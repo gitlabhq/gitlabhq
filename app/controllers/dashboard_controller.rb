@@ -1,7 +1,7 @@
 class DashboardController < ApplicationController
   respond_to :html
 
-  before_filter :load_projects
+  before_filter :load_projects, except: [:projects]
   before_filter :event_filter, only: :show
 
   def show
@@ -26,16 +26,18 @@ class DashboardController < ApplicationController
   def projects
     @projects = case params[:scope]
                 when 'personal' then
-                  @projects.personal(current_user)
+                  current_user.namespace.projects
                 when 'joined' then
-                  @projects.joined(current_user)
+                  current_user.authorized_projects.joined(current_user)
+                when 'owned' then
+                  current_user.owned_projects
                 else
-                  @projects
-                end
+                  current_user.authorized_projects
+                end.sorted_by_activity
 
     @projects = @projects.search(params[:search]) if params[:search].present?
 
-    @labels = Project.where(id: @projects.map(&:id)).tags_on(:labels)
+    @labels = current_user.authorized_projects.tags_on(:labels)
 
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?
     @projects = @projects.page(params[:page]).per(30)
