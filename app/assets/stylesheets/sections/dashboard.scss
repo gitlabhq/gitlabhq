@@ -56,3 +56,9 @@
     margin-left: -2px;
   }
 }
+
+@media (max-width: 1200px) {
+  .dashboard .dash-projects-filter {
+    width: 132px;
+  }
+}
