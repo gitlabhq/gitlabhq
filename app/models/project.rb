@@ -414,6 +414,10 @@ class Project < ActiveRecord::Base
     imported
   end
 
+  def personal?
+    !group
+  end
+
   def rename_repo
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
