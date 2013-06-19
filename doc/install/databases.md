@@ -23,6 +23,9 @@ GitLab supports the following databases:
     # Grant the GitLab user necessary permissions on the table.
     mysql> GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
 
+    # Reload permissions
+    mysql> FLUSH PRIVILEGES
+    
     # Quit the database session
     mysql> \q
 
