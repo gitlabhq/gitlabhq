@@ -45,7 +45,7 @@ class Admin::TeamsController < Admin::ApplicationController
   end
 
   def destroy
-    user_team.destroy
+    ::Teams::RemoveContext.new(current_user, user_team).execute
 
     redirect_to admin_teams_path, notice: 'Team of users was successfully deleted.'
   end

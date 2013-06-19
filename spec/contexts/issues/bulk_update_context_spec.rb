@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::BulkUpdateContext do
+describe Projects::Issues::BulkUpdateContext do
 
   let(:issue) {
     create(:issue, project: @project)
@@ -29,7 +29,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Projects::Issues::BulkUpdateContext.new(@user, @project, @params).execute
       result[:success].should be_true
       result[:count].should == @issues.count
 
@@ -54,7 +54,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Projects::Issues::BulkUpdateContext.new(@user, @project, @params).execute
       result[:success].should be_true
       result[:count].should == @issues.count
 
@@ -77,7 +77,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Projects::Issues::BulkUpdateContext.new(@user, @project, @params).execute
       result[:success].should be_true
       result[:count].should == 1
 
@@ -99,7 +99,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Projects::Issues::BulkUpdateContext.new(@user, @project, @params).execute
       result[:success].should be_true
       result[:count].should == 1
 

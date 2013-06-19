@@ -6,7 +6,7 @@ class NotesController < ProjectResourceController
   respond_to :js
 
   def index
-    @notes = Notes::LoadContext.new(project, current_user, params).execute
+    @notes = Projects::Notes::LoadContext.new(current_user, project, params).execute
     @target_type = params[:target_type].camelize
     @target_id = params[:target_id]
 
@@ -18,7 +18,7 @@ class NotesController < ProjectResourceController
   end
 
   def create
-    @note = Notes::CreateContext.new(project, current_user, params).execute
+    @note = Projects::Notes::CreateContext.new(current_user, project, params).execute
     @target_type = params[:target_type].camelize
     @target_id = params[:target_id]
 

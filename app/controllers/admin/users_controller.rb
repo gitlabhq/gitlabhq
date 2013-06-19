@@ -37,7 +37,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def block
-    if admin_user.block
+    if Users::BlockContext.new(@current_user, admin_user).execute
       redirect_to :back, alert: "Successfully blocked"
     else
       redirect_to :back, alert: "Error occured. User was not blocked"

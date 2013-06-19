@@ -23,7 +23,7 @@ class HooksController < ProjectResourceController
   end
 
   def test
-    TestHookContext.new(project, current_user, params).execute
+    Projects::TestHookContext.new(current_user, project, params).execute
 
     redirect_to :back
   end

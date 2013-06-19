@@ -8,7 +8,7 @@ class CommitController < ProjectResourceController
   before_filter :require_non_empty_project
 
   def show
-    result = CommitLoadContext.new(project, current_user, params).execute
+    result = Projects::Commits::LoadContext.new(current_user, project, params).execute
 
     @commit = result[:commit]
 

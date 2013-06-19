@@ -162,7 +162,7 @@ module API
         if @user_team
           team_member = @user_team.user_team_user_relationships.find_by_user_id(params[:user_id])
           unless team_member.nil?
-            team_member.destroy
+            Teams::Users::RemoveRelationContext.new(current_user, @user_team, team_member).execute
           else
             not_found!
           end

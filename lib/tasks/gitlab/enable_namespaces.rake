@@ -99,7 +99,7 @@ namespace :gitlab do
       end
 
       begin
-        project.transfer(group.path)
+        Projects::TransferContext.new(User.first, project, group)
         puts "moved to #{new_path}".green
       rescue
         puts "failed moving to #{new_path}".red
