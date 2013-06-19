@@ -3,6 +3,8 @@ class TeamMembersController < ProjectResourceController
   before_filter :authorize_read_project!
   before_filter :authorize_admin_project!, except: [:index, :show]
 
+  layout "project_settings"
+
   def index
     @group = @project.group
     @users_projects = @project.users_projects.order('project_access DESC')

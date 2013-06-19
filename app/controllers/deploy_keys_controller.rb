@@ -4,6 +4,8 @@ class DeployKeysController < ProjectResourceController
   # Authorize
   before_filter :authorize_admin_project!
 
+  layout "project_settings"
+
   def index
     @enabled_keys = @project.deploy_keys.all
     @available_keys = available_keys - @enabled_keys

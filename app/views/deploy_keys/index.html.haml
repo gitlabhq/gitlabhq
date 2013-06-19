@@ -1,5 +1,3 @@
-= render "projects/settings_nav"
-
 %p.slead
   Deploy keys allow read-only access to repository. They can be used for CI, staging or production servers
 
@@ -12,7 +10,7 @@
 %hr.clearfix
 
 .row
-  .span6.enabled-keys
+  .span5.enabled-keys
     %h5.cgreen
       Enabled deploy keys
       %small for this project
@@ -21,7 +19,7 @@
       - if @enabled_keys.blank?
         .light-well
           %p.nothing_here_message Create #{link_to 'new deploy key', new_project_deploy_key_path(@project)} or add existing one
-  .span6.available-keys
+  .span5.available-keys
     %h5
       Available deploy keys
       %small from projects you are able to manage

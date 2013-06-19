@@ -15,6 +15,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def edit
+    render 'edit', layout: "project_settings"
   end
 
   def create
@@ -42,7 +43,7 @@ class ProjectsController < ProjectResourceController
         format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
       else
-        format.html { render action: "edit" }
+        format.html { render action: "edit", layout: "project_settings" }
         format.js
       end
     end

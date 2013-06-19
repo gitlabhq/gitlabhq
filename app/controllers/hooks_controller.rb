@@ -5,6 +5,8 @@ class HooksController < ProjectResourceController
 
   respond_to :html
 
+  layout "project_settings"
+
   def index
     @hooks = @project.hooks.all
     @hook = ProjectHook.new

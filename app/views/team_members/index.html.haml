@@ -1,4 +1,3 @@
-= render "projects/settings_nav"
 %h3.page_title
   Users with access to this project
 
@@ -12,15 +11,6 @@
 %p.light
   Read more about project permissions
   %strong= link_to "here", help_permissions_path, class: "vlink"
-
-.clearfix
-
 - if @group
-  .row
-    .span6
-      = render "team_members/group_members"
-    .span6
-      = render "team_members/team", members: @users_projects
-
-- else
-  = render "team_members/team", members: @users_projects
+  = render "team_members/group_members"
+= render "team_members/team", members: @users_projects

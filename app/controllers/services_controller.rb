@@ -5,6 +5,8 @@ class ServicesController < ProjectResourceController
 
   respond_to :html
 
+  layout "project_settings"
+
   def index
     @project.build_missing_services
     @services = @project.services.reload
