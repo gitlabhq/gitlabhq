@@ -1,6 +1,6 @@
 - user = member.user
 - allow_admin = current_user_can_admin_project
-%li{id: dom_id(user), class: "team_member_row user_#{user.id}"}
+%li{id: dom_id(user), class: "team_member_row access-#{member.human_access.downcase}"}
   .pull-right
     - if allow_admin
       .pull-left

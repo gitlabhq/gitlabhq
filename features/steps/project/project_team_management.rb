@@ -30,35 +30,27 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Then 'I should see "Mike" in team list as "Reporter"' do
-    user = User.find_by_name("Mike")
-
-    within "#user_#{user.id}" do
+    within ".access-reporter" do
       page.should have_content('Mike')
-      page.find('#team_member_project_access').value.should == access_value(:reporter)
     end
   end
 
   Given 'I should see "Sam" in team list as "Developer"' do
-    user = User.find_by_name("Sam")
-
-    within "#user_#{user.id}" do
+    within ".access-developer" do
       page.should have_content('Sam')
-      page.find('#team_member_project_access').value.should == access_value(:developer)
     end
   end
 
   And 'I change "Sam" role to "Reporter"' do
     user = User.find_by_name("Sam")
-    within ".user_#{user.id}" do
+    within "#user_#{user.id}" do
       select "Reporter", from: "team_member_project_access"
     end
   end
 
   And 'I should see "Sam" in team list as "Reporter"' do
-    user = User.find_by_name("Sam")
-    within ".user_#{user.id}" do
+    within ".access-reporter" do
       page.should have_content('Sam')
-      page.find('#team_member_project_access').value.should == access_value(:reporter)
     end
   end
 
@@ -110,11 +102,5 @@ class ProjectTeamManagement < Spinach::FeatureSteps
     within "#user_#{User.find_by_name('Sam').id}" do
       click_link('Remove user from team')
     end
-  end
-
-  private
-
-  def access_value(key)
-    UsersProject.roles_hash[key].to_s
   end
 end
