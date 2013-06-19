@@ -20,21 +20,15 @@
 %hr
 
 -if @hooks.any?
-  %h3.page_title
-    Hooks (#{@hooks.count})
-  %br
-  %table
-    %thead
-      %tr
-        %th URL
-        %th
-    - @hooks.each do |hook|
-      %tr
-        %td
+  .ui-box
+    %h5.title
+      Hooks (#{@hooks.count})
+    %ul.well-list
+      - @hooks.each do |hook|
+        %li
           %span.badge.badge-info POST
           &rarr;
           %span.monospace= hook.url
-        %td
           .pull-right
             = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small grouped"
             = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-small grouped"
