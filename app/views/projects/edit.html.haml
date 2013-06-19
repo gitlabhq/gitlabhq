@@ -129,7 +129,7 @@
                         %span Namespace
                       .controls
                         .clearfix
-                          = f.select :namespace_id, namespaces_options(@project.namespace_id || Namespace::global_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+                          = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
                         %ul
                           %li Be careful. Changing project namespace can have unintended side effects
                           %li You can transfer project only to namespaces you can manage

@@ -24,10 +24,3 @@
 
 - else
   = render "team_members/team", members: @users_projects
-
-- if @assigned_teams.present?
-  %h5
-    Assigned teams
-    (#{@project.user_teams.count})
-  %div
-    = render "team_members/assigned_teams", assigned_teams: @assigned_teams
