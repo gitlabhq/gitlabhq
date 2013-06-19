@@ -33,7 +33,7 @@ module Projects
         # Find matching namespace and check if it allowed
         # for current user if namespace_id passed.
         if allowed_namespace?(current_user, namespace_id)
-          @project.namespace_id = namespace_id unless namespace_id == Namespace.global_id
+          @project.namespace_id = namespace_id
         else
           deny_namespace
           return @project
@@ -75,12 +75,8 @@ module Projects
     end
 
     def allowed_namespace?(user, namespace_id)
-      if namespace_id == Namespace.global_id
-        return user.admin
-      else
-        namespace = Namespace.find_by_id(namespace_id)
-        current_user.can?(:manage_namespace, namespace)
-      end
+      namespace = Namespace.find_by_id(namespace_id)
+      current_user.can?(:manage_namespace, namespace)
     end
   end
 end
