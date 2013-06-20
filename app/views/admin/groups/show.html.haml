@@ -75,7 +75,7 @@
           %div
             = users_select_tag(:user_ids, multiple: true)
           %div.prepend-top-10
-            = select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span2"}
+            = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select chosen"
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
     .ui-box

@@ -58,13 +58,6 @@ class Admin::GroupsController < Admin::ApplicationController
     redirect_to :back, notice: 'Group was successfully updated.'
   end
 
-  def remove_project
-    @project = Project.find(params[:project_id])
-    @project.transfer(nil)
-
-    redirect_to :back, notice: 'Group was successfully updated.'
-  end
-
   def project_teams_update
     @group.add_users(params[:user_ids].split(','), params[:group_access])
 
