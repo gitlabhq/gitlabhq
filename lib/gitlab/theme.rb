@@ -1,12 +1,18 @@
 module Gitlab
   class Theme
+    BASIC  = 1
+    MARS   = 2
+    MODERN = 3
+    GRAY   = 4
+    COLOR  = 5
+
     def self.css_class_by_id(id)
       themes = {
-        1 => "ui_basic",
-        2 => "ui_mars",
-        3 => "ui_modern",
-        4 => "ui_gray",
-        5 => "ui_color"
+        BASIC  => "ui_basic",
+        MARS   => "ui_mars",
+        MODERN => "ui_modern",
+        GRAY   => "ui_gray",
+        COLOR  => "ui_color"
       }
 
       id ||= 1

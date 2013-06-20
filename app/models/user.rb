@@ -205,6 +205,7 @@ class User < ActiveRecord::Base
       u.projects_limit = Gitlab.config.gitlab.default_projects_limit
       u.can_create_group = Gitlab.config.gitlab.default_can_create_group
       u.can_create_team = Gitlab.config.gitlab.default_can_create_team
+      u.theme_id = Gitlab::Theme::MARS
     end
   end
 
