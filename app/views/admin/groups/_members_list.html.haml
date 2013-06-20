@@ -1,0 +1,29 @@
+.tab-pane#members-list
+  %fieldset
+    .ui-box
+      %h5.title
+        Add user to Group projects:
+      .ui-box-body.form-holder
+        %p.light
+          Read more about project permissions
+          %strong= link_to "here", help_permissions_path, class: "vlink"
+
+        = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
+          %div
+            = users_select_tag(:user_ids, multiple: true)
+          %div.prepend-top-10
+            = select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span2"}
+          %hr
+          = submit_tag 'Add user to projects in group', class: "btn btn-create"
+    .ui-box
+      %h5.title
+        Users from Group projects
+        %small
+          (#{@group.users.count})
+      %ul.well-list
+        - @group.users.sort_by(&:name).each do |user|
+          %li{class: dom_class(user)}
+            %strong
+              = link_to user.name, admin_user_path(user)
+            %span.pull-right.light
+              = pluralize user.authorized_projects.in_namespace(@group).count, 'project'

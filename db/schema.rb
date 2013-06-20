@@ -235,6 +235,14 @@ ActiveRecord::Schema.define(:version => 20130614132337) do
     t.string "name"
   end
 
+  create_table "user_team_group_relationships", :force => true do |t|
+    t.integer  "user_team_id"
+    t.integer  "group_id"
+    t.integer  "greatest_access"
+    t.datetime "created_at",      :null => false
+    t.datetime "updated_at",      :null => false
+  end
+
   create_table "user_team_project_relationships", :force => true do |t|
     t.integer  "project_id"
     t.integer  "user_team_id"

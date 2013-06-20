@@ -1,0 +1,20 @@
+%h3.page_title
+  Edit max access in #{link_to @group.name, @group} for #{link_to(@team.name, team_path(@team))} team
+
+%hr
+
+= form_tag group_team_path(@group, @team), method: :put do
+  .clearfix
+    %label Max access for Team members:
+    .input
+      = select_tag :greatest_project_access, options_for_select(UserTeam.access_roles, @team.max_project_access_in_group(@group)), class: "project-access-select chosen span3"
+
+  .clearfix
+    %label Rebuild current permissions in projects
+    .input
+      = check_box_tag :rebuild_permissions, :yes, false, class: "project-access-select chosen span3"
+
+  %br
+  .actions
+    = submit_tag 'Save', class: "btn btn-save"
+    = link_to 'Cancel', :back, class: "btn btn-cancel"

@@ -28,8 +28,11 @@ class Ability
 
       team = project.team
 
+      user_teams = project.user_teams
+      is_team_admin = user_teams.inject(false) { |a, b| a = a || b.admin?(user)}
+
       # Rules based on role in project
-      if team.masters.include?(user)
+      if team.masters.include?(user) || is_team_admin
         rules << project_master_rules
 
       elsif team.developers.include?(user)
@@ -132,7 +135,7 @@ class Ability
       rules = []
 
       # Only group owner and administrators can manage group
-      if group.owner == user || user.admin?
+      if group.owner == user || user.admin? || group.admins.include?(user)
         rules << [
           :manage_group,
           :manage_namespace

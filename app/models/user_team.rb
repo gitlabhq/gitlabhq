@@ -18,9 +18,12 @@ class UserTeam < ActiveRecord::Base
 
   has_many :user_team_project_relationships, dependent: :destroy
   has_many :user_team_user_relationships, dependent: :destroy
+  has_many :user_team_group_relationships, dependent: :destroy
 
   has_many :projects, through: :user_team_project_relationships
   has_many :members,  through: :user_team_user_relationships, source: :user
+  has_many :admins,   through: :user_team_user_relationships, source: :user, conditions: { user_team_user_relationships: { group_admin: true } }
+  has_many :groups,   through: :user_team_group_relationships
 
   validates :owner, presence: true
   validates :name, presence: true, uniqueness: true,
@@ -35,6 +38,7 @@ class UserTeam < ActiveRecord::Base
   scope :with_member, ->(user){ joins(:user_team_user_relationships).where(user_team_user_relationships: {user_id: user.id}) }
   scope :with_project, ->(project){ joins(:user_team_project_relationships).where(user_team_project_relationships: {project_id: project})}
   scope :without_project, ->(project){ where("user_teams.id NOT IN (:ids)", ids: (a = with_project(project); a.blank? ? 0 : a))}
+  scope :not_in_group, ->(group){ where("id NOT IN (:ids)", ids: group.user_teams)}
   scope :created_by, ->(user){ where(owner_id: user) }
 
   class << self
@@ -96,6 +100,14 @@ class UserTeam < ActiveRecord::Base
 
   def max_project_access(project)
     user_team_project_relationships.find_by_project_id(project).greatest_access
+  end
+
+  def max_project_access_in_group(group)
+    user_team_group_relationships.find_by_group_id(group).greatest_access
+  end
+
+  def human_max_group_access(group)
+    self.class.access_roles.invert[max_project_access_in_group(group)]
   end
 
   def human_max_project_access(project)
