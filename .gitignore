@@ -1,3 +1,6 @@
+# Eclipse files
+.project
+# Other files
 .bundle
 .rbx/
 db/*.sqlite3
