@@ -155,7 +155,10 @@ header {
     }
     .project_name {
       a {
-        color: #FFF;
+        color: #DDD;
+        &:hover {
+          color: #FFF;
+        }
       }
       color: #fff;
       text-shadow: 0 1px 1px #444;
