@@ -1,20 +1,49 @@
-Project.seed(:id, [
+project_urls = [
+  'https://github.com/documentcloud/underscore.git',
+  'https://github.com/diaspora/diaspora.git',
+  'https://github.com/diaspora/diaspora-project-site.git',
+  'https://github.com/diaspora/diaspora-client.git',
+  'https://github.com/brightbox/brightbox-cli.git',
+  'https://github.com/brightbox/puppet.git',
+  'https://github.com/gitlabhq/gitlabhq.git',
+  'https://github.com/gitlabhq/gitlab-ci.git',
+  'https://github.com/gitlabhq/gitlab-recipes.git',
+  'https://github.com/gitlabhq/gitlab-shell.git',
+  'https://github.com/gitlabhq/grack.git',
+  'https://github.com/twitter/flight.git',
+  'https://github.com/twitter/typeahead.js.git',
+  'https://github.com/h5bp/html5-boilerplate.git',
+  'https://github.com/h5bp/mobile-boilerplate.git',
+]
 
-  # Global
-  { id: 1, name: "Underscore.js", path: "underscore", creator_id: 1 },
-  { id: 2, name: "Diaspora", path: "diaspora", creator_id: 1 },
+project_urls.each_with_index do |url, i|
+  group_path, project_path = url.split('/')[-2..-1]
 
-  # Brightbox
-  { id: 3, namespace_id: 100, name: "Brightbox CLI", path: "brightbox-cli", creator_id: 1 },
-  { id: 4, namespace_id: 100, name: "Puppet", path: "puppet", creator_id: 1 },
+  group = Group.find_by_path(group_path)
 
-  # KDE
-  { id: 5, namespace_id: 101, name: "kdebase", path: "kdebase", creator_id: 1},
-  { id: 6, namespace_id: 101, name: "kdelibs", path: "kdelibs", creator_id: 1},
-  { id: 7, namespace_id: 101, name: "amarok",  path: "amarok",  creator_id: 1},
+  unless group
+    group = Group.new(
+      name: group_path.titleize,
+      path: group_path
+    )
+    group.owner = User.first
+    group.save
+  end
 
-  # GitLab
-  { id: 8,  namespace_id: 99, name: "gitlabhq", path: "gitlabhq", creator_id: 1},
-  { id: 9,  namespace_id: 99, name: "gitlab-ci",  path: "gitlab-ci",  creator_id: 1},
-  { id: 10, namespace_id: 99, name: "gitlab-recipes",  path: "gitlab-recipes",  creator_id: 1},
-])
+  project_path.gsub!(".git", "")
+
+  params = {
+    import_url: url,
+    namespace_id: group.id,
+    name: project_path.titleize
+  }
+
+  project = Projects::CreateContext.new(User.first, params).execute
+
+  if project.valid?
+    print '.'
+  else
+    puts project.errors.full_messages
+    print 'F'
+  end
+end

@@ -11,7 +11,6 @@ Gitlab::Seeder.quiet do
     next unless user
 
     user_id = user.id
-    IssueObserver.current_user = user
 
     Issue.seed(:id, [{
       id: i,
