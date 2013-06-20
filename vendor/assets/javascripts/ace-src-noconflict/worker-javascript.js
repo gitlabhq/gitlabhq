@@ -9180,19 +9180,17 @@ function Tokenizer(s, f, l, allowHTMLComments) {
     this.lineno = l || 1;
     this.allowHTMLComments = allowHTMLComments;
     this.blockComments = null;
-}
-
-Tokenizer.prototype = {
     get done() {
         // We need to set scanOperand to true here because the first thing
         // might be a regexp.
         return this.peek(true) === END;
-    },
-
+    };
     get token() {
         return this.tokens[this.tokenIndex];
-    },
+    };
+}
 
+Tokenizer.prototype = {
     match: function (tt, scanOperand, keywordIsName) {
         return this.get(scanOperand, keywordIsName) === tt || this.unget();
     },
