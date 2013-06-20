@@ -1,14 +1,11 @@
 .row
   .span3
     %ul.nav.nav-pills.nav-stacked
-      %li.active
-        = link_to 'Projects', '#tab-projects', 'data-toggle' => 'tab'
-      %li
-        = link_to 'Edit Group', '#tab-edit', 'data-toggle' => 'tab'
-      %li
-        = link_to 'Transfer', '#tab-transfer', 'data-toggle' => 'tab'
-      %li
-        = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
+      %li.active= link_to 'Projects', '#tab-projects', 'data-toggle' => 'tab'
+      %li= link_to 'Teams', '#tab-teams', 'data-toggle' => 'tab'
+      %li= link_to 'Edit Group', '#tab-edit', 'data-toggle' => 'tab'
+      %li= link_to 'Transfer', '#tab-transfer', 'data-toggle' => 'tab'
+      %li= link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
 
   .span9
     .tab-content
@@ -29,6 +26,28 @@
                   = link_to 'Remove', project, confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
             - if @group.projects.blank?
               %p.nothing_here_message This group has no projects yet
+
+      .tab-pane#tab-teams
+        .ui-box
+          %h5.title
+            Teams
+            %small
+              (#{@group.user_teams.count})
+            %span.pull-right
+              = link_to new_group_team_path(@group), class: "btn btn-tiny info" do
+                %i.icon-plus
+                Assign Team
+            -# if @avaliable_teams.any?
+          %ul.well-list
+            - @group.user_teams.each do |team|
+              %li
+                = link_to team.name, team_path(team)
+                .pull-right
+                  = link_to 'Edit', edit_group_team_path(@group, team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
+                  = link_to 'Resign', group_team_path(@group, team), confirm: "RESIGN #{team.name} from #{@group.name} and all group projects? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+            - if @group.projects.blank?
+              %p.nothing_here_message This group has no teams yet
+
 
       .tab-pane#tab-edit
         .ui-box

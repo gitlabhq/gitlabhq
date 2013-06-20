@@ -1,0 +1,23 @@
+%table.zebra-striped
+  %thead
+    %tr
+      %th
+        Name
+        %i.icon-sort-down
+      %th Description
+      %th Permission
+      %th Admins
+      %th Owner
+
+  - @teams.each do |team|
+    %tr
+      %td
+        %strong= link_to team.name, team_path(team)
+      %td= truncate team.description
+      %td= team.human_max_group_access(@group)
+      %td= raw team.admins.any? ? team.admins.map { |a| link_to a.name, user_path(a) }.join(", ") : "-"
+      %td
+        - if team.owner
+          = link_to team.owner.name, user_path(team.owner)
+        - else
+          (deleted)

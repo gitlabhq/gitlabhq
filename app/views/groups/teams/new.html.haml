@@ -1,0 +1,18 @@
+%h3.page_title
+  = "Assign #{@group.name} group to team of users"
+%hr
+%p.slead
+  Read more about assign to team of users #{link_to "here", '#', class: 'vlink'}.
+= form_tag group_teams_path(@group), method: 'post' do
+  %p.slead Choose Team of users you want to assign:
+  .padded
+    = label_tag :team_id, "Team"
+    .input= select_tag(:team_id, options_from_collection_for_select(@available_teams, :id, :name), prompt: "Select team", class: "chosen xxlarge", required: true)
+  %p.slead Choose greatest user acces in team you want to assign:
+  .padded
+    = label_tag :team_ids, "Permission"
+    .input= select_tag :greatest_project_access, options_for_select(UserTeam.access_roles), {class: "project-access-select chosen span3" }
+
+  .actions
+    = submit_tag 'Assign', class: "btn btn-create"
+    = link_to "Cancel", group_teams_path(@group), class: "btn btn-cancel"

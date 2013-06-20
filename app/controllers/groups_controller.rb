@@ -120,7 +120,7 @@ class GroupsController < ApplicationController
 
   # Dont allow unauthorized access to group
   def authorize_read_group!
-    unless projects.present? or can?(current_user, :manage_group, @group)
+    unless projects.present? || can?(current_user, :manage_group, group)
       return render_404
     end
   end

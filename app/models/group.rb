@@ -13,6 +13,9 @@
 #
 
 class Group < Namespace
+  has_many :user_team_group_relationships, dependent: :destroy
+  has_many :user_teams, through: :user_team_group_relationships
+  has_many :admins, through: :user_teams, class_name: User, conditions: { user_team_user_relationships: { group_admin: true } }
 
   def add_users_to_project_teams(user_ids, project_access)
     UsersProject.add_users_into_projects(

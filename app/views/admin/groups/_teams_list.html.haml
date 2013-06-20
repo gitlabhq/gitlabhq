@@ -1,0 +1,45 @@
+.tab-pane#teams-list
+  %fieldset
+    %table.zebra-striped
+      %thead
+        %tr
+          %th
+            Name
+            %i.icon-sort-down
+          %th Description
+          %th Permission
+          %th Admins
+          %th Owner
+          %th.cred Danger Zone!
+
+      - @teams.each do |team|
+        %tr
+          %td
+            %strong= link_to team.name, team_path(team)
+          %td= truncate team.description
+          %td= team.human_max_group_access(@group)
+          %td= raw team.admins.any? ? team.admins.map { |a| link_to a.name, user_path(a) }.join(", ") : "-"
+          %td
+            - if team.owner
+              = link_to team.owner.name, user_path(team.owner)
+            - else
+              (deleted)
+          %td.bgred
+            = link_to 'Edit', edit_group_team_path(@group, team), id: "edit_#{dom_id(team)}", class: "btn btn-small"
+            = link_to 'Resign', group_team_path(@group, team), confirm: "REMOVE #{team.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+
+    - if @available_teams.any?
+      = form_tag group_teams_path(@group), method: 'post' do
+        %fieldset
+          %legend Assign Team to group
+          .padded
+            = label_tag :team_id, "Team"
+            .input= select_tag(:team_id, options_from_collection_for_select(@available_teams, :id, :name), prompt: "Select team", class: "chosen xxlarge", required: true)
+          %p.slead Choose greatest user acces in team you want to assign:
+          .padded
+            = label_tag :team_ids, "Permission"
+            .input= select_tag :greatest_project_access, options_for_select(UserTeam.access_roles), {class: "project-access-select chosen span3" }
+
+          .actions
+            = submit_tag 'Assign', class: "btn btn-create"
+            = link_to "Cancel", group_teams_path(@group), class: "btn btn-cancel"

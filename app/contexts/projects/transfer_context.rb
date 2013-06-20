@@ -13,7 +13,20 @@ module Projects
         elsif namespace_id.to_i != project.namespace_id
           # Transfer to someone namespace
           namespace = Namespace.find(namespace_id)
+          old_namespace = project.namespace
+
           project.transfer(namespace)
+
+          old_namespace.user_teams.each do |team|
+            Gitlab::UserTeamManager.resign(team, project)
+          end
+
+          if namespace.type == "Group"
+            namespace.user_teams.each do |team|
+              access = team.max_project_access_in_group(namespace)
+              Gitlab::UserTeamManager.assign(team, project, access)
+            end
+          end
         end
       end
 

@@ -8,6 +8,11 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def show
+    @group_projects = @group.projects
+    @members = @group.users
+    @teams = @group.user_teams
+
+    @available_teams = group.user_teams.any? ? UserTeam.where("id not in (?)", group.user_teams) : UserTeam.scoped
   end
 
   def new
