@@ -83,7 +83,7 @@
         Users from #{@group.name} Group
         %small
           (#{@group.users_groups.count})
-      %ul.well-list
+      %ul.well-list.group-users-list
         - @group.users_groups.order('group_access DESC').each do |member|
           - user = member.user
           %li{class: dom_class(user)}
