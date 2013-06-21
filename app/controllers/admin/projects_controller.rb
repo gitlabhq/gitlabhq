@@ -15,6 +15,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def show
     @repository = @project.repository
+    @group = @project.group
   end
 
   protected
