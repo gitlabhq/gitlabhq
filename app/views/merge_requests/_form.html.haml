@@ -62,20 +62,18 @@
         Cancel
 
 :javascript
-  $(function(){
-    disableButtonIfEmptyField("#merge_request_title", ".btn-save");
+  disableButtonIfEmptyField("#merge_request_title", ".btn-save");
 
-    var source_branch = $("#merge_request_source_branch")
-      , target_branch = $("#merge_request_target_branch");
+  var source_branch = $("#merge_request_source_branch")
+    , target_branch = $("#merge_request_target_branch");
 
-    $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
-    $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });
+  $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: source_branch.val() });
+  $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: target_branch.val() });
 
-    source_branch.live("change", function() {
-      $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: $(this).val() });
-    });
+  source_branch.live("change", function() {
+    $.get("#{branch_from_project_merge_requests_path(@project)}", {ref: $(this).val() });
+  });
 
-    target_branch.live("change", function() {
-      $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: $(this).val() });
-    });
+  target_branch.live("change", function() {
+    $.get("#{branch_to_project_merge_requests_path(@project)}", {ref: $(this).val() });
   });

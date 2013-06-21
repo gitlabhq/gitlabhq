@@ -27,13 +27,11 @@
 
 
 :javascript
-  $(function() {
-    var availableTags = #{@project.repository.ref_names.to_json};
+  var availableTags = #{@project.repository.ref_names.to_json};
 
-    $("#from, #to").autocomplete({
-      source: availableTags,
-      minLength: 1
-    });
-
-    disableButtonIfEmptyField('#to', '.commits-compare-btn');
+  $("#from, #to").autocomplete({
+    source: availableTags,
+    minLength: 1
   });
+
+  disableButtonIfEmptyField('#to', '.commits-compare-btn');
