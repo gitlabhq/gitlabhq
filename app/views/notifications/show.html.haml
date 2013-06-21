@@ -36,36 +36,19 @@
 = link_to '#', class: 'js-toggle-visibility-link' do
   %h6.btn.btn-tiny
     %i.icon-chevron-down
-    %span Per project notifications setting
+    %span Advanced notifications settings
+.js-toggle-visibility-container.hide
+  %h5 Groups:
+  %ul.well-list
+    - @users_groups.each do |users_group|
+      - notification = Notification.new(users_group)
+      = render 'settings', type: 'project', membership: users_group, notification: notification
 
-%ul.well-list.js-toggle-visibility-container.hide
-  - @users_projects.each do |users_project|
-    - notification = Notification.new(users_project)
-    %li
-      .row
-        .span4
-          %span
-            = link_to_project(users_project.project)
-        .span7
-          = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
-            = hidden_field_tag :notification_type, 'project', id: dom_id(users_project, 'notification_type')
-            = hidden_field_tag :notification_id, users_project.id, id: dom_id(users_project, 'notification_id')
-
-            = label_tag do
-              = radio_button_tag :notification_level, Notification::N_GLOBAL, notification.global?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
-              %span Use global setting
-
-            = label_tag do
-              = radio_button_tag :notification_level, Notification::N_DISABLED, notification.disabled?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
-              %span Disabled
-
-            = label_tag do
-              = radio_button_tag :notification_level, Notification::N_PARTICIPATING, notification.participating?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
-              %span Participating
-
-            = label_tag do
-              = radio_button_tag :notification_level, Notification::N_WATCH, notification.watch?, id: dom_id(users_project, 'notification_level'), class: 'trigger-submit'
-              %span Watch
+  %h5 Projects:
+  %ul.well-list
+    - @users_projects.each do |users_project|
+      - notification = Notification.new(users_project)
+      = render 'settings', type: 'project', membership: users_project, notification: notification
 
 
 .save-status-fixed

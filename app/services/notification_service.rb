@@ -148,13 +148,18 @@ class NotificationService
   # Get project users with WATCH notification level
   def project_watchers(project)
 
-    # Get project notification settings since it has higher priority
-    user_ids = project.users_projects.where(notification_level: Notification::N_WATCH).pluck(:user_id)
-    project_watchers = User.where(id: user_ids)
+    member_methods = [:users_projects]
+    member_methods << :users_groups if project.group
 
-    # next collect users who use global settings with watch state
-    user_ids = project.users_projects.where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
-    project_watchers += User.where(id: user_ids, notification_level: Notification::N_WATCH)
+    member_methods.each do |member_method|
+      # Get project notification settings since it has higher priority
+      user_ids = project.send(member_method).where(notification_level: Notification::N_WATCH).pluck(:user_id)
+      project_watchers = User.where(id: user_ids)
+
+      # next collect users who use global settings with watch state
+      user_ids = project.send(member_method).where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
+      project_watchers += User.where(id: user_ids, notification_level: Notification::N_WATCH)
+    end
 
     project_watchers.uniq
   end

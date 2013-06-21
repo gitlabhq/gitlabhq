@@ -11,6 +11,8 @@
 #
 
 class UsersGroup < ActiveRecord::Base
+  include Notifiable
+
   GUEST     = 10
   REPORTER  = 20
   DEVELOPER = 30

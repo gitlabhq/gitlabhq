@@ -13,6 +13,7 @@
 
 class UsersProject < ActiveRecord::Base
   include Gitlab::ShellAdapter
+  include Notifiable
 
   GUEST     = 10
   REPORTER  = 20
@@ -30,7 +31,6 @@ class UsersProject < ActiveRecord::Base
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
-  validates :notification_level, inclusion: { in: Notification.project_notification_levels }, presence: true
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -133,9 +133,5 @@ class UsersProject < ActiveRecord::Base
 
   def skip_git?
     !!@skip_git
-  end
-
-  def notification
-    @notification ||= Notification.new(self)
   end
 end
