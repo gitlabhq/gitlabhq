@@ -174,6 +174,10 @@ class NotificationService
 
       tm = project.users_projects.find_by_user_id(user.id)
 
+      if !tm && project.group
+        tm = project.users_groups.find_by_user_id(user.id)
+      end
+
       # reject users who globally disabled notification and has no membership
       next user.notification.disabled? unless tm
 
