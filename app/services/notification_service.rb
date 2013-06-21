@@ -147,17 +147,17 @@ class NotificationService
 
   # Get project users with WATCH notification level
   def project_watchers(project)
+    project_watchers = []
+    member_methods = { project => :users_projects }
+    member_methods.merge!(project.group => :users_groups) if project.group
 
-    member_methods = [:users_projects]
-    member_methods << :users_groups if project.group
-
-    member_methods.each do |member_method|
+    member_methods.each do |object, member_method|
       # Get project notification settings since it has higher priority
-      user_ids = project.send(member_method).where(notification_level: Notification::N_WATCH).pluck(:user_id)
-      project_watchers = User.where(id: user_ids)
+      user_ids = object.send(member_method).where(notification_level: Notification::N_WATCH).pluck(:user_id)
+      project_watchers += User.where(id: user_ids)
 
       # next collect users who use global settings with watch state
-      user_ids = project.send(member_method).where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
+      user_ids = object.send(member_method).where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
       project_watchers += User.where(id: user_ids, notification_level: Notification::N_WATCH)
     end
 
@@ -175,7 +175,7 @@ class NotificationService
       tm = project.users_projects.find_by_user_id(user.id)
 
       if !tm && project.group
-        tm = project.users_groups.find_by_user_id(user.id)
+        tm = project.group.users_groups.find_by_user_id(user.id)
       end
 
       # reject users who globally disabled notification and has no membership
