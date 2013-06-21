@@ -10,7 +10,8 @@ class Ability
       when "ProjectSnippet" then project_snippet_abilities(user, subject)
       when "PersonalSnippet" then personal_snippet_abilities(user, subject)
       when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group", "Namespace" then group_abilities(user, subject)
+      when "Group" then group_abilities(user, subject)
+      when "Namespace" then namespace_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -137,6 +138,19 @@ class Ability
       if group.owners.include?(user) || user.admin?
         rules << [
           :manage_group,
+          :manage_namespace
+        ]
+      end
+
+      rules.flatten
+    end
+
+    def namespace_abilities user, namespace
+      rules = []
+
+      # Only namespace owner and administrators can manage it
+      if namespace.owner == user || user.admin?
+        rules << [
           :manage_namespace
         ]
       end
