@@ -45,7 +45,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   # Sub Tabs: Home
 
   Given 'I click the "Team" tab' do
-    click_link('Team')
+    click_link('Project Members')
   end
 
   Given 'I click the "Attachments" tab' do
@@ -61,7 +61,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   end
 
   Given 'I click the "Hooks" tab' do
-    click_link('Hooks')
+    click_link('Web Hooks')
   end
 
   Given 'I click the "Deploy Keys" tab' do
@@ -73,7 +73,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   end
 
   Then 'the active sub tab should be Team' do
-    ensure_active_sub_tab('Team')
+    ensure_active_sub_tab('Project Members')
   end
 
   Then 'the active sub tab should be Attachments' do
@@ -89,7 +89,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   end
 
   Then 'the active sub tab should be Hooks' do
-    ensure_active_sub_tab('Hooks')
+    ensure_active_sub_tab('Web Hooks')
   end
 
   Then 'the active sub tab should be Deploy Keys' do

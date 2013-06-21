@@ -91,6 +91,15 @@ class MergeRequest < ActiveRecord::Base
     if target_branch == source_branch
       errors.add :branch_conflict, "You can not use same branch for source and target branches"
     end
+
+    if opened? || reopened?
+      similar_mrs = self.project.merge_requests.where(source_branch: source_branch, target_branch: target_branch).opened
+      similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
+
+      if similar_mrs.any?
+        errors.add :base, "There is already an open merge request for this branches"
+      end
+    end
   end
 
   def reload_code

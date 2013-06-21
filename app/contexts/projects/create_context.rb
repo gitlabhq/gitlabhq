@@ -51,6 +51,7 @@ module Projects
         if shell.import_repository(@project.path_with_namespace, @project.import_url)
           # We should create satellite for imported repo
           @project.satellite.create unless @project.satellite.exists?
+          @project.imported = true
           true
         else
           @project.errors.add(:import_url, 'cannot clone repo')
