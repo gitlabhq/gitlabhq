@@ -53,7 +53,6 @@ window.stopSpinner = ->
 window.unbindEvents = ->
   $(document).unbind('scroll')
   $(document).off('scroll')
-  $(document).off('click')
 
 document.addEventListener("page:fetch", startSpinner)
 document.addEventListener("page:fetch", unbindEvents)

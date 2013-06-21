@@ -1,6 +1,6 @@
 class GroupsController < ApplicationController
   respond_to :html
-  before_filter :group, except: [:new, :create, :people]
+  before_filter :group, except: [:new, :create]
 
   # Authorize
   before_filter :authorize_read_group!, except: [:new, :create]

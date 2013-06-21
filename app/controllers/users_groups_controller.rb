@@ -21,7 +21,7 @@ class UsersGroupsController < ApplicationController
     @users_group.destroy
 
     respond_to do |format|
-      format.html { redirect_to  people_group_path(@group), notice: 'User was  successfully removed from group.' }
+      format.html { redirect_to people_group_path(@group), notice: 'User was  successfully removed from group.' }
       format.js { render nothing: true }
     end
   end
