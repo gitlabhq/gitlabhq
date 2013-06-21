@@ -36,10 +36,10 @@ The GitLab installation consists of setting up the following components:
 `sudo` is not installed on Debian by default. Make sure your system is
 up-to-date and install it.
 
-    # run as root
-    apt-get update
-    apt-get upgrade
-    apt-get install sudo
+    # run as root!
+    apt-get update -y
+    apt-get upgrade -y
+    apt-get install sudo -y
 
 **Note:**
 Vim is an editor that is used here whenever there are files that need to be
@@ -55,7 +55,7 @@ Install the required packages:
 Make sure you have the right version of Python installed.
 
     # Install Python
-    sudo apt-get install python
+    sudo apt-get install -y python
 
     # Make sure that Python is 2.5+ (3.x is not supported at the moment)
     python --version
@@ -73,15 +73,17 @@ Make sure you have the right version of Python installed.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install postfix 
+	sudo apt-get install -y postfix 
+
+Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
 
-Remove old 1.8 ruby if present
+Remove the old Ruby 1.8 if present
 
-    sudo apt-get remove ruby1.8
+    sudo apt-get remove -y ruby1.8
 
-Download and compile it:
+Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p392.tar.gz | tar xz
@@ -92,7 +94,7 @@ Download and compile it:
 
 Install the Bundler Gem:
 
-    sudo gem install bundler
+    sudo gem install bundler --no-ri --no-rdoc
 
 
 # 3. System Users
@@ -106,28 +108,25 @@ Create a `git` user for Gitlab:
 
 GitLab Shell is a ssh access and repository management software developed specially for GitLab.
 
-    # Login as git
-    sudo su git
-
     # Go to home directory
     cd /home/git
 
     # Clone gitlab shell
-    git clone https://github.com/gitlabhq/gitlab-shell.git
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git
 
     cd gitlab-shell
 
     # switch to right version
-    git checkout v1.4.0
+    sudo -u git -H git checkout v1.4.0
 
-    cp config.yml.example config.yml
+    sudo -u git -H cp config.yml.example config.yml
 
     # Edit config and replace gitlab_url
     # with something like 'http://domain.com/'
-    vim config.yml
+    sudo -u git -H vim config.yml
 
     # Do setup
-    ./bin/install
+    sudo -u git -H ./bin/install
 
 
 # 5. Database
@@ -152,8 +151,7 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     sudo -u git -H git checkout 5-3-stable
 
 **Note:**
-You can change `5-3-stable` to `master` if you want the *bleeding edge* version, but
-do so with caution!
+You can change `5-3-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
 
 ## Configure it
 
@@ -205,10 +203,18 @@ Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
     # Mysql
     sudo -u git cp config/database.yml.mysql config/database.yml
 
+    or
+
     # PostgreSQL
     sudo -u git cp config/database.yml.postgresql config/database.yml
 
-Make sure to update username/password in config/database.yml.
+    # Make sure to update username/password in config/database.yml.
+    # You only need to adapt the production settings (first part).
+    # If you followed the database guide then please do as follows:
+    # Change 'root' to 'gitlab'
+    # Change 'secure password' with the value you have given to $password
+    # You can keep the double quotes around the password
+    sudo -u git -H vim config/database.yml
 
 ## Install Gems
 
@@ -216,16 +222,20 @@ Make sure to update username/password in config/database.yml.
 
     sudo gem install charlock_holmes --version '0.6.9.4'
 
-    # For MySQL (note, the option says "without")
+    # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres
 
-    # Or for PostgreSQL
+    # Or for PostgreSQL (note, the option says "without ... mysql")
     sudo -u git -H bundle install --deployment --without development test mysql
 
 
 ## Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
+
+    # Type 'yes' to create the database.
+
+    # When done you see 'Administrator account created:'
 
 
 ## Install Init Script
@@ -269,7 +279,7 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 [`Advanced Setup Tips`](./installation.md#advanced-setup-tips) section.
 
 ## Installation
-    sudo apt-get install nginx
+    sudo apt-get install -y nginx
 
 ## Site Configuration
 
@@ -280,10 +290,8 @@ Download an example site config:
 
 Make sure to edit the config file to match your setup:
 
-    # **YOUR_SERVER_FQDN** to the fully-qualified
-    # domain name of your host serving GitLab. Also, replace
-    # the 'listen' line with the following:
-    #   listen 80 default_server;         # e.g., listen 192.168.1.1:80;
+    # Change YOUR_SERVER_FQDN to the fully-qualified
+    # domain name of your host serving GitLab.
     sudo vim /etc/nginx/sites-available/gitlab
 
 ## Restart
