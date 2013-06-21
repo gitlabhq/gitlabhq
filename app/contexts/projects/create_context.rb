@@ -58,7 +58,7 @@ module Projects
         end
       end
 
-      if @project.save
+      if @project.save && !@project.group
         @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
       end
 
