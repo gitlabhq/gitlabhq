@@ -128,13 +128,6 @@ describe User do
     it { @user.personal_projects.should include(@project) }
     it { @user.personal_projects.should_not include(@project_2) }
     it { @user.personal_projects.should_not include(@project_3) }
-
-    # master_projects doesn't check creator/namespace.
-    # In real case the users_projects relation will certainly be assigned
-    # when the project is created.
-    it { @user.master_projects.should_not include(@project) }
-    it { @user.master_projects.should include(@project_2) }
-    it { @user.master_projects.should_not include(@project_3) }
   end
 
   describe 'groups' do
