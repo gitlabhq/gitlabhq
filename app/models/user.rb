@@ -74,6 +74,8 @@ class User < ActiveRecord::Base
 
   # Groups
   has_many :own_groups, class_name: "Group", foreign_key: :owner_id
+  has_many :owned_groups, through: :users_groups, source: :group, conditions: { users_groups: { group_access: UsersGroup::OWNER } }
+
   has_many :users_groups, dependent: :destroy
   has_many :groups, through: :users_groups
 
@@ -223,11 +225,6 @@ class User < ActiveRecord::Base
     if Namespace.find_by_path(namespace_name)
       self.errors.add :username, "already exist"
     end
-  end
-
-  # Groups where user is an owner
-  def owned_groups
-    own_groups
   end
 
   # Groups user has access to
