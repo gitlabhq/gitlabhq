@@ -42,7 +42,7 @@
   %ul.well-list
     - @users_groups.each do |users_group|
       - notification = Notification.new(users_group)
-      = render 'settings', type: 'project', membership: users_group, notification: notification
+      = render 'settings', type: 'group', membership: users_group, notification: notification
 
   %h5 Projects:
   %ul.well-list
