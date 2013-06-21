@@ -18,7 +18,7 @@
       Members
       %span.count= @team.members.count
 
-  - if can? current_user, :admin_user_team, @team
+  - if can? current_user, :manage_user_team, @team
     = nav_link(path: 'teams#edit') do
       = link_to edit_team_path(@team), class: "stat-tab tab " do
         Settings

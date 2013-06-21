@@ -27,7 +27,7 @@ class Issue < ActiveRecord::Base
 
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :authored, ->(user) { where(author_id: user) }
-  scope :open_for, ->(user) { opened.assigned(user) }
+  scope :open_for, ->(user) { opened.assigned_to(user) }
 
   state_machine :state, initial: :opened do
     event :close do

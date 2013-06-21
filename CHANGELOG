@@ -24,6 +24,7 @@ v 5.3.0
   - init.d: Ensure socket is removed before starting service
   - Admin area: Style teams:index, group:show pages
   - Own page for failed forking
+  - Scrum view for milestone
 
 v 5.2.0
   - Turbolinks

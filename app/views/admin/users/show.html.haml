@@ -1,32 +1,68 @@
+%h3.page_title
+  User:
+  = @admin_user.name
+  - if @admin_user.blocked?
+    %span.cred (Blocked)
+  - if @admin_user.admin
+    %span.cred (Admin)
+
+  .pull-right
+    = link_to edit_admin_user_path(@admin_user), class: "btn grouped btn-small" do
+      %i.icon-edit
+      Edit
+    - unless @admin_user == current_user
+      - if @admin_user.blocked?
+        = link_to 'Unblock', unblock_admin_user_path(@admin_user), method: :put, class: "btn grouped btn-small success"
+      - else
+        = link_to 'Block', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn grouped btn-small btn-remove"
+      = link_to 'Destroy', [:admin, @admin_user], confirm: "USER #{@admin_user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn grouped btn-small btn-remove"
+%hr
+
 .row
   .span6
-    %h3.page_title
-      = image_tag gravatar_icon(@admin_user.email, 90), class: "avatar s90"
-      = @admin_user.name
-      - if @admin_user.blocked?
-        %span.cred (Blocked)
-      - if @admin_user.admin
-        %span.cred (Admin)
-      .pull-right
-        = link_to edit_admin_user_path(@admin_user), class: "btn pull-right" do
-          %i.icon-edit
-          Edit
-      %br
-      %small @#{@admin_user.username}
-      %br
-      %small member since #{@admin_user.created_at.stamp("Nov 12, 2031")}
-    .clearfix
-    %hr
-    %p
-      %span.btn.btn-small
-        %i.icon-envelope
-        = mail_to @admin_user.email
-      - unless @admin_user == current_user
-        - if @admin_user.blocked?
-          = link_to 'Unblock', unblock_admin_user_path(@admin_user), method: :put, class: "btn btn-small success"
-        - else
-          = link_to 'Block', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
-        = link_to 'Destroy', [:admin, @admin_user], confirm: "USER #{@admin_user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+    .ui-box
+      %h5.title
+        Account:
+        .pull-right
+          = image_tag gravatar_icon(@admin_user.email, 32), class: "avatar s32"
+      %ul.well-list
+        %li
+          %span.light Name:
+          %strong= @admin_user.name
+        %li
+          %span.light Username:
+          %strong
+            = @admin_user.username
+        %li
+          %span.light Email:
+          %strong
+            = mail_to @admin_user.email
+
+        %li
+          %span.light Member since:
+          %strong
+            = @admin_user.created_at.stamp("Nov 12, 2031")
+
+        %li
+          %span.light Last sign-in at:
+          %strong
+            - if @admin_user.last_sign_in_at
+              = @admin_user.last_sign_in_at.stamp("Nov 12, 2031")
+            - else
+              never
+
+        - if @admin_user.ldap_user?
+          %li
+            %span.light LDAP uid:
+            %strong
+              = @admin_user.extern_uid
+
+        - if @admin_user.created_by
+          %li
+            %span.light Created by:
+            %strong
+              = link_to @admin_user.created_by.name, [:admin, @admin_user.created_by]
+
     %hr
     %h5
       Add User to Projects
@@ -67,11 +103,11 @@
 
 
   .span6
-    = render 'users/profile', user: @admin_user
     .ui-box
       %h5.title Projects (#{@projects.count})
       %ul.well-list
         - @projects.sort_by(&:name_with_namespace).each do |project|
+          - tm = project.team.get_tm(@admin_user.id)
           %li
             = link_to admin_project_path(project), class: dom_class(project) do
               - if project.namespace
@@ -79,16 +115,17 @@
                 \/
               %strong.well-title
                 = truncate(project.name, length: 45)
-            %span.pull-right.light
-              - if project.owner == @admin_user
-                %i.icon-wrench
-              - tm = project.team.get_tm(@admin_user.id)
-              - if tm
-                = tm.project_access_human
-                = link_to edit_admin_project_member_path(project, tm.user), class: "btn btn-small" do
+
+            - if project.owner == @admin_user
+              %span.label.label-info owner
+
+            - if tm
+              .pull-right
+                = link_to edit_admin_project_member_path(project, tm.user), class: "btn grouped btn-small" do
                   %i.icon-edit
-                = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @admin_user), method: :delete, class: "btn btn-small btn-remove" do
+                = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @admin_user), method: :delete, class: "btn grouped btn-small btn-remove" do
                   %i.icon-remove
-    %p.light
-      %i.icon-wrench
-      &ndash; user is a project owner
+
+              .pull-right.light
+                = tm.project_access_human
+                &nbsp;

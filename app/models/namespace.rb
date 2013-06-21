@@ -27,6 +27,7 @@ class Namespace < ActiveRecord::Base
                       message: "only letters, digits, spaces & '_' '-' '.' allowed." }
   validates :description, length: { within: 0..255 }
   validates :path, uniqueness: true, presence: true, length: { within: 1..255 },
+            exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 

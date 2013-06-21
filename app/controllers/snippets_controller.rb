@@ -7,7 +7,11 @@ class SnippetsController < ApplicationController
   # Allow destroy snippet
   before_filter :authorize_admin_snippet!, only: [:destroy]
 
+  before_filter :set_title
+
   respond_to :html
+
+  layout 'navless'
 
   def index
     @snippets = Snippet.public.fresh.non_expired.page(params[:page]).per(20)
@@ -97,5 +101,9 @@ class SnippetsController < ApplicationController
 
   def authorize_admin_snippet!
     return render_404 unless can?(current_user, :admin_personal_snippet, @snippet)
+  end
+
+  def set_title
+    @title = 'Snippets'
   end
 end

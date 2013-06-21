@@ -92,6 +92,10 @@ ul.notes {
     .note-body {
       @include md-typography;
       margin-left: 45px;
+
+      .highlight {
+        @include border-radius(4px);
+      }
     }
     .note-header {
       padding-bottom: 5px;

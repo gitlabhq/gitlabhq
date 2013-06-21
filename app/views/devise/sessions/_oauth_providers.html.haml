@@ -1,8 +1,9 @@
-- if enabled_oauth_providers.present?
+- providers = (enabled_oauth_providers - [:ldap])
+- if providers.present?
   %hr
   %div{:'data-no-turbolink' => 'data-no-turbolink'}
     %span Sign in with: &nbsp;
-    - (enabled_oauth_providers - [:ldap]).each do |provider|
+    - providers.each do |provider|
       %span
         - if default_providers.include?(provider)
           = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)

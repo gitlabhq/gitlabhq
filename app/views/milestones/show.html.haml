@@ -55,39 +55,52 @@
         = markdown @milestone.description
 
 
-.row
-  .span6
-    .ui-box.milestone-issue-filter
-      .title
-        %ul.nav.nav-pills
-          %li.active= link_to('Open Issues', '#')
-          %li=link_to('All Issues', '#')
-      %ul.well-list
-        - @issues.each do |issue|
-          %li{data: {closed: issue.closed?}}
-            = link_to [@project, issue] do
-              %span.badge.badge-info ##{issue.id}
-            &ndash;
-            = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
+%ul.nav.nav-tabs
+  %li.active
+    = link_to '#tab-issues', 'data-toggle' => 'tab' do
+      Issues
+      %span.badge= @issues.count
+  %li
+    = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
+      Merge Requests
+      %span.badge= @merge_requests.count
+  %li
+    = link_to '#tab-participants', 'data-toggle' => 'tab' do
+      Participants
+      %span.badge= @users.count
 
-  .span6
-    .ui-box.milestone-merge-requests-filter
-      .title
-        %ul.nav.nav-pills
-          %li.active= link_to('Open Merge Requests', '#')
-          %li=link_to('All Merge Requests', '#')
-      %ul.well-list
-        - @merge_requests.each do |merge_request|
-          %li{data: {closed: merge_request.closed? || merge_request.merged?}}
-            = link_to [@project, merge_request] do
-              %span.badge.badge-info ##{merge_request.id}
-            &ndash;
-            = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
 
-%hr
-%h6 Participants:
-%div
-  - @users.each do |user|
-    = link_to_member(@project, user)
+.tab-content
+  .tab-pane.active#tab-issues
+    .row
+      .span4
+        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
+      .span4
+        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
+      .span4
+        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
 
-.clearfix
+  .tab-pane#tab-merge-requests
+    .row
+      .span6
+        .ui-box
+          %h5.title Open
+          %ul.well-list
+            - @merge_requests.opened.each do |merge_request|
+              = render 'merge_request', merge_request: merge_request
+      .span6
+        .ui-box
+          %h5.title Closed
+          %ul.well-list
+            - @merge_requests.closed.each do |merge_request|
+              = render 'merge_request', merge_request: merge_request
+
+  .tab-pane#tab-participants
+    %ul.bordered-list
+      - @users.each do |user|
+        %li
+          = link_to user, title: user.name, class: "dark" do
+            = image_tag gravatar_icon(user.email, 32), class: "avatar s32"
+            %strong= truncate(user.name, lenght: 40)
+            %br
+            %small.cgray= user.username
