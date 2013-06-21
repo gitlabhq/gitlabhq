@@ -88,6 +88,7 @@ class User < ActiveRecord::Base
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
 
+  has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
   has_many :master_projects,          through: :users_projects, source: :project,
@@ -233,15 +234,19 @@ class User < ActiveRecord::Base
 
   # Groups user has access to
   def authorized_groups
-    @group_ids ||= (groups.pluck(:id) + own_groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-    Group.where(id: @group_ids)
+    @authorized_groups ||= begin
+                             group_ids = (groups.pluck(:id) + own_groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
+                             Group.where(id: group_ids)
+                           end
   end
 
 
   # Projects user has access to
   def authorized_projects
-    @project_ids ||= (owned_projects.pluck(:id) + groups.map(&:projects).flatten.map(&:id) + projects.pluck(:id)).uniq
-    Project.where(id: @project_ids)
+    @authorized_projects ||= begin
+                               project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id)).uniq
+                               Project.where(id: project_ids).includes(:namespace)
+                             end
   end
 
   # Team membership in authorized projects
