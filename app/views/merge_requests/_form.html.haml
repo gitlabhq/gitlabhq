@@ -40,12 +40,12 @@
             = f.label :assignee_id do
               %i.icon-user
               Assign to
-            .input= f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+            .input= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
           .left
             = f.label :milestone_id do
               %i.icon-time
               Milestone
-            .input= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+            .input= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
   .control-group
 

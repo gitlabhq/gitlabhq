@@ -101,7 +101,7 @@ class ProjectsController < ProjectResourceController
     @suggestions = {
       emojis: Emoji.names,
       issues: @project.issues.select([:id, :title, :description]),
-      members: @project.users.select([:username, :name]).order(:username)
+      members: @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
     }
 
     respond_to do |format|
