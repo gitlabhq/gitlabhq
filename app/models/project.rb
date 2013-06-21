@@ -68,6 +68,7 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
+  delegate :members, to: :team, prefix: true
 
   # Validations
   validates :creator, presence: true
