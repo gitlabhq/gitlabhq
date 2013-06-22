@@ -218,6 +218,24 @@ describe Notify do
       end
     end
 
+    describe 'project was moved' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      subject { Notify.project_was_moved_email(project.id, user.id) }
+
+      it 'has the correct subject' do
+        should have_subject /project was moved/
+      end
+
+      it 'contains name of project' do
+        should have_body_text /#{project.name_with_namespace}/
+      end
+
+      it 'contains new user role' do
+        should have_body_text /#{project.ssh_url_to_repo}/
+      end
+    end
+
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }

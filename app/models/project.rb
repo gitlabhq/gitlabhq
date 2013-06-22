@@ -246,8 +246,8 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    self.users_projects.each do |member|
-      Notify.delay.project_was_moved_email(member.id)
+    team.members.each do |user|
+      Notify.delay.project_was_moved_email(self.id, user.id)
     end
   end
 
