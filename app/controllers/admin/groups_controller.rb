@@ -25,7 +25,7 @@ class Admin::GroupsController < Admin::ApplicationController
     if @group.save
       redirect_to [:admin, @group], notice: 'Group was successfully created.'
     else
-      render action: "new"
+      render "new"
     end
   end
 
@@ -40,7 +40,7 @@ class Admin::GroupsController < Admin::ApplicationController
     if @group.update_attributes(group_params)
       redirect_to [:admin, @group], notice: 'Group was successfully updated.'
     else
-      render action: "edit"
+      render "edit"
     end
   end
 

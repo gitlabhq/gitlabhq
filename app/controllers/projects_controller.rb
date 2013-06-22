@@ -27,7 +27,7 @@ class ProjectsController < ProjectResourceController
         if @project.saved?
           redirect_to @project
         else
-          render action: "new"
+          render "new"
         end
       end
       format.js
@@ -43,7 +43,7 @@ class ProjectsController < ProjectResourceController
         format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
       else
-        format.html { render action: "edit", layout: "project_settings" }
+        format.html { render "edit", layout: "project_settings" }
         format.js
       end
     end
@@ -90,7 +90,7 @@ class ProjectsController < ProjectResourceController
           redirect_to(@forked_project, notice: 'Project was successfully forked.')
         else
           @title = 'Fork project'
-          render action: "fork"
+          render "fork"
         end
       end
       format.js

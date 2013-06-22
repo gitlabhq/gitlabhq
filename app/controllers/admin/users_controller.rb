@@ -53,7 +53,7 @@ class Admin::UsersController < Admin::ApplicationController
         format.html { redirect_to [:admin, @admin_user], notice: 'User was successfully created.' }
         format.json { render json: @admin_user, status: :created, location: @admin_user }
       else
-        format.html { render action: "new" }
+        format.html { render "new" }
         format.json { render json: @admin_user.errors, status: :unprocessable_entity }
       end
     end
@@ -76,7 +76,7 @@ class Admin::UsersController < Admin::ApplicationController
       else
         # restore username to keep form action url.
         admin_user.username = params[:id]
-        format.html { render action: "edit" }
+        format.html { render "edit" }
         format.json { render json: admin_user.errors, status: :unprocessable_entity }
       end
     end

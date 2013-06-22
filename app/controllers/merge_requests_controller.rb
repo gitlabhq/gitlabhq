@@ -54,7 +54,7 @@ class MergeRequestsController < ProjectResourceController
       @merge_request.reload_code
       redirect_to [@project, @merge_request], notice: 'Merge request was successfully created.'
     else
-      render action: "new"
+      render "new"
     end
   end
 
@@ -64,7 +64,7 @@ class MergeRequestsController < ProjectResourceController
       @merge_request.mark_as_unchecked
       redirect_to [@project, @merge_request], notice: 'Merge request was successfully updated.'
     else
-      render action: "edit"
+      render "edit"
     end
   end
 
