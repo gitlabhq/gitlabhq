@@ -113,8 +113,8 @@ Gitlab::Application.routes.draw do
       put :update_username
     end
 
-    resource :notifications
-    resource :password
+    resource :notifications, only: [:show, :update]
+    resource :password, only: [:new, :create]
   end
 
   resources :keys
@@ -125,7 +125,7 @@ Gitlab::Application.routes.draw do
   #
   # Dashboard Area
   #
-  resource :dashboard, controller: "dashboard" do
+  resource :dashboard, controller: "dashboard", only: [:show] do
     member do
       get :projects
       get :issues
@@ -198,7 +198,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resource :repository do
+    resource :repository, only: [:show] do
       member do
         get "branches"
         get "tags"
