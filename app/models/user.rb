@@ -231,7 +231,7 @@ class User < ActiveRecord::Base
   def authorized_groups
     @authorized_groups ||= begin
                              group_ids = (groups.pluck(:id) + own_groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids)
+                             Group.where(id: group_ids).order('namespaces.name ASC')
                            end
   end
 
@@ -240,7 +240,7 @@ class User < ActiveRecord::Base
   def authorized_projects
     @authorized_projects ||= begin
                                project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id)).uniq
-                               Project.where(id: project_ids).includes(:namespace)
+                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
 
