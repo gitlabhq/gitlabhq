@@ -18,7 +18,7 @@ class UsersGroupsController < ApplicationController
 
   def destroy
     @users_group = @group.users_groups.find(params[:id])
-    @users_group.destroy
+    @users_group.destroy unless @users_group.user == @group.owner
 
     respond_to do |format|
       format.html { redirect_to people_group_path(@group), notice: 'User was  successfully removed from group.' }
