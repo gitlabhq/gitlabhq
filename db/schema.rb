@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130621195223) do
+ActiveRecord::Schema.define(:version => 20130622115340) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -19,6 +19,8 @@ ActiveRecord::Schema.define(:version => 20130621195223) do
     t.datetime "created_at",    :null => false
     t.datetime "updated_at",    :null => false
   end
+
+  add_index "deploy_keys_projects", ["project_id"], :name => "index_deploy_keys_projects_on_project_id"
 
   create_table "events", :force => true do |t|
     t.string   "target_type"
@@ -148,8 +150,10 @@ ActiveRecord::Schema.define(:version => 20130621195223) do
     t.integer  "noteable_id"
   end
 
+  add_index "notes", ["author_id"], :name => "index_notes_on_author_id"
   add_index "notes", ["commit_id"], :name => "index_notes_on_commit_id"
   add_index "notes", ["created_at"], :name => "index_notes_on_created_at"
+  add_index "notes", ["noteable_id", "noteable_type"], :name => "index_notes_on_noteable_id_and_noteable_type"
   add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
   add_index "notes", ["project_id", "noteable_type"], :name => "index_notes_on_project_id_and_noteable_type"
   add_index "notes", ["project_id"], :name => "index_notes_on_project_id"
@@ -186,6 +190,8 @@ ActiveRecord::Schema.define(:version => 20130621195223) do
     t.datetime "updated_at", :null => false
   end
 
+  add_index "protected_branches", ["project_id"], :name => "index_protected_branches_on_project_id"
+
   create_table "services", :force => true do |t|
     t.string   "type"
     t.string   "title"
@@ -214,6 +220,7 @@ ActiveRecord::Schema.define(:version => 20130621195223) do
     t.string   "type"
   end
 
+  add_index "snippets", ["author_id"], :name => "index_snippets_on_author_id"
   add_index "snippets", ["created_at"], :name => "index_snippets_on_created_at"
   add_index "snippets", ["expires_at"], :name => "index_snippets_on_expires_at"
   add_index "snippets", ["project_id"], :name => "index_snippets_on_project_id"
@@ -310,6 +317,8 @@ ActiveRecord::Schema.define(:version => 20130621195223) do
     t.integer  "notification_level", :default => 3, :null => false
   end
 
+  add_index "users_groups", ["user_id"], :name => "index_users_groups_on_user_id"
+
   create_table "users_projects", :force => true do |t|
     t.integer  "user_id",                           :null => false
     t.integer  "project_id",                        :null => false
@@ -331,5 +340,7 @@ ActiveRecord::Schema.define(:version => 20130621195223) do
     t.string   "type",       :default => "ProjectHook"
     t.integer  "service_id"
   end
+
+  add_index "web_hooks", ["project_id"], :name => "index_web_hooks_on_project_id"
 
 end
