@@ -76,16 +76,7 @@ Gitlab::Application.routes.draw do
 
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
-        put :project_update
         put :project_teams_update
-        delete :remove_project
-      end
-    end
-
-    resources :teams, constraints: { id: /[^\/]+/ } do
-      scope module: :teams do
-        resources :members,   only: [:edit, :update, :destroy, :new, :create]
-        resources :projects,  only: [:edit, :update, :destroy, :new, :create], constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
       end
     end
 
@@ -98,7 +89,7 @@ Gitlab::Application.routes.draw do
 
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
       scope module: :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
-        resources :members, only: [:edit, :update, :destroy]
+        resources :members, only: [:destroy]
       end
     end
 

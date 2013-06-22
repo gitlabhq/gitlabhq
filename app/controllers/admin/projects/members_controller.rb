@@ -1,18 +1,4 @@
 class Admin::Projects::MembersController < Admin::Projects::ApplicationController
-  def edit
-    @member = team_member
-    @project = project
-    @team_member_relation = team_member_relation
-  end
-
-  def update
-    if team_member_relation.update_attributes(params[:team_member])
-      redirect_to [:admin, project],  notice: 'Project Access was successfully updated.'
-    else
-      render action: "edit"
-    end
-  end
-
   def destroy
     team_member_relation.destroy
 
@@ -28,5 +14,4 @@ class Admin::Projects::MembersController < Admin::Projects::ApplicationControlle
   def team_member_relation
     team_member.users_projects.find_by_project_id(project)
   end
-
 end

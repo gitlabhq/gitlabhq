@@ -65,7 +65,7 @@
   .span6
     .ui-box
       %h5.title
-        Add user(s):
+        Add user(s) to the group:
       .ui-box-body.form-holder
         %p.light
           Read more about project permissions
@@ -80,7 +80,8 @@
           = submit_tag 'Add users into group', class: "btn btn-create"
     .ui-box
       %h5.title
-        Users from #{@group.name} Group
+        %strong #{@group.name}
+        Group Members
         %small
           (#{@group.users_groups.count})
       %ul.well-list.group-users-list

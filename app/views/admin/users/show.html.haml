@@ -63,15 +63,16 @@
             %strong
               = link_to @admin_user.created_by.name, [:admin, @admin_user.created_by]
 
-    - if @admin_user.owned_groups.present?
+    - if @admin_user.users_groups.present?
       .ui-box
-        %h5.title Owned groups:
+        %h5.title Groups:
         %ul.well-list
-          - @admin_user.groups.each do |group|
+          - @admin_user.users_groups.each do |user_group|
+            - group = user_group.group
             %li
               %strong= link_to group.name, admin_group_path(group)
-
-
+              .pull-right
+                %span.light= user_group.human_access
 
   .span6
     .ui-box
@@ -87,16 +88,8 @@
               %strong.well-title
                 = truncate(project.name, length: 45)
 
-            - if project.owner == @admin_user
-              %span.label.label-info owner
-
             - if tm
               .pull-right
-                = link_to edit_admin_project_member_path(project, tm.user), class: "btn grouped btn-small" do
-                  %i.icon-edit
-                = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @admin_user), method: :delete, class: "btn grouped btn-small btn-remove" do
+                %span.light= tm.human_access
+                = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @admin_user), method: :delete, class: "btn btn-small btn-remove" do
                   %i.icon-remove
-
-              .pull-right.light
-                = tm.project_access_human
-                &nbsp;

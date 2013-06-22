@@ -44,16 +44,6 @@ class Admin::GroupsController < Admin::ApplicationController
     end
   end
 
-  def project_update
-    project_ids = params[:project_ids]
-
-    Project.where(id: project_ids).each do |project|
-      project.transfer(@group)
-    end
-
-    redirect_to :back, notice: 'Group was successfully updated.'
-  end
-
   def project_teams_update
     @group.add_users(params[:user_ids].split(','), params[:group_access])
 

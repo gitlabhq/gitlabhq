@@ -91,12 +91,16 @@
         Team
         %small
           (#{@project.users.count})
-        = link_to project_team_index_path(@project), class: "btn btn-tiny" do
-          %i.icon-edit
-          Edit Team
+        .pull-right
+          = link_to project_team_index_path(@project), class: "btn btn-tiny" do
+            %i.icon-edit
+            Manage Access
       %ul.well-list.team_members
-        - @project.users.each do |tm|
+        - @project.users.each do |user|
           %li
             %strong
-              = link_to tm.name, admin_user_path(tm)
-            %span.pull-right.light= @project.project_access_human(tm)
+              = link_to user.name, admin_user_path(user)
+            .pull-right
+              %span.light= @project.project_access_human(user)
+              = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
+                %i.icon-remove

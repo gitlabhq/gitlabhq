@@ -12,17 +12,6 @@ class Admin::UsersController < Admin::ApplicationController
     @projects = admin_user.authorized_projects
   end
 
-  def team_update
-    UsersProject.add_users_into_projects(
-      params[:project_ids],
-      [admin_user.id],
-      params[:project_access]
-    )
-
-    redirect_to [:admin, admin_user], notice: 'Teams were successfully updated.'
-  end
-
-
   def new
     @admin_user = User.new.with_defaults
   end
