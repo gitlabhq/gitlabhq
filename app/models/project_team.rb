@@ -92,7 +92,6 @@ class ProjectTeam
       new_tm = tm.dup
       new_tm.id = nil
       new_tm.project_id = target_project.id
-      new_tm.skip_git = true
       new_tm
     end
 

@@ -25,8 +25,6 @@ class UsersProject < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  attr_accessor :skip_git
-
   validates :user, presence: true
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
@@ -77,7 +75,6 @@ class UsersProject < ActiveRecord::Base
           user_ids.each do |user_id|
             users_project = UsersProject.new(project_access: project_access, user_id: user_id)
             users_project.project_id = project_id
-            users_project.skip_git = true
             users_project.save
           end
         end
@@ -92,7 +89,6 @@ class UsersProject < ActiveRecord::Base
       UsersProject.transaction do
         users_projects = UsersProject.where(project_id: project_ids)
         users_projects.each do |users_project|
-          users_project.skip_git = true
           users_project.destroy
         end
       end
@@ -130,8 +126,4 @@ class UsersProject < ActiveRecord::Base
   end
 
   alias_method :human_access, :project_access_human
-
-  def skip_git?
-    !!@skip_git
-  end
 end
