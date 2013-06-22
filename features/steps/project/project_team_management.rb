@@ -79,7 +79,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I own project "Website"' do
-    @project = create(:project, name: "Website")
+    @project = create(:project, name: "Website", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
@@ -94,7 +94,8 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   When 'I submit "Website" project for import team' do
-    select 'Website', from: 'source_project_id'
+    project = Project.find_by_name("Website")
+    select project.name_with_namespace, from: 'source_project_id'
     click_button 'Import'
   end
 

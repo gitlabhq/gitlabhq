@@ -42,7 +42,7 @@ module SharedProject
 
   Then 'I should see project "Shop" activity feed' do
     project = Project.find_by_name("Shop")
-    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name}"
+    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name_with_namespace}"
   end
 
   Then 'I should see project settings' do
