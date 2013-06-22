@@ -124,12 +124,7 @@ end
 # branches_project_repository GET    /:project_id/repository/branches(.:format) repositories#branches
 #     tags_project_repository GET    /:project_id/repository/tags(.:format)     repositories#tags
 #  archive_project_repository GET    /:project_id/repository/archive(.:format)  repositories#archive
-#          project_repository POST   /:project_id/repository(.:format)          repositories#create
-#      new_project_repository GET    /:project_id/repository/new(.:format)      repositories#new
 #     edit_project_repository GET    /:project_id/repository/edit(.:format)     repositories#edit
-#                             GET    /:project_id/repository(.:format)          repositories#show
-#                             PUT    /:project_id/repository(.:format)          repositories#update
-#                             DELETE /:project_id/repository(.:format)          repositories#destroy
 describe RepositoriesController, "routing" do
   it "to #branches" do
     get("/gitlabhq/repository/branches").should route_to('repositories#branches', project_id: 'gitlabhq')
@@ -143,28 +138,8 @@ describe RepositoriesController, "routing" do
     get("/gitlabhq/repository/archive").should route_to('repositories#archive', project_id: 'gitlabhq')
   end
 
-  it "to #create" do
-    post("/gitlabhq/repository").should route_to('repositories#create', project_id: 'gitlabhq')
-  end
-
-  it "to #new" do
-    get("/gitlabhq/repository/new").should route_to('repositories#new', project_id: 'gitlabhq')
-  end
-
-  it "to #edit" do
-    get("/gitlabhq/repository/edit").should route_to('repositories#edit', project_id: 'gitlabhq')
-  end
-
   it "to #show" do
     get("/gitlabhq/repository").should route_to('repositories#show', project_id: 'gitlabhq')
-  end
-
-  it "to #update" do
-    put("/gitlabhq/repository").should route_to('repositories#update', project_id: 'gitlabhq')
-  end
-
-  it "to #destroy" do
-    delete("/gitlabhq/repository").should route_to('repositories#destroy', project_id: 'gitlabhq')
   end
 end
 

@@ -36,6 +36,13 @@ FactoryGirl.define do
 
   factory :project_with_code, parent: :project do
     path { 'gitlabhq' }
+
+    after :create do |project|
+      repos_path  = Rails.root.join('tmp', 'test-git-base-path')
+      seed_repo   = Rails.root.join('tmp', 'repositories', 'gitlabhq')
+      target_repo = File.join(repos_path, project.path_with_namespace + '.git')
+      system("ln -s #{seed_repo} #{target_repo}")
+    end
   end
 
   factory :group do

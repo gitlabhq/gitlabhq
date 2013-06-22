@@ -8,7 +8,7 @@ describe API::API do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:project) { create(:project_with_code, creator_id: user.id) }
+  let!(:project) { create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
   let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
