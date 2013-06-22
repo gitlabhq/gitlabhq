@@ -108,8 +108,8 @@ describe User do
       ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @project = create :project, namespace: @user.namespace
-      @project_2 = create :project # Grant MASTER access to the user
-      @project_3 = create :project # Grant DEVELOPER access to the user
+      @project_2 = create :project, group: create(:group) # Grant MASTER access to the user
+      @project_3 = create :project, group: create(:group) # Grant DEVELOPER access to the user
 
       @project_2.team << [@user, :master]
       @project_3.team << [@user, :developer]
