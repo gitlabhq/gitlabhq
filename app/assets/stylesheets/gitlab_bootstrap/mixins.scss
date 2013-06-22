@@ -1,7 +1,7 @@
 /**
  * Generic mixins
  */
- @mixin box-shadow($shadow) {
+ @mixin box-shadow($shadow...) {
   -webkit-box-shadow: $shadow;
   -moz-box-shadow: $shadow;
   -ms-box-shadow: $shadow;
@@ -24,7 +24,7 @@
   background-image: -o-linear-gradient($from, $to);
 }
 
-@mixin transition($transition) {
+@mixin transition($transition...) {
   -webkit-transition: $transition;
   -moz-transition: $transition;
   -ms-transition: $transition;
