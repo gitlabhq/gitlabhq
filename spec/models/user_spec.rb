@@ -111,12 +111,8 @@ describe User do
       @project_2 = create :project # Grant MASTER access to the user
       @project_3 = create :project # Grant DEVELOPER access to the user
 
-      UsersProject.add_users_into_projects(
-        [@project_2.id], [@user.id], UsersProject::MASTER
-      )
-      UsersProject.add_users_into_projects(
-        [@project_3.id], [@user.id], UsersProject::DEVELOPER
-      )
+      @project_2.team << [@user, :master]
+      @project_3.team << [@user, :developer]
     end
 
     it { @user.authorized_projects.should include(@project) }

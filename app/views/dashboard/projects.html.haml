@@ -24,6 +24,8 @@
     .ui-box
       %h5.title
         Projects (#{@projects.total_count})
+        .pull-right.light
+          %small Last activity
       %ul.well-list
         - @projects.each do |project|
           %li
@@ -39,7 +41,7 @@
                 = truncate project.description, length: 80
 
             .pull-right.light
-              %small Last activity #{project_last_activity(project)}
+              %small #{project_last_activity(project)}
 
         - if @projects.blank?
           %li

@@ -63,28 +63,6 @@
             %strong
               = link_to @admin_user.created_by.name, [:admin, @admin_user.created_by]
 
-    %hr
-    %h5
-      Add User to Projects
-      %small
-        Read more about project permissions
-        %strong= link_to "here", help_permissions_path, class: "vlink"
-    %br
-    = form_tag team_update_admin_user_path(@admin_user), class: "bulk_import", method: :put  do
-      .control-group
-        = label_tag :project_ids, "Projects", class: 'control-label'
-        .controls
-          = select_tag :project_ids, options_from_collection_for_select(@not_in_projects , :id, :name_with_namespace),  multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span3'
-      .control-group
-        = label_tag :project_access, "Project Access", class: 'control-label'
-        .controls
-          = select_tag :project_access, options_for_select(Project.access_options), class: "project-access-select chosen span3"
-
-      .form-actions
-        = submit_tag 'Add', class: "btn btn-create"
-        .pull-right
-    %br
-
     - if @admin_user.owned_groups.present?
       .ui-box
         %h5.title Owned groups:

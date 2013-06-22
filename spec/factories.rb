@@ -27,6 +27,7 @@ FactoryGirl.define do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
     creator
+    namespace { creator.namespace }
   end
 
   factory :redmine_project, parent: :project do

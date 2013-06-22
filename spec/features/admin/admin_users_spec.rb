@@ -109,18 +109,4 @@ describe "Admin::Users" do
       end
     end
   end
-
-  describe "Add new project" do
-    before do
-      @new_project = create(:project)
-      visit admin_user_path(@user)
-    end
-
-    it "should create new user" do
-      select @new_project.name, from: "project_ids"
-      expect { click_button "Add" }.to change { UsersProject.count }.by(1)
-      page.should have_content @new_project.name
-      current_path.should == admin_user_path(@user)
-    end
-  end
 end

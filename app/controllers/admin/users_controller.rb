@@ -9,11 +9,6 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def show
-    # Projects user can be added to
-    @not_in_projects = Project.scoped
-    @not_in_projects = @not_in_projects.without_user(admin_user) if admin_user.authorized_projects.present?
-
-    # Projects he already own or joined
     @projects = admin_user.authorized_projects
   end
 
