@@ -57,7 +57,7 @@ class ProjectTeam
   end
 
   def members
-    fetch_members
+    @members ||= fetch_members
   end
 
   def guests
