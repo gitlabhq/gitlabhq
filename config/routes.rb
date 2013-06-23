@@ -160,135 +160,135 @@ Gitlab::Application.routes.draw do
       get :autocomplete_sources
     end
 
-    resources :blob,    only: [:show], constraints: {id: /.+/}
-    resources :raw,    only: [:show], constraints: {id: /.+/}
-    resources :tree,    only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
-    resources :edit_tree,    only: [:show, :update], constraints: {id: /.+/}, path: 'edit'
-    resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-    resources :commits, only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
-    resources :compare, only: [:index, :create]
-    resources :blame,   only: [:show], constraints: {id: /.+/}
-    resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
-    resources :graphs, only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
-    match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
-
     scope module: :projects do
-      resources :snippets do
+      resources :blob,    only: [:show], constraints: {id: /.+/}
+      resources :raw,    only: [:show], constraints: {id: /.+/}
+      resources :tree,    only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
+      resources :edit_tree,    only: [:show, :update], constraints: {id: /.+/}, path: 'edit'
+      resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+      resources :commits, only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
+      resources :compare, only: [:index, :create]
+      resources :blame,   only: [:show], constraints: {id: /.+/}
+      resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+      resources :graphs, only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+      match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
+
+        resources :snippets do
+          member do
+            get "raw"
+          end
+        end
+
+      resources :wikis, only: [:show, :edit, :destroy, :create] do
+        collection do
+          get :pages
+          put ':id' => 'wikis#update'
+          get :git_access
+        end
+
         member do
-          get "raw"
+          get "history"
         end
       end
-    end
 
-    resources :wikis, only: [:show, :edit, :destroy, :create] do
-      collection do
-        get :pages
-        put ':id' => 'wikis#update'
-        get :git_access
+      resource :wall, only: [:show] do
+        member do
+          get 'notes'
+        end
       end
 
-      member do
-        get "history"
-      end
-    end
-
-    resource :wall, only: [:show] do
-      member do
-        get 'notes'
-      end
-    end
-
-    resource :repository, only: [:show] do
-      member do
-        get "branches"
-        get "tags"
-        get "stats"
-        get "archive"
-      end
-    end
-
-    resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
-      member do
-        get :test
-      end
-    end
-
-    resources :deploy_keys do
-      member do
-        put :enable
-        put :disable
-      end
-    end
-
-    resources :protected_branches, only: [:index, :create, :destroy]
-
-    resources :refs, only: [] do
-      collection do
-        get "switch"
+      resource :repository, only: [:show] do
+        member do
+          get "branches"
+          get "tags"
+          get "stats"
+          get "archive"
+        end
       end
 
-      member do
-        # tree viewer logs
-        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
-        get "logs_tree/:path" => "refs#logs_tree",
-          as: :logs_file,
-          constraints: {
-            id:   /[a-zA-Z.0-9\/_\-#%+]+/,
-            path: /.*/
-          }
-      end
-    end
-
-    resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
-      member do
-        get :diffs
-        get :automerge
-        get :automerge_check
-        get :ci_status
+      resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
+        member do
+          get :test
+        end
       end
 
-      collection do
-        get :branch_from
-        get :branch_to
+      resources :deploy_keys do
+        member do
+          put :enable
+          put :disable
+        end
       end
-    end
 
-    resources :hooks, only: [:index, :create, :destroy] do
-      member do
-        get :test
+      resources :protected_branches, only: [:index, :create, :destroy]
+
+      resources :refs, only: [] do
+        collection do
+          get "switch"
+        end
+
+        member do
+          # tree viewer logs
+          get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
+          get "logs_tree/:path" => "refs#logs_tree",
+            as: :logs_file,
+            constraints: {
+              id:   /[a-zA-Z.0-9\/_\-#%+]+/,
+              path: /.*/
+            }
+        end
       end
-    end
 
-    resources :team, controller: 'team_members', only: [:index]
-    resources :milestones, except: [:destroy]
+      resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
+        member do
+          get :diffs
+          get :automerge
+          get :automerge_check
+          get :ci_status
+        end
 
-    resources :labels, only: [:index] do
-      collection do
-        post :generate
+        collection do
+          get :branch_from
+          get :branch_to
+        end
       end
-    end
 
-    resources :issues, except: [:destroy] do
-      collection do
-        post  :bulk_update
+      resources :hooks, only: [:index, :create, :destroy] do
+        member do
+          get :test
+        end
       end
-    end
 
-    resources :team_members, except: [:index, :edit] do
-      collection do
+      resources :team, controller: 'team_members', only: [:index]
+      resources :milestones, except: [:destroy]
 
-        # Used for import team
-        # from another project
-        get :import
-        post :apply_import
+      resources :labels, only: [:index] do
+        collection do
+          post :generate
+        end
       end
-    end
 
-    resources :notes, only: [:index, :create, :destroy] do
-      collection do
-        post :preview
+      resources :issues, except: [:destroy] do
+        collection do
+          post  :bulk_update
+        end
       end
-    end
+
+      resources :team_members, except: [:index, :edit] do
+        collection do
+
+          # Used for import team
+          # from another project
+          get :import
+          post :apply_import
+        end
+      end
+
+      resources :notes, only: [:index, :create, :destroy] do
+        collection do
+          post :preview
+        end
+      end
+      end
   end
 
   root to: "dashboard#show"

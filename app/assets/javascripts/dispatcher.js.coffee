@@ -18,19 +18,19 @@ class Dispatcher
     path = page.split(':')
 
     switch page
-      when 'issues:index'
+      when 'projects:issues:index'
         Issues.init()
       when 'dashboard:show'
         new Dashboard()
-      when 'commit:show'
+      when 'projects:commit:show'
         new Commit()
-      when 'groups:show', 'teams:show', 'projects:show'
+      when 'groups:show', 'projects:show'
         Pager.init(20, true)
       when 'projects:new', 'projects:edit'
         new Project()
-      when 'walls:show'
+      when 'projects:walls:show'
         new Wall(project_id)
-      when 'teams:members:index'
+      when 'projects:teams:members:index'
         new TeamMembers()
       when 'groups:people'
         new GroupMembers()

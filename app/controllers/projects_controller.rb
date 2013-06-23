@@ -1,4 +1,4 @@
-class ProjectsController < ProjectResourceController
+class ProjectsController < Projects::ApplicationController
   skip_before_filter :project, only: [:new, :create]
   skip_before_filter :repository, only: [:new, :create]
 
