@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe BlobController do
+describe Projects::BlobController do
   let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
 
