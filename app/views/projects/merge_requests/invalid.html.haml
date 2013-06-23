@@ -1,0 +1,17 @@
+.merge-request
+  = render "projects/merge_requests/show/mr_title"
+  = render "projects/merge_requests/show/mr_box"
+
+  .alert.alert-error
+    %h5
+      %i.icon-exclamation-sign
+      We cannot find
+      %span.label-branch= @merge_request.source_branch
+      or
+      %span.label-branch= @merge_request.target_branch
+      branches in the repository.
+    %p
+      Maybe it was removed or never pushed.
+    %p
+      Please close Merge Request or change branches with existing one
+
