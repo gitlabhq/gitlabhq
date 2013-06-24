@@ -11,6 +11,7 @@ Gitlab::Seeder.quiet do
     next unless user
 
     user_id = user.id
+    Thread.current[:current_user] = user
 
     Issue.seed(:id, [{
       id: i,

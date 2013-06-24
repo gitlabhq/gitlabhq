@@ -19,7 +19,7 @@ describe NotificationService do
   describe 'Notes' do
     context 'issue note' do
       let(:issue) { create(:issue, assignee: create(:user)) }
-      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id) }
+      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced') }
 
       before do
         build_team(note.project)
@@ -30,6 +30,7 @@ describe NotificationService do
           should_email(@u_watcher.id)
           should_email(note.noteable.author_id)
           should_email(note.noteable.assignee_id)
+          should_email(@u_mentioned.id)
           should_not_email(note.author_id)
           should_not_email(@u_participating.id)
           should_not_email(@u_disabled.id)
@@ -235,9 +236,11 @@ describe NotificationService do
     @u_watcher = create(:user, notification_level: Notification::N_WATCH)
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
+    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_WATCH)
 
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]
     project.team << [@u_disabled, :master]
+    project.team << [@u_mentioned, :master]
   end
 end

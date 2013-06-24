@@ -1,6 +1,6 @@
 $ ->
   new Dispatcher()
-  
+
 class Dispatcher
   constructor: () ->
     @initSearch()
