@@ -96,7 +96,7 @@ describe Project do
   describe "last_activity methods" do
     before { enable_observers }
     let(:project)    { create(:project) }
-    let(:last_event) { double(created_at: Time.now) }
+    let(:last_event) { double(project_id: project.id, created_at: Time.now) }
 
     describe "last_activity" do
       it "should alias last_activity to last_event"do

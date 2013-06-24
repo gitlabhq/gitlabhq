@@ -1,8 +1,8 @@
 class BaseContext
-  attr_accessor :project, :current_user, :params
+  attr_accessor :current_user, :params
 
-  def initialize(project, user, params)
-    @project, @current_user, @params = project, user, params.dup
+  def initialize(user, params)
+    @current_user, @params = user, params.dup
   end
 
   def abilities
@@ -17,4 +17,3 @@ class BaseContext
     abilities.allowed?(object, action, subject)
   end
 end
-

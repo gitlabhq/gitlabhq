@@ -16,7 +16,7 @@ class MergeRequestsController < ProjectResourceController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
+    @merge_requests = Projects::MergeRequests::LoadContext.new(current_user, project, params).execute
   end
 
   def show

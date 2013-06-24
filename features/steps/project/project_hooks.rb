@@ -26,7 +26,7 @@ class ProjectHooks < Spinach::FeatureSteps
 
   When 'I click test hook button' do
     test_hook_context = double(execute: true)
-    TestHookContext.should_receive(:new).and_return(test_hook_context)
+    ::Projects::TestHookContext.should_receive(:new).and_return(test_hook_context)
     click_link 'Test Hook'
   end
 

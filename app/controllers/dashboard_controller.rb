@@ -44,14 +44,14 @@ class DashboardController < ApplicationController
   # Get authored or assigned open merge requests
   def merge_requests
     @merge_requests = current_user.cared_merge_requests
-    @merge_requests = FilterContext.new(@merge_requests, params).execute
+    @merge_requests = FilterContext.new(@current_user, @merge_requests, params).execute
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
     @issues = current_user.assigned_issues
-    @issues = FilterContext.new(@issues, params).execute
+    @issues = FilterContext.new(@current_user, @issues, params).execute
     @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 

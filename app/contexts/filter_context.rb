@@ -1,9 +1,8 @@
-class FilterContext
-  attr_accessor :items, :params
+class FilterContext < BaseContext
+  attr_accessor :current_user, :items, :params
 
-  def initialize(items, params)
-    @items = items
-    @params = params
+  def initialize(user, items, params)
+    @current_user, @items, @params = user, items, params
   end
 
   def execute

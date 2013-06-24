@@ -293,10 +293,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def transfer(new_namespace)
-    ProjectTransferService.new.transfer(self, new_namespace)
-  end
-
   def execute_hooks(data)
     hooks.each { |hook| hook.async_execute(data) }
   end

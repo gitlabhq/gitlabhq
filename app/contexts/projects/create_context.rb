@@ -1,9 +1,5 @@
 module Projects
-  class CreateContext < BaseContext
-    def initialize(user, params)
-      @current_user, @params = user, params.dup
-    end
-
+  class CreateContext < ::BaseContext
     def execute
       # get namespace id
       namespace_id = params.delete(:namespace_id)
@@ -60,10 +56,19 @@ module Projects
 
       if @project.save
         @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
+
+        group = Group.find_by_id(@project.namespace_id)
+        if group
+          group.user_teams.each do |team|
+            access = team.max_project_access_in_group(group)
+            Gitlab::UserTeamManager.assign(team, project, access)
+          end
+        end
       end
 
       @project
     rescue => ex
+      @project.errors.add(:base, ex.message)
       @project.errors.add(:base, "Can't save project. Please try again later")
       @project
     end

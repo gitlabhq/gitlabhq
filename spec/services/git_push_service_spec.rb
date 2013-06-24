@@ -108,4 +108,3 @@ describe GitPushService do
     end
   end
 end
-

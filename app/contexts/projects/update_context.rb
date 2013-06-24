@@ -1,5 +1,5 @@
 module Projects
-  class UpdateContext < BaseContext
+  class UpdateContext < Projects::BaseContext
     def execute(role = :default)
       params[:project].delete(:namespace_id)
       params[:project].delete(:public) unless can?(current_user, :change_public_mode, project)

@@ -122,13 +122,6 @@ class User < ActiveRecord::Base
   delegate :path, to: :namespace, allow_nil: true, prefix: true
 
   state_machine :state, initial: :active do
-    after_transition any => :blocked do |user, transition|
-      # Remove user from all projects and
-      user.users_projects.find_each do |membership|
-        return false unless membership.destroy
-      end
-    end
-
     event :block do
       transition active: :blocked
     end

@@ -11,18 +11,12 @@ class Projects::TeamsController < Projects::ApplicationController
   end
 
   def assign
-    unless params[:team_id].blank?
-      team = UserTeam.find(params[:team_id])
-      access = params[:greatest_project_access]
-      team.assign_to_project(project, access)
-    end
+    Projects::Teams::CreateRelationContext.new(@current_user, project, params).execute
     redirect_to project_team_index_path(project)
   end
 
   def resign
-    team = project.user_teams.find_by_path(params[:id])
-    team.resign_from_project(project)
-
+    Projects::Teams::RemoveRelationContext.new(@current_user, project, params).execute
     redirect_to project_team_index_path(project)
   end
 

@@ -86,7 +86,7 @@ class IssuesController < ProjectResourceController
   end
 
   def bulk_update
-    result = Issues::BulkUpdateContext.new(project, current_user, params).execute
+    result = Projects::Issues::BulkUpdateContext.new(current_user, project, params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
@@ -109,6 +109,6 @@ class IssuesController < ProjectResourceController
   end
 
   def issues_filtered
-    @issues = Issues::ListContext.new(project, current_user, params).execute
+    @issues = Projects::Issues::ListContext.new(current_user, project, params).execute
   end
 end

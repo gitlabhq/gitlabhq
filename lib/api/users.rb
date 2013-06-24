@@ -113,7 +113,7 @@ module API
         user = User.find_by_id(params[:id])
 
         if user
-          user.destroy
+          Users::RemoveContext.new(current_user, user).execute
         else
           not_found!
         end
