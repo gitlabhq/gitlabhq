@@ -76,7 +76,7 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 gem  "asciidoctor"
 
 # Servers
-gem "puma", '~> 2.0.1'
+gem "puma", '~> 2.1.1'
 
 # State machine
 gem "state_machine"
@@ -168,7 +168,7 @@ group :development, :test do
   gem 'factory_girl_rails'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
-  gem 'minitest'
+  gem 'minitest', '~> 4.7.0'
 
   # Generate Fake data
   gem "ffaker"
