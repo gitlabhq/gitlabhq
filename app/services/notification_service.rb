@@ -110,9 +110,11 @@ class NotificationService
     else
       opts.merge!(noteable_id: note.noteable_id)
       target = note.noteable
-      recipients = []
-      recipients << target.assignee if target.respond_to?(:assignee)
-      recipients << target.author if target.respond_to?(:author)
+      if target.respond_to?(:participants)
+        recipients = target.participants
+      else
+        recipients = []
+      end
     end
 
     # Get users who left comment in thread
@@ -181,7 +183,12 @@ class NotificationService
   end
 
   def new_resource_email(target, method)
-    recipients = reject_muted_users([target.assignee], target.project)
+    if target.respond_to?(:participants)
+      recipients = target.participants
+    else
+      recipients = []
+    end
+    recipients = reject_muted_users(recipients, target.project)
     recipients = recipients.concat(project_watchers(target.project)).uniq
     recipients.delete(target.author)
 
