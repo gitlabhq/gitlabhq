@@ -12,13 +12,12 @@
     .clearfix
       = f.label :key
       .input
+        %p.light
+          Paste your public key here. Read more about how generate it #{link_to "here", help_ssh_path}
         = f.text_area :key, class: [:xxlarge, :thin_area]
-        %p.hint
-          Paste your public key here. Read more about how generate it
-          = link_to "here", help_ssh_path
 
 
     .actions
-      = f.submit 'Save', class: "btn btn-save"
+      = f.submit 'Add key', class: "btn btn-create"
       = link_to "Cancel", profile_keys_path, class: "btn btn-cancel"
 

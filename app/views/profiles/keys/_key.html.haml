@@ -1,12 +1,9 @@
-%tr
-  %td
-    = link_to profile_key_path(key) do
-      %strong= key.title
-  %td
-    %span.cgray
-      Added
-      = time_ago_in_words(key.created_at)
-      ago
-  %td
-    = link_to 'Remove', profile_key_path(key), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
+%li
+  = link_to profile_key_path(key) do
+    %strong= key.title
+  %span.cgray
+    added
+    = time_ago_in_words(key.created_at)
+    ago
+  = link_to 'Remove', profile_key_path(key), confirm: 'Are you sure?', method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
 
