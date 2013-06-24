@@ -1,6 +1,6 @@
 $ ->
   new Dispatcher()
-  
+
 class Dispatcher
   constructor: () ->
     @initSearch()
@@ -10,8 +10,6 @@ class Dispatcher
     page = $('body').attr('data-page')
     project_id = $('body').attr('data-project-id')
 
-    console.log(page)
- 
     unless page
       return false
 
