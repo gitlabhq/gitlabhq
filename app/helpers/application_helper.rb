@@ -34,12 +34,21 @@ module ApplicationHelper
   def gravatar_icon(user_email = '', size = nil)
     size = 40 if size.nil? || size <= 0
 
-    if !Gitlab.config.gravatar.enabled || user_email.blank?
-      'no_avatar.png'
-    else
+    if Gitlab.config.gravatar.enabled && !user_email.blank?
       gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
       sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
+    elsif Gitlab.config.custom_avatar.enabled && !user_email.blank?
+      custom_avatar_url = request.ssl? ? Gitlab.config.custom_avatar.ssl_url : Gitlab.config.custom_avatar.plain_url
+      user_email.strip!
+
+      if @user = User.find_by_email(user_email)
+        sprintf custom_avatar_url, user: @user[ Gitlab.config.custom_avatar.user_field ], size: size
+      else
+        'no_avatar.png'
+      end
+    else
+      'no_avatar.png'
     end
   end
 

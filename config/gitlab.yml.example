@@ -66,6 +66,11 @@ production: &base
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
 
+  custom_avatar:
+    enabled: false                # To use this, set to true and set gravatar.enabled to false.
+    # user_field: "username"      # Field of the user object to be used on %{user} placeholder (default: username)
+    # plain_url: "http://..."     # default: http://example.com/avatar/%{user}/%{size}
+    # ssl_url:   "https://..."    # default: https://example.com/avatar/%{user}/%{size}
 
 
   #
