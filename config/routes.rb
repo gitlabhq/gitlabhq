@@ -113,11 +113,13 @@ Gitlab::Application.routes.draw do
       put :update_username
     end
 
-    resource :notifications, only: [:show, :update]
-    resource :password, only: [:new, :create]
+    scope module: :profiles do
+      resource :notifications, only: [:show, :update]
+      resource :password, only: [:new, :create]
+      resources :keys
+    end
   end
 
-  resources :keys
   match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }
 
 

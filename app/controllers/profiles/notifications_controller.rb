@@ -1,4 +1,4 @@
-class NotificationsController < ApplicationController
+class Profiles::NotificationsController < ApplicationController
   layout 'profile'
 
   def show

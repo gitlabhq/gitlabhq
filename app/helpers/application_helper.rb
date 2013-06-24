@@ -95,7 +95,7 @@ module ApplicationHelper
 
     default_nav = [
       { label: "My Profile", url: profile_path },
-      { label: "My SSH Keys", url: keys_path },
+      { label: "My SSH Keys", url: profile_keys_path },
       { label: "My Dashboard", url: root_path },
       { label: "Admin Section", url: admin_root_path },
     ]

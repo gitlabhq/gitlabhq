@@ -1,6 +1,5 @@
-class KeysController < ApplicationController
+class Profiles::KeysController < ApplicationController
   layout "profile"
-  respond_to :js, :html
 
   def index
     @keys = current_user.keys.all
@@ -12,15 +11,16 @@ class KeysController < ApplicationController
 
   def new
     @key = current_user.keys.new
-
-    respond_with(@key)
   end
 
   def create
     @key = current_user.keys.new(params[:key])
-    @key.save
 
-    respond_with(@key)
+    if @key.save
+      redirect_to profile_key_path(@key)
+    else
+      render 'new'
+    end
   end
 
   def destroy
@@ -28,7 +28,7 @@ class KeysController < ApplicationController
     @key.destroy
 
     respond_to do |format|
-      format.html { redirect_to keys_url }
+      format.html { redirect_to profile_keys_url }
       format.js { render nothing: true }
     end
   end

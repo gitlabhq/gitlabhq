@@ -21,7 +21,7 @@ class ProfileSshKeys < Spinach::FeatureSteps
     key = Key.find_by_title("Laptop")
     page.should have_content(key.title)
     page.should have_content(key.key)
-    current_path.should == key_path(key)
+    current_path.should == profile_key_path(key)
   end
 
   Given 'I click link "Work"' do
@@ -33,7 +33,7 @@ class ProfileSshKeys < Spinach::FeatureSteps
   end
 
   Then 'I visit profile keys page' do
-    visit keys_path
+    visit profile_keys_path
   end
 
   And 'I should not see "Work" ssh key' do

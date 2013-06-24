@@ -155,33 +155,33 @@ end
 #      key GET    /keys/:id(.:format)      keys#show
 #          PUT    /keys/:id(.:format)      keys#update
 #          DELETE /keys/:id(.:format)      keys#destroy
-describe KeysController, "routing" do
+describe Profiles::KeysController, "routing" do
   it "to #index" do
-    get("/keys").should route_to('keys#index')
+    get("/profile/keys").should route_to('profiles/keys#index')
   end
 
   it "to #create" do
-    post("/keys").should route_to('keys#create')
+    post("/profile/keys").should route_to('profiles/keys#create')
   end
 
   it "to #new" do
-    get("/keys/new").should route_to('keys#new')
+    get("/profile/keys/new").should route_to('profiles/keys#new')
   end
 
   it "to #edit" do
-    get("/keys/1/edit").should route_to('keys#edit', id: '1')
+    get("/profile/keys/1/edit").should route_to('profiles/keys#edit', id: '1')
   end
 
   it "to #show" do
-    get("/keys/1").should route_to('keys#show', id: '1')
+    get("/profile/keys/1").should route_to('profiles/keys#show', id: '1')
   end
 
   it "to #update" do
-    put("/keys/1").should route_to('keys#update', id: '1')
+    put("/profile/keys/1").should route_to('profiles/keys#update', id: '1')
   end
 
   it "to #destroy" do
-    delete("/keys/1").should route_to('keys#destroy', id: '1')
+    delete("/profile/keys/1").should route_to('profiles/keys#destroy', id: '1')
   end
 end
 

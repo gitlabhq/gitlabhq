@@ -83,9 +83,9 @@
         %legend
           SSH public keys:
           %span.pull-right
-            = link_to pluralize(current_user.keys.count, 'key'), keys_path
+            = link_to pluralize(current_user.keys.count, 'key'), profile_keys_path
         .padded
-          = link_to "Add Public Key", new_key_path, class: "btn btn-small"
+          = link_to "Add Public Key", new_profile_key_path, class: "btn btn-small"
 
   .form-actions
     = f.submit 'Save', class: "btn btn-save"

@@ -1,4 +1,4 @@
-class PasswordsController < ApplicationController
+class Profiles::PasswordsController < ApplicationController
   layout 'navless'
 
   skip_before_filter :check_password_expiration

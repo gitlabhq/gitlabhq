@@ -1,6 +1,6 @@
 %div
-  = form_for @key do |f|
-    -if @key.errors.any?
+  = form_for [:profile, @key] do |f|
+    - if @key.errors.any?
       .alert.alert-error
         %ul
           - @key.errors.full_messages.each do |msg|
@@ -20,5 +20,5 @@
 
     .actions
       = f.submit 'Save', class: "btn btn-save"
-      = link_to "Cancel", keys_path, class: "btn btn-cancel"
+      = link_to "Cancel", profile_keys_path, class: "btn btn-cancel"
 

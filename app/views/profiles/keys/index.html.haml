@@ -1,6 +1,6 @@
 %h3.page_title
   SSH Keys
-  = link_to "Add new", new_key_path, class: "btn pull-right"
+  = link_to "Add new", new_profile_key_path, class: "btn pull-right"
 
 %hr
 %p.slead
@@ -13,8 +13,7 @@
       %th Name
       %th Added
       %th
-  - @keys.each do |key|
-    = render(partial: 'show', locals: {key: key})
+  = render @keys
   - if @keys.blank?
     %tr
       %td{colspan: 3}
