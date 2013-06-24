@@ -8,7 +8,7 @@ class ProfileSshKeys < Spinach::FeatureSteps
   end
 
   Given 'I click link "Add new"' do
-    click_link "Add new"
+    click_link "Add SSH Key"
   end
 
   And 'I submit new ssh key "Laptop"' do
