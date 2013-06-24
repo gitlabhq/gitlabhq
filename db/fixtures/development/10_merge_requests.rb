@@ -17,7 +17,8 @@ Gitlab::Seeder.quiet do
     next if branches.uniq.size < 2
 
     user_id = user.id
-    MergeRequestObserver.current_user = user
+    Thread.current[:current_user] = user
+
     MergeRequest.seed(:id, [{
       id: i,
       source_branch: branches.first,
