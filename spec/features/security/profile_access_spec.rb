@@ -10,8 +10,8 @@ describe "Users Security" do
       it { new_user_session_path.should_not be_404_for :visitor }
     end
 
-    describe "GET /keys" do
-      subject { keys_path }
+    describe "GET /profile/keys" do
+      subject { profile_keys_path }
 
       it { should be_allowed_for @u1 }
       it { should be_allowed_for :admin }

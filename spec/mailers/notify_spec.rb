@@ -86,7 +86,7 @@ describe Notify do
     end
 
     it 'includes a link to ssh keys page' do
-      should have_body_text /#{keys_path}/
+      should have_body_text /#{profile_keys_path}/
     end
   end
 
