@@ -65,4 +65,9 @@
     - else
       = link_to 'Close Issue', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn grouped close_issue", title: "Close Issue"
 
+.participants
+  %cite.cgray #{@issue.participants.count} participants
+  - @issue.participants.each do |participant|
+    = link_to_member(@project, participant, name: false, size: 24)
+
 .voting_notes#notes= render "notes/notes_with_form"

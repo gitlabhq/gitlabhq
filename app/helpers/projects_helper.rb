@@ -17,7 +17,7 @@ module ProjectsHelper
   end
 
   def link_to_member(project, author, opts = {})
-    default_opts = { avatar: true }
+    default_opts = { avatar: true, name: true, size: 16 }
     opts = default_opts.merge(opts)
 
     return "(deleted)" unless author
@@ -25,10 +25,10 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(gravatar_icon(author.try(:email)), width: 16, class: "avatar avatar-inline s16") if opts[:avatar]
+    author_html << image_tag(gravatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}") if opts[:avatar]
 
     # Build name span tag
-    author_html << content_tag(:span, sanitize(author.name), class: 'author')
+    author_html << content_tag(:span, sanitize(author.name), class: 'author') if opts[:name]
 
     author_html = author_html.html_safe
 
