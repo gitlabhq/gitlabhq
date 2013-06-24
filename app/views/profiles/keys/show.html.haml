@@ -12,6 +12,9 @@
           %strong= @key.created_at.stamp("Aug 21, 2011")
 
   .span8
+    %p
+      %span.light Fingerprint:
+      %strong= @key.fingerprint
     %pre.well-pre
       = @key.key
 
