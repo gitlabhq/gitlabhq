@@ -61,6 +61,14 @@ class Repository
     Rails.cache.delete(cache_key(:size))
     Rails.cache.delete(cache_key(:branch_names))
     Rails.cache.delete(cache_key(:tag_names))
+    Rails.cache.delete(cache_key(:graph_log))
+  end
+
+  def graph_log
+    Rails.cache.fetch(cache_key(:graph)) do
+      stats = Gitlab::Git::GitStats.new(raw, root_ref)
+      stats.parsed_log
+    end
   end
 
   def cache_key(type)

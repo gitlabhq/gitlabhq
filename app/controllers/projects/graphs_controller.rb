@@ -8,10 +8,18 @@ class Projects::GraphsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.js do
-        @repo = @project.repository
-        @stats = Gitlab::Git::GitStats.new(@repo.raw, @repo.root_ref)
-        @log = @stats.parsed_log.to_json rescue []
+        fetch_graph
       end
     end
+  end
+
+  private
+
+  def fetch_graph
+    @log = @project.repository.graph_log.to_json
+    @success = true
+  rescue => ex
+    @log = []
+    @success = false
   end
 end
