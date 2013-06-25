@@ -38,6 +38,32 @@ class NotesController < ProjectResourceController
     end
   end
 
+  def update
+    @note = @project.notes.find(params[:id])
+    return access_denied! unless can?(current_user, :admin_note, @note)
+
+    @note.update_attributes(params[:note])
+
+    respond_to do |format|
+      format.js do
+        render js: { success: @note.valid?, id: @note.id, note: view_context.markdown(@note.note) }.to_json
+      end
+      format.html do
+        redirect_to :back
+      end
+    end
+  end
+
+  def delete_attachment
+    @note = @project.notes.find(params[:id])
+    @note.remove_attachment!
+    @note.update_attribute(:attachment, nil)
+
+    respond_to do |format|
+      format.js { render nothing: true }
+    end
+  end
+
   def preview
     render text: view_context.markdown(params[:note])
   end
