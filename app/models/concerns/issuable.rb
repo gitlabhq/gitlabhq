@@ -6,6 +6,7 @@
 #
 module Issuable
   extend ActiveSupport::Concern
+  include Mentionable
 
   included do
     belongs_to :project
@@ -96,5 +97,19 @@ module Issuable
   # Return the total number of votes
   def votes_count
     upvotes + downvotes
+  end
+
+  # Return all users participating on the discussion
+  def participants
+    users = []
+    users << author
+    users << assignee if is_assigned?
+    mentions = []
+    mentions << self.mentioned_users
+    notes.each do |note|
+      users << note.author
+      mentions << note.mentioned_users
+    end
+    users.concat(mentions.reduce([], :|)).uniq
   end
 end
