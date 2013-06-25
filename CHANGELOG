@@ -1,3 +1,21 @@
+v 6.0.0
+  - Epic: Replace teams with group membership
+  - Add project filter on dashboard
+  - cache project graph
+  - Drop support of root namespaces
+  - Redesign project settings navigation
+  - Restlyed login screen
+  - Default theme is classic now
+  - Cache result of methods like authorize_projects, project.team.members etc
+  - Remove $.ready events
+  - Fix onclick events being double binded
+  - Add notification level to group membership
+  - Move all project controllers/views under Projects:: module
+  - Move all profile controllers/views under Profiles:: module
+  - Redesign ssh keys page
+  - Generate fingerprint for ssh keys
+  
+
 v 5.3.0
   - Refactored services 
   - Campfire service added
