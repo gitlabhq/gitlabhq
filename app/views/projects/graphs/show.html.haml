@@ -24,8 +24,8 @@
     type: "GET",
     url: location.href,
     complete: function() {
+      $(".stat-graph").fadeIn();
       $(".loading-graph").hide();
-      $(".stat-graph").show();
     },
     dataType: "script"
   });

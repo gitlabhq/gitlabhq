@@ -12,7 +12,8 @@ class window.ContributorsStatGraph
     @master_graph.draw()
   add_authors_graph: (author_data) ->
     @authors = []
-    _.each(author_data, (d) =>
+    limited_author_data = author_data.slice(0, 100)
+    _.each(limited_author_data, (d) =>
       author_header = @create_author_header(d)
       $(".contributors-list").append(author_header)
       @authors[d.author] = author_graph = new ContributorsAuthorGraph(d.dates)
