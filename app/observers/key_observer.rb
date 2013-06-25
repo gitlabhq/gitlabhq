@@ -1,5 +1,5 @@
 class KeyObserver < BaseObserver
-  def after_save(key)
+  def after_create(key)
     GitlabShellWorker.perform_async(
       :add_key,
       key.shell_id,
