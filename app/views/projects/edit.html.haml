@@ -2,7 +2,9 @@
   .project-edit-errors
   .project-edit-content
     .ui-box.white
-      %h5.title Settings:
+      %h5.title
+        %strong= @project.name
+        Project Settings:
       .form-holder
         = form_for(@project, remote: true) do |f|
           %fieldset
