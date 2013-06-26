@@ -1,6 +1,6 @@
 %li.commit
   %p
-    = link_to commit[:id][0..8], project_commit_path(project, commit[:id]), class: "commit_short_id"
+    = link_to commit[:id][0..8], project_commit_path(project, commit[:id]), class: "commit_short_id", alt: ''
     %span= commit[:author][:name]
     &ndash;
     = image_tag gravatar_icon(commit[:author][:email]), class: "avatar", width: 16

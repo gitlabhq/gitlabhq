@@ -53,7 +53,7 @@
             - @project.users.sort_by(&:name).each do |user|
               %li
                 = link_to project_issues_with_filter_path(@project, assignee_id: user.id) do
-                  = image_tag gravatar_icon(user.email), class: "avatar s16"
+                  = image_tag gravatar_icon(user.email), class: "avatar s16", alt: ''
                   = user.name
 
         .dropdown.inline.prepend-left-10

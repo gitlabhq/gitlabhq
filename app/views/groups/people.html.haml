@@ -12,7 +12,7 @@
       %ul.well-list
         - @users.each do |user|
           %li
-            = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
+            = image_tag gravatar_icon(user.email, 16), class: "avatar s16" , alt: ''
             %strong= user.name
             %span.cgray= user.email
             - if @group.owner == user
