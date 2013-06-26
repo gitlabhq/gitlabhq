@@ -14,7 +14,8 @@ v 6.0.0
   - Move all profile controllers/views under Profiles:: module
   - Redesign ssh keys page
   - Generate fingerprint for ssh keys
-  
+  - You an use arrows to navigate at tree view
+  - Apply user project limit only for personal projects
 
 v 5.3.0
   - Refactored services 
