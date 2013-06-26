@@ -32,6 +32,10 @@ class Dispatcher
         new TeamMembers()
       when 'groups:people'
         new GroupMembers()
+      when 'projects:tree:show'
+        new TreeView()
+      when 'projects:blob:show'
+        new BlobView()
 
     switch path.first()
       when 'admin' then new Admin()

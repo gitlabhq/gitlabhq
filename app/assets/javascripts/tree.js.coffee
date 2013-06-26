@@ -1,29 +1,43 @@
-# Code browser tree slider
-# Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
-$(".tree-content-holder .tree-item").live 'click', (e) ->
-  if (e.target.nodeName != "A")
-    path = $('.tree-item-file-name a', this).attr('href')
-    Turbolinks.visit(path)
+class TreeView
+  constructor: ->
+    @initKeyNav()
 
-$ ->
-  # Show the "Loading commit data" for only the first element
-  $('span.log_loading:first').removeClass('hide')
+    # Code browser tree slider
+    # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
+    $(".tree-content-holder .tree-item").on 'click', (e) ->
+      if (e.target.nodeName != "A")
+        path = $('.tree-item-file-name a', this).attr('href')
+        Turbolinks.visit(path)
 
-  # See if there are lines selected
-  # "#L12" and "#L34-56" supported
-  highlightBlobLines = ->
-    if window.location.hash isnt ""
-      matches = window.location.hash.match(/\#L(\d+)(\-(\d+))?/)
-      first_line = parseInt(matches?[1])
-      last_line = parseInt(matches?[3])
+    # Show the "Loading commit data" for only the first element
+    $('span.log_loading:first').removeClass('hide')
 
-      unless isNaN first_line
-        last_line = first_line if isNaN(last_line)
-        $("#tree-content-holder .highlight .line").removeClass("hll")
-        $("#LC#{line}").addClass("hll") for line in [first_line..last_line]
-        $("#L#{first_line}").ScrollTo()
+  initKeyNav: ->
+    li = $("tr.tree-item")
+    liSelected = null
+    $('body').keydown (e) ->
+      if e.which is 40
+        if liSelected
+          next = liSelected.next()
+          if next.length > 0
+            liSelected.removeClass "selected"
+            liSelected = next.addClass("selected")
+        else
+          liSelected = li.eq(0).addClass("selected")
 
-  # Highlight the correct lines on load
-  highlightBlobLines()
-  # Highlight the correct lines when the hash part of the URL changes
-  $(window).on 'hashchange', highlightBlobLines
+        $(liSelected).focus()
+      else if e.which is 38
+        if liSelected
+          next = liSelected.prev()
+          if next.length > 0
+            liSelected.removeClass "selected"
+            liSelected = next.addClass("selected")
+        else
+          liSelected = li.last().addClass("selected")
+
+        $(liSelected).focus()
+      else if e.which is 13
+        path = $('.tree-item.selected .tree-item-file-name a').attr('href')
+        Turbolinks.visit(path)
+
+@TreeView = TreeView
