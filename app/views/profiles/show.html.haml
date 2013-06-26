@@ -70,9 +70,9 @@
       - unless current_user.projects_limit_left > 100
         %fieldset
           %legend
-            Owned projects:
+            Personal projects:
             %small.pull-right
-              %span= current_user.owned_projects.count
+              %span= current_user.personal_projects.count
               of
               %span= current_user.projects_limit
           .padded

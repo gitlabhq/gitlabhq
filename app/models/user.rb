@@ -294,12 +294,12 @@ class User < ActiveRecord::Base
   end
 
   def projects_limit_left
-    projects_limit - owned_projects.count
+    projects_limit - personal_projects.count
   end
 
   def projects_limit_percent
     return 100 if projects_limit.zero?
-    (owned_projects.count.to_f / projects_limit) * 100
+    (personal_projects.count.to_f / projects_limit) * 100
   end
 
   def recent_push project_id = nil
