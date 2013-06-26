@@ -63,7 +63,7 @@
             - if @milestone.present?
               %strong= @milestone.title
             - elsif params[:milestone_id] == "0"
-              Unspecified
+              None (backlog)
             - else
               Any
             %b.caret
@@ -72,7 +72,7 @@
               = link_to project_issues_with_filter_path(@project, milestone_id: nil) do
                 Any
               = link_to project_issues_with_filter_path(@project, milestone_id: 0) do
-                Unspecified
+                None (backlog)
             - issues_active_milestones.each do |milestone|
               %li
                 = link_to project_issues_with_filter_path(@project, milestone_id: milestone.id) do
