@@ -88,9 +88,7 @@ Gitlab::Application.routes.draw do
     resource :background_jobs, controller: 'background_jobs', only: [:show]
 
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
-      scope module: :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
-        resources :members, only: [:destroy]
-      end
+      resources :members, only: [:destroy]
     end
 
     root to: "dashboard#index"
