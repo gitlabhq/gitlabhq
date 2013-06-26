@@ -55,6 +55,12 @@ class AdminGroups < Spinach::FeatureSteps
     end
   end
 
+  step 'I should be all groups' do
+    Group.all.each do |group|
+      page.should have_content group.name
+    end
+  end
+
   protected
 
   def current_group
