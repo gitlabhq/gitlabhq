@@ -1,4 +1,4 @@
-# # # # # # # # # # # # # # # # # # 
+# # # # # # # # # # # # # # # # # #
 # GitLab application config file  #
 # # # # # # # # # # # # # # # # # #
 #
@@ -37,7 +37,7 @@ production: &base
     # default_can_create_group: false  # default: true
     # default_can_create_team: false   # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
-    
+
     ## Users management
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
 
@@ -168,12 +168,12 @@ production: &base
   # 4. Extra customization
   # ==========================
 
-  extra: 
+  extra:
     ## Google analytics. Uncomment if you want it
     # google_analytics_id: '_your_tracking_id'
 
     ## Text under sign-in page (Markdown enabled)
-    # sign_in_text: | 
+    # sign_in_text: |
     #   ![Company Logo](http://www.companydomain.com/logo.png)
     #   [Learn more about CompanyName](http://www.companydomain.com/)
 
