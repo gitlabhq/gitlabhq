@@ -105,11 +105,11 @@ class MergeRequest < ActiveRecord::Base
     end
 
     if opened? || reopened?
-      similar_mrs = self.project.merge_requests.where(source_branch: source_branch, target_branch: target_branch).opened
+      similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.id).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
 
       if similar_mrs.any?
-        errors.add :base, "There is already an open merge request for this branches"
+        errors.add :base, "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
       end
     end
   end

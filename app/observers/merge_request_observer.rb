@@ -1,6 +1,5 @@
 class MergeRequestObserver < ActivityObserver
   observe :merge_request
-  cattr_accessor :current_user
 
   def after_create(merge_request)
     event_author_id = merge_request.author_id
