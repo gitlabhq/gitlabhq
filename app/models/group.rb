@@ -32,6 +32,17 @@ class Group < Namespace
     end
   end
 
+  def change_owner(user)
+    self.owner = user
+    membership = users_groups.where(user_id: user.id).first
+
+    if membership
+      membership.update_attributes(group_access: UsersGroup::OWNER)
+    else
+      add_owner
+    end
+  end
+
   private
 
   def add_owner

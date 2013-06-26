@@ -34,7 +34,7 @@ class Admin::GroupsController < Admin::ApplicationController
     owner_id =group_params.delete(:owner_id)
 
     if owner_id
-      @group.owner = User.find(owner_id)
+      @group.change_owner(User.find(owner_id))
     end
 
     if @group.update_attributes(group_params)
