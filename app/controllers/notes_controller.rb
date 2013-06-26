@@ -2,6 +2,7 @@ class NotesController < ProjectResourceController
   # Authorize
   before_filter :authorize_read_note!
   before_filter :authorize_write_note!, only: [:create]
+  before_filter :authorize_modify_note!, only: [:update]
 
   respond_to :js
 
