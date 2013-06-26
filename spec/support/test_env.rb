@@ -42,6 +42,7 @@ module TestEnv
       add_repository: true,
       mv_repository: true,
       remove_repository: true,
+      update_repository_head: true,
       add_key: true,
       remove_key: true
     )
