@@ -64,7 +64,8 @@ module Gitlab
       end
 
       def lock_file
-        Rails.root.join("tmp", "satellite_#{project.id}.lock")
+        create_locks_dir unless File.exists?(lock_files_dir)
+        File.join(lock_files_dir, "satellite_#{project.id}.lock")
       end
 
       def path
@@ -113,6 +114,16 @@ module Gitlab
       # Note: this will only update remote branches (i.e. origin/*)
       def update_from_source!
         repo.git.fetch({timeout: true}, :origin)
+      end
+
+      # Create directory for stroing
+      # satellites lock files
+      def create_locks_dir
+        FileUtils.mkdir_p(lock_files_dir)
+      end
+
+      def lock_files_dir
+        @lock_files_dir ||= File.join(Gitlab.config.satellites.path, "tmp")
       end
     end
   end
