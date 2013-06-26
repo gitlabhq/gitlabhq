@@ -38,6 +38,11 @@ Feature: Profile
     When I visit profile history page
     Then I should see my activity
 
+  Scenario: I visit my user page
+    When I visit profile page
+    And I click on my profile picture
+    Then I should see my user page
+
   @javascript
   Scenario: I change my application theme
     Given I visit profile design page

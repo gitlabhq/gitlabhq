@@ -104,4 +104,16 @@ class Profile < Spinach::FeatureSteps
   step 'I redirected to sign in page' do
     current_path.should == new_user_session_path
   end
+
+  step 'I click on my profile picture' do
+    click_link 'profile-pic'
+  end
+
+  step 'I should see my user page' do
+    page.should have_content "User Activity"
+
+    within '.navbar-gitlab' do
+      page.should have_content current_user.name
+    end
+  end
 end
