@@ -21,7 +21,7 @@ class ProjectTeam
     end
   end
 
-  def find user_id
+  def find(user_id)
     user = project.users.find_by_id(user_id)
 
     if group
@@ -31,7 +31,7 @@ class ProjectTeam
     user
   end
 
-  def get_tm user_id
+  def find_tm(user_id)
     project.users_projects.find_by_user_id(user_id)
   end
 
