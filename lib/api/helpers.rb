@@ -5,12 +5,12 @@ module API
     end
 
     def user_project
-      @project ||= find_project
+      @project ||= find_project(params[:id])
       @project || not_found!
     end
 
-    def find_project
-      project = Project.find_by_id(params[:id]) || Project.find_with_namespace(params[:id])
+    def find_project(id)
+      project = Project.find_by_id(id) || Project.find_with_namespace(id)
 
       if project && can?(current_user, :read_project, project)
         project
