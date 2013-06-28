@@ -12,25 +12,18 @@ module API
       if (identifier && !(@current_user.id == identifier || @current_user.username == identifier))
         render_api_error!('403 Forbidden: Must be admin to use sudo', 403) unless @current_user.is_admin?
         begin
-
-          if (identifier.is_a?(Integer))
-            user = User.find_by_id(identifier)
-          else
-            user = User.find_by_username(identifier)
-          end
-          if user.nil?
-            not_found!("No user id or username for: #{identifier}")
-          end
-          @current_user = user
+          @current_user = User.by_username_or_id(identifier)
         rescue => ex
           not_found!("No user id or username for: #{identifier}")
         end
+        not_found!("No user id or username for: #{identifier}") if current_user.nil?
       end
       @current_user
     end
 
     def sudo_identifier()
-      identifier = params[SUDO_PARAM] == nil ? env[SUDO_HEADER] : params[SUDO_PARAM]
+      identifier ||= params[SUDO_PARAM] ||= env[SUDO_HEADER]
+      # Regex for integers
       if (!!(identifier =~ /^[0-9]+$/))
         identifier.to_i
       else
@@ -129,10 +122,10 @@ module API
 
     def abilities
       @abilities ||= begin
-        abilities = Six.new
-        abilities << Ability
-        abilities
-      end
+                       abilities = Six.new
+                       abilities << Ability
+                       abilities
+                     end
     end
   end
 end
