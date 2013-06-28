@@ -6,9 +6,7 @@
 
   ul {
     margin: auto;
-    height: 41px;
-    position: relative;
-    top: 3px;
+    height: 42px;
     overflow: hidden;
     .count {
       font-weight: normal;
@@ -34,10 +32,23 @@
       display: table-cell;
       width: 1%;
       &.active {
-        border-bottom: 3px solid #777;
         a {
           color: $style_color;
           font-weight: bolder;
+
+          &:after {
+            content: '';
+            display: block;
+            position: relative;
+            bottom: 8px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-color: transparent transparent #777 transparent;
+            border-style: solid;
+            border-width: 6px;
+            margin-left: -6px;
+          }
         }
       }
 
@@ -67,6 +78,7 @@
       text-shadow: 0 1px 1px white;
       padding: 0 10px;
       text-decoration: none;
+      padding-top: 4px;
     }
   }
 }
