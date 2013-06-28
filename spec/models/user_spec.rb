@@ -208,4 +208,14 @@ describe User do
       user.can_create_group.should == false
     end
   end
+
+  describe 'by_username_or_id' do
+    let(:user1){create(:user, username: 'foo')}
+    it "should get the correct user" do
+      User.by_username_or_id(user1.id).should == user1
+      User.by_username_or_id('foo').should == user1
+      User.by_username_or_id(-1).should be_nil
+      User.by_username_or_id('bar').should be_nil
+    end
+  end
 end

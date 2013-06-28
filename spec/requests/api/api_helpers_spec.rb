@@ -1,7 +1,7 @@
 require 'spec_helper'
 
-describe Gitlab::API do
-  include Gitlab::APIHelpers
+describe API do
+  include API::APIHelpers
   include ApiHelpers
   let(:user) { create(:user) }
   let(:admin) { create(:admin) }
@@ -13,27 +13,27 @@ describe Gitlab::API do
   def set_env(token_usr, identifier)
     clear_env
     clear_param
-    env[Gitlab::APIHelpers::PRIVATE_TOKEN_HEADER] = token_usr.private_token
-    env[Gitlab::APIHelpers::SUDO_HEADER] = identifier
+    env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = token_usr.private_token
+    env[API::APIHelpers::SUDO_HEADER] = identifier
   end
 
 
   def set_param(token_usr, identifier)
     clear_env
     clear_param
-    params[Gitlab::APIHelpers::PRIVATE_TOKEN_PARAM] = token_usr.private_token
-    params[Gitlab::APIHelpers::SUDO_PARAM] = identifier
+    params[API::APIHelpers::PRIVATE_TOKEN_PARAM] = token_usr.private_token
+    params[API::APIHelpers::SUDO_PARAM] = identifier
   end
 
 
   def clear_env
-    env.delete(Gitlab::APIHelpers::PRIVATE_TOKEN_HEADER)
-    env.delete(Gitlab::APIHelpers::SUDO_HEADER)
+    env.delete(API::APIHelpers::PRIVATE_TOKEN_HEADER)
+    env.delete(API::APIHelpers::SUDO_HEADER)
   end
 
   def clear_param
-    params.delete(Gitlab::APIHelpers::PRIVATE_TOKEN_PARAM)
-    params.delete(Gitlab::APIHelpers::SUDO_PARAM)
+    params.delete(API::APIHelpers::PRIVATE_TOKEN_PARAM)
+    params.delete(API::APIHelpers::SUDO_PARAM)
   end
 
   def error!(message, status)
@@ -42,10 +42,10 @@ describe Gitlab::API do
 
   describe ".current_user" do
     it "should leave user as is when sudo not specified" do
-      env[Gitlab::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
+      env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
       current_user.should == user
       clear_env
-      params[Gitlab::APIHelpers::PRIVATE_TOKEN_PARAM] = user.private_token
+      params[API::APIHelpers::PRIVATE_TOKEN_PARAM] = user.private_token
       current_user.should == user
     end
 
