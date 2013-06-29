@@ -4,11 +4,11 @@ This guide details how to use issues and pull requests to improve GitLab.
 
 ## Closing policy for issues and pull requests
 
-Issues and pull requests not in line with the guidelines listed in this document will be closed. GitLab is a popular open source project and the capacity to deal with issues and pull requests is limited. To get support for your problems please use other channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
+GitLab is a popular open source project and the capacity to deal with issues and pull requests is limited. Out of respect for our volunteer’s time, issues and pull requests not in line with the guidelines listed in this document will be closed immediately while other issues may be closed at our discretion. Please treat our volunteers with courtesy and respect, it will go a long way towards getting your issue resolved. To get support for your problems please use other channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
 
 ## Issue tracker
 
-The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the latest [stable or development release of GitLab](MAINTENANCE.md). When submitting an issue please conform to the issue submission guidelines listed below.
+The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the latest [stable or development release of GitLab](MAINTENANCE.md). When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a pull request which partially or fully addresses the issue.
 
 Do not use the issue tracker for feature requests. We have a specific [feedback and suggestions forum](http://feedback.gitlab.com) for this purpose.
 
@@ -16,7 +16,7 @@ Please send a pull request with a tested solution or a pull request with a faili
 
 ### Issue tracker guidelines
 
-**[Search](https://github.com/gitlabhq/gitlabhq/search?q=&ref=cmdform&type=Issues)** for similar entries before submitting your own, there's a good chance somebody else had the same issue. Show your support with `:+1:` and/or join the discussion. Please submit issues in the following format:
+**[Search](https://github.com/gitlabhq/gitlabhq/search?q=&ref=cmdform&type=Issues)** for similar entries before submitting your own, there's a good chance somebody else had the same issue. Show your support with `:+1:` and/or join the discussion. Please submit issues in the following format (as the first post):
 
 1. **Summary:** Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
 2. **Steps to reproduce:** How can we reproduce the issue, preferably on the [GitLab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) (start with: `vagrant destroy && vagrant up && vagrant ssh`)
