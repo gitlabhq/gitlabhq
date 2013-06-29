@@ -1,6 +1,10 @@
 .project_clone_panel
   .row
     .span8
+      = link_to "javascript:void((function(){var ua=navigator.userAgent.toLowerCase();var s=/windows|win32/.test(ua)?'windows':(/macintosh|mac os x/.test(ua)?'mac':'');if(s){document.location='github-'+s+'://openRepo/"+@project.http_url_to_repo+"';}})())", class: 'btn grouped' do
+        %i.icon-hdd
+        Clone
+
       .form-horizontal= render "shared/clone_panel"
     .span3.pull-right
       .pull-right
