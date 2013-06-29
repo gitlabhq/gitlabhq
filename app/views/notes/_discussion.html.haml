@@ -8,7 +8,7 @@
       = link_to "javascript:;", class: "js-details-target turn-off js-toggler-target" do
         %i.icon-eye-open
         Show discussion
-    = image_tag gravatar_icon(note.author.email), class: "avatar s32"
+    = image_tag gravatar_icon(note.author.email), class: "avatar s32", alt: ''
     %div
       = link_to_member(@project, note.author, avatar: false)
       - if note.for_merge_request?

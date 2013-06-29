@@ -2,6 +2,8 @@
 
 ![logo](https://raw.github.com/gitlabhq/gitlabhq/master/public/gitlab_logo.png)
 
+![animated-screenshots](http://makeagif.com/media/6-23-2013/AN3Mo6.gif)
+
 ### GitLab allows you to
  * keep your code secure on your own server
  * manage repositories, users and access permissions
@@ -22,7 +24,7 @@
 
 * [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 
-* [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq) this button can be yellow (small updates are available) but must not be red (a security fix or an important update is available)
+* [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq) this button can be yellow (small updates are available) but must not be red (a security fix or an important update is available), gems are updated in major releases of GitLab.
 
 * [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 

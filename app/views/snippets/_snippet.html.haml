@@ -25,6 +25,6 @@
     = "##{snippet.id}"
     %span.light
       by
-      = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16"
+      = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
       = snippet.author_name
 
