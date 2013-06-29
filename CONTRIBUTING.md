@@ -4,9 +4,13 @@ This guide details how to use issues and pull requests to improve GitLab.
 
 ## Closing policy for issues and pull requests
 
-GitLab is a popular open source project and the capacity to deal with issues and pull requests is limited. Out of respect for our volunteer’s time, issues and pull requests not in line with the guidelines listed in this document will be closed immediately while other issues may be closed at our discretion. Please treat our volunteers with courtesy and respect, it will go a long way towards getting your issue resolved. To get support for your problems please use other channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
+GitLab is a popular open source project and the capacity to deal with issues and pull requests is limited. Out of respect for our volunteers, issues and pull requests not in line with the guidelines listed in this document may be closed without notice.
+
+Please treat our volunteers with courtesy and respect, it will go a long way towards getting your issue resolved.
 
 ## Issue tracker
+
+To get support for your particular problem please use the channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
 
 The [issue tracker](https://github.com/gitlabhq/gitlabhq/issues) is only for obvious bugs or misbehavior in the latest [stable or development release of GitLab](MAINTENANCE.md). When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a pull request which partially or fully addresses the issue.
 
