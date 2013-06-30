@@ -6,7 +6,7 @@
         Link here
       &nbsp;
       - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
-        = link_to "javascript:;", title: "Edit comment", class: "js-note-edit" do
+        = link_to "#", title: "Edit comment", class: "js-note-edit" do
           %i.icon-edit
         = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, confirm: 'Are you sure you want to remove this comment?', remote: true, class: "danger js-note-delete" do
           %i.icon-trash.cred
@@ -45,7 +45,7 @@
             %span.file_name.js-attachment-filename File name...
             = f.file_field :attachment, class: "js-note-attachment-input hide"
 
-          = link_to  'Cancel', "javascript:;", class: "btn btn-cancel note-edit-cancel"
+          = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
 
 
   - if note.attachment.url
