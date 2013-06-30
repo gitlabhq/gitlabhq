@@ -1,7 +1,7 @@
 .row
   .span8
     %h3.page_title
-      = image_tag gravatar_icon(@user.email, 90), class: "avatar s90"
+      = image_tag gravatar_icon(@user.email, 90), class: "avatar s90", alt: ''
       = @user.name
       - if @user == current_user
         .pull-right

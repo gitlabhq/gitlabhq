@@ -19,7 +19,7 @@
     %ol.styled
       - @stats.authors[0...50].each do |author|
         %li
-          = image_tag gravatar_icon(author.email, 16), class: 'avatar s16'
+          = image_tag gravatar_icon(author.email, 16), class: 'avatar s16', alt: ''
           = author.name
           %small.light= author.email
           .pull-right

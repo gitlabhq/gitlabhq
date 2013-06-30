@@ -173,6 +173,9 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
+    # Make config/database.yml readable to git only
+    sudo -u git -H chmod o-rwx config/database.yml
+
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
     sudo -u git -H mkdir tmp/sockets/
