@@ -76,7 +76,7 @@
       - unless current_user.projects_limit_left > 100
         %fieldset
           %legend
-            Owned projects:
+            Owned public projects:
             %small.pull-right
               %span= current_user.owned_projects.count
               of
@@ -84,6 +84,18 @@
           .padded
             .progress
               .bar{style: "width: #{current_user.projects_limit_percent}%;"}
+
+      - unless current_user.projects_limit_left > 100
+        %fieldset
+          %legend
+            Owned private projects:
+            %small.pull-right
+              %span= current_user.owned_projects_priv.count
+              of
+              %span= current_user.projects_limit_priv
+          .padded
+            .progress
+              .bar{style: "width: #{current_user.projects_limit_percent_priv}%;"}
 
       %fieldset
         %legend

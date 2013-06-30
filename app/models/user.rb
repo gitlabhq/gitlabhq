@@ -18,6 +18,7 @@
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
+#  projects_limit_priv    :integer          default(10)
 #  skype                  :string(255)      default(""), not null
 #  linkedin               :string(255)      default(""), not null
 #  twitter                :string(255)      default(""), not null
@@ -45,7 +46,7 @@ class User < ActiveRecord::Base
                   :extern_uid, :provider, :password_expires_at,
                   as: [:default, :admin]
 
-  attr_accessible :projects_limit, :can_create_team, :can_create_group,
+  attr_accessible :projects_limit, :projects_limit_priv, :can_create_team, :can_create_group,
                   as: :admin
 
   attr_accessor :force_random_password
@@ -96,7 +97,10 @@ class User < ActiveRecord::Base
   has_many :master_projects,          through: :users_projects, source: :project,
                                       conditions: { users_projects: { project_access: UsersProject::MASTER } }
   has_many :own_projects,             foreign_key: :creator_id, class_name: 'Project'
-  has_many :owned_projects,           through: :namespaces, source: :projects
+  has_many :owned_projects,           through: :namespaces, source: :projects,
+                                      conditions: { projects: { public: true } }
+  has_many :owned_projects_priv,      through: :namespaces, source: :projects,
+                                      conditions: { projects: { public: false } }
 
   #
   # Validations
@@ -106,6 +110,7 @@ class User < ActiveRecord::Base
   validates :bio, length: { within: 0..255 }
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
+  validates :projects_limit_priv, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :username, presence: true, uniqueness: true,
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.username_regex,
@@ -206,6 +211,7 @@ class User < ActiveRecord::Base
   def with_defaults
     tap do |u|
       u.projects_limit = Gitlab.config.gitlab.default_projects_limit
+      u.projects_limit_priv = Gitlab.config.gitlab.default_projects_limit_private
       u.can_create_group = Gitlab.config.gitlab.default_can_create_group
       u.can_create_team = Gitlab.config.gitlab.default_can_create_team
     end
@@ -288,6 +294,10 @@ class User < ActiveRecord::Base
     projects_limit > owned_projects.count
   end
 
+  def can_create_project_priv?
+    projects_limit_priv > owned_projects_priv.count
+  end
+
   def can_create_group?
     can?(:create_group, nil)
   end
@@ -323,6 +333,15 @@ class User < ActiveRecord::Base
   def projects_limit_percent
     return 100 if projects_limit.zero?
     (owned_projects.count.to_f / projects_limit) * 100
+  end
+
+  def projects_limit_left_priv
+    projects_limit_priv - owned_projects_priv.count
+  end
+
+  def projects_limit_percent_priv
+    return 100 if projects_limit_priv.zero?
+    (owned_projects_priv.count.to_f / projects_limit_priv) * 100
   end
 
   def recent_push project_id = nil
