@@ -45,16 +45,19 @@ class Project < ActiveRecord::Base
 
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
+  has_one :campfire_service, dependent: :destroy
+  has_one :hipchat_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
 
+  has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :merge_requests,     dependent: :destroy
   has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
   has_many :users_projects,     dependent: :destroy
   has_many :notes,              dependent: :destroy
-  has_many :snippets,           dependent: :destroy
+  has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
   has_many :user_team_project_relationships, dependent: :destroy
@@ -76,6 +79,7 @@ class Project < ActiveRecord::Base
             format: { with: Gitlab::Regex.project_name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter should be first" }
   validates :path, presence: true, length: { within: 0..255 },
+            exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
@@ -89,7 +93,7 @@ class Project < ActiveRecord::Base
     format: { with: URI::regexp(%w(http https)), message: "should be a valid url" },
     if: :import?
 
-  validate :check_limit, :repo_name
+  validate :check_limit
 
   # Scopes
   scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
@@ -107,11 +111,7 @@ class Project < ActiveRecord::Base
 
   class << self
     def abandoned
-      project_ids = Event.select('max(created_at) as latest_date, project_id').
-        group('project_id').
-        having('latest_date < ?', 6.months.ago).map(&:project_id)
-
-      where(id: project_ids)
+      where('projects.last_activity_at < ?', 6.months.ago)
     end
 
     def with_push
@@ -167,14 +167,6 @@ class Project < ActiveRecord::Base
     errors[:base] << ("Can't check your ability to create project")
   end
 
-  def repo_name
-    denied_paths = %w(admin dashboard groups help profile projects search)
-
-    if denied_paths.include?(path)
-      errors.add(:path, "like #{path} is not allowed")
-    end
-  end
-
   def to_param
     if namespace
       namespace.path + "/" + path
@@ -227,8 +219,18 @@ class Project < ActiveRecord::Base
     self.issues_enabled && !self.used_default_issues_tracker?
   end
 
-  def services
-    [gitlab_ci_service].compact
+  def build_missing_services
+    available_services_names.each do |service_name|
+      service = services.find { |service| service.to_param == service_name }
+
+      # If service is available but missing in db
+      # we should create an instance. Ex `create_gitlab_ci_service`
+      service = self.send :"create_#{service_name}_service" if service.nil?
+    end
+  end
+
+  def available_services_names
+    %w(gitlab_ci campfire hipchat)
   end
 
   def gitlab_ci?
@@ -413,5 +415,33 @@ class Project < ActiveRecord::Base
 
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+  end
+
+  def imported?
+    imported
+  end
+
+  def rename_repo
+    old_path_with_namespace = File.join(namespace_dir, path_was)
+    new_path_with_namespace = File.join(namespace_dir, path)
+
+    if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
+      # If repository moved successfully we need to remove old satellite
+      # and send update instructions to users.
+      # However we cannot allow rollback since we moved repository
+      # So we basically we mute exceptions in next actions
+      begin
+        gitlab_shell.rm_satellites(old_path_with_namespace)
+        send_move_instructions
+      rescue
+        # Returning false does not rolback after_* transaction but gives
+        # us information about failing some of tasks
+        false
+      end
+    else
+      # if we cannot move namespace directory we should rollback
+      # db changes in order to prevent out of sync between db and fs
+      raise Exception.new('repository cannot be renamed')
+    end
   end
 end

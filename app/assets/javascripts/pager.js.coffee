@@ -30,6 +30,7 @@
       @disable = true
 
   initLoadMore: ->
+    $(document).unbind('scroll')
     $(document).endlessScroll
       bottomPixels: 400
       fireDelay: 1000

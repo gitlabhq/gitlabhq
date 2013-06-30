@@ -2,6 +2,7 @@ module API
   # Issues API
   class Issues < Grape::API
     before { authenticate! }
+    before { Thread.current[:current_user] = current_user }
 
     resource :issues do
       # Get currently authenticated user's issues
@@ -70,7 +71,7 @@ module API
       #   assignee_id (optional) - The ID of a user to assign issue
       #   milestone_id (optional) - The ID of a milestone to assign issue
       #   labels (optional) - The labels of an issue
-      #   state (optional) - The state of an issue (close|reopen)
+      #   state_event (optional) - The state event of an issue (close|reopen)
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
@@ -79,7 +80,7 @@ module API
 
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
         attrs[:label_list] = params[:labels] if params[:labels].present?
-        IssueObserver.current_user = current_user
+
         if @issue.update_attributes attrs
           present @issue, with: Entities::Issue
         else

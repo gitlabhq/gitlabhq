@@ -8,9 +8,14 @@
 %p
   login..........................................
   %code= @user['email']
-%p
-  - unless Gitlab.config.gitlab.signup_enabled
+
+- if @user.created_by_id
+  %p
     password..................................
     %code= @password
+
+  %p
+    You will be forced to change this password immediately after login.
+
 %p
   = link_to "Click here to login", root_url

@@ -1,12 +1,20 @@
+# Select Version to Install
+Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
+this should be the highest numbered stable branch (example shown below). 
+
+![capture](https://f.cloud.github.com/assets/1192780/564911/2f9f3e1e-c5b7-11e2-9f89-98e527d1adec.png)
+
+If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installation guide links by version.
+
 # Important notes
 
 This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and operating system requirements.
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
 
-The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment.
+The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
-If you find a bug/error in this guide please **submit a pull request** following the [`contributing guide`](../../CONTRIBUTING.md).
+If you find a bug/error in this guide please **submit a pull request** following the [contributing guide](../../CONTRIBUTING.md).
 
 - - -
 
@@ -68,6 +76,10 @@ does not ship with one. The recommended mail server is postfix and you can insta
 	sudo apt-get install postfix 
 
 # 2. Ruby
+
+Remove old 1.8 ruby if present
+
+    sudo apt-get remove ruby1.8
 
 Download and compile it:
 
@@ -137,10 +149,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-2-stable
+    sudo -u git -H git checkout 5-3-stable
 
 **Note:**
-You can change `5-2-stable` to `master` if you want the *bleeding edge* version, but
+You can change `5-3-stable` to `master` if you want the *bleeding edge* version, but
 do so with caution!
 
 ## Configure it
@@ -176,6 +188,10 @@ do so with caution!
     # Copy the example Puma config
     sudo -u git -H cp config/puma.rb.example config/puma.rb
 
+    # Enable cluster mode if you expect to have a high load instance
+    # Ex. change amount of workers to 3 for 2GB RAM server
+    sudo -u git -H vim config/puma.rb
+
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
@@ -207,7 +223,7 @@ Make sure to update username/password in config/database.yml.
     sudo -u git -H bundle install --deployment --without development test mysql
 
 
-## Initialise Database and Activate Advanced Features
+## Initialize Database and Activate Advanced Features
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
@@ -216,7 +232,7 @@ Make sure to update username/password in config/database.yml.
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab
+    sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -230,18 +246,20 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+## Start Your GitLab Instance
+
+    sudo service gitlab start
+    # or
+    sudo /etc/init.d/gitlab restart
+
+## Double-check Application Status
+
 To make sure you didn't miss anything run a more thorough check with:
 
     sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, then congratulations on successfully installing GitLab!
 However there are still a few steps left.
-
-## Start Your GitLab Instance
-
-    sudo service gitlab start
-    # or
-    sudo /etc/init.d/gitlab restart
 
 
 # 7. Nginx
@@ -257,7 +275,7 @@ If you can't or don't want to use Nginx as your web server, have a look at the
 
 Download an example site config:
 
-    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/nginx/gitlab
+    sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
@@ -326,10 +344,10 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
-* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-2-stable/Gemfile#L18)
+* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/Gemfile#L18)
 * Run `sudo -u git -H bundle install` to install the new gem(s)
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-2-stable/config/gitlab.yml.example#L53) as a reference)
-* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-2-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/config/gitlab.yml.example#L53) as a reference)
+* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-3-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
 * Restart GitLab
 
 ### Examples

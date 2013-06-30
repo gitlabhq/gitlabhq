@@ -1,13 +1,30 @@
-%tr
-  %td
-    = image_tag gravatar_icon(snippet.author_email), class: "avatar s24"
-    %a{href: project_snippet_path(snippet.project, snippet)}
-      %strong= truncate(snippet.title, length: 60)
-  %td
-    = snippet.file_name
-  %td
+%li
+  .snippet-title
+    - if snippet.private?
+      = private_icon
+    - else
+      = public_icon
+    = link_to reliable_snippet_path(snippet) do
+      %h5.inline
+        = truncate(snippet.title, length: 60)
     %span.cgray
-      - if snippet.expires_at
-        = snippet.expires_at.to_date.to_s(:short)
-      - else
-        Never
+      = snippet.file_name
+
+  %small.pull-right.cgray
+    - if snippet.project_id?
+      = link_to snippet.project.name_with_namespace, project_path(snippet.project)
+      %span
+        \|
+    Expires:
+    - if snippet.expires_at
+      = snippet.expires_at.to_date.to_s(:short)
+    - else
+      Never
+
+  .snippet-info.prepend-left-20
+    = "##{snippet.id}"
+    %span.light
+      by
+      = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16"
+      = snippet.author_name
+

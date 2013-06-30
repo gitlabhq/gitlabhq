@@ -16,8 +16,7 @@ class RegistrationsController < Devise::RegistrationsController
 
   def build_resource(hash=nil)
     super
-    self.resource.projects_limit = Gitlab.config.gitlab.default_projects_limit
-    self.resource
+    self.resource.with_defaults
   end
 
   private

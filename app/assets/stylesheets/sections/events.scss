@@ -53,6 +53,14 @@
       margin-top: 5px;
       margin-left: 40px;
 
+      pre {
+        border: none;
+        background: #f9f9f9;
+        border-radius: 0;
+        color: #555;
+        margin: 0 20px;
+      }
+
       .note-file-attach {
         .note-image-attach {
           margin-top: 4px;

@@ -8,12 +8,6 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def show
-    @projects = Project.scoped
-    @projects = @projects.not_in_group(@group) if @group.projects.present?
-    @projects = @projects.all
-    @projects.reject!(&:empty_repo?)
-
-    @users = User.active
   end
 
   def new
@@ -68,7 +62,8 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def project_teams_update
-    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
+    @group.add_users_to_project_teams(params[:user_ids].split(','), params[:project_access])
+
     redirect_to [:admin, @group], notice: 'Users were successfully added.'
   end
 

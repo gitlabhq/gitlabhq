@@ -1,3 +1,31 @@
+v 5.3.0
+  - Refactored services 
+  - Campfire service added
+  - HipChat service added
+  - Fixed bug with LDAP + git over http
+  - Fixed bug with google analytics code being ignored
+  - Improve sign-in page if ldap enabled
+  - Respect newlines in wall messages
+  - Generate the Rails secret token on first run
+  - Rename repo feature
+  - Init.d: remove gitlab.socket on service start
+  - Api: added teams api
+  - Api: Prevent blob content being escaped
+  - Api: Smart deploy key add behaviour
+  - Api: projets/owned.json return user owned project
+  - Fix bug with team assignation on project from #4109
+  - Advanced snippets: public/private, project/personal (Andrew Kulakov)
+  - Repository Graphs (Karlo Nicholas T. Soriano)
+  - Fix dashboard lost if comment on commit
+  - Update gitlab-grack. Fixes issue with --depth option
+  - Fix project events duplicate on project page
+  - Fix postgres error when displaying network graph.
+  - Fix dashboard event filter when navigate via turbolinks
+  - init.d: Ensure socket is removed before starting service
+  - Admin area: Style teams:index, group:show pages
+  - Own page for failed forking
+  - Scrum view for milestone
+
 v 5.2.0
   - Turbolinks
   - Git over http with ldap credentials

@@ -7,7 +7,8 @@ class ProjectsController < ProjectResourceController
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
-  layout 'application', only: [:new, :create]
+  layout 'navless', only: [:new, :create, :fork]
+  before_filter :set_title, only: [:new, :create]
 
   def new
     @project = Project.new
@@ -33,12 +34,12 @@ class ProjectsController < ProjectResourceController
   end
 
   def update
-    status = ::Projects::UpdateContext.new(project, current_user, params).execute
+    status = ::Projects::UpdateContext.new(@project, current_user, params).execute
 
     respond_to do |format|
       if status
         flash[:notice] = 'Project was successfully updated.'
-        format.html { redirect_to edit_project_path(project), notice: 'Project was successfully updated.' }
+        format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
       else
         format.html { render action: "edit" }
@@ -80,14 +81,15 @@ class ProjectsController < ProjectResourceController
   end
 
   def fork
-    @project = ::Projects::ForkContext.new(project, current_user).execute
+    @forked_project = ::Projects::ForkContext.new(project, current_user).execute
 
     respond_to do |format|
       format.html do
-        if @project.saved? && @project.forked?
-          redirect_to(@project, notice: 'Project was successfully forked.')
+        if @forked_project.saved? && @forked_project.forked?
+          redirect_to(@forked_project, notice: 'Project was successfully forked.')
         else
-          render action: "new"
+          @title = 'Fork project'
+          render action: "fork"
         end
       end
       format.js
@@ -104,5 +106,11 @@ class ProjectsController < ProjectResourceController
     respond_to do |format|
       format.json { render :json => @suggestions }
     end
+  end
+
+  private
+
+  def set_title
+    @title = 'New Project'
   end
 end

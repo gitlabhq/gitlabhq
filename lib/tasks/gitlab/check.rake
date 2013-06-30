@@ -138,13 +138,15 @@ namespace :gitlab do
     def check_init_script_up_to_date
       print "Init script up-to-date? ... "
 
+      recipe_path = Rails.root.join("lib/support/init.d/", "gitlab")
       script_path = "/etc/init.d/gitlab"
+
       unless File.exists?(script_path)
         puts "can't check because of previous errors".magenta
         return
       end
 
-      recipe_content = `curl https://raw.github.com/gitlabhq/gitlabhq/5-2-stable/lib/support/init.d/gitlab 2>/dev/null`
+      recipe_content = File.read(recipe_path)
       script_content = File.read(script_path)
 
       if recipe_content == script_content
@@ -219,7 +221,7 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           "sudo chown -R gitlab #{log_path}",
-          "sudo chmod -R rwX #{log_path}"
+          "sudo chmod -R u+rwX #{log_path}"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -239,7 +241,7 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           "sudo chown -R gitlab #{tmp_path}",
-          "sudo chmod -R rwX #{tmp_path}"
+          "sudo chmod -R u+rwX #{tmp_path}"
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -659,7 +661,7 @@ namespace :gitlab do
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
-    if required_version <= current_version
+    if current_version.valid? && required_version <= current_version
       puts "OK (#{current_version})".green
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".red
@@ -673,7 +675,7 @@ namespace :gitlab do
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "
 
-    if required_version <= current_version
+    if current_version.valid? && required_version <= current_version
         puts "yes (#{current_version})".green
     else
       puts "no".red

@@ -29,7 +29,7 @@ class Admin::UsersController < Admin::ApplicationController
 
 
   def new
-    @admin_user = User.new({ projects_limit: Gitlab.config.gitlab.default_projects_limit }, as: :admin)
+    @admin_user = User.new.with_defaults
   end
 
   def edit
@@ -55,8 +55,14 @@ class Admin::UsersController < Admin::ApplicationController
   def create
     admin = params[:user].delete("admin")
 
-    @admin_user = User.new(params[:user], as: :admin)
+    opts = {
+      force_random_password: true,
+      password_expires_at: Time.now
+    }
+
+    @admin_user = User.new(params[:user].merge(opts), as: :admin)
     @admin_user.admin = (admin && admin.to_i > 0)
+    @admin_user.created_by_id = current_user.id
 
     respond_to do |format|
       if @admin_user.save

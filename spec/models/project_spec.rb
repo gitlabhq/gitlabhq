@@ -36,7 +36,7 @@ describe Project do
     it { should have_many(:milestones).dependent(:destroy) }
     it { should have_many(:users_projects).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
-    it { should have_many(:snippets).dependent(:destroy) }
+    it { should have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { should have_many(:deploy_keys_projects).dependent(:destroy) }
     it { should have_many(:deploy_keys) }
     it { should have_many(:hooks).dependent(:destroy) }
@@ -61,10 +61,6 @@ describe Project do
     it { should ensure_length_of(:path).is_within(0..255) }
     it { should ensure_length_of(:description).is_within(0..2000) }
     it { should validate_presence_of(:creator) }
-    it { should ensure_inclusion_of(:issues_enabled).in_array([true, false]) }
-    it { should ensure_inclusion_of(:wall_enabled).in_array([true, false]) }
-    it { should ensure_inclusion_of(:merge_requests_enabled).in_array([true, false]) }
-    it { should ensure_inclusion_of(:wiki_enabled).in_array([true, false]) }
     it { should ensure_length_of(:issues_tracker_id).is_within(0..255) }
 
     it "should not allow new projects beyond user limits" do

@@ -41,6 +41,10 @@ a {
     color: $primary_color;
   }
 
+  &:focus {
+    text-decoration: underline;
+  }
+
   &.btn {
     color: $style_color;
     &:hover {

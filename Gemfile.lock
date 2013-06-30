@@ -12,16 +12,6 @@ GIT
   specs:
     raphael-rails (2.1.0)
 
-GIT
-  remote: https://github.com/jonleighton/poltergeist.git
-  revision: 9645b52009e258921b860d3b7601d00008b22c45
-  ref: 9645b52009e258921b860d3b7601d00008b22c45
-  specs:
-    poltergeist (1.1.0)
-      capybara (~> 2.0, >= 2.0.1)
-      faye-websocket (~> 0.4, >= 0.4.4)
-      http_parser.rb (~> 0.5.3)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -56,6 +46,7 @@ GEM
       rails (~> 3.0)
     addressable (2.3.4)
     arel (3.0.2)
+    asciidoctor (0.1.3)
     awesome_print (1.1.0)
     backports (2.6.7)
     bcrypt-ruby (3.0.1)
@@ -64,7 +55,7 @@ GEM
       erubis (>= 2.6.6)
     binding_of_caller (0.7.1)
       debug_inspector (>= 0.0.1)
-    bootstrap-sass (2.2.1.1)
+    bootstrap-sass (2.3.1.0)
       sass (~> 3.2)
     builder (3.0.4)
     capybara (2.1.0)
@@ -76,9 +67,11 @@ GEM
     carrierwave (0.8.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
-    celluloid (0.13.0)
+    celluloid (0.14.0)
       timers (>= 1.0.0)
     charlock_holmes (0.6.9.4)
+    childprocess (0.3.9)
+      ffi (~> 1.0, >= 1.0.11)
     chosen-rails (0.9.8)
       railties (~> 3.0)
       thor (~> 0.14)
@@ -102,11 +95,13 @@ GEM
       simplecov (>= 0.7)
       thor
     crack (0.3.2)
+    d3_rails (3.1.4)
+      railties (>= 3.1.0)
     daemons (1.1.9)
-    database_cleaner (0.9.1)
+    database_cleaner (1.0.1)
     debug_inspector (0.0.2)
     descendants_tracker (0.0.1)
-    devise (2.2.3)
+    devise (2.2.4)
       bcrypt-ruby (~> 3.0)
       orm_adapter (~> 0.1)
       railties (~> 3.1)
@@ -130,13 +125,14 @@ GEM
       railties (>= 3.0.0)
     faraday (0.8.7)
       multipart-post (~> 1.1)
+    faraday_middleware (0.9.0)
+      faraday (>= 0.7.4, < 0.9)
     faye-websocket (0.4.7)
       eventmachine (>= 0.12.0)
     ffaker (1.16.0)
     ffi (1.8.1)
-    font-awesome-sass-rails (3.0.2.2)
-      railties (>= 3.1.1)
-      sass-rails (>= 3.1.1)
+    font-awesome-rails (3.1.1.3)
+      railties (>= 3.2, < 5.0)
     foreman (0.63.0)
       dotenv (>= 0.7)
       thor (>= 0.13.6)
@@ -158,7 +154,7 @@ GEM
       pygments.rb (~> 0.4.2)
       sanitize (~> 2.0.3)
       stringex (~> 1.5.1)
-    gitlab-grack (1.0.0)
+    gitlab-grack (1.0.1)
       rack (~> 1.4.1)
     gitlab-grit (2.5.1)
       charlock_holmes (~> 0.6.9)
@@ -168,13 +164,13 @@ GEM
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
-    gitlab_git (1.2.1)
+    gitlab_git (1.3.0)
       activesupport (~> 3.2.13)
       github-linguist (~> 2.3.4)
       gitlab-grit (~> 2.5.1)
     gitlab_meta (5.0)
-    gitlab_omniauth-ldap (1.0.2)
-      net-ldap (~> 0.2.2)
+    gitlab_omniauth-ldap (1.0.3)
+      net-ldap (~> 0.3.1)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
@@ -201,7 +197,7 @@ GEM
       lumberjack (>= 1.0.2)
       pry (>= 0.9.10)
       thor (>= 0.14.6)
-    guard-rspec (2.6.0)
+    guard-rspec (3.0.0)
       guard (>= 1.8)
       rspec (~> 2.13)
     guard-spinach (0.0.2)
@@ -214,14 +210,22 @@ GEM
       activesupport (>= 3.1, < 4.1)
       haml (>= 3.1, < 4.1)
       railties (>= 3.1, < 4.1)
-    hashie (2.0.4)
+    hashie (1.2.0)
     hike (1.2.2)
+    hipchat (0.9.0)
+      httparty
     http_parser.rb (0.5.3)
     httparty (0.11.0)
       multi_json (~> 1.0)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
     i18n (0.6.1)
+    jasmine (1.3.2)
+      jasmine-core (~> 1.3.1)
+      rack (~> 1.0)
+      rspec (>= 1.3.1)
+      selenium-webdriver (>= 0.1.3)
+    jasmine-core (1.3.1)
     journey (1.0.4)
     jquery-atwho-rails (0.3.0)
     jquery-rails (2.1.3)
@@ -244,7 +248,7 @@ GEM
     letter_opener (1.1.0)
       launchy (~> 2.2.0)
     libv8 (3.11.8.17)
-    listen (1.0.3)
+    listen (1.1.3)
       rb-fsevent (>= 0.9.3)
       rb-inotify (>= 0.9)
       rb-kqueue (>= 0.2)
@@ -258,11 +262,11 @@ GEM
     minitest (4.7.4)
     modernizr (2.6.2)
       sprockets (~> 2.0)
-    multi_json (1.7.2)
+    multi_json (1.7.3)
     multi_xml (0.5.3)
     multipart-post (1.2.0)
     mysql2 (0.3.11)
-    net-ldap (0.2.2)
+    net-ldap (0.3.1)
     nokogiri (1.5.9)
     oauth (0.4.7)
     oauth2 (0.8.1)
@@ -291,9 +295,13 @@ GEM
       omniauth-oauth (~> 1.0)
     orm_adapter (0.4.0)
     pg (0.15.1)
+    poltergeist (1.3.0)
+      capybara (~> 2.1.0)
+      faye-websocket (>= 0.4.4, < 0.5.0)
+      http_parser.rb (~> 0.5.3)
     polyglot (0.3.3)
     posix-spawn (0.3.6)
-    pry (0.9.12.1)
+    pry (0.9.12.2)
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
@@ -363,7 +371,7 @@ GEM
     redis-activesupport (3.2.3)
       activesupport (~> 3.2.3)
       redis-store (~> 1.1.0)
-    redis-namespace (1.2.1)
+    redis-namespace (1.3.0)
       redis (~> 3.0.0)
     redis-rack (1.4.2)
       rack (~> 1.4.1)
@@ -394,9 +402,10 @@ GEM
       rspec-mocks (~> 2.13.0)
     ruby-progressbar (1.0.2)
     rubyntlm (0.1.1)
+    rubyzip (0.9.9)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
-    sass (3.2.8)
+    sass (3.2.9)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -410,16 +419,22 @@ GEM
     select2-rails (3.3.1)
       sass-rails (>= 3.2)
       thor (~> 0.14)
+    selenium-webdriver (2.32.1)
+      childprocess (>= 0.2.5)
+      multi_json (~> 1.0)
+      rubyzip
+      websocket (~> 1.0.4)
     settingslogic (2.0.9)
     sexp_processor (4.2.1)
-    shoulda-matchers (1.3.0)
+    shoulda-matchers (2.1.0)
       activesupport (>= 3.0.0)
-    sidekiq (2.11.1)
-      celluloid (~> 0.13.0)
-      connection_pool (~> 1.0)
-      multi_json (~> 1)
-      redis (~> 3)
+    sidekiq (2.12.0)
+      celluloid (>= 0.14.0)
+      connection_pool (>= 1.0.0)
+      json
+      redis (>= 3.0)
       redis-namespace
+    simple_oauth (0.1.9)
     simplecov (0.7.1)
       multi_json (~> 1.0)
       simplecov-html (~> 0.7.1)
@@ -432,7 +447,7 @@ GEM
     slim (1.3.8)
       temple (~> 0.6.3)
       tilt (~> 1.3.3)
-    slop (3.4.4)
+    slop (3.4.5)
     spinach (0.8.2)
       colorize (= 0.5.8)
       gherkin-ruby (~> 0.3.0)
@@ -461,15 +476,29 @@ GEM
     thor (0.18.1)
     tilt (1.3.7)
     timers (1.1.0)
+    tinder (1.9.2)
+      eventmachine (~> 1.0)
+      faraday (~> 0.8)
+      faraday_middleware (~> 0.9)
+      hashie (~> 1.0)
+      json (~> 1.7.5)
+      mime-types (~> 1.19)
+      multi_json (~> 1.5)
+      twitter-stream (~> 0.1)
     treetop (1.4.12)
       polyglot
       polyglot (>= 0.3.1)
     turbolinks (1.1.1)
       coffee-rails
+    twitter-stream (0.1.16)
+      eventmachine (>= 0.12.8)
+      http_parser.rb (~> 0.5.1)
+      simple_oauth (~> 0.1.4)
     tzinfo (0.3.37)
     uglifier (2.0.1)
       execjs (>= 0.3.0)
       multi_json (~> 1.0, >= 1.0.2)
+    underscore-rails (1.4.4)
     virtus (0.5.4)
       backports (~> 2.6.1)
       descendants_tracker (~> 0.0.1)
@@ -478,6 +507,7 @@ GEM
     webmock (1.11.0)
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
+    websocket (1.0.7)
     xpath (2.0.0)
       nokogiri (~> 1.3)
     yajl-ruby (1.1.0)
@@ -488,41 +518,45 @@ PLATFORMS
 DEPENDENCIES
   acts-as-taggable-on
   annotate!
+  asciidoctor
   awesome_print
   better_errors
   binding_of_caller
-  bootstrap-sass (= 2.2.1.1)
+  bootstrap-sass
   capybara
   carrierwave
   chosen-rails (= 0.9.8)
   coffee-rails
   colored
   coveralls
+  d3_rails (~> 3.1.4)
   database_cleaner
   devise
   email_spec
   enumerize
   factory_girl_rails
   ffaker
-  font-awesome-sass-rails (~> 3.0.0)
+  font-awesome-rails (~> 3.1.1)
   foreman
   gemoji (~> 1.2.1)
   github-linguist
   github-markup (~> 0.7.4)
   gitlab-gollum-lib (~> 1.0.0)
-  gitlab-grack (~> 1.0.0)
+  gitlab-grack (~> 1.0.1)
   gitlab-pygments.rb (~> 0.3.2)
-  gitlab_git (~> 1.2.1)
+  gitlab_git (~> 1.3.0)
   gitlab_meta (= 5.0)
-  gitlab_omniauth-ldap (= 1.0.2)
+  gitlab_omniauth-ldap (= 1.0.3)
   gon
-  grape
-  grape-entity
+  grape (~> 0.4.1)
+  grape-entity (~> 0.3.0)
   growl
   guard-rspec
   guard-spinach
   haml-rails
+  hipchat (~> 0.9.0)
   httparty
+  jasmine
   jquery-atwho-rails (= 0.3.0)
   jquery-rails (= 2.1.3)
   jquery-turbolinks
@@ -538,7 +572,7 @@ DEPENDENCIES
   omniauth-google-oauth2
   omniauth-twitter
   pg
-  poltergeist!
+  poltergeist (~> 1.3.0)
   pry
   puma (~> 2.0.1)
   quiet_assets (~> 1.0.1)
@@ -557,7 +591,7 @@ DEPENDENCIES
   seed-fu
   select2-rails
   settingslogic
-  shoulda-matchers (= 1.3.0)
+  shoulda-matchers (~> 2.1.0)
   sidekiq
   simplecov
   sinatra
@@ -570,6 +604,8 @@ DEPENDENCIES
   test_after_commit
   therubyracer
   thin
+  tinder (~> 1.9.2)
   turbolinks
   uglifier
+  underscore-rails (~> 1.4.4)
   webmock

@@ -91,6 +91,15 @@ class MergeRequest < ActiveRecord::Base
     if target_branch == source_branch
       errors.add :branch_conflict, "You can not use same branch for source and target branches"
     end
+
+    if opened? || reopened?
+      similar_mrs = self.project.merge_requests.where(source_branch: source_branch, target_branch: target_branch).opened
+      similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
+
+      if similar_mrs.any?
+        errors.add :base, "There is already an open merge request for this branches"
+      end
+    end
   end
 
   def reload_code
@@ -118,7 +127,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def broken_diffs?
-    diffs == [Gitlab::Git::Diff::BROKEN_DIFF]
+    diffs == broken_diffs
   end
 
   def valid_diffs?
@@ -214,10 +223,22 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def dump_diffs(diffs)
-    diffs.map(&:to_hash)
+    if diffs == broken_diffs
+      broken_diffs
+    elsif diffs.respond_to?(:map)
+      diffs.map(&:to_hash)
+    end
   end
 
-  def load_diffs(array)
-    array.map { |hash| Gitlab::Git::Diff.new(hash) }
+  def load_diffs(raw)
+    if raw == broken_diffs
+      broken_diffs
+    elsif raw.respond_to?(:map)
+      raw.map { |hash| Gitlab::Git::Diff.new(hash) }
+    end
+  end
+
+  def broken_diffs
+    [Gitlab::Git::Diff::BROKEN_DIFF]
   end
 end

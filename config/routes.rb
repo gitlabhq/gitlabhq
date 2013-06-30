@@ -29,6 +29,7 @@ Gitlab::Application.routes.draw do
   #
   get 'help'                => 'help#index'
   get 'help/api'            => 'help#api'
+  get 'help/api/:category'  => 'help#api', as: 'help_api_file'
   get 'help/markdown'       => 'help#markdown'
   get 'help/permissions'    => 'help#permissions'
   get 'help/public_access'  => 'help#public_access'
@@ -37,6 +38,16 @@ Gitlab::Application.routes.draw do
   get 'help/system_hooks'   => 'help#system_hooks'
   get 'help/web_hooks'      => 'help#web_hooks'
   get 'help/workflow'       => 'help#workflow'
+
+  #
+  # Global snippets
+  #
+  resources :snippets do
+    member do
+      get "raw"
+    end
+  end
+  get "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
 
   #
   # Public namespace
@@ -83,7 +94,7 @@ Gitlab::Application.routes.draw do
     end
 
     resource :logs, only: [:show]
-    resource :resque, controller: 'resque', only: [:show]
+    resource :background_jobs, controller: 'background_jobs', only: [:show]
 
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
       scope module: :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ } do
@@ -112,6 +123,7 @@ Gitlab::Application.routes.draw do
     end
 
     resource :notifications
+    resource :password
   end
 
   resources :keys
@@ -179,8 +191,17 @@ Gitlab::Application.routes.draw do
     resources :commits, only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
     resources :compare, only: [:index, :create]
     resources :blame,   only: [:show], constraints: {id: /.+/}
-    resources :graph,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+    resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+    resources :graphs, only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
     match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
+
+    scope module: :projects do
+      resources :snippets do
+        member do
+          get "raw"
+        end
+      end
+    end
 
     resources :wikis, only: [:show, :edit, :destroy, :create] do
       collection do
@@ -231,11 +252,11 @@ Gitlab::Application.routes.draw do
 
       member do
         # tree viewer logs
-        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }
+        get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
         get "logs_tree/:path" => "refs#logs_tree",
           as: :logs_file,
           constraints: {
-            id:   /[a-zA-Z.0-9\/_\-]+/,
+            id:   /[a-zA-Z.0-9\/_\-#%+]+/,
             path: /.*/
           }
       end
@@ -255,18 +276,11 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :snippets do
-      member do
-        get "raw"
-      end
-    end
-
     resources :hooks, only: [:index, :create, :destroy] do
       member do
         get :test
       end
     end
-
 
     resources :team, controller: 'team_members', only: [:index]
     resources :milestones, except: [:destroy]

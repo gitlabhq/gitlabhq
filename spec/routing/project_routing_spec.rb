@@ -201,7 +201,11 @@ describe RefsController, "routing" do
 
   it "to #logs_tree" do
     get("/gitlabhq/refs/stable/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable')
+    get("/gitlabhq/refs/feature%2345/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature#45')
+    get("/gitlabhq/refs/feature%2B45/logs_tree").should             route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature+45')
     get("/gitlabhq/refs/stable/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'stable', path: 'foo/bar/baz')
+    get("/gitlabhq/refs/feature%2345/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature#45', path: 'foo/bar/baz')
+    get("/gitlabhq/refs/feature%2B45/logs_tree/foo/bar/baz").should route_to('refs#logs_tree', project_id: 'gitlabhq', id: 'feature+45', path: 'foo/bar/baz')
     get("/gitlab/gitlabhq/refs/stable/logs_tree/files.scss").should route_to('refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'stable', path: 'files.scss')
   end
 end
@@ -258,13 +262,37 @@ end
 #      project_snippet GET    /:project_id/snippets/:id(.:format)      snippets#show
 #                      PUT    /:project_id/snippets/:id(.:format)      snippets#update
 #                      DELETE /:project_id/snippets/:id(.:format)      snippets#destroy
-describe SnippetsController, "routing" do
+describe Project::SnippetsController, "routing" do
   it "to #raw" do
-    get("/gitlabhq/snippets/1/raw").should route_to('snippets#raw', project_id: 'gitlabhq', id: '1')
+    get("/gitlabhq/snippets/1/raw").should route_to('projects/snippets#raw', project_id: 'gitlabhq', id: '1')
   end
 
-  it_behaves_like "RESTful project resources" do
-    let(:controller) { 'snippets' }
+  it "to #index" do
+    get("/gitlabhq/snippets").should route_to("projects/snippets#index", project_id: 'gitlabhq')
+  end
+
+  it "to #create" do
+    post("/gitlabhq/snippets").should route_to("projects/snippets#create", project_id: 'gitlabhq')
+  end
+
+  it "to #new" do
+    get("/gitlabhq/snippets/new").should route_to("projects/snippets#new", project_id: 'gitlabhq')
+  end
+
+  it "to #edit" do
+    get("/gitlabhq/snippets/1/edit").should route_to("projects/snippets#edit", project_id: 'gitlabhq', id: '1')
+  end
+
+  it "to #show" do
+    get("/gitlabhq/snippets/1").should route_to("projects/snippets#show", project_id: 'gitlabhq', id: '1')
+  end
+
+  it "to #update" do
+    put("/gitlabhq/snippets/1").should route_to("projects/snippets#update", project_id: 'gitlabhq', id: '1')
+  end
+
+  it "to #destroy" do
+    delete("/gitlabhq/snippets/1").should route_to("projects/snippets#destroy", project_id: 'gitlabhq', id: '1')
   end
 end
 
@@ -422,9 +450,15 @@ describe CompareController, "routing" do
   end
 end
 
-describe GraphController, "routing" do
+describe NetworkController, "routing" do
   it "to #show" do
-    get("/gitlabhq/graph/master").should route_to('graph#show', project_id: 'gitlabhq', id: 'master')
-    get("/gitlabhq/graph/master.json").should route_to('graph#show', project_id: 'gitlabhq', id: 'master', format: "json")
+    get("/gitlabhq/network/master").should route_to('network#show', project_id: 'gitlabhq', id: 'master')
+    get("/gitlabhq/network/master.json").should route_to('network#show', project_id: 'gitlabhq', id: 'master', format: "json")
+  end
+end
+
+describe GraphsController, "routing" do
+  it "to #show" do
+    get("/gitlabhq/graphs/master").should route_to('graphs#show', project_id: 'gitlabhq', id: 'master')
   end
 end

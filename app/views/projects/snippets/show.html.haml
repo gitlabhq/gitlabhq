@@ -1,0 +1,13 @@
+%h3.page_title
+  %i.icon-lock.cgreen
+  = @snippet.title
+
+  %small.pull-right
+    = "##{@snippet.id}"
+    %span.light
+      by
+      = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+      = @snippet.author_name
+%br
+%div= render 'projects/snippets/blob'
+%div#notes= render "notes/notes_with_form"

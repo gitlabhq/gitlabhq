@@ -418,3 +418,13 @@ img.emoji {
   overflow: hidden;
   height: 220px;
 }
+
+.navless-container {
+  margin-top: 30px;
+}
+
+.description-block {
+  @extend .light-well;
+  @extend .light;
+  margin-bottom: 10px;
+}

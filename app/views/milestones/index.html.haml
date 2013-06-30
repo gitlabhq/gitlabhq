@@ -21,12 +21,12 @@
           = link_to project_milestones_path(@project, f: "all") do
             All
     .span9
-      %div.ui-box
+      .ui-box
         %ul.well-list
           = render @milestones
 
-          - if @milestones.present?
-            %li.bottom= paginate @milestones, theme: "gitlab"
-          - else
+          - if @milestones.blank?
             %li
               %h3.nothing_here_message Nothing to show here
+
+      = paginate @milestones, theme: "gitlab"

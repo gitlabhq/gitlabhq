@@ -19,7 +19,12 @@
             = f.label :assignee_id do
               %i.icon-user
               Assign to
-            .input= f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+            .input
+              .pull-left
+                = f.select(:assignee_id, @project.users.alphabetically.collect {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+              .pull-right
+                &nbsp;
+                = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
           .issue_milestone.pull-left
             = f.label :milestone_id do
               %i.icon-time
@@ -55,31 +60,36 @@
 
 
 :javascript
-  $(function(){
-    $("#issue_label_list")
-      .bind( "keydown", function( event ) {
-        if ( event.keyCode === $.ui.keyCode.TAB &&
-          $( this ).data( "autocomplete" ).menu.active ) {
-          event.preventDefault();
-        }
-      })
-      .autocomplete({
-        minLength: 0,
-        source: function( request, response ) {
-          response( $.ui.autocomplete.filter(
-            #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
-        },
-        focus: function() {
-          return false;
-        },
-        select: function(event, ui) {
-          var terms = split( this.value );
-          terms.pop();
-          terms.push( ui.item.value );
-          terms.push( "" );
-          this.value = terms.join( ", " );
-          return false;
-        }
-      });
-  });
+  $("#issue_label_list")
+    .bind( "keydown", function( event ) {
+      if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).data( "autocomplete" ).menu.active ) {
+        event.preventDefault();
+      }
+    })
+    .bind( "click", function( event ) {
+        $( this ).autocomplete("search", "");
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function( request, response ) {
+        response( $.ui.autocomplete.filter(
+          #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split( this.value );
+        terms.pop();
+        terms.push( ui.item.value );
+        terms.push( "" );
+        this.value = terms.join( ", " );
+        return false;
+      }
+    });
 
+  $('.assign-to-me-link').on('click', function(e){
+    $('#issue_assignee_id').val("#{current_user.id}").trigger("liszt:updated");
+    e.preventDefault();
+  });

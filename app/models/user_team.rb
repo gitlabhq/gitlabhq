@@ -111,7 +111,6 @@ class UserTeam < ActiveRecord::Base
   end
 
   def admin?(member)
-    user_team_user_relationships.with_user(member).first.group_admin?
+    user_team_user_relationships.with_user(member).first.try(:group_admin?)
   end
-
 end

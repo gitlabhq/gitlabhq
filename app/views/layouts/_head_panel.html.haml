@@ -9,11 +9,19 @@
       %h1.project_name= title
       %ul.nav
         %li
+          %a
+            %div.hide.turbolink-spinner
+              %i.icon-refresh.icon-spin
+              Loading...
+        %li
           = render "layouts/search"
         %li
           = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
             %i.icon-globe
         - unless current_user.is_guest?
+          %li
+            = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
+              %i.icon-paste
           - if current_user.is_admin?
             %li
               = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
@@ -41,5 +49,3 @@
             %li
               = link_to current_user, class: "profile-pic" do
                 = image_tag gravatar_icon(current_user.email, 26)
-
-

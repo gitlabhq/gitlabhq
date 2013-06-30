@@ -41,13 +41,20 @@ window.linkify = (str) ->
   exp = /(\b(https?|ftp|file):\/\/[-A-Z0-9+&@#\/%?=~_|!:,.;]*[-A-Z0-9+&@#\/%=~_|])/ig
   return str.replace(exp,"<a href='$1'>$1</a>")
 
+window.simpleFormat = (str) ->
+  linkify(sanitize(str).replace(/\n/g, '<br />'))
+
 window.startSpinner = ->
   $('.turbolink-spinner').fadeIn()
 
 window.stopSpinner = ->
   $('.turbolink-spinner').fadeOut()
 
+window.stopEndlessScroll = ->
+  $(document).unbind('scroll')
+
 document.addEventListener("page:fetch", startSpinner)
+document.addEventListener("page:fetch", stopEndlessScroll)
 document.addEventListener("page:receive", stopSpinner)
 
 $ ->

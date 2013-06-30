@@ -10,7 +10,7 @@
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: "Are you sure?"
+            = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: leave_edit_message
       .file_content.code
         %pre#editor= @blob.data
 
@@ -23,11 +23,11 @@
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: :file_content
       .commit-button-annotation
-        = button_tag "Commit", class: 'btn commit-btn js-commit-button'
+        = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-primary'
         .message
           to branch
           %strong= @ref
-      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", confirm: "Are you sure?"
+      = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-cancel", confirm: leave_edit_message
 
 :javascript
   ace.config.set("modePath", "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")

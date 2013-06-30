@@ -19,9 +19,10 @@ _Disclaimer_: I do not provide any support on GitLab itself.  I only contribute 
 You should also be aware that **Public GitLab** only applies to the latest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab.  So, use the *-stable branches!  The `master` branch on this repo has a high chance to be broken.
 ## Changelog
 
-  * [2013-05-29] : Public GitLab supports GitLab 5.2 (stable) - [Upgrade 5.1 to 5.2](https://github.com/ArthurHoaro/Public-GitLab/blob/5-2-stable/doc/update/5.1-to-5.2.md)
+  * [2013-06-30] : Public GitLab supports GitLab 5.3 (stable) - [Upgrade 5.2 to 5.3](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/doc/update/5.2-to-5.3.md)
+  * [2013-05-29] : Public GitLab supports GitLab 5.2 (stable) - [Upgrade 5.1 to 5.2](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/doc/update/5.1-to-5.2.md)
   * [2013-05-03] : Bugfix (you need to [update](https://github.com/ArthurHoaro/Public-GitLab#update-public-gitlab) your DB triggers)
-  * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable) - [Upgrade 5.0 to 5.1](https://github.com/ArthurHoaro/Public-GitLab/blob/5-1-stable/doc/update/5.0-to-5.1.md)
+  * [2013-04-25] : Public GitLab supports GitLab 5.1 (stable) - [Upgrade 5.0 to 5.1](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/doc/update/5.0-to-5.1.md)
 
 > Warning: GitLab 5.1 does not work properly with old version of Git (ok on 1.7.10+). [More here](https://github.com/gitlabhq/gitlabhq/issues/3666). 
   
@@ -30,9 +31,9 @@ You should also be aware that **Public GitLab** only applies to the latest [stab
 
 ## Installation
 
-During the [official installation](https://github.com/gitlabhq/gitlabhq/blob/5-2-stable/doc/install/installation.md) workflow, **Public GitLab** override part _"6. GitLab - Clone the Source"_. 
+During the [official installation](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/doc/install/installation.md) workflow, **Public GitLab** override part _"6. GitLab - Clone the Source"_. 
 
-**Warning**: Remember that you _need_ to use the latest **stable branch**, even if you want to download it from [zip file](https://github.com/ArthurHoaro/Public-GitLab/archive/5-2-stable.zip).
+**Warning**: Remember that you _need_ to use the latest **stable branch**, even if you want to download it from [zip file](https://github.com/ArthurHoaro/Public-GitLab/archive/5-3-stable.zip).
 
 ### Clone the Source
 
@@ -88,19 +89,17 @@ Then enjoy !
 
 ## Update Public GitLab
 
-You need to refer to official [update guides](https://github.com/ArthurHoaro/Public-GitLab/blob/5-2-stable/doc/update/) to upgrade GitLab version.
+You need to refer to official [update guides](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/doc/update/) to upgrade GitLab version.
 
 If the changelog on this README indicates any SQL update, you need to update your database :
 
 PostgreSQL:
-
 
      cd /home/git/gitlab/pgl
      psql -h host -U user database < pgl_postgres_trigger.sql
      
 
 MySQL:
-
 
     cd /home/git/gitlab/pgl
     mysql -hhost -uuser -p
@@ -110,7 +109,7 @@ MySQL:
 
 ## Reporting issues
 
-See [CONTRIBUTING](https://github.com/ArthurHoaro/Public-GitLab/blob/5-2-stable/CONTRIBUTING.md).
+See [CONTRIBUTING](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/CONTRIBUTING.md).
 
 If there is a new stable branch, please do not open an issue to ask for an update.  [Contact me](http://hoa.ro/static6/contact) instead.
 
@@ -133,6 +132,6 @@ Read more at issues [#3](https://github.com/ArthurHoaro/Public-GitLab/issues/3) 
 
 Public GitLab is provided and maintained by [Arthur Hoaro](http://hoa.ro).
 
-Public GitLab is distributed under the [same license](https://github.com/ArthurHoaro/Public-GitLab/blob/5-2-stable/LICENSE) as the original software.
+Public GitLab is distributed under the [same license](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/LICENSE) as the original software.
 
 This fork is based on [cjdelisle](https://github.com/cjdelisle/) work, from his [original fork](https://github.com/cjdelisle/gitboria.com/commit/61db393bfd4fc75c5f046f01b01c7f114f601426).

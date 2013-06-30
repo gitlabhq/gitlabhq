@@ -42,8 +42,11 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, as: [:default, :admin]
-  attr_accessible :projects_limit, :can_create_team, :can_create_group, as: :admin
+                  :extern_uid, :provider, :password_expires_at,
+                  as: [:default, :admin]
+
+  attr_accessible :projects_limit, :can_create_team, :can_create_group,
+                  as: :admin
 
   attr_accessor :force_random_password
 
@@ -78,6 +81,7 @@ class User < ActiveRecord::Base
   has_many :team_projects,                   through: :user_team_project_relationships
 
   # Projects
+  has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
@@ -89,6 +93,8 @@ class User < ActiveRecord::Base
 
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
+  has_many :master_projects,          through: :users_projects, source: :project,
+                                      conditions: { users_projects: { project_access: UsersProject::MASTER } }
   has_many :own_projects,             foreign_key: :creator_id, class_name: 'Project'
   has_many :owned_projects,           through: :namespaces, source: :projects
 
@@ -101,6 +107,7 @@ class User < ActiveRecord::Base
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :username, presence: true, uniqueness: true,
+            exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.username_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
@@ -196,6 +203,14 @@ class User < ActiveRecord::Base
     username
   end
 
+  def with_defaults
+    tap do |u|
+      u.projects_limit = Gitlab.config.gitlab.default_projects_limit
+      u.can_create_group = Gitlab.config.gitlab.default_can_create_group
+      u.can_create_team = Gitlab.config.gitlab.default_can_create_team
+    end
+  end
+
   def notification
     @notification ||= Notification.new(self)
   end
@@ -236,8 +251,12 @@ class User < ActiveRecord::Base
   end
 
   def authorized_teams
-    @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
-    UserTeam.where(id: @team_ids)
+    if admin?
+      UserTeam.scoped
+    else
+      @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
+      UserTeam.where(id: @team_ids)
+    end
   end
   
   def public_projects
@@ -349,7 +368,15 @@ class User < ActiveRecord::Base
     end
   end
 
-  def tm_of(project)
-    project.team_member_by_id(self.id)
+  def ldap_user?
+    extern_uid && provider == 'ldap'
+  end
+
+  def accessible_deploy_keys
+    DeployKey.in_projects(self.master_projects).uniq
+  end
+
+  def created_by
+    User.find_by_id(created_by_id) if created_by_id
   end
 end

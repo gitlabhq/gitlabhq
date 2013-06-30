@@ -1,9 +1,13 @@
 require_relative 'shell_env'
-require 'omniauth-ldap'
+require_relative 'grack_ldap'
+require_relative 'grack_helpers'
 
 module Grack
   class Auth < Rack::Auth::Basic
-    attr_accessor :user, :project
+    include LDAP
+    include Helpers
+
+    attr_accessor :user, :project, :ref, :env
 
     def call(env)
       @env = env
@@ -14,80 +18,73 @@ module Grack
       @env['PATH_INFO'] = @request.path
       @env['SCRIPT_NAME'] = ""
 
-      return render_not_found unless project
-      return unauthorized unless project.public || @auth.provided?
-      return bad_request if @auth.provided? && !@auth.basic?
+      auth!
+    end
 
-      if valid?
-        if @auth.provided?
+    private
+
+    def auth!
+      return render_not_found unless project
+
+      if @auth.provided?
+        return bad_request unless @auth.basic?
+
+        # Authentication with username and password
+        login, password = @auth.credentials
+
+        @user = authenticate_user(login, password)
+
+        if @user
+          Gitlab::ShellEnv.set_env(@user)
           @env['REMOTE_USER'] = @auth.username
+        else
+          return unauthorized
         end
-        return @app.call(env)
+
+      else
+        return unauthorized unless project.public
+      end
+
+      if authorized_git_request?
+        @app.call(env)
       else
         unauthorized
       end
     end
 
-    def valid?
-      if @auth.provided?
-        # Authentication with username and password
-        login, password = @auth.credentials
-        self.user = User.find_by_email(login) || User.find_by_username(login)
-
-        # If the provided login was not a known email or username
-        # then user is nil
-        if user.nil? 
-          # Second chance - try LDAP authentication
-          return false unless Gitlab.config.ldap.enabled         
-          ldap_auth(login,password)
-          return false unless !user.nil?
-        else
-          return false unless user.valid_password?(password)
-        end
-           
-        Gitlab::ShellEnv.set_env(user)
-      end
-
+    def authorized_git_request?
       # Git upload and receive
       if @request.get?
-        validate_get_request
+        authorize_request(@request.params['service'])
       elsif @request.post?
-        validate_post_request
+        authorize_request(File.basename(@request.path))
       else
         false
       end
     end
 
-    def ldap_auth(login, password)
-      # Check user against LDAP backend if user is not authenticated
-      # Only check with valid login and password to prevent anonymous bind results
-      gl = Gitlab.config
-      if gl.ldap.enabled && !login.blank? && !password.blank?
-        ldap = OmniAuth::LDAP::Adaptor.new(gl.ldap)
-        ldap_user = ldap.bind_as(
-          filter: Net::LDAP::Filter.eq(ldap.uid, login),
-          size: 1,
-          password: password
-        )
-        if ldap_user
-          self.user = User.find_by_extern_uid_and_provider(ldap_user.dn, 'ldap')
-        end
+    def authenticate_user(login, password)
+      user = User.find_by_email(login) || User.find_by_username(login)
+
+      # If the provided login was not a known email or username
+      # then user is nil
+      if user.nil? || user.ldap_user?
+        # Second chance - try LDAP authentication
+        return nil unless ldap_conf.enabled
+
+        auth = Gitlab::Auth.new
+        auth.ldap_auth(login, password)
+      else
+        return user if user.valid_password?(password)
       end
     end
 
-    def validate_get_request
-      validate_request(@request.params['service'])
-    end
-
-    def validate_post_request
-      validate_request(File.basename(@request.path))
-    end
-
-    def validate_request(service)
-      if service == 'git-upload-pack'
+    def authorize_request(service)
+      case service
+      when 'git-upload-pack'
         project.public || can?(user, :download_code, project)
-      elsif service == 'git-receive-pack'
-        action = if project.protected_branch?(current_ref)
+      when'git-receive-pack'
+        action = if project.protected_branch?(ref)
                    :push_code_to_protected_branches
                  else
                    :push_code
@@ -99,45 +96,24 @@ module Grack
       end
     end
 
-    def can?(object, action, subject)
-      abilities.allowed?(object, action, subject)
+    def project
+      @project ||= project_by_path(@request.path_info)
     end
 
-    def current_ref
-      if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
-        input = Zlib::GzipReader.new(@request.body).read
-      else
-        input = @request.body.read
-      end
+    def ref
+      @ref ||= parse_ref
+    end
+
+    def parse_ref
+      input = if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
+                Zlib::GzipReader.new(@request.body).read
+              else
+                @request.body.read
+              end
+
       # Need to reset seek point
       @request.body.rewind
       /refs\/heads\/([\w\.-]+)/n.match(input.force_encoding('ascii-8bit')).to_a.last
     end
-
-    def project
-      unless instance_variable_defined? :@project
-        # Find project by PATH_INFO from env
-        if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
-          @project = Project.find_with_namespace(m.last)
-        end
-      end
-      return @project
-    end
-
-    PLAIN_TYPE = {"Content-Type" => "text/plain"}
-
-    def render_not_found
-      [404, PLAIN_TYPE, ["Not Found"]]
-    end
-
-    protected
-
-    def abilities
-      @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
-    end
-  end# Auth
-end# Grack
+  end
+end

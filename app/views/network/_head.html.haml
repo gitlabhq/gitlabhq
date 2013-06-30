@@ -5,7 +5,7 @@
   .pull-left
     = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
   .pull-left
-    = form_tag project_graph_path(@project, @id), method: :get do |f|
+    = form_tag project_network_path(@project, @id), method: :get do |f|
       .control-group
         = label_tag :filter_ref, "Show only selected ref", class: 'control-label light'
         .controls
@@ -14,7 +14,7 @@
       = hidden_field_tag(key, value, id: nil) unless key == "filter_ref"
 
   .search.pull-right
-    = form_tag project_graph_path(@project, @id), method: :get do |f|
+    = form_tag project_network_path(@project, @id), method: :get do |f|
       .control-group
         = label_tag :search , "Looking for commit:", class: 'control-label light'
         .controls

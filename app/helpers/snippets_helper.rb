@@ -8,4 +8,12 @@ module SnippetsHelper
     ]
     options_for_select(options)
   end
+
+  def reliable_snippet_path(snippet)
+    if snippet.project_id?
+      project_snippet_path(snippet.project, snippet)
+    else
+      snippet_path(snippet)
+    end
+  end
 end

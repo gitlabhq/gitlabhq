@@ -27,6 +27,7 @@ module API
     mount Groups
     mount Users
     mount Projects
+    mount Repositories
     mount Issues
     mount Milestones
     mount Session
@@ -34,5 +35,9 @@ module API
     mount Notes
     mount Internal
     mount SystemHooks
+    mount UserTeams
+    mount ProjectSnippets
+    mount DeployKeys
+    mount ProjectHooks
   end
 end

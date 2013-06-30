@@ -56,5 +56,5 @@ Parameters:
 + `title` (optional) - The title of a milestone
 + `description` (optional) - The description of a milestone
 + `due_date` (optional) - The due date of the milestone
-+ `closed` (optional) - The status of the milestone
++ `state_event` (optional) - The state event of the milestone (close|activate)
 

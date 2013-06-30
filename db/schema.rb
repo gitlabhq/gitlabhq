@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130506095501) do
+ActiveRecord::Schema.define(:version => 20130614132337) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -172,6 +172,7 @@ ActiveRecord::Schema.define(:version => 20130506095501) do
     t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",       :default => true,     :null => false
     t.datetime "last_activity_at"
+    t.boolean  "imported",               :default => false,    :null => false
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"
@@ -194,6 +195,8 @@ ActiveRecord::Schema.define(:version => 20130506095501) do
     t.datetime "updated_at",                     :null => false
     t.boolean  "active",      :default => false, :null => false
     t.string   "project_url"
+    t.string   "subdomain"
+    t.string   "room"
   end
 
   add_index "services", ["project_id"], :name => "index_services_on_project_id"
@@ -201,12 +204,14 @@ ActiveRecord::Schema.define(:version => 20130506095501) do
   create_table "snippets", :force => true do |t|
     t.string   "title"
     t.text     "content"
-    t.integer  "author_id",  :null => false
-    t.integer  "project_id", :null => false
+    t.integer  "author_id",                    :null => false
+    t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
+    t.boolean  "private",    :default => true, :null => false
+    t.string   "type"
   end
 
   add_index "snippets", ["created_at"], :name => "index_snippets_on_created_at"
@@ -285,6 +290,8 @@ ActiveRecord::Schema.define(:version => 20130506095501) do
     t.string   "state"
     t.integer  "color_scheme_id",                       :default => 1,     :null => false
     t.integer  "notification_level",                    :default => 1,     :null => false
+    t.datetime "password_expires_at"
+    t.integer  "created_by_id"
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"

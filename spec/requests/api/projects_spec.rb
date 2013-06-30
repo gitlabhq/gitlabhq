@@ -10,7 +10,7 @@ describe API::API do
   let(:admin) { create(:admin) }
   let!(:project) { create(:project_with_code, creator_id: user.id) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
-  let!(:snippet) { create(:snippet, author: user, project: project, title: 'example') }
+  let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
 
@@ -173,72 +173,26 @@ describe API::API do
     end
   end
 
-  describe "GET /projects/:id/repository/branches" do
-    it "should return an array of project branches" do
-      get api("/projects/#{project.id}/repository/branches", user)
+  describe "GET /projects/:id/events" do
+    it "should return a project events" do
+      get api("/projects/#{project.id}/events", user)
       response.status.should == 200
-      json_response.should be_an Array
-      json_response.first['name'].should == project.repo.heads.sort_by(&:name).first.name
-    end
-  end
+      json_event = json_response.first
 
-  describe "GET /projects/:id/repository/branches/:branch" do
-    it "should return the branch information for a single branch" do
-      get api("/projects/#{project.id}/repository/branches/new_design", user)
-      response.status.should == 200
-
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
-      json_response['protected'].should == false
+      json_event['action_name'].should == 'joined'
+      json_event['project_id'].to_i.should == project.id
     end
 
-    it "should return a 404 error if branch is not available" do
-      get api("/projects/#{project.id}/repository/branches/unknown", user)
+    it "should return a 404 error if not found" do
+      get api("/projects/42/events", user)
       response.status.should == 404
-    end
-  end
-
-  describe "PUT /projects/:id/repository/branches/:branch/protect" do
-    it "should protect a single branch" do
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
-      response.status.should == 200
-
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
-      json_response['protected'].should == true
+      json_response['message'].should == '404 Not Found'
     end
 
-    it "should return a 404 error if branch not found" do
-      put api("/projects/#{project.id}/repository/branches/unknown/protect", user)
+    it "should return a 404 error if user is not a member" do
+      other_user = create(:user)
+      get api("/projects/#{project.id}/events", other_user)
       response.status.should == 404
-    end
-
-    it "should return success when protect branch again" do
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
-      response.status.should == 200
-    end
-  end
-
-  describe "PUT /projects/:id/repository/branches/:branch/unprotect" do
-    it "should unprotect a single branch" do
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
-      response.status.should == 200
-
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
-      json_response['protected'].should == false
-    end
-
-    it "should return success when unprotect branch" do
-      put api("/projects/#{project.id}/repository/branches/unknown/unprotect", user)
-      response.status.should == 404
-    end
-
-    it "should return success when unprotect branch again" do
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
-      response.status.should == 200
     end
   end
 
@@ -491,35 +445,6 @@ describe API::API do
     end
   end
 
-  describe "GET /projects/:id/repository/tags" do
-    it "should return an array of project tags" do
-      get api("/projects/#{project.id}/repository/tags", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.first['name'].should == project.repo.tags.sort_by(&:name).reverse.first.name
-    end
-  end
-
-  describe "GET /projects/:id/repository/commits" do
-    context "authorized user" do
-      before { project.team << [user2, :reporter] }
-
-      it "should return project commits" do
-        get api("/projects/#{project.id}/repository/commits", user)
-        response.status.should == 200
-
-        json_response.should be_an Array
-        json_response.first['id'].should == project.repository.commit.id
-      end
-    end
-
-    context "unauthorized user" do
-      it "should not return project commits" do
-        get api("/projects/#{project.id}/repository/commits")
-        response.status.should == 401
-      end
-    end
-  end
 
   describe "GET /projects/:id/snippets" do
     it "should return an array of project snippets" do
@@ -610,28 +535,6 @@ describe API::API do
     it "should return a 404 error if raw project snippet not found" do
       get api("/projects/#{project.id}/snippets/5555/raw", user)
       response.status.should == 404
-    end
-  end
-
-  describe "GET /projects/:id/repository/commits/:sha/blob" do
-    it "should get the raw file contents" do
-      get api("/projects/#{project.id}/repository/commits/master/blob?filepath=README.md", user)
-      response.status.should == 200
-    end
-
-    it "should return 404 for invalid branch_name" do
-      get api("/projects/#{project.id}/repository/commits/invalid_branch_name/blob?filepath=README.md", user)
-      response.status.should == 404
-    end
-
-    it "should return 404 for invalid file" do
-      get api("/projects/#{project.id}/repository/commits/master/blob?filepath=README.invalid", user)
-      response.status.should == 404
-    end
-
-    it "should return a 400 error if filepath is missing" do
-      get api("/projects/#{project.id}/repository/commits/master/blob", user)
-      response.status.should == 400
     end
   end
 

@@ -15,7 +15,7 @@ describe Notify do
 
   describe 'for new users, the email' do
     let(:example_site_path) { root_path }
-    let(:new_user) { create(:user, email: 'newguy@example.com') }
+    let(:new_user) { create(:user, email: 'newguy@example.com', created_by_id: 1) }
 
     subject { Notify.new_user_email(new_user.id, new_user.password) }
 
@@ -32,8 +32,7 @@ describe Notify do
     end
 
     it 'contains the new user\'s password' do
-      Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
-      should have_body_text /#{new_user.password}/
+      should have_body_text /password/
     end
 
     it 'includes a link to the site' do
@@ -61,8 +60,7 @@ describe Notify do
     end
 
     it 'should not contain the new user\'s password' do
-      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
-      should_not have_body_text /#{new_user.password}/
+      should_not have_body_text /password/
     end
 
     it 'includes a link to the site' do

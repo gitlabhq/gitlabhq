@@ -1,6 +1,4 @@
 class IssueObserver < BaseObserver
-  cattr_accessor :current_user
-
   def after_create(issue)
     notification.new_issue(issue, current_user)
   end

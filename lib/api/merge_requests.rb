@@ -2,6 +2,7 @@ module API
   # MergeRequest API
   class MergeRequests < Grape::API
     before { authenticate! }
+    before { Thread.current[:current_user] = current_user }
 
     resource :projects do
       helpers do
@@ -93,8 +94,6 @@ module API
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
         authorize! :modify_merge_request, merge_request
-
-        MergeRequestObserver.current_user = current_user
 
         if merge_request.update_attributes attrs
           merge_request.reload_code

@@ -3,7 +3,8 @@ admin = User.create(
   name: "Administrator",
   username: 'root',
   password: "5iveL!fe",
-  password_confirmation: "5iveL!fe"
+  password_confirmation: "5iveL!fe",
+  password_expires_at: Time.now
 )
 
 admin.projects_limit = 10000

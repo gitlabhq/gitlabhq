@@ -14,32 +14,32 @@ GET /users
     "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:00:58Z",
     "bio": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
-    "dark_scheme": false,
     "extern_uid": "john.smith",
     "provider": "provider_name",
     "theme_id": 1
+    "color_scheme_id": 2
   },
   {
     "id": 2,
     "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
-    "blocked": false,
+    "state": "blocked",
     "created_at": "2012-05-23T08:01:01Z",
     "bio": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
-    "dark_scheme": true,
     "extern_uid": "jack.smith",
     "provider": "provider_name",
     "theme_id": 1
+    "color_scheme_id": 3
   }
 ]
 ```
@@ -63,16 +63,16 @@ Parameters:
   "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
-  "blocked": false,
+  "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
-  "dark_scheme": false,
   "extern_uid": "john.smith",
   "provider": "provider_name",
   "theme_id": 1
+  "color_scheme_id": 2
 }
 ```
 
@@ -156,14 +156,14 @@ GET /user
   "email": "john@example.com",
   "name": "John Smith",
   "private_token": "dd34asd13as",
-  "blocked": false,
+  "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
-  "dark_scheme": false,
   "theme_id": 1
+  "color_scheme_id": 2
   "is_admin": false,
   "can_create_group" : true,
   "can_create_team" : true,

@@ -197,8 +197,22 @@ FactoryGirl.define do
     url
   end
 
-  factory :snippet do
+  factory :project_snippet do
     project
+    author
+    title
+    content
+    file_name
+  end
+
+  factory :personal_snippet do
+    author
+    title
+    content
+    file_name
+  end
+
+  factory :snippet do
     author
     title
     content

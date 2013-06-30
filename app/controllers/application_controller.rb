@@ -1,7 +1,8 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
-  before_filter :set_current_user_for_observers
+  before_filter :check_password_expiration
+  before_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
@@ -50,7 +51,7 @@ class ApplicationController < ActionController::Base
   def reject_blocked!
     if current_user && current_user.blocked?
       sign_out current_user
-      flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
+      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       redirect_to new_user_session_path
     end
   end
@@ -58,16 +59,15 @@ class ApplicationController < ActionController::Base
   def after_sign_in_path_for resource
     if resource.is_a?(User) && resource.respond_to?(:blocked?) && resource.blocked?
       sign_out resource
-      flash[:alert] = "Your account is blocked. Retry when an admin unblock it."
+      flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       new_user_session_path
     else
       super
     end
   end
 
-  def set_current_user_for_observers
-    MergeRequestObserver.current_user = current_user
-    IssueObserver.current_user = current_user
+  def set_current_user_for_thread
+    Thread.current[:current_user] = current_user
   end
 
   def abilities
@@ -87,7 +87,7 @@ class ApplicationController < ActionController::Base
       @project
     else
       @project = nil
-      render_404
+      render_404 and return
     end
   end
 
@@ -172,7 +172,13 @@ class ApplicationController < ActionController::Base
     gon.default_issues_tracker = Project.issues_tracker.default_value
     gon.api_version = API::API.version
     gon.api_token = current_user.private_token if current_user
-    gon.gravatar_url = request.ssl? ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
+    gon.gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
+  end
+
+  def check_password_expiration
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now
+      redirect_to new_profile_password_path and return
+    end
   end
 end

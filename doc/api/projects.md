@@ -30,7 +30,8 @@ GET /projects
     "merge_requests_enabled": false,
     "wall_enabled": true,
     "wiki_enabled": true,
-    "created_at": "2012-05-23T08:05:02Z"
+    "created_at": "2012-05-23T08:05:02Z",
+    "last_activity_at": "2012-05-23T08:05:02Z"
   },
   {
     "id": 5,
@@ -52,7 +53,8 @@ GET /projects
     "merge_requests_enabled": true,
     "wall_enabled": true,
     "wiki_enabled": true,
-    "created_at": "2012-05-30T12:49:20Z"
+    "created_at": "2012-05-30T12:49:20Z",
+    "last_activity_at": "2012-05-23T08:05:02Z"
   }
 ]
 ```
@@ -75,6 +77,7 @@ Parameters:
 {
   "id": 5,
   "name": "gitlab",
+  "name_with_namespace": "GitLab / gitlabhq",
   "description": null,
   "default_branch": "api",
   "owner": {
@@ -92,8 +95,77 @@ Parameters:
   "merge_requests_enabled": true,
   "wall_enabled": true,
   "wiki_enabled": true,
-  "created_at": "2012-05-30T12:49:20Z"
+  "created_at": "2012-05-30T12:49:20Z",
+  "last_activity_at": "2012-05-23T08:05:02Z"
 }
+```
+
+### Get project events
+
+Get a project events for specific project.
+Sorted from newest to latest
+
+```
+GET /projects/:id/events
+```
+
+Parameters:
+
++ `id` (required) - The ID or NAME of a project
+
+```json
+
+[{
+  "title": null,
+  "project_id": 15,
+  "action_name": "closed",
+  "target_id": 830,
+  "target_type": "Issue",
+  "author_id": 1,
+  "data": null,
+  "target_title": "Public project search field"
+}, {
+  "title": null,
+  "project_id": 15,
+  "action_name": "opened",
+  "target_id": null,
+  "target_type": null,
+  "author_id": 1,
+  "data": {
+    "before": "50d4420237a9de7be1304607147aec22e4a14af7",
+    "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+    "ref": "refs/heads/master",
+    "user_id": 1,
+    "user_name": "Dmitriy Zaporozhets",
+    "repository": {
+      "name": "gitlabhq",
+      "url": "git@dev.gitlab.org:gitlab/gitlabhq.git",
+      "description": "GitLab: self hosted Git management software. \r\nDistributed under the MIT License.",
+      "homepage": "https://dev.gitlab.org/gitlab/gitlabhq"
+    },
+    "commits": [{
+      "id": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "message": "Add simple search to projects in public area",
+      "timestamp": "2013-05-13T18:18:08+00:00",
+      "url": "https://dev.gitlab.org/gitlab/gitlabhq/commit/c5feabde2d8cd023215af4d2ceeb7a64839fc428",
+      "author": {
+        "name": "Dmitriy Zaporozhets",
+        "email": "dmitriy.zaporozhets@gmail.com"
+      }
+    }],
+    "total_commits_count": 1
+  },
+  "target_title": null
+}, {
+  "title": null,
+  "project_id": 15,
+  "action_name": "closed",
+  "target_id": 840,
+  "target_type": "Issue",
+  "author_id": 1,
+  "data": null,
+  "target_title": "Finish & merge Code search PR"
+}]
 ```
 
 
@@ -380,127 +452,4 @@ Parameters:
 
 + `id` (required) - The ID of the project.
 + `branch` (required) - The name of the branch.
-
-
-### List tags
-
-Lists all tags of a project.
-
-```
-GET /projects/:id/repository/tags
-```
-
-Parameters:
-
-+ `id` (required) - The ID of the project
-
-
-### List commits
-
-Lists all commits with pagination. If the optional `ref_name` name is not given the commits of
-the default branch (usually master) are returned.
-
-```
-GET /projects/:id/repository/commits
-```
-
-Parameters:
-
-+ `id` (required) - The Id of the project
-+ `ref_name` (optional) - The name of a repository branch or tag
-+ `page` (optional) - The page of commits to return (`0` default)
-+ `per_page` (optional) - The number of commits per page (`20` default)
-
-Returns values:
-
-+ `200 Ok` on success and a list with commits
-+ `404 Not Found` if project with id or the branch with `ref_name` not found
-
-
-
-## Deploy Keys
-
-### List deploy keys
-
-Get a list of a project's deploy keys.
-
-```
-GET /projects/:id/keys
-```
-
-Parameters:
-
-+ `id` (required) - The ID of the project
-
-```json
-[
-  {
-    "id": 1,
-    "title" : "Public key"
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
-      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
-      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
-  },
-  {
-    "id": 3,
-    "title" : "Another Public key"
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
-      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
-      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
-  }
-]
-```
-
-
-### Single deploy key
-
-Get a single key.
-
-```
-GET /projects/:id/keys/:key_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID of the project
-+ `key_id` (required) - The ID of the deploy key
-
-```json
-{
-  "id": 1,
-  "title" : "Public key"
-  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
-      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
-      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
-}
-```
-
-
-### Add deploy key
-
-Creates a new deploy key for a project.
-
-```
-POST /projects/:id/keys
-```
-
-Parameters:
-
-+ `id` (required) - The ID of the project
-+ `title` (required) - New deploy key's title
-+ `key` (required) - New deploy key
-
-
-### Delete deploy key
-
-Delete a deploy key from a project
-
-```
-DELETE /projects/:id/keys/:key_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID of the project
-+ `key_id` (required) - The ID of the deploy key
 

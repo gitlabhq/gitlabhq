@@ -14,7 +14,7 @@ class RefsController < ProjectResourceController
                    elsif params[:destination] == "blob"
                      project_blob_path(@project, (@id))
                    elsif params[:destination] == "graph"
-                     project_graph_path(@project, @id, @options)
+                     project_network_path(@project, @id, @options)
                    else
                      project_commits_path(@project, @id)
                    end

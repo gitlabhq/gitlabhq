@@ -106,7 +106,7 @@ module SharedPaths
   end
 
   step 'I visit admin Resque page' do
-    visit admin_resque_path
+    visit admin_background_jobs_path
   end
 
   step 'I visit admin groups page' do
@@ -149,7 +149,7 @@ module SharedPaths
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     Network::Graph.stub(max_count: 10)
 
-    visit project_graph_path(@project, root_ref)
+    visit project_network_path(@project, root_ref)
   end
 
   step "I visit my project's issues page" do
@@ -273,6 +273,22 @@ module SharedPaths
 
   step 'I visit the public projects area' do
     visit public_root_path
+  end
+
+  # ----------------------------------------
+  # Snippets
+  # ----------------------------------------
+
+  Given 'I visit project "Shop" snippets page' do
+    visit project_snippets_path(project)
+  end
+
+  Given 'I visit snippets page' do
+    visit snippets_path
+  end
+
+  Given 'I visit new snippet page' do
+    visit new_snippet_path
   end
 
   def root_ref

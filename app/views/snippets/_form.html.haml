@@ -2,7 +2,7 @@
   = @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 %hr
 .snippet-form-holder
-  = form_for [@project, @snippet] do |f|
+  = form_for @snippet, as: :personal_snippet, url: url do |f|
     -if @snippet.errors.any?
       .alert.alert-error
         %ul
@@ -12,6 +12,9 @@
     .clearfix
       = f.label :title
       .input= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
+    .clearfix
+      = f.label "Private?"
+      .input= f.check_box :private, {class: ''}
     .clearfix
       = f.label "Lifetime"
       .input= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
@@ -28,9 +31,9 @@
 
     .form-actions
       = f.submit 'Save', class: "btn-save btn"
-      = link_to "Cancel", project_snippets_path(@project), class: " btn"
+      = link_to "Cancel", snippets_path(@project), class: " btn"
       - unless @snippet.new_record?
-        .pull-right= link_to 'Destroy', [@project, @snippet], confirm: 'Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+        .pull-right= link_to 'Destroy', snippet_path(@snippet), confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
 
 
 :javascript

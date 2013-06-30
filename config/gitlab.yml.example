@@ -32,10 +32,14 @@ production: &base
     # Email address of your support contact (default: same as email_from)
     support_email: support@localhost
 
-    ## Project settings
+    ## User settings
     default_projects_limit: 10
-    # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
+    # default_can_create_group: false  # default: true
+    # default_can_create_team: false   # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
+    
+    ## Users management
+    # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
 
     ## Default project features settings
     default_projects_features:
@@ -66,6 +70,11 @@ production: &base
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
+    # 
+    # jira:
+    #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
+    #   issues_url: "http://jira.sample/browse/:id"
+    #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
 
   ## Gravatar
   gravatar:

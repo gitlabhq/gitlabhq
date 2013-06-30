@@ -9,20 +9,20 @@
         = link_to 'New Project', new_project_path, class: "btn btn-small"
   .span4
     .ui-box
-      %h5.title Groups
-      .data.padded
-        = link_to admin_groups_path do
-          %h1= Group.count
-        %hr
-        = link_to 'New Group', new_admin_group_path, class: "btn btn-small"
-  .span4
-    .ui-box
       %h5.title Users
       .data.padded
         = link_to admin_users_path do
           %h1= User.count
         %hr
         = link_to 'New User', new_admin_user_path, class: "btn btn-small"
+  .span4
+    .ui-box
+      %h5.title Groups
+      .data.padded
+        = link_to admin_groups_path do
+          %h1= Group.count
+        %hr
+        = link_to 'New Group', new_admin_group_path, class: "btn btn-small"
 
 .row
   .span4
@@ -49,6 +49,14 @@
   .span4
     %h4 Stats
     %hr
+    %p
+      Teams
+      %span.light.pull-right
+        = UserTeam.count
+    %p
+      Forks
+      %span.light.pull-right
+        = ForkedProjectLink.count
     %p
       Issues
       %span.light.pull-right

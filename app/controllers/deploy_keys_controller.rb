@@ -54,6 +54,6 @@ class DeployKeysController < ProjectResourceController
   protected
 
   def available_keys
-    @available_keys ||= DeployKey.in_projects(current_user.owned_projects).uniq
+    @available_keys ||= current_user.accessible_deploy_keys
   end
 end

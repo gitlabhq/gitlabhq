@@ -1,6 +1,13 @@
 /**
  * Notes
  */
+
+@-webkit-keyframes target-note {
+  from { background:#fffff0; }
+  50% { background:#ffffd3; }
+  to { background:#fffff0; }
+}
+
 ul.notes {
   display: block;
   list-style: none;
@@ -85,10 +92,19 @@ ul.notes {
     .note-body {
       @include md-typography;
       margin-left: 45px;
+
+      .highlight {
+        @include border-radius(4px);
+      }
     }
     .note-header {
       padding-bottom: 5px;
     }
+  }
+
+  .note:target {
+    -webkit-animation:target-note 2s linear;
+    background: #fffff0;
   }
 
   // paint top or bottom borders depending on notes direction

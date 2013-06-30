@@ -12,7 +12,7 @@
     .loading.hide
   .side.span4
     - if @team.description.present?
-      .description.well.well-small.light
+      .description-block
         = @team.description
     = render "projects", projects: @projects
     .prepend-top-20

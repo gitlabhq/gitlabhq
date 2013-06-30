@@ -2,6 +2,24 @@ require 'digest/md5'
 require 'uri'
 
 module ApplicationHelper
+  COLOR_SCHEMES = {
+    1 => 'white',
+    2 => 'dark',
+    3 => 'solarized-dark',
+    4 => 'monokai',
+  }
+  COLOR_SCHEMES.default = 'white'
+
+  # Helper method to access the COLOR_SCHEMES
+  #
+  # The keys are the `color_scheme_ids`
+  # The values are the `name` of the scheme.
+  #
+  # The preview images are `name-scheme-preview.png`
+  # The stylesheets should use the css class `.name`
+  def color_schemes
+    COLOR_SCHEMES.freeze
+  end
 
   # Check if a particular controller is the current one
   #
@@ -119,23 +137,12 @@ module ApplicationHelper
     Emoji.names.to_s
   end
 
-  def ldap_enable?
-    Devise.omniauth_providers.include?(:ldap)
-  end
-
   def app_theme
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
 
   def user_color_scheme_class
-    case current_user.color_scheme_id
-    when 1 then 'white'
-    when 2 then 'black'
-    when 3 then 'solarized-dark'
-    when 4 then 'monokai'
-    else
-      'white'
-    end
+    COLOR_SCHEMES[current_user.try(:color_scheme_id)] if defined?(current_user)
   end
 
   # Define whenever show last push event
@@ -185,9 +192,12 @@ module ApplicationHelper
   alias_method :url_to_image, :image_url
 
   def users_select_tag(id, opts = {})
-    css_class = "ajax-users-select"
-    css_class << " multiselect" if opts[:multiple]
-    hidden_field_tag(id, '', class: css_class)
+    css_class = "ajax-users-select "
+    css_class << "multiselect " if opts[:multiple]
+    css_class << (opts[:class] || '')
+    value = opts[:selected] || ''
+
+    hidden_field_tag(id, value, class: css_class)
   end
 
   def body_data_page
@@ -206,4 +216,13 @@ module ApplicationHelper
   def extra_config
     Gitlab.config.extra
   end
+
+  def public_icon
+    content_tag :i, nil, class: 'icon-globe cblue'
+  end
+
+  def private_icon
+    content_tag :i, nil, class: 'icon-lock cgreen'
+  end
+
 end

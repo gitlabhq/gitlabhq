@@ -19,14 +19,14 @@
             - @group.projects.each do |project|
               %li
                 - if project.public
-                  %i.icon-share
+                  = public_icon
                 - else
-                  %i.icon-lock.cgreen
+                  = private_icon
                 = link_to project.name_with_namespace, project
                 .pull-right
                   = link_to 'Team', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
                   = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-                  = link_to 'Remove', project, confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+                  = link_to 'Remove', project, confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
             - if @group.projects.blank?
               %p.nothing_here_message This group has no projects yet
 

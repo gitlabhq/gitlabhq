@@ -5,7 +5,7 @@ production:
   adapter: postgresql
   encoding: unicode
   database: gitlabhq_production
-  pool: 5
+  pool: 10
   username: git
   password:
   # host: localhost

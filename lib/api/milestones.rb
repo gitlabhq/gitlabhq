@@ -60,7 +60,7 @@ module API
       #   title (optional) - The title of a milestone
       #   description (optional) - The description of a milestone
       #   due_date (optional) - The due date of a milestone
-      #   state (optional) - The status of the milestone (close|activate)
+      #   state_event (optional) - The state event of the milestone (close|activate)
       # Example Request:
       #   PUT /projects/:id/milestones/:milestone_id
       put ":id/milestones/:milestone_id" do

@@ -3,8 +3,11 @@ Hi <%= @user.name %>!
 The Administrator created an account for you. Now you are a member of company GitLab application.
 
 login.................. <%= @user.email %>
-<% unless Gitlab.config.gitlab.signup_enabled %>
+<% if @user.created_by_id %>
   password............... <%= @password %>
+  
+  You will be forced to change this password immediately after login.
 <% end %>
+
 
 Click here to login: <%= url_for(root_url) %>

@@ -12,6 +12,26 @@
 %hr
 
 
-.clearfix
-%div.team-table
-  = render partial: "teams/members/team", locals: {project: @team}
+.row
+  .span3
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: ("active" if !params[:type])}
+        = link_to team_members_path(@team, type: nil) do
+          All
+      %li{class: ("active" if params[:type] == 'masters')}
+        = link_to team_members_path(@team, type: 'masters') do
+          Masters
+      %li{class: ("active" if params[:type] == 'developers')}
+        = link_to team_members_path(@team, type: 'developers') do
+          Developers
+      %li{class: ("active" if params[:type] == 'reporters')}
+        = link_to team_members_path(@team, type: 'reporters') do
+          Reporters
+      %li{class: ("active" if params[:type] == 'guests')}
+        = link_to team_members_path(@team, type: 'guests') do
+          Guests
+
+  .span9
+    .clearfix
+    %div.team-table
+      = render "teams/members/team", team: @team

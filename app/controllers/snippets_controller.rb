@@ -1,12 +1,5 @@
-class SnippetsController < ProjectResourceController
-  before_filter :module_enabled
+class SnippetsController < ApplicationController
   before_filter :snippet, only: [:show, :edit, :destroy, :update, :raw]
-
-  # Allow read any snippet
-  before_filter :authorize_read_snippet!
-
-  # Allow write(create) snippet
-  before_filter :authorize_write_snippet!, only: [:new, :create]
 
   # Allow modify snippet
   before_filter :authorize_modify_snippet!, only: [:edit, :update]
@@ -14,25 +7,54 @@ class SnippetsController < ProjectResourceController
   # Allow destroy snippet
   before_filter :authorize_admin_snippet!, only: [:destroy]
 
+  before_filter :set_title
+
   respond_to :html
 
+  layout 'navless'
+
   def index
-    @snippets = @project.snippets.fresh.non_expired
+    @snippets = Snippet.public.fresh.non_expired.page(params[:page]).per(20)
+  end
+
+  def user_index
+    @user = User.find_by_username(params[:username])
+    @snippets = @user.snippets.fresh.non_expired
+
+    if @user == current_user
+      @snippets = case params[:scope]
+                  when 'public' then
+                    @snippets.public
+                  when 'private' then
+                    @snippets.private
+                  else
+                    @snippets
+                  end
+    else
+      @snippets = @snippets.public
+    end
+
+    @snippets = @snippets.page(params[:page]).per(20)
+
+    if @user == current_user
+      render 'current_user_index'
+    else
+      render 'user_index'
+    end
   end
 
   def new
-    @snippet = @project.snippets.new
+    @snippet = PersonalSnippet.new
   end
 
   def create
-    @snippet = @project.snippets.new(params[:snippet])
+    @snippet = PersonalSnippet.new(params[:personal_snippet])
     @snippet.author = current_user
-    @snippet.save
 
-    if @snippet.valid?
-      redirect_to [@project, @snippet]
+    if @snippet.save
+      redirect_to snippet_path(@snippet)
     else
-      respond_with(@snippet)
+      respond_with @snippet
     end
   end
 
@@ -40,27 +62,22 @@ class SnippetsController < ProjectResourceController
   end
 
   def update
-    @snippet.update_attributes(params[:snippet])
-
-    if @snippet.valid?
-      redirect_to [@project, @snippet]
+    if @snippet.update_attributes(params[:personal_snippet])
+      redirect_to snippet_path(@snippet)
     else
-      respond_with(@snippet)
+      respond_with @snippet
     end
   end
 
   def show
-    @note = @project.notes.new(noteable: @snippet)
-    @target_type = :snippet
-    @target_id = @snippet.id
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :admin_snippet, @snippet)
+    return access_denied! unless can?(current_user, :admin_personal_snippet, @snippet)
 
     @snippet.destroy
 
-    redirect_to project_snippets_path(@project)
+    redirect_to snippets_path
   end
 
   def raw
@@ -75,18 +92,18 @@ class SnippetsController < ProjectResourceController
   protected
 
   def snippet
-    @snippet ||= @project.snippets.find(params[:id])
+    @snippet ||= PersonalSnippet.where('author_id = :user_id or private is false', user_id: current_user.id).find(params[:id])
   end
 
   def authorize_modify_snippet!
-    return render_404 unless can?(current_user, :modify_snippet, @snippet)
+    return render_404 unless can?(current_user, :modify_personal_snippet, @snippet)
   end
 
   def authorize_admin_snippet!
-    return render_404 unless can?(current_user, :admin_snippet, @snippet)
+    return render_404 unless can?(current_user, :admin_personal_snippet, @snippet)
   end
 
-  def module_enabled
-    return render_404 unless @project.snippets_enabled
+  def set_title
+    @title = 'Snippets'
   end
 end

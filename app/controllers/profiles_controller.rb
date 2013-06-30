@@ -3,6 +3,9 @@ class ProfilesController < ApplicationController
 
   before_filter :reject_guest! 
   before_filter :user
+  before_filter :authorize_change_password!, only: :update_password
+  before_filter :authorize_change_username!, only: :update_username
+
   layout 'profile'
 
   def show
@@ -54,9 +57,7 @@ class ProfilesController < ApplicationController
   end
 
   def update_username
-    if @user.can_change_username?
-      @user.update_attributes(username: params[:user][:username])
-    end
+    @user.update_attributes(username: params[:user][:username])
 
     respond_to do |format|
       format.js
@@ -80,5 +81,13 @@ class ProfilesController < ApplicationController
     end
 
     user_attributes
+  end
+
+  def authorize_change_password!
+    return render_404 if @user.ldap_user?
+  end
+
+  def authorize_change_username!
+    return render_404 unless @user.can_change_username?
   end
 end

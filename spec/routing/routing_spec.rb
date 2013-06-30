@@ -8,20 +8,59 @@ describe SearchController, "routing" do
 end
 
 # gitlab_api /api         API::API
-#     resque /info/resque Resque::Server
 #            /:path       Grack
 describe "Mounted Apps", "routing" do
   it "to API" do
     get("/api").should be_routable
   end
 
-  it "to Resque" do
-    pending
-    get("/info/resque").should be_routable
-  end
-
   it "to Grack" do
     get("/gitlabhq.git").should be_routable
+  end
+end
+
+#     snippets GET    /snippets(.:format)          snippets#index
+#          POST   /snippets(.:format)          snippets#create
+#  new_snippet GET    /snippets/new(.:format)      snippets#new
+# edit_snippet GET    /snippets/:id/edit(.:format) snippets#edit
+#      snippet GET    /snippets/:id(.:format)      snippets#show
+#          PUT    /snippets/:id(.:format)      snippets#update
+#          DELETE /snippets/:id(.:format)      snippets#destroy
+describe SnippetsController, "routing" do
+  it "to #user_index" do
+    get("/s/User").should route_to('snippets#user_index', username: 'User')
+  end
+
+  it "to #raw" do
+    get("/snippets/1/raw").should route_to('snippets#raw', id: '1')
+  end
+
+  it "to #index" do
+    get("/snippets").should route_to('snippets#index')
+  end
+
+  it "to #create" do
+    post("/snippets").should route_to('snippets#create')
+  end
+
+  it "to #new" do
+    get("/snippets/new").should route_to('snippets#new')
+  end
+
+  it "to #edit" do
+    get("/snippets/1/edit").should route_to('snippets#edit', id: '1')
+  end
+
+  it "to #show" do
+    get("/snippets/1").should route_to('snippets#show', id: '1')
+  end
+
+  it "to #update" do
+    put("/snippets/1").should route_to('snippets#update', id: '1')
+  end
+
+  it "to #destroy" do
+    delete("/snippets/1").should route_to('snippets#destroy', id: '1')
   end
 end
 

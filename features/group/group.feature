@@ -19,6 +19,7 @@ Feature: Groups
     When I visit group merge requests page
     Then I should see merge requests from this group assigned to me
 
+  @javascript
   Scenario: I should add user to projects in Group
     Given I have new user "John"
     When I visit group people page

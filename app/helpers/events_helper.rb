@@ -83,4 +83,40 @@ module EventsHelper
       render "events/event_push", event: event
     end
   end
+
+  def event_note_target_path(event)
+    if event.note? && event.note_commit?
+      project_commit_path(event.project, event.note_target)
+    else
+      url_for([event.project, event.note_target])
+    end
+  end
+
+  def event_note_title_html(event)
+    if event.note_target
+      if event.note_commit?
+        link_to project_commit_path(event.project, event.note_commit_id), class: "commit_short_id" do
+          "#{event.note_target_type} #{event.note_short_commit_id}"
+        end
+      elsif event.note_project_snippet?
+        link_to(project_snippet_path(event.project, event.note_target)) do
+          content_tag :strong do
+            "#{event.note_target_type} ##{truncate event.note_target_id}"
+          end
+        end
+      else
+        link_to event_note_target_path(event) do
+          content_tag :strong do
+            "#{event.note_target_type} ##{truncate event.note_target_id}"
+          end
+        end
+      end
+    elsif event.wall_note?
+      link_to 'wall', project_wall_path(event.project)
+    else
+      content_tag :strong do
+        "(deleted)"
+      end
+    end
+  end
 end
