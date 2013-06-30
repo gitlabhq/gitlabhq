@@ -38,6 +38,7 @@ Gitlab::Application.routes.draw do
   get 'help/system_hooks'   => 'help#system_hooks'
   get 'help/web_hooks'      => 'help#web_hooks'
   get 'help/workflow'       => 'help#workflow'
+  get 'help/shortcuts'
 
   #
   # Global snippets
