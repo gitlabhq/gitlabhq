@@ -19,7 +19,7 @@ _Disclaimer_: I do not provide any support on GitLab itself.  I only contribute 
 You should also be aware that **Public GitLab** only applies to the latest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab.  So, use the *-stable branches!  The `master` branch on this repo has a high chance to be broken.
 ## Changelog
 
-  * [2013-06-30] : New beta feature ! Added a different projects number limit per user for private and public projects. Thanks to (Mike)[https://github.com/MJSmith5] for the idea.
+  * [2013-06-30] : New beta feature ! Added a different projects number limit per user for private and public projects. Thanks to [Mike](https://github.com/MJSmith5) for the idea.
   
   > Please update your DB model to use it ( `bundle exec rake db:migrate RAILS_ENV=production` ).
   
