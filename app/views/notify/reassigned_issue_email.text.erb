@@ -2,6 +2,4 @@ Reassigned Issue <%= @issue.id %>
 
 <%= url_for(project_issue_url(@issue.project, @issue)) %>
           
-
-Assignee changed from <%= @previous_assignee.name %> to <%= @issue.assignee_name %>
-
+Assignee changed <%= "from #{@previous_assignee.name}" if @previous_assignee %> to <%= @issue.assignee_name %>
