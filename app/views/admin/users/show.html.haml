@@ -24,7 +24,7 @@
       %h5.title
         Account:
         .pull-right
-          = image_tag gravatar_icon(@admin_user.email, 32), class: "avatar s32"
+          = image_tag gravatar_icon(@admin_user.email, 32), class:"avatar s32", alt:""
       %ul.well-list
         %li
           %span.light Name:
@@ -62,7 +62,6 @@
             %span.light Created by:
             %strong
               = link_to @admin_user.created_by.name, [:admin, @admin_user.created_by]
-
     %hr
     %h5
       Add User to Projects

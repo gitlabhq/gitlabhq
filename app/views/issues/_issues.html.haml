@@ -53,7 +53,7 @@
             - @project.users.sort_by(&:name).each do |user|
               %li
                 = link_to project_issues_with_filter_path(@project, assignee_id: user.id) do
-                  = image_tag gravatar_icon(user.email), class: "avatar s16"
+                  = image_tag gravatar_icon(user.email), class: "avatar s16", alt: ''
                   = user.name
 
         .dropdown.inline.prepend-left-10
@@ -63,7 +63,7 @@
             - if @milestone.present?
               %strong= @milestone.title
             - elsif params[:milestone_id] == "0"
-              Unspecified
+              None (backlog)
             - else
               Any
             %b.caret
@@ -72,7 +72,7 @@
               = link_to project_issues_with_filter_path(@project, milestone_id: nil) do
                 Any
               = link_to project_issues_with_filter_path(@project, milestone_id: 0) do
-                Unspecified
+                None (backlog)
             - issues_active_milestones.each do |milestone|
               %li
                 = link_to project_issues_with_filter_path(@project, milestone_id: milestone.id) do

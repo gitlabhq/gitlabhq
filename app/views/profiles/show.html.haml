@@ -1,5 +1,5 @@
 .profile_avatar_holder
-  = image_tag gravatar_icon(@user.email, 90)
+  = image_tag gravatar_icon(@user.email, 90), alt: ''
 %h3.page_title
   = @user.name
   %br

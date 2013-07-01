@@ -4,7 +4,7 @@
   .row
     .span3
       = link_to user_path(user.username), title: user.name, class: "dark" do
-        = image_tag gravatar_icon(user.email, 40), class: "avatar s32"
+        = image_tag gravatar_icon(user.email, 40), class: "avatar s32", alt: ''
       = link_to user_path(user.username), title: user.name, class: "dark" do
         %strong= truncate(user.name, lenght: 40)
         %br
