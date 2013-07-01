@@ -46,6 +46,26 @@ var NoteList = {
                     ".js-note-delete",
                     NoteList.removeNote);
 
+    // show the edit note form
+    $(document).on("click",
+                    ".js-note-edit",
+                    NoteList.showEditNoteForm);
+
+    // cancel note editing
+    $(document).on("click",
+                    ".note-edit-cancel",
+                    NoteList.cancelNoteEdit);
+
+    // delete note attachment
+    $(document).on("click",
+                    ".js-note-attachment-delete",
+                    NoteList.deleteNoteAttachment);
+
+    // update the note after editing
+    $(document).on("ajax:complete",
+                   "form.edit_note",
+                   NoteList.updateNote);
+
     // reset main target form after submit
     $(document).on("ajax:complete",
                    ".js-main-target-form",
@@ -53,12 +73,12 @@ var NoteList = {
 
 
     $(document).on("click",
-      ".js-choose-note-attachment-button",
-      NoteList.chooseNoteAttachment);
+                  ".js-choose-note-attachment-button",
+                  NoteList.chooseNoteAttachment);
 
     $(document).on("click",
-      ".js-show-outdated-discussion",
-      function(e) { $(this).next('.outdated-discussion').show(); e.preventDefault() });
+                  ".js-show-outdated-discussion",
+                  function(e) { $(this).next('.outdated-discussion').show(); e.preventDefault() });
   },
 
 
@@ -97,8 +117,8 @@ var NoteList = {
 
   /**
    * Called when clicking the "Choose File" button.
-   * 
-   * Opesn the file selection dialog.
+   *
+   * Opens the file selection dialog.
    */
   chooseNoteAttachment: function() {
     var form = $(this).closest("form");
@@ -133,7 +153,7 @@ var NoteList = {
 
   /**
    * Called in response to "cancel" on a diff note form.
-   * 
+   *
    * Shows the reply button again.
    * Removes the form and if necessary it's temporary row.
    */
@@ -175,6 +195,59 @@ var NoteList = {
     note.remove();
     NoteList.updateVotes();
   },
+
+  /**
+   * Called in response to clicking the edit note link
+   *
+   * Replaces the note text with the note edit form
+   * Adds a hidden div with the original content of the note to fill the edit note form with
+   * if the user cancels
+   */
+  showEditNoteForm: function(e) {
+    e.preventDefault();
+    var note = $(this).closest(".note");
+    note.find(".note-text").hide();
+
+    // Show the attachment delete link
+    note.find(".js-note-attachment-delete").show();
+
+    var form = note.find(".note-edit-form");
+    form.show();
+
+
+    var textarea = form.find("textarea");
+    var p = $("<p></p>").text(textarea.val());
+    var hidden_div = $('<div class="note-original-content"></div>').append(p);
+    form.append(hidden_div);
+    hidden_div.hide();
+    textarea.focus();
+  },
+
+  /**
+   * Called in response to clicking the cancel button when editing a note
+   *
+   * Resets and hides the note editing form
+   */
+  cancelNoteEdit: function(e) {
+    e.preventDefault();
+    var note = $(this).closest(".note");
+    NoteList.resetNoteEditing(note);
+  },
+
+
+  /**
+   * Called in response to clicking the delete attachment link
+   *
+   * Removes the attachment wrapper view, including image tag if it exists
+   * Resets the note editing form
+   */
+  deleteNoteAttachment: function() {
+    var note = $(this).closest(".note");
+    note.find(".note-attachment").remove();
+    NoteList.resetNoteEditing(note);
+    NoteList.rewriteTimestamp(note.find(".note-last-update"));
+  },
+
 
   /**
    * Called when clicking on the "reply" button for a diff line.
@@ -426,5 +499,65 @@ var NoteList = {
       votes.find(".upvotes").text(votes.find(".upvotes").text().replace(/\d+/, upvotes));
       votes.find(".downvotes").text(votes.find(".downvotes").text().replace(/\d+/, downvotes));
     }
+  },
+
+  /**
+   * Called in response to the edit note form being submitted
+   *
+   * Updates the current note field.
+   * Hides the edit note form
+   */
+  updateNote: function(e, xhr, settings) {
+    response = JSON.parse(xhr.responseText);
+    if (response.success) {
+      var note_li = $("#note_" + response.id);
+      var note_text = note_li.find(".note-text");
+      note_text.html(response.note).show();
+
+      var note_form = note_li.find(".note-edit-form");
+      note_form.hide();
+      note_form.find(".btn-save").enableButton();
+
+      // Update the "Edited at xxx label" on the note to show it's just been updated
+      NoteList.rewriteTimestamp(note_li.find(".note-last-update"));
+    }
+  },
+
+  /**
+  * Called in response to the 'cancel note' link clicked, or after deleting a note attachment
+  *
+  * Hides the edit note form and shows the note
+  * Resets the edit note form textarea with the original content of the note
+  */
+  resetNoteEditing: function(note) {
+    note.find(".note-text").show();
+
+    // Hide the attachment delete link
+    note.find(".js-note-attachment-delete").hide();
+
+    // Put the original content of the note back into the edit form textarea
+    var form = note.find(".note-edit-form");
+    var original_content = form.find(".note-original-content");
+    form.find("textarea").val(original_content.text());
+    original_content.remove();
+
+    note.find(".note-edit-form").hide();
+  },
+
+  /**
+  * Utility function to generate new timestamp text for a note
+  *
+  */
+  rewriteTimestamp: function(element) {
+    // Strip all newlines from the existing timestamp
+    var ts = element.text().replace(/\n/g, ' ').trim();
+
+    // If the timestamp already has '(Edited xxx ago)' text, remove it
+    ts = ts.replace(new RegExp("\\(Edited [A-Za-z0-9 ]+\\)$", "gi"), "");
+
+    // Append "(Edited just now)"
+    ts = (ts + " <small>(Edited just now)</small>");
+
+    element.html(ts);
   }
 };

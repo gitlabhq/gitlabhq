@@ -319,7 +319,10 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :notes, only: [:index, :create, :destroy] do
+    resources :notes, only: [:index, :create, :destroy, :update] do
+      member do
+        delete :delete_attachment
+      end
       collection do
         post :preview
       end
