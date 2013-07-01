@@ -8,7 +8,13 @@ module Emails
 
     def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
       @issue = Issue.find(issue_id)
-      @previous_assignee ||= User.find(previous_assignee_id)
+      unless @previous_assignee
+          if previous_assignee_id
+              @previous_assignee = User.find(previous_assignee_id)
+          else
+              @previous_assignee = User.new
+          end
+      end
       @project = @issue.project
       mail(to: recipient(recipient_id), subject: subject("changed issue ##{@issue.id}", @issue.title))
     end
