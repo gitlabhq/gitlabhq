@@ -67,6 +67,9 @@ $ ->
     $('.appear-data').fadeIn()
     e.preventDefault()
 
+  $('body').keydown (e) ->
+    if e.which is 191
+      new Shortcuts()
 
   # Initialize chosen selects
   $('select.chosen').chosen()

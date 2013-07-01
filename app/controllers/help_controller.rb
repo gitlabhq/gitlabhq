@@ -12,4 +12,7 @@ class HelpController < ApplicationController
       not_found!
     end
   end
+
+  def shortcuts
+  end
 end
