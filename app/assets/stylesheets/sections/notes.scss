@@ -325,3 +325,32 @@ ul.notes {
     float: left;
   }
 }
+
+.note-edit-form {
+  display: none;
+
+  .note_text {
+    border: 1px solid #DDD;
+    box-shadow: none;
+    font-size: 14px;
+    height: 80px;
+    width: 98.6%;
+  }
+
+  .form-actions {
+    padding-left: 20px;
+
+    .btn-save {
+      float: left;
+    }
+
+    .note-form-option {
+      float: left;
+      padding: 2px 0 0 25px;
+    }
+  }
+}
+
+.js-note-attachment-delete {
+  display: none;
+}
