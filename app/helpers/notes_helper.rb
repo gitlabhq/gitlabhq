@@ -28,4 +28,11 @@ module NotesHelper
   def loading_new_notes?
     params[:loading_new].present?
   end
+
+  def note_timestamp(note)
+    # Shows the created at time and the updated at time if different
+    ts = "#{time_ago_in_words(note.created_at)} ago"
+    ts << content_tag(:small, " (Edited #{time_ago_in_words(note.updated_at)} ago)") if note.updated_at != note.created_at
+    ts.html_safe
+  end
 end
