@@ -150,6 +150,9 @@ production: &base
     upload_pack: true
     receive_pack: true
 
+    # If GitLab is listening on a different host to the web host (for example, the webserver is on a DMZ, ssh is on a private internal network)
+    # ssh_host: host.name     
+
     # If you use non-standard ssh port you need to specify it
     # ssh_port: 22
 
