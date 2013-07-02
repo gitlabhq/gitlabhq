@@ -56,15 +56,10 @@ class Key < ActiveRecord::Base
   def generate_fingerpint
     cmd_status = 0
     cmd_output = ''
-    file = Tempfile.new('gitlab_key_file')
-
-    begin
+    Tempfile.open('gitlab_key_file') do |file|
       file.puts key
       file.rewind
       cmd_output, cmd_status = popen("ssh-keygen -lf #{file.path}", '/tmp')
-    ensure
-      file.close
-      file.unlink # deletes the temp file
     end
 
     if cmd_status.zero?
