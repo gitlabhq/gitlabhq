@@ -18,6 +18,7 @@ production: &base
     host: localhost
     port: 80
     https: false
+    # WARNING: This feature is no longer supported
     # Uncomment and customize to run in non-root path
     # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/puma.rb may need to be changed
     # relative_url_root: /gitlab
