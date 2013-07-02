@@ -49,10 +49,8 @@ describe Key do
   end
 
   context "validate it is a fingerprintable key" do
-    let(:user) { create(:user) }
-
     it "accepts the fingerprintable key" do
-      build(:key, user: user).should be_valid
+      build(:key).should be_valid
     end
 
     it "rejects the unfingerprintable key (contains space in middle)" do
