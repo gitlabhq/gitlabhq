@@ -120,7 +120,7 @@ header {
         border-bottom: 1px solid #AAA;
 
         .nav > li > a {
-          color: #DDD;
+          color: #AAA;
           text-shadow: 0 1px 0 #444;
 
           &:hover {
@@ -128,6 +128,10 @@ header {
           }
         }
       }
+    }
+
+    .turbolink-spinner {
+      color: #FFF;
     }
 
     .search {
