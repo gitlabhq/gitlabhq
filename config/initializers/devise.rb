@@ -216,6 +216,15 @@ Devise.setup do |config|
       password: Gitlab.config.ldap['password']
   end
 
+  if Gitlab.config.cas.enabled
+    config.omniauth :cas,
+      host:                     Gitlab.config.cas['host'],
+      login_url:                Gitlab.config.cas['login_url'],
+      ssl:                      Gitlab.config.cas['ssl'],
+      service_validate_url:     Gitlab.config.cas['service_validate_url'],
+      logout_url:               Gitlab.config.cas['logout_url']
+  end
+
   Gitlab.config.omniauth.providers.each do |provider|
     case provider['args']
     when Array

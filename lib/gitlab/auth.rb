@@ -17,6 +17,48 @@ module Gitlab
       end
     end
 
+    def find_for_cas_auth(auth, signed_in_resource = nil)
+      uid = auth.info.uid || auth.uid
+      provider = auth.provider
+      raise OmniAuth::Error, "CAS accounts must provide an uid" if uid.nil?
+
+      if @user = User.find_by_extern_uid_and_provider(uid, provider)
+        @user
+      else
+        uid = uid.to_s.force_encoding("utf-8")
+        name = auth.info.name || auth.name || uid
+        name = name.to_s.force_encoding("utf-8")
+        email = auth.info.email || auth.email
+        email = email.downcase unless email.nil?
+
+        log.error "CAS account doesn't provide an email" if email.nil?
+
+        mail_server = "#{Gitlab.config.cas['mail_server']}"
+        mail_server = Gitlab.config.cas['host'] if mail_server.empty? 
+
+        email = "#{uid}@#{mail_server}" if email.nil?
+
+        prefix = '(CAS)'
+        log.info "#{prefix}Creating user from #{provider} login"\
+          " {uid => #{uid}, name => #{name}, email => #{email}}"
+
+        password = Devise.friendly_token[0, 8].downcase
+        @user = User.new({
+          extern_uid: uid,
+          provider: provider,
+          name: name,
+          username: email.match(/^[^@]*/)[0],
+          email: email,
+          password: password,
+          password_confirmation: password,
+        }, as: :admin).with_defaults
+        
+        @user.save!
+
+        @user
+      end
+    end
+
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid

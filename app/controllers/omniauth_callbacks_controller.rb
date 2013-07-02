@@ -24,6 +24,17 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     sign_in_and_redirect @user
   end
 
+  def cas
+    # We only find ourselves here if the authentication to CAS was successful.
+    oauth = request.env['omniauth.auth']
+    provider, uid = oauth['provider'], oauth['uid']
+    @user = User.find_for_cas_auth(request.env["omniauth.auth"], current_user)
+    if @user.persisted?
+      @user.remember_me = true
+    end
+    sign_in_and_redirect @user
+  end
+
   private
 
   def handle_omniauth
