@@ -132,7 +132,7 @@ class Project < ActiveRecord::Base
         namespace = Namespace.find_by_path(id.first)
         return nil unless namespace
 
-        where(namespace_id: namespace.id).find_by_path(id.second)
+        where(namespace_id: namespace.id).find_by_path(id.second.chomp(".git"))
       else
         where(path: id, namespace_id: nil).last
       end
