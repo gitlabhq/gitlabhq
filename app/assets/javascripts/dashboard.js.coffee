@@ -8,15 +8,16 @@ class Dashboard
       @toggleFilter($(event.currentTarget))
       @reloadActivities()
 
-    $(".dash-projects-filter").keyup ->
+    $(".dash-filter").keyup ->
       terms = $(this).val()
+      uiBox = $(this).parents('.ui-box').first()
       if terms == "" || terms == undefined
-        $(".dash-projects-list li").show()
+        uiBox.find(".dash-list li").show()
       else
-        $(".dash-projects-list li").each (index) ->
+        uiBox.find(".dash-list li").each (index) ->
           name = $(this).find(".well-title").text()
 
-          if name.search(terms) == -1
+          if name.toLowerCase().search(terms.toLowerCase()) == -1
             $(this).hide()
           else
             $(this).show()

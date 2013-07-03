@@ -7,7 +7,9 @@
     @extend .pull-right;
 
     .ui-box {
-      margin: 3px;
+      margin: 0px;
+      box-shadow: none;
+
       > .title {
         padding: 2px 15px;
       }
@@ -28,7 +30,6 @@
           }
         }
       }
-      @extend .ui-box;
     }
   }
 }
@@ -47,7 +48,7 @@
 }
 
 .dashboard {
-  .dash-projects-filter {
+  .dash-filter {
     margin: 0;
     padding: 4px 6px;
     width: 202px;
@@ -58,7 +59,29 @@
 }
 
 @media (max-width: 1200px) {
-  .dashboard .dash-projects-filter {
+  .dashboard .dash-filter {
     width: 132px;
+  }
+}
+
+.dash-sidebar-tabs {
+  margin-bottom: 2px;
+  border: none;
+  margin: 0;
+
+  li {
+    &.active {
+      a {
+        @include linear-gradient(#f5f5f5, #eee);
+        border-bottom: 1px solid #EEE !important;
+        &:hover {
+          background: #eee;
+        }
+      }
+    }
+
+    a {
+      border-color: #CCC !important;
+    }
   }
 }
