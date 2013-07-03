@@ -173,9 +173,6 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
-    # Make config/database.yml readable to git only
-    sudo -u git -H chmod o-rwx config/database.yml
-
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
     sudo -u git -H mkdir tmp/sockets/
@@ -218,6 +215,9 @@ Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
     sudo -u git -H vim config/database.yml
+    
+    # Make config/database.yml readable to git only
+    sudo -u git -H chmod o-rwx config/database.yml
 
 ## Install Gems
 
