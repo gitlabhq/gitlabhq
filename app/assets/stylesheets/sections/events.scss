@@ -99,7 +99,7 @@
     margin-bottom: 5px;
     .avatar {
       width: 18px;
-      margin-top: 3px;
+      margin: 2px 4px;
     }
   }
 
@@ -118,7 +118,12 @@
       }
       &.commits-stat {
         display: block;
-        margin-top: 5px;
+        padding: 3px;
+        margin-top: 3px;
+
+        &:hover {
+          background: none;
+        }
       }
     }
   }
