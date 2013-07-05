@@ -67,10 +67,6 @@ $ ->
     $('.appear-data').fadeIn()
     e.preventDefault()
 
-  $('body').keydown (e) ->
-    if e.which is 191
-      new Shortcuts()
-
   # Initialize chosen selects
   $('select.chosen').chosen()
 
@@ -114,6 +110,10 @@ $ ->
       when 115
         $("#search").focus()
         e.preventDefault()
+      when 63
+        new Shortcuts()
+        e.preventDefault()
+
 
   # Commit show suppressed diff
   $(".supp_diff_link").bind "click", ->
