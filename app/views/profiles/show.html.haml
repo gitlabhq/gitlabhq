@@ -85,7 +85,7 @@
             .progress
               .bar{style: "width: #{current_user.projects_limit_percent}%;"}
 
-      - unless current_user.projects_limit_left > 100
+      - unless current_user.projects_limit_left_priv > 100
         %fieldset
           %legend
             Owned private projects:
