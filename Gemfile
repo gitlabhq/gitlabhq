@@ -76,7 +76,7 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 gem  "asciidoctor"
 
 # Servers
-gem "puma", '~> 2.1.1'
+gem "puma", '~> 2.3.0'
 
 # State machine
 gem "state_machine"
