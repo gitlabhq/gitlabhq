@@ -160,8 +160,14 @@ class Project < ActiveRecord::Base
   end
 
   def check_limit
-    unless creator.can_create_project?
-      errors[:limit_reached] << ("Your own projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
+    if self.public
+      unless creator.can_create_project?
+        errors[:limit_reached] << ("Your own public projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
+      end
+    else
+      unless creator.can_create_project_priv?
+        errors[:limit_reached] << ("Your own private projects limit is #{creator.projects_limit_priv}! Please contact administrator to increase it")
+      end
     end
   rescue
     errors[:base] << ("Can't check your ability to create project")

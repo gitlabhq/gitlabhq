@@ -19,6 +19,11 @@ _Disclaimer_: I do not provide any support on GitLab itself.  I only contribute 
 You should also be aware that **Public GitLab** only applies to the latest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab.  So, use the *-stable branches!  The `master` branch on this repo has a high chance to be broken.
 ## Changelog
 
+  * [2013-07-06] : [New feature](https://github.com/ArthurHoaro/Public-GitLab/pull/19) ! Added a different projects number limit per user for private and public projects. Thanks to [Mike](https://github.com/MJSmith5) for the idea.
+  
+  > Please update your DB model to use it ( `bundle exec rake db:migrate RAILS_ENV=production` ).
+  > Warning: New option in `config/gitlab.yml.example` (`default_projects_limit_private`).
+  
   * [2013-06-30] : Public GitLab supports GitLab 5.3 (stable) - [Upgrade 5.2 to 5.3](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/doc/update/5.2-to-5.3.md)
   * [2013-05-29] : Public GitLab supports GitLab 5.2 (stable) - [Upgrade 5.1 to 5.2](https://github.com/ArthurHoaro/Public-GitLab/blob/5-3-stable/doc/update/5.1-to-5.2.md)
   * [2013-05-03] : Bugfix (you need to [update](https://github.com/ArthurHoaro/Public-GitLab#update-public-gitlab) your DB triggers)

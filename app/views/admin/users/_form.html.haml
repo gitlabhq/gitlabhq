@@ -49,8 +49,12 @@
       .row
         .span8
           .clearfix
-            = f.label :projects_limit
+            = f.label :projects_limit_public
             .input= f.number_field :projects_limit
+
+          .clearfix
+            = f.label :projects_limit_private
+            .input= f.number_field :projects_limit_priv
 
           .clearfix
             = f.label :can_create_group
