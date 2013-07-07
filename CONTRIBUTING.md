@@ -8,6 +8,8 @@ GitLab is a popular open source project and the capacity to deal with issues and
 
 Please treat our volunteers with courtesy and respect, it will go a long way towards getting your issue resolved.
 
+Issues and pull requests should be in English and contain appropriate language for audiences of all ages.
+
 ## Issue tracker
 
 To get support for your particular problem please use the channels as detailed in [the getting help section of the readme](https://github.com/gitlabhq/gitlabhq#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
@@ -26,7 +28,7 @@ Please send a pull request with a tested solution or a pull request with a faili
 2. **Steps to reproduce:** How can we reproduce the issue, preferably on the [GitLab Vagrant virtual machine](https://github.com/gitlabhq/gitlab-vagrant-vm) (start with: `vagrant destroy && vagrant up && vagrant ssh`)
 3. **Expected behavior:** Describe your issue in detail
 4. **Observed behavior**
-5. **Relevant logs and/or screen shots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
+5. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
 6. **Output of checks**
     * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
@@ -45,6 +47,7 @@ If you can, please submit a pull request with the fix or improvements including 
 1. Fork the project on GitHub
 1. Create a feature branch
 1. Write [tests](README.md#run-the-tests) and code
+1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a pull request
@@ -54,12 +57,13 @@ We will accept pull requests if:
 
 * The code has proper tests and all tests pass (or it is a test exposing a failure in existing code)
 * It can be merged without problems (if not please use: `git rebase master`)
-* It doesn't break any existing functionality
+* It does not break any existing functionality
 * It's quality code that conforms to the [Ruby](https://github.com/bbatsov/ruby-style-guide) and [Rails](https://github.com/bbatsov/rails-style-guide) style guides and best practices
 * The description includes a motive for your change and the method you used to achieve it
+* It is not a catch all pull request but rather fixes a specific issue or implements a specific feature
 * It keeps the GitLab code base clean and well structured
 * We think other users will benefit from the same functionality
 * If it makes changes to the UI the pull request should include screenshots
-* It is a single commit (please use git rebase -i to squash commits)
+* It is a single commit (please use `git rebase -i` to squash commits)
 
 For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
