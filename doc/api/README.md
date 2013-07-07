@@ -81,3 +81,8 @@ When listing resources you can pass the following parameters:
 + [System Hooks](system_hooks.md)
 + [Groups](groups.md)
 + [User Teams](user_teams.md)
+
+## Clients
+
++ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
++ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
