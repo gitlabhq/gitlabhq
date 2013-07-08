@@ -59,8 +59,9 @@ gem "haml-rails"
 
 # Files attachments
 gem "carrierwave"
+
 # for aws storage
-# gem "fog", "~> 1.3.1"
+gem "fog", "~> 1.3.1", group: :aws
 
 # Authorization
 gem "six"
@@ -76,7 +77,8 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 gem  "asciidoctor"
 
 # Servers
-gem "puma", '~> 2.0.1'
+gem "puma", '~> 2.3.1', group: :puma
+gem "unicorn", '~> 4.6.3', group: :unicorn
 
 # State machine
 gem "state_machine"
