@@ -17,7 +17,7 @@
 
 APP_ROOT="/home/git/gitlab"
 APP_USER="git"
-DAEMON_OPTS="-C $APP_ROOT/config/unicorn.rb -E production"
+DAEMON_OPTS="-c $APP_ROOT/config/unicorn.rb -E production"
 PID_PATH="$APP_ROOT/tmp/pids"
 SOCKET_PATH="$APP_ROOT/tmp/sockets"
 WEB_SERVER_PID="$PID_PATH/unicorn.pid"
