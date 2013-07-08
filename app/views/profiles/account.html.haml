@@ -3,7 +3,7 @@
     %fieldset
       %legend Social Accounts
       .oauth_select_holder
-        %p.hint Tip: Click on icon to activate sigin with one of the following services
+        %p.hint Tip: Click on icon to activate signin with one of the following services
         - enabled_social_providers.each do |provider|
           %span{class: oauth_active_class(provider) }
             = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
