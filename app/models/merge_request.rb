@@ -116,7 +116,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diffs
-    load_diffs(st_diffs) || []
+    @diffs ||= (load_diffs(st_diffs) || [])
   end
 
   def reloaded_diffs
@@ -128,6 +128,8 @@ class MergeRequest < ActiveRecord::Base
 
   def broken_diffs?
     diffs == broken_diffs
+  rescue
+    true
   end
 
   def valid_diffs?

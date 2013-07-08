@@ -30,7 +30,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def diffs
-    @diffs = @merge_request.diffs
     @commit = @merge_request.last_commit
 
     @comments_allowed = @reply_allowed = true
