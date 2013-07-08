@@ -5,7 +5,7 @@
       %li
         = link_to [@project, issue] do
           %span.badge{class: issue.closed? ? 'badge-important' : 'badge-info'} ##{issue.id}
-        = link_to_gfm truncate(issue.title, length: 60), [@project, issue]
+        = link_to_gfm truncate(issue.title, length: 40), [@project, issue]
         - if issue.assignee
           .pull-right
             = image_tag gravatar_icon(issue.assignee.email, 16), class: "avatar s16"
