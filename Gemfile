@@ -118,6 +118,9 @@ gem "d3_rails", "~> 3.1.4"
 # underscore-rails
 gem "underscore-rails", "~> 1.4.4"
 
+# Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
+gem 'minitest'
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"
@@ -168,9 +171,6 @@ group :development, :test do
   gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
-
-  # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
-  gem 'minitest'
 
   # Generate Fake data
   gem "ffaker"
