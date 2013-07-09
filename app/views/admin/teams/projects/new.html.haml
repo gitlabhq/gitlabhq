@@ -8,7 +8,7 @@
     .input
       = select_tag :project_ids, options_from_collection_for_select(@projects , :id, :name_with_namespace), multiple: true, data: {placeholder: 'Select projects'}, class: 'chosen span5'
 
-  %h6 Choose greatest user acces for your team in this projects:
+  %h6 Choose greatest user access for your team in these projects:
   .clearfix
     = label_tag :greatest_project_access, "Greatest Access"
     .input
