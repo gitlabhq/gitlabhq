@@ -33,6 +33,18 @@ class Repository
     commits
   end
 
+  def round_commit_count
+    if commit_count > 10000
+      '10000+'
+    elsif commit_count > 5000
+      '5000+'
+    elsif commit_count > 1000
+      '1000+'
+    else
+      commit_count
+    end
+  end
+
   def branch_names
     Rails.cache.fetch(cache_key(:branch_names)) do
       raw_repository.branch_names
@@ -45,8 +57,10 @@ class Repository
     end
   end
 
-  def method_missing(m, *args, &block)
-    raw_repository.send(m, *args, &block)
+  def commit_count
+    Rails.cache.fetch(cache_key(:commit_count)) do
+      raw_repository.raw.commit_count
+    end
   end
 
   # Return repo size in megabytes
@@ -61,6 +75,7 @@ class Repository
     Rails.cache.delete(cache_key(:size))
     Rails.cache.delete(cache_key(:branch_names))
     Rails.cache.delete(cache_key(:tag_names))
+    Rails.cache.delete(cache_key(:commit_count))
     Rails.cache.delete(cache_key(:graph_log))
   end
 
@@ -73,6 +88,10 @@ class Repository
 
   def cache_key(type)
     "#{type}:#{path_with_namespace}"
+  end
+
+  def method_missing(m, *args, &block)
+    raw_repository.send(m, *args, &block)
   end
 
   def respond_to?(method)

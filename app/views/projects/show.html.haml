@@ -37,9 +37,18 @@
 
       %hr
       %p
-      %p Repo Size: #{@project.repository.size} MB
-      %p Created on: #{@project.created_at.stamp('Aug 22, 2013')}
-      %p Owner: #{link_to @project.owner_name, @project.owner}
+      %p
+        %span.light Repo size is
+        #{@project.repository.size} MB
+      %p
+        %span.light Created at
+        #{@project.created_at.stamp('Aug 22, 2013')}
+      %p
+        %span.light Owned by
+        - if @project.group
+          #{link_to @project.group.name, @project.group} Group
+        - else
+          #{link_to @project.owner_name, @project.owner}
       - if @project.forked_from_project
         %p
           %i.icon-code-fork
@@ -50,3 +59,11 @@
         %hr
         = link_to @project.gitlab_ci_service.builds_path do
           = image_tag @project.gitlab_ci_service.status_img_path, alt: "build status"
+
+      %hr
+      %p
+        = link_to pluralize(@repository.round_commit_count, 'commit'), project_commits_path(@project)
+      %p
+        = link_to pluralize(@repository.branch_names.count, 'branch'), project_repository_path(@project)
+      %p
+        = link_to pluralize(@repository.tag_names.count, 'tag'), tags_project_repository_path(@project)
