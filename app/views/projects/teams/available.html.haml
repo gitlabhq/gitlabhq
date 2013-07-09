@@ -10,7 +10,7 @@
   .padded
     = label_tag :team_id, "Team"
     .input= select_tag(:team_id, options_from_collection_for_select(@teams, :id, :name), prompt: "Select team", class: "chosen xxlarge", required: true)
-  %p.slead Choose greatest user acces in team you want to assign:
+  %p.slead Choose greatest user access for your team in this project:
   .padded
     = label_tag :team_ids, "Permission"
     .input= select_tag :greatest_project_access, options_for_select(UserTeam.access_roles), {class: "project-access-select chosen span3" }
