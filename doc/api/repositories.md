@@ -39,6 +39,38 @@ Parameters:
 ]
 ```
 
+## Create a branch
+
+Create a new branch.
+
+```
+POST /projects/:id/repository/branches/:branch/:ref
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:branch` (required) - The name of the branch being created
++ `:ref` (required) - Reference branch is built from (Branch/Tag/SHA1/etc)
+
+```
+200 OK
+```
+
+## Delete a branch
+
+Delete a new branch.
+
+```
+DELETE /projects/:id/repository/branches/:branch
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:branch` (required) - The name of the branch being deleted
+
+```
+200 OK
+```
 
 ## Get single repository branch
 
@@ -78,6 +110,39 @@ Parameters:
   },
   "protected": true
 }
+```
+
+## Create a tag
+
+Create a new tag.
+
+```
+POST /projects/:id/repository/tags/:tag/:ref
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:tag` (required) - The name of the tag being created
++ `:ref` (required) - Reference tag is built from (Branch/Tag/SHA1/etc)
+
+```
+200 OK
+```
+
+## Delete a tag
+
+Delete a new tag.
+
+```
+DELETE /projects/:id/repository/tags/:tag
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:tag` (required) - The name of the tag being deleted
+
+```
+200 OK
 ```
 
 
