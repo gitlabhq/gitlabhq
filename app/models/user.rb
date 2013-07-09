@@ -262,7 +262,7 @@ class User < ActiveRecord::Base
   end
 
   def can_create_project?
-    projects_limit > owned_projects.count
+    projects_limit_left > 0
   end
 
   def can_create_group?
