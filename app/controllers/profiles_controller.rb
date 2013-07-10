@@ -17,7 +17,7 @@ class ProfilesController < ApplicationController
   end
 
   def update
-    if @user.update_attributes(user_attributes)
+    if @user.update_attributes(params[:user])
       flash[:notice] = "Profile was successfully updated"
     else
       flash[:alert] = "Failed to update profile"
@@ -67,19 +67,6 @@ class ProfilesController < ApplicationController
 
   def user
     @user = current_user
-  end
-
-  def user_attributes
-    user_attributes = params[:user]
-
-    # Sanitize user input because we dont have strict
-    # validation for this fields
-    %w(name skype linkedin twitter bio).each do |attr|
-      value = user_attributes[attr]
-      user_attributes[attr] = sanitize(strip_tags(value)) if value.present?
-    end
-
-    user_attributes
   end
 
   def authorize_change_password!

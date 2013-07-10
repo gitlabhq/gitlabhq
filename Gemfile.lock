@@ -610,6 +610,7 @@ DEPENDENCIES
   redcarpet (~> 2.2.2)
   redis-rails
   rspec-rails
+  sanitize
   sass-rails
   sdoc
   seed-fu
