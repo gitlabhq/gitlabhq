@@ -66,12 +66,6 @@ describe "On a merge request", js: true do
       within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) }
       within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
     end
-
-    it "should be removable" do
-      find('.note').hover
-      find(".js-note-delete").click
-      should_not have_css(".note")
-    end
   end
 
   describe "when editing a note", js: true do
