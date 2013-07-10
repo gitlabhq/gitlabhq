@@ -1,18 +1,14 @@
 .ui-box
   %h5.title
-    %strong= @group.name
-    Projects (#{projects.count})
-    - if can? current_user, :manage_group, @group
-      %span.pull-right
-        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-small", title: 'New Project' do
-          %i.icon-plus
-          %span.only-wide New Project
+    Shared Projects (#{projects.count})
   %ul.well-list
-    - if projects.blank?
-      %p.nothing_here_message This groups has no projects yet
     - projects.each do |project|
       %li.project-row
         = link_to project_path(project), class: dom_class(project) do
+          %span.namespace-name
+            - if project.namespace
+              = project.namespace.human_name
+              \/
           %span.project-name
             = truncate(project.name, length: 25)
           %span.arrow
