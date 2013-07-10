@@ -22,7 +22,7 @@ class Key < ActiveRecord::Base
   before_validation :strip_white_space
 
   validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\Assh-.*\Z/ }, uniqueness: true
+  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
   validate :fingerprintable_key
 
   delegate :name, :email, to: :user, prefix: true
