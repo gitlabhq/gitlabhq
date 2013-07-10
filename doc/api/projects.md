@@ -453,3 +453,28 @@ Parameters:
 + `id` (required) - The ID of the project.
 + `branch` (required) - The name of the branch.
 
+
+## Admin fork relation
+
+Allows modification of the forked relationship between existing projects. . Available only for admins.
+
+### Create a forked from/to relation between existing projects.
+
+```
+POST /projects/:id/fork/:forked_from_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
++ `forked_from_id:` (required) - The ID of the project that was forked from
+
+### Delete an existing forked from relationship
+
+```
+DELETE /projects/:id/fork
+```
+
+Parameter:
+
++ `id` (required) - The ID of the project
