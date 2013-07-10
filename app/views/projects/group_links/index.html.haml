@@ -1,0 +1,35 @@
+%h3.page_title Share project with groups
+%br
+%p
+  Project can be stored in one group at once
+  %br
+  However you can share project with other groups here.
+
+.row
+  .span5.enabled-groups
+    %h5
+      Already shared with:
+    %ul.bordered-list
+      - Group.first(2).each do |group|
+        %li
+          %h5
+            .pull-left
+              %a.btn.btn-small
+                %i.icon-remove
+              &nbsp;
+            = link_to group do
+              %i.icon-folder-open
+              = group.name
+
+  .span5.available-groups
+    %h5
+      Can be shared with:
+    %ul.bordered-list
+      - Group.last(5).each do |group|
+        %li
+          %h5
+            .pull-right
+              %a.btn.btn-small Share
+            %i.icon-folder-close
+            = group.name
+

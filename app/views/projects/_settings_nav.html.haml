@@ -19,3 +19,7 @@
     = link_to project_services_path(@project) do
       %span
       Services
+  = nav_link(controller: :group_links) do
+    = link_to project_group_links_path(@project) do
+      %span
+      Groups
