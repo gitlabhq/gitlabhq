@@ -118,6 +118,9 @@ gem "d3_rails", "~> 3.1.4"
 # underscore-rails
 gem "underscore-rails", "~> 1.4.4"
 
+# Sanitize user input
+gem "sanitize"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"

@@ -116,7 +116,10 @@ class User < ActiveRecord::Base
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
 
   before_validation :generate_password, on: :create
+  before_validation :sanitize_attrs
+
   before_save :ensure_authentication_token
+
   alias_attribute :private_token, :authentication_token
 
   delegate :path, to: :namespace, allow_nil: true, prefix: true
@@ -370,5 +373,12 @@ class User < ActiveRecord::Base
 
   def created_by
     User.find_by_id(created_by_id) if created_by_id
+  end
+
+  def sanitize_attrs
+    %w(name username skype linkedin twitter bio).each do |attr|
+      value = self.send(attr)
+      self.send("#{attr}=", Sanitize.clean(value)) if value.present?
+    end
   end
 end
