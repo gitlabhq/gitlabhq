@@ -64,3 +64,14 @@
 
   &.nav-small-tabs > li > a { padding: 6px 9px; }
 }
+
+
+
+/**
+ * fix to keep tooltips position in top navigation bar
+ *
+ */
+.navbar .nav > li {
+  position: relative;
+  white-space: nowrap;
+}
