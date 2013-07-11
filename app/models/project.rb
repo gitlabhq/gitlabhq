@@ -67,6 +67,9 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
 
+  has_many :project_group_links_path, dependent: :destroy
+  has_many :invited_groups, through: :project_group_links, source: 'group'
+
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
 
