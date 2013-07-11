@@ -61,10 +61,11 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
-      #   issues_enabled (optional) - enabled by default
-      #   wall_enabled (optional) - enabled by default
-      #   merge_requests_enabled (optional) - enabled by default
-      #   wiki_enabled (optional) - enabled by default
+      #   issues_enabled (optional) 
+      #   wall_enabled (optional) 
+      #   merge_requests_enabled (optional) 
+      #   wiki_enabled (optional) 
+      #   snippets_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
       # Example Request
       #   POST /projects
@@ -77,6 +78,7 @@ module API
                                     :wall_enabled,
                                     :merge_requests_enabled,
                                     :wiki_enabled,
+                                    :snippets_enabled,
                                     :namespace_id]
         @project = ::Projects::CreateContext.new(current_user, attrs).execute
         if @project.saved?
@@ -96,10 +98,11 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
-      #   issues_enabled (optional) - enabled by default
-      #   wall_enabled (optional) - enabled by default
-      #   merge_requests_enabled (optional) - enabled by default
-      #   wiki_enabled (optional) - enabled by default
+      #   issues_enabled (optional) 
+      #   wall_enabled (optional) 
+      #   merge_requests_enabled (optional) 
+      #   wiki_enabled (optional)
+      #   snippets_enabled (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -111,7 +114,8 @@ module API
                                     :issues_enabled,
                                     :wall_enabled,
                                     :merge_requests_enabled,
-                                    :wiki_enabled]
+                                    :wiki_enabled,
+                                    :snippets_enabled]
         @project = ::Projects::CreateContext.new(user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
