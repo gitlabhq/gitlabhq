@@ -3,7 +3,7 @@ module Grack
     def project_by_path(path)
       if m = /^\/([\w\.\/-]+)\.git/.match(path).to_a
         path_with_namespace = m.last
-        path_with_namespace.gsub!(/.wiki$/, '')
+        path_with_namespace.gsub!(/\.wiki$/, '')
 
         Project.find_with_namespace(path_with_namespace)
       end
