@@ -16,6 +16,9 @@ class Group < Namespace
   has_many :users_groups, dependent: :destroy
   has_many :users, through: :users_groups
 
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: 'project'
+
   after_create :add_owner
 
   def human_name

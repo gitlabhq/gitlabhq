@@ -17,7 +17,7 @@
         = @group.description
     = render "projects", projects: @projects
     %br
-    = render "shared_projects", projects: Project.first(3)
+    = render "shared_projects", projects: @shared_projects
 
     .prepend-top-20
       = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed" do
