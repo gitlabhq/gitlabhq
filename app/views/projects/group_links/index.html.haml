@@ -10,11 +10,12 @@
     %h5
       Already shared with:
     %ul.bordered-list
-      - Group.first(2).each do |group|
+      - @group_links.each do |group_link|
+        - group = group_link.group
         %li
           %h5
             .pull-left
-              %a.btn.btn-small
+              = link_to project_group_link_path(@project, group_link), method: :delete, class: 'btn btn-small' do
                 %i.icon-remove
               &nbsp;
             = link_to group do
@@ -25,11 +26,13 @@
     %h5
       Can be shared with:
     %ul.bordered-list
-      - Group.last(5).each do |group|
+      - @available_groups.each do |group|
         %li
           %h5
             .pull-right
-              %a.btn.btn-small Share
+              = form_tag project_group_links_path(@project), method: :post do
+                = hidden_field_tag :group_id, group.id
+                = submit_tag "Share", class: "btn btn-small"
             %i.icon-folder-close
             = group.name
 

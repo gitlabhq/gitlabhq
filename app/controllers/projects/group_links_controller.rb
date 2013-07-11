@@ -14,15 +14,24 @@ class Projects::GroupLinksController < Projects::ApplicationController
   layout 'project_settings'
 
   def index
-    # TODO: Implement
+    @group_links = project.project_group_links.all
+    @available_groups = Group.scoped
+    @available_groups -= project.invited_groups
+    @available_groups -= [project.group]
   end
 
   def create
-    # TODO: Implement
+    link = project.project_group_links.new
+    link.group_id = params[:group_id]
+    link.save
+
+    redirect_to project_group_links_path(project)
   end
 
   def destroy
-    # TODO: Implement
+    project.project_group_links.find(params[:id]).destroy
+
+    redirect_to project_group_links_path(project)
   end
 end
 
