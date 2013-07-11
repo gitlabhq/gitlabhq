@@ -1,6 +1,8 @@
 .ui-box
   %h5.title
-    Shared Projects (#{projects.count})
+    Projects shared with
+    %strong #{@group.name}
+    (#{projects.count})
   %ul.well-list
     - projects.each do |project|
       %li.project-row

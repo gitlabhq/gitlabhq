@@ -7,6 +7,10 @@
     = link_to project_team_index_path(@project), class: "team-tab tab" do
       %i.icon-group
       Members
+  = nav_link(controller: :group_links) do
+    = link_to project_group_links_path(@project) do
+      %span
+      Groups
   = nav_link(controller: :deploy_keys) do
     = link_to project_deploy_keys_path(@project) do
       %span
@@ -19,7 +23,3 @@
     = link_to project_services_path(@project) do
       %span
       Services
-  = nav_link(controller: :group_links) do
-    = link_to project_group_links_path(@project) do
-      %span
-      Groups
