@@ -334,6 +334,10 @@ class Project < ActiveRecord::Base
     true
   end
 
+  def update_head(branch)
+    gitlab_shell.update_head(path_with_namespace, branch)
+  end
+
   def valid_repo?
     repository.exists?
   rescue

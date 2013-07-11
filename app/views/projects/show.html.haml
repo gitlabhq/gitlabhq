@@ -37,6 +37,7 @@
 
       %hr
       %p
+      %p Default Branch: #{link_to @project.default_branch, project_commits_path(@project, @repository.root_ref)}
       %p Repo Size: #{@project.repository.size} MB
       %p Created on: #{@project.created_at.stamp('Aug 22, 2013')}
       %p Owner: #{link_to @project.owner_name, @project.owner}

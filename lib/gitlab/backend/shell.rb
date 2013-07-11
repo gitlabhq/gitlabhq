@@ -121,6 +121,14 @@ module Gitlab
       FileUtils.rm_r(satellites_path, force: true)
     end
 
+    # Update the branch that HEAD points to within the repo.
+    #
+    # Ex.
+    #   update_head("gitlab/gitlab-ci", 'master-devel')
+    def update_head(path, branch)
+      system("#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects update-head #{path}.git #{branch}")
+    end
+
     def url_to_repo path
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
