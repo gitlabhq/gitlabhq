@@ -2,7 +2,7 @@
   %fieldset
     %legend= "New Group member(s) for #{@group.name}"
 
-    %h6 1. Choose people you want in the group
+    %h6 1. Choose users you want in the group
     .clearfix
       = f.label :user_ids, "People"
       .input= users_select_tag(:user_ids, multiple: true, class: 'input-large')
@@ -13,6 +13,5 @@
       .input= select_tag :group_access, options_for_select(UsersGroup.group_access_roles, @users_group.group_access), class: "project-access-select chosen"
 
     .form-actions
-      = hidden_field_tag :redirect_to, people_group_path(@group)
       = f.submit 'Add users into group', class: "btn btn-create"
 

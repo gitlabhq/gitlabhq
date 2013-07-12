@@ -61,7 +61,7 @@ class GroupsController < ApplicationController
     end
   end
 
-  def people
+  def members
     @project = group.projects.find(params[:project_id]) if params[:project_id]
     @members = group.users_groups.order('group_access DESC')
     @users_group = UsersGroup.new

@@ -22,7 +22,7 @@ Feature: Groups
   @javascript
   Scenario: I should add user to projects in Group
     Given I have new user "John"
-    When I visit group people page
+    When I visit group members page
     And I select user "John" from list with role "Reporter"
     Then I should see user "John" in team list
 

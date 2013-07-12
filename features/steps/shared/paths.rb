@@ -21,8 +21,8 @@ module SharedPaths
     visit merge_requests_group_path(current_group)
   end
 
-  step 'I visit group people page' do
-    visit people_group_path(current_group)
+  step 'I visit group members page' do
+    visit members_group_path(current_group)
   end
 
   step 'I visit group settings page' do
