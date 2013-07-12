@@ -194,7 +194,6 @@ class MergeRequest < ActiveRecord::Base
     commits
   end
 
-
   def merge!(user_id)
     self.author_id_of_changes = user_id
     self.merge
@@ -221,7 +220,6 @@ class MergeRequest < ActiveRecord::Base
   def to_diff(current_user)
     Gitlab::Satellite::MergeAction.new(current_user, self).diff_in_satellite
   end
-
 
   # Returns the commit as a series of email patches.
   #

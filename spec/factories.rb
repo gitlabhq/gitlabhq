@@ -71,7 +71,6 @@ FactoryGirl.define do
     end
   end
 
-
   factory :group do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }

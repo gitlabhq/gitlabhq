@@ -24,7 +24,6 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     page.should have_content "Wiki Feature"
   end
 
-
   Then 'I should see closed merge request "Bug NS-04"' do
     merge_request = MergeRequest.find_by_title!("Bug NS-04")
     merge_request.closed?.should be_true

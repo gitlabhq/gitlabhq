@@ -44,7 +44,6 @@ module Gitlab
         handle_exception(ex)
       end
 
-
       # Get a raw diff of the source to the target
       def diff_in_satellite
         in_locked_and_timed_satellite do |merge_repo|
@@ -114,14 +113,12 @@ module Gitlab
           end
           commits = commits.map { |commit| Gitlab::Git::Commit.new(commit, nil) }
           return commits
-
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
 
       private
-
       # Merges the source_branch into the target_branch in the satellite.
       #
       # Note: it will clear out the satellite before doing anything

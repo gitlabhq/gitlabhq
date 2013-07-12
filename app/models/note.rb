@@ -52,11 +52,11 @@ class Note < ActiveRecord::Base
 
   def self.create_status_change_note(noteable, project, author, status)
     create({
-               noteable: noteable,
-               project: project,
-               author: author,
-               note: "_Status changed to #{status}_"
-           }, without_protection: true)
+      noteable: noteable,
+      project: project,
+      author: author,
+      note: "_Status changed to #{status}_"
+    }, without_protection: true)
   end
 
   def commit_author
@@ -97,7 +97,7 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def downvote?
     votable? && (note.start_with?('-1') ||
-        note.start_with?(':-1:')
+      note.start_with?(':-1:')
     )
   end
 
@@ -136,8 +136,8 @@ class Note < ActiveRecord::Base
     else
       super
     end
-      # Temp fix to prevent app crash
-      # if note commit id doesn't exist
+  # Temp fix to prevent app crash
+  # if note commit id doesn't exist
   rescue
     nil
   end
@@ -146,7 +146,7 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def upvote?
     votable? && (note.start_with?('+1') ||
-        note.start_with?(':+1:')
+      note.start_with?(':+1:')
     )
   end
 

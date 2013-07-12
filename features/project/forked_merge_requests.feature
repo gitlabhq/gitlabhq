@@ -4,7 +4,6 @@ Feature: Project Forked Merge Requests
     And I am a member of project "Shop"
     And I have a project forked off of "Shop" called "Forked Shop"
 
-
   @javascript
   Scenario: I can visit the target projects commit for a forked merge request
     Given I visit project "Forked Shop" merge requests page

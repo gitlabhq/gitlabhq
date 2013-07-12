@@ -16,7 +16,6 @@ class ForkProject < Spinach::FeatureSteps
     @project.team << [@user, :reporter]
   end
 
-
   step 'I should see the forked project page' do
     page.should have_content "Project was successfully forked."
     current_path.should include current_user.namespace.path

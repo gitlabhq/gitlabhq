@@ -71,12 +71,12 @@
   $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: source_branch.val() });
   $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: target_branch.val() });
 
-  target_project.live("change", function() {
+  target_project.on("change", function() {
     $.get("#{update_branches_project_merge_requests_path(@source_project)}", {target_project_id:  $(this).val() });
   });
-  source_branch.live("change", function() {
+  source_branch.on("change", function() {
     $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: $(this).val() });
   });
-  target_branch.live("change", function() {
+  target_branch.on("change", function() {
     $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
   });

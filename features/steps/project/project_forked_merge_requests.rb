@@ -4,8 +4,6 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
 
-
-
   Given 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
     @project ||= create(:project_with_code, name: "Shop")
@@ -22,11 +20,9 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     forked_project_link.save!
   end
 
-
   Given 'I click link "New Merge Request"' do
     click_link "New Merge Request"
   end
-
 
   Then 'I should see merge request "Merge Request On Forked Project"' do
     page.should have_content "Merge Request On Forked Project"
@@ -151,7 +147,6 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     verify_commit_link(".mr_target_commit",@project)
   end
 
-
   And 'I fill out an invalid "Merge Request On Forked Project" merge request' do
     #If this isn't filled in the rest of the validations won't be triggered
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
@@ -161,13 +156,11 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     find(:select, "merge_request_target_branch", {}).value.should == ""
   end
 
-
   Then 'I should see validation errors' do
     page.should have_content "Source branch can't be blank"
     page.should have_content "Target branch can't be blank"
     page.should have_content "Branch conflict You can not use same project/branch for source and target"
   end
-
 
   def project
     @project ||= Project.find_by_name!("Shop")
@@ -179,5 +172,4 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     find(:div,container_div).should have_css ".browse_code_link_holder"
     find(:div,container_div).find(".commit_short_id")['href'].should have_content "#{container_project.path_with_namespace}/commit"
   end
-
 end
