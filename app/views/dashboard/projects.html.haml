@@ -1,15 +1,3 @@
-%h3.page_title
-  Projects
-  %span
-    (#{@projects.total_count})
-  - if current_user.can_create_project?
-    %span.pull-right
-      = link_to new_project_path, class: "btn btn-tiny info" do
-        %i.icon-plus
-        New Project
-
-
-%hr
 .row
   .span3
     %ul.nav.nav-pills.nav-stacked
@@ -19,8 +7,10 @@
         = link_to "Personal", projects_dashboard_path(scope: 'personal')
       = nav_tab :scope, 'joined' do
         = link_to "Joined", projects_dashboard_path(scope: 'joined')
+      = nav_tab :scope, 'owned' do
+        = link_to "Owned", projects_dashboard_path(scope: 'owned')
 
-    - if @labels.any?
+    - if @labels.present?
       %p.light Filter by label:
       %ul.bordered-list
         - @labels.each do |label|
@@ -31,48 +21,31 @@
 
 
   .span9
-    - if @projects.any?
-      = form_tag projects_dashboard_path, method: 'get' do
-        %fieldset.dashboard-search-filter
-          = hidden_field_tag "scope", params[:scope]
-          = search_field_tag "search", params[:search], { id: 'dashboard_projects_search', placeholder: 'Search', class: 'left input-xxlarge'}
-          = button_tag type: 'submit', class: 'btn' do
-            %i.icon-search
-
-    %ul.bordered-list
-      - @projects.each do |project|
-        %li.clearfix
-          .clearfix
-            %h5
-              = link_to project_path(project), class: dom_class(project) do
-                - if project.namespace
-                  = project.namespace.human_name
-                  %span= "/"
-                %strong
-                  = truncate(project.name, length: 45)
-              .pull-right.light
-                - if project.owner == current_user
-                  %i.icon-wrench
-                - tm = project.team.get_tm(current_user.id)
-                - if tm
-                  %strong= tm.project_access_human
-          .clearfix
-            .left
-              - if project.description.present?
-                %span.light= project.description
-              - project.labels.each do |label|
-                %span.label.label-info
-                  %i.icon-tag
-                  = label.name
+    .ui-box
+      %h5.title
+        Projects (#{@projects.total_count})
+        .pull-right.light
+          %small Last activity
+      %ul.well-list
+        - @projects.each do |project|
+          %li
+            - if project.public
+              = public_icon
+            - else
+              = private_icon
+            = link_to project_path(project), class: dom_class(project) do
+              %strong
+                = project.name_with_namespace
+            - if project.description.present?
+              %span.light
+                = truncate project.description, length: 80
 
             .pull-right.light
-              %small.light
-                Last activity #{project_last_activity(project)}
+              %small #{project_last_activity(project)}
 
-      - if @projects.blank?
-        %li
-          %h3.nothing_here_message There are no projects here.
+        - if @projects.blank?
+          %li
+            %h3.nothing_here_message There are no projects here.
     .bottom
-      %hr
       = paginate @projects, theme: "gitlab"
 

@@ -4,7 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
+#  encrypted_password     :string(128)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -13,8 +13,8 @@
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
@@ -34,6 +34,8 @@
 #  state                  :string(255)
 #  color_scheme_id        :integer          default(1), not null
 #  notification_level     :integer          default(1), not null
+#  password_expires_at    :datetime
+#  created_by_id          :integer
 #
 
 class User < ActiveRecord::Base
@@ -71,14 +73,11 @@ class User < ActiveRecord::Base
   has_many :keys, dependent: :destroy
 
   # Groups
-  has_many :groups, class_name: "Group", foreign_key: :owner_id
+  has_many :own_groups, class_name: "Group", foreign_key: :owner_id
+  has_many :owned_groups, through: :users_groups, source: :group, conditions: { users_groups: { group_access: UsersGroup::OWNER } }
 
-  # Teams
-  has_many :own_teams,                       dependent: :destroy, class_name: "UserTeam", foreign_key: :owner_id
-  has_many :user_team_user_relationships,    dependent: :destroy
-  has_many :user_teams,                      through: :user_team_user_relationships
-  has_many :user_team_project_relationships, through: :user_teams
-  has_many :team_projects,                   through: :user_team_project_relationships
+  has_many :users_groups, dependent: :destroy
+  has_many :groups, through: :users_groups
 
   # Projects
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
@@ -91,10 +90,9 @@ class User < ActiveRecord::Base
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
 
+  has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
-  has_many :master_projects,          through: :users_projects, source: :project,
-                                      conditions: { users_projects: { project_access: UsersProject::MASTER } }
   has_many :own_projects,             foreign_key: :creator_id, class_name: 'Project'
   has_many :owned_projects,           through: :namespaces, source: :projects
 
@@ -211,6 +209,7 @@ class User < ActiveRecord::Base
       u.projects_limit = Gitlab.config.gitlab.default_projects_limit
       u.can_create_group = Gitlab.config.gitlab.default_can_create_group
       u.can_create_team = Gitlab.config.gitlab.default_can_create_team
+      u.theme_id = Gitlab::Theme::MARS
     end
   end
 
@@ -231,35 +230,21 @@ class User < ActiveRecord::Base
     end
   end
 
-  # Groups where user is an owner
-  def owned_groups
-    groups
-  end
-
-  def owned_teams
-    own_teams
-  end
-
   # Groups user has access to
   def authorized_groups
-    @group_ids ||= (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-    Group.where(id: @group_ids)
+    @authorized_groups ||= begin
+                             group_ids = (groups.pluck(:id) + own_groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
+                             Group.where(id: group_ids).order('namespaces.name ASC')
+                           end
   end
 
 
   # Projects user has access to
   def authorized_projects
-    @project_ids ||= (owned_projects.pluck(:id) + projects.pluck(:id)).uniq
-    Project.where(id: @project_ids)
-  end
-
-  def authorized_teams
-    if admin?
-      UserTeam.scoped
-    else
-      @team_ids ||= (user_teams.pluck(:id) + own_teams.pluck(:id)).uniq
-      UserTeam.where(id: @team_ids)
-    end
+    @authorized_projects ||= begin
+                               project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id)).uniq
+                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+                             end
   end
 
   # Team membership in authorized projects
@@ -280,7 +265,7 @@ class User < ActiveRecord::Base
   end
 
   def can_create_project?
-    projects_limit > owned_projects.count
+    projects_limit_left > 0
   end
 
   def can_create_group?
@@ -312,12 +297,12 @@ class User < ActiveRecord::Base
   end
 
   def projects_limit_left
-    projects_limit - owned_projects.count
+    projects_limit - personal_projects.count
   end
 
   def projects_limit_percent
     return 100 if projects_limit.zero?
-    (owned_projects.count.to_f / projects_limit) * 100
+    (personal_projects.count.to_f / projects_limit) * 100
   end
 
   def recent_push project_id = nil
@@ -368,7 +353,7 @@ class User < ActiveRecord::Base
   end
 
   def accessible_deploy_keys
-    DeployKey.in_projects(self.master_projects).uniq
+    DeployKey.in_projects(self.authorized_projects).uniq
   end
 
   def created_by

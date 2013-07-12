@@ -25,6 +25,9 @@
           = link_to "search bar", '#', onclick: "$('#search').focus();"
           on the top of this page
         %li
+          Use
+          = link_to "shortcuts", '#', onclick: "new Shortcuts()"
+        %li
           Ask in our
           = link_to "mailing list", "https://groups.google.com/forum/#!forum/gitlabhq"
           or on
@@ -32,6 +35,7 @@
         %li
           Browse our
           = link_to "issue tracker", "https://github.com/gitlabhq/gitlabhq/issues"
+
   .span4
     .ui-box
       .title

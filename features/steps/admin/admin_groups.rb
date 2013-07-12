@@ -43,13 +43,22 @@ class AdminGroups < Spinach::FeatureSteps
     user = User.find_by_name("John")
     select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select "Reporter", from: "project_access"
+      select "Reporter", from: "group_access"
     end
-    click_button "Add user to projects in group"
+    click_button "Add users into group"
   end
 
   Then 'I should see "John" in team list in every project as "Reporter"' do
-    user = User.find_by_name("John")
+    within ".group-users-list" do
+      page.should have_content "John"
+      page.should have_content "Reporter"
+    end
+  end
+
+  step 'I should be all groups' do
+    Group.all.each do |group|
+      page.should have_content group.name
+    end
   end
 
   protected

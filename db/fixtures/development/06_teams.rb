@@ -1,14 +1,23 @@
 ActiveRecord::Base.observers.disable :all
 
 Gitlab::Seeder.quiet do
-  Project.all.each do |project|
-    project.team << [User.first, :master]
-    print '.'
+  Group.all.each do |group|
+    User.all.sample(4).each do |user|
+      if group.add_users([user.id], UsersGroup.group_access_roles.values.sample)
+        print '.'
+      else
+        print 'F'
+      end
+    end
+  end
 
-    User.all.sample(rand(10)).each do |user|
-      role = [:master, :developer, :reporter].sample
-      project.team << [user, role]
-      print '.'
+  Project.all.each do |project|
+    User.all.sample(4).each do |user|
+      if project.team << [user, UsersProject.access_roles.values.sample]
+        print '.'
+      else
+        print 'F'
+      end
     end
   end
 end

@@ -17,9 +17,28 @@
           - if can? current_user, :download_code, @project
             = link_to archive_project_repository_path(@project), class: "btn grouped" do
               %i.icon-download-alt
-              Download
+              %span.only-wide Download
 
-            = link_to tags_project_repository_path(@project), class: "btn grouped only-wide", title: 'Git Tags' do
-              %i.icon-tags
-              Tags
-
+        .dropdown.pull-right
+          %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+            %i.icon-plus-sign-alt
+            %span.only-wide New
+            %b.caret
+          %ul.dropdown-menu
+            - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+              %li
+                = link_to url_for_new_issue, title: "New Issue" do
+                  Issue
+            - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+              %li
+                = link_to new_project_merge_request_path(@project), title: "New Merge Request" do
+                  Merge Request
+            - if @project.snippets_enabled && can?(current_user, :write_snippet, @project)
+              %li
+                = link_to new_project_snippet_path(@project), title: "New Snippet" do
+                  Snippet
+            - if can?(current_user, :admin_team_member, @project)
+              %li.divider
+              %li
+                = link_to new_project_team_member_path(@project), title: "New Team member" do
+                  Team member

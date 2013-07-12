@@ -70,7 +70,7 @@ module SharedPaths
   end
 
   step 'I visit profile SSH keys page' do
-    visit keys_path
+    visit profile_keys_path
   end
 
   step 'I visit profile design page' do

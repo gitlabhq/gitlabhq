@@ -6,8 +6,8 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)

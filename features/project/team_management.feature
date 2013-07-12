@@ -31,6 +31,7 @@ Feature: Project Team management
   Scenario: Import team from another project
     Given I own project "Website"
     And "Mike" is "Website" reporter
+    When I visit project "Shop" team page
     And I click link "Import team from another project"
-    When I submit "Website" project for import team
+    And I submit "Website" project for import team
     Then I should see "Mike" in team list as "Reporter"

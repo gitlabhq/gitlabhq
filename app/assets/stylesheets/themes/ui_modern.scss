@@ -16,15 +16,15 @@
     @extend .header-dark;
     &.navbar-gitlab {
       .navbar-inner {
-        background: #567;
+        background: #345;
         .app_logo {
           &:hover {
-            background-color: #516171;
+            background-color: #234;
           }
         }
         .separator {
-          background: #456;
-          border-left: 1px solid #678;
+          background: #234;
+          border-left: 1px solid #456;
         }
       }
     }

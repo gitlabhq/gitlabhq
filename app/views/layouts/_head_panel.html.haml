@@ -36,5 +36,5 @@
           = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
             %i.icon-signout
         %li
-          = link_to current_user, class: "profile-pic" do
-            = image_tag(gravatar_icon(current_user.email, 26), alt: '')
+          = link_to current_user, class: "profile-pic", id: 'profile-pic' do
+            = image_tag gravatar_icon(current_user.email, 26), alt: ''

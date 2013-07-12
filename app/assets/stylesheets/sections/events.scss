@@ -41,6 +41,8 @@
     }
   }
   .event-body {
+    margin-left: 35px;
+
     .commit p {
       color: #666;
       padding-top: 5px;
@@ -51,7 +53,6 @@
     .event-note {
       color: #555;
       margin-top: 5px;
-      margin-left: 40px;
 
       pre {
         border: none;
@@ -77,10 +78,6 @@
       margin-right: 5px;
     }
   }
-  .avatar {
-    position: relative;
-    top: -3px;
-  }
   .event_icon {
     position: relative;
     float: right;
@@ -95,11 +92,10 @@
     }
   }
   ul {
-    margin-left: 50px;
     margin-bottom: 5px;
     .avatar {
       width: 18px;
-      margin-top: 3px;
+      margin: 2px 4px;
     }
   }
 
@@ -118,7 +114,12 @@
       }
       &.commits-stat {
         display: block;
-        margin-top: 5px;
+        padding: 3px;
+        margin-top: 3px;
+
+        &:hover {
+          background: none;
+        }
       }
     }
   }

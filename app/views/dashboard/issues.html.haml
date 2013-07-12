@@ -22,7 +22,7 @@
 
           %ul.well-list.issues-list
             - group[1].each do |issue|
-              = render issue
+              = render 'projects/issues/issue', issue: issue
       %hr
       = paginate @issues, theme: "gitlab"
     - else

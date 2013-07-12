@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe CommitController do
+describe Projects::CommitController do
   let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
   let(:commit)  { project.repository.last_commit_for("master") }

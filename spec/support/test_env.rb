@@ -42,6 +42,7 @@ module TestEnv
       add_repository: true,
       mv_repository: true,
       remove_repository: true,
+      update_repository_head: true,
       add_key: true,
       remove_key: true
     )
@@ -65,11 +66,6 @@ module TestEnv
 
     # Recreate tmp/test-git-base-path
     FileUtils.mkdir_p Gitlab.config.gitlab_shell.repos_path
-
-    # Symlink tmp/repositories/gitlabhq to tmp/test-git-base-path/gitlabhq
-    seed_repo = Rails.root.join('tmp', 'repositories', 'gitlabhq')
-    target_repo = File.join(repos_path, 'gitlabhq.git')
-    system("ln -s #{seed_repo} #{target_repo}")
   end
 
   def create_temp_repo(path)

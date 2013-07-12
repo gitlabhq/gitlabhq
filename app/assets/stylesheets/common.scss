@@ -206,17 +206,6 @@ p.time {
   }
 }
 
-.arrow{
-  background: #E3E5EA;
-  padding: 5px;
-  margin-top: 5px;
-  @include border-radius(5px);
-  text-shadow: none;
-  color: #999;
-  line-height: 16px;
-  font-weight: bold;
-}
-
 .thin_area{
   height: 150px;
 }
@@ -311,14 +300,17 @@ li.note {
   }
 }
 
-.error_message {
-  @extend .cred;
-  border-left: 4px solid #E99;
+.error-message {
   padding: 10px;
-  margin-bottom: 10px;
-  background: #FEE;
+  background: #C67;
   padding-left: 20px;
+  margin: 0;
+  color: #FFF;
 
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
   &.centered {
     text-align: center;
   }

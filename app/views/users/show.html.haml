@@ -14,7 +14,7 @@
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     .clearfix
     %hr
-    %h5 Recent events
+    %h5 User Activity:
     = render @events
   .span4
     = render 'profile', user: @user

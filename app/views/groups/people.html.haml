@@ -1,20 +1,20 @@
+- can_manage_group =  current_user.can? :manage_group, @group
 .row
-  .span3
-    = render 'people_filter'
-  .span9
-    - if can?(current_user, :manage_group, @group)
-      = render (@project ? "new_member" : "new_group_member")
+  .span6
+    - if can_manage_group
+      = render "new_group_member"
+    - else
+      .light-well
+        %h4.nothing_here_message
+          Only group owners can manage group members
+  .span6
     .ui-box
       %h5.title
-        Team
+        #{@group.name} Group Members
         %small
-          (#{@users.size})
+          (#{@members.count})
       %ul.well-list
-        - @users.each do |user|
-          %li
-            = image_tag gravatar_icon(user.email, 16), class: "avatar s16" , alt: ''
-            %strong= user.name
-            %span.cgray= user.email
-            - if @group.owner == user
-              %span.btn.btn-small.disabled.pull-right Group Owner
-
+        - @members.each do |member|
+          = render 'users_groups/users_group', member: member, show_controls: can_manage_group
+    %p.light
+      Group members get access to all projects in this group

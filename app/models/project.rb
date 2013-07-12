@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -20,6 +20,7 @@
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
+#  imported               :boolean          default(FALSE), not null
 #
 
 require "grit"
@@ -55,22 +56,19 @@ class Project < ActiveRecord::Base
   has_many :merge_requests,     dependent: :destroy
   has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
-  has_many :users_projects,     dependent: :destroy
   has_many :notes,              dependent: :destroy
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-  has_many :user_team_project_relationships, dependent: :destroy
 
-  has_many :users,          through: :users_projects
-  has_many :user_teams,     through: :user_team_project_relationships
-  has_many :user_team_user_relationships, through: :user_teams
-  has_many :user_teams_members, through: :user_team_user_relationships
+  has_many :users_projects, dependent: :destroy
+  has_many :users, through: :users_projects
 
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
+  delegate :members, to: :team, prefix: true
 
   # Validations
   validates :creator, presence: true
@@ -102,7 +100,7 @@ class Project < ActiveRecord::Base
   scope :in_team, ->(team) { where("projects.id IN (:ids)", ids: team.projects.map(&:id)) }
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :in_group_namespace, -> { joins(:group) }
-  scope :sorted_by_activity, -> { order("projects.last_activity_at DESC") }
+  scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(public: true) }
@@ -248,8 +246,8 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    self.users_projects.each do |member|
-      Notify.delay.project_was_moved_email(member.id)
+    team.members.each do |user|
+      Notify.delay.project_was_moved_email(self.id, user.id)
     end
   end
 
@@ -415,6 +413,10 @@ class Project < ActiveRecord::Base
 
   def imported?
     imported
+  end
+
+  def personal?
+    !group
   end
 
   def rename_repo

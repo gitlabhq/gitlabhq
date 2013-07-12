@@ -166,7 +166,7 @@ module Gitlab
     end
 
     def reference_user(identifier)
-      if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
+      if member = @project.team_members.find { |user| user.username == identifier }
         link_to("@#{identifier}", user_path(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end

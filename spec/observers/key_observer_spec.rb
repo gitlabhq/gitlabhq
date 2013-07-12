@@ -7,10 +7,10 @@ describe KeyObserver do
     @observer = KeyObserver.instance
   end
 
-  context :after_save do
+  context :after_create do
     it do
       GitlabShellWorker.should_receive(:perform_async).with(:add_key, @key.shell_id, @key.key)
-      @observer.after_save(@key)
+      @observer.after_create(@key)
     end
   end
 

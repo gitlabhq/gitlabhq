@@ -1,9 +1,9 @@
 .user_new
-  = form_for [:admin, @admin_user] do |f|
-    -if @admin_user.errors.any?
+  = form_for [:admin, @user] do |f|
+    -if @user.errors.any?
       #error_explanation
         %ul.unstyled.alert.alert-error
-          - @admin_user.errors.full_messages.each do |msg|
+          - @user.errors.full_messages.each do |msg|
             %li= msg
 
     %fieldset
@@ -24,7 +24,7 @@
           = f.text_field :email, required: true, autocomplete: "off"
           %span.help-inline * required
 
-    - if @admin_user.new_record?
+    - if @user.new_record?
       %fieldset
         %legend Password
         .clearfix
@@ -65,14 +65,14 @@
               %strong.cred Administrator
             .input= f.check_box :admin
         .span4
-          - unless @admin_user.new_record?
+          - unless @user.new_record?
             .alert.alert-error
-              - if @admin_user.blocked?
+              - if @user.blocked?
                 %p This user is blocked and is not able to login to GitLab
-                = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn btn-small"
+                = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
               - else
                 %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                = link_to 'Block User', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
+                = link_to 'Block User', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
       .clearfix
@@ -86,9 +86,9 @@
         .input= f.text_field :twitter
 
     .actions
-      - if @admin_user.new_record?
+      - if @user.new_record?
         = f.submit 'Create user', class: "btn btn-create"
         = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"
       - else
         = f.submit 'Save changes', class: "btn btn-save"
-        = link_to 'Cancel', admin_user_path(@admin_user), class: "btn btn-cancel"
+        = link_to 'Cancel', admin_user_path(@user), class: "btn btn-cancel"

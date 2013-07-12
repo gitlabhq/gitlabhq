@@ -1,3 +1,14 @@
+# == Schema Information
+#
+# Table name: forked_project_links
+#
+#  id                     :integer          not null, primary key
+#  forked_to_project_id   :integer          not null
+#  forked_from_project_id :integer          not null
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
+#
+
 require 'spec_helper'
 
 describe ForkedProjectLink, "add link on fork" do

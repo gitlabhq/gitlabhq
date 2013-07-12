@@ -1,5 +1,5 @@
 Gitlab::Seeder.quiet do
-  (2..300).each  do |i|
+  (2..50).each  do |i|
     begin
       User.seed(:id, [{
         id: i,

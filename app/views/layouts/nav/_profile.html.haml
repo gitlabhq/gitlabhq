@@ -7,7 +7,7 @@
   = nav_link(controller: :notifications) do
     = link_to "Notifications", profile_notifications_path
   = nav_link(controller: :keys) do
-    = link_to keys_path do
+    = link_to profile_keys_path do
       SSH Keys
       %span.count= current_user.keys.count
   = nav_link(path: 'profiles#design') do

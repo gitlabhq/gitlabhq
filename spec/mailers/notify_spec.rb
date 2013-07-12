@@ -86,7 +86,7 @@ describe Notify do
     end
 
     it 'includes a link to ssh keys page' do
-      should have_body_text /#{keys_path}/
+      should have_body_text /#{profile_keys_path}/
     end
   end
 
@@ -215,6 +215,24 @@ describe Notify do
           end
 
         end
+      end
+    end
+
+    describe 'project was moved' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      subject { Notify.project_was_moved_email(project.id, user.id) }
+
+      it 'has the correct subject' do
+        should have_subject /project was moved/
+      end
+
+      it 'contains name of project' do
+        should have_body_text /#{project.name_with_namespace}/
+      end
+
+      it 'contains new user role' do
+        should have_body_text /#{project.ssh_url_to_repo}/
       end
     end
 

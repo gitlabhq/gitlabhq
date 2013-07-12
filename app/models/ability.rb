@@ -10,8 +10,8 @@ class Ability
       when "ProjectSnippet" then project_snippet_abilities(user, subject)
       when "PersonalSnippet" then personal_snippet_abilities(user, subject)
       when "MergeRequest" then merge_request_abilities(user, subject)
-      when "Group", "Namespace" then group_abilities(user, subject)
-      when "UserTeam" then user_team_abilities(user, subject)
+      when "Group" then group_abilities(user, subject)
+      when "Namespace" then namespace_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -19,7 +19,6 @@ class Ability
     def global_abilities(user)
       rules = []
       rules << :create_group if user.can_create_group
-      rules << :create_team if user.can_create_team
       rules
     end
 
@@ -47,6 +46,10 @@ class Ability
       end
 
       if project.owner == user || user.admin?
+        rules << project_admin_rules
+      end
+
+      if project.group && project.group.owners.include?(user)
         rules << project_admin_rules
       end
 
@@ -132,7 +135,7 @@ class Ability
       rules = []
 
       # Only group owner and administrators can manage group
-      if group.owner == user || user.admin?
+      if group.owners.include?(user) || user.admin?
         rules << [
           :manage_group,
           :manage_namespace
@@ -142,16 +145,14 @@ class Ability
       rules.flatten
     end
 
-    def user_team_abilities user, team
+    def namespace_abilities user, namespace
       rules = []
 
-      # Only group owner and administrators can manage team
-      if user.admin? || team.owner == user || team.admin?(user)
-        rules << [ :manage_user_team ]
-      end
-
-      if team.owner == user || user.admin?
-        rules << [ :admin_user_team ]
+      # Only namespace owner and administrators can manage it
+      if namespace.owner == user || user.admin?
+        rules << [
+          :manage_namespace
+        ]
       end
 
       rules.flatten

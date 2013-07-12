@@ -14,4 +14,8 @@ module GroupsHelper
       merge_requests_group_path(@group, options)
     end
   end
+
+  def remove_user_from_group_message(group, user)
+    "You are going to remove #{user.name} from #{group.name} Group. Are you sure?"
+  end
 end

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe MergeRequestsController do
+describe Projects::MergeRequestsController do
   let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
@@ -8,7 +8,7 @@ describe MergeRequestsController do
   before do
     sign_in(user)
     project.team << [user, :master]
-    MergeRequestsController.any_instance.stub(validates_merge_request: true)
+    Projects::MergeRequestsController.any_instance.stub(validates_merge_request: true)
   end
 
   describe "#show" do

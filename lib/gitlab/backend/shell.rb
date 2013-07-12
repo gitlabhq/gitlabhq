@@ -36,6 +36,18 @@ module Gitlab
       system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "mv-project", "#{path}.git", "#{new_path}.git"
     end
 
+    # Update HEAD for repository
+    #
+    # path - project path with namespace
+    # branch - repository branch name
+    #
+    # Ex.
+    #  update_repository_head("gitlab/gitlab-ci", "3-1-stable")
+    #
+    def update_repository_head(path, branch)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "update-head", "#{path}.git", branch
+    end
+
     # Fork repository to new namespace
     #
     # path - project path with namespace

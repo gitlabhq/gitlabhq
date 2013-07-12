@@ -49,7 +49,5 @@
   = paginate @blobs, theme: 'gitlab'
 
 :javascript
-  $(function() {
-    $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
-  })
+  $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
 

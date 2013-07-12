@@ -12,14 +12,35 @@ class window.ContributorsStatGraph
     @master_graph.draw()
   add_authors_graph: (author_data) ->
     @authors = []
-    _.each(author_data, (d) =>
+    limited_author_data = author_data.slice(0, 100)
+    _.each(limited_author_data, (d) =>
       author_header = @create_author_header(d)
       $(".contributors-list").append(author_header)
       @authors[d.author] = author_graph = new ContributorsAuthorGraph(d.dates)
       author_graph.draw()
     )
   format_author_commit_info: (author) ->
-    author.commits + " commits " + author.additions + " ++ / " + author.deletions + " --" 
+    commits = $('<span/>', {
+      class: 'graph-author-commits-count'
+    })
+    commits.text(author.commits + " commits")
+
+    additions = $('<span/>', {
+      class: 'graph-additions'
+    })
+    additions.text(author.additions + " ++")
+
+    deletions = $('<span/>', {
+      class: 'graph-deletions'
+    })
+    deletions.text(author.deletions + " --")
+
+    $('<span/>').append(commits)
+      .append(" / ")
+      .append(additions)
+      .append(" / ")
+      .append(deletions)
+
   create_author_header: (author) ->
     list_item = $('<li/>', {
       class: 'person'
@@ -30,7 +51,7 @@ class window.ContributorsStatGraph
       class: 'commits'
     })
     author_commit_info = @format_author_commit_info(author)
-    author_commit_info_span.text(author_commit_info)
+    author_commit_info_span.html(author_commit_info)
     list_item.append(author_name)
     list_item.append(author_commit_info_span)
     list_item
@@ -52,10 +73,10 @@ class window.ContributorsStatGraph
     @field = field
   change_date_header: ->
     x_domain = ContributorsGraph.prototype.x_domain
-    print_date_format = d3.time.format("%B %e %Y");
-    print = print_date_format(x_domain[0]) + " - " + print_date_format(x_domain[1]);
-    $("#date_header").text(print);
+    print_date_format = d3.time.format("%B %e %Y")
+    print = print_date_format(x_domain[0]) + " - " + print_date_format(x_domain[1])
+    $("#date_header").text(print)
   redraw_author_commit_info: (author) ->
     author_list_item = $(@authors[author.author].list_item)
     author_commit_info = @format_author_commit_info(author)
-    author_list_item.find("span").text(author_commit_info)
+    author_list_item.find("span").html(author_commit_info)

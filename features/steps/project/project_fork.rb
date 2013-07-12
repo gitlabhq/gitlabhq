@@ -10,7 +10,7 @@ class ForkProject < Spinach::FeatureSteps
 
   step 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
-    @project ||= create(:project_with_code, name: "Shop")
+    @project ||= create(:project_with_code, name: "Shop", group: create(:group))
     @project.team << [@user, :reporter]
   end
 

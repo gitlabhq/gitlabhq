@@ -33,7 +33,7 @@ module Projects
         # Find matching namespace and check if it allowed
         # for current user if namespace_id passed.
         if allowed_namespace?(current_user, namespace_id)
-          @project.namespace_id = namespace_id unless namespace_id == Namespace.global_id
+          @project.namespace_id = namespace_id
         else
           deny_namespace
           return @project
@@ -48,6 +48,7 @@ module Projects
       # Import project from cloneable resource
       if @project.valid? && @project.import_url.present?
         shell = Gitlab::Shell.new
+
         if shell.import_repository(@project.path_with_namespace, @project.import_url)
           # We should create satellite for imported repo
           @project.satellite.create unless @project.satellite.exists?
@@ -59,7 +60,11 @@ module Projects
       end
 
       if @project.save
-        @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
+        unless @project.group
+          @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
+        end
+
+        @project.discover_default_branch
       end
 
       @project
@@ -75,12 +80,8 @@ module Projects
     end
 
     def allowed_namespace?(user, namespace_id)
-      if namespace_id == Namespace.global_id
-        return user.admin
-      else
-        namespace = Namespace.find_by_id(namespace_id)
-        current_user.can?(:manage_namespace, namespace)
-      end
+      namespace = Namespace.find_by_id(namespace_id)
+      current_user.can?(:manage_namespace, namespace)
     end
   end
 end

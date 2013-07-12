@@ -9,8 +9,8 @@
 #  author_id     :integer
 #  assignee_id   :integer
 #  title         :string(255)
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  st_commits    :text(2147483647)
 #  st_diffs      :text(2147483647)
 #  milestone_id  :integer
@@ -116,7 +116,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def diffs
-    load_diffs(st_diffs) || []
+    @diffs ||= (load_diffs(st_diffs) || [])
   end
 
   def reloaded_diffs
@@ -128,6 +128,8 @@ class MergeRequest < ActiveRecord::Base
 
   def broken_diffs?
     diffs == broken_diffs
+  rescue
+    true
   end
 
   def valid_diffs?

@@ -1,0 +1,14 @@
+= render "projects/commits/head"
+.row
+  .span3
+    = render "filter"
+  .span9
+    %table
+      %thead
+        %tr
+          %th Name
+          %th Last commit
+          %th
+      - @activities.each do |update|
+        = render "branch", branch: update.head
+
