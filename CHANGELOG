@@ -5,7 +5,7 @@ v 5.4.0
   - Fixed nav for empty repos
   - GitLab Markdown help page
   - Misspelling fixes
-  - Added suppoort of unicorn and fog gems
+  - Added support of unicorn and fog gems
   - Added client list to API doc
 
 v 5.3.0
