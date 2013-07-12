@@ -1,0 +1,17 @@
+%base{:href=>"http://git.dev.fwmrm.net", :target=>"_blank"}
+
+%div
+  = stylesheet_link_tag attachments["mail_compare.css"].url
+
+%h3
+  pusher : #{ @user.username }
+
+- if @commits.present?
+  %div.ui-box
+    %h5.title
+      Commits (#{@commits.count})
+    %ul.well-list= render Commit.decorate(@commits)
+
+  - unless @diffs.empty?
+    %h4 Diff
+    = render "commits/diffs", diffs: @diffs

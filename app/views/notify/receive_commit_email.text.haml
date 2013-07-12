@@ -1,0 +1,9 @@
+= "Project #{ @project.name } receive a push"
+
+Project Url: #{project_path(@project)}
+
+Branches: #{@ref}
+
+Author: #{@user.username}
+
+Before: #{@data[:before]} After: #{@data[:after]}
