@@ -5,12 +5,16 @@
 
 - if @project
   %ul.nav.nav-pills
-    %li{class: ("active" if params[:search_code].present?)}
-      = link_to search_path(params.merge(search_code: true)) do
+    %li{class: ("active" if params[:search_code].to_i==1)}
+      = link_to search_path(params.merge(search_code: "1")) do
         Repository Code
-    %li{class: ("active" if params[:search_code].blank?)}
-      = link_to search_path(params.merge(search_code: nil)) do
-        Everything else
+    %li{class: ("active" if params[:search_code].to_i==2)}
+      = link_to search_path(params.merge(search_code: "2")) do
+        Everything else (Filenames)
+    %li{class: ("active" if params[:search_code].to_i==3)}
+      = link_to search_path(params.merge(search_code: "3")) do
+        Wiki-Pages
+
 
 .search_results
   %ul.bordered-list
@@ -38,14 +42,17 @@
     - @wiki_pages.each do |wiki_page|
       %li
         wiki:
-        = link_to project_wiki_path(wiki_page.project, wiki_page) do
+        = link_to project_wiki_path(wiki_page.wiki.project.path_with_namespace, wiki_page) do
           %strong.term
             = truncate wiki_page.title, length: 50
-        %span.light (#{wiki_page.project.name_with_namespace})
+        %span.light (#{wiki_page.wiki.path_with_namespace})
 
+    - @wiki_pages_blob.each do |wiki_page|
+      = render 'wiki_blob', blob: wiki_page
     - @blobs.each do |blob|
       = render 'blob', blob: blob
 
+  = paginate @wiki_pages_blob, theme: 'gitlab'
   = paginate @blobs, theme: 'gitlab'
 
 :javascript
