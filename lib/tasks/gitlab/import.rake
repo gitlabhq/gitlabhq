@@ -29,8 +29,6 @@ namespace :gitlab do
         # Skip if group or user
         next if namespaces.include?(name)
 
-        next if name == 'gitolite-admin'
-
         puts "Processing #{repo_path}".yellow
 
         project = Project.find_with_namespace(path)
