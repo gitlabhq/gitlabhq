@@ -1,0 +1,17 @@
+.ui-box
+  %h5.title Groups
+  %ul.well-list
+    - @groups.each do |group|
+      %li
+        .pull-right
+          - if can?(current_user, :manage_group, group)
+            = link_to edit_group_path(group), class: "btn-small btn grouped" do
+              %i.icon-cogs
+              Settings
+
+          = link_to leave_profile_group_path(group), confirm: "Are you sure you want to leave #{group.name} group?", method: :delete, class: "btn-small btn grouped", title: 'Remove user from group' do
+            %i.icon-signout
+            Leave
+
+        = link_to group, class: 'group-name' do
+          = group.name

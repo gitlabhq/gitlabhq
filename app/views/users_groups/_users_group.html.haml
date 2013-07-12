@@ -13,6 +13,7 @@
     - else
       = member.human_access
 
-    - if show_controls && user != current_user && user != @group.owner
+    - if show_controls && user != @group.owner && user != current_user
       = link_to group_users_group_path(@group, member), confirm: remove_user_from_group_message(@group, user), method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
         %i.icon-minus.icon-white
+

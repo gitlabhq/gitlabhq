@@ -116,6 +116,11 @@ Gitlab::Application.routes.draw do
       resource :notifications, only: [:show, :update]
       resource :password, only: [:new, :create]
       resources :keys
+      resources :groups, only: [:index] do
+        member do
+          delete :leave
+        end
+      end
     end
   end
 
