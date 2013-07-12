@@ -2,7 +2,7 @@ class Profiles::GroupsController < ApplicationController
   layout "profile"
 
   def index
-    @groups = current_user.authorized_groups.all
+    @groups = current_user.authorized_groups.page(params[:page]).per(20)
   end
 
   def leave
