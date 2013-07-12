@@ -2,3 +2,14 @@
 You have been granted <%= @users_project.project_access_human %> access to project <%= @project.name_with_namespace %>
 
 <%= url_for(project_url(@project)) %>
+
+<% if Gitlab.config.sparkle_share.enabled && @users_project.sparkle_invite %>
+If you want to use this repository for SparkleShare, make sure you have installed v1.1 or later from www.sparkleshare.org.
+
+Use this invitation link to autoconfigure sparkleshare:
+<%= sparkle_share_invite_url(token: @users_project.sparkle_invite.token, format: :xml, protocol: Gitlab.config.sparkle_share.invite_protocol) %>
+
+Or add it manually (you'll need to make sure that gitlab knowns your public ssh key):
+* Address: <%= @users_project.sparkle_invite.address %>
+* Remote Path: <%= @users_project.sparkle_invite.remote_path %>
+<% end %>

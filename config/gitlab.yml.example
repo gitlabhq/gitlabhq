@@ -165,6 +165,17 @@ production: &base
     # Git timeout to read a commit, in seconds
     timeout: 10
 
+  # SparkleShare is an opensource dropbox clone
+  # http://sparkleshare.org/
+  # When you enable the sparkle share integration, GitLab will include
+  # an SparkleShare invitation link in the project access email send to team members
+  sparkle_share:
+    enabled: false
+    # ssh-keygen -lf /etc/ssh/ssh_host_rsa_key.pub | cut --bytes=6-52
+    # fingerprint: ''
+    # run your own fanout.c ()
+    # announcements_url: ''
+
   #
   # 4. Extra customization
   # ==========================

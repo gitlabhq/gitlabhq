@@ -75,6 +75,15 @@ Settings.gitlab.default_projects_features['wall']           = false if Settings.
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
 
 #
+# SparkleShare
+#
+Settings['sparkle_share'] ||= Settingslogic.new({})
+Settings.sparkle_share['enabled']           ||= false
+Settings.sparkle_share['fingerprint']       ||= false
+Settings.sparkle_share['anouncements_url']  ||= false
+Settings.sparkle_share['invite_protocol']   = Settings.gitlab.https ? "sparkleshare://addProject/https://" : "sparkleshare://addProject/http://"
+
+#
 # Gravatar
 #
 Settings['gravatar'] ||= Settingslogic.new({})

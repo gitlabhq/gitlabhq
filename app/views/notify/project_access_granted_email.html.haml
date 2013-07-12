@@ -3,3 +3,24 @@
 %p
   = link_to project_url(@project) do
     = @project.name_with_namespace
+
+- if Gitlab.config.sparkle_share.enabled && @users_project.sparkle_invite
+  %h3 SparkleShare (optional)
+  %p
+    If you want to use this repository for SparkleShare,
+    make sure you have installed v1.1 or later from
+    <a href="http://sparkleshare.org/">sparkleshare.org</a>.
+  %p
+    Click
+    = link_to sparkle_share_invite_url(token: @users_project.sparkle_invite.token, format: :xml, protocol: Gitlab.config.sparkle_share.invite_protocol) do
+      this invitation
+    to autoconfigure SparkleShare.
+    %br
+    Or add it manually (you'll need to make sure that gitlab knowns your public ssh key):
+    %ul
+      %li
+        %strong Address:
+        = @users_project.sparkle_invite.address
+      %li
+        %strong Remote Path:
+        = @users_project.sparkle_invite.remote_path
