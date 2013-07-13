@@ -86,9 +86,9 @@
     color: #456;
     font-size: 16px;
     text-shadow: 0 1px 1px #fff;
-    padding: 10px;
+    padding: 0 10px;
     font-size: 14px;
-    line-height: 20px;
+    line-height: 40px;
     font-weight: normal;
     margin: 0;
 
@@ -102,8 +102,7 @@
     }
 
     .btn {
-      position: relative;
-      margin-top: -2px;
+      vertical-align: middle;
     }
 
     .nav-pills {

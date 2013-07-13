@@ -42,7 +42,7 @@ class ProjectSnippets < Spinach::FeatureSteps
   end
 
   And 'I click link "Edit"' do
-    within ".file_title" do
+    within ".file-title" do
       click_link "Edit"
     end
   end

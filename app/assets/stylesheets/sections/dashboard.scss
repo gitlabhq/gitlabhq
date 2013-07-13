@@ -10,9 +10,6 @@
       margin: 0px;
       box-shadow: none;
 
-      .title .btn {
-          margin: 0;
-      }
       .nav-projects-tabs li { padding: 0; }
     }
   }
@@ -33,7 +30,7 @@
 
 .dashboard {
   .dash-filter {
-    margin: 0;
+    margin: 7px 0;
     padding: 4px 6px;
     width: 202px;
     float: left;
