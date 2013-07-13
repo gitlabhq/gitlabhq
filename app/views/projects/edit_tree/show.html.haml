@@ -21,7 +21,7 @@
         = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
-      = hidden_field_tag 'content', '', id: :file-content
+      = hidden_field_tag 'content', '', id: "file-content"
       .commit-button-annotation
         = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-primary'
         .message
