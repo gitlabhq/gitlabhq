@@ -31,6 +31,10 @@
  *
  */
 .event-item {
+  &:first-child {
+    padding-top: 0;
+  }
+
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
