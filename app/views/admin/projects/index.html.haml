@@ -41,7 +41,7 @@
           = link_to "Reset", admin_projects_path, class: "btn"
   .span8
     .ui-box
-      %h5.title
+      .title
         Projects (#{@projects.total_count})
       %ul.well-list
         - @projects.each do |project|

@@ -1,7 +1,7 @@
 .team-table
   - can_admin_project = (can? current_user, :admin_project, @project)
   .ui-box
-    %h5.title
+    .title
       %strong #{@project.name} Project
       members (#{members.count})
     %ul.well-list

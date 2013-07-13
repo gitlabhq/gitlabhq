@@ -13,7 +13,7 @@
 
 - if @commits.present?
   %div.ui-box
-    %h5.title
+    .title
       Commits (#{@commits.count})
     %ul.well-list= render Commit.decorate(@commits)
 

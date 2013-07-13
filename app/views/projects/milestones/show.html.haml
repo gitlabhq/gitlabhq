@@ -84,13 +84,13 @@
     .row
       .span6
         .ui-box
-          %h5.title Open
+          .title Open
           %ul.well-list
             - @merge_requests.opened.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
       .span6
         .ui-box
-          %h5.title Closed
+          .title Closed
           %ul.well-list
             - @merge_requests.closed.each do |merge_request|
               = render 'merge_request', merge_request: merge_request

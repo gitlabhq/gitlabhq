@@ -88,12 +88,9 @@
     text-shadow: 0 1px 1px #fff;
     padding: 10px;
     font-size: 14px;
+    line-height: 20px;
     font-weight: normal;
     margin: 0;
-
-    h5 {
-      margin: 0;
-    }
 
     > a {
       text-shadow: 0 1px 1px #fff;
@@ -106,7 +103,7 @@
 
     .btn {
       position: relative;
-      top: -2px;
+      margin-top: -2px;
     }
 
     .nav-pills {

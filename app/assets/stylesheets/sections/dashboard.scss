@@ -10,8 +10,8 @@
       margin: 0px;
       box-shadow: none;
 
-      > .title {
-        padding: 2px 15px;
+      .title .btn {
+          margin: 0;
       }
       .nav-projects-tabs li { padding: 0; }
     }
@@ -37,8 +37,6 @@
     padding: 4px 6px;
     width: 202px;
     float: left;
-    margin-top: 3px;
-    margin-left: -2px;
   }
 }
 
