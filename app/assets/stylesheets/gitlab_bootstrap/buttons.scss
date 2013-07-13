@@ -43,11 +43,8 @@
     }
   }
 
-  &.success {
-    @extend .btn-success;
-
+  &.btn-success {
     &:hover {
-      @extend .btn-success;
       background: #51a351;
     }
 
@@ -59,7 +56,7 @@
 
   &.btn-create {
     @extend .wide;
-    @extend .success;
+    @extend .btn-success;
   }
 
   &.btn-save {
