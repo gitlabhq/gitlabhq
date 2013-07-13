@@ -19,10 +19,10 @@
       .file-editor
         = f.label :file_name, "File"
         .input
-          .file_holder.snippet
-            .file_title
+          .file-holder.snippet
+            .file-title
               = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true
-            .file_content.code
+            .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
 

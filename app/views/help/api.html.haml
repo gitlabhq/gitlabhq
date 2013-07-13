@@ -6,10 +6,10 @@
     = @category.titleize
   %br
 
-  .file_holder
-    .file_title
+  .file-holder
+    .file-title
       %i.icon-file
       = @category
-    .file_content.wiki
+    .file-content.wiki
       = preserve do
         = markdown File.read(Rails.root.join("doc", "api", "#{@category}.md"))

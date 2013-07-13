@@ -2,12 +2,12 @@
  * File content holder
  *
  */
-.file_holder {
+.file-holder {
   border: 1px solid #BBB;
   margin-bottom: 1em;
   @include solid-shade;
 
-  .file_title {
+  .file-title {
     border-bottom: 1px solid #bbb;
     @include bg-dark-gray-gradient;
     margin: 0;
@@ -33,7 +33,7 @@
       }
     }
   }
-  .file_content {
+  .file-content {
     background: #fff;
     font-size: 11px;
 

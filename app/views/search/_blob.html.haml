@@ -1,10 +1,10 @@
 %li
-  .file_holder
-    .file_title
+  .file-holder
+    .file-title
       = link_to project_blob_path(@project, tree_join(blob.ref, blob.filename), :anchor => "L" + blob.startline.to_s) do
         %i.icon-file
         %strong
           = blob.filename
-    .file_content.code.term
+    .file-content.code.term
       %div{class: user_color_scheme_class}
         = raw blob.colorize( formatter: :gitlab, options: { first_line_number: blob.startline } )
