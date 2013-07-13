@@ -1,11 +1,11 @@
 = render "projects/issues/head"
 .row
   .span6
-    %h3.page_title
+    %h3.page-title
       Milestone ##{@milestone.id}
       %small
         = @milestone.expires_at
-    .back_link
+    .back-link
       = link_to project_milestones_path(@project) do
         &larr; To milestones list
   .span6

@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Issue ##{@issue.id}
 
   %small
@@ -22,7 +22,7 @@
 .pull-right
   .span3#votes= render 'votes/votes_block', votable: @issue
 
-.back_link
+.back-link
   = link_to project_issues_path(@project) do
     &larr; To issues list
 
