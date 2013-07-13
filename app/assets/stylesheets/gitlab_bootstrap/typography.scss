@@ -3,13 +3,18 @@
  *
  */
 
+h1.page-title {
+  @include page-title;
+  font-size: 28px;
+}
+
+h2.page-title {
+  @include page-title;
+  font-size: 24px;
+}
+
 h3.page-title {
-  color: #456;
-  font-size: 20px;
-  font-weight: normal;
-  line-height: 28px;
-  margin-top: 0px;
-  margin-bottom: 15px;
+  @include page-title;
 }
 
 h6 {

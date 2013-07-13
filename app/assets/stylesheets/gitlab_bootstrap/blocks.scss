@@ -86,11 +86,14 @@
     color: #456;
     font-size: 16px;
     text-shadow: 0 1px 1px #fff;
-    padding: 0px 10px;
-    line-height: 36px;
+    padding: 10px;
     font-size: 14px;
     font-weight: normal;
     margin: 0;
+
+    h5 {
+      margin: 0;
+    }
 
     > a {
       text-shadow: 0 1px 1px #fff;

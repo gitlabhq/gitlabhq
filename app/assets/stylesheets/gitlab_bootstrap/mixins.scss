@@ -84,3 +84,12 @@
   h3 { margin-top: 20px;}
   h4 { margin-top: 15px;}
 }
+
+@mixin page-title {
+  color: #456;
+  font-size: 20px;
+  font-weight: normal;
+  line-height: 1.5;
+  margin-top: 0px;
+  margin-bottom: 15px;
+}
