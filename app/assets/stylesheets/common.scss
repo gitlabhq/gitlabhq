@@ -23,12 +23,8 @@ body {
 
 .help li { color:$style_color; }
 
-.back_link {
-  text-decoration: underline;
+.back-link {
   font-size: 14px;
-  font-weight: bold;
-  padding: 10px 0;
-  padding-bottom: 0;
 }
 
 table a code {
@@ -412,7 +408,7 @@ img.emoji {
 }
 
 .navless-container {
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .description-block {

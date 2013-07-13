@@ -1,6 +1,6 @@
-%h3.page_title
+%h3.page-title
   = "New Team member(s)"
-%hr
+
 = form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project) do |f|
   -if @user_project_relation.errors.any?
     .alert.alert-error

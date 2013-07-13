@@ -11,7 +11,7 @@
  */
 .ui-box {
   background: #F9F9F9;
-  margin-bottom: 25px;
+  margin-bottom: 20px;
   border: 1px solid #CCC;
   word-wrap: break-word;
   @include solid-shade;
@@ -86,10 +86,11 @@
     color: #456;
     font-size: 16px;
     text-shadow: 0 1px 1px #fff;
-    padding: 0px 10px;
-    line-height: 36px;
+    padding: 0 10px;
     font-size: 14px;
+    line-height: 40px;
     font-weight: normal;
+    margin: 0;
 
     > a {
       text-shadow: 0 1px 1px #fff;
@@ -101,8 +102,7 @@
     }
 
     .btn {
-      position: relative;
-      top: -2px;
+      vertical-align: middle;
     }
 
     .nav-pills {
@@ -131,15 +131,6 @@
       margin: -20px;
       margin-bottom: 0;
       padding: 5px 20px;
-    }
-    .middle_title {
-      background: #f5f5f5;
-      margin:20px -20px;
-      padding: 0 20px;
-      border-top: 1px solid #eee;
-      border-bottom: 1px solid #eee;
-      font-size: 14px;
-      color: #777;
     }
   }
 

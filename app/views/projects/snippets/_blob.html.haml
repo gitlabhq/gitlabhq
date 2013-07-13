@@ -1,5 +1,5 @@
-.file_holder
-  .file_title
+.file-holder
+  .file-title
     %i.icon-file
     %strong= @snippet.file_name
     %span.options
@@ -7,7 +7,7 @@
         - if can?(current_user, :admin_project_snippet, @project) || @snippet.author == current_user
           = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-tiny", title: 'Edit Snippet'
         = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn btn-tiny", target: "_blank"
-  .file_content.code
+  .file-content.code
     - unless @snippet.content.empty?
       %div{class: user_color_scheme_class}
         = raw @snippet.colorize(formatter: :gitlab)

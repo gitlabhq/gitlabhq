@@ -2,7 +2,7 @@
   .project-edit-errors
   .project-edit-content
     .ui-box.white
-      %h5.title
+      .title
         %strong= @project.name
         Project Settings:
       .form-holder
@@ -102,7 +102,7 @@
 
     - if can?(current_user, :change_namespace, @project)
       .ui-box.ui-box-danger
-        %h5.title Transfer project
+        .title Transfer project
         .errors-holder
         .form-holder
           = form_for(@project, url: transfer_project_path(@project), remote: true, html: { class: 'transfer-project' }) do |f|
@@ -122,7 +122,7 @@
       %p.nothing_here_message Only project owner can transfer a project
 
     .ui-box.ui-box-danger
-      %h5.title Rename repository
+      .title Rename repository
       .errors-holder
       .form-holder
         = form_for(@project) do |f|
@@ -140,7 +140,7 @@
 
     - if can?(current_user, :remove_project, @project)
       .ui-box.ui-box-danger
-        %h5.title Remove project
+        .title Remove project
         .ui-box-body
           %p
             Remove of project will cause removing repository and all related resources like issues, merge requests etc.

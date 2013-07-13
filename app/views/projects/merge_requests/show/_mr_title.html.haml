@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
   %span.label-branch= @merge_request.source_branch
@@ -26,6 +26,6 @@
 .pull-right
   .span3#votes= render 'votes/votes_block', votable: @merge_request
 
-.back_link
+.back-link
   = link_to project_merge_requests_path(@project) do
     &larr; To merge requests

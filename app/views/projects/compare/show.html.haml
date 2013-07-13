@@ -1,8 +1,7 @@
 = render "projects/commits/head"
 
-%h3.page_title
+%h3.page-title
   Compare View
-%hr
 
 = render "form"
 
@@ -14,7 +13,7 @@
 
 - if @commits.present?
   %div.ui-box
-    %h5.title
+    .title
       Commits (#{@commits.count})
     %ul.well-list= render Commit.decorate(@commits)
 

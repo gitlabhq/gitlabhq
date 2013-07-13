@@ -3,15 +3,18 @@
  *
  */
 
-h1, h2, h3, h4, h5, h6 { margin: 0; }
-h3, h4, h5, h6 { line-height: 36px; }
-h5 { font-size: 14px; }
+h1.page-title {
+  @include page-title;
+  font-size: 28px;
+}
 
-h3.page_title {
-  color: #456;
-  font-size: 20px;
-  font-weight: normal;
-  line-height: 28px;
+h2.page-title {
+  @include page-title;
+  font-size: 24px;
+}
+
+h3.page-title {
+  @include page-title;
 }
 
 h6 {
@@ -91,10 +94,9 @@ a:focus {
  *
  */
 .wiki {
+  font-size: 14px;
+  line-height: 1.6;
   @include md-typography;
-
-  font-size: 13px;
-  line-height: 20px;
 
   .white .highlight pre { background: #f5f5f5; }
   ul { margin: 0 0 9px 25px !important; }

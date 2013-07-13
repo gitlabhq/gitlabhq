@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   User:
   = @user.name
   - if @user.blocked?
@@ -21,7 +21,7 @@
 .row
   .span6
     .ui-box
-      %h5.title
+      .title
         Account:
         .pull-right
           = image_tag gravatar_icon(@user.email, 32), class: "avatar s32"
@@ -65,7 +65,7 @@
 
     - if @user.users_groups.present?
       .ui-box
-        %h5.title Groups:
+        .title Groups:
         %ul.well-list
           - @user.users_groups.each do |user_group|
             - group = user_group.group
@@ -76,7 +76,7 @@
 
   .span6
     .ui-box
-      %h5.title Projects (#{@projects.count})
+      .title Projects (#{@projects.count})
       %ul.well-list
         - @projects.sort_by(&:name_with_namespace).each do |project|
           - tm = project.team.find_tm(@user.id)

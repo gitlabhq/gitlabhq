@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   %i.icon-lock.cgreen
   = @snippet.title
 
@@ -8,6 +8,5 @@
       by
       = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
       = @snippet.author_name
-%br
 %div= render 'projects/snippets/blob'
 %div#notes= render "projects/notes/notes_with_form"

@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   - if @service.activated?
     %span.cgreen
       %i.icon-circle
@@ -9,7 +9,7 @@
 
 %p= @service.description
 
-.back_link
+.back-link
   = link_to project_services_path(@project) do
     &larr; to services
 

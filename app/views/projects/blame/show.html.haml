@@ -11,14 +11,14 @@
       %li= link
   .clear
 
-  .file_holder
-    .file_title
+  .file-holder
+    .file-title
       %i.icon-file
       %span.file_name
         = @blob.name
         %small= number_to_human_size @blob.size
       %span.options= render "projects/blob/actions"
-    .file_content.blame
+    .file-content.blame
       %table
         - current_line = 1
         - @blame.each do |commit, lines|

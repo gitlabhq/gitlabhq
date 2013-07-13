@@ -14,7 +14,7 @@
             %strong= link_to "click here", "#", class: "how_to_merge_link vlink", title: "How To Merge"
             for instructions
           .accept_group
-            = f.submit "Accept Merge Request", class: "btn success accept_merge_request"
+            = f.submit "Accept Merge Request", class: "btn btn-success accept_merge_request"
             - unless @project.root_ref? @merge_request.source_branch
               .remove_branch_holder
                 = label_tag :should_remove_source_branch, class: "checkbox" do

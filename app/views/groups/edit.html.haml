@@ -18,7 +18,7 @@
     .tab-content
       .tab-pane.active#tab-edit
         .ui-box
-          %h5.title
+          .title
             %strong= @group.name
             Group Settings:
           %div.form-holder
@@ -42,7 +42,7 @@
 
       .tab-pane#tab-projects
         .ui-box
-          %h5.title
+          .title
             %strong= @group.name
             Projects:
             - if can? current_user, :manage_group, @group
@@ -67,7 +67,7 @@
 
       .tab-pane#tab-transfer
         .ui-box.ui-box-danger
-          %h5.title Transfer group
+          .title Transfer group
           .ui-box-body
             %p
               Transferring group will cause loss of admin control over group and all child projects
@@ -78,7 +78,7 @@
 
       .tab-pane#tab-remove
         .ui-box.ui-box-danger
-          %h5.title Remove group
+          .title Remove group
           .ui-box-body
             %p
               Remove of group will cause removing all child projects and resources.

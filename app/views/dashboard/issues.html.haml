@@ -1,11 +1,9 @@
-%h3.page_title
+%h3.page-title
   Issues
   %span.light
     &ndash;
     Assigned to you
   %span.pull-right #{@issues.total_count} issues
-
-%br
 
 .row
   .span3
@@ -15,7 +13,7 @@
       - @issues.group_by(&:project).each do |group|
         %div.ui-box
           - project = group[0]
-          %h5.title
+          .title
             = link_to_project project
             &nbsp;
             %i.icon-angle-right
