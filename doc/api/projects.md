@@ -189,6 +189,7 @@ Parameters:
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
++ `public` (optional)
 
 **Project access levels**
 
@@ -221,6 +222,7 @@ Parameters:
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
++ `public` (optional)
 
 
 
