@@ -3,7 +3,6 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   include SharedProject
 
   Then 'page should have network graph' do
-    page.should have_content "Project Network Graph"
     page.should have_selector ".graph"
   end
 
