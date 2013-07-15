@@ -4,7 +4,8 @@
 
 
   h4 {
-    padding: 0 10px;
+    margin: 0;
+    padding: 10px;
     border-bottom: 1px solid #bbb;
     @include bg-gray-gradient;
   }

@@ -17,7 +17,7 @@
   %ul.unstyled
     - @projects.each do |project|
       %li.clearfix
-        %h5
+        %div
           %i.icon-share
           - if current_user
             = link_to_project project
@@ -25,7 +25,7 @@
             = project.name_with_namespace
           .pull-right
             %pre.dark.tiny git clone #{project.http_url_to_repo}
-        %p.description
+        %div.description
           = project.description
     - unless @projects.present?
       %h3.nothing_here_message No public projects
