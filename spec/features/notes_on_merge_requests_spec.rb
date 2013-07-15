@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "On a merge request", js: true do
   let!(:project) { create(:project_with_code) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let!(:note) { create(:note_on_merge_request_with_attachment,  source_project: project, target_project: project) }
+  let!(:note) { create(:note_on_merge_request_with_attachment,  project: project) }
 
   before do
     login_as :user

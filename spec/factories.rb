@@ -1,8 +1,4 @@
-<<<<<<< HEAD
 include ActionDispatch::TestProcess
-=======
-require Rails.root.join('spec', 'support', 'test_env.rb')
->>>>>>> Merge Request on forked projects
 
 FactoryGirl.define do
   sequence :sentence, aliases: [:title, :content] do

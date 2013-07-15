@@ -159,7 +159,9 @@ module TestEnv
   # Create a testing satellite, and clone the source repo into it
   def create_satellite(source_repo, namespace, satellite_name)
     satellite_repo = satellite(namespace, satellite_name)
-    # Symlink tmp/satellite/gitlabhq to tmp/test-git-base-path/satellite/gitlabhq
+    # Symlink tmp/satellite/gitlabhq to tmp/test-git-base-path/satellite/gitlabhq, create the directory if it doesn't exist already
+    satellite_dir = File.dirname(satellite_repo)
+    FileUtils.mkdir_p satellite_dir unless File.exists?(satellite_dir)
     system("ln -s -f #{seed_satellite_path()} #{satellite_repo}")
   end
 
