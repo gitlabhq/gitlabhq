@@ -3,7 +3,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   include SharedProject
 
   Then 'page should have network graph' do
-    page.should have_selector ".graph"
+    page.should have_selector ".network-graph"
   end
 
   When 'I visit project "Shop" network page' do
@@ -23,7 +23,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'page should have "master" on graph' do
-    within '.graph' do
+    within '.network-graph' do
       page.should have_content 'master'
     end
   end
@@ -49,13 +49,13 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   Then 'page should have content not cotaining "v2.1.0"' do
-    within '.graph' do
+    within '.network-graph' do
       page.should have_content 'cleaning'
     end
   end
 
   Then 'page should not have content not cotaining "v2.1.0"' do
-    within '.graph' do
+    within '.network-graph' do
       page.should_not have_content 'cleaning'
     end
   end
@@ -69,7 +69,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'page should have "stable" on graph' do
-    within '.graph' do
+    within '.network-graph' do
       page.should have_content 'stable'
     end
   end
@@ -83,7 +83,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'page should have "v2.1.0" on graph' do
-    within '.graph' do
+    within '.network-graph' do
       page.should have_content 'v2.1.0'
     end
   end
