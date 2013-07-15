@@ -15,12 +15,12 @@
         %li
           %h5
             .pull-left
-              = link_to project_group_link_path(@project, group_link), method: :delete, class: 'btn btn-small' do
+              = link_to project_group_link_path(@project, group_link), method: :delete, class: 'btn btn-small append-right-10' do
                 %i.icon-remove
-              &nbsp;
             = link_to group do
               %i.icon-folder-open
               = group.name
+            %small.light up to Masters
 
   .span5.available-groups
     %h5
@@ -31,8 +31,9 @@
           %h5
             .pull-right
               = form_tag project_group_links_path(@project), method: :post do
+                = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink::MASTER), class: "span2"
                 = hidden_field_tag :group_id, group.id
-                = submit_tag "Share", class: "btn btn-small"
+                = submit_tag "Share", class: "btn"
             %i.icon-folder-close
             = group.name
 
