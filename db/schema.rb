@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130624162710) do
+ActiveRecord::Schema.define(:version => 20130711063759) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -156,6 +156,13 @@ ActiveRecord::Schema.define(:version => 20130624162710) do
   add_index "notes", ["noteable_type"], :name => "index_notes_on_noteable_type"
   add_index "notes", ["project_id", "noteable_type"], :name => "index_notes_on_project_id_and_noteable_type"
   add_index "notes", ["project_id"], :name => "index_notes_on_project_id"
+
+  create_table "project_group_links", :force => true do |t|
+    t.integer  "project_id", :null => false
+    t.integer  "group_id",   :null => false
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "projects", :force => true do |t|
     t.string   "name"

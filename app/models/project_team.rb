@@ -111,13 +111,30 @@ class ProjectTeam
   def fetch_members(level = nil)
     project_members = project.users_projects
     group_members = group ? group.users_groups : []
+    invited_members = []
+
+    if project.invited_groups.any?
+      project.invited_groups.each do |invited_group|
+        im = invited_group.users_groups
+        if level
+          if level == :masters
+            im = im.owners + im.masters
+          else
+            im = im.send(level)
+          end
+        end
+        invited_members << im
+      end
+
+      invited_members = invited_members.flatten.compact
+    end
 
     if level
       project_members = project_members.send(level)
       group_members = group_members.send(level) if group
     end
 
-    (project_members + group_members).map(&:user).uniq
+    (project_members + group_members + invited_members).map(&:user).uniq
   end
 
   def group
