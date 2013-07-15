@@ -1,8 +1,3 @@
-%h3.page-title
-  Users
-  = link_to 'New User', new_admin_user_path, class: "btn btn-small pull-right"
-%br
-
 .row
   .span3
     .admin-filter
@@ -34,6 +29,8 @@
     .ui-box
       .title
         Users (#{@users.total_count})
+        .pull-right
+          = link_to 'New User', new_admin_user_path, class: "btn btn-small wide btn-primary"
       %ul.well-list
         - @users.each do |user|
           %li
