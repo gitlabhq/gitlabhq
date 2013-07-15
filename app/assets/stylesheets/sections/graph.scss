@@ -1,16 +1,16 @@
-.graph_holder {
+.project-network {
   border: 1px solid #aaa;
   padding: 1px;
 
-
-  h4 {
-    margin: 0;
+  .tip {
+    color: #888;
+    font-size: 14px;
     padding: 10px;
     border-bottom: 1px solid #bbb;
     @include bg-gray-gradient;
   }
 
-  .graph {
+  .network-graph {
     background: #f1f1f1;
     height: 500px;
     overflow-y: scroll;
