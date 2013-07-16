@@ -35,11 +35,21 @@ class Repository
     commits
   end
 
+  def add_branch(branch_name, ref)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
+  end
+
   def rm_branch(branch_name)
+    Rails.cache.delete(cache_key(:branch_names))
+
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def rm_tag(tag_name)
+    Rails.cache.delete(cache_key(:tag_names))
+
     gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
