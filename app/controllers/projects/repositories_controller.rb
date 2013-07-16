@@ -8,10 +8,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
     @activities = @repository.commits_with_refs(20)
   end
 
-  def tags
-    @tags = @repository.tags
-  end
-
   def stats
     @stats = Gitlab::Git::Stats.new(@repository.raw, @repository.root_ref)
     @graph = @stats.graph
@@ -21,7 +17,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
     unless can?(current_user, :download_code, @project)
       render_404 and return
     end
-
 
     storage_path = Rails.root.join("tmp", "repositories")
 

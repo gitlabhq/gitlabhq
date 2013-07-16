@@ -205,8 +205,6 @@ Gitlab::Application.routes.draw do
 
       resource :repository, only: [:show] do
         member do
-          get "branches"
-          get "tags"
           get "stats"
           get "archive"
         end
@@ -225,6 +223,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :tags, only: [:index, :create, :destroy]
       resources :branches, only: [:index, :create, :destroy]
       resources :protected_branches, only: [:index, :create, :destroy]
 

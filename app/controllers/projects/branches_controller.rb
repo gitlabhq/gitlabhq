@@ -17,7 +17,7 @@ class Projects::BranchesController < Projects::ApplicationController
     branch = @project.repository.branches.find { |branch| branch.name == params[:id] }
 
     if branch && @project.repository.rm_branch(branch.name)
-      Event.create_rm_branch(@project, current_user, branch)
+      Event.create_rm_ref(@project, current_user, branch)
     end
 
     respond_to do |format|

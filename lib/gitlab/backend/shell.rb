@@ -96,6 +96,31 @@ module Gitlab
       system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-branch", "#{path}.git", branch_name
     end
 
+    # Add repository tag from passed ref
+    #
+    # path - project path with namespace
+    # tag_name - new tag name
+    # ref - HEAD for new tag
+    #
+    # Ex.
+    #   add_tag("gitlab/gitlab-ci", "v4.0", "master")
+    #
+    def add_tag(path, tag_name, ref)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "create-tag", "#{path}.git", tag_name, ref
+    end
+
+    # Remove repository tag
+    #
+    # path - project path with namespace
+    # tag_name - tag name to remove
+    #
+    # Ex.
+    #   rm_tag("gitlab/gitlab-ci", "v4.0")
+    #
+    def rm_tag(path, tag_name)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-tag", "#{path}.git", tag_name
+    end
+
     # Add new key to gitlab-shell
     #
     # Ex.

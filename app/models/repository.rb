@@ -39,6 +39,10 @@ class Repository
     gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
+  def rm_tag(tag_name)
+    gitlab_shell.rm_tag(path_with_namespace, tag_name)
+  end
+
   def round_commit_count
     if commit_count > 10000
       '10000+'
