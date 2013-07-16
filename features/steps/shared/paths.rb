@@ -217,7 +217,7 @@ module SharedPaths
   end
 
   step 'I visit project tags page' do
-    visit tags_project_repository_path(@project)
+    visit project_tags_path(@project)
   end
 
   step 'I visit project commit page' do

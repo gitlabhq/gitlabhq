@@ -203,7 +203,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/repository/tags" do
-      subject { tags_project_repository_path(project) }
+      subject { project_tags_path(project) }
 
       before do
         # Speed increase
@@ -445,7 +445,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/repository/tags" do
-      subject { tags_project_repository_path(project) }
+      subject { project_tags_path(project) }
 
       before do
         # Speed increase
