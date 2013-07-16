@@ -1,5 +1,18 @@
 module Gitlab
   class Auth
+    def find(login, password)
+      user = User.find_by_email(login) || User.find_by_username(login)
+
+      if user.nil? || user.ldap_user?
+        # Second chance - try LDAP authentication
+        return nil unless ldap_conf.enabled
+
+        ldap_auth(login, password)
+      else
+        user if user.valid_password?(password)
+      end
+    end
+
     def find_for_ldap_auth(auth, signed_in_resource = nil)
       uid = auth.info.uid
       provider = auth.provider
