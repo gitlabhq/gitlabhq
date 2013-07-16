@@ -189,7 +189,7 @@ module SharedPaths
   end
 
   step 'I visit project branches page' do
-    visit branches_project_repository_path(@project)
+    visit project_branches_path(@project)
   end
 
   step 'I visit compare refs page' do

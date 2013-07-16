@@ -187,7 +187,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/repository/branches" do
-      subject { branches_project_repository_path(project) }
+      subject { project_branches_path(project) }
 
       before do
         # Speed increase
@@ -429,7 +429,7 @@ describe "Application access" do
     end
 
     describe "GET /project_code/repository/branches" do
-      subject { branches_project_repository_path(project) }
+      subject { project_branches_path(project) }
 
       before do
         # Speed increase
