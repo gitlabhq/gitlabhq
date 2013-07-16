@@ -62,6 +62,9 @@ $ ->
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 
+  $('.remove-row').bind 'ajax:success', ->
+    $(this).closest('li').fadeOut()
+
   # Click a .appear-link, appear-data fadeout
   $(".appear-link").on 'click', (e) ->
     $('.appear-data').fadeIn()

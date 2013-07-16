@@ -8,10 +8,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
     @activities = @repository.commits_with_refs(20)
   end
 
-  def branches
-    @branches = @repository.branches
-  end
-
   def tags
     @tags = @repository.tags
   end

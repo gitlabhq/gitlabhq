@@ -1,4 +1,6 @@
 class Repository
+  include Gitlab::ShellAdapter
+
   attr_accessor :raw_repository
 
   def initialize(path_with_namespace, default_branch)
@@ -31,6 +33,10 @@ class Repository
     commits = raw_repository.commits_between(target, source)
     commits = Commit.decorate(commits) if commits.present?
     commits
+  end
+
+  def rm_branch(branch_name)
+    gitlab_shell.rm_branch(path_with_namespace, branch_name)
   end
 
   def round_commit_count

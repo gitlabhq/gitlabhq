@@ -5,5 +5,5 @@
     = link_to project_protected_branches_path(@project) do
       Protected
       %i.icon-lock
-  = nav_link(path: 'repositories#branches') do
-    = link_to 'All branches', branches_project_repository_path(@project)
+  = nav_link(path: 'branches#index') do
+    = link_to 'All branches', project_branches_path(@project)
