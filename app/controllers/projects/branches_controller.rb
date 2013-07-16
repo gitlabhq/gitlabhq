@@ -14,7 +14,11 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def destroy
-    @project.repository.rm_branch(params[:id])
+    branch = @project.repository.branches.find { |branch| branch.name == params[:id] }
+
+    if branch && @project.repository.rm_branch(branch.name)
+      Event.create_rm_branch(@project, current_user, branch)
+    end
 
     respond_to do |format|
       format.html { redirect_to project_branches_path }

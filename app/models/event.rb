@@ -54,6 +54,19 @@ class Event < ActiveRecord::Base
         Event::COMMENTED
       end
     end
+
+    def create_rm_branch(project, user, branch)
+      Event.create(
+        project: project,
+        action: Event::PUSHED,
+        data: {
+          ref: branch.name,
+          before: branch.commit.id,
+          after: '00000000'
+        },
+        author_id: user.id
+      )
+    end
   end
 
   def proper?
