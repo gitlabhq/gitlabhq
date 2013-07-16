@@ -16,6 +16,7 @@ v 6.0.0
   - Generate fingerprint for ssh keys
   - You an use arrows to navigate at tree view
   - Apply user project limit only for personal projects
+  - API: Allow login with LDAP credentials
 
 v 5.4.0
   - Ability to edit own comments
