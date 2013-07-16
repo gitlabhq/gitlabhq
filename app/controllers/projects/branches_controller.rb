@@ -10,7 +10,9 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
-    # TODO: implement
+    @project.repository.add_branch(params[:branch_name], params[:ref])
+
+    redirect_to project_branches_path(@project)
   end
 
   def destroy
@@ -21,7 +23,7 @@ class Projects::BranchesController < Projects::ApplicationController
     end
 
     respond_to do |format|
-      format.html { redirect_to project_branches_path }
+      format.html { redirect_to project_branches_path(@project) }
       format.js { render nothing: true }
     end
   end

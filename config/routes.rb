@@ -223,8 +223,8 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :tags, only: [:index, :create, :destroy]
-      resources :branches, only: [:index, :create, :destroy]
+      resources :tags, only: [:index, :new, :create, :destroy]
+      resources :branches, only: [:index, :new, :create, :destroy]
       resources :protected_branches, only: [:index, :create, :destroy]
 
       resources :refs, only: [] do
