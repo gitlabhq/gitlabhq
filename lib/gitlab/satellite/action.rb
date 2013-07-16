@@ -1,7 +1,7 @@
 module Gitlab
   module Satellite
     class Action
-      DEFAULT_OPTIONS = {git_timeout: 30.seconds}
+      DEFAULT_OPTIONS = { git_timeout: 30.seconds }
 
       attr_accessor :options, :project, :user
 
@@ -39,8 +39,8 @@ module Gitlab
       def prepare_satellite!(repo)
         project.satellite.clear_and_update!
 
-        repo.config['user.name']=user.name
-        repo.config['user.email']=user.email
+        repo.config['user.name'] = user.name
+        repo.config['user.email'] = user.email
       end
 
       def default_options(options = {})

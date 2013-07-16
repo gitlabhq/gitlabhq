@@ -109,25 +109,25 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     @forked_project = Project.find_by_name("Forked Shop")
 
     data = {
-        before: "0000000000000000000000000000000000000000",
-        after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-        ref: "refs/heads/new_design",
-        user_id: @user.id,
-        user_name: @user.name,
-        repository: {
-            name: @forked_project.name,
-            url: "localhost/rubinius",
-            description: "",
-            homepage: "localhost/rubinius",
-            private: true
-        }
+      before: "0000000000000000000000000000000000000000",
+      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
+      ref: "refs/heads/new_design",
+      user_id: @user.id,
+      user_name: @user.name,
+      repository: {
+        name: @forked_project.name,
+        url: "localhost/rubinius",
+        description: "",
+        homepage: "localhost/rubinius",
+        private: true
+      }
     }
 
     @event = Event.create(
-        project: @forked_project,
-        action: Event::PUSHED,
-        data: data,
-        author_id: @user.id
+      project: @forked_project,
+      action: Event::PUSHED,
+      data: data,
+      author_id: @user.id
     )
   end
 

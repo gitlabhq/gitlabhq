@@ -20,7 +20,6 @@ Feature: Project Forked Merge Requests
     And I submit the merge request
     Then I should see merge request "Merge Request On Forked Project"
 
-
   @javascript
   Scenario: I should see a push widget for forked merge requests
     Given project "Forked Shop" has push event
@@ -38,7 +37,6 @@ Feature: Project Forked Merge Requests
     And I should see merge request "Merge Request On Forked Project"
     And I click link edit "Merge Request On Forked Project"
     Then I see the edit page prefilled for "Merge Request On Forked Project"
-
 
   @javascript
   Scenario: I cannot submit an invalid merge request

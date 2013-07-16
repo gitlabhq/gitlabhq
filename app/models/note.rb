@@ -32,8 +32,8 @@ class Note < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true
 
   validates :note, :project, presence: true
-  validates :line_code, format: {with: /\A[a-z0-9]+_\d+_\d+\Z/}, allow_blank: true
-  validates :attachment, file_size: {maximum: 10.megabytes.to_i}
+  validates :line_code, format: { with: /\A[a-z0-9]+_\d+_\d+\Z/ }, allow_blank: true
+  validates :attachment, file_size: { maximum: 10.megabytes.to_i }
 
   validates :noteable_id, presence: true, if: ->(n) { n.noteable_type.present? && n.noteable_type != 'Commit' }
   validates :commit_id, presence: true, if: ->(n) { n.noteable_type == 'Commit' }
@@ -42,13 +42,13 @@ class Note < ActiveRecord::Base
 
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
-  scope :inline, -> { where("line_code IS NOT NULL") }
-  scope :not_inline, -> { where(line_code: [nil, '']) }
+  scope :inline, ->{ where("line_code IS NOT NULL") }
+  scope :not_inline, ->{ where(line_code: [nil, '']) }
 
-  scope :common, -> { where(noteable_type: ["", nil]) }
-  scope :fresh, -> { order("created_at ASC, id ASC") }
-  scope :inc_author_project, -> { includes(:project, :author) }
-  scope :inc_author, -> { includes(:author) }
+  scope :common, ->{ where(noteable_type: ["", nil]) }
+  scope :fresh, ->{ order("created_at ASC, id ASC") }
+  scope :inc_author_project, ->{ includes(:project, :author) }
+  scope :inc_author, ->{ includes(:author) }
 
   def self.create_status_change_note(noteable, project, author, status)
     create({
@@ -61,8 +61,8 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-        project.users.find_by_email(noteable.author_email) ||
-            project.users.find_by_name(noteable.author_name)
+      project.users.find_by_email(noteable.author_email) ||
+        project.users.find_by_name(noteable.author_name)
   rescue
     nil
   end
@@ -97,8 +97,8 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def downvote?
     votable? && (note.start_with?('-1') ||
-      note.start_with?(':-1:')
-    )
+                 note.start_with?(':-1:')
+                )
   end
 
   def for_commit?
@@ -146,8 +146,8 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def upvote?
     votable? && (note.start_with?('+1') ||
-      note.start_with?(':+1:')
-    )
+                 note.start_with?(':+1:')
+                )
   end
 
   def votable?

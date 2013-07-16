@@ -1,6 +1,5 @@
 module Gitlab
-  class SatelliteNotExistError < StandardError;
-  end
+  class SatelliteNotExistError < StandardError;  end
 
   module Satellite
     class Satellite
@@ -22,9 +21,9 @@ module Gitlab
         raise SatelliteNotExistError.new("Satellite doesn't exist")
       end
 
-
       def clear_and_update!
         raise_no_satellite unless exists?
+
         File.exists? path
         @repo = nil
         clear_working_dir!
@@ -67,7 +66,6 @@ module Gitlab
           end
         end
       end
-
 
       def lock_file
         create_locks_dir unless File.exists?(lock_files_dir)

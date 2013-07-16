@@ -1,11 +1,16 @@
 %h3.page-title
   = "Merge Request ##{@merge_request.id}:"
   &nbsp;
-  %span.label-project= @merge_request.source_project.path_with_namespace
-  %span.label-branch= @merge_request.source_branch
-  &rarr;
-  %span.label-project= @merge_request.target_project.path_with_namespace
-  %span.label-branch= @merge_request.target_branch
+  -if @merge_request.for_fork?
+    %span.label-project= @merge_request.source_project.path_with_namespace
+    %span.label-branch= @merge_request.source_branch
+    &rarr;
+    %span.label-project= @merge_request.target_project.path_with_namespace
+    %span.label-branch= @merge_request.target_branch
+  - else
+    %span.label-branch= @merge_request.source_branch
+    &rarr;
+    %span.label-branch= @merge_request.target_branch
 
   %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)

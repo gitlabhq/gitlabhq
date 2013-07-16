@@ -1,11 +1,8 @@
 require 'spec_helper'
 
 describe 'Gitlab::Satellite::Action' do
-
-
   let(:project) { create(:project_with_code) }
   let(:user) { create(:user) }
-
 
   describe '#prepare_satellite!' do
 
@@ -50,10 +47,7 @@ describe 'Gitlab::Satellite::Action' do
       repo.config['user.name'].should ==user.name
       repo.config['user.email'].should ==user.email
     end
-
-
   end
-
 
   describe '#in_locked_and_timed_satellite' do
 

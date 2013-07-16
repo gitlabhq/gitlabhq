@@ -11,7 +11,6 @@ describe 'Gitlab::Satellite::MergeAction' do
     #these commits are quite close together, itended to make string diffs/format patches small
     @close_commit1 = ['2_3_notes_fix', '8470d70da67355c9c009e4401746b1d5410af2e3']
     @close_commit2 = ['scss_refactoring', 'f0f14c8eaba69ebddd766498a9d0b0e79becd633']
-
   end
 
   let(:project) { create(:project_with_code) }
@@ -53,7 +52,6 @@ describe 'Gitlab::Satellite::MergeAction' do
     end
   end
 
-
   describe '#format_patch' do
     context 'on fork' do
       it 'should build a format patch' do
@@ -75,7 +73,6 @@ describe 'Gitlab::Satellite::MergeAction' do
       end
     end
   end
-
 
   describe '#diffs_between_satellite tested against diff_in_satellite' do
 
@@ -109,7 +106,6 @@ describe 'Gitlab::Satellite::MergeAction' do
         merge_request.source_branch = @master[0]
         diffs = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite
 
-
         merge_request.target_branch = @close_commit1[0]
         merge_request.source_branch = @master[0]
         diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diff_in_satellite
@@ -118,7 +114,6 @@ describe 'Gitlab::Satellite::MergeAction' do
       end
     end
   end
-
 
   describe '#can_be_merged?' do
     context 'on fork' do
@@ -145,5 +140,4 @@ describe 'Gitlab::Satellite::MergeAction' do
       end
     end
   end
-
 end

@@ -20,12 +20,12 @@ class FilterContext
     end
 
     case params[:status]
-      when 'closed'
-        items.closed
-      when 'all'
-        items
-      else
-        items.opened
+    when 'closed'
+      items.closed
+    when 'all'
+      items
+    else
+      items.opened
     end
   end
 end

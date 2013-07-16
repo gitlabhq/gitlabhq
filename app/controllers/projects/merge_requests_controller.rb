@@ -124,7 +124,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_branches
   end
 
-
   def ci_status
     status = project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
     response = {status: status}
@@ -134,11 +133,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   protected
 
-
   def selected_target_project
     ((@project.id.to_s == params[:target_project_id]) || @project.forked_project_link.nil?) ? @project : @project.forked_project_link.forked_from_project
   end
-
 
   def merge_request
     @merge_request ||= MergeRequest.find_by_id(params[:id])

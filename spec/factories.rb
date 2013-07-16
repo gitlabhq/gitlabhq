@@ -117,9 +117,9 @@ FactoryGirl.define do
       source_branch "stable" # pretend bcf03b5d
       st_commits do
         [
-            source_project.repository.commit('bcf03b5d').to_hash,
-            source_project.repository.commit('bcf03b5d~1').to_hash,
-            source_project.repository.commit('bcf03b5d~2').to_hash
+          source_project.repository.commit('bcf03b5d').to_hash,
+          source_project.repository.commit('bcf03b5d~1').to_hash,
+          source_project.repository.commit('bcf03b5d~2').to_hash
         ]
       end
       st_diffs do

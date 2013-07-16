@@ -72,17 +72,17 @@ module TestEnv
     )
 
     Gitlab::Satellite::Satellite.any_instance.stub(
-        exists?: true,
-        destroy: true,
-        create: true,
-        lock_files_dir: repos_path
+      exists?: true,
+      destroy: true,
+      create: true,
+      lock_files_dir: repos_path
     )
 
     MergeRequest.any_instance.stub(
-        check_if_can_be_merged: true
+      check_if_can_be_merged: true
     )
     Repository.any_instance.stub(
-        size: 12.45
+      size: 12.45
     )
   end
 
@@ -170,6 +170,4 @@ module TestEnv
     command = "git init --quiet --bare #{path};"
     system(command)
   end
-
-
 end

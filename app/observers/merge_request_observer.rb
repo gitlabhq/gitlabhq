@@ -2,8 +2,7 @@ class MergeRequestObserver < ActivityObserver
   observe :merge_request
 
   def after_create(merge_request)
-    event_author_id = merge_request.author_id
-    if event_author_id
+    if merge_request.author_id
       create_event(merge_request, Event.determine_action(merge_request))
     end
 
@@ -24,11 +23,11 @@ class MergeRequestObserver < ActivityObserver
     return true if merge_request.merge_event
 
     Event.create(
-        project: merge_request.target_project,
-        target_id: merge_request.id,
-        target_type: merge_request.class.name,
-        action: Event::MERGED,
-        author_id: merge_request.author_id_of_changes
+      project: merge_request.target_project,
+      target_id: merge_request.id,
+      target_type: merge_request.class.name,
+      action: Event::MERGED,
+      author_id: merge_request.author_id_of_changes
     )
   end
 
@@ -41,14 +40,13 @@ class MergeRequestObserver < ActivityObserver
     notification.reassigned_merge_request(merge_request, current_user) if merge_request.is_being_reassigned?
   end
 
-
   def create_event(record, status)
     Event.create(
-        project: record.target_project,
-        target_id: record.id,
-        target_type: record.class.name,
-        action: status,
-        author_id: record.author_id
+      project: record.target_project,
+      target_id: record.id,
+      target_type: record.class.name,
+      action: status,
+      author_id: record.author_id
     )
   end
 

@@ -2,7 +2,7 @@ module Emails
   module MergeRequests
     def new_merge_request_email(recipient_id, merge_request_id)
       @merge_request = MergeRequest.find(merge_request_id)
-      mail(to: @merge_request.assignee_email, subject: subject("new merge request !#{@merge_request.id}", @merge_request.title))
+      mail(to: recipient(recipient_id), subject: subject("new merge request !#{@merge_request.id}", @merge_request.title))
     end
 
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id)

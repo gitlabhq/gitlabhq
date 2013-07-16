@@ -5,4 +5,4 @@
       %span= day.stamp("28 Aug, 2010")
       .pull-right
         %small= pluralize(commits.count, 'commit')
-    %ul.well-list= render commits, :project => @project
+    %ul.well-list= render commits, project: @project

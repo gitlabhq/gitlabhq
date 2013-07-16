@@ -80,9 +80,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def merge_mr(merge_request)
-    recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.source_project)
-    recipients = recipients.concat(reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project))
-    recipients = recipients.concat(project_watchers(merge_request.source_project))
+    recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
 
     recipients.each do |recipient|
@@ -104,7 +102,7 @@ class NotificationService
     # ignore wall messages
     return true unless note.noteable_type.present?
 
-    opts = {noteable_type: note.noteable_type, project_id: note.project_id}
+    opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     if note.commit_id.present?
       opts.merge!(commit_id: note.commit_id)

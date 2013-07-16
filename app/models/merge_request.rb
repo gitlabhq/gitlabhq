@@ -26,8 +26,8 @@ class MergeRequest < ActiveRecord::Base
 
   include Issuable
 
-  belongs_to :target_project, :foreign_key => :target_project_id, class_name: "Project"
-  belongs_to :source_project, :foreign_key => :source_project_id, class_name: "Project"
+  belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
+  belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
   attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event
 
@@ -149,7 +149,11 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_diffs
-    diffs = Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
+    if for_fork?
+      diffs = Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
+    else
+      diffs = target_project.repository.diffs_between(source_branch, target_branch)
+    end
     diffs ||= []
     diffs
   end
@@ -172,7 +176,7 @@ class MergeRequest < ActiveRecord::Base
 
   def probably_merged?
     unmerged_commits.empty? &&
-        commits.any? && opened?
+      commits.any? && opened?
   end
 
   def reloaded_commits
@@ -185,11 +189,15 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_commits
-    commits = Gitlab::Satellite::MergeAction.new(self.author, self).commits_between
+    if for_fork?
+      commits = Gitlab::Satellite::MergeAction.new(self.author, self).commits_between
+    else
+      commits = target_project.repository.commits_between(self.target_branch, self.source_branch)
+    end
     if commits.present?
       commits = Commit.decorate(commits).
-          sort_by(&:created_at).
-          reverse
+      sort_by(&:created_at).
+      reverse
     end
     commits
   end

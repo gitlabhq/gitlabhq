@@ -21,7 +21,6 @@ describe "Application access" do
     let(:reporter) { create(:user) }
 
     before do
-
       # full access
       project.team << [master, :master]
 

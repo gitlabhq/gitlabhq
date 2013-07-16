@@ -90,7 +90,6 @@ describe MergeRequestObserver do
     end
   end
 
-
   describe "Merge Request created" do
     def self.it_should_be_valid_event
       it { @event.should_not be_nil }

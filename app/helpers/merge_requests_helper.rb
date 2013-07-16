@@ -1,26 +1,25 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
     new_project_merge_request_path(
-        event.project,
-        new_mr_from_push_event(event, event.project)
+      event.project,
+      new_mr_from_push_event(event, event.project)
     )
   end
 
   def new_mr_path_for_fork_from_push_event(event)
     new_project_merge_request_path(
-        event.project,
-        new_mr_from_push_event(event, event.project.forked_from_project)
+      event.project,
+      new_mr_from_push_event(event, event.project.forked_from_project)
     )
   end
 
-
   def new_mr_from_push_event(event, target_project)
     return :merge_request => {
-        source_project_id: event.project.id,
-        target_project_id: target_project.id,
-        source_branch: event.branch_name,
-        target_branch: target_project.repository.root_ref,
-        title: event.branch_name.titleize
+      source_project_id: event.project.id,
+      target_project_id: target_project.id,
+      source_branch: event.branch_name,
+      target_branch: target_project.repository.root_ref,
+      title: event.branch_name.titleize
     }
   end
 
