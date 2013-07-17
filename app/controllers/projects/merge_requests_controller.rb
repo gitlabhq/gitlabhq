@@ -39,16 +39,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    @merge_request = @project.merge_requests.new(params[:merge_request])
-
-    if params[:merge_request] && params[:merge_request][:source_project_id]
-      @merge_request.source_project = Project.find_by_id(params[:merge_request][:source_project_id])
-    else
-      @merge_request.source_project = @project
-    end
-    if params[:merge_request] && params[:merge_request][:target_project_id]
-      @merge_request.target_project = Project.find_by_id(params[:merge_request][:target_project_id])
-    end
+    @merge_request = MergeRequest.new(params[:merge_request])
+    @merge_request.source_project = @project unless @merge_request.source_project
+    @merge_request.target_project = @project unless @merge_request.target_project
     @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
     @source_project = @merge_request.source_project
     @merge_request
@@ -138,7 +131,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= MergeRequest.find_by_id(params[:id])
+    @merge_request ||= @project.merge_requests.find(params[:id])
   end
 
   def authorize_modify_merge_request!
