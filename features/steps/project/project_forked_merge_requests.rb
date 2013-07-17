@@ -100,6 +100,28 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     verify_commit_link(".mr_source_commit",@forked_project)
   end
 
+  And 'I update the merge request title' do
+    fill_in "merge_request_title", with: "An Edited Forked Merge Request"
+  end
+
+  And 'I save the merge request' do
+    click_button "Save changes"
+  end
+
+  Then 'I should see the edited merge request' do
+    page.should have_content "An Edited Forked Merge Request"
+    @project.merge_requests.size.should >= 1
+    @merge_request = @project.merge_requests.last
+    current_path.should == project_merge_request_path(@project, @merge_request)
+    @merge_request.source_project.should == @forked_project
+    @merge_request.source_branch.should == "master"
+    @merge_request.target_branch.should == "stable"
+    page.should have_content @forked_project.path_with_namespace
+    page.should have_content @project.path_with_namespace
+    page.should have_content @merge_request.source_branch
+    page.should have_content @merge_request.target_branch
+  end
+
   Then 'I should see last push widget' do
     page.should have_content "You pushed to new_design"
     page.should have_link "Create Merge Request"

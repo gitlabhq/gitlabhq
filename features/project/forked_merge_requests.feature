@@ -37,6 +37,9 @@ Feature: Project Forked Merge Requests
     And I should see merge request "Merge Request On Forked Project"
     And I click link edit "Merge Request On Forked Project"
     Then I see the edit page prefilled for "Merge Request On Forked Project"
+    And I update the merge request title
+    And I save the merge request
+    Then I should see the edited merge request
 
   @javascript
   Scenario: I cannot submit an invalid merge request

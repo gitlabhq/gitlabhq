@@ -54,10 +54,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def create
-    @merge_request = @project.merge_requests.new(params[:merge_request])
+    @merge_request = MergeRequest.new(params[:merge_request])
     @merge_request.author = current_user
-    @merge_request.source_project_id = params[:merge_request][:source_project_id].to_i
-    @merge_request.target_project_id = params[:merge_request][:target_project_id].to_i
     @target_branches ||= []
     if @merge_request.save
       @merge_request.reload_code
