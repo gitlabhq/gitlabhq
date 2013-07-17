@@ -83,7 +83,6 @@ describe MergeRequest do
     end
   end
 
-
   describe '#allow_source_branch_removal?' do
     it 'should not allow removal when mr is a fork' do
 

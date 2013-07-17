@@ -14,6 +14,14 @@ module API
           end
           not_found!
         end
+
+        def not_fork?(target_project_id, user_project)
+          target_project_id.nil? || target_project_id == user_project.id.to_s
+        end
+
+        def target_matches_fork(target_project_id,user_project)
+          user_project.forked? && user_project.forked_from_project.id.to_s == target_project_id
+        end
       end
 
       # List merge requests
@@ -69,13 +77,16 @@ module API
         merge_request.author = current_user
         merge_request.source_project = user_project
         target_project_id = attrs[:target_project_id]
-        if !target_project_id.nil? && user_project.forked? && user_project.forked_from_project.id.to_s == target_project_id
-          merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
-        elsif target_project_id.nil? || target_project_id == user_project.id.to_s
+        if not_fork?(target_project_id, user_project)
           merge_request.target_project = user_project
-        elsif !target_project_id.nil?
-          render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
+        else
+          if target_matches_fork(target_project_id,user_project)
+            merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+          else
+            render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
+          end
         end
+
         if merge_request.save
           merge_request.reload_code
           present merge_request, with: Entities::MergeRequest

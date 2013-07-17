@@ -130,7 +130,6 @@ module Gitlab
         repo.git.fetch(default_options, :origin)
       end
 
-
       def default_options(options = {})
         {raise: true, timeout: true}.merge(options)
       end
