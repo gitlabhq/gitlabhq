@@ -143,7 +143,7 @@ GEM
       net-ssh (>= 2.1.3)
       nokogiri (~> 1.5.0)
       ruby-hmac
-    font-awesome-rails (3.1.1.3)
+    font-awesome-rails (3.2.1.2)
       railties (>= 3.2, < 5.0)
     foreman (0.63.0)
       dotenv (>= 0.7)
@@ -560,7 +560,7 @@ DEPENDENCIES
   factory_girl_rails
   ffaker
   fog (~> 1.3.1)
-  font-awesome-rails (~> 3.1.1)
+  font-awesome-rails
   foreman
   gemoji (~> 1.2.1)
   github-linguist
