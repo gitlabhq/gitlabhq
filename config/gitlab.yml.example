@@ -148,6 +148,9 @@ production: &base
     repos_path: /home/git/repositories/
     # hooks_path: /home/git/gitlab-shell/hooks/    # default: 'hooks/' relative to home_path
 
+    # File used as authorized_keys for gitlab user
+    # auth_file: "/home/git/.ssh/authorized_keys"  # must be the same as the one in gitlab-shell's config.yml
+
     # Git over HTTP
     upload_pack: true
     receive_pack: true
