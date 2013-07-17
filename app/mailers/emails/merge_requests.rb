@@ -23,7 +23,6 @@ module Emails
     end
   end
 
-
   # Over rides default behavour to show source/target
   # Formats arguments into a String suitable for use as an email subject
   #
@@ -63,4 +62,5 @@ module Emails
     subject << " | " + extra.join(' | ') if extra.present?
     subject
   end
+
 end
