@@ -74,9 +74,7 @@ module Gitlab
             #this method doesn't take default options
             diffs = merge_repo.diff(common_commit, "source/#{merge_request.source_branch}")
           else
-            common_commit = merge_repo.git.native(:merge_base, default_options, ["#{merge_request.target_branch}", "#{merge_request.source_branch}"]).strip
-            #this method doesn't take default options
-            diffs = merge_repo.diff(common_commit, "#{merge_request.source_branch}")
+            raise "Attempt to determine diffs between for a non forked merge request in satellite MergeRequest.id:[#{merge_request.id}]"
           end
           diffs = diffs.map { |diff| Gitlab::Git::Diff.new(diff) }
           return diffs
@@ -109,7 +107,7 @@ module Gitlab
           if (merge_request.for_fork?)
             commits = merge_repo.commits_between("origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
           else
-            commits = merge_repo.commits_between("#{merge_request.target_branch}", "#{merge_request.source_branch}")
+            raise "Attempt to determine commits between for a non forked merge request in satellite MergeRequest.id:[#{merge_request.id}]"
           end
           commits = commits.map { |commit| Gitlab::Git::Commit.new(commit, nil) }
           return commits

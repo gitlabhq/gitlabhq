@@ -38,16 +38,14 @@ describe 'Gitlab::Satellite::MergeAction' do
     end
 
     context 'between branches' do
-      it 'should get proper commits between' do
+      it 'should raise exception -- not expected to be used by non forks' do
         merge_request.target_branch = @one_after_stable[0]
         merge_request.source_branch = @master[0]
-        commits = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between
-        verify_commits(commits, @one_after_stable[1], @master[1])
+        expect {Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between}.to raise_error
 
         merge_request.target_branch = @wiki_branch[0]
         merge_request.source_branch = @master[0]
-        commits = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between
-        verify_commits(commits, @wiki_branch[1], @master[1])
+        expect {Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).commits_between}.to raise_error
       end
     end
   end
@@ -104,13 +102,7 @@ describe 'Gitlab::Satellite::MergeAction' do
       it 'should get proper diffs' do
         merge_request.target_branch = @close_commit1[0]
         merge_request.source_branch = @master[0]
-        diffs = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite
-
-        merge_request.target_branch = @close_commit1[0]
-        merge_request.source_branch = @master[0]
-        diff = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diff_in_satellite
-
-        is_a_matching_diff(diff, diffs)
+        expect{Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).diffs_between_satellite}.to raise_error
       end
     end
   end
