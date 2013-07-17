@@ -1,10 +1,11 @@
 class Projects::TagsController < Projects::ApplicationController
   # Authorize
   before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  before_filter :authorize_admin_project!, only: [:destroy, :create]
+  before_filter :authorize_code_access!
+  before_filter :authorize_push!, only: [:create]
+  before_filter :authorize_admin_project!, only: [:destroy]
 
   def index
     @tags = Kaminari.paginate_array(@project.repository.tags).page(params[:page]).per(30)
