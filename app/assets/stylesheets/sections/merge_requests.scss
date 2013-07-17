@@ -82,10 +82,6 @@
   }
 }
 
-.mr_direction_tip {
-  margin-top:40px
-}
-
 .label-branch {
   @include border-radius(4px);
   padding: 2px 4px;
@@ -112,4 +108,13 @@
       color: #999;
     }
   }
+}
+
+.merge-request-angle {
+  text-align: center;
+  margin-top: 45px;
+}
+
+.merge-request-info {
+  padding: 15px 0;
 }

@@ -5,49 +5,48 @@
         - @merge_request.errors.full_messages.each do |msg|
           %li= msg
 
-  %fieldset
-    %legend 1. Select Branches
+  %h3.page-title
+    %i.icon-code-fork
+    Branches
+  .merge-request-branches
+  .row
+    .span5
+      .light-well
+        %h5.cgray From (Head Branch)
+        = f.select(:source_branch, @repository.branch_names, { include_blank: "Select branch" }, {class: 'chosen span4'})
+        .mr_source_commit.prepend-top-10
 
-    .row
-      .span5
-        .mr_branch_box
-          %h5.cgray From (Head Branch)
-          .body
-            .padded= f.select(:source_branch, @repository.branch_names, { include_blank: "Select branch" }, {class: 'chosen span4'})
-        .mr_source_commit
+    .span2
+      %h1.merge-request-angle
+        %i.icon-angle-right
+    .span5
+      .light-well
+        %h5.cgray To (Base Branch)
+        = f.select(:target_branch, @repository.branch_names, { include_blank: "Select branch" }, {class: 'chosen span4'})
+        .mr_target_commit.prepend-top-10
 
-      .span2
-        %center= image_tag "merge.png", class: 'mr_direction_tip'
-      .span5
-        .mr_branch_box
-          %h5.cgray To (Base Branch)
-          .body
-            .padded= f.select(:target_branch, @repository.branch_names, { include_blank: "Select branch" }, {class: 'chosen span4'})
-        .mr_target_commit
+  %hr
 
-  %fieldset
-    %legend 2. Fill info
+  %h3.page-title
+    %i.icon-paper-clip
+    Details
+  .merge-request-info
+    .clearfix
+      = f.label :title do
+        %strong= "Title *"
+      .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
+    .clearfix
+      .left
+        = f.label :assignee_id do
+          %i.icon-user
+          Assign to
+        .input= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+      .left
+        = f.label :milestone_id do
+          %i.icon-time
+          Milestone
+        .input= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
-    .ui-box.ui-box-show
-      .ui-box-head
-        .clearfix
-          = f.label :title do
-            %strong= "Title *"
-          .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
-      .ui-box-body
-        .clearfix
-          .left
-            = f.label :assignee_id do
-              %i.icon-user
-              Assign to
-            .input= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
-          .left
-            = f.label :milestone_id do
-              %i.icon-time
-              Milestone
-            .input= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
-
-  .control-group
 
   .form-actions
     - if @merge_request.new_record?

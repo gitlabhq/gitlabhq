@@ -1,5 +1,5 @@
 - if show_last_push_widget?(event)
-  .alert.alert-success.event-last-push
+  .event-last-push
     %span You pushed to
     = link_to project_commits_path(event.project, event.ref_name) do
       %strong= truncate(event.ref_name, length: 28)
@@ -11,3 +11,4 @@
     .pull-right
       = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-create btn-small" do
         Create Merge Request
+  %hr
