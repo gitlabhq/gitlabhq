@@ -35,6 +35,14 @@ class Repository
     commits
   end
 
+  def find_branch(name)
+    branches.find { |branch| branch.name == name }
+  end
+
+  def find_tag(name)
+    tags.find { |tag| tag.name == name }
+  end
+
   def add_branch(branch_name, ref)
     Rails.cache.delete(cache_key(:branch_names))
 

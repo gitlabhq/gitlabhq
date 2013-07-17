@@ -12,16 +12,20 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
-    @project.repository.add_branch(params[:branch_name], params[:ref])
+    @repository.add_branch(params[:branch_name], params[:ref])
+
+    if new_branch = @repository.find_branch(params[:branch_name])
+      Event.create_ref_event(@project, current_user, new_branch, 'add')
+    end
 
     redirect_to project_branches_path(@project)
   end
 
   def destroy
-    branch = @project.repository.branches.find { |branch| branch.name == params[:id] }
+    branch = @repository.find_branch(params[:id])
 
-    if branch && @project.repository.rm_branch(branch.name)
-      Event.create_rm_ref(@project, current_user, branch)
+    if branch && @repository.rm_branch(branch.name)
+      Event.create_ref_event(@project, current_user, branch, 'rm')
     end
 
     respond_to do |format|
