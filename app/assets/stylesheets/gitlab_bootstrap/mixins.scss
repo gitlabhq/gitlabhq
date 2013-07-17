@@ -84,7 +84,7 @@
 }
 
 @mixin page-title {
-  color: #456;
+  color: $style_color;
   font-size: 20px;
   font-weight: normal;
   line-height: 1.5;

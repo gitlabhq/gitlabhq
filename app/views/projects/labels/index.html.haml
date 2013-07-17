@@ -1,9 +1,5 @@
 = render "projects/issues/head"
 
-%h3.page-title
-  Labels
-%br
-
 - if @labels.present?
   %ul.bordered-list.labels-table
     - @labels.each do |label|
