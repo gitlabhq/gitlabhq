@@ -12,7 +12,9 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    # TODO: implement
+    @project.repository.add_tag(params[:tag_name], params[:ref])
+
+    redirect_to project_tags_path(@project)
   end
 
   def destroy

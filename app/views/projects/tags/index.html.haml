@@ -1,4 +1,15 @@
 = render "projects/commits/head"
+
+- if can? current_user, :push_code, @project
+  .pull-right
+    = link_to new_project_tag_path(@project), class: 'btn btn-create' do
+      %i.icon-add-sign
+      New tag
+
+%p
+  Tags give ability to mark specific points in history as being important
+%hr
+
 - unless @tags.empty?
   %ul.bordered-list
     - @tags.each do |tag|
@@ -26,7 +37,7 @@
                 %i.icon-download-alt
                 Download
             - if can?(current_user, :admin_project, @project)
-              = link_to project_tag_path(@project, tag.name), class: 'btn grouped btn-small remove-row', method: :delete, confirm: 'Removed tag cannot be restored. Are you sure?', remote: true do
+              = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row', method: :delete, confirm: 'Removed tag cannot be restored. Are you sure?', remote: true do
                 %i.icon-trash
 
   = paginate @tags, theme: 'gitlab'
