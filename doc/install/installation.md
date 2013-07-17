@@ -150,10 +150,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-3-stable
+    sudo -u git -H git checkout v5.3.0
 
 **Note:**
-You can change `5-3-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+You can change `v5.3.0` to `master` if you want the *bleeding edge* version, but do so with caution!
 
 ## Configure it
 
