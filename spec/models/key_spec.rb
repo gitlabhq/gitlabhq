@@ -42,9 +42,16 @@ describe Key do
       build(:key, user: user).should be_valid
     end
 
-    it "does not accepts the key twice" do
+    it "does not accept the exact same key twice" do
       create(:key, user: user)
       build(:key, user: user).should_not be_valid
+    end
+
+    it "does not accept a duplicate key with a different comment" do
+      create(:key, user: user)
+      duplicate = build(:key, user: user)
+      duplicate.key << ' extra comment'
+      duplicate.should_not be_valid
     end
   end
 

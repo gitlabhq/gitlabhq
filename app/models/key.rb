@@ -21,25 +21,16 @@ class Key < ActiveRecord::Base
 
   attr_accessible :key, :title
 
-  before_validation :strip_white_space
+  before_validation :strip_white_space, :generate_fingerpint
 
   validates :title, presence: true, length: { within: 0..255 }
   validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
-  validate :fingerprintable_key
+  validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
 
   delegate :name, :email, to: :user, prefix: true
 
   def strip_white_space
     self.key = key.strip unless key.blank?
-  end
-
-  def fingerprintable_key
-    return true unless key # Don't test if there is no key.
-
-    unless generate_fingerpint
-      errors.add(:key, "can't be fingerprinted")
-      false
-    end
   end
 
   # projects that has this key
@@ -54,6 +45,9 @@ class Key < ActiveRecord::Base
   private
 
   def generate_fingerpint
+    self.fingerprint = nil
+    return unless key.present?
+
     cmd_status = 0
     cmd_output = ''
     Tempfile.open('gitlab_key_file') do |file|
@@ -66,9 +60,6 @@ class Key < ActiveRecord::Base
       cmd_output.gsub /([\d\h]{2}:)+[\d\h]{2}/ do |match|
         self.fingerprint = match
       end
-      true
-    else
-      false
     end
   end
 end
