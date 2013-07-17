@@ -10,7 +10,7 @@
         Show discussion
     = image_tag gravatar_icon(note.author_email), class: "avatar s32"
     %div
-      = link_to_member(note.project, note.author, avatar: false)
+      = link_to_member(@project, note.author, avatar: false)
       - if note.for_merge_request?
         - if note.diff
           started a discussion on this merge request diff
