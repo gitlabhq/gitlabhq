@@ -9,7 +9,7 @@ describe GitlabMarkdownHelper do
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
   let(:issue)         { create(:issue, project: project) }
-  let(:merge_request) { create(:merge_request, project: project) }
+  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
   let(:member)        { project.users_projects.where(user_id: user).first }
 

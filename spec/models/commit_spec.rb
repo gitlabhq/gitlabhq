@@ -3,7 +3,6 @@ require 'spec_helper'
 describe Commit do
   let(:commit) { create(:project_with_code).repository.commit }
 
-
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do
       commit.stub(:safe_message).and_return('')

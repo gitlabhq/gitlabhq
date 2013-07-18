@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::API do
   include ApiHelpers
   before(:each) { enable_observers }
+  after(:each) {disable_observers}
 
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }

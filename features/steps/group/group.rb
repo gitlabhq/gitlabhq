@@ -60,7 +60,8 @@ class Groups < Spinach::FeatureSteps
 
   Given 'project from group has merge requests assigned to me' do
     create :merge_request,
-      project: project,
+      source_project: project,
+      target_project: project,
       assignee: current_user,
       author: current_user
   end

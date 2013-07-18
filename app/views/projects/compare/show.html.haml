@@ -9,14 +9,14 @@
   .alert.alert-block
     %p
       %strong Warning! This comparison include 100+ commits.
-    %p To prevent performance issue we dont show diff information.
+    %p To prevent performance issues we dont show diff information.
 
 - if @commits.present?
   %div.ui-box
     .title
       Commits (#{@commits.count})
-    %ul.well-list= render Commit.decorate(@commits)
+    %ul.well-list= render Commit.decorate(@commits), project: @project
 
   - unless @diffs.empty?
     %h4 Diff
-    = render "projects/commits/diffs", diffs: @diffs
+    = render "projects/commits/diffs", diffs: @diffs, project: @project

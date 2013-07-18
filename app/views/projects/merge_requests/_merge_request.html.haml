@@ -1,18 +1,24 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
     %span.light= "##{merge_request.id}"
-    = link_to_gfm truncate(merge_request.title, length: 80), project_merge_request_path(merge_request.project, merge_request), class: "row_title"
+    = link_to_gfm truncate(merge_request.title, length: 80), project_merge_request_path(merge_request.target_project, merge_request), class: "row_title"
     - if merge_request.merged?
       %small.pull-right
         %i.icon-ok
         = "MERGED"
     - else
       %span.pull-right
-        %i.icon-angle-right
-        = merge_request.target_branch
+        - if merge_request.for_fork?
+          = "#{merge_request.source_project.path_with_namespace}/#{merge_request.source_branch}"
+          %i.icon-angle-right
+          = "#{merge_request.target_project.path_with_namespace}/#{merge_request.target_branch}"
+        - else
+          = "#{merge_request.source_branch}"
+          %i.icon-angle-right
+          = "#{merge_request.target_branch}"
   .merge-request-info
     - if merge_request.author
-      authored by #{link_to_member(@project, merge_request.author)}
+      authored by #{link_to_member(merge_request.source_project, merge_request.author)}
     - if merge_request.votes_count > 0
       = render 'votes/votes_inline', votable: merge_request
     - if merge_request.notes.any?

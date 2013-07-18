@@ -84,9 +84,9 @@ ActiveRecord::Schema.define(:version => 20130624162710) do
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-    t.string   "target_branch",                       :null => false
-    t.string   "source_branch",                       :null => false
-    t.integer  "project_id",                          :null => false
+    t.string   "target_branch",                           :null => false
+    t.string   "source_branch",                           :null => false
+    t.integer  "source_project_id",                       :null => false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
@@ -97,14 +97,15 @@ ActiveRecord::Schema.define(:version => 20130624162710) do
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
+    t.integer  "target_project_id",                       :null => false
   end
 
   add_index "merge_requests", ["assignee_id"], :name => "index_merge_requests_on_assignee_id"
   add_index "merge_requests", ["author_id"], :name => "index_merge_requests_on_author_id"
   add_index "merge_requests", ["created_at"], :name => "index_merge_requests_on_created_at"
   add_index "merge_requests", ["milestone_id"], :name => "index_merge_requests_on_milestone_id"
-  add_index "merge_requests", ["project_id"], :name => "index_merge_requests_on_project_id"
   add_index "merge_requests", ["source_branch"], :name => "index_merge_requests_on_source_branch"
+  add_index "merge_requests", ["source_project_id"], :name => "index_merge_requests_on_project_id"
   add_index "merge_requests", ["target_branch"], :name => "index_merge_requests_on_target_branch"
   add_index "merge_requests", ["title"], :name => "index_merge_requests_on_title"
 

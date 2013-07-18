@@ -26,14 +26,13 @@ describe IssueObserver do
       before { mock_issue.stub(state: 'closed') }
 
       it 'note is created if the issue is being closed' do
-        Note.should_receive(:create_status_change_note).with(mock_issue, some_user, 'closed')
+        Note.should_receive(:create_status_change_note).with(mock_issue, mock_issue.project, some_user, 'closed')
 
         subject.after_close(mock_issue, nil)
       end
 
       it 'trigger notification to send emails' do
         subject.notification.should_receive(:close_issue).with(mock_issue, some_user)
-
         subject.after_close(mock_issue, nil)
       end
     end
@@ -42,8 +41,7 @@ describe IssueObserver do
       before { mock_issue.stub(state: 'reopened') }
 
       it 'note is created if the issue is being reopened' do
-        Note.should_receive(:create_status_change_note).with(mock_issue, some_user, 'reopened')
-
+        Note.should_receive(:create_status_change_note).with(mock_issue, mock_issue.project, some_user, 'reopened')
         subject.after_reopen(mock_issue, nil)
       end
     end

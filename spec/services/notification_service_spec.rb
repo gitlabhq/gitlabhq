@@ -2,7 +2,6 @@ require 'spec_helper'
 
 describe NotificationService do
   let(:notification) { NotificationService.new }
-
   describe 'Keys' do
     describe :new_key do
       let(:key) { create(:personal_key) }
@@ -156,7 +155,8 @@ describe NotificationService do
     let(:merge_request) { create :merge_request, assignee: create(:user) }
 
     before do
-      build_team(merge_request.project)
+      build_team(merge_request.source_project)
+      build_team(merge_request.target_project)
     end
 
     describe :new_merge_request do
@@ -232,11 +232,16 @@ describe NotificationService do
     end
   end
 
+  let(:u_watcher) { create(:user, notification_level: Notification::N_WATCH) }
+  let(:u_participating) { create(:user, notification_level: Notification::N_PARTICIPATING) }
+  let(:u_disabled) { create(:user, notification_level: Notification::N_DISABLED) }
+  let(:u_mentioned) { create(:user, username: 'mention', notification_level: Notification::N_WATCH) }
+
   def build_team(project)
-    @u_watcher = create(:user, notification_level: Notification::N_WATCH)
-    @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
-    @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
-    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_WATCH)
+    @u_watcher = u_watcher
+    @u_participating = u_participating
+    @u_disabled = u_disabled
+    @u_mentioned = u_mentioned
 
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]

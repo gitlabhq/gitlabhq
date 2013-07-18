@@ -3,6 +3,7 @@ require 'spec_helper'
 describe API::API do
   include ApiHelpers
   before(:each) { enable_observers }
+  after(:each) { disable_observers }
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
@@ -474,7 +475,6 @@ describe API::API do
       response.status.should == 405
     end
   end
-
 
   describe "GET /projects/:id/snippets" do
     it "should return an array of project snippets" do

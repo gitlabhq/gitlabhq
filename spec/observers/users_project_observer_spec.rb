@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe UsersProjectObserver do
   before(:each) { enable_observers }
+  after(:each) { disable_observers }
 
   let(:user) { create(:user) }
   let(:project) { create(:project) }

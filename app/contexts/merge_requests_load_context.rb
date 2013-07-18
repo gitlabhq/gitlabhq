@@ -14,7 +14,7 @@ class MergeRequestsLoadContext < BaseContext
                      end
 
     merge_requests = merge_requests.page(params[:page]).per(20)
-    merge_requests = merge_requests.includes(:author, :project).order("created_at desc")
+    merge_requests = merge_requests.includes(:author, :source_project, :target_project).order("created_at desc")
 
     # Filter by specific assignee_id (or lack thereof)?
     if params[:assignee_id].present?
