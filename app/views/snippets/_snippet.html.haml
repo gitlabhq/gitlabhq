@@ -17,6 +17,7 @@
     = "##{snippet.id}"
     %span
       by
-      = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
-      = snippet.author_name
+      = link_to user_snippets_path(snippet.author) do
+        = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
+        = snippet.author_name
       %span.light #{time_ago_in_words(snippet.created_at)} ago

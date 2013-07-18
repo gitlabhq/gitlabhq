@@ -16,8 +16,9 @@
     = "##{@snippet.id}"
     %span.light
       by
-      = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
-      = @snippet.author_name
+      = link_to user_snippets_path(@snippet.author) do
+        = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+        = @snippet.author_name
 
   .back-link
     - if @snippet.author == current_user
