@@ -13,7 +13,7 @@ Gitlab::Seeder.quiet do
     PersonalSnippet.seed(:id, [{
       id: i,
       author_id: user.id,
-      title: Faker::Lorem.sentence(6),
+      title: Faker::Lorem.sentence(3),
       file_name:  Faker::Internet.domain_word + '.sh',
       private: [true, false].sample,
       content: contents.sample,

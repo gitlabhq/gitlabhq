@@ -1,13 +1,8 @@
 %li
-  .snippet-title
-    - if snippet.private?
-      %i.icon-lock.cgreen
-    - else
-      %i.icon-globe.cblue
+  %h4.snippet-title
     = link_to reliable_snippet_path(snippet) do
-      %h5.inline
-        = truncate(snippet.title, length: 60)
-    %span.cgray
+      = truncate(snippet.title, length: 60)
+    %span.cgray.monospace.tiny.pull-right
       = snippet.file_name
 
   %small.pull-right.cgray
@@ -17,9 +12,10 @@
     - else
       Never
 
-  .snippet-info.prepend-left-20
+  .snippet-info
     = "##{snippet.id}"
-    %span.light
+    %span
       by
       = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16"
       = snippet.author_name
+      %span.light #{time_ago_in_words(snippet.created_at)} ago
