@@ -198,7 +198,7 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H git config --global user.email "gitlab@localhost"
 
 **Important Note:**
-Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
+Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
