@@ -53,8 +53,8 @@ namespace :gitlab do
 
 
 
-      # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.repos_path}/../gitlab-shell/VERSION"
+      # check GitLab Shell version
+      gitlab_shell_version_file = File.expand_path("VERSION", Gitlab.config.gitlab_shell.home_path)
       if File.readable?(gitlab_shell_version_file)
         gitlab_shell_version = File.read(gitlab_shell_version_file)
       end
@@ -63,6 +63,7 @@ namespace :gitlab do
       puts "GitLab Shell".yellow
       puts "Version:\t#{gitlab_shell_version || "unknown".red}"
       puts "Repositories:\t#{Gitlab.config.gitlab_shell.repos_path}"
+      puts "Home:\t\t#{Gitlab.config.gitlab_shell.home_path}"
       puts "Hooks:\t\t#{Gitlab.config.gitlab_shell.hooks_path}"
       puts "Git:\t\t#{Gitlab.config.git.bin_path}"
 

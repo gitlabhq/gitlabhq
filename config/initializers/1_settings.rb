@@ -86,7 +86,8 @@ Settings.gravatar['ssl_url']    ||= 'https://secure.gravatar.com/avatar/%{hash}?
 # GitLab Shell
 #
 Settings['gitlab_shell'] ||= Settingslogic.new({})
-Settings.gitlab_shell['hooks_path']   ||= Settings.gitlab['user_home'] + '/gitlab-shell/hooks/'
+Settings.gitlab_shell['home_path']    ||= Settings.gitlab['user_home'] + '/gitlab-shell/'
+Settings.gitlab_shell['hooks_path']   ||= File.expand_path('hooks/', Settings.gitlab_shell.home_path)
 Settings.gitlab_shell['receive_pack']   = true if Settings.gitlab_shell['receive_pack'].nil?
 Settings.gitlab_shell['upload_pack']    = true if Settings.gitlab_shell['upload_pack'].nil?
 Settings.gitlab_shell['repos_path']   ||= Settings.gitlab['user_home'] + '/repositories/'
@@ -95,6 +96,7 @@ Settings.gitlab_shell['ssh_port']     ||= 22
 Settings.gitlab_shell['ssh_user']     ||= Settings.gitlab.user
 Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
+Settings.gitlab_shell['auth_file']    ||= Settings.gitlab['user_home'] + '/.ssh/authorized_keys'
 
 #
 # Backup

@@ -71,7 +71,7 @@ production: &base
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
-    # 
+    #
     # jira:
     #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
     #   issues_url: "http://jira.sample/browse/:id"
@@ -143,9 +143,14 @@ production: &base
 
   ## GitLab Shell settings
   gitlab_shell:
+    # GitLab Shell deployment directory path
+    home_path: /home/git/gitlab-shell/
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
     repos_path: /home/git/repositories/
-    hooks_path: /home/git/gitlab-shell/hooks/
+    # hooks_path: /home/git/gitlab-shell/hooks/    # default: 'hooks/' relative to home_path
+
+    # File used as authorized_keys for gitlab user
+    # auth_file: "/home/git/.ssh/authorized_keys"  # must be the same as the one in gitlab-shell's config.yml
 
     # Git over HTTP
     upload_pack: true
