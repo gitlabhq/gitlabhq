@@ -27,7 +27,7 @@
           = f.submit 'Protect', class: "btn-create btn"
     - unless @branches.empty?
       %h5 Already Protected:
-      %ul.bordered-list
+      %ul.bordered-list.protected-branches-list
         - @branches.each do |branch|
           %li
             %h4
