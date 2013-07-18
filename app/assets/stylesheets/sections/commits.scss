@@ -441,3 +441,26 @@
 .ui-box.commit-box {
   margin-top: 0;
 }
+
+.commit-stat-summary {
+  color: #666;
+  line-height: 2;
+}
+
+li.commit {
+  .avatar {
+    width: 24px;
+    top:-5px;
+    margin-right: 5px;
+    margin-left: 10px;
+  }
+
+  code {
+    padding: 2px 2px 0;
+    margin-top: -2px;
+    &:hover {
+      color: black;
+      border: 1px solid #ccc;
+    }
+  }
+}

@@ -7,8 +7,15 @@
       But if you still want to see diff
       = link_to "click this link", project_commit_path(@project, @commit, force_show_diff: true), class: "underlined_link"
 
-%p.cgray
-  Showing #{pluralize(diffs.count, "changed file")}
+%p.commit-stat-summary
+  Showing
+  %strong.cdark #{pluralize(diffs.count, "changed file")}
+  - if current_controller?(:commit)
+    - unless @commit.has_zero_stats?
+      with
+      %strong.cgreen #{@commit.stats.additions} additions
+      and
+      %strong.cred #{@commit.stats.deletions} deletions
 .file-stats
   = render "projects/commits/diff_head", diffs: diffs
 
