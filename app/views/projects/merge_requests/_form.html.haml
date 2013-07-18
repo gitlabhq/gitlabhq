@@ -13,8 +13,8 @@
     .span5
       .light-well
         %h5.cgray From
-        .padded= form_helper.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span4'})
-        .padded= form_helper.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span4'})
+        .padded= f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span4'})
+        .padded= f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span4'})
         .mr_source_commit.prepend-top-10
     .span2
       %h1.merge-request-angle
@@ -23,8 +23,8 @@
       .light-well
         %h5.cgray To
         - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-        .padded= form_helper.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span4'})
-        .padded= form_helper.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span4'})
+        .padded= f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span4'})
+        .padded= f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span4'})
       .mr_target_commit.prepend-top-10
 
   %hr
