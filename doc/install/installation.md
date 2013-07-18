@@ -280,8 +280,8 @@ However there are still a few steps left.
 # 7. Nginx
 
 **Note:**
-If you can't or don't want to use Nginx as your web server, have a look at the
-[`Advanced Setup Tips`](./installation.md#advanced-setup-tips) section.
+Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
+[GitLab recipes](https://github.com/gitlabhq/gitlab-recipes).
 
 ## Installation
     sudo apt-get install -y nginx
