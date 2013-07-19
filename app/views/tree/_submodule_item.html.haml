@@ -1,7 +1,7 @@
 - url = submodule_item.url(@ref) rescue ''
-- submodule_path = url.split(":")[1][0...-4]
 - name = submodule_item.basename
-- return '' unless url
+- return unless url
+- submodule_path = url.split(":")[1][0...-4]
 %tr{ class: "tree-item", url: url }
   %td.tree-item-file-name
     = image_tag "submodule.png"
