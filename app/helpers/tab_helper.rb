@@ -81,8 +81,8 @@ module TabHelper
   end
 
   def branches_tab_class
-    if current_page?(branches_project_repository_path(@project)) ||
-      current_controller?(:protected_branches) ||
+    if current_controller?(:protected_branches) ||
+      current_controller?(:branches) ||
       current_page?(project_repository_path(@project))
       'active'
     end

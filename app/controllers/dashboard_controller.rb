@@ -35,8 +35,6 @@ class DashboardController < ApplicationController
                   current_user.authorized_projects
                 end.sorted_by_activity
 
-    @projects = @projects.search(params[:search]) if params[:search].present?
-
     @labels = current_user.authorized_projects.tags_on(:labels)
 
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?

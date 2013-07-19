@@ -6,9 +6,12 @@ POST /session
 
 Parameters:
 
-+ `email` (required) - The email of user
++ `login` (required) - The login of user
++ `email` (required if login missing) - The email of user
 + `password` (required) - Valid password
 
+
+__You can login with both GitLab and LDAP credentials now__
 
 ```json
 {

@@ -126,14 +126,6 @@ end
 #  archive_project_repository GET    /:project_id/repository/archive(.:format)  projects/repositories#archive
 #     edit_project_repository GET    /:project_id/repository/edit(.:format)     projects/repositories#edit
 describe Projects::RepositoriesController, "routing" do
-  it "to #branches" do
-    get("/gitlabhq/repository/branches").should route_to('projects/repositories#branches', project_id: 'gitlabhq')
-  end
-
-  it "to #tags" do
-    get("/gitlabhq/repository/tags").should route_to('projects/repositories#tags', project_id: 'gitlabhq')
-  end
-
   it "to #archive" do
     get("/gitlabhq/repository/archive").should route_to('projects/repositories#archive', project_id: 'gitlabhq')
   end
@@ -142,6 +134,19 @@ describe Projects::RepositoriesController, "routing" do
     get("/gitlabhq/repository").should route_to('projects/repositories#show', project_id: 'gitlabhq')
   end
 end
+
+describe Projects::BranchesController, "routing" do
+  it "to #branches" do
+    get("/gitlabhq/branches").should route_to('projects/branches#index', project_id: 'gitlabhq')
+  end
+end
+
+describe Projects::TagsController, "routing" do
+  it "to #tags" do
+    get("/gitlabhq/tags").should route_to('projects/tags#index', project_id: 'gitlabhq')
+  end
+end
+
 
 #     project_deploy_keys GET    /:project_id/deploy_keys(.:format)          deploy_keys#index
 #                         POST   /:project_id/deploy_keys(.:format)          deploy_keys#create

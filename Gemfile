@@ -137,7 +137,7 @@ group :assets do
   gem "modernizr",        "2.6.2"
   gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass'
-  gem "font-awesome-rails", "~> 3.1.1"
+  gem "font-awesome-rails"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
   gem "gon"
 end

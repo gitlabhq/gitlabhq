@@ -104,6 +104,21 @@ describe API::API do
         json_response[k.to_s].should == v
       end
     end
+
+    it "should set a project as public" do
+      project = attributes_for(:project, { public: true })
+      post api("/projects", user), project
+      json_response['public'].should be_true
+
+    end
+
+    it "should set a project as private" do
+      project = attributes_for(:project, { public: false })
+      post api("/projects", user), project
+      json_response['public'].should be_false
+
+    end
+
   end
 
   describe "POST /projects/user/:id" do
@@ -144,6 +159,21 @@ describe API::API do
         json_response[k.to_s].should == v
       end
     end
+
+    it "should set a project as public" do
+      project = attributes_for(:project, { public: true })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_true
+
+    end
+
+    it "should set a project as private" do
+      project = attributes_for(:project, { public: false })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_false
+
+    end
+
   end
 
   describe "GET /projects/:id" do

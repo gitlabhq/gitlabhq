@@ -30,7 +30,7 @@ class Dispatcher
         new Wall(project_id)
       when 'projects:teams:members:index'
         new TeamMembers()
-      when 'groups:people'
+      when 'groups:members'
         new GroupMembers()
       when 'projects:tree:show'
         new TreeView()

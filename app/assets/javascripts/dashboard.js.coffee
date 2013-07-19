@@ -15,7 +15,7 @@ class Dashboard
         uiBox.find(".dash-list li").show()
       else
         uiBox.find(".dash-list li").each (index) ->
-          name = $(this).find(".well-title").text()
+          name = $(this).find(".filter-title").text()
 
           if name.toLowerCase().search(terms.toLowerCase()) == -1
             $(this).hide()

@@ -16,6 +16,8 @@ v 6.0.0
   - Generate fingerprint for ssh keys
   - You an use arrows to navigate at tree view
   - Apply user project limit only for personal projects
+  - API: Allow login with LDAP credentials
+  - Ability to remove branches/tags with UI
 
 v 5.4.0
   - Ability to edit own comments
@@ -24,8 +26,13 @@ v 5.4.0
   - Fixed nav for empty repos
   - GitLab Markdown help page
   - Misspelling fixes
-  - Added suppoort of unicorn and fog gems
+  - Added support of unicorn and fog gems
   - Added client list to API doc
+  - Fix PostgreSQL database restoration problem
+  - Increase snippet content column size
+  - allow project import via git:// url
+  - Show participants on issues, including mentions
+  - Notify mentioned users with email
 
 v 5.3.0
   - Refactored services 

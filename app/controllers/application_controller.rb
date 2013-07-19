@@ -91,6 +91,10 @@ class ApplicationController < ActionController::Base
     return access_denied! unless can?(current_user, :download_code, project) or project.public?
   end
 
+  def authorize_push!
+    return access_denied! unless can?(current_user, :push_code, project)
+  end
+
   def authorize_create_team!
     return access_denied! unless can?(current_user, :create_team, nil)
   end

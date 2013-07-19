@@ -46,7 +46,11 @@ class window.ContributorsGraph
 
 class window.ContributorsMasterGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = 1100
+    if $(window).width() > 1214
+      @width = 1100
+    else
+      @width = 870
+
     @height = 125
     @x = null
     @y = null
@@ -118,7 +122,11 @@ class window.ContributorsMasterGraph extends ContributorsGraph
 
 class window.ContributorsAuthorGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = 490
+    if $(window).width() > 1214
+      @width = 490
+    else
+      @width = 380
+    
     @height = 130
     @x = null
     @y = null

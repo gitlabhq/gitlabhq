@@ -14,27 +14,29 @@
   font-size: 10px;
 }
 
-#contributors .person {
-  &:nth-child(even) {
-    float: right;
+#contributors {
+  .contributors-list {
+    margin: 0 0 10px 0;
+    list-style: none;
+    padding: 0;
   }
-  float: left;
-  margin-top: 10px;
-}
 
-.contributors-list {
-  margin: 0 0 10px 0;
-  list-style: none;
-  padding: 0;
-}
+  .person {
+    &:nth-child(even) {
+      float: right;
+    }
+    float: left;
+    margin-top: 10px;
+  }
 
-#contributors .person .spark {
-  display: block;
-  background: #f3f3f3;
-}
+  .person .spark {
+    display: block;
+    background: #f3f3f3;
+  }
 
-#contributors .person .area-contributor {
-  fill: #f17f49;
+  .person .area-contributor {
+    fill: #f17f49;
+  }
 }
 
 .selection rect {

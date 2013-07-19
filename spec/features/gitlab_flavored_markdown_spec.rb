@@ -41,7 +41,7 @@ describe "GitLab Flavored Markdown" do
     end
 
     it "should render title in repositories#branches" do
-      visit branches_project_repository_path(project)
+      visit project_branches_path(project)
 
       page.should have_link("##{issue.id}")
     end

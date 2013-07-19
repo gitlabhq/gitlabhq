@@ -116,6 +116,11 @@ Gitlab::Application.routes.draw do
       resource :notifications, only: [:show, :update]
       resource :password, only: [:new, :create]
       resources :keys
+      resources :groups, only: [:index] do
+        member do
+          delete :leave
+        end
+      end
     end
   end
 
@@ -141,7 +146,7 @@ Gitlab::Application.routes.draw do
     member do
       get :issues
       get :merge_requests
-      get :people
+      get :members
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
@@ -200,8 +205,6 @@ Gitlab::Application.routes.draw do
 
       resource :repository, only: [:show] do
         member do
-          get "branches"
-          get "tags"
           get "stats"
           get "archive"
         end
@@ -220,6 +223,8 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :tags, only: [:index, :new, :create, :destroy]
+      resources :branches, only: [:index, :new, :create, :destroy]
       resources :protected_branches, only: [:index, :create, :destroy]
 
       resources :refs, only: [] do

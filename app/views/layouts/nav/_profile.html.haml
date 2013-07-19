@@ -12,6 +12,8 @@
       %span.count= current_user.keys.count
   = nav_link(path: 'profiles#design') do
     = link_to "Design", design_profile_path
+  = nav_link(controller: :groups) do
+    = link_to "Groups", profile_groups_path
   = nav_link(path: 'profiles#history') do
     = link_to "History", history_profile_path
 

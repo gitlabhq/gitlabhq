@@ -1,4 +1,4 @@
-.ui-box.ui-box-show
+.ui-box.ui-box-show.commit-box
   .ui-box-head
     .pull-right
       - if @notes_count > 0
@@ -15,7 +15,7 @@
           %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
       = link_to project_tree_path(@project, @commit), class: "btn btn-primary grouped" do
         %span Browse Code »
-    %h3.commit-title.page_title
+    %h3.commit-title.page-title
       = gfm escape_once(@commit.title)
     - if @commit.description.present?
       %pre.commit-description

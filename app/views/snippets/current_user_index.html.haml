@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   My Snippets
   %small share code pastes with others out of git repository
   .pull-right
@@ -19,6 +19,6 @@
       = nav_tab :scope, 'public' do
         = link_to "Public", user_snippets_path(@user, scope: 'public')
 
-  .span9
+  .span9.my-snippets
     = render 'snippets'
 

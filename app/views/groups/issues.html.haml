@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Issues
   %small (assigned to you)
   %small.pull-right #{@issues.total_count} issues
@@ -12,7 +12,7 @@
       - @issues.group_by(&:project).each do |group|
         %div.ui-box
           - project = group[0]
-          %h5.title
+          .title
             = link_to_project project
           %ul.well-list.issues-list
             - group[1].each do |issue|

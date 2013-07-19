@@ -13,7 +13,7 @@ class SnippetsFeature < Spinach::FeatureSteps
   end
 
   And 'I click link "Edit"' do
-    within ".file_title" do
+    within ".file-title" do
       click_link "Edit"
     end
   end
@@ -24,12 +24,11 @@ class SnippetsFeature < Spinach::FeatureSteps
 
   And 'I submit new snippet "Personal snippet three"' do
     fill_in "personal_snippet_title", :with => "Personal snippet three"
-    select "forever", :from => "personal_snippet_expires_at"
     fill_in "personal_snippet_file_name", :with => "my_snippet.rb"
     within('.file-editor') do
       find(:xpath, "//input[@id='personal_snippet_content']").set 'Content of snippet three'
     end
-    click_button "Save"
+    click_button "Create snippet"
   end
 
   Then 'I should see snippet "Personal snippet three"' do

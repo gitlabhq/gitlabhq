@@ -11,8 +11,8 @@
       Branches
       %span.badge= @repository.branches.length
 
-  = nav_link(controller: :repositories, action: :tags) do
-    = link_to tags_project_repository_path(@project) do
+  = nav_link(controller: :tags) do
+    = link_to project_tags_path(@project) do
       Tags
       %span.badge= @repository.tags.length
 

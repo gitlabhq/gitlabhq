@@ -1,11 +1,11 @@
 = render "projects/issues/head"
 .row
   .span6
-    %h3.page_title
+    %h3.page-title
       Milestone ##{@milestone.id}
       %small
         = @milestone.expires_at
-    .back_link
+    .back-link
       = link_to project_milestones_path(@project) do
         &larr; To milestones list
   .span6
@@ -84,13 +84,13 @@
     .row
       .span6
         .ui-box
-          %h5.title Open
+          .title Open
           %ul.well-list
             - @merge_requests.opened.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
       .span6
         .ui-box
-          %h5.title Closed
+          .title Closed
           %ul.well-list
             - @merge_requests.closed.each do |merge_request|
               = render 'merge_request', merge_request: merge_request

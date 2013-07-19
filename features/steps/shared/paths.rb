@@ -21,8 +21,8 @@ module SharedPaths
     visit merge_requests_group_path(current_group)
   end
 
-  step 'I visit group people page' do
-    visit people_group_path(current_group)
+  step 'I visit group members page' do
+    visit members_group_path(current_group)
   end
 
   step 'I visit group settings page' do
@@ -189,7 +189,7 @@ module SharedPaths
   end
 
   step 'I visit project branches page' do
-    visit branches_project_repository_path(@project)
+    visit project_branches_path(@project)
   end
 
   step 'I visit compare refs page' do
@@ -217,7 +217,7 @@ module SharedPaths
   end
 
   step 'I visit project tags page' do
-    visit tags_project_repository_path(@project)
+    visit project_tags_path(@project)
   end
 
   step 'I visit project commit page' do

@@ -9,7 +9,7 @@ class UsersGroupsController < ApplicationController
   def create
     @group.add_users(params[:user_ids].split(','), params[:group_access])
 
-    redirect_to people_group_path(@group), notice: 'Users were successfully added.'
+    redirect_to members_group_path(@group), notice: 'Users were successfully added.'
   end
 
   def update
@@ -21,7 +21,7 @@ class UsersGroupsController < ApplicationController
     @users_group.destroy unless @users_group.user == @group.owner
 
     respond_to do |format|
-      format.html { redirect_to people_group_path(@group), notice: 'User was  successfully removed from group.' }
+      format.html { redirect_to members_group_path(@group), notice: 'User was  successfully removed from group.' }
       format.js { render nothing: true }
     end
   end

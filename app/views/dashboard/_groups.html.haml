@@ -1,5 +1,5 @@
 .ui-box
-  %h5.title.clearfix
+  .title.clearfix
     = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter'
     - if current_user.can_create_group?
       %span.pull-right
@@ -10,7 +10,7 @@
     - groups.each do |group|
       %li.group-row
         = link_to group_path(id: group.path), class: dom_class(group) do
-          %span.group-name
+          %span.group-name.filter-title
             = truncate(group.name, length: 35)
           %span.arrow
             %i.icon-angle-right

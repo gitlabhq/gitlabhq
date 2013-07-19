@@ -14,7 +14,7 @@ class Admin
 
     $('.log-bottom').click (e) ->
       e.preventDefault()
-      visible_log = $(".file_content:visible")
+      visible_log = $(".file-content:visible")
       visible_log.animate({ scrollTop: visible_log.find('ol').height() }, "fast")
 
     modal = $('.change-owner-holder')

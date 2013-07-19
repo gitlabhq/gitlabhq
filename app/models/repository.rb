@@ -1,4 +1,6 @@
 class Repository
+  include Gitlab::ShellAdapter
+
   attr_accessor :raw_repository
 
   def initialize(path_with_namespace, default_branch)
@@ -31,6 +33,38 @@ class Repository
     commits = raw_repository.commits_between(target, source)
     commits = Commit.decorate(commits) if commits.present?
     commits
+  end
+
+  def find_branch(name)
+    branches.find { |branch| branch.name == name }
+  end
+
+  def find_tag(name)
+    tags.find { |tag| tag.name == name }
+  end
+
+  def add_branch(branch_name, ref)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
+  end
+
+  def add_tag(tag_name, ref)
+    Rails.cache.delete(cache_key(:tag_names))
+
+    gitlab_shell.add_tag(path_with_namespace, tag_name, ref)
+  end
+
+  def rm_branch(branch_name)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.rm_branch(path_with_namespace, branch_name)
+  end
+
+  def rm_tag(tag_name)
+    Rails.cache.delete(cache_key(:tag_names))
+
+    gitlab_shell.rm_tag(path_with_namespace, tag_name)
   end
 
   def round_commit_count
