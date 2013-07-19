@@ -1,11 +1,12 @@
 - url = submodule_item.url(@ref) rescue ''
 - name = submodule_item.basename
 - return '' unless url
+- submodule_path = url.split(":")[1][0...-4]
 %tr{ class: "tree-item", url: url }
   %td.tree-item-file-name
     = image_tag "submodule.png"
-    %strong= truncate(name, length: 40)
+    %strong= link_to truncate(name, length: 40), '/' + submodule_path + '/tree/master'
   %td
-    %code= submodule_item.id[0..10]
+    %code= link_to submodule_item.id[0..10], '/' + submodule_path + '/tree/' + submodule_item.id
   %td{ colspan: 2 }
-    = link_to truncate(url, length: 40), url
+    = link_to truncate(url, length: 40), '/' + submodule_path + '/tree/' + submodule_item.id
