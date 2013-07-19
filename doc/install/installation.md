@@ -190,7 +190,7 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
-    sudo -u git -H vim config/unicorn.rb
+    sudo -u git -H editor config/unicorn.rb
 
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
