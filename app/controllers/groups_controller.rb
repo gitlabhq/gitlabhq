@@ -34,6 +34,8 @@ class GroupsController < ApplicationController
     @events = Event.in_projects(project_ids).limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push
 
+    @shared_projects = @group.shared_projects
+
     respond_to do |format|
       format.html
       format.js

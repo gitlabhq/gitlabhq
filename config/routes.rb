@@ -289,6 +289,8 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :group_links, only: [:index, :create, :destroy]
+
       resources :notes, only: [:index, :create, :destroy, :update] do
         member do
           delete :delete_attachment

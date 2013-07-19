@@ -1,4 +1,23 @@
-Copyright (c) 2011 Dmitriy Zaporozhets
+GitLab Enterprise Edition consists of two parts with distinct licenses.
+All code exclusive to GitLab Enterprise Edition (EE) is covered by the
+GitLab Enterprise Edition (EE) license. All code that is also released
+in the GitLab Community Edition (CE) is covered by that license.
+
+-------------------------------------------------------------------
+
+The GitLab Enterprise Edition (EE) license
+
+Copyright (c) 2013 GitLab.com
+
+All Rights Reserved. No part of this software may be reproduced without
+prior permission of GitLab.com. By using this software you agree to be
+bound by the GitLab Enterprise Support Subscription Terms.
+
+-------------------------------------------------------------------
+
+The GitLab Community Edition (CE) license
+
+Copyright (c) 2011-2013 Dmitriy Zaporozhets
 
 Permission is hereby granted, free of charge, to any person obtaining a copy
 of this software and associated documentation files (the "Software"), to deal
