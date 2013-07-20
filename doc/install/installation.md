@@ -186,7 +186,7 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     sudo chmod -R u+rwX  public/uploads
 
     # Copy the example Puma config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
