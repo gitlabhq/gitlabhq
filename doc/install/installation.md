@@ -52,7 +52,7 @@ If you are not familiar with vim please skip this and keep using the default edi
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev libmysqld-dev libmysqlclient-dev mysql-client
 
 Make sure you have the right version of Python installed.
 
@@ -186,7 +186,7 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     sudo chmod -R u+rwX  public/uploads
 
     # Copy the example Puma config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
