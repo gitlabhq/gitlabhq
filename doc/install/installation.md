@@ -119,7 +119,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    sudo -u git -H git checkout v1.4.0
+    sudo -u git -H git checkout v1.5.0
 
     sudo -u git -H cp config.yml.example config.yml
 
@@ -153,7 +153,7 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     sudo -u git -H git checkout 5-4-stable
 
 **Note:**
-You can change `5-3-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
 
 ## Configure it
 
