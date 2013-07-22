@@ -48,7 +48,7 @@ describe NotificationService do
     end
 
     context 'commit note' do
-      let(:note) { create :note_on_commit }
+      let(:note) { create(:note_on_commit, note: '@mention referenced') }
 
       before do
         build_team(note.project)
@@ -57,6 +57,7 @@ describe NotificationService do
       describe :new_note do
         it do
           should_email(@u_watcher.id)
+          should_email(@u_mentioned.id)
           should_not_email(note.author_id)
           should_not_email(@u_participating.id)
           should_not_email(@u_disabled.id)
@@ -67,10 +68,12 @@ describe NotificationService do
           create(:note_on_commit,
                  author: @u_participating,
                  project_id: note.project_id,
-                 commit_id: note.commit_id)
+                 commit_id: note.commit_id,
+                 note: '@mention referenced')
 
           should_email(@u_watcher.id)
           should_email(@u_participating.id)
+          should_email(@u_mentioned.id)
           should_not_email(note.author_id)
           should_not_email(@u_disabled.id)
           notification.new_note(note)
