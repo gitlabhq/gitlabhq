@@ -52,8 +52,10 @@ Parameters:
 + `:branch` (required) - The name of the branch being created
 + `:ref` (required) - Reference branch is built from (Branch/Tag/SHA1/etc)
 
-```
-200 OK
+```json
+{
+  "received": true
+}
 ```
 
 ## Delete a branch
@@ -68,8 +70,10 @@ Parameters:
 + `id` (required) - The ID of the project
 + `:branch` (required) - The name of the branch being deleted
 
-```
-200 OK
+```json
+{
+  "received": true
+}
 ```
 
 ## Get single repository branch
@@ -125,8 +129,10 @@ Parameters:
 + `:tag` (required) - The name of the tag being created
 + `:ref` (required) - Reference tag is built from (Branch/Tag/SHA1/etc)
 
-```
-200 OK
+```json
+{
+  "received": true
+}
 ```
 
 ## Delete a tag
@@ -141,8 +147,10 @@ Parameters:
 + `id` (required) - The ID of the project
 + `:tag` (required) - The name of the tag being deleted
 
-```
-200 OK
+```json
+{
+  "received": true
+}
 ```
 
 

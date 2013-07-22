@@ -32,7 +32,9 @@ module API
       #   ref (required) - SHA1 ref of branch.
       # Example Request:
       #   POST /projects/:id/repository/branches/:branch/:ref
-      post ":id/repository/branches/:branch/:ref" do
+      post ":id/repository/branches/:branch/:ref",
+        :requirements => { :branch => /.*/, :ref => /.*/ } do
+
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
         resource_exists! if @branch
 
@@ -40,7 +42,7 @@ module API
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
 
         # Return 200 OK. Since the branch is created in a background process
-        # we can't yet return it.
+        present({ 'received' => true })
       end
 
       # Deletes a branch
@@ -50,12 +52,14 @@ module API
       #   branch (required) - The name of the branch
       # Example Request:
       #   DELETE /projects/:id/repository/branches/:branch
-      delete ":id/repository/branches/:branch" do
+      delete ":id/repository/branches/:branch",
+        :requirements => { :branch => /.*/ } do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
         not_found! unless @branch
 
         user_project.repository.rm_branch(params[:branch])
         # Returns 200 OK
+        present({ 'received' => true })
       end
 
       # Get a single branch
@@ -127,7 +131,8 @@ module API
       #   ref (required) - SHA1 ref of tag.
       # Example Request:
       #   POST /projects/:id/repository/tags/:tag/:ref
-      post ":id/repository/tags/:tag/:ref" do
+      post ":id/repository/tags/:tag/:ref",
+        :requirements => { :tag => /.*/, :ref => /.*/ } do
         @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
         resource_exists! if @tag
 
@@ -136,6 +141,7 @@ module API
 
         # Return 200 OK. Since the tag is created in a background process
         # we can't yet return it.
+        present({ 'received' => true })
       end
 
       # Deletes a tag
@@ -145,12 +151,14 @@ module API
       #   tag (required) - The name of the tag
       # Example Request:
       #   DELETE /projects/:id/repository/tags/:tag
-      delete ":id/repository/tags/:tag" do
+      delete ":id/repository/tags/:tag",
+        :requirements => { :tag => /.*/ } do
         @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
         not_found! unless @tag
 
         user_project.repository.rm_tag(params[:tag])
         # Returns 200 OK
+        present({ 'received' => true })
       end
 
       # Get a project repository commits
