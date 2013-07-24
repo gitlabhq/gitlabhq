@@ -67,9 +67,27 @@ describe Gitlab::Auth do
 
     it "should create user if single_sing_on"do
       Gitlab.config.omniauth['allow_single_sign_on'] = true
+      Gitlab.config.omniauth['allow_single_sign_on_email_regexp'] = nil
       User.stub find_by_provider_and_extern_uid: nil
       gl_auth.should_receive :create_from_omniauth
       gl_auth.find_or_new_for_omniauth(@auth)
+    end
+
+    it "should create user if single_sign_on and email matches email_regexp"do
+      Gitlab.config.omniauth['allow_single_sign_on'] = true
+      Gitlab.config.omniauth['allow_single_sign_on_email_regexp'] = "@mail\\.com\\z"
+      User.stub find_by_provider_and_extern_uid: nil
+      gl_auth.should_receive :create_from_omniauth
+      gl_auth.find_or_new_for_omniauth(@auth)
+    end
+
+    it "should not create user if single_sign_on and email does not match email_regexp"do
+      Gitlab.config.omniauth['allow_single_sign_on'] = true
+      Gitlab.config.omniauth['allow_single_sign_on_email_regexp'] = "@mail\\.net\\z"
+      User.stub find_by_provider_and_extern_uid: nil
+      gl_auth.should_receive :create_from_omniauth
+      user = gl_auth.find_or_new_for_omniauth(@auth)
+      user.should be_nil
     end
   end
 

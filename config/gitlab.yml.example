@@ -117,6 +117,8 @@ production: &base
     # This allows users to login without having a user account first (default: false).
     # User accounts will be created automatically when authentication was successful.
     allow_single_sign_on: false
+    # Limit account creation by email address
+    # allow_single_sign_on_email_regexp: '@yourcompany\.com\z'
     # Locks down those users until they have been cleared by the admin (default: true).
     block_auto_created_users: true
 
