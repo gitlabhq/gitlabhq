@@ -42,6 +42,9 @@ production: &base
     ## Users management
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
 
+    ## Use github compatible hook format
+    # github_compatible_hooks: true
+
     ## Default project features settings
     default_projects_features:
       issues: true

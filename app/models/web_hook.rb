@@ -23,20 +23,31 @@ class WebHook < ActiveRecord::Base
                   format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
 
   def execute(data)
-    parsed_url = URI.parse(url)
-    if parsed_url.userinfo.blank?
-      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
-    else
-      post_url = url.gsub("#{parsed_url.userinfo}@", "")
-      auth = {
-        username: URI.decode(parsed_url.user),
-        password: URI.decode(parsed_url.password),
+    options = {}
+    if Gitlab.config.gitlab.github_compatible_hooks
+      options = {
+        :body => {"payload" => data.to_json}
       }
-      WebHook.post(post_url,
-                   body: data.to_json,
-                   headers: {"Content-Type" => "application/json"},
-                   basic_auth: auth)
+    else
+      options = {
+        :body => data.to_json,
+        :headers => {"Content-Type" => "application/json"}
+      }
     end
+
+    post_url = url
+    parsed_url = URI.parse(post_url)
+    if !parsed_url.userinfo.blank?
+      options.merge!({
+        :basic_auth => {
+          username: URI.decode(parsed_url.user),
+          password: URI.decode(parsed_url.password),
+        }
+      })
+      post_url = url.gsub("#{parsed_url.userinfo}@", "")
+    end
+
+    WebHook.post(post_url, options)
   end
 
   def async_execute(data)
