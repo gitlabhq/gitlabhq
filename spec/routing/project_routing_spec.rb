@@ -262,7 +262,7 @@ end
 #      project_snippet GET    /:project_id/snippets/:id(.:format)      snippets#show
 #                      PUT    /:project_id/snippets/:id(.:format)      snippets#update
 #                      DELETE /:project_id/snippets/:id(.:format)      snippets#destroy
-describe Project::SnippetsController, "routing" do
+describe SnippetsController, "routing" do
   it "to #raw" do
     get("/gitlabhq/snippets/1/raw").should route_to('projects/snippets#raw', project_id: 'gitlabhq', id: '1')
   end

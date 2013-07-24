@@ -1,3 +1,18 @@
+v 5.4.0
+  - Ability to edit own comments
+  - Documentation improvements
+  - Improve dashboard projects page
+  - Fixed nav for empty repos
+  - GitLab Markdown help page
+  - Misspelling fixes
+  - Added support of unicorn and fog gems
+  - Added client list to API doc
+  - Fix PostgreSQL database restoration problem
+  - Increase snippet content column size
+  - allow project import via git:// url
+  - Show participants on issues, including mentions
+  - Notify mentioned users with email
+
 v 5.3.0
   - Refactored services 
   - Campfire service added

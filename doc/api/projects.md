@@ -53,6 +53,7 @@ GET /projects
     "merge_requests_enabled": true,
     "wall_enabled": true,
     "wiki_enabled": true,
+    "snippets_enabled": true,
     "created_at": "2012-05-30T12:49:20Z",
     "last_activity_at": "2012-05-23T08:05:02Z"
   }
@@ -95,6 +96,7 @@ Parameters:
   "merge_requests_enabled": true,
   "wall_enabled": true,
   "wiki_enabled": true,
+  "snippets_enabled": true,
   "created_at": "2012-05-30T12:49:20Z",
   "last_activity_at": "2012-05-23T08:05:02Z"
 }
@@ -182,10 +184,11 @@ Parameters:
 + `name` (required) - new project name
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
-+ `issues_enabled` (optional) - enabled by default
-+ `wall_enabled` (optional) - enabled by default
-+ `merge_requests_enabled` (optional) - enabled by default
-+ `wiki_enabled` (optional) - enabled by default
++ `issues_enabled` (optional)
++ `wall_enabled` (optional)
++ `merge_requests_enabled` (optional)
++ `wiki_enabled` (optional) 
++ `snippets_enabled` (optional)
 
 **Project access levels**
 
@@ -213,10 +216,11 @@ Parameters:
 + `name` (required) - new project name
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
-+ `issues_enabled` (optional) - enabled by default
-+ `wall_enabled` (optional) - enabled by default
-+ `merge_requests_enabled` (optional) - enabled by default
-+ `wiki_enabled` (optional) - enabled by default
++ `issues_enabled` (optional)
++ `wall_enabled` (optional)
++ `merge_requests_enabled` (optional)
++ `wiki_enabled` (optional) 
++ `snippets_enabled` (optional)
 
 
 
@@ -453,3 +457,28 @@ Parameters:
 + `id` (required) - The ID of the project.
 + `branch` (required) - The name of the branch.
 
+
+## Admin fork relation
+
+Allows modification of the forked relationship between existing projects. . Available only for admins.
+
+### Create a forked from/to relation between existing projects.
+
+```
+POST /projects/:id/fork/:forked_from_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of the project
++ `forked_from_id:` (required) - The ID of the project that was forked from
+
+### Delete an existing forked from relationship
+
+```
+DELETE /projects/:id/fork
+```
+
+Parameter:
+
++ `id` (required) - The ID of the project

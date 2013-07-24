@@ -69,15 +69,20 @@ When listing resources you can pass the following parameters:
 
 ## Contents
 
-+ [Users](users.md)
-+ [Session](session.md)
-+ [Projects](projects.md)
-+ [Project Snippets](project_snippets.md)
-+ [Repositories](repositories.md)
-+ [Issues](issues.md)
-+ [Milestones](milestones.md)
-+ [Notes](notes.md)
-+ [Deploy Keys](deploy_keys.md)
-+ [System Hooks](system_hooks.md)
-+ [Groups](groups.md)
-+ [User Teams](user_teams.md)
++ [Users](api/users.md)
++ [Session](api/session.md)
++ [Projects](api/projects.md)
++ [Project Snippets](api/project_snippets.md)
++ [Repositories](api/repositories.md)
++ [Issues](api/issues.md)
++ [Milestones](api/milestones.md)
++ [Notes](api/notes.md)
++ [Deploy Keys](api/deploy_keys.md)
++ [System Hooks](api/system_hooks.md)
++ [Groups](api/groups.md)
++ [User Teams](api/user_teams.md)
+
+## Clients
+
++ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
++ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby

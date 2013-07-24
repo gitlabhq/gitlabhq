@@ -18,7 +18,7 @@
       %span
         %i.icon-comments
         = issue.notes.count
-    - if issue.milestone_id?
+    - if issue.milestone
       %span
         %i.icon-time
         = issue.milestone.title

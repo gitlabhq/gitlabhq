@@ -25,13 +25,20 @@ module API
       expose :id, :url, :created_at
     end
 
+    class ForkedFromProject < Grape::Entity
+      expose :id
+      expose :name, :name_with_namespace
+      expose :path, :path_with_namespace
+    end
+
     class Project < Grape::Entity
       expose :id, :description, :default_branch, :public, :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :owner, using: Entities::UserBasic
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :namespace
+      expose :forked_from_project, using: Entities::ForkedFromProject, :if => lambda{ | project, options | project.forked? }
     end
 
     class ProjectMember < UserBasic

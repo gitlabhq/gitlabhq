@@ -93,6 +93,13 @@ bind "unix://#{application_path}/tmp/sockets/gitlab.socket"
 #
 # workers 2
 
+# GitLab cluster mode recommendations
+# If you have more than 1 GB RAM, uncomment one of the following lines:
+#
+# workers 2 # if you have at least 1.5 GB RAM
+# workers 3 # if you have at least 2   GB RAM
+# workers 4 # if you have at least 2.5 GB RAM
+
 # Code to run when a worker boots to setup the process before booting
 # the app.
 #

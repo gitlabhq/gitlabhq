@@ -3,6 +3,7 @@ require 'spec_helper'
 describe "On a merge request", js: true do
   let!(:project) { create(:project_with_code) }
   let!(:merge_request) { create(:merge_request, project: project) }
+  let!(:note) { create(:note_on_merge_request_with_attachment, project: project) }
 
   before do
     login_as :user
@@ -65,11 +66,70 @@ describe "On a merge request", js: true do
       within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) }
       within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
     end
+  end
 
-    it "should be removable" do
-      find('.note').hover
-      find(".js-note-delete").click
-      should_not have_css(".note")
+  describe "when editing a note", js: true do
+    it "should contain the hidden edit form" do
+      within("#note_#{note.id}") { should have_css(".note-edit-form", visible: false) }
+    end
+
+    describe "editing the note" do
+      before do
+        find('.note').hover
+        find(".js-note-edit").click
+      end
+
+      it "should show the note edit form and hide the note body" do
+        within("#note_#{note.id}") do
+          find(".note-edit-form", visible: true).should be_visible
+          find(".note-text", visible: false).should_not be_visible
+        end
+      end
+
+      it "should reset the edit note form textarea with the original content of the note if cancelled" do
+        find('.note').hover
+        find(".js-note-edit").click
+
+        within(".note-edit-form") do
+          fill_in "note[note]", with: "Some new content"
+          find(".btn-cancel").click
+          find(".js-note-text", visible: false).text.should == note.note
+        end
+      end
+
+      it "appends the edited at time to the note" do
+        find('.note').hover
+        find(".js-note-edit").click
+
+        within(".note-edit-form") do
+          fill_in "note[note]", with: "Some new content"
+          find(".btn-save").click
+        end
+
+        within("#note_#{note.id}") do
+          should have_css(".note-last-update small")
+          find(".note-last-update small").text.should match(/Edited just now/)
+        end
+      end
+    end
+
+    describe "deleting an attachment" do
+      before do
+        find('.note').hover
+        find(".js-note-edit").click
+      end
+
+      it "shows the delete link" do
+        within(".note-attachment") do
+          should have_css(".js-note-attachment-delete")
+        end
+      end
+
+      it "removes the attachment div and resets the edit form" do
+        find(".js-note-attachment-delete").click
+        should_not have_css(".note-attachment")
+        find(".note-edit-form", visible: false).should_not be_visible
+      end
     end
   end
 end

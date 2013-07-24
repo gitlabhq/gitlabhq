@@ -12,7 +12,7 @@ class Admin::Teams::ProjectsController < Admin::Teams::ApplicationController
       user_team.assign_to_projects(project_ids, access)
     end
 
-    redirect_to admin_team_path(user_team), notice: 'Team of users was successfully assgned to projects.'
+    redirect_to admin_team_path(user_team), notice: 'Team of users was successfully assigned to projects.'
   end
 
   def edit

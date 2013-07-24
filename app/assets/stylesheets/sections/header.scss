@@ -77,6 +77,7 @@ header {
     top: -4px;
     img {
       width: 26px;
+      height: 26px;
       @include border-radius(4px);
     }
   }

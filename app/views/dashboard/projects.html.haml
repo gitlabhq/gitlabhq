@@ -20,22 +20,24 @@
       = nav_tab :scope, 'joined' do
         = link_to "Joined", projects_dashboard_path(scope: 'joined')
 
-    %p.light Filter by label:
-    %ul.bordered-list
-      - @labels.each do |label|
-        %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
-          = link_to projects_dashboard_path(scope: params[:scope], label: label.name) do
-            %i.icon-tag
-            = label.name
+    - if @labels.any?
+      %p.light Filter by label:
+      %ul.bordered-list
+        - @labels.each do |label|
+          %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
+            = link_to projects_dashboard_path(scope: params[:scope], label: label.name) do
+              %i.icon-tag
+              = label.name
 
 
   .span9
-    = form_tag projects_dashboard_path, method: 'get' do
-      %fieldset.dashboard-search-filter
-        = hidden_field_tag "scope", params[:scope]
-        = search_field_tag "search", params[:search], { id: 'dashboard_projects_search', placeholder: 'Search', class: 'left input-xxlarge'}
-        = button_tag type: 'submit', class: 'btn' do
-          %i.icon-search
+    - if @projects.any?
+      = form_tag projects_dashboard_path, method: 'get' do
+        %fieldset.dashboard-search-filter
+          = hidden_field_tag "scope", params[:scope]
+          = search_field_tag "search", params[:search], { id: 'dashboard_projects_search', placeholder: 'Search', class: 'left input-xxlarge'}
+          = button_tag type: 'submit', class: 'btn' do
+            %i.icon-search
 
     %ul.bordered-list
       - @projects.each do |project|

@@ -20,6 +20,7 @@ APP_USER="git"
 DAEMON_OPTS="-C $APP_ROOT/config/puma.rb"
 PID_PATH="$APP_ROOT/tmp/pids"
 SOCKET_PATH="$APP_ROOT/tmp/sockets"
+SOCKET_FILE="$SOCKET_PATH/gitlab.socket"
 WEB_SERVER_PID="$PID_PATH/puma.pid"
 SIDEKIQ_PID="$PID_PATH/sidekiq.pid"
 STOP_SIDEKIQ="RAILS_ENV=production bundle exec rake sidekiq:stop"
@@ -51,7 +52,7 @@ start() {
     exit 1
   else
     if [ `whoami` = root ]; then
-      execute "rm $SOCKET_PATH/gitlab.socket"
+      ! [ -e $SOCKET_FILE ] || execute "rm $SOCKET_FILE"
       execute "RAILS_ENV=production bundle exec puma $DAEMON_OPTS"
       execute "mkdir -p $PID_PATH && $START_SIDEKIQ  > /dev/null  2>&1 &"
       echo "$DESC started"
@@ -65,12 +66,13 @@ stop() {
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     ## Program is running, stop it.
     kill -QUIT `cat $WEB_SERVER_PID`
+    ! [ -e $SOCKET_FILE ] || execute "rm $SOCKET_FILE"
     execute "mkdir -p $PID_PATH && $STOP_SIDEKIQ  > /dev/null  2>&1 &"
     rm "$WEB_SERVER_PID" >> /dev/null
     echo "$DESC stopped"
   else
     ## Program is not running, exit with error.
-    echo "Error! $DESC not started!"
+    echo "Error! $DESC is not started!"
     exit 1
   fi
 }
@@ -81,7 +83,7 @@ restart() {
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     echo "Restarting $DESC..."
     kill -USR2 `cat $WEB_SERVER_PID`
-    execute "mkdir -p $PID_PATH && $STOP_SIDEKIQ  > /dev/null  2>&1 &"
+    execute "mkdir -p $PID_PATH && $STOP_SIDEKIQ  > /dev/null  2>&1"
     if [ `whoami` = root ]; then
       execute "mkdir -p $PID_PATH && $START_SIDEKIQ  > /dev/null  2>&1 &"
     fi

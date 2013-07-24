@@ -1,8 +1,8 @@
 %h3.page_title
   - if @snippet.private?
-    %i.icon-lock.cgreen
+    %i{:class => "icon-lock cgreen has_bottom_tooltip", "data-original-title" => "Private snippet"}
   - else
-    %i.icon-globe.cblue
+    %i{:class => "icon-globe cblue has_bottom_tooltip", "data-original-title" => "Public snippet"}
 
   = @snippet.title
 
