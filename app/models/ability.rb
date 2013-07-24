@@ -42,12 +42,12 @@ class Ability
         rules << project_guest_rules
 
       elsif project.is_public?
-        rules << project_anon_and_download_rules
+        rules << project_anon_rules 
       end
 
-      if project.public?
-        rules << public_project_rules
-      end
+      # if project.public?
+      #   rules << public_project_rules
+      # end
 
       if project.owner == user || user.admin?
         rules << project_admin_rules
@@ -83,17 +83,12 @@ class Ability
         :read_team_member,
         :read_merge_request,
         :read_note,
-      ]
-    end
-
-    def project_anon_and_download_rules
-      project_anon_rules + [
         :download_code
       ]
     end
 
     def project_guest_rules
-      project_anon_and_download_rules + [
+      project_anon_rules + [
         :write_project,
         :write_issue,
         :write_note
