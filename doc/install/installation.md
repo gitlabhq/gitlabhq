@@ -357,11 +357,14 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
+* Stop GitLab `sudo service gitlab stop`
 * Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/Gemfile#L18)
-* Run `sudo -u git -H bundle install` to install the new gem(s)
+* Run `sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deploy` to install the new gem(s) with MySQL and `sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deploy` to install with PostgreSQL
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/config/gitlab.yml.example#L53) as a reference)
 * Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-3-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
-* Restart GitLab
+* Add provider as one of the default providers in the `default_providers()` function of the `app/helpers/oauth_helper.rb` file
+* Precompiled the assets from the GitLab root directory using `sudo -u git -H rake assets:precompile RAILS_ENV=production`
+* Start GitLab `sudo service gitlab start`
 
 ### Examples
 
