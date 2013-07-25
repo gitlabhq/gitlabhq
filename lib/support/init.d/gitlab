@@ -40,11 +40,10 @@ check_pid(){
 }
 
 execute() {
-  sudo -u $APP_USER -H bash -l -c "$1"
+  sudo -u $APP_USER -H bash -l -c "cd $APP_ROOT && $1"
 }
 
 start() {
-  cd $APP_ROOT
   check_pid
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     # Program is running, exit with error code 1.
@@ -61,7 +60,6 @@ start() {
 }
 
 stop() {
-  cd $APP_ROOT
   check_pid
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     ## Program is running, stop it.
@@ -78,7 +76,6 @@ stop() {
 }
 
 restart() {
-  cd $APP_ROOT
   check_pid
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     echo "Restarting $DESC..."
@@ -95,7 +92,6 @@ restart() {
 }
 
 status() {
-  cd $APP_ROOT
   check_pid
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     echo "$DESC / Puma with PID $PID is running."
