@@ -74,6 +74,7 @@ When listing resources you can pass the following parameters:
 + [Projects](projects.md)
 + [Project Snippets](project_snippets.md)
 + [Repositories](repositories.md)
++ [Merge Requests](merge_requests.md)
 + [Issues](issues.md)
 + [Milestones](milestones.md)
 + [Notes](notes.md)
