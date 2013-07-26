@@ -27,7 +27,12 @@ class Notify < ActionMailer::Base
   end
 
   def new_ssh_key_email(key_id)
-    @key = Key.find(key_id)
+    begin
+      @key = Key.find(key_id)
+    rescue ActiveRecord::RecordNotFound
+      logger.warn "key-#{key_id} not found; probably removed immediately"
+      return
+    end
     @user = @key.user
     mail(to: @user.email, subject: subject("SSH key was added to your account"))
   end
