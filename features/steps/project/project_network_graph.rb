@@ -30,22 +30,18 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
 
   When 'I switch ref to "stable"' do
     page.select 'stable', from: 'ref'
-    sleep 2
   end
 
   When 'I switch ref to "v2.1.0"' do
     page.select 'v2.1.0', from: 'ref'
-    sleep 2
   end
 
   When 'I switch ref to "v2.1.0"' do
     page.select 'v2.1.0', from: 'ref'
-    sleep 2
   end
 
   When 'click "Show only selected branch" checkbox' do
     find('#filter_ref').click
-    sleep 2
   end
 
   Then 'page should have content not cotaining "v2.1.0"' do

@@ -111,7 +111,6 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     within(".js-temp-notes-holder") do
       fill_in "note_note", with: "Line is wrong"
       click_button "Add Comment"
-      sleep 0.05
     end
   end
 

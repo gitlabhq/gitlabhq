@@ -23,7 +23,6 @@ module SharedDiffNote
     within(".file form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
       fill_in "note[note]", with: "Typo, please fix"
       find(".js-comment-button").trigger("click")
-      sleep 0.05
     end
   end
 

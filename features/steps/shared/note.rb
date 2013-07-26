@@ -16,7 +16,6 @@ module SharedNote
     within(".js-main-target-form") do
       fill_in "note[note]", with: "XML attached"
       click_button "Add Comment"
-      sleep 0.05
     end
   end
 
