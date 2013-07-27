@@ -55,6 +55,8 @@ Gitlab::Application.routes.draw do
   #
   namespace :public do
     resources :projects, only: [:index]
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:show]
+
     root to: "projects#index"
   end
 

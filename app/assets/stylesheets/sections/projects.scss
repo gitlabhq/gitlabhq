@@ -81,15 +81,25 @@ ul.nav.nav-projects-tabs {
 
 .public-projects {
   li {
-    margin-top: 8px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #eee;
+    .project-title {
+      font-size: 14px;
+      line-height: 2;
+      font-weight: normal;
+    }
 
     .description {
       margin-left: 15px;
       color: #aaa;
     }
   }
+}
+
+.public-clone {
+  background: #333;
+  color: #f5f5f5;
+  padding: 5px 10px;
+  margin: 1px;
+  font-weight: normal;
 }
 
 .new-tag-btn {
