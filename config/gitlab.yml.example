@@ -28,6 +28,9 @@ production: &base
     #
     # relative_url_root: /gitlab
 
+    # Title of the site used in HTML titles and Email subjects (default: 'GitLab')
+    # site_title: GitLab@MyCompany
+
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
     # user: git
 

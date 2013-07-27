@@ -2,11 +2,11 @@
   %head
     %meta{content: "text/html; charset=utf-8", "http-equiv" => "Content-Type"}
       %title
-        GitLab
+        = gitlab_config.site_title
 
   %body
     %h1{style: "background: #EEE; border-bottom: 1px solid #DDD; color: #474D57; font: normal 20px Helvetica, Arial, sans-serif; margin: 0; padding: 5px 10px; line-height: 32px; font-size: 16px;"}
-      GitLab
+      = gitlab_config.site_title
       - if @project
         \|
         = link_to @project.name_with_namespace, project_url(@project), style: 'color: #29B; text-decoration: none'

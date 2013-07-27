@@ -64,7 +64,7 @@ class Notify < ActionMailer::Base
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
   #   => "GitLab | Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    subject = "GitLab"
+    subject = Gitlab.config.gitlab.site_title
     subject << (@project ? " | #{@project.name_with_namespace}" : "")
     subject << " | " + extra.join(' | ') if extra.present?
     subject
