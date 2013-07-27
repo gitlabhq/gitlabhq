@@ -167,10 +167,15 @@ module CommitsHelper
 
     user = User.where('name like ? or email like ?', source_name, source_email).first
 
+    options = {
+      class: "commit-#{options[:source]}-link has_tooltip",
+      data: { :'original-title' => sanitize(source_email) }
+    }
+
     if user.nil?
-      mail_to(source_email, text.html_safe, class: "commit-#{options[:source]}-link")
+      mail_to(source_email, text.html_safe, options)
     else
-      link_to(text.html_safe, user_path(user), class: "commit-#{options[:source]}-link")
+      link_to(text.html_safe, user_path(user), options)
     end
   end
 end
