@@ -363,7 +363,7 @@ These steps are fairly general and you will need to figure out the exact details
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/config/gitlab.yml.example#L53) as a reference)
 * Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-3-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
 * Add provider as one of the default providers in the `default_providers()` function of the `app/helpers/oauth_helper.rb` file
-* Precompiled the assets from the GitLab root directory using `sudo -u git -H rake assets:precompile RAILS_ENV=production`
+* Precompile the assets from the GitLab root directory using `sudo -u git -H rake assets:precompile RAILS_ENV=production`
 * Start GitLab `sudo service gitlab start`
 
 ### Examples
