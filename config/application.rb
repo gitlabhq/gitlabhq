@@ -67,5 +67,8 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Uncomment this if you are using a subdirectory
+    # config.relative_url_root = "/gitlab"
   end
 end
