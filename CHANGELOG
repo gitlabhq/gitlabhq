@@ -14,7 +14,7 @@ v 6.0.0
   - Move all profile controllers/views under Profiles:: module
   - Redesign ssh keys page
   - Generate fingerprint for ssh keys
-  - You an use arrows to navigate at tree view
+  - You can use arrows to navigate at tree view
   - Apply user project limit only for personal projects
   - API: Allow login with LDAP credentials
   - Ability to remove branches/tags with UI
