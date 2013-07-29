@@ -1,4 +1,3 @@
-
 ----------------------------------------------
 
 Table of Contents  
@@ -159,7 +158,7 @@ Emoji
 
 	If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet]( "http://www.emoji-cheat-sheet.com/") for a list of all supported emoji codes. :thumbsup: 
+	Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup: 
 
 Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
 
@@ -169,7 +168,7 @@ You can use it to point out a :bug: or warn about :monkey:patches. And if someon
 
 If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
 
-Consult the [Emoji Cheat Sheet]( "http://www.emoji-cheat-sheet.com/") for a list of all supported emoji codes. :thumbsup: 
+Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup: 
 
 <a name="special"/>
 Special GitLab References
