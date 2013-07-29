@@ -94,6 +94,23 @@ ul.nav.nav-projects-tabs {
   }
 }
 
+.my-projects {
+  li {
+    .project-title {
+      font-size: 14px;
+    }
+
+    .project-info {
+      margin-bottom: 10px;
+    }
+
+    .access-icon i {
+      color: #AAA;
+    }
+  }
+}
+
+
 .public-clone {
   background: #333;
   color: #f5f5f5;
