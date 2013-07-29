@@ -432,7 +432,7 @@ class Project < ActiveRecord::Base
         gitlab_shell.rm_satellites(old_path_with_namespace)
         send_move_instructions
       rescue
-        # Returning false does not rolback after_* transaction but gives
+        # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end

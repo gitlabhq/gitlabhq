@@ -8,7 +8,7 @@ NOTE: This is a developer guide. If you are trying to install GitLab see the lat
 
 ### From x.x to x.x
 
-#### 0. Any major changes? Database updates? Web server change? File strucuture changes?
+#### 0. Any major changes? Database updates? Web server change? File structure changes?
 
 #### 1. Make backup
 

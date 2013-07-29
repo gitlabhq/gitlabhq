@@ -177,7 +177,7 @@ var NoteList = {
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
-    // show the reply button (will only work for replys)
+    // show the reply button (will only work for replies)
     form.prev(".js-discussion-reply-button").show();
 
     if (row.is(".js-temp-notes-holder")) {

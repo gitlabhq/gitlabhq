@@ -1,6 +1,6 @@
 module Gitlab
   # This module provide 2 methods
-  # to set specific ENV variabled for GitLab Shell
+  # to set specific ENV variables for GitLab Shell
   module ShellEnv
     extend self
 

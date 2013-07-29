@@ -1,6 +1,6 @@
 # NotificationService class
 #
-# Used for notifing users with emails about different events
+# Used for notifying users with emails about different events
 #
 # Ex.
 #   NotificationService.new.new_issue(issue, current_user)
@@ -90,7 +90,7 @@ class NotificationService
 
   # Notify new user with email after creation
   def new_user(user)
-    # Dont email omniauth created users
+    # Don't email omniauth created users
     mailer.new_user_email(user.id, user.password) unless user.extern_uid?
   end
 

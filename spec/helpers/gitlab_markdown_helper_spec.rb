@@ -287,7 +287,7 @@ describe GitlabMarkdownHelper do
         gfm(":invalid-emoji:").should_not match(/<img/)
       end
 
-      it "should work independet of reference links (i.e. without @project being set)" do
+      it "should work independent of reference links (i.e. without @project being set)" do
         @project = nil
         gfm(":+1:").should match(/<img/)
       end

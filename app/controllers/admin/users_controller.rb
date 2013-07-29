@@ -24,7 +24,7 @@ class Admin::UsersController < Admin::ApplicationController
     if user.block
       redirect_to :back, alert: "Successfully blocked"
     else
-      redirect_to :back, alert: "Error occured. User was not blocked"
+      redirect_to :back, alert: "Error occurred. User was not blocked"
     end
   end
 
@@ -32,7 +32,7 @@ class Admin::UsersController < Admin::ApplicationController
     if user.activate
       redirect_to :back, alert: "Successfully unblocked"
     else
-      redirect_to :back, alert: "Error occured. User was not unblocked"
+      redirect_to :back, alert: "Error occurred. User was not unblocked"
     end
   end
 

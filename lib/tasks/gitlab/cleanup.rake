@@ -43,7 +43,7 @@ namespace :gitlab do
       end
     end
 
-    desc "GITLAB | Cleanup | Clean respositories"
+    desc "GITLAB | Cleanup | Clean repositories"
     task repos: :environment  do
       warn_user_is_not_gitlab
       remove_flag = ENV['REMOVE']

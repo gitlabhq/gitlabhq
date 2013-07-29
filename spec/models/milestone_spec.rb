@@ -127,11 +127,11 @@ describe Milestone do
       issue = create :issue
     end
 
-    it 'should be true if milestone active and all nestied issues closed' do
+    it 'should be true if milestone active and all nested issues closed' do
       milestone.can_be_closed?.should be_true
     end
 
-    it 'should be false if milestone active and not all nestied issues closed' do
+    it 'should be false if milestone active and not all nested issues closed' do
       issue.milestone = milestone
       issue.save
 
