@@ -17,5 +17,8 @@ class Public::ProjectsController < ApplicationController
 
     @repository = @project.repository
     @recent_tags = @repository.tags.first(10)
+
+    @commit = @repository.commit(params[:ref])
+    @tree = Tree.new(@repository, @commit.id, @ref, @path)
   end
 end
