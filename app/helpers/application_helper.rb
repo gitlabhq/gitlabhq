@@ -35,7 +35,7 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == controller.controller_name }
   end
 
-  # Check if a partcular action is the current one
+  # Check if a particular action is the current one
   #
   # args - One or more action names to check
   #

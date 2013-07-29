@@ -116,7 +116,7 @@ module Gitlab
         repo.git.fetch({timeout: true}, :origin)
       end
 
-      # Create directory for stroing
+      # Create directory for storing
       # satellites lock files
       def create_locks_dir
         FileUtils.mkdir_p(lock_files_dir)

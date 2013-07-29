@@ -143,7 +143,7 @@ class WikiPage
     save :update_page, @page, content, format, message
   end
 
-  # Destroys the WIki Page.
+  # Destroys the Wiki Page.
   #
   # Returns boolean True or False.
   def delete
