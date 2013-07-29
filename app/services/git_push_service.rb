@@ -69,6 +69,10 @@ class GitPushService
   #   },
   #   commits: Array,
   #   total_commits_count: Fixnum
+  #   pusher: {
+  #     name: String,
+  #     email: String
+  #   }
   # }
   #
   def post_receive_data(oldrev, newrev, ref)
@@ -94,7 +98,11 @@ class GitPushService
         homepage: project.web_url,
       },
       commits: [],
-      total_commits_count: push_commits_count
+      total_commits_count: push_commits_count,
+      pusher: {
+        name: user.username,
+        email: user.email
+	  }
     }
 
     # For performance purposes maximum 20 latest commits

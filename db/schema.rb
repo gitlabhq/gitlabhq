@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130614132337) do
+ActiveRecord::Schema.define(:version => 20130729130101) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -321,10 +321,11 @@ ActiveRecord::Schema.define(:version => 20130614132337) do
   create_table "web_hooks", :force => true do |t|
     t.string   "url"
     t.integer  "project_id"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
-    t.string   "type",       :default => "ProjectHook"
+    t.datetime "created_at",                           :null => false
+    t.datetime "updated_at",                           :null => false
+    t.string   "type",              :default => "ProjectHook"
     t.integer  "service_id"
+    t.boolean  "github_compatible", :default => false, :null => false
   end
 
 end

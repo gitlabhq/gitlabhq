@@ -2,19 +2,20 @@
 #
 # Table name: web_hooks
 #
-#  id         :integer          not null, primary key
-#  url        :string(255)
-#  project_id :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  type       :string(255)      default("ProjectHook")
-#  service_id :integer
+#  id                :integer          not null, primary key
+#  url               :string(255)
+#  project_id        :integer
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  type              :string(255)      default("ProjectHook")
+#  service_id        :integer
+#  github_compatible :boolean          default(FALSE), not null
 #
 
 class WebHook < ActiveRecord::Base
   include HTTParty
 
-  attr_accessible :url
+  attr_accessible :url, :github_compatible
 
   # HTTParty timeout
   default_timeout 10
@@ -24,9 +25,10 @@ class WebHook < ActiveRecord::Base
 
   def execute(data)
     options = {}
-    if Gitlab.config.gitlab.github_compatible_hooks
+    if github_compatible
+      payload = github_compatible_data(data)
       options = {
-        :body => {"payload" => data.to_json}
+        :body => {"payload" => payload.to_json}
       }
     else
       options = {
@@ -37,7 +39,7 @@ class WebHook < ActiveRecord::Base
 
     post_url = url
     parsed_url = URI.parse(post_url)
-    if !parsed_url.userinfo.blank?
+    if parsed_url.userinfo.present?
       options.merge!({
         :basic_auth => {
           username: URI.decode(parsed_url.user),
@@ -52,5 +54,13 @@ class WebHook < ActiveRecord::Base
 
   def async_execute(data)
     Sidekiq::Client.enqueue(ProjectWebHookWorker, id, data)
+  end
+
+  # Transforms the input into GitHub compatible format
+  def github_compatible_data(data)
+    r = data.deep_dup
+    r[:repository][:url] = project.web_url
+
+    r
   end
 end
