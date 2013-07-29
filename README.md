@@ -19,6 +19,10 @@ _Disclaimer_: I do not provide any support on GitLab itself.  I only contribute 
 You should also be aware that **Public GitLab** only applies to the latest [stable](https://github.com/ArthurHoaro/Public-GitLab/) release branch of GitLab.  So, use the *-stable branches!  The `master` branch on this repo has a high chance to be broken.
 ## Changelog
 
+  * [2013-07-29] : Fixes 2 issues (more at #22)
+
+  > You need to [update your bundles](https://github.com/ArthurHoaro/Public-GitLab/blob/5-4-stable/doc/update/5.3-to-5.4.md#3-install-libs-migrations-etc) depending on your DBMS
+
   * [2013-07-24] : Public GitLab supports GitLab 5.4 (stable) - [Upgrade 5.3 to 5.4](https://github.com/ArthurHoaro/Public-GitLab/blob/5-4-stable/doc/update/5.3-to-5.4.md)
   * [2013-07-06] : [New feature](https://github.com/ArthurHoaro/Public-GitLab/pull/19) ! Added a different projects number limit per user for private and public projects. Thanks to [Mike](https://github.com/MJSmith5) for the idea.
   
