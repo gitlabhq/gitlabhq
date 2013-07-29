@@ -235,7 +235,7 @@ describe Project do
       project.can_have_issues_tracker_id?.should be_false
     end
 
-    it "should be always false if issues disbled" do
+    it "should be always false if issues disabled" do
       project.issues_enabled = false
       ext_project.issues_enabled = false
 

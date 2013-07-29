@@ -55,7 +55,7 @@ namespace :gitlab do
   # Runs the given command and matches the output against the given pattern
   #
   # Returns nil if nothing matched
-  # Retunrs the MatchData if the pattern matched
+  # Returns the MatchData if the pattern matched
   #
   # see also #run
   # see also String#match

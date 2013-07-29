@@ -43,9 +43,9 @@ module Network
 
     # Method is adding time and space on the
     # list of commits. As well as returns date list
-    # corelated with time set on commits.
+    # correlated with time set on commits.
     #
-    # @return [Array<TimeDate>] list of commit dates corelated with time on commits
+    # @return [Array<TimeDate>] list of commit dates correlated with time on commits
     def index_commits
       days = []
       @map = {}

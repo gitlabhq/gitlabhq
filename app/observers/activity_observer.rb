@@ -8,7 +8,7 @@ class ActivityObserver < BaseObserver
       # Skip system status notes like 'status changed to close'
       return true if record.note.include?("_Status changed to ")
 
-      # Skip wall notes to prevent spaming of dashboard
+      # Skip wall notes to prevent spamming of dashboard
       return true if record.noteable_type.blank?
     end
 

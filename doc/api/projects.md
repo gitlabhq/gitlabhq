@@ -193,7 +193,7 @@ Parameters:
 
 **Project access levels**
 
-The project access levels are defined in the `user_project.rb` class. Currently, these levels are recoginized:
+The project access levels are defined in the `user_project.rb` class. Currently, these levels are recognized:
 
 ```
   GUEST     = 10

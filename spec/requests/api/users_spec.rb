@@ -247,7 +247,7 @@ describe API::API do
   end
 
   describe "GET /user/keys/:id" do
-    it "should returm single key" do
+    it "should return single key" do
       user.keys << key
       user.save
       get api("/user/keys/#{key.id}", user)
