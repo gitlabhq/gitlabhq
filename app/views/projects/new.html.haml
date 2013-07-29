@@ -7,8 +7,8 @@
         = f.label :name do
           Project name is
         .input
-          = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1
-          = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 3
+          = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1, autofocus: true
+          = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 
       - if current_user.can_select_namespace?
         .clearfix
@@ -29,6 +29,12 @@
           = f.text_field :import_url, class: 'xlarge', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
+      .clearfix
+        = f.label :description do
+          Description
+          %span.light (optional)
+        .input
+          = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250, tabindex: 3
 
       %p.padded
         New projects are private by default. You choose who can see the project and commit to repository.
