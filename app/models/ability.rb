@@ -79,7 +79,7 @@ class Ability
         :read_wiki,
         :read_issue,
         :read_milestone,
-        :read_snippet,
+        :read_project_snippet,
         :read_team_member,
         :read_merge_request,
         :read_note,
