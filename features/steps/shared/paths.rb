@@ -275,6 +275,10 @@ module SharedPaths
     visit public_root_path
   end
 
+  step 'I visit public page for "Community" project' do
+    visit public_project_path(Project.find_by_name("Community"))
+  end
+
   # ----------------------------------------
   # Snippets
   # ----------------------------------------
