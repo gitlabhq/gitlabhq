@@ -4,5 +4,6 @@
 - else
   :plain
     $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
+    $('.project-submit').enable();
     $('.save-project-loader').hide();
     $('.project-edit-container').show();
