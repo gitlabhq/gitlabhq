@@ -41,12 +41,43 @@ describe ProjectHook do
     end
   end
 
+  describe "github_compatible_data" do
+    it "copies project.web_url to data.repository.url" do
+
+      repo_url = "git@example.com:repository.git"
+      repo_homepage = "http://example.com/repository"
+
+      data = {
+        before: 'oldrev',
+        after: 'newrev',
+        ref: 'ref',
+        repository: {
+          url: repo_url,
+          homepage: repo_homepage
+        }
+      }
+
+      result = WebHook.github_compatible_data(data)
+      result[:repository].should include(:url => repo_homepage)
+      result[:repository].should_not include(:homepage)
+    end
+  end
+
   describe "execute" do
     before(:each) do
       @project_hook = create(:project_hook)
       @project = create(:project)
       @project.hooks << [@project_hook]
-      @data = { before: 'oldrev', after: 'newrev', ref: 'ref'}
+      @project.path = "repository"
+
+      @data = {
+        before: 'oldrev',
+        after: 'newrev',
+        ref: 'ref',
+        repository: {
+          url: "git@example.com:repository.git"
+        }
+      }
 
       WebMock.stub_request(:post, @project_hook.url)
     end
@@ -69,10 +100,11 @@ describe ProjectHook do
         @project_hook.github_compatible = true
       end
 
-      it "POSTs the data in github compatible format" do
+      it "POSTs the data in GitHub compatible format" do
         @project_hook.execute(@data)
+        transformed_data = WebHook.github_compatible_data(@data)
         WebMock.should have_requested(:post, @project_hook.url).
-                           with(:body => "payload=" + CGI.escape(@data.to_json)).
+                           with(:body => "payload=" + CGI.escape(transformed_data.to_json)).
                            once
       end
     end
@@ -92,15 +124,17 @@ describe ProjectHook do
     end
 
     context "with username and password in the URL" do
-      before do
-        @project_hook.url = "http://user:password@example.com/repo"
-      end
-
       it "adds the authorization header" do
-        @project_hook.execute(@data)
-        WebMock.should have_requested(:post, @project_hook.url).
-                           with(:headers => {'Authorization' => 'Basic dXNlcjpwYXNzd29yZA=='}).
-                           once
+        url_with_auth = "http://user:password@example.com/"
+
+        auth_project_hook = create(:project_hook)
+        auth_project_hook.url = url_with_auth
+
+        WebMock.stub_request(:post, url_with_auth)
+
+        auth_project_hook.execute("test")
+
+        WebMock.should have_requested(:post, url_with_auth).once
       end
     end
   end
