@@ -2,8 +2,8 @@ require 'spec_helper'
 
 describe "On a merge request", js: true do
   let!(:project) { create(:project_with_code) }
-  let!(:merge_request) { create(:merge_request, project: project) }
-  let!(:note) { create(:note_on_merge_request_with_attachment, project: project) }
+  let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+  let!(:note) { create(:note_on_merge_request_with_attachment,  project: project) }
 
   before do
     login_as :user
@@ -62,7 +62,7 @@ describe "On a merge request", js: true do
 
     it 'should be added and form reset' do
       should have_content("This is awsome!")
-      within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!")  }
+      within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!") }
       within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) }
       within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
     end
@@ -135,14 +135,15 @@ describe "On a merge request", js: true do
 end
 
 describe "On a merge request diff", js: true, focus: true do
-  let!(:project) { create(:project_with_code) }
-  let!(:merge_request) { create(:merge_request_with_diffs, project: project) }
+  let!(:project) { create(:source_project_with_code) }
+  let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
 
   before do
     login_as :user
     project.team << [@user, :master]
     visit diffs_project_merge_request_path(project, merge_request)
   end
+
 
   subject { page }
 
@@ -183,6 +184,9 @@ describe "On a merge request diff", js: true, focus: true do
   end
 
   describe "with muliple note forms" do
+    let!(:project) { create(:source_project_with_code) }
+    let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
+
     before do
       find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
       find('a[data-line-code="342e16cbbd482ac2047dc679b2749d248cc1428f_18_17"]').click
@@ -205,13 +209,13 @@ describe "On a merge request diff", js: true, focus: true do
 
       # TODO: fix
       #it 'should check if previews were rendered separately' do
-        #within("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185'] + .js-temp-notes-holder") do
-          #should have_css(".js-note-preview", text: "One comment on line 185")
-        #end
+      #within("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185'] + .js-temp-notes-holder") do
+      #should have_css(".js-note-preview", text: "One comment on line 185")
+      #end
 
-        #within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .js-temp-notes-holder") do
-          #should have_css(".js-note-preview", text: "Another comment on line 17")
-        #end
+      #within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .js-temp-notes-holder") do
+      #should have_css(".js-note-preview", text: "Another comment on line 17")
+      #end
       #end
     end
 
@@ -238,39 +242,38 @@ describe "On a merge request diff", js: true, focus: true do
 
       # TODO: fix
       #it "should remove last note of a discussion" do
-        #within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .notes-holder") do
-          #find(".js-note-delete").click
-        #end
-
-        #should_not have_css(".note_holder")
+      # within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .notes-holder") do
+      #   find(".js-note-delete").click
+      # end
+      # should_not have_css(".note_holder")
       #end
     end
   end
 
   # TODO: fix
   #describe "when replying to a note" do
-    #before do
-      ## create first note
-      #find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184"]').click
+  #before do
+  ## create first note
+  # find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184"]').click
 
-      #within(".js-temp-notes-holder") do
-        #fill_in "note[note]", with: "One comment on line 184"
-        #click_button("Add Comment")
-      #end
+  # within(".js-temp-notes-holder") do
+  # fill_in "note[note]", with: "One comment on line 184"
+  # click_button("Add Comment")
+  #end
 
-      #within(".js-temp-notes-holder") do
-        #find(".js-discussion-reply-button").click
-        #fill_in "note[note]", with: "An additional comment in reply"
-        #click_button("Add Comment")
-      #end
-    #end
+  # within(".js-temp-notes-holder") do
+  # find(".js-discussion-reply-button").click
+  # fill_in "note[note]", with: "An additional comment in reply"
+  # click_button("Add Comment")
+  # end
+  #end
 
-    #it 'should be inserted and form removed from reply' do
-      #should have_content("An additional comment in reply")
-      #within(".notes_holder") { should have_css(".note", count: 2) }
-      #within(".notes_holder") { should have_no_css("form") }
-      #within(".notes_holder") { should have_link("Reply") }
-    #end
+  #it 'should be inserted and form removed from reply' do
+  # should have_content("An additional comment in reply")
+  # within(".notes_holder") { should have_css(".note", count: 2) }
+  # within(".notes_holder") { should have_no_css("form") }
+  # within(".notes_holder") { should have_link("Reply") }
+  # end
   #end
 end
 

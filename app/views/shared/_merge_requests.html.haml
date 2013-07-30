@@ -1,5 +1,5 @@
 - if @merge_requests.any?
-  - @merge_requests.group_by(&:project).each do |group|
+  - @merge_requests.group_by(&:target_project).each do |group|
     .ui-box
       - project = group[0]
       .title

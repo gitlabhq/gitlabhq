@@ -15,7 +15,7 @@
             for instructions
           .accept_group
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
-            - unless @project.root_ref? @merge_request.source_branch
+            - unless @merge_request.disallow_source_branch_removal?
               .remove_branch_holder
                 = label_tag :should_remove_source_branch, class: "checkbox" do
                   = check_box_tag :should_remove_source_branch

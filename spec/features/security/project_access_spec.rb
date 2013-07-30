@@ -14,10 +14,10 @@ describe "Application access" do
   end
 
   describe "Project" do
-    let(:project)  { create(:project_with_code) }
+    let(:project) { create(:project_with_code) }
 
-    let(:master)   { create(:user) }
-    let(:guest)    { create(:user) }
+    let(:master) { create(:user) }
+    let(:guest) { create(:user) }
     let(:reporter) { create(:user) }
 
     before do
@@ -108,7 +108,7 @@ describe "Application access" do
     describe "GET /project_code/blob" do
       before do
         commit = project.repository.commit
-        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
+        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob) }.first.name
         @blob_path = project_blob_path(project, File.join(commit.id, path))
       end
 
@@ -232,13 +232,13 @@ describe "Application access" do
 
 
   describe "PublicProject" do
-    let(:project)  { create(:project_with_code) }
+    let(:project) { create(:project_with_code) }
 
-    let(:master)   { create(:user) }
-    let(:guest)    { create(:user) }
+    let(:master) { create(:user) }
+    let(:guest) { create(:user) }
     let(:reporter) { create(:user) }
 
-    let(:admin)    { create(:user) }
+    let(:admin) { create(:user) }
 
     before do
       # public project
@@ -339,7 +339,7 @@ describe "Application access" do
     describe "GET /project_code/blob" do
       before do
         commit = project.repository.commit
-        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
+        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob) }.first.name
         @blob_path = project_blob_path(project, File.join(commit.id, path))
       end
 

@@ -6,6 +6,7 @@ class Notify < ActionMailer::Base
 
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
+  add_template_helper MergeRequestsHelper
 
   default_url_options[:host]     = Gitlab.config.gitlab.host
   default_url_options[:protocol] = Gitlab.config.gitlab.protocol
