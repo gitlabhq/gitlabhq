@@ -89,13 +89,15 @@ module Gitlab
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
           if (merge_request.for_fork?)
-            patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}...source/#{merge_request.source_branch}")
+            patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}..source/#{merge_request.source_branch}")
           else
-            patch = merge_repo.git.format_patch(default_options({stdout: true}), "#{merge_request.target_branch}...#{merge_request.source_branch}")
+            patch = merge_repo.git.format_patch(default_options({stdout: true}), "#{merge_request.target_branch}..#{merge_request.source_branch}")
           end
           return patch
         end
       rescue Grit::Git::CommandFailed => ex
+        puts ex
+        ex.backtrace.each {|l|puts l}
         handle_exception(ex)
       end
 

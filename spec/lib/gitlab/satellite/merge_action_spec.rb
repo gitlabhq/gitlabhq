@@ -51,23 +51,36 @@ describe 'Gitlab::Satellite::MergeAction' do
   end
 
   describe '#format_patch' do
+    let(:target_commit) {['artiom-config-examples','9edbac5ac88ffa1ec9dad0097226b51e29ebc9ac']}
+    let(:source_commit) {['metior', '313d96e42b313a0af5ab50fa233bf43e27118b3f']}
+
+    def verify_content(patch)
+      (patch.include? source_commit[1]).should be_true
+      (patch.include? '635d3e09b72232b6e92a38de6cc184147e5bcb41').should be_true
+      (patch.include? '2bb2dee057327c81978ed0aa99904bd7ff5e6105').should be_true
+      (patch.include? '2e83de1924ad3429b812d17498b009a8b924795d').should be_true
+      (patch.include? 'ee45a49c57a362305431cbf004e4590b713c910e').should be_true
+      (patch.include? 'a6870dd08f8f274d9a6b899f638c0c26fefaa690').should be_true
+
+      (patch.include? 'e74fae147abc7d2ffbf93d363dbbe45b87751f6f').should be_false
+      (patch.include? '86f76b11c670425bbab465087f25172378d76147').should be_false
+    end
+
     context 'on fork' do
       it 'should build a format patch' do
-        merge_request_fork.target_branch = @close_commit1[0]
-        merge_request_fork.source_branch = @close_commit2[0]
+        merge_request_fork.target_branch = target_commit[0]
+        merge_request_fork.source_branch = source_commit[0]
         patch = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).format_patch
-        (patch.include? "From #{@close_commit2[1]}").should be_true
-        (patch.include? "From #{@close_commit1[1]}").should be_true
+        verify_content(patch)
       end
     end
 
     context 'between branches' do
       it 'should build a format patch' do
-        merge_request.target_branch = @close_commit1[0]
-        merge_request.source_branch = @close_commit2[0]
-        patch = Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).format_patch
-        (patch.include? "From #{@close_commit2[1]}").should be_true
-        (patch.include? "From #{@close_commit1[1]}").should be_true
+        merge_request.target_branch = target_commit[0]
+        merge_request.source_branch = source_commit[0]
+        patch = Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request).format_patch
+        verify_content(patch)
       end
     end
   end
