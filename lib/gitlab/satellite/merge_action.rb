@@ -96,8 +96,6 @@ module Gitlab
           return patch
         end
       rescue Grit::Git::CommandFailed => ex
-        puts ex
-        ex.backtrace.each {|l|puts l}
         handle_exception(ex)
       end
 
