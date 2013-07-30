@@ -9,9 +9,6 @@
       = time_ago_in_words(event.created_at)
       ago.
     .pull-right
-      = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-new-mr" do
+      = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-create btn-small" do
         Create Merge Request
-      - if !event.project.nil? && event.project.forked?
-        = link_to new_mr_path_for_fork_from_push_event(event), title: "New Merge Request", class: "btn btn-create btn-small" do
-          Create Merge Request on fork
   %hr

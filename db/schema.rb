@@ -92,8 +92,8 @@ ActiveRecord::Schema.define(:version => 20130624162710) do
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "st_commits",    :limit => 2147483647
-    t.text     "st_diffs",      :limit => 2147483647
+    t.text     "st_commits",        :limit => 2147483647
+    t.text     "st_diffs",          :limit => 2147483647
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"

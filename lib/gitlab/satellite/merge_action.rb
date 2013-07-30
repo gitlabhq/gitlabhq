@@ -48,14 +48,14 @@ module Gitlab
       def diff_in_satellite
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
-
           update_satellite_source_and_target!(merge_repo)
+
           if merge_request.for_fork?
             diff = merge_repo.git.native(:diff, default_options, "origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
           else
             diff = merge_repo.git.native(:diff, default_options, "#{merge_request.target_branch}", "#{merge_request.source_branch}")
-
           end
+
           return diff
         end
       rescue Grit::Git::CommandFailed => ex
@@ -88,11 +88,13 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
+
           if (merge_request.for_fork?)
             patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}...source/#{merge_request.source_branch}")
           else
             patch = merge_repo.git.format_patch(default_options({stdout: true}), "#{merge_request.target_branch}...#{merge_request.source_branch}")
           end
+
           return patch
         end
       rescue Grit::Git::CommandFailed => ex
@@ -139,7 +141,7 @@ module Gitlab
 
       # Assumes a satellite exists that is a fresh clone of the projects repo, prepares satellite for merges, diffs etc
       def update_satellite_source_and_target!(repo)
-        if  merge_request.for_fork?
+        if merge_request.for_fork?
           repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
           repo.remote_fetch('source')
           repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
