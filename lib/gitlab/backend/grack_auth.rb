@@ -26,7 +26,13 @@ module Grack
     def auth!
       return render_not_found unless project
 
-      if @auth.provided?
+      if Gitlab.config.env.enabled
+        return unauthorized unless @env['HTTP_REMOTE_USER']
+        @user = User.find_by_provider_and_extern_uid('env', @env['HTTP_REMOTE_USER'])
+        return unauthorized unless @user
+        Gitlab::ShellEnv.set_env(@user)
+        @env['REMOTE_USER'] = @env['HTTP_REMOTE_USER']
+      elsif @auth.provided?
         return bad_request unless @auth.basic?
 
         # Authentication with username and password
