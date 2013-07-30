@@ -205,6 +205,16 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
+  ldap_configs = {
+    host:     Gitlab.config.ldap['host'],
+    base:     Gitlab.config.ldap['base'],
+    uid:      Gitlab.config.ldap['uid'],
+    port:     Gitlab.config.ldap['port'],
+    method:   Gitlab.config.ldap['method'],
+    bind_dn:  Gitlab.config.ldap['bind_dn'],
+    password: Gitlab.config.ldap['password']
+  }
+  
   if Gitlab.config.ldap.enabled
     if Gitlab.config.ldap.allow_username_or_email_login
       email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
@@ -212,15 +222,9 @@ Devise.setup do |config|
       email_stripping_proc = ->(name) {name}
     end
 
-    config.omniauth :ldap,
-      host:     Gitlab.config.ldap['host'],
-      base:     Gitlab.config.ldap['base'],
-      uid:      Gitlab.config.ldap['uid'],
-      port:     Gitlab.config.ldap['port'],
-      method:   Gitlab.config.ldap['method'],
-      bind_dn:  Gitlab.config.ldap['bind_dn'],
-      password: Gitlab.config.ldap['password'],
-      name_proc: email_stripping_proc
+    ldap_configs[:name_proc] = email_stripping_proc
+
+    config.omniauth :ldap, ldap_configs
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
@@ -235,4 +239,6 @@ Devise.setup do |config|
       config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
     end
   end
+
+  config.omniauth :env, ldap_configs if Gitlab.config.env.enabled
 end

@@ -99,6 +99,10 @@ production: &base
     password: '_the_password_of_the_bind_user'
     allow_username_or_email_login: true
 
+  ## env (REMOTE_USER) settings
+  env:
+    enabled: false
+
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
