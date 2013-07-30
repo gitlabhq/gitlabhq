@@ -2,10 +2,7 @@
   %h4.snippet-title
     = link_to reliable_snippet_path(snippet) do
       = truncate(snippet.title, length: 60)
-      - if snippet.private?
-        %span.label.label-success
-          %i.icon-lock
-          private
+      = render partial: 'snippet_visibility', locals: {snippet: snippet}
     %span.cgray.monospace.tiny.pull-right
       = snippet.file_name
 

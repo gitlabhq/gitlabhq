@@ -280,6 +280,18 @@ module SharedPaths
   end
 
   # ----------------------------------------
+  # Public Snippets
+  # ----------------------------------------
+
+  step 'I visit the public snippets area' do
+    visit public_snippets_path
+  end
+
+  step 'I visit public page for "World Public Snippet" snippet' do
+    visit public_snippet_path(Snippet.find_by_title("World Public Snippet"))
+  end
+
+  # ----------------------------------------
   # Snippets
   # ----------------------------------------
 

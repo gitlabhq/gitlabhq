@@ -5,4 +5,5 @@ Feature: Public Projects
   Scenario: I should see the list of public projects
     When I visit the public projects area
     Then I should see the list of public projects
+    And I should see a link to public snippets
 

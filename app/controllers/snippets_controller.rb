@@ -14,7 +14,7 @@ class SnippetsController < ApplicationController
   layout 'navless'
 
   def index
-    @snippets = Snippet.public.fresh.non_expired.page(params[:page]).per(20)
+    @snippets = Snippet.all_public.fresh.non_expired.page(params[:page]).per(20)
   end
 
   def user_index
@@ -24,14 +24,14 @@ class SnippetsController < ApplicationController
     if @user == current_user
       @snippets = case params[:scope]
                   when 'public' then
-                    @snippets.public
+                    @snippets.all_public
                   when 'private' then
                     @snippets.private
                   else
                     @snippets
                   end
     else
-      @snippets = @snippets.public
+      @snippets = @snippets.all_public
     end
 
     @snippets = @snippets.page(params[:page]).per(20)
@@ -92,7 +92,7 @@ class SnippetsController < ApplicationController
   protected
 
   def snippet
-    @snippet ||= PersonalSnippet.where('author_id = :user_id or private is false', user_id: current_user.id).find(params[:id])
+    @snippet ||= PersonalSnippet.where('author_id = :user_id or visibility = :visibility', user_id: current_user.id, visibility: :private).find(params[:id])
   end
 
   def authorize_modify_snippet!

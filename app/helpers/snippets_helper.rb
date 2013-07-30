@@ -9,6 +9,15 @@ module SnippetsHelper
     options_for_select(options)
   end
 
+  def visibility_select_options(opts={})
+    options = [
+      ['Private',       "private"],
+      ['Gitlab Public', "gitlab_public"],
+      ['World Public',  "world_public"]
+    ]
+    options_for_select(options, opts[:selected])
+  end
+
   def reliable_snippet_path(snippet)
     if snippet.project_id?
       project_snippet_path(snippet.project, snippet)

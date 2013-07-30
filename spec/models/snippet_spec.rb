@@ -4,15 +4,15 @@
 #
 #  id         :integer          not null, primary key
 #  title      :string(255)
-#  content    :text
+#  content    :text(2147483647)
 #  author_id  :integer          not null
 #  project_id :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  file_name  :string(255)
 #  expires_at :datetime
-#  private    :boolean          default(TRUE), not null
 #  type       :string(255)
+#  visibility :string(255)      not null
 #
 
 require 'spec_helper'
@@ -37,5 +37,12 @@ describe Snippet do
     it { should ensure_length_of(:title).is_within(0..255) }
 
     it { should validate_presence_of(:content) }
+  end
+
+  describe "visibility" do
+    it "sets the default visibility" do
+      snippet = create(:snippet)
+      snippet.visibility.should eq("private")
+    end
   end
 end

@@ -1,0 +1,7 @@
+%ul
+  = nav_link(controller: [:public, :projects]) do
+    = link_to public_projects_path do
+      Projects
+  = nav_link(controller: [:snippets]) do
+    = link_to public_snippets_path do
+      Snippets
