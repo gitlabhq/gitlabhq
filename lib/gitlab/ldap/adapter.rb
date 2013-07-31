@@ -54,10 +54,10 @@ module Gitlab
         end
       end
 
-      def users(cn = "*")
+      def users(uid = "*")
         options = {
           base: config['base'],
-          filter: Net::LDAP::Filter.eq("cn", cn)
+          filter: Net::LDAP::Filter.eq("uid", uid)
         }
 
         entries = ldap.search(options).select do |entry|
@@ -67,6 +67,10 @@ module Gitlab
         entries.map do |entry|
           Gitlab::LDAP::Person.new(entry)
         end
+      end
+
+      def user(uid)
+        users(uid).first
       end
 
       private
