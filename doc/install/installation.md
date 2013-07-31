@@ -150,10 +150,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-3-stable
+    sudo -u git -H git checkout 5-4-stable
 
 **Note:**
-You can change `5-3-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
 
 ## Configure it
 
@@ -185,12 +185,12 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H mkdir public/uploads
     sudo chmod -R u+rwX  public/uploads
 
-    # Copy the example Unicorn config
-    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+    # Copy the example Puma config
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
 
-    # Enable cluster mode if you expect to have a high load instance
-    # Ex. change amount of workers to 3 for 2GB RAM server
-    sudo -u git -H editor config/unicorn.rb
+    # Increase the amount of threads if you expect to have a high load instance
+    # Ex. change amount of threads to 0,32 for 2GB RAM server
+    sudo -u git -H editor config/puma.rb
 
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
@@ -198,7 +198,7 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H git config --global user.email "gitlab@localhost"
 
 **Important Note:**
-Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
+Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
@@ -357,9 +357,9 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
-* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/Gemfile#L18)
+* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/Gemfile#L18)
 * Run `sudo -u git -H bundle install` to install the new gem(s)
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/config/gitlab.yml.example#L53) as a reference)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/config/gitlab.yml.example#L53) as a reference)
 * Restart GitLab
 
 ### Examples
