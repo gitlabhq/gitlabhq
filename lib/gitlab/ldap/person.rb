@@ -21,14 +21,28 @@ module Gitlab
         entry.cn.join(" ")
       end
 
-      def username
+      def uid
         entry.uid.join(" ")
+      end
+
+      def username
+        uid
+      end
+
+      def groups
+        adapter.groups.select do |group|
+          group.member_uids.include?(uid)
+        end
       end
 
       private
 
       def entry
         @entry
+      end
+
+      def adapter
+        @adapter ||= Gitlab::LDAP::Adapter.new
       end
     end
   end

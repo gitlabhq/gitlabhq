@@ -31,8 +31,6 @@ module Gitlab
         end.compact
       end
 
-      private
-
       def member_uids
         if entry.respond_to? :memberuid
           entry.memberuid
@@ -42,6 +40,8 @@ module Gitlab
           end
         end.compact
       end
+
+      private
 
       def member_dns
         if entry.respond_to? :member
