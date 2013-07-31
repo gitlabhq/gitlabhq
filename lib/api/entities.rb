@@ -3,6 +3,9 @@ module API
     class User < Grape::Entity
       expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
              :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
+      expose :is_admin?, as: :is_admin
+      expose :can_create_group?, as: :can_create_group
+      expose :can_create_project?, as: :can_create_project
     end
 
     class UserSafe < Grape::Entity
@@ -15,10 +18,6 @@ module API
 
     class UserLogin < User
       expose :private_token
-      expose :is_admin?, as: :is_admin
-      expose :can_create_group?, as: :can_create_group
-      expose :can_create_project?, as: :can_create_project
-      expose :can_create_team?, as: :can_create_team
     end
 
     class Hook < Grape::Entity
