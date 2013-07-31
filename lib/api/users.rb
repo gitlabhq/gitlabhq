@@ -40,14 +40,21 @@ module API
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
+      #   admin                             - User is admin - true or false (default)
+      #   can_create_group                  - User can create groups - true or false
+      #   can_create_team                   - User can create teams - true or false
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter,
+                                     :projects_limit, :username, :extern_uid, :provider, :bio,
+                                     :can_create_group, :can_create_team, :admin]
         user = User.new attrs, as: :admin
+        admin = attrs.delete(:admin)
+        user.admin = admin unless admin.nil?
         if user.save
           present user, with: Entities::User
         else
@@ -68,16 +75,23 @@ module API
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
+      #   admin                             - User is admin - true or false (default)
+      #   can_create_group                  - User can create groups - true or false
+      #   can_create_team                   - User can create teams - true or false
       # Example Request:
       #   PUT /users/:id
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter,
+                                     :projects_limit, :username, :extern_uid, :provider, :bio,
+                                     :can_create_group, :can_create_team, :admin]
         user = User.find(params[:id])
         not_found!("User not found") unless user
 
-        if user.update_attributes(attrs)
+        admin = attrs.delete(:admin)
+        user.admin = admin unless admin.nil?
+        if user.update_attributes(attrs, as: :admin)
           present user, with: Entities::User
         else
           not_found!
