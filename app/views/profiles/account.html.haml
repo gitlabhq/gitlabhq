@@ -1,3 +1,10 @@
+%h3.page-title
+  Account settings
+%p.light
+  You can change password, username, private token here.
+  - if current_user.ldap_user?
+    Some options are unavailable for LDAP accounts
+%hr
 - unless current_user.ldap_user?
   - if Gitlab.config.omniauth.enabled
     %fieldset
