@@ -1,2 +1,7 @@
 :plain
   $(".mr_source_commit").html("#{commit_to_html(@commit)}");
+  var mrTitle = $('#merge_request_title');
+
+  if(mrTitle.is(":empty")) {
+    mrTitle.val("#{params[:ref].titleize}");
+  }

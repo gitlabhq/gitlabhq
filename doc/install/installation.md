@@ -185,12 +185,12 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H mkdir public/uploads
     sudo chmod -R u+rwX  public/uploads
 
-    # Copy the example Puma config
+    # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
-    sudo -u git -H vim config/unicorn.rb
+    sudo -u git -H editor config/unicorn.rb
 
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
@@ -360,7 +360,6 @@ These steps are fairly general and you will need to figure out the exact details
 * Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/Gemfile#L18)
 * Run `sudo -u git -H bundle install` to install the new gem(s)
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-3-stable/config/gitlab.yml.example#L53) as a reference)
-* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-3-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
 * Restart GitLab
 
 ### Examples

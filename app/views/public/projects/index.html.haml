@@ -11,22 +11,20 @@
             = search_field_tag :search, params[:search], placeholder: "gitlab-ci", class: "span3 search-text-input", id: "projects_search"
             = submit_tag 'Search', class: "btn btn-primary wide"
 
-%hr
-
 .public-projects
-  %ul.unstyled
+  %ul.bordered-list
     - @projects.each do |project|
-      %li.clearfix
-        %div
-          %i.icon-share
-          - if current_user
-            = link_to_project project
-          - else
+      %li
+        .project-title
+          %i.icon-share.cgray
+          = link_to public_project_path(project) do
             = project.name_with_namespace
           .pull-right
-            %pre.dark.tiny git clone #{project.http_url_to_repo}
-        %div.description
-          = project.description
+            %pre.public-clone git clone #{project.http_url_to_repo}
+
+        - if project.description.present?
+          %div.description
+            = project.description
     - unless @projects.present?
       %h3.nothing_here_message No public projects
 

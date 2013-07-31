@@ -36,7 +36,7 @@ describe Gitlab::Auth do
     end
 
 
-    it "should create from auth if user doesnot exist"do
+    it "should create from auth if user does not exist"do
       User.stub find_by_extern_uid_and_provider: nil
       User.stub find_by_email: nil
       gl_auth.should_receive :create_from_omniauth

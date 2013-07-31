@@ -45,7 +45,7 @@ describe Issue do
   end
 
   describe '#is_being_reassigned?' do
-    it 'returnes issues assigned to user' do
+    it 'returns issues assigned to user' do
       user = create :user
 
       2.times do

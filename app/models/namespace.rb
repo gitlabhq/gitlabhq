@@ -73,7 +73,7 @@ class Namespace < ActiveRecord::Base
         gitlab_shell.rm_satellites(path_was)
         send_update_instructions
       rescue
-        # Returning false does not rolback after_* transaction but gives
+        # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end

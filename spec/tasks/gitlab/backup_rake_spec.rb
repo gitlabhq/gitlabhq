@@ -30,7 +30,7 @@ describe 'gitlab:app namespace rake task' do
 
       let(:gitlab_version) { %x{git rev-parse HEAD}.gsub(/\n/,"") }
 
-      it 'should fail on mismach' do
+      it 'should fail on mismatch' do
         YAML.stub load_file: {gitlab_version: gitlab_version.reverse}
         expect { run_rake_task }.to raise_error SystemExit
       end
