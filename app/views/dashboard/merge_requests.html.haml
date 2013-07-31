@@ -1,10 +1,11 @@
 %h3.page-title
   Merge Requests
-  %span.light
-    &ndash;
-    Authored by or assigned to you
   %span.pull-right #{@merge_requests.total_count} merge requests
 
+
+%p.light
+  Only merge requests authored or assigned to you are listed here.
+%hr
 .row
   .span3
     = render 'filter', entity: 'merge_request'
