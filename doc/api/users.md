@@ -23,7 +23,9 @@ GET /users
     "extern_uid": "john.smith",
     "provider": "provider_name",
     "theme_id": 1,
-    "color_scheme_id": 2
+    "color_scheme_id": 2,
+    "is_admin": false,
+    "can_create_group": true
   },
   {
     "id": 2,
@@ -39,7 +41,9 @@ GET /users
     "extern_uid": "jack.smith",
     "provider": "provider_name",
     "theme_id": 1,
-    "color_scheme_id": 3
+    "color_scheme_id": 3,
+    "is_admin": false,
+    "can_create_group": true
   }
 ]
 ```
@@ -72,7 +76,9 @@ Parameters:
   "extern_uid": "john.smith",
   "provider": "provider_name",
   "theme_id": 1,
-  "color_scheme_id": 2
+  "color_scheme_id": 2,
+  "is_admin": false,
+  "can_create_group": true
 }
 ```
 
@@ -87,17 +93,19 @@ POST /users
 
 Parameters:
 
-+ `email` (required)          - Email
-+ `password` (required)       - Password
-+ `username` (required)       - Username
-+ `name` (required)           - Name
-+ `skype` (optional)          - Skype ID
-+ `linkedin` (optional)       - Linkedin
-+ `twitter` (optional)        - Twitter account
-+ `projects_limit` (optional) - Number of projects user can create
-+ `extern_uid` (optional)     - External UID
-+ `provider` (optional)       - External provider name
-+ `bio` (optional)            - User's bio
++ `email` (required)            - Email
++ `password` (required)         - Password
++ `username` (required)         - Username
++ `name` (required)             - Name
++ `skype` (optional)            - Skype ID
++ `linkedin` (optional)         - Linkedin
++ `twitter` (optional)          - Twitter account
++ `projects_limit` (optional)   - Number of projects user can create
++ `extern_uid` (optional)       - External UID
++ `provider` (optional)         - External provider name
++ `bio` (optional)              - User's bio
++ `admin` (optional)            - User is admin - true or false (default)
++ `can_create_group` (optional) - User can create groups - true or false
 
 
 ## User modification
@@ -121,6 +129,8 @@ Parameters:
 + `extern_uid`                        - External UID
 + `provider`                          - External provider name
 + `bio`                               - User's bio
++ `admin` (optional)                  - User is admin - true or false (default)
++ `can_create_group` (optional)       - User can create groups - true or false
 
 Note, at the moment this method does only return a 404 error, even in cases where a 409 (Conflict) would
 be more appropriate, e.g. when renaming the email address to some existing one.
@@ -166,7 +176,6 @@ GET /user
   "color_scheme_id": 2,
   "is_admin": false,
   "can_create_group" : true,
-  "can_create_team" : true,
   "can_create_project" : true
 }
 ```
