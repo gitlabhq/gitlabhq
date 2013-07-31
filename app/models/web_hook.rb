@@ -58,7 +58,7 @@ class WebHook < ActiveRecord::Base
 
   # Transforms the input into GitHub compatible format
   def self.github_compatible_data(data)
-    r = data.deep_dup
+    r = data.deep_dup.with_indifferent_access
     r[:repository][:url] = r[:repository][:homepage]
 
     r

@@ -102,7 +102,7 @@ class GitPushService
       pusher: {
         name: user.username,
         email: user.email
-	  }
+      }
     }
 
     # For performance purposes maximum 20 latest commits
