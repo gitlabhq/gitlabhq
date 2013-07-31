@@ -1,19 +1,25 @@
-%h3.page-title Setup your notification level
+%h3.page-title
+  Notifications settings
 
-%p.light
-  %strong Disabled
-  &ndash; You will not get any notifications via email
-%p.light
-  %strong Participating
-  &ndash; You will receive only notifications from related resources(ex. from assigned issue or your commit)
-%p.light
-  %strong Watch
-  &ndash; You will receive all notifications from projects in which you participate
-%hr
+.alert.alert-info
+  %p
+    %i.icon-circle.cred
+    %strong Disabled
+    &ndash; You will not get any notifications via email
+  %p
+    %i.icon-circle.cblue
+    %strong Participating
+    &ndash; You will receive only notifications from related resources(ex. from assigned issue or your commit)
+  %p
+    %i.icon-circle.cgreen
+    %strong Watch
+    &ndash; You will receive all notifications from projects in which you participate
 
 .row
   .span4
-    %h5 Global setting
+    %h4
+      = notification_icon(@notification)
+      Global setting
   .span7
     = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
       = hidden_field_tag :notification_type, 'global'
@@ -30,20 +36,21 @@
         = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
         %span Watch
 
-%hr
+%br
 = link_to '#', class: 'js-toggle-visibility-link' do
-  %h6.btn.btn-tiny
+  %span.btn.btn-tiny
     %i.icon-chevron-down
     %span Advanced notifications settings
 .js-toggle-visibility-container.hide
-  %h5 Groups:
-  %ul.well-list
+  %hr
+  %h4 Groups:
+  %ul.bordered-list
     - @users_groups.each do |users_group|
       - notification = Notification.new(users_group)
       = render 'settings', type: 'group', membership: users_group, notification: notification
 
-  %h5 Projects:
-  %ul.well-list
+  %h4 Projects:
+  %ul.bordered-list
     - @users_projects.each do |users_project|
       - notification = Notification.new(users_project)
       = render 'settings', type: 'project', membership: users_project, notification: notification
