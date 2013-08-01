@@ -1,8 +1,7 @@
 table {
   @extend .table;
   @extend .table-striped;
-  @include solid-shade;
-  border: 1px solid #bbb;
+  border: 1px solid #CCC;
   width: 100%;
 
   &.low {
@@ -20,7 +19,7 @@ table {
   th {
     font-weight: bold;
     vertical-align: middle;
-    border-bottom: 1px solid #bbb;
+    border-bottom: 1px solid #CCC;
     text-shadow: 0 1px 1px #fff;
     @include bg-dark-gray-gradient;
 
@@ -46,11 +45,11 @@ table {
     }
 
     &:first-child {
-      border-left: 1px solid #bbb;
+      border-left: 1px solid #CCC;
     }
 
     &:last-child {
-      border-right: 1px solid #bbb;
+      border-right: 1px solid #CCC;
     }
   }
 

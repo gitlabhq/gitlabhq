@@ -10,11 +10,10 @@
  *
  */
 .ui-box {
-  background: #F9F9F9;
+  background: #FFF;
   margin-bottom: 20px;
   border: 1px solid #CCC;
   word-wrap: break-word;
-  @include solid-shade;
 
   &.ui-box-show {
     margin:20px 0;

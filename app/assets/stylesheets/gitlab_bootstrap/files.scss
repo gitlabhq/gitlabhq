@@ -3,18 +3,18 @@
  *
  */
 .file-holder {
-  border: 1px solid #BBB;
+  border: 1px solid #CCC;
   margin-bottom: 1em;
-  @include solid-shade;
 
   .file-title {
     border-bottom: 1px solid #bbb;
     @include bg-dark-gray-gradient;
+    text-shadow: 0 1px 1px #fff;
     margin: 0;
     font-weight: normal;
     font-weight: bold;
     text-align: left;
-    color: #666;
+    color: $style_color;
     padding: 9px 10px;
     height: 18px;
 
