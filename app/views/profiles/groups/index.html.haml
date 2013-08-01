@@ -1,5 +1,10 @@
 %h3.page-title
   Group membership
+  - if current_user.can_create_group?
+    %span.pull-right
+      = link_to new_group_path, class: "btn btn-new" do
+        %i.icon-plus
+        New Group
 %p.light
   Members of group have access to all group projects.
 %hr
@@ -7,11 +12,6 @@
   .title
     %strong Groups
     (#{@groups.count})
-    - if current_user.can_create_group?
-      %span.pull-right
-        = link_to new_group_path, class: "btn btn-small btn-primary" do
-          %i.icon-plus
-          New Group
   %ul.well-list
     - @groups.each do |group|
       %li

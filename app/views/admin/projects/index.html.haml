@@ -38,7 +38,7 @@
       .title
         Projects (#{@projects.total_count})
         .pull-right
-          = link_to 'New Project', new_project_path, class: "btn btn-small btn-primary wide"
+          = link_to 'New Project', new_project_path, class: "btn btn-new"
       %ul.well-list
         - @projects.each do |project|
           %li

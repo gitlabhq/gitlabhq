@@ -52,13 +52,6 @@ a {
     text-decoration: underline;
   }
 
-  &.btn {
-    color: $style_color;
-    &:hover {
-      color: $style_color;
-    }
-  }
-
   &.dark {
     color: $style_color;
   }

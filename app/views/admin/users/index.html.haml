@@ -30,7 +30,7 @@
       .title
         Users (#{@users.total_count})
         .pull-right
-          = link_to 'New User', new_admin_user_path, class: "btn btn-small wide btn-primary"
+          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|
           %li

@@ -9,7 +9,7 @@ class ProjectFeature < Spinach::FeatureSteps
   end
 
   And 'I save project' do
-    click_button 'Save'
+    click_button 'Save changes'
   end
 
   Then 'I should see project with new settings' do

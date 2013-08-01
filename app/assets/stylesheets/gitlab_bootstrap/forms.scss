@@ -1,0 +1,32 @@
+form {
+  @extend .form-horizontal;
+
+  .actions {
+    @extend .form-actions;
+  }
+
+  .clearfix {
+    @extend .control-group;
+  }
+
+  .input {
+    @extend .controls;
+  }
+
+  label {
+    @extend .control-label;
+  }
+  .xlarge {
+    @extend .input-xlarge;
+  }
+  .xxlarge {
+    @extend .input-xxlarge;
+  }
+}
+
+input {
+  &.input-xpadding {
+    padding: 6px 10px;
+  }
+}
+

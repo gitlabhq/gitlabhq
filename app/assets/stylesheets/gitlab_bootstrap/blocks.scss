@@ -97,6 +97,8 @@
 
     .btn {
       vertical-align: middle;
+      padding: 4px 12px;
+      @include box-shadow(0 0px 1px 1px #f2f2f2);
     }
 
     .nav-pills {

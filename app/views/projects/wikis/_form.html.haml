@@ -29,8 +29,9 @@
       = f.label :commit_message
       .input= f.text_field :message, class: 'span8'
   .actions
-    = f.submit 'Save', class: "btn-save btn"
     - if @wiki && @wiki.persisted?
+      = f.submit 'Save changes', class: "btn-save btn"
       = link_to "Cancel", project_wiki_path(@project, @wiki), class: "btn btn-cancel"
     - else
+      = f.submit 'Create page', class: "btn-create btn"
       = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"

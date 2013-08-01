@@ -32,7 +32,7 @@
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "btn-save btn"
+      = f.submit 'Create milestone', class: "btn-create btn"
       = link_to "Cancel", project_milestones_path(@project), class: "btn btn-cancel"
     -else
       = f.submit 'Save changes', class: "btn-save btn"

@@ -90,3 +90,11 @@ pre.well-pre {
   border-radius: 0;
   color: #555;
 }
+
+.input-append .btn.active, .input-prepend .btn.active {
+  background: #CCC;
+  border-color: #BBB;
+  text-shadow: 0 1px 1px #fff;
+  font-weight: bold;
+  @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
+}

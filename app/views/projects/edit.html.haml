@@ -4,7 +4,7 @@
     .ui-box.white
       .title
         %strong= @project.name
-        Project Settings:
+        project settings:
       .form-holder
         = form_for(@project, remote: true) do |f|
           %fieldset
@@ -98,7 +98,7 @@
 
 
           .form-actions
-            = f.submit 'Save', class: "btn btn-save"
+            = f.submit 'Save changes', class: "btn btn-save"
 
     - if can?(current_user, :change_namespace, @project)
       .ui-box.ui-box-danger

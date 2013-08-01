@@ -81,33 +81,6 @@ span.update-author {
   font-weight: normal;
 }
 
-form {
-  @extend .form-horizontal;
-
-  .actions {
-    @extend .form-actions;
-  }
-
-  .clearfix {
-    @extend .control-group;
-  }
-
-  .input {
-    @extend .controls;
-  }
-
-  label {
-    @extend .control-label;
-  }
-  .xlarge {
-    @extend .input-xlarge;
-  }
-  .xxlarge {
-    @extend .input-xxlarge;
-  }
-}
-
-
 .field_with_errors {
   display: inline;
 }
@@ -124,13 +97,6 @@ ul.breadcrumb {
     color: #474D57;
     font-weight: bold;
     font-size: 14px;
-  }
-}
-
-input[type=text] {
-  &.large_text {
-    padding: 6px;
-    font-size: 16px;
   }
 }
 

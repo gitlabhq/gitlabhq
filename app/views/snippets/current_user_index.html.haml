@@ -1,12 +1,13 @@
 %h3.page-title
   My Snippets
-  %small share code pastes with others out of git repository
   .pull-right
-    = link_to new_snippet_path, class: "btn btn-small add_new grouped btn-primary", title: "New Snippet" do
+    = link_to new_snippet_path, class: "btn btn-new grouped", title: "New Snippet" do
       Add new snippet
-    = link_to snippets_path, class: "btn btn-small grouped"  do
+    = link_to snippets_path, class: "btn grouped"  do
       Discover snippets
 
+%p.light
+  Share code pastes with others out of git repository
 %hr
 
 .row
