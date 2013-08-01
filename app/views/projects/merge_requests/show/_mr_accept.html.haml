@@ -11,7 +11,8 @@
           %p
             You can accept this request automatically.
             If you still want to do it manually -
-            %strong= link_to "click here", "#", class: "how_to_merge_link vlink", title: "How To Merge"
+            %strong
+              = link_to "click here", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
             for instructions
           .accept_group
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
@@ -31,7 +32,7 @@
   .automerge_widget.cannot_be_merged{style: "display:none"}
     .alert.alert-disabled
       %span
-        = link_to "Show how to merge", "#", class: "how_to_merge_link btn btn-small padded", title: "How To Merge"
+        = link_to "Show how to merge", "#modal_merge_info", class: "how_to_merge_link btn btn-small padded", title: "How To Merge", "data-toggle" => "modal"
         &nbsp;
         %strong This request can't be merged with GitLab. You should do it manually
 
