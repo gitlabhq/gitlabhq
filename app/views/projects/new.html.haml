@@ -8,7 +8,6 @@
           Project name is
         .input
           = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1, autofocus: true
-          = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 
       - if current_user.can_select_namespace?
         .clearfix
@@ -38,14 +37,15 @@
 
       %p.padded
         New projects are private by default. You choose who can see the project and commit to repository.
-      %hr
+      .form-actions
+        = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 
-      - if current_user.can_create_group?
-        .clearfix
-          .input.light
-            Need a group for several dependent projects?
-            = link_to new_group_path, class: "btn btn-tiny" do
-              Create a group
+        - if current_user.can_create_group?
+          .pull-right
+            .input.light
+              Need a group for several dependent projects?
+              = link_to new_group_path, class: "btn btn-tiny" do
+                Create a group
 
 .save-project-loader.hide
   %center
