@@ -20,7 +20,7 @@
         .ui-box
           .title
             %strong= @group.name
-            Group Settings:
+            group settings:
           %div.form-holder
             = form_for @group do |f|
               - if @group.errors.any?
@@ -44,7 +44,7 @@
         .ui-box
           .title
             %strong= @group.name
-            Projects:
+            projects:
             - if can? current_user, :manage_group, @group
               %span.pull-right
                 = link_to new_project_path(namespace_id: @group.id), class: "btn btn-tiny" do
@@ -85,4 +85,4 @@
             %p
               %strong Removed group can not be restored!
 
-            = link_to 'Remove Group', @group, confirm: 'Removed group can not be restored! Are you sure?', method: :delete, class: "btn btn-remove btn-small"
+            = link_to 'Remove Group', @group, confirm: 'Removed group can not be restored! Are you sure?', method: :delete, class: "btn btn-remove"
