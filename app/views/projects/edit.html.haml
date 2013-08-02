@@ -22,7 +22,7 @@
               .input
                 = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
 
-            - unless @project.empty_repo?
+            - if @project.repository.branch_names.any?
               .clearfix
                 = f.label :default_branch, "Default Branch"
                 .input= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
