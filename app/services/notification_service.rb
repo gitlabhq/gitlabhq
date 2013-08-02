@@ -106,15 +106,15 @@ class NotificationService
 
     if note.commit_id.present?
       opts.merge!(commit_id: note.commit_id)
-      recipients = [note.commit_author]
     else
       opts.merge!(noteable_id: note.noteable_id)
-      target = note.noteable
-      if target.respond_to?(:participants)
-        recipients = target.participants
-      else
-        recipients = []
-      end
+    end
+
+    target = note.noteable
+    if target.respond_to?(:participants)
+      recipients = target.participants
+    else
+      recipients = note.mentioned_users
     end
 
     # Get users who left comment in thread
