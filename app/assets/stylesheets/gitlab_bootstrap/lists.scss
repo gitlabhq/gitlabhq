@@ -83,4 +83,13 @@ ul.bordered-list {
       a { color: #777; }
     }
   }
+
+  &.top-list {
+    li:first-child {
+      padding-top: 0;
+      h4, h5 {
+        margin-top: 0;
+      }
+    }
+  }
 }

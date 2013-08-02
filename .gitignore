@@ -30,3 +30,4 @@ vendor/bundle/*
 rails_best_practices_output.html
 doc/code/*
 .secret
+*.log
