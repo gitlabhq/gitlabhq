@@ -44,13 +44,17 @@ input.check_all_issues {
   margin: 0;
   margin-right: 10px;
   position: relative;
-  top: 8px;
+  top: 10px;
   height: 22px;
 }
 
 .issues_content {
   .title {
     height: 40px;
+  }
+
+  form {
+    margin: 0;
   }
 }
 

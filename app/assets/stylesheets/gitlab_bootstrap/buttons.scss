@@ -24,10 +24,17 @@
     @include linear-gradient(#fAfAfA, #f1f1f1);
   }
 
+  &.focus,
+  &:focus {
+    text-decoration: none;
+    @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
+  }
+
   &.active,
   &:active {
     background-image: none;
     outline: 0;
+    text-decoration: none;
     @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
   }
 
