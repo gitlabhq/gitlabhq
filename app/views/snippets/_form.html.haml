@@ -13,8 +13,8 @@
       = f.label :title
       .input= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
     .clearfix
-      = f.label "Private?"
-      .input= f.check_box :private, {class: ''}
+      = f.label "Visibility"
+      .input= f.select :visibility, visibility_select_options(selected: @snippet.visibility), {}, {class: 'chosen span2'}
     .clearfix
       .file-editor
         = f.label :file_name, "File"

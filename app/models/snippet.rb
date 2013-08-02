@@ -4,21 +4,21 @@
 #
 #  id         :integer          not null, primary key
 #  title      :string(255)
-#  content    :text
+#  content    :text(2147483647)
 #  author_id  :integer          not null
 #  project_id :integer
-#  created_at :datetime
-#  updated_at :datetime
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
 #  file_name  :string(255)
 #  expires_at :datetime
-#  private    :boolean          default(TRUE), not null
 #  type       :string(255)
+#  visibility :string(255)      not null
 #
 
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
-  attr_accessible :title, :content, :file_name, :expires_at, :private
+  attr_accessible :title, :content, :file_name, :expires_at, :visibility
 
   belongs_to :author, class_name: "User"
 
@@ -32,11 +32,13 @@ class Snippet < ActiveRecord::Base
   validates :content, presence: true
 
   # Scopes
-  scope :public,  -> { where(private: false) }
-  scope :private, -> { where(private: true) }
-  scope :fresh,   -> { order("created_at DESC") }
-  scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
-  scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
+  scope :gitlab_public, -> { where(visibility: :gitlab_public) }
+  scope :world_public,  -> { where(visibility: :world_public) }
+  scope :private,       -> { where(visibility: :private) }
+  scope :all_public,    -> { where("visibility IN (?)", [:gitlab_public, :world_public]) }
+  scope :fresh,         -> { order("created_at DESC") }
+  scope :expired,       -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
+  scope :non_expired,   -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
 
   def self.content_types
     [
@@ -64,5 +66,11 @@ class Snippet < ActiveRecord::Base
 
   def expired?
     expires_at && expires_at < Time.current
+  end
+
+  %w{private gitlab_public world_public}.each do |visibility_type|
+    define_method "#{visibility_type}?" do
+      visibility.to_s == visibility_type
+    end
   end
 end

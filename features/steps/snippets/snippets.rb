@@ -45,13 +45,13 @@ class SnippetsFeature < Spinach::FeatureSteps
     page.should have_content "Personal snippet new title"
   end
 
-  And 'I uncheck "Private" checkbox' do
-    find(:xpath, "//input[@id='personal_snippet_private']").set true
+  And 'I choose "Private" visibility' do
+    page.select('Private', :from => 'personal_snippet_visibility')
     click_button "Save"
   end
 
-  Then 'I should see "Personal snippet one" public' do
-    page.should have_no_xpath("//i[@class='public-snippet']")
+  Then 'I should see "Personal snippet one" private' do
+    page.should have_content "private"
   end
 
   And 'I visit snippet page "Personal snippet one"' do

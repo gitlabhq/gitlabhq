@@ -1,7 +1,7 @@
 Feature: Discover Snippets
   Background:
     Given I sign in as a user
-    And I have public "Personal snippet one" snippet
+    And I have gitlab public "Personal snippet one" snippet
     And I have private "Personal snippet private" snippet
 
   Scenario: I should see snippets

@@ -1,0 +1,12 @@
+- if snippet.private?
+  %span.label.label-important
+    %i.icon-lock
+    private
+- elsif snippet.gitlab_public?
+  %span.label.label-info
+    %i.icon-unlock
+    gitlab public
+- else
+  %span.label.label-success
+    %i.icon-unlock
+    world public

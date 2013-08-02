@@ -1,0 +1,22 @@
+.row
+  .span6
+    %h3.page-title
+      Snippets (#{@snippets.count})
+      %small with read-only access
+
+
+.public-projects
+  %ul.bordered-list
+    - @snippets.each do |snippet|
+      %li
+        .project-title
+          %i.icon-share.cgray
+          = snippet.author.name
+          \/
+          = link_to public_snippet_path(snippet) do
+            = snippet.title
+
+    - unless @snippets.present?
+      %h3.nothing_here_message No public snippets
+
+= paginate @snippets, theme: "gitlab"

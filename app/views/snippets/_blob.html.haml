@@ -7,7 +7,11 @@
         - if @snippet.author == current_user
           = link_to "Edit", edit_snippet_path(@snippet), class: "btn btn-tiny", title: 'Edit Snippet'
           = link_to "Delete", snippet_path(@snippet), method: :delete, confirm: "Are you sure?", class: "btn btn-tiny", title: 'Delete Snippet'
-        = link_to "Raw", raw_snippet_path(@snippet), class: "btn btn-tiny", target: "_blank"
+        - if request.original_url =~ /public/
+          = link_to "Raw", raw_public_snippet_path(@snippet), class: "btn btn-tiny", target: "_blank"
+        - else
+          = link_to "Raw", raw_snippet_path(@snippet), class: "btn btn-tiny", target: "_blank"
+
   .file-content.code
     - unless @snippet.content.empty?
       %div{class: user_color_scheme_class}

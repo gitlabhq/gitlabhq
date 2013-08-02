@@ -2,6 +2,7 @@ class Public::ProjectsController < ApplicationController
   skip_before_filter :authenticate_user!,
     :reject_blocked, :set_current_user_for_observers,
     :add_abilities
+  before_filter :set_object_type
 
   layout 'public'
 
@@ -20,5 +21,10 @@ class Public::ProjectsController < ApplicationController
 
     @commit = @repository.commit(params[:ref])
     @tree = Tree.new(@repository, @commit.id)
+  end
+
+  private
+  def set_object_type
+    @public_object_type = "Projects"
   end
 end
