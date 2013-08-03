@@ -71,6 +71,9 @@ Make sure you have the right version of Python installed.
     # If you get a "command not found" error create a link to the python binary
     sudo ln -s /usr/bin/python /usr/bin/python2
 
+    # For reStructuredText markup language support install required package:
+    sudo apt-get install python-docutils
+
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
