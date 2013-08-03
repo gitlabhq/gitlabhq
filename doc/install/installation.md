@@ -196,6 +196,7 @@ You can change `5-3-stable` to `master` if you want the *bleeding edge* version,
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
     sudo -u git -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H git config --global core.autocrlf input
 
 **Important Note:**
 Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
