@@ -39,12 +39,12 @@ module TreeHelper
   #
   # Returns boolean
   def markup?(filename)
-    filename.end_with?(*%w(.textile .rdoc .org .creole
-                           .mediawiki .rst .asciidoc .pod))
+    filename.downcase.end_with?(*%w(.textile .rdoc .org .creole
+                                    .mediawiki .rst .asciidoc .pod))
   end
 
   def gitlab_markdown?(filename)
-    filename.end_with?(*%w(.mdown .md .markdown))
+    filename.downcase.end_with?(*%w(.mdown .md .markdown))
   end
 
   def plain_text_readme? filename
