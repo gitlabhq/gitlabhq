@@ -227,9 +227,10 @@ var NoteList = {
     // Show the attachment delete link
     note.find(".js-note-attachment-delete").show();
 
+    GitLab.GfmAutoComplete.setup();
+
     var form = note.find(".note-edit-form");
     form.show();
-
 
     var textarea = form.find("textarea");
     var p = $("<p></p>").text(textarea.val());
