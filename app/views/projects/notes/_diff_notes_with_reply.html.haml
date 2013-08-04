@@ -1,6 +1,6 @@
 - note = notes.first # example note
 -# Check if line want not changed since comment was left
-- if !defined?(raw_line) || raw_line == note.diff_line
+- if !defined?(line) || line == note.diff_line
   %tr.notes_holder
     %td.notes_line{ colspan: 2 }
       %span.btn.disabled

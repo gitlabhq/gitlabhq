@@ -36,7 +36,7 @@
         ago
   .discussion-body
     - if note.for_diff_line?
-      - if note.diff
+      - if note.active?
         .content
           .file= render "projects/notes/discussion_diff", discussion_notes: discussion_notes, note: note
       - else

@@ -51,7 +51,7 @@ class Note < ActiveRecord::Base
   scope :inc_author, ->{ includes(:author) }
 
   serialize :st_diff
-  before_create :set_diff, if: ->(n) { n.noteable_type == 'MergeRequest' && n.line_code.present? }
+  before_create :set_diff, if: ->(n) { n.line_code.present? }
 
   def self.create_status_change_note(noteable, author, status)
     create({
@@ -81,7 +81,7 @@ class Note < ActiveRecord::Base
   def set_diff
     # First lets find notes with same diff
     # before iterating over all mr diffs
-    diff = self.noteable.notes.where(line_code: self.line_code).last.try(:diff)
+    diff = Note.where(noteable_id: self.noteable_id, noteable_type: self.noteable_type, line_code: self.line_code).last.try(:diff)
     diff ||= find_diff
 
     self.st_diff = diff.to_hash if diff
@@ -89,6 +89,12 @@ class Note < ActiveRecord::Base
 
   def diff
     @diff ||= Gitlab::Git::Diff.new(st_diff) if st_diff.respond_to?(:map)
+  end
+
+  def active?
+    # TODO: determine if discussion is outdated
+    # according to recent MR diff or not
+    true
   end
 
   def diff_file_index
@@ -108,10 +114,15 @@ class Note < ActiveRecord::Base
   end
 
   def diff_line
+    return @diff_line if @diff_line
+
     if diff
-      @diff_line ||= diff.diff.lines.select { |line| line =~ /\A\+/ }[diff_new_line] ||
-        diff.diff.lines.select { |line| line =~ /\A\-/ }[diff_old_line]
+      Gitlab::DiffParser.new(diff).each do |full_line, type, line_code, line_new, line_old|
+        @diff_line = full_line if line_code == self.line_code
+      end
     end
+
+    @diff_line
   end
 
   def discussion_id
