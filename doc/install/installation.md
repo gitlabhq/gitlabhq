@@ -97,6 +97,10 @@ Download Ruby and compile it:
     make
     sudo make install
 
+Install tools required for build process
+
+    sudo apt-get install build-essential g++
+
 Install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
