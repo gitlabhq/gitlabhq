@@ -102,6 +102,9 @@ class NotificationService
     # ignore wall messages
     return true unless note.noteable_type.present?
 
+    # ignore gitlab service messages
+    return true if note.note =~ /\A_Status changed to closed_/
+
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     if note.commit_id.present?
