@@ -50,6 +50,9 @@ class Note < ActiveRecord::Base
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
+  serialize :st_diff
+  before_create :set_diff, if: ->(n) { n.noteable_type == 'MergeRequest' && n.line_code.present? }
+
   def self.create_status_change_note(noteable, author, status)
     create({
       noteable: noteable,
@@ -67,14 +70,25 @@ class Note < ActiveRecord::Base
     nil
   end
 
-  def diff
-    if noteable.diffs.present?
-      noteable.diffs.select do |d|
-        if d.new_path
-          Digest::SHA1.hexdigest(d.new_path) == diff_file_index
-        end
-      end.first
+  def find_diff
+    return nil unless noteable.diffs.present?
+
+    @diff ||= noteable.diffs.find do |d|
+      Digest::SHA1.hexdigest(d.new_path) == diff_file_index if d.new_path
     end
+  end
+
+  def set_diff
+    # First lets find notes with same diff
+    # before iterating over all mr diffs
+    diff = self.noteable.notes.where(line_code: self.line_code).last.try(:diff)
+    diff ||= find_diff
+
+    self.st_diff = diff.to_hash if diff
+  end
+
+  def diff
+    @diff ||= Gitlab::Git::Diff.new(st_diff) if st_diff.respond_to?(:map)
   end
 
   def diff_file_index
@@ -82,7 +96,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_file_name
-    diff.new_path
+    diff.new_path if diff
   end
 
   def diff_new_line
