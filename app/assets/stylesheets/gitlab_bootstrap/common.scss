@@ -48,7 +48,13 @@
   line-height: 36px;
 }
 
-p.slead { color: #456; font-size: 16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
+.slead {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 12px;
+  font-weight: normal;
+  line-height: 24px;
+}
 
 /** FORMS **/
 input[type='search'].search-text-input {
