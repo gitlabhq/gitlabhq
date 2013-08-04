@@ -38,6 +38,8 @@ module CommitsHelper
 
     lines_arr = ::Gitlab::InlineDiff.processing diff_arr
     lines_arr.each do |line|
+      raw_line = line.dup
+
       next if line.match(/^\-\-\- \/dev\/null/)
       next if line.match(/^\+\+\+ \/dev\/null/)
       next if line.match(/^\-\-\- a/)
@@ -58,7 +60,7 @@ module CommitsHelper
       else
         type = identification_type(line)
         line_code = build_line_anchor(diff, line_new, line_old)
-        yield(full_line, type, line_code, line_new, line_old)
+        yield(full_line, type, line_code, line_new, line_old, raw_line)
       end
 
 

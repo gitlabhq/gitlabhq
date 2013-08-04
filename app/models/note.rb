@@ -99,8 +99,19 @@ class Note < ActiveRecord::Base
     diff.new_path if diff
   end
 
+  def diff_old_line
+    line_code.split('_')[1].to_i
+  end
+
   def diff_new_line
     line_code.split('_')[2].to_i
+  end
+
+  def diff_line
+    if diff
+      @diff_line ||= diff.diff.lines.select { |line| line =~ /\A\+/ }[diff_new_line] ||
+        diff.diff.lines.select { |line| line =~ /\A\-/ }[diff_old_line]
+    end
   end
 
   def discussion_id
