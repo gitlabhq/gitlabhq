@@ -57,6 +57,8 @@ module TreeHelper
   end
 
   def allowed_tree_edit?
+    return false unless @repository.branch_names.include?(@ref)
+
     if @project.protected_branch? @ref
       can?(current_user, :push_code_to_protected_branches, @project)
     else
