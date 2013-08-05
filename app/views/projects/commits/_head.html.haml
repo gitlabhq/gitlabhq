@@ -7,7 +7,7 @@
     = link_to 'Compare', project_compare_index_path(@project)
 
   = nav_link(html_options: {class: branches_tab_class}) do
-    = link_to project_repository_path(@project) do
+    = link_to recent_project_branches_path(@project) do
       Branches
       %span.badge= @repository.branches.length
 

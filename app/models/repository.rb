@@ -49,6 +49,12 @@ class Repository
     tags.find { |tag| tag.name == name }
   end
 
+  def recent_branches(limit = 20)
+    branches.sort do |a, b|
+      a.commit.committed_date <=> b.commit.committed_date
+    end[0..limit]
+  end
+
   def add_branch(branch_name, ref)
     Rails.cache.delete(cache_key(:branch_names))
 
