@@ -137,7 +137,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_diffs
-    project.repository.diffs_between(source_branch, target_branch)
+    Gitlab::Git::Diff.between(project.repository, source_branch, target_branch)
   end
 
   def last_commit
