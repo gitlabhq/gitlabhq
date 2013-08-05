@@ -175,8 +175,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository" do
-      subject { project_repository_path(project) }
+    describe "GET /project_code/branches/recent" do
+      subject { recent_project_branches_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -186,7 +186,7 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/branches" do
+    describe "GET /project_code/branches" do
       subject { project_branches_path(project) }
 
       before do
@@ -202,7 +202,7 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/tags" do
+    describe "GET /project_code/tags" do
       subject { project_tags_path(project) }
 
       before do
@@ -417,8 +417,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository" do
-      subject { project_repository_path(project) }
+    describe "GET /project_code/branches/recent" do
+      subject { recent_project_branches_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -428,7 +428,7 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/branches" do
+    describe "GET /project_code/branches" do
       subject { project_branches_path(project) }
 
       before do
@@ -444,7 +444,7 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/tags" do
+    describe "GET /project_code/tags" do
       subject { project_tags_path(project) }
 
       before do
