@@ -25,7 +25,7 @@ Spork.prefork do
   # if you change any configuration or code from libraries loaded here, you'll
   # need to restart spork for it take effect.
   Capybara.javascript_driver = :poltergeist
-  Capybara.default_wait_time = 10
+  Capybara.default_wait_time = 30
 
   # Requires supporting ruby files with custom matchers and macros, etc,
   # in spec/support/ and its subdirectories.
