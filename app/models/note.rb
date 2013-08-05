@@ -71,7 +71,7 @@ class Note < ActiveRecord::Base
   end
 
   def find_diff
-    return nil unless noteable.diffs.present?
+    return nil unless noteable && noteable.diffs.present?
 
     @diff ||= noteable.diffs.find do |d|
       Digest::SHA1.hexdigest(d.new_path) == diff_file_index if d.new_path
