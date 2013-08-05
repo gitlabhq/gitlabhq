@@ -62,13 +62,13 @@ class BranchGraph
     cuday = 0
     cumonth = ""
 
-    r.rect(0, 0, 30, @barHeight).attr fill: "#222"
-    r.rect(30, 0, 25, @barHeight).attr fill: "#444"
+    r.rect(0, 0, 40, @barHeight).attr fill: "#222"
+    r.rect(40, 0, 30, @barHeight).attr fill: "#444"
 
     for day, mm in @days
       if cuday isnt day[0]
         # Dates
-        r.text(40, @offsetY + @unitTime * mm, day[0])
+        r.text(55, @offsetY + @unitTime * mm, day[0])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#BBB"
@@ -77,7 +77,7 @@ class BranchGraph
 
       if cumonth isnt day[1]
         # Months
-        r.text(13, @offsetY + @unitTime * mm, day[1])
+        r.text(20, @offsetY + @unitTime * mm, day[1])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#EEE"
