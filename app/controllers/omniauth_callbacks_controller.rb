@@ -21,6 +21,9 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     if @user.persisted?
       @user.remember_me = true
     end
+
+    Gitlab::LDAP::Access.new.update_permissions(@user)
+
     sign_in_and_redirect @user
   end
 
