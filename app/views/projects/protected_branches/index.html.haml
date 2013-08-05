@@ -1,7 +1,7 @@
 = render "projects/commits/head"
 .row
   .span3
-    = render "projects/repositories/filter"
+    = render "projects/branches/filter"
   .span9
     .alert.alert-info
       %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.

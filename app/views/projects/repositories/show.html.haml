@@ -1,9 +1,0 @@
-= render "projects/commits/head"
-.row
-  .span3
-    = render "filter"
-  .span9
-    %ul.bordered-list
-      - @activities.each do |update|
-        = render "projects/branches/branch", branch: update.head
-
