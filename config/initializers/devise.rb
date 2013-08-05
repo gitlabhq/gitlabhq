@@ -230,9 +230,17 @@ Devise.setup do |config|
       config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], *provider['args']
     when Hash
       # A Hash from the configuration will be passed as is.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
-    else
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+      if provider['name'] == 'pam'  # the pam gem is not oauth based, the app credentials are not used.
+        config.omniauth provider['name'].to_sym, provider['args']
+      else
+        config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
+      end
+      else
+      if provider['name'] == 'pam'
+        config.omniauth provider['name'].to_sym
+      else
+        config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+      end
     end
   end
 end
