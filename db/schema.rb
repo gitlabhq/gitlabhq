@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130711063759) do
+ActiveRecord::Schema.define(:version => 20130802124933) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -129,6 +129,7 @@ ActiveRecord::Schema.define(:version => 20130711063759) do
     t.datetime "updated_at",                  :null => false
     t.string   "type"
     t.string   "description", :default => "", :null => false
+    t.string   "ldap_cn"
   end
 
   add_index "namespaces", ["name"], :name => "index_namespaces_on_name"
