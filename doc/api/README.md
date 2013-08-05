@@ -87,4 +87,4 @@ When listing resources you can pass the following parameters:
 
 + [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
 + [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
-+ [python-gitab](https://github.com/Itxaka/python-gitlab) - Python
++ [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
