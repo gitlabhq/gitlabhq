@@ -11,7 +11,7 @@ class FilterContext
   end
 
   def apply_filter items
-    if params[:project_id]
+    if params[:project_id].present?
       items = items.where(project_id: params[:project_id])
     end
 
