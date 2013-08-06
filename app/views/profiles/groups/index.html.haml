@@ -11,9 +11,10 @@
 .ui-box
   .title
     %strong Groups
-    (#{@groups.count})
+    (#{@user_groups.count})
   %ul.well-list
-    - @groups.each do |group|
+    - @user_groups.each do |user_group|
+      - group = user_group.group
       %li
         .pull-right
           - if can?(current_user, :manage_group, group)
@@ -28,4 +29,7 @@
         = link_to group, class: 'group-name' do
           = group.name
 
-= paginate @groups
+        as #{user_group.human_access}
+
+
+= paginate @user_groups
