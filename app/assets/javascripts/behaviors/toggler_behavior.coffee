@@ -13,6 +13,5 @@ $ ->
     e.preventDefault()
   
   $("body").on "click", ".js-toggle-button", (e) ->
-    $(@).disableButton()
-    $(@).closest(".js-toggle-container").find(".js-toggle-content").show()
+    $(@).closest(".js-toggle-container").find(".js-toggle-content").toggle()
     e.preventDefault()
