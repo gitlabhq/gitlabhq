@@ -11,3 +11,8 @@ $ ->
     container = $(".js-toggle-visibility-container")
     container.toggleClass("hide")
     e.preventDefault()
+  
+  $("body").on "click", ".js-toggle-button", (e) ->
+    $(@).disableButton()
+    $(@).closest(".js-toggle-container").find(".js-toggle-content").show()
+    e.preventDefault()
