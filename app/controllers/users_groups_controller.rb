@@ -13,7 +13,8 @@ class UsersGroupsController < ApplicationController
   end
 
   def update
-    # TODO: implement
+    @member = @group.users_groups.find(params[:id])
+    @member.update_attributes(params[:users_group])
   end
 
   def destroy

@@ -15,6 +15,22 @@
   border: 1px solid #CCC;
   word-wrap: break-word;
 
+  &.small-box {
+    margin-bottom: 10px;
+
+    .title {
+      font-size: 13px;
+      line-height: 30px;
+
+      a {
+        color: #666;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+
   &.ui-box-show {
     margin:20px 0;
     background: #FFF;

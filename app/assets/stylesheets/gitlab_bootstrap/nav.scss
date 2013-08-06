@@ -10,6 +10,7 @@
   > li > a {
     @include border-radius(0);
   }
+
   &.nav-stacked {
     > li > a {
       border-left: 4px solid #EEE;
@@ -28,6 +29,12 @@
       li > a {
         padding: 20px;
       }
+    }
+  }
+
+  &.nav-pills-small {
+    > li > a {
+      padding: 8px 12px;
     }
   }
 }

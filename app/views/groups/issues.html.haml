@@ -6,18 +6,6 @@
 %hr
 .row
   .span3
-    = render 'filter', entity: 'issue'
+    = render 'shared/filter', entity: 'issue'
   .span9
-    - if @issues.any?
-      - @issues.group_by(&:project).each do |group|
-        %div.ui-box
-          - project = group[0]
-          .title
-            = link_to_project project
-          %ul.well-list.issues-list
-            - group[1].each do |issue|
-              = render 'projects/issues/issue', issue: issue
-      %hr
-      = paginate @issues, theme: "gitlab"
-    - else
-      %p.nothing_here_message Nothing to show here
+    = render 'shared/issues'
