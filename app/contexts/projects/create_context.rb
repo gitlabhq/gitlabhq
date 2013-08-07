@@ -46,6 +46,15 @@ module Projects
 
       @project.creator = current_user
 
+      if @project.valid? && @project.wiki_enabled?
+        begin
+          #force the creation of a wiki,
+          GollumWiki.new(@project, current_user).wiki
+        rescue => exception
+          @project.errors.add(:wiki_enabled, 'cannot create wiki')
+        end
+      end
+
       if @project.save
         @project.discover_default_branch
 
