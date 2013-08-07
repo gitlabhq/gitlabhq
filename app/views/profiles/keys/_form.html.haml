@@ -6,12 +6,12 @@
           - @key.errors.full_messages.each do |msg|
             %li= msg
 
-    .clearfix
+    .control-group
       = f.label :title
-      .input= f.text_field :title
-    .clearfix
+      .controls= f.text_field :title
+    .control-group
       = f.label :key
-      .input
+      .controls
         %p.light
           Paste your public key here. Read more about how generate it #{link_to "here", help_ssh_path}
         = f.text_area :key, class: [:xxlarge, :thin_area]

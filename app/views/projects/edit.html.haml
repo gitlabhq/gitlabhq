@@ -8,24 +8,24 @@
       .form-holder
         = form_for(@project, remote: true) do |f|
           %fieldset
-            .clearfix.project_name_holder
+            .control-group.project_name_holder
               = f.label :name do
                 Project name is
-              .input
+              .controls
                 = f.text_field :name, placeholder: "Example Project", class: "span5"
 
 
-            .clearfix
+            .control-group
               = f.label :description do
                 Project description
                 %span.light (optional)
-              .input
+              .controls
                 = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
-              .clearfix
+              .control-group
                 = f.label :default_branch, "Default Branch"
-                .input= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
+                .controls= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
 
 
           - if can?(current_user, :change_public_mode, @project)
@@ -66,11 +66,11 @@
             - if Project.issues_tracker.values.count > 1
               .control-group
                 = f.label :issues_tracker, "Issues tracker", class: 'control-label'
-                .input= f.select(:issues_tracker, Project.issues_tracker.values, {}, { disabled: !@project.issues_enabled })
+                .controls= f.select(:issues_tracker, Project.issues_tracker.values, {}, { disabled: !@project.issues_enabled })
 
-              .clearfix
+              .control-group
                 = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
-                .input= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
+                .controls= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
 
             .control-group
               = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
@@ -110,7 +110,7 @@
               = f.label :namespace_id do
                 %span Namespace
               .controls
-                .clearfix
+                .control-group
                   = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
                 %ul
                   %li Be careful. Changing project namespace can have unintended side effects
@@ -130,7 +130,7 @@
             = f.label :path do
               %span Path
             .controls
-              .clearfix
+              .control-group
                 = f.text_field :path
               %ul
                 %li Be careful. Rename of project repo can have unintended side effects
