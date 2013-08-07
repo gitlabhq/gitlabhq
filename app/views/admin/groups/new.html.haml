@@ -8,11 +8,11 @@
     = f.label :name do
       Group name is
     .controls
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
   .control-group.group-description-holder
     = f.label :description, "Details"
     .controls
-      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
 
   .form-actions
     = f.submit 'Create group', class: "btn btn-create"

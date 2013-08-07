@@ -4,17 +4,6 @@ form {
   label {
     @extend .control-label;
   }
-
-  .actions {
-    @extend .form-actions;
-  }
-
-  .xlarge {
-    @extend .input-xlarge;
-  }
-  .xxlarge {
-    @extend .input-xxlarge;
-  }
 }
 
 input {

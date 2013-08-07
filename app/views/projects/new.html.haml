@@ -7,7 +7,7 @@
         = f.label :name do
           Project name is
         .controls
-          = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1, autofocus: true
+          = f.text_field :name, placeholder: "Example Project", class: "input-xxlarge", tabindex: 1, autofocus: true
 
       - if current_user.can_select_namespace?
         .control-group

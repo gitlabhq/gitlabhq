@@ -54,7 +54,7 @@
           It can be used for atom feed or API
         %p.cgray
           - if current_user.private_token
-            = text_field_tag "token", current_user.private_token, class: "xxlarge large_text"
+            = text_field_tag "token", current_user.private_token, class: "input-xxlarge large_text"
             = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token"
           - else
             %span You don`t have one yet. Click generate to fix it.
