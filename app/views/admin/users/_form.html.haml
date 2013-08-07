@@ -8,28 +8,28 @@
 
     %fieldset
       %legend Account
-      .clearfix
+      .control-group
         = f.label :name
-        .input
+        .controls
           = f.text_field :name, required: true, autocomplete: "off"
           %span.help-inline * required
-      .clearfix
+      .control-group
         = f.label :username
-        .input
+        .controls
           = f.text_field :username, required: true, autocomplete: "off"
           %span.help-inline * required
-      .clearfix
+      .control-group
         = f.label :email
-        .input
+        .controls
           = f.text_field :email, required: true, autocomplete: "off"
           %span.help-inline * required
 
     - if @user.new_record?
       %fieldset
         %legend Password
-        .clearfix
+        .control-group
           = f.label :password
-          .input
+          .controls
             %strong
               A temporary password will be generated and sent to user.
               %br
@@ -37,33 +37,33 @@
     - else
       %fieldset
         %legend Password
-        .clearfix
+        .control-group
           = f.label :password
-          .input= f.password_field :password, disabled: f.object.force_random_password
-        .clearfix
+          .controls= f.password_field :password, disabled: f.object.force_random_password
+        .control-group
           = f.label :password_confirmation
-          .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
+          .controls= f.password_field :password_confirmation, disabled: f.object.force_random_password
 
     %fieldset
       %legend Access
       .row
         .span8
-          .clearfix
+          .control-group
             = f.label :projects_limit
-            .input= f.number_field :projects_limit
+            .controls= f.number_field :projects_limit
 
-          .clearfix
+          .control-group
             = f.label :can_create_group
-            .input= f.check_box :can_create_group
+            .controls= f.check_box :can_create_group
 
-          .clearfix
+          .control-group
             = f.label :can_create_team
-            .input= f.check_box :can_create_team
+            .controls= f.check_box :can_create_team
 
-          .clearfix
+          .control-group
             = f.label :admin do
               %strong.cred Administrator
-            .input= f.check_box :admin
+            .controls= f.check_box :admin
         .span4
           - unless @user.new_record?
             .alert.alert-error
@@ -75,17 +75,17 @@
                 = link_to 'Block User', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
-      .clearfix
+      .control-group
         = f.label :skype
-        .input= f.text_field :skype
-      .clearfix
+        .controls= f.text_field :skype
+      .control-group
         = f.label :linkedin
-        .input= f.text_field :linkedin
-      .clearfix
+        .controls= f.text_field :linkedin
+      .control-group
         = f.label :twitter
-        .input= f.text_field :twitter
+        .controls= f.text_field :twitter
 
-    .actions
+    .form-actions
       - if @user.new_record?
         = f.submit 'Create user', class: "btn btn-create"
         = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"

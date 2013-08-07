@@ -3,36 +3,36 @@
     = render 'projects/errors'
   .project-edit-content
     = form_for @project, remote: true do |f|
-      .clearfix.project_name_holder
+      .control-group.project_name_holder
         = f.label :name do
           Project name is
-        .input
-          = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1, autofocus: true
+        .controls
+          = f.text_field :name, placeholder: "Example Project", class: "input-xxlarge", tabindex: 1, autofocus: true
 
       - if current_user.can_select_namespace?
-        .clearfix
+        .control-group
           = f.label :namespace_id do
             %span Namespace
-          .input
+          .controls
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen', tabindex: 2}
 
-      .clearfix
-        .input
+      .control-group
+        .controls
           = link_to "#", class: 'appear-link' do
             %i.icon-upload-alt
             %span Import existing repository?
-      .clearfix.appear-data.import-url-data
+      .control-group.appear-data.import-url-data
         = f.label :import_url do
           %span Import existing repo
-        .input
+        .controls
           = f.text_field :import_url, class: 'xlarge', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
-      .clearfix
+      .control-group
         = f.label :description do
           Description
           %span.light (optional)
-        .input
+        .controls
           = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250, tabindex: 3
 
       %p.padded
@@ -42,7 +42,7 @@
 
         - if current_user.can_create_group?
           .pull-right
-            .input.light
+            .controls.light
               Need a group for several dependent projects?
               = link_to new_group_path, class: "btn btn-tiny" do
                 Create a group

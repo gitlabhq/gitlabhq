@@ -9,16 +9,16 @@
           %li= msg
 
   %h6 1. Choose people you want in the team
-  .clearfix
+  .control-group
     = f.label :user_ids, "People"
-    .input
+    .controls
       = users_select_tag(:user_ids, multiple: true)
 
   %h6 2. Set access level for them
-  .clearfix
+  .control-group
     = f.label :project_access, "Project Access"
-    .input= select_tag :project_access, options_for_select(Project.access_options, @user_project_relation.project_access), class: "project-access-select chosen"
+    .controls= select_tag :project_access, options_for_select(Project.access_options, @user_project_relation.project_access), class: "project-access-select chosen"
 
-  .actions
+  .form-actions
     = f.submit 'Add users', class: "btn btn-create"
     = link_to "Cancel", project_team_index_path(@project), class: "btn btn-cancel"
