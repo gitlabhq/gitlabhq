@@ -38,11 +38,10 @@ module API
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
         resource_exists! if @branch
 
-        user_project.repository.create_branch(params[:branch], params[:ref])
+        user_project.repository.add_branch(params[:branch], params[:ref])
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
 
-        # Return 200 OK. Since the branch is created in a background process
-        present({ 'received' => true })
+        present @branch, with: Entities::RepoObject, project: user_project
       end
 
       # Deletes a branch
@@ -58,8 +57,7 @@ module API
         not_found! unless @branch
 
         user_project.repository.rm_branch(params[:branch])
-        # Returns 200 OK
-        present({ 'received' => true })
+        present({ 'success' => true })
       end
 
       # Get a single branch
@@ -136,12 +134,10 @@ module API
         @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
         resource_exists! if @tag
 
-        user_project.repository.create_tag(params[:tag], params[:ref])
+        user_project.repository.add_tag(params[:tag], params[:ref])
         @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
 
-        # Return 200 OK. Since the tag is created in a background process
-        # we can't yet return it.
-        present({ 'received' => true })
+        present @tag, with: Entities::RepoObject, project: user_project
       end
 
       # Deletes a tag
@@ -157,8 +153,7 @@ module API
         not_found! unless @tag
 
         user_project.repository.rm_tag(params[:tag])
-        # Returns 200 OK
-        present({ 'received' => true })
+        present({ 'success' => true })
       end
 
       # Get a project repository commits

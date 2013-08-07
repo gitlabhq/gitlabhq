@@ -54,7 +54,31 @@ Parameters:
 
 ```json
 {
-  "received": true
+    "name": "test_branch",
+    "commit": {
+        "id": "d67868df74c26c88b2cf1d25d91a269f237963e8",
+        "parents": [
+            {
+                "id": "ccd7a20d618558b2ac17d49200500de01e6adce1"
+            },
+            {
+                "id": "de60b9aa1c2c66f4cb7c76541e01a15ebdef0838"
+            }
+        ],
+        "tree": "90b63cf2244f93d0b3eef162dc05f8c94f3527ec",
+        "message": "Merge pull request #1249 from braddunbar/throttle\n\nPrevent false negatives for _.throttle tests.",
+        "author": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "committer": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "authored_date": "2013-08-07T15:35:30+00:00",
+        "committed_date": "2013-08-07T15:35:30+00:00"
+    },
+    "protected": false
 }
 ```
 
@@ -72,7 +96,7 @@ Parameters:
 
 ```json
 {
-  "received": true
+    "success": true
 }
 ```
 
@@ -131,7 +155,31 @@ Parameters:
 
 ```json
 {
-  "received": true
+    "name": "v1.1",
+    "commit": {
+        "id": "d67868df74c26c88b2cf1d25d91a269f237963e8",
+        "parents": [
+            {
+                "id": "ccd7a20d618558b2ac17d49200500de01e6adce1"
+            },
+            {
+                "id": "de60b9aa1c2c66f4cb7c76541e01a15ebdef0838"
+            }
+        ],
+        "tree": "90b63cf2244f93d0b3eef162dc05f8c94f3527ec",
+        "message": "Merge pull request #1249 from braddunbar/throttle\n\nPrevent false negatives for _.throttle tests.",
+        "author": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "committer": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "authored_date": "2013-08-07T15:35:30+00:00",
+        "committed_date": "2013-08-07T15:35:30+00:00"
+    },
+    "protected": false
 }
 ```
 
@@ -149,7 +197,7 @@ Parameters:
 
 ```json
 {
-  "received": true
+  "success": true
 }
 ```
 

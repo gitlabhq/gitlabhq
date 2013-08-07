@@ -38,6 +38,50 @@ describe API::API do
     end
   end
 
+  describe "POST /projects/:id/repository/branches/:branch/:ref" do
+    it "should return that the request was received" do
+      post api("/projects/#{project.id}/repository/branches/new_branch/master", user)
+      response.status.should == 201
+    end
+
+    it "should return a 409 conflict if the resource already exists" do
+      post api("/projects/#{project.id}/repository/branches/new_design/master", user)
+      response.status.should == 409
+    end
+  end
+
+  describe "DELETE /projects/:id/repository/branches/:branch/" do
+    it "should return that the request was received" do
+      delete api("/projects/#{project.id}/repository/branches/master", user)
+      response.status.should == 200
+
+      json_response['success'].should == true
+    end
+
+    it "should return a 404 not found if the resource already exists" do
+      delete api("/projects/#{project.id}/repository/branches/abranchthatdoesnotexist", user)
+      response.status.should == 404
+    end
+  end
+
+  describe "POST /projects/:id/repository/tags/:tag/:ref" do
+    it "should return that the request was received" do
+      post api("/projects/#{project.id}/repository/tags/v1.0/master", user)
+      response.status.should == 201
+    end
+    it "should return a 409 conflict if the resource already exists" do
+      post api("/projects/#{project.id}/repository/tags/v0.9.4/master", user)
+      response.status.should == 409
+    end
+  end
+
+  describe "DELETE /projects/:id/repository/tags/:tag/" do
+    it "should return a 404 not found if the resource already exists" do
+      delete api("/projects/#{project.id}/repository/tags/atagthatdoesnotexist", user)
+      response.status.should == 404
+    end
+  end
+
   describe "PUT /projects/:id/repository/branches/:branch/protect" do
     it "should protect a single branch" do
       put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
