@@ -47,7 +47,7 @@
             %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
 
 
-    .actions
+    .form-actions
       - if @issue.new_record?
         = f.submit 'Submit new issue', class: "btn btn-create"
       -else

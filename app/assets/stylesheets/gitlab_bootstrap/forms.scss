@@ -1,21 +1,14 @@
 form {
   @extend .form-horizontal;
 
+  label {
+    @extend .control-label;
+  }
+
   .actions {
     @extend .form-actions;
   }
 
-  .clearfix {
-    @extend .control-group;
-  }
-
-  .input {
-    @extend .controls;
-  }
-
-  label {
-    @extend .control-label;
-  }
   .xlarge {
     @extend .input-xlarge;
   }

@@ -28,7 +28,7 @@
     .ui-box-bottom
       = f.label :commit_message
       .controls= f.text_field :message, class: 'span8'
-  .actions
+  .form-actions
     - if @wiki && @wiki.persisted?
       = f.submit 'Save changes', class: "btn-save btn"
       = link_to "Cancel", project_wiki_path(@project, @wiki), class: "btn btn-cancel"

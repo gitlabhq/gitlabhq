@@ -85,7 +85,7 @@
         = f.label :twitter
         .controls= f.text_field :twitter
 
-    .actions
+    .form-actions
       - if @user.new_record?
         = f.submit 'Create user', class: "btn btn-create"
         = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"
