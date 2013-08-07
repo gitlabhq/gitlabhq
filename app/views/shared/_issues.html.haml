@@ -9,7 +9,6 @@
       %ul.well-list.issues-list
         - group[1].each do |issue|
           = render 'projects/issues/issue', issue: issue
-  %hr
   = paginate @issues, theme: "gitlab"
 - else
   %p.nothing_here_message Nothing to show here
