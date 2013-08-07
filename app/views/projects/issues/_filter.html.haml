@@ -18,6 +18,9 @@
           All
 
   %fieldset
-    %hr
-    = link_to "Reset", project_issues_path(@project), class: 'btn pull-right'
+    - if %w(status milestone_id assignee_id label_name).select { |k| params[k].present? }.any?
+      = link_to project_issues_path(@project), class: 'cgray pull-right' do
+        %i.icon-remove
+        Clear filter
+
 
