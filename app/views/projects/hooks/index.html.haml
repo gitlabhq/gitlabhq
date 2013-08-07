@@ -11,9 +11,9 @@
     .alert.alert-error
       - @hook.errors.full_messages.each do |msg|
         %p= msg
-  .clearfix
+  .control-group
     = f.label :url, "URL:"
-    .input
+    .controls
       = f.text_field :url, class: "text_field xxlarge input-xpadding", placeholder: 'http://example.com/trigger-ci.json'
       &nbsp;
       = f.submit "Add Web Hook", class: "btn btn-create"

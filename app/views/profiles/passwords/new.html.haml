@@ -10,13 +10,13 @@
           - @user.errors.full_messages.each do |msg|
             %li= msg
 
-    .clearfix
+    .control-group
       = f.label :password
-      .input= f.password_field :password, required: true
-    .clearfix
+      .controls= f.password_field :password, required: true
+    .control-group
       = f.label :password_confirmation
-      .input
+      .controls
         = f.password_field :password_confirmation, required: true
-    .clearfix
-      .input
+    .control-group
+      .controls
         = f.submit 'Set new password', class: "btn btn-create"
