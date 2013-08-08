@@ -152,7 +152,7 @@ class MergeRequest < ActiveRecord::Base
     diffs = if for_fork?
               Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
             else
-              Gitlab::Git::Diff.between(project.repository, source_branch, target_branch)
+              Gitlab::Git::Diff.between(target_project.repository, source_branch, target_branch)
             end
 
     diffs ||= []
@@ -195,6 +195,7 @@ class MergeRequest < ActiveRecord::Base
     else
       commits = target_project.repository.commits_between(self.target_branch, self.source_branch)
     end
+
     if commits.present?
       commits = Commit.decorate(commits).
       sort_by(&:created_at).
