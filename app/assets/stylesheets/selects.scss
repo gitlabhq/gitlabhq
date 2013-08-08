@@ -103,18 +103,19 @@
       }
     }
   }
+}
 
-  .chosen-single {
-    @include bg-light-gray-gradient;
+.chosen-container .chosen-single,
+.chosen-container.chosen-with-drop .chosen-single {
+  @include bg-light-gray-gradient;
 
-    div {
-      background: transparent;
-      border-left: none;
-    }
+  div {
+    background: transparent;
+    border-left: none;
+  }
 
-    span {
-      font-weight: normal;
-    }
+  span {
+    font-weight: normal;
   }
 }
 
@@ -139,4 +140,12 @@
 .select2-no-results, .select2-searching {
   padding: 7px;
   color: #666;
+}
+
+.chosen-container .chosen-single div b {
+  background-position-y: 0px !important;
+}
+
+.chosen-container .chosen-drop .chosen-search input {
+  background-position-y: -24px !important;
 }
