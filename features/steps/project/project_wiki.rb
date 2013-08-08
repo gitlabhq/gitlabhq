@@ -5,7 +5,7 @@ class ProjectWiki < Spinach::FeatureSteps
   include SharedPaths
 
   Given 'I click on the Cancel button' do
-    within(:css, ".actions") do
+    within(:css, ".form-actions") do
       click_on "Cancel"
     end
   end
