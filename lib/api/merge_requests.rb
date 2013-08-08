@@ -14,6 +14,14 @@ module API
           end
           not_found!
         end
+
+        def not_fork?(target_project_id, user_project)
+          target_project_id.nil? || target_project_id == user_project.id.to_s
+        end
+
+        def target_matches_fork(target_project_id,user_project)
+          user_project.forked? && user_project.forked_from_project.id.to_s == target_project_id
+        end
       end
 
       # List merge requests
@@ -51,9 +59,10 @@ module API
       #
       # Parameters:
       #
-      #   id (required)            - The ID of a project
+      #   id (required)            - The ID of a project - this will be the source of the merge request
       #   source_branch (required) - The source branch
       #   target_branch (required) - The target branch
+      #   target_project           - The target project of the merge request defaults to the :id of the project
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
       #
@@ -63,10 +72,20 @@ module API
       post ":id/merge_requests" do
         authorize! :write_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
-
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id]
         merge_request = user_project.merge_requests.new(attrs)
         merge_request.author = current_user
+        merge_request.source_project = user_project
+        target_project_id = attrs[:target_project_id]
+        if not_fork?(target_project_id, user_project)
+          merge_request.target_project = user_project
+        else
+          if target_matches_fork(target_project_id,user_project)
+            merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+          else
+            render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
+          end
+        end
 
         if merge_request.save
           merge_request.reload_code

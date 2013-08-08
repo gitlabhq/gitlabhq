@@ -42,8 +42,8 @@ class Note < ActiveRecord::Base
 
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
-  scope :inline, -> { where("line_code IS NOT NULL") }
-  scope :not_inline, -> { where(line_code: [nil, '']) }
+  scope :inline, ->{ where("line_code IS NOT NULL") }
+  scope :not_inline, ->{ where(line_code: [nil, '']) }
 
   scope :common, ->{ where(noteable_type: ["", nil]) }
   scope :fresh, ->{ order("created_at ASC, id ASC") }
@@ -53,10 +53,10 @@ class Note < ActiveRecord::Base
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
 
-  def self.create_status_change_note(noteable, author, status)
+  def self.create_status_change_note(noteable, project, author, status)
     create({
       noteable: noteable,
-      project: noteable.project,
+      project: project,
       author: author,
       note: "_Status changed to #{status}_"
     }, without_protection: true)
@@ -65,7 +65,7 @@ class Note < ActiveRecord::Base
   def commit_author
     @commit_author ||=
       project.users.find_by_email(noteable.author_email) ||
-      project.users.find_by_name(noteable.author_name)
+        project.users.find_by_name(noteable.author_name)
   rescue
     nil
   end

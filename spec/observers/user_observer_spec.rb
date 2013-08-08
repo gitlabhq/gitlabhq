@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe UserObserver do
   before(:each) { enable_observers }
+  after(:each) {disable_observers}
   subject { UserObserver.instance }
   before { subject.stub(notification: mock('NotificationService').as_null_object) }
 

@@ -262,6 +262,7 @@ Gitlab::Application.routes.draw do
         collection do
           get :branch_from
           get :branch_to
+          get :update_branches
         end
       end
 
