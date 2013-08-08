@@ -198,6 +198,11 @@ class User < ActiveRecord::Base
         User.find_by_username(name_or_id)
       end
     end
+
+    def defaults
+      { projects_limit: Gitlab.config.gitlab.default_projects_limit, can_create_group: Gitlab.config.gitlab.default_can_create_group, can_create_team: Gitlab.config.gitlab.default_can_create_team }
+    end
+
   end
 
   #
