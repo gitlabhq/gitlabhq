@@ -3,30 +3,31 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
+  include ChosenHelper
 
-  Given 'I am a member of project "Shop"' do
+  step 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
     @project ||= create(:project_with_code, name: "Shop")
     @project.team << [@user, :reporter]
   end
 
-  And 'I have a project forked off of "Shop" called "Forked Shop"' do
+  step 'I have a project forked off of "Shop" called "Forked Shop"' do
     @forking_user = @user
     forked_project_link = build(:forked_project_link)
     @forked_project = Project.find_by_name "Forked Shop"
     @forked_project ||= create(:source_project_with_code, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
+
     forked_project_link.forked_from_project = @project
     forked_project_link.forked_to_project = @forked_project
     @forked_project.team << [@forking_user , :master]
     forked_project_link.save!
   end
 
-  Given 'I click link "New Merge Request"' do
+  step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
   end
 
-  Then 'I should see merge request "Merge Request On Forked Project"' do
-    page.should have_content "Merge Request On Forked Project"
+  step 'I should see merge request "Merge Request On Forked Project"' do
     @project.merge_requests.size.should >= 1
     @merge_request = @project.merge_requests.last
     current_path.should == project_merge_request_path(@project, @merge_request)
@@ -40,56 +41,41 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_content @merge_request.target_branch
   end
 
-  And 'I fill out a "Merge Request On Forked Project" merge request' do
-    #The ordering here is a bit whacky on purpose:
-    #Select the target right away, to give update_branches time to run and clean up the target_branches
-    find(:select, "merge_request_target_project_id", {}).value.should == @forked_project.id.to_s
-    select @project.path_with_namespace, from: "merge_request_target_project_id"
+  step 'I fill out a "Merge Request On Forked Project" merge request' do
+    chosen @forked_project.id, from: "#merge_request_source_project_id"
+    chosen @project.id, from: "#merge_request_target_project_id"
 
-
-    fill_in "merge_request_title", with: "Merge Request On Forked Project"
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
-
     find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
 
-    #Ensure the option exists in the select
-    find(:select, "merge_request_source_branch", {}).should have_content "master"
-    select "master", from: "merge_request_source_branch"
-    #Ensure the option is selected
-    find(:select, "merge_request_source_branch", {}).value.should have_content "master"
-    verify_commit_link(".mr_source_commit",@forked_project)
+    chosen "master", from: "#merge_request_source_branch"
+    chosen "stable", from: "#merge_request_target_branch"
 
+    find(:select, "merge_request_source_branch", {}).value.should == 'master'
+    find(:select, "merge_request_target_branch", {}).value.should == 'stable'
 
-    #This could fail if the javascript hasn't run yet, there is a timing issue here -- this is why we do the select at the top
-    #Ensure the option exists in the select
-    find(:select, "merge_request_target_branch", {}).should have_content "stable"
-    #We must give apparently lots of time for update branches to finish
-
-    (find(:select, "merge_request_target_branch", {}).find(:option, "stable",{}).select_option).should be_true
-    #Ensure the option is selected
-    find(:select, "merge_request_target_branch", {}).value.should have_content "stable"
-    verify_commit_link(".mr_target_commit",@project)
+    fill_in "merge_request_title", with: "Merge Request On Forked Project"
   end
 
-  And 'I submit the merge request' do
+  step 'I submit the merge request' do
     click_button "Submit merge request"
   end
 
-  And 'I follow the target commit link' do
+  step 'I follow the target commit link' do
     commit = @project.repository.commit
     click_link commit.short_id(8)
   end
 
-  Then 'I should see the commit under the forked from project' do
+  step 'I should see the commit under the forked from project' do
     commit = @project.repository.commit
     page.should have_content(commit.message)
   end
 
-  And 'I click "Create Merge Request on fork" link' do
+  step 'I click "Create Merge Request on fork" link' do
     click_link "Create Merge Request on fork"
   end
 
-  Then 'I see prefilled new Merge Request page for the forked project' do
+  step 'I see prefilled new Merge Request page for the forked project' do
     current_path.should == new_project_merge_request_path(@forked_project)
     find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
     find("#merge_request_target_project_id").value.should == @project.id.to_s
@@ -100,15 +86,15 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     verify_commit_link(".mr_source_commit",@forked_project)
   end
 
-  And 'I update the merge request title' do
+  step 'I update the merge request title' do
     fill_in "merge_request_title", with: "An Edited Forked Merge Request"
   end
 
-  And 'I save the merge request' do
+  step 'I save the merge request' do
     click_button "Save changes"
   end
 
-  Then 'I should see the edited merge request' do
+  step 'I should see the edited merge request' do
     page.should have_content "An Edited Forked Merge Request"
     @project.merge_requests.size.should >= 1
     @merge_request = @project.merge_requests.last
@@ -122,12 +108,12 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_content @merge_request.target_branch
   end
 
-  Then 'I should see last push widget' do
+  step 'I should see last push widget' do
     page.should have_content "You pushed to new_design"
     page.should have_link "Create Merge Request"
   end
 
-  Given 'project "Forked Shop" has push event' do
+  step 'project "Forked Shop" has push event' do
     @forked_project = Project.find_by_name("Forked Shop")
 
     data = {
@@ -154,13 +140,13 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
 
-  Then 'I click link edit "Merge Request On Forked Project"' do
+  step 'I click link edit "Merge Request On Forked Project"' do
     find("#edit_merge_request").click
   end
 
-  Then 'I see the edit page prefilled for "Merge Request On Forked Project"' do
+  step 'I see the edit page prefilled for "Merge Request On Forked Project"' do
     current_path.should == edit_project_merge_request_path(@project, @merge_request)
-    page.should have_content "Edit merge request #{@merge_request.id}"
+    page.should have_content "Edit merge request ##{@merge_request.id}"
     find("#merge_request_title").value.should == "Merge Request On Forked Project"
     find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
     find("#merge_request_target_project_id").value.should == @project.id.to_s
@@ -170,7 +156,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     verify_commit_link(".mr_target_commit",@project)
   end
 
-  And 'I fill out an invalid "Merge Request On Forked Project" merge request' do
+  step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
     #If this isn't filled in the rest of the validations won't be triggered
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
@@ -179,7 +165,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     find(:select, "merge_request_target_branch", {}).value.should == ""
   end
 
-  Then 'I should see validation errors' do
+  step 'I should see validation errors' do
     page.should have_content "Source branch can't be blank"
     page.should have_content "Target branch can't be blank"
     page.should have_content "Branch conflict You can not use same project/branch for source and target"

@@ -88,11 +88,11 @@ module TestEnv
 
   def clear_repo_dir(namespace, name)
     setup_stubs
-    #Clean any .wiki.git that may have been created
+    # Clean any .wiki.git that may have been created
     FileUtils.rm_rf File.join(testing_path(), "#{name}.wiki.git")
   end
 
-  #Create a repo and it's satellite
+  # Create a repo and it's satellite
   def create_repo(namespace, name)
     setup_stubs
     repo = repo(namespace, name)
@@ -152,7 +152,7 @@ module TestEnv
     # Recreate tmp/test-git-base-path
     FileUtils.mkdir_p Gitlab.config.gitlab_shell.repos_path
 
-    #Since much more is happening in satellites
+    # Since much more is happening in satellites
     FileUtils.mkdir_p Gitlab.config.satellites.path
   end
 
@@ -161,8 +161,8 @@ module TestEnv
     satellite_repo = satellite(namespace, satellite_name)
     # Symlink tmp/satellite/gitlabhq to tmp/test-git-base-path/satellite/gitlabhq, create the directory if it doesn't exist already
     satellite_dir = File.dirname(satellite_repo)
-    FileUtils.mkdir_p satellite_dir unless File.exists?(satellite_dir)
-    system("ln -s -f #{seed_satellite_path()} #{satellite_repo}")
+    FileUtils.mkdir_p(satellite_dir) unless File.exists?(satellite_dir)
+    system("ln -s -f #{seed_satellite_path} #{satellite_repo}")
   end
 
   def create_temp_repo(path)

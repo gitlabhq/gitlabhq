@@ -21,14 +21,6 @@ Feature: Project Forked Merge Requests
     Then I should see merge request "Merge Request On Forked Project"
 
   @javascript
-  Scenario: I should see a push widget for forked merge requests
-    Given project "Forked Shop" has push event
-    And I visit dashboard page
-    Then I should see last push widget
-    And I click "Create Merge Request on fork" link
-    Then I see prefilled new Merge Request page for the forked project
-
-  @javascript
   Scenario: I can edit a forked merge request
     Given I visit project "Forked Shop" merge requests page
     And I click link "New Merge Request"

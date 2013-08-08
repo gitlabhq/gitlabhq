@@ -101,12 +101,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def branch_from
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
-    @commit = @repository.commit(params[:ref])
+    @commit = @repository.commit(params[:ref]) if params[:ref].present?
   end
 
   def branch_to
     @target_project = selected_target_project
-    @commit = @target_project.repository.commit(params[:ref])
+    @commit = @target_project.repository.commit(params[:ref]) if params[:ref].present?
   end
 
   def update_branches
