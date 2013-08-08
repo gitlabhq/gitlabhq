@@ -29,26 +29,26 @@ Feature: Project Issues
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I comment issue
     Given I visit issue page "Release 0.4"
     And I leave a comment like "XML attached"
     Then I should see comment "XML attached"
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I search issue
     Given I fill in issue search with "Release"
     Then I should see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I search issue that not exist
     Given I fill in issue search with "Bug"
     Then I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
 
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I search all issues
     Given I click link "All"
     And I fill in issue search with "0.3"

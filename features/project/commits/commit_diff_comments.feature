@@ -4,38 +4,38 @@ Feature: Comments on commit diffs
     And I own project "Shop"
     And I visit project commit page
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can access add diff comment buttons
     Then I should see add a diff comment button
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can comment on a commit diff
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a diff comment saying "Typo, please fix"
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I get a temporary form for the first comment on a diff line
     Given I open a diff comment form
     Then I should see a temporary diff comment form
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I have a cancel button on the diff form
     Given I open a diff comment form
     Then I should see the cancel comment button
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can cancel a diff form
     Given I open a diff comment form
     And I cancel the diff comment
     Then I should not see the diff comment form
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can't open a second form for a diff line
     Given I open a diff comment form
     And I open a diff comment form
     Then I should only see one diff form
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can have multiple forms
     Given I open a diff comment form
     And I write a diff comment like ":-1: I don't like this"
@@ -43,41 +43,41 @@ Feature: Comments on commit diffs
     Then I should see a diff comment form with ":-1: I don't like this"
     And I should see an empty diff comment form
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can preview multiple forms separately
     Given I preview a diff comment text like "Should fix it :smile:"
     And I preview another diff comment text like "DRY this up"
     Then I should see two separate previews
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I have a reply button in discussions
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a discussion reply button
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can't preview without text
     Given I open a diff comment form
     And I haven't written any diff comment text
     Then I should not see the diff comment preview button
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can preview with text
     Given I open a diff comment form
     And I write a diff comment like ":-1: I don't like this"
     Then I should see the diff comment preview button
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I preview a diff comment
     Given I preview a diff comment text like "Should fix it :smile:"
     Then I should see the diff comment preview
     And I should not see the diff comment text field
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I can edit after preview
     Given I preview a diff comment text like "Should fix it :smile:"
     Then I should see the diff comment edit button
 
-  @javascript
+  @javascript @inaccessible
   Scenario: The form gets removed after posting
     Given I preview a diff comment text like "Should fix it :smile:"
     And I submit the diff comment
