@@ -3,7 +3,7 @@
   = render "projects/merge_requests/show/how_to_merge"
   = render "projects/merge_requests/show/mr_box"
   = render "projects/merge_requests/show/mr_accept"
-  - if merge_requests.source_project.gitlab_ci?
+  - if @merge_request.source_project.gitlab_ci?
     = render "projects/merge_requests/show/mr_ci"
   = render "projects/merge_requests/show/commits"
 
