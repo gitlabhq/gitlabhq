@@ -1,4 +1,12 @@
 GIT
+  remote: https://github.com/av3r4ge/omniauth-env.git
+  revision: d909c833be7aa2f5aeb0bd69681853b7b3ddce9a
+  specs:
+    omniauth-env (0.0.1)
+      gitlab_omniauth-ldap (~> 1.0.3)
+      omniauth (~> 1.0)
+
+GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: 18a4e2eb77c8f3ef695b563e4a7ca45dfede819b
   specs:
@@ -592,6 +600,7 @@ DEPENDENCIES
   modernizr (= 2.6.2)
   mysql2
   omniauth (~> 1.1.3)
+  omniauth-env!
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter

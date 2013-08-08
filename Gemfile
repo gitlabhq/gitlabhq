@@ -121,6 +121,9 @@ gem "underscore-rails", "~> 1.4.4"
 # Sanitize user input
 gem "sanitize"
 
+# REMOTE_USER omniauth strategy
+gem "omniauth-env", git: "https://github.com/av3r4ge/omniauth-env.git"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"

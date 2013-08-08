@@ -44,6 +44,9 @@ Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
 
+Settings['env'] ||= Settingslogic.new({})
+Settings.env['enabled'] = false if Settings.env['enabled'].nil?
+
 Settings['issues_tracker']  ||= {}
 
 #

@@ -18,6 +18,7 @@ v 6.0.0
   - Apply user project limit only for personal projects
   - API: Allow login with LDAP credentials
   - Ability to remove branches/tags with UI
+  - Support REMOTE_USER omniauth strategy
 
 v 5.4.0
   - Ability to edit own comments
