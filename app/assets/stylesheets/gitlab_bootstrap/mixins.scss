@@ -17,6 +17,10 @@
   border-radius: $radius;
 }
 
+@mixin border-radius-left($radius) {
+  @include border-radius($radius 0 0 $radius)
+}
+
 @mixin linear-gradient($from, $to) {
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
   background-image: -webkit-linear-gradient($from, $to);

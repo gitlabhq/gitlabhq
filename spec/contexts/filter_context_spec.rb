@@ -21,17 +21,19 @@ describe FilterContext do
       merge_request3
       merge_request4
     end
+
     it 'should by default filter properly' do
       merge_requests = user.cared_merge_requests
       params ={}
       merge_requests = FilterContext.new(merge_requests, params).execute
       merge_requests.size.should == 3
     end
+
     it 'should apply blocks passed in on creation to the filters' do
       merge_requests = user.cared_merge_requests
       params = {:project_id => project1.id}
       merge_requests = FilterContext.new(merge_requests, params).execute
-      merge_requests.size.should == 2
+      merge_requests.size.should == 1
     end
   end
 

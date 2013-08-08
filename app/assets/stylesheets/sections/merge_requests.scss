@@ -84,14 +84,23 @@
 
 .label-branch {
   @include border-radius(4px);
-  padding: 2px 4px;
+  padding: 3px 4px;
   border: none;
   font-size: 14px;
   background: #474D57;
   color: #fff;
   font-family: $monospace_font;
-  text-shadow: 0 1px 1px #111;
   font-weight: normal;
+  overflow: hidden;
+
+  .label-project {
+    @include border-radius-left(4px);
+    padding: 3px 4px;
+    background: #29A;
+    position: relative;
+    left: -4px;
+    letter-spacing: -1px;
+  }
 }
 
 .mr-list {

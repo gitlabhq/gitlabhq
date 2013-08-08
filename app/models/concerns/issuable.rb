@@ -21,6 +21,7 @@ module Issuable
     scope :recent, -> { order("created_at DESC") }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
+    scope :of_projects, ->(ids) { where(project_id: ids) }
 
     delegate :name,
              :email,
