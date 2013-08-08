@@ -6,39 +6,39 @@
           %li= msg
 
   %h3.page-title
-    %i.icon-code-fork
     Branches
   .merge-request-branches
   .row
     .span5
-      .light-well
-        %h5.cgray From
-        .padded
+      .ui-box
+        .title From
+        .ui-box-head
+          Project:
           = f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span4'})
           .prepend-top-10
             %i.icon-code-fork
-            &nbsp;
+            Branch:
             = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span3'})
-        .mr_source_commit.prepend-top-10
+          .mr_source_commit.prepend-top-10
     .span2
       %h1.merge-request-angle
         %i.icon-angle-right
     .span5
-      .light-well
-        %h5.cgray To
-        - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-        .padded
+      .ui-box
+        .title To
+        .ui-box-head
+          - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
+          Project:
           = f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span4'})
           .prepend-top-10
             %i.icon-code-fork
-            &nbsp;
+            Branch:
             = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span3'})
-        .mr_target_commit.prepend-top-10
+          .mr_target_commit.prepend-top-10
 
   %hr
 
   %h3.page-title
-    %i.icon-paper-clip
     Details
   .merge-request-form-info
     .control-group

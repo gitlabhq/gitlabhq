@@ -63,12 +63,8 @@
   .commit {
     margin: 0;
     padding: 0;
-    padding: 5px;
-    margin-bottom: 5px;
+    padding: 5px 0;
     .avatar { position:relative }
-    .row_title {
-      color: #444;
-    }
     .commit-author-name,
     .dash,
     .committed_ago,
