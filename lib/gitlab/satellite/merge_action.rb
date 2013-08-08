@@ -90,9 +90,9 @@ module Gitlab
           update_satellite_source_and_target!(merge_repo)
 
           if (merge_request.for_fork?)
-            patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}...source/#{merge_request.source_branch}")
+            patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}..source/#{merge_request.source_branch}")
           else
-            patch = merge_repo.git.format_patch(default_options({stdout: true}), "#{merge_request.target_branch}...#{merge_request.source_branch}")
+            patch = merge_repo.git.format_patch(default_options({stdout: true}), "#{merge_request.target_branch}..#{merge_request.source_branch}")
           end
 
           return patch
