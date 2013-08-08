@@ -64,6 +64,9 @@ GEM
       rack (>= 1.0.0)
       rack-test (>= 0.5.4)
       xpath (~> 2.0)
+    capybara-accessible (0.1.8)
+      capybara
+      selenium-webdriver
     carrierwave (0.8.0)
       activemodel (>= 3.2.0)
       activesupport (>= 3.2.0)
@@ -547,6 +550,7 @@ DEPENDENCIES
   binding_of_caller
   bootstrap-sass
   capybara
+  capybara-accessible
   carrierwave
   chosen-rails (= 0.9.8)
   coffee-rails

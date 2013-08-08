@@ -25,8 +25,13 @@ WebMock.allow_net_connect!
 # JS driver
 #
 require 'capybara/poltergeist'
-Capybara.javascript_driver = :poltergeist
+require 'capybara/accessible'
 Spinach.hooks.on_tag("javascript") do
+  ::Capybara.javascript_driver = (ENV['WEBDRIVER'] == 'accessible') ? :accessible : :poltergeist
+  ::Capybara.current_driver = ::Capybara.javascript_driver
+end
+Spinach.hooks.on_tag("inaccessible") do
+  ::Capybara.javascript_driver = :poltergeist
   ::Capybara.current_driver = ::Capybara.javascript_driver
 end
 Capybara.default_wait_time = 10
