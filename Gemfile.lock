@@ -250,7 +250,7 @@ GEM
     jquery-turbolinks (1.0.0)
       railties (>= 3.1.0)
       turbolinks
-    jquery-ui-rails (2.0.2)
+    jquery-ui-rails (3.0.1)
       jquery-rails
       railties (>= 3.1.0)
     json (1.7.7)
@@ -588,7 +588,7 @@ DEPENDENCIES
   jquery-atwho-rails (= 0.3.0)
   jquery-rails (= 2.1.3)
   jquery-turbolinks
-  jquery-ui-rails (= 2.0.2)
+  jquery-ui-rails (= 3.0.1)
   kaminari (~> 0.14.1)
   launchy
   letter_opener

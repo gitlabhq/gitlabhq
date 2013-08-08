@@ -133,7 +133,7 @@ group :assets do
   gem 'select2-rails'
   gem 'jquery-atwho-rails', "0.3.0"
   gem "jquery-rails",     "2.1.3"
-  gem "jquery-ui-rails",  "2.0.2"
+  gem "jquery-ui-rails",  "3.0.1"
   gem "modernizr",        "2.6.2"
   gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass'
