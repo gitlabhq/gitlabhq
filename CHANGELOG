@@ -1,5 +1,6 @@
 v 6.0.0
   - Epic: Replace teams with group membership
+  - Merge Requests between fork and project (Izaak Alpert)
   - Add project filter on dashboard
   - cache project graph
   - Drop support of root namespaces
