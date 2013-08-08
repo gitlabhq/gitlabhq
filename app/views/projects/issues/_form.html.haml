@@ -90,6 +90,6 @@
     });
 
   $('.assign-to-me-link').on('click', function(e){
-    $('#issue_assignee_id').val("#{current_user.id}").trigger("liszt:updated");
+    $('#issue_assignee_id').val("#{current_user.id}").trigger("chosen:updated");
     e.preventDefault();
   });
