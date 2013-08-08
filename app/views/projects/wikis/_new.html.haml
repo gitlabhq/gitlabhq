@@ -1,6 +1,6 @@
 %div#modal-new-wiki.modal.hide
   .modal-header
-    %a.close{href: "#"} ×
+    %a.close{href: "#", "data-dismiss" => "modal"} ×
     %h3.page-title New Wiki Page
   .modal-body
     = label_tag :new_wiki_path do

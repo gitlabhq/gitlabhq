@@ -1,17 +1,5 @@
 .new_project,
 .edit_project {
-  .project_name_holder {
-    input,
-    label {
-      font-size: 16px;
-      line-height: 20px;
-      padding: 8px;
-    }
-  }
-  .adv_settings {
-    h6 { margin-left: 40px; }
-  }
-
   fieldset.features {
     .control-label {
       font-weight: bold;

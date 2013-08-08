@@ -1,13 +1,16 @@
-.project-edit-container
+%p.slead
+  New projects are private by default. You choose who can see the project and commit to repository.
+%hr
+.project-edit-container.prepend-top-10
   .project-edit-errors
     = render 'projects/errors'
   .project-edit-content
     = form_for @project, remote: true do |f|
       .control-group.project_name_holder
         = f.label :name do
-          Project name is
+          %strong Project name is
         .controls
-          = f.text_field :name, placeholder: "Example Project", class: "input-xxlarge", tabindex: 1, autofocus: true
+          = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
 
       - if current_user.can_select_namespace?
         .control-group
@@ -25,7 +28,7 @@
         = f.label :import_url do
           %span Import existing repo
         .controls
-          = f.text_field :import_url, class: 'xlarge', placeholder: 'https://github.com/randx/six.git'
+          = f.text_field :import_url, class: 'input-xlarge', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
       .control-group
@@ -33,10 +36,8 @@
           Description
           %span.light (optional)
         .controls
-          = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250, tabindex: 3
+          = f.text_area :description, placeholder: "awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
 
-      %p.padded
-        New projects are private by default. You choose who can see the project and commit to repository.
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 

@@ -34,6 +34,10 @@
   &.ui-box-show {
     margin:20px 0;
     background: #FFF;
+
+    .control-group {
+      margin-bottom: 0;
+    }
   }
 
   &.ui-box-danger {

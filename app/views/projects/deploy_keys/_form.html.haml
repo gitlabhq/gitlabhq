@@ -8,14 +8,14 @@
 
     .control-group
       = f.label :title
-      .controls= f.text_field :title
+      .controls= f.text_field :title, class: 'input-xlarge'
     .control-group
       = f.label :key
       .controls
-        = f.text_area :key, class: [:xxlarge, :thin_area]
-        %p.hint
+        %p.light
           Paste a machine public key here. Read more about how generate it
           = link_to "here", help_ssh_path
+        = f.text_area :key, class: "input-xxlarge thin_area"
 
     .form-actions
       = f.submit 'Create', class: "btn-create btn"

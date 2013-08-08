@@ -12,3 +12,18 @@ input {
   }
 }
 
+.control-group {
+  .control-label {
+    padding-top: 6px;
+  }
+  .controls {
+    input, textarea {
+      padding: 6px 10px;
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      margin-top: 6px;
+    }
+  }
+}
+
