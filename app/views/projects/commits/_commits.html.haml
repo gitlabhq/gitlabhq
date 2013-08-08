@@ -1,5 +1,5 @@
 - @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
-  %div.ui-box
+  .ui-box.small-box
     .title
       %i.icon-calendar
       %span= day.stamp("28 Aug, 2010")
