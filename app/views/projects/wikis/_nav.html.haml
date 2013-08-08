@@ -12,7 +12,7 @@
 
   - if can?(current_user, :write_wiki, @project)
     .pull-right
-      = link_to '#', class: "add-new-wiki btn btn-small btn-primary" do
+      = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
         %i.icon-plus
         New Page
 

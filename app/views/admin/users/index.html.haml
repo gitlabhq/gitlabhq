@@ -30,7 +30,7 @@
       .title
         Users (#{@users.total_count})
         .pull-right
-          = link_to 'New User', new_admin_user_path, class: "btn btn-small wide btn-primary"
+          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|
           %li
@@ -55,4 +55,4 @@
                 - else
                   = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
                 = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
-      = paginate @users, theme: "gitlab"
+    = paginate @users, theme: "gitlab"

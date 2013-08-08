@@ -119,7 +119,7 @@ $ ->
 
 
   # Commit show suppressed diff
-  $(".supp_diff_link").bind "click", ->
+  $(".content").on "click", ".supp_diff_link", ->
     $(@).next('table').show()
     $(@).remove()
 

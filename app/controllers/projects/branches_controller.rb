@@ -11,6 +11,10 @@ class Projects::BranchesController < Projects::ApplicationController
     @branches = Kaminari.paginate_array(@repository.branches).page(params[:page]).per(30)
   end
 
+  def recent
+    @branches = @repository.recent_branches
+  end
+
   def create
     @repository.add_branch(params[:branch_name], params[:ref])
 

@@ -2,6 +2,8 @@
   .row
     .span4
       %span
+        = notification_icon(notification)
+
         - if membership.kind_of? UsersGroup
           = link_to membership.group.name, membership.group
         - else

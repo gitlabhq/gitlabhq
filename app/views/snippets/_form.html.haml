@@ -9,16 +9,16 @@
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
 
-    .clearfix
+    .control-group
       = f.label :title
-      .input= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
-    .clearfix
+      .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
+    .control-group
       = f.label "Private?"
-      .input= f.check_box :private, {class: ''}
-    .clearfix
+      .controls= f.check_box :private, {class: ''}
+    .control-group
       .file-editor
         = f.label :file_name, "File"
-        .input
+        .controls
           .file-holder.snippet
             .file-title
               = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true

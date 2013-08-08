@@ -39,7 +39,9 @@ class Dispatcher
 
     switch path.first()
       when 'admin' then new Admin()
-      when 'wikis' then new Wikis()
+      when 'projects'
+        new Wikis() if path[1] == 'wikis'
+
 
   initSearch: ->
     autocomplete_json = $('.search-autocomplete-json').data('autocomplete-opts')

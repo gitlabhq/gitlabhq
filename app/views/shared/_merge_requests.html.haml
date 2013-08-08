@@ -1,13 +1,12 @@
 - if @merge_requests.any?
   - @merge_requests.group_by(&:target_project).each do |group|
-    .ui-box
+    .ui-box.small-box
       - project = group[0]
       .title
         = link_to_project project
       %ul.well-list.mr-list
         - group[1].each do |merge_request|
           = render 'projects/merge_requests/merge_request', merge_request: merge_request
-  %hr
   = paginate @merge_requests, theme: "gitlab"
 
 - else

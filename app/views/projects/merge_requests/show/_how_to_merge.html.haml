@@ -1,7 +1,7 @@
 %div#modal_merge_info.modal.hide
   .modal-header
-    %a.close{href: "#"} ×
-    %h3 How To Merge
+    %a.close{href: "#", "data-dismiss" => "modal"} ×
+    %h3 How to merge
   .modal-body
     - if @merge_request.for_fork?
       - source_remote = @merge_request.source_project.namespace.nil? ? "source" :@merge_request.source_project.namespace.path

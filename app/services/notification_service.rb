@@ -102,19 +102,22 @@ class NotificationService
     # ignore wall messages
     return true unless note.noteable_type.present?
 
+    # ignore gitlab service messages
+    return true if note.note =~ /\A_Status changed to closed_/
+
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     if note.commit_id.present?
       opts.merge!(commit_id: note.commit_id)
-      recipients = [note.commit_author]
     else
       opts.merge!(noteable_id: note.noteable_id)
-      target = note.noteable
-      if target.respond_to?(:participants)
-        recipients = target.participants
-      else
-        recipients = []
-      end
+    end
+
+    target = note.noteable
+    if target.respond_to?(:participants)
+      recipients = target.participants
+    else
+      recipients = note.mentioned_users
     end
 
     # Get users who left comment in thread

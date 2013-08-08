@@ -1,21 +1,17 @@
+%h3.page-title
+  Group members
+%p.light
+  Members of group have access to all group projects.
+%hr
 - can_manage_group =  current_user.can? :manage_group, @group
-.row
-  .span6
-    - if can_manage_group
-      = render "new_group_member"
-    - else
-      .light-well
-        %h4.nothing_here_message
-          Only group owners can manage group members
-  .span6
-    .ui-box
-      .title
-        %strong #{@group.name}
-        Group Members
-        %small
-          (#{@members.count})
-      %ul.well-list
-        - @members.each do |member|
-          = render 'users_groups/users_group', member: member, show_controls: can_manage_group
-    %p.light
-      Group members get access to all projects in this group
+.ui-box
+  .title
+    %strong #{@group.name}
+    group members
+    %small
+      (#{@members.count})
+  %ul.well-list
+    - @members.each do |member|
+      = render 'users_groups/users_group', member: member, show_controls: can_manage_group
+- if can_manage_group
+  = render "new_group_member"

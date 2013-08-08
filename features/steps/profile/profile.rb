@@ -12,7 +12,7 @@ class Profile < Spinach::FeatureSteps
     fill_in "user_skype", with: "testskype"
     fill_in "user_linkedin", with: "testlinkedin"
     fill_in "user_twitter", with: "testtwitter"
-    click_button "Save"
+    click_button "Save changes"
     @user.reload
   end
 

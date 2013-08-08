@@ -1,7 +1,7 @@
 .ui-box
   .title
-    %strong #{@group.name} Group
-    members (#{@group.users_groups.count})
+    %strong #{@group.name}
+    group members (#{@group.users_groups.count})
     .pull-right
       = link_to members_group_path(@group), class: 'btn btn-small' do
         %i.icon-edit

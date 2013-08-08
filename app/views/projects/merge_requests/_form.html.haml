@@ -33,21 +33,21 @@
     %i.icon-paper-clip
     Details
   .merge-request-form-info
-    .clearfix
+    .control-group
       = f.label :title do
         %strong= "Title *"
-      .input= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
-    .clearfix
+      .controls= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
+    .control-group
       .left
         = f.label :assignee_id do
           %i.icon-user
           Assign to
-        .input= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+        .controls= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
       .left
         = f.label :milestone_id do
           %i.icon-time
           Milestone
-        .input= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+        .controls= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
   .form-actions
     - if @merge_request.new_record?

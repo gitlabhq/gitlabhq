@@ -1,51 +1,52 @@
-.project-edit-container
+%p.slead
+  New projects are private by default. You choose who can see the project and commit to repository.
+%hr
+.project-edit-container.prepend-top-10
   .project-edit-errors
     = render 'projects/errors'
   .project-edit-content
     = form_for @project, remote: true do |f|
-      .clearfix.project_name_holder
+      .control-group.project_name_holder
         = f.label :name do
-          Project name is
-        .input
-          = f.text_field :name, placeholder: "Example Project", class: "xxlarge", tabindex: 1, autofocus: true
-          = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
+          %strong Project name is
+        .controls
+          = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
 
       - if current_user.can_select_namespace?
-        .clearfix
+        .control-group
           = f.label :namespace_id do
             %span Namespace
-          .input
+          .controls
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen', tabindex: 2}
 
-      .clearfix
-        .input
+      .control-group
+        .controls
           = link_to "#", class: 'appear-link' do
             %i.icon-upload-alt
             %span Import existing repository?
-      .clearfix.appear-data.import-url-data
+      .control-group.appear-data.import-url-data
         = f.label :import_url do
           %span Import existing repo
-        .input
-          = f.text_field :import_url, class: 'xlarge', placeholder: 'https://github.com/randx/six.git'
+        .controls
+          = f.text_field :import_url, class: 'input-xlarge', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
-      .clearfix
+      .control-group
         = f.label :description do
           Description
           %span.light (optional)
-        .input
-          = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250, tabindex: 3
+        .controls
+          = f.text_area :description, placeholder: "awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
 
-      %p.padded
-        New projects are private by default. You choose who can see the project and commit to repository.
-      %hr
+      .form-actions
+        = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 
-      - if current_user.can_create_group?
-        .clearfix
-          .input.light
-            Need a group for several dependent projects?
-            = link_to new_group_path, class: "btn btn-tiny" do
-              Create a group
+        - if current_user.can_create_group?
+          .pull-right
+            .controls.light
+              Need a group for several dependent projects?
+              = link_to new_group_path, class: "btn btn-tiny" do
+                Create a group
 
 .save-project-loader.hide
   %center

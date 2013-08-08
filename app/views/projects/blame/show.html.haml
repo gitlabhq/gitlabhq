@@ -1,21 +1,11 @@
-= render "head"
+%h3.page-title Blame view
 
 #tree-holder.tree-holder
-  %ul.breadcrumb
-    %li
-      %i.icon-angle-right
-      = link_to project_tree_path(@project, @ref) do
-        = @project.name
-    - tree_breadcrumbs(@tree, 6) do |link|
-      \/
-      %li= link
-  .clear
-
   .file-holder
     .file-title
       %i.icon-file
       %span.file_name
-        = @blob.name
+        = @path
         %small= number_to_human_size @blob.size
       %span.options= render "projects/blob/actions"
     .file-content.blame

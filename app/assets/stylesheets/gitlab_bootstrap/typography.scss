@@ -2,6 +2,10 @@
  * Headers
  *
  */
+h1, h2, h3, h4, h5, h6 {
+  font-weight: 500;
+  line-height: 1.1;
+}
 
 h1.page-title {
   @include page-title;
@@ -46,13 +50,6 @@ a {
 
   &:focus {
     text-decoration: underline;
-  }
-
-  &.btn {
-    color: $style_color;
-    &:hover {
-      color: $style_color;
-    }
   }
 
   &.dark {

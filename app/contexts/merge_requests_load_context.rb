@@ -2,7 +2,7 @@
 # based on filtering passed via params for @project
 class MergeRequestsLoadContext < BaseContext
   def execute
-    type = params[:f]
+    type = params[:status]
 
     merge_requests = project.merge_requests
 

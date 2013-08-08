@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130624162710) do
+ActiveRecord::Schema.define(:version => 20130804151314) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -148,6 +148,7 @@ ActiveRecord::Schema.define(:version => 20130624162710) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
+    t.text     "st_diff"
   end
 
   add_index "notes", ["author_id"], :name => "index_notes_on_author_id"

@@ -2,11 +2,49 @@
 $baseFontSize: 13px !default;
 $baseLineHeight: 18px !default;
 
-// BOOTSTRAP
-@import "bootstrap";
+/**
+ * BOOTSTRAP
+ */
+@import "bootstrap/variables";
+@import "bootstrap/mixins";
+@import "bootstrap/reset";
+@import "bootstrap/scaffolding";
+@import "bootstrap/grid";
+@import "bootstrap/layouts";
+@import "bootstrap/type";
+@import "bootstrap/code";
+@import "bootstrap/forms";
+@import "bootstrap/tables";
+@import "bootstrap/sprites";
+@import "bootstrap/dropdowns";
+@import "bootstrap/wells";
+@import "bootstrap/component-animations";
+@import "bootstrap/close";
+@import "bootstrap/button-groups";
+@import "bootstrap/alerts";
+@import "bootstrap/navs";
+@import "bootstrap/navbar";
+@import "bootstrap/breadcrumbs";
+@import "bootstrap/pagination";
+@import "bootstrap/pager";
+@import "bootstrap/modals";
+@import "bootstrap/tooltip";
+@import "bootstrap/popovers";
+@import "bootstrap/thumbnails";
+@import "bootstrap/media";
+@import "bootstrap/labels-badges";
+@import "bootstrap/progress-bars";
+@import "bootstrap/accordion";
+@import "bootstrap/carousel";
+@import "bootstrap/hero-unit";
+@import "bootstrap/utilities";
 @import "bootstrap/responsive-utilities";
 @import "bootstrap/responsive-1200px-min";
 
+/**
+ * Font icons
+ *
+ */
 @import "font-awesome";
 
 /**
@@ -26,3 +64,4 @@ $baseLineHeight: 18px !default;
 @import "gitlab_bootstrap/files.scss";
 @import "gitlab_bootstrap/tables.scss";
 @import "gitlab_bootstrap/lists.scss";
+@import "gitlab_bootstrap/forms.scss";

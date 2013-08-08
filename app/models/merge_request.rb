@@ -149,11 +149,12 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def unmerged_diffs
-    if for_fork?
-      diffs = Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
-    else
-      diffs = target_project.repository.diffs_between(source_branch, target_branch)
-    end
+    diffs = if for_fork?
+              Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
+            else
+              Gitlab::Git::Diff.between(project.repository, source_branch, target_branch)
+            end
+
     diffs ||= []
     diffs
   end

@@ -5,7 +5,7 @@ class ProjectWiki < Spinach::FeatureSteps
   include SharedPaths
 
   Given 'I click on the Cancel button' do
-    within(:css, ".actions") do
+    within(:css, ".form-actions") do
       click_on "Cancel"
     end
   end
@@ -17,7 +17,7 @@ class ProjectWiki < Spinach::FeatureSteps
 
   Given 'I create the Wiki Home page' do
     fill_in "Content", with: '[link test](test)'
-    click_on "Save"
+    click_on "Create page"
   end
 
   Then 'I should see the newly created wiki page' do
@@ -43,7 +43,7 @@ class ProjectWiki < Spinach::FeatureSteps
 
   And 'I change the content' do
     fill_in "Content", with: 'Updated Wiki Content'
-    click_on "Save"
+    click_on "Save changes"
   end
 
   Then 'I should see the updated content' do

@@ -10,7 +10,7 @@ class Projects::EditTreeController < Projects::ApplicationController
   before_filter :edit_requirements, only: [:show, :update]
 
   def show
-    @last_commit = @project.repository.last_commit_for(@ref, @path).sha
+    @last_commit = Gitlab::Git::Commit.last_for_path(@project.repository, @ref, @path).sha
   end
 
   def update

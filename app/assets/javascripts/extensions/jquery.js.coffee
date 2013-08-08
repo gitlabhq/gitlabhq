@@ -7,3 +7,7 @@ $.fn.enableButton = ->
   $(@).removeAttr('disabled').
     removeClass('disabled')
 
+$.fn.disableButton = ->
+  $(@).attr('disabled', 'disabled').
+    addClass('disabled')
+

@@ -1,3 +1,5 @@
+# Will be removed in 6.1 with tables
+#
 # == Schema Information
 #
 # Table name: user_team_project_relationships
