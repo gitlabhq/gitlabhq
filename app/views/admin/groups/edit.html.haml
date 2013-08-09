@@ -26,11 +26,19 @@
         %li It will change web url for access group and group projects.
         %li It will change the git path to repositories under this group.
 
+  %hr
+
   .clearfix
     = f.label :ldap_cn do
       LDAP Group cn
     .input
       = f.text_field :ldap_cn, class: "xxlarge left"
+
+  .clearfix
+    = f.label :ldap_access do
+      LDAP Access
+    .input
+      = f.select :ldap_access, options_for_select(UsersGroup.group_access_roles, @group.ldap_access)
 
   .form-actions
     = f.submit 'Save changes', class: "btn btn-primary"

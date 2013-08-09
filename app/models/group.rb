@@ -19,7 +19,12 @@ class Group < Namespace
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: 'project'
 
-  attr_accessible :ldap_cn
+  attr_accessible :ldap_cn, :ldap_access
+
+  validates :ldap_access,
+    inclusion: { in: UsersGroup.group_access_roles.values },
+    presence: true,
+    if: ->(group) { group.ldap_cn.present? }
 
   after_create :add_owner
 

@@ -21,7 +21,7 @@ module Gitlab
 
         # First lets add user to new groups
         groups.each do |group|
-          group.add_users([user.id], UsersGroup::DEVELOPER)
+          group.add_users([user.id], group.ldap_access) if group.ldap_access.present?
         end
 
         # Remove groups with LDAP if user lost access to it
