@@ -11,7 +11,7 @@ class ProjectsController < Projects::ApplicationController
   before_filter :set_title, only: [:new, :create]
 
   def new
-    @project = Project.new
+    @project = Project.new(default_branch: "master")
   end
 
   def edit
