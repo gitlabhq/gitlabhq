@@ -26,7 +26,12 @@ class Projects::ServicesController < Projects::ApplicationController
   def test
     data = GitPushService.new.sample_data(project, current_user)
 
-    @service.execute(data)
+    if data.nil?
+      flash[:alert] = "To test this service you need at least one commit in your repository"
+    else
+      @service.execute(data)
+      flash[:notice] = "A test notification has been send to the service."
+    end
 
     redirect_to :back
   end
