@@ -1,11 +1,21 @@
 v 6.0.0
-  - Epic: Replace teams with group membership
-  - Merge Requests between fork and project (Izaak Alpert)
+  - Feature: Replace teams with group membership
+  - Feature: Ability to have multiple owners for group
+  - Feature: Merge Requests between fork and project (Izaak Alpert)
+  - Feature: Generate fingerprint for ssh keys
+  - Feature: Ability to create and remove branches with UI
+  - Feature: Ability to create and remove git tags with UI
+  - Feature: Groups page in profile. You can leave group there
+  - API: Allow login with LDAP credentials
+  - Redesign: project settings navigation
+  - Redesign: snippets area
+  - Redesign: ssh keys page
+  - Redesign: buttons, blocks and other ui elements
+  - Add comment title to rss feed
+  - You can use arrows to navigate at tree view
   - Add project filter on dashboard
-  - cache project graph
+  - Cache project graph
   - Drop support of root namespaces
-  - Redesign project settings navigation
-  - Restyled login screen
   - Default theme is classic now
   - Cache result of methods like authorize_projects, project.team.members etc
   - Remove $.ready events
@@ -13,12 +23,13 @@ v 6.0.0
   - Add notification level to group membership
   - Move all project controllers/views under Projects:: module
   - Move all profile controllers/views under Profiles:: module
-  - Redesign ssh keys page
-  - Generate fingerprint for ssh keys
-  - You can use arrows to navigate at tree view
   - Apply user project limit only for personal projects
-  - API: Allow login with LDAP credentials
-  - Ability to remove branches/tags with UI
+  - Unicorn is default web server for new installations
+  - Store satellites lock files inside satellites dir
+  - Disabled threadsafety mode in rails
+  - Fixed bug with loosing MR comments
+  - Improved MR comments logic
+  - Render readme file for projects in public area
 
 v 5.4.0
   - Ability to edit own comments
