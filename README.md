@@ -2,7 +2,7 @@
 
 ![logo](https://raw.github.com/gitlabhq/gitlabhq/master/public/gitlab_logo.png)
 
-![animated-screenshots](http://makeagif.com/media/6-23-2013/AN3Mo6.gif)
+![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
 
 ### GitLab allows you to
  * keep your code secure on your own server
