@@ -2,9 +2,9 @@
   .alert.alert-block
     %p
       %strong Warning! Large commit with more than #{Commit::DIFF_SAFE_SIZE} files changed.
-    %p To prevent performance issue we rejected diff information.
+    %p To preserve performance the diff is not shown.
     %p
-      But if you still want to see diff
+      But if you still want to see the diff
       = link_to "click this link", project_commit_path(project, @commit, force_show_diff: true), class: "underlined_link"
 
 %p.commit-stat-summary
