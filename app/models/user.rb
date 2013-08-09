@@ -370,4 +370,8 @@ class User < ActiveRecord::Base
       self.send("#{attr}=", Sanitize.clean(value)) if value.present?
     end
   end
+
+  def requires_ldap_check?
+    !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+  end
 end

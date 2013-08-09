@@ -4,6 +4,7 @@ class ApplicationController < ActionController::Base
   before_filter :check_password_expiration
   before_filter :set_current_user_for_thread
   before_filter :add_abilities
+  before_filter :ldap_security_check
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
   before_filter :add_gon_variables
@@ -157,6 +158,15 @@ class ApplicationController < ActionController::Base
   def check_password_expiration
     if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now
       redirect_to new_profile_password_path and return
+    end
+  end
+
+  def ldap_security_check
+    if current_user.ldap_user? && current_user.requires_ldap_check?
+      Gitlab::LDAP::Access.new.update_permissions(current_user)
+
+      current_user.last_credential_check_at = Time.now
+      current_user.save
     end
   end
 end
