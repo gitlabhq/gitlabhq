@@ -86,8 +86,10 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'I change group name' do
-    fill_in 'group_name', with: 'new-name'
-    click_button "Save group"
+    within '#tab-edit' do
+      fill_in 'group_name', with: 'new-name'
+      click_button "Save group"
+    end
   end
 
   Then 'I should see new group name' do
