@@ -226,4 +226,13 @@ module ApplicationHelper
     content_tag :i, nil, class: 'icon-lock cgreen'
   end
 
+  def search_placeholder
+    if @project && @project.persisted?
+      "Search in this project"
+    elsif @group && @group.persisted?
+      "Search in this group"
+    else
+      "Search"
+    end
+  end
 end
