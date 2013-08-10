@@ -60,6 +60,8 @@
 
 /** Fix for Search Dropdown Border **/
 .chosen-container {
+  min-width: 100px;
+
   .chosen-search {
     input:focus {
       @include box-shadow(none);
