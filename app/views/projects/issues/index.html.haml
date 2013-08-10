@@ -18,6 +18,6 @@
 
 .row
   .span3
-    = render 'filter', entity: 'issue'
+    = render 'shared/project_filter', project_entities_path: project_issues_path(@project)
   .span9.issues-holder
     = render "issues"

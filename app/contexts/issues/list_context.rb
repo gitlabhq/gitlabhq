@@ -1,16 +1,20 @@
 module Issues
   class ListContext < BaseContext
-    include IssuesHelper
-
     attr_accessor :issues
 
     def execute
-      @issues = case params[:status]
-                when issues_filter[:all] then @project.issues
-                when issues_filter[:closed] then @project.issues.closed
-                when issues_filter[:to_me] then @project.issues.assigned_to(current_user)
-                when issues_filter[:by_me] then @project.issues.authored(current_user)
-                else @project.issues.opened
+      @issues = @project.issues
+
+      @issues = case params[:state]
+                when 'all' then @issues
+                when 'closed' then @issues.closed
+                else @issues.opened
+                end
+
+      @issues = case params[:scope]
+                when 'assigned-to-me' then @issues.assigned_to(current_user)
+                when 'created-by-me' then @issues.authored(current_user)
+                else @issues
                 end
 
       @issues = @issues.tagged_with(params[:label_name]) if params[:label_name].present?

@@ -35,7 +35,6 @@ class Issue < ActiveRecord::Base
   acts_as_taggable_on :labels
 
   scope :cared, ->(user) { where(assignee_id: user) }
-  scope :authored, ->(user) { where(author_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
 
   state_machine :state, initial: :opened do

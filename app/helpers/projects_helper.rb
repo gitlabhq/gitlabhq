@@ -61,6 +61,25 @@ module ProjectsHelper
     project_nav_tabs.include? name
   end
 
+  def project_filter_path(options={})
+    exist_opts = {
+      state: params[:state],
+      scope: params[:scope],
+      label_name: params[:label_name],
+      milestone_id: params[:milestone_id],
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
+
+  def project_active_milestones
+    @project.milestones.active.order("id desc").all
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
