@@ -46,15 +46,26 @@ table a code {
 /** FLASH message **/
 .flash-container {
   display: none;
-  .alert {
-    cursor: pointer;
-    margin: 0;
-    text-align: center;
-    border-radius: 0;
+  cursor: pointer;
+  margin: 0;
+  text-align: center;
+  border-radius: 0;
+  color: #fff;
 
-    span {
-      font-size: 14px;
-    }
+  span {
+    font-size: 14px;
+  }
+
+  .flash-notice {
+    background: #49C;
+    padding: 10px;
+    text-shadow: 0 1px 1px #178;
+  }
+
+  .flash-alert {
+    background: #C67;
+    text-shadow: 0 1px 1px #945;
+    padding: 10px;
   }
 }
 
