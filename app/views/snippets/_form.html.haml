@@ -14,7 +14,8 @@
       .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
     .control-group
       = f.label "Private?"
-      .controls= f.check_box :private, {class: ''}
+      .controls
+        = f.check_box :private, {class: ''}
     .control-group
       .file-editor
         = f.label :file_name, "File"
@@ -32,7 +33,7 @@
       - else
         = f.submit 'Save', class: "btn-save btn"
 
-      = link_to "Cancel", snippets_path(@project), class: " btn"
+      = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
       - unless @snippet.new_record?
         .pull-right= link_to 'Destroy', snippet_path(@snippet), confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
 

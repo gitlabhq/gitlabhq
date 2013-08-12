@@ -14,11 +14,20 @@
   .span3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
-        = link_to "All", user_snippets_path(@user)
+        = link_to user_snippets_path(@user) do
+          All
+          %span.pull-right
+            = @user.snippets.count
       = nav_tab :scope, 'private' do
-        = link_to "Private", user_snippets_path(@user, scope: 'private')
+        = link_to user_snippets_path(@user, scope: 'private') do
+          Private
+          %span.pull-right
+            = @user.snippets.private.count
       = nav_tab :scope, 'public' do
-        = link_to "Public", user_snippets_path(@user, scope: 'public')
+        = link_to user_snippets_path(@user, scope: 'public') do
+          Public
+          %span.pull-right
+            = @user.snippets.public.count
 
   .span9.my-snippets
     = render 'snippets'

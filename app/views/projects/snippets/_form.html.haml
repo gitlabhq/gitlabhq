@@ -27,8 +27,11 @@
               = f.hidden_field :content, class: 'snippet-file-content'
 
     .form-actions
-      = f.submit 'Save', class: "btn-save btn"
-      = link_to "Cancel", project_snippets_path(@project), class: " btn"
+      - if @snippet.new_record?
+        = f.submit 'Create snippet', class: "btn-create btn"
+      - else
+        = f.submit 'Save', class: "btn-save btn"
+      = link_to "Cancel", project_snippets_path(@project), class: " btn btn-cancel"
       - unless @snippet.new_record?
         .pull-right= link_to 'Destroy', project_snippet_path(@project, @snippet), confirm: 'Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
 
