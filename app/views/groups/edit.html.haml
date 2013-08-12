@@ -72,16 +72,16 @@
           .title LDAP group settings
           %div.form-holder
             = form_for @group do |f|
-              .clearfix
+              .control-group
                 = f.label :ldap_cn do
                   LDAP Group cn
-                .input
+                .controls
                   = f.text_field :ldap_cn, placeholder: "Ex. QA group", class: "xxlarge left"
 
-              .clearfix
+              .control-group
                 = f.label :ldap_access do
                   LDAP Access
-                .input
+                .controls
                   = f.select :ldap_access, options_for_select(UsersGroup.group_access_roles, @group.ldap_access)
 
               .form-actions

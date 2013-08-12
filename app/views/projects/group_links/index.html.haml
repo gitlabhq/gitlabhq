@@ -1,19 +1,16 @@
 %h3.page_title Share project with groups
-%br
-%p
-  Project can be stored in one group at once
-  %br
-  However you can share project with other groups here.
-
+%p.light
+  Project can be stored in one group at once. However you can share project with other groups here.
+%hr
 .row
   .span5.enabled-groups
-    %h5
+    %h4
       Already shared with:
     %ul.bordered-list
       - @group_links.each do |group_link|
         - group = group_link.group
         %li
-          %h5
+          %h4
             .pull-left
               = link_to project_group_link_path(@project, group_link), method: :delete, class: 'btn btn-small append-right-10' do
                 %i.icon-remove
@@ -23,17 +20,17 @@
             %small.light up to Masters
 
   .span5.available-groups
-    %h5
+    %h4
       Can be shared with:
     %ul.bordered-list
       - @available_groups.each do |group|
         %li
-          %h5
-            .pull-right
-              = form_tag project_group_links_path(@project), method: :post do
-                = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink::MASTER), class: "span2"
-                = hidden_field_tag :group_id, group.id
-                = submit_tag "Share", class: "btn"
+          .pull-right
+            = form_tag project_group_links_path(@project), method: :post do
+              = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink::MASTER), class: "span2"
+              = hidden_field_tag :group_id, group.id
+              = submit_tag "Share", class: "btn btn-small"
+          %h4
             %i.icon-folder-close
             = group.name
 
