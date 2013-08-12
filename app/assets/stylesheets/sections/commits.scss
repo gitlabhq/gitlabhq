@@ -440,16 +440,23 @@
   margin-top: 10px;
 }
 
-.ui-box.commit-box {
-  margin-top: 0;
+.commit-box {
+  margin: 10px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
 
-  .commit-committer-link,
-  .commit-author-link {
-    color: #333;
+  .commit-title {
+    margin: 0;
+    font-size: 20px;
     font-weight: bold;
-    text-shadow: 0 1px 1px #FFF;
+  }
+
+  .commit-description {
+    margin-top: 15px;
   }
 }
+
 
 .commit-stat-summary {
   color: #666;
@@ -476,4 +483,16 @@ li.commit {
 
 .commit-breadcrumb {
   padding: 0;
+}
+
+.commit-info-row {
+  margin-bottom: 10px;
+  .avatar {
+    @extend .avatar-inline;
+  }
+  .commit-committer-link,
+  .commit-author-link {
+    color: #444;
+    font-weight: bold;
+  }
 }
