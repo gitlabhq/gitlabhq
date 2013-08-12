@@ -1,10 +1,10 @@
-%p.slead
-  New projects are private by default. You choose who can see the project and commit to repository.
-%hr
-.project-edit-container.prepend-top-10
+.project-edit-container
   .project-edit-errors
     = render 'projects/errors'
   .project-edit-content
+    %p.slead
+      New projects are private by default. You choose who can see the project and commit to repository.
+    %hr
     = form_for @project, remote: true do |f|
       .control-group.project_name_holder
         = f.label :name do
@@ -51,4 +51,5 @@
 .save-project-loader.hide
   %center
     = image_tag "ajax_loader.gif"
-    %h3 Creating project &amp; repository. Please wait a moment, this page will automatically refresh when ready.
+    %h3 Creating project &amp; repository.
+    %p Please wait a moment, this page will automatically refresh when ready.
