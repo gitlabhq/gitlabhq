@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130804151314) do
+ActiveRecord::Schema.define(:version => 20130812143708) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -178,6 +178,7 @@ ActiveRecord::Schema.define(:version => 20130804151314) do
     t.boolean  "snippets_enabled",       :default => true,     :null => false
     t.datetime "last_activity_at"
     t.boolean  "imported",               :default => false,    :null => false
+    t.string   "import_url"
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"

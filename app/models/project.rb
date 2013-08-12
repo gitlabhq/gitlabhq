@@ -37,8 +37,6 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable_on :labels, :issues_default_labels
 
-  attr_accessor :import_url
-
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
   belongs_to :group,        foreign_key: "namespace_id", conditions: "type = 'Group'"
@@ -155,6 +153,10 @@ class Project < ActiveRecord::Base
 
   def import?
     import_url.present?
+  end
+
+  def imported?
+    imported
   end
 
   def check_limit
@@ -409,10 +411,6 @@ class Project < ActiveRecord::Base
 
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
-  end
-
-  def imported?
-    imported
   end
 
   def personal?
