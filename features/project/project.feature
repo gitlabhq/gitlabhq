@@ -5,7 +5,7 @@ Feature: Project Feature
     And project "Shop" has push event
     And I visit project "Shop" page
 
-  @javascript
+  @javascript @inaccessible
   Scenario: I should see project activity
     When I visit project "Shop" page
     Then I should see project "Shop" activity feed
