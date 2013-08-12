@@ -184,6 +184,10 @@ module SharedPaths
     visit project_path(project)
   end
 
+  step 'I visit project "Forked Shop" merge requests page' do
+    visit project_merge_requests_path(@forked_project)
+  end
+
   step 'I visit edit project "Shop" page' do
     visit edit_project_path(project)
   end
@@ -239,15 +243,19 @@ module SharedPaths
 
   step 'I visit merge request page "Bug NS-04"' do
     mr = MergeRequest.find_by_title("Bug NS-04")
-    visit project_merge_request_path(mr.project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I visit merge request page "Bug NS-05"' do
     mr = MergeRequest.find_by_title("Bug NS-05")
-    visit project_merge_request_path(mr.project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I visit project "Shop" merge requests page' do
+    visit project_merge_requests_path(project)
+  end
+
+  step 'I visit forked project "Shop" merge requests page' do
     visit project_merge_requests_path(project)
   end
 
@@ -273,6 +281,10 @@ module SharedPaths
 
   step 'I visit the public projects area' do
     visit public_root_path
+  end
+
+  step 'I visit public page for "Community" project' do
+    visit public_project_path(Project.find_by_name("Community"))
   end
 
   # ----------------------------------------

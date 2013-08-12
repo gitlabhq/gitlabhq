@@ -1,14 +1,20 @@
+%h3.page-title
+  Group membership
+  - if current_user.can_create_group?
+    %span.pull-right
+      = link_to new_group_path, class: "btn btn-new" do
+        %i.icon-plus
+        New Group
+%p.light
+  Members of group have access to all group projects.
+%hr
 .ui-box
   .title
     %strong Groups
-    (#{@groups.count})
-    - if current_user.can_create_group?
-      %span.pull-right
-        = link_to new_group_path, class: "btn btn-small btn-primary" do
-          %i.icon-plus
-          New Group
+    (#{@user_groups.count})
   %ul.well-list
-    - @groups.each do |group|
+    - @user_groups.each do |user_group|
+      - group = user_group.group
       %li
         .pull-right
           - if can?(current_user, :manage_group, group)
@@ -23,4 +29,7 @@
         = link_to group, class: 'group-name' do
           = group.name
 
-= paginate @groups
+        as #{user_group.human_access}
+
+
+= paginate @user_groups

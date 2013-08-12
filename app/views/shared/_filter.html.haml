@@ -1,0 +1,29 @@
+= form_tag filter_path(entity), method: 'get' do
+  %fieldset
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: ("active" if params[:status].blank?)}
+        = link_to filter_path(entity, status: nil) do
+          Open
+      %li{class: ("active" if params[:status] == 'closed')}
+        = link_to filter_path(entity, status: 'closed') do
+          Closed
+      %li{class: ("active" if params[:status] == 'all')}
+        = link_to filter_path(entity, status: 'all') do
+          All
+
+  %fieldset
+    %legend Projects:
+    %ul.nav.nav-pills.nav-pills-small.nav-stacked
+      - @projects.each do |project|
+        - unless entities_per_project(project, entity).zero?
+          %li{class: ("active" if params[:project_id] == project.id.to_s)}
+            = link_to filter_path(entity, project_id: project.id) do
+              = project.name_with_namespace
+              %small.pull-right= entities_per_project(project, entity)
+
+  %fieldset
+    - if params[:status].present? || params[:project_id].present?
+      = link_to filter_path(entity, status: nil, project_id: nil), class: 'pull-right cgray' do
+        %i.icon-remove
+        %strong Clear filter
+

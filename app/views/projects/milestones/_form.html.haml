@@ -26,13 +26,13 @@
     .span6
       .control-group
         = f.label :due_date, "Due Date", class: "control-label"
-        .input= f.hidden_field :due_date
+        .controls= f.hidden_field :due_date
         .controls
           .datepicker
 
   .form-actions
     - if @milestone.new_record?
-      = f.submit 'Create milestone', class: "btn-save btn"
+      = f.submit 'Create milestone', class: "btn-create btn"
       = link_to "Cancel", project_milestones_path(@project), class: "btn btn-cancel"
     -else
       = f.submit 'Save changes', class: "btn-save btn"

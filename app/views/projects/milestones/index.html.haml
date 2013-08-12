@@ -3,7 +3,7 @@
   %h3.page-title
     Milestones
     - if can? current_user, :admin_milestone, @project
-      = link_to new_project_milestone_path(@project), class: "pull-right btn btn-primary", title: "New Milestone" do
+      = link_to new_project_milestone_path(@project), class: "pull-right btn btn-new", title: "New Milestone" do
         %i.icon-plus
         New Milestone
 

@@ -421,8 +421,8 @@
 
 .commits-compare-switch{
   background: url("switch_icon.png") no-repeat center center;
-  width: 16px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   text-indent: -9999px;
   float: left;
   margin-right: 9px;
@@ -440,6 +440,13 @@
 
 .ui-box.commit-box {
   margin-top: 0;
+
+  .commit-committer-link,
+  .commit-author-link {
+    color: #333;
+    font-weight: bold;
+    text-shadow: 0 1px 1px #FFF;
+  }
 }
 
 .commit-stat-summary {
@@ -463,4 +470,8 @@ li.commit {
       border: 1px solid #ccc;
     }
   }
+}
+
+.commit-breadcrumb {
+  padding: 0;
 }

@@ -22,6 +22,7 @@ class Dashboard < Spinach::FeatureSteps
 
   Then 'I see prefilled new Merge Request page' do
     current_path.should == new_project_merge_request_path(@project)
+    find("#merge_request_target_project_id").value.should == @project.id.to_s
     find("#merge_request_source_branch").value.should == "new_design"
     find("#merge_request_target_branch").value.should == "master"
     find("#merge_request_title").value.should == "New Design"

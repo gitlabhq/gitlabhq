@@ -177,7 +177,7 @@ var NoteList = {
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
-    // show the reply button (will only work for replys)
+    // show the reply button (will only work for replies)
     form.prev(".js-discussion-reply-button").show();
 
     if (row.is(".js-temp-notes-holder")) {
@@ -227,9 +227,10 @@ var NoteList = {
     // Show the attachment delete link
     note.find(".js-note-attachment-delete").show();
 
+    GitLab.GfmAutoComplete.setup();
+
     var form = note.find(".note-edit-form");
     form.show();
-
 
     var textarea = form.find("textarea");
     var p = $("<p></p>").text(textarea.val());

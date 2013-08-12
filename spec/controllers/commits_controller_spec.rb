@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Projects::CommitsController do
   let(:project) { create(:project_with_code) }
-  let(:user)    { create(:user) }
+  let(:user) { create(:user) }
 
   before do
     sign_in(user)

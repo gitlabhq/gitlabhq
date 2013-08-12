@@ -123,7 +123,7 @@ Parameters:
 + `bio`                               - User's bio
 
 Note, at the moment this method does only return a 404 error, even in cases where a 409 (Conflict) would
-be more appropriate, e.g. when renaming the email address to some exsisting one.
+be more appropriate, e.g. when renaming the email address to some existing one.
 
 
 ## User deletion

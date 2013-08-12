@@ -1,4 +1,4 @@
-# Select2 ajax programatic helper
+# Select2 ajax programmatic helper
 # It allows you to select value from select2
 #
 # Params

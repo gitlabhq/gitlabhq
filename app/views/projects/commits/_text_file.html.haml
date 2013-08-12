@@ -3,7 +3,7 @@
   %a.supp_diff_link Diff suppressed. Click to show
 
 %table.text-file{class: "#{'hide' if too_big}"}
-  - each_diff_line(diff, index) do |line, type, line_code, line_new, line_old|
+  - each_diff_line(diff, index) do |line, type, line_code, line_new, line_old, raw_line|
     %tr.line_holder{ id: line_code, class: "#{type}" }
       - if type == "match"
         %td.old_line= "..."
@@ -20,4 +20,4 @@
     - if @reply_allowed
       - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
       - unless comments.empty?
-        = render "projects/notes/diff_notes_with_reply", notes: comments
+        = render "projects/notes/diff_notes_with_reply", notes: comments, line: line

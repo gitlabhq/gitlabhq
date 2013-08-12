@@ -18,19 +18,25 @@ class Repository
   end
 
   def commit(id = nil)
-    commit = raw_repository.commit(id)
+    commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
     commit
   end
 
   def commits(ref, path = nil, limit = nil, offset = nil)
-    commits = raw_repository.commits(ref, path, limit, offset)
+    commits = Gitlab::Git::Commit.where(
+      repo: raw_repository,
+      ref: ref,
+      path: path,
+      limit: limit,
+      offset: offset,
+    )
     commits = Commit.decorate(commits) if commits.present?
     commits
   end
 
-  def commits_between(target, source)
-    commits = raw_repository.commits_between(target, source)
+  def commits_between(from, to)
+    commits = Gitlab::Git::Commit.between(raw_repository, from, to)
     commits = Commit.decorate(commits) if commits.present?
     commits
   end
@@ -41,6 +47,12 @@ class Repository
 
   def find_tag(name)
     tags.find { |tag| tag.name == name }
+  end
+
+  def recent_branches(limit = 20)
+    branches.sort do |a, b|
+      a.commit.committed_date <=> b.commit.committed_date
+    end[0..limit]
   end
 
   def add_branch(branch_name, ref)

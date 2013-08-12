@@ -142,7 +142,7 @@ module Gitlab
     # Remove all ssh keys from gitlab shell
     #
     # Ex.
-    #   remmove_all_keys
+    #   remove_all_keys
     #
     def remove_all_keys
       system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-keys", "clear"

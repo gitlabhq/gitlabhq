@@ -8,8 +8,11 @@
       - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
         = link_to "#", title: "Edit comment", class: "js-note-edit" do
           %i.icon-edit
+          Edit
+        &nbsp;
         = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, confirm: 'Are you sure you want to remove this comment?', remote: true, class: "danger js-note-delete" do
           %i.icon-trash.cred
+          Remove
     = image_tag gravatar_icon(note.author_email), class: "avatar s32"
     = link_to_member(@project, note.author, avatar: false)
     %span.note-last-update

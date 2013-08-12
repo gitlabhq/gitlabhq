@@ -2,19 +2,23 @@
 # based on filtering passed via params for @project
 class MergeRequestsLoadContext < BaseContext
   def execute
-    type = params[:f]
+    merge_requests = @project.merge_requests
 
-    merge_requests = project.merge_requests
-
-    merge_requests = case type
+    merge_requests = case params[:state]
                      when 'all' then merge_requests
                      when 'closed' then merge_requests.closed
-                     when 'assigned-to-me' then merge_requests.opened.assigned_to(current_user)
                      else merge_requests.opened
                      end
 
+    merge_requests = case params[:scope]
+                     when 'assigned-to-me' then merge_requests.assigned_to(current_user)
+                     when 'created-by-me' then merge_requests.authored(current_user)
+                     else merge_requests
+                     end
+
+
     merge_requests = merge_requests.page(params[:page]).per(20)
-    merge_requests = merge_requests.includes(:author, :project).order("created_at desc")
+    merge_requests = merge_requests.includes(:author, :source_project, :target_project).order("created_at desc")
 
     # Filter by specific assignee_id (or lack thereof)?
     if params[:assignee_id].present?

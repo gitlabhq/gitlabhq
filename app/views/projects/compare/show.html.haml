@@ -8,15 +8,15 @@
 - if @commits.size > 100
   .alert.alert-block
     %p
-      %strong Warning! This comparison include 100+ commits.
-    %p To prevent performance issue we dont show diff information.
+      %strong Warning! This comparison includes more than 100 commits.
+    %p To preserve performance the line diff is not shown.
 
 - if @commits.present?
   %div.ui-box
     .title
       Commits (#{@commits.count})
-    %ul.well-list= render Commit.decorate(@commits)
+    %ul.well-list= render Commit.decorate(@commits), project: @project
 
   - unless @diffs.empty?
     %h4 Diff
-    = render "projects/commits/diffs", diffs: @diffs
+    = render "projects/commits/diffs", diffs: @diffs, project: @project

@@ -89,7 +89,7 @@ $ ->
   if (flash = $(".flash-container")).length > 0
     flash.click -> $(@).fadeOut()
     flash.show()
-    setTimeout (-> flash.fadeOut()), 3000
+    setTimeout (-> flash.fadeOut()), 9000
 
   # Disable form buttons while a form is submitting
   $('body').on 'ajax:complete, ajax:beforeSend, submit', 'form', (e) ->
@@ -119,7 +119,7 @@ $ ->
 
 
   # Commit show suppressed diff
-  $(".supp_diff_link").bind "click", ->
+  $(".content").on "click", ".supp_diff_link", ->
     $(@).next('table').show()
     $(@).remove()
 

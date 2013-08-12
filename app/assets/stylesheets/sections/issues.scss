@@ -44,13 +44,16 @@ input.check_all_issues {
   margin: 0;
   margin-right: 10px;
   position: relative;
-  top: 8px;
-  height: 22px;
+  top: 13px;
 }
 
 .issues_content {
   .title {
     height: 40px;
+  }
+
+  form {
+    margin: 0;
   }
 }
 
@@ -88,17 +91,7 @@ input.check_all_issues {
     }
 
     .update_selected_issues {
-      position: relative;
-      top:5px;
       margin-left: 4px;
-      float: left;
-    }
-
-    .update_issues_text {
-      padding: 3px;
-      line-height: 28px;
-      float: left;
-      color: #479;
     }
   }
 }

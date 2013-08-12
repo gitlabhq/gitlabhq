@@ -55,6 +55,8 @@ Gitlab::Application.routes.draw do
   #
   namespace :public do
     resources :projects, only: [:index]
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:show]
+
     root to: "projects#index"
   end
 
@@ -223,8 +225,13 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :branches, only: [:index, :new, :create, :destroy] do
+        collection do
+          get :recent
+        end
+      end
+
       resources :tags, only: [:index, :new, :create, :destroy]
-      resources :branches, only: [:index, :new, :create, :destroy]
       resources :protected_branches, only: [:index, :create, :destroy]
 
       resources :refs, only: [] do
@@ -255,6 +262,7 @@ Gitlab::Application.routes.draw do
         collection do
           get :branch_from
           get :branch_to
+          get :update_branches
         end
       end
 

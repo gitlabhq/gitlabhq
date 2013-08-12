@@ -53,7 +53,7 @@ class Project < ActiveRecord::Base
 
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
-  has_many :merge_requests,     dependent: :destroy
+  has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
   has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
   has_many :notes,              dependent: :destroy
@@ -435,7 +435,7 @@ class Project < ActiveRecord::Base
         gitlab_shell.rm_satellites(old_path_with_namespace)
         send_move_instructions
       rescue
-        # Returning false does not rolback after_* transaction but gives
+        # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end

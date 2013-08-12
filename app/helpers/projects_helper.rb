@@ -32,7 +32,11 @@ module ProjectsHelper
 
     author_html = author_html.html_safe
 
-    link_to(author_html, user_path(author), class: "author_link").html_safe
+    if opts[:name]
+      link_to(author_html, user_path(author), class: "author_link").html_safe
+    else
+      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => sanitize(author.name) } ).html_safe
+    end
   end
 
   def project_title project
@@ -55,6 +59,25 @@ module ProjectsHelper
 
   def project_nav_tab?(name)
     project_nav_tabs.include? name
+  end
+
+  def project_filter_path(options={})
+    exist_opts = {
+      state: params[:state],
+      scope: params[:scope],
+      label_name: params[:label_name],
+      milestone_id: params[:milestone_id],
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
+
+  def project_active_milestones
+    @project.milestones.active.order("id desc").all
   end
 
   private

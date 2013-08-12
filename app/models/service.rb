@@ -49,4 +49,8 @@ class Service < ActiveRecord::Base
   def execute
     # implement inside child
   end
+
+  def can_test?
+    !project.empty_repo?
+  end
 end
