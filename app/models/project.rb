@@ -89,7 +89,7 @@ class Project < ActiveRecord::Base
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
 
-  validate :check_limit
+  validate :check_limit, on: :create
 
   # Scopes
   scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }

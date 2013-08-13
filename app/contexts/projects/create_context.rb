@@ -46,11 +46,14 @@ module Projects
       @project.creator = current_user
 
       if @project.save
-        unless @project.group
-          @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
-        end
-
         @project.discover_default_branch
+
+        unless @project.group
+          @project.users_projects.create(
+            project_access: UsersProject::MASTER,
+            user: current_user
+          )
+        end
       end
 
       @project
