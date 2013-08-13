@@ -90,9 +90,9 @@ class window.ContributorsMasterGraph extends ContributorsGraph
       y(d.commits = d.commits ? d.additions ? d.deletions)
     ).interpolate("basis")
   create_brush: ->
-    @brush = d3.svg.brush().x(@x).on("brushend", @update_content);
+    @brush = d3.svg.brush().x(@x).on("brushend", @update_content)
   draw_path: (data) ->
-    @svg.append("path").datum(data).attr("class", "area").attr("d", @area);
+    @svg.append("path").datum(data).attr("class", "area").attr("d", @area)
   add_brush: ->
     @svg.append("g").attr("class", "selection").call(@brush).selectAll("rect").attr("height", @height);
   update_content: =>
