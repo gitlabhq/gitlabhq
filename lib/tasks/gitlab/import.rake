@@ -31,6 +31,11 @@ namespace :gitlab do
 
         puts "Processing #{repo_path}".yellow
 
+        if path =~ /.wiki\Z/
+          puts " * Skipping wiki repo"
+          next
+        end
+
         project = Project.find_with_namespace(path)
 
         if project
@@ -40,6 +45,7 @@ namespace :gitlab do
 
           project_params = {
             name: name,
+            path: name
           }
 
           # find group namespace
