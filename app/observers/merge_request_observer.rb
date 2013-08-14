@@ -46,8 +46,7 @@ class MergeRequestObserver < ActivityObserver
       target_id: record.id,
       target_type: record.class.name,
       action: status,
-      author_id: record.author_id
+      author_id: current_user
     )
   end
-
 end
