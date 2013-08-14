@@ -8,7 +8,6 @@ describe ActivityObserver do
     it { @event.project.should == project }
   end
 
-
   describe "Issue created" do
     before do
       Issue.observers.enable :activity_observer do
