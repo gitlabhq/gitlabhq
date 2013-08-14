@@ -6,11 +6,23 @@
       New projects are private by default. You choose who can see the project and commit to repository.
     %hr
     = form_for @project, remote: true do |f|
-      .control-group.project_name_holder
+      .control-group.project-name-holder
         = f.label :name do
           %strong Project name is
         .controls
           = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
+          %span.help-inline
+            = link_to "#", class: 'js-toggle-visibility-link' do
+              %span Custom repo name?
+
+      .control-group.js-toggle-visibility-container.hide
+        = f.label :path do
+          %span Repository name
+        .controls
+          .input-append
+            = f.text_field :path
+            %span.add-on .git
+
 
       - if current_user.can_select_namespace?
         .control-group
