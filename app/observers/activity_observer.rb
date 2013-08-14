@@ -29,11 +29,11 @@ class ActivityObserver < BaseObserver
 
   def create_event(record, status)
     Event.create(
-        project: record.project,
-        target_id: record.id,
-        target_type: record.class.name,
-        action: status,
-        author_id: record.author_id
+      project: record.project,
+      target_id: record.id,
+      target_type: record.class.name,
+      action: status,
+      author_id: current_user
     )
   end
 end
