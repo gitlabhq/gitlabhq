@@ -64,7 +64,9 @@ describe API::API do
       expect {
         post api("/users", admin), attr
       }.to change { User.count }.by(1)
-      User.find_by_username(attr[:username]).projects_limit.should == limit
+      user = User.find_by_username(attr[:username])
+      user.projects_limit.should == limit
+      user.theme_id.should == Gitlab::Theme::BASIC
       Gitlab.config.gitlab.unstub(:default_projects_limit)
     end
 

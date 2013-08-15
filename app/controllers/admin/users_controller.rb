@@ -13,7 +13,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def new
-    @user = User.new.with_defaults
+    @user = User.build_user
   end
 
   def edit
@@ -44,7 +44,7 @@ class Admin::UsersController < Admin::ApplicationController
       password_expires_at: Time.now
     }
 
-    @user = User.new(params[:user].merge(opts), as: :admin)
+    @user = User.build_user(params[:user].merge(opts), as: :admin)
     @user.admin = (admin && admin.to_i > 0)
     @user.created_by_id = current_user.id
 
