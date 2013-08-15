@@ -188,6 +188,9 @@ You can change `5-4-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H mkdir public/uploads
     sudo chmod -R u+rwX  public/uploads
 
+    # Copy the example Puma config
+    sudo -u git -H cp config/puma.rb.example config/puma.rb
+
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
