@@ -4,7 +4,7 @@
     %div
       %h3.page-title
         Project settings:
-      %p.light Some settings like transferring project are hidden inside danger area below
+      %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
       %hr
       .form-holder
         = form_for(@project, remote: true) do |f|
@@ -126,13 +126,13 @@
                   .control-group
                     = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
                   %ul
-                    %li Be careful. Changing project namespace can have unintended side effects
-                    %li You can transfer project only to namespaces you can manage
+                    %li Be careful. Changing the project's namespace can have unintended side effects.
+                    %li You can only transfer the project to namespaces you manage.
                     %li You will need to update your local repositories to point to the new location.
               .form-actions
                 = f.submit 'Transfer', class: "btn btn-remove"
       - else
-        %p.nothing_here_message Only project owner can transfer a project
+        %p.nothing_here_message Only the project owner can transfer a project
 
       .ui-box.ui-box-danger
         .title Rename repository
@@ -146,7 +146,7 @@
                 .control-group
                   = f.text_field :path
                 %ul
-                  %li Be careful. Rename of project repo can have unintended side effects
+                  %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
             .form-actions
               = f.submit 'Rename', class: "btn btn-remove"
@@ -156,9 +156,9 @@
           .title Remove project
           .ui-box-body
             %p
-              Remove of project will cause removing repository and all related resources like issues, merge requests etc.
+              Removing the project will delete its repository and all related resources including issues, merge requests etc.
               %br
-              %strong Removed project can not be restored!
+              %strong Removed projects cannot be restored!
 
             = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove"
       - else
