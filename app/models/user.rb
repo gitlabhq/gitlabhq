@@ -199,10 +199,16 @@ class User < ActiveRecord::Base
       end
     end
 
-    def defaults
-      { projects_limit: Gitlab.config.gitlab.default_projects_limit, can_create_group: Gitlab.config.gitlab.default_can_create_group, can_create_team: Gitlab.config.gitlab.default_can_create_team }
+    def build_user(attrs = {}, options= {})
+      user = User.new(defaults.merge(attrs), options)
+      # if not as: :admin force default settings
+      user.with_defaults unless options[:as] == :admin
+      user
     end
 
+    def defaults
+      { projects_limit: Gitlab.config.gitlab.default_projects_limit, can_create_group: Gitlab.config.gitlab.default_can_create_group, theme_id: Gitlab::Theme::BASIC }
+    end
   end
 
   #
@@ -211,14 +217,6 @@ class User < ActiveRecord::Base
 
   def to_param
     username
-  end
-
-  def with_defaults
-    tap do |u|
-      u.projects_limit = Gitlab.config.gitlab.default_projects_limit
-      u.can_create_group = Gitlab.config.gitlab.default_can_create_group
-      u.theme_id = Gitlab::Theme::MARS
-    end
   end
 
   def notification
@@ -380,4 +378,13 @@ class User < ActiveRecord::Base
       group.owners == [self]
     end
   end
+
+  :private
+
+  def with_defaults
+    User.defaults.each do |k,v|
+      self.send("#{k}=",v)
+    end
+  end
+
 end

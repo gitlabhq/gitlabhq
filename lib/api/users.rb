@@ -45,9 +45,8 @@ module API
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-
-        attrs = User.defaults.merge(attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio])
-        user = User.new attrs, as: :admin
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        user = User.build_user(attrs, as: :admin)
         if user.save
           present user, with: Entities::User
         else
