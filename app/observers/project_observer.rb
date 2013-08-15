@@ -1,5 +1,7 @@
 class ProjectObserver < BaseObserver
   def after_create(project)
+    project.update_column(:last_activity_at, project.created_at)
+
     return true if project.forked?
 
     if project.import?
