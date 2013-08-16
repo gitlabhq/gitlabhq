@@ -31,8 +31,9 @@ module API
       #
       # Parameters:
       #   email (required)                  - Email
-      #   password (required)               - Password
-      #   name                              - Name
+      #   password (semi-required)          - Password
+      #   name (required)                   - Name
+      #   username (required)               - username
       #   skype                             - Skype ID
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
@@ -40,13 +41,42 @@ module API
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
+      #   password_expired                  - password is set expired
+      #   force_random_password             - generate random password for user
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
-        required_attributes! [:email, :password, :name, :username]
+        required_attributes! [:email, :name, :username]
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        attrs = attributes_for_keys [:email, :name, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+
+        #parse password strategy params
+        if params[:expired_password].present?
+          expired = params[:expired_password].to_i > 0
+        else
+          expired = false
+        end
+        if params[:force_random_password].present?
+          force_random = params[:force_random_password].to_i > 0
+        else
+          force_random = false
+        end
+
+        #check params set properly
+        if !(force_random ^ params[:password].present?)
+          render_api_error!('400 Either password or force_random must be set',400)
+        end
+
+        if expired
+          attrs[:password_expires_at] = Time.now
+        end
+        if force_random
+          attrs[:force_random_password] = true
+        else
+          attrs[:password] = params[:password]
+        end
+
         user = User.new attrs, as: :admin
         if user.save
           present user, with: Entities::User
