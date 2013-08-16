@@ -12,4 +12,4 @@
     = preserve do
       = render_wiki_content(@wiki)
 
-%p.time Last edited by #{commit_author_link(@wiki.version, avatar: true, size: 16)} #{time_ago_in_words @wiki.created_at} ago
+%p.time Last edited by #{commit_author_link(@wiki.commit, avatar: true, size: 16)} #{time_ago_in_words @wiki.commit.created_at} ago
