@@ -1,28 +1,27 @@
 .ui-box
-  %h5.title
-    Projects
-    %span.light
-      (#{@projects_count})
+  .title.clearfix
+    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter'
     - if current_user.can_create_project?
       %span.pull-right
-        = link_to new_project_path, class: "btn btn-small" do
+        = link_to new_project_path, class: "btn" do
           %i.icon-plus
           New Project
 
-  %ul.well-list
+  %ul.well-list.dash-list
     - projects.each do |project|
-      %li
+      %li.project-row
         = link_to project_path(project), class: dom_class(project) do
-          - if project.namespace
-            = project.namespace.human_name
-            \/
-          %strong.well-title
+          %span.namespace-name
+            - if project.namespace
+              = project.namespace.human_name
+              \/
+          %span.project-name.filter-title
             = truncate(project.name, length: 25)
           %span.arrow
-            &rarr;
-          %span.last_activity
-            %strong Last activity:
-            %span= project_last_activity(project)
+            %i.icon-angle-right
+          %span.last-activity
+            %span Last activity:
+            %span.date= project_last_activity(project)
     - if projects.blank?
       %li
         %h3.nothing_here_message There are no projects here.

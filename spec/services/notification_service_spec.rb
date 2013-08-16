@@ -48,7 +48,7 @@ describe NotificationService do
     end
 
     context 'commit note' do
-      let(:note) { create :note_on_commit }
+      let(:note) { create(:note_on_commit) }
 
       before do
         build_team(note.project)
@@ -56,32 +56,35 @@ describe NotificationService do
 
       describe :new_note do
         it do
-          should_email(@u_watcher.id)
-          should_not_email(note.author_id)
-          should_not_email(@u_participating.id)
-          should_not_email(@u_disabled.id)
+          should_email(@u_watcher.id, note)
+          should_not_email(@u_mentioned.id, note)
+          should_not_email(note.author_id, note)
+          should_not_email(@u_participating.id, note)
+          should_not_email(@u_disabled.id, note)
           notification.new_note(note)
         end
 
         it do
-          create(:note_on_commit,
+          new_note = create(:note_on_commit,
                  author: @u_participating,
                  project_id: note.project_id,
-                 commit_id: note.commit_id)
+                 commit_id: note.commit_id,
+                 note: '@mention referenced')
 
-          should_email(@u_watcher.id)
-          should_email(@u_participating.id)
-          should_not_email(note.author_id)
-          should_not_email(@u_disabled.id)
-          notification.new_note(note)
+          should_email(@u_watcher.id, new_note)
+          should_email(@u_mentioned.id, new_note)
+          should_not_email(new_note.author_id, new_note)
+          should_not_email(@u_participating.id, new_note)
+          should_not_email(@u_disabled.id, new_note)
+          notification.new_note(new_note)
         end
 
-        def should_email(user_id)
-          Notify.should_receive(:note_commit_email).with(user_id, note.id)
+        def should_email(user_id, n)
+          Notify.should_receive(:note_commit_email).with(user_id, n.id)
         end
 
-        def should_not_email(user_id)
-          Notify.should_not_receive(:note_commit_email).with(user_id, note.id)
+        def should_not_email(user_id, n)
+          Notify.should_not_receive(:note_commit_email).with(user_id, n.id)
         end
       end
     end
@@ -156,7 +159,7 @@ describe NotificationService do
     let(:merge_request) { create :merge_request, assignee: create(:user) }
 
     before do
-      build_team(merge_request.project)
+      build_team(merge_request.target_project)
     end
 
     describe :new_merge_request do
@@ -236,7 +239,7 @@ describe NotificationService do
     @u_watcher = create(:user, notification_level: Notification::N_WATCH)
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
-    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_WATCH)
+    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_PARTICIPATING)
 
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]

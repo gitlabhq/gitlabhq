@@ -7,8 +7,8 @@
 #  assignee_id  :integer
 #  author_id    :integer
 #  project_id   :integer
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  created_at   :datetime
+#  updated_at   :datetime
 #  position     :integer          default(0)
 #  branch_name  :string(255)
 #  description  :text
@@ -17,7 +17,16 @@
 #
 
 class Issue < ActiveRecord::Base
+
   include Issuable
+
+  belongs_to :project
+  validates :project, presence: true
+
+  scope :of_group, ->(group) { where(project_id: group.project_ids) }
+  scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
+  scope :opened, -> { with_state(:opened) }
+  scope :closed, -> { with_state(:closed) }
 
   attr_accessible :title, :assignee_id, :position, :description,
                   :milestone_id, :label_list, :author_id_of_changes,
@@ -26,7 +35,6 @@ class Issue < ActiveRecord::Base
   acts_as_taggable_on :labels
 
   scope :cared, ->(user) { where(assignee_id: user) }
-  scope :authored, ->(user) { where(author_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
 
   state_machine :state, initial: :opened do

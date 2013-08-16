@@ -42,7 +42,7 @@ class ProjectSnippets < Spinach::FeatureSteps
   end
 
   And 'I click link "Edit"' do
-    within ".file_title" do
+    within ".file-title" do
       click_link "Edit"
     end
   end
@@ -58,7 +58,7 @@ class ProjectSnippets < Spinach::FeatureSteps
     within('.file-editor') do
       find(:xpath, "//input[@id='project_snippet_content']").set 'Content of snippet three'
     end
-    click_button "Save"
+    click_button "Create snippet"
   end
 
   Then 'I should see snippet "Snippet three"' do

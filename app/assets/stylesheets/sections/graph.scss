@@ -1,19 +1,38 @@
-.graph_holder { 
+.project-network {
   border: 1px solid #aaa;
   padding: 1px;
 
-
-  h4 { 
-    padding: 0 10px;
+  .tip {
+    color: #888;
+    font-size: 14px;
+    padding: 10px;
     border-bottom: 1px solid #bbb;
     @include bg-gray-gradient;
   }
 
-  .graph { 
+  .network-graph {
     background: #f1f1f1;
     height: 500px;
     overflow-y: scroll;
     overflow-x: hidden;
+  }
+}
+
+.graphs {
+  .graph-author-commits-count {
+  }
+
+  .graph-author-email {
+    float: right;
+    color: #777;
+  }
+
+  .graph-additions {
+    color: #4a2;
+  }
+
+  .graph-deletions {
+    color: #d12f19;
   }
 }
 

@@ -1,0 +1,90 @@
+= form_for [@project, @merge_request], html: { class: "#{controller.action_name}-merge-request form-horizontal" } do |f|
+  -if @merge_request.errors.any?
+    .alert.alert-error
+      %ul
+        - @merge_request.errors.full_messages.each do |msg|
+          %li= msg
+
+  %h3.page-title
+    Branches
+  .merge-request-branches
+  .row
+    .span5
+      .ui-box
+        .title From
+        .ui-box-head
+          Project:
+          = f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span4'})
+          .prepend-top-10
+            %i.icon-code-fork
+            Branch:
+            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span3'})
+          .mr_source_commit.prepend-top-10
+    .span2
+      %h1.merge-request-angle
+        %i.icon-angle-right
+    .span5
+      .ui-box
+        .title To
+        .ui-box-head
+          - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
+          Project:
+          = f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span4'})
+          .prepend-top-10
+            %i.icon-code-fork
+            Branch:
+            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span3'})
+          .mr_target_commit.prepend-top-10
+
+  %hr
+
+  %h3.page-title
+    Details
+  .merge-request-form-info
+    .control-group
+      = f.label :title do
+        %strong= "Title *"
+      .controls= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
+    .control-group
+      .left
+        = f.label :assignee_id do
+          %i.icon-user
+          Assign to
+        .controls= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+      .left
+        = f.label :milestone_id do
+          %i.icon-time
+          Milestone
+        .controls= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+
+  .form-actions
+    - if @merge_request.new_record?
+      = f.submit 'Submit merge request', class: "btn btn-create"
+    -else
+      = f.submit 'Save changes', class: "btn btn-save"
+    - if @merge_request.new_record?
+      = link_to project_merge_requests_path(@source_project), class: "btn btn-cancel" do
+        Cancel
+    - else
+      = link_to project_merge_request_path(@target_project, @merge_request), class: "btn btn-cancel" do
+        Cancel
+
+:javascript
+  disableButtonIfEmptyField("#merge_request_title", ".btn-save");
+
+  var source_branch = $("#merge_request_source_branch")
+    , target_branch = $("#merge_request_target_branch")
+    , target_project = $("#merge_request_target_project_id");
+
+  $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: source_branch.val() });
+  $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: target_branch.val() });
+
+  target_project.on("change", function() {
+    $.get("#{update_branches_project_merge_requests_path(@source_project)}", {target_project_id:  $(this).val() });
+  });
+  source_branch.on("change", function() {
+    $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: $(this).val() });
+  });
+  target_branch.on("change", function() {
+    $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
+  });

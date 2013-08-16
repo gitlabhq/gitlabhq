@@ -1,9 +1,4 @@
 module IssuesHelper
-  def project_issues_filter_path project, params = {}
-    params[:f] ||= cookies['issue_filter']
-    project_issues_path project, params
-  end
-
   def issue_css_classes issue
     classes = "issue"
     classes << " closed" if issue.closed?
@@ -18,25 +13,11 @@ module IssuesHelper
     OpenStruct.new(id: 0, title: 'None (backlog)', name: 'Unassigned')
   end
 
-  def issues_filter
-    {
-      all: "all",
-      closed: "closed",
-      to_me: "assigned-to-me",
-      by_me: "created-by-me",
-      open: "open"
-    }
-  end
-
-  def issues_active_milestones
-    @project.milestones.active.order("id desc").all
-  end
-
   def url_for_project_issues
     return "" if @project.nil?
 
     if @project.used_default_issues_tracker?
-      project_issues_filter_path(@project)
+      project_issues_path(@project)
     else
       url = Gitlab.config.issues_tracker[@project.issues_tracker]["project_url"]
       url.gsub(':project_id', @project.id.to_s)
@@ -77,16 +58,5 @@ module IssuesHelper
     else
       ""
     end
-  end
-
-  def project_issues_with_filter_path(project, opts)
-    default_opts = {
-      status: params[:status],
-      label_name: params[:label_name],
-      milestone_id: params[:milestone_id],
-      assignee_id: params[:assignee_id],
-    }
-
-    project_issues_path(@project, default_opts.merge(opts))
   end
 end

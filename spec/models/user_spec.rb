@@ -4,7 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
+#  encrypted_password     :string(128)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -13,8 +13,8 @@
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
@@ -34,6 +34,8 @@
 #  state                  :string(255)
 #  color_scheme_id        :integer          default(1), not null
 #  notification_level     :integer          default(1), not null
+#  password_expires_at    :datetime
+#  created_by_id          :integer
 #
 
 require 'spec_helper'
@@ -106,15 +108,11 @@ describe User do
       ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @project = create :project, namespace: @user.namespace
-      @project_2 = create :project # Grant MASTER access to the user
-      @project_3 = create :project # Grant DEVELOPER access to the user
+      @project_2 = create :project, group: create(:group) # Grant MASTER access to the user
+      @project_3 = create :project, group: create(:group) # Grant DEVELOPER access to the user
 
-      UsersProject.add_users_into_projects(
-        [@project_2.id], [@user.id], UsersProject::MASTER
-      )
-      UsersProject.add_users_into_projects(
-        [@project_3.id], [@user.id], UsersProject::DEVELOPER
-      )
+      @project_2.team << [@user, :master]
+      @project_3.team << [@user, :developer]
     end
 
     it { @user.authorized_projects.should include(@project) }
@@ -126,13 +124,6 @@ describe User do
     it { @user.personal_projects.should include(@project) }
     it { @user.personal_projects.should_not include(@project_2) }
     it { @user.personal_projects.should_not include(@project_3) }
-
-    # master_projects doesn't check creator/namespace.
-    # In real case the users_projects relation will certainly be assigned
-    # when the project is created.
-    it { @user.master_projects.should_not include(@project) }
-    it { @user.master_projects.should include(@project_2) }
-    it { @user.master_projects.should_not include(@project_3) }
   end
 
   describe 'groups' do
@@ -146,23 +137,6 @@ describe User do
     it { @user.namespaces.should include(@user.namespace, @group) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
-  end
-
-  describe 'teams' do
-    before do
-      ActiveRecord::Base.observers.enable(:user_observer)
-      @admin = create :user, admin: true
-      @user1 = create :user
-      @user2 = create :user
-      @team = create :user_team, owner: @user1
-    end
-
-    it { @admin.authorized_teams.should == [@team] }
-    it { @user1.authorized_teams.should == [@team] }
-    it { @user2.authorized_teams.should be_empty }
-    it { @admin.should be_can(:manage_user_team, @team) }
-    it { @user1.should be_can(:manage_user_team, @team) }
-    it { @user2.should_not be_can(:manage_user_team, @team) }
   end
 
   describe 'namespaced' do

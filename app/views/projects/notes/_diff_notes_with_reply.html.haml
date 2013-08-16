@@ -1,0 +1,13 @@
+- note = notes.first # example note
+-# Check if line want not changed since comment was left
+- if !defined?(line) || line == note.diff_line
+  %tr.notes_holder
+    %td.notes_line{ colspan: 2 }
+      %span.btn.disabled
+        %i.icon-comment
+        = notes.count
+    %td.notes_content
+      %ul.notes{ rel: note.discussion_id }
+        = render notes
+
+      = render "projects/notes/discussion_reply_button", note: note

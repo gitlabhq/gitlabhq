@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   = @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 %hr
 .snippet-form-holder
@@ -9,26 +9,29 @@
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
 
-    .clearfix
+    .control-group
       = f.label :title
-      .input= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
-    .clearfix
+      .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
+    .control-group
       = f.label "Lifetime"
-      .input= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
-    .clearfix
+      .controls= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
+    .control-group
       .file-editor
         = f.label :file_name, "File"
-        .input
-          .file_holder.snippet
-            .file_title
+        .controls
+          .file-holder.snippet
+            .file-title
               = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true
-            .file_content.code
+            .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
 
     .form-actions
-      = f.submit 'Save', class: "btn-save btn"
-      = link_to "Cancel", project_snippets_path(@project), class: " btn"
+      - if @snippet.new_record?
+        = f.submit 'Create snippet', class: "btn-create btn"
+      - else
+        = f.submit 'Save', class: "btn-save btn"
+      = link_to "Cancel", project_snippets_path(@project), class: " btn btn-cancel"
       - unless @snippet.new_record?
         .pull-right= link_to 'Destroy', project_snippet_path(@project, @snippet), confirm: 'Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
 

@@ -1,0 +1,53 @@
+- unless @allowed_to_merge
+  .alert
+    %strong You don't have permission to merge this MR
+
+
+- if @show_merge_controls
+  .automerge_widget.can_be_merged{style: "display:none"}
+    .alert.alert-success
+      %span
+        = form_for [:automerge, @project, @merge_request], remote: true, method: :get do |f|
+          %p
+            You can accept this request automatically.
+            If you still want to do it manually -
+            %strong
+              = link_to "click here", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
+            for instructions
+          .accept_group
+            = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
+            - unless @merge_request.disallow_source_branch_removal?
+              .remove_branch_holder
+                = label_tag :should_remove_source_branch, class: "checkbox" do
+                  = check_box_tag :should_remove_source_branch
+                  Remove source-branch
+          .clearfix
+
+
+  .automerge_widget.no_satellite{style: "display:none"}
+    .alert.alert-error
+      %span
+        %strong This repository does not have satellite. Ask an administrator to fix this issue
+
+  .automerge_widget.cannot_be_merged{style: "display:none"}
+    .alert.alert-disabled
+      %span
+        = link_to "Show how to merge", "#modal_merge_info", class: "how_to_merge_link btn padded", title: "How To Merge", "data-toggle" => "modal"
+        &nbsp;
+        %strong This request can't be merged with GitLab. You should do it manually
+
+  .automerge_widget.unchecked
+    .alert
+      %strong
+        %i.icon-refresh
+        Checking for ability to automatically merge…
+
+  .automerge_widget.already_cannot_be_merged{style: "display:none"}
+    .alert.alert-info
+      %strong This merge request already can not be merged. Try to reload page.
+
+  .merge-in-progress.hide
+    %span.cgray
+      %i.icon-refresh.icon-spin
+      &nbsp;
+      Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;

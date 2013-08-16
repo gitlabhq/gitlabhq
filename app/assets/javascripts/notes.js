@@ -1,5 +1,5 @@
 var NoteList = {
-
+  id: null,
   notes_path: null,
   target_params: null,
   target_id: 0,
@@ -15,6 +15,22 @@ var NoteList = {
 
     // get initial set of notes
     NoteList.getContent();
+
+    // Unbind events to prevent firing twice
+    $(document).off("click", ".js-add-diff-note-button");
+    $(document).off("click", ".js-discussion-reply-button");
+    $(document).off("click", ".js-note-preview-button");
+    $(document).off("click", ".js-note-attachment-input");
+    $(document).off("click", ".js-close-discussion-note-form");
+    $(document).off("click", ".js-note-delete");
+    $(document).off("click", ".js-note-edit");
+    $(document).off("click", ".js-note-edit-cancel");
+    $(document).off("click", ".js-note-attachment-delete");
+    $(document).off("click", ".js-choose-note-attachment-button");
+    $(document).off("click", ".js-show-outdated-discussion");
+
+    $(document).off("ajax:complete", ".js-main-target-form");
+
 
     // add a new diff note
     $(document).on("click",
@@ -161,7 +177,7 @@ var NoteList = {
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
-    // show the reply button (will only work for replys)
+    // show the reply button (will only work for replies)
     form.prev(".js-discussion-reply-button").show();
 
     if (row.is(".js-temp-notes-holder")) {
@@ -211,9 +227,10 @@ var NoteList = {
     // Show the attachment delete link
     note.find(".js-note-attachment-delete").show();
 
+    GitLab.GfmAutoComplete.setup();
+
     var form = note.find(".note-edit-form");
     form.show();
-
 
     var textarea = form.find("textarea");
     var p = $("<p></p>").text(textarea.val());

@@ -1,8 +1,0 @@
-.file_content.blob_file
-  %center
-    = link_to project_blob_path(@project, @id) do
-      %div.padded
-        %h4
-          %i.icon-download-alt
-          %br
-          Download (#{number_to_human_size blob.size})

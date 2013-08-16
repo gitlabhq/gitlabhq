@@ -1,0 +1,23 @@
+%div
+  = form_for [:profile, @key] do |f|
+    - if @key.errors.any?
+      .alert.alert-error
+        %ul
+          - @key.errors.full_messages.each do |msg|
+            %li= msg
+
+    .control-group
+      = f.label :title
+      .controls= f.text_field :title, class: "input-xlarge"
+    .control-group
+      = f.label :key
+      .controls
+        %p.light
+          Paste your public key here. Read more about how generate it #{link_to "here", help_ssh_path}
+        = f.text_area :key, class: "input-xxlarge thin_area"
+
+
+    .form-actions
+      = f.submit 'Add key', class: "btn btn-create"
+      = link_to "Cancel", profile_keys_path, class: "btn btn-cancel"
+

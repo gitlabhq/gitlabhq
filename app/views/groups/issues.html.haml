@@ -1,23 +1,15 @@
-%h3.page_title
-  Issues
-  %small (assigned to you)
-  %small.pull-right #{@issues.total_count} issues
+%h3.page-title
+  Issues assigned to me
+  %span.pull-right #{@issues.total_count} issues
 
+%p.light
+  Only issues from
+  %strong #{@group.name}
+  group are listed here. To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
 %hr
+
 .row
   .span3
-    = render 'filter', entity: 'issue'
+    = render 'shared/filter', entity: 'issue'
   .span9
-    - if @issues.any?
-      - @issues.group_by(&:project).each do |group|
-        %div.ui-box
-          - project = group[0]
-          %h5.title
-            = link_to_project project
-          %ul.well-list.issues-list
-            - group[1].each do |issue|
-              = render issue
-      %hr
-      = paginate @issues, theme: "gitlab"
-    - else
-      %p.nothing_here_message Nothing to show here
+    = render 'shared/issues'

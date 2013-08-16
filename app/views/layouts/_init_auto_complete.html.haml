@@ -1,6 +1,4 @@
 :javascript
-  $(function() {
-    GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_project_path(@project)}"
-    GitLab.GfmAutoComplete.Emoji.assetBase = '#{image_path("emoji")}'
-    GitLab.GfmAutoComplete.setup();
-  });
+  GitLab.GfmAutoComplete.dataSource = "#{autocomplete_sources_project_path(@project)}"
+  GitLab.GfmAutoComplete.Emoji.assetBase = '#{image_path("emoji")}'
+  GitLab.GfmAutoComplete.setup();

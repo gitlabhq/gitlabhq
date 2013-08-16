@@ -1,22 +1,21 @@
 .ui-box
-  %h5.title
-    Projects
-    %small
-      (#{projects.count})
+  .title
+    Projects (#{projects.count})
     - if can? current_user, :manage_group, @group
       %span.pull-right
-        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-tiny info" do
+        = link_to new_project_path(namespace_id: @group.id), class: "btn" do
           %i.icon-plus
           New Project
   %ul.well-list
     - if projects.blank?
       %p.nothing_here_message This groups has no projects yet
     - projects.each do |project|
-      %li
+      %li.project-row
         = link_to project_path(project), class: dom_class(project) do
-          %strong.well-title= truncate(project.name, length: 25)
+          %span.project-name
+            = truncate(project.name, length: 25)
           %span.arrow
-            &rarr;
-          %span.last_activity
-            %strong Last activity:
-            %span= project_last_activity(project)
+            %i.icon-angle-right
+          %span.last-activity
+            %span Last activity:
+            %span.date= project_last_activity(project)

@@ -1,0 +1,22 @@
+%h3.page-title
+  My SSH keys
+  .pull-right
+    = link_to "Add SSH Key", new_profile_key_path, class: "btn btn-new"
+%p.light
+  SSH keys allow you to establish a secure connection between your computer and GitLab
+  %br
+  Before you can add an SSH key you need to
+  = link_to "generate it", help_ssh_path
+%hr
+
+
+.ui-box
+  .title
+    SSH Keys (#{@keys.count})
+  %ul.well-list#keys-table
+    = render @keys
+    - if @keys.blank?
+      %li
+        %h3.nothing_here_message There are no SSH keys with access to your account.
+
+

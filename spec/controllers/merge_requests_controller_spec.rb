@@ -1,14 +1,14 @@
 require 'spec_helper'
 
-describe MergeRequestsController do
+describe Projects::MergeRequestsController do
   let(:project) { create(:project_with_code) }
   let(:user)    { create(:user) }
-  let(:merge_request) { create(:merge_request_with_diffs, project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
+  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
 
   before do
     sign_in(user)
     project.team << [user, :master]
-    MergeRequestsController.any_instance.stub(validates_merge_request: true)
+    Projects::MergeRequestsController.any_instance.stub(validates_merge_request: true)
   end
 
   describe "#show" do
@@ -28,7 +28,7 @@ describe MergeRequestsController do
       it "should render it" do
         get :show, project_id: project.code, id: merge_request.id, format: format
 
-        expect(response.body).to eq(merge_request.send(:"to_#{format}"))
+        expect(response.body).to eq((merge_request.send(:"to_#{format}",user)).to_s)
       end
 
       it "should not escape Html" do

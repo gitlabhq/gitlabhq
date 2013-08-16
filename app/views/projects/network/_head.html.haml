@@ -1,0 +1,23 @@
+.clearfix
+  .pull-left
+    = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
+  .pull-left
+    = form_tag project_network_path(@project, @id), method: :get do |f|
+      .control-group
+        = label_tag :filter_ref, "Show only selected ref", class: 'control-label light'
+        .controls
+          = check_box_tag :filter_ref, 1, @options[:filter_ref]
+    - @options.each do |key, value|
+      = hidden_field_tag(key, value, id: nil) unless key == "filter_ref"
+
+  .search.pull-right
+    = form_tag project_network_path(@project, @id), method: :get do |f|
+      .control-group
+        = label_tag :search , "Looking for commit:", class: 'control-label light'
+        .controls
+          = text_field_tag :q, @options[:q], placeholder: "Input SHA", class: "search-input input-xlarge"
+          = button_tag type: 'submit', class: 'btn vtop' do
+            %i.icon-search
+          - @options.each do |key, value|
+            = hidden_field_tag(key, value, id: nil) unless key == "q"
+

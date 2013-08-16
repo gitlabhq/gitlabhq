@@ -1,0 +1,28 @@
+- commit = Commit.new(Gitlab::Git::Commit.new(branch.commit))
+%li
+  %h4
+    = link_to project_commits_path(@project, branch.name) do
+      %strong= truncate(branch.name, length: 60)
+      - if branch.name == @repository.root_ref
+        %span.label.label-info default
+      - if @project.protected_branch? branch.name
+        %span.label.label-success
+          %i.icon-lock
+    .pull-right
+      - if can?(current_user, :download_code, @project)
+        = link_to archive_project_repository_path(@project, ref: branch.name), class: 'btn grouped btn-small' do
+          %i.icon-download-alt
+          Download
+      - if can?(current_user, :admin_project, @project) && branch.name != @repository.root_ref
+        = link_to project_branch_path(@project, branch.name), class: 'btn grouped btn-small remove-row', method: :delete, confirm: 'Removed branch cannot be restored. Are you sure?', remote: true do
+          %i.icon-trash
+
+  %p
+    = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
+      = commit.short_id
+    = image_tag gravatar_icon(commit.author_email), class: "avatar s16", alt: ''
+    %span.light
+      = gfm escape_once(truncate(commit.title, length: 40))
+    %span
+      = time_ago_in_words(commit.committed_date)
+      ago

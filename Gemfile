@@ -15,7 +15,7 @@ gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise"
+gem "devise", '~> 2.2'
 gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
@@ -23,7 +23,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem 'gitlab_git', '~> 1.3.0'
+gem "gitlab_git", '2.0.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
@@ -35,7 +35,7 @@ gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
 gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
 
 # Git Wiki
-gem "gitlab-gollum-lib", "~> 1.0.0", require: 'gollum-lib'
+gem "gitlab-gollum-lib", "~> 1.0.1", require: 'gollum-lib'
 
 # Language detection
 gem "github-linguist", require: "linguist"
@@ -129,7 +129,7 @@ group :assets do
   gem 'turbolinks'
   gem 'jquery-turbolinks'
 
-  gem 'chosen-rails',     "0.9.8"
+  gem 'chosen-rails',     "1.0.0"
   gem 'select2-rails'
   gem 'jquery-atwho-rails', "0.3.0"
   gem "jquery-rails",     "2.1.3"
@@ -137,7 +137,7 @@ group :assets do
   gem "modernizr",        "2.6.2"
   gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass'
-  gem "font-awesome-rails", "~> 3.1.1"
+  gem "font-awesome-rails"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
   gem "gon"
 end
@@ -173,7 +173,7 @@ group :development, :test do
   gem 'factory_girl_rails'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
-  gem 'minitest'
+  gem 'minitest', '~> 4.7.0'
 
   # Generate Fake data
   gem "ffaker"
@@ -203,5 +203,5 @@ group :test do
 end
 
 group :production do
-  gem "gitlab_meta", '5.0'
+  gem "gitlab_meta", '6.0'
 end

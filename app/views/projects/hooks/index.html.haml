@@ -1,0 +1,35 @@
+%h3.page-title
+  Post-receive hooks
+
+%p.light
+  #{link_to "Post-receive hooks ", help_web_hooks_path, class: "vlink"} can be
+  used for binding events when someone pushes to the repository.
+
+%hr.clearfix
+
+= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-inline' } do |f|
+  -if @hook.errors.any?
+    .alert.alert-error
+      - @hook.errors.full_messages.each do |msg|
+        %p= msg
+  .control-group
+    = f.label :url, "URL:"
+    .controls
+      = f.text_field :url, class: "text_field input-xxlarge input-xpadding", placeholder: 'http://example.com/trigger-ci.json'
+      &nbsp;
+      = f.submit "Add Web Hook", class: "btn btn-create"
+%hr
+
+-if @hooks.any?
+  .ui-box
+    .title
+      Hooks (#{@hooks.count})
+    %ul.well-list
+      - @hooks.each do |hook|
+        %li
+          %span.badge.badge-info POST
+          &rarr;
+          %span.monospace= hook.url
+          .pull-right
+            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small grouped"
+            = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-small grouped"

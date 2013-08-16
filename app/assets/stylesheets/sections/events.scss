@@ -31,6 +31,10 @@
  *
  */
 .event-item {
+  &:first-child {
+    padding-top: 0;
+  }
+
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
@@ -41,6 +45,8 @@
     }
   }
   .event-body {
+    margin-left: 35px;
+
     .commit p {
       color: #666;
       padding-top: 5px;
@@ -51,7 +57,6 @@
     .event-note {
       color: #555;
       margin-top: 5px;
-      margin-left: 40px;
 
       pre {
         border: none;
@@ -77,10 +82,6 @@
       margin-right: 5px;
     }
   }
-  .avatar {
-    position: relative;
-    top: -3px;
-  }
   .event_icon {
     position: relative;
     float: right;
@@ -94,16 +95,15 @@
       width: 20px;
     }
   }
+
   ul {
-    margin-left: 50px;
-    margin-bottom: 5px;
     .avatar {
       width: 18px;
-      margin-top: 3px;
+      margin: 2px 4px;
     }
   }
 
-  padding: 16px 5px;
+  padding: 12px 0px;
   &:last-child { border:none }
 
   .event_commits {
@@ -118,33 +118,14 @@
       }
       &.commits-stat {
         display: block;
-        margin-top: 5px;
+        padding: 3px;
+        margin-top: 3px;
+
+        &:hover {
+          background: none;
+        }
       }
     }
-  }
-}
-
-/**
- * Push event widget
- *
- */
-.event_lp {
-  color: #777;
-  padding: 10px;
-  min-height: 22px;
-  border-left: 5px solid $primary_color;
-  margin-bottom: 20px;
-  background: #f9f9f9;
-
-  .avatar {
-    width: 24px;
-  }
-
-  .btn-new-mr {
-    @extend .btn-primary;
-    @extend .small;
-    @extend .pull-right;
-    margin: -2px;
   }
 }
 

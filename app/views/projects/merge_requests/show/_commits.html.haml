@@ -1,0 +1,30 @@
+- if @commits.present?
+  .ui-box
+    .title
+      %i.icon-list
+      Commits (#{@commits.count})
+    .commits
+      - if @commits.count > 8
+        %ul.first-commits.well-list
+          - @commits.first(8).each do |commit|
+            = render "projects/commits/commit", commit: commit, project: @merge_request.source_project
+          %li.bottom
+            8 of #{@commits.count} commits displayed.
+            %strong
+              %a.show-all-commits Click here to show all
+        %ul.all-commits.hide.well-list
+          - @commits.each do |commit|
+            = render "projects/commits/commit", commit: commit, project: @merge_request.source_project
+
+      - else
+        %ul.well-list
+          - @commits.each do |commit|
+            = render "projects/commits/commit", commit: commit, project: @merge_request.source_project
+
+- else
+  %h4.nothing_here_message
+    Nothing to merge from
+    %span.label-branch #{@merge_request.source_branch}
+    to
+    %span.label-branch #{@merge_request.target_branch}
+  %br

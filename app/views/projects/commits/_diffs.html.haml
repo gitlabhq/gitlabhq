@@ -1,0 +1,56 @@
+- if @suppress_diff
+  .alert.alert-block
+    %p
+      %strong Warning! Large commit with more than #{Commit::DIFF_SAFE_SIZE} files changed.
+    %p To preserve performance the diff is not shown.
+    %p
+      But if you still want to see the diff
+      = link_to "click this link", project_commit_path(project, @commit, force_show_diff: true), class: "underlined_link"
+
+%p.commit-stat-summary
+  Showing
+  %strong.cdark #{pluralize(diffs.count, "changed file")}
+  - if current_controller?(:commit)
+    - unless @commit.has_zero_stats?
+      with
+      %strong.cgreen #{@commit.stats.additions} additions
+      and
+      %strong.cred #{@commit.stats.deletions} deletions
+.file-stats
+  = render "projects/commits/diff_head", diffs: diffs
+
+.files
+  - unless @suppress_diff
+    - diffs.each_with_index do |diff, i|
+      - next if diff.diff.empty?
+      - file = Gitlab::Git::Blob.new(project.repository, @commit.id, @ref, diff.new_path)
+      - file = Gitlab::Git::Blob.new(project.repository, @commit.parent_id, @ref, diff.old_path) unless file.exists?
+      - next unless file.exists?
+      .file{id: "diff-#{i}"}
+        .header
+          - if diff.deleted_file
+            %span= diff.old_path
+
+            - if @commit.parent_ids.present?
+              = link_to project_blob_path(project, tree_join(@commit.parent_id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
+                View file @
+                %span.commit-short-id= @commit.short_id(6)
+          - else
+            %span= diff.new_path
+            - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+              %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+
+            = link_to project_blob_path(project, tree_join(@commit.id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
+              View file @
+              %span.commit-short-id= @commit.short_id(6)
+
+        .content
+          -# Skipp all non non-supported blobs
+          - next unless file.respond_to?('text?')
+          - if file.text?
+            = render "projects/commits/text_file", diff: diff, index: i
+          - elsif file.image?
+            - old_file = Gitlab::Git::Blob.new(project.repository, @commit.parent_id, @ref, diff.old_path) if @commit.parent_id
+            = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i
+          - else
+            %p.nothing_here_message No preview for this file type

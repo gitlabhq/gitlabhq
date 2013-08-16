@@ -61,17 +61,19 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
-      #   issues_enabled (optional) 
-      #   wall_enabled (optional) 
-      #   merge_requests_enabled (optional) 
-      #   wiki_enabled (optional) 
+      #   issues_enabled (optional)
+      #   wall_enabled (optional)
+      #   merge_requests_enabled (optional)
+      #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
+      #   public (optional) - false by default
       # Example Request
       #   POST /projects
       post do
         required_attributes! [:name]
         attrs = attributes_for_keys [:name,
+                                    :path,
                                     :description,
                                     :default_branch,
                                     :issues_enabled,
@@ -79,7 +81,8 @@ module API
                                     :merge_requests_enabled,
                                     :wiki_enabled,
                                     :snippets_enabled,
-                                    :namespace_id]
+                                    :namespace_id,
+                                    :public]
         @project = ::Projects::CreateContext.new(current_user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
@@ -98,11 +101,12 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
-      #   issues_enabled (optional) 
-      #   wall_enabled (optional) 
-      #   merge_requests_enabled (optional) 
+      #   issues_enabled (optional)
+      #   wall_enabled (optional)
+      #   merge_requests_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
+      #   public (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -115,7 +119,8 @@ module API
                                     :wall_enabled,
                                     :merge_requests_enabled,
                                     :wiki_enabled,
-                                    :snippets_enabled]
+                                    :snippets_enabled,
+                                    :public]
         @project = ::Projects::CreateContext.new(user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project

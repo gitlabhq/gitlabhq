@@ -43,7 +43,7 @@ class SystemHooksService
         project_id: model.project_id,
         user_name: model.user.name,
         user_email: model.user.email,
-        project_access: model.repo_access_human
+        project_access: model.project_access_human
       })
     end
   end

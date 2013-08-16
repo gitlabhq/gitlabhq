@@ -1,6 +1,6 @@
 .alert.alert-info
   %span
-    Post receive hooks for binding events.
+    Post-receive hooks for binding events.
     %br
     Read more about system hooks
     %strong #{link_to "here", help_system_hooks_path, class: "vlink"}
@@ -10,10 +10,10 @@
     .alert.alert-error
       - @hook.errors.full_messages.each do |msg|
         %p= msg
-  .clearfix
+  .control-group
     = f.label :url, "URL:"
-    .input
-      = f.text_field :url, class: "text_field xxlarge"
+    .controls
+      = f.text_field :url, class: "text_field input-xxlarge input-xpadding"
       &nbsp;
       = f.submit "Add System Hook", class: "btn btn-create"
 %hr

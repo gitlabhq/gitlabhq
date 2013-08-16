@@ -1,0 +1,95 @@
+%div.issue-form-holder
+  %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
+  = form_for [@project, @issue] do |f|
+    -if @issue.errors.any?
+      .alert.alert-error
+        - @issue.errors.full_messages.each do |msg|
+          %span= msg
+          %br
+    .ui-box.ui-box-show
+      .ui-box-head
+        .control-group
+          = f.label :title do
+            %strong= "Subject *"
+          .controls
+            = f.text_field :title, maxlength: 255, class: "input-xxlarge js-gfm-input", autofocus: true, required: true
+      .ui-box-body
+        .control-group
+          .issue_assignee.pull-left
+            = f.label :assignee_id do
+              %i.icon-user
+              Assign to
+            .controls
+              .pull-left
+                = f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+              .pull-right
+                &nbsp;
+                = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+          .issue_milestone.pull-left
+            = f.label :milestone_id do
+              %i.icon-time
+              Milestone
+            .controls= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+
+      .ui-box-bottom
+        .control-group
+          = f.label :label_list do
+            %i.icon-tag
+            Labels
+          .controls
+            = f.text_field :label_list, maxlength: 2000, class: "input-xxlarge"
+            %p.hint Separate labels with commas.
+
+        .control-group
+          = f.label :description, "Details"
+          .controls
+            = f.text_area :description, class: "input-xxlarge js-gfm-input", rows: 14
+            %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+
+
+    .form-actions
+      - if @issue.new_record?
+        = f.submit 'Submit new issue', class: "btn btn-create"
+      -else
+        = f.submit 'Save changes', class: "btn-save btn"
+
+      - cancel_path = @issue.new_record? ? project_issues_path(@project) : project_issue_path(@project, @issue)
+      = link_to "Cancel", cancel_path, class: 'btn btn-cancel'
+
+
+
+
+:javascript
+  $("#issue_label_list")
+    .bind( "keydown", function( event ) {
+      if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).data( "autocomplete" ).menu.active ) {
+        event.preventDefault();
+      }
+    })
+    .bind( "click", function( event ) {
+        $( this ).autocomplete("search", "");
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function( request, response ) {
+        response( $.ui.autocomplete.filter(
+          #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split( this.value );
+        terms.pop();
+        terms.push( ui.item.value );
+        terms.push( "" );
+        this.value = terms.join( ", " );
+        return false;
+      }
+    });
+
+  $('.assign-to-me-link').on('click', function(e){
+    $('#issue_assignee_id').val("#{current_user.id}").trigger("chosen:updated");
+    e.preventDefault();
+  });

@@ -1,9 +1,9 @@
 %p
   = "Merge Request #{@merge_request.id} was closed by #{@updated_by.name}"
 %p
-  = link_to_gfm truncate(@merge_request.title, length: 40), project_merge_request_url(@merge_request.project, @merge_request)
+  = link_to_gfm truncate(@merge_request.title, length: 40), project_merge_request_url(@merge_request.target_project, @merge_request)
 %p
-  Branches: #{@merge_request.source_branch} &rarr; #{@merge_request.target_branch}
+  != merge_path_description(@merge_request, '&rarr;')
 %p
   Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
 

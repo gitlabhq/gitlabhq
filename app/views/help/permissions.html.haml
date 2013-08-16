@@ -1,66 +1,160 @@
 = render layout: 'help/layout' do
-  %h3.page_title Permissions
-  %br
+  %h3.page-title Permissions
 
-  %fieldset
-    %legend Guest
-    %ul
-      %li Create new issue
-      %li Leave comments
-      %li Write on project wall
-
-  %fieldset
-    %legend Reporter
-    %ul
-      %li Create new issue
-      %li Leave comments
-      %li Write on project wall
-      %li Pull project code
-      %li Download project
-      %li Create a code snippets
-
-
-  %fieldset
-    %legend Developer
-    %ul
-      %li Create new issue
-      %li Leave comments
-      %li Write on project wall
-      %li Pull project code
-      %li Download project
-      %li Create new merge request
-      %li Create a code snippets
-      %li Create new branches
-      %li Push to non-protected branches
-      %li Remove non-protected branches
-      %li Add tags
-      %li Write a wiki
-
-  %fieldset
-    %legend Master
-    %ul
-      %li Create new issue
-      %li Leave comments
-      %li Write on project wall
-      %li Pull project code
-      %li Download project
-      %li Create new merge request
-      %li Create a code snippets
-      %li Create new branches
-      %li Push to non-protected branches
-      %li Remove non-protected branches
-      %li Add tags
-      %li Write a wiki
-      %li Add new team members
-      %li Push to protected branches
-      %li Remove protected branches
-      %li Edit project
-      %li Add Deploy Keys to project
-      %li Configure Project Hooks
-
-  %fieldset
-    %legend Owner
-    %ul
-      %li Switch public mode
-      %li Transfer project to another namespace
-      %li Remove project
+  %table.table
+    %thead
+      %tr
+        %th Action
+        %th Guest
+        %th Reporter
+        %th Developer
+        %th Master
+        %th Owner
+    %tbody
+      %tr
+        %td Create new issue
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Leave comments
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Write on project wall
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Pull project code
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Download project
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Create code snippets
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Create new merge request
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Create new branches
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Push to non-protected branches
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Remove non-protected branches
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Add tags
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Write a wiki
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Add new team members
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Push to protected branches
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Remove protected branches
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Edit project
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Add Deploy Keys to project
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Configure Project Hooks
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Switch public mode
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+      %tr
+        %td Transfer project to another namespace
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+      %tr
+        %td Remove project
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;

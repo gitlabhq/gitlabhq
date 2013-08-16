@@ -1,6 +1,6 @@
 # NotificationService class
 #
-# Used for notifing users with emails about different events
+# Used for notifying users with emails about different events
 #
 # Ex.
 #   NotificationService.new.new_issue(issue, current_user)
@@ -23,7 +23,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def new_issue(issue, current_user)
-    new_resource_email(issue, 'new_issue_email')
+    new_resource_email(issue, issue.project, 'new_issue_email')
   end
 
   # When we close an issue we should send next emails:
@@ -33,7 +33,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def close_issue(issue, current_user)
-    close_resource_email(issue, current_user, 'closed_issue_email')
+    close_resource_email(issue, issue.project, current_user, 'closed_issue_email')
   end
 
   # When we reassign an issue we should send next emails:
@@ -42,7 +42,7 @@ class NotificationService
   #  * issue new assignee if his notification level is not Disabled
   #
   def reassigned_issue(issue, current_user)
-    reassign_resource_email(issue, current_user, 'reassigned_issue_email')
+    reassign_resource_email(issue, issue.project, current_user, 'reassigned_issue_email')
   end
 
 
@@ -51,7 +51,7 @@ class NotificationService
   #  * mr assignee if his notification level is not Disabled
   #
   def new_merge_request(merge_request, current_user)
-    new_resource_email(merge_request, 'new_merge_request_email')
+    new_resource_email(merge_request, merge_request.target_project, 'new_merge_request_email')
   end
 
   # When we reassign a merge_request we should send next emails:
@@ -60,7 +60,7 @@ class NotificationService
   #  * merge_request assignee if his notification level is not Disabled
   #
   def reassigned_merge_request(merge_request, current_user)
-    reassign_resource_email(merge_request, current_user, 'reassigned_merge_request_email')
+    reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
   end
 
   # When we close a merge request we should send next emails:
@@ -70,7 +70,7 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def close_mr(merge_request, current_user)
-    close_resource_email(merge_request, current_user, 'closed_merge_request_email')
+    close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
 
   # When we merge a merge request we should send next emails:
@@ -80,8 +80,8 @@ class NotificationService
   #  * project team members with notification level higher then Participating
   #
   def merge_mr(merge_request)
-    recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.project)
-    recipients = recipients.concat(project_watchers(merge_request.project)).uniq
+    recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
+    recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
 
     recipients.each do |recipient|
       mailer.merged_merge_request_email(recipient.id, merge_request.id)
@@ -90,7 +90,7 @@ class NotificationService
 
   # Notify new user with email after creation
   def new_user(user)
-    # Dont email omniauth created users
+    # Don't email omniauth created users
     mailer.new_user_email(user.id, user.password) unless user.extern_uid?
   end
 
@@ -102,19 +102,22 @@ class NotificationService
     # ignore wall messages
     return true unless note.noteable_type.present?
 
+    # ignore gitlab service messages
+    return true if note.note =~ /\A_Status changed to closed_/
+
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     if note.commit_id.present?
       opts.merge!(commit_id: note.commit_id)
-      recipients = [note.commit_author]
     else
       opts.merge!(noteable_id: note.noteable_id)
-      target = note.noteable
-      if target.respond_to?(:participants)
-        recipients = target.participants
-      else
-        recipients = []
-      end
+    end
+
+    target = note.noteable
+    if target.respond_to?(:participants)
+      recipients = target.participants
+    else
+      recipients = note.mentioned_users
     end
 
     # Get users who left comment in thread
@@ -149,14 +152,19 @@ class NotificationService
 
   # Get project users with WATCH notification level
   def project_watchers(project)
+    project_watchers = []
+    member_methods = { project => :users_projects }
+    member_methods.merge!(project.group => :users_groups) if project.group
 
-    # Get project notification settings since it has higher priority
-    user_ids = project.users_projects.where(notification_level: Notification::N_WATCH).pluck(:user_id)
-    project_watchers = User.where(id: user_ids)
+    member_methods.each do |object, member_method|
+      # Get project notification settings since it has higher priority
+      user_ids = object.send(member_method).where(notification_level: Notification::N_WATCH).pluck(:user_id)
+      project_watchers += User.where(id: user_ids)
 
-    # next collect users who use global settings with watch state
-    user_ids = project.users_projects.where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
-    project_watchers += User.where(id: user_ids, notification_level: Notification::N_WATCH)
+      # next collect users who use global settings with watch state
+      user_ids = object.send(member_method).where(notification_level: Notification::N_GLOBAL).pluck(:user_id)
+      project_watchers += User.where(id: user_ids, notification_level: Notification::N_WATCH)
+    end
 
     project_watchers.uniq
   end
@@ -171,6 +179,10 @@ class NotificationService
 
       tm = project.users_projects.find_by_user_id(user.id)
 
+      if !tm && project.group
+        tm = project.group.users_groups.find_by_user_id(user.id)
+      end
+
       # reject users who globally disabled notification and has no membership
       next user.notification.disabled? unless tm
 
@@ -182,14 +194,14 @@ class NotificationService
     end
   end
 
-  def new_resource_email(target, method)
+  def new_resource_email(target, project, method)
     if target.respond_to?(:participants)
       recipients = target.participants
     else
       recipients = []
     end
-    recipients = reject_muted_users(recipients, target.project)
-    recipients = recipients.concat(project_watchers(target.project)).uniq
+    recipients = reject_muted_users(recipients, project)
+    recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(target.author)
 
     recipients.each do |recipient|
@@ -197,9 +209,9 @@ class NotificationService
     end
   end
 
-  def close_resource_email(target, current_user, method)
-    recipients = reject_muted_users([target.author, target.assignee], target.project)
-    recipients = recipients.concat(project_watchers(target.project)).uniq
+  def close_resource_email(target, project, current_user, method)
+    recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -207,14 +219,14 @@ class NotificationService
     end
   end
 
-  def reassign_resource_email(target, current_user, method)
+  def reassign_resource_email(target, project, current_user, method)
     recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
 
     # Add watchers to email list
-    recipients = recipients.concat(project_watchers(target.project))
+    recipients = recipients.concat(project_watchers(project))
 
     # reject users with disabled notifications
-    recipients = reject_muted_users(recipients, target.project)
+    recipients = reject_muted_users(recipients, project)
 
     # Reject me from recipients if I reassign an item
     recipients.delete(current_user)

@@ -13,7 +13,7 @@ header {
       .nav > li > a {
         color: $style_color;
         text-shadow: 0 1px 0 #fff;
-        font-size: 16px;
+        font-size: 14px;
         padding: 10px;
       }
 
@@ -45,6 +45,7 @@ header {
       margin: 0 6px;
 
       h1 {
+        margin: 0;
         background: url('logo-black.png') no-repeat center 1px;
         background-size: 38px;
         float: left;
@@ -68,7 +69,7 @@ header {
     position: relative;
     float: left;
     margin: 0;
-    margin-left: 10px;
+    margin-left: 5px;
     @include header-font;
   }
 
@@ -92,7 +93,7 @@ header {
     margin-left: 10px;
 
     .search-input {
-      @extend .span2;
+      @extend .span3;
       background-image: url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
@@ -103,7 +104,7 @@ header {
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
       &:focus {
-        @extend .span3;
+        @extend .span4;
       }
     }
   }
@@ -120,7 +121,7 @@ header {
         border-bottom: 1px solid #AAA;
 
         .nav > li > a {
-          color: #DDD;
+          color: #AAA;
           text-shadow: 0 1px 0 #444;
 
           &:hover {
@@ -128,6 +129,10 @@ header {
           }
         }
       }
+    }
+
+    .turbolink-spinner {
+      color: #FFF;
     }
 
     .search {
@@ -156,7 +161,10 @@ header {
     }
     .project_name {
       a {
-        color: #FFF;
+        color: #BBB;
+        &:hover {
+          color: #FFF;
+        }
       }
       color: #fff;
       text-shadow: 0 1px 1px #444;

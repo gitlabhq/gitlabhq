@@ -13,9 +13,10 @@
       = sanitize(markdown(truncate(event.target.note, length: 150)), tags: %w(a img b pre p))
     - note = event.target
     - if note.attachment.url
-      = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do
-        - if note.attachment.image?
+      - if note.attachment.image?
+        = link_to note.attachment.url, target: '_blank' do
           = image_tag note.attachment.url, class: 'note-image-attach'
-        - else
+      - else
+        = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do
           %i.icon-paper-clip
           = note.attachment_identifier

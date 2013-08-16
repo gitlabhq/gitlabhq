@@ -42,7 +42,7 @@ namespace :gitlab do
     username = user.email.match(/^[^@]*/)[0]
     username.gsub!("+", ".")
 
-    # return username if no mathes
+    # return username if no matches
     return username unless User.find_by_username(username)
 
     # look for same username

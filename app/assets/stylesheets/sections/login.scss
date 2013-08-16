@@ -1,7 +1,7 @@
 /* Login Page */
 body.login-page{
-  background: #EEE;
-  .container .content { padding-top: 5%; }
+  background: #474D57;
+  .container .content { padding-top: 4%; }
 }
 
 .login-box{
@@ -37,3 +37,11 @@ body.login-page{
 }
 
 .login-box a.forgot{float: right; padding-top: 6px}
+
+.remember_me {
+  text-align: left;
+
+  input {
+    margin: 2px;
+  }
+}

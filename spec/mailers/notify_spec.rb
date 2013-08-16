@@ -86,7 +86,7 @@ describe Notify do
     end
 
     it 'includes a link to ssh keys page' do
-      should have_body_text /#{keys_path}/
+      should have_body_text /#{profile_keys_path}/
     end
   end
 
@@ -167,7 +167,7 @@ describe Notify do
       end
 
       context 'for merge requests' do
-        let(:merge_request) { create(:merge_request, assignee: assignee, project: project) }
+        let(:merge_request) { create(:merge_request, assignee: assignee, source_project: project, target_project: project) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -215,6 +215,24 @@ describe Notify do
           end
 
         end
+      end
+    end
+
+    describe 'project was moved' do
+      let(:project) { create(:project) }
+      let(:user) { create(:user) }
+      subject { Notify.project_was_moved_email(project.id, user.id) }
+
+      it 'has the correct subject' do
+        should have_subject /project was moved/
+      end
+
+      it 'contains name of project' do
+        should have_body_text /#{project.name_with_namespace}/
+      end
+
+      it 'contains new user role' do
+        should have_body_text /#{project.ssh_url_to_repo}/
       end
     end
 
@@ -293,7 +311,7 @@ describe Notify do
       end
 
       describe 'on a merge request' do
-        let(:merge_request) { create(:merge_request, project: project) }
+        let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
         before(:each) { note.stub(:noteable).and_return(merge_request) }
 

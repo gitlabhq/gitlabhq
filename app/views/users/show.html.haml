@@ -1,6 +1,6 @@
 .row
   .span8
-    %h3.page_title
+    %h3.page-title
       = image_tag gravatar_icon(@user.email, 90), class: "avatar s90", alt: ''
       = @user.name
       - if @user == current_user
@@ -14,7 +14,7 @@
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     .clearfix
     %hr
-    %h5 Recent events
+    %h5 User Activity:
     = render @events
   .span4
     = render 'profile', user: @user

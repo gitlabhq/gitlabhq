@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Group: #{@group.name}
 
   = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
@@ -8,7 +8,7 @@
 .row
   .span6
     .ui-box
-      %h5.title
+      .title
         Group info:
       %ul.well-list
         %li
@@ -49,38 +49,8 @@
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
-
     .ui-box
-      %h5.title
-        Add user to Group projects:
-      .ui-box-body.form-holder
-        %p.light
-          Read more about project permissions
-          %strong= link_to "here", help_permissions_path, class: "vlink"
-
-        = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
-          %div
-            = users_select_tag(:user_ids, multiple: true)
-          %div.prepend-top-10
-            = select_tag :project_access, options_for_select(Project.access_options), {class: "project-access-select chosen span2"}
-          %hr
-          = submit_tag 'Add user to projects in group', class: "btn btn-create"
-    .ui-box
-      %h5.title
-        Users from Group projects
-        %small
-          (#{@group.users.count})
-      %ul.well-list
-        - @group.users.sort_by(&:name).each do |user|
-          %li{class: dom_class(user)}
-            %strong
-              = link_to user.name, admin_user_path(user)
-            %span.pull-right.light
-              = pluralize user.authorized_projects.in_namespace(@group).count, 'project'
-
-  .span6
-    .ui-box
-      %h5.title
+      .title
         Projects
         %small
           (#{@group.projects.count})
@@ -91,3 +61,35 @@
               = link_to project.name_with_namespace, [:admin, project]
             %span.pull-right.light
               %span.monospace= project.path_with_namespace + ".git"
+
+  .span6
+    .ui-box
+      .title
+        Add user(s) to the group:
+      .ui-box-body.form-holder
+        %p.light
+          Read more about project permissions
+          %strong= link_to "here", help_permissions_path, class: "vlink"
+
+        = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
+          %div
+            = users_select_tag(:user_ids, multiple: true)
+          %div.prepend-top-10
+            = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select chosen"
+          %hr
+          = submit_tag 'Add users into group', class: "btn btn-create"
+    .ui-box
+      .title
+        %strong #{@group.name}
+        Group Members
+        %small
+          (#{@group.users_groups.count})
+      %ul.well-list.group-users-list
+        - @group.users_groups.order('group_access DESC').each do |member|
+          - user = member.user
+          %li{class: dom_class(user)}
+            %strong
+              = link_to user.name, admin_user_path(user)
+            %span.pull-right.light
+              = member.human_access
+

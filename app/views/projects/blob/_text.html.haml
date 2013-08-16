@@ -1,0 +1,14 @@
+- if gitlab_markdown?(blob.name)
+  .file-content.wiki
+    = preserve do
+      = markdown(blob.data)
+- elsif markup?(blob.name)
+  .file-content.wiki
+    = raw GitHub::Markup.render(blob.name, blob.data)
+- else
+  .file-content.code
+    - unless blob.empty?
+      %div{class: user_color_scheme_class}
+        = raw blob.colorize(formatter: :gitlab)
+    - else
+      %p.nothing_here_message Empty file

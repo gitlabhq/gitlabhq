@@ -1,0 +1,10 @@
+.ui-box
+  .title
+    %strong #{@group.name}
+    group members (#{@group.users_groups.count})
+    .pull-right
+      = link_to members_group_path(@group), class: 'btn btn-small' do
+        %i.icon-edit
+  %ul.well-list
+    - @group.users_groups.order('group_access DESC').each do |member|
+      = render 'users_groups/users_group', member: member, show_controls: false

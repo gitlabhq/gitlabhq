@@ -1,21 +1,18 @@
-%h3.page_title
-  GITLAB
+%h2.page-title
+  GitLab
   .pull-right
     %span= Gitlab::VERSION
     %small= Gitlab::REVISION
-%hr
-%p.lead
+%p.slead
   Self Hosted Git Management
   %br
   Fast, secure and stable solution based on Ruby on Rails.
-
-%br
 
 .row
   .span4
     .ui-box
       .title
-        %h5 Quick help
+        Quick help
       %ul.well-list
         %li
           Email your
@@ -25,6 +22,9 @@
           = link_to "search bar", '#', onclick: "$('#search').focus();"
           on the top of this page
         %li
+          Use
+          = link_to "shortcuts", '#', onclick: "new Shortcuts()"
+        %li
           Ask in our
           = link_to "mailing list", "https://groups.google.com/forum/#!forum/gitlabhq"
           or on
@@ -32,10 +32,11 @@
         %li
           Browse our
           = link_to "issue tracker", "https://github.com/gitlabhq/gitlabhq/issues"
+
   .span4
     .ui-box
       .title
-        %h5 User documentation
+        User documentation
       %ul.well-list
         %li
           %strong= link_to "Workflow", help_workflow_path
@@ -64,7 +65,7 @@
   .span4
     .ui-box
       .title
-        %h5 Admin documentation
+        Admin documentation
       %ul.well-list
 
         %li

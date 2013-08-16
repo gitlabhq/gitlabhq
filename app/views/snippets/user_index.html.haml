@@ -1,10 +1,9 @@
-%h3.page_title
+%h3.page-title
   = image_tag gravatar_icon(@user.email), class: "avatar s24"
   = @user.name
   %span
     \/
     Snippets
-  %small share code pastes with others out of git repository
   = link_to new_snippet_path, class: "btn btn-small add_new pull-right", title: "New Snippet" do
     Add new snippet
 

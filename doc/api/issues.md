@@ -1,6 +1,6 @@
 ## List issues
 
-Get all issues created by authenticed user. This function takes pagination parameters
+Get all issues created by authenticated user. This function takes pagination parameters
 `page` and `per_page` to restrict the list of issues.
 
 ```

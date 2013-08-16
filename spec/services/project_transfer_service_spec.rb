@@ -2,6 +2,7 @@ require 'spec_helper'
 
 describe ProjectTransferService do
   before(:each) { enable_observers }
+  after(:each) {disable_observers}
 
   context 'namespace -> namespace' do
     let(:user) { create(:user) }
@@ -23,6 +24,7 @@ describe ProjectTransferService do
     before do
       @result = service.transfer(project, nil)
     end
+
 
     it { @result.should be_true }
     it { project.namespace.should == nil }

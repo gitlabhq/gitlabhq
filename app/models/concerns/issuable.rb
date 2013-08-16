@@ -9,24 +9,20 @@ module Issuable
   include Mentionable
 
   included do
-    belongs_to :project
     belongs_to :author, class_name: "User"
     belongs_to :assignee, class_name: "User"
     belongs_to :milestone
     has_many :notes, as: :noteable, dependent: :destroy
 
-    validates :project, presence: true
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
 
-    scope :opened, -> { with_state(:opened) }
-    scope :closed, -> { with_state(:closed) }
-    scope :of_group, ->(group) { where(project_id: group.project_ids) }
-    scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
+    scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
     scope :recent, -> { order("created_at DESC") }
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
+    scope :of_projects, ->(ids) { where(project_id: ids) }
 
     delegate :name,
              :email,

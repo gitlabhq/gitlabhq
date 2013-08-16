@@ -1,4 +1,4 @@
-class ProjectsController < ProjectResourceController
+class ProjectsController < Projects::ApplicationController
   skip_before_filter :project, only: [:new, :create]
   skip_before_filter :repository, only: [:new, :create]
 
@@ -15,6 +15,7 @@ class ProjectsController < ProjectResourceController
   end
 
   def edit
+    render 'edit', layout: "project_settings"
   end
 
   def create
@@ -26,7 +27,7 @@ class ProjectsController < ProjectResourceController
         if @project.saved?
           redirect_to @project
         else
-          render action: "new"
+          render "new"
         end
       end
       format.js
@@ -42,7 +43,7 @@ class ProjectsController < ProjectResourceController
         format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
       else
-        format.html { render action: "edit" }
+        format.html { render "edit", layout: "project_settings" }
         format.js
       end
     end
@@ -55,6 +56,10 @@ class ProjectsController < ProjectResourceController
   def show
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent.limit(limit).offset(params[:offset] || 0)
+
+    # Ensure project default branch is set if it possible
+    # Normally it defined on push or during creation
+    @project.discover_default_branch
 
     respond_to do |format|
       format.html do
@@ -89,7 +94,7 @@ class ProjectsController < ProjectResourceController
           redirect_to(@forked_project, notice: 'Project was successfully forked.')
         else
           @title = 'Fork project'
-          render action: "fork"
+          render "fork"
         end
       end
       format.js
@@ -100,7 +105,7 @@ class ProjectsController < ProjectResourceController
     @suggestions = {
       emojis: Emoji.names,
       issues: @project.issues.select([:id, :title, :description]),
-      members: @project.users.select([:username, :name]).order(:username)
+      members: @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
     }
 
     respond_to do |format|

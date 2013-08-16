@@ -1,26 +1,16 @@
 .new_project,
 .edit_project {
-  .project_name_holder {
-    input,
-    label {
-      font-size: 16px;
-      line-height: 20px;
-      padding: 8px;
-    }
-    .btn {
-      padding: 6px 10px;
-      margin-left: 10px;
-      margin-bottom: 8px;
-    }
-  }
-  .adv_settings {
-    h6 { margin-left: 40px; }
-  }
-
   fieldset.features {
     .control-label {
       font-weight: bold;
     }
+  }
+}
+
+.project-name-holder {
+  .help-inline {
+    vertical-align: top;
+    padding: 7px;
   }
 }
 
@@ -30,6 +20,10 @@
   padding: 4px 7px;
   border: 1px solid #CCC;
   margin-bottom: 20px;
+
+  .btn {
+    padding: 4px 12px;
+  }
 }
 
 .project_clone_holder {
@@ -48,7 +42,7 @@
     margin-bottom: 50px;
   }
   h3 {
-    @extend .page_title;
+    @extend .page-title;
   }
 
 }
@@ -81,13 +75,45 @@ ul.nav.nav-projects-tabs {
 
 .public-projects {
   li {
-    margin-top: 8px;
-    margin-bottom: 5px;
-    border-bottom: 1px solid #eee;
+    .project-title {
+      font-size: 14px;
+      line-height: 2;
+      font-weight: normal;
+    }
 
     .description {
-      margin-left: 22px;
+      margin-left: 15px;
       color: #aaa;
     }
   }
+}
+
+.my-projects {
+  li {
+    .project-title {
+      font-size: 14px;
+    }
+
+    .project-info {
+      margin-bottom: 10px;
+    }
+
+    .access-icon i {
+      color: #AAA;
+    }
+  }
+}
+
+
+.public-clone {
+  background: #333;
+  color: #f5f5f5;
+  padding: 6px 10px;
+  margin: 1px;
+  font-weight: normal;
+}
+
+.new-tag-btn {
+  position: relative;
+  top: -5px;
 }

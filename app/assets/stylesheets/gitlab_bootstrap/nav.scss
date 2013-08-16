@@ -10,6 +10,7 @@
   > li > a {
     @include border-radius(0);
   }
+
   &.nav-stacked {
     > li > a {
       border-left: 4px solid #EEE;
@@ -21,6 +22,19 @@
       background: #F1F1F1;
       color: $style_color;
       font-weight: bold;
+    }
+
+    &.nav-stacked-menu {
+      background: #FAFAFA;
+      li > a {
+        padding: 16px;
+      }
+    }
+  }
+
+  &.nav-pills-small {
+    > li > a {
+      padding: 8px 12px;
     }
   }
 }

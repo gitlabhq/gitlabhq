@@ -1,3 +1,9 @@
+%h3.page-title
+  My appearance settings
+%p.light
+  Appearance settings saved to your profile and available across all devices
+%hr
+
 = form_for @user, url: profile_path, remote: true, method: :put do |f|
   %fieldset.application-theme
     %legend
@@ -24,7 +30,7 @@
       = label_tag do
         .prev.gray
         = f.radio_button :theme_id, 4
-        SlateGray
+        Gray
 
       = label_tag do
         .prev.violet

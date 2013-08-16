@@ -63,12 +63,8 @@
   .commit {
     margin: 0;
     padding: 0;
-    padding: 5px;
-    margin-bottom: 5px;
+    padding: 5px 0;
     .avatar { position:relative }
-    .row_title {
-      color: #444;
-    }
     .commit-author-name,
     .dash,
     .committed_ago,
@@ -82,20 +78,25 @@
   }
 }
 
-.mr_direction_tip {
-  margin-top:40px
-}
-
 .label-branch {
   @include border-radius(4px);
-  padding: 2px 4px;
+  padding: 3px 4px;
   border: none;
   font-size: 14px;
   background: #474D57;
   color: #fff;
   font-family: $monospace_font;
-  text-shadow: 0 1px 1px #111;
   font-weight: normal;
+  overflow: hidden;
+
+  .label-project {
+    @include border-radius-left(4px);
+    padding: 3px 4px;
+    background: #279;
+    position: relative;
+    left: -4px;
+    letter-spacing: -1px;
+  }
 }
 
 .mr-list {
@@ -112,4 +113,13 @@
       color: #999;
     }
   }
+}
+
+.merge-request-angle {
+  text-align: center;
+  margin-top: 45px;
+}
+
+.merge-request-form-info {
+  padding: 15px 0;
 }

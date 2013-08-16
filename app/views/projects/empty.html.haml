@@ -1,33 +1,44 @@
 = render 'clone_panel'
 
-%div.git-empty
-  %fieldset
-    %legend Git global setup:
-    %pre.dark
-      :preserve
-        git config --global user.name "#{current_user.name}"
-        git config --global user.email "#{current_user.email}"
+- if @project.import? && !@project.imported
+  .save-project-loader
+    %center
+      = image_tag "ajax_loader.gif"
+      %h3 Importing repository.
+      %p.monospace git clone --bare #{@project.import_url}
+      %p Please wait until we import repository for you. Refresh at will.
+      :javascript
+        new ProjectImport();
 
-  %fieldset
-    %legend Create Repository
-    %pre.dark
-      :preserve
-        mkdir #{@project.path}
-        cd #{@project.path}
-        git init
-        touch README
-        git add README
-        git commit -m 'first commit'
-        git remote add origin #{@project.url_to_repo}
-        git push -u origin master
+- else
+  %div.git-empty
+    %fieldset
+      %legend Git global setup:
+      %pre.dark
+        :preserve
+          git config --global user.name "#{current_user.name}"
+          git config --global user.email "#{current_user.email}"
 
-  %fieldset
-    %legend Existing Git Repo?
-    %pre.dark
-      :preserve
-        cd existing_git_repo
-        git remote add origin #{@project.url_to_repo}
-        git push -u origin master
+    %fieldset
+      %legend Create Repository
+      %pre.dark
+        :preserve
+          mkdir #{@project.path}
+          cd #{@project.path}
+          git init
+          touch README
+          git add README
+          git commit -m 'first commit'
+          git remote add origin #{@project.url_to_repo}
+          git push -u origin master
+
+    %fieldset
+      %legend Existing Git Repo?
+      %pre.dark
+        :preserve
+          cd existing_git_repo
+          git remote add origin #{@project.url_to_repo}
+          git push -u origin master
 
   - if can? current_user, :remove_project, @project
     .prepend-top-20

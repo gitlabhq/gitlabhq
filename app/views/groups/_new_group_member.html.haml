@@ -1,18 +1,20 @@
-= form_for @team_member, as: :team_member, url: team_members_group_path(@group) do |f|
+= form_for @users_group, url: group_users_groups_path(@group) do |f|
   %fieldset
-    %legend= "New Team member(s) for projects in #{@group.name}"
+    %legend
+      New member(s) for
+      %strong #{@group.name}
+      group
 
-    %h6 1. Choose people you want in the team
-    .clearfix
+    %p 1. Choose users you want in the group
+    .control-group
       = f.label :user_ids, "People"
-      .input= users_select_tag(:user_ids, multiple: true)
+      .controls= users_select_tag(:user_ids, multiple: true, class: 'input-large')
 
-    %h6 2. Set access level for them
-    .clearfix
-      = f.label :project_access, "Project Access"
-      .input= select_tag :project_access, options_for_select(Project.access_options, @team_member.project_access), class: "project-access-select chosen"
+    %p 2. Set access level for them
+    .control-group
+      = f.label :group_access, "Group Access"
+      .controls= select_tag :group_access, options_for_select(UsersGroup.group_access_roles, @users_group.group_access), class: "project-access-select chosen"
 
     .form-actions
-      = hidden_field_tag :redirect_to, people_group_path(@group)
-      = f.submit 'Add', class: "btn btn-save"
+      = f.submit 'Add users into group', class: "btn btn-create"
 

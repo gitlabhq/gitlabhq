@@ -23,12 +23,8 @@ body {
 
 .help li { color:$style_color; }
 
-.back_link {
-  text-decoration: underline;
+.back-link {
   font-size: 14px;
-  font-weight: bold;
-  padding: 10px 0;
-  padding-bottom: 0;
 }
 
 table a code {
@@ -50,15 +46,22 @@ table a code {
 /** FLASH message **/
 .flash-container {
   display: none;
-  .alert {
-    cursor: pointer;
-    margin: 0;
-    text-align: center;
-    border-radius: 0;
+  cursor: pointer;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
 
-    span {
-      font-size: 14px;
-    }
+  .flash-notice {
+    background: #49C;
+    padding: 10px;
+    text-shadow: 0 1px 1px #178;
+  }
+
+  .flash-alert {
+    background: #C67;
+    text-shadow: 0 1px 1px #945;
+    padding: 10px;
   }
 }
 
@@ -85,33 +88,6 @@ span.update-author {
   font-weight: normal;
 }
 
-form {
-  @extend .form-horizontal;
-
-  .actions {
-    @extend .form-actions;
-  }
-
-  .clearfix {
-    @extend .control-group;
-  }
-
-  .input {
-    @extend .controls;
-  }
-
-  label {
-    @extend .control-label;
-  }
-  .xlarge {
-    @extend .input-xlarge;
-  }
-  .xxlarge {
-    @extend .input-xxlarge;
-  }
-}
-
-
 .field_with_errors {
   display: inline;
 }
@@ -125,15 +101,6 @@ ul.breadcrumb {
   }
 
   a {
-    color: #474D57;
-    font-weight: bold;
-    font-size: 14px;
-  }
-}
-
-input[type=text] {
-  &.large_text {
-    padding: 6px;
     font-size: 16px;
   }
 }
@@ -146,23 +113,6 @@ input[type=text] {
   }
 }
 
-li.commit {
-  .avatar {
-    width: 24px;
-    top:-5px;
-    margin-right: 10px;
-    margin-left: 10px;
-  }
-
-  code {
-    padding: 2px 2px 0;
-    margin-top: -2px;
-    &:hover {
-      color: black;
-      border: 1px solid #ccc;
-    }
-  }
-}
 p.time {
   color: #999;
   font-size: 90%;
@@ -206,17 +156,6 @@ p.time {
   }
 }
 
-.arrow{
-  background: #E3E5EA;
-  padding: 5px;
-  margin-top: 5px;
-  @include border-radius(5px);
-  text-shadow: none;
-  color: #999;
-  line-height: 16px;
-  font-weight: bold;
-}
-
 .thin_area{
   height: 150px;
 }
@@ -254,19 +193,6 @@ li.note {
   }
 }
 
-.remember_me {
-  text-align: left;
-
-  input {
-    margin: 0;
-  }
-
-  span {
-    padding-left: 5px;
-  }
-}
-
-
 .rss-icon {
   img {
     width: 24px;
@@ -277,7 +203,6 @@ li.note {
     line-height: 24px;
   }
 }
-
 
 .supp_diff_link,
 .show-all-commits {
@@ -311,14 +236,17 @@ li.note {
   }
 }
 
-.error_message {
-  @extend .cred;
-  border-left: 4px solid #E99;
+.error-message {
   padding: 10px;
-  margin-bottom: 10px;
-  background: #FEE;
+  background: #C67;
   padding-left: 20px;
+  margin: 0;
+  color: #FFF;
 
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
   &.centered {
     text-align: center;
   }
@@ -420,11 +348,23 @@ img.emoji {
 }
 
 .navless-container {
-  margin-top: 30px;
+  margin-top: 20px;
 }
 
 .description-block {
   @extend .light-well;
   @extend .light;
   margin-bottom: 10px;
+}
+
+.group-name {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+table {
+  td.permission-x {
+    background: #D9EDF7 !important;
+    text-align: center;
+  }
 }

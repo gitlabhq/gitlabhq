@@ -1,9 +1,3 @@
-%h3.page_title
-  Projects
-  = link_to 'New Project', new_project_path, class: "btn btn-small pull-right"
-
-%hr
-
 .row
   .span4
     .admin-filter
@@ -41,8 +35,10 @@
           = link_to "Reset", admin_projects_path, class: "btn"
   .span8
     .ui-box
-      %h5.title
+      .title
         Projects (#{@projects.total_count})
+        .pull-right
+          = link_to 'New Project', new_project_path, class: "btn btn-new"
       %ul.well-list
         - @projects.each do |project|
           %li

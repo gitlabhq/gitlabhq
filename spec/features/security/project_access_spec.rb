@@ -14,10 +14,10 @@ describe "Application access" do
   end
 
   describe "Project" do
-    let(:project)  { create(:project_with_code) }
+    let(:project) { create(:project_with_code) }
 
-    let(:master)   { create(:user) }
-    let(:guest)    { create(:user) }
+    let(:master) { create(:user) }
+    let(:guest) { create(:user) }
     let(:reporter) { create(:user) }
 
     before do
@@ -108,7 +108,7 @@ describe "Application access" do
     describe "GET /project_code/blob" do
       before do
         commit = project.repository.commit
-        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
+        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob) }.first.name
         @blob_path = project_blob_path(project, File.join(commit.id, path))
       end
 
@@ -175,8 +175,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository" do
-      subject { project_repository_path(project) }
+    describe "GET /project_code/branches/recent" do
+      subject { recent_project_branches_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -186,8 +186,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/branches" do
-      subject { branches_project_repository_path(project) }
+    describe "GET /project_code/branches" do
+      subject { project_branches_path(project) }
 
       before do
         # Speed increase
@@ -202,8 +202,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/tags" do
-      subject { tags_project_repository_path(project) }
+    describe "GET /project_code/tags" do
+      subject { project_tags_path(project) }
 
       before do
         # Speed increase
@@ -232,13 +232,13 @@ describe "Application access" do
 
 
   describe "PublicProject" do
-    let(:project)  { create(:project_with_code) }
+    let(:project) { create(:project_with_code) }
 
-    let(:master)   { create(:user) }
-    let(:guest)    { create(:user) }
+    let(:master) { create(:user) }
+    let(:guest) { create(:user) }
     let(:reporter) { create(:user) }
 
-    let(:admin)    { create(:user) }
+    let(:admin) { create(:user) }
 
     before do
       # public project
@@ -339,7 +339,7 @@ describe "Application access" do
     describe "GET /project_code/blob" do
       before do
         commit = project.repository.commit
-        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob)}.first.name
+        path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob) }.first.name
         @blob_path = project_blob_path(project, File.join(commit.id, path))
       end
 
@@ -417,8 +417,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository" do
-      subject { project_repository_path(project) }
+    describe "GET /project_code/branches/recent" do
+      subject { recent_project_branches_path(project) }
 
       it { should be_allowed_for master }
       it { should be_allowed_for reporter }
@@ -428,8 +428,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/branches" do
-      subject { branches_project_repository_path(project) }
+    describe "GET /project_code/branches" do
+      subject { project_branches_path(project) }
 
       before do
         # Speed increase
@@ -444,8 +444,8 @@ describe "Application access" do
       it { should be_denied_for :visitor }
     end
 
-    describe "GET /project_code/repository/tags" do
-      subject { tags_project_repository_path(project) }
+    describe "GET /project_code/tags" do
+      subject { project_tags_path(project) }
 
       before do
         # Speed increase

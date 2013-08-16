@@ -1,8 +1,3 @@
-%h3.page_title
-  Users
-  = link_to 'New User', new_admin_user_path, class: "btn btn-small pull-right"
-%br
-
 .row
   .span3
     .admin-filter
@@ -32,10 +27,12 @@
 
   .span9
     .ui-box
-      %h5.title
-        Users (#{@admin_users.total_count})
+      .title
+        Users (#{@users.total_count})
+        .pull-right
+          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
-        - @admin_users.each do |user|
+        - @users.each do |user|
           %li
             - if user.blocked?
               %i.icon-lock.cred
@@ -58,4 +55,4 @@
                 - else
                   = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
                 = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
-      = paginate @admin_users, theme: "gitlab"
+    = paginate @users, theme: "gitlab"

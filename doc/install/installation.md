@@ -71,6 +71,9 @@ Make sure you have the right version of Python installed.
     # If you get a "command not found" error create a link to the python binary
     sudo ln -s /usr/bin/python /usr/bin/python2
 
+    # For reStructuredText markup language support install required package:
+    sudo apt-get install python-docutils
+
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
@@ -88,8 +91,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p392.tar.gz | tar xz
-    cd ruby-1.9.3-p392
+    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz | tar xz
+    cd ruby-2.0.0-p247
     ./configure
     make
     sudo make install
@@ -119,7 +122,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    sudo -u git -H git checkout v1.4.0
+    sudo -u git -H git checkout v1.7.0
 
     sudo -u git -H cp config.yml.example config.yml
 
@@ -153,7 +156,7 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     sudo -u git -H git checkout 5-4-stable
 
 **Note:**
-You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but do so with caution!
+You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -185,20 +188,21 @@ You can change `5-4-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H mkdir public/uploads
     sudo chmod -R u+rwX  public/uploads
 
-    # Copy the example Puma config
-    sudo -u git -H cp config/puma.rb.example config/puma.rb
+    # Copy the example Unicorn config
+    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
-    sudo -u git -H editor config/puma.rb
+    sudo -u git -H editor config/unicorn.rb
 
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
     sudo -u git -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H git config --global core.autocrlf input
 
 **Important Note:**
-Make sure to edit both `gitlab.yml` and `puma.rb` to match your setup.
+Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
@@ -280,8 +284,8 @@ However there are still a few steps left.
 # 7. Nginx
 
 **Note:**
-If you can't or don't want to use Nginx as your web server, have a look at the
-[`Advanced Setup Tips`](./installation.md#advanced-setup-tips) section.
+Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
+[GitLab recipes](https://github.com/gitlabhq/gitlab-recipes).
 
 ## Installation
     sudo apt-get install -y nginx
@@ -357,11 +361,23 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
-* Add `gem "omniauth-your-auth-provider"` to the [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/Gemfile#L19)
-* Run `sudo -u git -H bundle install` to install the new gem(s)
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/5-4-stable/config/gitlab.yml.example#L113) as a reference)
-* Add icons for the new provider into the [vendor/assets/images/authbuttons](https://github.com/gitlabhq/gitlabhq/tree/5-4-stable/vendor/assets/images/authbuttons) directory (you can find some more popular ones over at https://github.com/intridea/authbuttons)
-* Restart GitLab
+* Stop GitLab
+		`sudo service gitlab stop`
+
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example) as a reference)
+
+* Add the gem to your [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile)
+                `gem "omniauth-your-auth-provider"` 
+* If you're using MySQL, install the new Omniauth provider gem by running the following command:
+		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
+
+* If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
+		`sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
+
+> These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+
+* Start GitLab
+		`sudo service gitlab start`
 
 ### Examples
 

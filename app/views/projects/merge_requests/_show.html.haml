@@ -1,0 +1,38 @@
+.merge-request
+  = render "projects/merge_requests/show/mr_title"
+  = render "projects/merge_requests/show/how_to_merge"
+  = render "projects/merge_requests/show/mr_box"
+  = render "projects/merge_requests/show/mr_accept"
+  - if @merge_request.source_project.gitlab_ci?
+    = render "projects/merge_requests/show/mr_ci"
+  = render "projects/merge_requests/show/commits"
+
+  - if @commits.present?
+    %ul.nav.nav-tabs
+      %li.notes-tab{data: {action: 'notes'}}
+        = link_to project_merge_request_path(@project, @merge_request) do
+          %i.icon-comment
+          Discussion
+      %li.diffs-tab{data: {action: 'diffs'}}
+        = link_to diffs_project_merge_request_path(@project, @merge_request) do
+          %i.icon-list-alt
+          Diff
+
+  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+    = render "projects/notes/notes_with_form"
+  .diffs.tab-content
+    - if current_page?(action: 'diffs')
+      = render "projects/merge_requests/show/diffs"
+  .status
+
+:javascript
+  var merge_request;
+
+  merge_request = new MergeRequest({
+    url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
+    check_enable: #{@merge_request.unchecked? ? "true" : "false"},
+    url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
+    ci_enable: #{@project.gitlab_ci? ? "true" : "false"},
+    current_status: "#{@merge_request.merge_status_name}",
+    action: "#{controller.action_name}"
+  });

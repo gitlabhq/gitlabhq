@@ -8,6 +8,22 @@ class Dashboard
       @toggleFilter($(event.currentTarget))
       @reloadActivities()
 
+    $(".dash-filter").keyup ->
+      terms = $(this).val()
+      uiBox = $(this).parents('.ui-box').first()
+      if terms == "" || terms == undefined
+        uiBox.find(".dash-list li").show()
+      else
+        uiBox.find(".dash-list li").each (index) ->
+          name = $(this).find(".filter-title").text()
+
+          if name.toLowerCase().search(terms.toLowerCase()) == -1
+            $(this).hide()
+          else
+            $(this).show()
+
+
+
   reloadActivities: ->
     $(".content_list").html ''
     Pager.init 20, true

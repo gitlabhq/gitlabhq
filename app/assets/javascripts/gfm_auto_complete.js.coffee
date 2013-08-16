@@ -44,7 +44,7 @@ GitLab.GfmAutoComplete =
       tpl: @Issues.template
       callbacks:
         before_save: (issues) ->
-          $.map issues, (i) -> id: i.id, title: i.title, search: "#{i.id} #{i.title}"
+          $.map issues, (i) -> id: i.id, title: sanitize(i.title), search: "#{i.id} #{i.title}"
 
     input.one "focus", =>
       $.getJSON(@dataSource).done (data) ->

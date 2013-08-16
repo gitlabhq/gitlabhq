@@ -89,6 +89,10 @@ class WikiPage
     @page.versions.map { |v| Commit.new(Gitlab::Git::Commit.new(v)) }
   end
 
+  def commit
+    versions.first
+  end
+
   # Returns the Date that this latest version was
   # created on.
   def created_at
@@ -143,7 +147,7 @@ class WikiPage
     save :update_page, @page, content, format, message
   end
 
-  # Destroys the WIki Page.
+  # Destroys the Wiki Page.
   #
   # Returns boolean True or False.
   def delete

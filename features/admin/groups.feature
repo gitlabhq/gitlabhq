@@ -5,6 +5,9 @@ Feature: Admin Groups
     And Create gitlab user "John"
     And I visit admin groups page
 
+  Scenario: See group list
+    Then I should be all groups
+
   Scenario: Create a group
     When I click new group link
     And submit form with new group info

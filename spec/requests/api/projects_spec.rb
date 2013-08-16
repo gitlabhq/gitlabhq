@@ -3,12 +3,13 @@ require 'spec_helper'
 describe API::API do
   include ApiHelpers
   before(:each) { enable_observers }
+  after(:each) { disable_observers }
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:project) { create(:project_with_code, creator_id: user.id) }
+  let!(:project) { create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
   let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
@@ -104,6 +105,21 @@ describe API::API do
         json_response[k.to_s].should == v
       end
     end
+
+    it "should set a project as public" do
+      project = attributes_for(:project, { public: true })
+      post api("/projects", user), project
+      json_response['public'].should be_true
+
+    end
+
+    it "should set a project as private" do
+      project = attributes_for(:project, { public: false })
+      post api("/projects", user), project
+      json_response['public'].should be_false
+
+    end
+
   end
 
   describe "POST /projects/user/:id" do
@@ -144,6 +160,21 @@ describe API::API do
         json_response[k.to_s].should == v
       end
     end
+
+    it "should set a project as public" do
+      project = attributes_for(:project, { public: true })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_true
+
+    end
+
+    it "should set a project as private" do
+      project = attributes_for(:project, { public: false })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_false
+
+    end
+
   end
 
   describe "GET /projects/:id" do
@@ -444,7 +475,6 @@ describe API::API do
       response.status.should == 405
     end
   end
-
 
   describe "GET /projects/:id/snippets" do
     it "should return an array of project snippets" do

@@ -1,0 +1,48 @@
+%h3.page-title
+  - if @service.activated?
+    %span.cgreen
+      %i.icon-circle
+  - else
+    %span.cgray
+      %i.icon-circle-blank
+  = @service.title
+
+%p= @service.description
+
+.back-link
+  = link_to project_services_path(@project) do
+    &larr; to services
+
+%hr
+
+= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put) do |f|
+  - if @service.errors.any?
+    .alert.alert-error
+      %ul
+        - @service.errors.full_messages.each do |msg|
+          %li= msg
+
+
+  .control-group
+    = f.label :active, "Active", class: "control-label"
+    .controls
+      = f.check_box :active
+
+  - @service.fields.each do |field|
+    - name = field[:name]
+    - type = field[:type]
+    - placeholder = field[:placeholder]
+
+    .control-group
+      = f.label name, class: "control-label"
+      .controls
+        - if type == 'text'
+          = f.text_field name, class: "input-xlarge", placeholder: placeholder
+        - elsif type == 'checkbox'
+          = f.check_box name
+
+  .form-actions
+    = f.submit 'Save', class: 'btn btn-save'
+    &nbsp;
+    - if @service.valid? && @service.activated? && @service.can_test?
+      = link_to 'Test settings', test_project_service_path(@project, @service.to_param), class: 'btn btn-small'

@@ -1,4 +1,4 @@
-%h3.page_title
+%h3.page-title
   Project: #{@project.name_with_namespace}
   = link_to edit_project_path(@project), class: "btn pull-right" do
     %i.icon-edit
@@ -7,7 +7,7 @@
 .row
   .span6
     .ui-box
-      %h5.title
+      .title
         Project info:
       %ul.well-list
         %li
@@ -74,17 +74,33 @@
                 %i.icon-lock
                 Private
   .span6
+    - if @group
+      .ui-box
+        .title
+          %strong #{@group.name} Group
+          members (#{@group.users_groups.count})
+          .pull-right
+            = link_to admin_group_path(@group), class: 'btn btn-small' do
+              %i.icon-edit
+        %ul.well-list
+          - @group.users_groups.order('group_access DESC').each do |member|
+            = render 'users_groups/users_group', member: member, show_controls: false
+
     .ui-box
-      %h5.title
+      .title
         Team
         %small
           (#{@project.users.count})
-        = link_to project_team_index_path(@project), class: "btn btn-tiny" do
-          %i.icon-edit
-          Edit Team
+        .pull-right
+          = link_to project_team_index_path(@project), class: "btn btn-tiny" do
+            %i.icon-edit
+            Manage Access
       %ul.well-list.team_members
-        - @project.users.each do |tm|
+        - @project.users.each do |user|
           %li
             %strong
-              = link_to tm.name, admin_user_path(tm)
-            %span.pull-right.light= @project.project_access_human(tm)
+              = link_to user.name, admin_user_path(user)
+            .pull-right
+              %span.light= @project.project_access_human(user)
+              = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
+                %i.icon-remove

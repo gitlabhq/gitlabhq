@@ -1,13 +1,13 @@
 .main-nav {
-  margin: 30px 0;
-  margin-top: 10px;
+  background: #f5f5f5;
+  margin: 20px 0;
+  margin-top: 0;
+  padding-top: 4px;
   border-bottom: 1px solid #E1E1E1;
 
   ul {
     margin: auto;
-    height: 39px;
-    position: relative;
-    top: 3px;
+    height: 40px;
     overflow: hidden;
     .count {
       font-weight: normal;
@@ -33,10 +33,29 @@
       display: table-cell;
       width: 1%;
       &.active {
-        border-bottom: 3px solid #777;
         a {
           color: $style_color;
           font-weight: bolder;
+
+          &:after {
+            content: '';
+            display: block;
+            position: relative;
+            bottom: 8px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-color: transparent transparent #777 transparent;
+            border-style: solid;
+            border-width: 6px;
+            margin-left: -6px;
+          }
+        }
+      }
+
+      &:hover {
+        a {
+         color: $style_color;
         }
       }
 
@@ -54,11 +73,13 @@
       display: block;
       text-align: center;
       font-weight: normal;
-      height: 36px;
+      height: 38px;
       line-height: 34px;
       color: #777;
       text-shadow: 0 1px 1px white;
       padding: 0 10px;
+      text-decoration: none;
+      padding-top: 2px;
     }
   }
 }

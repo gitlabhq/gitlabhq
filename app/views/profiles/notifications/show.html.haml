@@ -1,0 +1,67 @@
+%h3.page-title
+  Notifications settings
+%p.light
+  GitLab uses the email specified in your profile for notifications
+%hr
+.alert.alert-info
+  %p
+    %i.icon-circle.cred
+    %strong Disabled
+    &ndash; You will not get any notifications via email
+  %p
+    %i.icon-circle.cblue
+    %strong Participating
+    &ndash; You will only receive notifications from related resources (e.g. from your commits or assigned issues)
+  %p
+    %i.icon-circle.cgreen
+    %strong Watch
+    &ndash; You will receive all notifications from projects in which you participate
+
+.row
+  .span4
+    %h4
+      = notification_icon(@notification)
+      Global setting
+  .span7
+    = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
+      = hidden_field_tag :notification_type, 'global'
+
+      = label_tag do
+        = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?, class: 'trigger-submit'
+        %span Disabled
+
+      = label_tag do
+        = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?, class: 'trigger-submit'
+        %span Participating
+
+      = label_tag do
+        = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
+        %span Watch
+
+%br
+= link_to '#', class: 'js-toggle-visibility-link' do
+  %span.btn.btn-tiny
+    %i.icon-chevron-down
+    %span Advanced notifications settings
+.js-toggle-visibility-container.hide
+  %hr
+  %h4 Groups:
+  %ul.bordered-list
+    - @users_groups.each do |users_group|
+      - notification = Notification.new(users_group)
+      = render 'settings', type: 'group', membership: users_group, notification: notification
+
+  %h4 Projects:
+  %ul.bordered-list
+    - @users_projects.each do |users_project|
+      - notification = Notification.new(users_project)
+      = render 'settings', type: 'project', membership: users_project, notification: notification
+
+
+.save-status-fixed
+  %span.update-success.cgreen.hide
+    %i.icon-ok
+    Saved
+  %span.update-failed.cred.hide
+    %i.icon-remove
+    Failed

@@ -5,8 +5,8 @@
 #  id         :integer          not null, primary key
 #  url        :string(255)
 #  project_id :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  created_at :datetime
+#  updated_at :datetime
 #  type       :string(255)      default("ProjectHook")
 #  service_id :integer
 #

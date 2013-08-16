@@ -21,8 +21,8 @@ module SharedPaths
     visit merge_requests_group_path(current_group)
   end
 
-  step 'I visit group people page' do
-    visit people_group_path(current_group)
+  step 'I visit group members page' do
+    visit members_group_path(current_group)
   end
 
   step 'I visit group settings page' do
@@ -70,7 +70,7 @@ module SharedPaths
   end
 
   step 'I visit profile SSH keys page' do
-    visit keys_path
+    visit profile_keys_path
   end
 
   step 'I visit profile design page' do
@@ -184,12 +184,16 @@ module SharedPaths
     visit project_path(project)
   end
 
+  step 'I visit project "Forked Shop" merge requests page' do
+    visit project_merge_requests_path(@forked_project)
+  end
+
   step 'I visit edit project "Shop" page' do
     visit edit_project_path(project)
   end
 
   step 'I visit project branches page' do
-    visit branches_project_repository_path(@project)
+    visit project_branches_path(@project)
   end
 
   step 'I visit compare refs page' do
@@ -217,7 +221,7 @@ module SharedPaths
   end
 
   step 'I visit project tags page' do
-    visit tags_project_repository_path(@project)
+    visit project_tags_path(@project)
   end
 
   step 'I visit project commit page' do
@@ -239,15 +243,19 @@ module SharedPaths
 
   step 'I visit merge request page "Bug NS-04"' do
     mr = MergeRequest.find_by_title("Bug NS-04")
-    visit project_merge_request_path(mr.project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I visit merge request page "Bug NS-05"' do
     mr = MergeRequest.find_by_title("Bug NS-05")
-    visit project_merge_request_path(mr.project, mr)
+    visit project_merge_request_path(mr.target_project, mr)
   end
 
   step 'I visit project "Shop" merge requests page' do
+    visit project_merge_requests_path(project)
+  end
+
+  step 'I visit forked project "Shop" merge requests page' do
     visit project_merge_requests_path(project)
   end
 
@@ -273,6 +281,10 @@ module SharedPaths
 
   step 'I visit the public projects area' do
     visit public_root_path
+  end
+
+  step 'I visit public page for "Community" project' do
+    visit public_project_path(Project.find_by_name("Community"))
   end
 
   # ----------------------------------------

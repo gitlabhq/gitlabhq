@@ -10,10 +10,18 @@
           .container
             %div.app_logo
               %span.separator
-              = link_to root_path, class: "home" do
+              = link_to public_root_path, class: "home" do
                 %h1 GITLAB
               %span.separator
             %h1.project_name Public Projects
+            %ul.nav
+              %li
+                %a
+                  %div.hide.turbolink-spinner
+                    %i.icon-refresh.icon-spin
+                    Loading...
+              %li
+                = link_to "Sign in", new_session_path(:user)
 
     .container.navless-container
       .content

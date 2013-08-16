@@ -59,7 +59,7 @@ describe Namespace do
       @namespace.stub(path_changed?: true)
     end
 
-    it "should raise error when dirtory exists" do
+    it "should raise error when directory exists" do
       expect { @namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 

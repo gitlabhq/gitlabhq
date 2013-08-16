@@ -1,13 +1,12 @@
 class DashboardController < ApplicationController
   respond_to :html
 
-  before_filter :load_projects
+  before_filter :load_projects, except: [:projects]
   before_filter :event_filter, only: :show
 
   def show
     @groups = current_user.authorized_groups.sort_by(&:human_name)
     @has_authorized_projects = @projects.count > 0
-    @teams = current_user.authorized_teams
     @projects_count = @projects.count
     @projects = @projects.limit(20)
 
@@ -27,18 +26,19 @@ class DashboardController < ApplicationController
   def projects
     @projects = case params[:scope]
                 when 'personal' then
-                  @projects.personal(current_user)
+                  current_user.namespace.projects
                 when 'joined' then
-                  @projects.joined(current_user)
+                  current_user.authorized_projects.joined(current_user)
+                when 'owned' then
+                  current_user.owned_projects
                 else
-                  @projects
-                end
+                  current_user.authorized_projects
+                end.sorted_by_activity
+
+    @labels = current_user.authorized_projects.tags_on(:labels)
 
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?
-    @projects = @projects.search(params[:search]) if params[:search].present?
     @projects = @projects.page(params[:page]).per(30)
-
-    @labels = Project.where(id: @projects.map(&:id)).tags_on(:labels)
   end
 
   # Get authored or assigned open merge requests

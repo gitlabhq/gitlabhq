@@ -1,54 +1,38 @@
 class Admin::UsersController < Admin::ApplicationController
-  before_filter :admin_user, only: [:show, :edit, :update, :destroy]
+  before_filter :user, only: [:show, :edit, :update, :destroy]
 
   def index
-    @admin_users = User.scoped
-    @admin_users = @admin_users.filter(params[:filter])
-    @admin_users = @admin_users.search(params[:name]) if params[:name].present?
-    @admin_users = @admin_users.alphabetically.page(params[:page])
+    @users = User.scoped
+    @users = @users.filter(params[:filter])
+    @users = @users.search(params[:name]) if params[:name].present?
+    @users = @users.alphabetically.page(params[:page])
   end
 
   def show
-    # Projects user can be added to
-    @not_in_projects = Project.scoped
-    @not_in_projects = @not_in_projects.without_user(admin_user) if admin_user.authorized_projects.present?
-
-    # Projects he already own or joined
-    @projects = admin_user.authorized_projects
+    @projects = user.authorized_projects
   end
-
-  def team_update
-    UsersProject.add_users_into_projects(
-      params[:project_ids],
-      [admin_user.id],
-      params[:project_access]
-    )
-
-    redirect_to [:admin, admin_user], notice: 'Teams were successfully updated.'
-  end
-
 
   def new
-    @admin_user = User.new.with_defaults
+    @user = User.new.with_defaults
   end
 
   def edit
-    admin_user
+    user
   end
 
   def block
-    if admin_user.block
+    if user.block
       redirect_to :back, alert: "Successfully blocked"
     else
-      redirect_to :back, alert: "Error occured. User was not blocked"
+      redirect_to :back, alert: "Error occurred. User was not blocked"
     end
   end
 
   def unblock
-    if admin_user.activate
+    if user.activate
       redirect_to :back, alert: "Successfully unblocked"
     else
-      redirect_to :back, alert: "Error occured. User was not unblocked"
+      redirect_to :back, alert: "Error occurred. User was not unblocked"
     end
   end
 
@@ -60,17 +44,17 @@ class Admin::UsersController < Admin::ApplicationController
       password_expires_at: Time.now
     }
 
-    @admin_user = User.new(params[:user].merge(opts), as: :admin)
-    @admin_user.admin = (admin && admin.to_i > 0)
-    @admin_user.created_by_id = current_user.id
+    @user = User.new(params[:user].merge(opts), as: :admin)
+    @user.admin = (admin && admin.to_i > 0)
+    @user.created_by_id = current_user.id
 
     respond_to do |format|
-      if @admin_user.save
-        format.html { redirect_to [:admin, @admin_user], notice: 'User was successfully created.' }
-        format.json { render json: @admin_user, status: :created, location: @admin_user }
+      if @user.save
+        format.html { redirect_to [:admin, @user], notice: 'User was successfully created.' }
+        format.json { render json: @user, status: :created, location: @user }
       else
-        format.html { render action: "new" }
-        format.json { render json: @admin_user.errors, status: :unprocessable_entity }
+        format.html { render "new" }
+        format.json { render json: @user.errors, status: :unprocessable_entity }
       end
     end
   end
@@ -83,26 +67,26 @@ class Admin::UsersController < Admin::ApplicationController
       params[:user].delete(:password_confirmation)
     end
 
-    admin_user.admin = (admin && admin.to_i > 0)
+    user.admin = (admin && admin.to_i > 0)
 
     respond_to do |format|
-      if admin_user.update_attributes(params[:user], as: :admin)
-        format.html { redirect_to [:admin, admin_user], notice: 'User was successfully updated.' }
+      if user.update_attributes(params[:user], as: :admin)
+        format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
         # restore username to keep form action url.
-        admin_user.username = params[:id]
-        format.html { render action: "edit" }
-        format.json { render json: admin_user.errors, status: :unprocessable_entity }
+        user.username = params[:id]
+        format.html { render "edit" }
+        format.json { render json: user.errors, status: :unprocessable_entity }
       end
     end
   end
 
   def destroy
-    if admin_user.personal_projects.count > 0
+    if user.personal_projects.count > 0
       redirect_to admin_users_path, alert: "User is a project owner and can't be removed." and return
     end
-    admin_user.destroy
+    user.destroy
 
     respond_to do |format|
       format.html { redirect_to admin_users_path }
@@ -112,7 +96,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   protected
 
-  def admin_user
-    @admin_user ||= User.find_by_username!(params[:id])
+  def user
+    @user ||= User.find_by_username!(params[:id])
   end
 end

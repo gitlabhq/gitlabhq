@@ -1,12 +1,11 @@
 .login-box
-  = image_tag "login-logo.png", width: "304", height: "66", class: "login-logo", alt: "Login Logo"
-
+  %h3.page-title Sign in
   - if ldap_enabled?
     %ul.nav.nav-tabs
       %li.active
         = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
       %li
-        = link_to 'Ordinary', '#tab-signin', 'data-toggle' => 'tab'
+        = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
     .tab-content
       %div#tab-ldap.tab-pane.active
         = render partial: 'devise/sessions/new_ldap'

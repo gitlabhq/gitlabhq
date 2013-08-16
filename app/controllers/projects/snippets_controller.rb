@@ -14,7 +14,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   # Allow destroy snippet
   before_filter :authorize_admin_project_snippet!, only: [:destroy]
 
-  layout 'project_resource'
+  layout 'projects'
 
   respond_to :html
 

@@ -1,15 +1,15 @@
-%h3.page_title
+%h3.page-title
   Public snippets
-  %small share code pastes with others out of git repository
 
   .pull-right
-    = link_to new_snippet_path, class: "btn btn-small add_new grouped btn-primary", title: "New Snippet" do
+    = link_to new_snippet_path, class: "btn btn-new grouped", title: "New Snippet" do
       Add new snippet
-    = link_to user_snippets_path(current_user), class: "btn btn-small grouped"  do
+    = link_to user_snippets_path(current_user), class: "btn grouped"  do
       My snippets
 
+%p.light
+  Public snippets created by you and other users are listed here
+
 %hr
-.row
-  .span12
-    = render 'snippets'
+= render 'snippets'
 

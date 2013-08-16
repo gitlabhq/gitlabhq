@@ -1,11 +1,13 @@
-%h3.page_title
+%h3.page-title
   Merge Requests
-  %small (authored by or assigned to you)
-  %small.pull-right #{@merge_requests.total_count} merge requests
+  %span.pull-right #{@merge_requests.total_count} merge requests
 
+
+%p.light
+  Only merge requests created by you or assigned to you are listed here.
 %hr
 .row
   .span3
-    = render 'filter', entity: 'merge_request'
+    = render 'shared/filter', entity: 'merge_request'
   .span9
     = render 'shared/merge_requests'

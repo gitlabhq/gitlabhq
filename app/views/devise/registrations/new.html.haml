@@ -1,5 +1,6 @@
 = form_for(resource, as: resource_name, url: registration_path(resource_name), html: { class: "login-box" }) do |f|
-  = image_tag "login-logo.png", width: "304", height: "66", class: "login-logo", alt: "Login Logo"
+  %h3.page-title Sign Up
+  %br
   = devise_error_messages!
   %div
     = f.text_field :name, class: "text top", placeholder: "Name", required: true

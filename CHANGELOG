@@ -1,3 +1,43 @@
+v 6.0.0
+  - Feature: Replace teams with group membership
+    We introduce group membership in 6.0 as a replacement for teams.
+    The old combination of groups and teams was confusing for a lot of people.
+    And when the members of a team where changed this wasn't reflected in the project permissions.
+    In GitLab 6.0 you will be able to add members to a group with a permission level for each member.
+    These group members will have access to the projects in that group.
+    Any changes to group members will immediately be reflected in the project permissions.
+    You can even have multiple owners for a group, greatly simplifying administration.
+  - Feature: Ability to have multiple owners for group
+  - Feature: Merge Requests between fork and project (Izaak Alpert)
+  - Feature: Generate fingerprint for ssh keys
+  - Feature: Ability to create and remove branches with UI
+  - Feature: Ability to create and remove git tags with UI
+  - Feature: Groups page in profile. You can leave group there
+  - API: Allow login with LDAP credentials
+  - Redesign: project settings navigation
+  - Redesign: snippets area
+  - Redesign: ssh keys page
+  - Redesign: buttons, blocks and other ui elements
+  - Add comment title to rss feed
+  - You can use arrows to navigate at tree view
+  - Add project filter on dashboard
+  - Cache project graph
+  - Drop support of root namespaces
+  - Default theme is classic now
+  - Cache result of methods like authorize_projects, project.team.members etc
+  - Remove $.ready events
+  - Fix onclick events being double binded
+  - Add notification level to group membership
+  - Move all project controllers/views under Projects:: module
+  - Move all profile controllers/views under Profiles:: module
+  - Apply user project limit only for personal projects
+  - Unicorn is default web server again
+  - Store satellites lock files inside satellites dir
+  - Disabled threadsafety mode in rails
+  - Fixed bug with loosing MR comments
+  - Improved MR comments logic
+  - Render readme file for projects in public area
+
 v 5.4.0
   - Ability to edit own comments
   - Documentation improvements
@@ -27,7 +67,7 @@ v 5.3.0
   - Api: added teams api
   - Api: Prevent blob content being escaped
   - Api: Smart deploy key add behaviour
-  - Api: projets/owned.json return user owned project
+  - Api: projects/owned.json return user owned project
   - Fix bug with team assignation on project from #4109
   - Advanced snippets: public/private, project/personal (Andrew Kulakov)
   - Repository Graphs (Karlo Nicholas T. Soriano)
@@ -63,7 +103,7 @@ v 5.2.0
 v 5.1.0
   - You can login with email or username now
   - Corrected project transfer rollback when repository cannot be moved
-  - Move both repo and wiki when project transfer requrested
+  - Move both repo and wiki when project transfer requested
   - Admin area: project editing was removed from admin namespace
   - Access: admin user has now access to any project.
   - Notification settings
@@ -73,7 +113,7 @@ v 5.1.0
   - Restyled Issues list. Show milestone version in issue row
   - Restyled Merge Request list
   - Backup now dump/restore uploads
-  - Improved perfomance of dashboard (Andrew Kumanyaev)
+  - Improved performance of dashboard (Andrew Kumanyaev)
   - File history now tracks renames (Akzhan Abdulin)
   - Drop wiki migration tools
   - Drop sqlite migration tools
@@ -82,7 +122,7 @@ v 5.1.0
   - Restyled network graph (Hiroyuki Sato)
 
 v 5.0.1
-  - Fixed issue with gitlab-grit being overrided by grit
+  - Fixed issue with gitlab-grit being overridden by grit
 
 v 5.0.0
   - Replaced gitolite with gitlab-shell
@@ -102,7 +142,7 @@ v 5.0.0
   - Update capybara, rspec-rails, poltergeist to recent versions
   - Wiki on git using Gollum
   - Added Solarized Dark theme for code review
-  - Dont show user emails in autocomplete lists, profile pages
+  - Don't show user emails in autocomplete lists, profile pages
   - Added settings tab for group, team, project
   - Replace user popup with icons in header
   - Handle project moving with gitlab-shell
@@ -155,7 +195,7 @@ v 4.1.0
 
 v 4.0.0
   - Remove project code and path from API. Use id instead
-  - Return valid clonable url to repo for web hook
+  - Return valid cloneable url to repo for web hook
   - Fixed backup issue
   - Reorganized settings
   - Fixed commits compare
@@ -220,15 +260,15 @@ v 3.0.0
   - Web Editor
   - Fixed bug with gitolite keys
   - UI improved
-  - Increased perfomance of application
+  - Increased performance of application
   - Show user avatar in last commit when browsing Files
   - Refactored Gitlab::Merge
-  - Use Font Awsome for icons
-  - Separate observing of Note and MergeRequestsa
+  - Use Font Awesome for icons
+  - Separate observing of Note and MergeRequests
   - Milestone "All Issues" filter
   - Fix issue close and reopen button text and styles
   - Fix forward/back while browsing Tree hierarchy
-  - Show numer of notes for commits and merge requests
+  - Show number of notes for commits and merge requests
   - Added support pg from box and update installation doc
   - Reject ssh keys that break gitolite
   - [API] list one project hook
@@ -247,7 +287,7 @@ v 2.9.0
   - added factory_girl
   - restyled projects list on dashboard
   - ssh keys validation to prevent gitolite crash
-  - send notifications if changed premission in project
+  - send notifications if changed permission in project
   - scss refactoring. gitlab_bootstrap/ dir
   - fix git push http body bigger than 112k problem
   - list of labels  page under issues tab
@@ -281,7 +321,7 @@ v 2.7.0
   - System hooks
   - UI improved
   - Dashboard events endless scroll
-  - Source perfomance increased
+  - Source performance increased
 
 v 2.6.0
   - UI polished
@@ -289,7 +329,7 @@ v 2.6.0
   - Handle huge commits
   - Last Push widget
   - Bugfix
-  - Better perfomance
+  - Better performance
   - Email in resque
   - Increased test coverage
   - Ability to remove branch with MR accept
@@ -310,7 +350,7 @@ v 2.4.0
   - Bootstrap 2.0
   - Responsive layout
   - Big commits handling
-  - Perfomance improved
+  - Performance improved
   - Milestones
 
 v 2.3.1
@@ -390,11 +430,11 @@ v 1.0.2
   - added adv validation for project path & code
   - feature: issues can be sortable
   - bugfix
-  - username dispalyed on top panel
+  - username displayed on top panel
 
 v 1.0.1
   - fixed: with invalid source code for commit
-  - fixed: lose branch/tag selection when use tree navigateion
+  - fixed: lose branch/tag selection when use tree navigation
   - when history clicked - display path
   - bug fix & code cleaning
 
@@ -411,11 +451,11 @@ v 0.9.4
   - authorization improved
   - html escaping
   - bug fix
-  - increassed test coverage
+  - increased test coverage
   - design improvements
 
 v 0.9.1
-  - increassed test coverage
+  - increased test coverage
   - design improvements
   - new issue email notification
   - updated app name
@@ -423,7 +463,7 @@ v 0.9.1
   - issue can be edit
 
 v 0.8.0
-  - sytax highlight for main file types
+  - syntax highlight for main file types
   - redesign
   - stability
   - security fixes

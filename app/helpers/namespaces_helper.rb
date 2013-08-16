@@ -3,12 +3,10 @@ module NamespacesHelper
     groups = current_user.owned_groups.select {|n| n.type == 'Group'}
     users = current_user.namespaces.reject {|n| n.type == 'Group'}
 
-    global_opts = ["Global", [['/', Namespace.global_id]] ]
     group_opts = ["Groups", groups.sort_by(&:human_name).map {|g| [g.human_name, g.id]} ]
     users_opts = [ "Users", users.sort_by(&:human_name).map {|u| [u.human_name, u.id]} ]
 
     options = []
-    options << global_opts if current_user.admin
     options << group_opts
     options << users_opts
 

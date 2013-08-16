@@ -1,0 +1,31 @@
+= render "projects/issues/head"
+.milestones_content
+  %h3.page-title
+    Milestones
+    - if can? current_user, :admin_milestone, @project
+      = link_to new_project_milestone_path(@project), class: "pull-right btn btn-new", title: "New Milestone" do
+        %i.icon-plus
+        New Milestone
+
+  .row
+    .span3
+      %ul.nav.nav-pills.nav-stacked
+        %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
+          = link_to project_milestones_path(@project, f: "active") do
+            Active
+        %li{class: ("active" if params[:f] == "closed")}
+          = link_to project_milestones_path(@project, f: "closed") do
+            Closed
+        %li{class: ("active" if params[:f] == "all")}
+          = link_to project_milestones_path(@project, f: "all") do
+            All
+    .span9
+      .ui-box
+        %ul.well-list
+          = render @milestones
+
+          - if @milestones.blank?
+            %li
+              %h3.nothing_here_message No milestones to show
+
+      = paginate @milestones, theme: "gitlab"

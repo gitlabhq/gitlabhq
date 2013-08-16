@@ -4,12 +4,12 @@
 #
 #  id         :integer          not null, primary key
 #  user_id    :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  created_at :datetime
+#  updated_at :datetime
 #  key        :text
 #  title      :string(255)
 #  identifier :string(255)
-#  project_id :integer
+#  type       :string(255)
 #
 
 require 'spec_helper'
@@ -42,17 +42,22 @@ describe Key do
       build(:key, user: user).should be_valid
     end
 
-    it "does not accepts the key twice" do
+    it "does not accept the exact same key twice" do
       create(:key, user: user)
       build(:key, user: user).should_not be_valid
+    end
+
+    it "does not accept a duplicate key with a different comment" do
+      create(:key, user: user)
+      duplicate = build(:key, user: user)
+      duplicate.key << ' extra comment'
+      duplicate.should_not be_valid
     end
   end
 
   context "validate it is a fingerprintable key" do
-    let(:user) { create(:user) }
-
     it "accepts the fingerprintable key" do
-      build(:key, user: user).should be_valid
+      build(:key).should be_valid
     end
 
     it "rejects the unfingerprintable key (contains space in middle)" do

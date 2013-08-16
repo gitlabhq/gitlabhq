@@ -1,24 +1,34 @@
-%h3.page_title
+%h3.page-title
   My Snippets
-  %small share code pastes with others out of git repository
   .pull-right
-    = link_to new_snippet_path, class: "btn btn-small add_new grouped btn-primary", title: "New Snippet" do
+    = link_to new_snippet_path, class: "btn btn-new grouped", title: "New Snippet" do
       Add new snippet
-    = link_to snippets_path, class: "btn btn-small grouped"  do
+    = link_to snippets_path, class: "btn grouped"  do
       Discover snippets
 
+%p.light
+  Share code pastes with others out of git repository
 %hr
 
 .row
   .span3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
-        = link_to "All", user_snippets_path(@user)
+        = link_to user_snippets_path(@user) do
+          All
+          %span.pull-right
+            = @user.snippets.count
       = nav_tab :scope, 'private' do
-        = link_to "Private", user_snippets_path(@user, scope: 'private')
+        = link_to user_snippets_path(@user, scope: 'private') do
+          Private
+          %span.pull-right
+            = @user.snippets.private.count
       = nav_tab :scope, 'public' do
-        = link_to "Public", user_snippets_path(@user, scope: 'public')
+        = link_to user_snippets_path(@user, scope: 'public') do
+          Public
+          %span.pull-right
+            = @user.snippets.public.count
 
-  .span9
+  .span9.my-snippets
     = render 'snippets'
 

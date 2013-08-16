@@ -39,11 +39,11 @@ class Groups < Spinach::FeatureSteps
 
   And 'I select user "John" from list with role "Reporter"' do
     user = User.find_by_name("John")
-    within "#new_team_member" do
+    within ".new_users_group" do
       select2(user.id, from: "#user_ids", multiple: true)
-      select "Reporter", from: "project_access"
+      select "Reporter", from: "group_access"
     end
-    click_button "Add"
+    click_button "Add users into group"
   end
 
   Then 'I should see user "John" in team list' do
@@ -60,7 +60,8 @@ class Groups < Spinach::FeatureSteps
 
   Given 'project from group has merge requests assigned to me' do
     create :merge_request,
-      project: project,
+      source_project: project,
+      target_project: project,
       assignee: current_user,
       author: current_user
   end

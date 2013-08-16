@@ -10,13 +10,13 @@ module TreeHelper
     tree = ""
 
     # Render folders if we have any
-    tree += render partial: 'tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
+    tree += render partial: 'projects/tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
 
     # Render files if we have any
-    tree += render partial: 'tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
+    tree += render partial: 'projects/tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
 
     # Render submodules if we have any
-    tree += render partial: 'tree/submodule_item', collection: submodules if submodules.present?
+    tree += render partial: 'projects/tree/submodule_item', collection: submodules if submodules.present?
 
     tree.html_safe
   end
@@ -39,12 +39,12 @@ module TreeHelper
   #
   # Returns boolean
   def markup?(filename)
-    filename.end_with?(*%w(.textile .rdoc .org .creole
-                           .mediawiki .rst .asciidoc .pod))
+    filename.downcase.end_with?(*%w(.textile .rdoc .org .creole
+                                    .mediawiki .rst .asciidoc .pod))
   end
 
   def gitlab_markdown?(filename)
-    filename.end_with?(*%w(.mdown .md .markdown))
+    filename.downcase.end_with?(*%w(.mdown .md .markdown))
   end
 
   def plain_text_readme? filename
@@ -57,6 +57,8 @@ module TreeHelper
   end
 
   def allowed_tree_edit?
+    return false unless @repository.branch_names.include?(@ref)
+
     if @project.protected_branch? @ref
       can?(current_user, :push_code_to_protected_branches, @project)
     else

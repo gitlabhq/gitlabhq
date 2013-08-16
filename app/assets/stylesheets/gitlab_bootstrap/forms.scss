@@ -1,0 +1,33 @@
+form {
+  @extend .form-horizontal;
+
+  label {
+    @extend .control-label;
+  }
+}
+
+input {
+  &.input-xpadding {
+    padding: 6px 10px;
+  }
+}
+
+.control-group {
+  .control-label {
+    padding-top: 6px;
+  }
+  .controls {
+    input, textarea {
+      padding: 6px 10px;
+    }
+
+    input[type="radio"], input[type="checkbox"] {
+      margin-top: 6px;
+    }
+
+    .add-on {
+      padding: 6px;
+    }
+  }
+}
+

@@ -5,14 +5,15 @@
 #  id                 :integer          not null, primary key
 #  user_id            :integer          not null
 #  project_id         :integer          not null
-#  created_at         :datetime         not null
-#  updated_at         :datetime         not null
+#  created_at         :datetime
+#  updated_at         :datetime
 #  project_access     :integer          default(0), not null
 #  notification_level :integer          default(3), not null
 #
 
 class UsersProject < ActiveRecord::Base
   include Gitlab::ShellAdapter
+  include Notifiable
 
   GUEST     = 10
   REPORTER  = 20
@@ -24,13 +25,10 @@ class UsersProject < ActiveRecord::Base
   belongs_to :user
   belongs_to :project
 
-  attr_accessor :skip_git
-
   validates :user, presence: true
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
   validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
   validates :project, presence: true
-  validates :notification_level, inclusion: { in: Notification.project_notification_levels }, presence: true
 
   delegate :name, :username, :email, to: :user, prefix: true
 
@@ -77,7 +75,6 @@ class UsersProject < ActiveRecord::Base
           user_ids.each do |user_id|
             users_project = UsersProject.new(project_access: project_access, user_id: user_id)
             users_project.project_id = project_id
-            users_project.skip_git = true
             users_project.save
           end
         end
@@ -92,7 +89,6 @@ class UsersProject < ActiveRecord::Base
       UsersProject.transaction do
         users_projects = UsersProject.where(project_id: project_ids)
         users_projects.each do |users_project|
-          users_project.skip_git = true
           users_project.destroy
         end
       end
@@ -129,15 +125,5 @@ class UsersProject < ActiveRecord::Base
     Project.access_options.key(self.project_access)
   end
 
-  def repo_access_human
-    self.class.access_roles.invert[self.project_access]
-  end
-
-  def skip_git?
-    !!@skip_git
-  end
-
-  def notification
-    @notification ||= Notification.new(self)
-  end
+  alias_method :human_access, :project_access_human
 end

@@ -1,0 +1,24 @@
+%h3.page-title
+  %i.icon-code-fork
+  New branch
+= form_tag project_branches_path, method: :post do
+  .control-group
+    = label_tag :branch_name, 'Name for new branch', class: 'control-label'
+    .controls
+      = text_field_tag :branch_name, nil, placeholder: 'feature/dashboard', required: true, tabindex: 1
+  .control-group
+    = label_tag :ref, 'Create from', class: 'control-label'
+    .controls
+      = text_field_tag :ref, nil, placeholder: 'master', required: true, tabindex: 2
+      .light branch name or commit SHA
+  .form-actions
+    = submit_tag 'Create branch', class: 'btn btn-create', tabindex: 3
+    = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'
+
+:javascript
+  var availableTags = #{@project.repository.ref_names.to_json};
+
+  $("#ref").autocomplete({
+    source: availableTags,
+    minLength: 1
+  });

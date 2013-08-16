@@ -1,177 +1,171 @@
-= render "projects/settings_nav"
-
 .project-edit-container
-  %h3.page_title Edit Project
-  %hr
   .project-edit-errors
   .project-edit-content
-    .row
-      .span3
-        %ul.nav.nav-pills.nav-stacked
-          %li.active
-            = link_to 'Settings', '#tab-settings', 'data-toggle' => 'tab'
-          %li
-            = link_to 'Rename repo', '#tab-rename', 'data-toggle' => 'tab'
-          %li
-            = link_to 'Transfer', '#tab-transfer', 'data-toggle' => 'tab'
-          %li
-            = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
-
-      .span9
-        .tab-content
-          .tab-pane.active#tab-settings
-            .ui-box.white
-              %h5.title Settings:
-              .form-holder
-                = form_for(@project, remote: true) do |f|
-                  %fieldset
-                    .clearfix.project_name_holder
-                      = f.label :name do
-                        Project name is
-                      .input
-                        = f.text_field :name, placeholder: "Example Project", class: "span5"
+    %div
+      %h3.page-title
+        Project settings:
+      %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
+      %hr
+      .form-holder
+        = form_for(@project, remote: true) do |f|
+          %fieldset
+            .control-group.project_name_holder
+              = f.label :name do
+                Project name is
+              .controls
+                = f.text_field :name, placeholder: "Example Project", class: "span5"
 
 
-                    .clearfix
-                      = f.label :description do
-                        Project description
-                        %span.light (optional)
-                      .input
-                        = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
+            .control-group
+              = f.label :description do
+                Project description
+                %span.light (optional)
+              .controls
+                = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
 
-                    - unless @project.empty_repo?
-                      .clearfix
-                        = f.label :default_branch, "Default Branch"
-                        .input= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
-
-
-                  - if can?(current_user, :change_public_mode, @project)
-                    %fieldset.public-mode
-                      %legend
-                        Public mode:
-                      .control-group
-                        = f.label :public, class: 'control-label' do
-                          %span Public access
-                        .controls
-                          = f.check_box :public
-                          %span.descr
-                            If checked, this project can be cloned
-                            %em without any
-                            authentication.
-                            It will also be listed on the #{link_to "public access directory", public_root_path}.
-                            %em Any
-                            user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
-
-                  %fieldset.features
-                    %legend
-                      Labels:
-                    .control-group
-                      = f.label :label_list, "Labels", class: 'control-label'
-                      .controls
-                        = f.text_field :label_list, maxlength: 2000, class: "span5"
-                        %p.hint Separate with comma.
-
-                  %fieldset.features
-                    %legend
-                      Features:
-                    .control-group
-                      = f.label :issues_enabled, "Issues", class: 'control-label'
-                      .controls
-                        = f.check_box :issues_enabled
-                        %span.descr Lightweight issue tracking system for this project
-
-                    - if Project.issues_tracker.values.count > 1
-                      .control-group
-                        = f.label :issues_tracker, "Issues tracker", class: 'control-label'
-                        .input= f.select(:issues_tracker, Project.issues_tracker.values, {}, { disabled: !@project.issues_enabled })
-
-                      .clearfix
-                        = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
-                        .input= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
-
-                    .control-group
-                      = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
-                      .controls
-                        = f.check_box :merge_requests_enabled
-                        %span.descr Submit changes to be merged upstream.
-
-                    .control-group
-                      = f.label :wiki_enabled, "Wiki", class: 'control-label'
-                      .controls
-                        = f.check_box :wiki_enabled
-                        %span.descr Pages for project documentation
-
-                    .control-group
-                      = f.label :wall_enabled, "Wall", class: 'control-label'
-                      .controls
-                        = f.check_box :wall_enabled
-                        %span.descr Simple chat system for broadcasting inside project
-
-                    .control-group
-                      = f.label :snippets_enabled, "Snippets", class: 'control-label'
-                      .controls
-                        = f.check_box :snippets_enabled
-                        %span.descr Share code pastes with others out of git repository
+            - if @project.repository.exists? && @project.repository.branch_names.any?
+              .control-group
+                = f.label :default_branch, "Default Branch"
+                .controls= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
 
 
-                  .form-actions
-                    = f.submit 'Save', class: "btn btn-save"
+          - if can?(current_user, :change_public_mode, @project)
+            %fieldset.public-mode
+              %legend
+                Public mode:
+              .control-group
+                = f.label :public, class: 'control-label' do
+                  %span Public access
+                .controls
+                  = f.check_box :public
+                  %span.descr
+                    If checked, this project can be cloned
+                    %em without any
+                    authentication.
+                    It will also be listed on the #{link_to "public access directory", public_root_path}.
+                    %em Any
+                    user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
 
-          .tab-pane#tab-transfer
-            - if can?(current_user, :change_namespace, @project)
-              .ui-box.ui-box-danger
-                %h5.title Transfer project
-                .errors-holder
-                .form-holder
-                  = form_for(@project, url: transfer_project_path(@project), remote: true, html: { class: 'transfer-project' }) do |f|
-                    .control-group
-                      = f.label :namespace_id do
-                        %span Namespace
-                      .controls
-                        .clearfix
-                          = f.select :namespace_id, namespaces_options(@project.namespace_id || Namespace::global_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
-                        %ul
-                          %li Be careful. Changing project namespace can have unintended side effects
-                          %li You can transfer project only to namespaces you can manage
-                          %li You will need to update your local repositories to point to the new location.
-                    .form-actions
-                      = f.submit 'Transfer', class: "btn btn-remove"
-            - else
-              %p.nothing_here_message Only project owner can transfer a project
+          %fieldset.features
+            %legend
+              Labels:
+            .control-group
+              = f.label :label_list, "Labels", class: 'control-label'
+              .controls
+                = f.text_field :label_list, maxlength: 2000, class: "span5"
+                %p.hint Separate labels with commas.
 
-          .tab-pane#tab-rename
-            .ui-box.ui-box-danger
-              %h5.title Rename repository
-              .errors-holder
-              .form-holder
-                = form_for(@project) do |f|
+          %fieldset.features
+            %legend
+              Features:
+            .control-group
+              = f.label :issues_enabled, "Issues", class: 'control-label'
+              .controls
+                = f.check_box :issues_enabled
+                %span.descr Lightweight issue tracking system for this project
+
+            - if Project.issues_tracker.values.count > 1
+              .control-group
+                = f.label :issues_tracker, "Issues tracker", class: 'control-label'
+                .controls= f.select(:issues_tracker, Project.issues_tracker.values, {}, { disabled: !@project.issues_enabled })
+
+              .control-group
+                = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
+                .controls= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
+
+            .control-group
+              = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
+              .controls
+                = f.check_box :merge_requests_enabled
+                %span.descr Submit changes to be merged upstream.
+
+            .control-group
+              = f.label :wiki_enabled, "Wiki", class: 'control-label'
+              .controls
+                = f.check_box :wiki_enabled
+                %span.descr Pages for project documentation
+
+            .control-group
+              = f.label :wall_enabled, "Wall", class: 'control-label'
+              .controls
+                = f.check_box :wall_enabled
+                %span.descr Simple chat system for broadcasting inside project
+
+            .control-group
+              = f.label :snippets_enabled, "Snippets", class: 'control-label'
+              .controls
+                = f.check_box :snippets_enabled
+                %span.descr Share code pastes with others out of git repository
+
+
+          .form-actions
+            = f.submit 'Save changes', class: "btn btn-save"
+
+
+
+    %center.light.prepend-top-20.padded
+      %h3
+        %i.icon-warning-sign
+        Dangerous settings
+      %p Project settings below may result in data loss!
+      = link_to '#', class: 'btn js-toggle-visibility-link' do
+        Show it to me
+        %i.icon-chevron-down
+
+    .js-toggle-visibility-container.hide
+      - if can?(current_user, :change_namespace, @project)
+        .ui-box.ui-box-danger
+          .title Transfer project
+          .errors-holder
+          .form-holder
+            = form_for(@project, url: transfer_project_path(@project), remote: true, html: { class: 'transfer-project' }) do |f|
+              .control-group
+                = f.label :namespace_id do
+                  %span Namespace
+                .controls
                   .control-group
-                    = f.label :path do
-                      %span Path
-                    .controls
-                      .clearfix
-                        = f.text_field :path
-                      %ul
-                        %li Be careful. Rename of project repo can have unintended side effects
-                        %li You will need to update your local repositories to point to the new location.
-                  .form-actions
-                    = f.submit 'Rename', class: "btn btn-remove"
+                    = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+                  %ul
+                    %li Be careful. Changing the project's namespace can have unintended side effects.
+                    %li You can only transfer the project to namespaces you manage.
+                    %li You will need to update your local repositories to point to the new location.
+              .form-actions
+                = f.submit 'Transfer', class: "btn btn-remove"
+      - else
+        %p.nothing_here_message Only the project owner can transfer a project
 
-          .tab-pane#tab-remove
-            - if can?(current_user, :remove_project, @project)
-              .ui-box.ui-box-danger
-                %h5.title Remove project
-                .ui-box-body
-                  %p
-                    Remove of project will cause removing repository and all related resources like issues, merge requests etc.
-                  %p
-                    %strong Removed project can not be restored!
+      .ui-box.ui-box-danger
+        .title Rename repository
+        .errors-holder
+        .form-holder
+          = form_for(@project) do |f|
+            .control-group
+              = f.label :path do
+                %span Path
+              .controls
+                .control-group
+                  = f.text_field :path
+                %ul
+                  %li Be careful. Renaming a project's repository can have unintended side effects.
+                  %li You will need to update your local repositories to point to the new location.
+            .form-actions
+              = f.submit 'Rename', class: "btn btn-remove"
 
-                  = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove btn-small"
-            - else
-              %p.nothing_here_message Only project owner can remove a project
+      - if can?(current_user, :remove_project, @project)
+        .ui-box.ui-box-danger
+          .title Remove project
+          .ui-box-body
+            %p
+              Removing the project will delete its repository and all related resources including issues, merge requests etc.
+              %br
+              %strong Removed projects cannot be restored!
+
+            = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove"
+      - else
+        %p.nothing_here_message Only project owner can remove a project
 
 .save-project-loader.hide
   %center
     = image_tag "ajax_loader.gif"
-    %h3 Saving project. Please wait a moment, this page will automatically refresh when ready.
+    %h3 Saving project.
+    %p Please wait a moment, this page will automatically refresh when ready.

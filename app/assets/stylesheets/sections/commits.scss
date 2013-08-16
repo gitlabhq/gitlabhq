@@ -421,8 +421,8 @@
 
 .commits-compare-switch{
   background: url("switch_icon.png") no-repeat center center;
-  width: 16px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   text-indent: -9999px;
   float: left;
   margin-right: 9px;
@@ -436,4 +436,63 @@
   background: none;
   border: none;
   margin: 0;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.commit-box {
+  margin: 10px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+
+  .commit-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .commit-description {
+    margin-top: 15px;
+  }
+}
+
+
+.commit-stat-summary {
+  color: #666;
+  line-height: 2;
+}
+
+li.commit {
+  .avatar {
+    width: 24px;
+    top:-5px;
+    margin-right: 5px;
+    margin-left: 10px;
+  }
+
+  code {
+    padding: 2px 2px 0;
+    margin-top: -2px;
+    &:hover {
+      color: black;
+      border: 1px solid #ccc;
+    }
+  }
+}
+
+.commit-breadcrumb {
+  padding: 0;
+}
+
+.commit-info-row {
+  margin-bottom: 10px;
+  .avatar {
+    @extend .avatar-inline;
+  }
+  .commit-committer-link,
+  .commit-author-link {
+    color: #444;
+    font-weight: bold;
+  }
 }

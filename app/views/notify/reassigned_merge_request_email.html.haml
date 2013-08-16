@@ -1,8 +1,10 @@
 %p
   = "Reassigned Merge Request !#{@merge_request.id}"
-  = link_to_gfm truncate(@merge_request.title, length: 30), project_merge_request_url(@merge_request.project, @merge_request)
+  = link_to_gfm truncate(@merge_request.title, length: 30), project_merge_request_url(@merge_request.target_project, @merge_request)
 %p
-  Assignee changed from
-  %strong #{@previous_assignee.name}
+  Assignee changed
+  - if @previous_assignee
+    from
+    %strong #{@previous_assignee.name}
   to
   %strong #{@merge_request.assignee_name}

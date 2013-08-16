@@ -2,19 +2,19 @@
   - if @group.errors.any?
     .alert.alert-error
       %span= @group.errors.full_messages.first
-  .clearfix
+  .control-group
     = f.label :name do
       Group name is
-    .input
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
+    .controls
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
 
-  .clearfix.group-description-holder
+  .control-group.group-description-holder
     = f.label :description, "Details"
-    .input
-      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+    .controls
+      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
 
-  .clearfix
-    .input
+  .control-group
+    .controls
       %ul
         %li Group is kind of directory for several projects
         %li All created groups are private

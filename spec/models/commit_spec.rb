@@ -3,18 +3,17 @@ require 'spec_helper'
 describe Commit do
   let(:commit) { create(:project_with_code).repository.commit }
 
-
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do
       commit.stub(:safe_message).and_return('')
       commit.title.should == "--no commit message"
     end
 
-    it "truncates a message without a newline at 70 characters" do
+    it "truncates a message without a newline at 80 characters" do
       message = commit.safe_message * 10
 
       commit.stub(:safe_message).and_return(message)
-      commit.title.should == "#{message[0..69]}&hellip;"
+      commit.title.should == "#{message[0..79]}&hellip;"
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do
@@ -28,7 +27,7 @@ describe Commit do
       message = (commit.safe_message * 10) + "\n"
 
       commit.stub(:safe_message).and_return(message)
-      commit.title.should == "#{message[0..69]}&hellip;"
+      commit.title.should == "#{message[0..79]}&hellip;"
     end
   end
 

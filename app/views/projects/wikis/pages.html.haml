@@ -1,0 +1,11 @@
+= render 'nav'
+%h3.page-title
+  All Pages
+%ul.bordered-list
+  - @wiki_pages.each do |wiki_page|
+    %li
+      %h4
+        = link_to wiki_page.title.titleize, project_wiki_path(@project, wiki_page)
+        %small (#{wiki_page.format})
+        .pull-right
+          %small Last edited #{time_ago_in_words(wiki_page.commit.created_at)} ago

@@ -6,8 +6,8 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
@@ -144,12 +144,12 @@ describe Note do
   end
 
   describe '#create_status_change_note' do
-    let(:project)  { create(:project) }
-    let(:thing)    { create(:issue, project: project) }
-    let(:author)   { create(:user) }
-    let(:status)   { 'new_status' }
+    let(:project) { create(:project) }
+    let(:thing) { create(:issue, project: project) }
+    let(:author) { create(:user) }
+    let(:status) { 'new_status' }
 
-    subject { Note.create_status_change_note(thing, author, status) }
+    subject { Note.create_status_change_note(thing, project, author, status) }
 
     it 'creates and saves a Note' do
       should be_a Note
@@ -157,9 +157,9 @@ describe Note do
     end
 
     its(:noteable) { should == thing }
-    its(:project)  { should == thing.project }
-    its(:author)   { should == author }
-    its(:note)     { should =~ /Status changed to #{status}/ }
+    its(:project) { should == thing.project }
+    its(:author) { should == author }
+    its(:note) { should =~ /Status changed to #{status}/ }
   end
 
   describe :authorization do

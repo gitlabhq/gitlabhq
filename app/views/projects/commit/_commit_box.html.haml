@@ -1,0 +1,47 @@
+.pull-right
+  %div
+    - if @notes_count > 0
+      %span.btn.disabled.grouped
+        %i.icon-comment
+        = @notes_count
+    .pull-left.btn-group
+      %a.btn.grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+        %i.icon-download-alt
+        Download as
+        %span.caret
+      %ul.dropdown-menu
+        %li= link_to "Email Patches", project_commit_path(@project, @commit, format: :patch)
+        %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
+    = link_to project_tree_path(@project, @commit), class: "btn btn-primary grouped" do
+      %span Browse Code »
+  %div
+
+%p
+  %span.light Commit
+  = link_to @commit.id, project_commit_path(@project, @commit)
+.commit-info-row
+  %span.light Authored by
+  %strong
+    = commit_author_link(@commit, avatar: true, size: 24)
+  %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
+    #{time_ago_in_words(@commit.authored_date)} ago
+
+- if @commit.different_committer?
+  .commit-info-row
+    %span.light Committed by
+    %strong
+      = commit_committer_link(@commit, avatar: true, size: 24)
+    %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
+      #{time_ago_in_words(@commit.committed_date)} ago
+
+.commit-info-row
+  %span.cgray= pluralize(@commit.parents.count, "parent")
+  - @commit.parents.each do |parent|
+    = link_to parent.id[0...10], project_commit_path(@project, parent)
+
+.commit-box
+  %h3.commit-title
+    = gfm escape_once(@commit.title)
+  - if @commit.description.present?
+    %pre.commit-description
+      = gfm escape_once(@commit.description)

@@ -1,0 +1,51 @@
+%div#modal_merge_info.modal.hide
+  .modal-header
+    %a.close{href: "#", "data-dismiss" => "modal"} ×
+    %h3 How to merge
+  .modal-body
+    - if @merge_request.for_fork?
+      - source_remote = @merge_request.source_project.namespace.nil? ? "source" :@merge_request.source_project.namespace.path
+      - target_remote = @merge_request.target_project.namespace.nil? ? "target" :@merge_request.target_project.namespace.path
+      %p
+        %strong Step 1.
+        Checkout target branch and get recent objects from GitLab
+        Assuming remote for  #{@merge_request.target_project.path_with_namespace} is called #{target_remote}
+        remote for  #{@merge_request.source_project.path_with_namespace} is called #{source_remote}
+      %pre.dark
+        :preserve
+          git checkout #{target_remote} #{@merge_request.target_branch}
+          git fetch #{source_remote}
+      %p
+        %strong Step 2.
+        Merge source branch into target branch and push changes to GitLab
+      %pre.dark
+        :preserve
+          git merge #{source_remote}/#{@merge_request.source_branch}
+          git push #{target_remote} #{@merge_request.target_branch}
+    - else
+      %p
+        %strong Step 1.
+        Checkout target branch and get recent objects from GitLab
+      %pre.dark
+        :preserve
+          git checkout #{@merge_request.target_branch}
+          git fetch origin
+      %p
+        %strong Step 2.
+        Merge source branch into target branch and push changes to GitLab
+      %pre.dark
+        :preserve
+          git merge origin/#{@merge_request.source_branch}
+          git push origin #{@merge_request.target_branch}
+
+
+:javascript
+  $(function(){
+    var modal = $('#modal_merge_info').modal({modal: true, show:false});
+    $('.how_to_merge_link').bind("click", function(){
+      modal.show();
+    });
+    $('.modal-header .close').bind("click", function(){
+      modal.hide();
+    })
+  })

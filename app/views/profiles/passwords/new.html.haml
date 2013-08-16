@@ -1,0 +1,22 @@
+= form_for @user, url: profile_password_path, method: :post do |f|
+  .light-well.padded
+    %p.slead
+      Please set new password before proceed.
+      %br
+      After successful password update you will be redirected to login screen
+    -if @user.errors.any?
+      .alert.alert-error
+        %ul
+          - @user.errors.full_messages.each do |msg|
+            %li= msg
+
+    .control-group
+      = f.label :password
+      .controls= f.password_field :password, required: true
+    .control-group
+      = f.label :password_confirmation
+      .controls
+        = f.password_field :password_confirmation, required: true
+    .control-group
+      .controls
+        = f.submit 'Set new password', class: "btn btn-create"

@@ -1,14 +1,13 @@
 - if @merge_requests.any?
-  - @merge_requests.group_by(&:project).each do |group|
-    .ui-box
+  - @merge_requests.group_by(&:target_project).each do |group|
+    .ui-box.small-box
       - project = group[0]
-      %h5.title
+      .title
         = link_to_project project
       %ul.well-list.mr-list
         - group[1].each do |merge_request|
-          = render(partial: 'merge_requests/merge_request', locals: {merge_request: merge_request})
-  %hr
+          = render 'projects/merge_requests/merge_request', merge_request: merge_request
   = paginate @merge_requests, theme: "gitlab"
 
 - else
-  %h3.nothing_here_message Nothing to show here
+  %h3.nothing_here_message No merge requests to show

@@ -1,8 +1,0 @@
-%span.pull-right
-  - if (@wiki && @wiki.persisted?)
-    = link_to history_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
-      Page History
-    - if can?(current_user, :write_wiki, @project)
-      = link_to edit_project_wiki_path(@project, @wiki), class: "btn btn-small grouped" do
-        %i.icon-edit
-        Edit

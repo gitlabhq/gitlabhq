@@ -1,18 +1,18 @@
 %ul.nav.nav-tabs.dash-sidebar-tabs
   %li.active
-    = link_to 'Projects', '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab'
+    = link_to '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab' do
+      Projects
+      %span.badge= @projects_count
   %li
-    = link_to 'Groups', '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab'
-  %li
-    = link_to 'Teams', '#teams', 'data-toggle' => 'tab', id: 'sidebar-teams-tab'
+    = link_to '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab' do
+      Groups
+      %span.badge= @groups.count
 
 .tab-content
   .tab-pane.active#projects
     = render "projects", projects: @projects
   .tab-pane#groups
     = render "groups", groups: @groups
-  .tab-pane#teams
-    = render "teams", teams: @teams
 
 .prepend-top-20
   %span.rss-icon

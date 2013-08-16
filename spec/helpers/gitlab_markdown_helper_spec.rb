@@ -9,7 +9,7 @@ describe GitlabMarkdownHelper do
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
   let(:issue)         { create(:issue, project: project) }
-  let(:merge_request) { create(:merge_request, project: project) }
+  let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
   let(:member)        { project.users_projects.where(user_id: user).first }
 
@@ -287,7 +287,7 @@ describe GitlabMarkdownHelper do
         gfm(":invalid-emoji:").should_not match(/<img/)
       end
 
-      it "should work independet of reference links (i.e. without @project being set)" do
+      it "should work independent of reference links (i.e. without @project being set)" do
         @project = nil
         gfm(":+1:").should match(/<img/)
       end

@@ -8,20 +8,20 @@ class ProfileSshKeys < Spinach::FeatureSteps
   end
 
   Given 'I click link "Add new"' do
-    click_link "Add new"
+    click_link "Add SSH Key"
   end
 
   And 'I submit new ssh key "Laptop"' do
     fill_in "key_title", with: "Laptop"
     fill_in "key_key", with: "ssh-rsa AAAAB3NzaC1yc2EAAAABIwAAAQEAzrEJUIR6Y03TCE9rIJ+GqTBvgb8t1jI9h5UBzCLuK4VawOmkLornPqLDrGbm6tcwM/wBrrLvVOqi2HwmkKEIecVO0a64A4rIYScVsXIniHRS6w5twyn1MD3sIbN+socBDcaldECQa2u1dI3tnNVcs8wi77fiRe7RSxePsJceGoheRQgC8AZ510UdIlO+9rjIHUdVN7LLyz512auAfYsgx1OfablkQ/XJcdEwDNgi9imI6nAXhmoKUm1IPLT2yKajTIC64AjLOnE0YyCh6+7RFMpiMyu1qiOCpdjYwTgBRiciNRZCH8xIedyCoAmiUgkUT40XYHwLuwiPJICpkAzp7Q== user@laptop"
-    click_button "Save"
+    click_button "Add key"
   end
 
   Then 'I should see new ssh key "Laptop"' do
     key = Key.find_by_title("Laptop")
     page.should have_content(key.title)
     page.should have_content(key.key)
-    current_path.should == key_path(key)
+    current_path.should == profile_key_path(key)
   end
 
   Given 'I click link "Work"' do
@@ -33,7 +33,7 @@ class ProfileSshKeys < Spinach::FeatureSteps
   end
 
   Then 'I visit profile keys page' do
-    visit keys_path
+    visit profile_keys_path
   end
 
   And 'I should not see "Work" ssh key' do

@@ -3,7 +3,10 @@ module LoginHelpers
   #
   # role - User role (e.g., :admin, :user)
   def login_as(role)
-    @user = create(role)
+    ActiveRecord::Base.observers.enable(:user_observer) do
+      @user = create(role)
+    end
+
     login_with(@user)
   end
 

@@ -1,5 +1,5 @@
 .ui-box
-  %h5.title Projects
+  .title Projects
   %ul.well-list
     - @projects.each do |project|
       %li
@@ -9,12 +9,3 @@
             \/
           %strong.well-title
             = truncate(project.name, length: 45)
-          %span.pull-right.light
-            - if project.owner == user
-              %i.icon-wrench
-            - tm = project.team.get_tm(user.id)
-            - if tm
-              = tm.project_access_human
-%p.light
-  %i.icon-wrench
-  &ndash; user is a project owner

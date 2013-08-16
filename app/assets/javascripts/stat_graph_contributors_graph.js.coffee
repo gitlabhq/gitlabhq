@@ -1,8 +1,8 @@
 class window.ContributorsGraph
   MARGIN:
     top: 20
-    right: 20 
-    bottom: 30 
+    right: 20
+    bottom: 30
     left: 50
   x_domain: null
   y_domain: null
@@ -38,7 +38,7 @@ class window.ContributorsGraph
     @y = d3.scale.linear().range([height, 0]).nice()
   draw_x_axis: ->
     @svg.append("g").attr("class", "x axis").attr("transform", "translate(0, #{@height})")
-    .call(@x_axis);
+    .call(@x_axis)
   draw_y_axis: ->
     @svg.append("g").attr("class", "y axis").call(@y_axis)
   set_data: (data) ->
@@ -46,8 +46,12 @@ class window.ContributorsGraph
 
 class window.ContributorsMasterGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = 1100
-    @height = 125
+    if $(window).width() > 1214
+      @width = 1100
+    else
+      @width = 870
+
+    @height = 200
     @x = null
     @y = null
     @x_axis = null
@@ -57,7 +61,7 @@ class window.ContributorsMasterGraph extends ContributorsGraph
     @brush = null
     @x_max_domain = null
   process_dates: (data) ->
-    dates = @get_dates(data) 
+    dates = @get_dates(data)
     @parse_dates(data)
     ContributorsGraph.set_dates(dates)
   get_dates: (data) ->
@@ -71,7 +75,7 @@ class window.ContributorsMasterGraph extends ContributorsGraph
     super @width, @height
   create_axes: ->
     @x_axis = d3.svg.axis().scale(@x).orient("bottom")
-    @y_axis = d3.svg.axis().scale(@y).orient("left")
+    @y_axis = d3.svg.axis().scale(@y).orient("left").ticks(5)
   create_svg: ->
     @svg = d3.select("#contributors-master").append("svg")
     .attr("width", @width + @MARGIN.left + @MARGIN.right)
@@ -83,14 +87,16 @@ class window.ContributorsMasterGraph extends ContributorsGraph
     @area = d3.svg.area().x((d) ->
       x(d.date)
     ).y0(@height).y1((d) ->
-      y(d.commits = d.commits ? d.additions ? d.deletions)
+      xa = d.commits = d.commits ? d.additions ? d.deletions
+      console.log(xa)
+      y(xa)
     ).interpolate("basis")
   create_brush: ->
-    @brush = d3.svg.brush().x(@x).on("brushend", @update_content);
+    @brush = d3.svg.brush().x(@x).on("brushend", @update_content)
   draw_path: (data) ->
-    @svg.append("path").datum(data).attr("class", "area").attr("d", @area);
+    @svg.append("path").datum(data).attr("class", "area").attr("d", @area)
   add_brush: ->
-    @svg.append("g").attr("class", "selection").call(@brush).selectAll("rect").attr("height", @height);
+    @svg.append("g").attr("class", "selection").call(@brush).selectAll("rect").attr("height", @height)
   update_content: =>
     ContributorsGraph.set_x_domain(if @brush.empty() then @x_max_domain else @brush.extent())
     $("#brush_change").trigger('change')
@@ -118,8 +124,12 @@ class window.ContributorsMasterGraph extends ContributorsGraph
 
 class window.ContributorsAuthorGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = 490
-    @height = 130
+    if $(window).width() > 1214
+      @width = 490
+    else
+      @width = 380
+
+    @height = 200
     @x = null
     @y = null
     @x_axis = null
@@ -130,8 +140,8 @@ class window.ContributorsAuthorGraph extends ContributorsGraph
   create_scale: ->
     super @width, @height
   create_axes: ->
-    @x_axis = d3.svg.axis().scale(@x).orient("bottom").tickFormat(d3.time.format("%m/%d"));
-    @y_axis = d3.svg.axis().scale(@y).orient("left")
+    @x_axis = d3.svg.axis().scale(@x).orient("bottom").ticks(8)
+    @y_axis = d3.svg.axis().scale(@y).orient("left").ticks(5)
   create_area: (x, y) ->
     @area = d3.svg.area().x((d) ->
       parseDate = d3.time.format("%Y-%m-%d").parse
@@ -148,7 +158,7 @@ class window.ContributorsAuthorGraph extends ContributorsGraph
     .append("g")
     .attr("transform", "translate(" + @MARGIN.left + "," + @MARGIN.top + ")")
   draw_path: (data) ->
-    @svg.append("path").datum(data).attr("class", "area-contributor").attr("d", @area);
+    @svg.append("path").datum(data).attr("class", "area-contributor").attr("d", @area)
   draw: ->
     @create_scale()
     @create_axes()

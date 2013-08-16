@@ -1,0 +1,16 @@
+%h3.page-title
+  Users with access to this project
+
+  - if can? current_user, :admin_team_member, @project
+    %span.pull-right
+      = link_to new_project_team_member_path(@project), class: "btn btn-new grouped", title: "New Team Member" do
+        New Team Member
+      = link_to import_project_team_members_path(@project), class: "btn grouped", title: "Import team from another project" do
+        Import members
+
+%p.light
+  Read more about project permissions
+  %strong= link_to "here", help_permissions_path, class: "vlink"
+= render "team", members: @users_projects
+- if @group
+  = render "group_members"

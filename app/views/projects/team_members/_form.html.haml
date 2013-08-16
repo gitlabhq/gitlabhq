@@ -1,0 +1,24 @@
+%h3.page-title
+  = "New Team member(s)"
+
+= form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project) do |f|
+  -if @user_project_relation.errors.any?
+    .alert.alert-error
+      %ul
+        - @user_project_relation.errors.full_messages.each do |msg|
+          %li= msg
+
+  %h6 1. Choose people you want in the team
+  .control-group
+    = f.label :user_ids, "People"
+    .controls
+      = users_select_tag(:user_ids, multiple: true)
+
+  %h6 2. Set access level for them
+  .control-group
+    = f.label :project_access, "Project Access"
+    .controls= select_tag :project_access, options_for_select(Project.access_options, @user_project_relation.project_access), class: "project-access-select chosen"
+
+  .form-actions
+    = f.submit 'Add users', class: "btn btn-create"
+    = link_to "Cancel", project_team_index_path(@project), class: "btn btn-cancel"

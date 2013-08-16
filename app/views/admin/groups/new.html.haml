@@ -1,18 +1,18 @@
-%h3.page_title New Group
+%h3.page-title New Group
 %hr
 = form_for [:admin, @group] do |f|
   - if @group.errors.any?
     .alert.alert-error
       %span= @group.errors.full_messages.first
-  .clearfix
+  .control-group
     = f.label :name do
       Group name is
-    .input
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "xxlarge left"
-  .clearfix.group-description-holder
+    .controls
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
+  .control-group.group-description-holder
     = f.label :description, "Details"
-    .input
-      = f.text_area :description, maxlength: 250, class: "xxlarge js-gfm-input", rows: 4
+    .controls
+      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
 
   .form-actions
     = f.submit 'Create group', class: "btn btn-create"

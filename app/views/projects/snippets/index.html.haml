@@ -1,10 +1,12 @@
-%h3.page_title
+%h3.page-title
   Snippets
-  %small share code pastes with others out of git repository
-
   - if can? current_user, :write_project_snippet, @project
-    = link_to new_project_snippet_path(@project), class: "btn btn-small add_new pull-right", title: "New Snippet" do
+    = link_to new_project_snippet_path(@project), class: "btn btn-new pull-right", title: "New Snippet" do
       Add new snippet
+
+%p.light
+  Share code pastes with others out of git repository
+
 %hr
 %ul.bordered-list
   = render partial: "projects/snippets/snippet", collection: @snippets

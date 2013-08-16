@@ -1,10 +1,10 @@
 /* CHZN reset few styles */
-.chzn-container-single .chzn-single {
+.chosen-container-single .chosen-single {
   background: #FFF;
   border: 1px solid #bbb;
   box-shadow: none;
 }
-.chzn-container-active .chzn-single {
+.chosen-container-active .chosen-single {
   background: #fff;
 }
 
@@ -41,38 +41,40 @@
   width: 120px;
 }
 
-.project-refs-form .chzn-container {
+.project-refs-form .chosen-container {
   position: relative;
   top: 0;
   left: 0;
   margin-right: 10px;
 
-  .chzn-drop {
+  .chosen-drop {
     min-width: 400px;
-    .chzn-results {
+    .chosen-results {
       max-height: 300px;
     }
-    .chzn-search input {
+    .chosen-search input {
       min-width: 365px;
     }
   }
 }
 
 /** Fix for Search Dropdown Border **/
-.chzn-container {
-  .chzn-search {
+.chosen-container {
+  min-width: 100px;
+
+  .chosen-search {
     input:focus {
       @include box-shadow(none);
     }
   }
 
-  .chzn-drop {
+  .chosen-drop {
     margin: 7px 0;
     min-width: 200px;
     border: 1px solid #bbb;
     @include border-radius(0);
 
-    .chzn-results {
+    .chosen-results {
       margin-top: 5px;
       max-height: 300px;
 
@@ -95,7 +97,7 @@
       }
     }
 
-    .chzn-search {
+    .chosen-search {
       @include bg-gray-gradient;
       input {
         min-width: 165px;
@@ -103,18 +105,19 @@
       }
     }
   }
+}
 
-  .chzn-single {
-    @include bg-light-gray-gradient;
+.chosen-container .chosen-single,
+.chosen-container.chosen-with-drop .chosen-single {
+  @include bg-light-gray-gradient;
 
-    div {
-      background: transparent;
-      border-left: none;
-    }
+  div {
+    background: transparent;
+    border-left: none;
+  }
 
-    span {
-      font-weight: normal;
-    }
+  span {
+    font-weight: normal;
   }
 }
 
@@ -139,4 +142,12 @@
 .select2-no-results, .select2-searching {
   padding: 7px;
   color: #666;
+}
+
+.chosen-container .chosen-single div b {
+  background-position-y: 0px !important;
+}
+
+.chosen-container .chosen-drop .chosen-search input {
+  background-position-y: -24px !important;
 }

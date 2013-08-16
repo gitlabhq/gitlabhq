@@ -1,16 +1,31 @@
-%h3.page_title
-  - if @snippet.private?
-    %i{:class => "icon-lock cgreen has_bottom_tooltip", "data-original-title" => "Private snippet"}
-  - else
-    %i{:class => "icon-globe cblue has_bottom_tooltip", "data-original-title" => "Public snippet"}
-
+%h3.page-title
   = @snippet.title
 
-  %small.pull-right
+  - if @snippet.private?
+    %span.label.label-success
+      %i.icon-lock
+      private
+
+  .pull-right
+    = link_to new_snippet_path, class: "btn btn-new btn-small", title: "New Snippet" do
+      Add new snippet
+
+
+.append-bottom-20
+  .pull-right
     = "##{@snippet.id}"
     %span.light
       by
-      = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
-      = @snippet.author_name
-%br
+      = link_to user_snippets_path(@snippet.author) do
+        = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+        = @snippet.author_name
+
+  .back-link
+    - if @snippet.author == current_user
+      = link_to user_snippets_path(current_user) do
+        &larr; my snippets
+    - else
+      = link_to snippets_path do
+        &larr; discover snippets
+
 %div= render 'blob'

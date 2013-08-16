@@ -22,11 +22,17 @@
     - @merge_requests.each do |merge_request|
       %li
         merge request:
-        = link_to [merge_request.project, merge_request] do
+        = link_to [merge_request.target_project, merge_request] do
           %span ##{merge_request.id}
           %strong.term
             = truncate merge_request.title, length: 50
-        %span.light (#{merge_request.project.name_with_namespace})
+        - if merge_request.for_fork?
+          %span.light (#{merge_request.source_project.name_with_namespace}:#{merge_request.source_branch} &rarr; #{merge_request.target_project.name_with_namespace}:#{merge_request.target_branch})
+        - else
+          %span.light (#{merge_request.source_branch} &rarr; #{merge_request.target_branch})
+        - if merge_request.closed?
+          %span.label Closed
+
     - @issues.each do |issue|
       %li
         issue:
@@ -35,6 +41,9 @@
           %strong.term
             = truncate issue.title, length: 50
         %span.light (#{issue.project.name_with_namespace})
+        - if issue.closed?
+          %span.label Closed
+
     - @wiki_pages.each do |wiki_page|
       %li
         wiki:
@@ -49,7 +58,5 @@
   = paginate @blobs, theme: 'gitlab'
 
 :javascript
-  $(function() {
-    $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
-  })
+  $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
 

@@ -1,6 +1,5 @@
 = render layout: 'help/layout' do
-  %h3.page_title Web hooks
-  %br
+  %h3.page-title Web hooks
 
   %p.slead
     Every GitLab project can trigger a web server whenever the repo is pushed to.
@@ -9,5 +8,5 @@
     %br
     GitLab will send POST request with commits information on every push.
   %h5 Hooks request example:
-  = render "hooks/data_ex"
+  = render "projects/hooks/data_ex"
 

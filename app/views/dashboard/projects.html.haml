@@ -1,26 +1,32 @@
-%h3.page_title
-  Projects
-  %span
-    (#{@projects.total_count})
-  - if current_user.can_create_project?
-    %span.pull-right
-      = link_to new_project_path, class: "btn btn-tiny info" do
-        %i.icon-plus
-        New Project
-
-
+%h3.page-title My Projects
+%p.light
+  All projects you have access to are listed here. Public projects are not included here unless you are a member
 %hr
 .row
   .span3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
-        = link_to "All", projects_dashboard_path
+        = link_to projects_dashboard_path do
+          All
+          %span.pull-right
+            = current_user.authorized_projects.count
       = nav_tab :scope, 'personal' do
-        = link_to "Personal", projects_dashboard_path(scope: 'personal')
+        = link_to projects_dashboard_path(scope: 'personal') do
+          Personal
+          %span.pull-right
+            = current_user.personal_projects.count
       = nav_tab :scope, 'joined' do
-        = link_to "Joined", projects_dashboard_path(scope: 'joined')
+        = link_to projects_dashboard_path(scope: 'joined') do
+          Joined
+          %span.pull-right
+            = current_user.authorized_projects.joined(current_user).count
+      = nav_tab :scope, 'owned' do
+        = link_to projects_dashboard_path(scope: 'owned') do
+          Owned
+          %span.pull-right
+            = current_user.owned_projects.count
 
-    - if @labels.any?
+    - if @labels.present?
       %p.light Filter by label:
       %ul.bordered-list
         - @labels.each do |label|
@@ -29,50 +35,39 @@
               %i.icon-tag
               = label.name
 
-
   .span9
-    - if @projects.any?
-      = form_tag projects_dashboard_path, method: 'get' do
-        %fieldset.dashboard-search-filter
-          = hidden_field_tag "scope", params[:scope]
-          = search_field_tag "search", params[:search], { id: 'dashboard_projects_search', placeholder: 'Search', class: 'left input-xxlarge'}
-          = button_tag type: 'submit', class: 'btn' do
-            %i.icon-search
-
-    %ul.bordered-list
+    %ul.bordered-list.my-projects.top-list
       - @projects.each do |project|
-        %li.clearfix
-          .clearfix
-            %h5
-              = link_to project_path(project), class: dom_class(project) do
-                - if project.namespace
-                  = project.namespace.human_name
-                  %span= "/"
-                %strong
-                  = truncate(project.name, length: 45)
-              .pull-right.light
-                - if project.owner == current_user
-                  %i.icon-wrench
-                - tm = project.team.get_tm(current_user.id)
-                - if tm
-                  %strong= tm.project_access_human
-          .clearfix
-            .left
-              - if project.description.present?
-                %span.light= project.description
+        %li
+          %h4.project-title
+            %span.access-icon
+              - if project.public
+                = public_icon
+              - else
+                = private_icon
+            = link_to project_path(project), class: dom_class(project) do
+              %strong= project.name_with_namespace
+
+            - if project.forked_from_project
+              %small.pull-right
+                %i.icon-code-fork
+                Forked from:
+                = link_to project.forked_from_project.name_with_namespace, project_path(project.forked_from_project)
+          .project-info
+            .pull-right
               - project.labels.each do |label|
                 %span.label.label-info
                   %i.icon-tag
                   = label.name
+            - if project.description.present?
+              %p= truncate project.description, length: 100
+            .last-activity
+              %span.light Last activity:
+              %span.date= project_last_activity(project)
 
-            .pull-right.light
-              %small.light
-                Last activity #{project_last_activity(project)}
-
-      - if @projects.blank?
-        %li
-          %h3.nothing_here_message There are no projects here.
+        - if @projects.blank?
+          %li
+            %h3.nothing_here_message There are no projects here.
     .bottom
-      %hr
       = paginate @projects, theme: "gitlab"
 

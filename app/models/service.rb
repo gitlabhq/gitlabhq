@@ -11,6 +11,8 @@
 #  updated_at  :datetime         not null
 #  active      :boolean          default(FALSE), not null
 #  project_url :string(255)
+#  subdomain   :string(255)
+#  room        :string(255)
 #
 
 # To add new service you should build a class inherited from Service
@@ -46,5 +48,9 @@ class Service < ActiveRecord::Base
 
   def execute
     # implement inside child
+  end
+
+  def can_test?
+    !project.empty_repo?
   end
 end
