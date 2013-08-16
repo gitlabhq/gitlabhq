@@ -86,7 +86,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 Remove the old Ruby 1.8 if present
 
-    sudo apt-get remove -y ruby1.8
+    sudo apt-get remove ruby1.8
 
 Download Ruby and compile it:
 
