@@ -51,7 +51,7 @@ During the [official installation](https://github.com/gitlabhq/gitlabhq/blob/5-4
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-2-stable
+    sudo -u git -H git checkout 5-4-stable
 
 ### Post installation
 At this point, all of the GitLab components are installed.  You still can't access GitLab though.
