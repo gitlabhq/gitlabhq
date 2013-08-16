@@ -95,6 +95,7 @@
       width: 20px;
     }
   }
+
   ul {
     margin-bottom: 5px;
     .avatar {
@@ -103,7 +104,7 @@
     }
   }
 
-  padding: 14px 0px;
+  padding: 12px 0px;
   &:last-child { border:none }
 
   .event_commits {
