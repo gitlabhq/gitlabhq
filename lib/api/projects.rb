@@ -61,10 +61,10 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
-      #   issues_enabled (optional) 
-      #   wall_enabled (optional) 
-      #   merge_requests_enabled (optional) 
-      #   wiki_enabled (optional) 
+      #   issues_enabled (optional)
+      #   wall_enabled (optional)
+      #   merge_requests_enabled (optional)
+      #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - false by default
@@ -73,6 +73,7 @@ module API
       post do
         required_attributes! [:name]
         attrs = attributes_for_keys [:name,
+                                    :path,
                                     :description,
                                     :default_branch,
                                     :issues_enabled,
@@ -100,9 +101,9 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
-      #   issues_enabled (optional) 
-      #   wall_enabled (optional) 
-      #   merge_requests_enabled (optional) 
+      #   issues_enabled (optional)
+      #   wall_enabled (optional)
+      #   merge_requests_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   public (optional)

@@ -1,9 +1,13 @@
 %h3.page-title
-  Issues
-  %small (assigned to you)
-  %small.pull-right #{@issues.total_count} issues
+  Issues assigned to me
+  %span.pull-right #{@issues.total_count} issues
 
+%p.light
+  Only issues from
+  %strong #{@group.name}
+  group are listed here. To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
 %hr
+
 .row
   .span3
     = render 'shared/filter', entity: 'issue'

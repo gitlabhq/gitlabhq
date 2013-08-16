@@ -1,13 +1,19 @@
 class ProjectObserver < BaseObserver
   def after_create(project)
-    return true if project.forked? || project.imported?
+    project.update_column(:last_activity_at, project.created_at)
 
-    GitlabShellWorker.perform_async(
-      :add_repository,
-      project.path_with_namespace
-    )
+    return true if project.forked?
 
-    log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
+    if project.import?
+      RepositoryImportWorker.perform_in(5.seconds, project.id)
+    else
+      GitlabShellWorker.perform_async(
+        :add_repository,
+        project.path_with_namespace
+      )
+
+      log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
+    end
   end
 
   def after_update(project)

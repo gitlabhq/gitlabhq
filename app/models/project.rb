@@ -37,8 +37,6 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable_on :labels, :issues_default_labels
 
-  attr_accessor :import_url
-
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
   belongs_to :group,        foreign_key: "namespace_id", conditions: "type = 'Group'"
@@ -78,11 +76,11 @@ class Project < ActiveRecord::Base
   validates :description, length: { within: 0..2000 }
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
-                      message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter should be first" }
+                      message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter or digit should be first" }
   validates :path, presence: true, length: { within: 0..255 },
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
-                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
+                      message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { within: 0..255 }
@@ -94,7 +92,7 @@ class Project < ActiveRecord::Base
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
 
-  validate :check_limit
+  validate :check_limit, on: :create
 
   # Scopes
   scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
@@ -158,6 +156,10 @@ class Project < ActiveRecord::Base
 
   def import?
     import_url.present?
+  end
+
+  def imported?
+    imported
   end
 
   def check_limit
@@ -313,7 +315,7 @@ class Project < ActiveRecord::Base
   def discover_default_branch
     # Discover the default branch, but only if it hasn't already been set to
     # something else
-    if repository && default_branch.nil?
+    if repository.exists? && default_branch.nil?
       update_attributes(default_branch: self.repository.discover_default_branch)
     end
   end
@@ -412,10 +414,6 @@ class Project < ActiveRecord::Base
 
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
-  end
-
-  def imported?
-    imported
   end
 
   def personal?

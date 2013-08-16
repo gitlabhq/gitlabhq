@@ -26,7 +26,7 @@ module Projects
       # Ex.
       #  'GitLab HQ'.parameterize => "gitlab-hq"
       #
-      @project.path = @project.name.dup.parameterize
+      @project.path = @project.name.dup.parameterize unless @project.path.present?
 
 
       if namespace_id
@@ -45,26 +45,15 @@ module Projects
 
       @project.creator = current_user
 
-      # Import project from cloneable resource
-      if @project.valid? && @project.import_url.present?
-        shell = Gitlab::Shell.new
-
-        if shell.import_repository(@project.path_with_namespace, @project.import_url)
-          # We should create satellite for imported repo
-          @project.satellite.create unless @project.satellite.exists?
-          @project.imported = true
-          true
-        else
-          @project.errors.add(:import_url, 'cannot clone repo')
-        end
-      end
-
       if @project.save
-        unless @project.group
-          @project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
-        end
-
         @project.discover_default_branch
+
+        unless @project.group
+          @project.users_projects.create(
+            project_access: UsersProject::MASTER,
+            user: current_user
+          )
+        end
       end
 
       @project

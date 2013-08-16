@@ -1,7 +1,8 @@
 .loading-graph
   %center
     .loading
-    %h3.page-title Building repository graph. Please wait a moment.
+    %h3.page-title Building repository graph.
+    %p Please wait a moment, this page will automatically refresh when ready.
 
 .stat-graph
   .header.clearfix
@@ -11,6 +12,8 @@
         %option{:value => "additions"} Additions
         %option{:value => "deletions"} Deletions
     %h3#date_header.page-title
+    %p.light
+      Commits to #{@project.default_branch}, excluding merge commits. Limited by 8,000 commits
     %input#brush_change{:type => "hidden"}
   .graphs
     #contributors-master

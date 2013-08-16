@@ -1,6 +1,6 @@
 %h3.page-title My Projects
 %p.light
-  All projects you have access to are listed here. Public projects are not included here unless you have membership in it
+  All projects you have access to are listed here. Public projects are not included here unless you are a member
 %hr
 .row
   .span3
@@ -46,7 +46,7 @@
               - else
                 = private_icon
             = link_to project_path(project), class: dom_class(project) do
-              = project.name_with_namespace
+              %strong= project.name_with_namespace
 
             - if project.forked_from_project
               %small.pull-right

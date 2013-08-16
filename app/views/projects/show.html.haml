@@ -36,7 +36,7 @@
       %p
         = link_to pluralize(@repository.round_commit_count, 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
       %p
-        = link_to pluralize(@repository.branch_names.count, 'branch'), project_repository_path(@project)
+        = link_to pluralize(@repository.branch_names.count, 'branch'), project_branches_path(@project)
       %p
         = link_to pluralize(@repository.tag_names.count, 'tag'), project_tags_path(@project)
 

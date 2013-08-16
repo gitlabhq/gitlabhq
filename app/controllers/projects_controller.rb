@@ -57,6 +57,10 @@ class ProjectsController < Projects::ApplicationController
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent.limit(limit).offset(params[:offset] || 0)
 
+    # Ensure project default branch is set if it possible
+    # Normally it defined on push or during creation
+    @project.discover_default_branch
+
     respond_to do |format|
       format.html do
         if @project.empty_repo?
