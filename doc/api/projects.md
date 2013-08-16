@@ -184,6 +184,7 @@ Parameters:
 + `name` (required) - new project name
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
++ `namespace_id` (optional) - project namespace, use 'GLN' for global namespace
 + `issues_enabled` (optional)
 + `wall_enabled` (optional)
 + `merge_requests_enabled` (optional)
