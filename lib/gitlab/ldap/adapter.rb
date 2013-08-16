@@ -10,17 +10,20 @@ module Gitlab
       attr_reader :ldap
 
       def initialize
+        encryption = config['method'].to_s == 'ssl' ? :simple_tls : nil
+
         options = {
           host: config['host'],
           port: config['port'],
+          encryption: encryption
         }
 
         auth_options = {
           auth: {
-          method: config['method'],
-          username: config['bind_dn'],
-          password: config['password']
-        }
+            method: :simple,
+            username: config['bind_dn'],
+            password: config['password']
+          }
         }
 
         if config['password'] || config['bind_dn']
