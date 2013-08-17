@@ -28,6 +28,13 @@
       background: #FAFAFA;
       li > a {
         padding: 16px;
+
+        &.success {
+          border-color: #4A4;
+        }
+        &.error {
+          border-color: #DA4E49;
+        }
       }
     }
   }
