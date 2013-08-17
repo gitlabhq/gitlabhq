@@ -104,6 +104,12 @@ input.check_all_issues {
   margin-bottom: 20px;
 }
 
+.issue-milestone {
+  .progress {
+    width: 200px;
+  }
+}
+
 .media-body {
   .ui-box:first-child {
     margin-top: 0;
