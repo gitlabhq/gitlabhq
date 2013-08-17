@@ -139,3 +139,18 @@
     float: left;
   }
 }
+
+.btn-group {
+  .btn-tiny {
+    margin: 0 !important;
+    border-right: 0;
+
+    i {
+      font-size: inherit !important;
+    }
+
+    &:last-child {
+      border-right: 1px solid #BBB;
+    }
+  }
+}

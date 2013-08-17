@@ -48,7 +48,7 @@
           - @issue.participants.each do |participant|
             = link_to_member(@project, participant, name: false, size: 24)
 
-    .voting_notes#notes= render "projects/notes/notes_with_form"
+        .voting_notes#notes= render "projects/notes/notes_with_form"
 
   .span2.issue-sidebar
     .status_info

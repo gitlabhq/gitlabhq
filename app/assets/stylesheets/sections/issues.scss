@@ -101,12 +101,14 @@ input.check_all_issues {
 }
 
 .participants {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .media-body {
   .ui-box:first-child {
     margin-top: 0;
+    border-color: #ddd;
+    @include border-radius(3px);
   }
 }
 
