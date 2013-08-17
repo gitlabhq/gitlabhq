@@ -61,9 +61,9 @@
       - if can?(current_user, :modify_issue, @issue)
         %li
           - if @issue.closed?
-            = link_to 'Reopen', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put, class: 'red'
+            = link_to 'Reopen', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put, class: 'success'
           - else
-            = link_to 'Close', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, title: "Close Issue", class: 'green'
+            = link_to 'Close', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, title: "Close Issue", class: 'error'
         %li
           = link_to edit_project_issue_path(@project, @issue) do
             Edit

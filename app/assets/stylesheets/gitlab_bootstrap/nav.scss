@@ -30,10 +30,24 @@
         padding: 16px;
 
         &.success {
-          border-color: #4A4;
+          border-color: rgba(68, 170, 68, 0.5);
+          background: rgba(68, 170, 68, 0.06);
+          color: rgba(68, 170, 68, 0.5);
+
+          &:hover {
+            background: rgba(68, 170, 68, 0.5);
+            color: #fff;
+          }
         }
         &.error {
-          border-color: #DA4E49;
+          border-color: rgba(218, 78, 73, 0.5);
+          background: rgba(218, 78, 73, 0.06);
+          color: rgba(218,78,73,0.5);
+
+          &:hover {
+            background: rgba(218, 78, 73, 0.5);
+            color: #fff;
+          }
         }
       }
     }
