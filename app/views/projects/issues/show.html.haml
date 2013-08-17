@@ -11,6 +11,8 @@
               .pull-right
                 - if @issue.closed?
                   .error.status_info Closed
+                - else
+                  .success.status_info Opened
 
               .media-body
                 %span.muted
