@@ -103,3 +103,21 @@ input.check_all_issues {
 .participants {
   margin-bottom: 10px;
 }
+
+.media-body {
+  .ui-box:first-child {
+    margin-top: 0;
+  }
+}
+
+.issue-sidebar {
+  .status_info {
+    float: none;
+    background: #eee;
+    color: #bbb;
+    font-weight: bold;
+    border-radius: 3px;
+    font-size: 16px;
+    padding: 9px;
+  }
+}
