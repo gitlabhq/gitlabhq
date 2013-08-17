@@ -41,7 +41,7 @@ module API
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
       #   bio                               - Bio
-      #   password_expired                  - password is set expired
+      #   expired_password                  - password is set expired
       #   force_random_password             - generate random password for user
       # Example Request:
       #   POST /users
@@ -52,25 +52,16 @@ module API
         attrs = attributes_for_keys [:email, :name, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
 
         #parse password strategy params
-        if params[:expired_password].present?
-          expired = params[:expired_password].to_i > 0
-        else
-          expired = false
-        end
-        if params[:force_random_password].present?
-          force_random = params[:force_random_password].to_i > 0
-        else
-          force_random = false
-        end
+        expired = params[:expired_password] && (params[:expired_password].to_i > 0)
+        force_random =  params[:force_random_password] && (params[:force_random_password].to_i > 0)
 
         #check params set properly
         if !(force_random ^ params[:password].present?)
           render_api_error!('400 Either password or force_random must be set',400)
         end
 
-        if expired
-          attrs[:password_expires_at] = Time.now
-        end
+        attrs[:password_expires_at] = Time.now if expired
+
         if force_random
           attrs[:force_random_password] = true
         else
@@ -78,6 +69,8 @@ module API
         end
 
         user = User.new attrs, as: :admin
+        user.created_by_id = current_user.id if expired # this is necessary to make the new user notification work correctly.
+
         if user.save
           present user, with: Entities::User
         else
