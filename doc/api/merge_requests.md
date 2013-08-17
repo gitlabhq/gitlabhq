@@ -97,7 +97,7 @@ Parameters:
 + `id` (required) - The ID of a project
 + `source_branch` (required) - The source branch
 + `target_branch` (required) - The target branch
-+ `assignee_id`              - Assignee user ID
++ `assignee_id` (opitional)  - Assignee user ID
 + `title` (required)         - Title of MR
 
 ```json
