@@ -9,7 +9,7 @@ GitLab supports the following databases:
 ## MySQL
 
     # Install the database packages
-    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+    sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev mysqld-dev
 
     # Pick a database root password (can be anything), type it and press enter
     # Retype the database root password and press enter
