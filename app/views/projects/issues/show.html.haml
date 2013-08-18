@@ -16,7 +16,7 @@
 
               .media-body
                 %span.muted
-                  Created by #{link_to_member(@project, @issue.assignee, avatar: false)} 
+                  Created by #{link_to_member(@project, @issue.author, avatar: false)} 
                   %span{title: @issue.created_at.stamp("Aug 21, 2011")} #{time_ago_in_words(@issue.created_at)} ago
                 %h4.box-title
                   = gfm escape_once(@issue.title)
