@@ -28,19 +28,19 @@
               - else
                 \ No one assigned.
 
-            - if @issue.milestone
-              - milestone = @issue.milestone
-              .pull-right.issue-milestone
-                .media
-                  .progress.pull-right
-                    .bar{style: "width: #{milestone.percent_complete}%"}
+            .pull-right.issue-milestone
+              - if @issue.milestone
+                - milestone = @issue.milestone
+                  .media
+                    .progress.pull-right
+                      .bar{style: "width: #{milestone.percent_complete}%"}
 
-                  .media-body
-                    %cite.cgray Milestone:
-                    %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
+                    .media-body
+                      %cite.cgray Milestone:
+                      %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
-            - else
-              %cite.cgray No milestone set.
+              - else
+                %cite.cgray No milestone set.
 
           - if @issue.description.present?
             .ui-box-bottom
