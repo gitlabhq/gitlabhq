@@ -76,8 +76,7 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 # Asciidoc to HTML
 gem  "asciidoctor"
 
-# Servers
-gem "puma", '~> 2.3.1', group: :puma
+# Application server
 gem "unicorn", '~> 4.6.3', group: :unicorn
 
 # State machine
