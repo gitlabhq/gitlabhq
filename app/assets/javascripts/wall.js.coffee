@@ -64,7 +64,7 @@ class Wall
     template = template.replace('{{text}}', simpleFormat(note.body))
 
     if note.attachment
-      file = '<i class="icon-paper-clip"/><a href="/files/note/' + note.id + '/' + note.attachment + '">' + note.attachment + '</a>'
+      file = '<i class="icon-paper-clip"/><a href="' + gon.relative_url_root + '/files/note/' + note.id + '/' + note.attachment + '">' + note.attachment + '</a>'
     else
       file = ''
     template = template.replace('{{file}}', file)
