@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130812143708) do
+ActiveRecord::Schema.define(:version => 20130819182730) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.text     "description"
     t.integer  "milestone_id"
     t.string   "state"
+    t.integer  "iid"
   end
 
   add_index "issues", ["assignee_id"], :name => "index_issues_on_assignee_id"
@@ -98,6 +99,7 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.string   "state"
     t.string   "merge_status"
     t.integer  "target_project_id",                       :null => false
+    t.integer  "iid"
   end
 
   add_index "merge_requests", ["assignee_id"], :name => "index_merge_requests_on_assignee_id"
