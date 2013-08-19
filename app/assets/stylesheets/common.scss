@@ -146,8 +146,7 @@ p.time {
   text-align: center;
   float: right;
   position: relative;
-  top: -5px;
-  @include border-radius(4px);
+  @include border-radius(3px);
 
   &.success {
     background: #4A4;

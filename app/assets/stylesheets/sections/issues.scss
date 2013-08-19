@@ -101,5 +101,31 @@ input.check_all_issues {
 }
 
 .participants {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
+}
+
+.issue-milestone {
+  .progress {
+    width: 200px;
+  }
+}
+
+.media-body {
+  .ui-box:first-child {
+    margin-top: 0;
+    border-color: #ddd;
+    @include border-radius(3px);
+  }
+}
+
+.issue-sidebar {
+  .status_info {
+    float: none;
+    background: #eee;
+    color: #bbb;
+    font-weight: bold;
+    border-radius: 3px;
+    font-size: 16px;
+    padding: 9px;
+  }
 }

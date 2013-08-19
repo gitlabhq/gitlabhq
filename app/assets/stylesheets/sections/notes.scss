@@ -17,8 +17,7 @@ ul.notes {
   .discussion-header,
   .note-header {
     @extend .cgray;
-    padding-top: 5px;
-    padding-bottom: 15px;
+    padding: 10px 10px 10px 15px;
 
     .avatar {
       float: left;
@@ -28,6 +27,7 @@ ul.notes {
     .discussion-last-update,
     .note-last-update {
       font-style: italic;
+      color: #999;
     }
     .author {
       color: $style_color;
@@ -76,10 +76,10 @@ ul.notes {
   }
 
   .note {
-    padding: 8px 0;
     overflow: hidden;
     display: block;
     position:relative;
+    margin-top: 0;
     p { color: $style_color; }
 
     .avatar {
@@ -91,30 +91,41 @@ ul.notes {
     }
     .note-body {
       @include md-typography;
-      margin-left: 45px;
+      padding-bottom: 3px;
 
       .highlight {
         @include border-radius(4px);
       }
+
+      p:first-child {
+        margin-top: -5px;
+      }
     }
-    .note-header {
-      padding-bottom: 5px;
+
+    .media-body {
+      .ui-box {
+        @include border-radius(3px);
+        overflow: hidden;
+        border-color: #ddd;
+      }
     }
   }
 
   .note:target {
-    -webkit-animation:target-note 2s linear;
-    background: #fffff0;
+    .note-body {
+      -webkit-animation:target-note 2s linear;
+      background: #fffff0;      
+    }
   }
 
   // paint top or bottom borders depending on notes direction
   &:not(.reversed) .note,
   &:not(.reversed) .discussion {
-    border-bottom: 1px solid #eee;
+    //border-bottom: 1px solid #eee;
   }
   &.reversed .note,
   &.reversed .discussion {
-    border-top: 1px solid #eee;
+    //border-top: 1px solid #eee;
   }
 }
 
@@ -160,6 +171,7 @@ ul.notes {
   .note-actions {
     display: none;
     float: right;
+    margin-top: -3px;
 
     [class^="icon-"],
     [class*="icon-"] {
@@ -247,15 +259,19 @@ ul.notes {
 .file,
 .discussion {
   .new_note {
-    margin: 8px 5px 8px 0;
+    margin: 0 5px 8px 0;
   }
 }
 .new_note {
   display: none;
 
+  .author {
+    font-weight: bold;
+    color: #474d57;
+  }
+
   .buttons {
     float: left;
-    margin-top: 8px;
   }
   .clearfix {
     margin-bottom: 0;
@@ -300,23 +316,13 @@ ul.notes {
 }
 
 
-.common-note-form {
-  margin: 0;
-  height: 140px;
-  background: #F9F9F9;
-  padding: 3px;
-  padding-bottom: 25px;
-  border: 1px solid #DDD;
-}
-
-
 .note-form-actions {
-  background: #F9F9F9;
-  height: 45px;
-  padding: 0 5px;
+  background: #f5f5f5;
+  border-top: 1px solid #e5e5e5;
+  padding: 16px;
 
   .note-form-option {
-    margin-top: 10px;
+    margin-top: 3px;
     margin-left: 30px;
     @extend .pull-left;
   }
@@ -338,7 +344,8 @@ ul.notes {
   }
 
   .form-actions {
-    padding-left: 20px;
+    padding: 16px;
+    margin: 18px -15px -21px;
 
     .btn-save {
       float: left;
