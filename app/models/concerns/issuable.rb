@@ -16,6 +16,7 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
+    validates :iid, presence: true, numericality: true
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}
@@ -23,6 +24,8 @@ module Issuable
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
+
+    validate :set_iid, on: :create
 
     delegate :name,
              :email,
@@ -42,6 +45,15 @@ module Issuable
     def search(query)
       where("title like :query", query: "%#{query}%")
     end
+  end
+
+  def set_iid
+    max_iid = project.send(self.class.name.tableize).maximum(:iid)
+    self.iid = max_iid.to_i + 1
+  end
+
+  def to_param
+    iid.to_s
   end
 
   def today?
