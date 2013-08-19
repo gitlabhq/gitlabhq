@@ -1,0 +1,44 @@
+- too_big = diff.diff.lines.count > 1000
+- if too_big
+  %a.supp_diff_link Diff suppressed. Click to show
+
+:javascript
+
+  $(document).ready(function () {
+
+    var data_diff = [];
+  
+    $('#diff').handsontable({
+      data: data_diff,
+      minRows: 1,
+      minCols: 1,
+      minSpareCols: 0,
+      minSpareRows: 0,
+      autoWrapRow: true,
+      colHeaders: false,
+      //contextMenu: true,
+      asyncRendering: false,
+      cells: function (row, col, prop) {
+        var cellProperties = {};
+        cellProperties.type = {
+          renderer: coopy.diffRenderer
+        }
+        return cellProperties;
+      }
+    });
+      
+    var data1 = #{old_file.to_csv.to_json};
+    var data2 = #{file.to_csv.to_json};
+    
+    var table1 = new coopy.CoopyTableView(data1);
+    var table2 = new coopy.CoopyTableView(data2);
+    var alignment = coopy.compareTables(table1,table2).align();
+    var table_diff = new coopy.CoopyTableView(data_diff);
+    var flags = new coopy.CompareFlags();
+    var highlighter = new coopy.TableDiff(alignment,flags);
+    highlighter.hilite(table_diff);
+    $("#diff").handsontable('loadData',table_diff.data);
+
+  });
+
+%div{id:"diff", class:"highlighter tabular #{'hide' if too_big}"}

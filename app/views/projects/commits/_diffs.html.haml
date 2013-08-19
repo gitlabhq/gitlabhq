@@ -47,7 +47,10 @@
         .content
           -# Skipp all non non-supported blobs
           - next unless file.respond_to?('text?')
-          - if file.text?
+          - if file.csv?
+            - old_file = Gitlab::Git::Blob.new(project.repository, @commit.parent_id, @ref, diff.old_path) if @commit.parent_id
+            = render "projects/commits/csv_file", diff: diff, old_file: old_file, file: file, index: i
+          - elsif file.text?
             = render "projects/commits/text_file", diff: diff, index: i
           - elsif file.image?
             - old_file = Gitlab::Git::Blob.new(project.repository, @commit.parent_id, @ref, diff.old_path) if @commit.parent_id
