@@ -67,9 +67,5 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
-    
-    # Uncomment this if you are using a subdirectory
-    # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/puma.rb may need to be changed
-    # config.relative_url_root = "/gitlab"
   end
 end
