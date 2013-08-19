@@ -48,6 +48,7 @@ class Project < ActiveRecord::Base
   has_one :campfire_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
+  has_one :flowdock_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
 
@@ -221,7 +222,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock)
   end
 
   def gitlab_ci?
