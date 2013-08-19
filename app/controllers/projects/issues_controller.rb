@@ -91,7 +91,7 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @issue ||= @project.issues.find(params[:id])
+    @issue ||= @project.issues.find_by_iid!(params[:id])
   end
 
   def authorize_modify_issue!

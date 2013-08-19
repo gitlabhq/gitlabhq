@@ -132,7 +132,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find(params[:id])
+    @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
   end
 
   def authorize_modify_merge_request!
