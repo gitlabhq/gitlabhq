@@ -284,6 +284,14 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def note_target_iid
+    if note_target.respond_to?(:iid)
+      note_target.iid
+    else
+      note_target_id
+    end.to_s
+  end
+
   def wall_note?
     target.noteable_type.blank?
   end

@@ -16,6 +16,7 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
+    validate :set_iid, on: :create
     validates :iid, presence: true, numericality: true
 
     scope :authored, ->(user) { where(author_id: user) }
@@ -25,7 +26,6 @@ module Issuable
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
 
-    validate :set_iid, on: :create
 
     delegate :name,
              :email,

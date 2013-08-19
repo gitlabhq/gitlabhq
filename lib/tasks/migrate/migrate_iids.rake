@@ -4,7 +4,7 @@ task migrate_iids: :environment do
   Issue.where(iid: nil).find_each(batch_size: 100) do |issue|
     begin
       issue.set_iid
-      if issue.save
+      if issue.update_attribute(:iid, mr.iid)
         print '.'
       else
         print 'F'
@@ -19,7 +19,7 @@ task migrate_iids: :environment do
   MergeRequest.where(iid: nil).find_each(batch_size: 100) do |mr|
     begin
       mr.set_iid
-      if mr.save
+      if mr.update_attribute(:iid, mr.iid)
         print '.'
       else
         print 'F'
@@ -28,4 +28,6 @@ task migrate_iids: :environment do
       print 'F'
     end
   end
+
+  puts 'done'
 end
