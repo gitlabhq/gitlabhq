@@ -186,7 +186,7 @@ GEM
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
-    gitlab_git (2.0.1)
+    gitlab_git (2.1.0)
       activesupport (~> 3.2.13)
       github-linguist (~> 2.3.4)
       gitlab-grit (~> 2.6.0)
@@ -578,7 +578,7 @@ DEPENDENCIES
   gitlab-gollum-lib (~> 1.0.1)
   gitlab-grack (~> 1.0.1)
   gitlab-pygments.rb (~> 0.3.2)
-  gitlab_git (= 2.0.1)
+  gitlab_git (= 2.1.0)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.3)
   gon
