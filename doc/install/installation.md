@@ -301,7 +301,7 @@ Make sure to edit the config file to match your setup:
 
 ## Restart
 
-    sudo service nginx restart
+    sudo service nginx reload
 
 
 # Done!
