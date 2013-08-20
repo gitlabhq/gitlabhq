@@ -201,7 +201,7 @@ class Project < ActiveRecord::Base
 
   def issue_exists?(issue_id)
     if used_default_issues_tracker?
-      self.issues.where(id: issue_id).first.present?
+      self.issues.where(iid: issue_id).first.present?
     else
       true
     end
