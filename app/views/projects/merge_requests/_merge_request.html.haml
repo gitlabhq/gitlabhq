@@ -1,6 +1,6 @@
 %li{ class: mr_css_classes(merge_request) }
   .merge-request-title
-    %span.light= "##{merge_request.id}"
+    %span.light= "##{merge_request.iid}"
     = link_to_gfm truncate(merge_request.title, length: 80), project_merge_request_path(merge_request.target_project, merge_request), class: "row_title"
     - if merge_request.merged?
       %small.pull-right
