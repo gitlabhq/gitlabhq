@@ -18,7 +18,7 @@
         .project-title
           %i.icon-share.cgray
           = link_to public_project_path(project) do
-            = project.name_with_namespace
+            %strong= project.name_with_namespace
           .pull-right
             %pre.public-clone git clone #{project.http_url_to_repo}
 
