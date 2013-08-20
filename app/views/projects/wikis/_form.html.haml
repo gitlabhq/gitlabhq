@@ -25,11 +25,11 @@
     .ui-box-bottom
       .control-group
         = f.label :content
-        .controls= f.text_area :content, class: 'span8 js-gfm-input'
+        .controls= f.text_area :content, class: 'col-md-8 js-gfm-input'
     .ui-box-bottom
       .control-group
         = f.label :commit_message
-        .controls= f.text_field :message, class: 'span8'
+        .controls= f.text_field :message, class: 'col-md-8'
   .form-actions
     - if @wiki && @wiki.persisted?
       = f.submit 'Save changes', class: "btn-save btn"

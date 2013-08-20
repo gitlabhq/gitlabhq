@@ -1,8 +1,8 @@
 .project_clone_panel
   .row
-    .span8
+    .col-md-8
       .form-horizontal= render "shared/clone_panel"
-    .span3.pull-right
+    .col-md-3.pull-right
       .pull-right
         - unless @project.empty_repo?
           - if can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace

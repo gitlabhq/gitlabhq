@@ -9,31 +9,31 @@
     Branches
   .merge-request-branches
   .row
-    .span5
+    .col-md-5
       .ui-box
         .title From
         .ui-box-head
           Project:
-          = f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span4'})
+          = f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen col-md-4'})
           .prepend-top-10
             %i.icon-code-fork
             Branch:
-            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span3'})
+            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen col-md-3'})
           .mr_source_commit.prepend-top-10
-    .span2
+    .col-md-2
       %h1.merge-request-angle
         %i.icon-angle-right
-    .span5
+    .col-md-5
       .ui-box
         .title To
         .ui-box-head
           - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
           Project:
-          = f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span4'})
+          = f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen col-md-4'})
           .prepend-top-10
             %i.icon-code-fork
             Branch:
-            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span3'})
+            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen col-md-3'})
           .mr_target_commit.prepend-top-10
 
   %hr
@@ -50,7 +50,7 @@
         = f.label :assignee_id do
           %i.icon-user
           Assign to
-        .controls= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+        .controls= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen col-md-3'})
       .left
         = f.label :milestone_id do
           %i.icon-time

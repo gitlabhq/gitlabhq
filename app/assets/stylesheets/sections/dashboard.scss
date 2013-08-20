@@ -20,7 +20,7 @@
 
   .search-text-input {
     float:left;
-    @extend .span2;
+    @extend .col-md-2;
   }
   .btn {
     margin-left: 5px;

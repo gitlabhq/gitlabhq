@@ -1,5 +1,5 @@
 .admin_dash.row
-  .span4
+  .col-md-4
     .ui-box
       .title Projects
       .data.padded
@@ -7,7 +7,7 @@
           %h1= Project.count
         %hr
         = link_to 'New Project', new_project_path, class: "btn btn-small"
-  .span4
+  .col-md-4
     .ui-box
       .title Users
       .data.padded
@@ -15,7 +15,7 @@
           %h1= User.count
         %hr
         = link_to 'New User', new_admin_user_path, class: "btn btn-small"
-  .span4
+  .col-md-4
     .ui-box
       .title Groups
       .data.padded
@@ -25,7 +25,7 @@
         = link_to 'New Group', new_admin_group_path, class: "btn btn-small"
 
 .row
-  .span4
+  .col-md-4
     %h4 Latest projects
     %hr
     - @projects.each do |project|
@@ -35,7 +35,7 @@
           = time_ago_in_words project.created_at
           ago
 
-  .span4
+  .col-md-4
     %h4 Latest users
     %hr
     - @users.each do |user|
@@ -46,7 +46,7 @@
           = time_ago_in_words user.created_at
           ago
 
-  .span4
+  .col-md-4
     %h4 Stats
     %hr
     %p

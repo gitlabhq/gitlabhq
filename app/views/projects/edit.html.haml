@@ -13,7 +13,7 @@
               = f.label :name do
                 Project name is
               .controls
-                = f.text_field :name, placeholder: "Example Project", class: "span5"
+                = f.text_field :name, placeholder: "Example Project", class: "col-md-5"
 
 
             .control-group
@@ -21,7 +21,7 @@
                 Project description
                 %span.light (optional)
               .controls
-                = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
+                = f.text_area :description, placeholder: "awesome project", class: "col-md-5", rows: 3, maxlength: 250
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
               .control-group
@@ -52,7 +52,7 @@
             .control-group
               = f.label :label_list, "Labels", class: 'control-label'
               .controls
-                = f.text_field :label_list, maxlength: 2000, class: "span5"
+                = f.text_field :label_list, maxlength: 2000, class: "col-md-5"
                 %p.hint Separate labels with commas.
 
           %fieldset.features

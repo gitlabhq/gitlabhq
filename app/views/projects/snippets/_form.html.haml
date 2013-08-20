@@ -14,7 +14,7 @@
       .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
     .control-group
       = f.label "Lifetime"
-      .controls= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
+      .controls= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen col-md-2'}
     .control-group
       .file-editor
         = f.label :file_name, "File"

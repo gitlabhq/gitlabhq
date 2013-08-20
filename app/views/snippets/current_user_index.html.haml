@@ -11,7 +11,7 @@
 %hr
 
 .row
-  .span3
+  .col-md-3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
         = link_to user_snippets_path(@user) do
@@ -29,6 +29,6 @@
           %span.pull-right
             = @user.snippets.public.count
 
-  .span9.my-snippets
+  .col-md-9.my-snippets
     = render 'snippets'
 
