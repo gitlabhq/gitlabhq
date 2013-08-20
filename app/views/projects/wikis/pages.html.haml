@@ -1,25 +1,11 @@
 = render 'nav'
 %h3.page-title
   All Pages
-  = render 'main_links'
-%br
-%table
-  %thead
-    %tr
-      %th Title
-      %th Format
-      %th Last updated
-      %th Updated by
-  %tbody
-    - @wiki_pages.each do |wiki_page|
-      %tr
-        %td
-          %strong= link_to wiki_page.title.titleize, project_wiki_path(@project, wiki_page)
-        %td
-          %strong= wiki_page.format
-        %td
-          = wiki_page.created_at.to_s(:short) do
-            (#{time_ago_in_words(wiki_page.created_at)}
-            ago)
-        %td
-          = commit_author_link(wiki_page.version, avatar: true, size: 24)
+%ul.bordered-list
+  - @wiki_pages.each do |wiki_page|
+    %li
+      %h4
+        = link_to wiki_page.title.titleize, project_wiki_path(@project, wiki_page)
+        %small (#{wiki_page.format})
+        .pull-right
+          %small Last edited #{time_ago_in_words(wiki_page.commit.created_at)} ago

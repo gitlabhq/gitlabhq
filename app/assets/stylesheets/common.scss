@@ -51,6 +51,10 @@ table a code {
   text-align: center;
   color: #fff;
   font-size: 14px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  opacity: 0.8;
 
   .flash-notice {
     background: #49C;
