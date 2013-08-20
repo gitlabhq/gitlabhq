@@ -232,10 +232,10 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without ... postgres")
-    sudo -u git -H bundle install --deployment --without development test postgres unicorn aws
+    sudo -u git -H bundle install --deployment --without development test postgres aws
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
-    sudo -u git -H bundle install --deployment --without development test mysql unicorn aws
+    sudo -u git -H bundle install --deployment --without development test mysql aws
 
 
 ## Initialize Database and Activate Advanced Features
