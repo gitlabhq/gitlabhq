@@ -427,6 +427,7 @@ class Project < ActiveRecord::Base
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
+        gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         gitlab_shell.rm_satellites(old_path_with_namespace)
         send_move_instructions
       rescue
