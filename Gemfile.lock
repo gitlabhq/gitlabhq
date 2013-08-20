@@ -1,4 +1,12 @@
 GIT
+  remote: git://github.com/thomas-mcdonald/bootstrap-sass.git
+  revision: 5bf533b803e92042c846dbf80faa4411951bb890
+  branch: 3
+  specs:
+    bootstrap-sass (3.0.0.0)
+      sass (~> 3.2)
+
+GIT
   remote: https://github.com/ctran/annotate_models.git
   revision: 18a4e2eb77c8f3ef695b563e4a7ca45dfede819b
   specs:
@@ -55,8 +63,6 @@ GEM
       erubis (>= 2.6.6)
     binding_of_caller (0.7.2)
       debug_inspector (>= 0.0.1)
-    bootstrap-sass (2.3.2.0)
-      sass (~> 3.2)
     builder (3.0.4)
     capybara (2.1.0)
       mime-types (>= 1.16)
@@ -555,12 +561,13 @@ DEPENDENCIES
   awesome_print
   better_errors
   binding_of_caller
-  bootstrap-sass
+  bootstrap-sass!
   capybara
   carrierwave
   chosen-rails (= 1.0.0)
   coffee-rails
   colored
+  compass
   coveralls
   d3_rails (~> 3.1.4)
   database_cleaner

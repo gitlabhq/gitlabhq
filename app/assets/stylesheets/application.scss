@@ -12,6 +12,8 @@
 /**
  * GitLab bootstrap:
  */
+@import "bootstrap";
+@import "compass.scss";
 @import "gitlab_bootstrap.scss";
 
 @import "common.scss";
