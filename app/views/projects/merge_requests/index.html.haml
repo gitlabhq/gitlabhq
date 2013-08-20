@@ -16,7 +16,7 @@
         .mr-filters
           %span Filter by
           .dropdown.inline.prepend-left-10
-            %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+            %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
               %i.icon-user
               %span.light assignee:
               - if @assignee.present?
@@ -39,7 +39,7 @@
                     = user.name
 
           .dropdown.inline.prepend-left-10
-            %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+            %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
               %i.icon-time
               %span.light milestone:
               - if @milestone.present?

@@ -33,7 +33,7 @@
         %td
           = link_to admin_hook_path(hook) do
             %strong= hook.url
-          = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-small pull-right"
+          = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-sm pull-right"
         %td POST
         %td
-          = link_to 'Remove', admin_hook_path(hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-small pull-right"
+          = link_to 'Remove', admin_hook_path(hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-sm pull-right"

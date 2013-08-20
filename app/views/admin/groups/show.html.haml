@@ -1,7 +1,7 @@
 %h3.page-title
   Group: #{@group.name}
 
-  = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
+  = link_to edit_admin_group_path(@group), class: "btn btn-sm pull-right" do
     %i.icon-edit
     Edit
 %hr
@@ -32,7 +32,7 @@
             - else
               (deleted)
           .pull-right
-            = link_to "#", class: "btn btn-small change-owner-link" do
+            = link_to "#", class: "btn btn-sm change-owner-link" do
               %i.icon-edit
               Change owner
         %li.change-owner-holder.hide.bgred

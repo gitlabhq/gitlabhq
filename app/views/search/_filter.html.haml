@@ -1,5 +1,5 @@
 .dropdown.inline
-  %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+  %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
     %i.icon-tags
     %span.light Group:
     - if @group.present?
@@ -17,7 +17,7 @@
           = group.name
 
 .dropdown.inline.prepend-left-10
-  %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+  %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
     %i.icon-tags
     %span.light Project:
     - if @project.present?

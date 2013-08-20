@@ -24,7 +24,7 @@
                 = f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
               .pull-right
                 &nbsp;
-                = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+                = link_to 'Assign to me', '#', class: 'btn btn-sm assign-to-me-link'
           .issue_milestone.pull-left
             = f.label :milestone_id do
               %i.icon-time

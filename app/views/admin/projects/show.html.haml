@@ -80,7 +80,7 @@
           %strong #{@group.name} Group
           members (#{@group.users_groups.count})
           .pull-right
-            = link_to admin_group_path(@group), class: 'btn btn-small' do
+            = link_to admin_group_path(@group), class: 'btn btn-sm' do
               %i.icon-edit
         %ul.well-list
           - @group.users_groups.order('group_access DESC').each do |member|
@@ -102,5 +102,5 @@
               = link_to user.name, admin_user_path(user)
             .pull-right
               %span.light= @project.project_access_human(user)
-              = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
+              = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-sm btn-remove" do
                 %i.icon-remove

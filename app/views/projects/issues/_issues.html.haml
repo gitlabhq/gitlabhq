@@ -10,11 +10,11 @@
           = select_tag('update[milestone_id]', options_from_collection_for_select(project_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :status, params[:status]
-          = button_tag "Save", class: "btn update_selected_issues btn-small btn-save"
+          = button_tag "Save", class: "btn update_selected_issues btn-sm btn-save"
       .issues-filters
         %span Filter by
         .dropdown.inline.prepend-left-10
-          %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+          %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
             %i.icon-tags
             %span.light labels:
             - if params[:label_name].present?
@@ -33,7 +33,7 @@
                     %i.icon-tag
                   = label_name
         .dropdown.inline.prepend-left-10
-          %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+          %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
             %i.icon-user
             %span.light assignee:
             - if @assignee.present?
@@ -56,7 +56,7 @@
                   = user.name
 
         .dropdown.inline.prepend-left-10
-          %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+          %a.dropdown-toggle.btn.btn-sm{href: '#', "data-toggle" => "dropdown"}
             %i.icon-time
             %span.light milestone:
             - if @milestone.present?

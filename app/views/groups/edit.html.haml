@@ -59,9 +59,9 @@
                   = private_icon
                 = link_to project.name_with_namespace, project
                 .pull-right
-                  = link_to 'Team', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-                  = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-                  = link_to 'Remove', project, confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
+                  = link_to 'Team', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+                  = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-sm"
+                  = link_to 'Remove', project, confirm: remove_project_message(project), method: :delete, class: "btn btn-sm btn-remove"
             - if @group.projects.blank?
               %p.nothing_here_message This group has no projects yet
 
@@ -74,7 +74,7 @@
             = form_for @group do |f|
               = users_select_tag(:'group[owner_id]')
               %hr
-              = f.submit 'Transfer group', class: "btn btn-small btn-remove"
+              = f.submit 'Transfer group', class: "btn btn-sm btn-remove"
 
       .tab-pane#tab-remove
         .ui-box.ui-box-danger

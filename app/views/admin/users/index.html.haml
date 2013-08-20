@@ -48,11 +48,11 @@
                 %i.icon-envelope
                 = mail_to user.email, user.email, class: 'light'
               &nbsp;
-              = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-small"
+              = link_to 'Edit', edit_admin_user_path(user), id: "edit_#{dom_id(user)}", class: "btn btn-sm"
               - unless user == current_user
                 - if user.blocked?
-                  = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-small success"
+                  = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-sm success"
                 - else
-                  = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
-                = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+                  = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-sm btn-remove"
+                = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-sm btn-remove"
     = paginate @users, theme: "gitlab"
