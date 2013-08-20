@@ -17,7 +17,7 @@
             = link_to group do
               %i.icon-folder-open
               = group.name
-            %small.light up to Masters
+            %small.light up to #{group_link.human_access}
 
   .span5.available-groups
     %h4
@@ -27,7 +27,7 @@
         %li
           .pull-right
             = form_tag project_group_links_path(@project), method: :post do
-              = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink::MASTER), class: "span2"
+              = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "span2"
               = hidden_field_tag :group_id, group.id
               = submit_tag "Share", class: "btn btn-small"
           %h4

@@ -25,4 +25,12 @@ class ProjectGroupLink < ActiveRecord::Base
       "Master"    => MASTER
     }
   end
+
+  def self.default_access
+    DEVELOPER
+  end
+
+  def human_access
+    self.class.access_options.key(self.group_access)
+  end
 end

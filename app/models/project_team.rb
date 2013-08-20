@@ -114,15 +114,27 @@ class ProjectTeam
     invited_members = []
 
     if project.invited_groups.any?
-      project.invited_groups.each do |invited_group|
+      project.project_group_links.each do |group_link|
+        invited_group = group_link.group
         im = invited_group.users_groups
+
         if level
-          if level == :masters
-            im = im.owners + im.masters
+          int_level = UsersGroup.group_access_roles[level.to_s.singularize.titleize]
+
+          # Skip group members if we ask for masters
+          # but max group access is developers
+          next if int_level > group_link.group_access
+
+          # If we ask for developers and max
+          # group access is developers we need to provide
+          # both group master, developers as devs
+          if int_level == group_link.group_access
+            im.where("group_access >= ?)", group_link.group_access)
           else
-            im = im.send(level)
+            im.send(level)
           end
         end
+
         invited_members << im
       end
 
