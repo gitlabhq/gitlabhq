@@ -4,7 +4,7 @@ task migrate_iids: :environment do
   Issue.where(iid: nil).find_each(batch_size: 100) do |issue|
     begin
       issue.set_iid
-      if issue.update_attribute(:iid, mr.iid)
+      if issue.update_attribute(:iid, issue.iid)
         print '.'
       else
         print 'F'
