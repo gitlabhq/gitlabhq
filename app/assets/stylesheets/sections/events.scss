@@ -35,6 +35,13 @@
     padding-top: 0;
   }
 
+  &.event-inline {
+    .avatar {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
   padding: 14px 0px;
   border-bottom: 1px solid #eee;
   .event-title {
