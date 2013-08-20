@@ -250,7 +250,7 @@ describe Notify do
         should have_body_text /#{project.name}/
       end
       it 'contains new user role' do
-        should have_body_text /#{users_project.project_access_human}/
+        should have_body_text /#{users_project.human_access}/
       end
     end
 

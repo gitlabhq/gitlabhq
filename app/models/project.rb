@@ -133,10 +133,6 @@ class Project < ActiveRecord::Base
         where(path: id, namespace_id: nil).last
       end
     end
-
-    def access_options
-      UsersProject.access_roles
-    end
   end
 
   def team
@@ -397,11 +393,6 @@ class Project < ActiveRecord::Base
 
   def http_url_to_repo
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
-  end
-
-  def project_access_human(member)
-    project_user_relation = self.users_projects.find_by_user_id(member.id)
-    self.class.access_options.key(project_user_relation.project_access)
   end
 
   # Check if current branch name is marked as protected in the system
