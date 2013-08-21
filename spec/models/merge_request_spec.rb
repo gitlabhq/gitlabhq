@@ -2,20 +2,22 @@
 #
 # Table name: merge_requests
 #
-#  id            :integer          not null, primary key
-#  target_branch :string(255)      not null
-#  source_branch :string(255)      not null
-#  project_id    :integer          not null
-#  author_id     :integer
-#  assignee_id   :integer
-#  title         :string(255)
-#  created_at    :datetime
-#  updated_at    :datetime
-#  st_commits    :text(2147483647)
-#  st_diffs      :text(2147483647)
-#  milestone_id  :integer
-#  state         :string(255)
-#  merge_status  :string(255)
+#  id                :integer          not null, primary key
+#  target_branch     :string(255)      not null
+#  source_branch     :string(255)      not null
+#  source_project_id :integer          not null
+#  author_id         :integer
+#  assignee_id       :integer
+#  title             :string(255)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  st_commits        :text(2147483647)
+#  st_diffs          :text(2147483647)
+#  milestone_id      :integer
+#  state             :string(255)
+#  merge_status      :string(255)
+#  target_project_id :integer          not null
+#  iid               :integer
 #
 
 require 'spec_helper'

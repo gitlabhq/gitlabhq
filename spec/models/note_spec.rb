@@ -6,13 +6,14 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime
-#  updated_at    :datetime
+#  created_at    :datetime         not null
+#  updated_at    :datetime         not null
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
 #  commit_id     :string(255)
 #  noteable_id   :integer
+#  st_diff       :text
 #
 
 require 'spec_helper'
