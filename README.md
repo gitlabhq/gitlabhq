@@ -14,7 +14,7 @@
 
 * powered by Ruby on Rails
 * completely free and open source (MIT license)
-* used by more than 10.000 organizations to keep their code secure
+* used by more than 25.000 organizations to keep their code secure
 
 ### Code status
 
