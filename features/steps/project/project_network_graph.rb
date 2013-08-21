@@ -76,7 +76,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
 
   When 'I looking for a commit by SHA of "v2.1.0"' do
     within ".content .search" do
-      fill_in 'q', with: '98d6492'
+      fill_in 'extended_sha1', with: '98d6492'
       find('button').click
     end
     sleep 2
@@ -85,6 +85,13 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   And 'page should have "v2.1.0" on graph' do
     within '.network-graph' do
       page.should have_content 'v2.1.0'
+    end
+  end
+
+  When 'I look for a commit by ";"' do
+    within ".content .search" do
+      fill_in 'extended_sha1', with: ';'
+      find('button').click
     end
   end
 end
