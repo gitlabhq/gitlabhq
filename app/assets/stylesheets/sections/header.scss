@@ -79,7 +79,7 @@ header {
     img {
       width: 26px;
       height: 26px;
-      @include border-radius(4px);
+      @include border-radius(2px);
     }
   }
 
@@ -102,7 +102,7 @@ header {
       background-position: 10px;
       padding-left: 25px;
       font-size: 13px;
-      @include border-radius(3px);
+      @include border-radius(2px);
       border: 1px solid #c6c6c6;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
@@ -110,7 +110,7 @@ header {
       line-height: 1.9;
 
       &:focus {
-        width: 300px;
+        width: 350px;
       }
     }
   }
@@ -187,7 +187,7 @@ header {
   .separator {
     float: left;
     height: 46px;
-    width: 1px;
+    width: 2px;
     background: white;
     border-left: 1px solid #DDD;
     margin-top: -3px;
