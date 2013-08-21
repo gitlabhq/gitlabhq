@@ -1,4 +1,3 @@
-class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
@@ -93,10 +92,6 @@ class ApplicationController < ActionController::Base
 
   def authorize_push!
     return access_denied! unless can?(current_user, :push_code, project)
-  end
-
-  def authorize_create_team!
-    return access_denied! unless can?(current_user, :create_team, nil)
   end
 
   def access_denied!

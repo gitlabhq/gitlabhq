@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
                   :extern_uid, :provider, :password_expires_at,
                   as: [:default, :admin]
 
-  attr_accessible :projects_limit, :can_create_team, :can_create_group,
+  attr_accessible :projects_limit, :can_create_group,
                   as: :admin
 
   attr_accessor :force_random_password
@@ -208,7 +208,6 @@ class User < ActiveRecord::Base
     tap do |u|
       u.projects_limit = Gitlab.config.gitlab.default_projects_limit
       u.can_create_group = Gitlab.config.gitlab.default_can_create_group
-      u.can_create_team = Gitlab.config.gitlab.default_can_create_team
       u.theme_id = Gitlab::Theme::MARS
     end
   end

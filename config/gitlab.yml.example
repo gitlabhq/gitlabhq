@@ -41,7 +41,6 @@ production: &base
     ## User settings
     default_projects_limit: 10
     # default_can_create_group: false  # default: true
-    # default_can_create_team: false   # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
 
     ## Users management
