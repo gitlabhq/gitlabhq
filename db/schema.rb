@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130821090530) do
+ActiveRecord::Schema.define(:version => 20130821090531) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -119,6 +119,7 @@ ActiveRecord::Schema.define(:version => 20130821090530) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.string   "state"
+    t.integer  "iid"
   end
 
   add_index "milestones", ["due_date"], :name => "index_milestones_on_due_date"

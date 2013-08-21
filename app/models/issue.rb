@@ -17,8 +17,8 @@
 #
 
 class Issue < ActiveRecord::Base
-
   include Issuable
+  include InternalId
 
   belongs_to :project
   validates :project, presence: true

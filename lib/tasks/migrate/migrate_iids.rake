@@ -30,4 +30,19 @@ task migrate_iids: :environment do
   end
 
   puts 'done'
+  puts 'Milestones'.yellow
+  Milestone.where(iid: nil).find_each(batch_size: 100) do |m|
+    begin
+      m.set_iid
+      if m.update_attribute(:iid, m.iid)
+        print '.'
+      else
+        print 'F'
+      end
+    rescue
+      print 'F'
+    end
+  end
+
+  puts 'done'
 end

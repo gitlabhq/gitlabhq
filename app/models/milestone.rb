@@ -13,6 +13,8 @@
 #
 
 class Milestone < ActiveRecord::Base
+  include InternalId
+
   attr_accessible :title, :description, :due_date, :state_event, :author_id_of_changes
   attr_accessor :author_id_of_changes
 
