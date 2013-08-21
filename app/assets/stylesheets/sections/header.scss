@@ -92,8 +92,11 @@ header {
     margin-right: 10px;
     margin-left: 10px;
 
+    form {
+      margin-top: 6px;
+    }
+
     .search-input {
-      @extend .col-md-3;
       background-image: url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
@@ -103,8 +106,11 @@ header {
       border: 1px solid #c6c6c6;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
+      width: 256px;
+      line-height: 1.9;
+
       &:focus {
-        @extend .col-md-4;
+        width: 300px;
       }
     }
   }
