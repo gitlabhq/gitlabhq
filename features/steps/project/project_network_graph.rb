@@ -87,4 +87,11 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
       page.should have_content 'v2.1.0'
     end
   end
+
+  When 'I look for a commit by ";"' do
+    within ".content .search" do
+      fill_in 'q', with: ';'
+      find('button').click
+    end
+  end
 end
