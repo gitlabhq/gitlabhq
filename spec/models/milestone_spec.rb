@@ -25,6 +25,7 @@ describe Milestone do
   end
 
   describe "Validation" do
+    before { subject.stub(set_iid: false) }
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:project) }
   end
