@@ -121,4 +121,8 @@ module EventsHelper
       end
     end
   end
+
+  def event_note(text)
+    sanitize(markdown(truncate(text, length: 150)), tags: %w(a img b pre p))
+  end
 end

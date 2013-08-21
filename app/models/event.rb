@@ -291,4 +291,14 @@ class Event < ActiveRecord::Base
       "Wall"
     end.downcase
   end
+
+  def body?
+    if push?
+      push_with_commits?
+    elsif note?
+      true
+    else
+      target.respond_to? :title
+    end
+  end
 end
