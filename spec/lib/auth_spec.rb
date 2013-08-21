@@ -99,7 +99,6 @@ describe Gitlab::Auth do
       user.should be_valid
       user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
       user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-      user.can_create_team.should == Gitlab.config.gitlab.default_can_create_team
     end
   end
 end
