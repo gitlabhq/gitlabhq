@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130819182730) do
+ActiveRecord::Schema.define(:version => 20130821090530) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -244,32 +244,6 @@ ActiveRecord::Schema.define(:version => 20130819182730) do
 
   create_table "tags", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "user_team_project_relationships", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "user_team_id"
-    t.integer  "greatest_access"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  create_table "user_team_user_relationships", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "user_team_id"
-    t.boolean  "group_admin"
-    t.integer  "permission"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-  end
-
-  create_table "user_teams", :force => true do |t|
-    t.string   "name"
-    t.string   "path"
-    t.integer  "owner_id"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
-    t.string   "description", :default => "", :null => false
   end
 
   create_table "users", :force => true do |t|
