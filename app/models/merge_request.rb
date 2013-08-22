@@ -250,6 +250,10 @@ class MergeRequest < ActiveRecord::Base
     (source_project.root_ref? source_branch) || for_fork?
   end
 
+  def project
+    target_project
+  end
+
   private
 
   def dump_commits(commits)
