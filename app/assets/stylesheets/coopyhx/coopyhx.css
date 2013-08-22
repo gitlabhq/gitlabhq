@@ -6,6 +6,6 @@
   background-color: #afa !important;
 }
 
-.csvdiff td.delete, .csvdiff tr.delete {
+.csvdiff td.remove, .csvdiff tr.remove {
   background-color: #faa !important;
 }
