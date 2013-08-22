@@ -3,9 +3,9 @@
 }
 
 .csvdiff td.add, .csvdiff tr.add {
-  background-color: #afa !important;
+  background-color: #CFD !important;
 }
 
 .csvdiff td.remove, .csvdiff tr.remove {
-  background-color: #faa !important;
+  background-color: #FDD !important;
 }
