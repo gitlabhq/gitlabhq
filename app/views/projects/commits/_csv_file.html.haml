@@ -1,3 +1,4 @@
+- random_id = SecureRandom.hex
 - too_big = diff.diff.lines.count > 1000
 - if too_big
   %a.supp_diff_link Diff suppressed. Click to show
@@ -22,8 +23,8 @@
     diff2html.render(table_diff);
     diff_html = diff2html.html()
 
-    $("#diff").html(diff_html);
+    $("#csv-diff-#{random_id}").html(diff_html);
 
   });
 
-%div{id:"diff", class:"csvdiff highlighter tabular #{'hide' if too_big}"}
+%div{id:"csv-diff-#{random_id}", class:"csvdiff highlighter tabular #{'hide' if too_big}"}
