@@ -281,7 +281,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :issues, except: [:destroy] do
+      resources :issues, constraints: {id: /\d+/}, except: [:destroy] do
         collection do
           post  :bulk_update
         end

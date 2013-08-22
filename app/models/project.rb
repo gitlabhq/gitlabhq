@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -21,6 +21,7 @@
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
+#  import_url             :string(255)
 #
 
 require "grit"
@@ -133,10 +134,6 @@ class Project < ActiveRecord::Base
         where(path: id, namespace_id: nil).last
       end
     end
-
-    def access_options
-      UsersProject.access_roles
-    end
   end
 
   def team
@@ -201,7 +198,7 @@ class Project < ActiveRecord::Base
 
   def issue_exists?(issue_id)
     if used_default_issues_tracker?
-      self.issues.where(id: issue_id).first.present?
+      self.issues.where(iid: issue_id).first.present?
     else
       true
     end
@@ -399,11 +396,6 @@ class Project < ActiveRecord::Base
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
-  def project_access_human(member)
-    project_user_relation = self.users_projects.find_by_user_id(member.id)
-    self.class.access_options.key(project_user_relation.project_access)
-  end
-
   # Check if current branch name is marked as protected in the system
   def protected_branch? branch_name
     protected_branches_names.include?(branch_name)
@@ -427,6 +419,7 @@ class Project < ActiveRecord::Base
       # However we cannot allow rollback since we moved repository
       # So we basically we mute exceptions in next actions
       begin
+        gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         gitlab_shell.rm_satellites(old_path_with_namespace)
         send_move_instructions
       rescue

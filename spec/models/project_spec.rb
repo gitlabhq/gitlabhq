@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -21,6 +21,7 @@
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
+#  import_url             :string(255)
 #
 
 require 'spec_helper'
@@ -201,11 +202,11 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     it "should be true or if used internal tracker and issue exists" do
-      project.issue_exists?(existed_issue.id).should be_true
+      project.issue_exists?(existed_issue.iid).should be_true
     end
 
     it "should be false or if used internal tracker and issue not exists" do
-      project.issue_exists?(not_existed_issue.id).should be_false
+      project.issue_exists?(not_existed_issue.iid).should be_false
     end
 
     it "should always be true if used other tracker" do

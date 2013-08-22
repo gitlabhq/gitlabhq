@@ -1,8 +1,6 @@
-require "grit"
-
 module Network
   class Graph
-    attr_reader :days, :commits, :map, :notes
+    attr_reader :days, :commits, :map, :notes, :repo
 
     def self.max_count
       @max_count ||= 650
@@ -13,7 +11,7 @@ module Network
       @ref = ref
       @commit = commit
       @filter_ref = filter_ref
-      @repo = project.repo
+      @repo = project.repository
 
       @commits = collect_commits
       @days = index_commits
@@ -33,11 +31,9 @@ module Network
     # Get commits from repository
     #
     def collect_commits
-      refs_cache = build_refs_cache
-
       find_commits(count_to_display_commit_in_center).map do |commit|
         # Decorate with app/model/network/commit.rb
-        Network::Commit.new(commit, refs_cache[commit.id])
+        Network::Commit.new(commit)
       end
     end
 
@@ -103,14 +99,13 @@ module Network
 
     def find_commits(skip = 0)
       opts = {
-        date_order: true,
         max_count: self.class.max_count,
         skip: skip
       }
 
-      ref = @ref if @filter_ref
+      opts[:ref] = @commit.id if @filter_ref
 
-      Grit::Commit.find_all(@repo, ref, opts)
+      @repo.find_commits(opts)
     end
 
     def commits_sort_by_ref
@@ -126,15 +121,7 @@ module Network
     end
 
     def include_ref?(commit)
-      heads = commit.refs.select do |ref|
-        ref.is_a?(Grit::Head) or ref.is_a?(Grit::Remote) or ref.is_a?(Grit::Tag)
-      end
-
-      heads.map! do |head|
-        head.name
-      end
-
-      heads.include?(@ref)
+      commit.ref_names(@repo).include?(@ref)
     end
 
     def find_free_parent_spaces(commit)
@@ -281,15 +268,6 @@ module Network
 
         leaves.push(commit)
       end
-    end
-
-    def build_refs_cache
-      refs_cache = {}
-      @repo.refs.each do |ref|
-        refs_cache[ref.commit.id] = [] unless refs_cache.include?(ref.commit.id)
-        refs_cache[ref.commit.id] << ref
-      end
-      refs_cache
     end
   end
 end

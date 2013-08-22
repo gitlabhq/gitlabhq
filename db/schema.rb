@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130812143708) do
+ActiveRecord::Schema.define(:version => 20130821090531) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -62,6 +62,7 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.text     "description"
     t.integer  "milestone_id"
     t.string   "state"
+    t.integer  "iid"
   end
 
   add_index "issues", ["assignee_id"], :name => "index_issues_on_assignee_id"
@@ -98,6 +99,7 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.string   "state"
     t.string   "merge_status"
     t.integer  "target_project_id",                       :null => false
+    t.integer  "iid"
   end
 
   add_index "merge_requests", ["assignee_id"], :name => "index_merge_requests_on_assignee_id"
@@ -117,6 +119,7 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
     t.string   "state"
+    t.integer  "iid"
   end
 
   add_index "milestones", ["due_date"], :name => "index_milestones_on_due_date"
@@ -242,32 +245,6 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
 
   create_table "tags", :force => true do |t|
     t.string "name"
-  end
-
-  create_table "user_team_project_relationships", :force => true do |t|
-    t.integer  "project_id"
-    t.integer  "user_team_id"
-    t.integer  "greatest_access"
-    t.datetime "created_at",      :null => false
-    t.datetime "updated_at",      :null => false
-  end
-
-  create_table "user_team_user_relationships", :force => true do |t|
-    t.integer  "user_id"
-    t.integer  "user_team_id"
-    t.boolean  "group_admin"
-    t.integer  "permission"
-    t.datetime "created_at",   :null => false
-    t.datetime "updated_at",   :null => false
-  end
-
-  create_table "user_teams", :force => true do |t|
-    t.string   "name"
-    t.string   "path"
-    t.integer  "owner_id"
-    t.datetime "created_at",                  :null => false
-    t.datetime "updated_at",                  :null => false
-    t.string   "description", :default => "", :null => false
   end
 
   create_table "users", :force => true do |t|

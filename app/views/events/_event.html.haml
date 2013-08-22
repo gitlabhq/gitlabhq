@@ -1,5 +1,5 @@
 - if event.proper?
-  %div.event-item
+  .event-item{class: "#{event.body? ? "event-block" : "event-inline" }"}
     %span.cgray.pull-right
       #{time_ago_in_words(event.created_at)} ago.
 
@@ -8,7 +8,6 @@
 
       - if event.push?
         = render "events/event/push", event: event
-        .clearfix
       - elsif event.note?
         = render "events/event/note", event: event
       - else

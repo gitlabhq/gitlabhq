@@ -1,7 +1,7 @@
 %h3.page-title
   Account settings
 %p.light
-  You can change password, username, private token here.
+  You can change your password, username and private token here.
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
 %hr
@@ -20,7 +20,7 @@
     %legend Password
     = form_for @user, url: update_password_profile_path, method: :put do |f|
       .padded
-        %p.slead After successful password update you will be redirected to login page where you should login with new password
+        %p.slead After a successful password update you will be redirected to login page where you should login with your new password
         -if @user.errors.any?
           .alert.alert-error
             %ul
@@ -49,9 +49,9 @@
     = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
       .data
         %p.slead
-          Private token used to access application resources without authentication.
+          Your private token is used to access application resources without authentication.
           %br
-          It can be used for atom feed or API
+          It can be used for atom feeds or the API.
         %p.cgray
           - if current_user.private_token
             = text_field_tag "token", current_user.private_token, class: "input-xxlarge large_text input-xpadding"
@@ -81,8 +81,8 @@
             %i.icon-remove
             Failed
           %ul.cred
-            %li It will change web url for personal projects.
-            %li It will change the git path to repositories for personal projects.
+            %li This will change the web URL for personal projects.
+            %li This will change the git path to repositories for personal projects.
         .controls
           = f.submit 'Save username', class: "btn btn-save"
 

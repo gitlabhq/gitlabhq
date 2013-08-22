@@ -18,9 +18,14 @@ production: &base
     host: localhost
     port: 80
     https: false
+
+    # Uncomment and customize the last line to run in a non-root path
     # WARNING: This feature is no longer supported
-    # Uncomment and customize to run in non-root path
-    # Note that ENV['RAILS_RELATIVE_URL_ROOT'] in config/puma.rb may need to be changed
+    # Note that three settings need to be changed for this to work.
+    # 1) In your application.rb file: config.relative_url_root = "/gitlab"
+    # 2) In your gitlab.yml file: relative_url_root: /gitlab
+    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT']
+    #
     # relative_url_root: /gitlab
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
@@ -36,7 +41,6 @@ production: &base
     ## User settings
     default_projects_limit: 10
     # default_can_create_group: false  # default: true
-    # default_can_create_team: false   # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
 
     ## Users management

@@ -1,5 +1,12 @@
 v 6.0.0
   - Feature: Replace teams with group membership
+    We introduce group membership in 6.0 as a replacement for teams.
+    The old combination of groups and teams was confusing for a lot of people.
+    And when the members of a team where changed this wasn't reflected in the project permissions.
+    In GitLab 6.0 you will be able to add members to a group with a permission level for each member.
+    These group members will have access to the projects in that group.
+    Any changes to group members will immediately be reflected in the project permissions.
+    You can even have multiple owners for a group, greatly simplifying administration.
   - Feature: Ability to have multiple owners for group
   - Feature: Merge Requests between fork and project (Izaak Alpert)
   - Feature: Generate fingerprint for ssh keys
@@ -24,7 +31,7 @@ v 6.0.0
   - Move all project controllers/views under Projects:: module
   - Move all profile controllers/views under Profiles:: module
   - Apply user project limit only for personal projects
-  - Unicorn is default web server for new installations
+  - Unicorn is default web server again
   - Store satellites lock files inside satellites dir
   - Disabled threadsafety mode in rails
   - Fixed bug with loosing MR comments

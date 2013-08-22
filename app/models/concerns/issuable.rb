@@ -24,6 +24,7 @@ module Issuable
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
 
+
     delegate :name,
              :email,
              to: :author,

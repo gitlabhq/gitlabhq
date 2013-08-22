@@ -1,9 +1,8 @@
 = render 'nav'
 %h3.page-title
   %span.light History for
-  = @wiki.title.titleize
-  = render 'main_links'
-%br
+  = link_to @wiki.title.titleize, project_wiki_path(@project, @wiki)
+
 %table
   %thead
     %tr

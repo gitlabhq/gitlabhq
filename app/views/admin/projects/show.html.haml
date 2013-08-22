@@ -96,11 +96,12 @@
             %i.icon-edit
             Manage Access
       %ul.well-list.team_members
-        - @project.users.each do |user|
+        - @project.users_projects.each do |users_project|
+          - user = users_project.user
           %li
             %strong
               = link_to user.name, admin_user_path(user)
             .pull-right
-              %span.light= @project.project_access_human(user)
+              %span.light= users_project.human_access
               = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
                 %i.icon-remove

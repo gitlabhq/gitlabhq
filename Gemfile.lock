@@ -186,7 +186,7 @@ GEM
     gitlab-pygments.rb (0.3.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
-    gitlab_git (2.0.1)
+    gitlab_git (2.1.0)
       activesupport (~> 3.2.13)
       github-linguist (~> 2.3.4)
       gitlab-grit (~> 2.6.0)
@@ -331,8 +331,6 @@ GEM
       coderay (~> 1.0.5)
       method_source (~> 0.8)
       slop (~> 3.4)
-    puma (2.3.1)
-      rack (>= 1.1, < 2.0)
     pygments.rb (0.4.2)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
@@ -578,7 +576,7 @@ DEPENDENCIES
   gitlab-gollum-lib (~> 1.0.1)
   gitlab-grack (~> 1.0.1)
   gitlab-pygments.rb (~> 0.3.2)
-  gitlab_git (= 2.0.1)
+  gitlab_git (= 2.1.0)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.3)
   gon
@@ -608,7 +606,6 @@ DEPENDENCIES
   pg
   poltergeist (~> 1.3.0)
   pry
-  puma (~> 2.3.1)
   quiet_assets (~> 1.0.1)
   rack-mini-profiler
   rails (= 3.2.13)

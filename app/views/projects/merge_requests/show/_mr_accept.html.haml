@@ -1,6 +1,6 @@
 - unless @allowed_to_merge
   .alert
-    %strong You don't have enough permissions to merge this MR
+    %strong You don't have permission to merge this MR
 
 
 - if @show_merge_controls
@@ -27,7 +27,7 @@
   .automerge_widget.no_satellite{style: "display:none"}
     .alert.alert-error
       %span
-        %strong This repository does not have satellite. Ask administrator to fix this issue
+        %strong This repository does not have satellite. Ask an administrator to fix this issue
 
   .automerge_widget.cannot_be_merged{style: "display:none"}
     .alert.alert-disabled

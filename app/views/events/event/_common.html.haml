@@ -2,7 +2,7 @@
   %span.author_name= link_to_author event
   %span.event_label{class: event.action_name}= event_action_name(event)
   - if event.target
-    %strong= link_to "##{event.target_id}", [event.project, event.target]
+    %strong= link_to "##{event.target_iid}", [event.project, event.target]
   - else
     %strong= gfm event.target_title
   at
@@ -10,7 +10,7 @@
     = link_to_project event.project
   - else
     = event.project_name
-.event-body
-  .event-note
-    - if event.target.respond_to?(:title)
+- if event.target.respond_to?(:title)
+  .event-body
+    .event-note
       = event.target.title

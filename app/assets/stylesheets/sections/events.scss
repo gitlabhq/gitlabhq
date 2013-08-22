@@ -35,6 +35,14 @@
     padding-top: 0;
   }
 
+  &.event-inline {
+    .avatar {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  padding: 14px 0px;
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
@@ -46,6 +54,7 @@
   }
   .event-body {
     margin-left: 35px;
+    margin-right: 100px;
 
     .commit p {
       color: #666;
@@ -66,12 +75,10 @@
         margin: 0 20px;
       }
 
-      .note-file-attach {
-        .note-image-attach {
-          margin-top: 4px;
-          margin-left: 0px;
-          max-width: 200px;
-        }
+      .note-image-attach {
+        margin-top: 4px;
+        margin-left: 0px;
+        max-width: 200px;
       }
     }
     .event-note-icon {
@@ -95,15 +102,14 @@
       width: 20px;
     }
   }
+
   ul {
-    margin-bottom: 5px;
     .avatar {
       width: 18px;
       margin: 2px 4px;
     }
   }
 
-  padding: 14px 0px;
   &:last-child { border:none }
 
   .event_commits {

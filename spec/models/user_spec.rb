@@ -4,7 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(128)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -13,8 +13,8 @@
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
@@ -198,7 +198,6 @@ describe User do
     it "should not apply defaults to user" do
       user.projects_limit.should == 10
       user.can_create_group.should == true
-      user.can_create_team.should == true
     end
   end
 
@@ -207,7 +206,6 @@ describe User do
     it "should apply defaults to user" do
       user.projects_limit.should == 42
       user.can_create_group.should == false
-      user.can_create_team.should == false
     end
   end
 end

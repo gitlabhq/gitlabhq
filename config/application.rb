@@ -67,5 +67,14 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+
+    # Uncomment and customize the last line to run in a non-root path
+    # WARNING: This feature is no longer supported
+    # Note that three settings need to be changed for this to work.
+    # 1) In your application.rb file: config.relative_url_root = "/gitlab"
+    # 2) In your gitlab.yml file: relative_url_root: /gitlab
+    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT']
+    #
+    # config.relative_url_root = "/gitlab"
   end
 end

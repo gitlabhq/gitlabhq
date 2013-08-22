@@ -4,7 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(128)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -13,8 +13,8 @@
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
                   :extern_uid, :provider, :password_expires_at,
                   as: [:default, :admin]
 
-  attr_accessible :projects_limit, :can_create_team, :can_create_group,
+  attr_accessible :projects_limit, :can_create_group,
                   as: :admin
 
   attr_accessor :force_random_password
@@ -208,7 +208,6 @@ class User < ActiveRecord::Base
     tap do |u|
       u.projects_limit = Gitlab.config.gitlab.default_projects_limit
       u.can_create_group = Gitlab.config.gitlab.default_can_create_group
-      u.can_create_team = Gitlab.config.gitlab.default_can_create_team
       u.theme_id = Gitlab::Theme::MARS
     end
   end

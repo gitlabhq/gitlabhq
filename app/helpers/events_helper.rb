@@ -109,7 +109,7 @@ module EventsHelper
       else
         link_to event_note_target_path(event) do
           content_tag :strong do
-            "#{event.note_target_type} ##{truncate event.note_target_id}"
+            "#{event.note_target_type} ##{truncate event.note_target_iid}"
           end
         end
       end
@@ -120,5 +120,9 @@ module EventsHelper
         "(deleted)"
       end
     end
+  end
+
+  def event_note(text)
+    sanitize(markdown(truncate(text, length: 150)), tags: %w(a img b pre p))
   end
 end

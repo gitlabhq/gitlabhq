@@ -2,29 +2,30 @@
 #
 # Table name: merge_requests
 #
-#  id             :integer          not null, primary key
-#  target_project_id :integer       not null
-#  target_branch  :string(255)      not null
-#  source_project_id :integer       not null
-#  source_branch  :string(255)      not null
-#  author_id      :integer
-#  assignee_id    :integer
-#  title          :string(255)
-#  created_at     :datetime
-#  updated_at     :datetime
-#  st_commits     :text(2147483647)
-#  st_diffs       :text(2147483647)
-#  milestone_id   :integer
-#  state          :string(255)
-#  merge_status   :string(255)
+#  id                :integer          not null, primary key
+#  target_branch     :string(255)      not null
+#  source_branch     :string(255)      not null
+#  source_project_id :integer          not null
+#  author_id         :integer
+#  assignee_id       :integer
+#  title             :string(255)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  st_commits        :text(2147483647)
+#  st_diffs          :text(2147483647)
+#  milestone_id      :integer
+#  state             :string(255)
+#  merge_status      :string(255)
+#  target_project_id :integer          not null
+#  iid               :integer
 #
 
 require Rails.root.join("app/models/commit")
 require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
-
   include Issuable
+  include InternalId
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
@@ -248,6 +249,10 @@ class MergeRequest < ActiveRecord::Base
 
   def disallow_source_branch_removal?
     (source_project.root_ref? source_branch) || for_fork?
+  end
+
+  def project
+    target_project
   end
 
   private
