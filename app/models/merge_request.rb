@@ -268,6 +268,10 @@ class MergeRequest < ActiveRecord::Base
     "merge request !#{iid}"
   end
 
+  def project
+    target_project
+  end
+
   private
 
   def dump_commits(commits)
