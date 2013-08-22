@@ -1336,6 +1336,7 @@ coopy.DiffRender.prototype = {
 				txt = v.toString(rows.getCell(c,row));
 				if(txt == "NULL") txt = "";
 				if(txt == "null") txt = "";
+				if(txt == null) txt = "";
 				var cell_mode = "";
 				var separator = "";
 				if(open && change_row >= 0) {

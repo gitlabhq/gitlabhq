@@ -7,25 +7,6 @@
   $(document).ready(function () {
 
     var data_diff = [];
-  
-    $('#diff').handsontable({
-      data: data_diff,
-      minRows: 1,
-      minCols: 1,
-      minSpareCols: 0,
-      minSpareRows: 0,
-      autoWrapRow: true,
-      colHeaders: false,
-      //contextMenu: true,
-      asyncRendering: false,
-      cells: function (row, col, prop) {
-        var cellProperties = {};
-        cellProperties.type = {
-          renderer: coopy.diffRenderer
-        }
-        return cellProperties;
-      }
-    });
       
     var data1 = #{old_file.to_csv.to_json};
     var data2 = #{file.to_csv.to_json};
@@ -37,7 +18,14 @@
     var flags = new coopy.CompareFlags();
     var highlighter = new coopy.TableDiff(alignment,flags);
     highlighter.hilite(table_diff);
-    $("#diff").handsontable('loadData',table_diff.data);
+
+    alert(table_diff);
+
+    var diff2html = new coopy.DiffRender();
+    diff2html.render(table_diff);
+    diff_html = diff2html.html()
+
+    $("#diff").html(diff_html);
 
   });
 

@@ -26,9 +26,7 @@
 //= require g.bar-min
 //= require branch-graph
 //= require ace-src-noconflict/ace
-//= require lib/jquery.handsontable.full
 //= require lib/coopyhx
-//= require lib/coopy_handsontable
 //= require_tree .
 //= require d3
 //= require underscore
