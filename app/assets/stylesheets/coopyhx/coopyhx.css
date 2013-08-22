@@ -1,11 +1,11 @@
-td.modify, tr.modify {
+.csvdiff td.modify, .csvdiff tr.modify {
   background-color: #aaf !important;
 }
 
-td.add, tr.add {
+.csvdiff td.add, .csvdiff tr.add {
   background-color: #afa !important;
 }
 
-td.delete, tr.delete {
+.csvdiff td.delete, .csvdiff tr.delete {
   background-color: #faa !important;
 }
