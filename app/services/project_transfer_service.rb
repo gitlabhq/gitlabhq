@@ -29,6 +29,9 @@ class ProjectTransferService
       # Move wiki repo also if present
       gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
 
+      # create satellite repo
+      project.ensure_satellite_exists
+
       true
     end
   end

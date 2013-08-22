@@ -421,6 +421,7 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         gitlab_shell.rm_satellites(old_path_with_namespace)
+        ensure_satellite_exists
         send_move_instructions
       rescue
         # Returning false does not rollback after_* transaction but gives
