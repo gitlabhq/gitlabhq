@@ -110,7 +110,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /#{project.name} \| new issue ##{issue.id} \| #{issue.title}/
+            should have_subject /#{project.name} \| new issue ##{issue.iid} \| #{issue.title}/
           end
 
           it 'contains a link to the new issue' do
@@ -126,7 +126,7 @@ describe Notify do
           it_behaves_like 'a multiple recipients email'
 
           it 'has the correct subject' do
-            should have_subject /changed issue ##{issue.id} \| #{issue.title}/
+            should have_subject /changed issue ##{issue.iid} \| #{issue.title}/
           end
 
           it 'contains the name of the previous assignee' do
@@ -148,7 +148,7 @@ describe Notify do
           subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
 
           it 'has the correct subject' do
-            should have_subject /changed issue ##{issue.id} \| #{issue.title}/i
+            should have_subject /changed issue ##{issue.iid} \| #{issue.title}/i
           end
 
           it 'contains the new status' do
@@ -175,7 +175,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /new merge request !#{merge_request.id}/
+            should have_subject /new merge request !#{merge_request.iid}/
           end
 
           it 'contains a link to the new merge request' do
@@ -199,7 +199,7 @@ describe Notify do
           it_behaves_like 'a multiple recipients email'
 
           it 'has the correct subject' do
-            should have_subject /changed merge request !#{merge_request.id}/
+            should have_subject /changed merge request !#{merge_request.iid}/
           end
 
           it 'contains the name of the previous assignee' do
