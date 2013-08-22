@@ -6,20 +6,17 @@
 
   $(document).ready(function () {
 
-    var data_diff = [];
-      
-    var data1 = #{old_file.to_csv.to_json};
-    var data2 = #{file.to_csv.to_json};
+    var old_table = new coopy.CoopyTableView(#{old_file.to_csv.to_json});
+    var new_table = new coopy.CoopyTableView(#{file.to_csv.to_json});
+
+    var alignment = coopy.compareTables(old_table,new_table).align();
     
-    var table1 = new coopy.CoopyTableView(data1);
-    var table2 = new coopy.CoopyTableView(data2);
-    var alignment = coopy.compareTables(table1,table2).align();
+    var data_diff = [];      
     var table_diff = new coopy.CoopyTableView(data_diff);
+    
     var flags = new coopy.CompareFlags();
     var highlighter = new coopy.TableDiff(alignment,flags);
     highlighter.hilite(table_diff);
-
-    alert(table_diff);
 
     var diff2html = new coopy.DiffRender();
     diff2html.render(table_diff);
