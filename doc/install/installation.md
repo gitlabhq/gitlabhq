@@ -147,7 +147,7 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
