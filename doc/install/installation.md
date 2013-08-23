@@ -224,6 +224,11 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
+    
+## Install default git-commit-notifier config file
+
+    cd /home/git/repositories
+    sudo -u git wget -O notify.yml https://raw.github.com/git-commit-notifier/git-commit-notifier/v0.12.0/config/git-notifier-config.example.yml
 
 ## Install Gems
 
