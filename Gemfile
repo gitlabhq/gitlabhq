@@ -122,6 +122,10 @@ gem "sanitize"
 
 # Git commit notifier
 gem "git-commit-notifier", "0.12.0"
+gem "nntp", "~> 1.0"
+gem "premailer", "~> 1.7", ">= 1.7.1", "!= 1.7.2"
+gem "nokogiri", "~> 1.4"
+gem "yajl-ruby", "~> 1.0"
 
 group :assets do
   gem "sass-rails"
