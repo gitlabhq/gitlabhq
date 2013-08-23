@@ -120,6 +120,9 @@ gem "underscore-rails", "~> 1.4.4"
 # Sanitize user input
 gem "sanitize"
 
+# Git commit notifier
+gem "git-commit-notifier", "0.12.0"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"
