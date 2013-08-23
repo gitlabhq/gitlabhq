@@ -7,7 +7,7 @@
 
   $(document).ready(function () {
 
-    var old_table = new coopy.CoopyTableView(#{old_file.to_csv.to_json});
+    var old_table = new coopy.CoopyTableView(#{old_file.data ? old_file.to_csv.to_json : '[]'});
     var new_table = new coopy.CoopyTableView(#{file.to_csv.to_json});
 
     var alignment = coopy.compareTables(old_table,new_table).align();
