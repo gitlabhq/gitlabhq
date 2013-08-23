@@ -161,6 +161,7 @@ GEM
     fssm (0.2.10)
     gemoji (1.2.1)
     gherkin-ruby (0.3.0)
+    git-commit-notifier (0.12.0)
     github-linguist (2.3.4)
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.3)
