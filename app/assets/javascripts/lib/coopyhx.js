@@ -86,6 +86,9 @@ Reflect.field = function(o,field) {
 	}
 	return v;
 }
+Reflect.setField = function(o,field,value) {
+	o[field] = value;
+}
 Reflect.fields = function(o) {
 	var a = [];
 	if(o != null) {
@@ -121,7 +124,15 @@ StringBuf.prototype = {
 	addSub: function(s,pos,len) {
 		this.b += len == null?HxOverrides.substr(s,pos,null):HxOverrides.substr(s,pos,len);
 	}
+	,add: function(x) {
+		this.b += Std.string(x);
+	}
 	,__class__: StringBuf
+}
+var StringTools = function() { }
+StringTools.__name__ = true;
+StringTools.fastCodeAt = function(s,index) {
+	return s.charCodeAt(index);
 }
 var ValueType = { __ename__ : true, __constructs__ : ["TNull","TInt","TFloat","TBool","TObject","TFunction","TClass","TEnum","TUnknown"] }
 ValueType.TNull = ["TNull",0];
@@ -198,7 +209,8 @@ coopy.Alignment.prototype = {
 		var xas = this.ha;
 		var xb = 0;
 		var va = new haxe.ds.IntMap();
-		var _g1 = 0, _g = this.ha;
+		var _g1 = 0;
+		var _g = this.ha;
 		while(_g1 < _g) {
 			var i = _g1++;
 			va.set(i,i);
@@ -238,7 +250,8 @@ coopy.Alignment.prototype = {
 			ref = new coopy.Alignment();
 			ref.range(this.ha,this.ha);
 			ref.tables(this.ta,this.ta);
-			var _g1 = 0, _g = this.ha;
+			var _g1 = 0;
+			var _g = this.ha;
 			while(_g1 < _g) {
 				var i = _g1++;
 				ref.link(i,i);
@@ -360,7 +373,8 @@ coopy.Alignment.prototype = {
 						prev = zr;
 						vp.remove(zr);
 						ct_vp--;
-						vl.remove(ref.a2b(zr));
+						var key = ref.a2b(zr);
+						vl.remove(key);
 						ct_vl--;
 						vr.remove(xr);
 						ct_vr--;
@@ -377,7 +391,8 @@ coopy.Alignment.prototype = {
 						ct_vp--;
 						vl.remove(xl);
 						ct_vl--;
-						vr.remove(this.a2b(zl));
+						var key = this.a2b(zl);
+						vr.remove(key);
 						ct_vr--;
 						xp = zl + 1;
 						xr = this.a2b(zl) + 1;
@@ -474,35 +489,21 @@ $hxExpose(coopy.Change, "coopy.Change");
 coopy.Change.__name__ = true;
 coopy.Change.prototype = {
 	toString: function() {
-		return (function($this) {
-			var $r;
-			var _g = $this;
-			$r = (function($this) {
-				var $r;
-				switch( (_g.mode)[1] ) {
-				case 0:
-					$r = "no change";
-					break;
-				case 2:
-					$r = "local change: " + Std.string($this.remote) + " -> " + Std.string($this.local);
-					break;
-				case 1:
-					$r = "remote change: " + Std.string($this.local) + " -> " + Std.string($this.remote);
-					break;
-				case 3:
-					$r = "conflicting change: " + Std.string($this.parent) + " -> " + Std.string($this.local) + " / " + Std.string($this.remote);
-					break;
-				case 4:
-					$r = "same change: " + Std.string($this.parent) + " -> " + Std.string($this.local) + " / " + Std.string($this.remote);
-					break;
-				case 5:
-					$r = $this.change;
-					break;
-				}
-				return $r;
-			}($this));
-			return $r;
-		}(this));
+		var _g = this;
+		switch(_g.mode[1]) {
+		case 0:
+			return "no change";
+		case 2:
+			return "local change: " + Std.string(this.remote) + " -> " + Std.string(this.local);
+		case 1:
+			return "remote change: " + Std.string(this.local) + " -> " + Std.string(this.remote);
+		case 3:
+			return "conflicting change: " + Std.string(this.parent) + " -> " + Std.string(this.local) + " / " + Std.string(this.remote);
+		case 4:
+			return "same change: " + Std.string(this.parent) + " -> " + Std.string(this.local) + " / " + Std.string(this.remote);
+		case 5:
+			return this.change;
+		}
 	}
 	,__class__: coopy.Change
 }
@@ -626,10 +627,12 @@ coopy.CompareTable.prototype = {
 	,isEqual2: function(a,b) {
 		if(a.get_width() != b.get_width() || a.get_height() != b.get_height()) return false;
 		var av = a.getCellView();
-		var _g1 = 0, _g = a.get_height();
+		var _g1 = 0;
+		var _g = a.get_height();
 		while(_g1 < _g) {
 			var i = _g1++;
-			var _g3 = 0, _g2 = a.get_width();
+			var _g3 = 0;
+			var _g2 = a.get_width();
 			while(_g3 < _g2) {
 				var j = _g3++;
 				if(!av.equals(a.getCell(j,i),b.getCell(j,i))) return false;
@@ -651,10 +654,12 @@ coopy.CompareTable.prototype = {
 		if(a.get_width() != b.get_width()) return false;
 		if(a.get_height() == 0 || b.get_height() == 0) return true;
 		var av = a.getCellView();
-		var _g1 = 0, _g = a.get_width();
+		var _g1 = 0;
+		var _g = a.get_width();
 		while(_g1 < _g) {
 			var i = _g1++;
-			var _g3 = i + 1, _g2 = a.get_width();
+			var _g3 = i + 1;
+			var _g2 = a.get_width();
 			while(_g3 < _g2) {
 				var j = _g3++;
 				if(av.equals(a.getCell(i,0),a.getCell(j,0))) return false;
@@ -701,7 +706,8 @@ coopy.CompareTable.prototype = {
 				var mb = new haxe.ds.StringMap();
 				var ct = 0;
 				var uniques = 0;
-				var _g3 = 0, _g2 = a.get_width();
+				var _g3 = 0;
+				var _g2 = a.get_width();
 				while(_g3 < _g2) {
 					var ca = _g3++;
 					var key = va.toString(a.getCell(ca,ra));
@@ -718,7 +724,8 @@ coopy.CompareTable.prototype = {
 					ra_uniques = uniques;
 				}
 				uniques = 0;
-				var _g3 = 0, _g2 = b.get_width();
+				var _g3 = 0;
+				var _g2 = b.get_width();
 				while(_g3 < _g2) {
 					var cb = _g3++;
 					var key = vb.toString(b.getCell(cb,rb));
@@ -765,7 +772,8 @@ coopy.CompareTable.prototype = {
 		this.alignColumns(align.meta,a,b);
 		var column_order = align.meta.toOrder();
 		var common_units = new Array();
-		var _g = 0, _g1 = column_order.getList();
+		var _g = 0;
+		var _g1 = column_order.getList();
 		while(_g < _g1.length) {
 			var unit = _g1[_g];
 			++_g;
@@ -782,7 +790,8 @@ coopy.CompareTable.prototype = {
 		var columns = new Array();
 		if(common_units.length > N) {
 			var columns_eval = new Array();
-			var _g1 = 0, _g = common_units.length;
+			var _g1 = 0;
+			var _g = common_units.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				var ct = 0;
@@ -821,7 +830,8 @@ coopy.CompareTable.prototype = {
 			}));
 			columns = columns.slice(0,N);
 		} else {
-			var _g1 = 0, _g = common_units.length;
+			var _g1 = 0;
+			var _g = common_units.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				columns.push(i);
@@ -849,7 +859,8 @@ coopy.CompareTable.prototype = {
 				at++;
 			}
 			var index = new coopy.IndexPair();
-			var _g2 = 0, _g1 = active_columns.length;
+			var _g2 = 0;
+			var _g1 = active_columns.length;
 			while(_g2 < _g1) {
 				var k1 = _g2++;
 				var unit = common_units[active_columns[k1]];
@@ -875,7 +886,8 @@ coopy.CompareTable.prototype = {
 				fixed.push(j);
 				align.link(j,cross.item_b.lst[0]);
 			}
-			var _g2 = 0, _g1 = fixed.length;
+			var _g2 = 0;
+			var _g1 = fixed.length;
 			while(_g2 < _g1) {
 				var j = _g2++;
 				pending.remove(fixed[j]);
@@ -993,7 +1005,8 @@ coopy.Coopy.cellFor = function(x) {
 }
 coopy.Coopy.jsonToTable = function(json) {
 	var output = null;
-	var _g = 0, _g1 = Reflect.fields(json);
+	var _g = 0;
+	var _g1 = Reflect.fields(json);
 	while(_g < _g1.length) {
 		var name = _g1[_g];
 		++_g;
@@ -1005,7 +1018,8 @@ coopy.Coopy.jsonToTable = function(json) {
 		output = new coopy.SimpleTable(columns.length,rows.length);
 		var has_hash = false;
 		var has_hash_known = false;
-		var _g3 = 0, _g2 = rows.length;
+		var _g3 = 0;
+		var _g2 = rows.length;
 		while(_g3 < _g2) {
 			var i = _g3++;
 			var row = rows[i];
@@ -1015,14 +1029,16 @@ coopy.Coopy.jsonToTable = function(json) {
 			}
 			if(!has_hash) {
 				var lst = row;
-				var _g5 = 0, _g4 = columns.length;
+				var _g5 = 0;
+				var _g4 = columns.length;
 				while(_g5 < _g4) {
 					var j = _g5++;
 					var val = lst[j];
 					output.setCell(j,i,coopy.Coopy.cellFor(val));
 				}
 			} else {
-				var _g5 = 0, _g4 = columns.length;
+				var _g5 = 0;
+				var _g4 = columns.length;
 				while(_g5 < _g4) {
 					var j = _g5++;
 					var val = Reflect.field(row,columns[j]);
@@ -1044,7 +1060,8 @@ coopy.Coopy.coopyhx = function(io) {
 	var pretty = true;
 	while(more) {
 		more = false;
-		var _g1 = 0, _g = args.length;
+		var _g1 = 0;
+		var _g = args.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var tag = args[i];
@@ -1230,7 +1247,8 @@ coopy.Csv.prototype = {
 		var quote = 0;
 		var result = "";
 		var start = this.cursor;
-		var _g1 = this.cursor, _g = txt.length;
+		var _g1 = this.cursor;
+		var _g = txt.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var ch = HxOverrides.cca(txt,i);
@@ -1298,7 +1316,8 @@ coopy.Csv.prototype = {
 		var str = v.toString(d);
 		var delim = ",";
 		var need_quote = false;
-		var _g1 = 0, _g = str.length;
+		var _g1 = 0;
+		var _g = str.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var ch = str.charAt(i);
@@ -1310,7 +1329,8 @@ coopy.Csv.prototype = {
 		var result = "";
 		if(need_quote) result += "\"";
 		var line_buf = "";
-		var _g1 = 0, _g = str.length;
+		var _g1 = 0;
+		var _g = str.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var ch = str.charAt(i);
@@ -1395,7 +1415,8 @@ coopy.DiffRender.examineCell = function(x,y,value,vcol,vrow,vcorner,cell) {
 				tokens = cell.pretty_value.split(div);
 				cell.pretty_value = tokens.join(String.fromCharCode(8594));
 				cell.category_given_tr = cell.category = cat;
-				var offset = cell.conflicted?1:0;
+				var offset;
+				if(cell.conflicted) offset = 1; else offset = 0;
 				cell.lvalue = tokens[offset];
 				cell.rvalue = tokens[offset + 1];
 				if(cell.conflicted) cell.pvalue = tokens[0];
@@ -1406,14 +1427,16 @@ coopy.DiffRender.examineCell = function(x,y,value,vcol,vrow,vcorner,cell) {
 coopy.DiffRender.renderCell = function(tt,x,y) {
 	var cell = new coopy.CellInfo();
 	var corner = tt.getCellText(0,0);
-	var off = corner == "@:@"?1:0;
+	var off;
+	if(corner == "@:@") off = 1; else off = 0;
 	coopy.DiffRender.examineCell(x,y,tt.getCellText(x,y),tt.getCellText(x,off),tt.getCellText(off,y),corner,cell);
 	return cell;
 }
 coopy.DiffRender.prototype = {
 	completeHtml: function() {
 		this.text_to_insert.splice(0,0,"<html>\n<meta charset='utf-8'>\n<head>\n<style TYPE='text/css'>\n");
-		this.text_to_insert.splice(1,0,this.sampleCss());
+		var x = this.sampleCss();
+		this.text_to_insert.splice(1,0,x);
 		this.text_to_insert.splice(2,0,"</style>\n</head>\n<body>\n<div class='highlighter'>\n");
 		this.text_to_insert.push("</div>\n</body>\n</html>\n");
 	}
@@ -1428,11 +1451,13 @@ coopy.DiffRender.prototype = {
 		var tt = new coopy.TableText(rows);
 		var cell = new coopy.CellInfo();
 		var corner = tt.getCellText(0,0);
-		var off = corner == "@:@"?1:0;
+		var off;
+		if(corner == "@:@") off = 1; else off = 0;
 		if(off > 0) {
 			if(rows.get_width() <= 1 || rows.get_height() <= 1) return;
 		}
-		var _g1 = 0, _g = rows.get_height();
+		var _g1 = 0;
+		var _g = rows.get_height();
 		while(_g1 < _g) {
 			var row = _g1++;
 			var open = false;
@@ -1442,7 +1467,8 @@ coopy.DiffRender.prototype = {
 			var row_mode = cell.category;
 			if(row_mode == "spec") change_row = row;
 			render.beginRow(row_mode);
-			var _g3 = 0, _g2 = rows.get_width();
+			var _g3 = 0;
+			var _g2 = rows.get_width();
 			while(_g3 < _g2) {
 				var c = _g3++;
 				coopy.DiffRender.examineCell(c,row,tt.getCellText(c,row),change_row >= 0?tt.getCellText(c,change_row):"",txt,corner,cell);
@@ -1510,7 +1536,8 @@ coopy.HighlightPatch.__interfaces__ = [coopy.Row];
 coopy.HighlightPatch.prototype = {
 	finishColumns: function() {
 		this.needSourceColumns();
-		var _g1 = this.payloadCol, _g = this.payloadTop;
+		var _g1 = this.payloadCol;
+		var _g = this.payloadTop;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var act = this.modifier.get(i);
@@ -1545,7 +1572,8 @@ coopy.HighlightPatch.prototype = {
 		}
 		var at = -1;
 		var rat = -1;
-		var _g1 = 0, _g = this.cmods.length - 1;
+		var _g1 = 0;
+		var _g = this.cmods.length - 1;
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(this.cmods[i].code != "+++" && this.cmods[i].code != "---") at = this.cmods[i].sourceRow;
@@ -1558,7 +1586,8 @@ coopy.HighlightPatch.prototype = {
 		this.permuteColumns();
 		if(this.headerMove != null) {
 			if(this.colPermutation.length > 0) {
-				var _g = 0, _g1 = this.cmods;
+				var _g = 0;
+				var _g1 = this.cmods;
 				while(_g < _g1.length) {
 					var mod = _g1[_g];
 					++_g;
@@ -1569,13 +1598,15 @@ coopy.HighlightPatch.prototype = {
 		}
 		var len = this.processMods(this.cmods,fate,this.source.get_width());
 		this.source.insertOrDeleteColumns(fate,len);
-		var _g = 0, _g1 = this.cmods;
+		var _g = 0;
+		var _g1 = this.cmods;
 		while(_g < _g1.length) {
 			var cmod = _g1[_g];
 			++_g;
 			if(!cmod.rem) {
 				if(cmod.add) {
-					var _g2 = 0, _g3 = this.mods;
+					var _g2 = 0;
+					var _g3 = this.mods;
 					while(_g2 < _g3.length) {
 						var mod = _g3[_g2];
 						++_g2;
@@ -1589,7 +1620,8 @@ coopy.HighlightPatch.prototype = {
 				}
 			}
 		}
-		var _g1 = 0, _g = this.source.get_width();
+		var _g1 = 0;
+		var _g = this.source.get_width();
 		while(_g1 < _g) {
 			var i = _g1++;
 			var name = this.view.toString(this.source.getCell(i,0));
@@ -1609,7 +1641,8 @@ coopy.HighlightPatch.prototype = {
 		var fate = new Array();
 		this.permuteRows();
 		if(this.rowPermutation.length > 0) {
-			var _g = 0, _g1 = this.mods;
+			var _g = 0;
+			var _g1 = this.mods;
 			while(_g < _g1.length) {
 				var mod = _g1[_g];
 				++_g;
@@ -1619,7 +1652,8 @@ coopy.HighlightPatch.prototype = {
 		if(this.rowPermutation.length > 0) this.source.insertOrDeleteRows(this.rowPermutation,this.rowPermutation.length);
 		var len = this.processMods(this.mods,fate,this.source.get_height());
 		this.source.insertOrDeleteRows(fate,len);
-		var _g = 0, _g1 = this.mods;
+		var _g = 0;
+		var _g1 = this.mods;
 		while(_g < _g1.length) {
 			var mod = _g1[_g];
 			++_g;
@@ -1719,12 +1753,14 @@ coopy.HighlightPatch.prototype = {
 				used.set(cursor,1);
 				1;
 			}
-			var _g1 = 0, _g = permutationRev.length;
+			var _g1 = 0;
+			var _g = permutationRev.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				permutation[i] = -1;
 			}
-			var _g1 = 0, _g = permutation.length;
+			var _g1 = 0;
+			var _g = permutation.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				permutation[permutationRev[i]] = i;
@@ -1741,7 +1777,8 @@ coopy.HighlightPatch.prototype = {
 			var mod = rmods[_g];
 			++_g;
 			if(last != -1) {
-				var _g2 = last, _g1 = mod.sourceRow + mod.sourceRowOffset;
+				var _g2 = last;
+				var _g1 = mod.sourceRow + mod.sourceRowOffset;
 				while(_g2 < _g1) {
 					var i = _g2++;
 					fate.push(i + offset);
@@ -1828,7 +1865,8 @@ coopy.HighlightPatch.prototype = {
 		var result = -1;
 		this.currentRow += del;
 		if(this.currentRow >= 0 && this.currentRow < this.patch.get_height()) {
-			var _g = 0, _g1 = this.indexes;
+			var _g = 0;
+			var _g1 = this.indexes;
 			while(_g < _g1.length) {
 				var idx = _g1[_g];
 				++_g;
@@ -1844,7 +1882,8 @@ coopy.HighlightPatch.prototype = {
 		return result;
 	}
 	,applyHeader: function() {
-		var _g1 = this.payloadCol, _g = this.payloadTop;
+		var _g1 = this.payloadCol;
+		var _g = this.payloadTop;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var name = this.getString(i);
@@ -1876,7 +1915,8 @@ coopy.HighlightPatch.prototype = {
 		if(this.source.get_height() == 0) this.applyAction("+++");
 	}
 	,applyMeta: function() {
-		var _g1 = this.payloadCol, _g = this.payloadTop;
+		var _g1 = this.payloadCol;
+		var _g = this.payloadTop;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var name = this.getString(i);
@@ -1916,7 +1956,8 @@ coopy.HighlightPatch.prototype = {
 		this.sourceInPatchCol = new haxe.ds.IntMap();
 		this.patchInSourceCol = new haxe.ds.IntMap();
 		var av = this.source.getCellView();
-		var _g1 = 0, _g = this.source.get_width();
+		var _g1 = 0;
+		var _g = this.source.get_width();
 		while(_g1 < _g) {
 			var i = _g1++;
 			var name = av.toString(this.source.getCell(i,0));
@@ -1933,14 +1974,16 @@ coopy.HighlightPatch.prototype = {
 		this.payloadCol = 1 + this.rcOffset;
 		this.payloadTop = this.patch.get_width();
 		var corner = this.patch.getCellView().toString(this.patch.getCell(0,0));
-		this.rcOffset = corner == "@:@"?1:0;
-		var _g1 = 0, _g = this.patch.get_height();
+		if(corner == "@:@") this.rcOffset = 1; else this.rcOffset = 0;
+		var _g1 = 0;
+		var _g = this.patch.get_height();
 		while(_g1 < _g) {
 			var r = _g1++;
 			var str = this.view.toString(this.patch.getCell(this.rcOffset,r));
 			this.actions.push(str != null?str:"");
 		}
-		var _g1 = 0, _g = this.patch.get_height();
+		var _g1 = 0;
+		var _g = this.patch.get_height();
 		while(_g1 < _g) {
 			var r = _g1++;
 			this.applyRow(r);
@@ -2009,7 +2052,8 @@ coopy.Index.prototype = {
 	}
 	,toKeyByContent: function(row) {
 		var wide = "";
-		var _g1 = 0, _g = this.cols.length;
+		var _g1 = 0;
+		var _g = this.cols.length;
 		while(_g1 < _g) {
 			var k = _g1++;
 			var txt = row.getRowString(this.cols[k]);
@@ -2022,7 +2066,8 @@ coopy.Index.prototype = {
 	,toKey: function(t,i) {
 		var wide = "";
 		if(this.v == null) this.v = t.getCellView();
-		var _g1 = 0, _g = this.cols.length;
+		var _g1 = 0;
+		var _g = this.cols.length;
 		while(_g1 < _g) {
 			var k = _g1++;
 			var d = t.getCell(this.cols[k],i);
@@ -2035,7 +2080,8 @@ coopy.Index.prototype = {
 	}
 	,indexTable: function(t) {
 		this.indexed_table = t;
-		var _g1 = 0, _g = t.get_height();
+		var _g1 = 0;
+		var _g = t.get_height();
 		while(_g1 < _g) {
 			var i = _g1++;
 			var key;
@@ -2155,13 +2201,15 @@ coopy.Mover.moveUnits = function(units) {
 		}
 	}
 	var v;
-	var _g1 = 0, _g = ltop + 1;
+	var _g1 = 0;
+	var _g = ltop + 1;
 	while(_g1 < _g) {
 		var i = _g1++;
 		v = in_src.get(i);
 		if(v != null) isrc.push(v);
 	}
-	var _g1 = 0, _g = rtop + 1;
+	var _g1 = 0;
+	var _g = rtop + 1;
 	while(_g1 < _g) {
 		var i = _g1++;
 		v = in_dest.get(i);
@@ -2286,7 +2334,8 @@ coopy.Ordering.prototype = {
 	}
 	,toString: function() {
 		var txt = "";
-		var _g1 = 0, _g = this.order.length;
+		var _g1 = 0;
+		var _g = this.order.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(i > 0) txt += ", ";
@@ -2343,10 +2392,12 @@ coopy.SimpleTable.__name__ = true;
 coopy.SimpleTable.__interfaces__ = [coopy.Table];
 coopy.SimpleTable.tableToString = function(tab) {
 	var x = "";
-	var _g1 = 0, _g = tab.get_height();
+	var _g1 = 0;
+	var _g = tab.get_height();
 	while(_g1 < _g) {
 		var i = _g1++;
-		var _g3 = 0, _g2 = tab.get_width();
+		var _g3 = 0;
+		var _g2 = tab.get_width();
 		while(_g3 < _g2) {
 			var j = _g3++;
 			if(j > 0) x += " ";
@@ -2358,12 +2409,15 @@ coopy.SimpleTable.tableToString = function(tab) {
 }
 coopy.SimpleTable.prototype = {
 	trimBlank: function() {
+		if(this.h == 0) return true;
+		var h_test = this.h;
+		if(h_test >= 3) h_test = 3;
 		var view = this.getCellView();
 		var space = view.toDatum("");
 		var more = true;
 		while(more) {
-			if(this.h == 0) return true;
-			var _g1 = 0, _g = this.get_width();
+			var _g1 = 0;
+			var _g = this.get_width();
 			while(_g1 < _g) {
 				var i = _g1++;
 				var c = this.getCell(i,this.h - 1);
@@ -2379,7 +2433,7 @@ coopy.SimpleTable.prototype = {
 		while(more) {
 			if(this.w == 0) break;
 			var _g = 0;
-			while(_g < 1) {
+			while(_g < h_test) {
 				var i = _g++;
 				var c = this.getCell(nw - 1,i);
 				if(!(view.equals(c,space) || c == null)) {
@@ -2394,7 +2448,8 @@ coopy.SimpleTable.prototype = {
 		var _g = 0;
 		while(_g < nw) {
 			var i = _g++;
-			var _g2 = 0, _g1 = this.h;
+			var _g2 = 0;
+			var _g1 = this.h;
 			while(_g2 < _g1) {
 				var r = _g2++;
 				var idx = r * this.w + i;
@@ -2410,12 +2465,14 @@ coopy.SimpleTable.prototype = {
 	}
 	,insertOrDeleteColumns: function(fate,wfate) {
 		var data2 = new haxe.ds.IntMap();
-		var _g1 = 0, _g = fate.length;
+		var _g1 = 0;
+		var _g = fate.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var j = fate[i];
 			if(j != -1) {
-				var _g3 = 0, _g2 = this.h;
+				var _g3 = 0;
+				var _g2 = this.h;
 				while(_g3 < _g2) {
 					var r = _g3++;
 					var idx = r * this.w + i;
@@ -2432,12 +2489,14 @@ coopy.SimpleTable.prototype = {
 	}
 	,insertOrDeleteRows: function(fate,hfate) {
 		var data2 = new haxe.ds.IntMap();
-		var _g1 = 0, _g = fate.length;
+		var _g1 = 0;
+		var _g = fate.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var j = fate[i];
 			if(j != -1) {
-				var _g3 = 0, _g2 = this.w;
+				var _g3 = 0;
+				var _g2 = this.w;
 				while(_g3 < _g2) {
 					var c = _g3++;
 					var idx = i * this.w + c;
@@ -2597,7 +2656,8 @@ coopy.TableDiff.prototype = {
 			b = this.align.getTarget();
 			p = a;
 		}
-		var _g1 = 0, _g = units.length;
+		var _g1 = 0;
+		var _g = units.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var unit = units[i];
@@ -2606,7 +2666,8 @@ coopy.TableDiff.prototype = {
 			if(unit.l >= 0 && unit.r >= 0) {
 				var mod = false;
 				var av = a.getCellView();
-				var _g3 = 0, _g2 = a.get_width();
+				var _g3 = 0;
+				var _g2 = a.get_width();
 				while(_g3 < _g2) {
 					var j = _g3++;
 				}
@@ -2649,7 +2710,8 @@ coopy.TableDiff.prototype = {
 		if(this.flags.ordered) {
 			row_moves = new haxe.ds.IntMap();
 			var moves = coopy.Mover.moveUnits(units);
-			var _g1 = 0, _g = moves.length;
+			var _g1 = 0;
+			var _g = moves.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				row_moves.set(moves[i],i);
@@ -2657,20 +2719,23 @@ coopy.TableDiff.prototype = {
 			}
 			col_moves = new haxe.ds.IntMap();
 			moves = coopy.Mover.moveUnits(column_units);
-			var _g1 = 0, _g = moves.length;
+			var _g1 = 0;
+			var _g = moves.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				col_moves.set(moves[i],i);
 				i;
 			}
 		}
-		var outer_reps_needed = this.flags.show_unchanged?1:2;
+		var outer_reps_needed;
+		if(this.flags.show_unchanged) outer_reps_needed = 1; else outer_reps_needed = 2;
 		var v = a.getCellView();
 		var sep = "";
 		var conflict_sep = "";
 		var schema = new Array();
 		var have_schema = false;
-		var _g1 = 0, _g = column_units.length;
+		var _g1 = 0;
+		var _g = column_units.length;
 		while(_g1 < _g) {
 			var j = _g1++;
 			var cunit = column_units[j];
@@ -2710,7 +2775,8 @@ coopy.TableDiff.prototype = {
 			var at = output.get_height();
 			output.resize(column_units.length + 1,at + 1);
 			output.setCell(0,at,v.toDatum("!"));
-			var _g1 = 0, _g = column_units.length;
+			var _g1 = 0;
+			var _g = column_units.length;
 			while(_g1 < _g) {
 				var j = _g1++;
 				output.setCell(j + 1,at,v.toDatum(schema[j]));
@@ -2721,7 +2787,8 @@ coopy.TableDiff.prototype = {
 			var at = output.get_height();
 			output.resize(column_units.length + 1,at + 1);
 			output.setCell(0,at,v.toDatum("@@"));
-			var _g1 = 0, _g = column_units.length;
+			var _g1 = 0;
+			var _g = column_units.length;
 			while(_g1 < _g) {
 				var j = _g1++;
 				var cunit = column_units[j];
@@ -2736,7 +2803,8 @@ coopy.TableDiff.prototype = {
 		}
 		var active = new Array();
 		if(!this.flags.show_unchanged) {
-			var _g1 = 0, _g = units.length;
+			var _g1 = 0;
+			var _g = units.length;
 			while(_g1 < _g) {
 				var i = _g1++;
 				active[i] = 0;
@@ -2749,7 +2817,8 @@ coopy.TableDiff.prototype = {
 				var del = this.flags.unchanged_context;
 				if(del > 0) {
 					var mark = -del - 1;
-					var _g2 = 0, _g1 = units.length;
+					var _g2 = 0;
+					var _g1 = units.length;
 					while(_g2 < _g1) {
 						var i = _g2++;
 						if(active[i] == 0 || active[i] == 3) {
@@ -2757,7 +2826,8 @@ coopy.TableDiff.prototype = {
 						} else if(active[i] == 1) mark = i;
 					}
 					mark = units.length + del + 1;
-					var _g2 = 0, _g1 = units.length;
+					var _g2 = 0;
+					var _g1 = units.length;
 					while(_g2 < _g1) {
 						var j = _g2++;
 						var i = units.length - 1 - j;
@@ -2770,7 +2840,8 @@ coopy.TableDiff.prototype = {
 			var showed_dummy = false;
 			var l = -1;
 			var r = -1;
-			var _g2 = 0, _g1 = units.length;
+			var _g2 = 0;
+			var _g1 = units.length;
 			while(_g2 < _g1) {
 				var i = _g2++;
 				var unit = units[i];
@@ -2795,7 +2866,8 @@ coopy.TableDiff.prototype = {
 				var at = output.get_height();
 				if(publish) output.resize(column_units.length + 1,at + 1);
 				if(dummy) {
-					var _g4 = 0, _g3 = column_units.length + 1;
+					var _g4 = 0;
+					var _g3 = column_units.length + 1;
 					while(_g4 < _g3) {
 						var j = _g4++;
 						output.setCell(j,at,v.toDatum("..."));
@@ -2806,7 +2878,8 @@ coopy.TableDiff.prototype = {
 				var have_addition = false;
 				if(unit.p < 0 && unit.l < 0 && unit.r >= 0) act = "+++";
 				if((unit.p >= 0 || !has_parent) && unit.l >= 0 && unit.r < 0) act = "---";
-				var _g4 = 0, _g3 = column_units.length;
+				var _g4 = 0;
+				var _g3 = column_units.length;
 				while(_g4 < _g3) {
 					var j = _g4++;
 					var cunit = column_units[j];
@@ -2898,7 +2971,8 @@ coopy.TableDiff.prototype = {
 		}
 		if(show_rc_numbers && !this.flags.never_show_order) {
 			var target = new Array();
-			var _g1 = 0, _g = output.get_width();
+			var _g1 = 0;
+			var _g = output.get_width();
 			while(_g1 < _g) {
 				var i = _g1++;
 				target.push(i + 1);
@@ -2906,7 +2980,8 @@ coopy.TableDiff.prototype = {
 			output.insertOrDeleteColumns(target,output.get_width() + 1);
 			this.l_prev = -1;
 			this.r_prev = -1;
-			var _g1 = 0, _g = output.get_height();
+			var _g1 = 0;
+			var _g = output.get_height();
 			while(_g1 < _g) {
 				var i = _g1++;
 				var unit = row_map.get(i);
@@ -2914,7 +2989,8 @@ coopy.TableDiff.prototype = {
 				output.setCell(0,i,this.reportUnit(unit));
 			}
 			target = new Array();
-			var _g1 = 0, _g = output.get_height();
+			var _g1 = 0;
+			var _g = output.get_height();
 			while(_g1 < _g) {
 				var i = _g1++;
 				target.push(i + 1);
@@ -2922,7 +2998,8 @@ coopy.TableDiff.prototype = {
 			output.insertOrDeleteRows(target,output.get_height() + 1);
 			this.l_prev = -1;
 			this.r_prev = -1;
-			var _g1 = 1, _g = output.get_width();
+			var _g1 = 1;
+			var _g = output.get_width();
 			while(_g1 < _g) {
 				var i = _g1++;
 				var unit = col_map.get(i - 1);
@@ -2978,7 +3055,8 @@ coopy.TableDiff.prototype = {
 		if(v.equals(d,null)) return nil;
 		var str = v.toString(d);
 		var score = 0;
-		var _g1 = 0, _g = str.length;
+		var _g1 = 0;
+		var _g = str.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(HxOverrides.cca(str,score) != 95) break;
@@ -3050,7 +3128,8 @@ coopy.TableModifier.__name__ = true;
 coopy.TableModifier.prototype = {
 	removeColumn: function(at) {
 		var fate = [];
-		var _g1 = 0, _g = this.t.get_width();
+		var _g1 = 0;
+		var _g = this.t.get_width();
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(i < at) fate.push(i); else if(i > at) fate.push(i - 1); else fate.push(-1);
@@ -3109,13 +3188,14 @@ coopy.Unit = function(l,r,p) {
 };
 coopy.Unit.__name__ = true;
 coopy.Unit.describe = function(i) {
-	return i >= 0?"" + i:"-";
+	if(i >= 0) return "" + i; else return "-";
 }
 coopy.Unit.prototype = {
 	fromString: function(txt) {
 		txt += "]";
 		var at = 0;
-		var _g1 = 0, _g = txt.length;
+		var _g1 = 0;
+		var _g = txt.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var ch = HxOverrides.cca(txt,i);
@@ -3140,7 +3220,7 @@ coopy.Unit.prototype = {
 		return coopy.Unit.describe(this.l) + ":" + coopy.Unit.describe(this.r);
 	}
 	,lp: function() {
-		return this.p == -2?this.l:this.p;
+		if(this.p == -2) return this.l; else return this.p;
 	}
 	,__class__: coopy.Unit
 }
@@ -3193,7 +3273,8 @@ coopy.Viterbi.prototype = {
 	,toString: function() {
 		this.calculatePath();
 		var txt = "";
-		var _g1 = 0, _g = this.index;
+		var _g1 = 0;
+		var _g = this.index;
 		while(_g1 < _g) {
 			var i = _g1++;
 			if(this.path.get(0,i) == -1) txt += "*"; else txt += this.path.get(0,i);
@@ -3211,7 +3292,8 @@ coopy.Viterbi.prototype = {
 			this.path_valid = true;
 			return;
 		}
-		var _g1 = 0, _g = this.K;
+		var _g1 = 0;
+		var _g = this.K;
 		while(_g1 < _g) {
 			var j = _g1++;
 			if((this.cost.get(j,this.index - 1) < best || bestj == -1) && this.src.get(j,this.index - 1) != -1) {
@@ -3220,7 +3302,8 @@ coopy.Viterbi.prototype = {
 			}
 		}
 		this.best_cost = best;
-		var _g1 = 0, _g = this.index;
+		var _g1 = 0;
+		var _g = this.index;
 		while(_g1 < _g) {
 			var j = _g1++;
 			var i = this.index - 1 - j;
@@ -3311,10 +3394,15 @@ haxe.Json.stringify = function(value,replacer) {
 haxe.Json.prototype = {
 	parseNumber: function(c) {
 		var start = this.pos - 1;
-		var minus = c == 45, digit = !minus, zero = c == 48;
-		var point = false, e = false, pm = false, end = false;
+		var minus = c == 45;
+		var digit = !minus;
+		var zero = c == 48;
+		var point = false;
+		var e = false;
+		var pm = false;
+		var end = false;
 		while(true) {
-			c = this.str.charCodeAt(this.pos++);
+			c = StringTools.fastCodeAt(this.str,this.pos++);
 			switch(c) {
 			case 48:
 				if(zero && !point) this.invalidNumber(start);
@@ -3354,7 +3442,7 @@ haxe.Json.prototype = {
 		}
 		var f = Std.parseFloat(HxOverrides.substr(this.str,start,this.pos - start));
 		var i = f | 0;
-		return i == f?i:f;
+		if(i == f) return i; else return f;
 	}
 	,invalidNumber: function(start) {
 		throw "Invalid number at position " + start + ": " + HxOverrides.substr(this.str,start,this.pos - start);
@@ -3363,11 +3451,11 @@ haxe.Json.prototype = {
 		var start = this.pos;
 		var buf = new StringBuf();
 		while(true) {
-			var c = this.str.charCodeAt(this.pos++);
+			var c = StringTools.fastCodeAt(this.str,this.pos++);
 			if(c == 34) break;
 			if(c == 92) {
 				buf.addSub(this.str,start,this.pos - start - 1);
-				c = this.str.charCodeAt(this.pos++);
+				c = StringTools.fastCodeAt(this.str,this.pos++);
 				switch(c) {
 				case 114:
 					buf.b += "\r";
@@ -3403,14 +3491,16 @@ haxe.Json.prototype = {
 	}
 	,parseRec: function() {
 		while(true) {
-			var c = this.str.charCodeAt(this.pos++);
+			var c = StringTools.fastCodeAt(this.str,this.pos++);
 			switch(c) {
 			case 32:case 13:case 10:case 9:
 				break;
 			case 123:
-				var obj = { }, field = null, comma = null;
+				var obj = { };
+				var field = null;
+				var comma = null;
 				while(true) {
-					var c1 = this.str.charCodeAt(this.pos++);
+					var c1 = StringTools.fastCodeAt(this.str,this.pos++);
 					switch(c1) {
 					case 32:case 13:case 10:case 9:
 						break;
@@ -3419,7 +3509,7 @@ haxe.Json.prototype = {
 						return obj;
 					case 58:
 						if(field == null) this.invalidChar();
-						obj[field] = this.parseRec();
+						Reflect.setField(obj,field,this.parseRec());
 						field = null;
 						comma = true;
 						break;
@@ -3436,9 +3526,10 @@ haxe.Json.prototype = {
 				}
 				break;
 			case 91:
-				var arr = [], comma = null;
+				var arr = [];
+				var comma = null;
 				while(true) {
-					var c1 = this.str.charCodeAt(this.pos++);
+					var c1 = StringTools.fastCodeAt(this.str,this.pos++);
 					switch(c1) {
 					case 32:case 13:case 10:case 9:
 						break;
@@ -3458,21 +3549,21 @@ haxe.Json.prototype = {
 				break;
 			case 116:
 				var save = this.pos;
-				if(this.str.charCodeAt(this.pos++) != 114 || this.str.charCodeAt(this.pos++) != 117 || this.str.charCodeAt(this.pos++) != 101) {
+				if(StringTools.fastCodeAt(this.str,this.pos++) != 114 || StringTools.fastCodeAt(this.str,this.pos++) != 117 || StringTools.fastCodeAt(this.str,this.pos++) != 101) {
 					this.pos = save;
 					this.invalidChar();
 				}
 				return true;
 			case 102:
 				var save = this.pos;
-				if(this.str.charCodeAt(this.pos++) != 97 || this.str.charCodeAt(this.pos++) != 108 || this.str.charCodeAt(this.pos++) != 115 || this.str.charCodeAt(this.pos++) != 101) {
+				if(StringTools.fastCodeAt(this.str,this.pos++) != 97 || StringTools.fastCodeAt(this.str,this.pos++) != 108 || StringTools.fastCodeAt(this.str,this.pos++) != 115 || StringTools.fastCodeAt(this.str,this.pos++) != 101) {
 					this.pos = save;
 					this.invalidChar();
 				}
 				return false;
 			case 110:
 				var save = this.pos;
-				if(this.str.charCodeAt(this.pos++) != 117 || this.str.charCodeAt(this.pos++) != 108 || this.str.charCodeAt(this.pos++) != 108) {
+				if(StringTools.fastCodeAt(this.str,this.pos++) != 117 || StringTools.fastCodeAt(this.str,this.pos++) != 108 || StringTools.fastCodeAt(this.str,this.pos++) != 108) {
 					this.pos = save;
 					this.invalidChar();
 				}
@@ -3499,7 +3590,7 @@ haxe.Json.prototype = {
 		this.buf.b += "\"";
 		var i = 0;
 		while(true) {
-			var c = s.charCodeAt(i++);
+			var c = StringTools.fastCodeAt(s,i++);
 			if(c != c) break;
 			switch(c) {
 			case 34:
@@ -3531,63 +3622,66 @@ haxe.Json.prototype = {
 	}
 	,toStringRec: function(k,v) {
 		if(this.replacer != null) v = this.replacer(k,v);
-		var _g = Type["typeof"](v);
-		var $e = (_g);
-		switch( $e[1] ) {
-		case 8:
-			this.buf.b += "\"???\"";
-			break;
-		case 4:
-			this.objString(v);
-			break;
-		case 1:
-			var v1 = v;
-			this.buf.b += Std.string(v1);
-			break;
-		case 2:
-			this.buf.b += Std.string(Math.isFinite(v)?v:"null");
-			break;
-		case 5:
-			this.buf.b += "\"<fun>\"";
-			break;
-		case 6:
-			var _g_eTClass_0 = $e[2];
-			if(_g_eTClass_0 == String) this.quote(v); else if(_g_eTClass_0 == Array) {
+		{
+			var _g = Type["typeof"](v);
+			switch(_g[1]) {
+			case 8:
+				this.buf.b += "\"???\"";
+				break;
+			case 4:
+				this.objString(v);
+				break;
+			case 1:
 				var v1 = v;
-				this.buf.b += "[";
-				var len = v1.length;
-				if(len > 0) {
-					this.toStringRec(0,v1[0]);
-					var i = 1;
-					while(i < len) {
-						this.buf.b += ",";
-						this.toStringRec(i,v1[i++]);
+				this.buf.b += Std.string(v1);
+				break;
+			case 2:
+				var v1;
+				if(Math.isFinite(v)) v1 = v; else v1 = "null";
+				this.buf.b += Std.string(v1);
+				break;
+			case 5:
+				this.buf.b += "\"<fun>\"";
+				break;
+			case 6:
+				var c = _g[2];
+				if(c == String) this.quote(v); else if(c == Array) {
+					var v1 = v;
+					this.buf.b += "[";
+					var len = v1.length;
+					if(len > 0) {
+						this.toStringRec(0,v1[0]);
+						var i = 1;
+						while(i < len) {
+							this.buf.b += ",";
+							this.toStringRec(i,v1[i++]);
+						}
 					}
-				}
-				this.buf.b += "]";
-			} else if(_g_eTClass_0 == haxe.ds.StringMap) {
+					this.buf.b += "]";
+				} else if(c == haxe.ds.StringMap) {
+					var v1 = v;
+					var o = { };
+					var $it0 = v1.keys();
+					while( $it0.hasNext() ) {
+						var k1 = $it0.next();
+						Reflect.setField(o,k1,v1.get(k1));
+					}
+					this.objString(o);
+				} else this.objString(v);
+				break;
+			case 7:
+				var i = Type.enumIndex(v);
+				var v1 = i;
+				this.buf.b += Std.string(v1);
+				break;
+			case 3:
 				var v1 = v;
-				var o = { };
-				var $it0 = v1.keys();
-				while( $it0.hasNext() ) {
-					var k1 = $it0.next();
-					o[k1] = v1.get(k1);
-				}
-				this.objString(o);
-			} else this.objString(v);
-			break;
-		case 7:
-			var i = Type.enumIndex(v);
-			var v1 = i;
-			this.buf.b += Std.string(v1);
-			break;
-		case 3:
-			var v1 = v;
-			this.buf.b += Std.string(v1);
-			break;
-		case 0:
-			this.buf.b += "null";
-			break;
+				this.buf.b += Std.string(v1);
+				break;
+			case 0:
+				this.buf.b += "null";
+				break;
+			}
 		}
 	}
 	,objString: function(v) {
@@ -3632,7 +3726,7 @@ haxe.ds.IntMap.prototype = {
 			var i = it.next();
 			s.b += Std.string(i);
 			s.b += " => ";
-			s.b += Std.string(Std.string(this.get(i)));
+			s.add(Std.string(this.get(i)));
 			if(it.hasNext()) s.b += ", ";
 		}
 		s.b += "}";
@@ -3708,7 +3802,8 @@ js.Boot.__string_rec = function(o,s) {
 				if(o.length == 2) return o[0];
 				var str = o[0] + "(";
 				s += "\t";
-				var _g1 = 2, _g = o.length;
+				var _g1 = 2;
+				var _g = o.length;
 				while(_g1 < _g) {
 					var i = _g1++;
 					if(i != 2) str += "," + js.Boot.__string_rec(o[i],s); else str += js.Boot.__string_rec(o[i],s);
@@ -3767,7 +3862,8 @@ js.Boot.__interfLoop = function(cc,cl) {
 	if(cc == cl) return true;
 	var intf = cc.__interfaces__;
 	if(intf != null) {
-		var _g1 = 0, _g = intf.length;
+		var _g1 = 0;
+		var _g = intf.length;
 		while(_g1 < _g) {
 			var i = _g1++;
 			var i1 = intf[i];
@@ -3799,14 +3895,14 @@ js.Boot.__instanceof = function(o,cl) {
 				if(js.Boot.__interfLoop(o.__class__,cl)) return true;
 			}
 		} else return false;
-		if(cl == Class && o.__name__ != null) return true; else null;
-		if(cl == Enum && o.__ename__ != null) return true; else null;
+		if(cl == Class && o.__name__ != null) return true;
+		if(cl == Enum && o.__ename__ != null) return true;
 		return o.__enum__ == cl;
 	}
 }
 function $iterator(o) { if( o instanceof Array ) return function() { return HxOverrides.iter(o); }; return typeof(o.iterator) == 'function' ? $bind(o,o.iterator) : o.iterator; };
-var $_;
-function $bind(o,m) { var f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; return f; };
+var $_, $fid = 0;
+function $bind(o,m) { if( m == null ) return null; if( m.__id__ == null ) m.__id__ = $fid++; var f; if( o.hx__closures__ == null ) o.hx__closures__ = {}; else f = o.hx__closures__[m.__id__]; if( f == null ) { f = function(){ return f.method.apply(f.scope, arguments); }; f.scope = o; f.method = m; o.hx__closures__[m.__id__] = f; } return f; };
 Math.__name__ = ["Math"];
 Math.NaN = Number.NaN;
 Math.NEGATIVE_INFINITY = Number.NEGATIVE_INFINITY;
@@ -3843,7 +3939,7 @@ function $hxExpose(src, path) {
 }
 })();
 
-//@ sourceMappingURL=coopy.js.map
+//# sourceMappingURL=coopy.js.map
 
 if (typeof exports != "undefined") {
     // avoid having excess nesting (coopy.coopy) when using node
