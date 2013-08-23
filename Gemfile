@@ -140,7 +140,7 @@ group :assets do
   gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
   gem 'bootstrap-sass'
   gem "font-awesome-rails"
-  gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
+  gem "gemoji", "~> 1.3.1", require: 'emoji/railtie'
   gem "gon"
 end
 
