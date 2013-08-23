@@ -3,6 +3,7 @@ class Notify < ActionMailer::Base
   include Emails::MergeRequests
   include Emails::Notes
   include Emails::Projects
+  include Emails::Commits
 
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
