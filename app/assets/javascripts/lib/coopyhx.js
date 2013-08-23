@@ -354,7 +354,7 @@ coopy.Alignment.prototype = {
 				}
 			}
 			if(zl != null && zr != null && this.a2b(zl) != null && ref.a2b(zr) != null) {
-				if(zl == prev + 1) {
+				if(zl == prev + 1 || zr != prev + 1) {
 					if(vr.exists(xr)) {
 						order.add(ref.a2b(zr),xr,zr);
 						prev = zr;
@@ -451,6 +451,18 @@ coopy.Bag = function() { }
 coopy.Bag.__name__ = true;
 coopy.Bag.prototype = {
 	__class__: coopy.Bag
+}
+coopy.CellInfo = function() {
+};
+$hxExpose(coopy.CellInfo, "coopy.CellInfo");
+coopy.CellInfo.__name__ = true;
+coopy.CellInfo.prototype = {
+	toString: function() {
+		if(!this.updated) return this.value;
+		if(!this.conflicted) return this.lvalue + "::" + this.rvalue;
+		return this.pvalue + "||" + this.lvalue + "::" + this.rvalue;
+	}
+	,__class__: coopy.CellInfo
 }
 coopy.Change = function(txt) {
 	if(txt != null) {
@@ -584,6 +596,9 @@ coopy.CompareFlags = function() {
 	this.always_show_header = true;
 	this.show_unchanged = false;
 	this.unchanged_context = 1;
+	this.always_show_order = false;
+	this.never_show_order = true;
+	this.ordered = true;
 };
 $hxExpose(coopy.CompareFlags, "coopy.CompareFlags");
 coopy.CompareFlags.__name__ = true;
@@ -867,6 +882,7 @@ coopy.CompareTable.prototype = {
 				pending_ct--;
 			}
 		}
+		align.link(0,0);
 	}
 	,alignCore: function(align) {
 		if(this.comp.p == null) {
@@ -1023,27 +1039,45 @@ coopy.Coopy.coopyhx = function(io) {
 	if(args[0] == "--test") return coopy.Coopy.randomTests();
 	var more = true;
 	var output = null;
+	var css_output = null;
+	var fragment = false;
+	var pretty = true;
 	while(more) {
 		more = false;
 		var _g1 = 0, _g = args.length;
 		while(_g1 < _g) {
 			var i = _g1++;
-			if(args[i] == "--output") {
+			var tag = args[i];
+			if(tag == "--output") {
 				more = true;
 				output = args[i + 1];
 				args.splice(i,2);
 				break;
+			} else if(tag == "--css") {
+				more = true;
+				fragment = true;
+				css_output = args[i + 1];
+				args.splice(i,2);
+			} else if(tag == "--fragment") {
+				more = true;
+				fragment = true;
+				args.splice(i,1);
+			} else if(tag == "--plain") {
+				more = true;
+				pretty = false;
+				args.splice(i,1);
 			}
 		}
 	}
 	var cmd = args[0];
-	if(args.length < 2 || !Lambda.has(["diff","patch","trim"],cmd)) {
+	if(args.length < 2 || !Lambda.has(["diff","patch","trim","render"],cmd)) {
 		io.writeStderr("Call coopyhx as:\n");
 		io.writeStderr("  coopyhx diff [--output OUTPUT.csv] a.csv b.csv\n");
 		io.writeStderr("  coopyhx diff [--output OUTPUT.csv] parent.csv a.csv b.csv\n");
 		io.writeStderr("  coopyhx diff [--output OUTPUT.jsonbook] a.jsonbook b.jsonbook\n");
 		io.writeStderr("  coopyhx patch [--output OUTPUT.csv] source.csv patch.csv\n");
 		io.writeStderr("  coopyhx trim [--output OUTPUT.csv] source.csv\n");
+		io.writeStderr("  coopyhx render [--output OUTPUT.html] [--css CSS.css] [--fragment] [--plain] diff.csv\n");
 		return 1;
 	}
 	if(output == null) output = "-";
@@ -1072,7 +1106,14 @@ coopy.Coopy.coopyhx = function(io) {
 		var patcher = new coopy.HighlightPatch(a,b);
 		patcher.apply();
 		tool.saveTable(output,a);
-	} else if(cmd1 == "trim") tool.saveTable(output,a);
+	} else if(cmd1 == "trim") tool.saveTable(output,a); else if(cmd1 == "render") {
+		var renderer = new coopy.DiffRender();
+		renderer.usePrettyArrows(pretty);
+		renderer.render(a);
+		if(!fragment) renderer.completeHtml();
+		tool.saveText(output,renderer.html());
+		if(css_output != null) tool.saveText(css_output,renderer.sampleCss());
+	}
 	return 0;
 }
 coopy.Coopy.main = function() {
@@ -1147,14 +1188,17 @@ coopy.Coopy.prototype = {
 			return output;
 		}
 	}
+	,saveText: function(name,txt) {
+		if(name != "-") this.io.saveContent(name,txt); else this.io.writeStdout(txt);
+		return true;
+	}
 	,saveTable: function(name,t) {
 		var txt = "";
 		if(this.format_preference != "json") {
 			var csv = new coopy.Csv();
 			txt = csv.renderTable(t);
 		} else txt = haxe.Json.stringify(coopy.Coopy.jsonify(t));
-		if(name != "-") this.io.saveContent(name,txt); else this.io.writeStdout(txt);
-		return true;
+		return this.saveText(name,txt);
 	}
 	,__class__: coopy.Coopy
 }
@@ -1306,50 +1350,103 @@ coopy.Csv.prototype = {
 coopy.DiffRender = function() {
 	this.text_to_insert = new Array();
 	this.open = false;
+	this.pretty_arrows = true;
 };
 $hxExpose(coopy.DiffRender, "coopy.DiffRender");
 coopy.DiffRender.__name__ = true;
+coopy.DiffRender.examineCell = function(x,y,value,vcol,vrow,vcorner,cell) {
+	cell.category = "";
+	cell.category_given_tr = "";
+	cell.separator = "";
+	cell.conflicted = false;
+	cell.updated = false;
+	cell.pvalue = cell.lvalue = cell.rvalue = null;
+	cell.value = value;
+	if(cell.value == null) cell.value = "";
+	cell.pretty_value = cell.value;
+	if(vrow == null) vrow = "";
+	if(vcol == null) vcol = "";
+	var removed_column = false;
+	if(vrow == ":") cell.category = "move";
+	if(vcol.indexOf("+++") >= 0) cell.category_given_tr = cell.category = "add"; else if(vcol.indexOf("---") >= 0) {
+		cell.category_given_tr = cell.category = "remove";
+		removed_column = true;
+	}
+	if(vrow == "!") cell.category = "spec"; else if(vrow == "@@") cell.category = "header"; else if(vrow == "+++") {
+		if(!removed_column) cell.category = "add";
+	} else if(vrow == "---") cell.category = "remove"; else if(vrow.indexOf("->") >= 0) {
+		if(!removed_column) {
+			var tokens = vrow.split("!");
+			var full = vrow;
+			var part = tokens[1];
+			if(part == null) part = full;
+			if(cell.value.indexOf(part) >= 0) {
+				var cat = "modify";
+				var div = part;
+				if(part != full) {
+					if(cell.value.indexOf(full) >= 0) {
+						div = full;
+						cat = "conflict";
+						cell.conflicted = true;
+					}
+				}
+				cell.updated = true;
+				cell.separator = div;
+				tokens = cell.pretty_value.split(div);
+				cell.pretty_value = tokens.join(String.fromCharCode(8594));
+				cell.category_given_tr = cell.category = cat;
+				var offset = cell.conflicted?1:0;
+				cell.lvalue = tokens[offset];
+				cell.rvalue = tokens[offset + 1];
+				if(cell.conflicted) cell.pvalue = tokens[0];
+			}
+		}
+	}
+}
+coopy.DiffRender.renderCell = function(tt,x,y) {
+	var cell = new coopy.CellInfo();
+	var corner = tt.getCellText(0,0);
+	var off = corner == "@:@"?1:0;
+	coopy.DiffRender.examineCell(x,y,tt.getCellText(x,y),tt.getCellText(x,off),tt.getCellText(off,y),corner,cell);
+	return cell;
+}
 coopy.DiffRender.prototype = {
-	render: function(rows) {
+	completeHtml: function() {
+		this.text_to_insert.splice(0,0,"<html>\n<meta charset='utf-8'>\n<head>\n<style TYPE='text/css'>\n");
+		this.text_to_insert.splice(1,0,this.sampleCss());
+		this.text_to_insert.splice(2,0,"</style>\n</head>\n<body>\n<div class='highlighter'>\n");
+		this.text_to_insert.push("</div>\n</body>\n</html>\n");
+	}
+	,sampleCss: function() {
+		return ".highlighter .add { \n  background-color: #7fff7f;\n}\n\n.highlighter .remove { \n  background-color: #ff7f7f;\n}\n\n.highlighter td.modify { \n  background-color: #7f7fff;\n}\n\n.highlighter td.conflict { \n  background-color: #f00;\n}\n\n.highlighter .spec { \n  background-color: #aaa;\n}\n\n.highlighter .move { \n  background-color: #ffa;\n}\n\n.highlighter .null { \n  color: #888;\n}\n\n.highlighter table { \n  border-collapse:collapse;\n}\n\n.highlighter td, .highlighter th {\n  border: 1px solid #2D4068;\n  padding: 3px 7px 2px;\n}\n\n.highlighter th, .highlighter .header { \n  background-color: #aaf;\n  font-weight: bold;\n  padding-bottom: 4px;\n  padding-top: 5px;\n  text-align:left;\n}\n\n.highlighter tr:first-child td {\n  border-top: 1px solid #2D4068;\n}\n\n.highlighter td:first-child { \n  border-left: 1px solid #2D4068;\n}\n\n.highlighter td {\n  empty-cells: show;\n}\n";
+	}
+	,render: function(rows) {
+		if(rows.get_width() == 0 || rows.get_height() == 0) return;
 		var render = this;
 		render.beginTable();
 		var change_row = -1;
-		var v = rows.getCellView();
+		var tt = new coopy.TableText(rows);
+		var cell = new coopy.CellInfo();
+		var corner = tt.getCellText(0,0);
+		var off = corner == "@:@"?1:0;
+		if(off > 0) {
+			if(rows.get_width() <= 1 || rows.get_height() <= 1) return;
+		}
 		var _g1 = 0, _g = rows.get_height();
 		while(_g1 < _g) {
 			var row = _g1++;
-			var row_mode = "";
-			var txt = "";
 			var open = false;
-			if(rows.get_width() > 0) {
-				txt = v.toString(rows.getCell(0,row));
-				if(txt == "@" || txt == "@@") row_mode = "@@"; else if(txt == "!" || txt == "+++" || txt == "---" || txt == "...") {
-					row_mode = txt;
-					if(txt == "!") change_row = row;
-				} else if(txt.indexOf("->") >= 0) row_mode = "->"; else open = true;
-			}
-			var cmd = txt;
+			var txt = tt.getCellText(off,row);
+			if(txt == null) txt = "";
+			coopy.DiffRender.examineCell(0,row,txt,"",txt,corner,cell);
+			var row_mode = cell.category;
+			if(row_mode == "spec") change_row = row;
 			render.beginRow(row_mode);
 			var _g3 = 0, _g2 = rows.get_width();
 			while(_g3 < _g2) {
 				var c = _g3++;
-				txt = v.toString(rows.getCell(c,row));
-				if(txt == "NULL") txt = "";
-				if(txt == "null") txt = "";
-				if(txt == null) txt = "";
-				var cell_mode = "";
-				var separator = "";
-				if(open && change_row >= 0) {
-					var change = v.toString(rows.getCell(c,change_row));
-					if(change == "+++" || change == "---") cell_mode = change;
-				}
-				if(cmd.indexOf("->") >= 0) {
-					if(txt.indexOf(cmd) >= 0) {
-						cell_mode = "->";
-						separator = cmd;
-					}
-				}
-				render.insertCell(txt,cell_mode,separator);
+				coopy.DiffRender.examineCell(c,row,tt.getCellText(c,row),change_row >= 0?tt.getCellText(c,change_row):"",txt,corner,cell);
+				render.insertCell(this.pretty_arrows?cell.pretty_value:cell.value,cell.category_given_tr);
 			}
 			render.endRow();
 		}
@@ -1367,19 +1464,9 @@ coopy.DiffRender.prototype = {
 	,endRow: function() {
 		this.insert("</tr>\n");
 	}
-	,insertCell: function(txt,mode,separator) {
+	,insertCell: function(txt,mode) {
 		var cell_decorate = "";
-		switch(mode) {
-		case "+++":
-			cell_decorate += " class=\"add\"";
-			break;
-		case "---":
-			cell_decorate += " class=\"remove\"";
-			break;
-		case "->":
-			cell_decorate += " class=\"modify\"";
-			break;
-		}
+		if(mode != "") cell_decorate = " class=\"" + mode + "\"";
 		this.insert(this.td_open + cell_decorate + ">");
 		this.insert(txt);
 		this.insert(this.td_close);
@@ -1387,31 +1474,13 @@ coopy.DiffRender.prototype = {
 	,beginRow: function(mode) {
 		this.td_open = "<td";
 		this.td_close = "</td>";
-		this.row_color = "";
-		this.open = false;
-		switch(mode) {
-		case "@@":
+		var row_class = "";
+		if(mode == "header") {
 			this.td_open = "<th";
 			this.td_close = "</th>";
-			break;
-		case "!":
-			this.row_color = "spec";
-			break;
-		case "+++":
-			this.row_color = "add";
-			break;
-		case "---":
-			this.row_color = "remove";
-			break;
-		default:
-			this.open = true;
-		}
+		} else row_class = mode;
 		var tr = "<tr>";
-		var row_decorate = "";
-		if(this.row_color != "") {
-			row_decorate = " class=\"" + this.row_color + "\"";
-			tr = "<tr" + row_decorate + ">";
-		}
+		if(row_class != "") tr = "<tr class=\"" + row_class + "\">";
 		this.insert(tr);
 	}
 	,beginTable: function() {
@@ -1419,6 +1488,9 @@ coopy.DiffRender.prototype = {
 	}
 	,insert: function(str) {
 		this.text_to_insert.push(str);
+	}
+	,usePrettyArrows: function(flag) {
+		this.pretty_arrows = flag;
 	}
 	,__class__: coopy.DiffRender
 }
@@ -1430,21 +1502,7 @@ coopy.Row.prototype = {
 coopy.HighlightPatch = function(source,patch) {
 	this.source = source;
 	this.patch = patch;
-	this.header = new haxe.ds.IntMap();
-	this.headerPre = new haxe.ds.StringMap();
-	this.headerPost = new haxe.ds.StringMap();
-	this.headerRename = new haxe.ds.StringMap();
-	this.modifier = new haxe.ds.IntMap();
-	this.sourceInPatch = new haxe.ds.IntMap();
-	this.patchInSource = new haxe.ds.IntMap();
-	this.mods = new Array();
-	this.cmods = new Array();
-	this.haveSourceColumns = false;
-	this.actCache = "";
-	this.actBaseCache = "";
-	this.actIsUpdate = false;
-	this.actIsConflicted = false;
-	this.csv = new coopy.Csv();
+	this.view = patch.getCellView();
 };
 $hxExpose(coopy.HighlightPatch, "coopy.HighlightPatch");
 coopy.HighlightPatch.__name__ = true;
@@ -1455,32 +1513,60 @@ coopy.HighlightPatch.prototype = {
 		var _g1 = this.payloadCol, _g = this.payloadTop;
 		while(_g1 < _g) {
 			var i = _g1++;
-			var mod = this.modifier.get(i);
+			var act = this.modifier.get(i);
 			var hdr = this.header.get(i);
-			if(mod == "---") {
-				var at = this.patchInSource.get(i);
-				var mod1 = new coopy.HighlightPatchUnit();
-				mod1.rem = true;
-				mod1.sourceRow = at;
-				mod1.patchRow = i;
-				this.cmods.push(mod1);
-			} else if(mod == "+++") {
-				var mod1 = new coopy.HighlightPatchUnit();
-				mod1.add = true;
+			if(act == null) act = "";
+			if(act == "---") {
+				var at = this.patchInSourceCol.get(i);
+				var mod = new coopy.HighlightPatchUnit();
+				mod.code = act;
+				mod.rem = true;
+				mod.sourceRow = at;
+				mod.patchRow = i;
+				this.cmods.push(mod);
+			} else if(act == "+++") {
+				var mod = new coopy.HighlightPatchUnit();
+				mod.code = act;
+				mod.add = true;
 				var prev = -1;
 				var cont = false;
-				if(i > this.payloadCol) {
-					if(this.modifier.get(i) == this.modifier.get(i - 1)) prev = -2; else {
-						var p = this.patchInSource.get(i - 1);
-						prev = p == null?-1:p;
-					}
-				}
-				if(prev == -2) mod1.sourceRow = this.cmods[this.cmods.length - 1].sourceRow; else mod1.sourceRow = prev + 1;
-				mod1.patchRow = i;
-				this.cmods.push(mod1);
+				mod.sourceRow = -1;
+				if(this.cmods.length > 0) mod.sourceRow = this.cmods[this.cmods.length - 1].sourceRow;
+				if(mod.sourceRow != -1) mod.sourceRowOffset = 1;
+				mod.patchRow = i;
+				this.cmods.push(mod);
+			} else {
+				var mod = new coopy.HighlightPatchUnit();
+				mod.code = act;
+				mod.patchRow = i;
+				mod.sourceRow = this.patchInSourceCol.get(i);
+				this.cmods.push(mod);
 			}
 		}
+		var at = -1;
+		var rat = -1;
+		var _g1 = 0, _g = this.cmods.length - 1;
+		while(_g1 < _g) {
+			var i = _g1++;
+			if(this.cmods[i].code != "+++" && this.cmods[i].code != "---") at = this.cmods[i].sourceRow;
+			this.cmods[i + 1].sourcePrevRow = at;
+			var j = this.cmods.length - 1 - i;
+			if(this.cmods[j].code != "+++" && this.cmods[j].code != "---") rat = this.cmods[j].sourceRow;
+			this.cmods[j - 1].sourceNextRow = rat;
+		}
 		var fate = new Array();
+		this.permuteColumns();
+		if(this.headerMove != null) {
+			if(this.colPermutation.length > 0) {
+				var _g = 0, _g1 = this.cmods;
+				while(_g < _g1.length) {
+					var mod = _g1[_g];
+					++_g;
+					if(mod.sourceRow >= 0) mod.sourceRow = this.colPermutation[mod.sourceRow];
+				}
+				this.source.insertOrDeleteColumns(this.colPermutation,this.colPermutation.length);
+			}
+		}
 		var len = this.processMods(this.cmods,fate,this.source.get_width());
 		this.source.insertOrDeleteColumns(fate,len);
 		var _g = 0, _g1 = this.cmods;
@@ -1493,13 +1579,13 @@ coopy.HighlightPatch.prototype = {
 					while(_g2 < _g3.length) {
 						var mod = _g3[_g2];
 						++_g2;
-						if(mod.patchRow != -1 && mod.sourceRow2 != -1) {
+						if(mod.patchRow != -1 && mod.destRow != -1) {
 							var d = this.patch.getCell(cmod.patchRow,mod.patchRow);
-							this.source.setCell(cmod.sourceRow2,mod.sourceRow2,d);
+							this.source.setCell(cmod.destRow,mod.destRow,d);
 						}
 					}
 					var hdr = this.header.get(cmod.patchRow);
-					this.source.setCell(cmod.sourceRow2,0,this.view.toDatum(hdr));
+					this.source.setCell(cmod.destRow,0,this.view.toDatum(hdr));
 				}
 			}
 		}
@@ -1512,8 +1598,25 @@ coopy.HighlightPatch.prototype = {
 			this.source.setCell(i,0,this.view.toDatum(next_name));
 		}
 	}
+	,permuteColumns: function() {
+		if(this.headerMove == null) return;
+		this.colPermutation = new Array();
+		this.colPermutationRev = new Array();
+		this.computeOrdering(this.cmods,this.colPermutation,this.colPermutationRev,this.source.get_width());
+		if(this.colPermutation.length == 0) return;
+	}
 	,finishRows: function() {
 		var fate = new Array();
+		this.permuteRows();
+		if(this.rowPermutation.length > 0) {
+			var _g = 0, _g1 = this.mods;
+			while(_g < _g1.length) {
+				var mod = _g1[_g];
+				++_g;
+				if(mod.sourceRow >= 0) mod.sourceRow = this.rowPermutation[mod.sourceRow];
+			}
+		}
+		if(this.rowPermutation.length > 0) this.source.insertOrDeleteRows(this.rowPermutation,this.rowPermutation.length);
 		var len = this.processMods(this.mods,fate,this.source.get_height());
 		this.source.insertOrDeleteRows(fate,len);
 		var _g = 0, _g1 = this.mods;
@@ -1529,13 +1632,13 @@ coopy.HighlightPatch.prototype = {
 					})(this.headerPost))();
 					while( $it0.hasNext() ) {
 						var c = $it0.next();
-						var offset = this.patchInSource.get(c);
-						if(offset >= 0) this.source.setCell(offset,mod.sourceRow2,this.patch.getCell(c,mod.patchRow));
+						var offset = this.patchInSourceCol.get(c);
+						if(offset >= 0) this.source.setCell(offset,mod.destRow,this.patch.getCell(c,mod.patchRow));
 					}
-				} else if(!(mod.rem || mod.pad)) {
+				} else if(mod.update) {
 					this.currentRow = mod.patchRow;
 					this.checkAct();
-					if(!this.actIsUpdate) continue;
+					if(!this.rowInfo.updated) continue;
 					var $it1 = ((function(_e1) {
 						return function() {
 							return _e1.iterator();
@@ -1544,40 +1647,101 @@ coopy.HighlightPatch.prototype = {
 					while( $it1.hasNext() ) {
 						var c = $it1.next();
 						var txt = this.view.toString(this.patch.getCell(c,mod.patchRow));
-						var at = txt.indexOf(this.actBaseCache);
-						if(at < 0) continue;
-						if(this.actIsConflicted) {
-							var at2 = txt.indexOf(this.actCache);
-							if(at2 >= 0) continue;
-						}
-						txt = HxOverrides.substr(txt,at + this.actBaseCache.length,null);
-						var d = this.view.toDatum(this.csv.parseSingleCell(txt));
-						this.source.setCell(this.patchInSource.get(c),mod.sourceRow2,d);
+						coopy.DiffRender.examineCell(0,0,txt,"",this.rowInfo.value,"",this.cellInfo);
+						if(!this.cellInfo.updated) continue;
+						if(this.cellInfo.conflicted) continue;
+						var d = this.view.toDatum(this.csv.parseSingleCell(this.cellInfo.rvalue));
+						this.source.setCell(this.patchInSourceCol.get(c),mod.destRow,d);
 					}
 				}
 			}
 		}
 	}
+	,permuteRows: function() {
+		this.rowPermutation = new Array();
+		this.rowPermutationRev = new Array();
+		this.computeOrdering(this.mods,this.rowPermutation,this.rowPermutationRev,this.source.get_height());
+	}
+	,computeOrdering: function(mods,permutation,permutationRev,dim) {
+		var to_unit = new haxe.ds.IntMap();
+		var from_unit = new haxe.ds.IntMap();
+		var meta_from_unit = new haxe.ds.IntMap();
+		var ct = 0;
+		var _g = 0;
+		while(_g < mods.length) {
+			var mod = mods[_g];
+			++_g;
+			if(mod.add || mod.rem) continue;
+			if(mod.sourceRow < 0) continue;
+			if(mod.sourcePrevRow >= 0) {
+				var v = mod.sourceRow;
+				to_unit.set(mod.sourcePrevRow,v);
+				v;
+				var v = mod.sourcePrevRow;
+				from_unit.set(mod.sourceRow,v);
+				v;
+				if(mod.sourcePrevRow + 1 != mod.sourceRow) ct++;
+			}
+			if(mod.sourceNextRow >= 0) {
+				var v = mod.sourceNextRow;
+				to_unit.set(mod.sourceRow,v);
+				v;
+				var v = mod.sourceRow;
+				from_unit.set(mod.sourceNextRow,v);
+				v;
+				if(mod.sourceRow + 1 != mod.sourceNextRow) ct++;
+			}
+		}
+		if(ct > 0) {
+			var cursor = null;
+			var logical = null;
+			var starts = [];
+			var _g = 0;
+			while(_g < dim) {
+				var i = _g++;
+				var u = from_unit.get(i);
+				if(u != null) {
+					meta_from_unit.set(u,i);
+					i;
+				} else starts.push(i);
+			}
+			var used = new haxe.ds.IntMap();
+			var len = 0;
+			var _g = 0;
+			while(_g < dim) {
+				var i = _g++;
+				if(meta_from_unit.exists(logical)) cursor = meta_from_unit.get(logical); else cursor = null;
+				if(cursor == null) cursor = logical = starts.shift();
+				if(cursor == null) cursor = 0;
+				while(used.exists(cursor)) cursor = (cursor + 1) % dim;
+				logical = cursor;
+				permutationRev.push(cursor);
+				used.set(cursor,1);
+				1;
+			}
+			var _g1 = 0, _g = permutationRev.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				permutation[i] = -1;
+			}
+			var _g1 = 0, _g = permutation.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				permutation[permutationRev[i]] = i;
+			}
+		}
+	}
 	,processMods: function(rmods,fate,len) {
-		var sorter = function(a,b) {
-			if(a.sourceRow == -1 && b.sourceRow != -1) return 1;
-			if(a.sourceRow != -1 && b.sourceRow == -1) return -1;
-			if(a.sourceRow > b.sourceRow) return 1;
-			if(a.sourceRow < b.sourceRow) return -1;
-			if(a.patchRow > b.patchRow) return 1;
-			if(a.patchRow < b.patchRow) return -1;
-			return 0;
-		};
-		this.mods.sort(sorter);
+		rmods.sort($bind(this,this.sortMods));
 		var offset = 0;
-		var last = 0;
+		var last = -1;
 		var target = 0;
 		var _g = 0;
 		while(_g < rmods.length) {
 			var mod = rmods[_g];
 			++_g;
 			if(last != -1) {
-				var _g2 = last, _g1 = mod.sourceRow;
+				var _g2 = last, _g1 = mod.sourceRow + mod.sourceRowOffset;
 				while(_g2 < _g1) {
 					var i = _g2++;
 					fate.push(i + offset);
@@ -1589,12 +1753,12 @@ coopy.HighlightPatch.prototype = {
 				fate.push(-1);
 				offset--;
 			} else if(mod.add) {
-				mod.sourceRow2 = target;
+				mod.destRow = target;
 				target++;
 				offset++;
-			} else mod.sourceRow2 = target;
+			} else mod.destRow = target;
 			if(mod.sourceRow >= 0) {
-				last = mod.sourceRow;
+				last = mod.sourceRow + mod.sourceRowOffset;
 				if(mod.rem) last++;
 			} else last = -1;
 		}
@@ -1609,83 +1773,75 @@ coopy.HighlightPatch.prototype = {
 		}
 		return len + offset;
 	}
+	,sortMods: function(a,b) {
+		if(b.code == "@@" && a.code != "@@") return 1;
+		if(a.code == "@@" && b.code != "@@") return -1;
+		if(a.sourceRow == -1 && !a.add && b.sourceRow != -1) return 1;
+		if(a.sourceRow != -1 && !b.add && b.sourceRow == -1) return -1;
+		if(a.sourceRow + a.sourceRowOffset > b.sourceRow + b.sourceRowOffset) return 1;
+		if(a.sourceRow + a.sourceRowOffset < b.sourceRow + b.sourceRowOffset) return -1;
+		if(a.patchRow > b.patchRow) return 1;
+		if(a.patchRow < b.patchRow) return -1;
+		return 0;
+	}
 	,getRowString: function(c) {
-		var at = this.sourceInPatch.get(c);
+		var at = this.sourceInPatchCol.get(c);
 		if(at == null) return "NOT_FOUND";
 		return this.getPreString(this.getString(at));
 	}
 	,getPreString: function(txt) {
 		this.checkAct();
-		if(!this.actIsUpdate) return txt;
-		if(!this.actIsConflicted) return txt.split(this.actCache)[0];
-		if(txt.indexOf(this.actCache) >= 0) return txt.split(this.actCache)[0];
-		return txt.split(this.actBaseCache)[0];
+		if(!this.rowInfo.updated) return txt;
+		coopy.DiffRender.examineCell(0,0,txt,"",this.rowInfo.value,"",this.cellInfo);
+		if(!this.cellInfo.updated) return txt;
+		return this.cellInfo.lvalue;
 	}
 	,checkAct: function() {
-		var act = this.getString(0);
-		if(act != this.actCache) {
-			this.actCache = act;
-			this.actIsUpdate = this.actCache.indexOf("->") >= 0;
-			this.actIsConflicted = this.actCache.indexOf("!") >= 0;
-			if(this.actIsConflicted) this.actBaseCache = this.actCache.split("!")[1]; else this.actBaseCache = this.actCache;
-		}
+		var act = this.getString(this.rcOffset);
+		if(this.rowInfo.value != act) coopy.DiffRender.examineCell(0,0,act,"",act,"",this.rowInfo);
 	}
-	,applyPad: function() {
-		this.needSourceIndex();
-		var at = this.lookUp();
-		if(at == -1) return;
+	,applyAction: function(code) {
 		var mod = new coopy.HighlightPatchUnit();
-		mod.pad = true;
-		mod.sourceRow = at;
+		mod.code = code;
+		mod.add = code == "+++";
+		mod.rem = code == "---";
+		mod.update = code == "->";
+		this.needSourceIndex();
+		if(this.lastSourceRow == -1) this.lastSourceRow = this.lookUp(-1);
+		mod.sourcePrevRow = this.lastSourceRow;
+		var nextAct = this.actions[this.currentRow + 1];
+		if(nextAct != "+++" && nextAct != "...") mod.sourceNextRow = this.lookUp(1);
+		if(mod.add) {
+			if(this.actions[this.currentRow - 1] != "+++") mod.sourcePrevRow = this.lookUp(-1);
+			mod.sourceRow = mod.sourcePrevRow;
+			if(mod.sourceRow != -1) mod.sourceRowOffset = 1;
+		} else mod.sourceRow = this.lastSourceRow = this.lookUp();
+		if(this.actions[this.currentRow + 1] == "") this.lastSourceRow = mod.sourceNextRow;
 		mod.patchRow = this.currentRow;
+		if(code == "@@") mod.sourceRow = 0;
 		this.mods.push(mod);
 	}
-	,applyDelete: function() {
-		this.needSourceIndex();
-		var at = this.lookUp();
-		if(at == -1) return;
-		var mod = new coopy.HighlightPatchUnit();
-		mod.rem = true;
-		mod.sourceRow = at;
-		mod.patchRow = this.currentRow;
-		this.mods.push(mod);
-	}
-	,lookUp: function() {
-		var _g = 0, _g1 = this.indexes;
-		while(_g < _g1.length) {
-			var idx = _g1[_g];
-			++_g;
-			var match = idx.queryByContent(this);
-			if(match.spot_a != 1) continue;
-			return match.item_a.lst[0];
-		}
-		return -1;
-	}
-	,applyInsert: function() {
-		this.needSourceIndex();
-		var mod = new coopy.HighlightPatchUnit();
-		mod.add = true;
-		var prev = -1;
-		var cont = false;
-		if(this.currentRow > 0) {
-			if(this.view.equals(this.patch.getCell(0,this.currentRow),this.patch.getCell(0,this.currentRow - 1))) prev = -2; else {
-				this.currentRow--;
-				prev = this.lookUp();
-				this.currentRow++;
+	,lookUp: function(del) {
+		if(del == null) del = 0;
+		var at = this.patchInSourceRow.get(this.currentRow + del);
+		if(at != null) return at;
+		var result = -1;
+		this.currentRow += del;
+		if(this.currentRow >= 0 && this.currentRow < this.patch.get_height()) {
+			var _g = 0, _g1 = this.indexes;
+			while(_g < _g1.length) {
+				var idx = _g1[_g];
+				++_g;
+				var match = idx.queryByContent(this);
+				if(match.spot_a != 1) continue;
+				result = match.item_a.lst[0];
+				break;
 			}
 		}
-		if(prev == -2) mod.sourceRow = this.mods[this.mods.length - 1].sourceRow; else mod.sourceRow = prev + 1;
-		mod.patchRow = this.currentRow;
-		this.mods.push(mod);
-	}
-	,applyUpdate: function() {
-		this.needSourceIndex();
-		var at = this.lookUp();
-		if(at == -1) return;
-		var mod = new coopy.HighlightPatchUnit();
-		mod.sourceRow = at;
-		mod.patchRow = this.currentRow;
-		this.mods.push(mod);
+		this.patchInSourceRow.set(this.currentRow,result);
+		result;
+		this.currentRow -= del;
+		return result;
 	}
 	,applyHeader: function() {
 		var _g1 = this.payloadCol, _g = this.payloadTop;
@@ -1693,6 +1849,13 @@ coopy.HighlightPatch.prototype = {
 			var i = _g1++;
 			var name = this.getString(i);
 			var mod = this.modifier.get(i);
+			var move = false;
+			if(mod != null) {
+				if(HxOverrides.cca(mod,0) == 58) {
+					move = true;
+					mod = HxOverrides.substr(mod,1,mod.length);
+				}
+			}
 			this.header.set(i,name);
 			if(mod != null) {
 				if(HxOverrides.cca(mod,0) == 40) {
@@ -1705,8 +1868,12 @@ coopy.HighlightPatch.prototype = {
 			}
 			if(mod != "+++") this.headerPre.set(name,i);
 			if(mod != "---") this.headerPost.set(name,i);
+			if(move) {
+				if(this.headerMove == null) this.headerMove = new haxe.ds.StringMap();
+				this.headerMove.set(name,1);
+			}
 		}
-		if(this.source.get_height() == 0) this.applyInsert();
+		if(this.source.get_height() == 0) this.applyAction("+++");
 	}
 	,applyMeta: function() {
 		var _g1 = this.payloadCol, _g = this.payloadTop;
@@ -1725,12 +1892,12 @@ coopy.HighlightPatch.prototype = {
 	}
 	,applyRow: function(r) {
 		this.currentRow = r;
-		this.payloadCol = 1;
-		this.payloadTop = this.patch.get_width();
-		this.view = this.patch.getCellView();
-		var dcode = this.patch.getCell(0,r);
-		var code = this.view.toString(dcode);
-		if(code == "@@") this.applyHeader(); else if(code == "+++") this.applyInsert(); else if(code == "---") this.applyDelete(); else if(code == "+") this.applyPad(); else if(code == "!") this.applyMeta(); else if(code.indexOf("->") >= 0) this.applyUpdate();
+		var code = this.actions[r];
+		if(r == 0 && this.rcOffset > 0) {
+		} else if(code == "@@") {
+			this.applyHeader();
+			this.applyAction("@@");
+		} else if(code == "!") this.applyMeta(); else if(code == "+++") this.applyAction(code); else if(code == "---") this.applyAction(code); else if(code == "+" || code == ":") this.applyAction(code); else if(code.indexOf("->") >= 0) this.applyAction("->"); else this.lastSourceRow = -1;
 	}
 	,needSourceIndex: function() {
 		if(this.indexes != null) return;
@@ -1745,7 +1912,9 @@ coopy.HighlightPatch.prototype = {
 		this.needSourceColumns();
 	}
 	,needSourceColumns: function() {
-		if(this.haveSourceColumns) return;
+		if(this.sourceInPatchCol != null) return;
+		this.sourceInPatchCol = new haxe.ds.IntMap();
+		this.patchInSourceCol = new haxe.ds.IntMap();
 		var av = this.source.getCellView();
 		var _g1 = 0, _g = this.source.get_width();
 		while(_g1 < _g) {
@@ -1753,13 +1922,24 @@ coopy.HighlightPatch.prototype = {
 			var name = av.toString(this.source.getCell(i,0));
 			var at = this.headerPre.get(name);
 			if(at == null) continue;
-			this.sourceInPatch.set(i,at);
-			this.patchInSource.set(at,i);
+			this.sourceInPatchCol.set(i,at);
+			this.patchInSourceCol.set(at,i);
 		}
-		this.haveSourceColumns = true;
 	}
 	,apply: function() {
+		this.reset();
 		if(this.patch.get_width() < 2) return true;
+		if(this.patch.get_height() < 1) return true;
+		this.payloadCol = 1 + this.rcOffset;
+		this.payloadTop = this.patch.get_width();
+		var corner = this.patch.getCellView().toString(this.patch.getCell(0,0));
+		this.rcOffset = corner == "@:@"?1:0;
+		var _g1 = 0, _g = this.patch.get_height();
+		while(_g1 < _g) {
+			var r = _g1++;
+			var str = this.view.toString(this.patch.getCell(this.rcOffset,r));
+			this.actions.push(str != null?str:"");
+		}
 		var _g1 = 0, _g = this.patch.get_height();
 		while(_g1 < _g) {
 			var r = _g1++;
@@ -1769,20 +1949,49 @@ coopy.HighlightPatch.prototype = {
 		this.finishColumns();
 		return true;
 	}
+	,reset: function() {
+		this.header = new haxe.ds.IntMap();
+		this.headerPre = new haxe.ds.StringMap();
+		this.headerPost = new haxe.ds.StringMap();
+		this.headerRename = new haxe.ds.StringMap();
+		this.headerMove = null;
+		this.modifier = new haxe.ds.IntMap();
+		this.mods = new Array();
+		this.cmods = new Array();
+		this.csv = new coopy.Csv();
+		this.rcOffset = 0;
+		this.currentRow = -1;
+		this.rowInfo = new coopy.CellInfo();
+		this.cellInfo = new coopy.CellInfo();
+		this.sourceInPatchCol = this.patchInSourceCol = null;
+		this.patchInSourceRow = new haxe.ds.IntMap();
+		this.indexes = null;
+		this.lastSourceRow = -1;
+		this.actions = new Array();
+		this.rowPermutation = null;
+		this.rowPermutationRev = null;
+		this.colPermutation = null;
+		this.colPermutationRev = null;
+	}
 	,__class__: coopy.HighlightPatch
 }
 coopy.HighlightPatchUnit = function() {
 	this.add = false;
 	this.rem = false;
+	this.update = false;
 	this.sourceRow = -1;
-	this.sourceRow2 = -1;
+	this.sourceRowOffset = 0;
+	this.sourcePrevRow = -1;
+	this.sourceNextRow = -1;
+	this.destRow = -1;
 	this.patchRow = -1;
+	this.code = "";
 };
 $hxExpose(coopy.HighlightPatchUnit, "coopy.HighlightPatchUnit");
 coopy.HighlightPatchUnit.__name__ = true;
 coopy.HighlightPatchUnit.prototype = {
 	toString: function() {
-		return (this.add?"insert":this.rem?"delete":"update") + " " + this.sourceRow + ":" + this.sourceRow2 + " " + this.patchRow;
+		return this.code + " patchRow " + this.patchRow + " sourceRows " + this.sourcePrevRow + "," + this.sourceRow + "," + this.sourceNextRow + " destRow " + this.destRow;
 	}
 	,__class__: coopy.HighlightPatchUnit
 }
@@ -1919,6 +2128,152 @@ coopy.IndexPair.prototype = {
 		this.ib.addColumn(i);
 	}
 	,__class__: coopy.IndexPair
+}
+coopy.Mover = function() {
+};
+$hxExpose(coopy.Mover, "coopy.Mover");
+coopy.Mover.__name__ = true;
+coopy.Mover.moveUnits = function(units) {
+	var isrc = new Array();
+	var idest = new Array();
+	var len = units.length;
+	var ltop = -1;
+	var rtop = -1;
+	var in_src = new haxe.ds.IntMap();
+	var in_dest = new haxe.ds.IntMap();
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		var unit = units[i];
+		if(unit.l >= 0 && unit.r >= 0) {
+			if(ltop < unit.l) ltop = unit.l;
+			if(rtop < unit.r) rtop = unit.r;
+			in_src.set(unit.l,i);
+			i;
+			in_dest.set(unit.r,i);
+			i;
+		}
+	}
+	var v;
+	var _g1 = 0, _g = ltop + 1;
+	while(_g1 < _g) {
+		var i = _g1++;
+		v = in_src.get(i);
+		if(v != null) isrc.push(v);
+	}
+	var _g1 = 0, _g = rtop + 1;
+	while(_g1 < _g) {
+		var i = _g1++;
+		v = in_dest.get(i);
+		if(v != null) idest.push(v);
+	}
+	return coopy.Mover.moveWithoutExtras(isrc,idest);
+}
+coopy.Mover.moveWithExtras = function(isrc,idest) {
+	var len = isrc.length;
+	var len2 = idest.length;
+	var in_src = new haxe.ds.IntMap();
+	var in_dest = new haxe.ds.IntMap();
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		in_src.set(isrc[i],i);
+		i;
+	}
+	var _g = 0;
+	while(_g < len2) {
+		var i = _g++;
+		in_dest.set(idest[i],i);
+		i;
+	}
+	var src = new Array();
+	var dest = new Array();
+	var v;
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		v = isrc[i];
+		if(in_dest.exists(v)) src.push(v);
+	}
+	var _g = 0;
+	while(_g < len2) {
+		var i = _g++;
+		v = idest[i];
+		if(in_src.exists(v)) dest.push(v);
+	}
+	return coopy.Mover.moveWithoutExtras(src,dest);
+}
+coopy.Mover.moveWithoutExtras = function(src,dest) {
+	if(src.length != dest.length) return null;
+	if(src.length <= 1) return [];
+	var len = src.length;
+	var in_src = new haxe.ds.IntMap();
+	var blk_len = new haxe.ds.IntMap();
+	var blk_src_loc = new haxe.ds.IntMap();
+	var blk_dest_loc = new haxe.ds.IntMap();
+	var _g = 0;
+	while(_g < len) {
+		var i = _g++;
+		in_src.set(src[i],i);
+		i;
+	}
+	var ct = 0;
+	var in_cursor = -2;
+	var out_cursor = 0;
+	var next;
+	var blk = -1;
+	var v;
+	while(out_cursor < len) {
+		v = dest[out_cursor];
+		next = in_src.get(v);
+		if(next != in_cursor + 1) {
+			blk = v;
+			ct = 1;
+			blk_src_loc.set(blk,next);
+			blk_dest_loc.set(blk,out_cursor);
+		} else ct++;
+		blk_len.set(blk,ct);
+		in_cursor = next;
+		out_cursor++;
+	}
+	var blks = new Array();
+	var $it0 = blk_len.keys();
+	while( $it0.hasNext() ) {
+		var k = $it0.next();
+		blks.push(k);
+	}
+	blks.sort(function(a,b) {
+		return blk_len.get(b) - blk_len.get(a);
+	});
+	var moved = new Array();
+	while(blks.length > 0) {
+		var blk1 = blks.shift();
+		var blen = blks.length;
+		var ref_src_loc = blk_src_loc.get(blk1);
+		var ref_dest_loc = blk_dest_loc.get(blk1);
+		var i = blen - 1;
+		while(i >= 0) {
+			var blki = blks[i];
+			var blki_src_loc = blk_src_loc.get(blki);
+			var to_left_src = blki_src_loc < ref_src_loc;
+			var to_left_dest = blk_dest_loc.get(blki) < ref_dest_loc;
+			if(to_left_src != to_left_dest) {
+				var ct1 = blk_len.get(blki);
+				var _g = 0;
+				while(_g < ct1) {
+					var j = _g++;
+					moved.push(src[blki_src_loc]);
+					blki_src_loc++;
+				}
+				blks.splice(i,1);
+			}
+			i--;
+		}
+	}
+	return moved;
+}
+coopy.Mover.prototype = {
+	__class__: coopy.Mover
 }
 coopy.Ordering = function() {
 	this.order = new Array();
@@ -2263,6 +2618,8 @@ coopy.TableDiff.prototype = {
 		if(!output.isResizable()) return false;
 		output.resize(0,0);
 		output.clear();
+		var row_map = new haxe.ds.IntMap();
+		var col_map = new haxe.ds.IntMap();
 		var order = this.align.toOrder();
 		var units = order.getList();
 		var has_parent = this.align.reference != null;
@@ -2286,6 +2643,27 @@ coopy.TableDiff.prototype = {
 		}
 		var column_order = this.align.meta.toOrder();
 		var column_units = column_order.getList();
+		var show_rc_numbers = false;
+		var row_moves = null;
+		var col_moves = null;
+		if(this.flags.ordered) {
+			row_moves = new haxe.ds.IntMap();
+			var moves = coopy.Mover.moveUnits(units);
+			var _g1 = 0, _g = moves.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				row_moves.set(moves[i],i);
+				i;
+			}
+			col_moves = new haxe.ds.IntMap();
+			moves = coopy.Mover.moveUnits(column_units);
+			var _g1 = 0, _g = moves.length;
+			while(_g1 < _g) {
+				var i = _g1++;
+				col_moves.set(moves[i],i);
+				i;
+			}
+		}
 		var outer_reps_needed = this.flags.show_unchanged?1:2;
 		var v = a.getCellView();
 		var sep = "";
@@ -2296,6 +2674,11 @@ coopy.TableDiff.prototype = {
 		while(_g1 < _g) {
 			var j = _g1++;
 			var cunit = column_units[j];
+			var reordered = false;
+			if(this.flags.ordered) {
+				if(col_moves.exists(j)) reordered = true;
+				if(reordered) show_rc_numbers = true;
+			}
 			var act = "";
 			if(cunit.r >= 0 && cunit.lp() == -1) {
 				have_schema = true;
@@ -2316,6 +2699,10 @@ coopy.TableDiff.prototype = {
 						act += ")";
 					}
 				}
+			}
+			if(reordered) {
+				act = ":" + act;
+				have_schema = true;
 			}
 			schema.push(act);
 		}
@@ -2343,6 +2730,7 @@ coopy.TableDiff.prototype = {
 				} else if(cunit.lp() >= 0) {
 					if(a.get_height() > 0) output.setCell(j + 1,at,a.getCell(cunit.lp(),ra_header));
 				}
+				col_map.set(j + 1,cunit);
 			}
 			top_line_done = true;
 		}
@@ -2380,13 +2768,21 @@ coopy.TableDiff.prototype = {
 				}
 			}
 			var showed_dummy = false;
+			var l = -1;
+			var r = -1;
 			var _g2 = 0, _g1 = units.length;
 			while(_g2 < _g1) {
 				var i = _g2++;
 				var unit = units[i];
+				var reordered = false;
+				if(this.flags.ordered) {
+					if(row_moves.exists(i)) reordered = true;
+					if(reordered) show_rc_numbers = true;
+				}
 				if(unit.r < 0 && unit.l < 0) continue;
 				if(unit.r == 0 && unit.lp() == 0 && top_line_done) continue;
 				var act = "";
+				if(reordered) act = ":";
 				var publish = this.flags.show_unchanged;
 				var dummy = false;
 				if(out == 1) {
@@ -2464,7 +2860,7 @@ coopy.TableDiff.prototype = {
 					var txt = null;
 					if(have_dd_to) {
 						txt = this.quoteForDiff(v,dd);
-						if(sep == "") sep = this.getSeparator(a,null,"->");
+						if(sep == "") sep = this.getSeparator(a,b,"->");
 						var is_conflict = false;
 						if(have_dd_to_alt) {
 							if(!v.equals(dd_to,dd_to_alt)) is_conflict = true;
@@ -2483,7 +2879,10 @@ coopy.TableDiff.prototype = {
 						if(txt != null) output.setCell(j + 1,at,v.toDatum(txt)); else output.setCell(j + 1,at,dd);
 					}
 				}
-				if(publish) output.setCell(0,at,v.toDatum(act));
+				if(publish) {
+					output.setCell(0,at,v.toDatum(act));
+					row_map.set(at,unit);
+				}
 				if(act != "") {
 					if(!publish) {
 						if(active != null) active[i] = 1;
@@ -2491,7 +2890,88 @@ coopy.TableDiff.prototype = {
 				}
 			}
 		}
+		if(!show_rc_numbers) {
+			if(this.flags.always_show_order) show_rc_numbers = true; else if(this.flags.ordered) {
+				show_rc_numbers = this.isReordered(row_map,output.get_height());
+				if(!show_rc_numbers) show_rc_numbers = this.isReordered(col_map,output.get_width());
+			}
+		}
+		if(show_rc_numbers && !this.flags.never_show_order) {
+			var target = new Array();
+			var _g1 = 0, _g = output.get_width();
+			while(_g1 < _g) {
+				var i = _g1++;
+				target.push(i + 1);
+			}
+			output.insertOrDeleteColumns(target,output.get_width() + 1);
+			this.l_prev = -1;
+			this.r_prev = -1;
+			var _g1 = 0, _g = output.get_height();
+			while(_g1 < _g) {
+				var i = _g1++;
+				var unit = row_map.get(i);
+				if(unit == null) continue;
+				output.setCell(0,i,this.reportUnit(unit));
+			}
+			target = new Array();
+			var _g1 = 0, _g = output.get_height();
+			while(_g1 < _g) {
+				var i = _g1++;
+				target.push(i + 1);
+			}
+			output.insertOrDeleteRows(target,output.get_height() + 1);
+			this.l_prev = -1;
+			this.r_prev = -1;
+			var _g1 = 1, _g = output.get_width();
+			while(_g1 < _g) {
+				var i = _g1++;
+				var unit = col_map.get(i - 1);
+				if(unit == null) continue;
+				output.setCell(i,0,this.reportUnit(unit));
+			}
+			output.setCell(0,0,"@:@");
+		}
 		return true;
+	}
+	,reportUnit: function(unit) {
+		var txt = unit.toString();
+		var reordered = false;
+		if(unit.l >= 0) {
+			if(unit.l < this.l_prev) reordered = true;
+			this.l_prev = unit.l;
+		}
+		if(unit.r >= 0) {
+			if(unit.r < this.r_prev) reordered = true;
+			this.r_prev = unit.r;
+		}
+		if(reordered) txt = "[" + txt + "]";
+		return txt;
+	}
+	,isReordered: function(m,ct) {
+		var reordered = false;
+		var l = -1;
+		var r = -1;
+		var _g = 0;
+		while(_g < ct) {
+			var i = _g++;
+			var unit = m.get(i);
+			if(unit == null) continue;
+			if(unit.l >= 0) {
+				if(unit.l < l) {
+					reordered = true;
+					break;
+				}
+				l = unit.l;
+			}
+			if(unit.r >= 0) {
+				if(unit.r < r) {
+					reordered = true;
+					break;
+				}
+				r = unit.r;
+			}
+		}
+		return reordered;
 	}
 	,quoteForDiff: function(v,d) {
 		var nil = "NULL";
@@ -2533,6 +3013,7 @@ coopy.TableDiff.prototype = {
 				while(_g1 < w) {
 					var x = _g1++;
 					var txt = view.toString(t2.getCell(x,y));
+					if(txt == null) continue;
 					while(txt.indexOf(sep) >= 0) sep = "-" + sep;
 				}
 			}
@@ -2578,6 +3059,18 @@ coopy.TableModifier.prototype = {
 	}
 	,__class__: coopy.TableModifier
 }
+coopy.TableText = function(rows) {
+	this.rows = rows;
+	this.view = rows.getCellView();
+};
+$hxExpose(coopy.TableText, "coopy.TableText");
+coopy.TableText.__name__ = true;
+coopy.TableText.prototype = {
+	getCellText: function(x,y) {
+		return this.view.toString(this.rows.getCell(x,y));
+	}
+	,__class__: coopy.TableText
+}
 coopy.TableView = function() {
 };
 $hxExpose(coopy.TableView, "coopy.TableView");
@@ -2608,6 +3101,8 @@ coopy.TableView.prototype = {
 }
 coopy.Unit = function(l,r,p) {
 	if(p == null) p = -2;
+	if(r == null) r = -2;
+	if(l == null) l = -2;
 	this.l = l;
 	this.r = r;
 	this.p = p;
@@ -2617,7 +3112,30 @@ coopy.Unit.describe = function(i) {
 	return i >= 0?"" + i:"-";
 }
 coopy.Unit.prototype = {
-	toString: function() {
+	fromString: function(txt) {
+		txt += "]";
+		var at = 0;
+		var _g1 = 0, _g = txt.length;
+		while(_g1 < _g) {
+			var i = _g1++;
+			var ch = HxOverrides.cca(txt,i);
+			if(ch >= 48 && ch <= 57) {
+				at *= 10;
+				at += ch - 48;
+			} else if(ch == 45) at = -1; else if(ch == 124) {
+				this.p = at;
+				at = 0;
+			} else if(ch == 58) {
+				this.l = at;
+				at = 0;
+			} else if(ch == 93) {
+				this.r = at;
+				return true;
+			}
+		}
+		return false;
+	}
+	,toString: function() {
 		if(this.p >= -1) return coopy.Unit.describe(this.p) + "|" + coopy.Unit.describe(this.l) + ":" + coopy.Unit.describe(this.r);
 		return coopy.Unit.describe(this.l) + ":" + coopy.Unit.describe(this.r);
 	}
@@ -3481,7 +3999,7 @@ CoopyTableView.prototype.trimColumns = function() {
 }
 
 CoopyTableView.prototype.getData = function() {
-    return data;
+    return this.data;
 }
 
 CoopyTableView.prototype.clone = function() {
