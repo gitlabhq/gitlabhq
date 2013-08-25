@@ -248,7 +248,7 @@ class User < ActiveRecord::Base
   # Projects user has access to
   def authorized_projects
     @authorized_projects ||= begin
-                               project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id)).uniq + public_projects.pluck(:id)).uniq
+                               project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id).uniq + public_projects.pluck(:id)).uniq
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end

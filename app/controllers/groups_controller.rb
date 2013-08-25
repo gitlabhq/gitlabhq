@@ -87,7 +87,6 @@ class GroupsController < ApplicationController
   end
 
   def destroy
-    @group.truncate_teams
     @group.destroy
 
     redirect_to root_path, notice: 'Group was removed.'

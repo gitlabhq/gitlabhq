@@ -23,7 +23,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '2.0.1'
+gem "gitlab_git", '2.1.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
@@ -76,8 +76,7 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 # Asciidoc to HTML
 gem  "asciidoctor"
 
-# Servers
-gem "puma", '~> 2.3.1', group: :puma
+# Application server
 gem "unicorn", '~> 4.6.3', group: :unicorn
 
 # State machine

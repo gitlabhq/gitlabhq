@@ -153,10 +153,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 5-4-stable
+    sudo -u git -H git checkout 6-0-stable
 
 **Note:**
-You can change `5-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -232,10 +232,10 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without ... postgres")
-    sudo -u git -H bundle install --deployment --without development test postgres unicorn aws
+    sudo -u git -H bundle install --deployment --without development test postgres aws
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
-    sudo -u git -H bundle install --deployment --without development test mysql unicorn aws
+    sudo -u git -H bundle install --deployment --without development test mysql aws
 
 
 ## Initialize Database and Activate Advanced Features
