@@ -14,6 +14,9 @@ GitLab supports the following databases:
     # Pick a database root password (can be anything), type it and press enter
     # Retype the database root password and press enter
 
+    # Secure your installation.
+    sudo mysql_secure_installation
+    
     # Login to MySQL
     mysql -u root -p
 
