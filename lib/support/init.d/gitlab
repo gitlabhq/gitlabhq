@@ -81,7 +81,7 @@ restart() {
   if [ "$PID" -ne 0 -a "$STATUS" -ne 0 ]; then
     echo "Restarting $DESC..."
     kill -USR2 `cat $WEB_SERVER_PID`
-    execute "mkdir -p $PID_PATH && $STOP_SIDEKIQ  > /dev/null  2>&1 &"
+    execute "mkdir -p $PID_PATH && $STOP_SIDEKIQ  > /dev/null  2>&1"
     if [ `whoami` = root ]; then
       execute "mkdir -p $PID_PATH && $START_SIDEKIQ  > /dev/null  2>&1 &"
     fi
