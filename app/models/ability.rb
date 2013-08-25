@@ -169,14 +169,14 @@ class Ability
 
     [:issue, :note, :project_snippet, :personal_snippet, :merge_request].each do |name|
       define_method "#{name}_abilities" do |user, subject|
-        if subject.author == user
+        if subject.author == user && subject.author.username != "guest"
           [
             :"read_#{name}",
             :"write_#{name}",
             :"modify_#{name}",
             :"admin_#{name}"
           ]
-        elsif subject.respond_to?(:assignee) && subject.assignee == user
+        elsif subject.respond_to?(:assignee) && subject.assignee == user && subject.author.username != "guest"
           [
             :"read_#{name}",
             :"write_#{name}",

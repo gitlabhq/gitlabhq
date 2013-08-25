@@ -6,10 +6,9 @@
     .pull-right
       .span6
         - if can? current_user, :write_issue, @project
-          - unless current_user.is_guest?
-            = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-right", title: "New Issue", id: "new_issue_link" do
-              %i.icon-plus
-              New Issue
+          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-right", title: "New Issue", id: "new_issue_link" do
+            %i.icon-plus
+            New Issue
 
         = form_tag project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: 'pull-right'  do
           = hidden_field_tag :status, params[:status], id: 'search_status'
