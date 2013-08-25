@@ -10,4 +10,8 @@ class BaseObserver < ActiveRecord::Observer
   def current_user
     Thread.current[:current_user]
   end
+
+  def current_commit
+    Thread.current[:current_commit]
+  end
 end

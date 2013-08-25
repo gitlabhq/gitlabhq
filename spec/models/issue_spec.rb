@@ -56,4 +56,10 @@ describe Issue do
       Issue.open_for(user).count.should eq 2
     end
   end
+
+  it_behaves_like 'an editable mentionable' do
+    let(:subject) { create :issue, project: mproject }
+    let(:backref_text) { "issue ##{subject.iid}" }
+    let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
+  end
 end
