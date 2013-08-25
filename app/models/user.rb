@@ -99,7 +99,6 @@ class User < ActiveRecord::Base
                                       conditions: { projects: { public: true } }
   has_many :owned_projects_priv,      through: :namespaces, source: :projects,
                                       conditions: { projects: { public: false } }
-
   #
   # Validations
   #
@@ -248,11 +247,18 @@ class User < ActiveRecord::Base
   # Projects user has access to
   def authorized_projects
     @authorized_projects ||= begin
-                               project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id).uniq + public_projects.pluck(:id)).uniq
+                               project_ids = (owned_projects.pluck(:id) + owned_projects_priv.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id) + public_projects.pluck(:id)) .uniq
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
-  
+ 
+  def authorized_personal_projects
+    @authorized_personal_projects ||= begin
+                       		        project_ids = (owned_projects.pluck(:id) + groups_projects.pluck(:id) + owned_projects_priv.pluck(:id) + users_projects.where("project_access > 20").pluck(:project_id)).uniq
+                         		 Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+	                             end
+  end
+ 
   def public_projects
     Project.where("projects.public = true")
   end
