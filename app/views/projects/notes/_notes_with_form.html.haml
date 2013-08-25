@@ -3,8 +3,7 @@
 
 .js-main-target-form
 - if can? current_user, :write_note, @project
-  - unless current_user.is_guest?
-    = render "projects/notes/form"
+  = render "projects/notes/form"
 
 :javascript
   NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");
