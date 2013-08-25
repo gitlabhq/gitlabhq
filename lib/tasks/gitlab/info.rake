@@ -54,7 +54,7 @@ namespace :gitlab do
 
 
       # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.repos_path}/../gitlab-shell/VERSION"
+      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"
       if File.readable?(gitlab_shell_version_file)
         gitlab_shell_version = File.read(gitlab_shell_version_file)
       end
