@@ -86,15 +86,15 @@ class Ability
         :read_team_member,
         :read_merge_request,
         :read_note,
-        :download_code
+        :download_code,
+	:write_issue,
+        :write_note
       ]
     end
 
     def project_guest_rules
       project_anon_rules + [
         :write_project,
-        :write_issue,
-        :write_note
       ]
     end
 
