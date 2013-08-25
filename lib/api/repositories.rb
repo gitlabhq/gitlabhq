@@ -102,6 +102,20 @@ module API
         present commits, with: Entities::RepoCommit
       end
 
+      # Get a specific commit of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (required) - The commit or branch name
+      # Example Request:
+      #   GET /projects/:id/repository/commit/:sha
+      get ":id/repository/commit/:sha" do
+        authorize! :download_code, user_project
+        sha = params[:sha]
+        result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
+        result[:commit].diffs
+      end
+
       # Get a project repository tree
       #
       # Parameters:
