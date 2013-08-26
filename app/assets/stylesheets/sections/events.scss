@@ -80,6 +80,10 @@
         margin-left: 0px;
         max-width: 200px;
       }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
     .event-note-icon {
       color: #777;
