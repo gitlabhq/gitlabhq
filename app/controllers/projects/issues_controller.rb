@@ -91,7 +91,11 @@ class Projects::IssuesController < Projects::ApplicationController
   protected
 
   def issue
-    @issue ||= @project.issues.find_by_iid!(params[:id])
+    @issue ||= begin
+                 @project.issues.find_by_iid!(params[:id])
+               rescue ActiveRecord::RecordNotFound
+                 redirect_old
+               end
   end
 
   def authorize_modify_issue!
@@ -108,5 +112,21 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issues_filtered
     @issues = Issues::ListContext.new(project, current_user, params).execute
+  end
+
+  # Since iids are implemented only in 6.1
+  # user may navigate to issue page using old global ids.
+  #
+  # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
+  #
+  def redirect_old
+    issue = @project.issues.find_by_id(params[:id])
+
+    if issue
+      redirect_to project_issue_path(@project, issue)
+      return
+    else
+      raise ActiveRecord::RecordNotFound.new
+    end
   end
 end
