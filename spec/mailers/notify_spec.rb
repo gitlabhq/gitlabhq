@@ -320,7 +320,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for merge request !#{merge_request.id}/
+          should have_subject /note for merge request !#{merge_request.iid}/
         end
 
         it 'contains a link to the merge request note' do
@@ -338,7 +338,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for issue ##{issue.id}/
+          should have_subject /note for issue ##{issue.iid}/
         end
 
         it 'contains a link to the issue note' do
