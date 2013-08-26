@@ -11,11 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-<<<<<<< HEAD
-ActiveRecord::Schema.define(:version => 20130630204200) do
-=======
 ActiveRecord::Schema.define(:version => 20130812143708) do
->>>>>>> 0e387919c3827260434aed48e1f28ee02ce5e58d
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -77,13 +73,8 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
 
   create_table "keys", :force => true do |t|
     t.integer  "user_id"
-<<<<<<< HEAD
-    t.datetime "created_at"
-    t.datetime "updated_at"
-=======
     t.datetime "created_at",  :null => false
     t.datetime "updated_at",  :null => false
->>>>>>> 0e387919c3827260434aed48e1f28ee02ce5e58d
     t.text     "key"
     t.string   "title"
     t.string   "type"
@@ -93,18 +84,6 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
   add_index "keys", ["user_id"], :name => "index_keys_on_user_id"
 
   create_table "merge_requests", :force => true do |t|
-<<<<<<< HEAD
-    t.string   "target_branch", :null => false
-    t.string   "source_branch", :null => false
-    t.integer  "project_id",    :null => false
-    t.integer  "author_id"
-    t.integer  "assignee_id"
-    t.string   "title"
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.text     "st_commits"
-    t.text     "st_diffs"
-=======
     t.string   "target_branch",                           :null => false
     t.string   "source_branch",                           :null => false
     t.integer  "source_project_id",                       :null => false
@@ -115,7 +94,6 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.datetime "updated_at",                              :null => false
     t.text     "st_commits",        :limit => 2147483647
     t.text     "st_diffs",          :limit => 2147483647
->>>>>>> 0e387919c3827260434aed48e1f28ee02ce5e58d
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
@@ -236,13 +214,8 @@ ActiveRecord::Schema.define(:version => 20130812143708) do
     t.text     "content",    :limit => 2147483647
     t.integer  "author_id",                                          :null => false
     t.integer  "project_id"
-<<<<<<< HEAD
-    t.datetime "created_at"
-    t.datetime "updated_at"
-=======
     t.datetime "created_at",                                         :null => false
     t.datetime "updated_at",                                         :null => false
->>>>>>> 0e387919c3827260434aed48e1f28ee02ce5e58d
     t.string   "file_name"
     t.datetime "expires_at"
     t.boolean  "private",                          :default => true, :null => false
