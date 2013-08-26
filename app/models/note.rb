@@ -24,6 +24,7 @@ class Note < ActiveRecord::Base
 
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code, :commit_id
+  attr_mentionable :note
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true
@@ -54,13 +55,34 @@ class Note < ActiveRecord::Base
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
 
-  def self.create_status_change_note(noteable, project, author, status)
+  def self.create_status_change_note(noteable, project, author, status, source)
+    body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
+
     create({
       noteable: noteable,
       project: project,
       author: author,
-      note: "_Status changed to #{status}_"
+      note: body,
+      system: true
     }, without_protection: true)
+  end
+
+  # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
+  # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
+  def self.create_cross_reference_note(noteable, mentioner, author, project)
+    create({
+      noteable: noteable,
+      commit_id: (noteable.sha if noteable.respond_to? :sha),
+      project: project,
+      author: author,
+      note: "_mentioned in #{mentioner.gfm_reference}_",
+      system: true
+    }, without_protection: true)
+  end
+
+  # Determine whether or not a cross-reference note already exists.
+  def self.cross_reference_exists?(noteable, mentioner)
+    where(noteable_id: noteable.id, system: true, note: "_mentioned in #{mentioner.gfm_reference}_").any?
   end
 
   def commit_author
@@ -189,6 +211,16 @@ class Note < ActiveRecord::Base
 
   def votable?
     for_issue? || (for_merge_request? && !for_diff_line?)
+  end
+
+  # Mentionable override.
+  def gfm_reference
+    noteable.gfm_reference
+  end
+
+  # Mentionable override.
+  def local_reference
+    noteable
   end
 
   def noteable_type_name

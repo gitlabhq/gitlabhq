@@ -31,7 +31,7 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
   attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event
-
+  attr_mentionable :title
 
   attr_accessor :should_remove_source_branch
 
@@ -253,6 +253,20 @@ class MergeRequest < ActiveRecord::Base
 
   def project
     target_project
+  end
+
+  # Return the set of issues that will be closed if this merge request is accepted.
+  def closes_issues
+    if target_branch == project.default_branch
+      unmerged_commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
+    else
+      []
+    end
+  end
+
+  # Mentionable override.
+  def gfm_reference
+    "merge request !#{iid}"
   end
 
   private

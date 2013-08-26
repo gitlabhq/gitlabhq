@@ -6,6 +6,7 @@ describe GitPushService do
   let (:service) { GitPushService.new }
 
   before do
+    @blankrev = '0000000000000000000000000000000000000000'
     @oldrev = 'b98a310def241a6fd9c9a9a3e7934c48e498fe81'
     @newrev = 'b19a04f53caeebf4fe5ec2327cb83e9253dc91bb'
     @ref = 'refs/heads/master'
@@ -98,13 +99,115 @@ describe GitPushService do
 
       it "when pushing a branch for the first time" do
         @project_hook.should_not_receive(:execute)
-        service.execute(project, user, '00000000000000000000000000000000', 'newrev', 'refs/heads/master')
+        service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
       it "when pushing tags" do
         @project_hook.should_not_receive(:execute)
         service.execute(project, user, 'newrev', 'newrev', 'refs/tags/v1.0.0')
       end
+    end
+  end
+
+  describe "cross-reference notes" do
+    let(:issue) { create :issue, project: project }
+    let(:commit_author) { create :user }
+    let(:commit) { project.repository.commit }
+
+    before do
+      commit.stub({
+        safe_message: "this commit \n mentions ##{issue.id}",
+        references: [issue],
+        author_name: commit_author.name,
+        author_email: commit_author.email
+      })
+      project.repository.stub(commits_between: [commit])
+    end
+
+    it "creates a note if a pushed commit mentions an issue" do
+      Note.should_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+
+      service.execute(project, user, @oldrev, @newrev, @ref)
+    end
+
+    it "only creates a cross-reference note if one doesn't already exist" do
+      Note.create_cross_reference_note(issue, commit, user, project)
+
+      Note.should_not_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+
+      service.execute(project, user, @oldrev, @newrev, @ref)
+    end
+
+    it "defaults to the pushing user if the commit's author is not known" do
+      commit.stub(author_name: 'unknown name', author_email: 'unknown@email.com')
+      Note.should_receive(:create_cross_reference_note).with(issue, commit, user, project)
+
+      service.execute(project, user, @oldrev, @newrev, @ref)
+    end
+
+    it "finds references in the first push to a non-default branch" do
+      project.repository.stub(:commits_between).with(@blankrev, @newrev).and_return([])
+      project.repository.stub(:commits_between).with("master", @newrev).and_return([commit])
+
+      Note.should_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+
+      service.execute(project, user, @blankrev, @newrev, 'refs/heads/other')
+    end
+
+    it "finds references in the first push to a default branch" do
+      project.repository.stub(:commits_between).with(@blankrev, @newrev).and_return([])
+      project.repository.stub(:commits).with(@newrev).and_return([commit])
+
+      Note.should_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+
+      service.execute(project, user, @blankrev, @newrev, 'refs/heads/master')
+    end
+  end
+
+  describe "closing issues from pushed commits" do
+    let(:issue) { create :issue, project: project }
+    let(:other_issue) { create :issue, project: project }
+    let(:commit_author) { create :user }
+    let(:closing_commit) { project.repository.commit }
+
+    before do
+      closing_commit.stub({
+        issue_closing_regex: /^([Cc]loses|[Ff]ixes) #\d+/,
+        safe_message: "this is some work.\n\ncloses ##{issue.iid}",
+        author_name: commit_author.name,
+        author_email: commit_author.email
+      })
+
+      project.repository.stub(commits_between: [closing_commit])
+    end
+
+    it "closes issues with commit messages" do
+      service.execute(project, user, @oldrev, @newrev, @ref)
+
+      Issue.find(issue.id).should be_closed
+    end
+
+    it "passes the closing commit as a thread-local" do
+      service.execute(project, user, @oldrev, @newrev, @ref)
+
+      Thread.current[:current_commit].should == closing_commit
+    end
+
+    it "doesn't create cross-reference notes for a closing reference" do
+      expect {
+        service.execute(project, user, @oldrev, @newrev, @ref)
+      }.not_to change { Note.where(project_id: project.id, system: true).count }
+    end
+
+    it "doesn't close issues when pushed to non-default branches" do
+      project.stub(default_branch: 'durf')
+
+      # The push still shouldn't create cross-reference notes.
+      expect {
+        service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
+      }.not_to change { Note.where(project_id: project.id, system: true).count }
+
+      Issue.find(issue.id).should be_opened
     end
   end
 end

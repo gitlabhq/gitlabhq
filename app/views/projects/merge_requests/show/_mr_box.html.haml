@@ -33,4 +33,10 @@
         %i.icon-ok
         Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
         #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
-
+  - if !@closes_issues.empty? && @merge_request.opened?
+    .ui-box-bottom.alert-info
+      %span
+        %i.icon-ok
+        Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
+        = succeed '.' do
+          != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)

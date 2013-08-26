@@ -1,6 +1,8 @@
 class IssueObserver < BaseObserver
   def after_create(issue)
     notification.new_issue(issue, current_user)
+
+    issue.create_cross_references!(issue.project, current_user)
   end
 
   def after_close(issue, transition)
@@ -17,12 +19,14 @@ class IssueObserver < BaseObserver
     if issue.is_being_reassigned?
       notification.reassigned_issue(issue, current_user)
     end
+
+    issue.notice_added_references(issue.project, current_user)
   end
 
   protected
 
   # Create issue note with service comment like 'Status changed to closed'
   def create_note(issue)
-    Note.create_status_change_note(issue, issue.project, current_user, issue.state)
+    Note.create_status_change_note(issue, issue.project, current_user, issue.state, current_commit)
   end
 end
