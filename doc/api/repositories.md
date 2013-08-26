@@ -239,6 +239,34 @@ Parameters:
 ]
 ```
 
+## Get the diff of a commit
+
+Get the diff of a commit in a project.
+
+```
+GET /projects/:id/repository/commit/:sha
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `sha` (required) - The name of a repository branch or tag or if not given the default branch
+
+```json
+[
+  {
+    "diff": "--- a/doc/update/5.4-to-6.0.md\n+++ b/doc/update/5.4-to-6.0.md\n@@ -71,6 +71,8 @@\n sudo -u git -H bundle exec rake migrate_keys RAILS_ENV=production\n sudo -u git -H bundle exec rake migrate_inline_notes RAILS_ENV=production\n \n+sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production\n+\n ```\n \n ### 6. Update config files",
+    "new_path": "doc/update/5.4-to-6.0.md",
+    "old_path": "doc/update/5.4-to-6.0.md",
+    "a_mode": null,
+    "b_mode": "100644",
+    "new_file": false,
+    "renamed_file": false,
+    "deleted_file": false
+  }
+]
+```
+
 ## List repository tree
 
 Get a list of repository files and directories in a project.

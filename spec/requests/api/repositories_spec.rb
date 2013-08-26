@@ -112,6 +112,28 @@ describe API::API do
     end
   end
 
+  describe "GET /projects:id/repository/commit/:sha" do
+    context "authorized user" do
+      before { project.team << [user2, :reporter] }
+
+      it "should return the diff of the selected commit" do
+        get api("/projects/#{project.id}/repository/commit/#{project.repository.commit.id}", user)
+        response.status.should == 200
+
+        json_response.should be_an Array
+        json_response.length.should >= 1
+        json_response.first.keys.should include "diff"
+      end
+    end
+
+    context "unauthorized user" do
+      it "should not return the diff of the selected commit" do
+        get api("/projects/#{project.id}/repository/commit/#{project.repository.commit.id}")
+        response.status.should == 401
+      end
+    end
+  end
+
   describe "GET /projects/:id/repository/tree" do
     context "authorized user" do
       before { project.team << [user2, :reporter] }
