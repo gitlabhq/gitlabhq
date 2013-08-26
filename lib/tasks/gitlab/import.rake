@@ -23,8 +23,8 @@ namespace :gitlab do
 
         path = repo_path.sub(/\.git$/, '')
         name = File.basename path
-        group_name = File.dirname path
-        group_name = nil if group_name == '.'
+        folder_name = File.dirname path
+        folder_name = nil if folder_name == '.'
 
         # Skip if group or user
         next if namespaces.include?(name)
@@ -48,34 +48,52 @@ namespace :gitlab do
             path: name
           }
 
-          # find group namespace
-          if group_name
-            group = Group.find_by_path(group_name)
-            # create group namespace
-            if !group
-              group = Group.new(:name => group_name)
-              group.path = group_name
+          if !folder_name
+            old_path = File.join(git_base_path,repo_path)
+            cur_space = Namespace.find_by_owner_id(user.id)
+            folder_name = cur_space.path
+            new_folder = File.join(git_base_path, folder_name)
+            new_path = File.join(new_folder,repo_path)
+            FileUtils.mv(old_path, new_path)
+          end
+
+          # find the namespace
+          if folder_name
+            result_id = nil
+            cur_space = Namespace.find_by_path(folder_name)
+            # if the namespace does not exist
+            if !cur_space
+              # create group namespace
+              group = Group.new(:name => folder_name)
+              group.path = folder_name
               group.owner = user
               if group.save
                 puts " * Created Group #{group.name} (#{group.id})".green
+                result_id = group.id
               else
                 puts " * Failed trying to create group #{group.name}".red
               end
+            else
+              # namespace exists no need to create
+              user = User.find_by_id(cur_space.owner_id)
+              result_id = namespace.id
             end
+            
             # set project group
-            project_params[:namespace_id] = group.id
-          end
+            project_params[:namespace_id] = result_id
 
-          project = Projects::CreateContext.new(user, project_params).execute
+            project = Projects::CreateContext.new(user, project_params).execute
 
-          if project.valid?
-            puts " * Created #{project.name} (#{repo_path})".green
+            if project.valid?
+              puts " * Created #{project.name} (#{repo_path})".green
+            else
+              puts " * Failed trying to create #{project.name} (#{repo_path})".red
+            end
           else
-            puts " * Failed trying to create #{project.name} (#{repo_path})".red
+            puts " * The folder move failed or the folder was misnamed".red
           end
         end
       end
-
       puts "Done!".green
     end
   end
