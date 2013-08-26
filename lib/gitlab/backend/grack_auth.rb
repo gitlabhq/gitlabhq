@@ -15,7 +15,7 @@ module Grack
       @auth = Request.new(env)
 
       # Need this patch due to the rails mount
-      
+
       # Need this if under RELATIVE_URL_ROOT
       unless Gitlab.config.gitlab.relative_url_root.empty?
         # If website is mounted using relative_url_root need to remove it first
@@ -23,7 +23,7 @@ module Grack
       else
         @env['PATH_INFO'] = @request.path
       end
-      
+
       @env['SCRIPT_NAME'] = ""
 
       auth!
@@ -110,7 +110,7 @@ module Grack
 
       # Need to reset seek point
       @request.body.rewind
-      /refs\/heads\/([\w\.-]+)/n.match(input.force_encoding('ascii-8bit')).to_a.last
+      /refs\/heads\/([\/\w\.-]+)/n.match(input.force_encoding('ascii-8bit')).to_a.last
     end
   end
 end
