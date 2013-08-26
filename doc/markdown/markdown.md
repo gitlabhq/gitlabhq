@@ -442,6 +442,7 @@ This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
 
+<a name="tables"/>
 ## Tables
 
 Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
