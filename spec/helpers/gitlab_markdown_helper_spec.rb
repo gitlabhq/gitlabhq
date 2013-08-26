@@ -366,6 +366,15 @@ describe GitlabMarkdownHelper do
       markdown(actual).should match(%r{Apply <em><a.+>!#{merge_request.iid}</a></em>})
     end
 
+    it "should handle tables" do
+      actual = %Q{| header 1 | header 2 |
+| -------- | -------- |
+| cell 1   | cell 2   |
+| cell 3   | cell 4   |}
+
+      markdown(actual).should match(/\A<table/)
+    end
+
     it "should leave code blocks untouched" do
       helper.stub(:user_color_scheme_class).and_return(:white)
 
