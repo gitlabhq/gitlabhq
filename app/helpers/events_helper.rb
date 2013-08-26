@@ -28,7 +28,7 @@ module EventsHelper
                end
 
     content_tag :div, class: "filter_icon #{inactive}" do
-      link_to dashboard_path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
+      link_to request.path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
         content_tag :i, nil, class: icon_for_event[key]
       end
     end

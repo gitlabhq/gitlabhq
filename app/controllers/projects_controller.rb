@@ -55,7 +55,10 @@ class ProjectsController < Projects::ApplicationController
 
   def show
     limit = (params[:limit] || 20).to_i
-    @events = @project.events.recent.limit(limit).offset(params[:offset] || 0)
+
+    @events = @project.events.recent
+    @events = event_filter.apply_filter(@events)
+    @events = @events.limit(limit).offset(params[:offset] || 0)
 
     # Ensure project default branch is set if it possible
     # Normally it defined on push or during creation

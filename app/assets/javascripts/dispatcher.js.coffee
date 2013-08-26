@@ -20,10 +20,11 @@ class Dispatcher
         Issues.init()
       when 'dashboard:show'
         new Dashboard()
+        new Activities()
       when 'projects:commit:show'
         new Commit()
       when 'groups:show', 'projects:show'
-        Pager.init(20, true)
+        new Activities()
       when 'projects:new', 'projects:edit'
         new Project()
       when 'projects:walls:show'
