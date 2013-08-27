@@ -91,19 +91,20 @@ describe GitPushService do
       end
     end
 
-    context "does not execute web hooks" do
+    context "execute web hooks" do
       before do
         @project_hook = create(:project_hook)
         project.hooks << [@project_hook]
+        stub_request(:post, @project_hook.url)
       end
 
       it "when pushing a branch for the first time" do
-        @project_hook.should_not_receive(:execute)
+        @project_hook.should_receive(:async_execute)
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
       it "when pushing tags" do
-        @project_hook.should_not_receive(:execute)
+        @project_hook.should_not_receive(:async_execute)
         service.execute(project, user, 'newrev', 'newrev', 'refs/tags/v1.0.0')
       end
     end
