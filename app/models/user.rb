@@ -126,6 +126,17 @@ class User < ActiveRecord::Base
     after_transition any => :blocked do |user, transition|
       # Remove user from all projects and
       user.users_projects.find_each do |membership|
+        # skip owned resources
+        next if membership.project.owner == user
+
+        return false unless membership.destroy
+      end
+
+      # Remove user from all groups
+      user.users_groups.find_each do |membership|
+        # skip owned resources
+        next if membership.group.owner == user
+
         return false unless membership.destroy
       end
     end
