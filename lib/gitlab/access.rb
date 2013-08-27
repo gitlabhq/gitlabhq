@@ -44,5 +44,9 @@ module Gitlab
     def human_access
       Gitlab::Access.options_with_owner.key(access_field)
     end
+
+    def owner?
+      access_field == OWNER
+    end
   end
 end

@@ -135,7 +135,7 @@ class User < ActiveRecord::Base
       # Remove user from all groups
       user.users_groups.find_each do |membership|
         # skip owned resources
-        next if membership.group.owner == user
+        next if membership.group.owners.include?(user)
 
         return false unless membership.destroy
       end
@@ -374,6 +374,12 @@ class User < ActiveRecord::Base
     %w(name username skype linkedin twitter bio).each do |attr|
       value = self.send(attr)
       self.send("#{attr}=", Sanitize.clean(value)) if value.present?
+    end
+  end
+
+  def solo_owned_groups
+    @solo_owned_groups ||= owned_groups.select do |group|
+      group.owners == [self]
     end
   end
 end
