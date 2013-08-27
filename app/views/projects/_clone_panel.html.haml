@@ -37,6 +37,17 @@
               %li
                 = link_to new_project_snippet_path(@project), title: "New Snippet" do
                   Snippet
+            - if can? current_user, :push_code, @project
+              %li.divider
+              %li
+                = link_to new_project_branch_path(@project) do
+                  %i.icon-code-fork
+                  Git branch
+              %li
+                = link_to new_project_tag_path(@project) do
+                  %i.icon-tag
+                  Git tag
+
             - if can?(current_user, :admin_team_member, @project)
               %li.divider
               %li
