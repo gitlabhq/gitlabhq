@@ -10,11 +10,8 @@
     = link_to edit_admin_user_path(@user), class: "btn grouped" do
       %i.icon-edit
       Edit
-    - unless @user == current_user
-      - if @user.blocked?
-        = link_to 'Unblock', unblock_admin_user_path(@user), method: :put, class: "btn grouped success"
-      - else
-        = link_to 'Block', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn grouped btn-remove"
+    - if @user.blocked?
+      = link_to 'Unblock', unblock_admin_user_path(@user), method: :put, class: "btn grouped success"
 %hr
 
 .row
@@ -62,15 +59,34 @@
             %strong
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
-    .alert.alert-error
-      %h4 Remove user
-      %br
-      %p Deleting a user has the following effects:
-      %ul
-        %li All user content like authored issues, snippets, comments will be removed
-        %li User personal projects will be removed and cannot be restored
-        %li Owned groups will be transfered to first admin
-      = link_to 'Remove user', [:admin, @user], confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-remove"
+    - unless @user == current_user
+      .alert
+        %h4 Block user
+        %br
+        %p Blocking user has the following effects:
+        %ul
+          %li User will not be able to login
+          %li User will not be able to access git repositories
+          %li User will be removed from joined projects and groups
+          %li Personal projects will be left
+          %li Owned groups will be left
+        = link_to 'Block user', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-remove"
+
+      .alert.alert-error
+        %h4
+          Remove user
+        %br
+        %p Deleting a user has the following effects:
+        %ul
+          %li All user content like authored issues, snippets, comments will be removed
+          - rp = @user.personal_projects.count
+          - unless rp.zero?
+            %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+          - if @user.solo_owned_groups.present?
+            %li
+              Next groups with all content will be removed:
+              %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
+        = link_to 'Remove user', [:admin, @user], confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-remove"
 
   .span6
     - if @user.users_groups.present?

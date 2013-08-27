@@ -83,14 +83,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    # 1. Move all user groups to admin
-    user.own_groups.each do |group|
-      group.owner_id = User.admins.first
-      group.save
-    end
+    # 1. Remove groups where user is the only owner
+    user.solo_owned_groups.map(&:destroy)
 
-    # 2. Remove user with all authored contenst
-    #    including personal projects
+    # 2. Remove user with all authored content including personal projects
     user.destroy
 
     respond_to do |format|
