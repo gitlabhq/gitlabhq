@@ -110,4 +110,8 @@ class UsersProject < ActiveRecord::Base
   def access_field
     project_access
   end
+
+  def owner?
+    project.owner == user
+  end
 end

@@ -90,6 +90,9 @@
 
             - if tm
               .pull-right
-                %span.light= tm.human_access
-                = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @user), method: :delete, class: "btn btn-small btn-remove" do
-                  %i.icon-remove
+                - if tm.owner?
+                  %span.light Owner
+                - else
+                  %span.light= tm.human_access
+                  = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @user), method: :delete, class: "btn btn-small btn-remove" do
+                    %i.icon-remove

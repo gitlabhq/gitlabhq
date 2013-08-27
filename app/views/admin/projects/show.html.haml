@@ -102,6 +102,9 @@
             %strong
               = link_to user.name, admin_user_path(user)
             .pull-right
-              %span.light= users_project.human_access
-              = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
-                %i.icon-remove
+              - if users_project.owner?
+                %span.light Owner
+              - else
+                %span.light= users_project.human_access
+                = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
+                  %i.icon-remove
