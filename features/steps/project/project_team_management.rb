@@ -16,7 +16,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I click link "New Team Member"' do
-    click_link "New Team Member"
+    click_link "New project member"
   end
 
   And 'I select "Mike" as "Reporter"' do
@@ -90,7 +90,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   And 'I click link "Import team from another project"' do
-    click_link "Import team from another project"
+    click_link "Import members from another project"
   end
 
   When 'I submit "Website" project for import team' do

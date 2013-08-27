@@ -84,7 +84,7 @@ class Profile < Spinach::FeatureSteps
   end
 
   step "I should receive feedback that the changes were saved" do
-    page.should have_content("Saved")
+    page.should have_content("saved")
   end
 
   step 'my password is expired' do
