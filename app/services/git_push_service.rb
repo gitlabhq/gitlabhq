@@ -30,6 +30,9 @@ class GitPushService
     if push_to_existing_branch?(ref, oldrev)
       project.update_merge_requests(oldrev, newrev, ref, @user)
       process_commit_messages(ref)
+    end
+
+    if push_to_branch?(ref)
       project.execute_hooks(@push_data.dup)
       project.execute_services(@push_data.dup)
     end
@@ -173,6 +176,10 @@ class GitPushService
     ref_parts = ref.split('/')
 
     ref_parts[1] =~ /heads/ && oldrev == "0000000000000000000000000000000000000000"
+  end
+
+  def push_to_branch? ref
+    ref =~ /refs\/heads/
   end
 
   def is_default_branch? ref
