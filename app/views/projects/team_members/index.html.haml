@@ -3,9 +3,9 @@
 
   - if can? current_user, :admin_team_member, @project
     %span.pull-right
-      = link_to new_project_team_member_path(@project), class: "btn btn-new grouped", title: "New Team Member" do
-        New Team Member
-      = link_to import_project_team_members_path(@project), class: "btn grouped", title: "Import team from another project" do
+      = link_to new_project_team_member_path(@project), class: "btn btn-new grouped", title: "New project member" do
+        New project member
+      = link_to import_project_team_members_path(@project), class: "btn grouped", title: "Import members from another project" do
         Import members
 
 %p.light

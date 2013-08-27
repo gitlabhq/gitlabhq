@@ -40,5 +40,5 @@
             - if can?(current_user, :admin_team_member, @project)
               %li.divider
               %li
-                = link_to new_project_team_member_path(@project), title: "New Team member" do
-                  Team member
+                = link_to new_project_team_member_path(@project), title: "New project member" do
+                  Project member
