@@ -7,15 +7,14 @@
     %span.cred (Admin)
 
   .pull-right
-    = link_to edit_admin_user_path(@user), class: "btn grouped btn-small" do
+    = link_to edit_admin_user_path(@user), class: "btn grouped" do
       %i.icon-edit
       Edit
     - unless @user == current_user
       - if @user.blocked?
-        = link_to 'Unblock', unblock_admin_user_path(@user), method: :put, class: "btn grouped btn-small success"
+        = link_to 'Unblock', unblock_admin_user_path(@user), method: :put, class: "btn grouped success"
       - else
-        = link_to 'Block', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn grouped btn-small btn-remove"
-      = link_to 'Destroy', [:admin, @user], confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn grouped btn-small btn-remove"
+        = link_to 'Block', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn grouped btn-remove"
 %hr
 
 .row
@@ -63,6 +62,17 @@
             %strong
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
+    .alert.alert-error
+      %h4 Remove user
+      %br
+      %p Deleting a user has the following effects:
+      %ul
+        %li All user content like authored issues, snippets, comments will be removed
+        %li User personal projects will be removed and cannot be restored
+        %li Owned groups will be transfered to first admin
+      = link_to 'Remove user', [:admin, @user], confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-remove"
+
+  .span6
     - if @user.users_groups.present?
       .ui-box
         .title Groups:
@@ -74,7 +84,6 @@
               .pull-right
                 %span.light= user_group.human_access
 
-  .span6
     .ui-box
       .title Projects (#{@projects.count})
       %ul.well-list
@@ -96,3 +105,5 @@
                   %span.light= tm.human_access
                   = link_to admin_project_member_path(project, tm.user), confirm: remove_from_project_team_message(project, @user), method: :delete, class: "btn btn-small btn-remove" do
                     %i.icon-remove
+
+

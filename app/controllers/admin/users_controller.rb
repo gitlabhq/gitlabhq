@@ -83,9 +83,14 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    if user.personal_projects.count > 0
-      redirect_to admin_users_path, alert: "User is a project owner and can't be removed." and return
+    # 1. Move all user groups to admin
+    user.own_groups.each do |group|
+      group.owner_id = User.admins.first
+      group.save
     end
+
+    # 2. Remove user with all authored contenst
+    #    including personal projects
     user.destroy
 
     respond_to do |format|
