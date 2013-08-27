@@ -2,6 +2,7 @@ class Ability
   class << self
     def allowed(user, subject)
       return [] unless user.kind_of?(User)
+      return [] if user.blocked?
 
       case subject.class.name
       when "Project" then project_abilities(user, subject)
