@@ -1,4 +1,5 @@
 v 6.1.0
+  - Rewrite: Init script now less prone to errors and keeps better track of the service.
   - Link issues, merge requests, and commits when they reference each other with GFM
   - Close issues automatically when pushing commits with a special message
 
