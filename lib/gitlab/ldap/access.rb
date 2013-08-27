@@ -8,6 +8,10 @@ module Gitlab
   module LDAP
     class Access
       def update_permissions(user)
+        # Skip updating group permissions
+        # if instance does not use group_base setting
+        return true unless Gitlab.config.ldap['group_base'].present?
+
         ldap_user = Gitlab::LDAP::Person.find(user.extern_uid)
         ldap_groups = ldap_user.groups
         ldap_groups_cn = ldap_groups.map(&:name)
