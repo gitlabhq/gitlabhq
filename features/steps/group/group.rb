@@ -67,7 +67,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   When 'I click new group link' do
-    click_link "New Group"
+    click_link "New group"
   end
 
   And 'submit form with new group info' do
