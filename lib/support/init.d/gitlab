@@ -20,8 +20,8 @@ RAILS_ENV="production"
 
 # Script variable names should be lower-case not to conflict with internal
 # /bin/sh variables such as PATH, EDITOR or SHELL.
-app_root="/home/gitlab/gitlab"
-app_user="gitlab"
+app_root="/home/git/gitlab"
+app_user="git"
 unicorn_conf="$app_root/config/unicorn.rb"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
@@ -68,7 +68,7 @@ check_pids(){
 check_pids
 
 
-# Checks wether the different parts of the server is already running or not.
+# Checks whether the different parts of the service are already running or not.
 check_status(){
   check_pids
   # If the web server is running kill -0 $wpid returns true, or rather 0.
@@ -117,7 +117,7 @@ start() {
   else
     echo "Starting the GitLab Unicorn web server..."
     # Remove old socket if it exists
-    rm -f "$socket_path"/gitlab.socket
+    rm -f "$socket_path"/gitlab.socket 2>/dev/null
     # Start the webserver
     bundle exec unicorn_rails -D -c "$unicorn_conf" -E "$RAILS_ENV"
   fi
