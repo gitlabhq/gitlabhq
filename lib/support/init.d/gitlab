@@ -20,8 +20,8 @@ RAILS_ENV="production"
 
 # Script variable names should be lower-case not to conflict with internal
 # /bin/sh variables such as PATH, EDITOR or SHELL.
-app_root="/home/gitlab/gitlab"
-app_user="gitlab"
+app_root="/home/git/gitlab"
+app_user="git"
 unicorn_conf="$app_root/config/unicorn.rb"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
@@ -76,10 +76,14 @@ check_status(){
   if [ $wpid -ne 0 ]; then
     kill -0 "$wpid" 2>/dev/null
     web_status="$?"
+  else
+    web_status="-1"
   fi
   if [ $spid -ne 0 ]; then
     kill -0 "$spid" 2>/dev/null
     sidekiq_status="$?"
+  else
+    sidekiq_status="-1"
   fi
 }
 
@@ -89,12 +93,18 @@ check_stale_pids(){
   # If there is a pid it is something else than 0, the service is running if
   # *_status is == 0.
   if [ "$wpid" != "0" -a "$web_status" != "0" ]; then
-    echo "Found stale Unicorn web server pid, removing. This is most likely caused by the web server crashing the last time it ran."
-    rm "$web_server_pid_path"
+    echo "Removing stale Unicorn web server pid. This is most likely caused by the web server crashing the last time it ran."
+    if ! rm "$web_server_pid_path"; then
+      echo "Unable to remove stale pid, exiting"
+      exit 1
+    fi
   fi
   if [ "$spid" != "0" -a "$sidekiq_status" != "0" ]; then
-    echo "Found stale Sidekiq web server pid, removing. This is most likely caused by the Sidekiq crashing the last time it ran."
-    rm "$sidekiq_pid_path"
+    echo "Removing stale Sidekiq web server pid. This is most likely caused by the Sidekiq crashing the last time it ran."
+    if ! rm "$sidekiq_pid_path"; then
+      echo "Unable to remove stale pid, exiting"
+      exit 1
+    fi
   fi
 }
 
@@ -205,7 +215,7 @@ reload(){
   echo "Done."
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading it's config..."
   RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop
-  echo "Starting Sidekiq..."  
+  echo "Starting Sidekiq..."
   RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:start
   # Waiting 2 seconds for sidekiq to write it.
   sleep 2
