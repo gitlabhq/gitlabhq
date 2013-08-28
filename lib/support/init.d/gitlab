@@ -20,8 +20,8 @@ RAILS_ENV="production"
 
 # Script variable names should be lower-case not to conflict with internal
 # /bin/sh variables such as PATH, EDITOR or SHELL.
-app_root="/home/git/gitlab"
-app_user="git"
+app_root="/home/gitlab/gitlab"
+app_user="gitlab"
 unicorn_conf="$app_root/config/unicorn.rb"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
@@ -99,7 +99,7 @@ check_stale_pids(){
 }
 
 # If no parts of the service is running, bail out.
-check_not_running(){
+exit_if_not_running(){
   check_stale_pids
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
     echo "GitLab is not running."
@@ -138,7 +138,7 @@ start() {
 
 # Asks the Unicorn and the Sidekiq if they would be so kind as to stop, if not kills them.
 stop() {
-  check_not_running
+  exit_if_not_running
   # If the Unicorn web server is running, tell it to stop;
   if [ "$web_status" = "0" ]; then
     kill -QUIT "$wpid" &
@@ -178,7 +178,7 @@ stop() {
 
 # Returns the status of GitLab and it's components
 status() {
-  check_not_running
+  exit_if_not_running
   if [ "$web_status" = "0" ]; then
       echo "The GitLab Unicorn webserver with pid $wpid is running."
   else
@@ -195,14 +195,21 @@ status() {
 }
 
 reload(){
-  check_not_running
+  exit_if_not_running
   if [ "$wpid" = "0" ];then
     echo "The GitLab Unicorn Web server is not running thus it's configuration can't be reloaded."
     exit 1
   fi
-  printf "Reloading GitLab configuration... "
-  kill -HUP "$wpid"
+  printf "Reloading GitLab Unicorn configuration... "
+  kill -USR2 "$wpid"
   echo "Done."
+  echo "Restarting GitLab Sidekiq since it isn't capable of reloading it's config..."
+  RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop
+  echo "Starting Sidekiq..."  
+  RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:start
+  # Waiting 2 seconds for sidekiq to write it.
+  sleep 2
+  status
 }
 
 
