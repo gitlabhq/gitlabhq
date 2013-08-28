@@ -59,8 +59,8 @@ class GitPushService
   #
   def sample_data(project, user)
     @project, @user = project, user
-    commits = project.repository.commits(project.default_branch, nil, 3)
-    post_receive_data(commits.last.id, commits.first.id, "refs/heads/#{project.default_branch}")
+    @push_commits = project.repository.commits(project.default_branch, nil, 3)
+    post_receive_data(@push_commits.last.id, @push_commits.first.id, "refs/heads/#{project.default_branch}")
   end
 
   protected
