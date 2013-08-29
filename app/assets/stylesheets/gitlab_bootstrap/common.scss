@@ -28,7 +28,7 @@
 .hint { font-style: italic; color: #999; }
 .light { color: #888 }
 .tiny { font-weight: normal }
-.vtop { vertical-align: top; }
+.vtop { vertical-align: top !important; }
 
 
 /** ALERT MESSAGES **/
