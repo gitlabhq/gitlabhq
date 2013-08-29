@@ -13,7 +13,7 @@ class Projects::RawController < Projects::ApplicationController
     if @blob.exists?
       send_data(
         @blob.data,
-        type: @blob.mime_type,
+        type: @blob.content_type,
         disposition: 'inline',
         filename: @blob.name
       )
