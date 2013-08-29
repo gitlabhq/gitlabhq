@@ -188,7 +188,11 @@ stop() {
 
 # Returns the status of GitLab and it's components
 status() {
-  exit_if_not_running
+  check_status
+  if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
+    echo "GitLab is not running."
+    return
+  fi
   if [ "$web_status" = "0" ]; then
       echo "The GitLab Unicorn webserver with pid $wpid is running."
   else
@@ -207,19 +211,27 @@ status() {
 reload(){
   exit_if_not_running
   if [ "$wpid" = "0" ];then
-    echo "The GitLab Unicorn Web server is not running thus it's configuration can't be reloaded."
+    echo "The GitLab Unicorn Web server is not running thus its configuration can't be reloaded."
     exit 1
   fi
   printf "Reloading GitLab Unicorn configuration... "
   kill -USR2 "$wpid"
   echo "Done."
-  echo "Restarting GitLab Sidekiq since it isn't capable of reloading it's config..."
+  echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
   RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop
   echo "Starting Sidekiq..."
   RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:start
   # Waiting 2 seconds for sidekiq to write it.
   sleep 2
   status
+}
+
+restart(){
+  check_status
+  if [ "$web_status" = "0" -o "$sidekiq_status" = "0" ]; then
+    stop
+  fi
+  start
 }
 
 
@@ -233,8 +245,7 @@ case "$1" in
         stop
         ;;
   restart)
-        stop
-	start
+        restart
         ;;
   reload|force-reload)
 	reload
