@@ -1,6 +1,11 @@
 v 6.1.0
   - Link issues, merge requests, and commits when they reference each other with GFM
   - Close issues automatically when pushing commits with a special message
+  - Project internal ids for issues, mr, milestones
+  - Improve user removal from admin area
+  - Remove deprecated classes and rake tasks
+  - Add event filter for group and project show pages
+  - Add links to create branch/tag from project home page
 
 v 6.0.0
   - Feature: Replace teams with group membership
