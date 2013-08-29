@@ -423,6 +423,7 @@ class Project < ActiveRecord::Base
         gitlab_shell.rm_satellites(old_path_with_namespace)
         ensure_satellite_exists
         send_move_instructions
+        reset_events_cache
       rescue
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
@@ -433,5 +434,20 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+  end
+
+  # Reset events cache related to this project
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when project was moved
+  # * when project was renamed
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(project_id: self.id).
+      order('id DESC').limit(100).
+      update_all(updated_at: Time.now)
   end
 end
