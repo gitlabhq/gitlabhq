@@ -31,3 +31,22 @@ input {
   }
 }
 
+input[type='search'].search-text-input {
+  background-image: url("icon-search.png");
+  background-repeat: no-repeat;
+  background-position: 10px;
+  padding-left: 25px;
+  @include border-radius(4px);
+  border: 1px solid #ccc;
+}
+
+input[type='text'].danger {
+  background: #F2DEDE!important;
+  border-color: #D66;
+  text-shadow: 0 1px 1px #fff
+}
+
+fieldset legend {
+  font-size: 16px;
+  margin-bottom: 10px;
+}

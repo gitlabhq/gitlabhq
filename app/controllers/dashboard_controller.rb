@@ -33,9 +33,13 @@ class DashboardController < ApplicationController
                   current_user.owned_projects
                 else
                   current_user.authorized_projects
-                end.sorted_by_activity
+                end
+
+    @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
+    @projects = @projects.includes(:namespace).sorted_by_activity
 
     @labels = current_user.authorized_projects.tags_on(:labels)
+    @groups = current_user.authorized_groups
 
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?
     @projects = @projects.page(params[:page]).per(30)
