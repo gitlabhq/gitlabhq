@@ -12,7 +12,7 @@
           All
 
   %fieldset
-    %legend Projects:
+    %legend Projects
     %ul.nav.nav-pills.nav-pills-small.nav-stacked
       - @projects.each do |project|
         - unless entities_per_project(project, entity).zero?
