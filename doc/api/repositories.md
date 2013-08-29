@@ -239,12 +239,37 @@ Parameters:
 ]
 ```
 
+## Get a single commit
+
+Get a specific commit identified by the commit hash or name of a branch or tag.
+
+```
+GET /projects/:id/repository/commits/:sha
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `sha` (required) - The commit hash or name of a repository branch or tag
+
+```json
+{
+  "id": "6104942438c14ec7bd21c6cd5bd995272b3faff6",
+  "short_id": "6104942438c",
+  "title": "Sanitize for network graph",
+  "author_name": "randx",
+  "author_email": "dmitriy.zaporozhets@gmail.com",
+  "created_at": "2012-09-20T09:06:12+03:00"
+}
+```
+
+
 ## Get the diff of a commit
 
 Get the diff of a commit in a project.
 
 ```
-GET /projects/:id/repository/commit/:sha
+GET /projects/:id/repository/commits/:sha/diff
 ```
 
 Parameters:
@@ -323,7 +348,7 @@ Parameters:
 Get the raw file contents for a file.
 
 ```
-GET /projects/:id/repository/commits/:sha/blob
+GET /projects/:id/repository/blobs/:sha
 ```
 
 Parameters:
