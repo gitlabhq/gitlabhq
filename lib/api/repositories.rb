@@ -106,13 +106,29 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   sha (required) - The commit hash or name of a repository branch or tag
+      # Example Request:
+      #   GET /projects/:id/repository/commits/:sha
+      get ":id/repository/commits/:sha" do
+        authorize! :download_code, user_project
+        sha = params[:sha]
+        commit = user_project.repository.commit(sha)
+        not_found! "Commit" unless commit
+        present commit, with: Entities::RepoCommit
+      end
+
+      # Get the diff for a specific commit of a project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
       #   sha (required) - The commit or branch name
       # Example Request:
-      #   GET /projects/:id/repository/commit/:sha
-      get ":id/repository/commit/:sha" do
+      #   GET /projects/:id/repository/commits/:sha/diff
+      get ":id/repository/commits/:sha/diff" do
         authorize! :download_code, user_project
         sha = params[:sha]
         result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
+        not_found! "Commit" unless result[:commit]
         result[:commit].diffs
       end
 
@@ -148,8 +164,8 @@ module API
       #   sha (required) - The commit or branch name
       #   filepath (required) - The path to the file to display
       # Example Request:
-      #   GET /projects/:id/repository/commits/:sha/blob
-      get ":id/repository/commits/:sha/blob" do
+      #   GET /projects/:id/repository/blobs/:sha
+      get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
         authorize! :download_code, user_project
         required_attributes! [:filepath]
 
