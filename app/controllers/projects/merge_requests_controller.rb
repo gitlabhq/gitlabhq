@@ -181,7 +181,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def allowed_to_merge?
-    action = if project.protected_branch?(@merge_request.target_branch)
+    action = if @merge_request.assignee == current_user
+               :push_code
+             elsif project.protected_branch?(@merge_request.target_branch)
                :push_code_to_protected_branches
              else
                :push_code
