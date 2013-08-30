@@ -1,5 +1,5 @@
 %p
-  = "Merge Request #{@merge_request.id} was closed by #{@updated_by.name}"
+  = "Merge Request #{@merge_request.iid} was closed by #{@updated_by.name}"
 %p
   = link_to_gfm truncate(@merge_request.title, length: 40), project_merge_request_url(@merge_request.target_project, @merge_request)
 %p
