@@ -6,11 +6,12 @@
     r = Raphael('activity-chart')
 
     fin = ->
-      @flag = r.popup(@bar.x, @bar.y, @bar.value or "0").insertBefore(this)
+      @flag = r.popup(@bar.x, @bar.y, @bar.value or "0").insertBefore(this) unless @hasOwnProperty("flag")
+      @flag.attr "opacity", 1
 
     fout = ->
       @flag.animate
-        opacity: 0, 300, -> @remove()
+        opacity: 0, 300
 
     r.text(160, 10, title).attr font: "13px sans-serif"
     r.barchart(
