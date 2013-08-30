@@ -22,7 +22,7 @@ GET /users
     "twitter": "",
     "extern_uid": "john.smith",
     "provider": "provider_name",
-    "theme_id": 1
+    "theme_id": 1,
     "color_scheme_id": 2
   },
   {
@@ -38,7 +38,7 @@ GET /users
     "twitter": "",
     "extern_uid": "jack.smith",
     "provider": "provider_name",
-    "theme_id": 1
+    "theme_id": 1,
     "color_scheme_id": 3
   }
 ]
@@ -71,7 +71,7 @@ Parameters:
   "twitter": "",
   "extern_uid": "john.smith",
   "provider": "provider_name",
-  "theme_id": 1
+  "theme_id": 1,
   "color_scheme_id": 2
 }
 ```
@@ -162,8 +162,8 @@ GET /user
   "skype": "",
   "linkedin": "",
   "twitter": "",
-  "theme_id": 1
-  "color_scheme_id": 2
+  "theme_id": 1,
+  "color_scheme_id": 2,
   "is_admin": false,
   "can_create_group" : true,
   "can_create_team" : true,
@@ -184,14 +184,14 @@ GET /user/keys
 [
   {
     "id": 1,
-    "title" : "Public key"
+    "title" : "Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
       596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
       soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
   },
   {
     "id": 3,
-    "title" : "Another Public key"
+    "title" : "Another Public key",
     "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
       596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
       soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
@@ -219,7 +219,7 @@ Parameters:
 ```json
 {
   "id": 1,
-  "title" : "Public key"
+  "title" : "Public key",
   "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
       596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
       soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
