@@ -1,10 +1,8 @@
 require_relative 'shell_env'
-require_relative 'grack_ldap'
 require_relative 'grack_helpers'
 
 module Grack
   class Auth < Rack::Auth::Basic
-    include LDAP
     include Helpers
 
     attr_accessor :user, :project, :ref, :env
