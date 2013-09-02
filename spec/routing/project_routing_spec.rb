@@ -138,12 +138,24 @@ end
 describe Projects::BranchesController, "routing" do
   it "to #branches" do
     get("/gitlab/gitlabhq/branches").should route_to('projects/branches#index', project_id: 'gitlab/gitlabhq')
+    delete("/gitlab/gitlabhq/branches/feature%2345").should route_to('projects/branches#destroy', project_id: 'gitlab/gitlabhq', id: 'feature#45')
+    delete("/gitlab/gitlabhq/branches/feature%2B45").should route_to('projects/branches#destroy', project_id: 'gitlab/gitlabhq', id: 'feature+45')
+    delete("/gitlab/gitlabhq/branches/feature@45").should route_to('projects/branches#destroy', project_id: 'gitlab/gitlabhq', id: 'feature@45')
+    delete("/gitlab/gitlabhq/branches/feature%2345/foo/bar/baz").should route_to('projects/branches#destroy', project_id: 'gitlab/gitlabhq', id: 'feature#45/foo/bar/baz')
+    delete("/gitlab/gitlabhq/branches/feature%2B45/foo/bar/baz").should route_to('projects/branches#destroy', project_id: 'gitlab/gitlabhq', id: 'feature+45/foo/bar/baz')
+    delete("/gitlab/gitlabhq/branches/feature@45/foo/bar/baz").should route_to('projects/branches#destroy', project_id: 'gitlab/gitlabhq', id: 'feature@45/foo/bar/baz')
   end
 end
 
 describe Projects::TagsController, "routing" do
   it "to #tags" do
     get("/gitlab/gitlabhq/tags").should route_to('projects/tags#index', project_id: 'gitlab/gitlabhq')
+    delete("/gitlab/gitlabhq/tags/feature%2345").should route_to('projects/tags#destroy', project_id: 'gitlab/gitlabhq', id: 'feature#45')
+    delete("/gitlab/gitlabhq/tags/feature%2B45").should route_to('projects/tags#destroy', project_id: 'gitlab/gitlabhq', id: 'feature+45')
+    delete("/gitlab/gitlabhq/tags/feature@45").should route_to('projects/tags#destroy', project_id: 'gitlab/gitlabhq', id: 'feature@45')
+    delete("/gitlab/gitlabhq/tags/feature%2345/foo/bar/baz").should route_to('projects/tags#destroy', project_id: 'gitlab/gitlabhq', id: 'feature#45/foo/bar/baz')
+    delete("/gitlab/gitlabhq/tags/feature%2B45/foo/bar/baz").should route_to('projects/tags#destroy', project_id: 'gitlab/gitlabhq', id: 'feature+45/foo/bar/baz')
+    delete("/gitlab/gitlabhq/tags/feature@45/foo/bar/baz").should route_to('projects/tags#destroy', project_id: 'gitlab/gitlabhq', id: 'feature@45/foo/bar/baz')
   end
 end
 
@@ -183,9 +195,11 @@ describe Projects::RefsController, "routing" do
     get("/gitlab/gitlabhq/refs/stable/logs_tree").should             route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'stable')
     get("/gitlab/gitlabhq/refs/feature%2345/logs_tree").should             route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'feature#45')
     get("/gitlab/gitlabhq/refs/feature%2B45/logs_tree").should             route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'feature+45')
+    get("/gitlab/gitlabhq/refs/feature@45/logs_tree").should             route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'feature@45')
     get("/gitlab/gitlabhq/refs/stable/logs_tree/foo/bar/baz").should route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'stable', path: 'foo/bar/baz')
     get("/gitlab/gitlabhq/refs/feature%2345/logs_tree/foo/bar/baz").should route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'feature#45', path: 'foo/bar/baz')
     get("/gitlab/gitlabhq/refs/feature%2B45/logs_tree/foo/bar/baz").should route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'feature+45', path: 'foo/bar/baz')
+    get("/gitlab/gitlabhq/refs/feature@45/logs_tree/foo/bar/baz").should route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'feature@45', path: 'foo/bar/baz')
     get("/gitlab/gitlabhq/refs/stable/logs_tree/files.scss").should route_to('projects/refs#logs_tree', project_id: 'gitlab/gitlabhq', id: 'stable', path: 'files.scss')
   end
 end

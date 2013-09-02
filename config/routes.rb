@@ -222,14 +222,14 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+      resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex } do
         collection do
-          get :recent
+          get :recent, constraints: { id: Gitlab::Regex.git_reference_regex }
         end
       end
 
-      resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
-      resources :protected_branches, only: [:index, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
+      resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
+      resources :protected_branches, only: [:index, :create, :destroy], constraints: { id: Gitlab::Regex.git_reference_regex }
 
       resources :refs, only: [] do
         collection do
@@ -238,11 +238,11 @@ Gitlab::Application.routes.draw do
 
         member do
           # tree viewer logs
-          get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
+          get "logs_tree", constraints: { id: Gitlab::Regex.git_reference_regex }
           get "logs_tree/:path" => "refs#logs_tree",
             as: :logs_file,
             constraints: {
-              id:   /[a-zA-Z.0-9\/_\-#%+]+/,
+              id:   Gitlab::Regex.git_reference_regex,
               path: /.*/
             }
         end
