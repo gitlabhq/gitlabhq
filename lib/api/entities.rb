@@ -112,7 +112,7 @@ module API
     end
 
     class MergeRequest < Grape::Entity
-      expose :id, :target_branch, :source_branch, :title, :state
+      expose :id, :target_branch, :source_branch, :title, :state, :upvotes, :downvotes
       expose :target_project_id, as: :project_id
       expose :author, :assignee, using: Entities::UserBasic
     end
