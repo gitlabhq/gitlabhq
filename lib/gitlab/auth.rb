@@ -13,23 +13,6 @@ module Gitlab
       end
     end
 
-    def find_for_ldap_auth(auth, signed_in_resource = nil)
-      uid = auth.info.uid
-      provider = auth.provider
-      email = auth.info.email.downcase unless auth.info.email.nil?
-      raise OmniAuth::Error, "LDAP accounts must provide an uid and email address" if uid.nil? or email.nil?
-
-      if @user = User.find_by_extern_uid_and_provider(uid, provider)
-        @user
-      elsif @user = User.find_by_email(email)
-        log.info "Updating legacy LDAP user #{email} with extern_uid => #{uid}"
-        @user.update_attributes(extern_uid: uid, provider: provider)
-        @user
-      else
-        create_from_omniauth(auth, true)
-      end
-    end
-
     def create_from_omniauth(auth, ldap = false)
       provider = auth.provider
       uid = auth.info.uid || auth.uid
