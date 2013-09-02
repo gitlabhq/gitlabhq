@@ -41,6 +41,10 @@ module Gitlab
       raise OmniAuth::Error, "#{ldap_prefix}#{provider} does not provide an email"\
         " address" if auth.info.email.blank?
 
+      if email_regexp = Gitlab.config.omniauth['allow_single_sign_on_email_regexp']
+        Regexp.new(email_regexp, 'i') === email or return nil
+      end
+
       log.info "#{ldap_prefix}Creating user from #{provider} login"\
         " {uid => #{uid}, name => #{name}, email => #{email}}"
       password = Devise.friendly_token[0, 8].downcase
