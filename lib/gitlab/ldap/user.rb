@@ -9,7 +9,7 @@ module Gitlab
       class << self
         def find(uid, email)
           # Look for user with ldap provider and same uid
-          user = model.ldap.where(extern_uid: uid).last
+          user = find_by_uid(uid)
           return user if user
 
           # Look for user with same emails
@@ -61,6 +61,25 @@ module Gitlab
           user
         end
 
+        def find_by_uid(uid)
+          model.ldap.where(extern_uid: uid).last
+        end
+
+        def auth(login, password)
+          # Check user against LDAP backend if user is not authenticated
+          # Only check with valid login and password to prevent anonymous bind results
+          return nil unless ldap_conf.enabled && login.present? && password.present?
+
+          ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
+          ldap_user = ldap.bind_as(
+            filter: Net::LDAP::Filter.eq(ldap.uid, login),
+            size: 1,
+            password: password
+          )
+
+          find_by_uid(ldap_user.dn) if ldap_user
+        end
+
         private
 
         def uid(auth)
@@ -85,6 +104,10 @@ module Gitlab
 
         def model
           ::User
+        end
+
+        def ldap_conf
+          Gitlab.config.ldap
         end
       end
     end
