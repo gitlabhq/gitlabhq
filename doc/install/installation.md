@@ -122,7 +122,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    sudo -u git -H git checkout v1.7.0
+    sudo -u git -H git checkout v1.7.1
 
     sudo -u git -H cp config.yml.example config.yml
 
