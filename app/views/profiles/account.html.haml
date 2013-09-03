@@ -86,7 +86,7 @@
         .controls
           = f.submit 'Save username', class: "btn btn-save"
 
-- if gitlab_config.signup_enabled
+- if gitlab_config.signup_enabled && !current_user.ldap_user?
   %fieldset.remove-account
     %legend
       Remove account
