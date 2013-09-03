@@ -60,7 +60,8 @@ production: &base
       snippets: false
 	  
     ## Webhook settings
-    # webhook_timeout: 30  # default: 10 - Number of seconds to wait for HTTP response after sending webhook HTTP POST request
+    # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
+    # webhook_timeout: 10
 
   ## External issues trackers
   issues_tracker:
