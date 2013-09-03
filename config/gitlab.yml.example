@@ -58,6 +58,10 @@ production: &base
       wiki: true
       wall: false
       snippets: false
+	  
+    ## Webhook settings
+    # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
+    # webhook_timeout: 10
 
   ## External issues trackers
   issues_tracker:
