@@ -232,6 +232,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without ... postgres")
+    sudo apt-get install mysql-client libmysqlclient-dev
     sudo -u git -H bundle install --deployment --without development test postgres aws
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
