@@ -54,7 +54,7 @@ module Gitlab
       def users(uid = "*")
         options = {
           base: config['base'],
-          filter: Net::LDAP::Filter.eq("uid", uid)
+          filter: Net::LDAP::Filter.eq(config.uid, uid)
         }
 
         entries = ldap.search(options).select do |entry|
