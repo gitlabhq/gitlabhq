@@ -14,7 +14,7 @@ require 'spinach/capybara'
 require 'sidekiq/testing/inline'
 
 
-%w(valid_commit select2_helper chosen_helper test_env).each do |f|
+%w(valid_commit big_commits select2_helper chosen_helper test_env).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
