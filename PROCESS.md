@@ -26,7 +26,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 - Close fixed issues (via commit messages or manually)
 - Codes [new features](http://feedback.gitlab.com/forums/176466-general/filters/top)!
 - Response guidelines
-- Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (hearth, star, smile, etc.). Some good tips about giving feedback to pull requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+- Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to pull requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
 
 ## Priorities of the issue team
 
