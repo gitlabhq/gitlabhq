@@ -15,7 +15,7 @@ module Mentionable
     matches.each do |match|
       identifier = match.delete "@"
       if has_project
-        id = project.users_projects.joins(:user).where(users: { username: identifier }).pluck(:user_id).first
+        id = project.team.members.find { |u| u.username == identifier }.try(:id)
       else
         id = User.where(username: identifier).pluck(:id).first
       end
