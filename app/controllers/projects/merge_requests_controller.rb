@@ -40,6 +40,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @comments_target = {noteable_type: 'MergeRequest',
                         noteable_id: @merge_request.id}
     @line_notes = @merge_request.notes.where("line_code is not null")
+
+    diff_line_count = Commit::diff_line_count(@merge_request.diffs)
+    @suppress_diff = Commit::diff_suppress?(@merge_request.diffs, diff_line_count) && !params[:force_show_diff]
+    @force_suppress_diff = Commit::diff_force_suppress?(@merge_request.diffs, diff_line_count)
   end
 
   def new

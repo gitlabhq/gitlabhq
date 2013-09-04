@@ -1,11 +1,25 @@
+- @suppress_diff ||= @suppress_diff || @force_suppress_diff
 - if @suppress_diff
   .alert.alert-block
     %p
-      %strong Warning! Large commit with more than #{Commit::DIFF_SAFE_SIZE} files changed.
-    %p To preserve performance the diff is not shown.
+      %strong Warning! This is a large diff.
     %p
-      But if you still want to see the diff
-      = link_to "click this link", project_commit_path(project, @commit, force_show_diff: true), class: "underlined_link"
+      To preserve performance the diff is not shown.
+      - if current_controller?(:commit) or current_controller?(:merge_requests)
+        Please, download the diff as
+        - if current_controller?(:commit)
+          = link_to "plain diff", project_commit_path(@project, @commit, format: :diff), class: "underlined_link"
+          or
+          = link_to "email patch", project_commit_path(@project, @commit, format: :patch), class: "underlined_link"
+        - else
+          = link_to "plain diff", project_merge_request_path(@project, @merge_request, format: :diff), class: "underlined_link"
+          or
+          = link_to "email patch", project_merge_request_path(@project, @merge_request, format: :patch), class: "underlined_link"
+        instead.
+    - unless @force_suppress_diff
+      %p
+        If you still want to see the diff
+        = link_to "click this link", url_for(force_show_diff: true), class: "underlined_link"
 
 %p.commit-stat-summary
   Showing

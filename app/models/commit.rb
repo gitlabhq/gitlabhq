@@ -6,13 +6,39 @@ class Commit
 
   attr_mentionable :safe_message
 
-  # Safe amount of files with diffs in one commit to render
+  # Safe amount of changes (files and lines) in one commit to render
   # Used to prevent 500 error on huge commits by suppressing diff
   #
-  DIFF_SAFE_SIZE = 100
+  # User can force display of diff above this size
+  DIFF_SAFE_FILES  = 100
+  DIFF_SAFE_LINES  = 5000
+  # Commits above this size will not be rendered in HTML
+  DIFF_HARD_LIMIT_FILES = 500
+  DIFF_HARD_LIMIT_LINES = 10000
 
   def self.decorate(commits)
     commits.map { |c| self.new(c) }
+  end
+
+  # Calculate number of lines to render for diffs
+  def self.diff_line_count(diffs)
+    diffs.reduce(0){|sum, d| sum + d.diff.lines.count}
+  end
+
+  def self.diff_suppress?(diffs, line_count = nil)
+    # optimize - check file count first
+    return true if diffs.size > DIFF_SAFE_FILES
+
+    line_count ||= Commit::diff_line_count(diffs)
+    line_count > DIFF_SAFE_LINES
+  end
+
+  def self.diff_force_suppress?(diffs, line_count = nil)
+    # optimize - check file count first
+    return true if diffs.size > DIFF_HARD_LIMIT_FILES
+
+    line_count ||= Commit::diff_line_count(diffs)
+    line_count > DIFF_HARD_LIMIT_LINES
   end
 
   attr_accessor :raw
@@ -25,6 +51,19 @@ class Commit
 
   def id
     @raw.id
+  end
+
+  def diff_line_count
+    @diff_line_count ||= Commit::diff_line_count(self.diffs)
+    @diff_line_count
+  end
+
+  def diff_suppress?
+    Commit::diff_suppress?(self.diffs, diff_line_count)
+  end
+
+  def diff_force_suppress?
+    Commit::diff_force_suppress?(self.diffs, diff_line_count)
   end
 
   # Returns a string describing the commit for use in a link title
