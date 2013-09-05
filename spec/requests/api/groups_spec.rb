@@ -108,7 +108,6 @@ describe API::API do
       Project.stub(:find).and_return(project)
     end
 
-
     context "when authenticated as user" do
       it "should not transfer project to group" do
         post api("/groups/#{group1.id}/projects/#{project.id}", user2)
@@ -139,6 +138,7 @@ describe API::API do
       group
     end
     let!(:group_no_members) { create(:group, owner: owner) }
+
     describe "GET /groups/:id/members" do
       context "when authenticated as user that is part or the group" do
         it "each user: should return an array of members groups of group3" do
@@ -154,6 +154,7 @@ describe API::API do
             json_response.find { |e| e['id']==guest.id }['access_level'].should == UsersGroup::GUEST
           end
         end
+
         it "users not part of the group should get access error" do
           get api("/groups/#{group_with_members.id}/members", user1)
           response.status.should == 403
@@ -179,14 +180,17 @@ describe API::API do
           json_response['access_level'].should == UsersGroup::MASTER
           group_no_members.users_groups.count.should == count_before + 1
         end
+
         it "should return error if member already exists" do
           post api("/groups/#{group_with_members.id}/members", owner), user_id: master.id, access_level: UsersGroup::MASTER
           response.status.should == 409
         end
+
         it "should return a 400 error when user id is not given" do
           post api("/groups/#{group_no_members.id}/members", owner), access_level: UsersGroup::MASTER
           response.status.should == 400
         end
+
         it "should return a 400 error when access level is not given" do
           post api("/groups/#{group_no_members.id}/members", owner), user_id: master.id
           response.status.should == 400
@@ -196,7 +200,6 @@ describe API::API do
           post api("/groups/#{group_no_members.id}/members", owner), user_id: master.id, access_level: 1234
           response.status.should == 422
         end
-
       end
     end
 
@@ -216,6 +219,7 @@ describe API::API do
           response.status.should == 200
           group_with_members.users_groups.count.should == count_before - 1
         end
+
         it "should return a 404 error when user id is not known" do
           delete api("/groups/#{group_with_members.id}/members/1328", owner)
           response.status.should == 404

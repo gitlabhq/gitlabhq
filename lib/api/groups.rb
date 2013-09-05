@@ -14,9 +14,10 @@ module API
           end
         end
         def validate_access_level?(level)
-          [UsersGroup::GUEST, UsersGroup::REPORTER, UsersGroup::DEVELOPER, UsersGroup::MASTER].include? level.to_i
+          Gitlab::Access.options_with_owner.values.include? level.to_i
         end
       end
+
       # Get a groups list
       #
       # Example Request:
@@ -88,7 +89,7 @@ module API
       get ":id/members" do
         group = find_group(params[:id])
         members = group.users_groups
-        users = (paginate members).collect { | member| member.user}
+        users = (paginate members).collect(&:user)
         present users, with: Entities::GroupMember, group: group
       end
 
@@ -102,7 +103,7 @@ module API
       #  POST /groups/:id/members
       post ":id/members" do
         required_attributes! [:user_id, :access_level]
-        if not validate_access_level?(params[:access_level])
+        unless validate_access_level?(params[:access_level])
           render_api_error!("Wrong access level", 422)
         end
         group = find_group(params[:id])
