@@ -11,11 +11,11 @@ end
 #            /:path       Grack
 describe "Mounted Apps", "routing" do
   it "to API" do
-    get("/api").should be_routable
+    get("/api/issues").should be_routable
   end
 
   it "to Grack" do
-    get("/gitlabhq.git").should be_routable
+    get("/gitlab/gitlabhq.git").should be_routable
   end
 end
 
