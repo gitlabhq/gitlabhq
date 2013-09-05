@@ -3,7 +3,7 @@ require 'spec_helper'
 describe "Issues Feed" do
   describe "GET /issues" do
     let!(:user)     { create(:user) }
-    let!(:project)  { create(:project, namespace: user.namespace) }
+    let!(:project)  { create(:project) }
     let!(:issue)    { create(:issue, author: user, project: project) }
 
     before { project.team << [user, :developer] }

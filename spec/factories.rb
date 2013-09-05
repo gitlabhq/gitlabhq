@@ -28,6 +28,7 @@ FactoryGirl.define do
   factory :project do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
+    namespace
     creator
 
     trait :source do

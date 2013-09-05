@@ -38,11 +38,6 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
-  When 'I switch ref to "v2.1.0"' do
-    page.select 'v2.1.0', from: 'ref'
-    sleep 2
-  end
-
   When 'click "Show only selected branch" checkbox' do
     find('#filter_ref').click
     sleep 2

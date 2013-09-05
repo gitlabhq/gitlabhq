@@ -157,7 +157,7 @@ Gitlab::Application.routes.draw do
   #
   # Project Area
   #
-  resources :projects, constraints: { id: /(?:[a-zA-Z.0-9_\-]+\/)?[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
+  resources :projects, constraints: { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       put :transfer
       post :fork
@@ -177,13 +177,13 @@ Gitlab::Application.routes.draw do
       resources :graphs, only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
       match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
-        resources :snippets do
+        resources :snippets, constraints: {id: /\d+/} do
           member do
             get "raw"
           end
         end
 
-      resources :wikis, only: [:show, :edit, :destroy, :create] do
+      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-]+/} do
         collection do
           get :pages
           put ':id' => 'wikis#update'
@@ -195,7 +195,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resource :wall, only: [:show] do
+      resource :wall, only: [:show], constraints: {id: /\d+/} do
         member do
           get 'notes'
         end
@@ -214,21 +214,21 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :deploy_keys do
+      resources :deploy_keys, constraints: {id: /\d+/} do
         member do
           put :enable
           put :disable
         end
       end
 
-      resources :branches, only: [:index, :new, :create, :destroy] do
+      resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
         collection do
           get :recent
         end
       end
 
-      resources :tags, only: [:index, :new, :create, :destroy]
-      resources :protected_branches, only: [:index, :create, :destroy]
+      resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
+      resources :protected_branches, only: [:index, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
 
       resources :refs, only: [] do
         collection do
@@ -262,14 +262,14 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :hooks, only: [:index, :create, :destroy] do
+      resources :hooks, only: [:index, :create, :destroy], constraints: {id: /\d+/} do
         member do
           get :test
         end
       end
 
       resources :team, controller: 'team_members', only: [:index]
-      resources :milestones, except: [:destroy]
+      resources :milestones, except: [:destroy], constraints: {id: /\d+/}
 
       resources :labels, only: [:index] do
         collection do
@@ -283,7 +283,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :team_members, except: [:index, :edit] do
+      resources :team_members, except: [:index, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
         collection do
 
           # Used for import team
@@ -293,7 +293,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :notes, only: [:index, :create, :destroy, :update] do
+      resources :notes, only: [:index, :create, :destroy, :update], constraints: {id: /\d+/} do
         member do
           delete :delete_attachment
         end
