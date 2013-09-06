@@ -2,7 +2,7 @@ namespace :gitlab do
   namespace :import do
     # How to use:
     #
-    #  1. copy your bare repos under git base_path
+    #  1. copy your bare repos under git repos_path
     #  2. run bundle exec rake gitlab:import:repos RAILS_ENV=production
     #
     # Notes:
