@@ -51,14 +51,20 @@ module Gitlab
         end
       end
 
-      def users(uid = "*")
+      def users(opts)
+        if opts.respond_to? :key?
+          key, uid = opts.keys.first, opts.values.first
+        else
+          key, uid = config.uid, opts || "*"
+        end
+
         options = {
           base: config['base'],
-          filter: Net::LDAP::Filter.eq(config.uid, uid)
+          filter: Net::LDAP::Filter.eq(key, uid)
         }
 
         entries = ldap.search(options).select do |entry|
-          entry.respond_to? :uid
+          entry.respond_to? config.uid
         end
 
         entries.map do |entry|
@@ -66,8 +72,8 @@ module Gitlab
         end
       end
 
-      def user(uid)
-        users(uid).first
+      def user(opts)
+        users(opts).first
       end
 
       private

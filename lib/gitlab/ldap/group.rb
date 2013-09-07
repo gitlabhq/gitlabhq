@@ -20,8 +20,8 @@ module Gitlab
       end
 
       def members
-        member_uids.map do |uid|
-          adapter.user(uid)
+        member_uids.map do |opts|
+          adapter.user(opts)
         end.compact
       end
 
@@ -30,7 +30,7 @@ module Gitlab
           entry.memberuid
         else
           member_dns.map do |dn|
-            $1 if dn =~ /uid=([a-zA-Z0-9.-]+)/
+            dn_to_opts(dn)
           end
         end.compact
       end
@@ -55,6 +55,10 @@ module Gitlab
 
       def adapter
         @adapter ||= Gitlab::LDAP::Adapter.new
+      end
+
+      def dn_to_opts(dn)
+        dn.split(",").first.split("=")
       end
     end
   end
