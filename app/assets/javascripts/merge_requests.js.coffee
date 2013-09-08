@@ -11,7 +11,7 @@ class MergeRequest
 
   constructor: (@opts) ->
     this.$el = $('.merge-request')
-    @diffs_loaded = false
+    @diffs_loaded = if @opts.action == 'diffs' then true else false
     @commits_loaded = false
 
     this.activateTab(@opts.action)
