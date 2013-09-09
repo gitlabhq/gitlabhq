@@ -17,14 +17,12 @@ describe API do
     env[API::APIHelpers::SUDO_HEADER] = identifier
   end
 
-
   def set_param(token_usr, identifier)
     clear_env
     clear_param
     params[API::APIHelpers::PRIVATE_TOKEN_PARAM] = token_usr.private_token
     params[API::APIHelpers::SUDO_PARAM] = identifier
   end
-
 
   def clear_env
     env.delete(API::APIHelpers::PRIVATE_TOKEN_HEADER)
@@ -70,6 +68,7 @@ describe API do
       set_param(user, admin.username)
       expect { current_user }.to raise_error
     end
+
     it "should throw an error when the user cannot be found for a given id" do
       id = user.id + admin.id
       user.id.should_not == id
@@ -80,6 +79,7 @@ describe API do
       set_param(admin, id)
       expect { current_user }.to raise_error
     end
+
     it "should throw an error when the user cannot be found for a given username" do
       username = "#{user.username}#{admin.username}"
       user.username.should_not == username
@@ -90,6 +90,7 @@ describe API do
       set_param(admin, username)
       expect { current_user }.to raise_error
     end
+
     it "should handle sudo's to oneself" do
       set_env(admin, admin.id)
       current_user.should == admin
@@ -116,6 +117,7 @@ describe API do
       current_user.should == user
       current_user.should == user
     end
+
     it "should handle multiple sudo's to oneself using string ids" do
       set_env(admin, user.id.to_s)
       current_user.should == user
