@@ -16,7 +16,8 @@ module Projects
         wiki_enabled: default_features.wiki,
         wall_enabled: default_features.wall,
         snippets_enabled: default_features.snippets,
-        merge_requests_enabled: default_features.merge_requests
+        merge_requests_enabled: default_features.merge_requests,
+        public: default_features.public
       }
 
       @project = Project.new(default_opts.merge(params))
