@@ -32,7 +32,6 @@ class Issue < ActiveRecord::Base
   attr_accessible :title, :assignee_id, :position, :description,
                   :milestone_id, :label_list, :author_id_of_changes,
                   :state_event
-  attr_mentionable :title, :description
 
   acts_as_taggable_on :labels
 
