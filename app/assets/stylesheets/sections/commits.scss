@@ -374,6 +374,15 @@
     min-width: 65px;
     font-family: $monospace_font;
   }
+
+  .row_title {
+    font-weight: bold;
+    color: #444;
+    &:hover {
+      color: #444;
+      text-decoration: underline;
+    }
+  }
 }
 
 .file-stats a {
@@ -495,4 +504,10 @@ li.commit {
     color: #444;
     font-weight: bold;
   }
+}
+
+.commits-row {
+  padding-bottom: 10px;
+  margin-bottom: 10px;
+  border-bottom: 1px solid #DDD;
 }
