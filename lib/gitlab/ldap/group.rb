@@ -19,23 +19,13 @@ module Gitlab
         name.parameterize
       end
 
-      def members
-        member_uids.map do |opts|
-          adapter.user(opts)
-        end.compact
+      def memberuid?
+        entry.respond_to? :memberuid
       end
 
       def member_uids
-        if entry.respond_to? :memberuid
-          entry.memberuid
-        else
-          member_dns.map do |dn|
-            dn_to_opts(dn)
-          end
-        end.compact
+        entry.memberuid
       end
-
-      private
 
       def member_dns
         if entry.respond_to? :member
@@ -49,16 +39,14 @@ module Gitlab
         end
       end
 
+      private
+
       def entry
         @entry
       end
 
       def adapter
         @adapter ||= Gitlab::LDAP::Adapter.new
-      end
-
-      def dn_to_opts(dn)
-        dn.split(",").first.split("=")
       end
     end
   end

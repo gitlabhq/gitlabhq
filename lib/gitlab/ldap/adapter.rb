@@ -51,17 +51,17 @@ module Gitlab
         end
       end
 
-      def users(opts)
-        if opts.respond_to? :key?
-          key, uid = opts.keys.first, opts.values.first
+      def users(field, value)
+        if field.to_sym == :dn
+          options = {
+            base: value
+          }
         else
-          key, uid = config.uid, opts || "*"
+          options = {
+            base: config['base'],
+            filter: Net::LDAP::Filter.eq(field, value)
+          }
         end
-
-        options = {
-          base: config['base'],
-          filter: Net::LDAP::Filter.eq(key, uid)
-        }
 
         entries = ldap.search(options).select do |entry|
           entry.respond_to? config.uid
@@ -72,8 +72,8 @@ module Gitlab
         end
       end
 
-      def user(opts)
-        users(opts).first
+      def user(*args)
+        users(*args).first
       end
 
       private
