@@ -19,23 +19,13 @@ module Gitlab
         name.parameterize
       end
 
-      def members
-        member_uids.map do |uid|
-          adapter.user(uid)
-        end.compact
+      def memberuid?
+        entry.respond_to? :memberuid
       end
 
       def member_uids
-        if entry.respond_to? :memberuid
-          entry.memberuid
-        else
-          member_dns.map do |dn|
-            $1 if dn =~ /uid=([a-zA-Z0-9.-]+)/
-          end
-        end.compact
+        entry.memberuid
       end
-
-      private
 
       def member_dns
         if entry.respond_to? :member
@@ -48,6 +38,8 @@ module Gitlab
           raise 'Unsupported member attribute'
         end
       end
+
+      private
 
       def entry
         @entry

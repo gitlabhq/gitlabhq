@@ -7,15 +7,12 @@
 module Gitlab
   module LDAP
     class Person
-      def self.find(user_uid)
-        uid = if user_uid =~ /uid=([a-zA-Z0-9.-]+)/
-                $1
-              else
-                user_uid
-              end
+      def self.find_by_uid(uid)
+        Gitlab::LDAP::Adapter.new.user(config.uid, uid)
+      end
 
-
-        Gitlab::LDAP::Adapter.new.user(uid)
+      def self.find_by_dn(dn)
+        Gitlab::LDAP::Adapter.new.user('dn', dn)
       end
 
       def initialize(entry)
@@ -27,16 +24,24 @@ module Gitlab
       end
 
       def uid
-        entry.uid.join(" ")
+        entry.send(config.uid).join(" ")
       end
 
       def username
         uid
       end
 
+      def dn
+        entry.dn
+      end
+
       def groups
         adapter.groups.select do |group|
-          group.member_uids.include?(uid)
+          if group.memberuid?
+            group.member_uids.include?(uid)
+          else
+            group.member_dns.include?(dn)
+          end
         end
       end
 
@@ -48,6 +53,10 @@ module Gitlab
 
       def adapter
         @adapter ||= Gitlab::LDAP::Adapter.new
+      end
+
+      def config
+        @config ||= Gitlab.config.ldap
       end
     end
   end
