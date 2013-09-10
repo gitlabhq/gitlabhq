@@ -469,7 +469,6 @@ li.commit {
     }
 
     .commit_short_id {
-      float: left;
       min-width: 65px;
       font-family: $monospace_font;
     }
@@ -487,6 +486,17 @@ li.commit {
   .commit-row-info {
     a {
       color: #777;
+    }
+
+    .committed_ago {
+      float: right;
+      @extend .cgray;
+    }
+  }
+
+  &.inline-commit {
+    .commit-row-title {
+      font-size: 13px;
     }
 
     .committed_ago {
