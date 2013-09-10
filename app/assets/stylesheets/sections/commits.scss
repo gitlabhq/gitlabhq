@@ -345,46 +345,6 @@
 }
 
 
-/**
- * COMMIT ROW
- */
-.commit {
-  .browse_code_link_holder {
-    float: right;
-  }
-
-  .committed_ago {
-    float: right;
-    @extend .cgray;
-  }
-
-  .notes_count {
-    float: right;
-    margin-right: 10px;
-  }
-
-  code {
-    background: #FCEEC1;
-    color: $style_color;
-  }
-
-  .commit_short_id {
-    float: left;
-    @extend .lined;
-    min-width: 65px;
-    font-family: $monospace_font;
-  }
-
-  .row_title {
-    font-weight: bold;
-    color: #444;
-    &:hover {
-      color: #444;
-      text-decoration: underline;
-    }
-  }
-}
-
 .file-stats a {
   color: $style_color;
 }
@@ -472,24 +432,6 @@
   line-height: 2;
 }
 
-li.commit {
-  .avatar {
-    width: 24px;
-    top:-5px;
-    margin-right: 5px;
-    margin-left: 10px;
-  }
-
-  code {
-    padding: 2px 2px 0;
-    margin-top: -2px;
-    &:hover {
-      color: black;
-      border: 1px solid #ccc;
-    }
-  }
-}
-
 .commit-breadcrumb {
   padding: 0;
 }
@@ -506,8 +448,50 @@ li.commit {
   }
 }
 
-.commits-row {
-  padding-bottom: 10px;
-  margin-bottom: 10px;
-  border-bottom: 1px solid #DDD;
+.lists-separator {
+  margin: 10px 0;
+  border-top: 1px dashed #CCC;
+}
+
+/**
+ * COMMIT ROW
+ */
+li.commit {
+  padding: 8px;
+
+  .commit-row-title {
+    font-size: 14px;
+    margin-bottom: 2px;
+
+    .notes_count {
+      float: right;
+      margin-right: 10px;
+    }
+
+    .commit_short_id {
+      float: left;
+      min-width: 65px;
+      font-family: $monospace_font;
+    }
+
+    .commit-row-message {
+      color: #555;
+      font-weight: bolder;
+      &:hover {
+        color: #444;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .commit-row-info {
+    a {
+      color: #777;
+    }
+
+    .committed_ago {
+      float: right;
+      @extend .cgray;
+    }
+  }
 }
