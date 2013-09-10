@@ -75,6 +75,7 @@ Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.g
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
 Settings.gitlab.default_projects_features['wall']           = false if Settings.gitlab.default_projects_features['wall'].nil?
 Settings.gitlab.default_projects_features['snippets']       = false if Settings.gitlab.default_projects_features['snippets'].nil?
+Settings.gitlab.default_projects_features['public']         = false if Settings.gitlab.default_projects_features['public'].nil?
 
 #
 # Gravatar

@@ -64,13 +64,6 @@
     margin: 0;
     padding: 0;
     padding: 5px 0;
-    .avatar { position:relative }
-    .commit-author-name,
-    .dash,
-    .committed_ago,
-    .browse_code_link_holder {
-      display: none;
-    }
     list-style: none;
     &:hover {
       background: none;
