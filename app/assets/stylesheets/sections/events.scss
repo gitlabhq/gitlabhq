@@ -56,10 +56,6 @@
     margin-left: 35px;
     margin-right: 100px;
 
-    .commit p {
-      color: #666;
-      padding-top: 5px;
-    }
     .event-info {
       color: #666;
     }
@@ -107,13 +103,6 @@
     }
   }
 
-  ul {
-    .avatar {
-      width: 18px;
-      margin: 2px 4px;
-    }
-  }
-
   &:last-child { border:none }
 
   .event_commits {
@@ -124,12 +113,14 @@
         background: transparent;
         padding: 3px;
         border: none;
-        font-size: 12px;
+        color: #666;
+        .commit-row-title {
+          font-size: 12px;
+        }
       }
       &.commits-stat {
         display: block;
         padding: 3px;
-        margin-top: 3px;
 
         &:hover {
           background: none;
