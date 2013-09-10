@@ -12,25 +12,39 @@ module Gitlab
         # if instance does not use group_base setting
         return true unless Gitlab.config.ldap['group_base'].present?
 
+        # Get LDAP user entry
         ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
-        ldap_groups = ldap_user.groups
-        ldap_groups_cn = ldap_groups.map(&:name)
-        groups = ::Group.where(ldap_cn: ldap_groups_cn)
 
-        # First lets add user to new groups
-        groups.each do |group|
-          group.add_users([user.id], group.ldap_access) if group.ldap_access.present?
-        end
+        # Get all GitLab groups with activated LDAP
+        groups = ::Group.where('ldap_cn IS NOT NULL')
 
-        # Remove groups with LDAP if user lost access to it
-        user.authorized_groups.where('ldap_cn IS NOT NULL').each do |group|
-          if ldap_groups_cn.include?(group.ldap_cn)
-            # ok user still in group
+        # Get LDAP groups based on cn from GitLab groups
+        ldap_groups = groups.pluck(:ldap_cn).map { |cn| Gitlab::LDAP::Group.find_by_cn(cn) }
+        ldap_groups = ldap_groups.compact.uniq
+
+        # Iterate over ldap groups and check user membership
+        ldap_groups.each do |ldap_group|
+          if ldap_group.has_member?(ldap_user)
+            # If user present in LDAP group -> add him to GitLab groups
+            add_user_to_groups(user.id, ldap_group.cn)
           else
-            # user lost access to this group in ldap
-            membership = group.users_groups.where(user_id: user.id).last
-            membership.destroy if membership
+            # If not - remove him from GitLab groups
+            remove_user_from_groups(user.id, ldap_group.cn)
           end
+        end
+      end
+
+      def add_user_to_groups(user_id, group_cn)
+        groups = ::Group.where(ldap_cn: group_cn)
+        groups.each do |group|
+          group.add_users([user_id], group.ldap_access) if group.ldap_access.present?
+        end
+      end
+
+      def remove_user_from_groups(user_id, group_cn)
+        groups = ::Group.where(ldap_cn: group_cn)
+        groups.each do |group|
+          group.users_groups.where(user_id: user_id).destroy_all
         end
       end
     end

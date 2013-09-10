@@ -51,6 +51,10 @@ module Gitlab
         end
       end
 
+      def group(*args)
+        groups(*args).first
+      end
+
       def users(field, value)
         if field.to_sym == :dn
           options = {

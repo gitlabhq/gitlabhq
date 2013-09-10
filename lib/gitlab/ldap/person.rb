@@ -35,16 +35,6 @@ module Gitlab
         entry.dn
       end
 
-      def groups
-        adapter.groups.select do |group|
-          if group.memberuid?
-            group.member_uids.include?(uid)
-          else
-            group.member_dns.include?(dn)
-          end
-        end
-      end
-
       private
 
       def entry
