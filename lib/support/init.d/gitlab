@@ -35,7 +35,7 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ "$USER" != "$app_user" ]; then
-  sudo -u "$app_user" -H $0 "$@"; exit;
+  sudo -u "$app_user" -H -i $0 "$@"; exit;
 fi
 
 # Switch to the gitlab path, if it fails exit with an error.
