@@ -2,8 +2,12 @@
   .project-edit-errors
     = render 'projects/errors'
   .project-edit-content
-    %p.slead
-      New projects are private by default. You choose who can see the project and commit to repository.
+    - if Gitlab.config.gitlab.default_projects_features.public
+      %p.slead
+        New projects are public by default. Any signed in user can see your project but cannot commit to it unless granted access.
+    - else
+      %p.slead
+        New projects are private by default. You choose who can see the project and commit to repository.
     %hr
     = form_for @project, remote: true do |f|
       .control-group.project-name-holder
