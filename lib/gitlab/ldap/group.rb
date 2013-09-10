@@ -7,12 +7,20 @@
 module Gitlab
   module LDAP
     class Group
+      def self.find_by_cn(cn)
+        Gitlab::LDAP::Adapter.new.group(cn)
+      end
+
       def initialize(entry)
         @entry = entry
       end
 
-      def name
+      def cn
         entry.cn.join(" ")
+      end
+
+      def name
+        cn
       end
 
       def path
@@ -25,6 +33,14 @@ module Gitlab
 
       def member_uids
         entry.memberuid
+      end
+
+      def has_member?(user)
+        if memberuid?
+          member_uids.include?(user.uid)
+        else
+          member_dns.include?(user.dn)
+        end
       end
 
       def member_dns
