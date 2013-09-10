@@ -1,9 +1,15 @@
 v 6.1.0
+  - Description field added to Merge Request
+  - API: Sudo api calls (Izaak Alpert)
+  - API: Group membership api (Izaak Alpert)
+  - Improved commit diff
+  - Improved large commit handling (Boyan Tabakov)
   - Rewrite: Init script now less prone to errors and keeps better track of the service.
   - Link issues, merge requests, and commits when they reference each other with GFM
   - Close issues automatically when pushing commits with a special message
   - Project internal ids for issues, mr, milestones
   - Improve user removal from admin area
+  - Invalidate events cache when project was moved
   - Remove deprecated classes and rake tasks
   - Add event filter for group and project show pages
   - Add links to create branch/tag from project home page
