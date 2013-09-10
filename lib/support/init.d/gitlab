@@ -32,6 +32,10 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 
 ### Here ends user configuration ###
 
+#Ensure /usr/local/bin is in the $PATH
+if ! (echo $PATH | grep '/usr/local/bin' &> /dev/null);then
+  export PATH="/usr/local/bin:$PATH"
+fi
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ "$USER" != "$app_user" ]; then
