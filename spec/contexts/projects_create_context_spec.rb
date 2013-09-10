@@ -42,21 +42,24 @@ describe Projects::CreateContext do
         stub_const("Settings", Class.new)
         Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
       end
+
       context 'should be public when setting is public' do
         before do
           @settings.stub(:public) { true }
           @project = create_project(@user, @opts)
         end
+
         it { @project.public.should be_true }
       end
+
       context 'should be private when setting is not public' do
         before do
           @settings.stub(:public) { false }
           @project = create_project(@user, @opts)
         end
+
         it { @project.public.should be_false }
       end
-
     end
   end
 
