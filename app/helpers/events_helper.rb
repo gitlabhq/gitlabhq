@@ -123,6 +123,8 @@ module EventsHelper
   end
 
   def event_note(text)
-    sanitize(markdown(truncate(text, length: 150)), tags: %w(a img b pre p))
+    text = first_line(text)
+    text = truncate(text, length: 150)
+    sanitize(markdown(text), tags: %w(a img b pre p))
   end
 end
