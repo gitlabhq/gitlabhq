@@ -196,29 +196,63 @@ describe User do
     it { User.not_in_project(@project).should include(@user, @project.owner) }
   end
 
-  describe 'normal user' do
-    let(:user) { create(:user, name: 'John Smith') }
+  describe 'user creation' do
+    describe 'normal user' do
+      let(:user) { create(:user, name: 'John Smith') }
 
-    it { user.is_admin?.should be_false }
-    it { user.require_ssh_key?.should be_true }
-    it { user.can_create_group?.should be_true }
-    it { user.can_create_project?.should be_true }
-    it { user.first_name.should == 'John' }
-  end
-
-  describe 'without defaults' do
-    let(:user) { User.new }
-    it "should not apply defaults to user" do
-      user.projects_limit.should == 10
-      user.can_create_group.should == true
+      it { user.is_admin?.should be_false }
+      it { user.require_ssh_key?.should be_true }
+      it { user.can_create_group?.should be_true }
+      it { user.can_create_project?.should be_true }
+      it { user.first_name.should == 'John' }
     end
-  end
 
-  describe 'with defaults' do
-    let(:user) { User.new.with_defaults }
-    it "should apply defaults to user" do
-      user.projects_limit.should == 42
-      user.can_create_group.should == false
+    describe 'without defaults' do
+      let(:user) { User.new }
+      it "should not apply defaults to user" do
+        user.projects_limit.should == 10
+        user.can_create_group.should be_true
+        user.theme_id.should == Gitlab::Theme::BASIC
+      end
+    end
+    context 'as admin' do
+      describe 'with defaults' do
+        let(:user) { User.build_user({}, as: :admin) }
+        it "should apply defaults to user" do
+          user.projects_limit.should == 42
+          user.can_create_group.should be_false
+          user.theme_id.should == Gitlab::Theme::BASIC
+        end
+      end
+
+      describe 'with default overrides' do
+        let(:user) { User.build_user({projects_limit: 123, can_create_group: true, can_create_team: true, theme_id: Gitlab::Theme::MARS}, as: :admin) }
+        it "should apply defaults to user" do
+          user.projects_limit.should == 123
+          user.can_create_group.should be_true
+          user.theme_id.should == Gitlab::Theme::MARS
+        end
+      end
+    end
+
+    context 'as user' do
+      describe 'with defaults' do
+        let(:user) { User.build_user }
+        it "should apply defaults to user" do
+          user.projects_limit.should == 42
+          user.can_create_group.should be_false
+          user.theme_id.should == Gitlab::Theme::BASIC
+        end
+      end
+
+      describe 'with default overrides' do
+        let(:user) { User.build_user(projects_limit: 123, can_create_group: true, theme_id: Gitlab::Theme::MARS) }
+        it "should apply defaults to user" do
+          user.projects_limit.should == 42
+          user.can_create_group.should be_false
+          user.theme_id.should == Gitlab::Theme::BASIC
+        end
+      end
     end
   end
 
