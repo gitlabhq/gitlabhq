@@ -175,10 +175,9 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     @project ||= Project.find_by_name!("Shop")
   end
 
-  #Verify a link is generated against the correct project
+  # Verify a link is generated against the correct project
   def verify_commit_link(container_div, container_project)
-    #This should force a wait for the javascript to execute
-    find(:div,container_div).should have_css ".browse_code_link_holder"
+    # This should force a wait for the javascript to execute
     find(:div,container_div).find(".commit_short_id")['href'].should have_content "#{container_project.path_with_namespace}/commit"
   end
 end
