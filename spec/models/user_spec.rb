@@ -139,6 +139,19 @@ describe User do
     it { @user.owned_groups.should == [@group] }
   end
 
+  describe 'group multiple owners' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @user = create :user
+      @user2 = create :user
+      @group = create :group, owner: @user
+
+      @group.add_users([@user2.id], UsersGroup::OWNER)
+    end
+
+    it { @user2.several_namespaces?.should be_true }
+  end
+
   describe 'namespaced' do
     before do
       ActiveRecord::Base.observers.enable(:user_observer)
