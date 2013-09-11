@@ -34,7 +34,7 @@ GitLab supports the following databases:
     mysql> \q
 
     # Try connecting to the new database with the new user
-    sudo -u git -H mysql -u gitlab -p -D gitlabhq_production
+    sudo -u git -h mysql -u gitlab -p -D gitlabhq_production
 
     # Type the password you replaced $password with earlier
 
