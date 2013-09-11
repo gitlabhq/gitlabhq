@@ -187,7 +187,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.3.0'
+  gem 'poltergeist', '~> 1.4.1'
 
   gem 'spork', '~> 1.0rc'
   gem 'jasmine'
