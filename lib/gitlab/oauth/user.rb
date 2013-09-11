@@ -27,7 +27,7 @@ module Gitlab
             password_confirmation: password,
           }
 
-          user = model.new(opts, as: :admin).with_defaults
+          user = model.build_user(opts, as: :admin)
           user.save!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
