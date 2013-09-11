@@ -207,7 +207,11 @@ class User < ActiveRecord::Base
     end
 
     def defaults
-      { projects_limit: Gitlab.config.gitlab.default_projects_limit, can_create_group: Gitlab.config.gitlab.default_can_create_group, theme_id: Gitlab::Theme::BASIC }
+      {
+        projects_limit: Gitlab.config.gitlab.default_projects_limit,
+        can_create_group: Gitlab.config.gitlab.default_can_create_group,
+        theme_id: Gitlab::Theme::BASIC
+      }
     end
   end
 
@@ -379,12 +383,11 @@ class User < ActiveRecord::Base
     end
   end
 
-  :private
+  private
 
   def with_defaults
     User.defaults.each do |k,v|
       self.send("#{k}=",v)
     end
   end
-
 end
