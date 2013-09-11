@@ -3,6 +3,8 @@ class Notify < ActionMailer::Base
   include Emails::MergeRequests
   include Emails::Notes
   include Emails::Projects
+  include Emails::Profile
+  include Emails::Groups
 
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
@@ -18,18 +20,6 @@ class Notify < ActionMailer::Base
   # Just send email with 3 seconds delay
   def self.delay
     delay_for(2.seconds)
-  end
-
-  def new_user_email(user_id, password)
-    @user = User.find(user_id)
-    @password = password
-    mail(to: @user.email, subject: subject("Account was created for you"))
-  end
-
-  def new_ssh_key_email(key_id)
-    @key = Key.find(key_id)
-    @user = @key.user
-    mail(to: @user.email, subject: subject("SSH key was added to your account"))
   end
 
   private
