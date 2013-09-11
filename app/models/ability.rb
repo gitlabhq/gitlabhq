@@ -135,6 +135,10 @@ class Ability
     def group_abilities user, group
       rules = []
 
+      if group.users.include?(user)
+        rules << :read_group
+      end
+
       # Only group owner and administrators can manage group
       if group.owners.include?(user) || user.admin?
         rules << [
