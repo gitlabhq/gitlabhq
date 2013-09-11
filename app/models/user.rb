@@ -383,8 +383,6 @@ class User < ActiveRecord::Base
     end
   end
 
-  private
-
   def with_defaults
     User.defaults.each do |k,v|
       self.send("#{k}=",v)
