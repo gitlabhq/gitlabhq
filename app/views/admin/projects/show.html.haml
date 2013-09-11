@@ -12,7 +12,8 @@
       %ul.well-list
         %li
           %span.light Name:
-          %strong= @project.name
+          %strong
+            = link_to @project.name, project_path(@project)
         %li
           %span.light Namespace:
           %strong
