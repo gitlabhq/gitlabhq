@@ -7,7 +7,6 @@ module Emails
            subject: subject("access to project was granted"))
     end
 
-
     def project_was_moved_email(project_id, user_id)
       @user = User.find user_id
       @project = Project.find project_id
