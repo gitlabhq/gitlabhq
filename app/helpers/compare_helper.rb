@@ -7,6 +7,6 @@ module CompareHelper
   end
 
   def compare_mr_path
-    new_project_merge_request_path(@project, merge_request: {source_branch: params[:from], target_branch: params[:to]})
+    new_project_merge_request_path(@project, merge_request: {source_branch: params[:to], target_branch: params[:from]})
   end
 end
