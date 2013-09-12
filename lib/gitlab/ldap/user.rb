@@ -26,7 +26,7 @@ module Gitlab
             # * When user already has account and need to link his LDAP account.
             # * LDAP uid changed for user with same email and we need to update his uid
             #
-            user = model.find_by_email(email)
+            user = find_user(email)
 
             if user
               user.update_attributes(extern_uid: uid, provider: provider)
@@ -40,6 +40,15 @@ module Gitlab
             end
           end
 
+          user
+        end
+
+        def find_user(email)
+          if user = model.find_by_email(email)
+          elsif ldap_conf['allow_username_or_email_login']
+            uname = (email.partition('@').first) unless email.nil?
+            user = model.find_by_username(uname)
+          end
           user
         end
 
