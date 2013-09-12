@@ -13,4 +13,4 @@ Feature: Admin Users
     And Input non ascii char in username
     And Click save
     Then See username error message
-    And Not chenged form action url
+    And Not changed form action url
