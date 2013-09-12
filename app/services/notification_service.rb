@@ -148,6 +148,14 @@ class NotificationService
     mailer.project_access_granted_email(users_project.id)
   end
 
+  def new_group_member(users_group)
+    mailer.group_access_granted_email(users_group.id)
+  end
+
+  def update_group_member(users_group)
+    mailer.group_access_granted_email(users_group.id)
+  end
+
   protected
 
   # Get project users with WATCH notification level
