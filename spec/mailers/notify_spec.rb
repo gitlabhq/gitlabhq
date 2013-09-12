@@ -347,4 +347,24 @@ describe Notify do
       end
     end
   end
+
+  describe 'group access changed' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:membership) { create(:users_group, group: group, user: user) }
+
+    subject { Notify.group_access_granted_email(membership.id) }
+
+    it 'has the correct subject' do
+      should have_subject /access to group was granted/
+    end
+
+    it 'contains name of project' do
+      should have_body_text /#{group.name}/
+    end
+
+    it 'contains new user role' do
+      should have_body_text /#{membership.human_access}/
+    end
+  end
 end
