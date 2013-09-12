@@ -6,10 +6,9 @@ form {
   }
 }
 
-input {
-  &.input-xpadding {
-    padding: 6px 10px;
-  }
+input.input-xpadding,
+.add-on.input-xpadding {
+  padding: 6px 10px;
 }
 
 .control-group {
