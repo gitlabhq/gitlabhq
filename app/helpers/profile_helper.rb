@@ -10,10 +10,10 @@ module ProfileHelper
   end
 
   def show_profile_social_tab?
-    Gitlab.config.omniauth.enabled && !current_user.ldap_user?
+    Gitlab.config.omniauth.enabled && !current_user.ldap_user? && !current_user.pam_user?
   end
 
   def show_profile_remove_tab?
-    Gitlab.config.gitlab.signup_enabled && !current_user.ldap_user?
+    Gitlab.config.gitlab.signup_enabled && !current_user.ldap_user? && !current_user.pam_user?
   end
 end

@@ -31,7 +31,7 @@ module Gitlab
           user.save!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
-          if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
+          if Gitlab.config.omniauth['block_auto_created_users'] && !ldap? && !pam?
             user.block
           end
 
@@ -88,6 +88,10 @@ module Gitlab
 
         def ldap?
           provider == 'ldap'
+        end
+
+        def pam?
+          provider == 'pam'
         end
       end
     end

@@ -4,6 +4,8 @@
   You can change your password, username and private token here.
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
+  - elsif current_user.pam_user?
+    Some options are unavailable for PAM accounts
 %hr
 
 

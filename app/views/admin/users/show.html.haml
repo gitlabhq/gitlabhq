@@ -60,6 +60,12 @@
             %strong
               = @user.extern_uid
 
+        - elsif @user.pam_user?
+          %li
+            %span.light PAM uid:
+            %strong
+              = @user.extern_uid
+
         - if @user.created_by
           %li
             %span.light Created by:

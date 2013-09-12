@@ -70,7 +70,7 @@ class ProfilesController < ApplicationController
   end
 
   def authorize_change_password!
-    return render_404 if @user.ldap_user?
+    return render_404 if @user.ldap_user? || @user.pam_user?
   end
 
   def authorize_change_username!
