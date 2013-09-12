@@ -3,6 +3,7 @@ module CompareHelper
     params[:from].present? && params[:to].present? &&
       @repository.branch_names.include?(params[:from]) &&
       @repository.branch_names.include?(params[:to]) &&
+      params[:from] != params[:to] &&
       !@refs_are_same
   end
 
