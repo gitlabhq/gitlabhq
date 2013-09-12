@@ -479,11 +479,13 @@ namespace :gitlab do
         return
       end
 
-      if File.stat(repo_base_path).uid == uid_for(gitlab_shell_ssh_user) &&
-         File.stat(repo_base_path).gid == gid_for(gitlab_shell_owner_group)
+      uid = uid_for(gitlab_shell_ssh_user)
+      gid = gid_for(gitlab_shell_owner_group)
+      if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
         puts "yes".green
       else
         puts "no".red
+        puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".blue
         try_fixing_it(
           "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
         )
