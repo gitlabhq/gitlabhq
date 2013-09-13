@@ -230,6 +230,12 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     cd /home/git/gitlab
 
     sudo gem install charlock_holmes --version '0.6.9.4'
+    
+    #check bundle is installed or not 
+    which bundle
+    
+    #if you get 'command not found',then run the following
+    gem install bundler
 
     # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
