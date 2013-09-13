@@ -2,13 +2,7 @@
   .project-edit-errors
     = render 'projects/errors'
   .project-edit-content
-    - if Gitlab.config.gitlab.default_projects_features.public
-      %p.slead
-        New projects are public by default. Any signed in user can see your project but cannot commit to it unless granted access.
-    - else
-      %p.slead
-        New projects are private by default. You choose who can see the project and commit to repository.
-    %hr
+
     = form_for @project, remote: true do |f|
       .control-group.project-name-holder
         = f.label :name do
@@ -53,6 +47,12 @@
           %span.light (optional)
         .controls
           = f.text_area :description, placeholder: "awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
+      .control-group.project-public-holder
+        = f.label :public do
+          %span Public project
+        .controls
+          = f.check_box :public, { :checked => Gitlab.config.gitlab.default_projects_features.public }, true, false
+          %span.help-inline Make project visible to everyone
 
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
