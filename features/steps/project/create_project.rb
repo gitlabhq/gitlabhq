@@ -17,4 +17,26 @@ class CreateProject < Spinach::FeatureSteps
     page.should have_content "git remote"
     page.should have_content Project.last.url_to_repo
   end
+
+  Then 'I see empty project instuctions' do
+    page.should have_content "git init"
+    page.should have_content "git remote"
+    page.should have_content Project.last.url_to_repo
+  end
+
+  And 'I click on HTTP' do
+    click_button 'HTTP'
+  end
+
+  Then 'Remote url should update to http link' do
+    page.should have_content "git remote add origin #{Project.last.http_url_to_repo}"
+  end
+
+  And 'If I click on SSH' do
+    click_button 'SSH'
+  end
+
+  Then 'Remote url should update to ssh link' do
+    page.should have_content "git remote add origin #{Project.last.url_to_repo}"
+  end
 end
