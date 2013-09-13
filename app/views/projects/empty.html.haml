@@ -29,7 +29,8 @@
           touch README
           git add README
           git commit -m 'first commit'
-          git remote add origin #{@project.url_to_repo}
+        %span.clone= "git remote add origin #{@project.url_to_repo}"
+        :preserve
           git push -u origin master
 
     %fieldset
@@ -37,7 +38,8 @@
       %pre.dark
         :preserve
           cd existing_git_repo
-          git remote add origin #{@project.url_to_repo}
+        %span.clone= "git remote add origin #{@project.url_to_repo}"
+        :preserve
           git push -u origin master
 
   - if can? current_user, :remove_project, @project
