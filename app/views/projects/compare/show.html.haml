@@ -20,3 +20,16 @@
   - unless @diffs.empty?
     %h4 Diff
     = render "projects/commits/diffs", diffs: @diffs, project: @project
+- else
+  .light-well
+    %center
+      %h4
+        There isn't anything to compare.
+      %p.slead
+        - if params[:to] == params[:from]
+          You'll need to use different branch names to get a valid comparison.
+        - else
+          %span.label-branch #{params[:from]}
+          and
+          %span.label-branch #{params[:to]}
+          are the same.

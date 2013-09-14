@@ -206,17 +206,6 @@ describe "On a merge request diff", js: true, focus: true do
           find(".js-note-preview-button").trigger("click")
         end
       end
-
-      # TODO: fix
-      #it 'should check if previews were rendered separately' do
-      #within("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185'] + .js-temp-notes-holder") do
-      #should have_css(".js-note-preview", text: "One comment on line 185")
-      #end
-
-      #within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .js-temp-notes-holder") do
-      #should have_css(".js-note-preview", text: "Another comment on line 17")
-      #end
-      #end
     end
 
     describe "posting a note" do
@@ -239,42 +228,8 @@ describe "On a merge request diff", js: true, focus: true do
         should have_css(".notes_holder .note", count: 1)
         should have_link("Reply")
       end
-
-      # TODO: fix
-      #it "should remove last note of a discussion" do
-      # within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .notes-holder") do
-      #   find(".js-note-delete").click
-      # end
-      # should_not have_css(".note_holder")
-      #end
     end
   end
-
-  # TODO: fix
-  #describe "when replying to a note" do
-  #before do
-  ## create first note
-  # find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184"]').click
-
-  # within(".js-temp-notes-holder") do
-  # fill_in "note[note]", with: "One comment on line 184"
-  # click_button("Add Comment")
-  #end
-
-  # within(".js-temp-notes-holder") do
-  # find(".js-discussion-reply-button").click
-  # fill_in "note[note]", with: "An additional comment in reply"
-  # click_button("Add Comment")
-  # end
-  #end
-
-  #it 'should be inserted and form removed from reply' do
-  # should have_content("An additional comment in reply")
-  # within(".notes_holder") { should have_css(".note", count: 2) }
-  # within(".notes_holder") { should have_no_css("form") }
-  # within(".notes_holder") { should have_link("Reply") }
-  # end
-  #end
 end
 
 describe "On merge request discussion", js: true do

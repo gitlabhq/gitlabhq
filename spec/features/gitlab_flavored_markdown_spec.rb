@@ -11,7 +11,7 @@ describe "GitLab Flavored Markdown" do
   end
 
   before do
-    Commit.any_instance.stub(title: "fix ##{issue.id}\n\nask @#{fred.username} for details")
+    Commit.any_instance.stub(title: "fix ##{issue.iid}\n\nask @#{fred.username} for details")
   end
 
   let(:commit) { project.repository.commit }
@@ -25,13 +25,13 @@ describe "GitLab Flavored Markdown" do
     it "should render title in commits#index" do
       visit project_commits_path(project, 'master', limit: 1)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
 
     it "should render title in commits#show" do
       visit project_commit_path(project, commit)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
 
     it "should render description in commits#show" do
@@ -43,7 +43,7 @@ describe "GitLab Flavored Markdown" do
     it "should render title in repositories#branches" do
       visit project_branches_path(project)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
   end
 
@@ -57,20 +57,20 @@ describe "GitLab Flavored Markdown" do
                       author: @user,
                       assignee: @user,
                       project: project,
-                      title: "fix ##{@other_issue.id}",
+                      title: "fix ##{@other_issue.iid}",
                       description: "ask @#{fred.username} for details")
     end
 
     it "should render subject in issues#index" do
       visit project_issues_path(project)
 
-      page.should have_link("##{@other_issue.id}")
+      page.should have_link("##{@other_issue.iid}")
     end
 
     it "should render subject in issues#show" do
       visit project_issue_path(project, @issue)
 
-      page.should have_link("##{@other_issue.id}")
+      page.should have_link("##{@other_issue.iid}")
     end
 
     it "should render details in issues#show" do
@@ -83,19 +83,19 @@ describe "GitLab Flavored Markdown" do
 
   describe "for merge requests" do
     before do
-      @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix ##{issue.id}")
+      @merge_request = create(:merge_request, source_project: project, target_project: project, title: "fix ##{issue.iid}")
     end
 
     it "should render title in merge_requests#index" do
       visit project_merge_requests_path(project)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
 
     it "should render title in merge_requests#show" do
       visit project_merge_request_path(project, @merge_request)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
   end
 
@@ -104,20 +104,20 @@ describe "GitLab Flavored Markdown" do
     before do
       @milestone = create(:milestone,
                           project: project,
-                          title: "fix ##{issue.id}",
+                          title: "fix ##{issue.iid}",
                           description: "ask @#{fred.username} for details")
     end
 
     it "should render title in milestones#index" do
       visit project_milestones_path(project)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
 
     it "should render title in milestones#show" do
       visit project_milestone_path(project, @milestone)
 
-      page.should have_link("##{issue.id}")
+      page.should have_link("##{issue.iid}")
     end
 
     it "should render description in milestones#show" do

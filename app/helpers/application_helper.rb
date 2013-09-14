@@ -235,4 +235,11 @@ module ApplicationHelper
       "Search"
     end
   end
+
+  def first_line(str)
+    lines = str.split("\n")
+    line = lines.first
+    line += "..." if lines.size > 1
+    line
+  end
 end

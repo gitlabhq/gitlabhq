@@ -23,7 +23,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '2.0.1'
+gem "gitlab_git", '2.1.1'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
@@ -76,8 +76,7 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 # Asciidoc to HTML
 gem  "asciidoctor"
 
-# Servers
-gem "puma", '~> 2.3.1', group: :puma
+# Application server
 gem "unicorn", '~> 4.6.3', group: :unicorn
 
 # State machine
@@ -135,7 +134,7 @@ group :assets do
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
-  gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
+  gem "raphael-rails", "~> 2.1.2"
   gem 'bootstrap-sass'
   gem "font-awesome-rails"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
@@ -188,7 +187,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.3.0'
+  gem 'poltergeist', '~> 1.4.1'
 
   gem 'spork', '~> 1.0rc'
   gem 'jasmine'

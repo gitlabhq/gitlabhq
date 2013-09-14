@@ -24,4 +24,9 @@ Gitlab::Seeder.quiet do
     }])
     print('.')
   end
+
+  Issue.all.map do |issue|
+    issue.set_iid
+    issue.save
+  end
 end

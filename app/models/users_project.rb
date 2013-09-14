@@ -5,8 +5,8 @@
 #  id                 :integer          not null, primary key
 #  user_id            :integer          not null
 #  project_id         :integer          not null
-#  created_at         :datetime
-#  updated_at         :datetime
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
 #  project_access     :integer          default(0), not null
 #  notification_level :integer          default(3), not null
 #
@@ -14,11 +14,7 @@
 class UsersProject < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Notifiable
-
-  GUEST     = 10
-  REPORTER  = 20
-  DEVELOPER = 30
-  MASTER    = 40
+  include Gitlab::Access
 
   attr_accessible :user, :user_id, :project_access
 
@@ -27,7 +23,7 @@ class UsersProject < ActiveRecord::Base
 
   validates :user, presence: true
   validates :user_id, uniqueness: { scope: [:project_id], message: "already exists in project" }
-  validates :project_access, inclusion: { in: [GUEST, REPORTER, DEVELOPER, MASTER] }, presence: true
+  validates :project_access, inclusion: { in: Gitlab::Access.values }, presence: true
   validates :project, presence: true
 
   delegate :name, :username, :email, to: :user, prefix: true
@@ -103,27 +99,19 @@ class UsersProject < ActiveRecord::Base
     end
 
     def roles_hash
-      {
-        guest: GUEST,
-        reporter: REPORTER,
-        developer: DEVELOPER,
-        master: MASTER
-      }
+      Gitlab::Access.sym_options
     end
 
     def access_roles
-      {
-        "Guest"     => GUEST,
-        "Reporter"  => REPORTER,
-        "Developer" => DEVELOPER,
-        "Master"    => MASTER
-      }
+      Gitlab::Access.options
     end
   end
 
-  def project_access_human
-    Project.access_options.key(self.project_access)
+  def access_field
+    project_access
   end
 
-  alias_method :human_access, :project_access_human
+  def owner?
+    project.owner == user
+  end
 end

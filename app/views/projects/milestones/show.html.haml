@@ -8,7 +8,10 @@
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn grouped" do
         %i.icon-edit
         Edit
-      = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove"
+      - if @milestone.active?
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove"
+      - else
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn"
 
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success

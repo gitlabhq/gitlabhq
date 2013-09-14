@@ -256,6 +256,10 @@ class Event < ActiveRecord::Base
     target.commit_id
   end
 
+  def target_iid
+    target.respond_to?(:iid) ? target.iid : target_id
+  end
+
   def note_short_commit_id
     note_commit_id[0..8]
   end
@@ -280,6 +284,14 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def note_target_iid
+    if note_target.respond_to?(:iid)
+      note_target.iid
+    else
+      note_target_id
+    end.to_s
+  end
+
   def wall_note?
     target.noteable_type.blank?
   end
@@ -290,5 +302,15 @@ class Event < ActiveRecord::Base
     else
       "Wall"
     end.downcase
+  end
+
+  def body?
+    if push?
+      push_with_commits?
+    elsif note?
+      true
+    else
+      target.respond_to? :title
+    end
   end
 end

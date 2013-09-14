@@ -4,7 +4,9 @@ admin = User.create(
   username: 'root',
   password: "5iveL!fe",
   password_confirmation: "5iveL!fe",
-  password_expires_at: Time.now
+  password_expires_at: Time.now,
+  theme_id: Gitlab::Theme::MARS
+
 )
 
 admin.projects_limit = 10000

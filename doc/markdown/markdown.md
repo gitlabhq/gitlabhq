@@ -27,8 +27,9 @@ Table of Contents
 [Inline HTML](#toc_25)
 [Horizontal Rule](#toc_26)
 [Line Breaks](#toc_27)
+[Tables](#toc_28)
 
-[References](#toc_28)
+[References](#toc_29)
 ---------------------
 
 ----------------------------------------------
@@ -439,6 +440,27 @@ This line is separated from the one above by two newlines, so it will be a *sepa
 
 This line is also begins a separate paragraph, but...  
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
+
+
+<a name="tables"/>
+## Tables
+
+Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
+
+```
+| header 1 | header 2 |
+| -------- | -------- |
+| cell 1   | cell 2   |
+| cell 3   | cell 4   |
+```
+
+Code above produces next output:
+
+| header 1 | header 2 |
+| -------- | -------- |
+| cell 1   | cell 2   |
+| cell 3   | cell 4   |
+
 
 ------------
 

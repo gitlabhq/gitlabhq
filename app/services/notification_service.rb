@@ -107,17 +107,18 @@ class NotificationService
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
-    if note.commit_id.present?
-      opts.merge!(commit_id: note.commit_id)
-    else
-      opts.merge!(noteable_id: note.noteable_id)
-    end
-
     target = note.noteable
     if target.respond_to?(:participants)
       recipients = target.participants
     else
       recipients = note.mentioned_users
+    end
+
+    if note.commit_id.present?
+      opts.merge!(commit_id: note.commit_id)
+      recipients << note.commit_author
+    else
+      opts.merge!(noteable_id: note.noteable_id)
     end
 
     # Get users who left comment in thread
@@ -146,6 +147,14 @@ class NotificationService
 
   def update_team_member(users_project)
     mailer.project_access_granted_email(users_project.id)
+  end
+
+  def new_group_member(users_group)
+    mailer.group_access_granted_email(users_group.id)
+  end
+
+  def update_group_member(users_group)
+    mailer.group_access_granted_email(users_group.id)
   end
 
   protected

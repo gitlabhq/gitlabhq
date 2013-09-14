@@ -3,9 +3,9 @@
     Projects (#{projects.count})
     - if can? current_user, :manage_group, @group
       %span.pull-right
-        = link_to new_project_path(namespace_id: @group.id), class: "btn" do
+        = link_to new_project_path(namespace_id: @group.id), class: "btn btn-new" do
           %i.icon-plus
-          New Project
+          New project
   %ul.well-list
     - if projects.blank?
       %p.nothing_here_message This groups has no projects yet

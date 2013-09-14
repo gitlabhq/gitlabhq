@@ -13,7 +13,7 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def new
-    @user = User.new.with_defaults
+    @user = User.build_user
   end
 
   def edit
@@ -44,7 +44,7 @@ class Admin::UsersController < Admin::ApplicationController
       password_expires_at: Time.now
     }
 
-    @user = User.new(params[:user].merge(opts), as: :admin)
+    @user = User.build_user(params[:user].merge(opts), as: :admin)
     @user.admin = (admin && admin.to_i > 0)
     @user.created_by_id = current_user.id
 
@@ -83,9 +83,10 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def destroy
-    if user.personal_projects.count > 0
-      redirect_to admin_users_path, alert: "User is a project owner and can't be removed." and return
-    end
+    # 1. Remove groups where user is the only owner
+    user.solo_owned_groups.map(&:destroy)
+
+    # 2. Remove user with all authored content including personal projects
     user.destroy
 
     respond_to do |format|

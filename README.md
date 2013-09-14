@@ -14,7 +14,7 @@
 
 * powered by Ruby on Rails
 * completely free and open source (MIT license)
-* used by more than 10.000 organizations to keep their code secure
+* used by more than 25.000 organizations to keep their code secure
 
 ### Code status
 
@@ -80,7 +80,7 @@ Since 2011 GitLab is released on the 22nd of every month. Every new release incl
 
 * [Changelog](CHANGELOG)
 
-* Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status ["started"](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
+* Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
 
 ### Run in production mode

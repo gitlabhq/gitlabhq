@@ -7,11 +7,13 @@ class MergeRequestObserver < ActivityObserver
     end
 
     notification.new_merge_request(merge_request, current_user)
+
+    merge_request.create_cross_references!(merge_request.project, current_user)
   end
 
   def after_close(merge_request, transition)
     create_event(merge_request, Event::CLOSED)
-    Note.create_status_change_note(merge_request, merge_request.target_project, current_user, merge_request.state)
+    Note.create_status_change_note(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
 
     notification.close_mr(merge_request, current_user)
   end
@@ -33,11 +35,13 @@ class MergeRequestObserver < ActivityObserver
 
   def after_reopen(merge_request, transition)
     create_event(merge_request, Event::REOPENED)
-    Note.create_status_change_note(merge_request, merge_request.target_project, current_user, merge_request.state)
+    Note.create_status_change_note(merge_request, merge_request.target_project, current_user, merge_request.state, nil)
   end
 
   def after_update(merge_request)
     notification.reassigned_merge_request(merge_request, current_user) if merge_request.is_being_reassigned?
+
+    merge_request.notice_added_references(merge_request.project, current_user)
   end
 
   def create_event(record, status)

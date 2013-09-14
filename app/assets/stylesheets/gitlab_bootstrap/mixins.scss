@@ -89,6 +89,12 @@
   h2 { margin-top: 25px;}
   h3 { margin-top: 20px;}
   h4 { margin-top: 15px;}
+
+  blockquote p {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.5;
+  }
 }
 
 @mixin page-title {

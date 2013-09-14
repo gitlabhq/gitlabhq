@@ -18,6 +18,7 @@ module LoginHelpers
     fill_in "user_login", with: user.email
     fill_in "user_password", with: "123456"
     click_button "Sign in"
+    Thread.current[:current_user] = user
   end
 
   def logout

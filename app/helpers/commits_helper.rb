@@ -56,8 +56,9 @@ module CommitsHelper
     end
   end
 
-  def commit_to_html commit, project
-    escape_javascript(render 'projects/commits/commit', commit: commit, project: project) unless commit.nil?
+  def commit_to_html(commit, project, inline = true)
+    template = inline ? "inline_commit" : "commit"
+    escape_javascript(render "projects/commits/#{template}", commit: commit, project: project) unless commit.nil?
   end
 
   def diff_line_content(line)

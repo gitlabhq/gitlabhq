@@ -6,6 +6,7 @@
     &nbsp;
     %span.cgray You will only see events from projects in this group
     %hr
+    = render 'shared/event_filter'
     - if @events.any?
       .content_list
     - else
