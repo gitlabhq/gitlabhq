@@ -66,7 +66,7 @@ describe API::API do
       }.to change { User.count }.by(1)
       user = User.find_by_username(attr[:username])
       user.projects_limit.should == limit
-      user.theme_id.should == Gitlab::Theme::BASIC
+      user.theme_id.should == Gitlab::Theme::MARS
       Gitlab.config.gitlab.unstub(:default_projects_limit)
     end
 

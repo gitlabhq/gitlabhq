@@ -209,6 +209,7 @@ describe User do
 
     describe 'without defaults' do
       let(:user) { User.new }
+
       it "should not apply defaults to user" do
         user.projects_limit.should == 10
         user.can_create_group.should be_true
@@ -218,19 +219,21 @@ describe User do
     context 'as admin' do
       describe 'with defaults' do
         let(:user) { User.build_user({}, as: :admin) }
+
         it "should apply defaults to user" do
           user.projects_limit.should == 42
           user.can_create_group.should be_false
-          user.theme_id.should == Gitlab::Theme::BASIC
+          user.theme_id.should == Gitlab::Theme::MARS
         end
       end
 
       describe 'with default overrides' do
-        let(:user) { User.build_user({projects_limit: 123, can_create_group: true, can_create_team: true, theme_id: Gitlab::Theme::MARS}, as: :admin) }
+        let(:user) { User.build_user({projects_limit: 123, can_create_group: true, can_create_team: true, theme_id: Gitlab::Theme::BASIC}, as: :admin) }
+
         it "should apply defaults to user" do
           user.projects_limit.should == 123
           user.can_create_group.should be_true
-          user.theme_id.should == Gitlab::Theme::MARS
+          user.theme_id.should == Gitlab::Theme::BASIC
         end
       end
     end
@@ -238,26 +241,29 @@ describe User do
     context 'as user' do
       describe 'with defaults' do
         let(:user) { User.build_user }
+
         it "should apply defaults to user" do
           user.projects_limit.should == 42
           user.can_create_group.should be_false
-          user.theme_id.should == Gitlab::Theme::BASIC
+          user.theme_id.should == Gitlab::Theme::MARS
         end
       end
 
       describe 'with default overrides' do
-        let(:user) { User.build_user(projects_limit: 123, can_create_group: true, theme_id: Gitlab::Theme::MARS) }
+        let(:user) { User.build_user(projects_limit: 123, can_create_group: true, theme_id: Gitlab::Theme::BASIC) }
+
         it "should apply defaults to user" do
           user.projects_limit.should == 42
           user.can_create_group.should be_false
-          user.theme_id.should == Gitlab::Theme::BASIC
+          user.theme_id.should == Gitlab::Theme::MARS
         end
       end
     end
   end
 
   describe 'by_username_or_id' do
-    let(:user1){create(:user, username: 'foo')}
+    let(:user1) { create(:user, username: 'foo') }
+
     it "should get the correct user" do
       User.by_username_or_id(user1.id).should == user1
       User.by_username_or_id('foo').should == user1
