@@ -18,7 +18,7 @@ module Projects
         snippets_enabled: default_features.snippets,
         merge_requests_enabled: default_features.merge_requests,
         public: default_features.public
-      }
+      }.stringify_keys
 
       @project = Project.new(default_opts.merge(params))
 
