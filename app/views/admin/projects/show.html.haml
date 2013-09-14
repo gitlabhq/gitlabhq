@@ -99,7 +99,7 @@
       %ul.well-list.team_members
         - @project.users_projects.each do |users_project|
           - user = users_project.user
-          %li
+          %li.users_project
             %strong
               = link_to user.name, admin_user_path(user)
             .pull-right
@@ -107,5 +107,5 @@
                 %span.light Owner
               - else
                 %span.light= users_project.human_access
-                = link_to admin_project_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn btn-small btn-remove" do
+                = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, remote: true, class: "btn btn-small btn-remove" do
                   %i.icon-remove
