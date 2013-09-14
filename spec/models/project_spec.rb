@@ -58,11 +58,11 @@ describe Project do
     let!(:project) { create(:project) }
 
     it { should validate_presence_of(:name) }
-    it { should validate_uniqueness_of(:name) }
+    it { should validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { should ensure_length_of(:name).is_within(0..255) }
 
     it { should validate_presence_of(:path) }
-    it { should validate_uniqueness_of(:path) }
+    it { should validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { should ensure_length_of(:path).is_within(0..255) }
     it { should ensure_length_of(:description).is_within(0..2000) }
     it { should validate_presence_of(:creator) }
@@ -157,15 +157,6 @@ describe Project do
       it { Project.find_with_namespace('gitlab/gitlab-ci').should == @project }
       it { Project.find_with_namespace('gitlab-ci').should be_nil }
     end
-
-    context 'w/o namespace' do
-      before do
-        @project = create(:project, name: 'gitlab-ci')
-      end
-
-      it { Project.find_with_namespace('gitlab-ci').should == @project }
-      it { Project.find_with_namespace('gitlab/gitlab-ci').should be_nil }
-    end
   end
 
   describe :to_param do
@@ -176,14 +167,6 @@ describe Project do
       end
 
       it { @project.to_param.should == "gitlab/gitlab-ci" }
-    end
-
-    context 'w/o namespace' do
-      before do
-        @project = create(:project, name: 'gitlab-ci')
-      end
-
-      it { @project.to_param.should == "gitlab-ci" }
     end
   end
 
