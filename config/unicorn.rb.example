@@ -35,7 +35,7 @@ timeout 30
 pid "/home/git/gitlab/tmp/pids/unicorn.pid"
 
 # By default, the Unicorn logger will write to stderr.
-# Additionally, ome applications/frameworks log to stderr or stdout,
+# Additionally, some applications/frameworks log to stderr or stdout,
 # so prevent them from going to /dev/null when daemonized here:
 stderr_path "/home/git/gitlab/log/unicorn.stderr.log"
 stdout_path "/home/git/gitlab/log/unicorn.stdout.log"
