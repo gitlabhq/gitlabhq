@@ -200,17 +200,18 @@ class User < ActiveRecord::Base
     end
 
     def build_user(attrs = {}, options= {})
-      user = User.new(defaults.merge(attrs), options)
-      # if not as: :admin force default settings
-      user.with_defaults unless options[:as] == :admin
-      user
+      if options[:as] == :admin
+        User.new(defaults.merge(attrs.symbolize_keys), options)
+      else
+        User.new(attrs, options).with_defaults
+      end
     end
 
     def defaults
       {
         projects_limit: Gitlab.config.gitlab.default_projects_limit,
         can_create_group: Gitlab.config.gitlab.default_can_create_group,
-        theme_id: Gitlab::Theme::BASIC
+        theme_id: Gitlab::Theme::MARS
       }
     end
   end
@@ -384,8 +385,10 @@ class User < ActiveRecord::Base
   end
 
   def with_defaults
-    User.defaults.each do |k,v|
-      self.send("#{k}=",v)
+    User.defaults.each do |k, v|
+      self.send("#{k}=", v)
     end
+
+    self
   end
 end
