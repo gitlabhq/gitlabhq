@@ -33,7 +33,14 @@
           %span.light Email:
           %strong
             = mail_to @user.email
-
+        %li
+          %span.light Can create groups:
+          %strong
+            = @user.can_create_group ? "Yes" : "No"
+        %li
+          %span.light Personal projects limit:
+          %strong
+            = @user.projects_limit
         %li
           %span.light Member since:
           %strong
