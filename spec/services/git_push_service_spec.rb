@@ -48,7 +48,7 @@ describe GitPushService do
         it { should include(id: @commit.id) }
         it { should include(message: @commit.safe_message) }
         it { should include(timestamp: @commit.date.xmlschema) }
-        it { should include(url: "#{Gitlab.config.gitlab.url}/#{project.code}/commit/#{@commit.id}") }
+        it { should include(url: "#{Gitlab.config.gitlab.url}/#{project.to_param}/commit/#{@commit.id}") }
 
         context "with a author" do
           subject { @push_data[:commits].first[:author] }
