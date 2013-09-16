@@ -20,11 +20,11 @@ module Gitlab
       end
 
       def name
-        entry.cn.join(" ")
+        entry.cn.first
       end
 
       def uid
-        entry.send(config.uid).join(" ")
+        entry.send(config.uid).first
       end
 
       def username

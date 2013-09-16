@@ -16,7 +16,7 @@ module Gitlab
       end
 
       def cn
-        entry.cn.join(" ")
+        entry.cn.first
       end
 
       def name
