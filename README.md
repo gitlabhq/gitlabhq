@@ -41,7 +41,7 @@
 * Ubuntu/Debian**
 * ruby 1.9.3
 * MySQL or PostgreSQL
-* git 1.7.10
+* git >=1.7.10
 * gitlab-shell
 * redis
 
