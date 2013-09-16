@@ -30,19 +30,19 @@ module API
       # Create user. Available only for admin
       #
       # Parameters:
-      #   email (required)                                          - Email
-      #   password (required unless force_random_password is set)   - Password
-      #   name (required)                                           - Name
-      #   username (required)                                       - username
-      #   skype                                                     - Skype ID
-      #   linkedin                                                  - Linkedin
-      #   twitter                                                   - Twitter account
-      #   projects_limit                                            - Number of projects user can create
-      #   extern_uid                                                - External authentication provider UID
-      #   provider                                                  - External provider
-      #   bio                                                       - Bio
-      #   expired_password                                          - password is set expired
-      #   force_random_password (required unless password is set)   - generate random password for user
+      #   email (required)                                                    - Email
+      #   password (required unless force_random_password is set)             - Password
+      #   name (required)                                                     - Name
+      #   username (required)                                                 - username
+      #   skype                                                               - Skype ID
+      #   linkedin                                                            - Linkedin
+      #   twitter                                                             - Twitter account
+      #   projects_limit                                                      - Number of projects user can create
+      #   extern_uid                                                          - External authentication provider UID
+      #   provider                                                            - External provider
+      #   bio                                                                 - Bio
+      #   expired_password (true/false)                                       - password is set expired
+      #   force_random_password (true/false; required unless password is set) - generate random password for user
       # Example Request:
       #   POST /users
       post do
