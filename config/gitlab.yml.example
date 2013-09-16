@@ -42,6 +42,14 @@ production: &base
     default_projects_limit: 10
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
+    ## Default theme
+    ##   BASIC  = 1
+    ##   MARS   = 2
+    ##   MODERN = 3
+    ##   GRAY   = 4
+    ##   COLOR  = 5
+    # default_theme: 1 # default: 1
+
 
     ## Users management
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
