@@ -83,6 +83,8 @@ does not ship with one. The recommended mail server is postfix and you can insta
 Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
+For those people in China, due to complex network problem, we suggest you use a ruby [mirror](http://ruby.taobao.org/) built by Taobao to insure that your installation be successful.
+
 
 Remove the old Ruby 1.8 if present
 
