@@ -75,8 +75,13 @@ describe API::API do
       response.status.should == 400
     end
 
-    it "should return 400 error if password not given" do
+    it "should return 400 error if password or force_random_password not given" do
       post api("/users", admin), { email: 'test@example.com' }
+      response.status.should == 400
+    end
+
+    it "should return 400 error if both password and force_random_password are set" do
+      post api("/users", admin), { password: 'password', force_random_password: '1' }
       response.status.should == 400
     end
 
