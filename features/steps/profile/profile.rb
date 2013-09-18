@@ -91,6 +91,11 @@ class Profile < Spinach::FeatureSteps
     current_user.update_attributes(password_expires_at: Time.now - 1.hour)
   end
 
+  step "I am not an ldap user" do
+    current_user.update_attributes(extern_uid: nil,  provider: '')
+    current_user.ldap_user?.should be_false
+  end
+
   step 'I redirected to expired password page' do
     current_path.should == new_profile_password_path
   end
