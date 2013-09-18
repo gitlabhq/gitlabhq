@@ -83,6 +83,7 @@ class Project < ActiveRecord::Base
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { within: 0..255 }
 
+  validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
 
@@ -165,11 +166,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    if namespace
-      namespace.path + "/" + path
-    else
-      path
-    end
+    namespace.path + "/" + path
   end
 
   def web_url
