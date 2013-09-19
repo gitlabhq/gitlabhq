@@ -7,7 +7,7 @@ v 6.1.0
   - API: Group membership api (Izaak Alpert)
   - Improved commit diff
   - Improved large commit handling (Boyan Tabakov)
-  - Rewrite: Init script now less prone to errors and keeps better track of the service.
+  - Rewrite: Init script now less prone to errors and keeps better track of the service (Rovanion Luckey)
   - Link issues, merge requests, and commits when they reference each other with GFM (Ash Wilson)
   - Close issues automatically when pushing commits with a special message
   - Improve user removal from admin area
