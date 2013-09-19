@@ -20,8 +20,6 @@
 
 * [![build status](http://ci.gitlab.org/projects/1/status.png?ref=master)](http://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
 
-* [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq) on travis-ci.org (master branch)
-
 * [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 
 * [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq) this button can be yellow (small updates are available) but must not be red (a security fix or an important update is available), gems are updated in major releases of GitLab.
@@ -39,11 +37,10 @@
 ### Requirements
 
 * Ubuntu/Debian**
-* ruby 1.9.3
+* ruby 1.9.3+
+* git 1.7.10+
+* redis 2.0+
 * MySQL or PostgreSQL
-* git
-* gitlab-shell
-* redis
 
 ** More details are in the [requirements doc](doc/install/requirements.md)
 
