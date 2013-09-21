@@ -57,13 +57,17 @@
   }
 
   .tree-table {
+    border: none;
+
     th .btn {
       margin: -2px -1px;
       padding: 2px 10px;
     }
     td {
       line-height: 20px;
-      background: #fafafa;
+      background: #fff !important;
+      border-left: none;
+      border-right: none;
     }
   }
 

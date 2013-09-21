@@ -17,11 +17,11 @@ table {
   }
 
   th {
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 15px;
     vertical-align: middle;
     border-bottom: 1px solid #CCC;
     text-shadow: 0 1px 1px #fff;
-    @include bg-dark-gray-gradient;
 
     ul.nav {
       text-shadow: none;
