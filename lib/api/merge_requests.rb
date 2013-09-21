@@ -4,7 +4,7 @@ module API
     before { authenticate! }
     before { Thread.current[:current_user] = current_user }
 
-    resource :projects, requirements: { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/ } do
+    resource :projects do
       helpers do
         def handle_merge_request_errors!(errors)
           if errors[:project_access].any?
