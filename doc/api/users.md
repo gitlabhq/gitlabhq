@@ -87,17 +87,19 @@ POST /users
 
 Parameters:
 
-+ `email` (required)          - Email
-+ `password` (required)       - Password
-+ `username` (required)       - Username
-+ `name` (required)           - Name
-+ `skype` (optional)          - Skype ID
-+ `linkedin` (optional)       - Linkedin
-+ `twitter` (optional)        - Twitter account
-+ `projects_limit` (optional) - Number of projects user can create
-+ `extern_uid` (optional)     - External UID
-+ `provider` (optional)       - External provider name
-+ `bio` (optional)            - User's bio
++ `email` (required)                                                    - Email
++ `password` (required unless force_random_password is set)             - Password
++ `username` (required)                                                 - Username
++ `name` (required)                                                     - Name
++ `skype` (optional)                                                    - Skype ID
++ `linkedin` (optional)                                                 - Linkedin
++ `twitter` (optional)                                                  - Twitter account
++ `projects_limit` (optional)                                           - Number of projects user can create
++ `extern_uid` (optional)                                               - External UID
++ `provider` (optional)                                                 - External provider name
++ `bio` (optional)                                                      - User's bio
++ `expired_password` (true/false)                                       - Password is set expired
++ `force_random_password` (true/false; required unless password is set) - generate random password for user
 
 
 ## User modification
