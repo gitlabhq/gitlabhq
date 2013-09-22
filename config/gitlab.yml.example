@@ -48,7 +48,7 @@ production: &base
     ##   MODERN = 3
     ##   GRAY   = 4
     ##   COLOR  = 5
-    # default_theme: 1 # default: 1
+    # default_theme: 2 # default: 2
 
 
     ## Users management
