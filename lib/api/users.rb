@@ -55,18 +55,14 @@ module API
         expired = params[:expired_password] && (params[:expired_password].to_i > 0)
         force_random =  params[:force_random_password] && (params[:force_random_password].to_i > 0)
 
-        #check params set properly
-        if !(force_random ^ params[:password].present?)
-          render_api_error!('400 Either password or force_random_password must be set',400)
-        end
-
-        attrs[:password_expires_at] = Time.now if expired
-
-        if force_random
+        if params[:password] && !force_random
+          attrs[:password] = params[:password]
+        elsif force_random && !params[:password]
           attrs[:force_random_password] = true
         else
-          attrs[:password] = params[:password]
-        end
+          render_api_error!('400 Either password or force_random_password must be set',400)
+
+        attrs[:password_expires_at] = Time.now if expired
 
         user = User.new attrs, as: :admin
         user.created_by_id = current_user.id if expired # this is necessary to make the new user notification work correctly.
