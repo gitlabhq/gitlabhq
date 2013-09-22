@@ -692,4 +692,42 @@ describe API::API do
       end
     end
   end
+
+  describe "GET /projects/search/:query" do
+    let!(:query) { 'query'}
+    let!(:search) { create(:project, name: query, creator_id: user.id, namespace: user.namespace) }
+    let!(:pre) { create(:project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
+    let!(:post) { create(:project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:pre_post) { create(:project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:unfound) { create(:project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
+    let!(:public) { create(:project, name: "another #{query}",public: true) }
+    let!(:unfound_public) { create(:project, name: 'unfound public', public: true) }
+
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/projects/search/#{query}")
+        response.status.should == 401
+      end
+    end
+
+    context "when authenticated" do
+      it "should return an array of projects" do
+        get api("/projects/search/#{query}",user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.size.should == 5
+        json_response.each {|project| project['name'].should =~ /.*query.*/}
+      end
+    end
+
+    context "when authenticated as a different user" do
+      it "should return matching public projects" do
+        get api("/projects/search/#{query}", user2)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.size.should == 1
+        json_response.first['name'].should == "another #{query}"
+      end
+    end
+  end
 end
