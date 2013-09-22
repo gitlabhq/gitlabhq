@@ -211,7 +211,7 @@ class User < ActiveRecord::Base
       {
         projects_limit: Gitlab.config.gitlab.default_projects_limit,
         can_create_group: Gitlab.config.gitlab.default_can_create_group,
-        theme_id: Gitlab::Theme::MARS
+        theme_id: Gitlab.config.gitlab.default_theme
       }
     end
   end

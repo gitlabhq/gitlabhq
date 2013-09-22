@@ -221,9 +221,9 @@ describe User do
         let(:user) { User.build_user({}, as: :admin) }
 
         it "should apply defaults to user" do
-          user.projects_limit.should == 42
-          user.can_create_group.should be_false
-          user.theme_id.should == Gitlab::Theme::MARS
+          user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
+          user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
+          user.theme_id.should == Gitlab.config.gitlab.default_theme
         end
       end
 
@@ -231,6 +231,9 @@ describe User do
         let(:user) { User.build_user({projects_limit: 123, can_create_group: true, can_create_team: true, theme_id: Gitlab::Theme::BASIC}, as: :admin) }
 
         it "should apply defaults to user" do
+          Gitlab.config.gitlab.default_projects_limit.should_not == 123
+          Gitlab.config.gitlab.default_can_create_group.should_not be_true
+          Gitlab.config.gitlab.default_theme.should_not == Gitlab::Theme::MARS
           user.projects_limit.should == 123
           user.can_create_group.should be_true
           user.theme_id.should == Gitlab::Theme::BASIC
@@ -243,9 +246,9 @@ describe User do
         let(:user) { User.build_user }
 
         it "should apply defaults to user" do
-          user.projects_limit.should == 42
-          user.can_create_group.should be_false
-          user.theme_id.should == Gitlab::Theme::MARS
+          user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
+          user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
+          user.theme_id.should == Gitlab.config.gitlab.default_theme
         end
       end
 
@@ -253,9 +256,9 @@ describe User do
         let(:user) { User.build_user(projects_limit: 123, can_create_group: true, theme_id: Gitlab::Theme::BASIC) }
 
         it "should apply defaults to user" do
-          user.projects_limit.should == 42
-          user.can_create_group.should be_false
-          user.theme_id.should == Gitlab::Theme::MARS
+          user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
+          user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
+          user.theme_id.should == Gitlab.config.gitlab.default_theme
         end
       end
     end
