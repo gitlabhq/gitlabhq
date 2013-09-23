@@ -44,11 +44,15 @@ module Gitlab
         end
 
         def find_user(email)
-          if user = model.find_by_email(email)
-          elsif ldap_conf['allow_username_or_email_login']
-            uname = (email.partition('@').first) unless email.nil?
+          user = model.find_by_email(email)
+
+          # If no user found and allow_username_or_email_login is true
+          # we look for user by extracting part of his email
+          if !user && email && ldap_conf['allow_username_or_email_login']
+            uname = email.partition('@').first
             user = model.find_by_username(uname)
           end
+
           user
         end
 
