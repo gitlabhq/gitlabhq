@@ -233,7 +233,7 @@ describe User do
         it "should apply defaults to user" do
           Gitlab.config.gitlab.default_projects_limit.should_not == 123
           Gitlab.config.gitlab.default_can_create_group.should_not be_true
-          Gitlab.config.gitlab.default_theme.should_not == Gitlab::Theme::MARS
+          Gitlab.config.gitlab.default_theme.should_not == Gitlab::Theme::BASIC
           user.projects_limit.should == 123
           user.can_create_group.should be_true
           user.theme_id.should == Gitlab::Theme::BASIC
