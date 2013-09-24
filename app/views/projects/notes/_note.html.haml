@@ -5,7 +5,7 @@
         %i.icon-link
         Link here
       &nbsp;
-      - if(note.author_id == current_user.id) || can?(current_user, :admin_note, @project)
+      - if(note.author_id == current_user.try(:id)) || can?(current_user, :admin_note, @project)
         = link_to "#", title: "Edit comment", class: "js-note-edit" do
           %i.icon-edit
           Edit

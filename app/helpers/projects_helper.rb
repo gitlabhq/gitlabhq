@@ -103,4 +103,20 @@ module ProjectsHelper
 
     nav_tabs.flatten
   end
+
+  def git_user_name
+    if current_user
+      current_user.name
+    else
+      "Your name"
+    end
+  end
+
+  def git_user_email
+    if current_user
+      current_user.email
+    else
+      "your@email.com"
+    end
+  end
 end

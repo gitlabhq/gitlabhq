@@ -16,8 +16,8 @@
       %legend Git global setup:
       %pre.dark
         :preserve
-          git config --global user.name "#{current_user.name}"
-          git config --global user.email "#{current_user.email}"
+          git config --global user.name "#{git_user_name}"
+          git config --global user.email "#{git_user_email}"
 
     %fieldset
       %legend Create Repository
