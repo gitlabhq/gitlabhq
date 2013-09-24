@@ -77,5 +77,8 @@ module Gitlab
     # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT']
     #
     # config.relative_url_root = "/gitlab"
+
+    # Enable rack attack middleware
+    config.middleware.use Rack::Attack
   end
 end
