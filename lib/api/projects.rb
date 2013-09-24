@@ -266,16 +266,14 @@ module API
       #
       # Parameters:
       #   query (required) - A string contained in the project name
-      #   per_page (optional) - number of projects to return per page, defaults to 20
-      #   offset (optional) - the offset in pages to retrieve
+      #   per_page (optional) - number of projects to return per page
+      #   page (optional) - the page to retrieve
       # Example Request:
       #   GET /projects/search/:query
       get "/search/:query" do
-        limit = (params[:per_page] || 20).to_i
-        offset = (params[:page] || 0).to_i * limit
         ids = current_user.authorized_projects.map(&:id)
-        projects = Project.where("(id in (?) OR public = true) AND (name LIKE (?))", ids, "%#{params[:query]}%").limit(limit).offset(offset)
-        present projects, with: Entities::Project
+        projects = Project.where("(id in (?) OR public = true) AND (name LIKE (?))", ids, "%#{params[:query]}%")
+        present paginate(projects), with: Entities::Project
       end
     end
   end
