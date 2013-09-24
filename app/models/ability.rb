@@ -30,7 +30,17 @@ class Ability
                 end
 
       if project && project.public
-        public_project_rules
+        [
+          :read_project,
+          :read_wiki,
+          :read_issue,
+          :read_milestone,
+          :read_project_snippet,
+          :read_team_member,
+          :read_merge_request,
+          :read_note,
+          :download_code
+        ]
       else
         []
       end
