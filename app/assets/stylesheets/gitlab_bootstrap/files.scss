@@ -6,6 +6,10 @@
   border: 1px solid #CCC;
   margin-bottom: 1em;
 
+  table {
+    @extend .table;
+  }
+
   .file-title {
     border-bottom: 1px solid #bbb;
     @include bg-dark-gray-gradient;
