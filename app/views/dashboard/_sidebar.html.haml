@@ -1,14 +1,25 @@
-- if @groups.present?
-  = render "groups", groups: @groups
-= render "projects", projects: @projects
-%div
+%ul.nav.nav-tabs.dash-sidebar-tabs
+  %li.active
+    = link_to '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab' do
+      Projects
+      %span.badge= @projects_count
+  %li
+    = link_to '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab' do
+      Groups
+      %span.badge= @groups.count
+
+.tab-content
+  .tab-pane.active#projects
+    = render "projects", projects: @projects
+  .tab-pane#groups
+    = render "groups", groups: @groups
+
+.prepend-top-20
   %span.rss-icon
     = link_to dashboard_path(:atom, { private_token: current_user.private_token }) do
-      = image_tag "rss_ui.png", title: "feed"
-      %strong News Feed
+      %strong
+        %i.icon-rss
+        News Feed
 
 %hr
-.gitlab-promo
-  = link_to "Homepage", "http://gitlab.org"
-  = link_to "Blog", "http://blog.gitlab.org"
-  = link_to "@gitlabhq", "https://twitter.com/gitlabhq"
+= render 'shared/promo'

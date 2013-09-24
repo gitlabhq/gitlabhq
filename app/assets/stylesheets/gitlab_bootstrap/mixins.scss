@@ -17,11 +17,23 @@
   border-radius: $radius;
 }
 
+@mixin border-radius-left($radius) {
+  @include border-radius($radius 0 0 $radius)
+}
+
 @mixin linear-gradient($from, $to) {
   background-image: -webkit-gradient(linear, 0 0, 0 100%, from($from), to($to));
   background-image: -webkit-linear-gradient($from, $to);
   background-image: -moz-linear-gradient($from, $to);
   background-image: -o-linear-gradient($from, $to);
+}
+
+@mixin transition($transition) {
+  -webkit-transition: $transition;
+  -moz-transition: $transition;
+  -ms-transition: $transition;
+  -o-transition: $transition;
+  transition: $transition;
 }
 
 /**
@@ -62,8 +74,33 @@
 @mixin header-font {
   color: $style_color;
   text-shadow: 0 1px 1px #FFF;
-  font-family: 'Yanone', sans-serif;
-  font-size: 26px;
-  line-height: 42px;
+  font-size: 16px;
+  line-height: 40px;
   font-weight: normal;
+}
+
+@mixin md-typography {
+  *:first-child {
+    margin-top: 0;
+  }
+
+  code { padding: 0 4px; }
+  h1 { margin-top: 30px;}
+  h2 { margin-top: 25px;}
+  h3 { margin-top: 20px;}
+  h4 { margin-top: 15px;}
+
+  blockquote p {
+    color: #888;
+    font-size: 14px;
+    line-height: 1.5;
+  }
+}
+
+@mixin page-title {
+  color: $style_color;
+  font-size: 20px;
+  line-height: 1.5;
+  margin-top: 0px;
+  margin-bottom: 15px;
 }

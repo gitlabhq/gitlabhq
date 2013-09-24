@@ -1,0 +1,18 @@
+%ul
+  = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
+    = link_to root_path, title: "Home" do
+      %i.icon-home
+  = nav_link(path: 'dashboard#projects') do
+    = link_to projects_dashboard_path do
+      Projects
+  = nav_link(path: 'dashboard#issues') do
+    = link_to issues_dashboard_path do
+      Issues
+      %span.count= current_user.assigned_issues.opened.count
+  = nav_link(path: 'dashboard#merge_requests') do
+    = link_to merge_requests_dashboard_path do
+      Merge Requests
+      %span.count= current_user.cared_merge_requests.opened.count
+  = nav_link(controller: :help) do
+    = link_to "Help", help_path
+

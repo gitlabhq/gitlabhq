@@ -2,8 +2,8 @@ module SharedNote
   include Spinach::DSL
 
   Given 'I delete a comment' do
-    sleep 1
-    first(".js-note-delete").trigger("click")
+    find('.note').hover
+    find(".js-note-delete").click
   end
 
   Given 'I haven\'t written any comment text' do
@@ -95,21 +95,6 @@ module SharedNote
     within(".js-main-target-form") do
       page.should have_css(".js-note-preview-button", visible: true)
     end
-  end
-
-
-
-  # Wall
-
-  Given 'I write new comment "my special test message"' do
-    within(".js-main-target-form") do
-      fill_in "note[note]", with: "my special test message"
-      click_button "Add Comment"
-    end
-  end
-
-  Then 'I should see project wall note "my special test message"' do
-    page.should have_content "my special test message"
   end
 
   Then 'I should see comment "XML attached"' do

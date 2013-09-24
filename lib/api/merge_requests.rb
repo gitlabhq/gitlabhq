@@ -1,9 +1,28 @@
-module Gitlab
+module API
   # MergeRequest API
   class MergeRequests < Grape::API
     before { authenticate! }
+    before { Thread.current[:current_user] = current_user }
 
     resource :projects do
+      helpers do
+        def handle_merge_request_errors!(errors)
+          if errors[:project_access].any?
+            error!(errors[:project_access], 422)
+          elsif errors[:branch_conflict].any?
+            error!(errors[:branch_conflict], 422)
+          end
+          not_found!
+        end
+
+        def not_fork?(target_project_id, user_project)
+          target_project_id.nil? || target_project_id == user_project.id.to_s
+        end
+
+        def target_matches_fork(target_project_id,user_project)
+          user_project.forked? && user_project.forked_from_project.id.to_s == target_project_id
+        end
+      end
 
       # List merge requests
       #
@@ -40,9 +59,10 @@ module Gitlab
       #
       # Parameters:
       #
-      #   id (required)            - The ID of a project
+      #   id (required)            - The ID of a project - this will be the source of the merge request
       #   source_branch (required) - The source branch
       #   target_branch (required) - The target branch
+      #   target_project           - The target project of the merge request defaults to the :id of the project
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
       #
@@ -51,16 +71,27 @@ module Gitlab
       #
       post ":id/merge_requests" do
         authorize! :write_merge_request, user_project
-
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title]
+        required_attributes! [:source_branch, :target_branch, :title]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id]
         merge_request = user_project.merge_requests.new(attrs)
         merge_request.author = current_user
+        merge_request.source_project = user_project
+        target_project_id = attrs[:target_project_id]
+        if not_fork?(target_project_id, user_project)
+          merge_request.target_project = user_project
+        else
+          if target_matches_fork(target_project_id,user_project)
+            merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+          else
+            render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
+          end
+        end
 
         if merge_request.save
           merge_request.reload_code
           present merge_request, with: Entities::MergeRequest
         else
-          not_found!
+          handle_merge_request_errors! merge_request.errors
         end
       end
 
@@ -73,12 +104,12 @@ module Gitlab
       #   target_branch               - The target branch
       #   assignee_id                 - Assignee user ID
       #   title                       - Title of MR
-      #   closed                      - Status of MR. true - closed
+      #   state_event                 - Status of MR. (close|reopen|merge)
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :closed]
+        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
         authorize! :modify_merge_request, merge_request
@@ -88,7 +119,7 @@ module Gitlab
           merge_request.mark_as_unchecked
           present merge_request, with: Entities::MergeRequest
         else
-          not_found!
+          handle_merge_request_errors! merge_request.errors
         end
       end
 
@@ -102,6 +133,8 @@ module Gitlab
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
       post ":id/merge_request/:merge_request_id/comments" do
+        required_attributes! [:note]
+
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
         note.author = current_user

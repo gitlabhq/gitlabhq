@@ -2,82 +2,64 @@
 #
 # Table name: keys
 #
-#  id         :integer          not null, primary key
-#  user_id    :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  key        :text
-#  title      :string(255)
-#  identifier :string(255)
-#  project_id :integer
+#  id          :integer          not null, primary key
+#  user_id     :integer
+#  created_at  :datetime         not null
+#  updated_at  :datetime         not null
+#  key         :text
+#  title       :string(255)
+#  type        :string(255)
+#  fingerprint :string(255)
 #
 
 require 'digest/md5'
 
 class Key < ActiveRecord::Base
+  include Gitlab::Popen
+
   belongs_to :user
-  belongs_to :project
 
   attr_accessible :key, :title
 
-  before_validation :strip_white_space
-  before_save :set_identifier
+  before_validation :strip_white_space, :generate_fingerpint
 
   validates :title, presence: true, length: { within: 0..255 }
-  validates :key, presence: true, length: { within: 0..5000 }, format: { :with => /ssh-.{3} / }
-  validate :unique_key, :fingerprintable_key
+  validates :key, presence: true, length: { within: 0..5000 }, format: { with: /\A(ssh|ecdsa)-.*\Z/ }, uniqueness: true
+  validates :fingerprint, uniqueness: true, presence: { message: 'cannot be generated' }
 
   delegate :name, :email, to: :user, prefix: true
 
   def strip_white_space
-    self.key = self.key.strip unless self.key.blank?
-  end
-
-  def unique_key
-    query = Key.where(key: key)
-    query = query.where('(project_id IS NULL OR project_id = ?)', project_id) if project_id
-    if (query.count > 0)
-      errors.add :key, 'already exist.'
-    end
-  end
-
-  def fingerprintable_key
-    return true unless key # Don't test if there is no key.
-    # `ssh-keygen -lf /dev/stdin <<< "#{key}"` errors with: redirection unexpected
-    file = Tempfile.new('key_file')
-    begin
-      file.puts key
-      file.rewind
-      fingerprint_output = `ssh-keygen -lf #{file.path} 2>&1` # Catch stderr.
-    ensure
-      file.close
-      file.unlink # deletes the temp file
-    end
-    errors.add(:key, "can't be fingerprinted") if fingerprint_output.match("failed")
-  end
-
-  def set_identifier
-    if is_deploy_key
-      self.identifier = "deploy_#{Digest::MD5.hexdigest(key)}"
-    else
-      self.identifier = "#{user.identifier}_#{Time.now.to_i}"
-    end
-  end
-
-  def is_deploy_key
-    true if project_id
+    self.key = key.strip unless key.blank?
   end
 
   # projects that has this key
   def projects
-    if is_deploy_key
-      [project]
-    else
-      user.authorized_projects
-    end
+    user.authorized_projects
   end
 
-  def last_deploy?
-    Key.where(identifier: identifier).count == 0
+  def shell_id
+    "key-#{id}"
+  end
+
+  private
+
+  def generate_fingerpint
+    self.fingerprint = nil
+    return unless key.present?
+
+    cmd_status = 0
+    cmd_output = ''
+    Tempfile.open('gitlab_key_file') do |file|
+      file.puts key
+      file.rewind
+      cmd_output, cmd_status = popen("ssh-keygen -lf #{file.path}", '/tmp')
+    end
+
+    if cmd_status.zero?
+      cmd_output.gsub /([\d\h]{2}:)+[\d\h]{2}/ do |match|
+        self.fingerprint = match
+      end
+    end
   end
 end

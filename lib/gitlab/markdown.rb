@@ -7,6 +7,7 @@ module Gitlab
   # Supported reference formats are:
   #   * @foo for team members
   #   * #123 for issues
+  #   * #JIRA-123 for Jira issues
   #   * !123 for merge requests
   #   * $123 for snippets
   #   * 123456 for commits
@@ -17,7 +18,7 @@ module Gitlab
   # Examples
   #
   #   >> gfm("Hey @david, can you fix this?")
-  #   => "Hey <a href="/gitlab/team_members/1">@david</a>, can you fix this?"
+  #   => "Hey <a href="/u/david">@david</a>, can you fix this?"
   #
   #   >> gfm("Commit 35d5f7c closes #1234")
   #   => "Commit <a href="/gitlab/commits/35d5f7c">35d5f7c</a> closes <a href="/gitlab/issues/1234">#1234</a>"
@@ -25,6 +26,8 @@ module Gitlab
   #   >> gfm(":trollface:")
   #   => "<img alt=\":trollface:\" class=\"emoji\" src=\"/images/trollface.png" title=\":trollface:\" />
   module Markdown
+    include IssuesHelper
+
     attr_reader :html_options
 
     # Public: Parse the provided text with GitLab-Flavored Markdown
@@ -60,7 +63,7 @@ module Gitlab
         insert_piece($1)
       end
 
-      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
+      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class), tags: ActionView::Base.sanitized_allowed_tags + %w(table tr td th)
     end
 
     private
@@ -95,10 +98,11 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
-        |\#(?<issue>\d+)                     # Issue ID
+        |\#(?<issue>([a-zA-Z]+-)?\d+)        # Issue ID
         |!(?<merge_request>\d+)              # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
         |(?<commit>[\h]{6,40})               # Commit ID
+        |(?<skip>gfm-extraction-[\h]{6,40})  # Skip gfm extractions. Otherwise will be parsed as commit
       )
       (?<suffix>\W)?                         # Suffix
     }x.freeze
@@ -111,13 +115,18 @@ module Gitlab
         prefix     = $~[:prefix]
         suffix     = $~[:suffix]
         type       = TYPES.select{|t| !$~[t].nil?}.first
-        identifier = $~[type]
 
-        # Avoid HTML entities
-        if prefix && suffix && prefix[0] == '&' && suffix[-1] == ';'
-          match
-        elsif ref_link = reference_link(type, identifier)
-          "#{prefix}#{ref_link}#{suffix}"
+        if type
+          identifier = $~[type]
+
+          # Avoid HTML entities
+          if prefix && suffix && prefix[0] == '&' && suffix[-1] == ';'
+            match
+          elsif ref_link = reference_link(type, identifier)
+            "#{prefix}#{ref_link}#{suffix}"
+          else
+            match
+          end
         else
           match
         end
@@ -157,19 +166,22 @@ module Gitlab
     end
 
     def reference_user(identifier)
-      if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
-        link_to("@#{identifier}", project_team_member_url(@project, member), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+      if member = @project.team_members.find { |user| user.username == identifier }
+        link_to("@#{identifier}", user_url(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
       end
     end
 
     def reference_issue(identifier)
-      if issue = @project.issues.where(id: identifier).first
-        link_to("##{identifier}", project_issue_url(@project, issue), html_options.merge(title: "Issue: #{issue.title}", class: "gfm gfm-issue #{html_options[:class]}"))
+      if @project.issue_exists? identifier
+        url = url_for_issue(identifier)
+        title = title_for_issue(identifier)
+
+        link_to("##{identifier}", url, html_options.merge(title: "Issue: #{title}", class: "gfm gfm-issue #{html_options[:class]}"))
       end
     end
 
     def reference_merge_request(identifier)
-      if merge_request = @project.merge_requests.where(id: identifier).first
+      if merge_request = @project.merge_requests.where(iid: identifier).first
         link_to("!#{identifier}", project_merge_request_url(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
       end
     end
@@ -182,7 +194,7 @@ module Gitlab
 
     def reference_commit(identifier)
       if @project.valid_repo? && commit = @project.repository.commit(identifier)
-        link_to(identifier, project_commit_url(@project, commit), html_options.merge(title: CommitDecorator.new(commit).link_title, class: "gfm gfm-commit #{html_options[:class]}"))
+        link_to(identifier, project_commit_url(@project, commit), html_options.merge(title: commit.link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
     end
   end

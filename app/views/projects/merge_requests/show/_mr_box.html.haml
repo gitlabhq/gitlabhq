@@ -1,0 +1,48 @@
+.ui-box.ui-box-show
+  .ui-box-head
+    %h4.box-title
+      = gfm escape_once(@merge_request.title)
+      - if @merge_request.merged?
+        .success.status_info
+          %i.icon-ok
+          Merged
+      - elsif @merge_request.closed?
+        .error.status_info Closed
+
+  .ui-box-body
+    %div
+      %cite.cgray
+        Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by #{link_to_member(@project, @merge_request.author)}
+        - if @merge_request.assignee
+          \, currently assigned to #{link_to_member(@project, @merge_request.assignee)}
+      - if @merge_request.milestone
+        - milestone = @merge_request.milestone
+        %cite.cgray and attached to milestone
+        %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
+
+
+  - if @merge_request.description.present?
+    .ui-box-bottom
+      .wiki
+        = preserve do
+          = markdown @merge_request.description
+
+  - if @merge_request.closed?
+    .ui-box-bottom.alert-error
+      %span
+        %i.icon-remove
+        Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
+        %small #{time_ago_in_words(@merge_request.closed_event.created_at)} ago.
+  - if @merge_request.merged?
+    .ui-box-bottom.alert-success
+      %span
+        %i.icon-ok
+        Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
+        #{time_ago_in_words(@merge_request.merge_event.created_at)} ago.
+  - if !@closes_issues.empty? && @merge_request.opened?
+    .ui-box-bottom.alert-info
+      %span
+        %i.icon-ok
+        Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
+        = succeed '.' do
+          != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)

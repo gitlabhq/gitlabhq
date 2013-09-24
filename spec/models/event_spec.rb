@@ -52,7 +52,7 @@ describe Event do
 
       @event = Event.create(
         project: project,
-        action: Event::Pushed,
+        action: Event::PUSHED,
         data: data,
         author_id: @user.id
       )
@@ -72,6 +72,7 @@ describe Event do
 
     before {
       Event.should_receive :create
+      observer.stub(notification: stub.as_null_object)
     }
 
     describe "Joined project team" do

@@ -1,6 +1,7 @@
 class Groups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include Select2Helper
 
   Then 'I should see projects list' do
     current_user.authorized_projects.each do |project|
@@ -10,7 +11,7 @@ class Groups < Spinach::FeatureSteps
 
   And 'I have group with projects' do
     @group   = create(:group, owner: current_user)
-    @project = create(:project, group: @group)
+    @project = create(:project, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
     @project.team << [current_user, :master]
@@ -28,7 +29,7 @@ class Groups < Spinach::FeatureSteps
 
   Then 'I should see merge requests from this group assigned to me' do
     assigned_to_me(:merge_requests).each do |issue|
-      page.should have_content issue.title
+      page.should have_content issue.title[0..80]
     end
   end
 
@@ -38,11 +39,11 @@ class Groups < Spinach::FeatureSteps
 
   And 'I select user "John" from list with role "Reporter"' do
     user = User.find_by_name("John")
-    within "#new_team_member" do
-      select user.name, :from => "user_ids"
-      select "Reporter", :from => "project_access"
+    within ".new_users_group" do
+      select2(user.id, from: "#user_ids", multiple: true)
+      select "Reporter", from: "group_access"
     end
-    click_button "Add"
+    click_button "Add users into group"
   end
 
   Then 'I should see user "John" in team list' do
@@ -59,9 +60,41 @@ class Groups < Spinach::FeatureSteps
 
   Given 'project from group has merge requests assigned to me' do
     create :merge_request,
-      project: project,
+      source_project: project,
+      target_project: project,
       assignee: current_user,
       author: current_user
+  end
+
+  When 'I click new group link' do
+    click_link "New group"
+  end
+
+  And 'submit form with new group info' do
+    fill_in 'group_name', with: 'Samurai'
+    fill_in 'group_description', with: 'Tokugawa Shogunate'
+    click_button "Create group"
+  end
+
+  Then 'I should see newly created group' do
+    page.should have_content "Samurai"
+    page.should have_content "Tokugawa Shogunate"
+    page.should have_content "You will only see events from projects in this group"
+  end
+
+  Then 'I should be redirected to group page' do
+    current_path.should == group_path(Group.last)
+  end
+
+  And 'I change group name' do
+    fill_in 'group_name', with: 'new-name'
+    click_button "Save group"
+  end
+
+  Then 'I should see new group name' do
+    within ".navbar-gitlab" do
+      page.should have_content "group: new-name"
+    end
   end
 
   protected

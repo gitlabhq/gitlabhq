@@ -31,39 +31,63 @@
  *
  */
 .event-item {
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &.event-inline {
+    .avatar {
+      width: 16px;
+      height: 16px;
+    }
+  }
+
+  padding: 14px 0px;
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 15px;
     .author_name {
       color: #333;
     }
   }
   .event-body {
-    .commit p {
-      color: #555;
-      padding-top: 5px;
-    }
+    margin-left: 35px;
+    margin-right: 100px;
+
     .event-info {
       color: #666;
     }
     .event-note {
-      padding-top: 5px;
-      padding-left: 5px;
-      display: inline-block;
       color: #555;
+      margin-top: 5px;
+
+      pre {
+        border: none;
+        background: #f9f9f9;
+        border-radius: 0;
+        color: #555;
+        margin: 0 20px;
+      }
+
+      .note-image-attach {
+        margin-top: 4px;
+        margin-left: 0px;
+        max-width: 200px;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
+      }
     }
     .event-note-icon {
       color: #777;
       float: left;
       font-size: 16px;
-      line-height: 18px;
-      margin: 5px;
+      line-height: 16px;
+      margin-right: 5px;
     }
-  }
-  .avatar {
-    position: relative;
-    top: -3px;
   }
   .event_icon {
     position: relative;
@@ -78,16 +102,7 @@
       width: 20px;
     }
   }
-  ul {
-    margin-left: 50px;
-    margin-bottom: 5px;
-    .avatar {
-      width: 18px;
-      margin-top: 3px;
-    }
-  }
 
-  padding: 16px 5px;
   &:last-child { border:none }
 
   .event_commits {
@@ -98,37 +113,20 @@
         background: transparent;
         padding: 3px;
         border: none;
-        font-size: 12px;
+        color: #666;
+        .commit-row-title {
+          font-size: 12px;
+        }
       }
       &.commits-stat {
         display: block;
-        margin-top: 5px;
+        padding: 3px;
+
+        &:hover {
+          background: none;
+        }
       }
     }
-  }
-}
-
-/**
- * Push event widget
- *
- */
-.event_lp {
-  color: #777;
-  padding: 10px;
-  min-height: 22px;
-  border-left: 5px solid #5AB9C3;
-  margin-bottom: 20px;
-  background: #f9f9f9;
-
-  .avatar {
-    width: 24px;
-  }
-
-  .btn-new-mr {
-    @extend .btn-info;
-    @extend .small;
-    @extend .right;
-    margin: -3px;
   }
 }
 
@@ -144,7 +142,7 @@
   .filter_icon {
     a {
       text-align:center;
-      border-left: 3px solid #29B;
+      border-left: 3px solid $primary_color;
       background: #f9f9f9;
       margin-bottom: 10px;
       float: left;

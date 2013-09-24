@@ -13,17 +13,18 @@
 #  line_code     :string(255)
 #  commit_id     :string(255)
 #  noteable_id   :integer
+#  st_diff       :text
 #
 
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Note < ActiveRecord::Base
+  include Mentionable
+
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code, :commit_id
-
-  attr_accessor :notify
-  attr_accessor :notify_author
+  attr_mentionable :note
 
   belongs_to :project
   belongs_to :noteable, polymorphic: true
@@ -43,39 +44,80 @@ class Note < ActiveRecord::Base
 
   # Scopes
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
-  scope :inline, where("line_code IS NOT NULL")
-  scope :not_inline, where("line_code IS NULL")
+  scope :inline, ->{ where("line_code IS NOT NULL") }
+  scope :not_inline, ->{ where(line_code: [nil, '']) }
 
   scope :common, ->{ where(noteable_type: ["", nil]) }
   scope :fresh, ->{ order("created_at ASC, id ASC") }
   scope :inc_author_project, ->{ includes(:project, :author) }
   scope :inc_author, ->{ includes(:author) }
 
-  def self.create_status_change_note(noteable, author, status)
+  serialize :st_diff
+  before_create :set_diff, if: ->(n) { n.line_code.present? }
+
+  def self.create_status_change_note(noteable, project, author, status, source)
+    body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
+
     create({
       noteable: noteable,
-      project: noteable.project,
+      project: project,
       author: author,
-      note: "_Status changed to #{status}_"
+      note: body,
+      system: true
     }, without_protection: true)
+  end
+
+  # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
+  # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
+  def self.create_cross_reference_note(noteable, mentioner, author, project)
+    create({
+      noteable: noteable,
+      commit_id: (noteable.sha if noteable.respond_to? :sha),
+      project: project,
+      author: author,
+      note: "_mentioned in #{mentioner.gfm_reference}_",
+      system: true
+    }, without_protection: true)
+  end
+
+  # Determine whether or not a cross-reference note already exists.
+  def self.cross_reference_exists?(noteable, mentioner)
+    where(noteable_id: noteable.id, system: true, note: "_mentioned in #{mentioner.gfm_reference}_").any?
   end
 
   def commit_author
     @commit_author ||=
       project.users.find_by_email(noteable.author_email) ||
-      project.users.find_by_name(noteable.author_name)
+        project.users.find_by_name(noteable.author_name)
   rescue
     nil
   end
 
-  def diff
-    if noteable.diffs.present?
-      noteable.diffs.select do |d|
-        if d.b_path
-          Digest::SHA1.hexdigest(d.b_path) == diff_file_index
-        end
-      end.first
+  def find_diff
+    return nil unless noteable && noteable.diffs.present?
+
+    @diff ||= noteable.diffs.find do |d|
+      Digest::SHA1.hexdigest(d.new_path) == diff_file_index if d.new_path
     end
+  end
+
+  def set_diff
+    # First lets find notes with same diff
+    # before iterating over all mr diffs
+    diff = Note.where(noteable_id: self.noteable_id, noteable_type: self.noteable_type, line_code: self.line_code).last.try(:diff)
+    diff ||= find_diff
+
+    self.st_diff = diff.to_hash if diff
+  end
+
+  def diff
+    @diff ||= Gitlab::Git::Diff.new(st_diff) if st_diff.respond_to?(:map)
+  end
+
+  def active?
+    # TODO: determine if discussion is outdated
+    # according to recent MR diff or not
+    true
   end
 
   def diff_file_index
@@ -83,15 +125,31 @@ class Note < ActiveRecord::Base
   end
 
   def diff_file_name
-    diff.b_path
+    diff.new_path if diff
+  end
+
+  def diff_old_line
+    line_code.split('_')[1].to_i
   end
 
   def diff_new_line
     line_code.split('_')[2].to_i
   end
 
+  def diff_line
+    return @diff_line if @diff_line
+
+    if diff
+      Gitlab::DiffParser.new(diff).each do |full_line, type, line_code, line_new, line_old|
+        @diff_line = full_line if line_code == self.line_code
+      end
+    end
+
+    @diff_line
+  end
+
   def discussion_id
-    @discussion_id ||= [:discussion, noteable_type.try(:underscore), noteable_id, line_code].join("-").to_sym
+    @discussion_id ||= [:discussion, noteable_type.try(:underscore), noteable_id || commit_id, line_code].join("-").to_sym
   end
 
   # Returns true if this is a downvote note,
@@ -138,17 +196,9 @@ class Note < ActiveRecord::Base
       super
     end
   # Temp fix to prevent app crash
-  # if note commit id doesnt exist
+  # if note commit id doesn't exist
   rescue
     nil
-  end
-
-  def notify
-    @notify ||= false
-  end
-
-  def notify_author
-    @notify_author ||= false
   end
 
   # Returns true if this is an upvote note,
@@ -163,11 +213,27 @@ class Note < ActiveRecord::Base
     for_issue? || (for_merge_request? && !for_diff_line?)
   end
 
+  # Mentionable override.
+  def gfm_reference
+    noteable.gfm_reference
+  end
+
+  # Mentionable override.
+  def local_reference
+    noteable
+  end
+
   def noteable_type_name
     if noteable_type.present?
       noteable_type.downcase
     else
       "wall"
     end
+  end
+
+  # FIXME: Hack for polymorphic associations with STI
+  #        For more information wisit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
+  def noteable_type=(sType)
+    super(sType.to_s.classify.constantize.base_class.to_s)
   end
 end

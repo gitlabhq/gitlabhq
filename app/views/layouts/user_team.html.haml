@@ -1,0 +1,11 @@
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head", title: "#{@team.name}"
+  %body{class: "#{app_theme} application", :'data-page' => body_data_page}
+    = render "layouts/head_panel", title: "team: #{@team.name}"
+    = render "layouts/flash"
+    %nav.main-nav
+      .container= render 'layouts/nav/team'
+
+    .container
+      .content= yield

@@ -1,16 +1,43 @@
-module Gitlab
+module API
   module APIHelpers
+    PRIVATE_TOKEN_HEADER = "HTTP_PRIVATE_TOKEN"
+    PRIVATE_TOKEN_PARAM = :private_token
+    SUDO_HEADER ="HTTP_SUDO"
+    SUDO_PARAM = :sudo
+
     def current_user
-      @current_user ||= User.find_by_authentication_token(params[:private_token] || env["HTTP_PRIVATE_TOKEN"])
+      @current_user ||= User.find_by_authentication_token(params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER])
+      identifier = sudo_identifier()
+      # If the sudo is the current user do nothing
+      if (identifier && !(@current_user.id == identifier || @current_user.username == identifier))
+        render_api_error!('403 Forbidden: Must be admin to use sudo', 403) unless @current_user.is_admin?
+        begin
+          @current_user = User.by_username_or_id(identifier)
+        rescue => ex
+          not_found!("No user id or username for: #{identifier}")
+        end
+        not_found!("No user id or username for: #{identifier}") if current_user.nil?
+      end
+      @current_user
+    end
+
+    def sudo_identifier()
+      identifier ||= params[SUDO_PARAM] ||= env[SUDO_HEADER]
+      # Regex for integers
+      if (!!(identifier =~ /^[0-9]+$/))
+        identifier.to_i
+      else
+        identifier
+      end
     end
 
     def user_project
-      @project ||= find_project
+      @project ||= find_project(params[:id])
       @project || not_found!
     end
 
-    def find_project
-      project = Project.find_by_id(params[:id]) || Project.find_with_namespace(params[:id])
+    def find_project(id)
+      project = Project.find_by_id(id) || Project.find_with_namespace(id)
 
       if project && can?(current_user, :read_project, project)
         project
@@ -41,6 +68,17 @@ module Gitlab
       abilities.allowed?(object, action, subject)
     end
 
+    # Checks the occurrences of required attributes, each attribute must be present in the params hash
+    # or a Bad Request error is invoked.
+    #
+    # Parameters:
+    #   keys (required) - A hash consisting of keys that must be present
+    def required_attributes!(keys)
+      keys.each do |key|
+        bad_request!(key) unless params[key].present?
+      end
+    end
+
     def attributes_for_keys(keys)
       attrs = {}
       keys.each do |key|
@@ -53,6 +91,12 @@ module Gitlab
 
     def forbidden!
       render_api_error!('403 Forbidden', 403)
+    end
+
+    def bad_request!(attribute)
+      message = ["400 (Bad request)"]
+      message << "\"" + attribute.to_s + "\" not given"
+      render_api_error!(message.join(' '), 400)
     end
 
     def not_found!(resource = nil)

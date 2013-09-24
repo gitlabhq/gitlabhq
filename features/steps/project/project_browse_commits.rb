@@ -15,11 +15,11 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   Then 'I see commits atom feed' do
-    commit = CommitDecorator.decorate(@project.repository.commit)
+    commit = @project.repository.commit
     page.response_headers['Content-Type'].should have_content("application/atom+xml")
-    page.body.should have_selector("title", :text => "Recent commits to #{@project.name}")
-    page.body.should have_selector("author email", :text => commit.author_email)
-    page.body.should have_selector("entry summary", :text => commit.description)
+    page.body.should have_selector("title", text: "Recent commits to #{@project.name}")
+    page.body.should have_selector("author email", text: commit.author_email)
+    page.body.should have_selector("entry summary", text: commit.description)
   end
 
   Given 'I click on commit link' do
@@ -48,14 +48,44 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     page.should have_selector('ul.breadcrumb span.divider', count: 3)
     page.should have_selector('ul.breadcrumb a', count: 4)
 
-    find('ul.breadcrumb li:first a')['href'].should match(/#{@project.path_with_namespace}\/commits\/master\z/)
+    find('ul.breadcrumb li:nth-child(2) a')['href'].should match(/#{@project.path_with_namespace}\/commits\/master\z/)
     find('ul.breadcrumb li:last a')['href'].should match(%r{master/app/models/project\.rb\z})
   end
 
   Then 'I see commits stats' do
-    page.should have_content 'Stats'
+    page.should have_content 'Top 50 Committers'
     page.should have_content 'Committers'
     page.should have_content 'Total commits'
     page.should have_content 'Authors'
+  end
+
+  Given 'I visit big commit page' do
+    visit project_commit_path(@project, BigCommits::BIG_COMMIT_ID)
+  end
+
+  Then 'I see big commit warning' do
+    page.should have_content BigCommits::BIG_COMMIT_MESSAGE
+    page.should have_content "Warning! This is a large diff"
+    page.should have_content "If you still want to see the diff"
+  end
+
+  Given 'I visit huge commit page' do
+    visit project_commit_path(@project, BigCommits::HUGE_COMMIT_ID)
+  end
+
+  Then 'I see huge commit message' do
+    page.should have_content BigCommits::HUGE_COMMIT_MESSAGE
+    page.should have_content "Warning! This is a large diff"
+    page.should_not have_content "If you still want to see the diff"
+  end
+
+  Given 'I visit a commit with an image that changed' do
+    visit project_commit_path(@project, 'cc1ba255d6c5ffdce87a357ba7ccc397a4f4026b')
+  end
+
+  Then 'The diff links to both the previous and current image' do
+    links = page.all('.two-up span div a')
+    links[0]['href'].should =~ %r{blob/bc3735004cb45cec5e0e4fa92710897a910a5957}
+    links[1]['href'].should =~ %r{blob/cc1ba255d6c5ffdce87a357ba7ccc397a4f4026b}
   end
 end

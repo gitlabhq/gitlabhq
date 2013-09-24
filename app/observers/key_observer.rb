@@ -1,12 +1,19 @@
-class KeyObserver < ActiveRecord::Observer
-  include Gitolited
+class KeyObserver < BaseObserver
+  def after_create(key)
+    GitlabShellWorker.perform_async(
+      :add_key,
+      key.shell_id,
+      key.key
+    )
 
-  def after_save(key)
-    gitolite.set_key(key.identifier, key.key, key.projects)
+    notification.new_key(key)
   end
 
   def after_destroy(key)
-    return if key.is_deploy_key && !key.last_deploy?
-    gitolite.remove_key(key.identifier, key.projects)
+    GitlabShellWorker.perform_async(
+      :remove_key,
+      key.shell_id,
+      key.key,
+    )
   end
 end

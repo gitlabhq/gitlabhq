@@ -4800,7 +4800,7 @@ var SearchHighlight = require("./search_highlight").SearchHighlight;
 /**
  * new EditSession(text, mode)
  * - text (Document | String): If `text` is a `Document`, it associates the `EditSession` with it. Otherwise, a new `Document` is created, with the initial text
- * - mode (TextMode): The inital language mode to use for the document
+ * - mode (TextMode): The initial language mode to use for the document
  *
  * Sets up a new `EditSession` and associates it with the given `Document` and `TextMode`.
  *
@@ -10068,7 +10068,7 @@ ace.define('ace/token_iterator', ['require', 'exports', 'module' ], function(req
  * - initialRow (Number): The row to start the tokenizing at
  * - initialColumn (Number): The column to start the tokenizing at
  *
- * Creates a new token iterator object. The inital token index is set to the provided row and column coordinates.
+ * Creates a new token iterator object. The initial token index is set to the provided row and column coordinates.
  *
  **/
 var TokenIterator = function(session, initialRow, initialColumn) {
@@ -11946,7 +11946,7 @@ var VirtualRenderer = function(container, theme) {
         this.$horizScroll = horizScroll;
         if (horizScrollChanged) {
             this.scroller.style.overflowX = horizScroll ? "scroll" : "hidden";
-            // when we hide scrollbar scroll event isn't emited
+            // when we hide scrollbar scroll event isn't emitted
             // leaving session with wrong scrollLeft value
             if (!horizScroll)
                 this.session.setScrollLeft(0);
@@ -13029,7 +13029,7 @@ var Text = function(parentEl) {
 
             var html = [];
             // Get the tokens per line as there might be some lines in between
-            // beeing folded.
+            // being folded.
             this.$renderLine(html, row, false, row == foldStart ? foldLine : false);
 
             // don't use setInnerHtml since we are working with an empty DIV
@@ -14529,7 +14529,7 @@ var Editor = require("./editor").Editor;
      * - dir (Number): The direction of lines to select: -1 for up, 1 for down
      * - skip (Boolean): If `true`, removes the active selection range
      *
-     * Finds the next occurence of text in an active selection and adds it to the selections.
+     * Finds the next occurrence of text in an active selection and adds it to the selections.
      **/
     this.selectMore = function(dir, skip) {
         var session = this.session;

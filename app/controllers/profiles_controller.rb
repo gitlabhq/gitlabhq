@@ -1,5 +1,10 @@
 class ProfilesController < ApplicationController
+  include ActionView::Helpers::SanitizeHelper
+
   before_filter :user
+  before_filter :authorize_change_password!, only: :update_password
+  before_filter :authorize_change_username!, only: :update_username
+
   layout 'profile'
 
   def show
@@ -62,5 +67,13 @@ class ProfilesController < ApplicationController
 
   def user
     @user = current_user
+  end
+
+  def authorize_change_password!
+    return render_404 if @user.ldap_user?
+  end
+
+  def authorize_change_username!
+    return render_404 unless @user.can_change_username?
   end
 end

@@ -7,6 +7,9 @@
   = stylesheet_link_tag    "application"
   = javascript_include_tag "application"
   = csrf_meta_tags
+  = include_gon
+
+  = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
 
   -# Atom feed
   - if current_user

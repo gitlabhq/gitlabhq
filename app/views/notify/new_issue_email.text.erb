@@ -1,0 +1,5 @@
+New Issue was created.
+
+Issue <%= @issue.iid %>: <%= url_for(project_issue_url(@issue.project, @issue)) %>
+Author:   <%= @issue.author_name %>
+Asignee:  <%= @issue.assignee_name %>

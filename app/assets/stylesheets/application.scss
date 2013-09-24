@@ -5,6 +5,7 @@
  *= require jquery.ui.gitlab
  *= require jquery.atwho
  *= require chosen
+ *= require select2
  *= require_self
 */
 
@@ -14,7 +15,7 @@
 @import "gitlab_bootstrap.scss";
 
 @import "common.scss";
-@import "ref_select.scss";
+@import "selects.scss";
 
 @import "sections/header.scss";
 @import "sections/nav.scss";
@@ -33,9 +34,15 @@
 @import "sections/login.scss";
 @import "sections/editor.scss";
 @import "sections/admin.scss";
+@import "sections/wiki.scss";
+@import "sections/wall.scss";
+@import "sections/dashboard.scss";
+@import "sections/stat_graph.scss";
 
 @import "highlight/white.scss";
 @import "highlight/dark.scss";
+@import "highlight/solarized_dark.scss";
+@import "highlight/monokai.scss";
 
 /**
  * UI themes:

@@ -2,6 +2,7 @@ class AdminGroups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedActiveTab
+  include Select2Helper
 
   When 'I visit admin group page' do
     visit admin_group_path(current_group)
@@ -20,16 +21,18 @@ class AdminGroups < Spinach::FeatureSteps
   end
 
   And 'Create gitlab user "John"' do
-    create(:user, :name => "John")
+    create(:user, name: "John")
   end
 
   And 'submit form with new group info' do
-    fill_in 'group_name', :with => 'gitlab'
+    fill_in 'group_name', with: 'gitlab'
+    fill_in 'group_description', with: 'Group description'
     click_button "Create group"
   end
 
   Then 'I should see newly created group' do
     page.should have_content "Group: gitlab"
+    page.should have_content "Group description"
   end
 
   Then 'I should be redirected to group page' do
@@ -38,17 +41,24 @@ class AdminGroups < Spinach::FeatureSteps
 
   When 'I select user "John" from user list as "Reporter"' do
     user = User.find_by_name("John")
+    select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select user.name, :from => "user_ids"
-      select "Reporter", :from => "project_access"
+      select "Reporter", from: "group_access"
     end
-    click_button "Add user to projects in group"
+    click_button "Add users into group"
   end
 
   Then 'I should see "John" in team list in every project as "Reporter"' do
-    user = User.find_by_name("John")
-    projects_with_access = find(".user_#{user.id} .projects_access")
-    projects_with_access.should have_link("Reporter")
+    within ".group-users-list" do
+      page.should have_content "John"
+      page.should have_content "Reporter"
+    end
+  end
+
+  step 'I should be all groups' do
+    Group.all.each do |group|
+      page.should have_content group.name
+    end
   end
 
   protected

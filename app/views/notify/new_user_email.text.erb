@@ -1,0 +1,13 @@
+Hi <%= @user.name %>!
+
+The Administrator created an account for you. Now you are a member of the company GitLab application.
+
+login.................. <%= @user.email %>
+<% if @user.created_by_id %>
+  password............... <%= @password %>
+
+  You will be forced to change this password immediately after login.
+<% end %>
+
+
+Click here to login: <%= url_for(root_url) %>

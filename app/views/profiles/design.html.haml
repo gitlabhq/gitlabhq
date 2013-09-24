@@ -1,10 +1,13 @@
+%h3.page-title
+  My appearance settings
+%p.light
+  Appearance settings saved to your profile and available across all devices
+%hr
+
 = form_for @user, url: profile_path, remote: true, method: :put do |f|
   %fieldset.application-theme
     %legend
       Application theme
-      .update-feedback.hide
-        %i.icon-ok
-        Saved
     .themes_opts
       = label_tag do
         .prev.default
@@ -24,7 +27,7 @@
       = label_tag do
         .prev.gray
         = f.radio_button :theme_id, 4
-        SlateGray
+        Gray
 
       = label_tag do
         .prev.violet
@@ -36,17 +39,10 @@
   %fieldset.code-preview-theme
     %legend
       Code preview theme
-      .update-feedback.hide
-        %i.icon-ok
-        Saved
     .code_highlight_opts
-      = label_tag do
-        .prev
-          = image_tag "white.png"
-        = f.radio_button :dark_scheme, false
-        White code preview
-      = label_tag do
-        .prev
-          = image_tag "dark.png"
-        = f.radio_button :dark_scheme, true
-        Dark code preview
+      - color_schemes.each do |color_scheme_id, color_scheme|
+        = label_tag do
+          .prev
+            = image_tag "#{color_scheme}-scheme-preview.png"
+          = f.radio_button :color_scheme_id, color_scheme_id
+          = color_scheme.gsub(/[-_]+/, ' ').humanize

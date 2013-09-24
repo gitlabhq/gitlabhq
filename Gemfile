@@ -1,4 +1,4 @@
-source "http://rubygems.org"
+source "https://rubygems.org"
 
 def darwin_only(require_as)
   RUBY_PLATFORM.include?('darwin') && require_as
@@ -8,60 +8,63 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.11"
+gem "rails", "3.2.13"
 
 # Supported DBs
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise", "~> 2.1.0"
-gem 'omniauth', "~> 1.1.1"
+gem "devise", '~> 2.2'
+gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 
-# GITLAB patched libs
-gem "grit",          git: "https://github.com/gitlabhq/grit.git",           ref: '7f35cb98ff17d534a07e3ce6ec3d580f67402837'
-gem 'grack',         git: "https://github.com/gitlabhq/grack.git",          ref: 'ba46f3b0845c6a09d488ae6abdce6ede37e227e8'
-gem 'grit_ext',      git: "https://github.com/gitlabhq/grit_ext.git",       ref: '8e6afc2da821354774aa4d1ee8a1aa2082f84a3e'
+# Extracting information from a git repository
+# Provide access to Gitlab::Git library
+gem "gitlab_git", '2.3.1'
+
+# Ruby/Rack Git Smart-HTTP Server Handler
+gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.2', require: "omniauth-ldap"
-
-# Dump db to yml file. Mostly used to migrate from sqlite to mysql
-gem 'gitlab_yaml_db', '1.0.0', require: "yaml_db"
-
-# Gitolite client (for work with gitolite-admin repo)
-gem "gitolite", '1.1.0'
+gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
 
 # Syntax highlighter
-gem "pygments.rb",  git: "https://github.com/gitlabhq/pygments.rb.git", branch: "master"
+gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
+
+# Git Wiki
+gem "gitlab-gollum-lib", "~> 1.0.1", require: 'gollum-lib'
 
 # Language detection
-gem "github-linguist", "~> 2.3.4" , require: "linguist"
+gem "github-linguist", require: "linguist"
 
 # API
-gem "grape", "~> 0.2.1"
+gem "grape", "~> 0.4.1"
+gem "grape-entity", "~> 0.3.0"
 
 # Format dates and times
 # based on human-friendly examples
 gem "stamp"
 
+# Enumeration fields
+gem 'enumerize'
+
 # Pagination
 gem "kaminari", "~> 0.14.1"
 
 # HAML
-gem "haml-rails", "~> 0.3.5"
+gem "haml-rails"
 
 # Files attachments
-gem "carrierwave", "~> 0.7.1"
+gem "carrierwave"
+
+# for aws storage
+gem "fog", "~> 1.3.1", group: :aws
 
 # Authorization
 gem "six"
-
-# Generate Fake data
-gem "ffaker"
 
 # Seed data
 gem "seed-fu"
@@ -70,19 +73,22 @@ gem "seed-fu"
 gem "redcarpet",     "~> 2.2.2"
 gem "github-markup", "~> 0.7.4", require: 'github/markup'
 
-# Servers
-gem "unicorn", "~> 4.4.0"
+# Asciidoc to HTML
+gem  "asciidoctor"
+
+# Application server
+gem "unicorn", '~> 4.6.3', group: :unicorn
+
+# State machine
+gem "state_machine"
 
 # Issue tags
-gem "acts-as-taggable-on", "2.3.3"
-
-# Decorators
-gem "draper", "~> 0.18.0"
+gem "acts-as-taggable-on"
 
 # Background jobs
 gem 'slim'
-gem 'sinatra', :require => nil
-gem 'sidekiq', '2.6.4'
+gem 'sinatra', require: nil
+gem 'sidekiq'
 
 # HTTP requests
 gem "httparty"
@@ -95,23 +101,44 @@ gem 'settingslogic'
 
 # Misc
 gem "foreman"
-gem "git"
+
+# Cache
+gem "redis-rails"
+
+# Campfire integration
+gem 'tinder', '~> 1.9.2'
+
+# HipChat integration
+gem "hipchat", "~> 0.9.0"
+
+# d3
+gem "d3_rails", "~> 3.1.4"
+
+# underscore-rails
+gem "underscore-rails", "~> 1.4.4"
+
+# Sanitize user input
+gem "sanitize"
 
 group :assets do
-  gem "sass-rails",   "~> 3.2.5"
-  gem "coffee-rails", "~> 3.2.2"
-  gem "uglifier",     "~> 1.3.0"
+  gem "sass-rails"
+  gem "coffee-rails"
+  gem "uglifier"
   gem "therubyracer"
+  gem 'turbolinks'
+  gem 'jquery-turbolinks'
 
-  gem 'chosen-rails',     "0.9.8"
-  gem 'jquery-atwho-rails', "0.1.7"
+  gem 'chosen-rails',     "1.0.0"
+  gem 'select2-rails'
+  gem 'jquery-atwho-rails', "0.3.0"
   gem "jquery-rails",     "2.1.3"
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
-  gem "raphael-rails",    git: "https://github.com/gitlabhq/raphael-rails.git"
-  gem 'bootstrap-sass',   "2.2.1.1"
-  gem "font-awesome-sass-rails", "~> 3.0.0"
+  gem "raphael-rails", "~> 2.1.2"
+  gem 'bootstrap-sass'
+  gem "font-awesome-rails"
   gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
+  gem "gon"
 end
 
 group :development do
@@ -133,15 +160,22 @@ group :development do
 end
 
 group :development, :test do
+  gem 'coveralls', require: false
   gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
   gem "pry"
   gem "awesome_print"
-  gem "database_cleaner", ref: "f89c34300e114be99532f14c115b2799a3380ac6", git: "https://github.com/bmabey/database_cleaner.git"
+  gem "database_cleaner"
   gem "launchy"
   gem 'factory_girl_rails'
+
+  # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
+  gem 'minitest', '~> 4.7.0'
+
+  # Generate Fake data
+  gem "ffaker"
 
   # Guard
   gem 'guard-rspec'
@@ -153,17 +187,20 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', git: 'https://github.com/jonleighton/poltergeist.git', ref: '5c2e092001074a8cf09f332d3714e9ba150bc8ca'
+  gem 'poltergeist', '~> 1.4.1'
+
+  gem 'spork', '~> 1.0rc'
+  gem 'jasmine'
 end
 
 group :test do
   gem "simplecov", require: false
-  gem "shoulda-matchers", "1.3.0"
+  gem "shoulda-matchers", "~> 2.1.0"
   gem 'email_spec'
   gem "webmock"
   gem 'test_after_commit'
 end
 
 group :production do
-  gem "gitlab_meta", '4.0'
+  gem "gitlab_meta", '6.0'
 end

@@ -1,5 +1,5 @@
 html {
-  overflow-y: scroll; 
+  overflow-y: scroll;
 }
 
 /** LAYOUT **/
@@ -17,43 +17,20 @@ body {
   margin: 0 0;
 }
 
-.visible_link,
 .author_link {
   color: $link_color;
 }
 
 .help li { color:$style_color; }
 
-.back_link {
-  text-decoration: underline;
+.back-link {
   font-size: 14px;
-  font-weight: bold;
-  padding: 10px 0;
-  padding-bottom: 0;
-}
-
-.info_link {
-  margin-right: 5px;
-  float: left;
-
-  img {
-    width: 20px;
-  }
-}
-
-.download_repo_link {
-  background: url("images.png") no-repeat 0 -48px;
-  padding-left: 20px;
 }
 
 table a code {
   position: relative;
   top: -2px;
   margin-right: 3px;
-}
-
-.span12 hr{
- margin-top: 5px;
 }
 
 .loading {
@@ -67,32 +44,30 @@ table a code {
 }
 
 /** FLASH message **/
-#flash-container {
-  height: 50px;
-  position: fixed;
-  z-index: 10001;
-  top: 0px;
-  width: 100%;
-  margin-bottom: 15px;
-  overflow: hidden;
-  background: white;
-  cursor: pointer;
-  border-bottom: 1px solid #ccc;
-  text-align: center;
+.flash-container {
   display: none;
+  cursor: pointer;
+  margin: 0;
+  text-align: center;
+  color: #fff;
+  font-size: 14px;
+  position: fixed;
+  bottom: 0;
+  width: 100%;
+  opacity: 0.8;
+  z-index: 100;
 
-  h4 {
-    color: #666;
-    font-size: 18px;
-    line-height: 38px;
-    padding-top: 5px;
-    margin: 2px;
-    font-weight: normal;
+  .flash-notice {
+    background: #49C;
+    padding: 10px;
+    text-shadow: 0 1px 1px #178;
   }
-}
 
-.git_url_wrapper {
-  margin-right:50px
+  .flash-alert {
+    background: #C67;
+    text-shadow: 0 1px 1px #945;
+    padding: 10px;
+  }
 }
 
 span.update-author {
@@ -106,65 +81,17 @@ span.update-author {
   }
 }
 
-.dashboard-loader {
-  float: left;
-  margin: 10px;
-  display: none;
-}
 .user-mention {
   color: #2FA0BB;
   font-weight: bold;
 }
 
-.neib {
-  margin-right: 10px;
-}
-
 .label {
-  padding: 0px 4px;
-  font-size: 10px;
+  padding: 1px 4px;
+  font-size: 12px;
   font-style: normal;
-  background-color: $link_color;
-
-  &.label-success {
-    background-color: #8D8;
-    color: #333;
-    text-shadow: 0 1px 1px white;
-  }
-
-  &.label-error {
-    background-color: #D88;
-    color: #333;
-    text-shadow: 0 1px 1px white;
-  }
+  font-weight: normal;
 }
-
-form {
-  @extend .form-horizontal;
-
-  .actions {
-    @extend .form-actions;
-  }
-
-  .clearfix {
-    @extend .control-group;
-  }
-
-  .input {
-    @extend .controls;
-  }
-
-  label {
-    @extend .control-label;
-  }
-  .xlarge {
-    @extend .input-xlarge;
-  }
-  .xxlarge {
-    @extend .input-xxlarge;
-  }
-}
-
 
 .field_with_errors {
   display: inline;
@@ -179,54 +106,9 @@ ul.breadcrumb {
   }
 
   a {
-    color: #474D57;
-    font-weight: bold;
-    font-size: 14px;
-  }
-
-  .arrow {
-    background: url("images.png") no-repeat -85px -77px;
-    width: 19px;
-    height: 16px;
-    float: left;
-    position: relative;
-    left: -10px;
-    padding: 0;
-    margin: 0;
-  }
-}
-
-input[type=text] {
-  &.large_text {
-    padding: 6px;
     font-size: 16px;
   }
 }
-
-input.git_clone_url {
-  width: 325px;
-}
-
-.merge-request-form-holder {
-  select {
-    width: 300px;
-  }
-}
-
-/** Issues **/
-#issue_assignee_id {
-  width: 300px;
-}
-
-#new_issue_dialog textarea{
-    height: 100px;
-}
-
-.project_list_url {
-  width: 250px;
-  background:#fff !important;
-}
-
 
 .line_holder {
   &:hover {
@@ -236,49 +118,26 @@ input.git_clone_url {
   }
 }
 
-li.commit {
-  .avatar {
-    width: 24px;
-    top:-5px;
-    margin-right: 10px;
-    margin-left: 10px;
-  }
-
-  code {
-    padding: 2px 2px 0;
-    margin-top: -2px;
-    &:hover {
-      color: black;
-      border: 1px solid #ccc;
-    }
-  }
-}
 p.time {
   color: #999;
   font-size: 90%;
   margin: 30px 3px 3px 2px;
 }
 
-
-.styled_image {
-  border: 2px solid #ddd;
-}
-
-
-
-/* Fix for readme code (stopped it from being yellow) */
-.readme {
-  pre {
-    background: white !important;
-
-    code {
-      background: none !important;
-    }
+.search-holder {
+  label, input {
+     height: 30px;
+     padding: 0;
+     font-size: 14px;
+  }
+  label {
+    line-height: 30px;
+    color: #666;
   }
 }
 
 .highlight_word {
-  background: #EEDC94;
+  border-bottom: 2px solid #F90;
 }
 
 .status_info {
@@ -291,21 +150,15 @@ p.time {
   top: -5px;
   @include border-radius(4px);
 
+  &.success {
+    background: #4A4;
+    color: #FFF;
+  }
+
   &.error {
     background: #DA4E49;
     color: #FFF;
   }
-}
-
-.arrow{
-  background: #E3E5EA;
-  padding: 5px;
-  margin-top: 5px;
-  @include border-radius(5px);
-  text-shadow: none;
-  color: #999;
-  line-height: 16px;
-  font-weight: bold;
 }
 
 .thin_area{
@@ -326,10 +179,6 @@ li.note {
     li {
       border-bottom:none !important;
     }
-    .file {
-      padding-left: 20px;
-      background:url("icon-attachment.png") no-repeat left center;
-    }
   }
 }
 
@@ -349,38 +198,6 @@ li.note {
   }
 }
 
-.remember_me {
-  text-align: left;
-
-  input {
-    margin: 0;
-  }
-
-  span {
-    padding-left: 5px;
-  }
-}
-
-
-
-/**
- * Admin area
- *
- */
-.admin_dash {
-  .data {
-    a {
-      h1 {
-        line-height: 48px;
-        font-size: 48px;
-        padding: 20px;
-        text-align: center;
-        font-weight: normal;
-      }
-    }
-  }
-}
-
 .rss-icon {
   img {
     width: 24px;
@@ -392,25 +209,12 @@ li.note {
   }
 }
 
-
-
-/* CHZN reset few styles */
-.chzn-container-single .chzn-single {
-  background: #FFF;
-  border: 1px solid #bbb;
-  box-shadow: none;
-}
-.chzn-container-active .chzn-single {
-  background: #fff;
-}
-
-
 .supp_diff_link,
 .show-all-commits {
   cursor: pointer;
 }
 
-.merge_request,
+.merge-request,
 .issue {
   &.today{
     background: #EFE;
@@ -437,14 +241,17 @@ li.note {
   }
 }
 
-.error_message {
-  @extend .cred;
-  border-left: 4px solid #E99;
+.error-message {
   padding: 10px;
-  margin-bottom: 10px;
-  background: #FEE;
+  background: #C67;
   padding-left: 20px;
+  margin: 0;
+  color: #FFF;
 
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
   &.centered {
     text-align: center;
   }
@@ -510,27 +317,6 @@ pre {
   }
 }
 
-.float-link {
-  float: left;
-  margin-right: 15px;
-  .s16 {
-    margin-right: 5px;
-  }
-}
-
-.dashboard-search-filter {
-  padding:5px;
-
-  .search-text-input {
-    float:left;
-    @extend .span2;
-  }
-  .btn {
-    margin-left: 5px;
-    float:left;
-  }
-}
-
 h1.http_status_code {
   font-size: 56px;
   line-height: 100px;
@@ -555,4 +341,44 @@ img.emoji {
   height: 20px;
   vertical-align: middle;
   width: 20px;
+}
+
+.appear-data {
+  display: none;
+}
+
+.chart {
+  overflow: hidden;
+  height: 220px;
+}
+
+.navless-container {
+  margin-top: 20px;
+}
+
+.description-block {
+  @extend .light-well;
+  @extend .light;
+  margin-bottom: 10px;
+}
+
+.group-name {
+  font-size: 14px;
+  line-height: 24px;
+}
+
+table {
+  td.permission-x {
+    background: #D9EDF7 !important;
+    text-align: center;
+  }
+}
+
+.dashboard-intro-icon {
+  float: left;
+  font-size: 32px;
+  color: #AAA;
+  padding: 5px 0;
+  width: 50px;
+  min-height: 100px;
 }

@@ -1,0 +1,30 @@
+= render 'nav'
+%h3.page-title
+  %span.light History for
+  = link_to @wiki.title.titleize, project_wiki_path(@project, @wiki)
+
+%table
+  %thead
+    %tr
+      %th Page version
+      %th Author
+      %th Commit Message
+      %th Last updated
+      %th Format
+  %tbody
+    - @wiki.versions.each do |version|
+      - commit = version
+      %tr
+        %td
+          = link_to project_wiki_path(@project, @wiki, version_id: commit.id) do
+            = commit.short_id
+        %td
+          = commit_author_link(commit, avatar: true, size: 24)
+        %td
+          = commit.title
+        %td
+          = time_ago_in_words(version.date)
+          ago
+        %td
+          %strong
+            = @wiki.page.wiki.page(@wiki.page.name, commit.id).try(:format)

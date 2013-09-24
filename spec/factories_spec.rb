@@ -1,6 +1,9 @@
 require 'spec_helper'
 
-INVALID_FACTORIES = [:key_with_a_space_in_the_middle]
+INVALID_FACTORIES = [
+  :key_with_a_space_in_the_middle,
+  :invalid_key,
+]
 
 FactoryGirl.factories.map(&:name).each do |factory_name|
   next if INVALID_FACTORIES.include?(factory_name)

@@ -1,19 +1,26 @@
 /** COLORS **/
-.cgray { color:gray }
-.cred { color:#D12F19 }
-.cgreen { color:#4a2 }
-.cblack { color:#111 }
-.cdark { color:#444 }
-.cwhite { color:#fff!important }
-.bgred { background:#F2DEDE!important }
+.cgray { color: gray }
+.cred { color: #D12F19 }
+.cgreen { color: #4a2 }
+.cblue { color: #29A }
+.cblack { color: #111 }
+.cdark { color: #444 }
+.cwhite { color: #fff!important }
+.bgred { background: #F2DEDE!important }
 
 /** COMMON CLASSES **/
 .left { float:left }
-.right { float:right!important }
-.append-bottom-10 { margin-bottom:10px }
-.append-bottom-20 { margin-bottom:20px }
+
 .prepend-top-10 { margin-top:10px }
 .prepend-top-20 { margin-top:20px }
+.prepend-left-10 { margin-left:10px }
+.prepend-left-20 { margin-left:20px }
+.append-right-10 { margin-right:10px }
+.append-right-20 { margin-right:20px }
+.append-bottom-10 { margin-bottom:10px }
+.append-bottom-20 { margin-bottom:20px }
+.inline { display: inline-block }
+
 .padded { padding:20px }
 .ipadded { padding:20px!important }
 .lborder { border-left:1px solid #eee }
@@ -21,83 +28,15 @@
 .hint { font-style: italic; color: #999; }
 .light { color: #888 }
 .tiny { font-weight: normal }
+.vtop { vertical-align: top !important; }
 
-/** PILLS & TABS**/
-.nav-pills {
-  .active a {
-    background: $primary_color;
-  }
-
-  > li > a {
-    @include border-radius(0);
-  }
-  &.nav-stacked {
-    > li > a {
-      border-left: 4px solid #EEE;
-      padding: 12px;
-    }
-    > .active > a {
-      border-color: #29B;
-      border-radius: 0;
-      background: #F1F1F1;
-      color: $style_color;
-      font-weight: bold;
-    }
-  }
-}
-
-.nav-pills > .active > a > i[class^="icon-"] { background: inherit; }
-
-
-
-/**
- * nav-tabs
- *
- */
-.nav-tabs > li > a, .nav-pills > li > a { color: $style_color; }
-.nav.nav-tabs {
-  li {
-    > a {
-      padding: 8px 20px;
-      margin-right: 7px;
-      line-height: 20px;
-      border-color: #EEE;
-      color: #888;
-      border-bottom: 1px solid #ddd;
-      .badge {
-        background-color: #eee;
-        color: #888;
-        text-shadow: 0 1px 1px #fff;
-      }
-      i[class^="icon-"] {
-        line-height: 14px;
-      }
-    }
-    &.active {
-      > a {
-        border-color: #CCC;
-        border-bottom: 1px solid #fff;
-        color: #333;
-      }
-    }
-  }
-
-  &.nav-small-tabs > li > a { padding: 6px 9px; }
-}
 
 /** ALERT MESSAGES **/
-.alert-message { @extend .alert; }
-.alert-messag.success { @extend .alert-success; }
-.alert-message.error { @extend .alert-error; }
-
-/** AVATARS **/
-img.avatar { float: left; margin-right: 12px; width: 40px; border: 1px solid #ddd; padding: 1px; }
-img.avatar.s16 { width: 16px; height: 16px; margin-right: 6px; }
-img.avatar.s24 { width: 24px; height: 24px; margin-right: 8px; }
-img.avatar.s32 { width: 32px; height: 32px; margin-right: 10px; }
-img.avatar.s90 { width: 90px; height: 90px; margin-right: 15px; }
-img.lil_av { padding-left: 4px; padding-right: 3px; }
-img.small { width: 80px; }
+.alert.alert-disabled {
+  background: #EEE;
+  color: #777;
+  border-color: #DDD;
+}
 
 /** HELPERS **/
 .nothing_here_message {
@@ -109,33 +48,42 @@ img.small { width: 80px; }
   line-height: 36px;
 }
 
-p.slead { color: #456; font-size: 16px; margin-bottom: 12px; font-weight: 200; line-height: 24px; }
-
-/** FORMS **/
-input[type='search'].search-text-input {
-  background-image: url("icon-search.png");
-  background-repeat: no-repeat;
-  background-position: 10px;
-  padding-left: 25px;
-  @include border-radius(4px);
-  border: 1px solid #ccc;
+.slead {
+  color: #666;
+  font-size: 14px;
+  margin-bottom: 12px;
+  font-weight: normal;
+  line-height: 24px;
 }
 
-input[type='text'].danger {
-  background: #F2DEDE!important;
-  border-color: #D66;
-  text-shadow: 0 1px 1px #fff
+
+.tab-content {
+  overflow: visible;
 }
 
-fieldset legend { font-size: 17px; }
+@media (max-width: 1200px) {
+  .only-wide {
+    display: none;
+  }
+}
 
-/** PAGINATION **/
-.gitlab_pagination {
-  span a { color: $link_color; }
-  .prev, .next, .current, .page a {
-    padding: 10px;
-  }
-  .current {
-    border-bottom: 2px solid $style_color;
-  }
+.pagination ul > li > a, .pagination ul > li >span {
+  @include linear-gradient(#f1f1f1, #e1e1e1);
+  color: #333;
+  text-shadow: 0 1px 1px #FFF;
+}
+
+pre.well-pre {
+  border: 1px solid #EEE;
+  background: #f9f9f9;
+  border-radius: 0;
+  color: #555;
+}
+
+.input-append .btn.active, .input-prepend .btn.active {
+  background: #CCC;
+  border-color: #BBB;
+  text-shadow: 0 1px 1px #fff;
+  font-weight: bold;
+  @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
 }

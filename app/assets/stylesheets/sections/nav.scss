@@ -1,70 +1,85 @@
-/*
- *  Main Menu of Application
- *
- */
-ul.main_menu {
-  margin: auto;
-  margin: 30px 0;
-  margin-top: 10px;
-  border-bottom: 1px solid #DDD;
-  height: 37px;
-  position: relative;
-  overflow: hidden;
-  .count {
-    position: relative;
-    top: -1px;
-    display: inline-block;
-    height: 15px;
-    margin: 0 0 0 5px;
-    padding: 0 8px 1px 8px;
-    height: auto;
-    font-size: 0.82em;
-    line-height: 14px;
-    text-align: center;
-    color: #777;
-  }
-  .label {
-    background: $hover;
-    text-shadow: none;
-    color: $style_color;
-  }
-  li {
-    list-style-type: none;
-    margin: 0;
-    display: table-cell;
-    width: 1%;
-    &.active {
-      border-bottom: 2px solid #474D57;
-      a {
-        color: $style_color;
-      }
-    }
+.main-nav {
+  background: #f5f5f5;
+  margin: 20px 0;
+  margin-top: 0;
+  padding-top: 4px;
+  border-bottom: 1px solid #E1E1E1;
 
-    &.home {
-      a {
-        background: url(home_icon.PNG) no-repeat center center;
-        text-indent:-9999px;
-        min-width: 20px;
-        img {
-          position: relative;
-          top: 4px;
+  ul {
+    margin: auto;
+    height: 40px;
+    overflow: hidden;
+    .count {
+      font-weight: normal;
+      display: inline-block;
+      height: 15px;
+      padding: 1px 6px;
+      height: auto;
+      font-size: 0.82em;
+      line-height: 14px;
+      text-align: center;
+      color: #777;
+      background: #eee;
+      @include border-radius(8px);
+    }
+    .label {
+      background: $hover;
+      text-shadow: none;
+      color: $style_color;
+    }
+    li {
+      list-style-type: none;
+      margin: 0;
+      display: table-cell;
+      width: 1%;
+      &.active {
+        a {
+          color: $style_color;
+          font-weight: bolder;
+
+          &:after {
+            content: '';
+            display: block;
+            position: relative;
+            bottom: 8px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-color: transparent transparent #777 transparent;
+            border-style: solid;
+            border-width: 6px;
+            margin-left: -6px;
+          }
+        }
+      }
+
+      &:hover {
+        a {
+         color: $style_color;
+        }
+      }
+
+      &.home {
+        a {
+          i {
+            font-size: 20px;
+            position: relative;
+            top: 4px;
+          }
         }
       }
     }
-  }
-  a {
-    display: block;
-    text-align: center;
-    font-weight: normal;
-    height: 35px;
-    line-height: 36px;
-    color: #777;
-    text-shadow: 0 1px 1px white;
-    padding: 0 10px;
+    a {
+      display: block;
+      text-align: center;
+      font-weight: normal;
+      height: 38px;
+      line-height: 34px;
+      color: #777;
+      text-shadow: 0 1px 1px white;
+      padding: 0 10px;
+      text-decoration: none;
+      padding-top: 2px;
+    }
   }
 }
-/*
- *  End of Main Menu
- *
- */
-

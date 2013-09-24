@@ -2912,7 +2912,7 @@ var JSHINT = (function () {
             immed       : true, // if immediate invocations must be wrapped in parens
             iterator    : true, // if the `__iterator__` property should be allowed
             jquery      : true, // if jQuery globals should be predefined
-            lastsemic   : true, // if semicolons may be ommitted for the trailing
+            lastsemic   : true, // if semicolons may be omitted for the trailing
                                 // statements inside of a one-line blocks.
             latedef     : true, // if the use before definition should not be tolerated
             laxbreak    : true, // if line breaks should not be checked
@@ -3674,7 +3674,7 @@ var JSHINT = (function () {
             line += 1;
 
             // If smarttabs option is used check for spaces followed by tabs only.
-            // Otherwise check for any occurence of mixed tabs and spaces.
+            // Otherwise check for any occurrence of mixed tabs and spaces.
             if (option.smarttabs)
                 at = s.search(/ \t/);
             else

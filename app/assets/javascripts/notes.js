@@ -1,36 +1,36 @@
 var NoteList = {
-
+  id: null,
   notes_path: null,
   target_params: null,
   target_id: 0,
   target_type: null,
-  top_id: 0,
-  bottom_id: 0,
-  loading_more_disabled: false,
-  reversed: false,
 
   init: function(tid, tt, path) {
     NoteList.notes_path = path + ".js";
     NoteList.target_id = tid;
     NoteList.target_type = tt;
-    NoteList.reversed = $("#notes-list").is(".reversed");
     NoteList.target_params = "target_type=" + NoteList.target_type + "&target_id=" + NoteList.target_id;
 
     NoteList.setupMainTargetNoteForm();
 
-    if(NoteList.reversed) {
-      var form = $(".js-main-target-form");
-      form.find(".buttons, .note_options").hide();
-      var textarea = form.find(".js-note-text");
-      textarea.css("height", "40px");
-      textarea.on("focus", function(){
-        textarea.css("height", "80px");
-        form.find(".buttons, .note_options").show();
-      });
-    }
-
     // get initial set of notes
     NoteList.getContent();
+
+    // Unbind events to prevent firing twice
+    $(document).off("click", ".js-add-diff-note-button");
+    $(document).off("click", ".js-discussion-reply-button");
+    $(document).off("click", ".js-note-preview-button");
+    $(document).off("click", ".js-note-attachment-input");
+    $(document).off("click", ".js-close-discussion-note-form");
+    $(document).off("click", ".js-note-delete");
+    $(document).off("click", ".js-note-edit");
+    $(document).off("click", ".js-note-edit-cancel");
+    $(document).off("click", ".js-note-attachment-delete");
+    $(document).off("click", ".js-choose-note-attachment-button");
+    $(document).off("click", ".js-show-outdated-discussion");
+
+    $(document).off("ajax:complete", ".js-main-target-form");
+
 
     // add a new diff note
     $(document).on("click",
@@ -62,6 +62,26 @@ var NoteList = {
                     ".js-note-delete",
                     NoteList.removeNote);
 
+    // show the edit note form
+    $(document).on("click",
+                    ".js-note-edit",
+                    NoteList.showEditNoteForm);
+
+    // cancel note editing
+    $(document).on("click",
+                    ".note-edit-cancel",
+                    NoteList.cancelNoteEdit);
+
+    // delete note attachment
+    $(document).on("click",
+                    ".js-note-attachment-delete",
+                    NoteList.deleteNoteAttachment);
+
+    // update the note after editing
+    $(document).on("ajax:complete",
+                   "form.edit_note",
+                   NoteList.updateNote);
+
     // reset main target form after submit
     $(document).on("ajax:complete",
                    ".js-main-target-form",
@@ -69,12 +89,12 @@ var NoteList = {
 
 
     $(document).on("click",
-      ".js-choose-note-attachment-button",
-      NoteList.chooseNoteAttachment);
+                  ".js-choose-note-attachment-button",
+                  NoteList.chooseNoteAttachment);
 
     $(document).on("click",
-      ".js-show-outdated-discussion",
-      function(e) { $(this).next('.outdated-discussion').show(); e.preventDefault() });
+                  ".js-show-outdated-discussion",
+                  function(e) { $(this).next('.outdated-discussion').show(); e.preventDefault() });
   },
 
 
@@ -113,8 +133,8 @@ var NoteList = {
 
   /**
    * Called when clicking the "Choose File" button.
-   * 
-   * Opesn the file selection dialog.
+   *
+   * Opens the file selection dialog.
    */
   chooseNoteAttachment: function() {
     var form = $(this).closest("form");
@@ -149,7 +169,7 @@ var NoteList = {
 
   /**
    * Called in response to "cancel" on a diff note form.
-   * 
+   *
    * Shows the reply button again.
    * Removes the form and if necessary it's temporary row.
    */
@@ -157,7 +177,7 @@ var NoteList = {
     var form = $(this).closest("form");
     var row = form.closest("tr");
 
-    // show the reply button (will only work for replys)
+    // show the reply button (will only work for replies)
     form.prev(".js-discussion-reply-button").show();
 
     if (row.is(".js-temp-notes-holder")) {
@@ -191,6 +211,60 @@ var NoteList = {
     note.remove();
     NoteList.updateVotes();
   },
+
+  /**
+   * Called in response to clicking the edit note link
+   *
+   * Replaces the note text with the note edit form
+   * Adds a hidden div with the original content of the note to fill the edit note form with
+   * if the user cancels
+   */
+  showEditNoteForm: function(e) {
+    e.preventDefault();
+    var note = $(this).closest(".note");
+    note.find(".note-text").hide();
+
+    // Show the attachment delete link
+    note.find(".js-note-attachment-delete").show();
+
+    GitLab.GfmAutoComplete.setup();
+
+    var form = note.find(".note-edit-form");
+    form.show();
+
+    var textarea = form.find("textarea");
+    var p = $("<p></p>").text(textarea.val());
+    var hidden_div = $('<div class="note-original-content"></div>').append(p);
+    form.append(hidden_div);
+    hidden_div.hide();
+    textarea.focus();
+  },
+
+  /**
+   * Called in response to clicking the cancel button when editing a note
+   *
+   * Resets and hides the note editing form
+   */
+  cancelNoteEdit: function(e) {
+    e.preventDefault();
+    var note = $(this).closest(".note");
+    NoteList.resetNoteEditing(note);
+  },
+
+
+  /**
+   * Called in response to clicking the delete attachment link
+   *
+   * Removes the attachment wrapper view, including image tag if it exists
+   * Resets the note editing form
+   */
+  deleteNoteAttachment: function() {
+    var note = $(this).closest(".note");
+    note.find(".note-attachment").remove();
+    NoteList.resetNoteEditing(note);
+    NoteList.rewriteTimestamp(note.find(".note-last-update"));
+  },
+
 
   /**
    * Called when clicking on the "reply" button for a diff line.
@@ -327,7 +401,7 @@ var NoteList = {
 
 
   /**
-   * Gets an inital set of notes.
+   * Gets an initial set of notes.
    */
   getContent: function() {
     $.ajax({
@@ -344,126 +418,9 @@ var NoteList = {
    * Replaces the content of #notes-list with the given html.
    */
   setContent: function(newNoteIds, html) {
-    NoteList.top_id = newNoteIds.first();
-    NoteList.bottom_id = newNoteIds.last();
     $("#notes-list").html(html);
-
-    // for the wall
-    if (NoteList.reversed) {
-      // init infinite scrolling
-      NoteList.initLoadMore();
-
-      // init getting new notes
-      NoteList.initRefreshNew();
-    }
   },
 
-
-  /**
-   * Handle loading more notes when scrolling to the bottom of the page.
-   * The id of the last note in the list is in NoteList.bottom_id.
-   *
-   * Set up refreshing only new notes after all notes have been loaded.
-   */
-
-
-  /**
-   * Initializes loading more notes when scrolling to the bottom of the page.
-   */
-  initLoadMore: function() {
-    $(document).endlessScroll({
-      bottomPixels: 400,
-      fireDelay: 1000,
-      fireOnce:true,
-      ceaseFire: function() {
-        return NoteList.loading_more_disabled;
-      },
-      callback: function(i) {
-        NoteList.getMore();
-      }
-    });
-  },
-
-  /**
-   * Gets an additional set of notes.
-   */
-  getMore: function() {
-    // only load more notes if there are no "new" notes
-    $('.loading').show();
-    $.ajax({
-      url: NoteList.notes_path,
-      data: NoteList.target_params + "&loading_more=1&" + (NoteList.reversed ? "before_id" : "after_id") + "=" + NoteList.bottom_id,
-      complete: function(){ $('.js-notes-busy').removeClass("loading")},
-      beforeSend: function() { $('.js-notes-busy').addClass("loading") },
-      dataType: "script"
-    });
-  },
-
-  /**
-   * Called in response to getMore().
-   * Append notes to #notes-list.
-   */
-  appendMoreNotes: function(newNoteIds, html) {
-    var lastNewNoteId = newNoteIds.last();
-    if(lastNewNoteId != NoteList.bottom_id) {
-      NoteList.bottom_id = lastNewNoteId;
-      $("#notes-list").append(html);
-    }
-  },
-
-  /**
-   * Called in response to getMore().
-   * Disables loading more notes when scrolling to the bottom of the page.
-   */
-  finishedLoadingMore: function() {
-    NoteList.loading_more_disabled = true;
-
-    // make sure we are up to date
-    NoteList.updateVotes();
-  },
-
-
-  /**
-   * Handle refreshing and adding of new notes.
-   *
-   * New notes are all notes that are created after the site has been loaded.
-   * The "old" notes are in #notes-list the "new" ones will be in #new-notes-list.
-   * The id of the last "old" note is in NoteList.bottom_id.
-   */
-
-
-  /**
-   * Initializes getting new notes every n seconds.
-   *
-   * Note: only used on wall.
-   */
-  initRefreshNew: function() {
-    setInterval("NoteList.getNew()", 10000);
-  },
-
-  /**
-   * Gets the new set of notes.
-   *
-   * Note: only used on wall.
-   */
-  getNew: function() {
-    $.ajax({
-      url: NoteList.notes_path,
-      data: NoteList.target_params + "&loading_new=1&after_id=" + (NoteList.reversed ? NoteList.top_id : NoteList.bottom_id),
-      dataType: "script"
-    });
-  },
-
-  /**
-   * Called in response to getNew().
-   * Replaces the content of #new-notes-list with the given html.
-   *
-   * Note: only used on wall.
-   */
-  replaceNewNotes: function(newNoteIds, html) {
-    $("#new-notes-list").html(html);
-    NoteList.updateVotes();
-  },
 
   /**
    * Adds a single common note to #notes-list.
@@ -495,15 +452,6 @@ var NoteList = {
 
     // cleanup after successfully creating a diff/discussion note
     $.proxy(NoteList.removeDiscussionNoteForm, form).call();
-  },
-
-  /**
-   * Adds a single wall note to #new-notes-list.
-   *
-   * Note: only used on wall.
-   */
-  appendNewWallNote: function(id, html) {
-    $("#new-notes-list").prepend(html);
   },
 
   /**
@@ -568,5 +516,65 @@ var NoteList = {
       votes.find(".upvotes").text(votes.find(".upvotes").text().replace(/\d+/, upvotes));
       votes.find(".downvotes").text(votes.find(".downvotes").text().replace(/\d+/, downvotes));
     }
+  },
+
+  /**
+   * Called in response to the edit note form being submitted
+   *
+   * Updates the current note field.
+   * Hides the edit note form
+   */
+  updateNote: function(e, xhr, settings) {
+    response = JSON.parse(xhr.responseText);
+    if (response.success) {
+      var note_li = $("#note_" + response.id);
+      var note_text = note_li.find(".note-text");
+      note_text.html(response.note).show();
+
+      var note_form = note_li.find(".note-edit-form");
+      note_form.hide();
+      note_form.find(".btn-save").enableButton();
+
+      // Update the "Edited at xxx label" on the note to show it's just been updated
+      NoteList.rewriteTimestamp(note_li.find(".note-last-update"));
+    }
+  },
+
+  /**
+  * Called in response to the 'cancel note' link clicked, or after deleting a note attachment
+  *
+  * Hides the edit note form and shows the note
+  * Resets the edit note form textarea with the original content of the note
+  */
+  resetNoteEditing: function(note) {
+    note.find(".note-text").show();
+
+    // Hide the attachment delete link
+    note.find(".js-note-attachment-delete").hide();
+
+    // Put the original content of the note back into the edit form textarea
+    var form = note.find(".note-edit-form");
+    var original_content = form.find(".note-original-content");
+    form.find("textarea").val(original_content.text());
+    original_content.remove();
+
+    note.find(".note-edit-form").hide();
+  },
+
+  /**
+  * Utility function to generate new timestamp text for a note
+  *
+  */
+  rewriteTimestamp: function(element) {
+    // Strip all newlines from the existing timestamp
+    var ts = element.text().replace(/\n/g, ' ').trim();
+
+    // If the timestamp already has '(Edited xxx ago)' text, remove it
+    ts = ts.replace(new RegExp("\\(Edited [A-Za-z0-9 ]+\\)$", "gi"), "");
+
+    // Append "(Edited just now)"
+    ts = (ts + " <small>(Edited just now)</small>");
+
+    element.html(ts);
   }
 };

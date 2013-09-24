@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Milestones API
   class Milestones < Grape::API
     before { authenticate! }
@@ -41,6 +41,7 @@ module Gitlab
       #   POST /projects/:id/milestones
       post ":id/milestones" do
         authorize! :admin_milestone, user_project
+        required_attributes! [:title]
 
         attrs = attributes_for_keys [:title, :description, :due_date]
         @milestone = user_project.milestones.new attrs
@@ -59,14 +60,14 @@ module Gitlab
       #   title (optional) - The title of a milestone
       #   description (optional) - The description of a milestone
       #   due_date (optional) - The due date of a milestone
-      #   closed (optional) - The status of the milestone
+      #   state_event (optional) - The state event of the milestone (close|activate)
       # Example Request:
       #   PUT /projects/:id/milestones/:milestone_id
       put ":id/milestones/:milestone_id" do
         authorize! :admin_milestone, user_project
 
         @milestone = user_project.milestones.find(params[:milestone_id])
-        attrs = attributes_for_keys [:title, :description, :due_date, :closed]
+        attrs = attributes_for_keys [:title, :description, :due_date, :state_event]
         if @milestone.update_attributes attrs
           present @milestone, with: Entities::Milestone
         else

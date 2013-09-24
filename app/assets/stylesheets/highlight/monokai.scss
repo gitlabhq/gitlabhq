@@ -1,0 +1,89 @@
+$monokai-fg: #f8f8f2;
+$monokai-comment: #75715e;
+$monokai-pink: #f92672;
+$monokai-blue: #66d9ef;
+$monokai-green: #a6e22e;
+$monokai-gold: #e6db74;
+$monokai-dark: #3b3a32;
+$monokai-purple: #ae81ff;
+
+.monokai .highlight {
+
+  background-color: #272822;
+
+  pre {
+    background-color: #272822;
+    color: $monokai-fg;
+  }
+
+  .hll { background-color: darken($hover, 65%) }
+  .c  { color: $monokai-comment } /* Comment */
+  .err { color: $monokai-fg } /* Error */
+  .g  { color: $monokai-fg } /* Generic */
+  .k  { color: $monokai-pink } /* Keyword */
+  .l  { color: $monokai-fg } /* Literal */
+  .n  { color: $monokai-blue } /* Name */
+  .o  { color: $monokai-fg } /* Operator */
+  .x  { color: $monokai-fg } /* Other */
+  .p  { color: $monokai-fg } /* Punctuation */
+  .cm { color: $monokai-comment } /* Comment.Multiline */
+  .cp { color: $monokai-comment } /* Comment.Preproc */
+  .c1 { color: $monokai-comment } /* Comment.Single */
+  .cs { color: $monokai-comment } /* Comment.Special */
+  .gd { color: #8b0807 } /* Generic.Deleted */
+  .ge { color: $monokai-fg; text-decoration: underline } /* Generic.Emph */
+  .gr { color: $monokai-fg } /* Generic.Error */
+  .gh { color: $monokai-fg; font-weight: bold } /* Generic.Heading */
+  .gi { color: $monokai-fg; font-weight: bold; background-color: #46830c } /* Generic.Inserted */
+  .go { color: $monokai-dark; background-color: #31322c } /* Generic.Output */
+  .gp { color: $monokai-fg } /* Generic.Prompt */
+  .gs { color: $monokai-fg } /* Generic.Strong */
+  .gu { color: $monokai-fg; font-weight: bold } /* Generic.Subheading */
+  .gt { color: #f8f8f0; background-color: $monokai-pink } /* Generic.Traceback */
+  .kc { color: $monokai-purple } /* Keyword.Constant */
+  .kd { color: $monokai-pink } /* Keyword.Declaration */
+  .kn { color: $monokai-pink } /* Keyword.Namespace */
+  .kp { color: $monokai-pink } /* Keyword.Pseudo */
+  .kr { color: $monokai-pink } /* Keyword.Reserved */
+  .kt { color: $monokai-fg } /* Keyword.Type */
+  .ld { color: $monokai-fg } /* Literal.Date */
+  .m  { color: $monokai-purple } /* Literal.Number */
+  .s  { color: $monokai-gold } /* Literal.String */
+  .na { color: $monokai-purple } /* Name.Attribute */
+  .nb { color: $monokai-blue } /* Name.Builtin */
+  .nc { color: $monokai-fg } /* Name.Class */
+  .no { color: $monokai-fg } /* Name.Constant */
+  .nd { color: $monokai-fg } /* Name.Decorator */
+  .ni { color: $monokai-fg } /* Name.Entity */
+  .ne { color: $monokai-fg } /* Name.Exception */
+  .nf { color: $monokai-green } /* Name.Function */
+  .nl { color: $monokai-gold } /* Name.Label */
+  .nn { color: $monokai-fg } /* Name.Namespace */
+  .nx { color: $monokai-fg } /* Name.Other */
+  .nt { color: $monokai-pink } /* Name.Tag */
+  .nv { color: $monokai-blue; font-style: italic } /* Name.Variable */
+  .py { color: $monokai-fg } /* Name.Property */
+  .ow { color: $monokai-pink } /* Operator.Word */
+  .w  { color: $monokai-fg } /* Text.Whitespace */
+  .mf { color: $monokai-purple } /* Literal.Number.Float */
+  .mh { color: $monokai-purple } /* Literal.Number.Hex */
+  .mi { color: $monokai-purple } /* Literal.Number.Integer */
+  .mo { color: $monokai-purple } /* Literal.Number.Oct */
+  .sb { color: $monokai-gold } /* Literal.String.Backtick */
+  .sc { color: $monokai-gold } /* Literal.String.Char */
+  .sd { color: $monokai-gold } /* Literal.String.Doc */
+  .s2 { color: $monokai-gold } /* Literal.String.Double */
+  .se { color: $monokai-gold } /* Literal.String.Escape */
+  .sh { color: $monokai-gold } /* Literal.String.Heredoc */
+  .si { color: $monokai-gold } /* Literal.String.Interpol */
+  .sx { color: $monokai-gold } /* Literal.String.Other */
+  .sr { color: $monokai-gold } /* Literal.String.Regex */
+  .s1 { color: $monokai-gold } /* Literal.String.Single */
+  .ss { color: $monokai-gold } /* Literal.String.Symbol */
+  .bp { color: $monokai-fg } /* Name.Builtin.Pseudo */
+  .vc { color: $monokai-blue; font-style: italic } /* Name.Variable.Class */
+  .vg { color: $monokai-blue; font-style: italic } /* Name.Variable.Global */
+  .vi { color: $monokai-blue; font-style: italic } /* Name.Variable.Instance */
+  .il { color: $monokai-purple } /* Literal.Number.Integer.Long */
+}
+

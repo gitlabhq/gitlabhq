@@ -23,7 +23,7 @@ Devise.setup do |config|
   # session. If you need permissions, you should implement that in a before filter.
   # You can also supply a hash where the value is a boolean determining whether
   # or not authentication should be aborted when the value is not present.
-  # config.authentication_keys = [ :email ]
+  config.authentication_keys = [ :login ]
 
   # Configure parameters from the request object used for authentication. Each entry
   # given should be a request method and it will automatically be passed to the
@@ -94,12 +94,12 @@ Devise.setup do |config|
   # config.extend_remember_period = false
 
   # Options to be passed to the created cookie. For instance, you can set
-  # :secure => true in order to force SSL only cookies.
+  # secure: true in order to force SSL only cookies.
   # config.cookie_options = {}
 
   # ==> Configuration for :validatable
   # Range for password length. Default is 6..128.
-  # config.password_length = 6..128
+  config.password_length = 6..128
 
   # Email regex used to validate email formats. It simply asserts that
   # an one (and only one) @ exists in the given string. This is mainly
@@ -202,18 +202,25 @@ Devise.setup do |config|
   # config.warden do |manager|
   #   manager.failure_app   = AnotherApp
   #   manager.intercept_401 = false
-  #   manager.default_strategies(:scope => :user).unshift :some_external_strategy
+  #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
   if Gitlab.config.ldap.enabled
+    if Gitlab.config.ldap.allow_username_or_email_login
+      email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
+    else
+      email_stripping_proc = ->(name) {name}
+    end
+
     config.omniauth :ldap,
-      :host     => Gitlab.config.ldap['host'],
-      :base     => Gitlab.config.ldap['base'],
-      :uid      => Gitlab.config.ldap['uid'],
-      :port     => Gitlab.config.ldap['port'],
-      :method   => Gitlab.config.ldap['method'],
-      :bind_dn  => Gitlab.config.ldap['bind_dn'],
-      :password => Gitlab.config.ldap['password']
+      host:     Gitlab.config.ldap['host'],
+      base:     Gitlab.config.ldap['base'],
+      uid:      Gitlab.config.ldap['uid'],
+      port:     Gitlab.config.ldap['port'],
+      method:   Gitlab.config.ldap['method'],
+      bind_dn:  Gitlab.config.ldap['bind_dn'],
+      password: Gitlab.config.ldap['password'],
+      name_proc: email_stripping_proc
   end
 
   Gitlab.config.omniauth.providers.each do |provider|

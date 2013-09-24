@@ -1,7 +1,5 @@
 /**
- *
- * COMMIT SHOw
- *
+ * Commit file
  */
 .commit-committer-link,
 .commit-author-link {
@@ -12,11 +10,11 @@
   }
 }
 
-.diff_file {
+.file {
   border: 1px solid #CCC;
   margin-bottom: 1em;
 
-  .diff_file_header {
+  .header {
     @extend .clearfix;
     padding: 5px 5px 5px 10px;
     color: #555;
@@ -28,32 +26,35 @@
     background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
     background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
 
+    a{
+      color: $style_color;
+    }
+
     > span {
-      font-family: $monospace;
+      font-family: $monospace_font;
       font-size: 14px;
       line-height: 30px;
     }
 
-    a.view-commit{
+    a.view-file{
       font-weight: bold;
     }
 
     .commit-short-id{
-      font-family: $monospace;
+      font-family: $monospace_font;
       font-size: smaller;
     }
 
     .file-mode{
-      font-family: $monospace;
+      font-family: $monospace_font;
     }
   }
-  .diff_file_content {
+  .content {
     overflow: auto;
     overflow-y: hidden;
-    background: #fff;
+    background: #FFF;
     color: #333;
     font-size: 12px;
-    font-family: $monospace;
     .old{
       span.idiff{
         background-color: #FAA;
@@ -66,162 +67,308 @@
     }
 
     table {
+      font-family: $monospace_font;
+      border: none;
+      margin: 0px;
+      padding: 0px;
       td {
         line-height: 18px;
-      }
-    }
-  }
-  .diff_file_content_image {
-    background: #eee;
-    text-align: center;
-    .image {
-      display: inline-block;
-      margin: 50px;
-      max-width: 400px;
-
-      img{
-        background: url('trans_bg.gif');
-      }
-
-      &.diff_removed {
-        img{
-          border: 1px solid #C00;
-        }
-      }
-
-      &.diff_added {
-        img{
-          border: 1px solid #0C0;
-        }
-      }
-
-      .image-info{
-        margin: 5px 0 0 0;
-      }
-    }
-
-    &.img_compared {
-      .image {
-        max-width: 300px;
-      }
-    }
-  }
-}
-
-.diff_file_content{
-  table {
-    border: none;
-    margin: 0px;
-    padding: 0px;
-    tr {
-      td {
         font-size: 12px;
       }
     }
-  }
-  .new_line,
-  .old_line,
-  .notes_line {
-    margin:0px;
-    padding:0px;
-    border:none;
-    background:#EEE;
-    color:#666;
-    padding: 0px 5px;
-    border-right: 1px solid #ccc;
-    text-align: right;
-    min-width: 35px;
-    max-width: 35px;
-    width: 35px;
-    moz-user-select: none;
-    -khtml-user-select: none;
-    user-select: none;
-
-    a {
-      float: left;
-      width: 35px;
-      font-weight: normal;
+    .old_line, .new_line {
+      margin: 0px;
+      padding: 0px;
+      border: none;
+      background: #EEE;
       color: #666;
-      &:hover {
-        text-decoration: underline;
+      padding: 0px 5px;
+      border-right: 1px solid #ccc;
+      text-align: right;
+      min-width: 35px;
+      max-width: 35px;
+      width: 35px;
+      @include user-select(none);
+      a {
+        float: left;
+        width: 35px;
+        font-weight: normal;
+        color: #666;
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+    .line_holder {
+      &.old .old_line,
+      &.old .new_line {
+        background: #FCC;
+        border-color: #E7BABA;
+      }
+      &.new .old_line,
+      &.new .new_line {
+        background: #CFC;
+        border-color: #B9ECB9;
+      }
+    }
+    .line_content {
+      display: block;
+      white-space: pre;
+      height: 18px;
+      margin: 0px;
+      padding: 0px 0.5em;
+      border: none;
+      &.new {
+        background: #CFD;
+      }
+      &.old {
+        background: #FDD;
+      }
+      &.matched {
+        color: #ccc;
+        background: #fafafa;
       }
     }
   }
-  .line_content {
-    white-space: pre;
-    height: 14px;
-    margin: 0px;
-    padding: 0px;
-    border: none;
-    &.new {
-      background: #CFD;
+  .image {
+    background: #ddd;
+    text-align: center;
+    padding: 30px;
+    .wrap{
+      display: inline-block;
     }
-    &.old {
-      background: #FDD;
+
+    .frame {
+      display: inline-block;
+      background-color: #fff;
+      line-height: 0;
+      img{
+        border: 1px solid #FFF;
+        background: url('trans_bg.gif');
+      }
+      &.deleted {
+        border: 1px solid $deleted;
+      }
+
+      &.added {
+        border: 1px solid $added;
+      }
     }
-    &.matched {
-      color: #ccc;
-      background: #fafafa;
+    .image-info{
+      font-size: 12px;
+      margin: 5px 0 0 0;
+      color: grey;
+    }
+
+    .view.swipe{
+      position: relative;
+
+      .swipe-frame{
+        display: block;
+        margin: auto;
+        position: relative;
+      }
+      .swipe-wrap{
+        overflow: hidden;
+        border-left: 1px solid #999;
+        position: absolute;
+        display: block;
+        top: 13px;
+        right: 7px;
+      }
+      .frame{
+        top: 0;
+        right: 0;
+        position: absolute;
+        &.deleted{
+          margin: 0;
+          display: block;
+          top: 13px;
+          right: 7px;
+        }
+      }
+      .swipe-bar{
+        display: block;
+        height: 100%;
+        width: 15px;
+        z-index: 100;
+        position: absolute;
+        cursor: pointer;
+        &:hover{
+          .top-handle{
+            background-position: -15px 3px;
+          }
+          .bottom-handle{
+            background-position: -15px -11px;
+          }
+        };
+        .top-handle{
+          display: block;
+          height: 14px;
+          width: 15px;
+          position: absolute;
+          top: 0px;
+          background: url('swipemode_sprites.gif') 0 3px no-repeat;
+        }
+        .bottom-handle{
+          display: block;
+          height: 14px;
+          width: 15px;
+          position: absolute;
+          bottom: 0px;
+          background: url('swipemode_sprites.gif') 0 -11px no-repeat;
+        }
+      }
+    } //.view.swipe
+    .view.onion-skin{
+      .onion-skin-frame{
+        display: block;
+        margin: auto;
+        position: relative;
+      }
+      .frame.added, .frame.deleted {
+        position: absolute;
+        display: block;
+        top: 0px;
+        left: 0px;
+      }
+      .controls{
+        display: block;
+        height: 14px;
+        width: 300px;
+        z-index: 100;
+        position: absolute;
+        bottom: 0px;
+        left: 50%;
+        margin-left: -150px;
+
+        .drag-track{
+          display: block;
+          position: absolute;
+          left: 12px;
+          height: 10px;
+          width: 276px;
+          background: url('onion_skin_sprites.gif') -4px -20px repeat-x;
+        }
+
+        .dragger {
+          display: block;
+          position: absolute;
+          left: 0px;
+          top: 0px;
+          height: 14px;
+          width: 14px;
+          background: url('onion_skin_sprites.gif') 0px -34px repeat-x;
+          cursor: pointer;
+        }
+
+        .transparent {
+          display: block;
+          position: absolute;
+          top: 2px;
+          right: 0px;
+          height: 10px;
+          width: 10px;
+          background: url('onion_skin_sprites.gif') -2px 0px no-repeat;
+        }
+
+        .opaque {
+          display: block;
+          position: absolute;
+          top: 2px;
+          left: 0px;
+          height: 10px;
+          width: 10px;
+          background: url('onion_skin_sprites.gif') -2px -10px no-repeat;
+        }
+      }
+    } //.view.onion-skin
+  }
+  .view-modes{
+
+    padding: 10px;
+    text-align: center;
+
+    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
+    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
+    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+
+    ul, li{
+      list-style: none;
+      margin: 0;
+      padding: 0;
+      display: inline-block;
+    }
+
+    li{
+      color: grey;
+      border-left: 1px solid #c1c1c1;
+      padding: 0 12px 0 16px;
+      cursor: pointer;
+      &:first-child{
+        border-left: none;
+      }
+      &:hover{
+        text-decoration: underline;
+      }
+      &.active{
+        &:hover{
+          text-decoration: none;
+        }
+        cursor: default;
+        color: #333;
+      }
+      &.disabled{
+        display: none;
+      }
     }
   }
 }
 
 /** COMMIT BLOCK **/
-.commit-title{display: block;}
-.commit-title{margin-bottom: 10px}
-.commit-author, .commit-committer{display: block;color: #999; font-weight: normal; font-style: italic;}
-.commit-author strong, .commit-committer strong{font-weight: bold; font-style: normal;}
-
-
-/** COMMIT ROW **/
-.commit {
-  .browse_code_link_holder {
-    @extend .span2;
-    float: right;
-  }
-
-  .committed_ago {
-    float: right;
-    @extend .cgray;
-  }
-
-  .notes_count {
-    float: right;
-    margin: -6px 8px 6px;
-  }
-
-  code {
-    background: #FCEEC1;
-    color: $style_color;
-  }
-
-  .commit_short_id {
-    float: left;
-    @extend .lined;
-    min-width: 65px;
-    font-family: $monospace;
-  }
+.commit-title{
+  display: block;
+}
+.commit-title{
+  margin-bottom: 10px;
+}
+.commit-author, .commit-committer{
+  display: block;
+  color: #999;
+  font-weight: normal;
+  font-style: italic;
+}
+.commit-author strong, .commit-committer strong{
+  font-weight: bold;
+  font-style: normal;
 }
 
-.diff_file_header a,
+
 .file-stats a {
   color: $style_color;
 }
 
 .file-stats {
-  .new-file{
-    i{
+  .new-file {
+    a {
+      color: #090;
+    }
+    i {
       color: #1BCF00;
     }
   }
-  .renamed-file{
-    i{
+  .renamed-file {
+    i {
       color: #FE9300;
     }
   }
-  .deleted-file{
-    i{
-      color: #FF0000;
+  .deleted-file {
+    a {
+      color: #B00;
+    }
+    i {
+      color: #EE0000;
     }
   }
   .edit-file{
@@ -237,14 +384,14 @@
   font-size: 13px;
   background: #474D57;
   color: #fff;
-  font-family: $monospace;
+  font-family: $monospace_font;
 }
 
 
 .commits-compare-switch{
   background: url("switch_icon.png") no-repeat center center;
-  width: 16px;
-  height: 18px;
+  width: 22px;
+  height: 22px;
   text-indent: -9999px;
   float: left;
   margin-right: 9px;
@@ -252,4 +399,109 @@
   @include border-radius(4px);
   padding: 4px;
   background-color: #EEE;
+}
+
+.commit-description {
+  background: none;
+  border: none;
+  margin: 0;
+  padding: 0;
+  margin-top: 10px;
+}
+
+.commit-box {
+  margin: 10px 0;
+  border-top: 1px solid #ddd;
+  border-bottom: 1px solid #ddd;
+  padding: 20px 0;
+
+  .commit-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: bold;
+  }
+
+  .commit-description {
+    margin-top: 15px;
+  }
+}
+
+
+.commit-stat-summary {
+  color: #666;
+  line-height: 2;
+}
+
+.commit-breadcrumb {
+  padding: 0;
+}
+
+.commit-info-row {
+  margin-bottom: 10px;
+  .avatar {
+    @extend .avatar-inline;
+  }
+  .commit-committer-link,
+  .commit-author-link {
+    color: #444;
+    font-weight: bold;
+  }
+}
+
+.lists-separator {
+  margin: 10px 0;
+  border-top: 1px dashed #CCC;
+}
+
+/**
+ * COMMIT ROW
+ */
+li.commit {
+  padding: 8px;
+
+  .commit-row-title {
+    font-size: 14px;
+    margin-bottom: 2px;
+
+    .notes_count {
+      float: right;
+      margin-right: 10px;
+    }
+
+    .commit_short_id {
+      min-width: 65px;
+      font-family: $monospace_font;
+    }
+
+    .commit-row-message {
+      color: #555;
+      font-weight: bolder;
+      &:hover {
+        color: #444;
+        text-decoration: underline;
+      }
+    }
+  }
+
+  .commit-row-info {
+    a {
+      color: #777;
+    }
+
+    .committed_ago {
+      float: right;
+      @extend .cgray;
+    }
+  }
+
+  &.inline-commit {
+    .commit-row-title {
+      font-size: 13px;
+    }
+
+    .committed_ago {
+      float: right;
+      @extend .cgray;
+    }
+  }
 }

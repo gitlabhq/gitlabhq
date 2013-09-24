@@ -1,9 +1,16 @@
 = form_tag search_path, method: :get, class: 'form-inline' do |f|
-  .padded
+  .search-holder
     = label_tag :search do
-      %strong Looking for
-    .input
+      %span Looking for
+    .controls
       = search_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge search-text-input", id: "dashboard_search"
-      = submit_tag 'Search', class: "btn primary wide"
-- if params[:search].present?
-  = render 'search/result'
+      = hidden_field_tag :project_id, params[:project_id]
+      = hidden_field_tag :group_id, params[:group_id]
+      = hidden_field_tag :search_code, params[:search_code]
+      = submit_tag 'Search', class: "btn btn-create"
+      .prepend-top-10
+        = render 'filter', f: f
+
+  .results.prepend-top-10
+    - if params[:search].present?
+      = render 'search/result'

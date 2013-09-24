@@ -1,0 +1,28 @@
+= form_for @group do |f|
+  - if @group.errors.any?
+    .alert.alert-error
+      %span= @group.errors.full_messages.first
+  .control-group
+    = f.label :name do
+      Group name is
+    .controls
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
+
+  .control-group.group-description-holder
+    = f.label :description, "Details"
+    .controls
+      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
+
+  .control-group
+    .controls
+      %ul
+        %li Group is kind of directory for several projects
+        %li All created groups are private
+        %li People within a group see only projects they have access to
+        %li All projects of group will be stored in a group directory
+        %li You will be able to move existing projects into group
+
+  .form-actions
+    = f.submit 'Create group', class: "btn btn-create"
+
+

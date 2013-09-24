@@ -1,79 +1,90 @@
 .user_new
-  = form_for [:admin, @admin_user] do |f|
-    -if @admin_user.errors.any?
+  = form_for [:admin, @user] do |f|
+    -if @user.errors.any?
       #error_explanation
         %ul.unstyled.alert.alert-error
-          - @admin_user.errors.full_messages.each do |msg|
+          - @user.errors.full_messages.each do |msg|
             %li= msg
 
     %fieldset
       %legend Account
-      .clearfix
+      .control-group
         = f.label :name
-        .input
-          = f.text_field :name, required: true
+        .controls
+          = f.text_field :name, required: true, autocomplete: "off"
           %span.help-inline * required
-      .clearfix
+      .control-group
         = f.label :username
-        .input
-          = f.text_field :username, required: true
+        .controls
+          = f.text_field :username, required: true, autocomplete: "off"
           %span.help-inline * required
-      .clearfix
+      .control-group
         = f.label :email
-        .input
-          = f.text_field :email, required: true
+        .controls
+          = f.text_field :email, required: true, autocomplete: "off"
           %span.help-inline * required
 
-    %fieldset
-      %legend Password
-      .clearfix
-        = f.label :password
-        .input= f.password_field :password, disabled: f.object.force_random_password
-      .clearfix
-        = f.label :password_confirmation
-        .input= f.password_field :password_confirmation, disabled: f.object.force_random_password
-      -if f.object.new_record?
-        .clearfix
-          = f.label :force_random_password do
-            %span Generate random password
-          .input= f.check_box :force_random_password, {}, true, nil
+    - if @user.new_record?
+      %fieldset
+        %legend Password
+        .control-group
+          = f.label :password
+          .controls
+            %strong
+              A temporary password will be generated and sent to user.
+              %br
+              User will be forced to change it after first sign in
+    - else
+      %fieldset
+        %legend Password
+        .control-group
+          = f.label :password
+          .controls= f.password_field :password, disabled: f.object.force_random_password
+        .control-group
+          = f.label :password_confirmation
+          .controls= f.password_field :password_confirmation, disabled: f.object.force_random_password
 
     %fieldset
       %legend Access
       .row
         .span8
-          .clearfix
+          .control-group
             = f.label :projects_limit
-            .input= f.number_field :projects_limit
+            .controls= f.number_field :projects_limit
 
-          .clearfix
+          .control-group
+            = f.label :can_create_group
+            .controls= f.check_box :can_create_group
+
+          .control-group
             = f.label :admin do
               %strong.cred Administrator
-            .input= f.check_box :admin
+            .controls= f.check_box :admin
         .span4
-          - unless @admin_user.new_record?
+          - unless @user.new_record?
             .alert.alert-error
-              - if @admin_user.blocked
+              - if @user.blocked?
                 %p This user is blocked and is not able to login to GitLab
-                = link_to 'Unblock User', unblock_admin_user_path(@admin_user), method: :put, class: "btn small"
+                = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
               - else
                 %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                = link_to 'Block User', block_admin_user_path(@admin_user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn small danger"
+                = link_to 'Block User', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
-      .clearfix
+      .control-group
         = f.label :skype
-        .input= f.text_field :skype
-      .clearfix
+        .controls= f.text_field :skype
+      .control-group
         = f.label :linkedin
-        .input= f.text_field :linkedin
-      .clearfix
+        .controls= f.text_field :linkedin
+      .control-group
         = f.label :twitter
-        .input= f.text_field :twitter
+        .controls= f.text_field :twitter
 
-    .actions
-      = f.submit 'Save', class: "btn save-btn"
-      - if @admin_user.new_record?
-        = link_to 'Cancel', admin_users_path, class: "btn cancel-btn"
+    .form-actions
+      - if @user.new_record?
+        = f.submit 'Create user', class: "btn btn-create"
+        = link_to 'Cancel', admin_users_path, class: "btn btn-cancel"
       - else
-        = link_to 'Cancel', admin_user_path(@admin_user), class: "btn cancel-btn"
+        = f.submit 'Save changes', class: "btn btn-save"
+        = link_to 'Cancel', admin_user_path(@user), class: "btn btn-cancel"

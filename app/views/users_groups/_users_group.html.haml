@@ -1,0 +1,23 @@
+- user = member.user
+- return unless user
+%li{class: "#{dom_class(member)} js-toggle-container", id: dom_id(member)}
+  = image_tag gravatar_icon(user.email, 16), class: "avatar s16"
+  %strong= user.name
+  %span.cgray= user.username
+  - if user == current_user
+    %span.label.label-success It's you
+
+  %span.pull-right
+    %strong= member.human_access
+
+    - if show_controls && user != @group.owner && user != current_user
+      = link_to '#', class: "btn-tiny btn js-toggle-button", title: 'Edit access level' do
+        %i.icon-edit
+      = link_to group_users_group_path(@group, member), confirm: remove_user_from_group_message(@group, user), method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+        %i.icon-minus.icon-white
+
+  .edit-member.hide.js-toggle-content
+    = form_for [@group, member], remote: true do |f|
+      .alert.prepend-top-20
+        = f.select :group_access, options_for_select(UsersGroup.group_access_roles, member.group_access)
+        = f.submit 'Save', class: 'btn btn-save'

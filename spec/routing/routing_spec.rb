@@ -7,21 +7,60 @@ describe SearchController, "routing" do
   end
 end
 
-# gitlab_api /api         Gitlab::API
-#     resque /info/resque Resque::Server
+# gitlab_api /api         API::API
 #            /:path       Grack
 describe "Mounted Apps", "routing" do
   it "to API" do
-    get("/api").should be_routable
-  end
-
-  it "to Resque" do
-    pending
-    get("/info/resque").should be_routable
+    get("/api/issues").should be_routable
   end
 
   it "to Grack" do
-    get("/gitlabhq.git").should be_routable
+    get("/gitlab/gitlabhq.git").should be_routable
+  end
+end
+
+#     snippets GET    /snippets(.:format)          snippets#index
+#          POST   /snippets(.:format)          snippets#create
+#  new_snippet GET    /snippets/new(.:format)      snippets#new
+# edit_snippet GET    /snippets/:id/edit(.:format) snippets#edit
+#      snippet GET    /snippets/:id(.:format)      snippets#show
+#          PUT    /snippets/:id(.:format)      snippets#update
+#          DELETE /snippets/:id(.:format)      snippets#destroy
+describe SnippetsController, "routing" do
+  it "to #user_index" do
+    get("/s/User").should route_to('snippets#user_index', username: 'User')
+  end
+
+  it "to #raw" do
+    get("/snippets/1/raw").should route_to('snippets#raw', id: '1')
+  end
+
+  it "to #index" do
+    get("/snippets").should route_to('snippets#index')
+  end
+
+  it "to #create" do
+    post("/snippets").should route_to('snippets#create')
+  end
+
+  it "to #new" do
+    get("/snippets/new").should route_to('snippets#new')
+  end
+
+  it "to #edit" do
+    get("/snippets/1/edit").should route_to('snippets#edit', id: '1')
+  end
+
+  it "to #show" do
+    get("/snippets/1").should route_to('snippets#show', id: '1')
+  end
+
+  it "to #update" do
+    put("/snippets/1").should route_to('snippets#update', id: '1')
+  end
+
+  it "to #destroy" do
+    delete("/snippets/1").should route_to('snippets#destroy', id: '1')
   end
 end
 
@@ -116,44 +155,44 @@ end
 #      key GET    /keys/:id(.:format)      keys#show
 #          PUT    /keys/:id(.:format)      keys#update
 #          DELETE /keys/:id(.:format)      keys#destroy
-describe KeysController, "routing" do
+describe Profiles::KeysController, "routing" do
   it "to #index" do
-    get("/keys").should route_to('keys#index')
+    get("/profile/keys").should route_to('profiles/keys#index')
   end
 
   it "to #create" do
-    post("/keys").should route_to('keys#create')
+    post("/profile/keys").should route_to('profiles/keys#create')
   end
 
   it "to #new" do
-    get("/keys/new").should route_to('keys#new')
+    get("/profile/keys/new").should route_to('profiles/keys#new')
   end
 
   it "to #edit" do
-    get("/keys/1/edit").should route_to('keys#edit', id: '1')
+    get("/profile/keys/1/edit").should route_to('profiles/keys#edit', id: '1')
   end
 
   it "to #show" do
-    get("/keys/1").should route_to('keys#show', id: '1')
+    get("/profile/keys/1").should route_to('profiles/keys#show', id: '1')
   end
 
   it "to #update" do
-    put("/keys/1").should route_to('keys#update', id: '1')
+    put("/profile/keys/1").should route_to('profiles/keys#update', id: '1')
   end
 
   it "to #destroy" do
-    delete("/keys/1").should route_to('keys#destroy', id: '1')
+    delete("/profile/keys/1").should route_to('profiles/keys#destroy', id: '1')
   end
 end
 
-#                dashboard GET    /dashboard(.:format)                dashboard#index
+#                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests
-#                     root        /                                   dashboard#index
+#                     root        /                                   dashboard#show
 describe DashboardController, "routing" do
   it "to #index" do
-    get("/dashboard").should route_to('dashboard#index')
-    get("/").should route_to('dashboard#index')
+    get("/dashboard").should route_to('dashboard#show')
+    get("/").should route_to('dashboard#show')
   end
 
   it "to #issues" do

@@ -3,13 +3,14 @@ module SharedProject
 
   # Create a project without caring about what it's called
   And "I own a project" do
-    @project = create(:project)
+    @project = create(:project_with_code, namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
   # Create a specific project called "Shop"
   And 'I own project "Shop"' do
-    @project = create(:project, name: "Shop")
+    @project = Project.find_by_name "Shop"
+    @project ||= create(:project_with_code, name: "Shop", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
@@ -33,7 +34,7 @@ module SharedProject
 
     @event = Event.create(
       project: @project,
-      action: Event::Pushed,
+      action: Event::PUSHED,
       data: data,
       author_id: @user.id
     )
@@ -41,13 +42,17 @@ module SharedProject
 
   Then 'I should see project "Shop" activity feed' do
     project = Project.find_by_name("Shop")
-    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name}"
+    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name_with_namespace}"
   end
 
   Then 'I should see project settings' do
     current_path.should == edit_project_path(@project)
     page.should have_content("Project name is")
     page.should have_content("Features:")
+  end
+
+  Then 'page status code should be 404' do
+    page.status_code.should == 404
   end
 
   def current_project

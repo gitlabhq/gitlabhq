@@ -1,101 +1,133 @@
 .btn {
-  @include linear-gradient(#f7f7f7, #d5d5d5);
-  border-color: #BBB;
+  display: inline-block;
+  padding: 6px 12px;
+  margin-bottom: 0;
+  font-size: 13px;
+  line-height: $baseLineHeight;
+  text-align: center;
+  vertical-align: middle;
+  cursor: pointer;
+  border: 1px solid #BBB;
+  color: $style_color;
+  @include border-radius($baseBorderRadius);
+  @include box-shadow(inset 0 1px 0 rgba(255,255,255,.2));
+  @include linear-gradient(#f1f1f1, #e1e1e1);
+  text-shadow: 0 1px 1px #FFF;
+  text-decoration: none;
+
+  &.hover,
   &:hover {
-    @include bg-gray-gradient;
-    border-color: #bbb;
-    color: #333;
+    color: $style_color;
+    background: #f1f1f1;
+    border-color: #AAA;
+    text-decoration: none;
+    @include linear-gradient(#fAfAfA, #f1f1f1);
   }
 
-  &.btn-white {
-    background: #FFF;
+  &.focus,
+  &:focus {
+    text-decoration: none;
+    @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
   }
 
-  &.primary {
-    background: #2a79A3;
-    @include linear-gradient(#47A7b7, #2585b5);
-    border-color: #2A79A3;
-    color: #fff;
-    text-shadow: 0 1px 1px #268;
-    &:hover {
-      background: $primary_color;
-      color: #fff;
-    }
+  &.active,
+  &:active {
+    background-image: none;
+    outline: 0;
+    text-decoration: none;
+    @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
+  }
 
-    &.disabled {
-      color: #fff;
-      background: #29B;
+  &.disabled,
+  &[disabled] {
+    cursor: default;
+    background-image: none;
+    @include opacity(65);
+    @include box-shadow(none);
+  }
+
+  &.btn-primary {
+    color: #FFF;
+    border-color: #189;
+    text-shadow: 0 1px 1px #189;
+    @include linear-gradient(#4AC, #289);
+
+    &.hover,
+    &:hover,
+    &.disabled,
+    &[disabled] {
+      color: #FFF;
+      background: #389;
     }
   }
 
-  &.btn-info {
-    background: #5aB9C3;
-    border-color: $primary_color;
-    color: #fff;
-    text-shadow: 0 1px 1px #268;
-    &:hover {
-      background: $primary_color;
-      color: #fff;
-    }
+  &.btn-success {
+    color: #FFF;
+    border-color: #1A1;
+    text-shadow: 0 1px 1px #FFF;
+    text-shadow: 0 1px 1px #181;
+    @include linear-gradient(#62C452, #51a351);
 
-    &.disabled {
-      color: #fff;
-      background: #29B;
+
+    &.hover,
+    &:hover,
+    &.disabled,
+    &[disabled] {
+      color: #FFF;
+      background: #2A2;
     }
   }
 
-  &.success {
+  &.btn-danger {
+    color: #FFF;
+    text-shadow: 0 1px 1px #811;
+    border-color: #BD362F;
+    @include linear-gradient(#EE5F5B, #BD362F);
+
+
+    &.hover,
+    &:hover,
+    &.disabled,
+    &[disabled] {
+      color: #FFF;
+      background: #A22;
+    }
+  }
+
+  &.btn-new {
     @extend .btn-success;
-
-    &:hover {
-      @extend .btn-success;
-      background: #51a351;
-    }
-
-    &.disabled {
-      color: #fff;
-      background: #2b2;
-    }
   }
 
-  &.save-btn {
+  &.btn-create {
     @extend .wide;
-    @extend .primary;
+    @extend .btn-success;
   }
 
-  &.cancel-btn {
+  &.btn-save {
+    @extend .wide;
+    @extend .btn-primary;
+  }
+
+  &.btn-close,
+  &.btn-remove {
+    @extend .btn-danger;
+  }
+
+  &.btn-cancel {
     float: right;
   }
 
   &.wide {
-    padding-left: 30px;
-    padding-right: 30px;
+    padding-left: 20px;
+    padding-right: 20px;
   }
 
-  &.danger {
-    @extend .btn-danger;
-    border-color: #BD362F;
-
-    &:hover {
-      color: #fff;
-      background: #EE4E49;
-    }
+  &.btn-small {
+    padding: 2px 10px;
+    font-size: 12px;
   }
 
-  &.danger {
-    @extend .btn-danger;
-  }
-
-  &.small {
-    @extend .btn-small;
-  }
-
-  &.active {
-    border-color: #aaa;
-    background-color: #ccc;
-  }
-
-  &.very_small {
+  &.btn-tiny {
     font-size: 11px;
     padding: 2px 6px;
     line-height: 16px;
@@ -105,10 +137,5 @@
   &.grouped {
     margin-right: 7px;
     float: left;
-  }
-
-  &.padded {
-    margin-right: 3px;
-    padding: 4px 10px 4px;
   }
 }

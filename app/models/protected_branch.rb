@@ -10,20 +10,13 @@
 #
 
 class ProtectedBranch < ActiveRecord::Base
-  include Gitolited
+  include Gitlab::ShellAdapter
 
   attr_accessible :name
 
   belongs_to :project
   validates :name, presence: true
   validates :project, presence: true
-
-  after_save :update_repository
-  after_destroy :update_repository
-
-  def update_repository
-    gitolite.update_repository(project)
-  end
 
   def commit
     project.repository.commit(self.name)

@@ -1,19 +1,20 @@
-This installation guide was created for Debian/Ubuntu and tested on it.
+# Select Version to Install
+Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
+this should be the highest numbered stable branch (example shown below). 
 
-Please read `doc/install/requirements.md` for hardware and platform requirements.
+![capture](https://f.cloud.github.com/assets/1192780/564911/2f9f3e1e-c5b7-11e2-9f89-98e527d1adec.png)
 
+If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installation guide links by version.
 
-**Important Note:**
-The following steps have been known to work.
-If you deviate from this guide, do it with caution and make sure you don't
-violate any assumptions GitLab makes about its environment.
-For things like AWS installation scripts, init scripts or config files for
-alternative web server have a look at the "Advanced Setup Tips" section.
+# Important notes
 
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and operating system requirements.
 
-**Important Note:**
-If you find a bug/error in this guide please submit an issue or pull request
-following the contribution guide (see `CONTRIBUTING.md`).
+This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
+
+The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
+
+If you find a bug/error in this guide please **submit a pull request** following the [contributing guide](../../CONTRIBUTING.md).
 
 - - -
 
@@ -24,7 +25,7 @@ The GitLab installation consists of setting up the following components:
 1. Packages / Dependencies
 2. Ruby
 3. System Users
-4. Gitolite
+4. GitLab shell
 5. Database
 6. GitLab
 7. Nginx
@@ -32,32 +33,31 @@ The GitLab installation consists of setting up the following components:
 
 # 1. Packages / Dependencies
 
-`sudo` is not installed on Debian by default. If you don't have it you'll need
-to install it first.
+`sudo` is not installed on Debian by default. Make sure your system is
+up-to-date and install it.
 
-    # run as root
-    apt-get update && apt-get upgrade && apt-get install sudo
-
-Make sure your system is up-to-date:
-
-    sudo apt-get update
-    sudo apt-get upgrade
+    # run as root!
+    apt-get update -y
+    apt-get upgrade -y
+    apt-get install sudo -y
 
 **Note:**
-Vim is an editor that is used here whenever there are files that need to be
-edited by hand. But, you can use any editor you like instead.
+During this installation some files will need to be edited manually.
+If you are familiar with vim set it as default editor with the commands below.
+If you are not familiar with vim please skip this and keep using the default editor.
 
-    # Install vim
+    # Install vim and set as default editor
     sudo apt-get install -y vim
+    sudo update-alternatives --set editor /usr/bin/vim.basic
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server postfix checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
 
 Make sure you have the right version of Python installed.
 
     # Install Python
-    sudo apt-get install python
+    sudo apt-get install -y python
 
     # Make sure that Python is 2.5+ (3.x is not supported at the moment)
     python --version
@@ -71,203 +71,187 @@ Make sure you have the right version of Python installed.
     # If you get a "command not found" error create a link to the python binary
     sudo ln -s /usr/bin/python /usr/bin/python2
 
+    # For reStructuredText markup language support install required package:
+    sudo apt-get install python-docutils
+
+**Note:** In order to receive mail notifications, make sure to install a
+mail server. By default, Debian is shipped with exim4 whereas Ubuntu
+does not ship with one. The recommended mail server is postfix and you can install it with:
+
+	sudo apt-get install -y postfix 
+
+Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
 
-Download and compile it:
+Remove the old Ruby 1.8 if present
+
+    sudo apt-get remove -y ruby1.8
+
+Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress http://ftp.ruby-lang.org/pub/ruby/1.9/ruby-1.9.3-p327.tar.gz | tar xz
-    cd ruby-1.9.3-p327
+    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz | tar xz
+    cd ruby-2.0.0-p247
     ./configure
     make
     sudo make install
 
 Install the Bundler Gem:
 
-    sudo gem install bundler
+    sudo gem install bundler --no-ri --no-rdoc
 
 
 # 3. System Users
 
-Create a user for Git and Gitolite:
+Create a `git` user for Gitlab:
 
-    sudo adduser \
-      --system \
-      --shell /bin/sh \
-      --gecos 'Git Version Control' \
-      --group \
-      --disabled-password \
-      --home /home/git \
-      git
-
-Create a user for GitLab:
-
-    sudo adduser --disabled-login --gecos 'GitLab' gitlab
-
-    # Add it to the git group
-    sudo usermod -a -G git gitlab
-
-    # Generate the SSH key
-    sudo -u gitlab -H ssh-keygen -q -N '' -t rsa -f /home/gitlab/.ssh/id_rsa
+    sudo adduser --disabled-login --gecos 'GitLab' git
 
 
-# 4. Gitolite
+# 4. GitLab shell
 
-Clone GitLab's fork of the Gitolite source code:
+GitLab Shell is an ssh access and repository management software developed specially for GitLab.
 
+    # Go to home directory
     cd /home/git
-    sudo -u git -H git clone -b gl-v320 https://github.com/gitlabhq/gitolite.git /home/git/gitolite
 
-Setup Gitolite with GitLab as its admin:
+    # Clone gitlab shell
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git
 
-**Important Note:**
-GitLab assumes *full and unshared* control over this Gitolite installation.
+    cd gitlab-shell
 
-    # Add Gitolite scripts to $PATH
-    sudo -u git -H mkdir /home/git/bin
-    sudo -u git -H sh -c 'printf "%b\n%b\n" "PATH=\$PATH:/home/git/bin" "export PATH" >> /home/git/.profile'
-    sudo -u git -H sh -c 'gitolite/install -ln /home/git/bin'
+    # switch to right version
+    sudo -u git -H git checkout v1.7.1
 
-    # Copy the gitlab user's (public) SSH key ...
-    sudo cp /home/gitlab/.ssh/id_rsa.pub /home/git/gitlab.pub
-    sudo chmod 0444 /home/git/gitlab.pub
+    sudo -u git -H cp config.yml.example config.yml
 
-    # ... and use it as the admin key for the Gitolite setup
-    sudo -u git -H sh -c "PATH=/home/git/bin:$PATH; gitolite setup -pk /home/git/gitlab.pub"
+    # Edit config and replace gitlab_url
+    # with something like 'http://domain.com/'
+    sudo -u git -H editor config.yml
 
-Fix the directory permissions for the configuration directory:
-
-    # Make sure the Gitolite config dir is owned by git
-    sudo chmod 750 /home/git/.gitolite/
-    sudo chown -R git:git /home/git/.gitolite/
-
-Fix the directory permissions for the repositories:
-
-    # Make sure the repositories dir is owned by git and it stays that way
-    sudo chmod -R ug+rwXs,o-rwx /home/git/repositories/
-    sudo chown -R git:git /home/git/repositories/
-
-
-## Add domains to list to the list of known hosts
-
-    sudo -u gitlab -H ssh git@localhost
-    sudo -u gitlab -H ssh git@YOUR_DOMAIN_NAME
-    sudo -u gitlab -H ssh git@YOUR_GITOLITE_DOMAIN_NAME
-
-
-## Test if everything works so far
-
-    # Clone the admin repo so SSH adds localhost to known_hosts ...
-    # ... and to be sure your users have access to Gitolite
-    sudo -u gitlab -H git clone git@localhost:gitolite-admin.git /tmp/gitolite-admin
-
-    # If it succeeded without errors you can remove the cloned repo
-    sudo rm -rf /tmp/gitolite-admin
-
-**Important Note:**
-If you can't clone the `gitolite-admin` repository: **DO NOT PROCEED WITH INSTALLATION**!
-Check the [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide)
-and make sure you have followed all of the above steps carefully.
+    # Do setup
+    sudo -u git -H ./bin/install
 
 
 # 5. Database
 
-See `doc/install/databases.md`
+To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](./databases.md).
 
 
 # 6. GitLab
 
-    # We'll install GitLab into home directory of the user "gitlab"
-    cd /home/gitlab
+    # We'll install GitLab into home directory of the user "git"
+    cd /home/git
 
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u gitlab -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
 
-    # Go to gitlab dir 
-    cd /home/gitlab/gitlab
-   
+    # Go to gitlab dir
+    cd /home/git/gitlab
+
     # Checkout to stable release
-    sudo -u gitlab -H git checkout 4-1-stable
+    sudo -u git -H git checkout 6-1-stable
 
 **Note:**
-You can change `4-1-stable` to `master` if you want the *bleeding edge* version, but
-do so with caution!
+You can change `6-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
-    cd /home/gitlab/gitlab
+    cd /home/git/gitlab
 
     # Copy the example GitLab config
-    sudo -u gitlab -H cp config/gitlab.yml.example config/gitlab.yml
+    sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
 
     # Make sure to change "localhost" to the fully-qualified domain name of your
     # host serving GitLab where necessary
-    sudo -u gitlab -H vim config/gitlab.yml
+    sudo -u git -H editor config/gitlab.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
-    sudo chown -R gitlab log/
-    sudo chown -R gitlab tmp/
+    sudo chown -R git log/
+    sudo chown -R git tmp/
     sudo chmod -R u+rwX  log/
     sudo chmod -R u+rwX  tmp/
 
-    # Make directory for satellites
-    sudo -u gitlab -H mkdir /home/gitlab/gitlab-satellites
+    # Create directory for satellites
+    sudo -u git -H mkdir /home/git/gitlab-satellites
+
+    # Create directories for sockets/pids and make sure GitLab can write to them
+    sudo -u git -H mkdir tmp/pids/
+    sudo -u git -H mkdir tmp/sockets/
+    sudo chmod -R u+rwX  tmp/pids/
+    sudo chmod -R u+rwX  tmp/sockets/
+
+    # Create public/uploads directory otherwise backup will fail
+    sudo -u git -H mkdir public/uploads
+    sudo chmod -R u+rwX  public/uploads
 
     # Copy the example Unicorn config
-    sudo -u gitlab -H cp config/unicorn.rb.example config/unicorn.rb
+    sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
+
+    # Enable cluster mode if you expect to have a high load instance
+    # Ex. change amount of workers to 3 for 2GB RAM server
+    sudo -u git -H editor config/unicorn.rb
+
+    # Configure Git global settings for git user, useful when editing via web
+    # Edit user.email according to what is set in gitlab.yml
+    sudo -u git -H git config --global user.name "GitLab"
+    sudo -u git -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H git config --global core.autocrlf input
 
 **Important Note:**
-Make sure to edit both files to match your setup.
+Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
     # Mysql
-    sudo -u gitlab cp config/database.yml.mysql config/database.yml
+    sudo -u git cp config/database.yml.mysql config/database.yml
+
+    or
 
     # PostgreSQL
-    sudo -u gitlab cp config/database.yml.postgresql config/database.yml
+    sudo -u git cp config/database.yml.postgresql config/database.yml
 
-Make sure to update username/password in config/database.yml.
+    # Make sure to update username/password in config/database.yml.
+    # You only need to adapt the production settings (first part).
+    # If you followed the database guide then please do as follows:
+    # Change 'root' to 'gitlab'
+    # Change 'secure password' with the value you have given to $password
+    # You can keep the double quotes around the password
+    sudo -u git -H editor config/database.yml
+    
+    # Make config/database.yml readable to git only
+    sudo -u git -H chmod o-rwx config/database.yml
 
 ## Install Gems
 
-    cd /home/gitlab/gitlab
+    cd /home/git/gitlab
 
-    sudo gem install charlock_holmes --version '0.6.9'
+    sudo gem install charlock_holmes --version '0.6.9.4'
 
-    # For MySQL (note, the option says "without")
-    sudo -u gitlab -H bundle install --deployment --without development test postgres
+    # For MySQL (note, the option says "without ... postgres")
+    sudo -u git -H bundle install --deployment --without development test postgres aws
 
-    # Or for PostgreSQL
-    sudo -u gitlab -H bundle install --deployment --without development test mysql
+    # Or for PostgreSQL (note, the option says "without ... mysql")
+    sudo -u git -H bundle install --deployment --without development test mysql aws
 
-## Configure Git
 
-GitLab needs to be able to commit and push changes to Gitolite. In order to do
-that Git requires a username and email. (We recommend using the same address
-used for the `email.from` setting in `config/gitlab.yml`)
+## Initialize Database and Activate Advanced Features
 
-    sudo -u gitlab -H git config --global user.name "GitLab"
-    sudo -u gitlab -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
-## Setup GitLab Hooks
+    # Type 'yes' to create the database.
 
-    sudo cp ./lib/hooks/post-receive /home/git/.gitolite/hooks/common/post-receive
-    sudo chown git:git /home/git/.gitolite/hooks/common/post-receive
-
-## Initialise Database and Activate Advanced Features
-
-    sudo -u gitlab -H bundle exec rake gitlab:setup RAILS_ENV=production
+    # When done you see 'Administrator account created:'
 
 
 ## Install Init Script
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo curl --output /etc/init.d/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/init.d/gitlab
+    sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
     sudo chmod +x /etc/init.d/gitlab
 
 Make GitLab start on boot:
@@ -277,16 +261,9 @@ Make GitLab start on boot:
 
 ## Check Application Status
 
-Check if GitLab and its environment is configured correctly:
+Check if GitLab and its environment are configured correctly:
 
-    sudo -u gitlab -H bundle exec rake gitlab:env:info RAILS_ENV=production
-
-To make sure you didn't miss anything run a more thorough check with:
-
-    sudo -u gitlab -H bundle exec rake gitlab:check RAILS_ENV=production
-
-If all items are green, then congratulations on successfully installing GitLab!
-However there are still a few steps left.
+    sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
 ## Start Your GitLab Instance
 
@@ -294,33 +271,41 @@ However there are still a few steps left.
     # or
     sudo /etc/init.d/gitlab restart
 
+## Double-check Application Status
+
+To make sure you didn't miss anything run a more thorough check with:
+
+    sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+However there are still a few steps left.
+
 
 # 7. Nginx
 
 **Note:**
-If you can't or don't want to use Nginx as your web server, have a look at the
-"Advanced Setup Tips" section.
+Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
+[GitLab recipes](https://github.com/gitlabhq/gitlab-recipes).
 
 ## Installation
-    sudo apt-get install nginx
+    sudo apt-get install -y nginx
 
 ## Site Configuration
 
 Download an example site config:
 
-    sudo curl --output /etc/nginx/sites-available/gitlab https://raw.github.com/gitlabhq/gitlab-recipes/master/nginx/gitlab
+    sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
 
 Make sure to edit the config file to match your setup:
 
-    # Change **YOUR_SERVER_IP** and **YOUR_SERVER_FQDN**
-    # to the IP address and fully-qualified domain name
-    # of your host serving GitLab
-    sudo vim /etc/nginx/sites-enabled/gitlab
+    # Change YOUR_SERVER_FQDN to the fully-qualified
+    # domain name of your host serving GitLab.
+    sudo editor /etc/nginx/sites-available/gitlab
 
 ## Restart
 
-    sudo /etc/init.d/nginx restart
+    sudo service nginx restart
 
 
 # Done!
@@ -332,7 +317,7 @@ The setup has created an admin account for you. You can use it to log in:
     5iveL!fe
 
 **Important Note:**
-Please go over to your profile page and immediately chage the password, so
+Please go over to your profile page and immediately change the password, so
 nobody can access your GitLab by using this login information later on.
 
 **Enjoy!**
@@ -350,13 +335,13 @@ a different host, you can configure its connection string via the
 `config/resque.yml` file.
 
     # example
-    production: redis.example.tld:6379
+    production: redis://redis.example.tld:6379
 
 ## Custom SSH Connection
 
-If you are running SSH on a non-standard port, you must change the gitlab user'S SSH config.
-    
-    # Add to /home/gitlab/.ssh/config
+If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
+
+    # Add to /home/git/.ssh/config
     host localhost          # Give your setup a name (here: override localhost)
         user git            # Your remote git user
         port 2222           # Your port number
@@ -364,7 +349,39 @@ If you are running SSH on a non-standard port, you must change the gitlab user'S
 
 You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
 
-## User-contributed Configurations
+## LDAP authentication
 
-You can find things like  AWS installation scripts, init scripts or config files
-for alternative web server in our [recipes collection](https://github.com/gitlabhq/gitlab-recipes/).
+You can configure LDAP authentication in config/gitlab.yml. Please restart GitLab after editing this file.
+
+## Using Custom Omniauth Providers
+
+GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships with a few providers preinstalled (e.g. LDAP, GitHub, Twitter). But sometimes that is not enough and you need to integrate with other authentication solutions. For these cases you can use the Omniauth provider.
+
+### Steps
+
+These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
+
+* Stop GitLab
+		`sudo service gitlab stop`
+
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example) as a reference)
+
+* Add the gem to your [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile)
+                `gem "omniauth-your-auth-provider"` 
+* If you're using MySQL, install the new Omniauth provider gem by running the following command:
+		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
+
+* If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
+		`sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
+
+> These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+
+* Start GitLab
+		`sudo service gitlab start`
+
+
+### Examples
+
+If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
+You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-Custom-Omniauth-Provider-Configurations).
+While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.

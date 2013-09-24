@@ -1,6 +1,6 @@
 #
 # * Filter merge requests
-# 
+#
 @merge_requestsPage = ->
   $('#assignee_id').chosen()
   $('#milestone_id').chosen()
@@ -8,30 +8,32 @@
     $(this).closest('form').submit()
 
 class MergeRequest
-  
+
   constructor: (@opts) ->
     this.$el = $('.merge-request')
-    @diffs_loaded = false
+    @diffs_loaded = if @opts.action == 'diffs' then true else false
     @commits_loaded = false
-    
+
     this.activateTab(@opts.action)
-    
+
     this.bindEvents()
-    
+
     this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
+    
+    modal = $('#modal_merge_info').modal(show: false)
 
   # Local jQuery finder
   $: (selector) ->
     this.$el.find(selector)
 
   initMergeWidget: ->
-    this.showState( @opts.current_state )
-    
+    this.showState( @opts.current_status )
+
     if this.$('.automerge_widget').length and @opts.check_enable
       $.get @opts.url_to_automerge_check, (data) =>
-        this.showState( data.state )
+        this.showState( data.merge_status )
       , 'json'
 
     if @opts.ci_enable
@@ -42,12 +44,12 @@ class MergeRequest
   bindEvents: ->
     this.$('.nav-tabs').on 'click', 'a', (event) =>
       a = $(event.currentTarget)
-      
+
       href = a.attr('href')
       History.replaceState {path: href}, document.title, href
-      
+
       event.preventDefault()
-      
+
     this.$('.nav-tabs').on 'click', 'li', (event) =>
       this.activateTab($(event.currentTarget).data('action'))
 
@@ -76,7 +78,6 @@ class MergeRequest
     $('.ci_widget.ci-' + state).show()
 
   loadDiff: (event) ->
-    $('.dashboard-loader').show()
     $.ajax
       type: 'GET'
       url: this.$('.nav-tabs .diffs-tab a').attr('href')

@@ -1,0 +1,17 @@
+%ul.nav.nav-pills.nav-stacked
+  = nav_link(path: 'branches#recent') do
+    = link_to 'Recent', recent_project_branches_path(@project)
+  = nav_link(path: 'protected_branches#index') do
+    = link_to project_protected_branches_path(@project) do
+      Protected
+      %i.icon-lock
+  = nav_link(path: 'branches#index') do
+    = link_to 'All branches', project_branches_path(@project)
+
+
+%hr
+- if can? current_user, :push_code, @project
+  = link_to new_project_branch_path(@project), class: 'btn btn-create' do
+    %i.icon-add-sign
+    New branch
+

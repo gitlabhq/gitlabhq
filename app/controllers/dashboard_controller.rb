@@ -1,24 +1,14 @@
 class DashboardController < ApplicationController
   respond_to :html
 
-  before_filter :projects
-  before_filter :event_filter, only: :index
+  before_filter :load_projects, except: [:projects]
+  before_filter :event_filter, only: :show
 
-  def index
-    @groups = current_user.authorized_groups
-
+  def show
+    @groups = current_user.authorized_groups.sort_by(&:human_name)
     @has_authorized_projects = @projects.count > 0
-
-    @projects = case params[:scope]
-                when 'personal' then
-                  @projects.personal(current_user)
-                when 'joined' then
-                  @projects.joined(current_user)
-                else
-                  @projects
-                end
-
-    @projects = @projects.page(params[:page]).per(30)
+    @projects_count = @projects.count
+    @projects = @projects.limit(20)
 
     @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
     @events = @event_filter.apply_filter(@events)
@@ -31,6 +21,28 @@ class DashboardController < ApplicationController
       format.js
       format.atom { render layout: false }
     end
+  end
+
+  def projects
+    @projects = case params[:scope]
+                when 'personal' then
+                  current_user.namespace.projects
+                when 'joined' then
+                  current_user.authorized_projects.joined(current_user)
+                when 'owned' then
+                  current_user.owned_projects
+                else
+                  current_user.authorized_projects
+                end
+
+    @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
+    @projects = @projects.includes(:namespace).sorted_by_activity
+
+    @labels = current_user.authorized_projects.tags_on(:labels)
+    @groups = current_user.authorized_groups
+
+    @projects = @projects.tagged_with(params[:label]) if params[:label].present?
+    @projects = @projects.page(params[:page]).per(30)
   end
 
   # Get authored or assigned open merge requests
@@ -55,12 +67,7 @@ class DashboardController < ApplicationController
 
   protected
 
-  def projects
+  def load_projects
     @projects = current_user.authorized_projects.sorted_by_activity
-  end
-
-  def event_filter
-    filters = cookies['event_filter'].split(',') if cookies['event_filter']
-    @event_filter ||= EventFilter.new(filters)
   end
 end

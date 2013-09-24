@@ -2,7 +2,8 @@
 
 Gitlab::Application.config.session_store :cookie_store, key: '_gitlab_session',
                                                       secure: Gitlab::Application.config.force_ssl,
-                                                      httponly: true
+                                                      httponly: true,
+                                                      path: (Rails.application.config.relative_url_root.nil?) ? '/' : Rails.application.config.relative_url_root
 
 # Use the database for sessions instead of the cookie-based default,
 # which shouldn't be used to store highly confidential information

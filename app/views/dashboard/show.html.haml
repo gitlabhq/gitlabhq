@@ -1,0 +1,9 @@
+- if @has_authorized_projects
+  .dashboard
+    .activities.span8
+      = render 'activities'
+    .side.span4
+      = render 'sidebar'
+
+- else
+  = render "zero_authorized_projects"

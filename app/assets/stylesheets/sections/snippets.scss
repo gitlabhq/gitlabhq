@@ -1,9 +1,16 @@
-.snippet.file_holder {
-  .file_title {
+.snippet.file-holder {
+  .file-title {
     .snippet-file-name {
+      padding: 4px 10px;
       position: relative;
       top: -4px;
       left: -4px;
     }
   }
 }
+
+.my-snippets li:first-child {
+  h4 { margin-top: 0; }
+  padding-top: 0;
+}
+

@@ -37,15 +37,15 @@ class EventFilter
     filter = params.dup
 
     actions = []
-    actions << Event::Pushed if filter.include? 'push'
-    actions << Event::Merged if filter.include? 'merged'
+    actions << Event::PUSHED if filter.include? 'push'
+    actions << Event::MERGED if filter.include? 'merged'
 
     if filter.include? 'team'
-      actions << Event::Joined
-      actions << Event::Left
+      actions << Event::JOINED
+      actions << Event::LEFT
     end
 
-    actions << Event::Commented if filter.include? 'comments'
+    actions << Event::COMMENTED if filter.include? 'comments'
 
     events = events.where(action: actions)
   end

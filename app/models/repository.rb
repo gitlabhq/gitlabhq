@@ -1,169 +1,153 @@
 class Repository
-  # Repository directory name with namespace direcotry
-  # Examples:
-  #   gitlab/gitolite
-  #   diaspora
-  #
-  attr_accessor :path_with_namespace
+  include Gitlab::ShellAdapter
 
-  # Grit repo object
-  attr_accessor :repo
+  attr_accessor :raw_repository
 
-  # Default branch in the repository
-  attr_accessor :root_ref
-
-  def initialize(path_with_namespace, root_ref = 'master')
-    @root_ref = root_ref || "master"
-    @path_with_namespace = path_with_namespace
-
-    # Init grit repo object
-    repo
+  def initialize(path_with_namespace, default_branch)
+    @raw_repository = Gitlab::Git::Repository.new(path_with_namespace, default_branch)
+  rescue Gitlab::Git::Repository::NoRepository
+    nil
   end
 
-  def raw
-    repo
-  end
-
-  def path_to_repo
-    @path_to_repo ||= File.join(Gitlab.config.gitolite.repos_path, "#{path_with_namespace}.git")
-  end
-
-  def repo
-    @repo ||= Grit::Repo.new(path_to_repo)
-  end
-
-  def commit(commit_id = nil)
-    Commit.find_or_first(repo, commit_id, root_ref)
-  end
-
-  def fresh_commits(n = 10)
-    Commit.fresh_commits(repo, n)
-  end
-
-  def commits_with_refs(n = 20)
-    Commit.commits_with_refs(repo, n)
-  end
-
-  def commits_since(date)
-    Commit.commits_since(repo, date)
-  end
-
-  def commits(ref, path = nil, limit = nil, offset = nil)
-    Commit.commits(repo, ref, path, limit, offset)
-  end
-
-  def last_commit_for(ref, path = nil)
-    commits(ref, path, 1).first
-  end
-
-  def commits_between(from, to)
-    Commit.commits_between(repo, from, to)
-  end
-
-  def has_post_receive_file?
-    !!hook_file
-  end
-
-  def valid_post_receive_file?
-    valid_hook_file == hook_file
-  end
-
-  def valid_hook_file
-    @valid_hook_file ||= File.read(Rails.root.join('lib', 'hooks', 'post-receive'))
-  end
-
-  def hook_file
-    @hook_file ||= begin
-                     hook_path = File.join(path_to_repo, 'hooks', 'post-receive')
-                     File.read(hook_path) if File.exists?(hook_path)
-                   end
-  end
-
-  # Returns an Array of branch names
-  def branch_names
-    repo.branches.collect(&:name).sort
-  end
-
-  # Returns an Array of Branches
-  def branches
-    repo.branches.sort_by(&:name)
-  end
-
-  # Returns an Array of tag names
-  def tag_names
-    repo.tags.collect(&:name).sort.reverse
-  end
-
-  # Returns an Array of Tags
-  def tags
-    repo.tags.sort_by(&:name).reverse
-  end
-
-  # Returns an Array of branch and tag names
-  def ref_names
-    [branch_names + tag_names].flatten
-  end
-
-  def heads
-    @heads ||= repo.heads
-  end
-
-  def tree(fcommit, path = nil)
-    fcommit = commit if fcommit == :head
-    tree = fcommit.tree
-    path ? (tree / path) : tree
-  end
-
-  def has_commits?
-    !!commit
-  rescue Grit::NoSuchPathError
-    false
+  def exists?
+    raw_repository
   end
 
   def empty?
-    !has_commits?
+    raw_repository.empty?
   end
 
-  # Discovers the default branch based on the repository's available branches
-  #
-  # - If no branches are present, returns nil
-  # - If one branch is present, returns its name
-  # - If two or more branches are present, returns the one that has a name
-  #   matching root_ref (default_branch or 'master' if default_branch is nil)
-  def discover_default_branch
-    if branch_names.length == 0
-      nil
-    elsif branch_names.length == 1
-      branch_names.first
+  def commit(id = nil)
+    return nil unless raw_repository
+    commit = Gitlab::Git::Commit.find(raw_repository, id)
+    commit = Commit.new(commit) if commit
+    commit
+  end
+
+  def commits(ref, path = nil, limit = nil, offset = nil)
+    commits = Gitlab::Git::Commit.where(
+      repo: raw_repository,
+      ref: ref,
+      path: path,
+      limit: limit,
+      offset: offset,
+    )
+    commits = Commit.decorate(commits) if commits.present?
+    commits
+  end
+
+  def commits_between(from, to)
+    commits = Gitlab::Git::Commit.between(raw_repository, from, to)
+    commits = Commit.decorate(commits) if commits.present?
+    commits
+  end
+
+  def find_branch(name)
+    branches.find { |branch| branch.name == name }
+  end
+
+  def find_tag(name)
+    tags.find { |tag| tag.name == name }
+  end
+
+  def recent_branches(limit = 20)
+    branches.sort do |a, b|
+      a.commit.committed_date <=> b.commit.committed_date
+    end[0..limit]
+  end
+
+  def add_branch(branch_name, ref)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
+  end
+
+  def add_tag(tag_name, ref)
+    Rails.cache.delete(cache_key(:tag_names))
+
+    gitlab_shell.add_tag(path_with_namespace, tag_name, ref)
+  end
+
+  def rm_branch(branch_name)
+    Rails.cache.delete(cache_key(:branch_names))
+
+    gitlab_shell.rm_branch(path_with_namespace, branch_name)
+  end
+
+  def rm_tag(tag_name)
+    Rails.cache.delete(cache_key(:tag_names))
+
+    gitlab_shell.rm_tag(path_with_namespace, tag_name)
+  end
+
+  def round_commit_count
+    if commit_count > 10000
+      '10000+'
+    elsif commit_count > 5000
+      '5000+'
+    elsif commit_count > 1000
+      '1000+'
     else
-      branch_names.select { |v| v == root_ref }.first
+      commit_count
     end
   end
 
-  # Archive Project to .tar.gz
-  #
-  # Already packed repo archives stored at
-  # app_root/tmp/repositories/project_name/project_name-commit-id.tag.gz
-  #
-  def archive_repo(ref)
-    ref = ref || self.root_ref
-    commit = self.commit(ref)
-    return nil unless commit
-
-    # Build file path
-    file_name = self.path_with_namespace + "-" + commit.id.to_s + ".tar.gz"
-    storage_path = Rails.root.join("tmp", "repositories")
-    file_path = File.join(storage_path, file_name)
-
-    # Put files into a directory before archiving
-    prefix = self.path_with_namespace + "/"
-
-    # Create file if not exists
-    unless File.exists?(file_path)
-      FileUtils.mkdir_p storage_path
-      file = self.repo.archive_to_file(ref, prefix,  file_path)
+  def branch_names
+    Rails.cache.fetch(cache_key(:branch_names)) do
+      raw_repository.branch_names
     end
+  end
 
-    file_path
+  def tag_names
+    Rails.cache.fetch(cache_key(:tag_names)) do
+      raw_repository.tag_names
+    end
+  end
+
+  def commit_count
+    Rails.cache.fetch(cache_key(:commit_count)) do
+      begin
+        raw_repository.raw.commit_count
+      rescue
+        0
+      end
+    end
+  end
+
+  # Return repo size in megabytes
+  # Cached in redis
+  def size
+    Rails.cache.fetch(cache_key(:size)) do
+      raw_repository.size
+    end
+  end
+
+  def expire_cache
+    Rails.cache.delete(cache_key(:size))
+    Rails.cache.delete(cache_key(:branch_names))
+    Rails.cache.delete(cache_key(:tag_names))
+    Rails.cache.delete(cache_key(:commit_count))
+    Rails.cache.delete(cache_key(:graph_log))
+  end
+
+  def graph_log
+    Rails.cache.fetch(cache_key(:graph_log)) do
+      stats = Gitlab::Git::GitStats.new(raw, root_ref)
+      stats.parsed_log
+    end
+  end
+
+  def cache_key(type)
+    "#{type}:#{path_with_namespace}"
+  end
+
+  def method_missing(m, *args, &block)
+    raw_repository.send(m, *args, &block)
+  end
+
+  def respond_to?(method)
+    return true if raw_repository.respond_to?(method)
+
+    super
   end
 end

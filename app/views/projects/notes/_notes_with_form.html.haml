@@ -1,0 +1,9 @@
+%ul#notes-list.notes
+.js-notes-busy
+
+.js-main-target-form
+- if can? current_user, :write_note, @project
+  = render "projects/notes/form"
+
+:javascript
+  NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");

@@ -1,22 +1,39 @@
-.issues_table {
+.issues-list {
   .issue {
     padding: 10px;
+    position: relative;
 
-    .issue_check {
+    .issue-title {
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .issue-info {
+      color: #999;
+    }
+
+    .issue-check {
       float: left;
       padding: 8px 0;
       padding-right: 8px;
       min-width: 15px;
     }
 
-    p {
-      padding-top: 0;
-      padding-bottom: 2px;
+    .issue-labels {
+      display: inline-block;
     }
 
-    img.avatar {
-      width: 32px;
-      margin-top: 1px;
+    .issue-actions {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 2px;
+    }
+
+    &:hover {
+      .issue-actions {
+        display: block;
+      }
     }
   }
 }
@@ -27,13 +44,16 @@ input.check_all_issues {
   margin: 0;
   margin-right: 10px;
   position: relative;
-  top: 8px;
-  height: 22px;
+  top: 13px;
 }
 
 .issues_content {
   .title {
     height: 40px;
+  }
+
+  form {
+    margin: 0;
   }
 }
 
@@ -60,7 +80,7 @@ input.check_all_issues {
 @media (min-width: 800px)  { .issues_bulk_update select { width: 120px; }  }
 @media (min-width: 1200px) { .issues_bulk_update select { width: 160px; }  }
 
-#issues-table-holder {
+.issues-holder {
   .issues_filters {
   }
 
@@ -71,21 +91,15 @@ input.check_all_issues {
     }
 
     .update_selected_issues {
-      position: relative;
-      top:5px;
       margin-left: 4px;
-      float: left;
-    }
-
-    .update_issues_text {
-      padding: 3px;
-      line-height: 28px;
-      float: left;
-      color: #479;
     }
   }
 }
 
 #update_status {
   width: 100px;
+}
+
+.participants {
+  margin-bottom: 10px;
 }

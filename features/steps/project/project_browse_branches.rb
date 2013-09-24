@@ -22,7 +22,7 @@ class ProjectBrowseBranches < Spinach::FeatureSteps
   end
 
   Then 'I should see "Shop" protected branches list' do
-    within "table" do
+    within ".protected-branches-list" do
       page.should have_content "stable"
       page.should_not have_content "master"
     end
@@ -30,6 +30,6 @@ class ProjectBrowseBranches < Spinach::FeatureSteps
 
   And 'project "Shop" has protected branches' do
     project = Project.find_by_name("Shop")
-    project.protected_branches.create(:name => "stable")
+    project.protected_branches.create(name: "stable")
   end
 end

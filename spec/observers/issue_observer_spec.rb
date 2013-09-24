@@ -1,198 +1,98 @@
 require 'spec_helper'
 
 describe IssueObserver do
-  let(:some_user) { double(:user, id: 1) }
-  let(:assignee) { double(:user, id: 2) }
-  let(:author) { double(:user, id: 3) }
-  let(:issue)    { double(:issue, id: 42, assignee: assignee, author: author) }
+  let(:some_user)      { create :user }
+  let(:assignee)       { create :user }
+  let(:author)         { create :user }
+  let(:mock_issue)     { create(:issue, assignee: assignee, author: author) }
 
-  before(:each) { subject.stub(:current_user).and_return(some_user) }
+
+  before { subject.stub(:current_user).and_return(some_user) }
+  before { subject.stub(:current_commit).and_return(nil) }
+  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { mock_issue.project.stub_chain(:repository, :commit).and_return(nil) }
 
   subject { IssueObserver.instance }
 
   describe '#after_create' do
+    it 'trigger notification to send emails' do
+      subject.should_receive(:notification)
 
-    it 'is called when an issue is created' do
-      subject.should_receive(:after_create)
+      subject.after_create(mock_issue)
+    end
 
-      Issue.observers.enable :issue_observer do
-        create(:issue, project: create(:project))
+    it 'should create cross-reference notes' do
+      other_issue = create(:issue)
+      mock_issue.stub(references: [other_issue])
+
+      Note.should_receive(:create_cross_reference_note).with(other_issue, mock_issue,
+        some_user, mock_issue.project)
+      subject.after_create(mock_issue)
+    end
+  end
+
+  context '#after_close' do
+    context 'a status "closed"' do
+      before { mock_issue.stub(state: 'closed') }
+
+      it 'note is created if the issue is being closed' do
+        Note.should_receive(:create_status_change_note).with(mock_issue, mock_issue.project, some_user, 'closed', nil)
+
+        subject.after_close(mock_issue, nil)
+      end
+
+      it 'trigger notification to send emails' do
+        subject.notification.should_receive(:close_issue).with(mock_issue, some_user)
+        subject.after_close(mock_issue, nil)
+      end
+
+      it 'appends a mention to the closing commit if one is present' do
+        commit = double('commit', gfm_reference: 'commit 123456')
+        subject.stub(current_commit: commit)
+
+        Note.should_receive(:create_status_change_note).with(mock_issue, mock_issue.project, some_user, 'closed', commit)
+
+        subject.after_close(mock_issue, nil)
       end
     end
 
-    it 'sends an email to the assignee' do
-      Notify.should_receive(:new_issue_email).with(issue.id)
+    context 'a status "reopened"' do
+      before { mock_issue.stub(state: 'reopened') }
 
-      subject.after_create(issue)
-    end
+      it 'note is created if the issue is being reopened' do
+        Note.should_receive(:create_status_change_note).with(mock_issue, mock_issue.project, some_user, 'reopened', nil)
 
-    it 'does not send an email to the assignee if assignee created the issue' do
-      subject.stub(:current_user).and_return(assignee)
-      Notify.should_not_receive(:new_issue_email)
-
-      subject.after_create(issue)
+        subject.after_reopen(mock_issue, nil)
+      end
     end
   end
 
   context '#after_update' do
     before(:each) do
-      issue.stub(:is_being_reassigned?).and_return(false)
-      issue.stub(:is_being_closed?).and_return(false)
-      issue.stub(:is_being_reopened?).and_return(false)
+      mock_issue.stub(:is_being_reassigned?).and_return(false)
     end
 
-    it 'is called when an issue is changed' do
-      changed = create(:issue, project: create(:project))
-      subject.should_receive(:after_update)
+    context 'notification' do
+      it 'triggered if the issue is being reassigned' do
+        mock_issue.should_receive(:is_being_reassigned?).and_return(true)
+        subject.should_receive(:notification)
 
-      Issue.observers.enable :issue_observer do
-        changed.description = 'I changed'
-        changed.save
-      end
-    end
-
-    context 'a reassigned email' do
-      it 'is sent if the issue is being reassigned' do
-        issue.should_receive(:is_being_reassigned?).and_return(true)
-        subject.should_receive(:send_reassigned_email).with(issue)
-
-        subject.after_update(issue)
+        subject.after_update(mock_issue)
       end
 
-      it 'is not sent if the issue is not being reassigned' do
-        issue.should_receive(:is_being_reassigned?).and_return(false)
-        subject.should_not_receive(:send_reassigned_email)
+      it 'is not triggered if the issue is not being reassigned' do
+        mock_issue.should_receive(:is_being_reassigned?).and_return(false)
+        subject.should_not_receive(:notification)
 
-        subject.after_update(issue)
+        subject.after_update(mock_issue)
       end
     end
 
-    context 'a status "closed"' do
-      it 'note is created if the issue is being closed' do
-        issue.should_receive(:is_being_closed?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice
-        Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
+    context 'cross-references' do
+      it 'notices added references' do
+        mock_issue.should_receive(:notice_added_references)
 
-        subject.after_update(issue)
-      end
-
-      it 'note is not created if the issue is not being closed' do
-        issue.should_receive(:is_being_closed?).and_return(false)
-        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'closed')
-
-        subject.after_update(issue)
-      end
-
-      it 'notification is delivered if the issue being closed' do
-        issue.stub(:is_being_closed?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice
-        Note.should_receive(:create_status_change_note).with(issue, some_user, 'closed')
-
-        subject.after_update(issue)
-      end
-
-      it 'notification is not delivered if the issue not being closed' do
-        issue.stub(:is_being_closed?).and_return(false)
-        Notify.should_not_receive(:issue_status_changed_email)
-        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'closed')
-
-        subject.after_update(issue)
-      end
-
-      it 'notification is delivered only to author if the issue being closed' do
-        issue_without_assignee = double(:issue, id: 42, author: author, assignee: nil)
-        issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
-        issue_without_assignee.stub(:is_being_closed?).and_return(true)
-        issue_without_assignee.stub(:is_being_reopened?).and_return(false)
-        Notify.should_receive(:issue_status_changed_email).once
-        Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'closed')
-
-        subject.after_update(issue_without_assignee)
-      end
-    end
-
-    context 'a status "reopened"' do
-      it 'note is created if the issue is being reopened' do
-        Notify.should_receive(:issue_status_changed_email).twice
-        issue.should_receive(:is_being_reopened?).and_return(true)
-        Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
-
-        subject.after_update(issue)
-      end
-
-      it 'note is not created if the issue is not being reopened' do
-        issue.should_receive(:is_being_reopened?).and_return(false)
-        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'reopened')
-
-        subject.after_update(issue)
-      end
-
-      it 'notification is delivered if the issue being reopened' do
-        issue.stub(:is_being_reopened?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).twice
-        Note.should_receive(:create_status_change_note).with(issue, some_user, 'reopened')
-
-        subject.after_update(issue)
-      end
-
-      it 'notification is not delivered if the issue not being reopened' do
-        issue.stub(:is_being_reopened?).and_return(false)
-        Notify.should_not_receive(:issue_status_changed_email)
-        Note.should_not_receive(:create_status_change_note).with(issue, some_user, 'reopened')
-
-        subject.after_update(issue)
-      end
-
-      it 'notification is delivered only to author if the issue being reopened' do
-        issue_without_assignee = double(:issue, id: 42, author: author, assignee: nil)
-        issue_without_assignee.stub(:is_being_reassigned?).and_return(false)
-        issue_without_assignee.stub(:is_being_closed?).and_return(false)
-        issue_without_assignee.stub(:is_being_reopened?).and_return(true)
-        Notify.should_receive(:issue_status_changed_email).once
-        Note.should_receive(:create_status_change_note).with(issue_without_assignee, some_user, 'reopened')
-
-        subject.after_update(issue_without_assignee)
-      end
-    end
-  end
-
-  describe '#send_reassigned_email' do
-    let(:previous_assignee) { double(:user, id: 3) }
-
-    before(:each) do
-      issue.stub(:assignee_id).and_return(assignee.id)
-      issue.stub(:assignee_id_was).and_return(previous_assignee.id)
-    end
-
-    def it_sends_a_reassigned_email_to(recipient)
-      Notify.should_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id)
-    end
-
-    def it_does_not_send_a_reassigned_email_to(recipient)
-      Notify.should_not_receive(:reassigned_issue_email).with(recipient, issue.id, previous_assignee.id)
-    end
-
-    it 'sends a reassigned email to the previous and current assignees' do
-      it_sends_a_reassigned_email_to assignee.id
-      it_sends_a_reassigned_email_to previous_assignee.id
-
-      subject.send(:send_reassigned_email, issue)
-    end
-
-    context 'does not send an email to the user who made the reassignment' do
-      it 'if the user is the assignee' do
-        subject.stub(:current_user).and_return(assignee)
-        it_sends_a_reassigned_email_to previous_assignee.id
-        it_does_not_send_a_reassigned_email_to assignee.id
-
-        subject.send(:send_reassigned_email, issue)
-      end
-      it 'if the user is the previous assignee' do
-        subject.stub(:current_user).and_return(previous_assignee)
-        it_sends_a_reassigned_email_to assignee.id
-        it_does_not_send_a_reassigned_email_to previous_assignee.id
-
-        subject.send(:send_reassigned_email, issue)
+        subject.after_update(mock_issue)
       end
     end
   end

@@ -1,0 +1,19 @@
+- commit = update
+%tr
+  %td
+    = link_to project_commits_path(@project, commit.head.name) do
+      %strong
+        = commit.head.name
+      - if @project.root_ref?(commit.head.name)
+        %span.label default
+
+  %td
+    %div
+      = link_to project_commits_path(@project, commit.id) do
+        %code= commit.short_id
+      = image_tag gravatar_icon(commit.author_email), class: "", width: 16, alt: ''
+      = gfm escape_once(truncate(commit.title, length: 40))
+  %td
+    %span.pull-right.cgray
+      = time_ago_in_words(commit.committed_date)
+      ago

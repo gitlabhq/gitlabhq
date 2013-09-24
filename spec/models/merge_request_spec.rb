@@ -2,21 +2,22 @@
 #
 # Table name: merge_requests
 #
-#  id            :integer          not null, primary key
-#  target_branch :string(255)      not null
-#  source_branch :string(255)      not null
-#  project_id    :integer          not null
-#  author_id     :integer
-#  assignee_id   :integer
-#  title         :string(255)
-#  closed        :boolean          default(FALSE), not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
-#  st_commits    :text(2147483647)
-#  st_diffs      :text(2147483647)
-#  merged        :boolean          default(FALSE), not null
-#  state         :integer          default(1), not null
-#  milestone_id  :integer
+#  id                :integer          not null, primary key
+#  target_branch     :string(255)      not null
+#  source_branch     :string(255)      not null
+#  source_project_id :integer          not null
+#  author_id         :integer
+#  assignee_id       :integer
+#  title             :string(255)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  st_commits        :text(2147483647)
+#  st_diffs          :text(2147483647)
+#  milestone_id      :integer
+#  state             :string(255)
+#  merge_status      :string(255)
+#  target_project_id :integer          not null
+#  iid               :integer
 #
 
 require 'spec_helper'
@@ -32,6 +33,12 @@ describe MergeRequest do
     it { should_not allow_mass_assignment_of(:project_id) }
   end
 
+  describe "Respond to" do
+    it { should respond_to(:unchecked?) }
+    it { should respond_to(:can_be_merged?) }
+    it { should respond_to(:cannot_be_merged?) }
+  end
+
   describe 'modules' do
     it { should include_module(Issuable) }
   end
@@ -40,7 +47,7 @@ describe MergeRequest do
     let!(:merge_request) { create(:merge_request) }
 
     before do
-      merge_request.stub(:commits) { [merge_request.project.repository.commit] }
+      merge_request.stub(:commits) { [merge_request.source_project.repository.commit] }
       create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit')
       create(:note, noteable: merge_request)
     end
@@ -63,34 +70,67 @@ describe MergeRequest do
     end
   end
 
-  describe '#is_being_closed?' do
-    it 'returns true if the closed attribute has changed and is now true' do
-      subject.closed = true
-      subject.is_being_closed?.should be_true
+  describe '#for_fork?' do
+    it 'returns true if the merge request is for a fork' do
+      subject.source_project = create(:source_project)
+      subject.target_project = create(:target_project)
+
+      subject.for_fork?.should be_true
     end
-    it 'returns false if the closed attribute has changed and is now false' do
-      merge_request = create(:closed_merge_request)
-      merge_request.closed = false
-      merge_request.is_being_closed?.should be_false
-    end
-    it 'returns false if the closed attribute has not changed' do
-      subject.is_being_closed?.should be_false
+    it 'returns false if is not for a fork' do
+      subject.source_project = create(:source_project)
+      subject.target_project = subject.source_project
+      subject.for_fork?.should be_false
     end
   end
 
+  describe '#allow_source_branch_removal?' do
+    it 'should not allow removal when mr is a fork' do
 
-  describe '#is_being_reopened?' do
-    it 'returns true if the closed attribute has changed and is now false' do
-      merge_request = create(:closed_merge_request)
-      merge_request.closed = false
-      merge_request.is_being_reopened?.should be_true
+      subject.disallow_source_branch_removal?.should be_true
     end
-    it 'returns false if the closed attribute has changed and is now true' do
-      subject.closed = true
-      subject.is_being_reopened?.should be_false
+    it 'should not allow removal when the mr is not a fork, but the source branch is the root reference' do
+      subject.target_project = subject.source_project
+      subject.source_branch = subject.source_project.repository.root_ref
+      subject.disallow_source_branch_removal?.should be_true
     end
-    it 'returns false if the closed attribute has not changed' do
-      subject.is_being_reopened?.should be_false
+
+    it 'should not disallow removal when the mr is not a fork, and but source branch is not the root reference' do
+      subject.target_project = subject.source_project
+      subject.source_branch = "Something Different #{subject.source_project.repository.root_ref}"
+      subject.for_fork?.should be_false
+      subject.disallow_source_branch_removal?.should be_false
     end
+  end
+
+  describe 'detection of issues to be closed' do
+    let(:issue0) { create :issue, project: subject.project }
+    let(:issue1) { create :issue, project: subject.project }
+    let(:commit0) { mock('commit0', closes_issues: [issue0]) }
+    let(:commit1) { mock('commit1', closes_issues: [issue0]) }
+    let(:commit2) { mock('commit2', closes_issues: [issue1]) }
+
+    before do
+      subject.stub(unmerged_commits: [commit0, commit1, commit2])
+    end
+
+    it 'accesses the set of issues that will be closed on acceptance' do
+      subject.project.default_branch = subject.target_branch
+
+      subject.closes_issues.should == [issue0, issue1].sort_by(&:id)
+    end
+
+    it 'only lists issues as to be closed if it targets the default branch' do
+      subject.project.default_branch = 'master'
+      subject.target_branch = 'something-else'
+
+      subject.closes_issues.should be_empty
+    end
+  end
+
+  it_behaves_like 'an editable mentionable' do
+    let(:subject) { create :merge_request, source_project: mproject, target_project: mproject }
+    let(:backref_text) { "merge request !#{subject.iid}" }
+    let(:set_mentionable_text) { ->(txt){ subject.title = txt } }
   end
 end

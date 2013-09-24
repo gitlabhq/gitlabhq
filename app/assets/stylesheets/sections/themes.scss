@@ -1,10 +1,3 @@
-.application-theme, .code-preview-theme {
-  .update-feedback {
-    color: #468847;
-    float: right;
-  }
-}
-
 .themes_opts {
   padding-left: 20px;
 
@@ -27,15 +20,15 @@
       }
 
       &.modern {
-        background: #567;
+        background: #345;
       }
 
       &.gray {
-        background: #708090;
+        background: #373737;
       }
 
       &.violet {
-        background: #657;
+        background: #547;
       }
     }
   }

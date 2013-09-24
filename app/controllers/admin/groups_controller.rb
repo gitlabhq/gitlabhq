@@ -1,4 +1,4 @@
-class Admin::GroupsController < AdminController
+class Admin::GroupsController < Admin::ApplicationController
   before_filter :group, only: [:edit, :show, :update, :destroy, :project_update, :project_teams_update]
 
   def index
@@ -8,12 +8,6 @@ class Admin::GroupsController < AdminController
   end
 
   def show
-    @projects = Project.scoped
-    @projects = @projects.not_in_group(@group) if @group.projects.present?
-    @projects = @projects.all
-    @projects.reject!(&:empty_repo?)
-
-    @users = User.active
   end
 
   def new
@@ -31,7 +25,7 @@ class Admin::GroupsController < AdminController
     if @group.save
       redirect_to [:admin, @group], notice: 'Group was successfully created.'
     else
-      render action: "new"
+      render "new"
     end
   end
 
@@ -40,41 +34,23 @@ class Admin::GroupsController < AdminController
     owner_id =group_params.delete(:owner_id)
 
     if owner_id
-      @group.owner = User.find(owner_id)
+      @group.change_owner(User.find(owner_id))
     end
 
     if @group.update_attributes(group_params)
       redirect_to [:admin, @group], notice: 'Group was successfully updated.'
     else
-      render action: "edit"
+      render "edit"
     end
-  end
-
-  def project_update
-    project_ids = params[:project_ids]
-
-    Project.where(id: project_ids).each do |project|
-      project.transfer(@group)
-    end
-
-    redirect_to :back, notice: 'Group was successfully updated.'
-  end
-
-  def remove_project
-    @project = Project.find(params[:project_id])
-    @project.transfer(nil)
-
-    redirect_to :back, notice: 'Group was successfully updated.'
   end
 
   def project_teams_update
-    @group.add_users_to_project_teams(params[:user_ids], params[:project_access])
-    redirect_to [:admin, @group], notice: 'Users was successfully added.'
+    @group.add_users(params[:user_ids].split(','), params[:group_access])
+
+    redirect_to [:admin, @group], notice: 'Users were successfully added.'
   end
 
   def destroy
-    @group.truncate_teams
-
     @group.destroy
 
     redirect_to admin_groups_path, notice: 'Group was successfully deleted.'

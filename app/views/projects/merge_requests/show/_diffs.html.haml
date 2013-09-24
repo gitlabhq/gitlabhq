@@ -1,0 +1,10 @@
+- if @merge_request.valid_diffs?
+  = render "projects/commits/diffs", diffs: @merge_request.diffs, project: @merge_request.source_project
+- elsif @merge_request.broken_diffs?
+  %h4.nothing_here_message
+    Can't load diff.
+    You can
+    = link_to "download it", project_merge_request_path(@merge_request.source_project, @merge_request), format: :diff, class: "vlink"
+    instead.
+- else
+  %h4.nothing_here_message Nothing to merge

@@ -3,24 +3,20 @@ module TreeHelper
   # their corresponding partials
   #
   # contents - A Grit::Tree object for the current tree
-  def render_tree(contents)
+  def render_tree(tree)
     # Render Folders before Files/Submodules
-    folders, files = contents.partition { |v| v.kind_of?(Grit::Tree) }
+    folders, files, submodules = tree.trees, tree.blobs, tree.submodules
 
     tree = ""
 
     # Render folders if we have any
-    tree += render partial: 'tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
+    tree += render partial: 'projects/tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
 
-    files.each do |f|
-      if f.respond_to?(:url)
-        # Object is a Submodule
-        tree += render partial: 'tree/submodule_item', object: f
-      else
-        # Object is a Blob
-        tree += render partial: 'tree/tree_item', object: f, locals: {type: 'file'}
-      end
-    end
+    # Render files if we have any
+    tree += render partial: 'projects/tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
+
+    # Render submodules if we have any
+    tree += render partial: 'projects/tree/submodule_item', collection: submodules if submodules.present?
 
     tree.html_safe
   end
@@ -43,16 +39,16 @@ module TreeHelper
   #
   # Returns boolean
   def markup?(filename)
-    filename.end_with?(*%w(.textile .rdoc .org .creole
-                           .mediawiki .rst .asciidoc .pod))
+    filename.downcase.end_with?(*%w(.textile .rdoc .org .creole
+                                    .mediawiki .rst .asciidoc .pod))
   end
 
   def gitlab_markdown?(filename)
-    filename.end_with?(*%w(.mdown .md .markdown))
+    filename.downcase.end_with?(*%w(.mdown .md .markdown))
   end
 
   def plain_text_readme? filename
-    filename == 'README'
+    filename =~ /^README(.txt)?$/i
   end
 
   # Simple shortcut to File.join
@@ -61,6 +57,8 @@ module TreeHelper
   end
 
   def allowed_tree_edit?
+    return false unless @repository.branch_names.include?(@ref)
+
     if @project.protected_branch? @ref
       can?(current_user, :push_code_to_protected_branches, @project)
     else
@@ -68,28 +66,29 @@ module TreeHelper
     end
   end
 
-  # Breadcrumb links for a Project and, if applicable, a tree path
-  def breadcrumbs
-    return unless @project && @ref
+  def tree_breadcrumbs(tree, max_links = 2)
+    if tree.path
+      part_path = ""
+      parts = tree.path.split("\/")
 
-    # Add the root project link and the arrow icon
-    crumbs = content_tag(:li) do
-      content_tag(:span, nil, class: 'arrow') +
-      link_to(@project.name, project_commits_path(@project, @ref))
-    end
+      yield('..', nil) if parts.count > max_links
 
-    if @path
-      parts = @path.split('/')
+      parts.each do |part|
+        part_path = File.join(part_path, part) unless part_path.empty?
+        part_path = part if part_path.empty?
 
-      parts.each_with_index do |part, i|
-        crumbs += content_tag(:span, '/', class: 'divider')
-        crumbs += content_tag(:li) do
-          # The text is just the individual part, but the link needs all the parts before it
-          link_to part, project_commits_path(@project, tree_join(@ref, parts[0..i].join('/')))
-        end
+        next unless parts.last(2).include?(part) if parts.count > max_links
+        yield(part, tree_join(tree.ref, part_path))
       end
     end
+  end
 
-    crumbs.html_safe
+  def up_dir_path tree
+    file = File.join(tree.path, "..")
+    tree_join(tree.ref, file)
+  end
+
+  def leave_edit_message
+    "Leave edit mode?\nAll unsaved changes will be lost."
   end
 end

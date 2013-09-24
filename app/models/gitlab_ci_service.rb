@@ -11,6 +11,8 @@
 #  updated_at  :datetime         not null
 #  active      :boolean          default(FALSE), not null
 #  project_url :string(255)
+#  subdomain   :string(255)
+#  room        :string(255)
 #
 
 class GitlabCiService < Service
@@ -45,5 +47,32 @@ class GitlabCiService < Service
 
   def build_page sha
     project_url + "/builds/#{sha}"
+  end
+
+  def builds_path
+    project_url + "?ref=" + project.default_branch
+  end
+
+  def status_img_path
+    project_url + "/status.png?ref=" + project.default_branch
+  end
+
+  def title
+    'GitLab CI'
+  end
+
+  def description
+    'Continuous integration server from GitLab'
+  end
+
+  def to_param
+    'gitlab_ci'
+  end
+
+  def fields
+    [
+      { type: 'text', name: 'token', placeholder: 'GitLab CI project specific token' },
+      { type: 'text', name: 'project_url', placeholder: 'http://ci.gitlabhq.com/projects/3'}
+    ]
   end
 end

@@ -7,25 +7,42 @@
 #  project_id  :integer          not null
 #  description :text
 #  due_date    :date
-#  closed      :boolean          default(FALSE), not null
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
+#  state       :string(255)
+#  iid         :integer
 #
 
 class Milestone < ActiveRecord::Base
-  attr_accessible :title, :description, :due_date, :closed, :author_id_of_changes
+  include InternalId
+
+  attr_accessible :title, :description, :due_date, :state_event, :author_id_of_changes
   attr_accessor :author_id_of_changes
 
   belongs_to :project
   has_many :issues
   has_many :merge_requests
+  has_many :participants, through: :issues, source: :assignee
 
-  scope :active, where(closed: false)
-  scope :closed, where(closed: true)
+  scope :active, -> { with_state(:active) }
+  scope :closed, -> { with_state(:closed) }
 
   validates :title, presence: true
   validates :project, presence: true
-  validates :closed, inclusion: { in: [true, false] }
+
+  state_machine :state, initial: :active do
+    event :close do
+      transition active: :closed
+    end
+
+    event :activate do
+      transition closed: :active
+    end
+
+    state :closed
+
+    state :active
+  end
 
   def expired?
     if due_date
@@ -33,10 +50,6 @@ class Milestone < ActiveRecord::Base
     else
       false
     end
-  end
-
-  def participants
-    User.where(id: issues.pluck(:assignee_id))
   end
 
   def open_items_count
@@ -62,21 +75,17 @@ class Milestone < ActiveRecord::Base
       if due_date.past?
         "expired at #{due_date.stamp("Aug 21, 2011")}"
       else
-        "expires at #{due_date.stamp("Aug 21, 2011")}"  
+        "expires at #{due_date.stamp("Aug 21, 2011")}"
       end
-    end  
+    end
   end
 
   def can_be_closed?
-    open? && issues.opened.count.zero?
+    active? && issues.opened.count.zero?
   end
 
   def is_empty?
     total_items_count.zero?
-  end
-
-  def open?
-    !closed
   end
 
   def author_id

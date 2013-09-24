@@ -1,10 +1,14 @@
-.file_holder
-  .file_title
+.file-holder
+  .file-title
     %i.icon-file
     %strong= @snippet.file_name
     %span.options
-      = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn very_small", target: "_blank"
-  .file_content.code
+      .btn-group.tree-btn-group.pull-right
+        - if @snippet.author == current_user
+          = link_to "Edit", edit_snippet_path(@snippet), class: "btn btn-tiny", title: 'Edit Snippet'
+          = link_to "Delete", snippet_path(@snippet), method: :delete, confirm: "Are you sure?", class: "btn btn-tiny", title: 'Delete Snippet'
+        = link_to "Raw", raw_snippet_path(@snippet), class: "btn btn-tiny", target: "_blank"
+  .file-content.code
     - unless @snippet.content.empty?
       %div{class: user_color_scheme_class}
         = raw @snippet.colorize(formatter: :gitlab)

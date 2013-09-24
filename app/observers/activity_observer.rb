@@ -1,34 +1,39 @@
-class ActivityObserver < ActiveRecord::Observer
-  observe :issue, :merge_request, :note, :milestone
+class ActivityObserver < BaseObserver
+  observe :issue, :note, :milestone
 
   def after_create(record)
     event_author_id = record.author_id
 
-    # Skip status notes
-    if record.kind_of?(Note) && record.note.include?("_Status changed to ")
-      return true
+    if record.kind_of?(Note)
+      # Skip system notes, like status changes and cross-references.
+      return true if record.system?
+
+      # Skip wall notes to prevent spamming of dashboard
+      return true if record.noteable_type.blank?
     end
 
     if event_author_id
-      Event.create(
-        project: record.project,
-        target_id: record.id,
-        target_type: record.class.name,
-        action: Event.determine_action(record),
-        author_id: event_author_id
-      )
+      create_event(record, Event.determine_action(record))
     end
   end
 
-  def after_save(record)
-    if record.changed.include?("closed") && record.author_id_of_changes
-      Event.create(
-        project: record.project,
-        target_id: record.id,
-        target_type: record.class.name,
-        action: (record.closed ? Event::Closed : Event::Reopened),
-        author_id: record.author_id_of_changes
-      )
-    end
+  def after_close(record, transition)
+    create_event(record, Event::CLOSED)
+  end
+
+  def after_reopen(record, transition)
+    create_event(record, Event::REOPENED)
+  end
+
+  protected
+
+  def create_event(record, status)
+    Event.create(
+      project: record.project,
+      target_id: record.id,
+      target_type: record.class.name,
+      action: status,
+      author_id: current_user.id
+    )
   end
 end

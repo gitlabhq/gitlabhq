@@ -1,0 +1,96 @@
+.dashboard {
+  @extend .row;
+  .activities {
+  }
+
+  .side {
+    @extend .pull-right;
+
+    .ui-box {
+      margin: 0px;
+      box-shadow: none;
+
+      .nav-projects-tabs li { padding: 0; }
+    }
+  }
+}
+
+.dashboard-search-filter {
+  padding:5px;
+
+  .search-text-input {
+    float:left;
+    @extend .span2;
+  }
+  .btn {
+    margin-left: 5px;
+    float:left;
+  }
+}
+
+.dashboard {
+  .dash-filter {
+    margin: 7px 0;
+    padding: 4px 6px;
+    width: 202px;
+    float: left;
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard .dash-filter {
+    width: 132px;
+  }
+}
+
+.dash-sidebar-tabs {
+  margin-bottom: 2px;
+  border: none;
+  margin: 0;
+
+  li {
+    &.active {
+      a {
+        @include linear-gradient(#f5f5f5, #eee);
+        border-bottom: 1px solid #EEE !important;
+        &:hover {
+          background: #eee;
+        }
+      }
+    }
+
+    a {
+      border-color: #CCC !important;
+    }
+  }
+}
+
+.project-row, .group-row {
+  padding: 10px 15px !important;
+
+  .namespace-name {
+    color: #666;
+    font-weight: bold;
+  }
+
+  .project-name, .group-name {
+    font-size: 16px;
+  }
+
+  .arrow {
+    float: right;
+    padding: 10px 5px;
+    margin: 0;
+    font-size: 20px;
+    color: #666;
+  }
+
+  .last-activity, .owner-info {
+    color: #AAA;
+    display: block;
+    margin-top: 5px;
+    .date, .owner {
+      color: #777;
+    }
+  }
+}

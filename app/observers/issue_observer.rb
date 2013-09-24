@@ -1,33 +1,32 @@
-class IssueObserver < ActiveRecord::Observer
-  cattr_accessor :current_user
-
+class IssueObserver < BaseObserver
   def after_create(issue)
-    if issue.assignee && issue.assignee != current_user
-      Notify.delay.new_issue_email(issue.id)
-    end
+    notification.new_issue(issue, current_user)
+
+    issue.create_cross_references!(issue.project, current_user)
+  end
+
+  def after_close(issue, transition)
+    notification.close_issue(issue, current_user)
+
+    create_note(issue)
+  end
+
+  def after_reopen(issue, transition)
+    create_note(issue)
   end
 
   def after_update(issue)
-    send_reassigned_email(issue) if issue.is_being_reassigned?
-
-    status = nil
-    status = 'closed' if issue.is_being_closed?
-    status = 'reopened' if issue.is_being_reopened?
-    if status
-      Note.create_status_change_note(issue, current_user, status)
-      [issue.author, issue.assignee].compact.each do |recipient|
-        Notify.delay.issue_status_changed_email(recipient.id, issue.id, status, current_user.id)
-      end
+    if issue.is_being_reassigned?
+      notification.reassigned_issue(issue, current_user)
     end
+
+    issue.notice_added_references(issue.project, current_user)
   end
 
   protected
 
-  def send_reassigned_email(issue)
-    recipient_ids = [issue.assignee_id, issue.assignee_id_was].keep_if {|id| id && id != current_user.id }
-
-    recipient_ids.each do |recipient_id|
-      Notify.delay.reassigned_issue_email(recipient_id, issue.id, issue.assignee_id_was)
-    end
+  # Create issue note with service comment like 'Status changed to closed'
+  def create_note(issue)
+    Note.create_status_change_note(issue, issue.project, current_user, issue.state, current_commit)
   end
 end

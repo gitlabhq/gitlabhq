@@ -1,9 +1,3 @@
-%h3.page_title
-  Projects
-  = link_to 'New Project', new_project_path, class: "btn small right"
-
-%hr
-
 .row
   .span4
     .admin-filter
@@ -14,9 +8,9 @@
             = text_field_tag :name, params[:name], class: "span2"
 
         .control-group
-          = label_tag :namespace_id, 'Namespace:', class: 'control-label'
+          = label_tag :owner_id, 'Owner:', class: 'control-label'
           .controls
-            = select_tag :namespace_id, namespaces_options(params[:namespace_id], :all), class: "chosen span2", prompt: "Any"
+            = users_select_tag :owner_id, selected: params[:owner_id], class: 'input-large'
         .control-group
           = label_tag :public_only, 'Public Only', class: 'control-label'
           .controls
@@ -37,25 +31,25 @@
 
 
         .form-actions
-          = submit_tag "Search", class: "btn submit primary"
+          = submit_tag "Search", class: "btn submit btn-primary"
           = link_to "Reset", admin_projects_path, class: "btn"
   .span8
     .ui-box
-      %h5.title
+      .title
         Projects (#{@projects.total_count})
+        .pull-right
+          = link_to 'New Project', new_project_path, class: "btn btn-new"
       %ul.well-list
         - @projects.each do |project|
           %li
             - if project.public
-              %i.icon-share
+              = public_icon
             - else
-              %i.icon-lock.cgreen
+              = private_icon
             = link_to project.name_with_namespace, [:admin, project]
-            .right
-              = link_to 'Edit', edit_admin_project_path(project), id: "edit_#{dom_id(project)}", class: "btn small"
-              = link_to 'Destroy', [:admin, project], confirm: "REMOVE #{project.name}? Are you sure?", method: :delete, class: "btn small danger"
+            .pull-right
+              = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
+              = link_to 'Destroy', [project], confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
         - if @projects.blank?
           %p.nothing_here_message 0 projects matches
-        - else
-          %li.bottom
-            = paginate @projects, theme: "gitlab"
+    = paginate @projects, theme: "gitlab"

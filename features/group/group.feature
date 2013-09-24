@@ -19,8 +19,15 @@ Feature: Groups
     When I visit group merge requests page
     Then I should see merge requests from this group assigned to me
 
+  @javascript
   Scenario: I should add user to projects in Group
     Given I have new user "John"
-    When I visit group people page
+    When I visit group members page
     And I select user "John" from list with role "Reporter"
     Then I should see user "John" in team list
+
+  Scenario: I should see edit group page
+    When I visit group settings page
+    And I change group name
+    Then I should see new group name
+

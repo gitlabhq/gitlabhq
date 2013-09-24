@@ -5,7 +5,7 @@
     %strong= event.ref_name
   - else
     = link_to project_commits_path(event.project, event.ref_name) do
-      %strong= event.ref_name
+      %strong= truncate(event.ref_name, length: 30)
   at
   %strong= link_to_project event.project
 
@@ -21,5 +21,5 @@
         %li.commits-stat
           - if event.commits_count > 2
             %span ... and #{event.commits_count - 2} more commits.
-          = link_to project_compare_path(event.project, from: event.parent_commit.id, to: event.last_commit.id) do
-            %strong Compare &rarr; #{event.parent_commit.id[0..7]}...#{event.last_commit.id[0..7]}
+          = link_to project_compare_path(event.project, from: event.commit_from, to: event.commit_to) do
+            %strong Compare &rarr; #{event.commit_from[0..7]}...#{event.commit_to[0..7]}

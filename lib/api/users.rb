@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Users API
   class Users < Grape::API
     before { authenticate! }
@@ -9,7 +9,10 @@ module Gitlab
       # Example Request:
       #  GET /users
       get do
-        @users = paginate User
+        @users = User.scoped
+        @users = @users.active if params[:active].present?
+        @users = @users.search(params[:search]) if params[:search].present?
+        @users = paginate @users
         present @users, with: Entities::User
       end
 
@@ -34,14 +37,82 @@ module Gitlab
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
       #   projects_limit                    - Number of projects user can create
+      #   extern_uid                        - External authentication provider UID
+      #   provider                          - External provider
+      #   bio                               - Bio
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username]
-        user = User.new attrs, as: :admin
+        required_attributes! [:email, :password, :name, :username]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        user = User.build_user(attrs, as: :admin)
         if user.save
           present user, with: Entities::User
+        else
+          not_found!
+        end
+      end
+
+      # Update user. Available only for admin
+      #
+      # Parameters:
+      #   email                             - Email
+      #   name                              - Name
+      #   password                          - Password
+      #   skype                             - Skype ID
+      #   linkedin                          - Linkedin
+      #   twitter                           - Twitter account
+      #   projects_limit                    - Limit projects each user can create
+      #   extern_uid                        - External authentication provider UID
+      #   provider                          - External provider
+      #   bio                               - Bio
+      # Example Request:
+      #   PUT /users/:id
+      put ":id" do
+        authenticated_as_admin!
+
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+        user = User.find(params[:id])
+        not_found!("User not found") unless user
+
+        if user.update_attributes(attrs)
+          present user, with: Entities::User
+        else
+          not_found!
+        end
+      end
+
+      # Add ssh key to a specified user. Only available to admin users.
+      #
+      # Parameters:
+      # id (required) - The ID of a user
+      # key (required) - New SSH Key
+      # title (required) - New SSH Key's title
+      # Example Request:
+      # POST /users/:id/keys
+      post ":id/keys" do
+        authenticated_as_admin!
+        user = User.find(params[:id])
+        attrs = attributes_for_keys [:title, :key]
+        key = user.keys.new attrs
+        if key.save
+          present key, with: Entities::SSHKey
+        else
+          not_found!
+        end
+      end
+
+      # Delete user. Available only for admin
+      #
+      # Example Request:
+      #   DELETE /users/:id
+      delete ":id" do
+        authenticated_as_admin!
+        user = User.find_by_id(params[:id])
+
+        if user
+          user.destroy
         else
           not_found!
         end
@@ -54,7 +125,7 @@ module Gitlab
       # Example Request:
       #   GET /user
       get do
-        present @current_user, with: Entities::User
+        present @current_user, with: Entities::UserLogin
       end
 
       # Get currently authenticated user's keys
@@ -82,6 +153,8 @@ module Gitlab
       # Example Request:
       #   POST /user/keys
       post "keys" do
+        required_attributes! [:title, :key]
+
         attrs = attributes_for_keys [:title, :key]
         key = current_user.keys.new attrs
         if key.save
@@ -91,15 +164,18 @@ module Gitlab
         end
       end
 
-      # Delete existed ssh key of currently authenticated user
+      # Delete existing ssh key of currently authenticated user
       #
       # Parameters:
       #   id (required) - SSH Key ID
       # Example Request:
       #   DELETE /user/keys/:id
       delete "keys/:id" do
-        key = current_user.keys.find params[:id]
-        key.delete
+        begin
+          key = current_user.keys.find params[:id]
+          key.destroy
+        rescue
+        end
       end
     end
   end

@@ -9,10 +9,14 @@ RSpec.configure do |config|
       DatabaseCleaner.strategy = :transaction
     end
 
-    DatabaseCleaner.start
+    unless example.metadata[:no_db]
+      DatabaseCleaner.start
+    end
   end
 
   config.after do
-    DatabaseCleaner.clean
+    unless example.metadata[:no_db]
+      DatabaseCleaner.clean
+    end
   end
 end

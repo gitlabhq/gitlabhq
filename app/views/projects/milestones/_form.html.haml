@@ -1,0 +1,47 @@
+%h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
+.back-link
+  = link_to project_milestones_path(@project) do
+    &larr; To milestones
+
+%hr
+
+= form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
+  -if @milestone.errors.any?
+    .alert.alert-error
+      %ul
+        - @milestone.errors.full_messages.each do |msg|
+          %li= msg
+  .row
+    .span6
+      .control-group
+        = f.label :title, "Title", class: "control-label"
+        .controls
+          = f.text_field :title, maxlength: 255, class: "input-xlarge"
+          %p.hint Required
+      .control-group
+        = f.label :description, "Description", class: "control-label"
+        .controls
+          = f.text_area :description, maxlength: 2000, class: "input-xlarge", rows: 10
+          %p.hint Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+    .span6
+      .control-group
+        = f.label :due_date, "Due Date", class: "control-label"
+        .controls= f.hidden_field :due_date
+        .controls
+          .datepicker
+
+  .form-actions
+    - if @milestone.new_record?
+      = f.submit 'Create milestone', class: "btn-create btn"
+      = link_to "Cancel", project_milestones_path(@project), class: "btn btn-cancel"
+    -else
+      = f.submit 'Save changes', class: "btn-save btn"
+      = link_to "Cancel", project_milestone_path(@project, @milestone), class: "btn btn-cancel"
+
+
+:javascript
+  disableButtonIfEmptyField("#milestone_title", ".btn-save");
+  $( ".datepicker" ).datepicker({
+    dateFormat: "yy-mm-dd",
+    onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
+  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));

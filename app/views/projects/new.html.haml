@@ -1,12 +1,71 @@
-.project_new_holder
-  %h3.page_title
-    New Project
-  %hr
-  = render 'new_form'
-%div.save-project-loader.hide
+.project-edit-container
+  .project-edit-errors
+    = render 'projects/errors'
+  .project-edit-content
+
+    = form_for @project, remote: true do |f|
+      .control-group.project-name-holder
+        = f.label :name do
+          %strong Project name is
+        .controls
+          = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
+          %span.help-inline
+            = link_to "#", class: 'js-toggle-visibility-link' do
+              %span Customize repository name?
+
+      .control-group.js-toggle-visibility-container.hide
+        = f.label :path do
+          %span Repository name
+        .controls
+          .input-append
+            = f.text_field :path
+            %span.add-on .git
+
+
+      - if current_user.can_select_namespace?
+        .control-group
+          = f.label :namespace_id do
+            %span Namespace
+          .controls
+            = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen', tabindex: 2}
+
+      .control-group
+        .controls
+          = link_to "#", class: 'appear-link' do
+            %i.icon-upload-alt
+            %span Import existing repository?
+      .control-group.appear-data.import-url-data
+        = f.label :import_url do
+          %span Import existing repo
+        .controls
+          = f.text_field :import_url, class: 'input-xlarge', placeholder: 'https://github.com/randx/six.git'
+          .light
+            URL must be cloneable
+      .control-group
+        = f.label :description do
+          Description
+          %span.light (optional)
+        .controls
+          = f.text_area :description, placeholder: "awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
+      .control-group.project-public-holder
+        = f.label :public do
+          %span Public project
+        .controls
+          = f.check_box :public, { checked: Gitlab.config.gitlab.default_projects_features.public }, true, false
+          %span.help-inline Make project visible to everyone
+
+      .form-actions
+        = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
+
+        - if current_user.can_create_group?
+          .pull-right
+            .controls.light
+              Need a group for several dependent projects?
+              = link_to new_group_path, class: "btn btn-tiny" do
+                Create a group
+
+.save-project-loader.hide
   %center
     = image_tag "ajax_loader.gif"
-    %h3 Creating project &amp; repository. Please wait a few minutes
-
-:javascript
-  $(function(){ new Projects(); });
+    %h3 Creating project &amp; repository.
+    %p Please wait a moment, this page will automatically refresh when ready.

@@ -15,6 +15,12 @@
   .tree-table {
     @include border-radius(0);
     .tree-item {
+      td {
+        padding: 8px 10px;
+        strong {
+          font-weight: normal;
+        }
+      }
       &:hover {
         td {
           background: $hover;
@@ -22,6 +28,14 @@
           border-bottom: 1px solid #ADF;
         }
         cursor: pointer;
+      }
+
+      &.selected {
+        td {
+          background: $hover;
+          border-top: 1px solid #ADF;
+          border-bottom: 1px solid #ADF;
+        }
       }
     }
   }
@@ -43,13 +57,17 @@
   }
 
   .tree-table {
+    border: none;
+
     th .btn {
       margin: -2px -1px;
       padding: 2px 10px;
     }
     td {
       line-height: 20px;
-      background: #fafafa;
+      background: #fff;
+      border-left: none;
+      border-right: none;
     }
   }
 
@@ -96,9 +114,15 @@
 }
 
 .tree-btn-group {
+  top: 2px;
+
   .btn {
-    margin-right:-3px;
+    margin-right: 0px;
     padding: 2px 10px;
   }
 }
 
+.tree-ref-holder {
+  float: left;
+  margin-top: 5px;
+}

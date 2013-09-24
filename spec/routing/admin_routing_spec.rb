@@ -56,59 +56,22 @@ describe Admin::UsersController, "routing" do
   end
 end
 
-#        team_admin_project GET    /admin/projects/:id/team(.:format)        admin/projects#team {:id=>/[^\/]+/}
-# team_update_admin_project PUT    /admin/projects/:id/team_update(.:format) admin/projects#team_update {:id=>/[^\/]+/}
-#            admin_projects GET    /admin/projects(.:format)                 admin/projects#index {:id=>/[^\/]+/}
-#                           POST   /admin/projects(.:format)                 admin/projects#create {:id=>/[^\/]+/}
-#         new_admin_project GET    /admin/projects/new(.:format)             admin/projects#new {:id=>/[^\/]+/}
-#        edit_admin_project GET    /admin/projects/:id/edit(.:format)        admin/projects#edit {:id=>/[^\/]+/}
-#             admin_project GET    /admin/projects/:id(.:format)             admin/projects#show {:id=>/[^\/]+/}
-#                           PUT    /admin/projects/:id(.:format)             admin/projects#update {:id=>/[^\/]+/}
-#                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {:id=>/[^\/]+/}
+#        team_admin_project GET    /admin/projects/:id/team(.:format)        admin/projects#team {id: /[^\/]+/}
+# team_update_admin_project PUT    /admin/projects/:id/team_update(.:format) admin/projects#team_update {id: /[^\/]+/}
+#            admin_projects GET    /admin/projects(.:format)                 admin/projects#index {id: /[^\/]+/}
+#                           POST   /admin/projects(.:format)                 admin/projects#create {id: /[^\/]+/}
+#         new_admin_project GET    /admin/projects/new(.:format)             admin/projects#new {id: /[^\/]+/}
+#        edit_admin_project GET    /admin/projects/:id/edit(.:format)        admin/projects#edit {id: /[^\/]+/}
+#             admin_project GET    /admin/projects/:id(.:format)             admin/projects#show {id: /[^\/]+/}
+#                           PUT    /admin/projects/:id(.:format)             admin/projects#update {id: /[^\/]+/}
+#                           DELETE /admin/projects/:id(.:format)             admin/projects#destroy {id: /[^\/]+/}
 describe Admin::ProjectsController, "routing" do
-  it "to #team" do
-    get("/admin/projects/gitlab/team").should route_to('admin/projects#team', id: 'gitlab')
-  end
-
-  it "to #team_update" do
-    put("/admin/projects/gitlab/team_update").should route_to('admin/projects#team_update', id: 'gitlab')
-  end
-
   it "to #index" do
     get("/admin/projects").should route_to('admin/projects#index')
   end
 
-  it "to #edit" do
-    get("/admin/projects/gitlab/edit").should route_to('admin/projects#edit', id: 'gitlab')
-  end
-
   it "to #show" do
     get("/admin/projects/gitlab").should route_to('admin/projects#show', id: 'gitlab')
-  end
-
-  it "to #update" do
-    put("/admin/projects/gitlab").should route_to('admin/projects#update', id: 'gitlab')
-  end
-
-  it "to #destroy" do
-    delete("/admin/projects/gitlab").should route_to('admin/projects#destroy', id: 'gitlab')
-  end
-end
-
-# edit_admin_team_member GET    /admin/team_members/:id/edit(.:format) admin/team_members#edit
-#      admin_team_member PUT    /admin/team_members/:id(.:format)      admin/team_members#update
-#                        DELETE /admin/team_members/:id(.:format)      admin/team_members#destroy
-describe Admin::TeamMembersController, "routing" do
-  it "to #edit" do
-    get("/admin/team_members/1/edit").should route_to('admin/team_members#edit', id: '1')
-  end
-
-  it "to #update" do
-    put("/admin/team_members/1").should route_to('admin/team_members#update', id: '1')
-  end
-
-  it "to #destroy" do
-    delete("/admin/team_members/1").should route_to('admin/team_members#destroy', id: '1')
   end
 end
 
@@ -142,10 +105,10 @@ describe Admin::LogsController, "routing" do
   end
 end
 
-# admin_resque GET    /admin/resque(.:format) admin/resque#show
-describe Admin::ResqueController, "routing" do
+# admin_background_jobs GET    /admin/background_jobs(.:format) admin/background_jobs#show
+describe Admin::BackgroundJobsController, "routing" do
   it "to #show" do
-    get("/admin/resque").should route_to('admin/resque#show')
+    get("/admin/background_jobs").should route_to('admin/background_jobs#show')
   end
 end
 

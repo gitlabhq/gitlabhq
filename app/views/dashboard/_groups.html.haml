@@ -1,20 +1,22 @@
-.groups_box
-  %h5.title
-    Groups
-    %small
-      (#{groups.count})
+.ui-box
+  .title.clearfix
+    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter'
     - if current_user.can_create_group?
-      %span.right
-        = link_to new_admin_group_path, class: "btn very_small info" do
+      %span.pull-right
+        = link_to new_group_path, class: "btn btn-new" do
           %i.icon-plus
-          New Group
-  %ul.well-list
+          New group
+  %ul.well-list.dash-list
     - groups.each do |group|
-      %li
+      %li.group-row
         = link_to group_path(id: group.path), class: dom_class(group) do
-          %strong.well-title= truncate(group.name, length: 35)
+          %span.group-name.filter-title
+            = truncate(group.name, length: 35)
           %span.arrow
-            &rarr;
-          %span.last_activity
-            %strong Projects:
-            %span= current_user.authorized_projects.where(namespace_id: group.id).count
+            %i.icon-angle-right
+          %span.owner-info
+            %span Owner:
+            %span.owner= group.owner_name
+    - if groups.blank?
+      %li
+        %h3.nothing_here_message You have no groups yet.

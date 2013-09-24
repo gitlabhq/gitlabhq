@@ -16,7 +16,7 @@ namespace :gitlab do
   # Check which OS is running
   #
   # It will primarily use lsb_relase to determine the OS.
-  # It has fallbacks to Debian, SuSE and OS X.
+  # It has fallbacks to Debian, SuSE, OS X and systems running systemd.
   def os_name
     os_name = run("lsb_release -irs")
     os_name ||= if File.readable?('/etc/system-release')
@@ -32,13 +32,16 @@ namespace :gitlab do
     os_name ||= if os_x_version = run("sw_vers -productVersion")
                   "Mac OS X #{os_x_version}"
                 end
+    os_name ||= if File.readable?('/etc/os-release')
+                  File.read('/etc/os-release').match(/PRETTY_NAME=\"(.+)\"/)[1]
+                end
     os_name.try(:squish!)
   end
 
   # Prompt the user to input something
   #
   # message - the message to display before input
-  # choices - array of strings of acceptible answers or nil for any answer
+  # choices - array of strings of acceptable answers or nil for any answer
   #
   # Returns the user's answer
   def prompt(message, choices = nil)
@@ -49,10 +52,10 @@ namespace :gitlab do
     answer
   end
 
-  # Runs the given command and matches the output agains the given pattern
+  # Runs the given command and matches the output against the given pattern
   #
   # Returns nil if nothing matched
-  # Retunrs the MatchData if the pattern matched
+  # Returns the MatchData if the pattern matched
   #
   # see also #run
   # see also String#match
@@ -77,8 +80,11 @@ namespace :gitlab do
   end
 
   def gid_for(group_name)
-    group_line = File.read("/etc/group").lines.select{|l| l.start_with?("#{group_name}:")}.first
-    group_line.split(":")[2].to_i
+    begin
+      Etc.getgrnam(group_name).gid
+    rescue ArgumentError # no group
+      "group #{group_name} doesn't exist"
+    end
   end
 
   def warn_user_is_not_gitlab

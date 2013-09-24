@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -13,6 +13,10 @@ describe Gitlab::API do
 
         json_response['email'].should == user.email
         json_response['private_token'].should == user.private_token
+        json_response['is_admin'].should == user.is_admin?
+        json_response['can_create_team'].should == user.can_create_team?
+        json_response['can_create_project'].should == user.can_create_project?
+        json_response['can_create_group'].should == user.can_create_group?
       end
     end
 
@@ -29,6 +33,16 @@ describe Gitlab::API do
     context "when empty password" do
       it "should return authentication error" do
         post api("/session"), email: user.email
+        response.status.should == 401
+
+        json_response['email'].should be_nil
+        json_response['private_token'].should be_nil
+      end
+    end
+
+    context "when empty name" do
+      it "should return authentication error" do
+        post api("/session"), password: user.password
         response.status.should == 401
 
         json_response['email'].should be_nil

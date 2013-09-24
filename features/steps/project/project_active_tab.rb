@@ -7,7 +7,11 @@ class ProjectActiveTab < Spinach::FeatureSteps
   # Main Tabs
 
   Then 'the active main tab should be Home' do
-    ensure_active_main_tab(@project.name)
+    ensure_active_main_tab('Home')
+  end
+
+  Then 'the active main tab should be Settings' do
+    ensure_active_main_tab('Settings')
   end
 
   Then 'the active main tab should be Files' do
@@ -41,7 +45,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   # Sub Tabs: Home
 
   Given 'I click the "Team" tab' do
-    click_link('Team')
+    click_link('Members')
   end
 
   Given 'I click the "Attachments" tab' do
@@ -57,39 +61,27 @@ class ProjectActiveTab < Spinach::FeatureSteps
   end
 
   Given 'I click the "Hooks" tab' do
-    click_link('Hooks')
+    click_link('Web Hooks')
   end
 
   Given 'I click the "Deploy Keys" tab' do
     click_link('Deploy Keys')
   end
 
-  Then 'the active sub tab should be Show' do
-    ensure_active_sub_tab('Show')
+  Then 'the active sub nav should be Team' do
+    ensure_active_sub_nav('Members')
   end
 
-  Then 'the active sub tab should be Team' do
-    ensure_active_sub_tab('Team')
+  Then 'the active sub nav should be Edit' do
+    ensure_active_sub_nav('Edit Project')
   end
 
-  Then 'the active sub tab should be Attachments' do
-    ensure_active_sub_tab('Attachments')
+  Then 'the active sub nav should be Hooks' do
+    ensure_active_sub_nav('Web Hooks')
   end
 
-  Then 'the active sub tab should be Snippets' do
-    ensure_active_sub_tab('Snippets')
-  end
-
-  Then 'the active sub tab should be Edit' do
-    ensure_active_sub_tab('Edit')
-  end
-
-  Then 'the active sub tab should be Hooks' do
-    ensure_active_sub_tab('Hooks')
-  end
-
-  Then 'the active sub tab should be Deploy Keys' do
-    ensure_active_sub_tab('Deploy Keys')
+  Then 'the active sub nav should be Deploy Keys' do
+    ensure_active_sub_nav('Deploy Keys')
   end
 
   # Sub Tabs: Commits

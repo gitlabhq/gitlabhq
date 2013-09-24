@@ -53,31 +53,9 @@
   }
 }
 
-li.merge_request {
-  padding: 10px;
-  img.avatar {
-    width: 32px;
-    margin-top: 1px;
-  }
-  p {
-    padding: 0px;
-    padding-bottom: 2px;
-  }
-}
-
 .merge-in-progress {
   @extend .padded;
   @extend .append-bottom-10;
-}
-
-.label_branch {
-  @include border-radius(4px);
-  padding: 2px 4px;
-  border: none;
-  font-size: 14px;
-  background: #474D57;
-  color: #fff;
-  font-family: 'Menlo', 'Liberation Mono', 'Consolas', 'Courier New', 'andale mono','lucida console',monospace;
 }
 
 .mr_source_commit,
@@ -85,18 +63,7 @@ li.merge_request {
   .commit {
     margin: 0;
     padding: 0;
-    padding: 5px;
-    margin-bottom: 5px;
-    .avatar { position:relative }
-    .row_title {
-      color: #444;
-    }
-    .commit-author-name,
-    .dash,
-    .committed_ago,
-    .browse_code_link_holder {
-      display: none;
-    }
+    padding: 5px 0;
     list-style: none;
     &:hover {
       background: none;
@@ -104,6 +71,48 @@ li.merge_request {
   }
 }
 
-.mr_direction_tip {
-  margin-top:40px
+.label-branch {
+  @include border-radius(4px);
+  padding: 3px 4px;
+  border: none;
+  font-size: 14px;
+  background: #474D57;
+  color: #fff;
+  font-family: $monospace_font;
+  font-weight: normal;
+  overflow: hidden;
+
+  .label-project {
+    @include border-radius-left(4px);
+    padding: 3px 4px;
+    background: #279;
+    position: relative;
+    left: -4px;
+    letter-spacing: -1px;
+  }
+}
+
+.mr-list {
+  .merge-request {
+    padding: 10px;
+    position: relative;
+
+    .merge-request-title {
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .merge-request-info {
+      color: #999;
+    }
+  }
+}
+
+.merge-request-angle {
+  text-align: center;
+  margin: 0;
+}
+
+.merge-request-form-info {
+  padding: 15px 0;
 }

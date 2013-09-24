@@ -2,167 +2,141 @@ class Commit
   include ActiveModel::Conversion
   include StaticModel
   extend ActiveModel::Naming
+  include Mentionable
 
-  # Safe amount of files with diffs in one commit to render
+  attr_mentionable :safe_message
+
+  # Safe amount of changes (files and lines) in one commit to render
   # Used to prevent 500 error on huge commits by suppressing diff
   #
-  DIFF_SAFE_SIZE = 100
+  # User can force display of diff above this size
+  DIFF_SAFE_FILES  = 100
+  DIFF_SAFE_LINES  = 5000
+  # Commits above this size will not be rendered in HTML
+  DIFF_HARD_LIMIT_FILES = 500
+  DIFF_HARD_LIMIT_LINES = 10000
 
-  attr_accessor :commit, :head, :refs
-
-  delegate  :message, :authored_date, :committed_date, :parents, :sha,
-            :date, :committer, :author, :diffs, :tree, :id, :stats,
-            :to_patch, to: :commit
-
-  class << self
-    def find_or_first(repo, commit_id = nil, root_ref)
-      commit = if commit_id
-                 repo.commit(commit_id)
-               else
-                 repo.commits(root_ref).first
-               end
-
-      Commit.new(commit) if commit
-    end
-
-    def fresh_commits(repo, n = 10)
-      commits = repo.heads.map do |h|
-        repo.commits(h.name, n).map { |c| Commit.new(c, h) }
-      end.flatten.uniq { |c| c.id }
-
-      commits.sort! do |x, y|
-        y.committed_date <=> x.committed_date
-      end
-
-      commits[0...n]
-    end
-
-    def commits_with_refs(repo, n = 20)
-      commits = repo.branches.map { |ref| Commit.new(ref.commit, ref) }
-
-      commits.sort! do |x, y|
-        y.committed_date <=> x.committed_date
-      end
-
-      commits[0..n]
-    end
-
-    def commits_since(repo, date)
-      commits = repo.heads.map do |h|
-        repo.log(h.name, nil, since: date).each { |c| Commit.new(c, h) }
-      end.flatten.uniq { |c| c.id }
-
-      commits.sort! do |x, y|
-        y.committed_date <=> x.committed_date
-      end
-
-      commits
-    end
-
-    def commits(repo, ref, path = nil, limit = nil, offset = nil)
-      if path
-        repo.log(ref, path, max_count: limit, skip: offset)
-      elsif limit && offset
-        repo.commits(ref, limit, offset)
-      else
-        repo.commits(ref)
-      end.map{ |c| Commit.new(c) }
-    end
-
-    def commits_between(repo, from, to)
-      repo.commits_between(from, to).map { |c| Commit.new(c) }
-    end
-
-    def compare(project, from, to)
-      result = {
-        commits: [],
-        diffs: [],
-        commit: nil,
-        same: false
-      }
-
-      return result unless from && to
-
-      first = project.repository.commit(to.try(:strip))
-      last = project.repository.commit(from.try(:strip))
-
-      if first && last
-        result[:same] = (first.id == last.id)
-        result[:commits] = project.repo.commits_between(last.id, first.id).map {|c| Commit.new(c)}
-        result[:diffs] = project.repo.diff(last.id, first.id) rescue []
-        result[:commit] = Commit.new(first)
-      end
-
-      result
-    end
+  def self.decorate(commits)
+    commits.map { |c| self.new(c) }
   end
 
-  def initialize(raw_commit, head = nil)
+  # Calculate number of lines to render for diffs
+  def self.diff_line_count(diffs)
+    diffs.reduce(0){|sum, d| sum + d.diff.lines.count}
+  end
+
+  def self.diff_suppress?(diffs, line_count = nil)
+    # optimize - check file count first
+    return true if diffs.size > DIFF_SAFE_FILES
+
+    line_count ||= Commit::diff_line_count(diffs)
+    line_count > DIFF_SAFE_LINES
+  end
+
+  def self.diff_force_suppress?(diffs, line_count = nil)
+    # optimize - check file count first
+    return true if diffs.size > DIFF_HARD_LIMIT_FILES
+
+    line_count ||= Commit::diff_line_count(diffs)
+    line_count > DIFF_HARD_LIMIT_LINES
+  end
+
+  attr_accessor :raw
+
+  def initialize(raw_commit)
     raise "Nil as raw commit passed" unless raw_commit
 
-    @commit = raw_commit
-    @head = head
+    @raw = raw_commit
   end
 
-  def short_id(length = 10)
-    id.to_s[0..length]
+  def id
+    @raw.id
   end
 
-  def safe_message
-    @safe_message ||= message
+  def diff_line_count
+    @diff_line_count ||= Commit::diff_line_count(self.diffs)
+    @diff_line_count
   end
 
-  def created_at
-    committed_date
+  def diff_suppress?
+    Commit::diff_suppress?(self.diffs, diff_line_count)
   end
 
-  def author_email
-    author.email
+  def diff_force_suppress?
+    Commit::diff_force_suppress?(self.diffs, diff_line_count)
   end
 
-  def author_name
-    author.name
-  end
-
-  # Was this commit committed by a different person than the original author?
-  def different_committer?
-    author_name != committer_name || author_email != committer_email
-  end
-
-  def committer_name
-    committer.name
-  end
-
-  def committer_email
-    committer.email
-  end
-
-  def prev_commit
-    @prev_commit ||= if parents.present?
-                       Commit.new(parents.first)
-                     else
-                       nil
-                     end
-  end
-
-  def prev_commit_id
-    prev_commit.try :id
-  end
-
-  # Shows the diff between the commit's parent and the commit.
+  # Returns a string describing the commit for use in a link title
   #
-  # Cuts out the header and stats from #to_patch and returns only the diff.
-  def to_diff
-    # see Grit::Commit#show
-    patch = to_patch
+  # Example
+  #
+  #   "Commit: Alex Denisov - Project git clone panel"
+  def link_title
+    "Commit: #{author_name} - #{title}"
+  end
 
-    # discard lines before the diff
-    lines = patch.split("\n")
-    while !lines.first.start_with?("diff --git") do
-      lines.shift
+  # Returns the commits title.
+  #
+  # Usually, the commit title is the first line of the commit message.
+  # In case this first line is longer than 100 characters, it is cut off
+  # after 80 characters and ellipses (`&hellp;`) are appended.
+  def title
+    title = safe_message
+
+    return no_commit_message if title.blank?
+
+    title_end = title.index(/\n/)
+    if (!title_end && title.length > 100) || (title_end && title_end > 100)
+      title[0..79] << "&hellip;".html_safe
+    else
+      title.split(/\n/, 2).first
     end
-    lines.pop if lines.last =~ /^[\d.]+$/ # Git version
-    lines.pop if lines.last == "-- "      # end of diff
-    lines.join("\n")
+  end
+
+  # Returns the commits description
+  #
+  # cut off, ellipses (`&hellp;`) are prepended to the commit message.
+  def description
+    description = safe_message
+
+    title_end = description.index(/\n/)
+    if (!title_end && description.length > 100) || (title_end && title_end > 100)
+      "&hellip;".html_safe << description[80..-1]
+    else
+      description.split(/\n/, 2)[1].try(:chomp)
+    end
+  end
+
+  # Regular expression that identifies commit message clauses that trigger issue closing.
+  def issue_closing_regex
+    @issue_closing_regex ||= Regexp.new(Gitlab.config.gitlab.issue_closing_pattern)
+  end
+
+  # Discover issues should be closed when this commit is pushed to a project's
+  # default branch.
+  def closes_issues project
+    md = issue_closing_regex.match(safe_message)
+    if md
+      extractor = Gitlab::ReferenceExtractor.new
+      extractor.analyze(md[0])
+      extractor.issues_for(project)
+    else
+      []
+    end
+  end
+
+  # Mentionable override.
+  def gfm_reference
+    "commit #{sha[0..5]}"
+  end
+
+  def method_missing(m, *args, &block)
+    @raw.send(m, *args, &block)
+  end
+
+  def respond_to?(method)
+    return true if @raw.respond_to?(method)
+
+    super
   end
 end

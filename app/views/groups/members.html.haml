@@ -1,0 +1,17 @@
+%h3.page-title
+  Group members
+%p.light
+  Members of group have access to all group projects.
+%hr
+- can_manage_group =  current_user.can? :manage_group, @group
+.ui-box
+  .title
+    %strong #{@group.name}
+    group members
+    %small
+      (#{@members.count})
+  %ul.well-list
+    - @members.each do |member|
+      = render 'users_groups/users_group', member: member, show_controls: can_manage_group
+- if can_manage_group
+  = render "new_group_member"

@@ -1,5 +1,5 @@
 module DashboardHelper
-  def dashboard_filter_path(entity, options={})
+  def filter_path(entity, options={})
     exist_opts = {
       status: params[:status],
       project_id: params[:project_id],
@@ -7,12 +7,9 @@ module DashboardHelper
 
     options = exist_opts.merge(options)
 
-    case entity
-    when 'issue' then
-      dashboard_issues_path(options)
-    when 'merge_request'
-      dashboard_merge_requests_path(options)
-    end
+    path = request.path
+    path << "?#{options.to_param}"
+    path
   end
 
   def entities_per_project project, entity
@@ -27,6 +24,6 @@ module DashboardHelper
               items.opened
             end
 
-    items.where(assignee_id: current_user.id).count
+    items.cared(current_user).count
   end
 end

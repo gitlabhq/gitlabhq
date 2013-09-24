@@ -1,0 +1,15 @@
+%h3.page-title
+  Snippets
+  - if can? current_user, :write_project_snippet, @project
+    = link_to new_project_snippet_path(@project), class: "btn btn-new pull-right", title: "New Snippet" do
+      Add new snippet
+
+%p.light
+  Share code pastes with others out of git repository
+
+%hr
+%ul.bordered-list
+  = render partial: "projects/snippets/snippet", collection: @snippets
+  - if @snippets.empty?
+    %li
+      %h3.nothing_here_message Nothing here.

@@ -4,7 +4,7 @@ module Gitlab
 
       START  = "#!idiff-start!#"
       FINISH = "#!idiff-finish!#"
-    
+
       def processing diff_arr
         indexes = _indexes_of_changed_lines diff_arr
 
@@ -13,6 +13,9 @@ module Gitlab
           second_line = diff_arr[index+2]
           max_length = [first_line.size, second_line.size].max
 
+          # Skip inline diff if empty line was replaced with content
+          next if first_line == "-\n"
+
           first_the_same_symbols = 0
           (0..max_length + 1).each do |i|
             first_the_same_symbols = i - 1
@@ -20,9 +23,19 @@ module Gitlab
               break
             end
           end
+
           first_token = first_line[0..first_the_same_symbols][1..-1]
-          diff_arr[index+1].sub!(first_token, first_token + START)
-          diff_arr[index+2].sub!(first_token, first_token + START)
+          start = first_token + START
+
+          if first_token.empty?
+            # In case if we remove string of spaces in commit
+            diff_arr[index+1].sub!("-", "-" => "-#{START}")
+            diff_arr[index+2].sub!("+", "+" => "+#{START}")
+          else
+            diff_arr[index+1].sub!(first_token, first_token => start)
+            diff_arr[index+2].sub!(first_token, first_token => start)
+          end
+
           last_the_same_symbols = 0
           (1..max_length + 1).each do |i|
             last_the_same_symbols = -i
@@ -60,8 +73,6 @@ module Gitlab
         line.gsub!(FINISH, "</span>")
         line
       end
-    
     end
-
   end
 end

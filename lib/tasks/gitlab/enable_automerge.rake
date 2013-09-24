@@ -1,17 +1,18 @@
 namespace :gitlab do
-  desc "GITLAB | Enable auto merge"
-  task :enable_automerge => :environment do
-    warn_user_is_not_gitlab
+  namespace :satellites do
+    desc "GITLAB | Create satellite repos"
+    task create: :environment do
+      create_satellites
+    end
+  end
 
-    puts "Updating repo permissions ..."
-    Gitlab::Gitolite.new.enable_automerge
-    puts "... #{"done".green}"
-    puts ""
+  def create_satellites
+    warn_user_is_not_gitlab
 
     print "Creating satellites for ..."
     unless Project.count > 0
       puts "skipping, because you have no projects".magenta
-      next
+      return
     end
     puts ""
 
@@ -37,10 +38,5 @@ namespace :gitlab do
         end
       end
     end
-  end
-
-  namespace :satellites do
-    desc "GITLAB | Create satellite repos"
-    task create: 'gitlab:enable_automerge'
   end
 end

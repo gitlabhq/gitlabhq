@@ -6,7 +6,7 @@ production:
   encoding: utf8
   reconnect: false
   database: gitlabhq_production
-  pool: 5
+  pool: 10
   username: root
   password: "secure password"
   # host: localhost

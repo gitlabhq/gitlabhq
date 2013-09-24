@@ -1,12 +1,12 @@
 class EventFilters < Spinach::FeatureSteps
   include SharedAuthentication
-  include SharedPaths 
+  include SharedPaths
   include SharedProject
 
   Then 'I should see push event' do
     page.should have_selector('span.pushed')
   end
-  
+
   Then 'I should not see push event' do
     page.should_not have_selector('span.pushed')
   end
@@ -20,11 +20,11 @@ class EventFilters < Spinach::FeatureSteps
   end
 
   Then 'I should see merge request event' do
-    page.should have_selector('span.merged')
+    page.should have_selector('span.accepted')
   end
 
   And 'I should not see merge request event' do
-    page.should_not have_selector('span.merged')
+    page.should_not have_selector('span.accepted')
   end
 
   And 'this project has push event' do
@@ -45,7 +45,7 @@ class EventFilters < Spinach::FeatureSteps
 
     @event = Event.create(
       project: @project,
-      action: Event::Pushed,
+      action: Event::PUSHED,
       data: data,
       author_id: @user.id
     )
@@ -56,19 +56,19 @@ class EventFilters < Spinach::FeatureSteps
     Event.create(
       project: @project,
       author_id: user.id,
-      action: Event::Joined
+      action: Event::JOINED
     )
   end
 
   And 'this project has merge request event' do
-    merge_request = create :merge_request, author: @user, project: @project
+    merge_request = create :merge_request, author: @user, source_project: @project, target_project: @project
     Event.create(
       project: @project,
-      action: Event::Merged,
+      action: Event::MERGED,
       target_id: merge_request.id,
       target_type: "MergeRequest",
       author_id: @user.id
-    )    
+    )
   end
 
   When 'I click "push" event filter' do

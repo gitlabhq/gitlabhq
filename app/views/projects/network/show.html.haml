@@ -1,0 +1,14 @@
+= render "head"
+.project-network
+  .tip
+    You can move around the graph by using the arrow keys.
+  .network-graph
+    .loading.loading-gray
+
+:javascript
+  new Network({
+    url: '#{project_network_path(@project, @ref, @options.merge(format: :json))}',
+    commit_url: '#{project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")}',
+    ref: '#{@ref}',
+    commit_id: '#{@commit.id}'
+  })

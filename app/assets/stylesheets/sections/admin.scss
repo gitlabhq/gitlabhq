@@ -1,3 +1,21 @@
+/**
+ * Admin area
+ *
+ */
+.admin_dash {
+  .data {
+    a {
+      h1 {
+        line-height: 48px;
+        font-size: 48px;
+        padding: 20px;
+        text-align: center;
+        font-weight: normal;
+      }
+    }
+  }
+}
+
 .admin-filter form {
   label { width: 110px; }
   .controls { margin-left: 130px; }

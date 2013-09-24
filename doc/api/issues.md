@@ -1,6 +1,7 @@
 ## List issues
 
-Get all issues created by authenticed user.
+Get all issues created by authenticated user. This function takes pagination parameters
+`page` and `per_page` to restrict the list of issues.
 
 ```
 GET /issues
@@ -24,7 +25,7 @@ GET /issues
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "closed": true,
+    "state": 'closed',
     "updated_at": "2012-07-02T17:53:12Z",
     "created_at": "2012-07-02T17:53:12Z"
   },
@@ -41,7 +42,7 @@ GET /issues
       "title": "v1.0",
       "description": "",
       "due_date": "2012-07-20",
-      "closed": false,
+      "state": 'reopenend',
       "updated_at": "2012-07-04T13:42:48Z",
       "created_at": "2012-07-04T13:42:48Z"
     },
@@ -61,16 +62,18 @@ GET /issues
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "closed": false,
+    "state": 'opened',
     "updated_at": "2012-07-12T13:43:19Z",
     "created_at": "2012-06-28T12:58:06Z"
   }
 ]
 ```
 
+
 ## List project issues
 
-Get a list of project issues.
+Get a list of project issues. This function accepts pagination parameters `page` and `per_page`
+to return the list of project issues.
 
 ```
 GET /projects/:id/issues
@@ -80,9 +83,10 @@ Parameters:
 
 + `id` (required) - The ID of a project
 
+
 ## Single issue
 
-Get a project issue.
+Gets a single project issue.
 
 ```
 GET /projects/:id/issues/:issue_id
@@ -107,7 +111,7 @@ Parameters:
     "title": "v1.0",
     "description": "",
     "due_date": "2012-07-20",
-    "closed": false,
+    "state": 'closed',
     "updated_at": "2012-07-04T13:42:48Z",
     "created_at": "2012-07-04T13:42:48Z"
   },
@@ -127,15 +131,16 @@ Parameters:
     "blocked": false,
     "created_at": "2012-05-23T08:00:58Z"
   },
-  "closed": false,
+  "state": 'opened',
   "updated_at": "2012-07-12T13:43:19Z",
   "created_at": "2012-06-28T12:58:06Z"
 }
 ```
 
+
 ## New issue
 
-Create a new project issue.
+Creates a new project issue.
 
 ```
 POST /projects/:id/issues
@@ -150,11 +155,10 @@ Parameters:
 + `milestone_id` (optional) - The ID of a milestone to assign issue
 + `labels` (optional) - Comma-separated label names for an issue
 
-Will return created issue with status `201 Created` on success, or `404 Not found` on fail.
 
 ## Edit issue
 
-Update an existing project issue.
+Updates an existing project issue. This function is also used to mark an issue as closed.
 
 ```
 PUT /projects/:id/issues/:issue_id
@@ -169,7 +173,21 @@ Parameters:
 + `assignee_id` (optional) - The ID of a user to assign issue
 + `milestone_id` (optional) - The ID of a milestone to assign issue
 + `labels` (optional) - Comma-separated label names for an issue
-+ `closed` (optional) - The state of an issue (0 = false, 1 = true)
++ `state_event` (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
 
-Will return updated issue with status `200 OK` on success, or `404 Not found` on fail.
+
+## Delete existing issue (**Deprecated**)
+
+The function is deprecated and returns a `405 Method Not Allowed`
+error if called. An issue gets now closed and is done by calling `PUT /projects/:id/issues/:issue_id` with
+parameter `closed` set to 1.
+
+```
+DELETE /projects/:id/issues/:issue_id
+```
+
+Parameters:
+
++ `id` (required) - The project ID
++ `issue_id` (required) - The ID of the issue
 

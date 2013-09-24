@@ -13,7 +13,7 @@ module Gitlab
       # Updates the files content and creates a new commit for it
       #
       # Returns false if the ref has been updated while editing the file
-      # Returns false if commiting the change fails
+      # Returns false if committing the change fails
       # Returns false if pushing from the satellite to Gitolite failed or was rejected
       # Returns true otherwise
       def commit!(content, commit_message, last_commit)
@@ -49,7 +49,7 @@ module Gitlab
       protected
 
       def can_edit?(last_commit)
-        current_last_commit = @project.repository.last_commit_for(ref, file_path).sha
+        current_last_commit = Gitlab::Git::Commit.last_for_path(@project.repository, ref, file_path).sha
         last_commit == current_last_commit
       end
     end

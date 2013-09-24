@@ -1,0 +1,23 @@
+.ui-box
+  .title
+    Profile
+  %ul.well-list
+    %li
+      %span.light Member since
+      %strong= user.created_at.stamp("Aug 21, 2011")
+    - unless user.skype.blank?
+      %li
+        %span.light Skype:
+        %strong= user.skype
+    - unless user.linkedin.blank?
+      %li
+        %span.light LinkedIn:
+        %strong= user.linkedin
+    - unless user.twitter.blank?
+      %li
+        %span.light Twitter:
+        %strong= user.twitter
+    - unless user.bio.blank?
+      %li
+        %span.light Bio:
+        %span= user.bio

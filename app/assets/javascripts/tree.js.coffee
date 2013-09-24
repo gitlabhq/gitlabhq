@@ -1,56 +1,43 @@
-# Code browser tree slider
+class TreeView
+  constructor: ->
+    @initKeyNav()
 
-$ ->
-  if $('#tree-slider').length > 0
+    # Code browser tree slider
+    # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
+    $(".tree-content-holder .tree-item").on 'click', (e) ->
+      if (e.target.nodeName != "A")
+        path = $('.tree-item-file-name a', this).attr('href')
+        Turbolinks.visit(path)
+
     # Show the "Loading commit data" for only the first element
     $('span.log_loading:first').removeClass('hide')
 
-    $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live "click", ->
-      $("#tree-content-holder").hide("slide", { direction: "left" }, 150)
+  initKeyNav: ->
+    li = $("tr.tree-item")
+    liSelected = null
+    $('body').keydown (e) ->
+      if e.which is 40
+        if liSelected
+          next = liSelected.next()
+          if next.length > 0
+            liSelected.removeClass "selected"
+            liSelected = next.addClass("selected")
+        else
+          liSelected = li.eq(0).addClass("selected")
 
-    # Make the entire tree-item row clickable, but not if clicking another link (like a commit message)
-    $("#tree-slider .tree-item").live 'click', (e) ->
-      $('.tree-item-file-name a', this).trigger('click') if (e.target.nodeName != "A")
+        $(liSelected).focus()
+      else if e.which is 38
+        if liSelected
+          next = liSelected.prev()
+          if next.length > 0
+            liSelected.removeClass "selected"
+            liSelected = next.addClass("selected")
+        else
+          liSelected = li.last().addClass("selected")
 
-    # Show/Hide the loading spinner
-    $('#tree-slider .tree-item-file-name a, .breadcrumb a, .project-refs-form').live
-      "ajax:beforeSend": -> $('.tree_progress').addClass("loading")
-      "ajax:complete":   -> $('.tree_progress').removeClass("loading")
+        $(liSelected).focus()
+      else if e.which is 13
+        path = $('.tree-item.selected .tree-item-file-name a').attr('href')
+        Turbolinks.visit(path)
 
-    # Maintain forward/back history while browsing the file tree
-    ((window) ->
-      History = window.History
-      $ = window.jQuery
-      document = window.document
-
-      # Check to see if History.js is enabled for our Browser
-      unless History.enabled
-        return false
-
-      $('#tree-slider .tree-item-file-name a, .breadcrumb li > a').live 'click', (e) ->
-        History.pushState(null, null, decodeURIComponent($(@).attr('href')))
-        return false
-
-      History.Adapter.bind window, 'statechange', ->
-        state = History.getState()
-        window.ajaxGet(state.url)
-    )(window)
-
-  # See if there are lines selected
-  # "#L12" and "#L34-56" supported
-  highlightBlobLines = ->
-    if window.location.hash isnt ""
-      matches = window.location.hash.match(/\#L(\d+)(\-(\d+))?/)
-      first_line = parseInt(matches?[1])
-      last_line = parseInt(matches?[3])
-
-      unless isNaN first_line
-        last_line = first_line if isNaN(last_line)
-        $("#tree-content-holder .highlight .line").removeClass("hll")
-        $("#LC#{line}").addClass("hll") for line in [first_line..last_line]
-        $("#L#{first_line}").ScrollTo()
-
-  # Highlight the correct lines on load
-  highlightBlobLines()
-  # Highlight the correct lines when the hash part of the URL changes
-  $(window).on 'hashchange', highlightBlobLines
+@TreeView = TreeView

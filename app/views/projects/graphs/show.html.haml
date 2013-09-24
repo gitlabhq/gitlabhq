@@ -1,0 +1,34 @@
+.loading-graph
+  %center
+    .loading
+    %h3.page-title Building repository graph.
+    %p Please wait a moment, this page will automatically refresh when ready.
+
+.stat-graph
+  .header.clearfix
+    .pull-right
+      %select
+        %option{:value => "commits"} Commits
+        %option{:value => "additions"} Additions
+        %option{:value => "deletions"} Deletions
+    %h3#date_header.page-title
+    %p.light
+      Commits to #{@project.default_branch}, excluding merge commits. Limited by 6,000 commits
+    %input#brush_change{:type => "hidden"}
+  .graphs
+    #contributors-master
+    #contributors.clearfix
+      %ol.contributors-list.clearfix
+
+:javascript
+  $(".stat-graph").hide();
+
+  $.ajax({
+    type: "GET",
+    url: location.href,
+    complete: function() {
+      $(".stat-graph").fadeIn();
+      $(".loading-graph").hide();
+    },
+    dataType: "script"
+  });

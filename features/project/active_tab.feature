@@ -49,51 +49,38 @@ Feature: Project active tab
 
   Scenario: On Project Home/Show
     Given I visit my project's home page
-    Then the active sub tab should be Show
-    And no other sub tabs should be active
-    And the active main tab should be Home
+    Then the active main tab should be Home
+    And no other main tabs should be active
 
-  Scenario: On Project Home/Team
-    Given I visit my project's home page
+  # Sub Tabs: Settings
+
+  Scenario: On Project Settings/Team
+    Given I visit my project's settings page
     And I click the "Team" tab
-    Then the active sub tab should be Team
-    And no other sub tabs should be active
-    And the active main tab should be Home
+    Then the active sub nav should be Team
+    And no other sub navs should be active
+    And the active main tab should be Settings
 
-  Scenario: On Project Home/Attachments
-    Given I visit my project's home page
-    And I click the "Attachments" tab
-    Then the active sub tab should be Attachments
-    And no other sub tabs should be active
-    And the active main tab should be Home
-
-  Scenario: On Project Home/Snippets
-    Given I visit my project's home page
-    And I click the "Snippets" tab
-    Then the active sub tab should be Snippets
-    And no other sub tabs should be active
-    And the active main tab should be Home
-
-  Scenario: On Project Home/Edit
-    Given I visit my project's home page
+  Scenario: On Project Settings/Edit
+    Given I visit my project's settings page
     And I click the "Edit" tab
-    Then the active sub tab should be Edit
-    And no other sub tabs should be active
-    And the active main tab should be Home
+    Then the active sub nav should be Edit
+    And no other sub navs should be active
+    And the active main tab should be Settings
 
-  Scenario: On Project Home/Hooks
-    Given I visit my project's home page
+  Scenario: On Project Settings/Hooks
+    Given I visit my project's settings page
     And I click the "Hooks" tab
-    Then the active sub tab should be Hooks
-    And no other sub tabs should be active
-    And the active main tab should be Home
+    Then the active sub nav should be Hooks
+    And no other sub navs should be active
+    And the active main tab should be Settings
 
-  Scenario: On Project Home/Deploy Keys
-    Given I visit my project's home page
+  Scenario: On Project Settings/Deploy Keys
+    Given I visit my project's settings page
     And I click the "Deploy Keys" tab
-    Then the active sub tab should be Deploy Keys
-    And no other sub tabs should be active
-    And the active main tab should be Home
+    Then the active sub nav should be Deploy Keys
+    And no other sub navs should be active
+    And the active main tab should be Settings
 
   # Sub Tabs: Commits
 

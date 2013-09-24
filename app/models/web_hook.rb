@@ -28,10 +28,18 @@ class WebHook < ActiveRecord::Base
       WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
+      auth = {
+        username: URI.decode(parsed_url.user),
+        password: URI.decode(parsed_url.password),
+      }
       WebHook.post(post_url,
                    body: data.to_json,
                    headers: {"Content-Type" => "application/json"},
-                   basic_auth: {username: parsed_url.user, password: parsed_url.password})
+                   basic_auth: auth)
     end
+  end
+
+  def async_execute(data)
+    Sidekiq::Client.enqueue(ProjectWebHookWorker, id, data)
   end
 end

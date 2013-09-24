@@ -15,10 +15,6 @@ class DashboardActiveTab < Spinach::FeatureSteps
     ensure_active_main_tab('Merge Requests')
   end
 
-  Then 'the active main tab should be Search' do
-    ensure_active_main_tab('Search')
-  end
-
   Then 'the active main tab should be Help' do
     ensure_active_main_tab('Help')
   end
