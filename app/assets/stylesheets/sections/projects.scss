@@ -79,21 +79,6 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.public-projects {
-  li {
-    .project-title {
-      font-size: 14px;
-      line-height: 2;
-      font-weight: normal;
-    }
-
-    .description {
-      margin-left: 15px;
-      color: #aaa;
-    }
-  }
-}
-
 .my-projects {
   li {
     .project-title {
@@ -110,7 +95,6 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-
 .public-clone {
   background: #333;
   color: #f5f5f5;
@@ -122,4 +106,12 @@ ul.nav.nav-projects-tabs {
 .new-tag-btn {
   position: relative;
   top: -5px;
+}
+
+.public-projects .repo-info {
+  color: #777;
+
+  a {
+    color: #777;
+  }
 }

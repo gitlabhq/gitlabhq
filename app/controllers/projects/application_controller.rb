@@ -20,7 +20,7 @@ class Projects::ApplicationController < ApplicationController
     if current_user
       'projects'
     else
-      'public'
+      'public_projects'
     end
   end
 end

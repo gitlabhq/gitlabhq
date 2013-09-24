@@ -55,10 +55,9 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def show
-    return authenticate_user! unless @project.public
+    return authenticate_user! unless @project.public || current_user
 
     limit = (params[:limit] || 20).to_i
-
     @events = @project.events.recent
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
@@ -70,12 +69,12 @@ class ProjectsController < Projects::ApplicationController
     respond_to do |format|
       format.html do
         if @project.empty_repo?
-          render "projects/empty"
+          render "projects/empty", layout: user_layout
         else
           if current_user
             @last_push = current_user.recent_push(@project.id)
           end
-          render :show, layout: current_user ? "project" : "public"
+          render :show, layout: user_layout
         end
       end
       format.js
@@ -125,5 +124,9 @@ class ProjectsController < Projects::ApplicationController
 
   def set_title
     @title = 'New Project'
+  end
+
+  def user_layout
+    current_user ? "projects" : "public_projects"
   end
 end
