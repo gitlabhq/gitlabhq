@@ -24,12 +24,37 @@ module Gitlab
       end
 
       def update_permissions(user)
+        # Get LDAP user entry
+        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+
+        if Gitlab.config.ldap['sync_ssh_keys']
+          if ldap_user.entry.respond_to?(:sshpublickey)
+            sshkeys = ldap_user.entry.sshpublickey
+          else
+            sshkeys = []
+          end
+          sshkeys.each do |key|
+            k = user.keys.find_by_key(key)
+            if k && !k.is_a?(LDAPKey)
+              k.destroy
+              k = nil
+            end
+            unless k
+              k = LDAPKey.new(title: "LDAP Key", key: key)
+              k.save
+              user.keys << k
+            end
+          end
+          user.keys.all.each do |k|
+            if k.is_a?(LDAPKey) && !sshkeys.include?(k.key)
+              k.destroy
+            end
+          end
+        end
+
         # Skip updating group permissions
         # if instance does not use group_base setting
         return true unless Gitlab.config.ldap['group_base'].present?
-
-        # Get LDAP user entry
-        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
 
         # Get all GitLab groups with activated LDAP
         groups = ::Group.where('ldap_cn IS NOT NULL')

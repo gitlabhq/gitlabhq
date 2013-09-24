@@ -168,6 +168,9 @@ production: &base
     #
     admin_group: ''
 
+    # Allow synchronising SSH public keys with LDAP
+    sync_ssh_keys: false
+
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
