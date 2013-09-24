@@ -11,6 +11,12 @@ Feature: Profile
     Then I change my contact info
     And I should see new contact info
 
+  Scenario: I change my password without old one
+    Given I visit profile account page
+    When I try change my password w/o old one
+    Then I should see a missing password error message
+    And I should be redirected to account page
+
   Scenario: I change my password
     Given I visit profile account page
     Then I change my password
