@@ -120,6 +120,9 @@ gem "underscore-rails", "~> 1.4.4"
 # Sanitize user input
 gem "sanitize"
 
+# Protect against bruteforcing
+gem "rack-attack"
+
 group :assets do
   gem "sass-rails"
   gem "coffee-rails"
