@@ -1,7 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Public Projects"
-  %body{class: "#{app_theme} application", :'data-page' => body_data_page}
+  %body{class: "ui_mars application", :'data-page' => body_data_page}
     - if current_user
       = render "layouts/head_panel", title: "Public Projects"
     - else
@@ -13,7 +13,12 @@
               = link_to public_root_path, class: "home" do
                 %h1 GITLAB
               %span.separator
-            %h1.project_name Public Projects
+            %h1.project_name
+              - if @project
+                = project_title(@project)
+              - else
+                Public Projects
+
             %ul.nav
               %li
                 %a
@@ -21,8 +26,14 @@
                     %i.icon-refresh.icon-spin
                     Loading...
               %li
-                = link_to "Sign in", new_session_path(:user)
+                = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in'
 
-    .container.navless-container
-      .content
-        = yield
+    - if @project
+      %nav.main-nav
+        .container= render 'layouts/nav/project'
+
+      .container
+        .content= yield
+    - else
+      .container.navless-container
+        .content= yield

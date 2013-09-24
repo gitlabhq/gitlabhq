@@ -1,4 +1,5 @@
 class ProjectsController < Projects::ApplicationController
+  skip_before_filter :authenticate_user!, only: [:show]
   skip_before_filter :project, only: [:new, :create]
   skip_before_filter :repository, only: [:new, :create]
 
@@ -54,6 +55,8 @@ class ProjectsController < Projects::ApplicationController
   end
 
   def show
+    return authenticate_user! unless @project.public
+
     limit = (params[:limit] || 20).to_i
 
     @events = @project.events.recent
@@ -69,8 +72,10 @@ class ProjectsController < Projects::ApplicationController
         if @project.empty_repo?
           render "projects/empty"
         else
-          @last_push = current_user.recent_push(@project.id)
-          render :show
+          if current_user
+            @last_push = current_user.recent_push(@project.id)
+          end
+          render :show, layout: current_user ? "project" : "public"
         end
       end
       format.js

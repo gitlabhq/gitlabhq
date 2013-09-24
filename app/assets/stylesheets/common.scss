@@ -382,3 +382,8 @@ table {
   width: 50px;
   min-height: 100px;
 }
+
+.navbar-gitlab .navbar-inner .nav > li .btn-sign-in {
+  @extend .btn-new;
+  padding: 5px 15px;
+}

@@ -5,7 +5,7 @@
     .span3.pull-right
       .pull-right
         - unless @project.empty_repo?
-          - if can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
+          - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
             - if current_user.already_forked?(@project)
               = link_to project_path(current_user.fork_of(@project)), class: 'btn grouped disabled' do
                 %i.icon-code-fork
