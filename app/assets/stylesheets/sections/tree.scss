@@ -13,13 +13,21 @@
   }
 
   .tree-table {
+    @extend .table;
     @include border-radius(0);
-    .tree-item {
-      td {
+
+    tr {
+      td, th {
         padding: 8px 10px;
-        strong {
-          font-weight: normal;
-        }
+        line-height: 20px;
+      }
+      th {
+        font-weight: normal;
+        font-size: 15px;
+        border-bottom: 1px solid #CCC;
+      }
+      td {
+        border-color: #F1F1F1;
       }
       &:hover {
         td {
@@ -29,12 +37,11 @@
         }
         cursor: pointer;
       }
-
       &.selected {
         td {
-          background: $hover;
-          border-top: 1px solid #ADF;
-          border-bottom: 1px solid #ADF;
+          background: #f5f5f5;
+          border-top: 1px solid #EEE;
+          border-bottom: 1px solid #EEE;
         }
       }
     }
@@ -53,21 +60,6 @@
         position: relative;
         top:-1px;
       }
-    }
-  }
-
-  .tree-table {
-    border: none;
-
-    th .btn {
-      margin: -2px -1px;
-      padding: 2px 10px;
-    }
-    td {
-      line-height: 20px;
-      background: #fff;
-      border-left: none;
-      border-right: none;
     }
   }
 
