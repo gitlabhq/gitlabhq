@@ -497,5 +497,5 @@ GET /projects/search/:query
 Parameters:
 
 +   query (required) - A string contained in the project name
-+   per_page (optional) - number of projects to return per page, defaults to 20
-+   offset (optional) - the offset in pages to retrieve
++   per_page (optional) - number of projects to return per page
++   page (optional) - the page to retrieve
