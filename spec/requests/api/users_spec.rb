@@ -71,21 +71,26 @@ describe API::API do
     end
 
     it "should not create user with invalid email" do
-      post api("/users", admin), { email: "invalid email", password: 'password' }
+      post api("/users", admin), { email: "invalid email", password: 'password', name: "T. User", username: "testuser" }
       response.status.should == 400
     end
 
-    it "should return 400 error if password not given" do
-      post api("/users", admin), { email: 'test@example.com' }
+    it "should return 400 error if password or force_random_password not given" do
+      post api("/users", admin), { email: 'test@example.com', name: "T. User", username: "testuser" }
+      response.status.should == 400
+    end
+
+    it "should return 400 error if both password and force_random_password are set" do
+      post api("/users", admin), { password: 'password', force_random_password: '1', email: 'test@example.com', name: "T. User", username: "testuser"   }
       response.status.should == 400
     end
 
     it "should return 400 error if email not given" do
-      post api("/users", admin), { password: 'pass1234' }
+      post api("/users", admin), { password: 'pass1234', name: "T. User", username: "testuser"  }
       response.status.should == 400
     end
 
-    it "shouldn't available for non admin users" do
+    it "shouldn't be available for non admin users" do
       post api("/users", user), attributes_for(:user)
       response.status.should == 403
     end

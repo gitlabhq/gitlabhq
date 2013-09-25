@@ -30,23 +30,43 @@ module API
       # Create user. Available only for admin
       #
       # Parameters:
-      #   email (required)                  - Email
-      #   password (required)               - Password
-      #   name                              - Name
-      #   skype                             - Skype ID
-      #   linkedin                          - Linkedin
-      #   twitter                           - Twitter account
-      #   projects_limit                    - Number of projects user can create
-      #   extern_uid                        - External authentication provider UID
-      #   provider                          - External provider
-      #   bio                               - Bio
+      #   email (required)                                                    - Email
+      #   password (required unless force_random_password is set)             - Password
+      #   name (required)                                                     - Name
+      #   username (required)                                                 - username
+      #   skype                                                               - Skype ID
+      #   linkedin                                                            - Linkedin
+      #   twitter                                                             - Twitter account
+      #   projects_limit                                                      - Number of projects user can create
+      #   extern_uid                                                          - External authentication provider UID
+      #   provider                                                            - External provider
+      #   bio                                                                 - Bio
+      #   expired_password (true/false)                                       - password is set expired
+      #   force_random_password (true/false; required unless password is set) - generate random password for user
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
-        required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
-        user = User.build_user(attrs, as: :admin)
+        required_attributes! [:email, :name, :username]
+
+        attrs = attributes_for_keys [:email, :name, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio]
+
+        #parse password strategy params
+        expired = params[:expired_password] && (params[:expired_password].to_i > 0)
+        force_random =  params[:force_random_password] && (params[:force_random_password].to_i > 0)
+
+        if params[:password] && !force_random
+          attrs[:password] = params[:password]
+        elsif force_random && !params[:password]
+          attrs[:force_random_password] = true
+        else
+          render_api_error!('400 Either password or force_random_password must be set',400)
+
+        attrs[:password_expires_at] = Time.now if expired
+
+        user = User.new attrs, as: :admin
+        user.created_by_id = current_user.id if expired # this is necessary to make the new user notification work correctly.
+
         if user.save
           present user, with: Entities::User
         else
