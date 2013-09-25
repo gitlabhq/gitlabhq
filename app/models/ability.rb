@@ -154,7 +154,7 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if group.users.include?(user)
+      if group.users.include?(user) || user.admin?
         rules << :read_group
       end
 
