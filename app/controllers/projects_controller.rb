@@ -1,7 +1,7 @@
-class ProjectsController < Projects::ApplicationController
+class ProjectsController < ApplicationController
   skip_before_filter :authenticate_user!, only: [:show]
-  skip_before_filter :project, only: [:new, :create]
-  skip_before_filter :repository, only: [:new, :create]
+  before_filter :project, except: [:new, :create]
+  before_filter :repository, except: [:new, :create]
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
