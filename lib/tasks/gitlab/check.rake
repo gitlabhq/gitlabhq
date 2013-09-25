@@ -376,6 +376,7 @@ namespace :gitlab do
       check_repo_base_permissions
       check_update_hook_is_up_to_date
       check_repos_update_hooks_is_link
+      check_gitlab_shell_self_test
 
       finished_checking "GitLab Shell"
     end
@@ -549,6 +550,23 @@ namespace :gitlab do
             fix_and_rerun
           end
         end
+      end
+    end
+
+    def check_gitlab_shell_self_test
+      gitlab_shell_repo_base = File.expand_path('gitlab-shell', gitlab_shell_user_home)
+      check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
+      puts "Running #{check_cmd}"
+      if system(check_cmd, chdir: gitlab_shell_repo_base)
+        puts 'gitlab-shell self-check successful'.green
+      else
+        puts 'gitlab-shell self-check failed'.red
+        try_fixing_it(
+          'Make sure GitLab is running;',
+          'Check the gitlab-shell configuration file:',
+          sudo_gitlab("editor #{File.expand_path('config.yml', gitlab_shell_repo_base)}")
+        )
+        fix_and_rerun
       end
     end
 
