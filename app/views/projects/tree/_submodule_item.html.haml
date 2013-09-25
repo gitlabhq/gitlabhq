@@ -4,7 +4,7 @@
 %tr{ class: "tree-item", url: url }
   %td.tree-item-file-name
     = image_tag "submodule.png"
-    %strong= truncate(name, length: 40)
+    %span= truncate(name, length: 40)
   %td
     %code= submodule_item.id[0..10]
   %td{ colspan: 2 }
