@@ -484,3 +484,18 @@ DELETE /projects/:id/fork
 Parameter:
 
 + `id` (required) - The ID of the project
+
+
+## Search for projects by name
+
+Search for projects by name which are public or the calling user has access to
+
+```
+GET /projects/search/:query
+```
+
+Parameters:
+
++   query (required) - A string contained in the project name
++   per_page (optional) - number of projects to return per page
++   page (optional) - the page to retrieve
