@@ -38,18 +38,22 @@ class PivotaltrackerService < Service
   def execute(push)
     url = 'https://www.pivotaltracker.com/services/v5/source_commits'
     push[:commits].each do |commit|
-      message = {'source_commit' =>
-                  {'commit_id' => commit[:id],
-                   'author' => commit[:author][:name],
-                   'url' => commit[:url],
-                   'message' => commit[:message]}
-                }
-      status = PivotaltrackerService.post(url,
-                     body: message.to_json,
-                     headers: {'Content-Type' => 'application/json',
-                               'X-TrackerToken' => token}
-                    )
+      message = {
+        'source_commit' => {
+          'commit_id' => commit[:id],
+          'author' => commit[:author][:name],
+          'url' => commit[:url],
+          'message' => commit[:message]
+        }
+      }
+      PivotaltrackerService.post(
+        url,
+        body: message.to_json,
+        headers: {
+          'Content-Type' => 'application/json',
+          'X-TrackerToken' => token
+        }
+      )
     end
   end
-
 end
