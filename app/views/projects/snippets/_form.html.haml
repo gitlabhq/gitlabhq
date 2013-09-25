@@ -31,10 +31,10 @@
         = f.submit 'Create snippet', class: "btn-create btn"
       - else
         = f.submit 'Save', class: "btn-save btn"
-      = link_to "Cancel", project_snippets_path(@project), class: " btn btn-cancel"
-      - unless @snippet.new_record?
-        .pull-right= link_to 'Destroy', project_snippet_path(@project, @snippet), confirm: 'Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+      = link_to "Cancel", project_snippets_path(@project), class: "btn btn-cancel"
 
+    - unless @snippet.new_record?
+      = link_to 'Remove snippet', project_snippet_path(@project, @snippet), confirm: 'Are you sure?', method: :delete, class: "btn pull-right btn-remove delete-snippet prepend-left-10", id: "destroy_snippet_#{@snippet.id}"
 
 :javascript
   var editor = ace.edit("editor");
