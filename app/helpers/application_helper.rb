@@ -90,6 +90,8 @@ module ApplicationHelper
   end
 
   def search_autocomplete_source
+    return unless current_user
+
     projects = current_user.authorized_projects.map { |p| { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) } }
     groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
 

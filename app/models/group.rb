@@ -32,6 +32,10 @@ class Group < Namespace
     end
   end
 
+  def add_user(user, group_access)
+    self.users_groups.create(user_id: user.id, group_access: group_access)
+  end
+
   def change_owner(user)
     self.owner = user
     membership = users_groups.where(user_id: user.id).first

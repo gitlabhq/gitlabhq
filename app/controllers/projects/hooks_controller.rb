@@ -1,7 +1,6 @@
 class Projects::HooksController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, only: [:new, :create, :destroy]
+  before_filter :authorize_admin_project!
 
   respond_to :html
 

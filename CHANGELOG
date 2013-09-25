@@ -1,3 +1,6 @@
+v 6.2.0
+  - Public projects are visible from the outside
+
 v 6.1.0
   - Project specific IDs for issues, mr, milestones
     Above items will get a new id and for example all bookmarked issue urls will change.

@@ -1,7 +1,6 @@
 class Projects::TeamMembersController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_admin_project!, except: [:index, :show]
+  before_filter :authorize_admin_project!
 
   layout "project_settings"
 

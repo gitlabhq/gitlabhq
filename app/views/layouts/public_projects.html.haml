@@ -1,0 +1,9 @@
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head", title: @project.name_with_namespace
+  %body{class: "ui_mars application", :'data-page' => body_data_page}
+    = render "layouts/public_head_panel"
+    %nav.main-nav
+      .container= render 'layouts/nav/project'
+    .container
+      .content= yield

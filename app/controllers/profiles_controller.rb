@@ -33,8 +33,8 @@ class ProfilesController < ApplicationController
   end
 
   def update_password
-    params[:user].select! do |key, value|
-      %w(current_password password password_confirmation).include?(key.to_s)
+    password_attributes = params[:user].select do |key, value|
+      %w(password password_confirmation).include?(key.to_s)
     end
 
     unless @user.valid_password?(params[:user][:current_password])
@@ -42,7 +42,7 @@ class ProfilesController < ApplicationController
       return
     end
 
-    if @user.update_attributes(params[:user])
+    if @user.update_attributes(password_attributes)
       flash[:notice] = "Password was successfully updated. Please login with it"
       redirect_to new_user_session_path
     else

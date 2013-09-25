@@ -2,29 +2,40 @@
   .span6
     %h3.page-title
       Projects (#{@projects.total_count})
-      %small with read-only access
+    .light
+      You can browse public projects in read-only mode until signed in.
+
   .span6
     .pull-right
       = form_tag public_projects_path, method: :get, class: 'form-inline' do |f|
         .search-holder
-          .controls
-            = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "span3 search-text-input", id: "projects_search"
-            = submit_tag 'Search', class: "btn btn-primary wide"
-
+          = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "span3 search-text-input", id: "projects_search"
+          = submit_tag 'Search', class: "btn btn-primary wide"
+%hr
 .public-projects
-  %ul.bordered-list
+  %ul.bordered-list.top-list
     - @projects.each do |project|
       %li
-        .project-title
-          %i.icon-share.cgray
-          = link_to public_project_path(project) do
-            %strong= project.name_with_namespace
+        %h4
+          = link_to project_path(project) do
+            = project.name_with_namespace
           .pull-right
             %pre.public-clone git clone #{project.http_url_to_repo}
 
         - if project.description.present?
-          %div.description
+          %p
             = project.description
+
+        .repo-info
+          - unless project.empty_repo?
+            = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
+            &middot;
+            = link_to pluralize(project.repository.branch_names.count, 'branch'), project_branches_path(project)
+            &middot;
+            = link_to pluralize(project.repository.tag_names.count, 'tag'), project_tags_path(project)
+          - else
+            %i.icon-warning-sign
+            Empty repository
     - unless @projects.present?
       %h3.nothing_here_message No public projects
 
