@@ -11,7 +11,6 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
 
   step 'I should see project "Empty Public Project"' do
     page.should have_content "Empty Public Project"
-    puts page.save_page('foo.html')
   end
 
   step 'I should see public project details' do
@@ -24,7 +23,7 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'public project "Community"' do
-    create :project_with_code, name: 'Community', public: true
+    create :project_with_code, name: 'Community', public: true, default_branch: 'master'
   end
 
   step 'public empty project "Empty Public Project"' do
