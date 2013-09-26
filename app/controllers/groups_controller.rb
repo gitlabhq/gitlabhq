@@ -73,15 +73,7 @@ class GroupsController < ApplicationController
   end
 
   def update
-    group_params = params[:group].dup
-    owner_id = group_params.delete(:owner_id)
-
-    if owner_id
-      @group.owner = User.find(owner_id)
-      @group.save
-    end
-
-    if @group.update_attributes(group_params)
+    if @group.update_attributes(params[:group])
       redirect_to @group, notice: 'Group was successfully updated.'
     else
       render action: "edit"
