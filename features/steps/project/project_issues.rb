@@ -58,14 +58,17 @@ class ProjectIssues < Spinach::FeatureSteps
 
   Given 'I fill in issue search with "Release"' do
     fill_in 'issue_search', with: "Release"
+    sleep 0.05
   end
 
   Given 'I fill in issue search with "Bug"' do
     fill_in 'issue_search', with: "Bug"
+    sleep 0.05
   end
 
   And 'I fill in issue search with "0.3"' do
     fill_in 'issue_search', with: "0.3"
+    sleep 0.05
   end
 
   And 'I fill in issue search with "Something"' do
