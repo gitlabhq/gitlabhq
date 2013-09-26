@@ -47,7 +47,6 @@ Feature: Project Issues
     Then I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
 
-
   @javascript
   Scenario: I search all issues
     Given I click link "All"
