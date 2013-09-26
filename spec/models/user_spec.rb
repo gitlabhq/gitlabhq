@@ -130,11 +130,12 @@ describe User do
     before do
       ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
-      @group = create :group, owner: @user
+      @group = create :group
+      @group.add_owner(@user)
     end
 
     it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should include(@user.namespace, @group) }
+    it { @user.namespaces.should include(@user.namespace) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
   end
@@ -144,9 +145,10 @@ describe User do
       ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @user2 = create :user
-      @group = create :group, owner: @user
+      @group = create :group
+      @group.add_owner(@user)
 
-      @group.add_users([@user2.id], UsersGroup::OWNER)
+      @group.add_user(@user2, UsersGroup::OWNER)
     end
 
     it { @user2.several_namespaces?.should be_true }

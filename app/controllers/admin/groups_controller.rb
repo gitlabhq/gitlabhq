@@ -20,9 +20,9 @@ class Admin::GroupsController < Admin::ApplicationController
   def create
     @group = Group.new(params[:group])
     @group.path = @group.name.dup.parameterize if @group.name
-    @group.owner = current_user
 
     if @group.save
+      @group.add_owner(current_user)
       redirect_to [:admin, @group], notice: 'Group was successfully created.'
     else
       render "new"
@@ -30,14 +30,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def update
-    group_params = params[:group].dup
-    owner_id =group_params.delete(:owner_id)
-
-    if owner_id
-      @group.change_owner(User.find(owner_id))
-    end
-
-    if @group.update_attributes(group_params)
+    if @group.update_attributes(params[:group])
       redirect_to [:admin, @group], notice: 'Group was successfully updated.'
     else
       render "edit"

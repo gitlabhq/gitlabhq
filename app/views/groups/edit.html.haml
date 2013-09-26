@@ -10,8 +10,6 @@
           %i.icon-folder-close
           Projects
       %li
-        = link_to 'Transfer', '#tab-transfer', 'data-toggle' => 'tab'
-      %li
         = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
 
   .span10
@@ -64,17 +62,6 @@
                   = link_to 'Remove', project, confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
             - if @group.projects.blank?
               %p.nothing_here_message This group has no projects yet
-
-      .tab-pane#tab-transfer
-        .ui-box.ui-box-danger
-          .title Transfer group
-          .ui-box-body
-            %p
-              Transferring group will cause loss of admin control over group and all child projects
-            = form_for @group do |f|
-              = users_select_tag(:'group[owner_id]')
-              %hr
-              = f.submit 'Transfer group', class: "btn btn-small btn-remove"
 
       .tab-pane#tab-remove
         .ui-box.ui-box-danger

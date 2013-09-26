@@ -31,11 +31,8 @@
 
       .clearfix.light.append-bottom-10
         %span
-          %b Owner:
-          - if group.owner
-            = link_to group.owner_name, admin_user_path(group.owner)
-          - else
-            (deleted)
+          %b Members:
+          %span.badge= group.members.size
         \|
         %span
           %b Projects:

@@ -249,10 +249,10 @@ class Project < ActiveRecord::Base
   end
 
   def owner
-    if namespace
-      namespace_owner
+    if group
+      group
     else
-      creator
+      namespace.try(:owner)
     end
   end
 
@@ -274,10 +274,6 @@ class Project < ActiveRecord::Base
                                  name
                                end
                              end
-  end
-
-  def namespace_owner
-    namespace.try(:owner)
   end
 
   def path_with_namespace
