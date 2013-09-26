@@ -204,7 +204,7 @@ status() {
       printf "The GitLab Sidekiq job dispatcher is \033[31mnot running\033[0m.\n"
   fi
   if [ "$web_status" = "0" -a "$sidekiq_status" = "0" ]; then
-    printf "GitLab and all it's components are \033[32mup and running\033[0m.\n"
+    printf "GitLab and all its components are \033[32mup and running\033[0m.\n"
   fi
 }
 
