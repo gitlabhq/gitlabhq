@@ -85,12 +85,18 @@
     color: #666;
   }
 
-  .last-activity, .owner-info {
+  .last-activity {
     color: #AAA;
     display: block;
     margin-top: 5px;
-    .date, .owner {
+    .date {
       color: #777;
     }
+  }
+}
+
+.group-row {
+  .arrow {
+    padding: 2px 5px;
   }
 }
