@@ -20,6 +20,7 @@ Vagrantfile
 config/gitlab.yml
 config/database.yml
 config/initializers/omniauth.rb
+config/initializers/rack_attack.rb
 config/unicorn.rb
 config/resque.yml
 config/aws.yml
