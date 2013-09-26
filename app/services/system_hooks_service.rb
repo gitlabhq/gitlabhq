@@ -23,13 +23,15 @@ class SystemHooksService
 
     case model
     when Project
+      owner = model.owner
+
       data.merge!({
         name: model.name,
         path: model.path,
         path_with_namespace: model.path_with_namespace,
         project_id: model.id,
-        owner_name: model.owner.name,
-        owner_email: model.owner.email
+        owner_name: owner.name,
+        owner_email: owner.respond_to?(:email) ?  owner.email : nil
       })
     when User
       data.merge!({

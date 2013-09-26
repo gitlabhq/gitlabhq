@@ -21,9 +21,9 @@ class GroupsController < ApplicationController
   def create
     @group = Group.new(params[:group])
     @group.path = @group.name.dup.parameterize if @group.name
-    @group.owner = current_user
 
     if @group.save
+      @group.add_owner(current_user)
       redirect_to @group, notice: 'Group was successfully created.'
     else
       render action: "new"
