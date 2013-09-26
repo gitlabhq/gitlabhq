@@ -20,7 +20,7 @@ class Namespace < ActiveRecord::Base
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
 
-  validates :owner, presence: true
+  validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name, presence: true, uniqueness: true,
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.name_regex,

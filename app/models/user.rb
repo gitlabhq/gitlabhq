@@ -135,7 +135,7 @@ class User < ActiveRecord::Base
       # Remove user from all groups
       user.users_groups.find_each do |membership|
         # skip owned resources
-        next if membership.group.owners.include?(user)
+        next if membership.group.last_owner?(user)
 
         return false unless membership.destroy
       end

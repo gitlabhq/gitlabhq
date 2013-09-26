@@ -79,7 +79,7 @@ class Ability
         rules << project_admin_rules
       end
 
-      if project.group && project.group.owners.include?(user)
+      if project.group && project.group.has_owner?(user)
         rules << project_admin_rules
       end
 
@@ -159,7 +159,7 @@ class Ability
       end
 
       # Only group owner and administrators can manage group
-      if group.owners.include?(user) || user.admin?
+      if group.has_owner?(user) || user.admin?
         rules << [
           :manage_group,
           :manage_namespace
