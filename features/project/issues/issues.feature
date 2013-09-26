@@ -3,6 +3,7 @@ Feature: Project Issues
     Given I sign in as a user
     And I own project "Shop"
     And project "Shop" have "Release 0.4" open issue
+    And project "Shop" have "Tweet feature" open issue
     And project "Shop" have "Release 0.3" closed issue
     And I visit project "Shop" issues page
 
@@ -40,6 +41,7 @@ Feature: Project Issues
     Given I fill in issue search with "Release"
     Then I should see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
+    And I should not see "Tweet feature" in issues
 
   @javascript
   Scenario: I search issue that not exist
