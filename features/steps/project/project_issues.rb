@@ -12,6 +12,10 @@ class ProjectIssues < Spinach::FeatureSteps
     page.should_not have_content "Release 0.3"
   end
 
+  And 'I should not see "Tweet feature" in issues' do
+    page.should_not have_content "Tweet feature"
+  end
+
   Given 'I click link "Closed"' do
     click_link "Closed"
   end
@@ -119,6 +123,14 @@ class ProjectIssues < Spinach::FeatureSteps
     project = Project.find_by_name("Shop")
     create(:issue,
            title: "Release 0.4",
+           project: project,
+           author: project.users.first)
+  end
+
+  And 'project "Shop" have "Tweet feature" open issue' do
+    project = Project.find_by_name("Shop")
+    create(:issue,
+           title: "Tweet feature",
            project: project,
            author: project.users.first)
   end
