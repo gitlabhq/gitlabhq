@@ -225,4 +225,15 @@ describe API::API do
     end
   end
 
+  describe "GET /projects/:id/repository/archive/:sha" do
+    it "should get the archive" do
+      get api("/projects/#{project.id}/repository/archive", user)
+      response.status.should == 200
+    end
+
+    it "should return 404 for invalid sha" do
+      get api("/projects/#{project.id}/repository/archive/?sha=xxx", user)
+      response.status.should == 404
+    end
+  end
 end
