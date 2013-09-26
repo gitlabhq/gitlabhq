@@ -2,6 +2,9 @@
   Group members
 %p.light
   Members of group have access to all group projects.
+  Read more about permissions
+  %strong= link_to "here", help_permissions_path, class: "vlink"
+
 %hr
 - can_manage_group =  current_user.can? :manage_group, @group
 .ui-box
