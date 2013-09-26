@@ -5,10 +5,14 @@ class DashboardController < ApplicationController
   before_filter :event_filter, only: :show
 
   def show
+    # Fetch only 30 projects.
+    # If user needs more - point to Dashboard#projects page
+    @projects_limit = 30
+
     @groups = current_user.authorized_groups.sort_by(&:human_name)
     @has_authorized_projects = @projects.count > 0
     @projects_count = @projects.count
-    @projects = @projects.limit(20)
+    @projects = @projects.limit(@projects_limit)
 
     @events = Event.in_projects(current_user.authorized_projects.pluck(:id))
     @events = @event_filter.apply_filter(@events)
