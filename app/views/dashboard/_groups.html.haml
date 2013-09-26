@@ -14,9 +14,6 @@
             = truncate(group.name, length: 35)
           %span.arrow
             %i.icon-angle-right
-          %span.owner-info
-            %span Owner:
-            %span.owner= group.owner_name
     - if groups.blank?
       %li
         %h3.nothing_here_message You have no groups yet.
