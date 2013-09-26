@@ -6,8 +6,13 @@ describe API::API do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:group1) { create(:group, owner: user1) }
-  let!(:group2) { create(:group, owner: user2) }
+  let!(:group1) { create(:group) }
+  let!(:group2) { create(:group) }
+
+  before do
+    group1.add_owner(user1)
+    group2.add_owner(user2)
+  end
 
   describe "GET /groups" do
     context "when unauthenticated" do
@@ -130,14 +135,19 @@ describe API::API do
     let(:master) { create(:user) }
     let(:guest) { create(:user) }
     let!(:group_with_members) do
-      group = create(:group, owner: owner)
+      group = create(:group)
       group.add_users([reporter.id], UsersGroup::REPORTER)
       group.add_users([developer.id], UsersGroup::DEVELOPER)
       group.add_users([master.id], UsersGroup::MASTER)
       group.add_users([guest.id], UsersGroup::GUEST)
       group
     end
-    let!(:group_no_members) { create(:group, owner: owner) }
+    let!(:group_no_members) { create(:group) }
+
+    before do
+      group_with_members.add_owner owner
+      group_no_members.add_owner owner
+    end
 
     describe "GET /groups/:id/members" do
       context "when authenticated as user that is part or the group" do

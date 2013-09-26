@@ -71,7 +71,6 @@ FactoryGirl.define do
   factory :group do
     sequence(:name) { |n| "group#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
-    owner
     type 'Group'
   end
 
