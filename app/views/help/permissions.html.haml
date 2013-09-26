@@ -1,6 +1,9 @@
 = render layout: 'help/layout' do
   %h3.page-title Permissions
+  %p.light User has different abilities depends on access level he has in particular group or project
+  %hr
 
+  %h4 Project:
   %table.table
     %thead
       %tr
@@ -153,6 +156,53 @@
         %td.permission-x &#10003;
       %tr
         %td Remove project
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+
+  %h4 Group
+  %table.table
+    %thead
+      %tr
+        %th Action
+        %th Guest
+        %th Reporter
+        %th Developer
+        %th Master
+        %th Owner
+    %tbody
+      %tr
+        %td Browse group
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+        %td.permission-x &#10003;
+      %tr
+        %td Edit group
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+      %tr
+        %td Create project in group
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+      %tr
+        %td Manage group members
+        %td
+        %td
+        %td
+        %td
+        %td.permission-x &#10003;
+      %tr
+        %td Remove group
         %td
         %td
         %td
