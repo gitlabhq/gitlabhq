@@ -85,7 +85,6 @@ describe Project do
     it { should respond_to(:execute_hooks) }
     it { should respond_to(:transfer) }
     it { should respond_to(:name_with_namespace) }
-    it { should respond_to(:namespace_owner) }
     it { should respond_to(:owner) }
     it { should respond_to(:path_with_namespace) }
   end
