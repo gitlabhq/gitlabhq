@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130820102832) do
+ActiveRecord::Schema.define(:version => 20130909132950) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -147,8 +147,8 @@ ActiveRecord::Schema.define(:version => 20130820102832) do
     t.text     "note"
     t.string   "noteable_type"
     t.integer  "author_id"
-    t.datetime "created_at",                       :null => false
-    t.datetime "updated_at",                       :null => false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "project_id"
     t.string   "attachment"
     t.string   "line_code"
