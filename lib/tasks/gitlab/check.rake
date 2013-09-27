@@ -663,7 +663,6 @@ namespace :gitlab do
       else
         puts "#{sidekiq_match.length}".red
         try_fixing_it(
-          'Unless you are running another Rails application on this server there should only be one Sidekiq process.',
           'sudo service gitlab stop',
           'sudo pkill -f sidekiq',
           'sleep 10 && sudo pkill -9 -f sidekiq',
@@ -674,7 +673,7 @@ namespace :gitlab do
     end
 
     def sidekiq_process_match
-      run_and_match("ps aux | grep -i sidekiq", /(sidekiq \d+\.\d+\.\d+.+$)/)
+      run_and_match("ps ux | grep -i sidekiq", /(sidekiq \d+\.\d+\.\d+.+$)/)
     end
   end
 
