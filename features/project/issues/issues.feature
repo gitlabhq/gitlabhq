@@ -3,7 +3,7 @@ Feature: Project Issues
     Given I sign in as a user
     And I own project "Shop"
     And project "Shop" have "Release 0.4" open issue
-    And project "Shop" have "Tweet feature" open issue
+    And project "Shop" have "Tweet control" open issue
     And project "Shop" have "Release 0.3" closed issue
     And I visit project "Shop" issues page
 
@@ -38,20 +38,20 @@ Feature: Project Issues
 
   @javascript
   Scenario: I search issue
-    Given I fill in issue search with "Release"
+    Given I fill in issue search with "Re"
     Then I should see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
-    And I should not see "Tweet feature" in issues
+    And I should not see "Tweet control" in issues
 
   @javascript
   Scenario: I search issue that not exist
-    Given I fill in issue search with "Bug"
+    Given I fill in issue search with "Bu"
     Then I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
 
   @javascript
   Scenario: I search all issues
     Given I click link "All"
-    And I fill in issue search with "0.3"
+    And I fill in issue search with ".3"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues

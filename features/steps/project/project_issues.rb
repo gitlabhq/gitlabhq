@@ -12,8 +12,8 @@ class ProjectIssues < Spinach::FeatureSteps
     page.should_not have_content "Release 0.3"
   end
 
-  And 'I should not see "Tweet feature" in issues' do
-    page.should_not have_content "Tweet feature"
+  And 'I should not see "Tweet control" in issues' do
+    page.should_not have_content "Tweet control"
   end
 
   Given 'I click link "Closed"' do
@@ -60,19 +60,16 @@ class ProjectIssues < Spinach::FeatureSteps
     page.should have_content issue.project.name
   end
 
-  Given 'I fill in issue search with "Release"' do
-    fill_in 'issue_search', with: "Release"
-    sleep 0.05
+  Given 'I fill in issue search with "Re"' do
+    fill_in 'issue_search', with: "Re"
   end
 
-  Given 'I fill in issue search with "Bug"' do
-    fill_in 'issue_search', with: "Bug"
-    sleep 0.05
+  Given 'I fill in issue search with "Bu"' do
+    fill_in 'issue_search', with: "Bu"
   end
 
-  And 'I fill in issue search with "0.3"' do
-    fill_in 'issue_search', with: "0.3"
-    sleep 0.05
+  And 'I fill in issue search with ".3"' do
+    fill_in 'issue_search', with: ".3"
   end
 
   And 'I fill in issue search with "Something"' do
@@ -127,10 +124,10 @@ class ProjectIssues < Spinach::FeatureSteps
            author: project.users.first)
   end
 
-  And 'project "Shop" have "Tweet feature" open issue' do
+  And 'project "Shop" have "Tweet control" open issue' do
     project = Project.find_by_name("Shop")
     create(:issue,
-           title: "Tweet feature",
+           title: "Tweet control",
            project: project,
            author: project.users.first)
   end
