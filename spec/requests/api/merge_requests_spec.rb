@@ -2,9 +2,10 @@ require "spec_helper"
 
 describe API::API do
   include ApiHelpers
-
+  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
+  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
   let(:user) { create(:user) }
-  let!(:project) {create(:project_with_code, creator_id: user.id) }
+  let!(:project) {create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
   before {
     project.team << [user, :reporters]

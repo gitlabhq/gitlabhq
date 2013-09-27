@@ -5,7 +5,7 @@
       = @user.name
       - if @user == current_user
         .pull-right
-          = link_to profile_path, class: 'btn btn-small' do
+          = link_to profile_path, class: 'btn' do
             %i.icon-edit
             Edit Profile
       %br
@@ -14,7 +14,7 @@
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     .clearfix
     %hr
-    %h5 User Activity:
+    %h4 User Activity:
     = render @events
   .span4
     = render 'profile', user: @user

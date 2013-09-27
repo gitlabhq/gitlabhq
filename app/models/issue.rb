@@ -7,18 +7,19 @@
 #  assignee_id  :integer
 #  author_id    :integer
 #  project_id   :integer
-#  created_at   :datetime
-#  updated_at   :datetime
+#  created_at   :datetime         not null
+#  updated_at   :datetime         not null
 #  position     :integer          default(0)
 #  branch_name  :string(255)
 #  description  :text
 #  milestone_id :integer
 #  state        :string(255)
+#  iid          :integer
 #
 
 class Issue < ActiveRecord::Base
-
   include Issuable
+  include InternalId
 
   belongs_to :project
   validates :project, presence: true
@@ -55,4 +56,10 @@ class Issue < ActiveRecord::Base
 
   # Both open and reopened issues should be listed as opened
   scope :opened, -> { with_state(:opened, :reopened) }
+
+  # Mentionable overrides.
+
+  def gfm_reference
+    "issue ##{iid}"
+  end
 end

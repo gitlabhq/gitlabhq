@@ -56,12 +56,3 @@
     - @users_projects.each do |users_project|
       - notification = Notification.new(users_project)
       = render 'settings', type: 'project', membership: users_project, notification: notification
-
-
-.save-status-fixed
-  %span.update-success.cgreen.hide
-    %i.icon-ok
-    Saved
-  %span.update-failed.cred.hide
-    %i.icon-remove
-    Failed

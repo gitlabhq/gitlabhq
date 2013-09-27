@@ -9,6 +9,8 @@ coverage/*
 backups/*
 *.swp
 public/uploads/
+.ruby-version
+.ruby-gemset
 .rvmrc
 .rbenv-version
 .directory

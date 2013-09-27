@@ -8,10 +8,6 @@ class Projects::NetworkController < Projects::ApplicationController
   before_filter :require_non_empty_project
 
   def show
-    if @options[:q]
-      @commit = @project.repository.commit(@options[:q]) || @commit
-    end
-
     respond_to do |format|
       format.html
 

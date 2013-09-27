@@ -22,6 +22,7 @@ namespace :gitlab do
       check_tmp_writable
       check_init_script_exists
       check_init_script_up_to_date
+      check_projects_have_namespace
       check_satellites_exist
       check_redis_version
       check_git_version
@@ -374,8 +375,8 @@ namespace :gitlab do
       check_repo_base_is_not_symlink
       check_repo_base_user_and_group
       check_repo_base_permissions
-      check_post_receive_hook_is_up_to_date
-      check_repos_post_receive_hooks_is_link
+      check_update_hook_is_up_to_date
+      check_repos_update_hooks_is_link
 
       finished_checking "GitLab Shell"
     end
@@ -385,10 +386,10 @@ namespace :gitlab do
     ########################
 
 
-    def check_post_receive_hook_is_up_to_date
-      print "post-receive hook up-to-date? ... "
+    def check_update_hook_is_up_to_date
+      print "update hook up-to-date? ... "
 
-      hook_file = "post-receive"
+      hook_file = "update"
       gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
       gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
@@ -479,11 +480,13 @@ namespace :gitlab do
         return
       end
 
-      if File.stat(repo_base_path).uid == uid_for(gitlab_shell_ssh_user) &&
-         File.stat(repo_base_path).gid == gid_for(gitlab_shell_owner_group)
+      uid = uid_for(gitlab_shell_ssh_user)
+      gid = gid_for(gitlab_shell_owner_group)
+      if File.stat(repo_base_path).uid == uid && File.stat(repo_base_path).gid == gid
         puts "yes".green
       else
         puts "no".red
+        puts "  User id for #{gitlab_shell_ssh_user}: #{uid}. Groupd id for #{gitlab_shell_owner_group}: #{gid}".blue
         try_fixing_it(
           "sudo chown -R #{gitlab_shell_ssh_user}:#{gitlab_shell_owner_group} #{repo_base_path}"
         )
@@ -494,10 +497,10 @@ namespace :gitlab do
       end
     end
 
-    def check_repos_post_receive_hooks_is_link
-      print "post-receive hooks in repos are links: ... "
+    def check_repos_update_hooks_is_link
+      print "update hooks in repos are links: ... "
 
-      hook_file = "post-receive"
+      hook_file = "update"
       gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
       gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
@@ -550,6 +553,32 @@ namespace :gitlab do
       end
     end
 
+    def check_projects_have_namespace
+      print "projects have namespace: ... "
+
+      unless Project.count > 0
+        puts "can't check, you have no projects".magenta
+        return
+      end
+      puts ""
+
+      Project.find_each(batch_size: 100) do |project|
+        print "#{project.name_with_namespace.yellow} ... "
+
+        if project.namespace
+          puts "yes".green
+        else
+          puts "no".red
+          try_fixing_it(
+            "Migrate global projects"
+          )
+          for_more_information(
+            "doc/update/5.4-to-6.0.md in section \"#global-projects\""
+          )
+          fix_and_rerun
+        end
+      end
+    end
 
     # Helper methods
     ########################
@@ -657,7 +686,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 7, 0)
+    required_version = Gitlab::VersionInfo.new(1, 7, 1)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "

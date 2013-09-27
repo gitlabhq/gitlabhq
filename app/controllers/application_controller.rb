@@ -96,10 +96,6 @@ class ApplicationController < ActionController::Base
     return access_denied! unless can?(current_user, :push_code, project)
   end
 
-  def authorize_create_team!
-    return access_denied! unless can?(current_user, :create_team, nil)
-  end
-
   def access_denied!
     render "errors/access_denied", layout: "errors", status: 404
   end
@@ -156,7 +152,7 @@ class ApplicationController < ActionController::Base
   end
 
   def check_password_expiration
-    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now
+    if current_user && current_user.password_expires_at && current_user.password_expires_at < Time.now  && !current_user.ldap_user?
       redirect_to new_profile_password_path and return
     end
   end
@@ -168,5 +164,10 @@ class ApplicationController < ActionController::Base
       current_user.last_credential_check_at = Time.now
       current_user.save
     end
+  end
+
+  def event_filter
+    filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
+    @event_filter ||= EventFilter.new(filters)
   end
 end

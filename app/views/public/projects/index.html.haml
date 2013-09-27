@@ -8,7 +8,7 @@
       = form_tag public_projects_path, method: :get, class: 'form-inline' do |f|
         .search-holder
           .controls
-            = search_field_tag :search, params[:search], placeholder: "gitlab-ci", class: "span3 search-text-input", id: "projects_search"
+            = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "span3 search-text-input", id: "projects_search"
             = submit_tag 'Search', class: "btn btn-primary wide"
 
 .public-projects

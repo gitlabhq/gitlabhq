@@ -37,23 +37,23 @@ module IssuesHelper
     end
   end
 
-  def url_for_issue(issue_id)
+  def url_for_issue(issue_iid)
     return "" if @project.nil?
 
     if @project.used_default_issues_tracker?
-      url = project_issue_url project_id: @project, id: issue_id
+      url = project_issue_url project_id: @project, id: issue_iid
     else
       url = Gitlab.config.issues_tracker[@project.issues_tracker]["issues_url"]
-      url.gsub(':id', issue_id.to_s)
+      url.gsub(':id', issue_iid.to_s)
         .gsub(':project_id', @project.id.to_s)
         .gsub(':issues_tracker_id', @project.issues_tracker_id.to_s)
     end
   end
 
-  def title_for_issue(issue_id)
+  def title_for_issue(issue_iid)
     return "" if @project.nil?
 
-    if @project.used_default_issues_tracker? && issue = @project.issues.where(id: issue_id).first
+    if @project.used_default_issues_tracker? && issue = @project.issues.where(iid: issue_iid).first
       issue.title
     else
       ""

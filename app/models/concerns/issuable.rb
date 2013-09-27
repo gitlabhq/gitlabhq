@@ -24,6 +24,7 @@ module Issuable
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
 
+
     delegate :name,
              :email,
              to: :author,
@@ -36,6 +37,8 @@ module Issuable
              prefix: true
 
     attr_accessor :author_id_of_changes
+
+    attr_mentionable :title, :description
   end
 
   module ClassMethods

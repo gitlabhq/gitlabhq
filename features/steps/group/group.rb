@@ -11,7 +11,7 @@ class Groups < Spinach::FeatureSteps
 
   And 'I have group with projects' do
     @group   = create(:group, owner: current_user)
-    @project = create(:project, group: @group)
+    @project = create(:project, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
     @project.team << [current_user, :master]
@@ -67,7 +67,7 @@ class Groups < Spinach::FeatureSteps
   end
 
   When 'I click new group link' do
-    click_link "New Group"
+    click_link "New group"
   end
 
   And 'submit form with new group info' do

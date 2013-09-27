@@ -11,14 +11,14 @@ module Emails
       @note = Note.find(note_id)
       @issue = @note.noteable
       @project = @note.project
-      mail(to: recipient(recipient_id), subject: subject("note for issue ##{@issue.id}"))
+      mail(to: recipient(recipient_id), subject: subject("note for issue ##{@issue.iid}"))
     end
 
     def note_merge_request_email(recipient_id, note_id)
       @note = Note.find(note_id)
       @merge_request = @note.noteable
       @project = @note.project
-      mail(to: recipient(recipient_id), subject: subject("note for merge request !#{@merge_request.id}"))
+      mail(to: recipient(recipient_id), subject: subject("note for merge request !#{@merge_request.iid}"))
     end
 
     def note_wall_email(recipient_id, note_id)

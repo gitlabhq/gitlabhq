@@ -23,7 +23,7 @@
       %li
         merge request:
         = link_to [merge_request.target_project, merge_request] do
-          %span ##{merge_request.id}
+          %span ##{merge_request.iid}
           %strong.term
             = truncate merge_request.title, length: 50
         - if merge_request.for_fork?
@@ -37,7 +37,7 @@
       %li
         issue:
         = link_to [issue.project, issue] do
-          %span ##{issue.id}
+          %span ##{issue.iid}
           %strong.term
             = truncate issue.title, length: 50
         %span.light (#{issue.project.name_with_namespace})

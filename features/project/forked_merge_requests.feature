@@ -4,15 +4,6 @@ Feature: Project Forked Merge Requests
     And I am a member of project "Shop"
     And I have a project forked off of "Shop" called "Forked Shop"
 
-  # TODO: fix
-  #@javascript
-  #Scenario: I can visit the target projects commit for a forked merge request
-    #Given I visit project "Forked Shop" merge requests page
-    #And I click link "New Merge Request"
-    #And I fill out a "Merge Request On Forked Project" merge request
-    #And I follow the target commit link
-    #Then I should see the commit under the forked from project
-
   @javascript
   Scenario: I submit new unassigned merge request to a forked project
     Given I visit project "Forked Shop" merge requests page

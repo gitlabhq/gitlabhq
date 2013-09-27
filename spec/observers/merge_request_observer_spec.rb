@@ -5,15 +5,20 @@ describe MergeRequestObserver do
   let(:assignee) { create :user }
   let(:author) { create :user }
   let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author) }
-  let(:assigned_mr) { create(:merge_request, assignee: assignee, author: author) }
-  let(:unassigned_mr) { create(:merge_request, author: author) }
-  let(:closed_assigned_mr) { create(:closed_merge_request, assignee: assignee, author: author) }
-  let(:closed_unassigned_mr) { create(:closed_merge_request, author: author) }
+  let(:assigned_mr) { create(:merge_request, assignee: assignee, author: author, target_project: create(:project)) }
+  let(:unassigned_mr) { create(:merge_request, author: author, target_project: create(:project)) }
+  let(:closed_assigned_mr) { create(:closed_merge_request, assignee: assignee, author: author, target_project: create(:project)) }
+  let(:closed_unassigned_mr) { create(:closed_merge_request, author: author, target_project: create(:project)) }
 
   before { subject.stub(:current_user).and_return(some_user) }
   before { subject.stub(notification: mock('NotificationService').as_null_object) }
   before { mr_mock.stub(:author_id) }
   before { mr_mock.stub(:target_project) }
+  before { mr_mock.stub(:source_project) }
+  before { mr_mock.stub(:project) }
+  before { mr_mock.stub(:create_cross_references!).and_return(true) }
+  before { Repository.any_instance.stub(commit: nil) }
+
   before(:each) { enable_observers }
   after(:each) { disable_observers }
 
@@ -24,11 +29,20 @@ describe MergeRequestObserver do
       subject.should_receive(:notification)
       subject.after_create(mr_mock)
     end
+
+    it 'creates cross-reference notes' do
+       project = create :project
+       mr_mock.stub(title: "this mr references !#{assigned_mr.id}", project: project)
+       mr_mock.should_receive(:create_cross_references!).with(project, some_user)
+
+       subject.after_create(mr_mock)
+    end
   end
 
   context '#after_update' do
     before(:each) do
       mr_mock.stub(:is_being_reassigned?).and_return(false)
+      mr_mock.stub(:notice_added_references)
     end
 
     it 'is called when a merge request is changed' do
@@ -39,6 +53,12 @@ describe MergeRequestObserver do
         changed.title = 'I changed'
         changed.save
       end
+    end
+
+    it 'checks for new references' do
+      mr_mock.should_receive(:notice_added_references)
+
+      subject.after_update(mr_mock)
     end
 
     context 'a notification' do
@@ -61,13 +81,13 @@ describe MergeRequestObserver do
   context '#after_close' do
     context 'a status "closed"' do
       it 'note is created if the merge request is being closed' do
-        Note.should_receive(:create_status_change_note).with(assigned_mr, assigned_mr.target_project, some_user, 'closed')
+        Note.should_receive(:create_status_change_note).with(assigned_mr, assigned_mr.target_project, some_user, 'closed', nil)
 
         assigned_mr.close
       end
 
       it 'notification is delivered only to author if the merge request is being closed' do
-        Note.should_receive(:create_status_change_note).with(unassigned_mr, unassigned_mr.target_project, some_user, 'closed')
+        Note.should_receive(:create_status_change_note).with(unassigned_mr, unassigned_mr.target_project, some_user, 'closed', nil)
 
         unassigned_mr.close
       end
@@ -77,13 +97,13 @@ describe MergeRequestObserver do
   context '#after_reopen' do
     context 'a status "reopened"' do
       it 'note is created if the merge request is being reopened' do
-        Note.should_receive(:create_status_change_note).with(closed_assigned_mr, closed_assigned_mr.target_project, some_user, 'reopened')
+        Note.should_receive(:create_status_change_note).with(closed_assigned_mr, closed_assigned_mr.target_project, some_user, 'reopened', nil)
 
         closed_assigned_mr.reopen
       end
 
       it 'notification is delivered only to author if the merge request is being reopened' do
-        Note.should_receive(:create_status_change_note).with(closed_unassigned_mr, closed_unassigned_mr.target_project, some_user, 'reopened')
+        Note.should_receive(:create_status_change_note).with(closed_unassigned_mr, closed_unassigned_mr.target_project, some_user, 'reopened', nil)
 
         closed_unassigned_mr.reopen
       end

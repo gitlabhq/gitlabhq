@@ -4,7 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(128)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -13,8 +13,8 @@
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
@@ -139,6 +139,19 @@ describe User do
     it { @user.owned_groups.should == [@group] }
   end
 
+  describe 'group multiple owners' do
+    before do
+      ActiveRecord::Base.observers.enable(:user_observer)
+      @user = create :user
+      @user2 = create :user
+      @group = create :group, owner: @user
+
+      @group.add_users([@user2.id], UsersGroup::OWNER)
+    end
+
+    it { @user2.several_namespaces?.should be_true }
+  end
+
   describe 'namespaced' do
     before do
       ActiveRecord::Base.observers.enable(:user_observer)
@@ -183,31 +196,79 @@ describe User do
     it { User.not_in_project(@project).should include(@user, @project.owner) }
   end
 
-  describe 'normal user' do
-    let(:user) { create(:user, name: 'John Smith') }
+  describe 'user creation' do
+    describe 'normal user' do
+      let(:user) { create(:user, name: 'John Smith') }
 
-    it { user.is_admin?.should be_false }
-    it { user.require_ssh_key?.should be_true }
-    it { user.can_create_group?.should be_true }
-    it { user.can_create_project?.should be_true }
-    it { user.first_name.should == 'John' }
-  end
+      it { user.is_admin?.should be_false }
+      it { user.require_ssh_key?.should be_true }
+      it { user.can_create_group?.should be_true }
+      it { user.can_create_project?.should be_true }
+      it { user.first_name.should == 'John' }
+    end
 
-  describe 'without defaults' do
-    let(:user) { User.new }
-    it "should not apply defaults to user" do
-      user.projects_limit.should == 10
-      user.can_create_group.should == true
-      user.can_create_team.should == true
+    describe 'without defaults' do
+      let(:user) { User.new }
+
+      it "should not apply defaults to user" do
+        user.projects_limit.should == 10
+        user.can_create_group.should be_true
+        user.theme_id.should == Gitlab::Theme::BASIC
+      end
+    end
+    context 'as admin' do
+      describe 'with defaults' do
+        let(:user) { User.build_user({}, as: :admin) }
+
+        it "should apply defaults to user" do
+          user.projects_limit.should == 42
+          user.can_create_group.should be_false
+          user.theme_id.should == Gitlab::Theme::MARS
+        end
+      end
+
+      describe 'with default overrides' do
+        let(:user) { User.build_user({projects_limit: 123, can_create_group: true, can_create_team: true, theme_id: Gitlab::Theme::BASIC}, as: :admin) }
+
+        it "should apply defaults to user" do
+          user.projects_limit.should == 123
+          user.can_create_group.should be_true
+          user.theme_id.should == Gitlab::Theme::BASIC
+        end
+      end
+    end
+
+    context 'as user' do
+      describe 'with defaults' do
+        let(:user) { User.build_user }
+
+        it "should apply defaults to user" do
+          user.projects_limit.should == 42
+          user.can_create_group.should be_false
+          user.theme_id.should == Gitlab::Theme::MARS
+        end
+      end
+
+      describe 'with default overrides' do
+        let(:user) { User.build_user(projects_limit: 123, can_create_group: true, theme_id: Gitlab::Theme::BASIC) }
+
+        it "should apply defaults to user" do
+          user.projects_limit.should == 42
+          user.can_create_group.should be_false
+          user.theme_id.should == Gitlab::Theme::MARS
+        end
+      end
     end
   end
 
-  describe 'with defaults' do
-    let(:user) { User.new.with_defaults }
-    it "should apply defaults to user" do
-      user.projects_limit.should == 42
-      user.can_create_group.should == false
-      user.can_create_team.should == false
+  describe 'by_username_or_id' do
+    let(:user1) { create(:user, username: 'foo') }
+
+    it "should get the correct user" do
+      User.by_username_or_id(user1.id).should == user1
+      User.by_username_or_id('foo').should == user1
+      User.by_username_or_id(-1).should be_nil
+      User.by_username_or_id('bar').should be_nil
     end
   end
 end

@@ -8,13 +8,17 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def show
-    compare = Gitlab::Git::Compare.new(project.repository, params[:from], params[:to])
+    compare = Gitlab::Git::Compare.new(@repository.raw_repository, params[:from], params[:to])
 
     @commits       = compare.commits
     @commit        = compare.commit
     @diffs         = compare.diffs
     @refs_are_same = compare.same
     @line_notes    = []
+
+    diff_line_count = Commit::diff_line_count(@diffs)
+    @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count) && !params[:force_show_diff]
+    @force_suppress_diff = Commit::diff_force_suppress?(@diffs, diff_line_count)
   end
 
   def create

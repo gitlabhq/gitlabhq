@@ -3,9 +3,9 @@
     = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter'
     - if current_user.can_create_project?
       %span.pull-right
-        = link_to new_project_path, class: "btn" do
+        = link_to new_project_path, class: "btn btn-new" do
           %i.icon-plus
-          New Project
+          New project
 
   %ul.well-list.dash-list
     - projects.each do |project|

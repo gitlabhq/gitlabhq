@@ -84,11 +84,16 @@ class Profile < Spinach::FeatureSteps
   end
 
   step "I should receive feedback that the changes were saved" do
-    page.should have_content("Saved")
+    page.should have_content("saved")
   end
 
   step 'my password is expired' do
     current_user.update_attributes(password_expires_at: Time.now - 1.hour)
+  end
+
+  step "I am not an ldap user" do
+    current_user.update_attributes(extern_uid: nil,  provider: '')
+    current_user.ldap_user?.should be_false
   end
 
   step 'I redirected to expired password page' do

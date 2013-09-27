@@ -5,8 +5,8 @@
 #  id                 :integer          not null, primary key
 #  user_id            :integer          not null
 #  project_id         :integer          not null
-#  created_at         :datetime
-#  updated_at         :datetime
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
 #  project_access     :integer          default(0), not null
 #  notification_level :integer          default(3), not null
 #

@@ -34,6 +34,11 @@ Gitlab::Seeder.quiet do
   end
 end
 
+MergeRequest.all.map do |mr|
+  mr.set_iid
+  mr.save
+end
+
 puts 'Load diffs for Merge Requests (it will take some time)...'
 MergeRequest.all.each do |mr|
   mr.reload_code
