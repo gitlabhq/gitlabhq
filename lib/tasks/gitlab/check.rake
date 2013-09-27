@@ -626,6 +626,7 @@ namespace :gitlab do
       start_checking "Sidekiq"
 
       check_sidekiq_running
+      only_one_sidekiq_running
 
       finished_checking "Sidekiq"
     end
@@ -637,7 +638,7 @@ namespace :gitlab do
     def check_sidekiq_running
       print "Running? ... "
 
-      if run_and_match("ps aux | grep -i sidekiq", /sidekiq \d+\.\d+\.\d+.+$/)
+      if sidekiq_process_match
         puts "yes".green
       else
         puts "no".red
@@ -650,6 +651,30 @@ namespace :gitlab do
         )
         fix_and_rerun
       end
+    end
+
+    def only_one_sidekiq_running
+      sidekiq_match = sidekiq_process_match
+      return unless sidekiq_match
+
+      print 'Number of Sidekiq processes ... '
+      if sidekiq_match.length == 1
+        puts '1'.green
+      else
+        puts "#{sidekiq_match.length}".red
+        try_fixing_it(
+          'Unless you are running another Rails application on this server there should only be one Sidekiq process.',
+          'sudo service gitlab stop',
+          'sudo pkill -f sidekiq',
+          'sleep 10 && sudo pkill -9 -f sidekiq',
+          'sudo service gitlab start'
+        )
+        fix_and_rerun
+      end
+    end
+
+    def sidekiq_process_match
+      run_and_match("ps aux | grep -i sidekiq", /(sidekiq \d+\.\d+\.\d+.+$)/)
     end
   end
 
