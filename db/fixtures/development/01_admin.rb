@@ -8,5 +8,6 @@ User.seed(:id, [
     password_confirmation: "5iveL!fe",
     admin: true,
     projects_limit: 100,
+    theme_id: Gitlab::Theme::MARS
   }
 ])

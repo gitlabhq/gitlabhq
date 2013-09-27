@@ -5,91 +5,128 @@
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
 %hr
-- unless current_user.ldap_user?
-  - if Gitlab.config.omniauth.enabled
-    %fieldset
-      %legend Social Accounts
-      .oauth_select_holder
-        %p.hint Tip: Click on icon to activate signin with one of the following services
-        - enabled_social_providers.each do |provider|
-          %span{class: oauth_active_class(provider) }
-            = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
 
 
-  %fieldset.update-password
-    %legend Password
-    = form_for @user, url: update_password_profile_path, method: :put do |f|
-      .padded
-        %p.slead After a successful password update you will be redirected to login page where you should login with your new password
-        -if @user.errors.any?
-          .alert.alert-error
-            %ul
-              - @user.errors.full_messages.each do |msg|
-                %li= msg
+.row
+  .span2
+    %ul.nav.nav-pills.nav-stacked.nav-stacked-menu
+      %li.active
+        = link_to '#tab-token', 'data-toggle' => 'tab' do
+          Private Token
+      %li
+        = link_to '#tab-password', 'data-toggle' => 'tab' do
+          Password
 
-        .control-group
-          = f.label :password
-          .controls= f.password_field :password, required: true
-        .control-group
-          = f.label :password_confirmation
-          .controls
-            = f.password_field :password_confirmation, required: true
-        .control-group
-          .controls
-            = f.submit 'Save password', class: "btn btn-save"
+      - if show_profile_social_tab?
+        %li
+          = link_to '#tab-social', 'data-toggle' => 'tab' do
+            Social Accounts
 
+      - if show_profile_username_tab?
+        %li
+          = link_to '#tab-username', 'data-toggle' => 'tab' do
+            Change Username
 
+      - if show_profile_remove_tab?
+        %li
+          = link_to '#tab-remove', 'data-toggle' => 'tab' do
+            Remove Account
+  .span10
+    .tab-content
+      .tab-pane.active#tab-token
+        %fieldset.update-token
+          %legend
+            Private token
+            %span.cred.pull-right
+              keep it secret!
+          %div
+            = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
+              .data
+                %p.slead
+                  Your private token is used to access application resources without authentication.
+                  %br
+                  It can be used for atom feeds or the API.
+                %p.cgray
+                  - if current_user.private_token
+                    = text_field_tag "token", current_user.private_token, class: "input-xxlarge large_text input-xpadding"
+                    = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token"
+                  - else
+                    %span You don`t have one yet. Click generate to fix it.
+                    = f.submit 'Generate', class: "btn success btn-build-token"
 
-%fieldset.update-token
-  %legend
-    Private token
-    %span.cred.pull-right
-      keep it secret!
-  .padded
-    = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
-      .data
-        %p.slead
-          Your private token is used to access application resources without authentication.
-          %br
-          It can be used for atom feeds or the API.
-        %p.cgray
-          - if current_user.private_token
-            = text_field_tag "token", current_user.private_token, class: "input-xxlarge large_text input-xpadding"
-            = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token"
-          - else
-            %span You don`t have one yet. Click generate to fix it.
-            = f.submit 'Generate', class: "btn success btn-build-token"
+      .tab-pane#tab-password
+        %fieldset.update-password
+          %legend Password
+          = form_for @user, url: update_password_profile_path, method: :put do |f|
+            %div
+              %p.slead After a successful password update you will be redirected to login page where you should login with your new password
+              -if @user.errors.any?
+                .alert.alert-error
+                  %ul
+                    - @user.errors.full_messages.each do |msg|
+                      %li= msg
+              .control-group
+                = f.label :password
+                .controls= f.password_field :password, required: true
+              .control-group
+                = f.label :password_confirmation
+                .controls
+                  = f.password_field :password_confirmation, required: true
+              .control-group
+                .controls
+                  = f.submit 'Save password', class: "btn btn-save"
 
+      - if show_profile_social_tab?
+        .tab-pane#tab-social
+          %fieldset
+            %legend Social Accounts
+            .oauth_select_holder
+              %p.hint Tip: Click on icon to activate signin with one of the following services
+              - enabled_social_providers.each do |provider|
+                %span{class: oauth_active_class(provider) }
+                  = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
 
-- if current_user.can_change_username?
-  %fieldset.update-username
-    %legend
-      Username
-      %small.cred.pull-right
-        Changing your username can have unintended side effects!
-    = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
-      .padded
-        = f.label :username
-        .controls
-          = f.text_field :username, required: true
-          &nbsp;
-          %span.loading-gif.hide= image_tag "ajax_loader.gif"
-          %span.update-success.cgreen.hide
-            %i.icon-ok
-            Saved
-          %span.update-failed.cred.hide
-            %i.icon-remove
-            Failed
-          %ul.cred
-            %li This will change the web URL for personal projects.
-            %li This will change the git path to repositories for personal projects.
-        .controls
-          = f.submit 'Save username', class: "btn btn-save"
+      - if show_profile_username_tab?
+        .tab-pane#tab-username
+          %fieldset.update-username
+            %legend
+              Username
+              %small.cred.pull-right
+                Changing your username can have unintended side effects!
+            = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
+              %div
+              .control-group
+                = f.label :username
+                .controls
+                  = f.text_field :username, required: true
+                  &nbsp;
+                  %span.loading-gif.hide= image_tag "ajax_loader.gif"
+                  %span.update-success.cgreen.hide
+                    %i.icon-ok
+                    Saved
+                  %span.update-failed.cred.hide
+                    %i.icon-remove
+                    Failed
+                  %ul.cred
+                    %li This will change the web URL for personal projects.
+                    %li This will change the git path to repositories for personal projects.
+                .controls
+                  = f.submit 'Save username', class: "btn btn-save"
 
-- if gitlab_config.signup_enabled
-  %fieldset.remove-account
-    %legend
-      Remove account
-      %small.cred.pull-right
-        Before removing the account you must remove all projects!
-    = link_to 'Delete account', user_registration_path, confirm: "REMOVE #{current_user.name}? Are you sure?", method: :delete, class: "btn btn-remove delete-key btn-small pull-right"
+      - if show_profile_remove_tab?
+        .tab-pane#tab-remove
+          %fieldset.remove-account
+            %legend
+              Remove account
+            %div
+              %p Deleting an account has the following effects:
+              %ul
+                %li All user content like authored issues, snippets, comments will be removed
+                - rp = current_user.personal_projects.count
+                - unless rp.zero?
+                  %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+                - if current_user.solo_owned_groups.present?
+                  %li
+                    Next groups will be abandoned. You should transfer or remove them:
+                    %strong #{current_user.solo_owned_groups.map(&:name).join(', ')}
+              = link_to 'Delete account', user_registration_path, confirm: "REMOVE #{current_user.name}? Are you sure?", method: :delete, class: "btn btn-remove"

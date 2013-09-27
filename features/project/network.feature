@@ -34,3 +34,7 @@ Feature: Project Network Graph
     Then page should not have content not cotaining "v2.1.0"
     When click "Show only selected branch" checkbox
     Then page should have content not cotaining "v2.1.0"
+
+  Scenario: I should fail to look for a commit
+    When I look for a commit by ";"
+    Then page status code should be 404

@@ -10,6 +10,7 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  state       :string(255)
+#  iid         :integer
 #
 
 require 'spec_helper'
@@ -25,6 +26,7 @@ describe Milestone do
   end
 
   describe "Validation" do
+    before { subject.stub(set_iid: false) }
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:project) }
   end

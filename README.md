@@ -14,13 +14,11 @@
 
 * powered by Ruby on Rails
 * completely free and open source (MIT license)
-* used by more than 10.000 organizations to keep their code secure
+* used by more than 25.000 organizations to keep their code secure
 
 ### Code status
 
 * [![build status](http://ci.gitlab.org/projects/1/status.png?ref=master)](http://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
-
-* [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq) on travis-ci.org (master branch)
 
 * [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 
@@ -39,11 +37,10 @@
 ### Requirements
 
 * Ubuntu/Debian**
-* ruby 1.9.3
+* ruby 1.9.3+
+* git 1.7.10+
+* redis 2.0+
 * MySQL or PostgreSQL
-* git
-* gitlab-shell
-* redis
 
 ** More details are in the [requirements doc](doc/install/requirements.md)
 
@@ -80,7 +77,7 @@ Since 2011 GitLab is released on the 22nd of every month. Every new release incl
 
 * [Changelog](CHANGELOG)
 
-* Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status ["started"](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
+* Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
 
 ### Run in production mode

@@ -2,40 +2,7 @@
 
 ## Purpose of describing the contributing process
 
-Below we describe the contributing process for two reasons. Contributors know what to expect from maintainers (initial, response within xx days, friendly treatment, etc). And maintainers know what to expect from contributors (use latest version, confirm the issue is addressed, friendly treatment, etc).
-
-## How we handle issues
-
-The priority should be mentioning people that can help and assigning workflow labels. Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to reevaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
-
-If an issue is complex and needs the attention of a specific person, assignment is a good option but assigning issues might discourage other people from contributing to that issue. We need all the contributions we can get so this should never be discouraged. Also, an assigned person might not have time for a few weeks, so others should feel free to takeover. 
-
-Priority (from high to low):
-
-1. Mentioning people (very important)
-2. Workflow labels
-3. Functional labels (less important)
-4. Assigning issues (optional)
-
-## Workflow labels
-
-- _Awaiting feedback_: Feedback pending from the reporter
-- _Awaiting confirmation of fix_: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
-- _Attached PR_: There is a PR attached and the discussion should happen there
-  - We need to let issues stay in sync with the PR's. We can do this with a "Closing #XXXX" or "Fixes #XXXX" comment in the PR. We can't close the issue when there is a pull request because sometimes a PR is not good and we just close the PR, then the issue must stay.
-- _Awaiting developer action/feedback_: Issue needs to be fixed or clarified by a developer
-
-## Functional labels
-
-These labels describe what development specialities are involved such as: PostgreSQL, UX, LDAP.
-
-## Label colors
-- Light orange `#fef2c0`: workflow labels for issue team members (awaiting feedback, awaiting confirmation of fix)
-- Bright orange `#eb6420`: workflow labels for core team members (attached PR, awaiting developer action/feedback)
-- Light blue `#82C5FF`: functional labels
-- Green labels `#009800`: issues that can generally be ignored. For example, issues given the following labels normally can be closed immediately:
-  - Feature request (see copy & paste response: [Feature requests](#feature-requests))
-  - Support (see copy & paste response: [Support requests and configuration questions](#support-requests-and-configuration-questions)
+Below we describe the contributing process to GitLab for two reasons. So that contributors know what to expect from maintainers (possible responses, friendly treatment, etc.). And so that maintainers know what to expect from contributors (use the latest version, ensure that the issue is addressed, friendly treatment, etc.).
 
 ## Common actions
 
@@ -47,8 +14,6 @@ These labels describe what development specialities are involved such as: Postgr
 - Asks for feedback from issue reporter/pull request initiator ([invalid issue reports](#improperly-formatted-issue), [format code](#code-format), etc.)
 - Asks for feedback from the relevant developer(s) based on the [list of members and their specialities](http://gitlab.org/team/)
 - Monitors all issues/pull requests for feedback (but especially ones commented on since automatically watching them):
-- Assigns issues to developers if they indicate they are fixing it
-- Assigns pull requests to developers if they indicate they will take care of merge
 - Closes issues with no feedback from the reporter for two weeks
 - Closes stale pull requests
 
@@ -61,7 +26,44 @@ These labels describe what development specialities are involved such as: Postgr
 - Close fixed issues (via commit messages or manually)
 - Codes [new features](http://feedback.gitlab.com/forums/176466-general/filters/top)!
 - Response guidelines
-- Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (hearth, star, smile, etc.). Some good tips about giving feedback to pull requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+- Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to pull requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+
+## Priorities of the issue team
+
+1. Mentioning people (critical)
+2. Workflow labels (normal)
+3. Functional labels (minor)
+4. Assigning issues (avoid if possible)
+
+## Mentioning people
+
+The most important thing is making sure valid issues receive feedback from the development team. Therefore the priority is mentioning developers that can help on those issue. Please select someone with relevant experience from [GitLab core team](http://gitlab.org/team/). If there is nobody mentioned with that expertise look in the commit history for the affected files to find someone. Avoid mentioning the lead developer, this is the person that is least likely to give a timely response. If the involvement of the lead developer is needed the other core team members will mention this person.
+
+## Workflow labels
+
+Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to reevaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
+
+- _Awaiting feedback_: Feedback pending from the reporter
+- _Awaiting confirmation of fix_: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
+- _Attached PR_: There is a PR attached and the discussion should happen there
+  - We need to let issues stay in sync with the PR's. We can do this with a "Closing #XXXX" or "Fixes #XXXX" comment in the PR. We can't close the issue when there is a pull request because sometimes a PR is not good and we just close the PR, then the issue must stay.
+- _Awaiting developer action/feedback_: Issue needs to be fixed or clarified by a developer
+
+## Functional labels
+
+These labels describe what development specialities are involved such as: PostgreSQL, UX, LDAP.
+
+## Assigning issues
+
+If an issue is complex and needs the attention of a specific person, assignment is a good option but assigning issues might discourage other people from contributing to that issue. We need all the contributions we can get so this should never be discouraged. Also, an assigned person might not have time for a few weeks, so others should feel free to takeover.
+
+## Label colors
+- Light orange `#fef2c0`: workflow labels for issue team members (awaiting feedback, awaiting confirmation of fix)
+- Bright orange `#eb6420`: workflow labels for core team members (attached PR, awaiting developer action/feedback)
+- Light blue `#82C5FF`: functional labels
+- Green labels `#009800`: issues that can generally be ignored. For example, issues given the following labels normally can be closed immediately:
+  - Feature request (see copy & paste response: [Feature requests](#feature-requests))
+  - Support (see copy & paste response: [Support requests and configuration questions](#support-requests-and-configuration-questions)
 
 ## Copy & paste responses
 

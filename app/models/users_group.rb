@@ -2,31 +2,21 @@
 #
 # Table name: users_groups
 #
-#  id           :integer          not null, primary key
-#  group_access :integer          not null
-#  group_id     :integer          not null
-#  user_id      :integer          not null
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  id                 :integer          not null, primary key
+#  group_access       :integer          not null
+#  group_id           :integer          not null
+#  user_id            :integer          not null
+#  created_at         :datetime         not null
+#  updated_at         :datetime         not null
+#  notification_level :integer          default(3), not null
 #
 
 class UsersGroup < ActiveRecord::Base
   include Notifiable
-
-  GUEST     = 10
-  REPORTER  = 20
-  DEVELOPER = 30
-  MASTER    = 40
-  OWNER     = 50
+  include Gitlab::Access
 
   def self.group_access_roles
-    {
-      "Guest"     => GUEST,
-      "Reporter"  => REPORTER,
-      "Developer" => DEVELOPER,
-      "Master"    => MASTER,
-      "Owner"     => OWNER
-    }
+    Gitlab::Access.options_with_owner
   end
 
   attr_accessible :group_access, :user_id
@@ -50,7 +40,7 @@ class UsersGroup < ActiveRecord::Base
 
   delegate :name, :username, :email, to: :user, prefix: true
 
-  def human_access
-    UsersGroup.group_access_roles.key(self.group_access)
+  def access_field
+    group_access
   end
 end

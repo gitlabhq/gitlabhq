@@ -3,6 +3,6 @@
     = link_to "New comment on diff", diffs_project_merge_request_url(@merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")
   - else
     = link_to "New comment", project_merge_request_url(@merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")
-  for Merge Request ##{@merge_request.id}
+  for Merge Request ##{@merge_request.iid}
   %cite "#{truncate(@merge_request.title, length: 20)}"
 = render 'note_message'

@@ -15,6 +15,12 @@
   .tree-table {
     @include border-radius(0);
     .tree-item {
+      td {
+        padding: 8px 10px;
+        strong {
+          font-weight: normal;
+        }
+      }
       &:hover {
         td {
           background: $hover;

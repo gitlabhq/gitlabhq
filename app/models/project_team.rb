@@ -32,7 +32,15 @@ class ProjectTeam
   end
 
   def find_tm(user_id)
-    project.users_projects.find_by_user_id(user_id)
+    tm = project.users_projects.find_by_user_id(user_id)
+
+    # If user is not in project members
+    # we should check for group membership
+    if group && !tm
+      tm = group.users_groups.find_by_user_id(user_id)
+    end
+
+    tm
   end
 
   def add_user(user, access)

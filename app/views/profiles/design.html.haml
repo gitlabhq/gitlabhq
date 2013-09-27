@@ -8,9 +8,6 @@
   %fieldset.application-theme
     %legend
       Application theme
-      .update-feedback.hide
-        %i.icon-ok
-        Saved
     .themes_opts
       = label_tag do
         .prev.default
@@ -42,9 +39,6 @@
   %fieldset.code-preview-theme
     %legend
       Code preview theme
-      .update-feedback.hide
-        %i.icon-ok
-        Saved
     .code_highlight_opts
       - color_schemes.each do |color_scheme_id, color_scheme|
         = label_tag do

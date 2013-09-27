@@ -1,7 +1,7 @@
 %p
   New Issue was created.
 %p
-  = "Issue ##{@issue.id}"
+  = "Issue ##{@issue.iid}"
   = link_to_gfm truncate(@issue.title, length: 45), project_issue_url(@issue.project, @issue), title: @issue.title
 %p
   Author: #{@issue.author_name}

@@ -111,7 +111,7 @@ Create a `git` user for Gitlab:
 
 # 4. GitLab shell
 
-GitLab Shell is a ssh access and repository management software developed specially for GitLab.
+GitLab Shell is an ssh access and repository management software developed specially for GitLab.
 
     # Go to home directory
     cd /home/git
@@ -122,7 +122,7 @@ GitLab Shell is a ssh access and repository management software developed specia
     cd gitlab-shell
 
     # switch to right version
-    sudo -u git -H git checkout v1.7.0
+    sudo -u git -H git checkout v1.7.1
 
     sudo -u git -H cp config.yml.example config.yml
 
@@ -153,10 +153,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 6-0-stable-ee
+    sudo -u git -H git checkout 6-1-stable-ee
 
 **Note:**
-You can change `6-0-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 

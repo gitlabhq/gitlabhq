@@ -110,7 +110,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /#{project.name} \| new issue ##{issue.id} \| #{issue.title}/
+            should have_subject /#{project.name} \| new issue ##{issue.iid} \| #{issue.title}/
           end
 
           it 'contains a link to the new issue' do
@@ -126,7 +126,7 @@ describe Notify do
           it_behaves_like 'a multiple recipients email'
 
           it 'has the correct subject' do
-            should have_subject /changed issue ##{issue.id} \| #{issue.title}/
+            should have_subject /changed issue ##{issue.iid} \| #{issue.title}/
           end
 
           it 'contains the name of the previous assignee' do
@@ -148,7 +148,7 @@ describe Notify do
           subject { Notify.issue_status_changed_email(recipient.id, issue.id, status, current_user) }
 
           it 'has the correct subject' do
-            should have_subject /changed issue ##{issue.id} \| #{issue.title}/i
+            should have_subject /changed issue ##{issue.iid} \| #{issue.title}/i
           end
 
           it 'contains the new status' do
@@ -175,7 +175,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /new merge request !#{merge_request.id}/
+            should have_subject /new merge request !#{merge_request.iid}/
           end
 
           it 'contains a link to the new merge request' do
@@ -199,7 +199,7 @@ describe Notify do
           it_behaves_like 'a multiple recipients email'
 
           it 'has the correct subject' do
-            should have_subject /changed merge request !#{merge_request.id}/
+            should have_subject /changed merge request !#{merge_request.iid}/
           end
 
           it 'contains the name of the previous assignee' do
@@ -250,7 +250,7 @@ describe Notify do
         should have_body_text /#{project.name}/
       end
       it 'contains new user role' do
-        should have_body_text /#{users_project.project_access_human}/
+        should have_body_text /#{users_project.human_access}/
       end
     end
 
@@ -320,7 +320,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for merge request !#{merge_request.id}/
+          should have_subject /note for merge request !#{merge_request.iid}/
         end
 
         it 'contains a link to the merge request note' do
@@ -338,13 +338,33 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /note for issue ##{issue.id}/
+          should have_subject /note for issue ##{issue.iid}/
         end
 
         it 'contains a link to the issue note' do
           should have_body_text /#{note_on_issue_path}/
         end
       end
+    end
+  end
+
+  describe 'group access changed' do
+    let(:group) { create(:group) }
+    let(:user) { create(:user) }
+    let(:membership) { create(:users_group, group: group, user: user) }
+
+    subject { Notify.group_access_granted_email(membership.id) }
+
+    it 'has the correct subject' do
+      should have_subject /access to group was granted/
+    end
+
+    it 'contains name of project' do
+      should have_body_text /#{group.name}/
+    end
+
+    it 'contains new user role' do
+      should have_body_text /#{membership.human_access}/
     end
   end
 end

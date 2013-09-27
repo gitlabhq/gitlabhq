@@ -51,6 +51,10 @@ module SharedProject
     page.should have_content("Features:")
   end
 
+  Then 'page status code should be 404' do
+    page.status_code.should == 404
+  end
+
   def current_project
     @project ||= Project.first
   end

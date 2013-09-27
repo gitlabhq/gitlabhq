@@ -122,7 +122,7 @@ Notes:
 
 How to use:
 
-1. copy your bare repos under git base_path (see `config/gitlab.yml` git_host -> base_path)
+1. copy your bare repos under git repos_path (see `config/gitlab.yml` gitlab_shell -> repos_path)
 2. run the command below
 
 ```

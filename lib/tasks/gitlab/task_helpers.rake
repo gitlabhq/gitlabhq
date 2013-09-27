@@ -80,7 +80,11 @@ namespace :gitlab do
   end
 
   def gid_for(group_name)
-    Etc.getgrnam(group_name).gid
+    begin
+      Etc.getgrnam(group_name).gid
+    rescue ArgumentError # no group
+      "group #{group_name} doesn't exist"
+    end
   end
 
   def warn_user_is_not_gitlab

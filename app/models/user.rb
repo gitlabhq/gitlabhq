@@ -4,7 +4,7 @@
 #
 #  id                     :integer          not null, primary key
 #  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(128)      default(""), not null
+#  encrypted_password     :string(255)      default(""), not null
 #  reset_password_token   :string(255)
 #  reset_password_sent_at :datetime
 #  remember_created_at    :datetime
@@ -13,8 +13,8 @@
 #  last_sign_in_at        :datetime
 #  current_sign_in_ip     :string(255)
 #  last_sign_in_ip        :string(255)
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  name                   :string(255)
 #  admin                  :boolean          default(FALSE), not null
 #  projects_limit         :integer          default(10)
@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
                   :extern_uid, :provider, :password_expires_at,
                   as: [:default, :admin]
 
-  attr_accessible :projects_limit, :can_create_team, :can_create_group,
+  attr_accessible :projects_limit, :can_create_group,
                   as: :admin
 
   attr_accessor :force_random_password
@@ -126,6 +126,17 @@ class User < ActiveRecord::Base
     after_transition any => :blocked do |user, transition|
       # Remove user from all projects and
       user.users_projects.find_each do |membership|
+        # skip owned resources
+        next if membership.project.owner == user
+
+        return false unless membership.destroy
+      end
+
+      # Remove user from all groups
+      user.users_groups.find_each do |membership|
+        # skip owned resources
+        next if membership.group.owners.include?(user)
+
         return false unless membership.destroy
       end
     end
@@ -148,6 +159,7 @@ class User < ActiveRecord::Base
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : scoped }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
+  scope :ldap, -> { where(provider:  'ldap') }
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
@@ -175,24 +187,32 @@ class User < ActiveRecord::Base
       end
     end
 
-    def create_from_omniauth(auth, ldap = false)
-      gitlab_auth.create_from_omniauth(auth, ldap)
-    end
-
-    def find_or_new_for_omniauth(auth)
-      gitlab_auth.find_or_new_for_omniauth(auth)
-    end
-
-    def find_for_ldap_auth(auth, signed_in_resource = nil)
-      gitlab_auth.find_for_ldap_auth(auth, signed_in_resource)
-    end
-
-    def gitlab_auth
-      Gitlab::Auth.new
-    end
-
     def search query
       where("name LIKE :query OR email LIKE :query OR username LIKE :query", query: "%#{query}%")
+    end
+
+    def by_username_or_id(name_or_id)
+      if (name_or_id.is_a?(Integer))
+        User.find_by_id(name_or_id)
+      else
+        User.find_by_username(name_or_id)
+      end
+    end
+
+    def build_user(attrs = {}, options= {})
+      if options[:as] == :admin
+        User.new(defaults.merge(attrs.symbolize_keys), options)
+      else
+        User.new(attrs, options).with_defaults
+      end
+    end
+
+    def defaults
+      {
+        projects_limit: Gitlab.config.gitlab.default_projects_limit,
+        can_create_group: Gitlab.config.gitlab.default_can_create_group,
+        theme_id: Gitlab::Theme::MARS
+      }
     end
   end
 
@@ -202,15 +222,6 @@ class User < ActiveRecord::Base
 
   def to_param
     username
-  end
-
-  def with_defaults
-    tap do |u|
-      u.projects_limit = Gitlab.config.gitlab.default_projects_limit
-      u.can_create_group = Gitlab.config.gitlab.default_can_create_group
-      u.can_create_team = Gitlab.config.gitlab.default_can_create_team
-      u.theme_id = Gitlab::Theme::MARS
-    end
   end
 
   def notification
@@ -323,7 +334,7 @@ class User < ActiveRecord::Base
   end
 
   def several_namespaces?
-    namespaces.many?
+    namespaces.many? || owned_groups.any?
   end
 
   def namespace_id
@@ -373,5 +384,19 @@ class User < ActiveRecord::Base
 
   def requires_ldap_check?
     !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+  end
+
+  def solo_owned_groups
+    @solo_owned_groups ||= owned_groups.select do |group|
+      group.owners == [self]
+    end
+  end
+
+  def with_defaults
+    User.defaults.each do |k, v|
+      self.send("#{k}=", v)
+    end
+
+    self
   end
 end
