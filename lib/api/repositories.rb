@@ -2,6 +2,7 @@ module API
   # Projects API
   class Repositories < Grape::API
     before { authenticate! }
+    before { authorize! :download_code, user_project }
 
     resource :projects do
       helpers do
@@ -44,13 +45,12 @@ module API
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ":id/repository/branches/:branch/protect" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        not_found! unless @branch
-        protected = user_project.protected_branches.find_by_name(@branch.name)
+        authorize_admin_project
 
-        unless protected
-          user_project.protected_branches.create(name: @branch.name)
-        end
+        @branch = user_project.repository.find_branch(params[:branch])
+        not_found! unless @branch
+        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
@@ -63,13 +63,12 @@ module API
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/unprotect
       put ":id/repository/branches/:branch/unprotect" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        not_found! unless @branch
-        protected = user_project.protected_branches.find_by_name(@branch.name)
+        authorize_admin_project
 
-        if protected
-          protected.destroy
-        end
+        @branch = user_project.repository.find_branch(params[:branch])
+        not_found! unless @branch
+        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch.destroy if protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
@@ -92,8 +91,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do
-        authorize! :download_code, user_project
-
         page = (params[:page] || 0).to_i
         per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
@@ -110,7 +107,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha
       get ":id/repository/commits/:sha" do
-        authorize! :download_code, user_project
         sha = params[:sha]
         commit = user_project.repository.commit(sha)
         not_found! "Commit" unless commit
@@ -125,7 +121,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha/diff
       get ":id/repository/commits/:sha/diff" do
-        authorize! :download_code, user_project
         sha = params[:sha]
         result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
         not_found! "Commit" unless result[:commit]
@@ -140,8 +135,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tree
       get ":id/repository/tree" do
-        authorize! :download_code, user_project
-
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
@@ -166,7 +159,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/blobs/:sha
       get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
-        authorize! :download_code, user_project
         required_attributes! [:filepath]
 
         ref = params[:sha]

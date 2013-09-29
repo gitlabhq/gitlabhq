@@ -64,6 +64,10 @@ module API
       end
     end
 
+    def authorize_admin_project
+      authorize! :admin_project, user_project
+    end
+
     def can?(object, action, subject)
       abilities.allowed?(object, action, subject)
     end

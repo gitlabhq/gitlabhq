@@ -8,7 +8,8 @@ describe API::API do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project_with_code, creator_id: user.id) }
-  let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
+  let!(:master) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
+  let!(:guest) { create(:users_project, user: user2, project: project, project_access: UsersProject::GUEST) }
 
   before { project.team << [user, :reporter] }
 
@@ -32,6 +33,11 @@ describe API::API do
       json_response['protected'].should == false
     end
 
+    it "should return a 403 error if guest" do
+      get api("/projects/#{project.id}/repository/branches", user2)
+      response.status.should == 403
+    end
+
     it "should return a 404 error if branch is not available" do
       get api("/projects/#{project.id}/repository/branches/unknown", user)
       response.status.should == 404
@@ -51,6 +57,11 @@ describe API::API do
     it "should return a 404 error if branch not found" do
       put api("/projects/#{project.id}/repository/branches/unknown/protect", user)
       response.status.should == 404
+    end
+
+    it "should return a 403 error if guest" do
+      put api("/projects/#{project.id}/repository/branches/new_design/protect", user2)
+      response.status.should == 403
     end
 
     it "should return success when protect branch again" do
