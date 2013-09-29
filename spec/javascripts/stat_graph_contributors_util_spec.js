@@ -3,10 +3,10 @@ describe("ContributorsStatGraphUtil", function () {
   describe("#parse_log", function () {
     it("returns a correctly parsed log", function () {
       var fake_log = [
-            {author: "Karlo Soriano", date: "2013-05-09", additions: 471},
-            {author: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 6, deletions: 1},
-            {author: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 19, deletions: 3},
-            {author: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 29, deletions: 3}]
+            {author_email: "karlo@email.com", author_name: "Karlo Soriano", date: "2013-05-09", additions: 471},
+            {author_email: "dzaporozhets@email.com", author_name: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 6, deletions: 1},
+            {author_email: "dzaporozhets@email.com", author_name: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 19, deletions: 3},
+            {author_email: "dzaporozhets@email.com", author_name: "Dmitriy Zaporozhets", date: "2013-05-08", additions: 29, deletions: 3}]
       
       var correct_parsed_log = {
         total: [
@@ -15,11 +15,11 @@ describe("ContributorsStatGraphUtil", function () {
         by_author:
         [
         { 
-          author: "Karlo Soriano", 
+          author_name: "Karlo Soriano", author_email: "karlo@email.com",
           "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
         },
         {
-          author: "Dmitriy Zaporozhets",
+          author_name: "Dmitriy Zaporozhets",author_email: "dzaporozhets@email.com",
           "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
         }
         ]
@@ -112,10 +112,10 @@ describe("ContributorsStatGraphUtil", function () {
 
   describe("#add_author", function () {
     it("adds an author field to the collection", function () {
-      var fake_author = "Author"
+      var fake_author = { author_name: "Author", author_email: 'fake@email.com' }
       var fake_collection = {}
       ContributorsStatGraphUtil.add_author(fake_author, fake_collection)
-      expect(fake_collection[fake_author].author).toEqual("Author")
+      expect(fake_collection[fake_author.author_name].author_name).toEqual("Author")
     })
   })
 
@@ -153,30 +153,35 @@ describe("ContributorsStatGraphUtil", function () {
   describe("#get_author_data", function () {
     it("returns the log by author sorted by specified field", function () {
       var fake_parsed_log = {
-      total: [{date: "2013-05-09", additions: 471, deletions: 0, commits: 1},
-      {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}],
-      by_author:[
-      { 
-        author: "Karlo Soriano", 
-        "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
-      },
-      {
-        author: "Dmitriy Zaporozhets",
-        "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+        total: [
+          {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}, 
+          {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+        ],
+        by_author: [
+          { 
+            author_name: "Karlo Soriano", author_email: "karlo@email.com",
+            "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
+          },
+          {
+            author_name: "Dmitriy Zaporozhets", author_email: "dzaporozhets@email.com",
+            "2013-05-08": {date: "2013-05-08", additions: 54, deletions: 7, commits: 3}
+          }
+        ]
       }
-      ]}
-      var correct_author_data = [{author:"Dmitriy Zaporozhets",dates:{"2013-05-08":3},deletions:7,additions:54,"commits":3},
-      {author:"Karlo Soriano",dates:{"2013-05-09":1},deletions:0,additions:471,commits:1}]
+      var correct_author_data = [
+        {author_name:"Dmitriy Zaporozhets",author_email:"dzaporozhets@email.com",dates:{"2013-05-08":3},deletions:7,additions:54,"commits":3},
+        {author_name:"Karlo Soriano",author_email:"karlo@email.com",dates:{"2013-05-09":1},deletions:0,additions:471,commits:1}
+      ]
       expect(ContributorsStatGraphUtil.get_author_data(fake_parsed_log, "commits")).toEqual(correct_author_data)
     })
   })
 
   describe("#parse_log_entry", function () {
     it("adds the corresponding info from the log entry to the author", function () {
-      var fake_log_entry =    { author: "Karlo Soriano", 
+      var fake_log_entry =    { author_name: "Karlo Soriano", author_email: "karlo@email.com",
         "2013-05-09": {date: "2013-05-09", additions: 471, deletions: 0, commits: 1}
       }
-      var correct_parsed_log = {author:"Karlo Soriano",dates:{"2013-05-09":1},deletions:0,additions:471,commits:1}
+      var correct_parsed_log = {author_name:"Karlo Soriano",author_email:"karlo@email.com",dates:{"2013-05-09":1},deletions:0,additions:471,commits:1}
       expect(ContributorsStatGraphUtil.parse_log_entry(fake_log_entry, 'commits', null)).toEqual(correct_parsed_log)
     })
   })
