@@ -62,6 +62,25 @@ describe API::API do
       new_user.can_create_group.should == true
     end
 
+    it "should create non-admin user" do
+      post api('/users', admin), attributes_for(:user, admin: false, can_create_group: false)
+      response.status.should == 201
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      new_user.should_not == nil
+      new_user.admin.should == false
+      new_user.can_create_group.should == false
+    end
+
+    it "should create non-admin users by default" do
+      post api('/users', admin), attributes_for(:user)
+      response.status.should == 201
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      new_user.should_not == nil
+      new_user.admin.should == false
+    end
+
     it "should return 201 Created on success" do
       post api("/users", admin), attributes_for(:user, projects_limit: 3)
       response.status.should == 201
