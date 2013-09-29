@@ -70,11 +70,11 @@ module Gitlab
     config.assets.version = '1.0'
 
     # Uncomment and customize the last line to run in a non-root path
-    # WARNING: This feature is no longer supported
+    # WARNING: This feature is known to work, but unsupported
     # Note that three settings need to be changed for this to work.
     # 1) In your application.rb file: config.relative_url_root = "/gitlab"
     # 2) In your gitlab.yml file: relative_url_root: /gitlab
-    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT']
+    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
     #
     # config.relative_url_root = "/gitlab"
   end
