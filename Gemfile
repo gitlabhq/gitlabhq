@@ -165,7 +165,7 @@ group :development, :test do
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
-  gem "pry"
+  gem "pry-rails"
   gem "awesome_print"
   gem "database_cleaner"
   gem "launchy"
