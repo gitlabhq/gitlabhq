@@ -1,5 +1,3 @@
-require "grit"
-
 module Network
   class Commit
     include ActionView::Helpers::TagHelper
