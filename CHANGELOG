@@ -1,5 +1,17 @@
 v 6.2.0
   - Public projects are visible from the outside
+  - Add group access to permissions page
+  - Require current password to change one
+  - Group owner or admin can remove other group owners
+  - Remove group transfer since we have multiple owners
+  - Respect authorization in Repository API
+  - Improve UI for Project#files page
+  - Add more security specs
+  - Added search for projects by name to api (Izaak Alpert)
+  - Make default user theme configurable (Izaak Alpert)
+  - Update logic for validates_merge_request for tree of MR (Andrew Kumanyaev)
+  - Rake tasks for web hooks management (Jonhnny Weslley)
+  - Extended User API to expose admin and can_create_group for user creation/updating (Boyan Tabakov)
 
 v 6.1.0
   - Project specific IDs for issues, mr, milestones
