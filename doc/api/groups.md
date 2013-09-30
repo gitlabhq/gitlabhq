@@ -54,7 +54,7 @@ POST  /groups/:id/projects/:project_id
 
 Parameters:
 + `id` (required) - The ID of a group
-+ `project_id (required) - The ID of a project
++ `project_id` (required) - The ID of a project
 
 
 ## Group members
