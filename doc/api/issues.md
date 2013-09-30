@@ -25,7 +25,7 @@ GET /issues
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "state": 'closed',
+    "state": "closed",
     "updated_at": "2012-07-02T17:53:12Z",
     "created_at": "2012-07-02T17:53:12Z"
   },
@@ -42,7 +42,7 @@ GET /issues
       "title": "v1.0",
       "description": "",
       "due_date": "2012-07-20",
-      "state": 'reopenend',
+      "state": "reopenend",
       "updated_at": "2012-07-04T13:42:48Z",
       "created_at": "2012-07-04T13:42:48Z"
     },
@@ -62,7 +62,7 @@ GET /issues
       "blocked": false,
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "state": 'opened',
+    "state": "opened",
     "updated_at": "2012-07-12T13:43:19Z",
     "created_at": "2012-06-28T12:58:06Z"
   }
@@ -111,7 +111,7 @@ Parameters:
     "title": "v1.0",
     "description": "",
     "due_date": "2012-07-20",
-    "state": 'closed',
+    "state": "closed",
     "updated_at": "2012-07-04T13:42:48Z",
     "created_at": "2012-07-04T13:42:48Z"
   },
@@ -131,7 +131,7 @@ Parameters:
     "blocked": false,
     "created_at": "2012-05-23T08:00:58Z"
   },
-  "state": 'opened',
+  "state": "opened",
   "updated_at": "2012-07-12T13:43:19Z",
   "created_at": "2012-06-28T12:58:06Z"
 }
@@ -190,4 +190,3 @@ Parameters:
 
 + `id` (required) - The project ID
 + `issue_id` (required) - The ID of the issue
-
