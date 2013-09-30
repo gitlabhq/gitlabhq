@@ -24,8 +24,6 @@
 #  import_url             :string(255)
 #
 
-require "grit"
-
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   extend Enumerize
