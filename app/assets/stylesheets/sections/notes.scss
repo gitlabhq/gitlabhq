@@ -135,11 +135,15 @@ ul.notes {
       background-color: $white;
       border-width: 1px 0;
       padding-top: 0;
+
+      li {
+        padding: 5px;
+      }
     }
   }
 
   .reply-btn {
-    margin-top: 8px;
+    margin: 5px;
   }
 }
 
