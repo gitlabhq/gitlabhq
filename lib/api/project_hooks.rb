@@ -2,6 +2,7 @@ module API
   # Projects API
   class ProjectHooks < Grape::API
     before { authenticate! }
+    before { authorize_admin_project }
 
     resource :projects do
       helpers do
@@ -20,7 +21,6 @@ module API
       # Example Request:
       #   GET /projects/:id/hooks
       get ":id/hooks" do
-        authorize! :admin_project, user_project
         @hooks = paginate user_project.hooks
         present @hooks, with: Entities::Hook
       end
@@ -33,7 +33,6 @@ module API
       # Example Request:
       #   GET /projects/:id/hooks/:hook_id
       get ":id/hooks/:hook_id" do
-        authorize! :admin_project, user_project
         @hook = user_project.hooks.find(params[:hook_id])
         present @hook, with: Entities::Hook
       end
@@ -47,7 +46,6 @@ module API
       # Example Request:
       #   POST /projects/:id/hooks
       post ":id/hooks" do
-        authorize! :admin_project, user_project
         required_attributes! [:url]
 
         @hook = user_project.hooks.new({"url" => params[:url]})
@@ -71,7 +69,6 @@ module API
       #   PUT /projects/:id/hooks/:hook_id
       put ":id/hooks/:hook_id" do
         @hook = user_project.hooks.find(params[:hook_id])
-        authorize! :admin_project, user_project
         required_attributes! [:url]
 
         attrs = attributes_for_keys [:url]
@@ -93,7 +90,6 @@ module API
       # Example Request:
       #   DELETE /projects/:id/hooks/:hook_id
       delete ":id/hooks/:hook_id" do
-        authorize! :admin_project, user_project
         required_attributes! [:hook_id]
 
         begin
