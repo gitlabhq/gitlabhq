@@ -1,6 +1,6 @@
 # Select Version to Install
 Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
-this should be the highest numbered stable branch (example shown below). 
+this should be the highest numbered stable branch (example shown below).
 
 ![capture](https://f.cloud.github.com/assets/1192780/564911/2f9f3e1e-c5b7-11e2-9f89-98e527d1adec.png)
 
@@ -78,7 +78,7 @@ Make sure you have the right version of Python installed.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install -y postfix 
+	sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
@@ -221,7 +221,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
     sudo -u git -H editor config/database.yml
-    
+
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
 
@@ -232,10 +232,10 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without ... postgres")
-    sudo -u git -H bundle install --deployment --without development test postgres aws
+    sudo -u git -H bundle install --deployment --without development test mysql aws
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
-    sudo -u git -H bundle install --deployment --without development test mysql aws
+    sudo -u git -H bundle install --deployment --without development test postgres aws
 
 
 ## Initialize Database and Activate Advanced Features
@@ -367,7 +367,7 @@ These steps are fairly general and you will need to figure out the exact details
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example) as a reference)
 
 * Add the gem to your [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile)
-                `gem "omniauth-your-auth-provider"` 
+                `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
 		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
 
