@@ -52,6 +52,35 @@ describe API::API do
       }.to change { User.count }.by(1)
     end
 
+    it "should create user with correct attributes" do
+      post api('/users', admin), attributes_for(:user, admin: true, can_create_group: true)
+      response.status.should == 201
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      new_user.should_not == nil
+      new_user.admin.should == true
+      new_user.can_create_group.should == true
+    end
+
+    it "should create non-admin user" do
+      post api('/users', admin), attributes_for(:user, admin: false, can_create_group: false)
+      response.status.should == 201
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      new_user.should_not == nil
+      new_user.admin.should == false
+      new_user.can_create_group.should == false
+    end
+
+    it "should create non-admin users by default" do
+      post api('/users', admin), attributes_for(:user)
+      response.status.should == 201
+      user_id = json_response['id']
+      new_user = User.find(user_id)
+      new_user.should_not == nil
+      new_user.admin.should == false
+    end
+
     it "should return 201 Created on success" do
       post api("/users", admin), attributes_for(:user, projects_limit: 3)
       response.status.should == 201
@@ -135,6 +164,8 @@ describe API::API do
   end
 
   describe "PUT /users/:id" do
+    let!(:admin_user) { create(:admin) }
+
     before { admin }
 
     it "should update user with new bio" do
@@ -142,6 +173,21 @@ describe API::API do
       response.status.should == 200
       json_response['bio'].should == 'new test bio'
       user.reload.bio.should == 'new test bio'
+    end
+
+    it "should update admin status" do
+      put api("/users/#{user.id}", admin), {admin: true}
+      response.status.should == 200
+      json_response['is_admin'].should == true
+      user.reload.admin.should == true
+    end
+
+    it "should not update admin status" do
+      put api("/users/#{admin_user.id}", admin), {can_create_group: false}
+      response.status.should == 200
+      json_response['is_admin'].should == true
+      admin_user.reload.admin.should == true
+      admin_user.can_create_group.should == false
     end
 
     it "should not allow invalid update" do
@@ -228,7 +274,6 @@ describe API::API do
       response.status.should == 200
       json_response['email'].should == user.email
       json_response['is_admin'].should == user.is_admin?
-      json_response['can_create_team'].should == user.can_create_team?
       json_response['can_create_project'].should == user.can_create_project?
       json_response['can_create_group'].should == user.can_create_group?
     end
