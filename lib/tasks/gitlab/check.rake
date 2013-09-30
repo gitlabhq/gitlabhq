@@ -169,7 +169,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo -u gitlab -H bundle exec rake db:migrate"
+          "sudo -u gitlab -H bundle exec rake db:migrate RAILS_ENV=production"
         )
         fix_and_rerun
       end
@@ -194,7 +194,7 @@ namespace :gitlab do
         else
           puts "no".red
           try_fixing_it(
-            "sudo -u gitlab -H bundle exec rake gitlab:satellites:create",
+            "sudo -u gitlab -H bundle exec rake gitlab:satellites:create RAILS_ENV=production",
             "If necessary, remove the tmp/repo_satellites directory ...",
             "... and rerun the above command"
           )
@@ -785,7 +785,7 @@ namespace :gitlab do
         else
           puts "wrong or missing".red
           try_fixing_it(
-            "sudo -u gitlab -H bundle exec rake gitlab:gitolite:update_repos"
+            "sudo -u gitlab -H bundle exec rake gitlab:gitolite:update_repos RAILS_ENV=production"
           )
           for_more_information(
             "doc/raketasks/maintenance.md"
