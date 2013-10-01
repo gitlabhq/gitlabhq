@@ -76,7 +76,7 @@
                 = f.label :ldap_cn do
                   LDAP Group cn
                 .controls
-                  = f.text_field :ldap_cn, placeholder: "Ex. QA group", class: "xxlarge left"
+                  = f.hidden_field :ldap_cn, placeholder: "Ex. QA group", class: "xxlarge ajax-ldap-groups-select"
 
               .control-group
                 = f.label :ldap_access do

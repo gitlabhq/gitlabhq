@@ -136,5 +136,9 @@ module API
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
     end
+
+    class LdapGroup < Grape::Entity
+      expose :cn
+    end
   end
 end
