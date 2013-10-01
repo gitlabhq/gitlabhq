@@ -8,7 +8,7 @@ class Projects::RawController < Projects::ApplicationController
   before_filter :require_non_empty_project
 
   def show
-    @blob = Gitlab::Git::Blob.find(@repository, @commit.id, @path)
+    @blob = @repository.blob_at(@commit.id, @path)
 
     if @blob
       type = if @blob.mime_type =~ /html|javascript/

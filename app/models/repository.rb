@@ -155,4 +155,8 @@ class Repository
 
     super
   end
+
+  def blob_at(sha, path)
+    Gitlab::Git::Blob.find(self, sha, path)
+  end
 end
