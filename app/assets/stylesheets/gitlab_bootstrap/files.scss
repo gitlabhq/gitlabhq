@@ -69,6 +69,12 @@
 
     }
 
+    &.blob-no-preview {
+      background: #eee;
+      text-shadow: 0 1px 2px #FFF;
+      padding: 100px 0;
+    }
+
     /**
      *  Blame file
      */

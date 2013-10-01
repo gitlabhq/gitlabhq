@@ -107,6 +107,8 @@ module ExtractsPath
       @commit = @repo.commit(@options[:extended_sha1])
     end
 
+    raise InvalidPathError unless @commit
+
     @hex_path = Digest::SHA1.hexdigest(@path)
     @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
