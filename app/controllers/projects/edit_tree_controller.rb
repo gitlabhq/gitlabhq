@@ -32,9 +32,9 @@ class Projects::EditTreeController < Projects::ApplicationController
   private
 
   def edit_requirements
-    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
+    @blob = Gitlab::Git::Blob.find(@repository, @commit.id, @path)
 
-    unless @blob.exists? && @blob.text?
+    unless @blob
       redirect_to project_blob_path(@project, @id), notice: "You can only edit text files"
     end
 
