@@ -69,6 +69,16 @@ module Gitlab
           }
         end
 
+        if config['user_filter'].present?
+          user_filter = Net::LDAP::Filter.construct(config['user_filter'])
+
+          options[:filter] = if options[:filter]
+                               Net::LDAP::Filter.join(options[:filter], user_filter)
+                             else
+                               user_filter
+                             end
+        end
+
         entries = ldap.search(options).select do |entry|
           entry.respond_to? config.uid
         end

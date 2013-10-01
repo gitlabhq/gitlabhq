@@ -114,6 +114,12 @@ production: &base
     #
     base: ''
 
+    # Filter LDAP users
+    #
+    #   Ex. (employeeType=developer)
+    #
+    user_filter: ''
+
     # Base where we can search for groups
     #
     #   Ex. ou=Groups,dc=gitlab,dc=example

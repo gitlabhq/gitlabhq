@@ -159,15 +159,24 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.ldap_user? && current_user.requires_ldap_check?
-      Gitlab::LDAP::Access.new.update_permissions(current_user)
-
-      current_user.last_credential_check_at = Time.now
-      current_user.save
+      if gitlab_ldap_access.allowed?(current_user)
+        gitlab_ldap_access.update_permissions(current_user)
+        current_user.last_credential_check_at = Time.now
+        current_user.save
+      else
+        sign_out current_user
+        flash[:alert] = "Access denied for your LDAP account."
+        redirect_to new_user_session_path
+      end
     end
   end
 
   def event_filter
     filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
+  end
+
+  def gitlab_ldap_access
+    Gitlab::LDAP::Access.new
   end
 end
