@@ -67,9 +67,9 @@ module TreeHelper
   end
 
   def tree_breadcrumbs(tree, max_links = 2)
-    if tree.path
+    if @path.present?
       part_path = ""
-      parts = tree.path.split("\/")
+      parts = @path.split("\/")
 
       yield('..', nil) if parts.count > max_links
 
@@ -78,14 +78,14 @@ module TreeHelper
         part_path = part if part_path.empty?
 
         next unless parts.last(2).include?(part) if parts.count > max_links
-        yield(part, tree_join(tree.ref, part_path))
+        yield(part, tree_join(@ref, part_path))
       end
     end
   end
 
   def up_dir_path tree
-    file = File.join(tree.path, "..")
-    tree_join(tree.ref, file)
+    file = File.join(@path, "..")
+    tree_join(@ref, file)
   end
 
   def leave_edit_message

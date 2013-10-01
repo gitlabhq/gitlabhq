@@ -139,7 +139,7 @@ module API
         path = params[:path] || nil
 
         commit = user_project.repository.commit(ref)
-        tree = Tree.new(user_project.repository, commit.id, ref, path)
+        tree = Tree.new(user_project.repository, commit.id, path)
 
         trees = []
 
@@ -168,8 +168,8 @@ module API
         commit = repo.commit(ref)
         not_found! "Commit" unless commit
 
-        blob = Gitlab::Git::Blob.new(repo, commit.id, ref, params[:filepath])
-        not_found! "File" unless blob.exists?
+        blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
+        not_found! "File" unless blob
 
         env['api.format'] = :txt
 

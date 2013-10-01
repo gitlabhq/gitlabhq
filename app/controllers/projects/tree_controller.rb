@@ -8,6 +8,8 @@ class Projects::TreeController < Projects::ApplicationController
   before_filter :require_non_empty_project
 
   def show
+    return not_found! if tree.entries.empty?
+
     respond_to do |format|
       format.html
       # Disable cache so browser history works
