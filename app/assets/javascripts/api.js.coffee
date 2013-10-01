@@ -3,12 +3,12 @@
   user_path: "/api/:version/users/:id.json"
   notes_path: "/api/:version/projects/:id/notes.json"
 
-  # Get 20 (depends on api) recent notes 
+  # Get 20 (depends on api) recent notes
   # and sort the ascending from oldest to newest
   notes: (project_id, callback) ->
     url = Api.buildUrl(Api.notes_path)
     url = url.replace(':id', project_id)
-    
+
     $.ajax(
       url: url,
       data:
@@ -37,7 +37,7 @@
   # Only active users retrieved
   users: (query, callback) ->
     url = Api.buildUrl(Api.users_path)
-    
+
     $.ajax(
       url: url
       data:

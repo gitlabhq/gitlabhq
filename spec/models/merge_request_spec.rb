@@ -18,6 +18,7 @@
 #  merge_status      :string(255)
 #  target_project_id :integer          not null
 #  iid               :integer
+#  description       :text
 #
 
 require 'spec_helper'
