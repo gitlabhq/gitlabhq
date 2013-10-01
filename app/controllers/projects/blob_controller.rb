@@ -9,5 +9,7 @@ class Projects::BlobController < Projects::ApplicationController
 
   def show
     @blob = Gitlab::Git::Blob.find(@repository, @commit.id, @path)
+
+    not_found! unless @blob
   end
 end
