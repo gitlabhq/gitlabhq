@@ -40,11 +40,13 @@ module Gitlab
       # Ex.
       #   groups("dev*") # return all groups start with 'dev'
       #
-      def groups(cn = "*")
+      def groups(cn = "*", size = nil)
         options = {
           base: config['group_base'],
           filter: Net::LDAP::Filter.eq("cn", cn)
         }
+
+        options.merge!(size: size) if size
 
         ldap.search(options).map do |entry|
           Gitlab::LDAP::Group.new(entry)
