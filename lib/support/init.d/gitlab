@@ -7,7 +7,7 @@
 
 ### BEGIN INIT INFO
 # Provides:          gitlab
-# Required-Start:    $local_fs $remote_fs $network $syslog redis-server
+# Required-Start:    $local_fs $remote_fs $network $syslog redis-server mysql
 # Required-Stop:     $local_fs $remote_fs $network $syslog
 # Default-Start:     2 3 4 5
 # Default-Stop:      0 1 6
