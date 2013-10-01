@@ -145,10 +145,11 @@ group :assets do
 end
 
 group :development do
-  gem "annotate", git: "https://github.com/ctran/annotate_models.git"
+  gem "annotate", "~> 2.6.0.beta2"
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
   gem 'rack-mini-profiler'
+
   # Better errors handler
   gem 'better_errors'
   gem 'binding_of_caller'
