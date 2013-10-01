@@ -334,6 +334,8 @@ GEM
     rack (1.4.5)
     rack-accept (0.4.5)
       rack (>= 0.4)
+    rack-attack (2.2.1)
+      rack
     rack-cache (1.2)
       rack (>= 0.4)
     rack-mini-profiler (0.1.31)
@@ -608,6 +610,7 @@ DEPENDENCIES
   poltergeist (~> 1.4.1)
   pry
   quiet_assets (~> 1.0.1)
+  rack-attack
   rack-mini-profiler
   rails (= 3.2.13)
   rails-dev-tweaks
