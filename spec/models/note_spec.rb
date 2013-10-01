@@ -14,6 +14,7 @@
 #  commit_id     :string(255)
 #  noteable_id   :integer
 #  st_diff       :text
+#  system        :boolean          default(FALSE), not null
 #
 
 require 'spec_helper'
