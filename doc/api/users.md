@@ -43,7 +43,8 @@ GET /users
     "theme_id": 1,
     "color_scheme_id": 3,
     "is_admin": false,
-    "can_create_group": true
+    "can_create_group": true,
+    "can_create_project": true
   }
 ]
 ```
@@ -78,7 +79,8 @@ Parameters:
   "theme_id": 1,
   "color_scheme_id": 2,
   "is_admin": false,
-  "can_create_group": true
+  "can_create_group": true,
+  "can_create_project": true
 }
 ```
 
