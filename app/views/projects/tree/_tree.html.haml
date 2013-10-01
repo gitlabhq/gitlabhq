@@ -28,7 +28,7 @@
             = truncate(@commit.title, length: 50)
         %th= link_to "history", project_commits_path(@project, @id), class: "pull-right"
 
-    - if tree.up_dir?
+    - if @path.present?
       %tr.tree-item
         %td.tree-item-file-name
           = image_tag "file_empty.png", size: '16x16'
