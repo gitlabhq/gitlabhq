@@ -8,12 +8,12 @@ GET /groups
 
 ```json
 [
-    {
-        "id": 1,
-        "name": "Foobar Group",
-        "path": "foo-bar",
-        "owner_id": 18
-    }
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "owner_id": 18
+  }
 ]
 ```
 
