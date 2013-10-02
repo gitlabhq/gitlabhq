@@ -216,17 +216,18 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # Mysql
     sudo -u git cp config/database.yml.mysql config/database.yml
 
-    or
-
-    # PostgreSQL
-    sudo -u git cp config/database.yml.postgresql config/database.yml
-
     # Make sure to update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
     # If you followed the database guide then please do as follows:
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
     sudo -u git -H editor config/database.yml
+
+    or
+
+    # PostgreSQL
+    sudo -u git cp config/database.yml.postgresql config/database.yml
+
     
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
