@@ -368,4 +368,4 @@ GET /projects/:id/repository/archive
 
 Parameters:
 + `id` (required) - The ID of a project
-+ `sha` (optional) - The commit or branch name
++ `sha` (optional) - The commit sha to download defaults to the tip of the default branch

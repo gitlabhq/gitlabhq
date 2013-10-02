@@ -181,7 +181,7 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   sha (optional) - the commit sha to download defaults to head
+      #   sha (optional) - the commit sha to download defaults to the tip of the default branch
       # Example Request:
       #   GET /projects/:id/repository/archive
       get ":id/repository/archive" do
@@ -190,11 +190,15 @@ module API
         ref = params[:sha]
         storage_path = Rails.root.join("tmp", "repositories")
 
-        file_path = repo.archive_repo(ref || 'HEAD', storage_path)
-        if file_path
-          data = File.open(file_path).read
+        file_path = repo.archive_repo(ref, storage_path)
+        if file_path && File.exists?(file_path)
+          data = File.open(file_path, 'rb').read
+
+          header "Content-Disposition:", " infile; filename=\"#{File.basename(file_path)}\""
           content_type 'application/x-gzip'
-          header "Content-Disposition:"," infile; filename=\"#{File.basename(file_path)}\""
+
+          env['api.format'] = :binary
+
           present data
         else
           not_found!
