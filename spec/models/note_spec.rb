@@ -195,7 +195,7 @@ describe Note do
 
       it { should be_valid }
       its(:noteable) { should == issue }
-      its(:note) { should == "_mentioned in commit #{commit.sha[0..5]}_" }
+      its(:note) { should == "_mentioned in commit #{commit.sha[0..5]}_: #{commit.message}" }
     end
 
     context 'merge request from an issue' do
@@ -204,7 +204,7 @@ describe Note do
       it { should be_valid }
       its(:noteable) { should == mergereq }
       its(:project) { should == mergereq.project }
-      its(:note) { should == "_mentioned in issue ##{issue.iid}_" }
+      its(:note) { should == "_mentioned in issue ##{issue.iid}_: #{issue.title}" }
     end
 
     context 'commit from a merge request' do
