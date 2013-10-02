@@ -191,6 +191,7 @@ status() {
   check_status
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
     echo "GitLab is not running."
+    exit 3;
     return
   fi
   if [ "$web_status" = "0" ]; then
