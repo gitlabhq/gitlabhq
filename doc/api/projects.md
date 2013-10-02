@@ -221,18 +221,6 @@ Parameters:
 + `snippets_enabled` (optional)
 + `public` (optional)
 
-**Project access levels**
-
-The project access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
-
-```
-  GUEST     = 10
-  REPORTER  = 20
-  DEVELOPER = 30
-  MASTER    = 40
-  OWNER     = 50
-```
-
 
 ### Create project for user
 
