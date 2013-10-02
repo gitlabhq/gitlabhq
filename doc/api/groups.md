@@ -105,6 +105,18 @@ Parameters:
 + `access_level` (required) - Project access level
 
 
+**Group access levels**
+
+The group access levels are defined in the `users_group.rb` class. Currently, these levels are recognized:
+
+```
+  GUEST     = 10
+  REPORTER  = 20
+  DEVELOPER = 30
+  MASTER    = 40
+  OWNER     = 50
+```
+
 ### Remove user team member
 
 Removes user from user team.
