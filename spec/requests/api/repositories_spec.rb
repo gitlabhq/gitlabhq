@@ -229,6 +229,15 @@ describe API::API do
     it "should get the archive" do
       get api("/projects/#{project.id}/repository/archive", user)
       response.status.should == 200
+      response.content_type.should == 'application/x-gzip'
+      storage_path = Rails.root.join("tmp", "repositories")
+      file_path = project.repository.archive_repo(nil, storage_path)
+      file_path_compare = file_path + 'compare'
+      File.open(file_path_compare,'wb'){|f|f.write(response.body)}
+      FileUtils.compare_file(file_path, file_path_compare).should be_true
+      #cleanup
+      File.delete(file_path)
+      File.delete(file_path_compare)
     end
 
     it "should return 404 for invalid sha" do
