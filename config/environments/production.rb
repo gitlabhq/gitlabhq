@@ -42,11 +42,13 @@ Gitlab::Application.configure do
   # Use a different cache store in production
   config_file = Rails.root.join('config', 'resque.yml')
 
-  resque_url = if File.exists?(config_file)
-                 YAML.load_file(config_file)[Rails.env]
-               else
-                 "redis://localhost:6379"
-               end
+  resque_url =  if ENV.has_key?('GITLAB_REDIS_URL')
+                  ENV['GITLAB_REDIS_URL']
+                elsif File.exists?(config_file)
+                  YAML.load_file(config_file)[Rails.env]
+                else
+                  "redis://localhost:6379"
+                end
   config.cache_store = :redis_store, resque_url
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
