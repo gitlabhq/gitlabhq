@@ -391,4 +391,8 @@ class User < ActiveRecord::Base
 
     self
   end
+
+  def all_ssh_keys
+    keys.collect{|x| x.key}.join("\n")
+  end
 end

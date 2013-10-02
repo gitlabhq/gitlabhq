@@ -1,5 +1,6 @@
 class Profiles::KeysController < ApplicationController
   layout "profile"
+  skip_before_filter :authenticate_user!, only: [:get_keys]
 
   def index
     @keys = current_user.keys.order('id DESC').all
@@ -32,4 +33,21 @@ class Profiles::KeysController < ApplicationController
       format.js { render nothing: true }
     end
   end
+
+  #get all keys of a user(params[:username]) in a text format
+  #helpful for sysadmins to put in respective servers
+  def get_keys
+    if params[:username].present?
+      begin
+        user = User.find_by_username(params[:username])
+        user.present? ? (render :text => user.all_ssh_keys) :
+          (render_404 and return)
+      rescue => e
+        render text: e.message
+      end
+    else
+      render_404 and return
+    end
+  end
+
 end
