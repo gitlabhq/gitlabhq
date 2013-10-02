@@ -59,6 +59,19 @@ Parameters:
 
 ## Group members
 
+
+**Group access levels**
+
+The group access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
+
+```
+  GUEST     = 10
+  REPORTER  = 20
+  DEVELOPER = 30
+  MASTER    = 40
+  OWNER     = 50
+```
+
 ### List group members
 
 Get a list of group members viewable by the authenticated user.
