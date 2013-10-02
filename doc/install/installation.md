@@ -224,7 +224,6 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # Make sure to update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
     # If you followed the database guide then please do as follows:
-    # Change 'root' to 'gitlab'
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
     sudo -u git -H editor config/database.yml
