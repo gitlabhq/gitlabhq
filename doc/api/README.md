@@ -117,7 +117,7 @@ When listing resources you can pass the following parameters:
 + [Deploy Keys](deploy_keys.md)
 + [System Hooks](system_hooks.md)
 + [Groups](groups.md)
-+ [User Teams](user_teams.md)
+
 
 ## Clients
 
