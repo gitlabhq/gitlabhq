@@ -157,10 +157,8 @@ or start each component separately
 
 ### Getting in touch
 
-* [Core team](https://github.com/gitlabhq?tab=members)
+* [Core team](http://gitlab.org/team/)
 
-* [Contributors](https://github.com/gitlabhq/gitlabhq/graphs/contributors)
+* [Contributors](http://contributors.gitlab.org/)
 
-* [Leader](https://github.com/randx)
-
-* [Contact page](http://gitlab.org/contact/)
+* [Community](http://gitlab.org/community/)
