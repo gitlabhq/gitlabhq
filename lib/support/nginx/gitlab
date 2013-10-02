@@ -1,6 +1,6 @@
 # GITLAB
 # Maintainer: @randx
-# App Version: 5.0
+# App Version: 6.0
 
 upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
