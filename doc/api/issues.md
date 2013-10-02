@@ -22,7 +22,7 @@ GET /issues
       "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
-      "blocked": false,
+      "state": "active",
       "created_at": "2012-05-23T08:00:58Z"
     },
     "state": "closed",
@@ -51,7 +51,7 @@ GET /issues
       "username": "jack_smith",
       "email": "jack@example.com",
       "name": "Jack Smith",
-      "blocked": false,
+      "state": "active",
       "created_at": "2012-05-23T08:01:01Z"
     },
     "author": {
@@ -59,7 +59,7 @@ GET /issues
       "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
-      "blocked": false,
+      "state": "active",
       "created_at": "2012-05-23T08:00:58Z"
     },
     "state": "opened",
@@ -120,7 +120,7 @@ Parameters:
     "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:01:01Z"
   },
   "author": {
@@ -128,7 +128,7 @@ Parameters:
     "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:00:58Z"
   },
   "state": "opened",
