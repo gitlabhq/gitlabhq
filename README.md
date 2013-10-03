@@ -127,14 +127,17 @@ or start each component separately
 
 ### GitLab interfaces
 
-* [GitLab API](doc/api/README.md)
+* [GitLab API doc](doc/api/README.md) or see the [GitLab API website](http://api.gitlab.org/)
 
-* [Rake tasks](doc/raketasks)
+* [Rake tasks](doc/raketasks) including a [backup and restore procedure](doc/raketasks/backup_restore.md)
 
 * [Directory structure](doc/install/structure.md)
 
-* [Databases](doc/install/databases.md)
+* [Database installation](doc/install/databases.md)
 
+* [Markdown specification](doc/markdown/markdown.md)
+
+* [Security guide](doc/security/rack_attack.md) to throttle abusive requests
 
 ### Getting help
 
@@ -157,10 +160,8 @@ or start each component separately
 
 ### Getting in touch
 
-* [Core team](https://github.com/gitlabhq?tab=members)
+* [Core team](http://gitlab.org/team/)
 
-* [Contributors](https://github.com/gitlabhq/gitlabhq/graphs/contributors)
+* [Contributors](http://contributors.gitlab.org/)
 
-* [Leader](https://github.com/randx)
-
-* [Contact page](http://gitlab.org/contact/)
+* [Community](http://gitlab.org/community/)

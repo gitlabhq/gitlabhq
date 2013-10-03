@@ -12,6 +12,15 @@ Parameters:
 
 + **none**
 
+```json
+[
+  {
+    "id":3,
+    "url":"http://example.com/hook",
+    "created_at":"2013-10-02T10:15:31Z"
+  }
+]
+```
 
 ## Add new system hook hook
 
@@ -34,6 +43,16 @@ Parameters:
 
 + `id` (required) - The ID of hook
 
+```json
+{
+  "event_name":"project_create",
+  "name":"Ruby",
+  "path":"ruby",
+  "project_id":1,
+  "owner_name":"Someone",
+  "owner_email":"example@gitlabhq.com"
+}
+```
 
 ## Delete system hook
 

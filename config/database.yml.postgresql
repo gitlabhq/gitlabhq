@@ -6,8 +6,8 @@ production:
   encoding: unicode
   database: gitlabhq_production
   pool: 10
-  username: git
-  password:
+  # username: git
+  # password:
   # host: localhost
   # port: 5432 
   # socket: /tmp/postgresql.sock
