@@ -167,7 +167,7 @@ class User < ActiveRecord::Base
   # Class methods
   #
   class << self
-    # Devise method overridden to allow sing in with email or username
+    # Devise method overridden to allow sign in with email or username
     def find_for_database_authentication(warden_conditions)
       conditions = warden_conditions.dup
       if login = conditions.delete(:login)
