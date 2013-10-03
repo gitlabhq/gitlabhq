@@ -112,7 +112,7 @@ gem 'tinder', '~> 1.9.2'
 gem "hipchat", "~> 0.9.0"
 
 # Flowdock integration
-gem "flowdock-git-hook", "~> 0.4.2"
+gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 
 # d3
 gem "d3_rails", "~> 3.1.4"

@@ -135,9 +135,6 @@ GEM
       faraday (>= 0.7.4, < 0.9)
     ffaker (1.18.0)
     ffi (1.9.0)
-    flowdock-git-hook (0.4.2)
-      grit (>= 2.4.1)
-      multi_json
     fog (1.3.1)
       builder
       excon (~> 0.13.0)
@@ -164,6 +161,9 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
+    gitlab-flowdock-git-hook (0.4.2.2)
+      gitlab-grit (>= 2.4.1)
+      multi_json
     gitlab-gollum-lib (1.0.1)
       github-markdown (~> 0.5.3)
       github-markup (>= 0.7.5, < 1.0.0)
@@ -208,10 +208,6 @@ GEM
     grape-entity (0.3.0)
       activesupport
       multi_json (>= 1.3.2)
-    grit (2.5.0)
-      diff-lcs (~> 1.1)
-      mime-types (~> 1.15)
-      posix-spawn (~> 0.3.6)
     growl (1.0.3)
     guard (1.8.1)
       formatador (>= 0.2.4)
@@ -575,13 +571,13 @@ DEPENDENCIES
   enumerize
   factory_girl_rails
   ffaker
-  flowdock-git-hook (~> 0.4.2)
   fog (~> 1.3.1)
   font-awesome-rails
   foreman
   gemoji (~> 1.2.1)
   github-linguist
   github-markup (~> 0.7.4)
+  gitlab-flowdock-git-hook (~> 0.4.2)
   gitlab-gollum-lib (~> 1.0.1)
   gitlab-grack (~> 1.0.1)
   gitlab-pygments.rb (~> 0.3.2)
