@@ -40,6 +40,44 @@
 
           .dropdown.inline.prepend-left-10
             %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+              %i.icon-group
+              %span.light assigned to group:
+              - if @assigned_group.present?
+                %strong= @assigned_group.name
+              - else
+                Any
+              %b.caret
+            %ul.dropdown-menu
+              %li
+                = link_to project_filter_path(assigned_group_id: nil) do
+                  Any
+              - @user_groups.each do |user_group|
+                - group = user_group.group
+                %li
+                  = link_to project_filter_path(assigned_group_id: group.id) do
+                    = group.name
+
+          .dropdown.inline.prepend-left-10
+            %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+              %i.icon-group
+              %span.light created by group:
+              - if @created_group.present?
+                %strong= @created_group.name
+              - else
+                Any
+              %b.caret
+            %ul.dropdown-menu
+              %li
+                = link_to project_filter_path(created_group_id: nil) do
+                  Any
+              - @user_groups.each do |user_group|
+                - group = user_group.group
+                %li
+                  = link_to project_filter_path(created_group_id: group.id) do
+                    = group.name
+
+          .dropdown.inline.prepend-left-10
+            %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
               %i.icon-time
               %span.light milestone:
               - if @milestone.present?
