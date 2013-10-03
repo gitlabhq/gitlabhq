@@ -8,12 +8,12 @@ GET /groups
 
 ```json
 [
-    {
-        "id": 1,
-        "name": "Foobar Group",
-        "path": "foo-bar",
-        "owner_id": 18
-    }
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "owner_id": 18
+  }
 ]
 ```
 
@@ -58,6 +58,19 @@ Parameters:
 
 
 ## Group members
+
+
+**Group access levels**
+
+The group access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
+
+```
+  GUEST     = 10
+  REPORTER  = 20
+  DEVELOPER = 30
+  MASTER    = 40
+  OWNER     = 50
+```
 
 ### List group members
 
