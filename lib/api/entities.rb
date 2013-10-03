@@ -140,5 +140,9 @@ module API
     class LdapGroup < Grape::Entity
       expose :cn
     end
+
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
+    end
   end
 end
