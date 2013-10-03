@@ -16,14 +16,11 @@ class ProjectGroupLink < ActiveRecord::Base
   validates :project_id, presence: true
   validates :group_id, presence: true
   validates :group_id, uniqueness: { scope: [:project_id], message: "already shared with this group" }
+  validates :group_access, presence: true
+  validates :group_access, inclusion: { in: Gitlab::Access.values }, presence: true
 
   def self.access_options
-    {
-      "Guest"     => GUEST,
-      "Reporter"  => REPORTER,
-      "Developer" => DEVELOPER,
-      "Master"    => MASTER
-    }
+    Gitlab::Access.options
   end
 
   def self.default_access
