@@ -13,6 +13,8 @@
 #  project_url :string(255)
 #
 
+require "flowdock-git-hook"
+
 class FlowdockService < Service
   validates :token, presence: true, if: :activated?
 
