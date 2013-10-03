@@ -1,7 +1,7 @@
 # Custom Redis configuration
 config_file = Rails.root.join('config', 'resque.yml')
 
-resque_url =  if ENV.has_key?('GITLAB_REDIS_URL')
+resque_url =  if ENV.key?('GITLAB_REDIS_URL')
                 ENV['GITLAB_REDIS_URL']
               elsif File.exists?(config_file)
                 YAML.load_file(config_file)[Rails.env]
