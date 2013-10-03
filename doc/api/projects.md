@@ -484,3 +484,20 @@ DELETE /projects/:id/fork
 Parameter:
 
 + `id` (required) - The ID of the project
+
+
+### Share project with group
+
+Shares project with group. In order to share project with several groups - do several requests.
+You must be a master or owner of project in order to perform action
+
+
+```
+POST /projects/:id/share
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `group_id` (required) - The ID of a group to share with
++ `group_access` (required) - Group access level
