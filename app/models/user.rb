@@ -47,7 +47,7 @@ class User < ActiveRecord::Base
                   :extern_uid, :provider, :password_expires_at,
                   as: [:default, :admin]
 
-  attr_accessible :projects_limit, :can_create_group,
+  attr_accessible :projects_limit, :can_create_group, :admin,
                   as: :admin
 
   attr_accessor :force_random_password
