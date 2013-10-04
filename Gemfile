@@ -20,6 +20,7 @@ gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
+gem "omniauth-cas"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
