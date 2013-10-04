@@ -27,14 +27,8 @@
 require 'spec_helper'
 
 describe Project do
-  let(:user) { create(:user) }
-
-  before do
-    enable_observers
-    Thread.current[:current_user] = user
-  end
-
-  after  { disable_observers }
+  before { enable_observers }
+  after { disable_observers }
 
   describe "Associations" do
     it { should belong_to(:group) }

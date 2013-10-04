@@ -2,7 +2,6 @@ module API
   # MergeRequest API
   class MergeRequests < Grape::API
     before { authenticate! }
-    before { Thread.current[:current_user] = current_user }
 
     resource :projects do
       helpers do
@@ -70,28 +69,30 @@ module API
       #   POST /projects/:id/merge_requests
       #
       post ":id/merge_requests" do
-        authorize! :write_merge_request, user_project
-        required_attributes! [:source_branch, :target_branch, :title]
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id]
-        merge_request = user_project.merge_requests.new(attrs)
-        merge_request.author = current_user
-        merge_request.source_project = user_project
-        target_project_id = attrs[:target_project_id]
-        if not_fork?(target_project_id, user_project)
-          merge_request.target_project = user_project
-        else
-          if target_matches_fork(target_project_id,user_project)
-            merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+        set_current_user_for_thread do
+          authorize! :write_merge_request, user_project
+          required_attributes! [:source_branch, :target_branch, :title]
+          attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id]
+          merge_request = user_project.merge_requests.new(attrs)
+          merge_request.author = current_user
+          merge_request.source_project = user_project
+          target_project_id = attrs[:target_project_id]
+          if not_fork?(target_project_id, user_project)
+            merge_request.target_project = user_project
           else
-            render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
+            if target_matches_fork(target_project_id,user_project)
+              merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+            else
+              render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
+            end
           end
-        end
 
-        if merge_request.save
-          merge_request.reload_code
-          present merge_request, with: Entities::MergeRequest
-        else
-          handle_merge_request_errors! merge_request.errors
+          if merge_request.save
+            merge_request.reload_code
+            present merge_request, with: Entities::MergeRequest
+          else
+            handle_merge_request_errors! merge_request.errors
+          end
         end
       end
 
@@ -109,17 +110,19 @@ module API
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
-        attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event]
-        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+        set_current_user_for_thread do
+          attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event]
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
-        authorize! :modify_merge_request, merge_request
+          authorize! :modify_merge_request, merge_request
 
-        if merge_request.update_attributes attrs
-          merge_request.reload_code
-          merge_request.mark_as_unchecked
-          present merge_request, with: Entities::MergeRequest
-        else
-          handle_merge_request_errors! merge_request.errors
+          if merge_request.update_attributes attrs
+            merge_request.reload_code
+            merge_request.mark_as_unchecked
+            present merge_request, with: Entities::MergeRequest
+          else
+            handle_merge_request_errors! merge_request.errors
+          end
         end
       end
 
@@ -133,16 +136,18 @@ module API
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
       post ":id/merge_request/:merge_request_id/comments" do
-        required_attributes! [:note]
+        set_current_user_for_thread do
+          required_attributes! [:note]
 
-        merge_request = user_project.merge_requests.find(params[:merge_request_id])
-        note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
-        note.author = current_user
+          merge_request = user_project.merge_requests.find(params[:merge_request_id])
+          note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
+          note.author = current_user
 
-        if note.save
-          present note, with: Entities::MRNote
-        else
-          not_found!
+          if note.save
+            present note, with: Entities::MRNote
+          else
+            not_found!
+          end
         end
       end
 

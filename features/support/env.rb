@@ -51,4 +51,6 @@ Spinach.hooks.before_run do
   RSpec::Mocks::setup self
 
   include FactoryGirl::Syntax::Methods
+  MergeRequestObserver.any_instance.stub(current_user: create(:user))
 end
+
