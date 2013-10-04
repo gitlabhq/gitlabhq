@@ -156,6 +156,9 @@ GEM
       pygments.rb (>= 0.2.13)
     github-markdown (0.5.3)
     github-markup (0.7.5)
+    gitlab-flowdock-git-hook (0.4.2.2)
+      gitlab-grit (>= 2.4.1)
+      multi_json
     gitlab-gollum-lib (1.0.1)
       github-markdown (~> 0.5.3)
       github-markup (>= 0.7.5, < 1.0.0)
@@ -571,6 +574,7 @@ DEPENDENCIES
   gemoji (~> 1.2.1)
   github-linguist
   github-markup (~> 0.7.4)
+  gitlab-flowdock-git-hook (~> 0.4.2)
   gitlab-gollum-lib (~> 1.0.1)
   gitlab-grack (~> 1.0.1)
   gitlab-pygments.rb (~> 0.3.2)
