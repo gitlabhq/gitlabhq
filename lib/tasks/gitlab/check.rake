@@ -289,7 +289,6 @@ namespace :gitlab do
     ########################
 
     def check_gitlab_git_config
-      gitlab_user = Gitlab.config.gitlab.user
       print "Git configured for #{gitlab_user} user? ... "
 
       options = {
@@ -664,8 +663,8 @@ namespace :gitlab do
         puts "#{sidekiq_match.length}".red
         try_fixing_it(
           'sudo service gitlab stop',
-          'sudo pkill -f sidekiq',
-          'sleep 10 && sudo pkill -9 -f sidekiq',
+          "sudo pkill -u #{gitlab_user} -f sidekiq",
+          "sleep 10 && sudo pkill -9 -u #{gitlab_user} -f sidekiq",
           'sudo service gitlab start'
         )
         fix_and_rerun
@@ -709,8 +708,11 @@ namespace :gitlab do
   end
 
   def sudo_gitlab(command)
-    gitlab_user = Gitlab.config.gitlab.user
     "sudo -u #{gitlab_user} -H #{command}"
+  end
+
+  def gitlab_user
+    Gitlab.config.gitlab.user
   end
 
   def start_checking(component)
