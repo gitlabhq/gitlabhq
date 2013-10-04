@@ -24,3 +24,9 @@ Feature: Project Services
     And I click pivotaltracker service link
     And I fill pivotaltracker settings
     Then I should see pivotaltracker service settings saved
+
+  Scenario: Activate Flowdock service
+    When I visit project "Shop" services page
+    And I click Flowdock service link
+    And I fill Flowdock settings
+    Then I should see Flowdock service settings saved
