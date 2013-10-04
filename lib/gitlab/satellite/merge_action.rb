@@ -146,10 +146,8 @@ module Gitlab
           repo.remote_fetch('source')
           repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
         else
-          # We can't trust the input here being branch names, we can't always check it out because it could be a relative ref i.e. HEAD~3
-          # we could actually remove the if true, because it should never ever happen (as long as the satellite has been prepared)
           repo.git.checkout(default_options, "#{merge_request.source_branch}")
-          repo.git.checkout(default_options, "#{merge_request.target_branch}")
+          repo.git.checkout(default_options({t: true}), "origin/#{merge_request.target_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
