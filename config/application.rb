@@ -68,6 +68,7 @@ module Gitlab
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
+    config.assets.initialize_on_precompile = false
 
     # Uncomment and customize the last line to run in a non-root path
     # WARNING: This feature is known to work, but unsupported
