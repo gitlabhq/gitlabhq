@@ -2,35 +2,35 @@
 #
 # Table name: merge_requests
 #
-#  id             :integer          not null, primary key
-#  target_project_id :integer       not null
-#  target_branch  :string(255)      not null
-#  source_project_id :integer       not null
-#  source_branch  :string(255)      not null
-#  author_id      :integer
-#  assignee_id    :integer
-#  title          :string(255)
-#  created_at     :datetime
-#  updated_at     :datetime
-#  st_commits     :text(2147483647)
-#  st_diffs       :text(2147483647)
-#  milestone_id   :integer
-#  state          :string(255)
-#  merge_status   :string(255)
+#  id                :integer          not null, primary key
+#  target_branch     :string(255)      not null
+#  source_branch     :string(255)      not null
+#  source_project_id :integer          not null
+#  author_id         :integer
+#  assignee_id       :integer
+#  title             :string(255)
+#  created_at        :datetime         not null
+#  updated_at        :datetime         not null
+#  st_commits        :text(2147483647)
+#  st_diffs          :text(2147483647)
+#  milestone_id      :integer
+#  state             :string(255)
+#  merge_status      :string(255)
+#  target_project_id :integer          not null
+#  iid               :integer
 #
 
 require Rails.root.join("app/models/commit")
 require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
-
   include Issuable
+  include InternalId
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event
-
+  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event, :description
 
   attr_accessor :should_remove_source_branch
 
@@ -252,6 +252,20 @@ class MergeRequest < ActiveRecord::Base
 
   def project
     target_project
+  end
+
+  # Return the set of issues that will be closed if this merge request is accepted.
+  def closes_issues
+    if target_branch == project.default_branch
+      unmerged_commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
+    else
+      []
+    end
+  end
+
+  # Mentionable override.
+  def gfm_reference
+    "merge request !#{iid}"
   end
 
   private

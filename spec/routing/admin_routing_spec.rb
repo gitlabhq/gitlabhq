@@ -75,13 +75,6 @@ describe Admin::ProjectsController, "routing" do
   end
 end
 
-#                           DELETE   /admin/projects/:project_id/members/:id(.:format)         admin/projects/members#destroy {id: /[^\/]+/, project_id: /[^\/]+/}
-describe Admin::MembersController, "routing" do
-  it "to #destroy" do
-    delete("/admin/projects/test/members/1").should route_to('admin/members#destroy', project_id: 'test', id: '1')
-  end
-end
-
 # admin_hook_test GET    /admin/hooks/:hook_id/test(.:format) admin/hooks#test
 #     admin_hooks GET    /admin/hooks(.:format)               admin/hooks#index
 #                 POST   /admin/hooks(.:format)               admin/hooks#create

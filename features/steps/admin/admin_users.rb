@@ -28,7 +28,7 @@ class AdminUsers < Spinach::FeatureSteps
     end
   end
 
-  And 'Not chenged form action url' do
+  And 'Not changed form action url' do
     page.should have_selector %(form[action="/admin/users/#{@user.username}"])
   end
 end

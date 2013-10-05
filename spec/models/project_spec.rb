@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -21,6 +21,7 @@
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
+#  import_url             :string(255)
 #
 
 require 'spec_helper'
@@ -57,15 +58,16 @@ describe Project do
     let!(:project) { create(:project) }
 
     it { should validate_presence_of(:name) }
-    it { should validate_uniqueness_of(:name) }
+    it { should validate_uniqueness_of(:name).scoped_to(:namespace_id) }
     it { should ensure_length_of(:name).is_within(0..255) }
 
     it { should validate_presence_of(:path) }
-    it { should validate_uniqueness_of(:path) }
+    it { should validate_uniqueness_of(:path).scoped_to(:namespace_id) }
     it { should ensure_length_of(:path).is_within(0..255) }
     it { should ensure_length_of(:description).is_within(0..2000) }
     it { should validate_presence_of(:creator) }
     it { should ensure_length_of(:issues_tracker_id).is_within(0..255) }
+    it { should validate_presence_of(:namespace) }
 
     it "should not allow new projects beyond user limits" do
       project2 = build(:project)
@@ -156,15 +158,6 @@ describe Project do
       it { Project.find_with_namespace('gitlab/gitlab-ci').should == @project }
       it { Project.find_with_namespace('gitlab-ci').should be_nil }
     end
-
-    context 'w/o namespace' do
-      before do
-        @project = create(:project, name: 'gitlab-ci')
-      end
-
-      it { Project.find_with_namespace('gitlab-ci').should == @project }
-      it { Project.find_with_namespace('gitlab/gitlab-ci').should be_nil }
-    end
   end
 
   describe :to_param do
@@ -175,14 +168,6 @@ describe Project do
       end
 
       it { @project.to_param.should == "gitlab/gitlab-ci" }
-    end
-
-    context 'w/o namespace' do
-      before do
-        @project = create(:project, name: 'gitlab-ci')
-      end
-
-      it { @project.to_param.should == "gitlab-ci" }
     end
   end
 
@@ -201,11 +186,11 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     it "should be true or if used internal tracker and issue exists" do
-      project.issue_exists?(existed_issue.id).should be_true
+      project.issue_exists?(existed_issue.iid).should be_true
     end
 
     it "should be false or if used internal tracker and issue not exists" do
-      project.issue_exists?(not_existed_issue.id).should be_false
+      project.issue_exists?(not_existed_issue.iid).should be_false
     end
 
     it "should always be true if used other tracker" do

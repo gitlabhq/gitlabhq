@@ -1,6 +1,8 @@
 require 'spec_helper'
 
 describe Issues::BulkUpdateContext do
+  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
+  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:issue) {
     create(:issue, project: @project)
@@ -9,7 +11,8 @@ describe Issues::BulkUpdateContext do
   before do
     @user = create :user
     opts = {
-      name: "GitLab"
+      name: "GitLab",
+      namespace: @user.namespace
     }
     @project = Projects::CreateContext.new(@user, opts).execute
   end

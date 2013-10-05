@@ -18,7 +18,7 @@ describe Projects::TreeController do
     # Make sure any errors accessing the tree in our views bubble up to this spec
     render_views
 
-    before { get :show, project_id: project.code, id: id }
+    before { get :show, project_id: project.to_param, id: id }
 
     context "valid branch, no path" do
       let(:id) { 'master' }

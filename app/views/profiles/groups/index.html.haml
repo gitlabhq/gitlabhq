@@ -29,7 +29,10 @@
         = link_to group, class: 'group-name' do
           %strong= group.name
 
-        as #{user_group.human_access}
+        as
+        %strong #{user_group.human_access}
 
+        %div.light
+          #{pluralize(group.projects.count, "project")}, #{pluralize(group.users.count, "user")}
 
 = paginate @user_groups

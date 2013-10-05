@@ -8,7 +8,7 @@ describe IssuesHelper do
   describe :title_for_issue do
     it "should return issue title if used internal tracker" do
       @project = project
-      title_for_issue(issue.id).should eq issue.title
+      title_for_issue(issue.iid).should eq issue.title
     end
 
     it "should always return empty string if used external tracker" do
@@ -61,7 +61,7 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_issue(issue.id).should match(int_expected)
+      url_for_issue(issue.iid).should match(int_expected)
     end
 
     it "should return path to external tracker" do
@@ -73,7 +73,7 @@ describe IssuesHelper do
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_issue(issue.id).should eq ""
+      url_for_issue(issue.iid).should eq ""
     end
   end
 

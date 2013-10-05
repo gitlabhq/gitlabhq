@@ -23,10 +23,16 @@ class Admin
       e.preventDefault()
       $(this).hide()
       modal.show()
-    
+
     $('.change-owner-cancel-link').bind "click", (e) ->
       e.preventDefault()
       modal.hide()
       $('.change-owner-link').show()
+
+    $('li.users_project').bind 'ajax:success', ->
+      Turbolinks.visit(location.href)
+
+    $('li.users_group').bind 'ajax:success', ->
+      Turbolinks.visit(location.href)
 
 @Admin = Admin

@@ -52,10 +52,12 @@ describe NotificationService do
 
       before do
         build_team(note.project)
+        note.stub(:commit_author => @u_committer)
       end
 
       describe :new_note do
         it do
+          should_email(@u_committer.id, note)
           should_email(@u_watcher.id, note)
           should_not_email(@u_mentioned.id, note)
           should_not_email(note.author_id, note)
@@ -65,18 +67,14 @@ describe NotificationService do
         end
 
         it do
-          new_note = create(:note_on_commit,
-                 author: @u_participating,
-                 project_id: note.project_id,
-                 commit_id: note.commit_id,
-                 note: '@mention referenced')
-
-          should_email(@u_watcher.id, new_note)
-          should_email(@u_mentioned.id, new_note)
-          should_not_email(new_note.author_id, new_note)
-          should_not_email(@u_participating.id, new_note)
-          should_not_email(@u_disabled.id, new_note)
-          notification.new_note(new_note)
+          note.update_attribute(:note, '@mention referenced')
+          should_email(@u_committer.id, note)
+          should_email(@u_watcher.id, note)
+          should_email(@u_mentioned.id, note)
+          should_not_email(note.author_id, note)
+          should_not_email(@u_participating.id, note)
+          should_not_email(@u_disabled.id, note)
+          notification.new_note(note)
         end
 
         def should_email(user_id, n)
@@ -240,10 +238,12 @@ describe NotificationService do
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
     @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_PARTICIPATING)
+    @u_committer = create(:user, username: 'committer')
 
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]
     project.team << [@u_disabled, :master]
     project.team << [@u_mentioned, :master]
+    project.team << [@u_committer, :master]
   end
 end

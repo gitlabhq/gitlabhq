@@ -26,14 +26,30 @@
           %span.pull-right
             = current_user.owned_projects.count
 
+
+    - if @groups.present?
+      %fieldset
+        %legend Groups
+        %ul.bordered-list
+          - @groups.each do |group|
+            %li{ class: (group.name == params[:group]) ? 'active' : 'light' }
+              = link_to projects_dashboard_path(group: group.name) do
+                %i.icon-folder-close-alt
+                = group.name
+                %small.pull-right
+                  = group.projects.count
+
+
+
     - if @labels.present?
-      %p.light Filter by label:
-      %ul.bordered-list
-        - @labels.each do |label|
-          %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
-            = link_to projects_dashboard_path(scope: params[:scope], label: label.name) do
-              %i.icon-tag
-              = label.name
+      %fieldset
+        %legend Labels
+        %ul.bordered-list
+          - @labels.each do |label|
+            %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
+              = link_to projects_dashboard_path(scope: params[:scope], label: label.name) do
+                %i.icon-tag
+                = label.name
 
   .span9
     %ul.bordered-list.my-projects.top-list

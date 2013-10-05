@@ -23,7 +23,7 @@ class Group < Namespace
   end
 
   def owners
-    @owners ||= (users_groups.owners.map(&:user) << owner)
+    @owners ||= (users_groups.owners.map(&:user) << owner).uniq
   end
 
   def add_users(user_ids, group_access)

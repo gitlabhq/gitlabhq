@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime
-#  updated_at             :datetime
+#  created_at             :datetime         not null
+#  updated_at             :datetime         not null
 #  creator_id             :integer
 #  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
@@ -21,6 +21,7 @@
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
+#  import_url             :string(255)
 #
 
 require "grit"
@@ -45,6 +46,7 @@ class Project < ActiveRecord::Base
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
@@ -82,6 +84,7 @@ class Project < ActiveRecord::Base
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { within: 0..255 }
 
+  validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
 
@@ -133,10 +136,6 @@ class Project < ActiveRecord::Base
         where(path: id, namespace_id: nil).last
       end
     end
-
-    def access_options
-      UsersProject.access_roles
-    end
   end
 
   def team
@@ -174,11 +173,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    if namespace
-      namespace.path + "/" + path
-    else
-      path
-    end
+    namespace.path + "/" + path
   end
 
   def web_url
@@ -211,7 +206,7 @@ class Project < ActiveRecord::Base
 
   def issue_exists?(issue_id)
     if used_default_issues_tracker?
-      self.issues.where(id: issue_id).first.present?
+      self.issues.where(iid: issue_id).first.present?
     else
       true
     end
@@ -236,7 +231,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat)
+    %w(gitlab_ci campfire hipchat pivotaltracker)
   end
 
   def gitlab_ci?
@@ -409,11 +404,6 @@ class Project < ActiveRecord::Base
     http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
-  def project_access_human(member)
-    project_user_relation = self.users_projects.find_by_user_id(member.id)
-    self.class.access_options.key(project_user_relation.project_access)
-  end
-
   # Check if current branch name is marked as protected in the system
   def protected_branch? branch_name
     protected_branches_names.include?(branch_name)
@@ -439,7 +429,9 @@ class Project < ActiveRecord::Base
       begin
         gitlab_shell.mv_repository("#{old_path_with_namespace}.wiki", "#{new_path_with_namespace}.wiki")
         gitlab_shell.rm_satellites(old_path_with_namespace)
+        ensure_satellite_exists
         send_move_instructions
+        reset_events_cache
       rescue
         # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
@@ -450,5 +442,20 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+  end
+
+  # Reset events cache related to this project
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when project was moved
+  # * when project was renamed
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(project_id: self.id).
+      order('id DESC').limit(100).
+      update_all(updated_at: Time.now)
   end
 end

@@ -1,6 +1,6 @@
 - if @saved
   :plain
-    $('.save-status-fixed .update-success').showAndHide();
+    new Flash("Notification settings saved", "notice")
 - else
   :plain
-    $('.save-status-fixed .update-failed').showAndHide();
+    new Flash("Failed to save new settings", "alert")

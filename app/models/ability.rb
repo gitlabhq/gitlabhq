@@ -2,6 +2,7 @@ class Ability
   class << self
     def allowed(user, subject)
       return [] unless user.kind_of?(User)
+      return [] if user.blocked?
 
       case subject.class.name
       when "Project" then project_abilities(user, subject)
@@ -142,6 +143,10 @@ class Ability
 
     def group_abilities user, group
       rules = []
+
+      if group.users.include?(user)
+        rules << :read_group
+      end
 
       # Only group owner and administrators can manage group
       if group.owners.include?(user) || user.admin?

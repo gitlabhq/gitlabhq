@@ -42,11 +42,15 @@ production: &base
     default_projects_limit: 10
     default_projects_limit_private: 5
     # default_can_create_group: false  # default: true
-    # default_can_create_team: false   # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
 
     ## Users management
     # signup_enabled: true          # default: false - Account passwords are not sent via the email if signup is enabled.
+
+    ## Automatic issue closing
+    # If a commit message matches this regular express, all issues referenced from the matched text will be closed
+    # if it's pushed to a project's default branch.
+    # issue_closing_pattern: ^([Cc]loses|[Ff]ixes) +#\d+
 
     ## Default project features settings
     default_projects_features:
@@ -55,6 +59,7 @@ production: &base
       wiki: true
       wall: false
       snippets: false
+      public: false
 
   ## External issues trackers
   issues_tracker:

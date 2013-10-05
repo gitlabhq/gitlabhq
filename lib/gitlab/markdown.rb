@@ -63,7 +63,7 @@ module Gitlab
         insert_piece($1)
       end
 
-      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
+      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class), tags: ActionView::Base.sanitized_allowed_tags + %w(table tr td th)
     end
 
     private
@@ -181,7 +181,7 @@ module Gitlab
     end
 
     def reference_merge_request(identifier)
-      if merge_request = @project.merge_requests.where(id: identifier).first
+      if merge_request = @project.merge_requests.where(iid: identifier).first
         link_to("!#{identifier}", project_merge_request_url(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
       end
     end

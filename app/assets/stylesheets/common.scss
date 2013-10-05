@@ -55,6 +55,7 @@ table a code {
   bottom: 0;
   width: 100%;
   opacity: 0.8;
+  z-index: 100;
 
   .flash-notice {
     background: #49C;
@@ -371,4 +372,13 @@ table {
     background: #D9EDF7 !important;
     text-align: center;
   }
+}
+
+.dashboard-intro-icon {
+  float: left;
+  font-size: 32px;
+  color: #AAA;
+  padding: 5px 0;
+  width: 50px;
+  min-height: 100px;
 }

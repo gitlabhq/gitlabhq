@@ -4,7 +4,7 @@ class Dashboard < Spinach::FeatureSteps
   include SharedProject
 
   Then 'I should see "New Project" link' do
-    page.should have_link "New Project"
+    page.should have_link "New project"
   end
 
   Then 'I should see "Shop" project link' do
@@ -57,7 +57,7 @@ class Dashboard < Spinach::FeatureSteps
 
   And 'I have group with projects' do
     @group   = create(:group)
-    @project = create(:project, group: @group)
+    @project = create(:project, namespace: @group)
     @event   = create(:closed_issue_event, project: @project)
 
     @project.team << [current_user, :master]

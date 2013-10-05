@@ -18,6 +18,7 @@ class Repository
   end
 
   def commit(id = nil)
+    return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
     commit

@@ -67,6 +67,12 @@ module API
       expose :projects, using: Entities::Project
     end
 
+    class GroupMember < UserBasic
+      expose :group_access, as: :access_level do |user, options|
+        options[:group].users_groups.find_by_user_id(user.id).group_access
+      end
+    end
+
     class RepoObject < Grape::Entity
       expose :name, :commit
       expose :protected do |repo, options|
@@ -107,7 +113,8 @@ module API
     end
 
     class MergeRequest < Grape::Entity
-      expose :id, :target_branch, :source_branch, :project_id, :title, :state
+      expose :id, :target_branch, :source_branch, :title, :state
+      expose :target_project_id, as: :project_id
       expose :author, :assignee, using: Entities::UserBasic
     end
 

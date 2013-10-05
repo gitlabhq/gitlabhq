@@ -4,7 +4,7 @@
   = nav_link(controller: [:commit, :commits]) do
     = link_to 'Commits', project_commits_path(@project, @repository.root_ref)
   = nav_link(controller: :compare) do
-    = link_to 'Compare', project_compare_index_path(@project)
+    = link_to 'Compare', project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref)
 
   = nav_link(html_options: {class: branches_tab_class}) do
     = link_to recent_project_branches_path(@project) do
