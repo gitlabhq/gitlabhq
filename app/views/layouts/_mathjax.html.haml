@@ -1,0 +1,8 @@
+:javascript
+  $(document).ready(function() {
+    $.getScript('#{extra_config.mathjax_url}', function() {
+      $('.wiki').each(function(k, item) {
+        MathJax.Hub.Queue(["Typeset",MathJax.Hub,item]);
+      });
+    });
+  });

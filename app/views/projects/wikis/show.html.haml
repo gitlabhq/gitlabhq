@@ -1,3 +1,4 @@
+= render 'layouts/mathjax' if extra_config.has_key?('mathjax_url')
 = render 'nav'
 %h3.page-title
   = @wiki.title.titleize
