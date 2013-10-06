@@ -1,8 +1,13 @@
 :javascript
   $(document).ready(function() {
-    $.getScript('#{extra_config.mathjax_url}', function() {
-      $('.wiki').each(function(k, item) {
-        MathJax.Hub.Queue(["Typeset",MathJax.Hub,item]);
-      });
+    $.ajax({
+      url: '#{extra_config.mathjax_url}',
+      dataType: 'script',
+      crossDomain: true,
+      success: function() {
+        $('.wiki').each(function(k, item) {
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub,item]);
+        });
+      }
     });
   });
