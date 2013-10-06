@@ -1,4 +1,4 @@
-= image_tag gravatar_icon(@user.email, 60), alt: '', class: 'avatar s60'
+= image_tag avatar_icon(@user.email, 60), alt: '', class: 'avatar s60'
 %h3.page-title
   = @user.name
   %br
@@ -12,7 +12,7 @@
         Logout
 %hr
 
-= form_for @user, url: profile_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
+= form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit_user form-horizontal" }  do |f|
   -if @user.errors.any?
     %div.alert.alert-error
       %ul
@@ -29,7 +29,7 @@
         = f.label :email, class: "control-label"
         .controls
           = f.text_field :email, class: "input-xlarge", required: true
-          %span.help-block We also use email for avatar detection.
+          %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .control-group
         = f.label :skype, class: "control-label"
         .controls= f.text_field :skype, class: "input-xlarge"
@@ -39,6 +39,17 @@
       .control-group
         = f.label :twitter, class: "control-label"
         .controls= f.text_field :twitter, class: "input-xlarge"
+      .control-group
+        = f.label :avatar, class: "control-label"
+        .controls
+          .profile-avatar-form-option
+            %a.choose-btn.btn.btn-small.js-choose-user-avatar-button
+              %i.icon-paper-clip
+              %span Choose File ...
+            &nbsp;
+            %span.file_name.js-avatar-filename File name...
+            = f.file_field :avatar, class: "js-user-avatar-input hide"
+          %span.help-block The maximum file size allowed is 200KB.
       .control-group
         = f.label :bio, class: "control-label"
         .controls
@@ -53,7 +64,7 @@
             %p You can change your password on the Account page
           - if Gitlab.config.gravatar.enabled
             %li
-              %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
+              %p You can upload an avatar here or change it at #{link_to "gravatar.com", "http://gravatar.com"}
 
           - if Gitlab.config.omniauth.enabled && @user.provider?
             %li
