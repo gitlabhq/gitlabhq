@@ -63,7 +63,7 @@ Make sure you have the right version of Python installed.
     python --version
 
     # If it's Python 3 you might need to install Python 2 separately
-    sudo apt-get install python2.7
+    sudo apt-get install -y python2.7
 
     # Make sure you can access Python via python2
     python2 --version
@@ -72,7 +72,7 @@ Make sure you have the right version of Python installed.
     sudo ln -s /usr/bin/python /usr/bin/python2
 
     # For reStructuredText markup language support install required package:
-    sudo apt-get install python-docutils
+    sudo apt-get install -y python-docutils
 
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
