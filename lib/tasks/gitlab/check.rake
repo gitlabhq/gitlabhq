@@ -393,14 +393,20 @@ namespace :gitlab do
       hook_file = "update"
       gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
       gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
-      gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
 
-      unless File.exists?(gitlab_shell_hook_file)
-        puts "can't check because of previous errors".magenta
-        return
+      if File.exists?(gitlab_shell_hook_file)
+        puts "yes".green
+      else
+        puts "no".red
+        puts "Could not find #{gitlab_shell_hook_file}"
+        try_fixing_it(
+          'Check the hooks_path in config/gitlab.yml',
+          'Check your gitlab-shell installation'
+        )
+        for_more_information(
+          see_installation_guide_section "GitLab Shell"
+        )
       end
-
-      puts "yes".green
     end
 
     def check_repo_base_exists
