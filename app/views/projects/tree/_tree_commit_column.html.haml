@@ -1,2 +1,2 @@
-%span.tree_author= commit_author_link(commit, avatar: true)
+%span.tree_author= commit_author_link(commit, avatar: true, size: 16)
 = link_to_gfm truncate(commit.title, length: 80), project_commit_path(@project, commit.id), class: "tree-commit-link"
