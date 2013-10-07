@@ -12,6 +12,7 @@ v 6.2.0
   - Update logic for validates_merge_request for tree of MR (Andrew Kumanyaev)
   - Rake tasks for web hooks management (Jonhnny Weslley)
   - Extended User API to expose admin and can_create_group for user creation/updating (Boyan Tabakov)
+  - API: Remove group
 
 v 6.1.0
   - Project specific IDs for issues, mr, milestones
