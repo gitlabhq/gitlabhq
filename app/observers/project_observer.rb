@@ -16,10 +16,9 @@ class ProjectObserver < BaseObserver
     end
 
     if project.wiki_enabled?
-     #force the creation of a wiki,
-     GollumWiki.new(project, project.owner).wiki
+      #force the creation of a wiki,
+      GollumWiki.new(project, project.owner).wiki
     end
-
   end
 
   def after_update(project)
