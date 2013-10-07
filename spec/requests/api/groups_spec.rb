@@ -106,6 +106,44 @@ describe API::API do
     end
   end
 
+  describe "DELETE /groups/:id" do
+    context "when authenticated as user" do
+      it "should remove group" do
+        delete api("/groups/#{group1.id}", user1)
+        response.status.should == 200
+      end
+
+      it "should not remove a group if not an owner" do
+        user3 = create(:user)
+        group1.add_user(user3, Gitlab::Access::MASTER)
+        delete api("/groups/#{group1.id}", user3)
+        response.status.should == 403
+      end
+
+      it "should not remove a non existing group" do
+        delete api("/groups/1328", user1)
+        response.status.should == 404
+      end
+
+      it "should not remove a group not attached to user1" do
+        delete api("/groups/#{group2.id}", user1)
+        response.status.should == 403
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should remove any existing group" do
+        delete api("/groups/#{group2.id}", admin)
+        response.status.should == 200
+      end
+
+      it "should not remove a non existing group" do
+        delete api("/groups/1328", admin)
+        response.status.should == 404
+      end
+    end
+  end
+
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
