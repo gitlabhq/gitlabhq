@@ -30,15 +30,26 @@ describe API::API do
   end
 
   describe "GET /projects/:id/merge_request/:merge_request_id" do
-    it "should return merge_request" do
+    it "should return merge_request with closed and merged values" do
       get api("/projects/#{project.id}/merge_request/#{merge_request.id}", user)
       response.status.should == 200
       json_response['title'].should == merge_request.title
+      json_response['closed'].should == merge_request.closed?
+      json_response['merged'].should == merge_request.merged?
     end
 
     it "should return a 404 error if merge_request_id not found" do
       get api("/projects/#{project.id}/merge_request/999", user)
       response.status.should == 404
+    end
+  end
+
+  describe "GET /projects/:id/merge_request/:merge_request_id/commits" do
+    it "should return commits for the merge_request" do
+      get api("/projects/#{project.id}/merge_request/#{merge_request.id}/commits", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.first['title'].should == merge_request.unmerged_commits.first['title']
     end
   end
 
