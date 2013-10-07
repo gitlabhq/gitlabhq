@@ -151,7 +151,7 @@ stop() {
   exit_if_not_running
   # If the Unicorn web server is running, tell it to stop;
   if [ "$web_status" = "0" ]; then
-    kill -QUIT "$wpid" &
+    kill -QUIT "$wpid"
     echo "Stopping the GitLab Unicorn web server..."
     stopping=true
   else
@@ -160,7 +160,7 @@ stop() {
   # And do the same thing for the Sidekiq.
   if [ "$sidekiq_status" = "0" ]; then
     printf "Stopping Sidekiq job dispatcher."
-    RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop &
+    RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop
     stopping=true
   else
     echo "The Sidekiq was not running, must have run out of breath."
