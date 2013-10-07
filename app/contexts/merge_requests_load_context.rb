@@ -30,6 +30,18 @@ class MergeRequestsLoadContext < BaseContext
       merge_requests = merge_requests.where(milestone_id: (params[:milestone_id] == '0' ? nil : params[:milestone_id]))
     end
 
+    # Filter by specific assigned_group_id (or lack thereof)?
+    # We suppose that assigned to group means "assigned to any user from the group"
+    if params[:assigned_group_id].present?
+      merge_requests = merge_requests.joins(assignee: :users_groups).where(users_groups: {group_id: params[:assigned_group_id]})
+    end
+
+    # Filter by specific created_group_id (or lack thereof)?
+    # We suppose that created by group means "created by any user from the group"
+    if params[:created_group_id].present?
+      merge_requests = merge_requests.joins(author: :users_groups).where(users_groups: {group_id: params[:created_group_id]})
+    end
+
     merge_requests
   end
 end
