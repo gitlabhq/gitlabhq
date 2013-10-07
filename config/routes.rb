@@ -293,7 +293,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :group_links, only: [:index, :create, :destroy]
+      resources :group_links, only: [:index, :create, :destroy], constraints: {id: /\d+/}
 
       resources :notes, only: [:index, :create, :destroy, :update], constraints: {id: /\d+/} do
         member do
