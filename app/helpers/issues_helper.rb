@@ -16,7 +16,7 @@ module IssuesHelper
   def url_for_project_issues
     return "" if @project.nil?
 
-    if @project.used_default_issues_tracker?
+    if @project.used_default_issues_tracker? or !Gitlab.config.issues_tracker.has_key?(@project.issues_tracker)
       project_issues_path(@project)
     else
       url = Gitlab.config.issues_tracker[@project.issues_tracker]["project_url"]
@@ -28,7 +28,7 @@ module IssuesHelper
   def url_for_new_issue
     return "" if @project.nil?
 
-    if @project.used_default_issues_tracker?
+    if @project.used_default_issues_tracker? or !Gitlab.config.issues_tracker.has_key?(@project.issues_tracker)
       url = new_project_issue_path project_id: @project
     else
       url = Gitlab.config.issues_tracker[@project.issues_tracker]["new_issue_url"]
@@ -40,7 +40,7 @@ module IssuesHelper
   def url_for_issue(issue_iid)
     return "" if @project.nil?
 
-    if @project.used_default_issues_tracker?
+    if @project.used_default_issues_tracker? or !Gitlab.config.issues_tracker.has_key?(@project.issues_tracker)
       url = project_issue_url project_id: @project, id: issue_iid
     else
       url = Gitlab.config.issues_tracker[@project.issues_tracker]["issues_url"]
