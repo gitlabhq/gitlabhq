@@ -7,12 +7,14 @@ module API
       helpers do
         def find_group(id)
           group = Group.find(id)
-          if current_user.admin or current_user.groups.include? group
+
+          if can?(current_user, :read_group, group)
             group
           else
             render_api_error!("403 Forbidden - #{current_user.username} lacks sufficient access to #{group.name}", 403)
           end
         end
+
         def validate_access_level?(level)
           Gitlab::Access.options_with_owner.values.include? level.to_i
         end
@@ -62,6 +64,19 @@ module API
       get ":id" do
         group = find_group(params[:id])
         present group, with: Entities::GroupDetail
+      end
+
+
+      # Remove group
+      #
+      # Parameters:
+      #   id (required) - The ID of a group
+      # Example Request:
+      #   DELETE /groups/:id
+      delete ":id" do
+        group = find_group(params[:id])
+        authorize! :manage_group, group
+        group.destroy
       end
 
       # Transfer a project to the Group namespace
@@ -132,7 +147,6 @@ module API
           member.destroy
         end
       end
-
     end
   end
 end

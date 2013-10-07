@@ -57,6 +57,19 @@ Parameters:
 + `project_id` (required) - The ID of a project
 
 
+## Remove group
+
+Removes group with all projects inside.
+
+```
+DELETE /groups/:id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a user group
+
+
 ## Group members
 
 
