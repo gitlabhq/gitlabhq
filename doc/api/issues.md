@@ -190,4 +190,3 @@ Parameters:
 
 + `id` (required) - The project ID
 + `issue_id` (required) - The ID of the issue
-
