@@ -1,8 +1,15 @@
+
+require 'fileutils'
+
 module Gitlab
   module Popen
     def popen(cmd, path)
       vars = { "PWD" => path }
       options = { chdir: path }
+
+      unless File.directory?(path)
+       FileUtils.mkdir_p(path)
+      end
 
       @cmd_output = ""
       @cmd_status = 0
