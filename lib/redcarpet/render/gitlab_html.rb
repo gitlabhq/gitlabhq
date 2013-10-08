@@ -32,6 +32,10 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     h.link_to_gfm(content, link, title: title)
   end
 
+  def preprocess(full_document)
+    h.create_relative_links(full_document, @project.path_with_namespace)
+  end
+
   def postprocess(full_document)
     h.gfm(full_document)
   end

@@ -34,7 +34,8 @@ module GitlabMarkdownHelper
                           # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
                           filter_html: true,
                           with_toc_data: true,
-                          hard_wrap: true)
+                          hard_wrap: true,
+                          safe_links_only: true)
       @markdown = Redcarpet::Markdown.new(gitlab_renderer,
                       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
                       no_intra_emphasis: true,
@@ -56,5 +57,13 @@ module GitlabMarkdownHelper
     else
       wiki_page.formatted_content.html_safe
     end
+  end
+
+  def create_relative_links(text, project_path_with_namespace)
+    to_be_fixed = text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
+    to_be_fixed.each do |string|
+      text.gsub!(string, "/#{project_path_with_namespace}/blob/master/#{string}")
+    end
+    text
   end
 end
