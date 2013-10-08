@@ -1,4 +1,3 @@
-
 require 'fileutils'
 
 module Gitlab
@@ -8,7 +7,7 @@ module Gitlab
       options = { chdir: path }
 
       unless File.directory?(path)
-       FileUtils.mkdir_p(path)
+        FileUtils.mkdir_p(path)
       end
 
       @cmd_output = ""
