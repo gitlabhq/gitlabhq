@@ -71,6 +71,16 @@ module Gitlab
           find_by_uid(ldap_user.dn) if ldap_user
         end
 
+        # Check LDAP user existance by dn. User in git over ssh check
+        #
+        # It covers 2 cases:
+        # * when ldap account was removed
+        # * when ldap account was deactivated by change of OU membership in 'dn'
+        def blocked?(dn)
+          ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
+          ldap.connection.search(base: dn, size: 1).blank?
+        end
+
         private
 
         def find_by_uid(uid)
