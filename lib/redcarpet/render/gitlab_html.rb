@@ -34,10 +34,14 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def preprocess(full_document)
-    h.create_relative_links(full_document, @project.path_with_namespace, @ref)
+    h.create_relative_links(full_document, @project.path_with_namespace, @ref, is_wiki?)
   end
 
   def postprocess(full_document)
     h.gfm(full_document)
+  end
+
+  def is_wiki?
+    @template.instance_variable_get("@wiki")
   end
 end

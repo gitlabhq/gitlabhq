@@ -59,10 +59,16 @@ module GitlabMarkdownHelper
     end
   end
 
-  def create_relative_links(text, project_path_with_namespace, ref)
+  def create_relative_links(text, project_path_with_namespace, ref, wiki = false)
     links = text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
     links.each do |string|
-      text.gsub!(string, "/#{project_path_with_namespace}/blob/#{ref}/#{string}")
+      new_link = [
+        project_path_with_namespace,
+        wiki ? "wiki":"blob",
+        ref,
+        string
+      ].compact.join("/")
+      text.gsub!(string, "/#{new_link}")
     end
     text
   end
