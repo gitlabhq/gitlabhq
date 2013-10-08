@@ -7,7 +7,7 @@ describe SystemHooksService do
 
   context 'it should build event data' do
     it 'should build event data for user' do
-      SystemHooksService.build_event_data(user, :create).should include(:event_name, :name, :created_at, :email)
+      SystemHooksService.build_event_data(user, :create).should include(:event_name, :name, :created_at, :email, :user_id)
     end
 
     it 'should build event data for project' do
