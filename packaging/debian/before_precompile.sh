@@ -1,4 +1,5 @@
 #!/bin/sh
+# This script copies the necessary .yml and .rb config files, based of the .example files.
 
 set -ex
 
