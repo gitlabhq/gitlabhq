@@ -59,10 +59,10 @@ module GitlabMarkdownHelper
     end
   end
 
-  def create_relative_links(text, project_path_with_namespace)
-    to_be_fixed = text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
-    to_be_fixed.each do |string|
-      text.gsub!(string, "/#{project_path_with_namespace}/blob/master/#{string}")
+  def create_relative_links(text, project_path_with_namespace, ref)
+    links = text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
+    links.each do |string|
+      text.gsub!(string, "/#{project_path_with_namespace}/blob/#{ref}/#{string}")
     end
     text
   end
