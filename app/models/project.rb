@@ -53,6 +53,7 @@ class Project < ActiveRecord::Base
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
+  has_many :fork_merge_requests,dependent: :destroy, foreign_key: "source_project_id", class_name: MergeRequest
   has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
   has_many :notes,              dependent: :destroy
@@ -312,8 +313,11 @@ class Project < ActiveRecord::Base
     branch_name = ref.gsub("refs/heads/", "")
     c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
-    # Update code for merge requests
+    # Update code for merge requests into project between project branches
     mrs = self.merge_requests.opened.by_branch(branch_name).all
+    # Update code for merge requests between project and project fork
+    mrs += self.fork_merge_requests.opened.by_branch(branch_name).all
+    
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests
