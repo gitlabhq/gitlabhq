@@ -64,11 +64,11 @@ module GitlabMarkdownHelper
     links.each do |string|
       new_link = [
         project_path_with_namespace,
-        wiki ? "wiki":"blob",
+        wiki ? "wikis":"blob",
         ref,
         string
       ].compact.join("/")
-      text.gsub!(string, "/#{new_link}")
+      text.gsub!("](#{string})", "](/#{new_link})")
     end
     text
   end
