@@ -75,12 +75,12 @@ module GitlabMarkdownHelper
   def new_link(path_with_namespace, string, ref)
     [
       path_with_namespace,
-      path(string, ref),
+      path_with_ref(string, ref),
       string
     ].compact.join("/")
   end
 
-  def path(string, ref)
+  def path_with_ref(string, ref)
     if File.exists?(Rails.root.join(string))
       "#{local_path(string)}/#{correct_ref(ref)}"
     else
