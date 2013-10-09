@@ -244,6 +244,18 @@ Parameters:
 + `public` (optional)
 
 
+## Remove project
+
+Removes project with all resources(issues, merge requests etc)
+
+```
+DELETE /projects/:id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
+
 
 ## Team members
 

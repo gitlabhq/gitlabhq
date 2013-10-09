@@ -66,7 +66,6 @@ module API
         present group, with: Entities::GroupDetail
       end
 
-
       # Remove group
       #
       # Parameters:

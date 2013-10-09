@@ -730,4 +730,42 @@ describe API::API do
       end
     end
   end
+
+  describe "DELETE /projects/:id" do
+    context "when authenticated as user" do
+      it "should remove project" do
+        delete api("/projects/#{project.id}", user)
+        response.status.should == 200
+      end
+
+      it "should not remove a project if not an owner" do
+        user3 = create(:user)
+        project.team << [user3, :developer]
+        delete api("/projects/#{project.id}", user3)
+        response.status.should == 403
+      end
+
+      it "should not remove a non existing project" do
+        delete api("/projects/1328", user)
+        response.status.should == 404
+      end
+
+      it "should not remove a project not attached to user" do
+        delete api("/projects/#{project.id}", user2)
+        response.status.should == 404
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should remove any existing project" do
+        delete api("/projects/#{project.id}", admin)
+        response.status.should == 200
+      end
+
+      it "should not remove a non existing project" do
+        delete api("/projects/1328", admin)
+        response.status.should == 404
+      end
+    end
+  end
 end
