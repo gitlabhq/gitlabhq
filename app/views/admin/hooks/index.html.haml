@@ -1,9 +1,12 @@
-.alert.alert-info
-  %span
-    Post-receive hooks for binding events.
-    %br
-    Read more about system hooks
-    %strong #{link_to "here", help_system_hooks_path, class: "vlink"}
+%h3.page-title
+  System Hooks
+
+%p.light
+  #{link_to "System hooks ", help_system_hooks_path, class: "vlink"} can be
+  used for binding events when GitLab creates a User or Project.
+
+%hr
+
 
 = form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-inline' } do |f|
   -if @hook.errors.any?

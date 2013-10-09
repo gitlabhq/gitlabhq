@@ -20,6 +20,8 @@ Parameters:
         "project_id":3,
         "title":"test1",
         "state":"opened",
+        "upvotes":0,
+        "downvotes":0,
         "author":{
             "id":1,
             "username": "admin",
@@ -62,6 +64,8 @@ Parameters:
     "project_id":3,
     "title":"test1",
     "state":"merged",
+    "upvotes":0,
+    "downvotes":0,
     "author":{
         "id":1,
         "username": "admin",
@@ -106,6 +110,8 @@ Parameters:
     "project_id":3,
     "title":"test1",
     "state":"opened",
+    "upvotes":0,
+    "downvotes":0,
     "author":{
         "id":1,
         "username": "admin",
@@ -152,6 +158,8 @@ Parameters:
     "project_id":3,
     "title":"test1",
     "state":"opened",
+    "upvotes":0,
+    "downvotes":0,
     "author":{
         "id":1,
         "username": "admin",
