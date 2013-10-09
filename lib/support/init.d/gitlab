@@ -22,7 +22,6 @@ RAILS_ENV="production"
 # /bin/sh variables such as PATH, EDITOR or SHELL.
 app_root="/home/git/gitlab"
 app_user="git"
-unicorn_conf="$app_root/config/unicorn.rb"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 web_server_pid_path="$pid_path/unicorn.pid"
@@ -129,7 +128,7 @@ start() {
     # Remove old socket if it exists
     rm -f "$socket_path"/gitlab.socket 2>/dev/null
     # Start the webserver
-    bundle exec unicorn_rails -D -c "$unicorn_conf" -E "$RAILS_ENV"
+    RAILS_ENV=$RAILS_ENV script/web start
   fi
 
   # If sidekiq is already running, don't start it again.
@@ -137,7 +136,7 @@ start() {
     echo "The Sidekiq job dispatcher is already running with pid $spid, not restarting"
   else
     echo "Starting the GitLab Sidekiq event dispatcher..."
-    RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:start
+    RAILS_ENV=$RAILS_ENV script/background_jobs start
     # We are sleeping a bit here because sidekiq is slow at writing it's pid
     sleep 2
   fi
@@ -151,7 +150,7 @@ stop() {
   exit_if_not_running
   # If the Unicorn web server is running, tell it to stop;
   if [ "$web_status" = "0" ]; then
-    kill -QUIT "$wpid"
+    RAILS_ENV=$RAILS_ENV script/web stop
     echo "Stopping the GitLab Unicorn web server..."
     stopping=true
   else
@@ -160,7 +159,7 @@ stop() {
   # And do the same thing for the Sidekiq.
   if [ "$sidekiq_status" = "0" ]; then
     printf "Stopping Sidekiq job dispatcher."
-    RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop
+    RAILS_ENV=$RAILS_ENV script/background_jobs stop
     stopping=true
   else
     echo "The Sidekiq was not running, must have run out of breath."
@@ -215,10 +214,10 @@ reload(){
     exit 1
   fi
   printf "Reloading GitLab Unicorn configuration... "
-  kill -USR2 "$wpid"
+  RAILS_ENV=$RAILS_ENV script/web reload
   echo "Done."
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
-  RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:restart
+  RAILS_ENV=$RAILS_ENV script/background_jobs restart
   # Waiting 2 seconds for sidekiq to write it.
   sleep 2
   status
