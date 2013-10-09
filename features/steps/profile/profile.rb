@@ -133,8 +133,12 @@ class Profile < Spinach::FeatureSteps
     current_path.should == new_user_session_path
   end
 
+  step 'I should be redirected to password page' do
+    current_path.should == edit_profile_password_path
+  end
+
   step 'I should be redirected to account page' do
-    current_path.should == account_profile_path
+    current_path.should == profile_account_path
   end
 
   step 'I click on my profile picture' do

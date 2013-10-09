@@ -1,7 +1,7 @@
 class Profiles::PasswordsController < ApplicationController
   layout :determine_layout
 
-  skip_before_filter :check_password_expiration
+  skip_before_filter :check_password_expiration, only: [:new, :create]
 
   before_filter :set_user
   before_filter :set_title
@@ -44,7 +44,7 @@ class Profiles::PasswordsController < ApplicationController
       flash[:notice] = "Password was successfully updated. Please login with it"
       redirect_to new_user_session_path
     else
-      render 'account'
+      render 'edit'
     end
   end
 
