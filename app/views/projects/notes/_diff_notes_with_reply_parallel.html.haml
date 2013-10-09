@@ -1,0 +1,34 @@
+- note1 = notes1.first # example note
+- note2 = notes2.first # example note
+%tr.notes_holder
+  -# Check if line want not changed since comment was left
+  /- if !defined?(line1) || line1 == note1.diff_line
+  - if note1
+    %td.notes_content
+      %ul.notes{ rel: note1.discussion_id }
+        = render notes1
+      = render "projects/notes/discussion_reply_button", note: note1
+    %td.notes_line2
+      %span.btn.disabled.parallel-comment
+        %i.icon-comment
+        = notes1.count
+  - else
+    %td= ""
+    %td= ""
+
+  %td= ""
+
+  -# Check if line want not changed since comment was left
+  /- if !defined?(line2) || line2 == note2.diff_line
+  - if note2
+    %td.notes_line
+      %span.btn.disabled.parallel-comment
+        %i.icon-comment
+        = notes2.count
+    %td.notes_content
+      %ul.notes{ rel: note2.discussion_id }
+        = render notes2
+      = render "projects/notes/discussion_reply_button", note: note2
+  - else
+    %td= ""
+    %td= ""

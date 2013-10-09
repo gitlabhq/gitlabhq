@@ -105,6 +105,10 @@ module CommitsHelper
     branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
   end
 
+  def get_old_file(project, commit, diff)
+    project.repository.blob_at(commit.parent_id, diff.old_path) if commit.parent_id
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and

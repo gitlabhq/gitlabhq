@@ -70,7 +70,7 @@
         font-size: 12px;
       }
     }
-    .old_line, .new_line {
+    .old_line, .new_line, .diff_line {
       margin: 0px;
       padding: 0px;
       border: none;
@@ -92,6 +92,15 @@
           text-decoration: underline;
         }
       }
+      &.new {
+        background: #CFD;
+      }
+      &.old {
+        background: #FDD;
+      }
+    }
+    .diff_line {
+      padding: 0;
     }
     .line_holder {
       &.old .old_line,
@@ -121,6 +130,11 @@
       &.matched {
         color: #ccc;
         background: #fafafa;
+      }
+      &.parallel {
+        display: table-cell;
+        overflow: hidden;
+        width: 50%;
       }
     }
   }
