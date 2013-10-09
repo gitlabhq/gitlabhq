@@ -106,6 +106,8 @@ GEM
       orm_adapter (~> 0.1)
       railties (~> 3.1)
       warden (~> 1.2.1)
+    devise-async (0.8.0)
+      devise (>= 2.2, < 3.2)
     diff-lcs (1.2.4)
     dotenv (0.8.0)
     email_spec (1.4.0)
@@ -564,6 +566,7 @@ DEPENDENCIES
   d3_rails (~> 3.1.4)
   database_cleaner
   devise (~> 2.2)
+  devise-async
   email_spec
   enumerize
   factory_girl_rails
