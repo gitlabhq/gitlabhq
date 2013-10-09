@@ -86,6 +86,27 @@ describe GollumWiki do
     end
   end
 
+  describe "#empty?" do
+    context "when the wiki repository is empty" do
+      before do
+        Gitlab::Shell.any_instance.stub(:add_repository) do
+          create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
+        end
+        project.stub(:path_with_namespace).and_return("non-existant")
+      end
+
+      its(:empty?) { should be_true }
+    end
+
+    context "when the wiki has pages" do
+      before do
+        create_page("index", "This is an awesome new Gollum Wiki")
+      end
+
+      its(:empty?) { should be_false }
+    end
+  end
+
   describe "#pages" do
     before do
       create_page("index", "This is an awesome new Gollum Wiki")
