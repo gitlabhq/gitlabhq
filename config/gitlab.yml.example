@@ -1,3 +1,6 @@
+<%
+require 'uri'
+%>
 # # # # # # # # # # # # # # # # # #
 # GitLab application config file  #
 # # # # # # # # # # # # # # # # # #
@@ -14,10 +17,11 @@ production: &base
 
   ## GitLab settings
   gitlab:
+    <% host_url = URI.parse(ENV['GITLAB_HOST_URL'] || "http://localhost:80") %>
     ## Web server settings
-    host: localhost
-    port: 80
-    https: false
+    host: <%= host_url.host %>
+    port: <%= host_url.port %>
+    https: <%= host_url.scheme == "https" %>
 
     # Uncomment and customize the last line to run in a non-root path
     # WARNING: This feature is known to work, but unsupported
@@ -33,13 +37,13 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: gitlab@localhost
+    email_from: <%= ENV['GITLAB_EMAIL_FROM'] || "gitlab@localhost" %>
 
     # Email address of your support contact (default: same as email_from)
-    support_email: support@localhost
+    support_email: <%= ENV['GITLAB_SUPPORT_EMAIL'] || "support@localhost" %>
 
     ## User settings
-    default_projects_limit: 10
+    default_projects_limit: <%= (ENV['GITLAB_PROJECTS_LIMIT'] || 10).to_i %>
     # default_can_create_group: false  # default: true
     # username_changing_enabled: false # default: true - User can change her username/namespace
     ## Default theme
@@ -52,7 +56,7 @@ production: &base
 
 
     ## Users management
-    # default: false - Account passwords are not sent via the email if signup is enabled. 
+    # default: false - Account passwords are not sent via the email if signup is enabled.
     # signup_enabled: true
 
     ## Automatic issue closing
@@ -90,7 +94,7 @@ production: &base
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
-    # 
+    #
     # jira:
     #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
     #   issues_url: "http://jira.sample/browse/:id"
