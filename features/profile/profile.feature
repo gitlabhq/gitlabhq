@@ -22,6 +22,11 @@ Feature: Profile
     Then I change my password
     And I should be redirected to sign in page
 
+  Scenario: I edit my avatar
+    Given I visit profile page
+    Then I change my avatar
+    And I should see new avatar
+
   Scenario: My password is expired
     Given my password is expired
     And I am not an ldap user
