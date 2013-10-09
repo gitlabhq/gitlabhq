@@ -80,6 +80,18 @@ module ProjectsHelper
     @project.milestones.active.order("id desc").all
   end
 
+  def project_issues_trackers
+    values = Project.issues_tracker.values.map do |tracker_key|
+      if tracker_key.to_sym == :gitlab
+        ['GitLab', tracker_key]
+      else
+        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
+      end
+    end
+
+    options_for_select(values)
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
