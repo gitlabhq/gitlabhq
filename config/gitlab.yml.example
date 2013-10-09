@@ -73,6 +73,7 @@ production: &base
   ## External issues trackers
   issues_tracker:
     # redmine:
+    #   title: "Redmine"
     #   ## If not nil, link 'Issues' on project page will be replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
@@ -93,6 +94,7 @@ production: &base
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
     # 
     # jira:
+    #   title: "Atlassian Jira"
     #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
     #   issues_url: "http://jira.sample/browse/:id"
     #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
@@ -206,6 +208,7 @@ test:
   <<: *base
   issues_tracker:
     redmine:
+      title: "Redmine"
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
