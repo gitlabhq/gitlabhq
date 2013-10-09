@@ -60,16 +60,39 @@ module GitlabMarkdownHelper
   end
 
   def create_relative_links(text, project_path_with_namespace, ref, wiki = false)
-    links = text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
+    links = extract_paths(text)
     links.each do |string|
-      new_link = [
-        project_path_with_namespace,
-        wiki ? "wikis":"blob",
-        ref,
-        string
-      ].compact.join("/")
+      new_link = new_link(project_path_with_namespace, string, ref)
       text.gsub!("](#{string})", "](/#{new_link})")
     end
     text
+  end
+
+  def extract_paths(text)
+    text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
+  end
+
+  def new_link(path_with_namespace, string, ref)
+    [
+      path_with_namespace,
+      path(string, ref),
+      string
+    ].compact.join("/")
+  end
+
+  def path(string, ref)
+    if File.exists?(Rails.root.join(string))
+      "#{local_path(string)}/#{correct_ref(ref)}"
+    else
+      "wikis"
+    end
+  end
+
+  def local_path(string)
+    File.directory?(Rails.root.join(string)) ? "tree":"blob"
+  end
+
+  def correct_ref(ref)
+    ref ? ref:'master'
   end
 end
