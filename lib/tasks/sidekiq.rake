@@ -14,7 +14,7 @@ namespace :sidekiq do
       Rake::Task['sidekiq:stop'].invoke
       puts 'Starting new sidekiq process.'
     end
-    system "nohup bundle exec sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e #{Rails.env} -P #{pidfile} >> #{log_file} 2>&1 &"
+    system "bundle exec sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e #{Rails.env} -P #{pidfile} -d -L #{log_file} >> #{log_file} 2>&1"
   end
 
   desc "GITLAB | Start sidekiq with launchd on Mac OS X"
