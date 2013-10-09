@@ -5,7 +5,15 @@ namespace :sidekiq do
   end
 
   desc "GITLAB | Start sidekiq"
-  task :start do
+  task :start => :restart
+
+  desc 'GitLab | Restart sidekiq'
+  task :restart do
+    if File.exist?(pidfile)
+      puts 'Shutting down existing sidekiq process.'
+      Rake::Task['sidekiq:stop'].invoke
+      puts 'Starting new sidekiq process.'
+    end
     system "nohup bundle exec sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e #{Rails.env} -P #{pidfile} >> #{Rails.root.join("log", "sidekiq.log")} 2>&1 &"
   end
 
