@@ -43,7 +43,7 @@ require 'file_size_validator'
 
 class User < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :lockable, :async,
-         :recoverable, :rememberable, :trackable, :validatable, :omniauthable
+         :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
