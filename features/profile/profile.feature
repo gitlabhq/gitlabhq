@@ -12,13 +12,13 @@ Feature: Profile
     And I should see new contact info
 
   Scenario: I change my password without old one
-    Given I visit profile account page
+    Given I visit profile password page
     When I try change my password w/o old one
     Then I should see a missing password error message
-    And I should be redirected to account page
+    And I should be redirected to password page
 
   Scenario: I change my password
-    Given I visit profile account page
+    Given I visit profile password page
     Then I change my password
     And I should be redirected to sign in page
 
@@ -30,13 +30,13 @@ Feature: Profile
   Scenario: My password is expired
     Given my password is expired
     And I am not an ldap user
-    And I visit profile account page
+    Given I visit profile password page
     Then I redirected to expired password page
     And I submit new password
     And I redirected to sign in page
 
   Scenario: I unsuccessfully change my password
-    Given I visit profile account page
+    Given I visit profile password page
     When I unsuccessfully change my password
     Then I should see a password error message
 

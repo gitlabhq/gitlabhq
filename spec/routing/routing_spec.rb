@@ -128,7 +128,7 @@ end
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
   it "to #account" do
-    get("/profile/account").should route_to('profiles#account')
+    get("/profile/account").should route_to('profiles/accounts#show')
   end
 
   it "to #history" do
