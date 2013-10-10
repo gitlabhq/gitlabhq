@@ -27,7 +27,9 @@
         = blob.name
         %small= number_to_human_size blob.size
       %span.options= render "actions"
-    - if blob.text?
+    - if Gitlab.config.ipython_notebook.render && ipython_notebook?(blob.name)
+      = render "ipython_notebook", blob: blob
+    - elsif blob.text?
       = render "text", blob: blob
     - elsif blob.image?
       = render "image", blob: blob

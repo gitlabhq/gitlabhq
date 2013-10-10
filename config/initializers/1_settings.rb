@@ -140,6 +140,13 @@ Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
 
 #
+# IPython notebook
+#
+Settings['ipython_notebook'] ||= Settingslogic.new({})
+Settings.ipython_notebook['render']      = true if Settings.ipython_notebook['render'].nil?
+Settings.ipython_notebook['nbconvert'] ||= 'ipython nbconvert --to html --FilesWriter.build_directory=%{build_dir} %{notebook}'
+
+#
 # Extra customization
 #
 Settings['extra'] ||= Settingslogic.new({})

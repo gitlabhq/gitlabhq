@@ -64,6 +64,18 @@
       }
     }
 
+    &.ipython-notebook {
+      iframe {
+        width: 100%;
+        /* It is quite hard to choose a good height for the IFrame since we
+           cannot relate it to its contents (it's cross-domain/protocol). We
+           choose to have it very high, so we usually don't get nesting of
+           scrollbars (GitLab page and the IFrame). */
+        height: 16000px;
+        border: none;
+      }
+    }
+
     &.blob_file {
 
     }

@@ -1,0 +1,3 @@
+.file-content.ipython-notebook
+  - data = Base64.encode64(render_notebook(blob.data))
+  %iframe{src: "data:text/html;base64,#{ data }"}

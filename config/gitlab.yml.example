@@ -222,6 +222,11 @@ production: &base
     #   ![Company Logo](http://www.companydomain.com/logo.png)
     #   [Learn more about CompanyName](http://www.companydomain.com/)
 
+  ## Settings for rendering IPython notebooks
+  ipython_notebook:
+    render: true
+    nbconvert: ipython nbconvert --to html --FilesWriter.build_directory=%{build_dir} %{notebook}
+
 development:
   <<: *base
 
