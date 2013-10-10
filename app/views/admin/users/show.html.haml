@@ -20,7 +20,7 @@
       .title
         Account:
         .pull-right
-          = image_tag gravatar_icon(@user.email, 32), class: "avatar s32"
+          = image_tag avatar_icon(@user.email, 32), class: "avatar s32"
       %ul.well-list
         %li
           %span.light Name:
@@ -117,11 +117,7 @@
           - tm = project.team.find_tm(@user.id)
           %li.users_project
             = link_to admin_project_path(project), class: dom_class(project) do
-              - if project.namespace
-                = project.namespace.human_name
-                \/
-              %strong.well-title
-                = truncate(project.name, length: 45)
+              = project.name_with_namespace
 
             - if tm
               .pull-right

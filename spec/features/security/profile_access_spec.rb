@@ -29,7 +29,7 @@ describe "Users Security" do
     end
 
     describe "GET /profile/account" do
-      subject { account_profile_path }
+      subject { profile_account_path }
 
       it { should be_allowed_for @u1 }
       it { should be_allowed_for :admin }

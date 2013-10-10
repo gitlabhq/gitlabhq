@@ -270,27 +270,6 @@ li.note {
   }
 }
 
-.oauth_select_holder {
-  padding: 20px;
-  img {
-    padding: 5px;
-    margin-right: 10px;
-  }
-  .active {
-    img {
-      border: 1px solid #ccc;
-      background: $hover;
-      @include border-radius(5px);
-    }
-  }
-}
-
-.btn-build-token {
-  float: left;
-  padding: 6px 20px;
-  margin-right: 12px;
-}
-
 .gitlab-promo {
   a {
     color: #aaa;

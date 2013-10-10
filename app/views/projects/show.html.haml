@@ -17,7 +17,7 @@
       %p
       %p
         %span.light Repo size is
-        #{@project.repository.size} MB
+        = repository_size
       %p
         %span.light Created at
         #{@project.created_at.stamp('Aug 22, 2013')}

@@ -3,9 +3,7 @@ class Profile < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I should see my profile info' do
-    page.should have_content "Profile"
-    page.should have_content @user.name
-    page.should have_content @user.email
+    page.should have_content "Profile settings"
   end
 
   step 'I change my contact info' do
@@ -20,6 +18,17 @@ class Profile < Spinach::FeatureSteps
     @user.skype.should == 'testskype'
     @user.linkedin.should == 'testlinkedin'
     @user.twitter.should == 'testtwitter'
+  end
+
+  step 'I change my avatar' do
+    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button "Save changes"
+    @user.reload
+  end
+
+  step 'I should see new avatar' do
+    @user.avatar.should be_instance_of AttachmentUploader
+    @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
   end
 
   step 'I try change my password w/o old one' do
@@ -124,8 +133,12 @@ class Profile < Spinach::FeatureSteps
     current_path.should == new_user_session_path
   end
 
+  step 'I should be redirected to password page' do
+    current_path.should == edit_profile_password_path
+  end
+
   step 'I should be redirected to account page' do
-    current_path.should == account_profile_path
+    current_path.should == profile_account_path
   end
 
   step 'I click on my profile picture' do

@@ -38,13 +38,16 @@
 #  created_by_id          :integer
 #
 
+require 'carrierwave/orm/activerecord'
+require 'file_size_validator'
+
 class User < ActiveRecord::Base
-  devise :database_authenticatable, :token_authenticatable, :lockable,
+  devise :database_authenticatable, :token_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at,
+                  :extern_uid, :provider, :password_expires_at, :avatar,
                   as: [:default, :admin]
 
   attr_accessible :projects_limit, :can_create_group,
@@ -113,6 +116,8 @@ class User < ActiveRecord::Base
 
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
 
+  validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
+
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
 
@@ -149,6 +154,8 @@ class User < ActiveRecord::Base
       transition blocked: :active
     end
   end
+
+  mount_uploader :avatar, AttachmentUploader
 
   # Scopes
   scope :admins, -> { where(admin:  true) }

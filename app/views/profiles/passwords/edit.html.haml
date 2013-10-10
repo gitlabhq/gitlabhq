@@ -1,0 +1,32 @@
+%h3.page-title Password
+%p.light
+  Change your password or recover your current one.
+%hr
+.update-password
+  = form_for @user, url: profile_password_path, method: :put do |f|
+    %div
+      %p.slead
+        You must provide current password in order to change it.
+        %br
+        After a successful password update you will be redirected to login page where you should login with your new password
+      -if @user.errors.any?
+        .alert.alert-error
+          %ul
+            - @user.errors.full_messages.each do |msg|
+              %li= msg
+      .control-group
+        = f.label :current_password
+        .controls
+          = f.password_field :current_password, required: true
+          %div
+            = link_to "Forgot your password?", reset_profile_password_path, method: :put
+
+      .control-group
+        = f.label :password, 'New password'
+        .controls= f.password_field :password, required: true
+      .control-group
+        = f.label :password_confirmation
+        .controls
+          = f.password_field :password_confirmation, required: true
+      .form-actions
+        = f.submit 'Save password', class: "btn btn-save"

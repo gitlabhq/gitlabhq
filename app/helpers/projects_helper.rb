@@ -5,10 +5,10 @@ module ProjectsHelper
 
   def link_to_project project
     link_to project do
-      title = content_tag(:strong, project.name)
+      title = content_tag(:span, project.name, class: 'projet-name')
 
       if project.namespace
-        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'tiny')
+        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'namespace-name')
         title = namespace + title
       end
 
@@ -25,7 +25,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(gravatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
 
     # Build name span tag
     author_html << content_tag(:span, sanitize(author.name), class: 'author') if opts[:name]
@@ -80,6 +80,18 @@ module ProjectsHelper
     @project.milestones.active.order("id desc").all
   end
 
+  def project_issues_trackers
+    values = Project.issues_tracker.values.map do |tracker_key|
+      if tracker_key.to_sym == :gitlab
+        ['GitLab', tracker_key]
+      else
+        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
+      end
+    end
+
+    options_for_select(values)
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -118,5 +130,14 @@ module ProjectsHelper
     else
       "your@email.com"
     end
+  end
+
+  def repository_size
+    "#{@project.repository.size} MB"
+  rescue
+    # In order to prevent 500 error
+    # when application cannot allocate memory
+    # to calculate repo size - just show 'Unknown'
+    'unknown'
   end
 end

@@ -99,19 +99,21 @@ Gitlab::Application.routes.draw do
   #
   resource :profile, only: [:show, :update] do
     member do
-      get :account
       get :history
-      get :token
       get :design
 
-      put :update_password
       put :reset_private_token
       put :update_username
     end
 
     scope module: :profiles do
+      resource :account, only: [:show, :update]
       resource :notifications, only: [:show, :update]
-      resource :password, only: [:new, :create]
+      resource :password, only: [:new, :create, :edit, :update] do
+        member do
+          put :reset
+        end
+      end
       resources :keys
       resources :groups, only: [:index] do
         member do

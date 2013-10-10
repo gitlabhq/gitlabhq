@@ -108,7 +108,7 @@ module CommitsHelper
     source_name = commit.send "#{options[:source]}_name".to_sym
     source_email = commit.send "#{options[:source]}_email".to_sym
     text = if options[:avatar]
-            avatar = image_tag(gravatar_icon(source_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
+            avatar = image_tag(avatar_icon(source_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
             %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{source_name}</span>}
           else
             source_name

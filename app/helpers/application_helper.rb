@@ -49,6 +49,15 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
+  def avatar_icon(user_email = '', size = nil)
+    user = User.find_by_email(user_email)
+    if user && user.avatar.present?
+      user.avatar.url
+    else
+      gravatar_icon(user_email, size)
+    end
+  end
+
   def gravatar_icon(user_email = '', size = nil)
     size = 40 if size.nil? || size <= 0
 

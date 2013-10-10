@@ -129,6 +129,16 @@ module API
         end
       end
 
+      # Remove project
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   DELETE /projects/:id
+      delete ":id" do
+        authorize! :remove_project, user_project
+        user_project.destroy
+      end
 
       # Mark this project as forked from another
       #
