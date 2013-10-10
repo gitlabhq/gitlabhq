@@ -42,11 +42,13 @@ Gitlab::Application.configure do
   # Use a different cache store in production
   config_file = Rails.root.join('config', 'resque.yml')
 
-  resque_url = if File.exists?(config_file)
-                 YAML.load_file(config_file)[Rails.env]
-               else
-                 "redis://localhost:6379"
-               end
+  resque_url =  if ENV.key?('GITLAB_REDIS_URL')
+                  ENV['GITLAB_REDIS_URL']
+                elsif File.exists?(config_file)
+                  YAML.load_file(config_file)[Rails.env]
+                else
+                  "redis://localhost:6379"
+                end
   config.cache_store = :redis_store, resque_url
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
@@ -72,7 +74,27 @@ Gitlab::Application.configure do
   # with SQLite, MySQL, and PostgreSQL)
   # config.active_record.auto_explain_threshold_in_seconds = 0.5
 
-  config.action_mailer.delivery_method = :sendmail
+  if ENV.key?('SMTP_URL')
+    config.action_mailer.smtp_settings = begin
+      uri = URI.parse(ENV['SMTP_URL'])
+      params = {
+        :address              => uri.host,
+        :port                 => uri.port,
+        :domain               => (uri.path || "").split("/")[1],
+        :user_name            => uri.user,
+        :password             => uri.password,
+        :authentication       => 'plain',
+        :enable_starttls_auto => true
+      }
+      CGI.parse(uri.query || "").each {|k,v| params[k.to_sym] = v.first}
+      params
+    rescue
+      raise "Invalid SMTP_URL"
+    end
+  else
+    config.action_mailer.delivery_method = :sendmail
+  end
+
   # Defaults to:
   # # config.action_mailer.sendmail_settings = {
   # #   location: '/usr/sbin/sendmail',
