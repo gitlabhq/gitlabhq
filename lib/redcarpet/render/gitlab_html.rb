@@ -7,6 +7,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     @template = template
     @project = @template.instance_variable_get("@project")
     @ref = @template.instance_variable_get("@ref")
+    @request_path = @template.instance_variable_get("@path")
     super options
   end
 
@@ -34,7 +35,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def preprocess(full_document)
-    h.create_relative_links(full_document, @project.path_with_namespace, @ref, is_wiki?)
+    h.create_relative_links(full_document, @project.path_with_namespace, @ref, @request_path, is_wiki?)
   end
 
   def postprocess(full_document)

@@ -60,16 +60,17 @@ module GitlabMarkdownHelper
   end
 
   # text - whole text from a markdown file
-  # project_path_with_namespace - namespace/projectname
-  # ref - name of the branch or reference
+  # project_path_with_namespace - namespace/projectname, eg. gitlabhq/gitlabhq
+  # ref - name of the branch or reference, eg. stable
+  # requested_path - path of request, eg. doc/api/README.md, used in special case when path is pointing to the .md file were the original request is coming from
   # wiki - whether the markdown is from wiki or not
-  def create_relative_links(text, project_path_with_namespace, ref, wiki = false)
+  def create_relative_links(text, project_path_with_namespace, ref, requested_path, wiki = false)
     paths = extract_paths(text)
-    paths.each do |path|
-      new_path = rebuild_path(project_path_with_namespace, path, ref)
+    paths.each do |file_path|
+      new_path = rebuild_path(project_path_with_namespace, file_path, requested_path, ref)
       # Replacing old string with a new one with brackets ]() to prevent replacing occurence of a word
       # e.g. If we have a markdown like [test](test) this will replace ](test) and not the word test
-      text.gsub!("](#{path})", "](/#{new_path})")
+      text.gsub!("](#{file_path})", "](/#{new_path})")
     end
     text
   end
@@ -100,22 +101,44 @@ module GitlabMarkdownHelper
     ["http://","https://", "ftp://", "mailto:"]
   end
 
-  def rebuild_path(path_with_namespace, string, ref)
+  def rebuild_path(path_with_namespace, path, requested_path, ref)
+    file_path = relative_file_path(path, requested_path)
     [
       path_with_namespace,
-      path_with_ref(string, ref),
-      string
+      path_with_ref(file_path, ref),
+      file_path
     ].compact.join("/")
   end
 
   # Checks if the path exists in the repo
   # eg. checks if doc/README.md exists, if it doesn't then it is a wiki link
   def path_with_ref(path, ref)
-    if File.exists?(Rails.root.join(path))
+    if file_exists?(path)
       "#{local_path(path)}/#{correct_ref(ref)}"
     else
       "wikis"
     end
+  end
+
+  def relative_file_path(path, requested_path)
+    nested_path = build_nested_path(path, requested_path)
+    return nested_path if file_exists?(nested_path)
+    path
+  end
+
+  # Covering a special case, when the link is referencing file in the same directory eg:
+  # If we are at doc/api/README.md and the README.md contains relative links like [Users](users.md)
+  # this takes the request path(doc/api/README.md), and replaces the README.md with users.md so the path looks like doc/api/users.md
+  def build_nested_path(path, request_path)
+    return path unless request_path
+    base = request_path.split("/")
+    base.pop
+    (base + [path]).join("/")
+  end
+
+  def file_exists?(path)
+    return false if path.nil? || path.empty?
+    File.exists?(Rails.root.join(path))
   end
 
   # Check if the path is pointing to a directory(tree) or a file(blob)
