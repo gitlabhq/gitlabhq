@@ -59,20 +59,48 @@ module GitlabMarkdownHelper
     end
   end
 
+  # text - whole text from a markdown file
+  # project_path_with_namespace - namespace/projectname
+  # ref - name of the branch or reference
+  # wiki - whether the markdown is from wiki or not
   def create_relative_links(text, project_path_with_namespace, ref, wiki = false)
-    links = extract_paths(text)
-    links.each do |string|
-      new_link = new_link(project_path_with_namespace, string, ref)
-      text.gsub!("](#{string})", "](/#{new_link})")
+    paths = extract_paths(text)
+    paths.each do |path|
+      new_path = rebuild_path(project_path_with_namespace, path, ref)
+      # Replacing old string with a new one with brackets ]() to prevent replacing occurence of a word
+      # e.g. If we have a markdown like [test](test) this will replace ](test) and not the word test
+      text.gsub!("](#{path})", "](/#{new_path})")
     end
     text
   end
 
-  def extract_paths(text)
-    text.split("\n").map { |a| a.scan(/\]\(([^(]+)\)/) }.reject{|b| b.empty? }.flatten.reject{|c| c.include?("http" || "www")}
+  def extract_paths(markdown_text)
+    all_markdown_paths = pick_out_paths(markdown_text)
+    paths = remove_empty(all_markdown_paths)
+    select_relative(paths)
   end
 
-  def new_link(path_with_namespace, string, ref)
+  # Split the markdown text to each line and find all paths, this will match anything with - ]("some_text")
+  def pick_out_paths(markdown_text)
+    markdown_text.split("\n").map { |text| text.scan(/\]\(([^(]+)\)/) }
+  end
+
+  # Removes any empty result produced by not matching the regexp
+  def remove_empty(paths)
+    paths.reject{|l| l.empty? }.flatten
+  end
+
+  # Reject any path that contains ignored protocol
+  # eg. reject "https://gitlab.org} but accept "doc/api/README.md"
+  def select_relative(paths)
+    paths.reject{|path| ignored_protocols.map{|protocol| path.include?(protocol)}.any?}
+  end
+
+  def ignored_protocols
+    ["http://","https://", "ftp://", "mailto:"]
+  end
+
+  def rebuild_path(path_with_namespace, string, ref)
     [
       path_with_namespace,
       path_with_ref(string, ref),
@@ -80,19 +108,24 @@ module GitlabMarkdownHelper
     ].compact.join("/")
   end
 
-  def path_with_ref(string, ref)
-    if File.exists?(Rails.root.join(string))
-      "#{local_path(string)}/#{correct_ref(ref)}"
+  # Checks if the path exists in the repo
+  # eg. checks if doc/README.md exists, if it doesn't then it is a wiki link
+  def path_with_ref(path, ref)
+    if File.exists?(Rails.root.join(path))
+      "#{local_path(path)}/#{correct_ref(ref)}"
     else
       "wikis"
     end
   end
 
-  def local_path(string)
-    File.directory?(Rails.root.join(string)) ? "tree":"blob"
+  # Check if the path is pointing to a directory(tree) or a file(blob)
+  # eg. doc/api is directory and doc/README.md is file
+  def local_path(path)
+    File.directory?(Rails.root.join(path)) ? "tree" : "blob"
   end
 
+  # We will assume that if no ref exists we can point to master
   def correct_ref(ref)
-    ref ? ref:'master'
+    ref ? ref : "master"
   end
 end
