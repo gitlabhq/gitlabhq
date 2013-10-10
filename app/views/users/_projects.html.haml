@@ -3,9 +3,4 @@
   %ul.well-list
     - @projects.each do |project|
       %li
-        = link_to project_path(project), class: dom_class(project) do
-          - if project.namespace
-            = project.namespace.human_name
-            \/
-          %strong.well-title
-            = truncate(project.name, length: 45)
+        = link_to_project project

@@ -5,10 +5,10 @@ module ProjectsHelper
 
   def link_to_project project
     link_to project do
-      title = content_tag(:strong, project.name)
+      title = content_tag(:span, project.name, class: 'projet-name')
 
       if project.namespace
-        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'tiny')
+        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'namespace-name')
         title = namespace + title
       end
 
