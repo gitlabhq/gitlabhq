@@ -7,7 +7,7 @@
 %hr
 
 
-%div
+.account-page
   %fieldset.update-token
     %legend
       Private token
@@ -33,7 +33,7 @@
   - if show_profile_social_tab?
     %fieldset
       %legend Social Accounts
-      .oauth_select_holder
+      .oauth_select_holder.append-bottom-10
         %p Click on icon to activate signin with one of the following services
         - enabled_social_providers.each do |provider|
           %span{class: oauth_active_class(provider) }
