@@ -131,4 +131,13 @@ module ProjectsHelper
       "your@email.com"
     end
   end
+
+  def repository_size
+    "#{@project.repository.size} MB"
+  rescue
+    # In order to prevent 500 error
+    # when application cannot allocate memory
+    # to calculate repo size - just show 'Unknown'
+    'unknown'
+  end
 end
