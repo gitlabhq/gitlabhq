@@ -14,6 +14,11 @@ class ProjectObserver < BaseObserver
 
       log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
     end
+
+    if project.wiki_enabled?
+      # force the creation of a wiki,
+      GollumWiki.new(project, project.owner).wiki
+    end
   end
 
   def after_update(project)
