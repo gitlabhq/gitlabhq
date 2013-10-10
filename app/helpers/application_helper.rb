@@ -105,7 +105,7 @@ module ApplicationHelper
     groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
 
     default_nav = [
-      { label: "My Profile", url: profile_path },
+      { label: "My Profile settings", url: profile_path },
       { label: "My SSH Keys", url: profile_keys_path },
       { label: "My Dashboard", url: root_path },
       { label: "Admin Section", url: admin_root_path },
