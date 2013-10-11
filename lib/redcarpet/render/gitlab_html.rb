@@ -6,6 +6,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   def initialize(template, options = {})
     @template = template
     @project = @template.instance_variable_get("@project")
+    @ref = @template.instance_variable_get("@ref")
+    @request_path = @template.instance_variable_get("@path")
     super options
   end
 
@@ -32,7 +34,15 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     h.link_to_gfm(content, link, title: title)
   end
 
+  def preprocess(full_document)
+    h.create_relative_links(full_document, @project.path_with_namespace, @ref, @request_path, is_wiki?)
+  end
+
   def postprocess(full_document)
     h.gfm(full_document)
+  end
+
+  def is_wiki?
+    @template.instance_variable_get("@wiki")
   end
 end
