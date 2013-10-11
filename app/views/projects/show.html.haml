@@ -56,6 +56,12 @@
           = link_to archive_project_repository_path(@project), class: "btn btn-block" do
             %i.icon-download-alt
             %span Download
+
+        - if @project.imported? and can? current_user, :sync_repository, @project
+          = link_to sync_imported_project_path(@project), class: "btn btn-block", method: "POST" do
+            %i.icon-refresh
+            %span Sync from origin
+
     %br
     .light-well
       %p

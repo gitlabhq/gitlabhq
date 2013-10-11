@@ -138,7 +138,8 @@ class Ability
         :admin_merge_request,
         :admin_note,
         :admin_wiki,
-        :admin_project
+        :admin_project,
+        :sync_repository
       ]
     end
 
@@ -147,7 +148,8 @@ class Ability
         :change_namespace,
         :change_public_mode,
         :rename_project,
-        :remove_project
+        :remove_project,
+        :sync_repository
       ]
     end
 

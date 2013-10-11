@@ -163,6 +163,7 @@ Gitlab::Application.routes.draw do
       put :transfer
       post :fork
       get :autocomplete_sources
+      post :sync_imported
     end
 
     scope module: :projects do
