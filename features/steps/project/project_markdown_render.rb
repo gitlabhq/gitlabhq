@@ -150,4 +150,16 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     page.should have_content "backup_restore.md"
     page.should have_content "maintenance.md"
   end
+
+  Given 'I visit to the help page' do
+    visit help_path
+  end
+
+  And 'I select a page with markdown' do
+    click_link "Rake Tasks"
+  end
+
+  Then 'I should see a help page with markdown' do
+    page.should have_content "GitLab provides some specific rake tasks to enable special features or perform maintenance tasks"
+  end
 end 

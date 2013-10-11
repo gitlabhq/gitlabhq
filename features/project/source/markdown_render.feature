@@ -68,3 +68,8 @@ Feature: Project markdown render
     When I go back to wiki page home
     And I click on Rake tasks link
     Then I see Rake tasks directory
+
+  Scenario: I visit the help page with markdown
+    Given I visit to the help page
+    And I select a page with markdown
+    Then I should see a help page with markdown
