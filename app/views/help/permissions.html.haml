@@ -1,6 +1,8 @@
 = render layout: 'help/layout' do
   %h3.page-title Permissions
-  %p.light User has different abilities depends on access level he has in particular group or project
+  %p.light Users have different abilities depending on the access level they have in particular group or project.
+  %p.light If a user is both in a project group and in the project itself the highest permission level is used.
+  %p.light If a user is a GitLab administrator they receive all permissions.
   %hr
 
   %h4 Project:
