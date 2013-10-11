@@ -144,7 +144,7 @@ module API
         trees = []
 
         %w(trees blobs submodules).each do |type|
-          trees += tree.send(type).map { |t| { name: t.name, type: type.singularize, mode: t.mode, id: t.id } }
+          trees += tree.send(type).map { |t| {name: t.name, type: type.singularize, mode: t.mode, id: t.id} }
         end
 
         trees
@@ -175,6 +175,34 @@ module API
 
         content_type blob.mime_type
         present blob.data
+      end
+
+      # Get a an archive of the repository
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (optional) - the commit sha to download defaults to the tip of the default branch
+      # Example Request:
+      #   GET /projects/:id/repository/archive
+      get ":id/repository/archive" do
+        authorize! :download_code, user_project
+        repo = user_project.repository
+        ref = params[:sha]
+        storage_path = Rails.root.join("tmp", "repositories")
+
+        file_path = repo.archive_repo(ref, storage_path)
+        if file_path && File.exists?(file_path)
+          data = File.open(file_path, 'rb').read
+
+          header "Content-Disposition:", " infile; filename=\"#{File.basename(file_path)}\""
+          content_type 'application/x-gzip'
+
+          env['api.format'] = :binary
+
+          present data
+        else
+          not_found!
+        end
       end
     end
   end
