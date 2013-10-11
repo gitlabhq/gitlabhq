@@ -200,6 +200,9 @@ production: &base
     # sign_in_text: |
     #   ![Company Logo](http://www.companydomain.com/logo.png)
     #   [Learn more about CompanyName](http://www.companydomain.com/)
+   
+    ## enable or disable emoticons processing (default: true)
+    # emoticons: true
 
 development:
   <<: *base

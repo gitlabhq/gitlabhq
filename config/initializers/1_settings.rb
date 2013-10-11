@@ -123,6 +123,7 @@ Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "t
 #
 Settings['extra'] ||= Settingslogic.new({})
 
+Settings.extra['emoticons'] = true if Settings.extra['emoticons'].nil? # default enable
 #
 # Testing settings
 #

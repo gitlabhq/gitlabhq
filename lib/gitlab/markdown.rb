@@ -89,7 +89,7 @@ module Gitlab
     # Returns parsed text
     def parse(text)
       parse_references(text) if @project
-      parse_emoji(text)
+      parse_emoji(text) if Gitlab.config.extra.emoticons == true
 
       text
     end
