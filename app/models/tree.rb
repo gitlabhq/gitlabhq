@@ -7,7 +7,8 @@ class Tree
     @entries = Gitlab::Git::Tree.where(git_repo, sha, path)
 
     if readme_tree = @entries.find(&:readme?)
-      @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_tree.name)
+      readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
+      @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
     end
   end
 
