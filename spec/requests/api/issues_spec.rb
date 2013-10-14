@@ -42,6 +42,7 @@ describe API::API do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
       response.status.should == 200
       json_response['title'].should == issue.title
+      json_response['iid'].should == issue.iid
     end
 
     it "should return 404 if issue id not found" do

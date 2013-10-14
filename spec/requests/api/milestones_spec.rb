@@ -30,6 +30,7 @@ describe API::API do
       get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
       response.status.should == 200
       json_response['title'].should == milestone.title
+      json_response['iid'].should == milestone.iid
     end
 
     it "should return 401 error if user not authenticated" do
