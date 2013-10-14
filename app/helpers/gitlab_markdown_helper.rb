@@ -129,11 +129,18 @@ module GitlabMarkdownHelper
   # Covering a special case, when the link is referencing file in the same directory eg:
   # If we are at doc/api/README.md and the README.md contains relative links like [Users](users.md)
   # this takes the request path(doc/api/README.md), and replaces the README.md with users.md so the path looks like doc/api/users.md
+  # If we are at doc/api and the README.md shown in below the tree view
+  # this takes the rquest path(doc/api) and adds users.md so the path looks like doc/api/users.md
   def build_nested_path(path, request_path)
     return path unless request_path
-    base = request_path.split("/")
-    base.pop
-    (base + [path]).join("/")
+    if local_path(request_path) == "tree"
+      base = request_path.split("/").push(path)
+      base.join("/")
+    else
+      base = request_path.split("/")
+      base.pop
+      base.push(path).join("/")
+    end
   end
 
   def file_exists?(path)

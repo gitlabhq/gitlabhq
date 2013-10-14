@@ -162,4 +162,18 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   Then 'I should see a help page with markdown' do
     page.should have_content "GitLab provides some specific rake tasks to enable special features or perform maintenance tasks"
   end
-end 
+
+  Given 'I go directory which contains README file' do
+    visit project_tree_path(@project, "master/doc/api")
+    current_path.should == project_tree_path(@project, "master/doc/api")
+  end
+
+  And 'I click on a relative link in README' do
+    click_link "Users"
+  end
+
+  Then 'I should see the correct markdown' do
+    current_path.should == project_blob_path(@project, "master/doc/api/users.md")
+    page.should have_content "List users"
+  end
+end
