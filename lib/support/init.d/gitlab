@@ -218,9 +218,7 @@ reload(){
   kill -USR2 "$wpid"
   echo "Done."
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
-  RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:stop
-  echo "Starting Sidekiq..."
-  RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:start
+  RAILS_ENV=$RAILS_ENV bundle exec rake sidekiq:restart
   # Waiting 2 seconds for sidekiq to write it.
   sleep 2
   status
