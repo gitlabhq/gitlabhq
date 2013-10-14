@@ -10,6 +10,7 @@ GET /projects/:id/milestones
 [
   {
     "id":12,
+    "iid":3,
     "project_id":16,
     "title":"10.0",
     "description":"Version",
