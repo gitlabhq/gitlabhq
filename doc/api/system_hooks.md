@@ -1,5 +1,7 @@
 All methods require admin authorization.
 
+The url endpoint of the system hooks can be configured in [the admin area under hooks](/admin/hooks).
+
 ## List system hooks
 
 Get list of system hooks
