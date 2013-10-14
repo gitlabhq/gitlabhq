@@ -11,6 +11,7 @@ GET /issues
 [
   {
     "id": 43,
+    "iid": 3,
     "project_id": 8,
     "title": "4xx/5xx pages",
     "description": "",
@@ -31,6 +32,7 @@ GET /issues
   },
   {
     "id": 42,
+    "iid": 4,
     "project_id": 8,
     "title": "Add user settings",
     "description": "",
@@ -100,6 +102,7 @@ Parameters:
 ```json
 {
   "id": 42,
+  "iid": 3,
   "project_id": 8,
   "title": "Add user settings",
   "description": "",
