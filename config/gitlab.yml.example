@@ -116,6 +116,7 @@ production: &base
 
     # Filter LDAP users
     #
+    #   Format: RFC 4515
     #   Ex. (employeeType=developer)
     #
     user_filter: ''
