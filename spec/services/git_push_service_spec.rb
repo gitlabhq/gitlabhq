@@ -26,6 +26,7 @@ describe GitPushService do
     it { should include(ref: @ref) }
     it { should include(user_id: user.id) }
     it { should include(user_name: user.name) }
+    it { should include(project_id: project.id) }
 
     context "with repository data" do
       subject { @push_data[:repository] }
