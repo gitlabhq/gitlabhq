@@ -73,3 +73,8 @@ Feature: Project markdown render
     Given I visit to the help page
     And I select a page with markdown
     Then I should see a help page with markdown
+
+  Scenario: Tree view should have correct links in README
+    Given I go directory which contains README file
+    And I click on a relative link in README
+    Then I should see the correct markdown
