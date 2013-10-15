@@ -122,9 +122,11 @@ module EventsHelper
     end
   end
 
-  def event_note(text)
+  def event_note(text, max_length = 150)
     text = first_line(text)
-    text = truncate(text, length: 150)
+    if (text.length > max_length)
+      text = text.truncate(max_length, :separator => ' ')
+    end
     sanitize(markdown(text), tags: %w(a img b pre p))
   end
 end
