@@ -29,6 +29,7 @@ module Gitlab
 
           user = model.build_user(opts, as: :admin)
           user.save!
+          user.confirm!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
           if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?

@@ -17,6 +17,8 @@ v 6.2.0
   - Avatar upload on profile page with a maximum of 200KB (Steven Thonus)
   - Store the sessions in Redis instead of the cookie store
   - Fixed relative links in markdown
+  - User must confirm his email if signup enabled
+  - User must confirm changed email 
 
 v 6.1.0
   - Project specific IDs for issues, mr, milestones
