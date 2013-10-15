@@ -344,6 +344,12 @@ a different host, you can configure its connection string via the
     # example
     production: redis://redis.example.tld:6379
 
+If you want to connect the Redis server via socket, then use the "unix:" URL scheme 
+and the path to the Redis socket file in the `config/resque.yml` file.
+
+    # example
+    production: unix:/path/to/redis/socket
+
 ## Custom SSH Connection
 
 If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
