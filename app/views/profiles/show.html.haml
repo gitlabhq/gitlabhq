@@ -25,7 +25,12 @@
         = f.label :email, class: "control-label"
         .controls
           = f.text_field :email, class: "input-xlarge", required: true
-          %span.help-block We also use email for avatar detection if no avatar is uploaded.
+          - if @user.unconfirmed_email.present?
+            %span.help-block
+              We sent confirmation email to
+              %strong #{@user.unconfirmed_email}
+          - else
+            %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .control-group
         = f.label :skype, class: "control-label"
         .controls= f.text_field :skype, class: "input-xlarge"

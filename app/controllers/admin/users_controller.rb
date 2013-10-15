@@ -72,6 +72,7 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       if user.update_attributes(params[:user], as: :admin)
+        user.confirm!
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
