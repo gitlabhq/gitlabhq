@@ -1,5 +1,6 @@
 # Things to do when creating new release
-NOTE: This is a developer guide. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update). 
+NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
+
 ## Install guide up to date?
 
 * References correct GitLab branch `x-x-stable` and correct GitLab shell tag?
@@ -41,7 +42,7 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 #### 10. Check application status
 
-## Make sure code status is good
+## Make sure the code quality indicatiors are good
 
 * [![build status](http://ci.gitlab.org/projects/1/status.png?ref=master)](http://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
 
@@ -53,4 +54,18 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 * [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 
-## Make release branch
+## Make a release branch
+
+After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked.
+
+- 5 days before release: feature freeze
+- 3 days before release: UI freeze
+- 1 day before release: code freeze
+
+## Last actions
+
+1. Write a blog post (mention what GitLab is on the first line, select a MVP)
+1. Update VERSION and CHANGELOG
+1. Create a git tag vX.X.X
+1. Publish the blog post
+1. Tweet about the release
