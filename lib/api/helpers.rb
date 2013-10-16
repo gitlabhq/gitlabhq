@@ -16,7 +16,7 @@ module API
         rescue => ex
           not_found!("No user id or username for: #{identifier}")
         end
-        not_found!("No user id or username for: #{identifier}") if current_user.nil?
+        not_found!("No user id or username for: #{identifier}") if @current_user.nil?
       end
       @current_user
     end
