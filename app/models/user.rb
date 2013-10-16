@@ -199,11 +199,7 @@ class User < ActiveRecord::Base
     end
 
     def by_username_or_id(name_or_id)
-      if (name_or_id.is_a?(Integer))
-        User.find_by_id(name_or_id)
-      else
-        User.find_by_username(name_or_id)
-      end
+      where('username = ? OR id = ?', name_or_id, name_or_id).first
     end
 
     def build_user(attrs = {}, options= {})
