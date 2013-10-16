@@ -1,5 +1,5 @@
 %h3.page-title
-  User:
+  %span.cgray User:
   = @user.name
   - if @user.blocked?
     %span.cred (Blocked)
@@ -10,8 +10,6 @@
     = link_to edit_admin_user_path(@user), class: "btn grouped" do
       %i.icon-edit
       Edit
-    - if @user.blocked?
-      = link_to 'Unblock', unblock_admin_user_path(@user), method: :put, class: "btn grouped success"
 %hr
 
 .row
@@ -67,17 +65,30 @@
               = link_to @user.created_by.name, [:admin, @user.created_by]
 
     - unless @user == current_user
-      .alert
-        %h4 Block user
-        %br
-        %p Blocking user has the following effects:
-        %ul
-          %li User will not be able to login
-          %li User will not be able to access git repositories
-          %li User will be removed from joined projects and groups
-          %li Personal projects will be left
-          %li Owned groups will be left
-        = link_to 'Block user', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-remove"
+      - if @user.blocked?
+        .alert.alert-info
+          %h4 This user is blocked
+          %br
+          %p Blocking user has the following effects:
+          %ul
+            %li User will not be able to login
+            %li User will not be able to access git repositories
+            %li User will be removed from joined projects and groups
+            %li Personal projects will be left
+            %li Owned groups will be left
+          = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-new", confirm: 'Are you sure?'
+      - else
+        .alert
+          %h4 Block this user
+          %br
+          %p Blocking user has the following effects:
+          %ul
+            %li User will not be able to login
+            %li User will not be able to access git repositories
+            %li User will be removed from joined projects and groups
+            %li Personal projects will be left
+            %li Owned groups will be left
+          = link_to 'Block user', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-remove"
 
       .alert.alert-error
         %h4
