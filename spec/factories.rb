@@ -23,6 +23,10 @@ FactoryGirl.define do
     end
 
     factory :admin, traits: [:admin]
+
+    after :create do |u|
+      u.confirm!
+    end
   end
 
   factory :project do
