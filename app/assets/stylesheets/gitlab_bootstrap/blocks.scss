@@ -34,6 +34,8 @@
   &.ui-box-show {
     margin:20px 0;
     background: #FFF;
+    box-shadow: inset 0 1px 0 #fff, 0 1px 5px #f1f1f1;
+    @include linear-gradient(#fafafa, #f1f1f1);
 
     .control-group {
       margin-bottom: 0;

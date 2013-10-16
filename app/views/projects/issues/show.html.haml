@@ -32,7 +32,7 @@
   .ui-box-head
     %h4.box-title
       - if @issue.closed?
-        .error.status_info Closed
+        .state-label.state-label-red Closed
       = gfm escape_once(@issue.title)
 
   .ui-box-body

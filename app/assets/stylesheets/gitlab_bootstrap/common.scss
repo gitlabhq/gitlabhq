@@ -87,3 +87,24 @@ pre.well-pre {
   font-weight: bold;
   @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
 }
+
+/** Big Labels **/
+.state-label {
+  font-size: 14px;
+  padding: 5px 15px;
+  text-align: center;
+  float: right;
+  position: relative;
+  top: -5px;
+  @include border-radius(4px);
+
+  &.state-label-green {
+    background: #4A4;
+    color: #FFF;
+  }
+
+  &.state-label-red {
+    background: #DA4E49;
+    color: #FFF;
+  }
+}

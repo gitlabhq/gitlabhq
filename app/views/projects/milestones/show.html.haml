@@ -26,9 +26,9 @@
   .ui-box-head
     %h4.box-title
       - if @milestone.closed?
-        .error.status_info Closed
+        .state-label.state-label-red Closed
       - elsif @milestone.expired?
-        .error.status_info Expired
+        .state-label.state-label-red Expired
 
       = gfm escape_once(@milestone.title)
 

@@ -140,27 +140,6 @@ p.time {
   border-bottom: 2px solid #F90;
 }
 
-.status_info {
-  font-size: 14px;
-  padding: 5px 15px;
-  line-height: 26px;
-  text-align: center;
-  float: right;
-  position: relative;
-  top: -5px;
-  @include border-radius(4px);
-
-  &.success {
-    background: #4A4;
-    color: #FFF;
-  }
-
-  &.error {
-    background: #DA4E49;
-    color: #FFF;
-  }
-}
-
 .thin_area{
   height: 150px;
 }
