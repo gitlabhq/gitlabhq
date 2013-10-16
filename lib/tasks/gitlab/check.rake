@@ -678,7 +678,7 @@ namespace :gitlab do
     end
 
     def sidekiq_process_match
-      run_and_match("ps ux | grep -i sidekiq", /(sidekiq \d+\.\d+\.\d+.+$)/)
+      run_and_match("ps ux | grep -i sidekiq | grep -v grep", /(sidekiq \d+\.\d+\.\d+.+$)/)
     end
   end
 
