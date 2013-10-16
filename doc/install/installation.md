@@ -52,7 +52,7 @@ If you are not familiar with vim please skip this and keep using the default edi
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
 Make sure you have the right version of Python installed.
 
@@ -265,6 +265,9 @@ Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
 
+## Set up logrotate
+
+    sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
 ## Check Application Status
 
