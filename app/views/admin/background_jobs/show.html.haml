@@ -33,6 +33,6 @@
               %td= data.shift
               %td
             %td= data.join(" ")
-  %b If '[25 of 25 busy]' is shown, restart GitLab.
+  %b If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
   %br
   %b If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u git -f sidekiq) and restart GitLab.
