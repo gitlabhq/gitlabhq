@@ -3,7 +3,7 @@
 .ui-box
   %iframe{src: sidekiq_path, width: '100%', height: 900, style: "border: none"}
 %h4 Sidekiq running processes
-- sidekiq_processes = `ps -eo euser,pid,pcpu,pmem,stat,start,command | grep sidekiq | grep -v grep`
+- sidekiq_processes = `ps -U #{Settings.gitlab.user} -o euser,pid,pcpu,pmem,stat,start,command | grep sidekiq | grep -v grep`
 - if sidekiq_processes.empty?
   %b There are no running sidekiq processes
   %b Please restart GitLab
