@@ -47,6 +47,17 @@ describe IssuesHelper do
 
       url_for_project_issues.should eq ""
     end
+
+    describe "when external tracker was enabled and then config removed" do
+      before do
+        @project = ext_project
+        Gitlab.config.stub(:issues_tracker).and_return(nil)
+      end
+
+      it "should return path to internal tracker" do
+        url_for_project_issues.should match(polymorphic_path([@project]))
+      end
+    end
   end
 
   describe :url_for_issue do
@@ -75,6 +86,17 @@ describe IssuesHelper do
 
       url_for_issue(issue.iid).should eq ""
     end
+
+    describe "when external tracker was enabled and then config removed" do
+      before do
+        @project = ext_project
+        Gitlab.config.stub(:issues_tracker).and_return(nil)
+      end
+
+      it "should return internal path" do
+        url_for_issue(issue.iid).should match(polymorphic_path([@project, issue]))
+      end
+    end
   end
 
   describe :url_for_new_issue do
@@ -100,6 +122,17 @@ describe IssuesHelper do
       @project = nil
 
       url_for_new_issue.should eq ""
+    end
+
+    describe "when external tracker was enabled and then config removed" do
+      before do
+        @project = ext_project
+        Gitlab.config.stub(:issues_tracker).and_return(nil)
+      end
+
+      it "should return internal path" do
+        url_for_new_issue.should match(new_project_issue_path(@project))
+      end
     end
   end
 
