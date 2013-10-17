@@ -22,7 +22,8 @@ Gitlab::Seeder.quiet do
         assignee_id: user_id,
         state: ['opened', 'closed'].sample,
         milestone: project.milestones.sample,
-        title: Faker::Lorem.sentence(6)
+        title: Faker::Lorem.sentence(6),
+        description: Faker::Lorem.sentence
       }])
     ensure
       Thread.current[:current_user] = nil
