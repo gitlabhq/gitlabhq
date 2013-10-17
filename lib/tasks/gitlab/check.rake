@@ -643,7 +643,7 @@ namespace :gitlab do
     def check_sidekiq_running
       print "Running? ... "
 
-      if sidekiq_process_match
+      if sidekiq_process_count > 0
         puts "yes".green
       else
         puts "no".red
@@ -659,14 +659,14 @@ namespace :gitlab do
     end
 
     def only_one_sidekiq_running
-      sidekiq_match = sidekiq_process_match
-      return unless sidekiq_match
+      process_count = sidekiq_process_count
+      return if process_count.zero?
 
       print 'Number of Sidekiq processes ... '
-      if sidekiq_match.length == 1
+      if process_count == 1
         puts '1'.green
       else
-        puts "#{sidekiq_match.length}".red
+        puts "#{process_count}".red
         try_fixing_it(
           'sudo service gitlab stop',
           "sudo pkill -u #{gitlab_user} -f sidekiq",
@@ -677,8 +677,8 @@ namespace :gitlab do
       end
     end
 
-    def sidekiq_process_match
-      run_and_match("ps ux | grep -i sidekiq | grep -v grep", /(sidekiq \d+\.\d+\.\d+.+$)/)
+    def sidekiq_process_count
+      `ps ux`.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
 
