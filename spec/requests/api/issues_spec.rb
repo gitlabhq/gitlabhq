@@ -100,4 +100,16 @@ describe API::API do
       response.status.should == 405
     end
   end
+
+  describe "PUT /projects/:id/issues/:issue_id to test observer on close" do
+    before { enable_observers }
+    after { disable_observers }
+
+    it "should create an activity event when an issue is closed" do
+      Event.should_receive(:create)
+
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+        state_event: "close"
+    end
+  end
 end
