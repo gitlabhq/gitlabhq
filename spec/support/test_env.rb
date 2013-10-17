@@ -86,9 +86,8 @@ module TestEnv
     )
 
     ActivityObserver.any_instance.stub(
-        current_user: double("current_user", id: 1)
+      current_user: double("current_user", id: 1)
     )
-
   end
 
   def clear_repo_dir(namespace, name)
