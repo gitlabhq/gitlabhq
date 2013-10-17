@@ -97,6 +97,7 @@ pre.well-pre {
   position: relative;
   top: -5px;
   @include border-radius(4px);
+  text-shadow: none;
 
   &.state-label-green {
     background: #4A4;
