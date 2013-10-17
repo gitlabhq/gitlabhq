@@ -77,7 +77,7 @@ module ProjectsHelper
   end
 
   def project_active_milestones
-    @project.milestones.active.order("id desc").all
+    @project.milestones.active.order("due_date, title ASC").all
   end
 
   def project_issues_trackers
