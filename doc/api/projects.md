@@ -93,7 +93,7 @@ GET /projects/:id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 
 ```json
 {
