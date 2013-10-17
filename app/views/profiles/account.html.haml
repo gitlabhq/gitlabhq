@@ -15,9 +15,10 @@
       %li.active
         = link_to '#tab-token', 'data-toggle' => 'tab' do
           Private Token
-      %li
-        = link_to '#tab-password', 'data-toggle' => 'tab' do
-          Password
+      - if show_profile_password_tab?
+        %li
+          = link_to '#tab-password', 'data-toggle' => 'tab' do
+            Password
 
       - if show_profile_social_tab?
         %li
@@ -56,27 +57,28 @@
                     %span You don`t have one yet. Click generate to fix it.
                     = f.submit 'Generate', class: "btn success btn-build-token"
 
-      .tab-pane#tab-password
-        %fieldset.update-password
-          %legend Password
-          = form_for @user, url: update_password_profile_path, method: :put do |f|
-            %div
-              %p.slead After a successful password update you will be redirected to login page where you should login with your new password
-              -if @user.errors.any?
-                .alert.alert-error
-                  %ul
-                    - @user.errors.full_messages.each do |msg|
-                      %li= msg
-              .control-group
-                = f.label :password
-                .controls= f.password_field :password, required: true
-              .control-group
-                = f.label :password_confirmation
-                .controls
-                  = f.password_field :password_confirmation, required: true
-              .control-group
-                .controls
-                  = f.submit 'Save password', class: "btn btn-save"
+      - if show_profile_password_tab?
+        .tab-pane#tab-password
+          %fieldset.update-password
+            %legend Password
+            = form_for @user, url: update_password_profile_path, method: :put do |f|
+              %div
+                %p.slead After a successful password update you will be redirected to login page where you should login with your new password
+                -if @user.errors.any?
+                  .alert.alert-error
+                    %ul
+                      - @user.errors.full_messages.each do |msg|
+                        %li= msg
+                .control-group
+                  = f.label :password
+                  .controls= f.password_field :password, required: true
+                .control-group
+                  = f.label :password_confirmation
+                  .controls
+                    = f.password_field :password_confirmation, required: true
+                .control-group
+                  .controls
+                    = f.submit 'Save password', class: "btn btn-save"
 
       - if show_profile_social_tab?
         .tab-pane#tab-social

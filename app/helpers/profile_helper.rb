@@ -5,6 +5,10 @@ module ProfileHelper
     end
   end
 
+  def show_profile_password_tab?
+    current_user.can_change_password?
+  end
+
   def show_profile_username_tab?
     current_user.can_change_username?
   end

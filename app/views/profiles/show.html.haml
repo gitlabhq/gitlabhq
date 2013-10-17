@@ -49,8 +49,9 @@
       %fieldset.tips
         %legend Tips:
         %ul
-          %li
-            %p You can change your password on the Account page
+          - if current_user.can_change_password?
+            %li
+              %p You can change your password on the Account page
           - if Gitlab.config.gravatar.enabled
             %li
               %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}

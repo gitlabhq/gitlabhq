@@ -272,6 +272,10 @@ class User < ActiveRecord::Base
     keys.count == 0
   end
 
+  def can_change_password?
+    !ldap_user? && !pam_user?
+  end
+
   def can_change_username?
     Gitlab.config.gitlab.username_changing_enabled
   end
