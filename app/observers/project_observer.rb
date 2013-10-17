@@ -16,8 +16,14 @@ class ProjectObserver < BaseObserver
     end
 
     if project.wiki_enabled?
-      # force the creation of a wiki,
-      GollumWiki.new(project, project.owner).wiki
+      begin
+        # force the creation of a wiki,
+        GollumWiki.new(project, project.owner).wiki
+      rescue GollumWiki::CouldNotCreateWikiError => ex
+        # Prevent project observer crash
+        # if failed to create wiki
+        nil
+      end
     end
   end
 
