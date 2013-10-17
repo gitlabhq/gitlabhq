@@ -32,6 +32,8 @@
   }
 
   &.ui-box-show {
+    text-shadow: 0 1px 1px #fff;
+    color: #666;
     margin:20px 0;
     background: #FFF;
     box-shadow: inset 0 1px 0 #fff, 0 1px 5px #f1f1f1;
@@ -71,7 +73,6 @@
 
   .ui-box-head {
     .box-title {
-      color: $style_color;
       font-size: 18px;
       font-weight: normal;
       line-height: 28px;
