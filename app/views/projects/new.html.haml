@@ -51,7 +51,7 @@
         = f.label :public do
           %span Public project
         .controls
-          = f.check_box :public, { checked: Gitlab.config.gitlab.default_projects_features.public }, true, false
+          = f.check_box :public, { checked: gitlab_config.default_projects_features.public }, true, false
           %span.help-inline Make project visible to everyone
 
       .form-actions
