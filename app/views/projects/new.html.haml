@@ -6,7 +6,7 @@
     = form_for @project, remote: true do |f|
       .control-group.project-name-holder
         = f.label :name do
-          %strong Project name is
+          %strong Project name
         .controls
           = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
           %span.help-inline
