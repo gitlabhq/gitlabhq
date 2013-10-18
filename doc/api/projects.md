@@ -85,7 +85,7 @@ GET /projects
 ### Get single project
 
 Get a specific project, identified by project ID or NAME, which is owned by the authentication user.
-Currently namespaced projects cannot retrieved by name.
+Currently namespaced projects cannot be retrieved by name.
 
 ```
 GET /projects/:id
@@ -93,7 +93,7 @@ GET /projects/:id
 
 Parameters:
 
-+ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
++ `id` (required) - The ID or NAME of a project
 
 ```json
 {
