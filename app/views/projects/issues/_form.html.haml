@@ -1,5 +1,5 @@
 %div.issue-form-holder
-  %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.id}"
+  %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.iid}"
   = form_for [@project, @issue] do |f|
     -if @issue.errors.any?
       .alert.alert-error
