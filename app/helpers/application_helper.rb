@@ -192,7 +192,7 @@ module ApplicationHelper
               alt: "Sign in with #{provider.to_s.titleize}")
   end
 
-  def simple_sanitize str
+  def simple_sanitize(str)
     sanitize(str, tags: %w(a span))
   end
 
