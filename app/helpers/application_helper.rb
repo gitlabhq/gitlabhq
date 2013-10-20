@@ -98,51 +98,6 @@ module ApplicationHelper
     grouped_options_for_select(options, @ref || @project.default_branch)
   end
 
-  def search_autocomplete_source
-    return unless current_user
-
-    projects = current_user.authorized_projects.map { |p| { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) } }
-    groups = current_user.authorized_groups.map { |group| { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) } }
-
-    default_nav = [
-      { label: "My Profile settings", url: profile_path },
-      { label: "My SSH Keys", url: profile_keys_path },
-      { label: "My Dashboard", url: root_path },
-      { label: "Admin Section", url: admin_root_path },
-    ]
-
-    help_nav = [
-      { label: "help: API Help", url: help_api_path },
-      { label: "help: Markdown Help", url: help_markdown_path },
-      { label: "help: Permissions Help", url: help_permissions_path },
-      { label: "help: Public Access Help", url: help_public_access_path },
-      { label: "help: Rake Tasks Help", url: help_raketasks_path },
-      { label: "help: SSH Keys Help", url: help_ssh_path },
-      { label: "help: System Hooks Help", url: help_system_hooks_path },
-      { label: "help: Web Hooks Help", url: help_web_hooks_path },
-      { label: "help: Workflow Help", url: help_workflow_path },
-    ]
-
-    project_nav = []
-    if @project && @project.repository.exists? && @project.repository.root_ref
-      project_nav = [
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Files",    url: project_tree_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Commits",  url: project_commits_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Network",  url: project_network_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Graph",    url: project_graph_path(@project, @ref || @project.repository.root_ref) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Issues",   url: project_issues_path(@project) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Merge Requests", url: project_merge_requests_path(@project) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Milestones", url: project_milestones_path(@project) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Snippets", url: project_snippets_path(@project) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Team",     url: project_team_index_path(@project) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wall",     url: project_wall_path(@project) },
-        { label: "#{simple_sanitize(@project.name_with_namespace)} - Wiki",     url: project_wikis_path(@project) },
-      ]
-    end
-
-    [groups, projects, default_nav, project_nav, help_nav].flatten.to_json
-  end
-
   def emoji_autocomplete_source
     # should be an array of strings
     # so to_s can be called, because it is sufficient and to_json is too slow
@@ -192,7 +147,7 @@ module ApplicationHelper
               alt: "Sign in with #{provider.to_s.titleize}")
   end
 
-  def simple_sanitize str
+  def simple_sanitize(str)
     sanitize(str, tags: %w(a span))
   end
 
