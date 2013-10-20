@@ -24,7 +24,7 @@ describe "Issues" do
     end
 
     it "should open new issue popup" do
-      page.should have_content("Issue ##{issue.id}")
+      page.should have_content("Issue ##{issue.iid}")
     end
 
     describe "fill in" do
