@@ -81,16 +81,16 @@ ul.nav.nav-projects-tabs {
 
 .my-projects {
   li {
-    .project-title {
-      font-size: 14px;
-    }
-
     .project-info {
       margin-bottom: 10px;
     }
 
-    .access-icon i {
+    .access-icon {
       color: #AAA;
+      margin-left: 10px;
+      i {
+        color: #AAA;
+      }
     }
   }
 }

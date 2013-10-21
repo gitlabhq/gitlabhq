@@ -56,13 +56,12 @@
       - @projects.each do |project|
         %li
           %h4.project-title
-            %span.access-icon
-              - if project.public
-                = public_icon
-              - else
-                = private_icon
             = link_to project_path(project), class: dom_class(project) do
-              %strong= project.name_with_namespace
+              = project.name_with_namespace
+            - if project.public
+              %small.access-icon
+                = public_icon
+                Public
 
             - if project.forked_from_project
               %small.pull-right
