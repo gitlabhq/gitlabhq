@@ -52,7 +52,7 @@ If you are not familiar with vim please skip this and keep using the default edi
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
 Make sure you have the right version of Python installed.
 
@@ -73,6 +73,34 @@ Make sure you have the right version of Python installed.
 
     # For reStructuredText markup language support install required package:
     sudo apt-get install -y python-docutils
+
+Make sure you have the right version of Git installed
+
+    # Install Git
+    sudo apt-get install -y git-core
+
+    # Make sure Git is version 1.7.10 or higher
+    git --version
+
+    # System packaged Git too old? Remove it and compile from source.
+
+    # Remove packaged Git
+    sudo apt-get remove git-core
+
+    # Install dependencies
+    sudo apt-get install -y libexpat1-dev gettext
+
+    # Download and compile from source
+    cd /tmp
+    curl --progress https://git-core.googlecode.com/files/git-1.8.4.1.tar.gz | tar xz
+    cd git-1.8.4.1/
+    make prefix=/usr/local all
+
+    # Install into /usr/local/bin
+    sudo make prefix=/usr/local install
+
+    # Create a symlink for GitLab
+    sudo ln -s /usr/local/bin/git /usr/bin/git
 
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
