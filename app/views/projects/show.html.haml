@@ -25,7 +25,6 @@
       = link_to pluralize(@repository.tag_names.count, 'tag'), project_tags_path(@project)
       %span.light.prepend-left-20= repository_size
 
-%hr
 .row
   .span9
     = render "events/event_last_push", event: @last_push

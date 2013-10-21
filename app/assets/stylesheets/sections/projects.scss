@@ -15,6 +15,10 @@
 }
 
 .project-home-panel {
+  border-bottom: 1px solid #DDD;
+  padding-bottom: 30px;
+  margin-bottom: 30px;
+
   .project-home-title {
     font-size: 18px;
     color: #777;
@@ -26,7 +30,7 @@
     float: right;
   }
   .project-home-extra {
-    margin-top: 10px;
+    margin-top: 20px;
 
     .project-home-desc {
       float: left;
