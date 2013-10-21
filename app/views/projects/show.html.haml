@@ -5,6 +5,9 @@
         = @project.name_with_namespace
         - if @project.public
           %span.public-label Public
+        - else
+          %span.public-label Private
+
     .span8
       .project-home-dropdown
         = render "dropdown"
