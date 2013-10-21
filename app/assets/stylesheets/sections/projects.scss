@@ -14,25 +14,67 @@
   }
 }
 
-.project_clone_panel {
-  @include border-radius(4px);
-  @include bg-gray-gradient;
-  padding: 4px 7px;
-  border: 1px solid #CCC;
-  margin-bottom: 20px;
+.project-home-panel {
+  .project-home-title {
+    font-size: 18px;
+    color: #777;
+    margin: 0;
+    line-height: 2;
+  }
+  .project-home-dropdown {
+    margin-left: 10px;
+    float: right;
+  }
+  .project-home-extra {
+    margin-top: 10px;
 
-  .btn {
-    padding: 4px 12px;
+    .project-home-desc {
+      float: left;
+      color: #999;
+    }
+
+    .project-home-links {
+      float: right;
+      a {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .public-label {
+    font-size: 14px;
+    background: #f1f1f1;
+    padding: 6px 10px;
+    border-radius: 4px;
+    margin-left: 10px;
+    color: #888;
+    text-shadow: 0 1px 1px #FFF;
   }
 }
 
-.project_clone_holder {
-  input[type="text"] {
-    @extend .monospace;
-    border: 1px solid #BBB;
+.git-clone-holder {
+  float: right;
+
+  .btn {
+    border: none;
+    background: none;
     box-shadow: none;
-    margin-left: -1px;
-    background: #FFF;
+    color: #29b;
+    padding: 6px;
+
+    &.active {
+      color: #333;
+      font-weight: bold;
+    }
+  }
+
+  input[type="text"] {
+    margin-left: 5px;
+    @extend .monospace;
+    border: 1px solid #E1E1E1;
+    box-shadow: none;
+    background: #FAFAFA;
+    padding: 6px 10px;
   }
 }
 
