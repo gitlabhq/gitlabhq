@@ -6,10 +6,10 @@ class Project
 
     @initEvents()
 
- 
+
   initEvents: ->
     disableButtonIfEmptyField '#project_name', '.project-submit'
-    
+
     $('#project_issues_enabled').change ->
       if ($(this).is(':checked') == true)
         $('#project_issues_tracker').removeAttr('disabled')
@@ -29,7 +29,7 @@ class Project
 
 $ ->
   # Git clone panel switcher
-  scope = $ '.project_clone_holder'
+  scope = $ '.git-clone-holder'
   if scope.length > 0
     $('a, button', scope).click ->
       $('a, button', scope).removeClass 'active'
