@@ -32,3 +32,10 @@ Feature: Project Forked Merge Requests
     And I fill out an invalid "Merge Request On Forked Project" merge request
     And I submit the merge request
     Then I should see validation errors
+
+  @javascript
+  Scenario: I submit new unassigned merge request to a to forked project
+    Given I click "New Merge Request" button from "Shop" merge requests page
+    And I fill out a "Merge Request To Forked Project" merge request
+    And I submit the merge request
+    Then I should see merge request "Merge Request To Forked Project"

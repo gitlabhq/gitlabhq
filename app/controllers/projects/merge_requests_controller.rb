@@ -157,7 +157,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   protected
 
   def selected_target_project
-    ((@project.id.to_s == params[:target_project_id]) || @project.forked_project_link.nil?) ? @project : @project.forked_project_link.forked_from_project
+    if @project.id.to_s == params[:target_project_id]
+      @project
+    elsif @project.forked_from_project && @project.forked_from_project.id.to_s == params[:target_project_id]
+      @project.forked_from_project
+    else
+      Project.forked_to(@project).find {|proj|proj.id.to_s == params[:target_project_id]}
+    end
   end
 
   def merge_request

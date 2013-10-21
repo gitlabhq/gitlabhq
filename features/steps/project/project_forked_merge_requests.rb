@@ -139,7 +139,6 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     )
   end
 
-
   step 'I click link edit "Merge Request On Forked Project"' do
     find("#edit_merge_request").click
   end
@@ -169,6 +168,43 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_content "Source branch can't be blank"
     page.should have_content "Target branch can't be blank"
     page.should have_content "Branch conflict You can not use same project/branch for source and target"
+  end
+
+  step 'I click "New Merge Request" button from "Shop" merge requests page' do
+    @project.team.truncate
+    @project.team << [@user, :developer]
+    visit project_merge_requests_path(@project)
+    click_link "New Merge Request"
+  end
+
+  step 'I fill out a "Merge Request To Forked Project" merge request' do
+    chosen @project.id, from: "#merge_request_source_project_id"
+    chosen @forked_project.id, from: "#merge_request_target_project_id"
+
+    find(:select, "merge_request_source_project_id", {}).value.should == @project.id.to_s
+    find(:select, "merge_request_target_project_id", {}).value.should == @forked_project.id.to_s
+
+    chosen "stable", from: "#merge_request_source_branch"
+    chosen "master", from: "#merge_request_target_branch"
+
+    find(:select, "merge_request_source_branch", {}).value.should == 'stable'
+    find(:select, "merge_request_target_branch", {}).value.should == 'master'
+
+    fill_in "merge_request_title", with: "Merge Request To Forked Project"
+  end
+
+  step 'I should see merge request "Merge Request To Forked Project"' do
+    @forked_project.merge_requests.size.should >= 1
+    @merge_request = @forked_project.merge_requests.last
+    current_path.should == project_merge_request_path(@forked_project, @merge_request)
+    @merge_request.title.should == "Merge Request To Forked Project"
+    @merge_request.source_project.should == @project
+    @merge_request.source_branch.should == "stable"
+    @merge_request.target_branch.should == "master"
+    page.should have_content @forked_project.path_with_namespace
+    page.should have_content @project.path_with_namespace
+    page.should have_content @merge_request.source_branch
+    page.should have_content @merge_request.target_branch
   end
 
   def project
