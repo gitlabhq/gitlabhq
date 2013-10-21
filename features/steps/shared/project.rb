@@ -47,7 +47,7 @@ module SharedProject
 
   Then 'I should see project settings' do
     current_path.should == edit_project_path(@project)
-    page.should have_content("Project name is")
+    page.should have_content("Project name")
     page.should have_content("Features:")
   end
 
