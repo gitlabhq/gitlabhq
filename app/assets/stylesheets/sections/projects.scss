@@ -54,8 +54,11 @@
 
 .git-clone-holder {
   float: right;
+  border: 1px solid #E1E1E1;
+  @include border-radius(4px);
 
   .btn {
+    margin-left: 3px;
     border: none;
     background: none;
     box-shadow: none;
@@ -69,9 +72,11 @@
   }
 
   input[type="text"] {
-    margin-left: 5px;
+    margin-left: 2px;
+    border: none;
+    border-radius: 0;
+    border-left: 1px solid #E1E1E1;
     @extend .monospace;
-    border: 1px solid #E1E1E1;
     box-shadow: none;
     background: #FAFAFA;
     padding: 6px 10px;
