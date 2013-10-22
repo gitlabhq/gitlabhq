@@ -88,7 +88,7 @@ Is the system packaged Git too old? Remove it and compile from source.
     sudo apt-get remove git-core
 
     # Install dependencies
-    sudo apt-get install -y libexpat1-dev gettext
+    sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
 
     # Download and compile from source
     cd /tmp
