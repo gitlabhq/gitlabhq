@@ -8,7 +8,7 @@ gitlab_user=$(ls -l config.ru | awk '{print $3}')
 
 function stop
 {
-  bundle exec sidekiqctl stop $sidekiq_pidfile &>> $sidekiq_logfile
+  bundle exec sidekiqctl stop $sidekiq_pidfile >> $sidekiq_logfile 2>&1
 }
 
 function killall
@@ -32,7 +32,7 @@ function start_no_deamonize
 
 function start_sidekiq
 {
-  bundle exec sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e $RAILS_ENV -P $sidekiq_pidfile $@ &>> $sidekiq_logfile
+  bundle exec sidekiq -q post_receive,mailer,system_hook,project_web_hook,gitlab_shell,common,default -e $RAILS_ENV -P $sidekiq_pidfile $@ >> $sidekiq_logfile 2>&1
 }
 
 case "$1" in
