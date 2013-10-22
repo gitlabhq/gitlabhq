@@ -2,7 +2,7 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]
+  before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status, :accept_without_merge]
   before_filter :closes_issues, only: [:edit, :update, :show, :commits, :diffs]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
@@ -101,9 +101,20 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if @merge_request.opened? && @merge_request.can_be_merged?
+    if (@merge_request.opened? || @merge_request.accepted?) && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
       @merge_request.automerge!(current_user)
+      @status = true
+    else
+      @status = false
+    end
+  end
+
+  def accept_without_merge
+    return access_denied! unless allowed_to_accept?
+
+    if @merge_request.opened?
+      @merge_request.accept!
       @status = true
     else
       @status = false
@@ -178,7 +189,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.commits
 
     @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
+    @show_merge_controls = (@merge_request.opened? || @merge_request.accepted?) && @commits.any? && @allowed_to_merge
+    @allowed_to_accept = allowed_to_accept?
+    @show_accept_control = @merge_request.opened? && @commits.any? && @allowed_to_accept
 
     @target_type = :merge_request
     @target_id = @merge_request.id
@@ -193,7 +206,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
                :push_code
              end
 
-    can?(current_user, action, @project)
+    can_push_code = can?(current_user, action, @project)
+    can_merge = can?(current_user, :merge_merge_request, @project)
+    return can_push_code && can_merge
+  end
+
+  def allowed_to_accept?
+    can?(current_user, :accept_merge_request, @project)
   end
 
   def invalid_mr

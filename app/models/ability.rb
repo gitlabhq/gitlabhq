@@ -103,7 +103,8 @@ class Ability
         :write_merge_request,
         :write_wiki,
         :push_code,
-		:modify_merge_request
+        :modify_merge_request,
+        :accept_merge_request
       ]
     end
 
@@ -112,6 +113,7 @@ class Ability
         :push_code_to_protected_branches,
         :modify_issue,
         :modify_project_snippet,
+        :merge_merge_request,
         :admin_issue,
         :admin_milestone,
         :admin_project_snippet,

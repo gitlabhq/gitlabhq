@@ -36,11 +36,15 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened] => :closed
+      transition [:reopened, :opened, :accepted] => :closed
     end
 
     event :merge do
-      transition [:reopened, :opened] => :merged
+      transition [:reopened, :opened, :accepted] => :merged
+    end
+
+    event :accept do
+      transition [:reopened, :opened] => :accepted
     end
 
     event :reopen do
@@ -54,6 +58,8 @@ class MergeRequest < ActiveRecord::Base
     state :closed
 
     state :merged
+
+    state :accepted
   end
 
   state_machine :merge_status, initial: :unchecked do
@@ -98,6 +104,7 @@ class MergeRequest < ActiveRecord::Base
   # Closed scope for merge request should return
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
+  scope :not_closed, -> { with_states(:opened, :reopened, :accepted) }
 
   def validate_branches
     if target_project==source_project && target_branch == source_branch
@@ -202,6 +209,10 @@ class MergeRequest < ActiveRecord::Base
       reverse
     end
     commits
+  end
+
+  def accept_without_merge!
+    self.accept
   end
 
   def merge!(user_id)
