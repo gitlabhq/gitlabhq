@@ -99,8 +99,7 @@ Make sure you have the right version of Git installed
     # Install into /usr/local/bin
     sudo make prefix=/usr/local install
 
-    # Create a symlink for GitLab
-    sudo ln -s /usr/local/bin/git /usr/bin/git
+    # When editing config/gitlab.yml (Step 6), change the git bin_path to /usr/local/bin/git
 
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
@@ -195,6 +194,8 @@ You can change `6-1-stable` to `master` if you want the *bleeding edge* version,
 
     # Make sure to change "localhost" to the fully-qualified domain name of your
     # host serving GitLab where necessary
+    #
+    # If you installed Git from source, change the git bin_path to /usr/local/bin/git
     sudo -u git -H editor config/gitlab.yml
 
     # Make sure GitLab can write to the log/ and tmp/ directories
