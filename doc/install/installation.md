@@ -82,7 +82,7 @@ Make sure you have the right version of Git installed
     # Make sure Git is version 1.7.10 or higher
     git --version
 
-    # System packaged Git too old? Remove it and compile from source.
+Is the system packaged Git too old? Remove it and compile from source.
 
     # Remove packaged Git
     sudo apt-get remove git-core
