@@ -51,7 +51,8 @@ module Gitlab
         elsif entry.respond_to? :memberof
           entry.memberof
         else
-          raise 'Unsupported member attribute'
+          Rails.logger.warn("Could not find member DNs for LDAP group #{entry.inspect}")
+          []
         end
       end
 
