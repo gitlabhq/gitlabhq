@@ -45,7 +45,7 @@
         Username
       = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
         %p
-          Changing your username will change path to all personl projects!
+          Changing your username will change path to all personal projects!
         %div
           = f.text_field :username, required: true, class: 'input-xlarge input-xpadding'
           &nbsp;
