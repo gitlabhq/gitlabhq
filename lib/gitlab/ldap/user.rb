@@ -13,8 +13,8 @@ module Gitlab
         def find_or_create(auth)
           @auth = auth
 
-          if uid.blank? || email.blank?
-            raise_error("Account must provide an uid and email address")
+          if uid.blank? || email.blank? || username.blank?
+            raise_error("Account must provide a dn, uid and email address")
           end
 
           user = find(auth)
@@ -62,6 +62,10 @@ module Gitlab
 
         def find_by_uid(uid)
           model.where(provider: provider, extern_uid: uid).last
+        end
+
+        def username
+          auth.info.nickname.to_s.force_encoding("utf-8")
         end
 
         def provider
