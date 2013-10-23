@@ -692,4 +692,80 @@ describe API::API do
       end
     end
   end
+
+  describe "GET /projects/search/:query" do
+    let!(:query) { 'query'}
+    let!(:search) { create(:project, name: query, creator_id: user.id, namespace: user.namespace) }
+    let!(:pre) { create(:project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
+    let!(:post) { create(:project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:pre_post) { create(:project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:unfound) { create(:project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
+    let!(:public) { create(:project, name: "another #{query}",public: true) }
+    let!(:unfound_public) { create(:project, name: 'unfound public', public: true) }
+
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/projects/search/#{query}")
+        response.status.should == 401
+      end
+    end
+
+    context "when authenticated" do
+      it "should return an array of projects" do
+        get api("/projects/search/#{query}",user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.size.should == 5
+        json_response.each {|project| project['name'].should =~ /.*query.*/}
+      end
+    end
+
+    context "when authenticated as a different user" do
+      it "should return matching public projects" do
+        get api("/projects/search/#{query}", user2)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.size.should == 1
+        json_response.first['name'].should == "another #{query}"
+      end
+    end
+  end
+
+  describe "DELETE /projects/:id" do
+    context "when authenticated as user" do
+      it "should remove project" do
+        delete api("/projects/#{project.id}", user)
+        response.status.should == 200
+      end
+
+      it "should not remove a project if not an owner" do
+        user3 = create(:user)
+        project.team << [user3, :developer]
+        delete api("/projects/#{project.id}", user3)
+        response.status.should == 403
+      end
+
+      it "should not remove a non existing project" do
+        delete api("/projects/1328", user)
+        response.status.should == 404
+      end
+
+      it "should not remove a project not attached to user" do
+        delete api("/projects/#{project.id}", user2)
+        response.status.should == 404
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should remove any existing project" do
+        delete api("/projects/#{project.id}", admin)
+        response.status.should == 200
+      end
+
+      it "should not remove a non existing project" do
+        delete api("/projects/1328", admin)
+        response.status.should == 404
+      end
+    end
+  end
 end

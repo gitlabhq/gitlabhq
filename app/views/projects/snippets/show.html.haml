@@ -5,7 +5,7 @@
     = "##{@snippet.id}"
     %span.light
       by
-      = image_tag gravatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+      = image_tag avatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
       = @snippet.author_name
 %div= render 'projects/snippets/blob'
 %div#notes= render "projects/notes/notes_with_form"

@@ -34,7 +34,7 @@ Parameters:
     "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:00:58Z"
   },
   "expires_at": null,

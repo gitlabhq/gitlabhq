@@ -1,7 +1,8 @@
 /* Login Page */
 body.login-page{
-  background: #474D57;
-  .container .content { padding-top: 4%; }
+  .container > .content {
+    padding-top: 20px;
+  }
 }
 
 .login-box{

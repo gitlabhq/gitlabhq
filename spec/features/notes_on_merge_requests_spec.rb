@@ -216,12 +216,6 @@ describe "On a merge request diff", js: true, focus: true do
         end
       end
 
-      it do
-        within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .js-temp-notes-holder") do
-          should have_no_css(".js-temp-notes-holder")
-        end
-      end
-
       it 'should be added as discussion' do
         should have_content("Another comment on line 17")
         should have_css(".notes_holder")

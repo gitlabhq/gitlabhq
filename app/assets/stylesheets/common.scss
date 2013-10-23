@@ -140,27 +140,6 @@ p.time {
   border-bottom: 2px solid #F90;
 }
 
-.status_info {
-  font-size: 14px;
-  padding: 5px 15px;
-  line-height: 26px;
-  text-align: center;
-  float: right;
-  position: relative;
-  top: -5px;
-  @include border-radius(4px);
-
-  &.success {
-    background: #4A4;
-    color: #FFF;
-  }
-
-  &.error {
-    background: #DA4E49;
-    color: #FFF;
-  }
-}
-
 .thin_area{
   height: 150px;
 }
@@ -270,27 +249,6 @@ li.note {
   }
 }
 
-.oauth_select_holder {
-  padding: 20px;
-  img {
-    padding: 5px;
-    margin-right: 10px;
-  }
-  .active {
-    img {
-      border: 1px solid #ccc;
-      background: $hover;
-      @include border-radius(5px);
-    }
-  }
-}
-
-.btn-build-token {
-  float: left;
-  padding: 6px 20px;
-  margin-right: 12px;
-}
-
 .gitlab-promo {
   a {
     color: #aaa;
@@ -381,4 +339,9 @@ table {
   padding: 5px 0;
   width: 50px;
   min-height: 100px;
+}
+
+.navbar-gitlab .navbar-inner .nav > li .btn-sign-in {
+  @extend .btn-new;
+  padding: 5px 15px;
 }

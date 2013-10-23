@@ -21,7 +21,7 @@
       Stats
 
 
-  - if current_controller?(:commits) && current_user.private_token
+  - if current_user && current_controller?(:commits) && current_user.private_token
     %li.pull-right
       = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
         %i.icon-rss

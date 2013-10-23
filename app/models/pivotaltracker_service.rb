@@ -10,6 +10,9 @@
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  active      :boolean          default(FALSE), not null
+#  project_url :string(255)
+#  subdomain   :string(255)
+#  room        :string(255)
 #
 
 class PivotaltrackerService < Service

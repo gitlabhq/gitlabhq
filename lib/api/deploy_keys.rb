@@ -2,6 +2,7 @@ module API
   # Projects API
   class DeployKeys < Grape::API
     before { authenticate! }
+    before { authorize_admin_project }
 
     resource :projects do
       helpers do

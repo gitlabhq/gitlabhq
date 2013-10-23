@@ -26,7 +26,7 @@ module Gitlab
             # * When user already has account and need to link his LDAP account.
             # * LDAP uid changed for user with same email and we need to update his uid
             #
-            user = model.find_by_email(email)
+            user = find_user(email)
 
             if user
               user.update_attributes(extern_uid: uid, provider: provider)
@@ -38,6 +38,19 @@ module Gitlab
               #
               user = create(auth)
             end
+          end
+
+          user
+        end
+
+        def find_user(email)
+          user = model.find_by_email(email)
+
+          # If no user found and allow_username_or_email_login is true
+          # we look for user by extracting part of his email
+          if !user && email && ldap_conf['allow_username_or_email_login']
+            uname = email.partition('@').first
+            user = model.find_by_username(uname)
           end
 
           user
@@ -56,6 +69,16 @@ module Gitlab
           )
 
           find_by_uid(ldap_user.dn) if ldap_user
+        end
+
+        # Check LDAP user existance by dn. User in git over ssh check
+        #
+        # It covers 2 cases:
+        # * when ldap account was removed
+        # * when ldap account was deactivated by change of OU membership in 'dn'
+        def blocked?(dn)
+          ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
+          ldap.connection.search(base: dn, size: 1).blank?
         end
 
         private

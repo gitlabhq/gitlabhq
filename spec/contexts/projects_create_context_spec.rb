@@ -25,13 +25,15 @@ describe Projects::CreateContext do
 
     context 'group namespace' do
       before do
-        @group = create :group, owner: @user
+        @group = create :group
+        @group.add_owner(@user)
+
         @opts.merge!(namespace_id: @group.id)
         @project = create_project(@user, @opts)
       end
 
       it { @project.should be_valid }
-      it { @project.owner.should == @user }
+      it { @project.owner.should == @group }
       it { @project.namespace.should == @group }
     end
 

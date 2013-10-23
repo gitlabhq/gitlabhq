@@ -1,6 +1,7 @@
 class Ability
   class << self
     def allowed(user, subject)
+      return not_auth_abilities(user, subject) if user.nil?
       return [] unless user.kind_of?(User)
       return [] if user.blocked?
 
@@ -15,6 +16,34 @@ class Ability
       when "Namespace" then namespace_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
+    end
+
+    # List of possible abilities
+    # for non-authenticated user
+    def not_auth_abilities(user, subject)
+      project = if subject.kind_of?(Project)
+                  subject
+                elsif subject.respond_to?(:project)
+                  subject.project
+                else
+                  nil
+                end
+
+      if project && project.public
+        [
+          :read_project,
+          :read_wiki,
+          :read_issue,
+          :read_milestone,
+          :read_project_snippet,
+          :read_team_member,
+          :read_merge_request,
+          :read_note,
+          :download_code
+        ]
+      else
+        []
+      end
     end
 
     def global_abilities(user)
@@ -50,7 +79,7 @@ class Ability
         rules << project_admin_rules
       end
 
-      if project.group && project.group.owners.include?(user)
+      if project.group && project.group.has_owner?(user)
         rules << project_admin_rules
       end
 
@@ -58,19 +87,9 @@ class Ability
     end
 
     def public_project_rules
-      [
+      project_guest_rules + [
         :download_code,
         :fork_project,
-        :read_project,
-        :read_wiki,
-        :read_issue,
-        :read_milestone,
-        :read_project_snippet,
-        :read_team_member,
-        :read_merge_request,
-        :read_note,
-        :write_issue,
-        :write_note
       ]
     end
 
@@ -137,12 +156,12 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if group.users.include?(user)
+      if group.users.include?(user) || user.admin?
         rules << :read_group
       end
 
       # Only group owner and administrators can manage group
-      if group.owners.include?(user) || user.admin?
+      if group.has_owner?(user) || user.admin?
         rules << [
           :manage_group,
           :manage_namespace

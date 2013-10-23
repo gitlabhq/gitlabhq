@@ -2,6 +2,7 @@ module API
   # Projects API
   class Repositories < Grape::API
     before { authenticate! }
+    before { authorize! :download_code, user_project }
 
     resource :projects do
       helpers do
@@ -44,13 +45,12 @@ module API
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/protect
       put ":id/repository/branches/:branch/protect" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        not_found! unless @branch
-        protected = user_project.protected_branches.find_by_name(@branch.name)
+        authorize_admin_project
 
-        unless protected
-          user_project.protected_branches.create(name: @branch.name)
-        end
+        @branch = user_project.repository.find_branch(params[:branch])
+        not_found! unless @branch
+        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
@@ -63,13 +63,12 @@ module API
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/unprotect
       put ":id/repository/branches/:branch/unprotect" do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
-        not_found! unless @branch
-        protected = user_project.protected_branches.find_by_name(@branch.name)
+        authorize_admin_project
 
-        if protected
-          protected.destroy
-        end
+        @branch = user_project.repository.find_branch(params[:branch])
+        not_found! unless @branch
+        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch.destroy if protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
@@ -92,8 +91,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits
       get ":id/repository/commits" do
-        authorize! :download_code, user_project
-
         page = (params[:page] || 0).to_i
         per_page = (params[:per_page] || 20).to_i
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
@@ -110,7 +107,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha
       get ":id/repository/commits/:sha" do
-        authorize! :download_code, user_project
         sha = params[:sha]
         commit = user_project.repository.commit(sha)
         not_found! "Commit" unless commit
@@ -125,7 +121,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/commits/:sha/diff
       get ":id/repository/commits/:sha/diff" do
-        authorize! :download_code, user_project
         sha = params[:sha]
         result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
         not_found! "Commit" unless result[:commit]
@@ -140,18 +135,16 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tree
       get ":id/repository/tree" do
-        authorize! :download_code, user_project
-
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
 
         commit = user_project.repository.commit(ref)
-        tree = Tree.new(user_project.repository, commit.id, ref, path)
+        tree = Tree.new(user_project.repository, commit.id, path)
 
         trees = []
 
         %w(trees blobs submodules).each do |type|
-          trees += tree.send(type).map { |t| { name: t.name, type: type.singularize, mode: t.mode, id: t.id } }
+          trees += tree.send(type).map { |t| {name: t.name, type: type.singularize, mode: t.mode, id: t.id} }
         end
 
         trees
@@ -166,7 +159,6 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/blobs/:sha
       get [ ":id/repository/blobs/:sha", ":id/repository/commits/:sha/blob" ] do
-        authorize! :download_code, user_project
         required_attributes! [:filepath]
 
         ref = params[:sha]
@@ -176,13 +168,41 @@ module API
         commit = repo.commit(ref)
         not_found! "Commit" unless commit
 
-        blob = Gitlab::Git::Blob.new(repo, commit.id, ref, params[:filepath])
-        not_found! "File" unless blob.exists?
+        blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
+        not_found! "File" unless blob
 
         env['api.format'] = :txt
 
         content_type blob.mime_type
         present blob.data
+      end
+
+      # Get a an archive of the repository
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (optional) - the commit sha to download defaults to the tip of the default branch
+      # Example Request:
+      #   GET /projects/:id/repository/archive
+      get ":id/repository/archive" do
+        authorize! :download_code, user_project
+        repo = user_project.repository
+        ref = params[:sha]
+        storage_path = Rails.root.join("tmp", "repositories")
+
+        file_path = repo.archive_repo(ref, storage_path)
+        if file_path && File.exists?(file_path)
+          data = File.open(file_path, 'rb').read
+
+          header "Content-Disposition:", " infile; filename=\"#{File.basename(file_path)}\""
+          content_type 'application/x-gzip'
+
+          env['api.format'] = :binary
+
+          present data
+        else
+          not_found!
+        end
       end
     end
   end

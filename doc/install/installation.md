@@ -52,7 +52,7 @@ If you are not familiar with vim please skip this and keep using the default edi
 
 Install the required packages:
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl git-core openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
 Make sure you have the right version of Python installed.
 
@@ -63,7 +63,7 @@ Make sure you have the right version of Python installed.
     python --version
 
     # If it's Python 3 you might need to install Python 2 separately
-    sudo apt-get install python2.7
+    sudo apt-get install -y python2.7
 
     # Make sure you can access Python via python2
     python2 --version
@@ -72,7 +72,7 @@ Make sure you have the right version of Python installed.
     sudo ln -s /usr/bin/python /usr/bin/python2
 
     # For reStructuredText markup language support install required package:
-    sudo apt-get install python-docutils
+    sudo apt-get install -y python-docutils
 
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
@@ -86,14 +86,14 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 Remove the old Ruby 1.8 if present
 
-    sudo apt-get remove -y ruby1.8
+    sudo apt-get remove ruby1.8
 
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
     curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz | tar xz
     cd ruby-2.0.0-p247
-    ./configure
+    ./configure --disable-install-rdoc
     make
     sudo make install
 
@@ -153,10 +153,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 6-1-stable
+    sudo -u git -H git checkout 6-2-stable
 
 **Note:**
-You can change `6-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -195,6 +195,13 @@ You can change `6-1-stable` to `master` if you want the *bleeding edge* version,
     # Ex. change amount of workers to 3 for 2GB RAM server
     sudo -u git -H editor config/unicorn.rb
 
+    # Copy the example Rack attack config
+    sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
+
+    # Enable rack attack middleware
+    # Find and uncomment the line 'config.middleware.use Rack::Attack'
+    sudo -u git -H editor config/application.rb
+
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
@@ -209,18 +216,18 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # Mysql
     sudo -u git cp config/database.yml.mysql config/database.yml
 
+    # Make sure to update username/password in config/database.yml.
+    # You only need to adapt the production settings (first part).
+    # If you followed the database guide then please do as follows:
+    # Change 'secure password' with the value you have given to $password
+    # You can keep the double quotes around the password
+    sudo -u git -H editor config/database.yml
+
     or
 
     # PostgreSQL
     sudo -u git cp config/database.yml.postgresql config/database.yml
 
-    # Make sure to update username/password in config/database.yml.
-    # You only need to adapt the production settings (first part).
-    # If you followed the database guide then please do as follows:
-    # Change 'root' to 'gitlab'
-    # Change 'secure password' with the value you have given to $password
-    # You can keep the double quotes around the password
-    sudo -u git -H editor config/database.yml
     
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
@@ -258,6 +265,9 @@ Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
 
+## Set up logrotate
+
+    sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
 ## Check Application Status
 
@@ -336,6 +346,12 @@ a different host, you can configure its connection string via the
 
     # example
     production: redis://redis.example.tld:6379
+
+If you want to connect the Redis server via socket, then use the "unix:" URL scheme 
+and the path to the Redis socket file in the `config/resque.yml` file.
+
+    # example
+    production: unix:/path/to/redis/socket
 
 ## Custom SSH Connection
 

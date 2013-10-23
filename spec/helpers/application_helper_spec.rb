@@ -38,6 +38,24 @@ describe ApplicationHelper do
       current_action?(:baz, :bar, :foo).should be_true
     end
   end
+  
+  describe "avatar_icon" do
+    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+
+    it "should return an url for the avatar" do
+      user = create(:user)
+      user.avatar = File.open(avatar_file_path)
+      user.save!
+      avatar_icon(user.email).to_s.should == "/uploads/user/avatar/#{ user.id }/gitlab_logo.png"
+    end
+
+    it "should call gravatar_icon when no avatar is present" do
+      user = create(:user)
+      user.save!
+      stub!(:gravatar_icon).and_return('gravatar_method_called')
+      avatar_icon(user.email).to_s.should == "gravatar_method_called"
+    end
+  end
 
   describe "gravatar_icon" do
     let(:user_email) { 'user@email.com' }
@@ -105,4 +123,21 @@ describe ApplicationHelper do
     end
   end
 
+  describe "simple_sanitize" do
+    let(:a_tag) { '<a href="#">Foo</a>' }
+
+    it "allows the a tag" do
+      simple_sanitize(a_tag).should == a_tag
+    end
+
+    it "allows the span tag" do
+      input = '<span class="foo">Bar</span>'
+      simple_sanitize(input).should == input
+    end
+
+    it "disallows other tags" do
+      input = "<strike><b>#{a_tag}</b></strike>"
+      simple_sanitize(input).should == a_tag
+    end
+  end
 end

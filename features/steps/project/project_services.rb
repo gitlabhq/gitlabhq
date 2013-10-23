@@ -58,4 +58,18 @@ class ProjectServices < Spinach::FeatureSteps
   Then 'I should see pivotaltracker service settings saved' do
     find_field('Token').value.should == 'verySecret'
   end
+
+  And 'I click Flowdock service link' do
+    click_link 'Flowdock'
+  end
+
+  And 'I fill Flowdock settings' do
+    check 'Active'
+    fill_in 'Token', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  Then 'I should see Flowdock service settings saved' do
+    find_field('Token').value.should == 'verySecret'
+  end
 end

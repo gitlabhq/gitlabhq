@@ -1,6 +1,6 @@
 - if @user.valid?
   :plain
-    $('.update-username .update-success').show();
+    new Flash("Username sucessfully changed", "notice")
 - else
   :plain
-    $('.update-username .update-failed').show();
+    new Flash("Username change failed - #{@user.errors.full_messages.first}", "alert")

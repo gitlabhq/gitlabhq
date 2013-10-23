@@ -406,6 +406,30 @@ describe GitlabMarkdownHelper do
     it "should generate absolute urls for emoji" do
       markdown(":smile:").should include("src=\"#{url_to_image("emoji/smile")}")
     end
+
+    it "should handle relative urls for a file in master" do
+      actual = "[GitLab API doc](doc/api/README.md)\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+    it "should handle relative urls for a directory in master" do
+      actual = "[GitLab API doc](doc/api)\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api\">GitLab API doc</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+    it "should handle absolute urls" do
+      actual = "[GitLab](https://www.gitlab.com)\n"
+      expected = "<p><a href=\"https://www.gitlab.com\">GitLab</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+    it "should handle wiki urls" do
+      actual = "[Link](test/link)\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/wikis/test/link\">Link</a></p>\n"
+      markdown(actual).should match(expected)
+    end
   end
 
   describe "#render_wiki_content" do
