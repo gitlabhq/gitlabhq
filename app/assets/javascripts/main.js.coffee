@@ -123,6 +123,10 @@ $ ->
     $(@).next('table').show()
     $(@).remove()
 
+  $(".content").on "click", ".js-details-expand", ->
+    $(@).next('.js-details-contain').removeClass("hide")
+    $(@).remove()
+
 (($) ->
   _chosen = $.fn.chosen
   $.fn.extend chosen: (options) ->
