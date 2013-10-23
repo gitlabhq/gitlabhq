@@ -61,6 +61,7 @@ module API
           attrs[:force_random_password] = true
         else
           render_api_error!('400 Either password or force_random_password must be set',400)
+	end
 
         attrs[:password_expires_at] = Time.now if expired
 
