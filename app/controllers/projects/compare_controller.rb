@@ -8,7 +8,7 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def show
-    compare = Gitlab::Git::Compare.new(project.repository, params[:from], params[:to])
+    compare = Gitlab::Git::Compare.new(@repository.raw_repository, params[:from], params[:to])
 
     @commits       = compare.commits
     @commit        = compare.commit

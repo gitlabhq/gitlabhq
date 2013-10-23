@@ -67,6 +67,7 @@ describe Project do
     it { should ensure_length_of(:description).is_within(0..2000) }
     it { should validate_presence_of(:creator) }
     it { should ensure_length_of(:issues_tracker_id).is_within(0..255) }
+    it { should validate_presence_of(:namespace) }
 
     it "should not allow new projects beyond user limits" do
       project2 = build(:project)

@@ -44,4 +44,18 @@ class ProjectServices < Spinach::FeatureSteps
     find_field('Room').value.should == 'gitlab'
   end
 
+
+  And 'I click pivotaltracker service link' do
+    click_link 'PivotalTracker'
+  end
+
+  And 'I fill pivotaltracker settings' do
+    check 'Active'
+    fill_in 'Token', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  Then 'I should see pivotaltracker service settings saved' do
+    find_field('Token').value.should == 'verySecret'
+  end
 end

@@ -18,3 +18,9 @@ Feature: Project Services
     And I click hipchat service link
     And I fill hipchat settings
     Then I should see hipchat service settings saved
+
+  Scenario: Activate pivotaltracker service
+    When I visit project "Shop" services page
+    And I click pivotaltracker service link
+    And I fill pivotaltracker settings
+    Then I should see pivotaltracker service settings saved

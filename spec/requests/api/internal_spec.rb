@@ -2,6 +2,8 @@ require 'spec_helper'
 
 describe API::API do
   include ApiHelpers
+  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
+  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }

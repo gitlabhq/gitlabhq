@@ -46,6 +46,7 @@ class Project < ActiveRecord::Base
   has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
@@ -83,6 +84,7 @@ class Project < ActiveRecord::Base
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { within: 0..255 }
 
+  validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
 
@@ -165,11 +167,7 @@ class Project < ActiveRecord::Base
   end
 
   def to_param
-    if namespace
-      namespace.path + "/" + path
-    else
-      path
-    end
+    namespace.path + "/" + path
   end
 
   def web_url
@@ -223,7 +221,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat)
+    %w(gitlab_ci campfire hipchat pivotaltracker)
   end
 
   def gitlab_ci?

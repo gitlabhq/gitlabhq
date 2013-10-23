@@ -18,6 +18,7 @@ Feature: Profile
 
   Scenario: My password is expired
     Given my password is expired
+    And I am not an ldap user
     And I visit profile account page
     Then I redirected to expired password page
     And I submit new password
