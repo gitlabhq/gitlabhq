@@ -1,6 +1,8 @@
 require 'sidekiq/web'
 require 'api/api'
 
+ROUTES_BRANCH_NAME_REGEXP = /[a-zA-Z.\/0-9_\-#%+@]+/
+
 Gitlab::Application.routes.draw do
   #
   # Search
@@ -222,14 +224,14 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+      resources :branches, only: [:index, :new, :create, :destroy], constraints: { id: ROUTES_BRANCH_NAME_REGEXP } do
         collection do
           get :recent
         end
       end
 
-      resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
-      resources :protected_branches, only: [:index, :create, :destroy], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
+      resources :tags, only: [:index, :new, :create, :destroy], constraints: { id: ROUTES_BRANCH_NAME_REGEXP }
+      resources :protected_branches, only: [:index, :create, :destroy], constraints: { id: ROUTES_BRANCH_NAME_REGEXP }
 
       resources :refs, only: [] do
         collection do
@@ -238,11 +240,11 @@ Gitlab::Application.routes.draw do
 
         member do
           # tree viewer logs
-          get "logs_tree", constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ }
+          get "logs_tree", constraints: { id: ROUTES_BRANCH_NAME_REGEXP }
           get "logs_tree/:path" => "refs#logs_tree",
             as: :logs_file,
             constraints: {
-              id:   /[a-zA-Z.0-9\/_\-#%+]+/,
+              id:   ROUTES_BRANCH_NAME_REGEXP,
               path: /.*/
             }
         end
@@ -284,7 +286,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :team_members, except: [:index, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
+      resources :team_members, except: [:index, :edit], constraints: { id: ROUTES_BRANCH_NAME_REGEXP } do
         collection do
 
           # Used for import team
