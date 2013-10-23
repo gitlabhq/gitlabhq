@@ -51,3 +51,8 @@
       %i.icon-refresh.icon-spin
       &nbsp;
       Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;
+
+- elsif @show_accept_control
+  %span
+    = form_for [:accept_without_merge, @project, @merge_request], remote: true, method: :get do |f|
+      = f.submit "Accept Without Merge", class: "btn btn-create accept_without_merge"

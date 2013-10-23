@@ -33,6 +33,11 @@ class MergeRequestObserver < ActivityObserver
     )
   end
 
+  def after_accept(merge_request, transition)
+    notification.accept_mr(merge_request, current_user)
+    create_event(merge_request, Event::ACCEPTED)
+  end
+
   def after_reopen(merge_request, transition)
     create_event(merge_request, Event::REOPENED)
     Note.create_status_change_note(merge_request, merge_request.target_project, current_user, merge_request.state, nil)

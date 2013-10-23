@@ -1,5 +1,5 @@
 %h3.page-title
-  = "Merge Request ##{@merge_request.iid}:"
+  = "Merge Request ##{@merge_request.iid} (#{@merge_request.state}):"
   &nbsp;
   -if @merge_request.for_fork?
     %span.label-branch

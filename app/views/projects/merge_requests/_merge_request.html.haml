@@ -2,6 +2,7 @@
   .merge-request-title
     %span.light= "##{merge_request.iid}"
     = link_to_gfm truncate(merge_request.title, length: 80), project_merge_request_path(merge_request.target_project, merge_request), class: "row_title"
+    %span.light= "(#{merge_request.state})"
     - if merge_request.merged?
       %small.pull-right
         %i.icon-ok

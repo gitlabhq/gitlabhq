@@ -73,6 +73,16 @@ class NotificationService
     close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
 
+  # When we accept a merge request we should send next emails:
+  #
+  #  * merge_request author if his notification level is not Disabled
+  #  * merge_request assignee if his notification level is not Disabled
+  #  * project team members with notification level higher then Participating
+  #
+  def accept_mr(merge_request, current_user)
+    close_resource_email(merge_request, merge_request.target_project, current_user, 'accepted_merge_request_email')
+  end
+
   # When we merge a merge request we should send next emails:
   #
   #  * merge_request author if his notification level is not Disabled
