@@ -38,6 +38,16 @@ module Grack
         # Authentication with username and password
         login, password = @auth.credentials
 
+        # Allow authentication for GitLab CI service
+        # if valid token passed
+        if login == "gitlab-ci-token" && project.gitlab_ci?
+          token = project.gitlab_ci_service.token
+
+          if token.present? && token == password && service_name == 'git-upload-pack'
+            return @app.call(env)
+          end
+        end
+
         @user = authenticate_user(login, password)
 
         if @user
@@ -59,14 +69,7 @@ module Grack
     end
 
     def authorized_git_request?
-      # Git upload and receive
-      if @request.get?
-        authorize_request(@request.params['service'])
-      elsif @request.post?
-        authorize_request(File.basename(@request.path))
-      else
-        false
-      end
+      authorize_request(service_name)
     end
 
     def authenticate_user(login, password)
@@ -88,6 +91,16 @@ module Grack
         can?(user, action, project)
       else
         false
+      end
+    end
+
+    def service_name
+      if @request.get?
+        @request.params['service']
+      elsif @request.post?
+        File.basename(@request.path)
+      else
+        nil
       end
     end
 
