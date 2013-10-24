@@ -47,6 +47,7 @@ class Admin::UsersController < Admin::ApplicationController
     @user = User.build_user(params[:user].merge(opts), as: :admin)
     @user.admin = (admin && admin.to_i > 0)
     @user.created_by_id = current_user.id
+    @user.generate_password
     @user.confirm!
 
     respond_to do |format|
