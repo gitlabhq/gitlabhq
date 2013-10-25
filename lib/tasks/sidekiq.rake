@@ -4,11 +4,13 @@ namespace :sidekiq do
     system "script/background_jobs stop"
   end
 
-  desc "GITLAB | Start sidekiq" do
+  desc "GITLAB | Start sidekiq"
+  task :start do
     system "script/background_jobs start"
   end
 
-  desc 'GitLab | Restart sidekiq' do
+  desc 'GitLab | Restart sidekiq'
+  task :restart do
     system "script/background_jobs restart"
   end
 
