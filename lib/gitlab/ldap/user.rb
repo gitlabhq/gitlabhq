@@ -78,7 +78,8 @@ module Gitlab
         # * when ldap account was deactivated by change of OU membership in 'dn'
         def blocked?(dn)
           ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
-          ldap.connection.search(base: dn, size: 1).blank?
+          filter = Net::LDAP::Filter.eq("objectclass", "user")
+          ldap.connection.search(base: dn, filter: filter, size: 1).blank?
         end
 
         private
