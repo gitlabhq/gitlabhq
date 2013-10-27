@@ -7,5 +7,8 @@
   %div
     = f.password_field :password_confirmation, class: "text bottom", placeholder: "Confirm new password"
   %div
+  .clearfix.append-bottom-10
     = f.submit "Change my password", class: "btn btn-primary"
-    .pull-right= render partial: "devise/shared/links"
+    = link_to "Sign in", new_session_path(resource_name), class: "btn pull-right"
+  %div
+    = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
