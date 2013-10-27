@@ -142,19 +142,19 @@
   .filter_icon {
     a {
       text-align:center;
-      border-left: 3px solid $primary_color;
-      background: #f9f9f9;
+      background: #EEE;
       margin-bottom: 10px;
       float: left;
-      padding: 9px 7px;
+      padding: 9px 6px;
       font-size: 18px;
       width: 26px;
+      @include border-radius(3px);
     }
 
     &.inactive {
       a {
         color: #DDD;
-        border-left: 3px solid #EEE;
+        background: #f9f9f9;
       }
     }
   }
