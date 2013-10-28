@@ -5,6 +5,7 @@ This guide details how to use issues and pull requests to improve GitLab.
 -  [Closing policy for issues and pull requests](#closing-policy-for-issues-and-pull-requests)
 -  [Issue tracker](#issue-tracker)
 -  [Pull requests](#pull-requests)
+-  [Security vulnerabilities](#security-vulnerabilities)
 
 If you want to know how the GitLab team handles contributions have a look at [the GitLab contributing process](PROCESS.md).
 
@@ -73,3 +74,6 @@ We will accept pull requests if:
 * It is a single commit (please use `git rebase -i` to squash commits)
 
 For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).
+
+## Security vulnerabilities
+Please report security vulnerabilities in private to support@gitlab.com; also see http://www.gitlab.com/disclosure/. Do NOT create GitHub issues for security vulnerabilities.
