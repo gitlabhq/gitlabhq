@@ -102,6 +102,13 @@ check_status(){
   else
     sidekiq_status="-1"
   fi
+  if [ $web_status = 0 -a $sidekiq_status = 0 ]; then
+    gitlab_status=0
+  else
+    # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+    # code 3 means 'program is not running'
+    gitlab_status=3
+  fi
 }
 
 ## Check for stale pids and remove them if necessary.
@@ -275,6 +282,7 @@ case "$1" in
         ;;
   status)
         print_status
+        exit $gitlab_status
         ;;
   *)
         echo "Usage: service gitlab {start|stop|restart|reload|status}"
