@@ -31,7 +31,11 @@ module API
       #   DELETE /projects/:id/keys/:id
       delete ":id/services/gitlab-ci" do
         if user_project.gitlab_ci_service
-          user_project.gitlab_ci_service.destroy
+          user_project.gitlab_ci_service.update_attributes(
+            active: false,
+            token: nil,
+            project_url: nil
+          )
         end
       end
     end
