@@ -167,7 +167,11 @@ class Event < ActiveRecord::Base
     elsif left?
       'left'
     else
-      "opened"
+      if target_type == "Note"
+        "commented"
+      else
+        "opened"
+      end
     end
   end
 end

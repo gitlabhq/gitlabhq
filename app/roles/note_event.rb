@@ -1,6 +1,14 @@
 module NoteEvent
+  def note_id
+    target.id
+  end
+
   def note_commit_id
     target.commit_id
+  end
+
+  def note_note
+    target.note
   end
 
   def note_short_commit_id
