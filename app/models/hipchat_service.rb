@@ -71,5 +71,4 @@ class HipchatService < Service
 
     message
   end
-
 end
