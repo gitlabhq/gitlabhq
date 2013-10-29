@@ -15,7 +15,7 @@
     .control-group
       = f.label "Private?"
       .controls
-        = f.check_box :private, {class: ''}
+        = f.check_box :private, {class: '', checked: 0}
     .control-group
       .file-editor
         = f.label :file_name, "File"
