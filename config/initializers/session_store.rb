@@ -2,6 +2,7 @@
 
 Gitlab::Application.config.session_store(
   :redis_store, # Using the cookie_store would enable session replay attacks.
+  servers: Gitlab::Application.config.cache_store.last, # re-use the Redis config from the Rails cache store
   key: '_gitlab_session',
   secure: Gitlab::Application.config.force_ssl,
   httponly: true,
