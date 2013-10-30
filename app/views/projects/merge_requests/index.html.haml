@@ -99,6 +99,23 @@
                     %strong= milestone.title
                     %small.light= milestone.expires_at
 
+          .dropdown.inline.prepend-left-10
+            %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+              %span.light state:
+              - if @state.present?
+                %strong= @state.capitalize
+              - else
+                Any
+              %b.caret
+            %ul.dropdown-menu
+              %li
+                = link_to project_filter_path(state: nil) do
+                  Any
+              - @available_states.each do |state|
+                %li
+                  = link_to project_filter_path(state: state) do
+                    = state.capitalize
+
       %ul.well-list.mr-list
         = render @merge_requests
         - if @merge_requests.blank?

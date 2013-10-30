@@ -25,6 +25,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @user_groups = current_user.users_groups
     @assigned_group = @user_groups.where(group_id: assigned_group_id).first.group if assigned_group_id.present?
     @created_group = @user_groups.where(group_id: created_group_id).first.group if created_group_id.present?
+    # Merge request states, which will be available in the corresponding filter.
+    # We want to display all states, which displayed in the list MRs can have (i.e. everything what can be merged).
+    @available_states = MergeRequest::VALID_STATES_FOR_MERGE
+    @state = params[:state]
   end
 
   def show

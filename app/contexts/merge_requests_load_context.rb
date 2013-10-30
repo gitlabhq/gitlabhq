@@ -42,6 +42,11 @@ class MergeRequestsLoadContext < BaseContext
       merge_requests = merge_requests.joins(author: :users_groups).where(users_groups: {group_id: params[:created_group_id]})
     end
 
+    # Filter by specific state
+    if params[:state].present?
+      merge_requests = merge_requests.where(state: params[:state])
+    end
+
     merge_requests
   end
 end
