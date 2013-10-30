@@ -12,7 +12,9 @@ GET /groups
         "id": 1,
         "name": "Foobar Group",
         "path": "foo-bar",
-        "owner_id": 18
+        "owner_id": 18,
+        "ldap_cn": "ldap-group-name",
+        "ldap_access": 30,
     }
 ]
 ```
