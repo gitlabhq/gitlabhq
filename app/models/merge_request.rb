@@ -107,6 +107,10 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_states(:closed, :merged) }
   scope :not_closed, -> { with_states(:opened, :reopened, :accepted) }
 
+  def not_closed?
+    return !closed? && !merged?
+  end
+
   def validate_branches
     if target_project==source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
