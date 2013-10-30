@@ -73,14 +73,14 @@ class NotificationService
     close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
 
-  # When we accept a merge request we should send next emails:
+  # When we change a merge request's review state we should send next emails:
   #
   #  * merge_request author if his notification level is not Disabled
   #  * merge_request assignee if his notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
-  def accept_mr(merge_request, current_user)
-    close_resource_email(merge_request, merge_request.target_project, current_user, 'accepted_merge_request_email')
+  def review_mr(merge_request, current_user, action)
+    review_mr_email(merge_request, merge_request.target_project, current_user, action)
   end
 
   # When we merge a merge request we should send next emails:
@@ -225,6 +225,16 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id)
+    end
+  end
+
+  def review_mr_email(target, project, current_user, action)
+    recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients.delete(current_user)
+
+    recipients.each do |recipient|
+      mailer.send('reviewed_merge_request_email', recipient.id, target.id, current_user.id, action)
     end
   end
 

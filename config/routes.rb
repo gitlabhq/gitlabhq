@@ -255,6 +255,8 @@ Gitlab::Application.routes.draw do
           get :automerge_check
           get :ci_status
           get :accept_without_merge
+          get :reject
+          get :mark_fixed
         end
 
         collection do
