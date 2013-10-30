@@ -45,6 +45,8 @@ Parameters:
 
 + `name` (required) - The name of the group
 + `path` (required) - The path of the group
++ `ldap_cn` (optional) - LDAP group name to sync with
++ `ldap_access` (optional) - Access level for LDAP group members
 
 ## Transfer project to group
 
