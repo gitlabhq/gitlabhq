@@ -271,6 +271,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo -u git -H bundle install --deployment --without development test postgres aws
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
+    sudo apt-get install libpq-dev
     sudo -u git -H bundle install --deployment --without development test mysql aws
 
 
