@@ -45,5 +45,9 @@ class Projects::EditTreeController < Projects::ApplicationController
               end
 
     return access_denied! unless allowed
+
+    unless @repository.branch_names.include?(@ref)
+      redirect_to project_blob_path(@project, @id), notice: "You can only edit this file if you are on top of a branch"
+    end
   end
 end
