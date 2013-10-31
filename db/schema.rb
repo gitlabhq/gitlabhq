@@ -290,15 +290,12 @@ ActiveRecord::Schema.define(:version => 20131009115346) do
     t.integer  "notification_level",                      :default => 1,     :null => false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
-<<<<<<< HEAD
     t.datetime "last_credential_check_at"
-=======
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
->>>>>>> 9c3e95f6d9fea769bb1c23e0d74e7f82cc59810b
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
