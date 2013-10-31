@@ -30,6 +30,8 @@ class Event < ActiveRecord::Base
   JOINED    = 8 # User joined project
   LEFT      = 9 # User left project
   ACCEPTED  = 101 # User accepted merge request
+  REJECTED  = 102 # User rejected merge request
+  FIXED     = 103 # User fixed merge request
 
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
@@ -146,6 +148,14 @@ class Event < ActiveRecord::Base
      action == ACCEPTED
   end
 
+  def rejected?
+     action == REJECTED
+  end
+
+  def fixed?
+    action == FIXED
+  end
+
   def membership_changed?
     joined? || left?
   end
@@ -169,6 +179,10 @@ class Event < ActiveRecord::Base
       'left'
     elsif accepted?
       'accepted (without merge)'
+    elsif rejected?
+      'rejected'
+    elsif fixed?
+      'fixed'
     else
       "opened"
     end

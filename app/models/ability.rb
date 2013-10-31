@@ -123,7 +123,7 @@ class Ability
         :write_wiki,
         :push_code,
         :modify_merge_request,
-        :accept_merge_request
+        :review_merge_request
       ]
     end
 
