@@ -10,11 +10,14 @@ class SearchContext
     query = Shellwords.shellescape(query) if query.present?
 
     return result unless query.present?
-
-    projects = Project.where(id: project_ids)
-    result[:projects] = projects.search(query).limit(20)
+    result[:projects] = Project.where("projects.id in (?) OR projects.public = true", project_ids).search(query).limit(20)
 
     # Search inside single project
+    single_project_search(Project.where(id: project_ids), query)
+    result
+  end
+
+  def single_project_search(projects, query)
     project = projects.first if projects.length == 1
 
     if params[:search_code].present?
@@ -24,7 +27,6 @@ class SearchContext
       result[:issues] = Issue.where(project_id: project_ids).search(query).order('updated_at DESC').limit(20)
       result[:wiki_pages] = []
     end
-    result
   end
 
   def result
