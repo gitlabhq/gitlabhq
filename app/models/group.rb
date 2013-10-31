@@ -26,8 +26,6 @@ class Group < Namespace
     presence: true,
     if: ->(group) { group.ldap_cn.present? }
 
-  after_create :add_owner
-
   def human_name
     name
   end
