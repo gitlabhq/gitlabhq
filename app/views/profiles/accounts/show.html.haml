@@ -1,0 +1,73 @@
+%h3.page-title
+  Account settings
+%p.light
+  You can change your username and private token here.
+  - if current_user.ldap_user?
+    Some options are unavailable for LDAP accounts
+%hr
+
+
+.account-page
+  %fieldset.update-token
+    %legend
+      Private token
+    %div
+      = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
+        .data
+          %p
+            Your private token is used to access application resources without authentication.
+            %br
+            It can be used for atom feeds or the API.
+            %span.cred
+              Keep it secret!
+
+          %p.cgray
+            - if current_user.private_token
+              = text_field_tag "token", current_user.private_token, class: "input-xlarge input-xpadding pull-left"
+              = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token prepend-left-10"
+            - else
+              %span You don`t have one yet. Click generate to fix it.
+              = f.submit 'Generate', class: "btn success btn-build-token"
+
+
+  - if show_profile_social_tab?
+    %fieldset
+      %legend Social Accounts
+      .oauth_select_holder.append-bottom-10
+        %p Click on icon to activate signin with one of the following services
+        - enabled_social_providers.each do |provider|
+          %span{class: oauth_active_class(provider) }
+            = link_to authbutton(provider, 32), omniauth_authorize_path(User, provider)
+
+  - if show_profile_username_tab?
+    %fieldset.update-username
+      %legend
+        Username
+      = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
+        %p
+          Changing your username will change path to all personl projects!
+        %div
+          = f.text_field :username, required: true, class: 'input-xlarge input-xpadding'
+          &nbsp;
+          %span.loading-gif.hide= image_tag "ajax_loader.gif"
+        %p.light
+          = user_url(@user)
+        %div
+          = f.submit 'Save username', class: "btn btn-save"
+
+  - if show_profile_remove_tab?
+    %fieldset.remove-account
+      %legend
+        Remove account
+      %div
+        %p Deleting an account has the following effects:
+        %ul
+          %li All user content like authored issues, snippets, comments will be removed
+          - rp = current_user.personal_projects.count
+          - unless rp.zero?
+            %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
+          - if current_user.solo_owned_groups.present?
+            %li
+              Next groups will be abandoned. You should transfer or remove them:
+              %strong #{current_user.solo_owned_groups.map(&:name).join(', ')}
+        = link_to 'Delete account', user_registration_path, confirm: "REMOVE #{current_user.name}? Are you sure?", method: :delete, class: "btn btn-remove"

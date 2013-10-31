@@ -1,15 +1,16 @@
 = form_tag project_entities_path, method: 'get' do
   %fieldset
-    %ul.nav.nav-pills.nav-stacked
-      %li{class: ("active" if params[:scope].blank?)}
-        = link_to project_filter_path(scope: nil) do
-          Everyone's
-      %li{class: ("active" if params[:scope] == 'assigned-to-me')}
-        = link_to project_filter_path(scope: 'assigned-to-me') do
-          Assigned to me
-      %li{class: ("active" if params[:scope] == 'created-by-me')}
-        = link_to project_filter_path(scope: 'created-by-me') do
-          Created by me
+    - if current_user
+      %ul.nav.nav-pills.nav-stacked
+        %li{class: ("active" if params[:scope].blank?)}
+          = link_to project_filter_path(scope: nil) do
+            Everyone's
+        %li{class: ("active" if params[:scope] == 'assigned-to-me')}
+          = link_to project_filter_path(scope: 'assigned-to-me') do
+            Assigned to me
+        %li{class: ("active" if params[:scope] == 'created-by-me')}
+          = link_to project_filter_path(scope: 'created-by-me') do
+            Created by me
 
     %ul.nav.nav-pills.nav-stacked
       %li{class: ("active" if params[:state].blank?)}

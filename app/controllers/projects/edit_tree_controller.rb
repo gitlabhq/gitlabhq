@@ -10,7 +10,7 @@ class Projects::EditTreeController < Projects::ApplicationController
   before_filter :edit_requirements, only: [:show, :update]
 
   def show
-    @last_commit = Gitlab::Git::Commit.last_for_path(@project.repository, @ref, @path).sha
+    @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
   end
 
   def update
@@ -32,9 +32,9 @@ class Projects::EditTreeController < Projects::ApplicationController
   private
 
   def edit_requirements
-    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
+    @blob = @repository.blob_at(@commit.id, @path)
 
-    unless @blob.exists? && @blob.text?
+    unless @blob
       redirect_to project_blob_path(@project, @id), notice: "You can only edit text files"
     end
 

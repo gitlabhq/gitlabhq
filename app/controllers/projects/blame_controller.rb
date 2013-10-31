@@ -8,7 +8,7 @@ class Projects::BlameController < Projects::ApplicationController
   before_filter :require_non_empty_project
 
   def show
-    @blob = Gitlab::Git::Blob.new(@repository, @commit.id, @ref, @path)
+    @blob = @repository.blob_at(@commit.id, @path)
     @blame = Gitlab::Git::Blame.new(project.repository, @commit.id, @path)
   end
 end

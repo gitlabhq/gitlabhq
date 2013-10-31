@@ -157,12 +157,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def validates_merge_request
-    # Show git not found page if target branch doesn't exist
-    return invalid_mr unless @merge_request.target_project.repository.branch_names.include?(@merge_request.target_branch)
+    # Show git not found page
+    # if there is no saved commits between source & target branch
+    if @merge_request.commits.blank?
+       # and if source target doesn't exist
+       return invalid_mr unless @merge_request.target_project.repository.branch_names.include?(@merge_request.target_branch)
 
-    # Show git not found page if source branch doesn't exist
-    # and there is no saved commits between source & target branch
-    return invalid_mr if !@merge_request.source_project.repository.branch_names.include?(@merge_request.source_branch) && @merge_request.commits.blank?
+       # or if source branch doesn't exist
+       return invalid_mr unless @merge_request.source_project.repository.branch_names.include?(@merge_request.source_branch)
+    end
   end
 
   def define_show_vars

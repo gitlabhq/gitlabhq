@@ -67,6 +67,7 @@
     }
 
     table {
+      width: 100%;
       font-family: $monospace_font;
       border: none;
       margin: 0px;
@@ -418,7 +419,6 @@
   .commit-title {
     margin: 0;
     font-size: 20px;
-    font-weight: bold;
   }
 
   .commit-description {

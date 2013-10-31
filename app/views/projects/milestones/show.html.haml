@@ -1,6 +1,6 @@
 = render "projects/issues/head"
 %h3.page-title
-  Milestone ##{@milestone.id}
+  Milestone ##{@milestone.iid}
   %small
     = @milestone.expires_at
   .pull-right
@@ -26,9 +26,9 @@
   .ui-box-head
     %h4.box-title
       - if @milestone.closed?
-        .error.status_info Closed
+        .state-label.state-label-red Closed
       - elsif @milestone.expired?
-        .error.status_info Expired
+        .state-label.state-label-red Expired
 
       = gfm escape_once(@milestone.title)
 
@@ -99,7 +99,7 @@
       - @users.each do |user|
         %li
           = link_to user, title: user.name, class: "dark" do
-            = image_tag gravatar_icon(user.email, 32), class: "avatar s32"
+            = image_tag avatar_icon(user.email, 32), class: "avatar s32"
             %strong= truncate(user.name, lenght: 40)
             %br
             %small.cgray= user.username

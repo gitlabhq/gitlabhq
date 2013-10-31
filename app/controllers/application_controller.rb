@@ -2,7 +2,7 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
-  before_filter :set_current_user_for_thread
+  around_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :ldap_security_check
   before_filter :dev_tools if Rails.env == 'development'
@@ -51,6 +51,11 @@ class ApplicationController < ActionController::Base
 
   def set_current_user_for_thread
     Thread.current[:current_user] = current_user
+    begin
+      yield
+    ensure
+      Thread.current[:current_user] = nil
+    end
   end
 
   def abilities
@@ -63,6 +68,15 @@ class ApplicationController < ActionController::Base
 
   def project
     id = params[:project_id] || params[:id]
+
+    # Redirect from
+    #   localhost/group/project.git
+    # to
+    #   localhost/group/project
+    #
+    if id =~ /\.git\Z/
+      redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+    end
 
     @project = Project.find_with_namespace(id)
 

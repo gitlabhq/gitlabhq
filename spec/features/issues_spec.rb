@@ -24,7 +24,7 @@ describe "Issues" do
     end
 
     it "should open new issue popup" do
-      page.should have_content("Issue ##{issue.id}")
+      page.should have_content("Issue ##{issue.iid}")
     end
 
     describe "fill in" do
@@ -42,40 +42,6 @@ describe "Issues" do
         page.should have_content "bug 345"
         page.should have_content project.name
       end
-    end
-  end
-
-  describe "Search issue", js: true do
-    before do
-      ['foobar', 'foobar2', 'gitlab'].each do |title|
-        create(:issue,
-               author: @user,
-               assignee: @user,
-               project: project,
-               title: title)
-      end
-    end
-
-    it "should be able to search on different statuses" do
-      issue = Issue.first # with title 'foobar'
-      issue.close
-
-      visit project_issues_path(project)
-      click_link 'Closed'
-      fill_in 'issue_search', with: 'foobar'
-
-      page.should have_content 'foobar'
-      page.should_not have_content 'foobar2'
-      page.should_not have_content 'gitlab'
-    end
-
-    it "should search for term and return the correct results" do
-      visit project_issues_path(project)
-      fill_in 'issue_search', with: 'foobar'
-
-      page.should have_content 'foobar'
-      page.should have_content 'foobar2'
-      page.should_not have_content 'gitlab'
     end
   end
 

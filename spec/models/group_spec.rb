@@ -5,7 +5,7 @@
 #  id          :integer          not null, primary key
 #  name        :string(255)      not null
 #  path        :string(255)      not null
-#  owner_id    :integer          not null
+#  owner_id    :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  type        :string(255)
@@ -26,10 +26,10 @@ describe Group do
   it { should validate_uniqueness_of(:name) }
   it { should validate_presence_of :path }
   it { should validate_uniqueness_of(:path) }
-  it { should validate_presence_of :owner }
+  it { should_not validate_presence_of :owner }
 
   describe :users do
-    it { group.users.should == [group.owner] }
+    it { group.users.should == group.owners }
   end
 
   describe :human_name do
@@ -38,8 +38,20 @@ describe Group do
 
   describe :add_users do
     let(:user) { create(:user) }
-    before { group.add_users([user.id], UsersGroup::MASTER) }
+    before { group.add_user(user, UsersGroup::MASTER) }
 
     it { group.users_groups.masters.map(&:user).should include(user) }
+  end
+
+  describe :add_users do
+    let(:user) { create(:user) }
+    before { group.add_users([user.id], UsersGroup::GUEST) }
+
+    it "should update the group permission" do
+      group.users_groups.guests.map(&:user).should include(user)
+      group.add_users([user.id], UsersGroup::DEVELOPER)
+      group.users_groups.developers.map(&:user).should include(user)
+      group.users_groups.guests.map(&:user).should_not include(user)
+    end
   end
 end

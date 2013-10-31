@@ -18,6 +18,7 @@
 #  merge_status      :string(255)
 #  target_project_id :integer          not null
 #  iid               :integer
+#  description       :text
 #
 
 require 'spec_helper'
@@ -48,8 +49,8 @@ describe MergeRequest do
 
     before do
       merge_request.stub(:commits) { [merge_request.source_project.repository.commit] }
-      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit')
-      create(:note, noteable: merge_request)
+      create(:note, commit_id: merge_request.commits.first.id, noteable_type: 'Commit', project: merge_request.project)
+      create(:note, noteable: merge_request, project: merge_request.project)
     end
 
     it "should include notes for commits" do

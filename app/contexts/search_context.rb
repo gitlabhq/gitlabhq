@@ -13,7 +13,7 @@ class SearchContext
     projects = Project.where(id: project_ids)
     result[:projects] = projects.search(query).limit(20)
 
-    # Search inside singe project
+    # Search inside single project
     project = projects.first if projects.length == 1
 
     if params[:search_code].present?

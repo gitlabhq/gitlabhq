@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20130909132950) do
+ActiveRecord::Schema.define(:version => 20131009115346) do
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -129,7 +129,7 @@ ActiveRecord::Schema.define(:version => 20130909132950) do
   create_table "namespaces", :force => true do |t|
     t.string   "name",                        :null => false
     t.string   "path",                        :null => false
-    t.integer  "owner_id",                    :null => false
+    t.integer  "owner_id"
     t.datetime "created_at",                  :null => false
     t.datetime "updated_at",                  :null => false
     t.string   "type"
@@ -291,10 +291,16 @@ ActiveRecord::Schema.define(:version => 20130909132950) do
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
     t.datetime "last_credential_check_at"
+    t.string   "avatar"
+    t.string   "confirmation_token"
+    t.datetime "confirmed_at"
+    t.datetime "confirmation_sent_at"
+    t.string   "unconfirmed_email"
   end
 
   add_index "users", ["admin"], :name => "index_users_on_admin"
   add_index "users", ["authentication_token"], :name => "index_users_on_authentication_token", :unique => true
+  add_index "users", ["confirmation_token"], :name => "index_users_on_confirmation_token", :unique => true
   add_index "users", ["email"], :name => "index_users_on_email", :unique => true
   add_index "users", ["name"], :name => "index_users_on_name"
   add_index "users", ["reset_password_token"], :name => "index_users_on_reset_password_token", :unique => true
