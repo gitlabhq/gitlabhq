@@ -108,6 +108,23 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def sync_imported
+    opts = {
+      origin: params[:origin],
+      source_branch: params[:source_branch],
+      dest_branch: params[:dest_branch]
+    }
+
+    notice = ::Projects::SyncContext.new(project, current_user, opts).execute
+
+    respond_to do |format|
+      format.html do
+        redirect_to(project, notice: notice)
+      end
+      format.js
+    end
+  end
+
   def autocomplete_sources
     @suggestions = {
       emojis: Emoji.names,

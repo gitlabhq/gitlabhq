@@ -24,6 +24,20 @@ module Gitlab
       system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "import-project", "#{name}.git", url
     end
 
+    # Update an imported repository
+    #
+    # name - project path with namespace
+    # url - remote url
+    # source_branch - remote branch to fetch from
+    # dest_branch - local branch to fetch to
+    #
+    # Ex.
+    #   sync_imported_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git", "orig_branch", "dest_branch")
+    #
+    def sync_imported_repository(name, url, source_branch, dest_branch)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "sync-imported-repository", "#{name}.git", url, source_branch, dest_branch
+    end
+
     # Move repository
     #
     # path - project path with namespace
