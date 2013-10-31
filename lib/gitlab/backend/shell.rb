@@ -12,7 +12,7 @@ module Gitlab
     #   add_repository("gitlab/gitlab-ci")
     #
     def add_repository(name)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "add-project", Shellwords.shellwords("#{name}.git")
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "add-project", Shellwords.shellescape("#{name}.git")
     end
 
     # Import repository
@@ -23,7 +23,7 @@ module Gitlab
     #   import_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
     def import_repository(name, url)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "import-project", Shellwords.shellwords("#{name}.git"), Shellwords.shellwords(url)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "import-project", Shellwords.shellescape("#{name}.git"), Shellwords.shellescape(url)
     end
 
     # Move repository
@@ -35,7 +35,7 @@ module Gitlab
     #   mv_repository("gitlab/gitlab-ci", "randx/gitlab-ci-new.git")
     #
     def mv_repository(path, new_path)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "mv-project", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords("#{new_path}.git")
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "mv-project", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape("#{new_path}.git")
     end
 
     # Update HEAD for repository
@@ -47,7 +47,7 @@ module Gitlab
     #  update_repository_head("gitlab/gitlab-ci", "3-1-stable")
     #
     def update_repository_head(path, branch)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "update-head", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords(branch)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "update-head", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape(branch)
     end
 
     # Fork repository to new namespace
@@ -59,18 +59,18 @@ module Gitlab
     #  fork_repository("gitlab/gitlab-ci", "randx")
     #
     def fork_repository(path, fork_namespace)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "fork-project", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords(fork_namespace)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "fork-project", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape(fork_namespace)
     end
 
     # Remove repository from file system
     #
-    # name - project path with namespace
+    # path - project path with namespace
     #
     # Ex.
     #   remove_repository("gitlab/gitlab-ci")
     #
-    def remove_repository(name)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-project", Shellwords.shellwords("#{name}.git")
+    def remove_repository(path)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-project", Shellwords.shellescape("#{path}.git")
     end
 
     # Add repository branch from passed ref
@@ -83,7 +83,7 @@ module Gitlab
     #   add_branch("gitlab/gitlab-ci", "4-0-stable", "master")
     #
     def add_branch(path, branch_name, ref)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "create-branch", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords(branch_name), Shellwords.shellwords(ref)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "create-branch", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape(branch_name), Shellwords.shellescape(ref)
     end
 
     # Remove repository branch
@@ -95,7 +95,7 @@ module Gitlab
     #   rm_branch("gitlab/gitlab-ci", "4-0-stable")
     #
     def rm_branch(path, branch_name)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-branch", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords(branch_name)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-branch", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape(branch_name)
     end
 
     # Add repository tag from passed ref
@@ -108,7 +108,7 @@ module Gitlab
     #   add_tag("gitlab/gitlab-ci", "v4.0", "master")
     #
     def add_tag(path, tag_name, ref)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "create-tag", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords(tag_name), Shellwords.shellwords(ref)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "create-tag", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape(tag_name), Shellwords.shellescape(ref)
     end
 
     # Remove repository tag
@@ -120,7 +120,7 @@ module Gitlab
     #   rm_tag("gitlab/gitlab-ci", "v4.0")
     #
     def rm_tag(path, tag_name)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-tag", Shellwords.shellwords("#{path}.git"), Shellwords.shellwords(tag_name)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-projects", "rm-tag", Shellwords.shellescape("#{path}.git"), Shellwords.shellescape(tag_name)
     end
 
     # Add new key to gitlab-shell
@@ -129,7 +129,7 @@ module Gitlab
     #   add_key("key-42", "sha-rsa ...")
     #
     def add_key(key_id, key_content)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-keys", "add-key", Shellwords.shellwords(key_id), Shellwords.shellwords(key_content)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-keys", "add-key", Shellwords.shellescape(key_id), Shellwords.shellescape(key_content)
     end
 
     # Remove ssh key from gitlab shell
@@ -138,7 +138,7 @@ module Gitlab
     #   remove_key("key-342", "sha-rsa ...")
     #
     def remove_key(key_id, key_content)
-      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-keys", "rm-key", Shellwords.shellwords(key_id), Shellwords.shellwords(key_content)
+      system "#{gitlab_shell_user_home}/gitlab-shell/bin/gitlab-keys", "rm-key", Shellwords.shellescape(key_id), Shellwords.shellescape(key_content)
     end
 
     # Remove all ssh keys from gitlab shell
