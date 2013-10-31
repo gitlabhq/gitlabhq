@@ -2,7 +2,7 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status, :accept_without_merge]
+  before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status, :accept_without_merge, :reject, :mark_fixed]
   before_filter :closes_issues, only: [:edit, :update, :show, :commits, :diffs]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
@@ -25,6 +25,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @user_groups = current_user.users_groups
     @assigned_group = @user_groups.where(group_id: assigned_group_id).first.group if assigned_group_id.present?
     @created_group = @user_groups.where(group_id: created_group_id).first.group if created_group_id.present?
+    # Merge request states, which will be available in the corresponding filter.
+    # We want to display all states, which displayed in the list MRs can have (i.e. everything what can be merged).
+    @available_states = MergeRequest::VALID_STATES_FOR_MERGE
+    @state = params[:state]
   end
 
   def show
@@ -110,15 +114,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def accept_without_merge
-    return access_denied! unless allowed_to_accept?
+  def change_review_status(appropriate_current_statuses, change_status_method)
+    return access_denied! unless allowed_to_review?
 
-    if @merge_request.opened?
-      @merge_request.accept!
+    if appropriate_current_statuses.include?(@merge_request.state)
+      @merge_request.send(change_status_method)
       @status = true
     else
       @status = false
     end
+  end
+
+  def accept_without_merge
+    change_review_status(MergeRequest::VALID_STATES_FOR_ACCEPT, :accept)
+  end
+
+  def reject
+    change_review_status(MergeRequest::VALID_STATES_FOR_REJECT, :reject)
+  end
+
+  def mark_fixed
+    change_review_status(MergeRequest::VALID_STATES_FOR_MARK_FIXED, :mark_fixed)
   end
 
   def branch_from
@@ -192,9 +208,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @commits = @merge_request.commits
 
     @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = (@merge_request.opened? || @merge_request.accepted?) && @commits.any? && @allowed_to_merge
-    @allowed_to_accept = allowed_to_accept?
-    @show_accept_control = @merge_request.opened? && @commits.any? && @allowed_to_accept
+    @show_merge_controls = MergeRequest::VALID_STATES_FOR_MERGE.include?(@merge_request.state) && @commits.any? && @allowed_to_merge
+
+    @allowed_to_review = allowed_to_review?
+    @show_accept_button = MergeRequest::VALID_STATES_FOR_ACCEPT.include?(@merge_request.state) && @allowed_to_review
+    @show_reject_button = MergeRequest::VALID_STATES_FOR_REJECT.include?(@merge_request.state) && @allowed_to_review
+    @show_mark_fixed_button = MergeRequest::VALID_STATES_FOR_MARK_FIXED.include?(@merge_request.state) && @allowed_to_review
 
     @target_type = :merge_request
     @target_id = @merge_request.id
@@ -214,8 +233,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return can_push_code && can_merge
   end
 
-  def allowed_to_accept?
-    can?(current_user, :accept_merge_request, @project)
+  def allowed_to_review?
+    can?(current_user, :review_merge_request, @project)
   end
 
   def invalid_mr

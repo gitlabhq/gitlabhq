@@ -37,21 +37,30 @@ class MergeRequest < ActiveRecord::Base
 
   state_machine :state, initial: :opened do
     event :close do
-      transition [:reopened, :opened, :accepted] => :closed
+      transition [:reopened, :opened, :accepted, :rejected, :fixed] => :closed
     end
 
     event :merge do
-      transition [:reopened, :opened, :accepted] => :merged
+      transition [:reopened, :opened, :accepted, :rejected, :fixed] => :merged
     end
 
     event :accept do
-      transition [:reopened, :opened] => :accepted
+      transition [:reopened, :opened, :fixed, :rejected] => :accepted
+    end
+
+    event :reject do
+      transition [:reopened, :opened, :fixed, :accepted] => :rejected
+    end
+
+    event :mark_fixed do
+      transition [:rejected] => :fixed
     end
 
     event :reopen do
       transition closed: :reopened
     end
 
+    # New (not reviewed merge request)
     state :opened
 
     state :reopened
@@ -60,7 +69,14 @@ class MergeRequest < ActiveRecord::Base
 
     state :merged
 
+    # Reviewed and without issues which should be fixed, but not merged yet
     state :accepted
+
+    # Reviewed and containing some issues
+    state :rejected
+
+    # Fixed after review
+    state :fixed
   end
 
   state_machine :merge_status, initial: :unchecked do
@@ -105,7 +121,16 @@ class MergeRequest < ActiveRecord::Base
   # Closed scope for merge request should return
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
-  scope :not_closed, -> { with_states(:opened, :reopened, :accepted) }
+  scope :not_closed, -> { with_states(:opened, :reopened, :accepted, :rejected, :fixed) }
+
+  VALID_STATES_FOR_MERGE = ["opened", "reopened", "accepted", "rejected", "fixed"]
+  VALID_STATES_FOR_ACCEPT = ["opened", "reopened", "rejected", "fixed"]
+  VALID_STATES_FOR_REJECT = ["opened", "reopened", "accepted", "fixed"]
+  VALID_STATES_FOR_MARK_FIXED = ["rejected"]
+
+  def not_closed?
+    return !closed? && !merged?
+  end
 
   def validate_branches
     if target_project==source_project && target_branch == source_branch
@@ -210,10 +235,6 @@ class MergeRequest < ActiveRecord::Base
       reverse
     end
     commits
-  end
-
-  def accept_without_merge!
-    self.accept
   end
 
   def merge!(user_id)
