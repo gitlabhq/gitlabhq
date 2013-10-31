@@ -114,7 +114,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     end
   end
 
-  def change_review_status(appropriate_current_statuses, change_status_method)
+  def change_review_status(appropriate_current_statuses, change_status_method, review_action)
     return access_denied! unless allowed_to_review?
 
     if appropriate_current_statuses.include?(@merge_request.state)
@@ -123,18 +123,20 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       @status = false
     end
+    @review_action = review_action
+    render "_review"
   end
 
   def accept_without_merge
-    change_review_status(MergeRequest::VALID_STATES_FOR_ACCEPT, :accept)
+    change_review_status(MergeRequest::VALID_STATES_FOR_ACCEPT, :accept, 'accept (without merge)')
   end
 
   def reject
-    change_review_status(MergeRequest::VALID_STATES_FOR_REJECT, :reject)
+    change_review_status(MergeRequest::VALID_STATES_FOR_REJECT, :reject, 'reject')
   end
 
   def mark_fixed
-    change_review_status(MergeRequest::VALID_STATES_FOR_MARK_FIXED, :mark_fixed)
+    change_review_status(MergeRequest::VALID_STATES_FOR_MARK_FIXED, :mark_fixed, 'mark as fixed')
   end
 
   def branch_from
