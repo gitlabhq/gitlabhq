@@ -109,6 +109,10 @@ production: &base
   # 2. Auth settings
   # ==========================
 
+  # Standard settings
+  standard:
+    enabled: true
+
   ## LDAP settings
   ldap:
     enabled: false

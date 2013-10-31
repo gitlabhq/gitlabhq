@@ -35,6 +35,9 @@ end
 
 
 # Default settings
+Settings['standard'] ||= Settingslogic.new({})
+Settings.standard['enabled'] = true if Settings.standard['enabled'].nil?
+
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?

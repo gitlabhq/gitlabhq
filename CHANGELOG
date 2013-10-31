@@ -1,9 +1,10 @@
-v 6.3.0
+﻿v 6.3.0
   - API for adding gitlab-ci service
   - Init script now waits for pids to appear after (re)starting before reporting status (Rovanion Luckey)
   - Restyle project home page
   - Grammar fixes
   - Show branches list (which branches contains commit) on commit page (Andrew Kumanyaev)
+  - Added support for disabling standard login (Only enabled authorization methods are displayed on the sign in page) (Andrew Walton)
 
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
