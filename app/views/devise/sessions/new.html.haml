@@ -18,7 +18,7 @@
 
   = render 'devise/sessions/oauth_providers' if devise_mapping.omniauthable?
 
-  - if Gitlab.config.gitlab.signup_enabled
+  - if gitlab_config.signup_enabled
     %hr
     %div
       Don't have an account?

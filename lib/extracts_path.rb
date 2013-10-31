@@ -86,7 +86,6 @@ module ExtractsPath
   # - @ref    - A string representing the ref (e.g., the branch, tag, or commit SHA)
   # - @path   - A string representing the filesystem path
   # - @commit - A Commit representing the commit from the given ref
-  # - @tree   - A Tree representing the tree at the given ref/path
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
@@ -107,13 +106,18 @@ module ExtractsPath
     else
       @commit = @repo.commit(@options[:extended_sha1])
     end
-    @tree = Tree.new(@repo, @commit.id, @ref, @path)
+
+    raise InvalidPathError unless @commit
+
     @hex_path = Digest::SHA1.hexdigest(@path)
     @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
-    raise InvalidPathError unless @tree.exists?
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!
+  end
+
+  def tree
+    @tree ||= Tree.new(@repo, @commit.id, @path)
   end
 
   private

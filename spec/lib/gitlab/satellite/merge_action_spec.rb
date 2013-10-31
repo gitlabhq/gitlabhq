@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Gitlab::Satellite::MergeAction' do
   before(:each) do
 #    TestEnv.init(mailer: false, init_repos: true, repos: true)
-    @master = ['master', 'bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a']
+    @master = ['master', 'b1e6a9dbf1c85e6616497a5e7bad9143a4bd0828']
     @one_after_stable = ['stable', '6ea87c47f0f8a24ae031c3fff17bc913889ecd00'] #this commit sha is one after stable
     @wiki_branch = ['wiki', '635d3e09b72232b6e92a38de6cc184147e5bcb41'] #this is the commit sha where the wiki branch goes off from master
     @conflicting_metior = ['metior', '313d96e42b313a0af5ab50fa233bf43e27118b3f'] #this branch conflicts with the wiki branch

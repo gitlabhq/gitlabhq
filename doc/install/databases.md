@@ -14,6 +14,9 @@ GitLab supports the following databases:
     # Pick a database root password (can be anything), type it and press enter
     # Retype the database root password and press enter
 
+    # Secure your installation.
+    sudo mysql_secure_installation
+    
     # Login to MySQL
     mysql -u root -p
 
@@ -55,7 +58,7 @@ GitLab supports the following databases:
     sudo -u postgres psql -d template1
 
     # Create a user for GitLab. (change $password to a real password)
-    template1=# CREATE USER git WITH PASSWORD '$password';
+    template1=# CREATE USER git;
 
     # Create the GitLab production database & grant all privileges on database
     template1=# CREATE DATABASE gitlabhq_production OWNER git;

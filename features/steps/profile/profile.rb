@@ -3,9 +3,7 @@ class Profile < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I should see my profile info' do
-    page.should have_content "Profile"
-    page.should have_content @user.name
-    page.should have_content @user.email
+    page.should have_content "Profile settings"
   end
 
   step 'I change my contact info' do
@@ -22,8 +20,28 @@ class Profile < Spinach::FeatureSteps
     @user.twitter.should == 'testtwitter'
   end
 
+  step 'I change my avatar' do
+    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button "Save changes"
+    @user.reload
+  end
+
+  step 'I should see new avatar' do
+    @user.avatar.should be_instance_of AttachmentUploader
+    @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
+  end
+
+  step 'I try change my password w/o old one' do
+    within '.update-password' do
+      fill_in "user_password", with: "222333"
+      fill_in "user_password_confirmation", with: "222333"
+      click_button "Save"
+    end
+  end
+
   step 'I change my password' do
     within '.update-password' do
+      fill_in "user_current_password", with: "123456"
       fill_in "user_password", with: "222333"
       fill_in "user_password_confirmation", with: "222333"
       click_button "Save"
@@ -32,10 +50,15 @@ class Profile < Spinach::FeatureSteps
 
   step 'I unsuccessfully change my password' do
     within '.update-password' do
+      fill_in "user_current_password", with: "123456"
       fill_in "user_password", with: "password"
       fill_in "user_password_confirmation", with: "confirmation"
       click_button "Save"
     end
+  end
+
+  step "I should see a missing password error message" do
+    page.should have_content "You must provide a valid current password"
   end
 
   step "I should see a password error message" do
@@ -108,6 +131,14 @@ class Profile < Spinach::FeatureSteps
 
   step 'I redirected to sign in page' do
     current_path.should == new_user_session_path
+  end
+
+  step 'I should be redirected to password page' do
+    current_path.should == edit_profile_password_path
+  end
+
+  step 'I should be redirected to account page' do
+    current_path.should == profile_account_path
   end
 
   step 'I click on my profile picture' do

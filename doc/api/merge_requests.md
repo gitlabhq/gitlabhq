@@ -15,18 +15,20 @@ Parameters:
 [
     {
         "id":1,
+        "iid":1,
         "target_branch":"master",
         "source_branch":"test1",
         "project_id":3,
         "title":"test1",
-        "closed":true,
-        "merged":false,
+        "state":"opened",
+        "upvotes":0,
+        "downvotes":0,
         "author":{
             "id":1,
             "username": "admin",
             "email":"admin@local.host",
             "name":"Administrator",
-            "blocked":false,
+            "state":"active",
             "created_at":"2012-04-29T08:46:00Z"
         },
         "assignee":{
@@ -34,7 +36,7 @@ Parameters:
             "username": "admin",
             "email":"admin@local.host",
             "name":"Administrator",
-            "blocked":false,
+            "state":"active",
             "created_at":"2012-04-29T08:46:00Z"
         }
     }
@@ -58,18 +60,20 @@ Parameters:
 ```json
 {
     "id":1,
+    "iid":1,
     "target_branch":"master",
     "source_branch":"test1",
     "project_id":3,
     "title":"test1",
-    "closed":true,
-    "merged":false,
+    "state":"merged",
+    "upvotes":0,
+    "downvotes":0,
     "author":{
         "id":1,
         "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
-        "blocked":false,
+        "state":"active",
         "created_at":"2012-04-29T08:46:00Z"
     },
     "assignee":{
@@ -77,7 +81,7 @@ Parameters:
         "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
-        "blocked":false,
+        "state":"active",
         "created_at":"2012-04-29T08:46:00Z"
     }
 }
@@ -97,7 +101,7 @@ Parameters:
 + `id` (required) - The ID of a project
 + `source_branch` (required) - The source branch
 + `target_branch` (required) - The target branch
-+ `assignee_id`              - Assignee user ID
++ `assignee_id` (optional)   - Assignee user ID
 + `title` (required)         - Title of MR
 
 ```json
@@ -107,14 +111,15 @@ Parameters:
     "source_branch":"test1",
     "project_id":3,
     "title":"test1",
-    "closed":true,
-    "merged":false,
+    "state":"opened",
+    "upvotes":0,
+    "downvotes":0,
     "author":{
         "id":1,
         "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
-        "blocked":false,
+        "state":"active",
         "created_at":"2012-04-29T08:46:00Z"
     },
     "assignee":{
@@ -122,7 +127,7 @@ Parameters:
         "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
-        "blocked":false,
+        "state":"active",
         "created_at":"2012-04-29T08:46:00Z"
     }
 }
@@ -145,24 +150,24 @@ Parameters:
 + `target_branch`               - The target branch
 + `assignee_id`                 - Assignee user ID
 + `title`                       - Title of MR
-+ `closed`                      - Status of MR. true - closed
-
 
 ```json
+
 {
     "id":1,
     "target_branch":"master",
     "source_branch":"test1",
     "project_id":3,
     "title":"test1",
-    "closed":true,
-    "merged":false,
+    "state":"opened",
+    "upvotes":0,
+    "downvotes":0,
     "author":{
         "id":1,
         "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
-        "blocked":false,
+        "state":"active",
         "created_at":"2012-04-29T08:46:00Z"
     },
     "assignee":{
@@ -170,7 +175,7 @@ Parameters:
         "username": "admin",
         "email":"admin@local.host",
         "name":"Administrator",
-        "blocked":false,
+        "state":"active",
         "created_at":"2012-04-29T08:46:00Z"
     }
 }

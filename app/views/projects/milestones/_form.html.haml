@@ -1,4 +1,4 @@
-%h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.id}"
+%h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.iid}"
 .back-link
   = link_to project_milestones_path(@project) do
     &larr; To milestones

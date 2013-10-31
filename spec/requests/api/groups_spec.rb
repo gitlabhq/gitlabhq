@@ -6,8 +6,13 @@ describe API::API do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:group1) { create(:group, owner: user1, ldap_cn: "ldap-group", ldap_access: Gitlab::Access::MASTER ) }
-  let!(:group2) { create(:group, owner: user2) }
+  let!(:group1) { create(:group, ldap_cn: "ldap-group", ldap_access: Gitlab::Access::MASTER ) }
+  let!(:group2) { create(:group) }
+
+  before do
+    group1.add_owner(user1)
+    group2.add_owner(user2)
+  end
 
   describe "GET /groups" do
     context "when unauthenticated" do
@@ -103,6 +108,44 @@ describe API::API do
     end
   end
 
+  describe "DELETE /groups/:id" do
+    context "when authenticated as user" do
+      it "should remove group" do
+        delete api("/groups/#{group1.id}", user1)
+        response.status.should == 200
+      end
+
+      it "should not remove a group if not an owner" do
+        user3 = create(:user)
+        group1.add_user(user3, Gitlab::Access::MASTER)
+        delete api("/groups/#{group1.id}", user3)
+        response.status.should == 403
+      end
+
+      it "should not remove a non existing group" do
+        delete api("/groups/1328", user1)
+        response.status.should == 404
+      end
+
+      it "should not remove a group not attached to user1" do
+        delete api("/groups/#{group2.id}", user1)
+        response.status.should == 403
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should remove any existing group" do
+        delete api("/groups/#{group2.id}", admin)
+        response.status.should == 200
+      end
+
+      it "should not remove a non existing group" do
+        delete api("/groups/1328", admin)
+        response.status.should == 404
+      end
+    end
+  end
+
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
@@ -132,14 +175,19 @@ describe API::API do
     let(:master) { create(:user) }
     let(:guest) { create(:user) }
     let!(:group_with_members) do
-      group = create(:group, owner: owner)
+      group = create(:group)
       group.add_users([reporter.id], UsersGroup::REPORTER)
       group.add_users([developer.id], UsersGroup::DEVELOPER)
       group.add_users([master.id], UsersGroup::MASTER)
       group.add_users([guest.id], UsersGroup::GUEST)
       group
     end
-    let!(:group_no_members) { create(:group, owner: owner) }
+    let!(:group_no_members) { create(:group) }
+
+    before do
+      group_with_members.add_owner owner
+      group_no_members.add_owner owner
+    end
 
     describe "GET /groups/:id/members" do
       context "when authenticated as user that is part or the group" do

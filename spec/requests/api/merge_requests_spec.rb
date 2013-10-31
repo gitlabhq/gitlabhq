@@ -34,6 +34,7 @@ describe API::API do
       get api("/projects/#{project.id}/merge_request/#{merge_request.id}", user)
       response.status.should == 200
       json_response['title'].should == merge_request.title
+      json_response['iid'].should == merge_request.iid
     end
 
     it "should return a 404 error if merge_request_id not found" do

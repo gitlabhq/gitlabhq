@@ -1,30 +1,35 @@
+%h3.page-title
+  Admin area
+%p.light
+  You can manage projects, users and other GitLab data from here.
+%hr
 .admin_dash.row
   .span4
-    .ui-box
-      .title Projects
-      .data.padded
+    .light-well
+      %h4 Projects
+      .data
         = link_to admin_projects_path do
           %h1= Project.count
         %hr
-        = link_to 'New Project', new_project_path, class: "btn btn-small"
+        = link_to 'New Project', new_project_path, class: "btn btn-new"
   .span4
-    .ui-box
-      .title Users
-      .data.padded
+    .light-well
+      %h4 Users
+      .data
         = link_to admin_users_path do
           %h1= User.count
         %hr
-        = link_to 'New User', new_admin_user_path, class: "btn btn-small"
+        = link_to 'New User', new_admin_user_path, class: "btn btn-new"
   .span4
-    .ui-box
-      .title Groups
-      .data.padded
+    .light-well
+      %h4 Groups
+      .data
         = link_to admin_groups_path do
           %h1= Group.count
         %hr
-        = link_to 'New Group', new_admin_group_path, class: "btn btn-small"
+        = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
 
-.row
+.row.prepend-top-10
   .span4
     %h4 Latest projects
     %hr

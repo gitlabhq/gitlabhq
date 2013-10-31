@@ -26,6 +26,7 @@ project_urls.each_with_index do |url, i|
       name: group_path.titleize,
       path: group_path
     )
+    group.description = Faker::Lorem.sentence
     group.owner = User.first
     group.save
   end
@@ -35,7 +36,8 @@ project_urls.each_with_index do |url, i|
   params = {
     import_url: url,
     namespace_id: group.id,
-    name: project_path.titleize
+    name: project_path.titleize,
+    description: Faker::Lorem.sentence
   }
 
   project = Projects::CreateContext.new(User.first, params).execute

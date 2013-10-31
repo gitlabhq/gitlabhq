@@ -356,3 +356,16 @@ Parameters:
 + `id` (required) - The ID of a project
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
+
+
+## Get file archive
+
+Get a an archive of the repository
+
+```
+GET /projects/:id/repository/archive
+```
+
+Parameters:
++ `id` (required) - The ID of a project
++ `sha` (optional) - The commit sha to download defaults to the tip of the default branch

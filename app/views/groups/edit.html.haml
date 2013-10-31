@@ -12,8 +12,6 @@
       %li
         = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
       %li
-        = link_to 'Transfer', '#tab-transfer', 'data-toggle' => 'tab'
-      %li
         = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
 
   .span10
@@ -86,17 +84,6 @@
 
               .form-actions
                 = f.submit 'Save group', class: "btn btn-save"
-
-      .tab-pane#tab-transfer
-        .ui-box.ui-box-danger
-          .title Transfer group
-          .ui-box-body
-            %p
-              Transferring group will cause loss of admin control over group and all child projects
-            = form_for @group do |f|
-              = users_select_tag(:'group[owner_id]')
-              %hr
-              = f.submit 'Transfer group', class: "btn btn-small btn-remove"
 
       .tab-pane#tab-remove
         .ui-box.ui-box-danger

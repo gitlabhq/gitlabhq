@@ -52,6 +52,7 @@ Settings['issues_tracker']  ||= {}
 Settings['gitlab'] ||= Settingslogic.new({})
 Settings.gitlab['default_projects_limit'] ||= 10
 Settings.gitlab['default_can_create_group'] = true if Settings.gitlab['default_can_create_group'].nil?
+Settings.gitlab['default_theme'] = Gitlab::Theme::MARS if Settings.gitlab['default_theme'].nil?
 Settings.gitlab['host']       ||= 'localhost'
 Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
@@ -68,7 +69,7 @@ rescue ArgumentError # no user configured
 end
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
-Settings.gitlab['issue_closing_pattern'] = '^([Cc]loses|[Ff]ixes) #(\d+)' if Settings.gitlab['issue_closing_pattern'].nil?
+Settings.gitlab['issue_closing_pattern'] = '([Cc]loses|[Ff]ixes) #(\d+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab.default_projects_features['issues']         = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.gitlab.default_projects_features['merge_requests'].nil?

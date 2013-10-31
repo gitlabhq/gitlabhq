@@ -37,9 +37,9 @@
   - unless @suppress_diff
     - diffs.each_with_index do |diff, i|
       - next if diff.diff.empty?
-      - file = Gitlab::Git::Blob.new(project.repository, @commit.id, @ref, diff.new_path)
-      - file = Gitlab::Git::Blob.new(project.repository, @commit.parent_id, @ref, diff.old_path) unless file.exists?
-      - next unless file.exists?
+      - file = project.repository.blob_at(@commit.id, diff.new_path)
+      - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
+      - next unless file
       .file{id: "diff-#{i}"}
         .header
           - if diff.deleted_file
@@ -64,7 +64,7 @@
           - if file.text?
             = render "projects/commits/text_file", diff: diff, index: i
           - elsif file.image?
-            - old_file = Gitlab::Git::Blob.new(project.repository, @commit.parent_id, @ref, diff.old_path) if @commit.parent_id
+            - old_file = project.repository.blob_at(@commit.parent_id, diff.old_path) if @commit.parent_id
             = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i
           - else
             %p.nothing_here_message No preview for this file type

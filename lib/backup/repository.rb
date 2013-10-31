@@ -28,7 +28,9 @@ module Backup
 
         if File.exists?(path_to_repo(wiki))
           print " * #{wiki.path_with_namespace} ... "
-          if system("cd #{path_to_repo(wiki)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(wiki)} --all > /dev/null 2>&1")
+          if wiki.empty?
+            puts " [SKIPPED]".cyan
+          elsif system("cd #{path_to_repo(wiki)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(wiki)} --all > /dev/null 2>&1")
             puts " [DONE]".green
           else
             puts " [FAILED]".red

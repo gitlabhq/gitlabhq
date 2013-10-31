@@ -5,7 +5,7 @@
 #  id          :integer          not null, primary key
 #  name        :string(255)      not null
 #  path        :string(255)      not null
-#  owner_id    :integer          not null
+#  owner_id    :integer
 #  created_at  :datetime         not null
 #  updated_at  :datetime         not null
 #  type        :string(255)
@@ -20,7 +20,7 @@ class Namespace < ActiveRecord::Base
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
 
-  validates :owner, presence: true
+  validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name, presence: true, uniqueness: true,
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.name_regex,

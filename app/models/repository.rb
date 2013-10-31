@@ -1,12 +1,17 @@
 class Repository
   include Gitlab::ShellAdapter
 
-  attr_accessor :raw_repository
+  attr_accessor :raw_repository, :path_with_namespace
 
   def initialize(path_with_namespace, default_branch)
-    @raw_repository = Gitlab::Git::Repository.new(path_with_namespace, default_branch)
+    @path_with_namespace = path_with_namespace
+    @raw_repository = Gitlab::Git::Repository.new(path_to_repo) if path_with_namespace
   rescue Gitlab::Git::Repository::NoRepository
     nil
+  end
+
+  def path_to_repo
+    @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
   end
 
   def exists?
@@ -149,5 +154,9 @@ class Repository
     return true if raw_repository.respond_to?(method)
 
     super
+  end
+
+  def blob_at(sha, path)
+    Gitlab::Git::Blob.find(self, sha, path)
   end
 end
