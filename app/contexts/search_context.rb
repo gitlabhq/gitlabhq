@@ -6,7 +6,7 @@ class SearchContext
   end
 
   def execute
-    query = params[:search]
+    query = Shellwords.shellescape(params[:search])
 
     return result unless query.present?
 
