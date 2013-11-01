@@ -99,7 +99,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 or start each component separately
 
     bundle exec rails s
-    bundle exec rake sidekiq:start
+    script/background_jobs start
 
 ### Run the tests
 
