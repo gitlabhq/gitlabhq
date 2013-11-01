@@ -1,0 +1,79 @@
+require_relative 'authentication'
+require_relative 'project'
+require_relative 'paths'
+
+module SharedPublicProjects
+  include Spinach::DSL
+  include SharedAuthentication
+  include SharedProject
+  include SharedPaths
+
+  step 'I should see the list of public projects' do
+    page.should have_content "Public Projects"
+  end
+
+  step 'I should see project "Community"' do
+    page.should have_content "Community"
+  end
+
+  step 'I should not see project "Enterprise"' do
+    page.should_not have_content "Enterprise"
+  end
+
+  step 'I should see project "Empty Public Project"' do
+    page.should have_content "Empty Public Project"
+  end
+
+  step 'I should see public project details' do
+    page.should have_content '32 branches'
+    page.should have_content '16 tags'
+  end
+
+  step 'I should see project readme' do
+    page.should have_content 'README.md'
+  end
+
+  step 'public project "Community"' do
+    create :project_with_code, name: 'Community', public: true, default_branch: 'master'
+  end
+
+  step 'public empty project "Empty Public Project"' do
+    create :project, name: 'Empty Public Project', public: true
+  end
+
+  step 'I visit empty project page' do
+    project = Project.find_by_name('Empty Public Project')
+    visit project_path(project)
+  end
+
+  step 'I visit project "Community" page' do
+    project = Project.find_by_name('Community')
+    visit project_path(project)
+  end
+
+  step 'I should see empty public project details' do
+    page.should have_content 'Git global setup'
+  end
+
+  step 'private project "Enterprise"' do
+    create :project, name: 'Enterprise'
+  end
+
+  step 'I should see project "Community" home page' do
+    within '.project-home-title' do
+      page.should have_content 'Community'
+    end
+  end
+
+  step 'private mode is disabled' do
+    Gitlab.config.gitlab.stub(:private_mode).and_return(false)
+  end
+
+  step 'private mode is enabled' do
+    Gitlab.config.gitlab.stub(:private_mode).and_return(true)
+  end
+
+  step 'I should be redirected to sign in page' do
+    current_path.should == new_user_session_path
+  end
+end

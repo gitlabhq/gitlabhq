@@ -29,7 +29,7 @@ class Ability
                   nil
                 end
 
-      if project && project.public
+      if project && project.public && !Gitlab.config.gitlab.private_mode
         [
           :read_project,
           :read_wiki,

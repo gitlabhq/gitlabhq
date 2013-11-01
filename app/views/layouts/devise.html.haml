@@ -10,6 +10,9 @@
           %p.light
             GitLab is open source software to collaborate on code.
             %br
-            #{link_to "Sign in", new_user_session_path} or browse for #{link_to "public projects", public_projects_path}.
+            - if Gitlab.config.gitlab.private_mode
+              #{link_to "Sign in", new_user_session_path} to browse projects.
+            - else
+              #{link_to "Sign in", new_user_session_path} or browse for #{link_to "public projects", public_projects_path}.
         %hr
         = yield

@@ -80,7 +80,7 @@ module Grack
     def authorize_request(service)
       case service
       when 'git-upload-pack'
-        project.public || can?(user, :download_code, project)
+        can?(user, :download_code, project)
       when'git-receive-pack'
         action = if project.protected_branch?(ref)
                    :push_code_to_protected_branches

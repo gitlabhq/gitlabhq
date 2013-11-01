@@ -67,6 +67,7 @@ Settings.gitlab['user_home']  ||= begin
 rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
+Settings.gitlab['private_mode'] ||= false
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['issue_closing_pattern'] = '([Cc]loses|[Ff]ixes) #(\d+)' if Settings.gitlab['issue_closing_pattern'].nil?

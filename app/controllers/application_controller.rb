@@ -1,5 +1,6 @@
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
+  before_filter :private_mode_enabled?, :unless => :devise_controller?
   before_filter :reject_blocked!
   before_filter :check_password_expiration
   around_filter :set_current_user_for_thread
@@ -28,6 +29,10 @@ class ApplicationController < ActionController::Base
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
     logger.error "\n#{exception.class.name} (#{exception.message}):\n#{application_trace.join}"
+  end
+
+  def private_mode_enabled?
+    redirect_to new_user_session_path unless current_user or !Gitlab.config.gitlab.private_mode
   end
 
   def reject_blocked!
