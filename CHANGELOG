@@ -4,6 +4,7 @@ v 6.3.0
   - Restyle project home page
   - Grammar fixes
   - Show branches list (which branches contains commit) on commit page (Andrew Kumanyaev)
+  - Security improvements
 
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
