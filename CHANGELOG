@@ -5,6 +5,7 @@ v 6.3.0
   - Grammar fixes
   - Show branches list (which branches contains commit) on commit page (Andrew Kumanyaev)
   - Security improvements
+  - Added support for GitLab CI 4.0
 
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
