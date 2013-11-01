@@ -105,7 +105,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if (@merge_request.opened? || @merge_request.accepted?) && @merge_request.can_be_merged?
+    if @merge_request.opened? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
       @merge_request.automerge!(current_user)
       @status = true

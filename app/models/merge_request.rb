@@ -110,7 +110,8 @@ class MergeRequest < ActiveRecord::Base
 
   scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.project_ids) }
   scope :of_user_team, ->(team) { where("(source_project_id in (:team_project_ids) OR target_project_id in (:team_project_ids) AND assignee_id in (:team_member_ids))", team_project_ids: team.project_ids, team_member_ids: team.member_ids) }
-  scope :opened, -> { with_state(:opened) }
+  # Hack: we want the review states ('accepted', 'rejected', 'fixed') to behave in the same way as the 'opened' one
+  scope :opened, -> { with_states(:opened, :accepted, :rejected, :fixed) }
   scope :closed, -> { with_state(:closed) }
   scope :merged, -> { with_state(:merged) }
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
@@ -121,15 +122,15 @@ class MergeRequest < ActiveRecord::Base
   # Closed scope for merge request should return
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
-  scope :not_closed, -> { with_states(:opened, :reopened, :accepted, :rejected, :fixed) }
 
   VALID_STATES_FOR_MERGE = ["opened", "reopened", "accepted", "rejected", "fixed"]
   VALID_STATES_FOR_ACCEPT = ["opened", "reopened", "rejected", "fixed"]
   VALID_STATES_FOR_REJECT = ["opened", "reopened", "accepted", "fixed"]
   VALID_STATES_FOR_MARK_FIXED = ["rejected"]
 
-  def not_closed?
-    return !closed? && !merged?
+  # Hack: we want the review states ('accepted', 'rejected', 'fixed') to behave in the same way as the 'opened' one
+  def opened?
+    return state == "opened" || accepted? || rejected? || fixed?
   end
 
   def validate_branches
