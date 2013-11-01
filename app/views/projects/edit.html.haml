@@ -67,7 +67,7 @@
             - if Project.issues_tracker.values.count > 1
               .control-group
                 = f.label :issues_tracker, "Issues tracker", class: 'control-label'
-                .controls= f.select(:issues_tracker, project_issues_trackers, {}, { disabled: !@project.issues_enabled })
+                .controls= f.select(:issues_tracker, project_issues_trackers(@project.issues_tracker), {}, { disabled: !@project.issues_enabled })
 
               .control-group
                 = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
