@@ -62,23 +62,21 @@ module Gitlab
           return nil unless ldap_conf.enabled && login.present? && password.present?
 
           ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
+          filter = Net::LDAP::Filter.eq(ldap.uid, login)
+
+          # Apply LDAP user filter if present
+          if ldap_conf['user_filter'].present?
+            user_filter = Net::LDAP::Filter.construct(ldap_conf['user_filter'])
+            filter = Net::LDAP::Filter.join(filter, user_filter)
+          end
+
           ldap_user = ldap.bind_as(
-            filter: Net::LDAP::Filter.eq(ldap.uid, login),
+            filter: filter,
             size: 1,
             password: password
           )
 
           find_by_uid(ldap_user.dn) if ldap_user
-        end
-
-        # Check LDAP user existance by dn. User in git over ssh check
-        #
-        # It covers 2 cases:
-        # * when ldap account was removed
-        # * when ldap account was deactivated by change of OU membership in 'dn'
-        def blocked?(dn)
-          ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
-          ldap.connection.search(base: dn, size: 1).blank?
         end
 
         private
