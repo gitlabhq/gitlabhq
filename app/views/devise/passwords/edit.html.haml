@@ -9,6 +9,4 @@
   %div
   .clearfix.append-bottom-10
     = f.submit "Change my password", class: "btn btn-primary"
-    = link_to "Sign in", new_session_path(resource_name), class: "btn pull-right"
-  %div
-    = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
+    = render partial: "devise/shared/sign_in", :locals => { :cssclass => 'btn pull-right' }

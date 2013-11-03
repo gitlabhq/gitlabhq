@@ -1,12 +1,15 @@
-<h2>Resend unlock instructions</h2>
+<div class="login-box">
+  <h2>Resend unlock instructions</h2>
 
-<%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
-  <%= devise_error_messages! %>
+  <%= form_for(resource, as: resource_name, url: unlock_path(resource_name), html: { method: :post }) do |f| %>
+    <%= devise_error_messages! %>
 
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
+    <div>
+      <%= f.email_field :email, class: "text top", placeholder: "Username or Email", autofocus: "autofocus" %></div>
 
-  <div><%= f.submit "Resend unlock instructions" %></div>
-<% end %>
+      <div><%= f.submit "Resend unlock instructions", class: "btn btn-primary" %></div>
+      <% end %>
 
-<%= render partial: "devise/shared/links" %>
+      <%= render partial: "devise/shared/forgot_password", :locals => { :cssclass => 'btn' } %>
+      <%= render partial: "devise/shared/sign_in", :locals => { :cssclass => 'btn pull-right' } %>
+    </div>

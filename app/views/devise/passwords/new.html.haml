@@ -6,5 +6,5 @@
   %br/
   = f.submit "Reset password", class: "btn-primary btn"
   .pull-right
-    = link_to "Sign in", new_session_path(resource_name), class: "btn"
+    = render partial: "devise/shared/sign_in", :locals => { :cssclass => 'btn' }
     %br/
