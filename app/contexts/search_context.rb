@@ -24,7 +24,8 @@ class SearchContext
       result[:blobs] = project.repository.search_files(query, params[:repository_ref]) unless project.empty_repo?
     else
       result[:merge_requests] = MergeRequest.in_projects(project_ids).search(query).order('updated_at DESC').limit(20)
-      result[:issues] = Issue.where(project_id: project_ids).search(query).order('updated_at DESC').limit(20)
+      result[:issues] = Issue.where(project_id: project_ids).where("title like :query OR description like :query ", query: "%#{query}%").order('updated_at DESC').limit(20)
+      result[:notes] = Note.where(noteable_type: 'issue').where(project_id: project_ids).where("note like :query", query: "%#{query}%").order('updated_at DESC').limit(20)
       result[:wiki_pages] = []
     end
   end
@@ -34,6 +35,7 @@ class SearchContext
       projects: [],
       merge_requests: [],
       issues: [],
+      notes: [],
       wiki_pages: [],
       blobs: []
     }
