@@ -1,0 +1,6 @@
+v 6.2.0
+  - API: expose ldap_cn and ldap_access group attributes
+  - Use omniauth-ldap nickname attribute as GitLab username
+  - Improve group sharing UI for installation with many groups
+  - Fix empty LDAP group raises exception
+  - Respect LDAP user filter for git access
