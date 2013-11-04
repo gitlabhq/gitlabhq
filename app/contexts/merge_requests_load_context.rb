@@ -7,7 +7,7 @@ class MergeRequestsLoadContext < BaseContext
     merge_requests = case params[:state]
                      when 'all' then merge_requests
                      when 'closed' then merge_requests.closed
-                     else merge_requests.not_closed
+                     else merge_requests.opened
                      end
 
     merge_requests = case params[:scope]
