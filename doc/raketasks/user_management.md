@@ -12,5 +12,5 @@ Notes:
 * admin users are added as masters
 
 ```
-bundle exec rake gitlab:import:all_users_to_all_projects
+sudo -u git -H bundle exec rake gitlab:import:all_users_to_all_projects RAILS_ENV=production
 ```
