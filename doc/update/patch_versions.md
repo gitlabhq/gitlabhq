@@ -21,7 +21,15 @@ cd /home/git/gitlab
 sudo -u git -H git pull origin 6-2-stable
 ```
 
-### 3. Install libs, migrations, etc.
+### 4. Update gitlab-shell if necessary
+
+```bash
+cd /home/git/gitlab-shell
+sudo -u git -H git fetch
+sudo -u git -H git checkout v1.7.4
+```
+
+### 4. Install libs, migrations, etc.
 
 ```bash
 cd /home/git/gitlab
@@ -38,12 +46,12 @@ sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 sudo -u git -H bundle exec rake cache:clear RAILS_ENV=production
 ```
 
-### 4. Start application
+### 5. Start application
 
     sudo service gitlab start
     sudo service nginx restart
 
-### 5. Check application status
+### 6. Check application status
 
 Check if GitLab and its environment are configured correctly:
 
