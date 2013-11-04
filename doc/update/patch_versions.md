@@ -21,7 +21,7 @@ cd /home/git/gitlab
 sudo -u git -H git pull origin 6-2-stable
 ```
 
-### 4. Update gitlab-shell if necessary
+### 3. Update gitlab-shell if necessary
 
 ```bash
 cd /home/git/gitlab-shell
