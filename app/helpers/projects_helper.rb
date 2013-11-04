@@ -45,7 +45,10 @@ module ProjectsHelper
         link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name
       end
     else
-      project.name
+      owner = project.namespace.owner
+      content_tag :span do
+        link_to(simple_sanitize(owner.name), user_path(owner)) + " / " + project.name
+      end
     end
   end
 
