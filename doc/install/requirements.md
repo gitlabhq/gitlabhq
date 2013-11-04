@@ -15,7 +15,7 @@ It should also work on (though they are not officially supported):
 - CentOS
 - Fedora
 - Gentoo
-- RedHat
+- RHEL
 
 ## Other Unix Systems
 
