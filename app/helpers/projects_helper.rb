@@ -83,7 +83,7 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC").all
   end
 
-  def project_issues_trackers
+  def project_issues_trackers(current_tracker = nil)
     values = Project.issues_tracker.values.map do |tracker_key|
       if tracker_key.to_sym == :gitlab
         ['GitLab', tracker_key]
@@ -92,7 +92,7 @@ module ProjectsHelper
       end
     end
 
-    options_for_select(values)
+    options_for_select(values, current_tracker)
   end
 
   private
