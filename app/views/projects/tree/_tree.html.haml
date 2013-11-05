@@ -10,6 +10,11 @@
         = link_to truncate(title, length: 40), project_tree_path(@project, path)
       - else
         = link_to title, '#'
+  \/
+  %li
+    = link_to project_new_tree_path(@project, @id) do
+      %small
+        %i.icon-plus.light
 
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
