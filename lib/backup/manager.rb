@@ -1,5 +1,7 @@
 module Backup
   class Manager
+    BACKUP_CONTENTS = %w{repositories/ db/ uploads/ backup_information.yml}
+
     def pack
       # saving additional informations
       s = {}
@@ -16,7 +18,7 @@ module Backup
 
       # create archive
       print "Creating backup archive: #{s[:backup_created_at].to_i}_gitlab_backup.tar ... "
-      if Kernel.system(*%W(tar -cf #{s[:backup_created_at].to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml))
+      if Kernel.system('tar', '-cf', "#{s[:backup_created_at].to_i}_gitlab_backup.tar", *BACKUP_CONTENTS)
         puts "done".green
       else
         puts "failed".red
@@ -25,7 +27,7 @@ module Backup
 
     def cleanup
       print "Deleting tmp directories ... "
-      if Kernel.system(*%W(rm -rf repositories/ db/ uploads/ backup_information.yml))
+      if Kernel.system('rm', '-rf', *BACKUP_CONTENTS)
         puts "done".green
       else
         puts "failed".red
