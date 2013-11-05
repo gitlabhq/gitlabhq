@@ -288,6 +288,7 @@ Gitlab::Application.routes.draw do
 
       resources :team_members, except: [:index, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
         collection do
+          delete :leave
 
           # Used for import team
           # from another project
