@@ -82,8 +82,6 @@ class User < ActiveRecord::Base
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
-  has_many :owned_projects,           through: :owned_groups, source: :projects
-
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
@@ -258,6 +256,12 @@ class User < ActiveRecord::Base
                              end
   end
 
+  def owned_projects
+    @owned_projects ||= begin
+                          Project.where(namespace_id: owned_groups.pluck(:id).push(namespace.id)).joins(:namespace)
+                        end
+  end
+
   # Team membership in authorized projects
   def tm_in_authorized_projects
     UsersProject.where(project_id: authorized_projects.map(&:id), user_id: self.id)
@@ -330,7 +334,7 @@ class User < ActiveRecord::Base
   end
 
   def several_namespaces?
-    namespaces.many? || owned_groups.any?
+    owned_groups.any?
   end
 
   def namespace_id

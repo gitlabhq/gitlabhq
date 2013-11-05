@@ -135,7 +135,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should include(@user.namespace) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
   end
@@ -162,7 +161,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_false }
-    it { @user.namespaces.should == [@user.namespace] }
   end
 
   describe 'blocking user' do
