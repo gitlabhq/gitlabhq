@@ -16,7 +16,7 @@ module Backup
 
       # create archive
       print "Creating backup archive: #{s[:backup_created_at].to_i}_gitlab_backup.tar ... "
-      if Kernel.system("tar -cf #{s[:backup_created_at].to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml")
+      if Kernel.system(*%W(tar -cf #{s[:backup_created_at].to_i}_gitlab_backup.tar repositories/ db/ uploads/ backup_information.yml))
         puts "done".green
       else
         puts "failed".red
@@ -25,7 +25,7 @@ module Backup
 
     def cleanup
       print "Deleting tmp directories ... "
-      if Kernel.system("rm -rf repositories/ db/ uploads/ backup_information.yml")
+      if Kernel.system(*%W(rm -rf repositories/ db/ uploads/ backup_information.yml))
         puts "done".green
       else
         puts "failed".red
@@ -44,7 +44,7 @@ module Backup
         file_list.map! { |f| $1.to_i if f =~ /(\d+)_gitlab_backup.tar/ }
         file_list.sort.each do |timestamp|
           if Time.at(timestamp) < (Time.now - keep_time)
-            if system("rm #{timestamp}_gitlab_backup.tar")
+            if Kernel.system(*%W(rm #{timestamp}_gitlab_backup.tar))
               removed += 1
             end
           end
@@ -75,7 +75,7 @@ module Backup
       end
 
       print "Unpacking backup ... "
-      unless Kernel.system("tar -xf #{tar_file}")
+      unless Kernel.system(*%W(tar -xf #{tar_file}))
         puts "failed".red
         exit 1
       else
