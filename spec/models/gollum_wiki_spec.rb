@@ -1,11 +1,11 @@
 require "spec_helper"
+require "shellwords"
 
 describe GollumWiki do
 
   def create_temp_repo(path)
     FileUtils.mkdir_p path
-    command = "git init --quiet #{path};"
-    system(command)
+    system("git init --quiet #{Shellwords.shellescape(path)}")
   end
 
   def remove_temp_repo(path)
