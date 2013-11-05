@@ -50,6 +50,10 @@ production: &base
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
 
+    ## Private mode
+    # true - Public project pages require an authenticate user (files, issues, wik, etc.)
+    # false - Public project pages are visible to everyone (files, issues, wik, etc.)
+    # private_mode: true # default: false
 
     ## Users management
     # default: false - Account passwords are not sent via the email if signup is enabled. 
