@@ -8,7 +8,7 @@
       .controls
         %span.monospace= @path[-1] == "/" ? @path : @path + "/"
         &nbsp;
-        = text_field_tag 'file_name', '', placeholder: "sample.rb", required: true
+        = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true
         %span
           &nbsp;
           on
@@ -18,13 +18,13 @@
       = label_tag 'commit_message', class: "control-label" do
         Commit message
       .controls
-        = text_area_tag 'commit_message', '', placeholder: "Added new file", required: true, rows: 3
+        = text_area_tag 'commit_message', params[:commit_message], placeholder: "Added new file", required: true, rows: 3
 
     .file-holder
       .file-title
         %i.icon-file
       .file-content.code
-        %pre#editor= ""
+        %pre#editor= params[:content]
 
     .form-actions
       = hidden_field_tag 'content', '', id: "file-content"
