@@ -1,11 +1,11 @@
 require "spec_helper"
-require "shellwords"
 
 describe WikiPage do
 
   def create_temp_repo(path)
     FileUtils.mkdir_p path
-    system("git init --quiet #{Shellwords.shellescape(path)}")
+    command = "git init --quiet #{path};"
+    system(command)
   end
 
   def remove_temp_repo(path)

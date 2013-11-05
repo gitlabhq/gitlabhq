@@ -1,5 +1,4 @@
 require 'yaml'
-require 'shellwords'
 
 module Backup
   class Database
@@ -14,20 +13,20 @@ module Backup
     def dump
       case config["adapter"]
       when /^mysql/ then
-        system("mysqldump #{mysql_args} #{Shellwords.shellescape(config['database'])} > #{Shellwords.shellescape(db_file_name)}")
+        system("mysqldump #{mysql_args} #{config['database']} > #{db_file_name}")
       when "postgresql" then
         pg_env
-        system("pg_dump #{Shellwords.shellescape(config['database'])} > #{db_file_name}")
+        system("pg_dump #{config['database']} > #{db_file_name}")
       end
     end
 
     def restore
       case config["adapter"]
       when /^mysql/ then
-        system("mysql #{mysql_args} #{Shellwords.shellescape(config['database'])} < #{db_file_name}")
+        system("mysql #{mysql_args} #{config['database']} < #{db_file_name}")
       when "postgresql" then
         pg_env
-        system("psql #{Shellwords.shellescape(config['database'])} -f #{Shellwords.shellescape(db_file_name)}")
+        system("psql #{config['database']} -f #{db_file_name}")
       end
     end
 
@@ -46,7 +45,7 @@ module Backup
         'encoding'  => '--default-character-set',
         'password'  => '--password'
       }
-      args.map { |opt, arg| "#{arg}=#{Shellwords.shellescape(config[opt])}" if config[opt] }.compact.join(' ')
+      args.map { |opt, arg| "#{arg}='#{config[opt]}'" if config[opt] }.compact.join(' ')
     end
 
     def pg_env
