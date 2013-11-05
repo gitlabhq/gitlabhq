@@ -1,4 +1,5 @@
 require 'yaml'
+require 'shellwords'
 
 module Backup
   class Repository
@@ -18,7 +19,7 @@ module Backup
         # Create namespace dir if missing
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
 
-        if system("cd #{path_to_repo(project)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(project)} --all > /dev/null 2>&1")
+        if system("cd #{Shellwords.shellescape(path_to_repo(project))} > /dev/null 2>&1 && git bundle create #{Shellwords.shellescape(path_to_bundle(project))} --all > /dev/null 2>&1")
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -30,7 +31,7 @@ module Backup
           print " * #{wiki.path_with_namespace} ... "
           if wiki.empty?
             puts " [SKIPPED]".cyan
-          elsif system("cd #{path_to_repo(wiki)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(wiki)} --all > /dev/null 2>&1")
+          elsif system("cd #{Shellwords.shellescape(path_to_repo(wiki))} > /dev/null 2>&1 && git bundle create #{Shellwords.shellescape(path_to_bundle(wiki))} --all > /dev/null 2>&1")
             puts " [DONE]".green
           else
             puts " [FAILED]".red
@@ -53,7 +54,7 @@ module Backup
 
         project.namespace.ensure_dir_exist if project.namespace
 
-        if system("git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)} > /dev/null 2>&1")
+        if system("git clone --bare #{Shellwords.shellescape(path_to_bundle(project))} #{Shellwords.shellescape(path_to_repo(project))} > /dev/null 2>&1")
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -63,7 +64,7 @@ module Backup
 
         if File.exists?(path_to_bundle(wiki))
           print " * #{wiki.path_with_namespace} ... "
-          if system("git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)} > /dev/null 2>&1")
+          if system("git clone --bare #{Shellwords.shellescape(path_to_bundle(wiki))} #{Shellwords.shellescape(path_to_repo(wiki))} > /dev/null 2>&1")
             puts " [DONE]".green
           else
             puts " [FAILED]".red
