@@ -1,6 +1,6 @@
 class Projects::TeamMembersController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_admin_project!
+  before_filter :authorize_admin_project!, except: :leave
 
   layout "project_settings"
 
@@ -41,6 +41,15 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to project_team_index_path(@project) }
+      format.js { render nothing: true }
+    end
+  end
+
+  def leave
+    project.users_projects.find_by_user_id(current_user).destroy
+
+    respond_to do |format|
+      format.html { redirect_to :back }
       format.js { render nothing: true }
     end
   end

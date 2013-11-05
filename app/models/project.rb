@@ -317,7 +317,7 @@ class Project < ActiveRecord::Base
     mrs = self.merge_requests.opened.by_branch(branch_name).all
     # Update code for merge requests between project and project fork
     mrs += self.fork_merge_requests.opened.by_branch(branch_name).all
-    
+
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests
@@ -446,5 +446,9 @@ class Project < ActiveRecord::Base
     Event.where(project_id: self.id).
       order('id DESC').limit(100).
       update_all(updated_at: Time.now)
+  end
+
+  def project_member(user)
+    users_projects.where(user_id: user).first
   end
 end

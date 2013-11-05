@@ -395,4 +395,9 @@ class User < ActiveRecord::Base
 
     self
   end
+
+  def can_leave_project?(project)
+    project.namespace != namespace &&
+      project.project_member(self)
+  end
 end
