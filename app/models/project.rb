@@ -122,7 +122,7 @@ class Project < ActiveRecord::Base
     end
 
     def search query
-      joins(:namespace).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query", query: "%#{query}%")
+      joins(:namespace).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
     def find_with_namespace(id)
