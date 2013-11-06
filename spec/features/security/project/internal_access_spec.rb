@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Public Project Access" do
+describe "Internal Project Access" do
   let(:project) { create(:project_with_code) }
 
   let(:master) { create(:user) }
@@ -8,8 +8,8 @@ describe "Public Project Access" do
   let(:reporter) { create(:user) }
 
   before do
-    # public project
-    project.visibility_level = Gitlab::VisibilityLevel::PUBLIC
+    # internal project
+    project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
     project.save!
 
     # full access
@@ -20,10 +20,10 @@ describe "Public Project Access" do
 
   end
 
-  describe "Project should be public" do
+  describe "Project should be internal" do
     subject { project }
 
-    its(:public?) { should be_true }
+    its(:internal?) { should be_true }
   end
 
   describe "GET /:project_path" do
@@ -34,7 +34,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/tree/master" do
@@ -45,7 +45,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/commits/master" do
@@ -56,7 +56,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/commit/:sha" do
@@ -67,7 +67,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/compare" do
@@ -78,7 +78,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/team" do
@@ -100,7 +100,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/blob" do
@@ -115,7 +115,7 @@ describe "Public Project Access" do
     it { @blob_path.should be_allowed_for :admin }
     it { @blob_path.should be_allowed_for guest }
     it { @blob_path.should be_allowed_for :user }
-    it { @blob_path.should be_allowed_for :visitor }
+    it { @blob_path.should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/edit" do
@@ -148,7 +148,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/snippets" do
@@ -159,7 +159,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/snippets/new" do
@@ -181,7 +181,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/merge_requests/new" do
@@ -203,7 +203,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/branches" do
@@ -219,7 +219,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/tags" do
@@ -235,7 +235,7 @@ describe "Public Project Access" do
     it { should be_allowed_for :admin }
     it { should be_allowed_for guest }
     it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
+    it { should be_denied_for :visitor }
   end
 
   describe "GET /:project_path/hooks" do

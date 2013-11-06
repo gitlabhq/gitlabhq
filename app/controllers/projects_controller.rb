@@ -55,7 +55,7 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    return authenticate_user! unless @project.public || current_user
+    return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent
