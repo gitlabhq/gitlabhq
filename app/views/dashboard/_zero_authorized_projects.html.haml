@@ -11,9 +11,14 @@
       - if current_user.can_create_project?
         You can create up to
         %strong= pluralize(current_user.projects_limit, "project") + "."
-        Click on the button below to add a new one
+        Click on the button below to add a new one or
+        = link_to public_root_path do
+          browse public projects
+
       - else
-        If you are added to a project, it will be displayed here
+        If you are added to a project, it will be displayed here or
+        = link_to public_root_path do
+          browse public projects
 
     - if current_user.can_create_project?
       .link_holder

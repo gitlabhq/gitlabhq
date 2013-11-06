@@ -1,8 +1,13 @@
 %fieldset
   %ul.nav.nav-pills.nav-stacked
+    = nav_tab :scope, 'all' do
+      = link_to projects_dashboard_filter_path(scope: 'all') do
+        All
+        %span.pull-right
+          = current_user.all_projects.count
     = nav_tab :scope, nil do
       = link_to projects_dashboard_filter_path(scope: nil) do
-        All
+        Authorized
         %span.pull-right
           = current_user.authorized_projects.count
     = nav_tab :scope, 'personal' do
