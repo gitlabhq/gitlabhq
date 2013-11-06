@@ -213,7 +213,6 @@ Parameters:
 
 + `name` (required) - new project name
 + `description` (optional) - short project description
-+ `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
 + `wall_enabled` (optional)
 + `merge_requests_enabled` (optional)
