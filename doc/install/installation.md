@@ -227,10 +227,6 @@ You can change `6-2-stable` to `master` if you want the *bleeding edge* version,
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-    # Enable rack attack middleware
-    # Find and uncomment the line 'config.middleware.use Rack::Attack'
-    sudo -u git -H editor config/application.rb
-
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
