@@ -7,6 +7,8 @@ v 6.3.0
   - Security improvements
   - Added support for GitLab CI 4.0
   - Fixed issue with 500 error when group did not exist
+  - Ability to leave project
+  - You can create file in repo using UI
 
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
