@@ -3,7 +3,7 @@ class Repository
 
   attr_accessor :raw_repository, :path_with_namespace
 
-  def initialize(path_with_namespace, default_branch)
+  def initialize(path_with_namespace, default_branch = nil)
     @path_with_namespace = path_with_namespace
     @raw_repository = Gitlab::Git::Repository.new(path_to_repo) if path_with_namespace
   rescue Gitlab::Git::Repository::NoRepository

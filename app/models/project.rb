@@ -28,13 +28,15 @@ class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   extend Enumerize
 
-  attr_accessible :name, :path, :description, :default_branch, :issues_tracker, :label_list,
+  attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
     :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
   acts_as_taggable_on :labels, :issues_default_labels
+
+  attr_accessor :new_default_branch
 
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
@@ -143,7 +145,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, default_branch)
+    @repository ||= Repository.new(path_with_namespace)
   end
 
   def saved?
@@ -450,5 +452,9 @@ class Project < ActiveRecord::Base
 
   def project_member(user)
     users_projects.where(user_id: user).first
+  end
+
+  def default_branch
+    @default_branch ||= repository.root_ref if repository.exists?
   end
 end

@@ -91,7 +91,6 @@ describe API::API do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
-        default_branch: 'stable',
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,
@@ -110,16 +109,13 @@ describe API::API do
       project = attributes_for(:project, { public: true })
       post api("/projects", user), project
       json_response['public'].should be_true
-
     end
 
     it "should set a project as private" do
       project = attributes_for(:project, { public: false })
       post api("/projects", user), project
       json_response['public'].should be_false
-
     end
-
   end
 
   describe "POST /projects/user/:id" do
@@ -146,7 +142,6 @@ describe API::API do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
-        default_branch: 'stable',
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,

@@ -23,7 +23,7 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'public project "Community"' do
-    create :project_with_code, name: 'Community', public: true, default_branch: 'master'
+    create :project_with_code, name: 'Community', public: true
   end
 
   step 'public empty project "Empty Public Project"' do
