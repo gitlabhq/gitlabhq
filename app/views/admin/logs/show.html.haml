@@ -4,7 +4,14 @@
   %li
     = link_to "application.log", "#application", 'data-toggle' => 'tab'
   %li
-    = link_to "production.log", "#production", 'data-toggle' => 'tab'
+    - if Rails.env.production? then
+      = link_to "production.log", "#production", 'data-toggle' => 'tab'
+    - elsif Rails.env.staging? then
+      = link_to "staging.log", "#staging", 'data-toggle' => 'tab'
+    - elsif Rails.env.development? then
+      = link_to "development.log", "#development", 'data-toggle' => 'tab'
+    - elsif Rails.env.test? then
+      = link_to "test.log", "#test", 'data-toggle' => 'tab'
   %li
     = link_to "sidekiq.log", "#sidekiq", 'data-toggle' => 'tab'
 
@@ -50,6 +57,48 @@
       .file-content.logs
         %ol
           - Gitlab::Logger.read_latest_for('production.log').each do |line|
+            %li
+              %p= line
+  .tab-pane#staging
+    .file-holder#README
+      .file-title
+        %i.icon-file
+        staging.log
+        .pull-right
+          = link_to '#', class: 'log-bottom' do
+            %i.icon-arrow-down
+            Scroll down
+      .file-content.logs
+        %ol
+          - Gitlab::Logger.read_latest_for('staging.log').each do |line|
+            %li
+              %p= line
+  .tab-pane#development
+    .file-holder#README
+      .file-title
+        %i.icon-file
+        development.log
+        .pull-right
+          = link_to '#', class: 'log-bottom' do
+            %i.icon-arrow-down
+            Scroll down
+      .file-content.logs
+        %ol
+          - Gitlab::Logger.read_latest_for('development.log').each do |line|
+            %li
+              %p= line
+  .tab-pane#test
+    .file-holder#README
+      .file-title
+        %i.icon-file
+        test.log
+        .pull-right
+          = link_to '#', class: 'log-bottom' do
+            %i.icon-arrow-down
+            Scroll down
+      .file-content.logs
+        %ol
+          - Gitlab::Logger.read_latest_for('test.log').each do |line|
             %li
               %p= line
   .tab-pane#sidekiq

@@ -209,6 +209,6 @@ group :test do
   gem 'test_after_commit'
 end
 
-group :production do
+group :production, :staging do
   gem "gitlab_meta", '6.0'
 end
