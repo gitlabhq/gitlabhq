@@ -64,7 +64,9 @@ module GitlabMarkdownHelper
   # ref - name of the branch or reference, eg. stable
   # requested_path - path of request, eg. doc/api/README.md, used in special case when path is pointing to the .md file were the original request is coming from
   # wiki - whether the markdown is from wiki or not
-  def create_relative_links(text, project_path_with_namespace, ref, requested_path, wiki = false)
+  def create_relative_links(text, project, ref, requested_path, wiki = false)
+    @path_to_satellite = project.satellite.path
+    project_path_with_namespace = project.path_with_namespace
     paths = extract_paths(text)
     paths.each do |file_path|
       new_path = rebuild_path(project_path_with_namespace, file_path, requested_path, ref)
@@ -143,9 +145,10 @@ module GitlabMarkdownHelper
     end
   end
 
-  def file_exists?(path)
-    return false if path.nil? || path.empty?
-    File.exists?(Rails.root.join(path))
+  def file_exists?(document_path)
+    return false if document_path.nil? || document_path.empty?
+    full_path = [@path_to_satellite, document_path].join("/")
+    File.exists?(full_path)
   end
 
   # Check if the path is pointing to a directory(tree) or a file(blob)
