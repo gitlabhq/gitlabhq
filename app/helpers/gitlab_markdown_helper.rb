@@ -145,16 +145,20 @@ module GitlabMarkdownHelper
     end
   end
 
-  def file_exists?(document_path)
-    return false if document_path.nil? || document_path.empty?
-    full_path = [@path_to_satellite, document_path].join("/")
-    File.exists?(full_path)
+  def file_exists?(path)
+    return false if path.nil? || path.empty?
+    File.exists?(path_on_fs(path))
   end
 
   # Check if the path is pointing to a directory(tree) or a file(blob)
   # eg. doc/api is directory and doc/README.md is file
   def local_path(path)
-    File.directory?(Rails.root.join(path)) ? "tree" : "blob"
+    File.directory?(path_on_fs(path)) ? "tree" : "blob"
+  end
+
+  # Path to the file in the satellites repository on the filesystem
+  def path_on_fs(path)
+    [@path_to_satellite, path].join("/")
   end
 
   # We will assume that if no ref exists we can point to master
