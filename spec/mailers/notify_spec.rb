@@ -367,4 +367,28 @@ describe Notify do
       should have_body_text /#{membership.human_access}/
     end
   end
+
+  describe 'confirmation if email changed' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user, email: 'old-email@mail.com') }
+
+    before do
+      user.email = "new-email@mail.com"
+      user.save
+    end
+
+    subject { ActionMailer::Base.deliveries.last }
+
+    it 'is sent to the new user' do
+      should deliver_to 'new-email@mail.com'
+    end
+
+    it 'has the correct subject' do
+      should have_subject "Confirmation instructions"
+    end
+
+    it 'includes a link to the site' do
+      should have_body_text /#{example_site_path}/
+    end
+  end
 end
