@@ -302,14 +302,6 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def discover_default_branch
-    # Discover the default branch, but only if it hasn't already been set to
-    # something else
-    if repository.exists? && default_branch.nil?
-      update_attributes(default_branch: self.repository.discover_default_branch)
-    end
-  end
-
   def update_merge_requests(oldrev, newrev, ref, user)
     return true unless ref =~ /heads/
     branch_name = ref.gsub("refs/heads/", "")
