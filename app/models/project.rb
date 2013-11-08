@@ -306,7 +306,7 @@ class Project < ActiveRecord::Base
     # Discover the default branch, but only if it hasn't already been set to
     # something else
     if repository.exists? && default_branch.nil?
-      update_attributes(default_branch: self.repository.discover_default_branch)
+      @default_branch = self.repository.discover_default_branch
     end
   end
 
