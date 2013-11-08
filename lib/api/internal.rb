@@ -38,7 +38,7 @@ module API
 
           if user.ldap_user?
             # Check if LDAP user exists and match LDAP user_filter
-            unless Gitlab::LDAP::Access.allowed?(user.extern_uid)
+            unless Gitlab::LDAP::Access.new.allowed?(user)
               return false
             end
           end
