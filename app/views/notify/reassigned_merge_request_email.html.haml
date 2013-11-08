@@ -1,5 +1,5 @@
 %p
-  = "Reassigned Merge Request !#{@merge_request.iid}"
+  = "Reassigned Merge Request ##{@merge_request.iid}"
   = link_to_gfm truncate(@merge_request.title, length: 30), project_merge_request_url(@merge_request.target_project, @merge_request)
 %p
   Assignee changed
