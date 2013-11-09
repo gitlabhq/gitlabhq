@@ -45,6 +45,7 @@ module TestEnv
   def disable_mailer
     NotificationService.any_instance.stub(mailer: double.as_null_object)
   end
+
   def enable_mailer
     NotificationService.any_instance.unstub(:mailer)
   end

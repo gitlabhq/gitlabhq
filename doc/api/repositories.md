@@ -369,3 +369,18 @@ GET /projects/:id/repository/archive
 Parameters:
 + `id` (required) - The ID of a project
 + `sha` (optional) - The commit sha to download defaults to the tip of the default branch
+
+
+## Create new file in repository
+
+```
+POST /projects/:id/repository/files
+```
+
+Parameters:
+
++ `file_name` (required) - The name of new file. Ex. class.rb
++ `file_path` (optiona) - The path to new file. Ex. lib/
++ `branch_name` (required) - The name of branch
++ `content` (required) - File content
++ `commit_message` (required) - Commit message

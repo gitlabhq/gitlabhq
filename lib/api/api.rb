@@ -39,5 +39,6 @@ module API
     mount DeployKeys
     mount ProjectHooks
     mount Services
+    mount Files
   end
 end

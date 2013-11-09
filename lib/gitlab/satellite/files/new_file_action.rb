@@ -17,7 +17,7 @@ module Gitlab
           repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
 
           # update the file in the satellite's working dir
-          file_path_in_satellite = File.join(repo.working_dir, file_path, file_name)
+          file_path_in_satellite = File.join(repo.working_dir, file_path || '', file_name)
           File.open(file_path_in_satellite, 'w') { |f| f.write(content) }
 
           # add new file
