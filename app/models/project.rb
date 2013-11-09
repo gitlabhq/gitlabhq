@@ -27,6 +27,8 @@
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   extend Enumerize
+   
+  ActsAsTaggableOn.strict_case_match = true
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
