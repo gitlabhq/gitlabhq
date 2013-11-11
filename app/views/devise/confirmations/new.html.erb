@@ -1,12 +1,21 @@
-<h2>Resend confirmation instructions</h2>
-
-<%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
-  <%= devise_error_messages! %>
-
-  <div><%= f.label :email %><br />
-  <%= f.email_field :email %></div>
-
-  <div><%= f.submit "Resend confirmation instructions" %></div>
-<% end %>
-
-<%= render partial: "devise/shared/links" %>
+<div class="login-box">
+  <% if !resource.errors.any? %>
+    <h2>Resend confirmation instructions</h2>
+    <%= form_for(resource, as: resource_name, url: confirmation_path(resource_name), html: { method: :post }) do |f| %>
+      <div>
+        <%= f.email_field :email, class: "text", placeholder: "Email", autofocus: "autofocus" %>
+        </div>
+        <br />
+        <div>
+          <%= f.submit "Resend confirmation instructions", class: "btn btn-primary" %>
+          </div>
+        <% end %>
+      <% else %>
+        <div>
+          <%= devise_error_messages! %>
+        </div>
+      <% end %>
+        <div>
+          <%= render partial: "devise/shared/sign_in", :locals => { :cssclass => 'btn' } %>
+        </div>
+    </div>
