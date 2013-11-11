@@ -10,9 +10,7 @@ module Gitlab
       # Returns false if committing the change fails
       # Returns false if pushing from the satellite to Gitolite failed or was rejected
       # Returns true otherwise
-      def commit!(content, commit_message, last_commit)
-        return false unless can_edit?(last_commit)
-
+      def commit!(content, commit_message)
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
 
