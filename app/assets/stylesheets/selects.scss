@@ -71,8 +71,9 @@
   .chosen-drop {
     margin: 7px 0;
     min-width: 200px;
-    border: 1px solid #bbb;
+    border: 1px solid #CCC;
     @include border-radius(0);
+    box-shadow: inset 0 1px 0 #fff, 0 1px 5px #f1f1f1;
 
     .chosen-results {
       margin-top: 5px;
@@ -80,9 +81,10 @@
 
       .group-result {
         color: $style_color;
-        border-bottom: 1px solid #EEE;
-        padding: 8px;
+        font-size: 14px;
+        line-height: 1.5;
       }
+
       .active-result {
         @include border-radius(0);
 
@@ -91,8 +93,8 @@
           color: $style_color;
         }
         &.result-selected {
+          font-weight: bolder;
           background: #EEE;
-          border-left: 4px solid #CCC;
         }
       }
     }
@@ -118,17 +120,13 @@
 
   span {
     font-weight: normal;
+    text-shadow: 0 1px 2px #FFF;
   }
 }
 
 /** Select2 styling **/
 .select2-container .select2-choice {
-  background: #f1f1f1;
-  background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, whitesmoke), to(#e1e1e1));
-  background-image: -webkit-linear-gradient(whitesmoke 6.6%, #e1e1e1);
-  background-image: -moz-linear-gradient(whitesmoke 6.6%, #e1e1e1);
-  background-image: -ms-linear-gradient(whitesmoke 6.6%, #e1e1e1);
-  background-image: -o-linear-gradient(whitesmoke 6.6%, #e1e1e1);
+  @include bg-light-gray-gradient;
 }
 
 .select2-container .select2-choice div {

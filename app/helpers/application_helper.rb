@@ -84,8 +84,8 @@ module ApplicationHelper
     repository = @project.repository
 
     options = [
-      ["Branch", repository.branch_names ],
-      [ "Tag", repository.tag_names ]
+      ["Branches", repository.branch_names],
+      ["Tags", repository.tag_names]
     ]
 
     # If reference is commit id -
