@@ -208,4 +208,8 @@ module ApplicationHelper
     line += "..." if lines.size > 1
     line
   end
+
+  def broadcast_message
+    BroadcastMessage.current
+  end
 end
