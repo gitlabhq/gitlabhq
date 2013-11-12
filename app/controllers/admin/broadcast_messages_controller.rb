@@ -15,6 +15,15 @@ class Admin::BroadcastMessagesController < Admin::ApplicationController
     end
   end
 
+  def destroy
+    BroadcastMessage.find(params[:id]).destroy
+
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.js { render nothing: true }
+    end
+  end
+
   protected
 
   def broadcast_messages

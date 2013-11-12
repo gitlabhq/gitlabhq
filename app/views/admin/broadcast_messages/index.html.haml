@@ -25,7 +25,7 @@
     = f.submit "Add broadcast message", class: "btn btn-create"
 
 -if @broadcast_messages.any?
-  %ul.bordered-list
+  %ul.bordered-list.broadcast-messages
     - @broadcast_messages.each do |broadcast_message|
       %li
         .pull-right
@@ -36,6 +36,11 @@
           - if broadcast_message.ends_at
             %strong
               #{broadcast_message.ends_at.to_s(:short)}
+          &nbsp;
+          = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-tiny' do
+            %i.icon-remove.cred
+
         .message= broadcast_message.message
+
 
   = paginate @broadcast_messages
