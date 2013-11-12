@@ -9,6 +9,10 @@ This guide details how to use issues and pull requests to improve GitLab.
 
 If you want to know how the GitLab team handles contributions have a look at [the GitLab contributing process](PROCESS.md).
 
+## Contributor license agreement
+
+By submitting code as an individual you agree to the [individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md). By submitting code as an entity you agree to the [corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+
 ## Closing policy for issues and pull requests
 
 GitLab is a popular open source project and the capacity to deal with issues and pull requests is limited. Out of respect for our volunteers, issues and pull requests not in line with the guidelines listed in this document may be closed without notice.

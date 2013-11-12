@@ -40,3 +40,8 @@ $ ->
   # Ref switcher
   $('.project-refs-select').on 'change', ->
     $(@).parents('form').submit()
+
+  $('.hide-no-ssh-message').on 'click', (e) ->
+    $.cookie('hide_no_ssh_message', 'false')
+    $(@).parents('.no-ssh-key-message').hide()
+    e.preventDefault()

@@ -8,13 +8,6 @@ module Gitlab
         @file_path = file_path
         @ref = ref
       end
-
-      protected
-
-      def can_edit?(last_commit)
-        current_last_commit = Gitlab::Git::Commit.last_for_path(@project.repository, ref, file_path).sha
-        last_commit == current_last_commit
-      end
     end
   end
 end

@@ -227,10 +227,6 @@ You can change `6-2-stable` to `master` if you want the *bleeding edge* version,
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-    # Enable rack attack middleware
-    # Find and uncomment the line 'config.middleware.use Rack::Attack'
-    sudo -u git -H editor config/application.rb
-
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
@@ -264,8 +260,6 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 ## Install Gems
 
     cd /home/git/gitlab
-
-    sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws

@@ -33,11 +33,10 @@ module Files
         return error("Your changes could not be commited, because file with such name exists")
       end
 
-      new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, path)
+      new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, file_path)
       created_successfully = new_file_action.commit!(
         params[:content],
-        params[:commit_message],
-        file_name,
+        params[:commit_message]
       )
 
       if created_successfully
