@@ -66,6 +66,7 @@ FactoryGirl.define do
 
     after :create do |project|
       TestEnv.clear_repo_dir(project.namespace, project.path)
+      TestEnv.reset_satellite_dir
       TestEnv.create_repo(project.namespace, project.path)
     end
   end

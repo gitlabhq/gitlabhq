@@ -36,7 +36,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
   def preprocess(full_document)
     if @project
-      h.create_relative_links(full_document, @project.path_with_namespace, @ref, @request_path, is_wiki?)
+      h.create_relative_links(full_document, @project, @ref, @request_path, is_wiki?)
     else
       full_document
     end
