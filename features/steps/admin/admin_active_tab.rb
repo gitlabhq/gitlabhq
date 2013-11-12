@@ -30,4 +30,8 @@ class AdminActiveTab < Spinach::FeatureSteps
   Then 'the active main tab should be Resque' do
     ensure_active_main_tab('Background Jobs')
   end
+
+  Then 'the active main tab should be Messages' do
+    ensure_active_main_tab('Messages')
+  end
 end
