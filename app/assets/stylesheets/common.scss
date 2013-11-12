@@ -220,7 +220,6 @@ li.note {
 .error-message {
   padding: 10px;
   background: #C67;
-  padding-left: 20px;
   margin: 0;
   color: #FFF;
 
@@ -228,8 +227,18 @@ li.note {
     color: #fff;
     text-decoration: underline;
   }
-  &.centered {
-    text-align: center;
+}
+
+.no-ssh-key-message {
+  padding: 10px 0;
+  background: #C67;
+  margin: 0;
+  color: #FFF;
+  text-align: center;
+
+  a {
+    color: #fff;
+    text-decoration: underline;
   }
 }
 
