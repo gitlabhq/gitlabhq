@@ -158,7 +158,7 @@ module ProjectsHelper
             elsif current_controller?(:blob)
               "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
             elsif current_controller?(:commits)
-              "Commits - " + title
+              "Commits at #{@ref} - " + title
             elsif current_controller?(:merge_requests)
               if current_action?(:show)
                 "Merge request ##{@merge_request.iid} - " + title
