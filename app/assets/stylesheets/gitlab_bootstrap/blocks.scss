@@ -44,11 +44,13 @@
   }
 
   &.ui-box-danger {
+    background: #f7f7f7;
+    border: none;
+
     .title {
-      @include linear-gradient(#F26E5E, #bd362f);
+      background: #D65;
       color: #fff;
       text-shadow: 0 1px 1px #900;
-      font-weight: bold;
     }
   }
 
