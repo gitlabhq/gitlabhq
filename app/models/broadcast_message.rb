@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: broadcast_messages
+#
+#  id         :integer          not null, primary key
+#  message    :text             default(""), not null
+#  starts_at  :datetime
+#  ends_at    :datetime
+#  alert_type :integer
+#  created_at :datetime         not null
+#  updated_at :datetime         not null
+#
+
 class BroadcastMessage < ActiveRecord::Base
   attr_accessible :alert_type, :ends_at, :message, :starts_at
 

@@ -36,6 +36,11 @@
 #  notification_level     :integer          default(1), not null
 #  password_expires_at    :datetime
 #  created_by_id          :integer
+#  avatar                 :string(255)
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  unconfirmed_email      :string(255)
 #
 
 require 'spec_helper'
