@@ -23,12 +23,17 @@
             background-color: #373D47;
           }
         }
+        .separator {
+          background: #373D47;
+          border-left: 1px solid #575D67;
+        }
+        .nav > li > a {
+          color: #979DA7;
+        }
+        .search-input {
+          border-color: #979DA7;
+        }
       }
-    }
-
-    .separator {
-      background: #31363E;
-      border-left: 1px solid #666;
     }
   }
 }
