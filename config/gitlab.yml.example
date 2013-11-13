@@ -136,7 +136,7 @@ production: &base
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
-    # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
+    # see https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-custom-omniauth-provider-configurations
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
     # arguments, followed by optional 'args' which can be either a hash or an array.
     providers:
