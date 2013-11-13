@@ -79,6 +79,15 @@
       margin-top: 5px;
       max-height: 300px;
 
+      li {
+        border-bottom: 1px solid #EEE;
+        padding: 7px;
+
+        &:last-child {
+          border-bottom: none;
+        }
+      }
+
       .group-result {
         color: $style_color;
         font-size: 14px;
@@ -94,7 +103,7 @@
         }
         &.result-selected {
           font-weight: bolder;
-          background: #EEE;
+          background: #F3F3F3;
         }
       }
     }
