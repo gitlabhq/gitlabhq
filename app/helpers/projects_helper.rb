@@ -143,4 +143,38 @@ module ProjectsHelper
     # to calculate repo size - just show 'Unknown'
     'unknown'
   end
+
+  def project_head_title
+    title = @project.name_with_namespace
+
+    title = if current_controller?(:tree)
+              "#{@project.path}\/#{@path} at #{@ref} - " + title
+            elsif current_controller?(:issues)
+              if current_action?(:show)
+                "Issue ##{@issue.iid} - " + title
+              else
+                "Issues - " + title
+              end
+            elsif current_controller?(:blob)
+              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+            elsif current_controller?(:commits)
+              "Commits - " + title
+            elsif current_controller?(:merge_requests)
+              if current_action?(:show)
+                "Merge request ##{@merge_request.iid} - " + title
+              else
+                "Merge requests - " + title
+              end
+            elsif current_controller?(:wikis)
+              "Wiki - " + title
+            elsif current_controller?(:network)
+              "Network graph - " + title
+            elsif current_controller?(:graphs)
+              "Graphs - " + title
+            else
+              title
+            end
+
+    title
+  end
 end
