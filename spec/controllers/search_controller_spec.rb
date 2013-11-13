@@ -10,7 +10,7 @@ describe SearchController do
 
   describe '#find_project_ids' do
     it 'should include public projects ids when searching within a single project' do
-      project_ids = controller.find_project_ids(nil, project.id)
+      project_ids = controller.send(:find_project_ids,nil, project.id)
       project_ids.size.should == 1
       project_ids[0].should == project.id
     end

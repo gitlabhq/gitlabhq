@@ -15,6 +15,8 @@ class SearchController < ApplicationController
     @total_results = @projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.total_count
   end
 
+  private 
+
   def find_project_ids(group_id, project_id)
     project_ids = current_user.authorized_projects.map(&:id)
 
