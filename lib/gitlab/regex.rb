@@ -44,7 +44,7 @@ module Gitlab
     protected
 
     def default_regex
-      /\A[a-zA-Z0-9][a-zA-Z0-9_\-\.]*\z/
+      /\A[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
     end
   end
 end
