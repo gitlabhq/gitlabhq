@@ -10,21 +10,21 @@
   white-space: nowrap;
   padding: 6px 12px;
   font-size: 13px;
-  line-height: 1.5;
+  line-height: 18px;
   border-radius: 4px;
   -webkit-user-select: none;
   -moz-user-select: none;
   -ms-user-select: none;
   -o-user-select: none;
   user-select: none;
-  color: #333333;
+  color: #444444;
   background-color: #fff;
   border-color: #ccc;
   text-shadow: none;
 
   &.hover,
   &:hover {
-    color: #333333;
+    color: #444444;
     text-decoration: none;
     background-color: #ebebeb;
     border-color: #adadad;
@@ -32,7 +32,7 @@
 
   &.focus,
   &:focus {
-    color: #333333;
+    color: #444444;
     text-decoration: none;
     outline: thin dotted #333;
     outline: 5px auto -webkit-focus-ring-color;

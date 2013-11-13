@@ -34,9 +34,8 @@
   &.ui-box-show {
     color: #666;
     margin:20px 0;
-    background: #FFF;
+    background: #FAFAFA;
     box-shadow: inset 0 1px 0 #fff, 0 1px 5px #f1f1f1;
-    @include linear-gradient(#fafafa, #f1f1f1);
 
     .control-group {
       margin-bottom: 0;
@@ -100,9 +99,9 @@
   }
 
   .title {
-    @include bg-gray-gradient;
-    border-bottom: 1px solid #CCC;
-    color: #456;
+    background-color: #EEE;
+    border-bottom: 1px solid #DDD;
+    color: #666;
     font-size: 16px;
     text-shadow: 0 1px 1px #fff;
     padding: 0 10px;
