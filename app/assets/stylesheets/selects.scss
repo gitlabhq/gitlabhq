@@ -1,13 +1,3 @@
-/* CHZN reset few styles */
-.chosen-container-single .chosen-single {
-  background: #FFF;
-  border: 1px solid #bbb;
-  box-shadow: none;
-}
-.chosen-container-active .chosen-single {
-  background: #fff;
-}
-
 .ajax-users-select {
   width: 400px;
 
@@ -27,109 +17,29 @@
   }
 }
 
-/** Branch/tag selector **/
-.project-refs-form {
-  margin: 0;
-  span {
-    background:none !important;
-    position:static !important;
-    width:auto !important;
-    height:auto !important;
-  }
-}
-.project-refs-select {
-  width: 120px;
-}
-
-.project-refs-form .chosen-container {
-  position: relative;
-  top: 0;
-  left: 0;
-  margin-right: 10px;
-
-  .chosen-drop {
-    min-width: 400px;
-    .chosen-results {
-      max-height: 300px;
-    }
-    .chosen-search input {
-      min-width: 365px;
-    }
-  }
-}
-
-/** Fix for Search Dropdown Border **/
+/** Chosen.js selectbox style override **/
 .chosen-container {
   min-width: 100px;
 
-  .chosen-search {
-    input:focus {
-      @include box-shadow(none);
-    }
+  .chosen-single {
+    background: #EEE !important;
+    border: 1px solid #DDD !important;
+    @include box-shadow(none !important);
+    @include border-radius(4px !important);
+  }
+
+  .chosen-results li.highlighted {
+    background: #29b;
   }
 
   .chosen-drop {
-    margin: 7px 0;
-    min-width: 200px;
-    border: 1px solid #CCC;
-    @include border-radius(0);
-    box-shadow: inset 0 1px 0 #fff, 0 1px 5px #f1f1f1;
-
-    .chosen-results {
-      margin-top: 5px;
-      max-height: 300px;
-
-      li {
-        border-bottom: 1px solid #EEE;
-        padding: 7px;
-
-        &:last-child {
-          border-bottom: none;
-        }
-      }
-
-      .group-result {
-        color: $style_color;
-        font-size: 14px;
-        line-height: 1.5;
-      }
-
-      .active-result {
-        @include border-radius(0);
-
-        &.highlighted {
-          background: $hover;
-          color: $style_color;
-        }
-        &.result-selected {
-          font-weight: bolder;
-          background: #F3F3F3;
-        }
-      }
-    }
-
-    .chosen-search {
-      @include bg-gray-gradient;
-      input {
-        min-width: 165px;
-        border-color: #CCC;
-      }
-    }
-  }
-}
-
-.chosen-container .chosen-single,
-.chosen-container.chosen-with-drop .chosen-single {
-  @include bg-light-gray-gradient;
-
-  div {
-    background: transparent;
-    border-left: none;
+    margin-top: 10px;
+    border: 1px solid #DDD !important;
+    @include border-radius(4px !important);
   }
 
-  span {
-    font-weight: normal;
-    text-shadow: 0 1px 2px #FFF;
+  .chosen-search input {
+    @include box-shadow(none !important);
   }
 }
 

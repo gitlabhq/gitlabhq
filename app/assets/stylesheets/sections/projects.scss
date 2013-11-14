@@ -188,3 +188,34 @@ ul.nav.nav-projects-tabs {
 .transfer-project .chosen-container {
   min-width: 200px;
 }
+
+/** Branch/tag selector **/
+.project-refs-form {
+  margin: 0;
+  span {
+    background:none !important;
+    position:static !important;
+    width:auto !important;
+    height:auto !important;
+  }
+}
+.project-refs-select {
+  width: 120px;
+}
+
+.project-refs-form .chosen-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-right: 10px;
+
+  &.chosen-container-active {
+    .chosen-drop {
+      min-width: 400px;
+    }
+
+    .chosen-results {
+      max-height: 400px;
+    }
+  }
+}
