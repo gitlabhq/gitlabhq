@@ -1,7 +1,8 @@
 module API
   module APIHelpers
     def current_user
-      @current_user ||= User.find_by_authentication_token(params[:private_token] || env["HTTP_PRIVATE_TOKEN"])
+      private_token = (params[:private_token] || env["HTTP_PRIVATE_TOKEN"]).to_s
+      @current_user ||= User.find_by_authentication_token(private_token)
     end
 
     def user_project
