@@ -209,6 +209,11 @@ ul.nav.nav-projects-tabs {
   left: 0;
   margin-right: 10px;
 
+  .chosen-single span {
+    font-weight: bold;
+    color: #555;
+  }
+
   &.chosen-container-active {
     .chosen-drop {
       min-width: 400px;

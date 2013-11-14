@@ -39,6 +39,7 @@
   }
 
   .chosen-search input {
+    border: 1px solid #CCC !important;
     @include box-shadow(none !important);
   }
 }
