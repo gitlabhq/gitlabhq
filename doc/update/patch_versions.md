@@ -26,7 +26,7 @@ sudo -u git -H git pull origin 6-2-stable
 ```bash
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
-sudo -u git -H git checkout v1.7.4
+sudo -u git -H git checkout v1.7.8
 ```
 
 ### 4. Install libs, migrations, etc.
