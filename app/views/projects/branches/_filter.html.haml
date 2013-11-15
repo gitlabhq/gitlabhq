@@ -1,12 +1,22 @@
 %ul.nav.nav-pills.nav-stacked
   = nav_link(path: 'branches#recent') do
-    = link_to 'Recent', recent_project_branches_path(@project)
+    = link_to recent_project_branches_path(@project) do
+      Recent
+      .pull-right
+        = @repository.recent_branches.count
+
   = nav_link(path: 'protected_branches#index') do
     = link_to project_protected_branches_path(@project) do
       Protected
       %i.icon-lock
+      .pull-right
+        = @project.protected_branches.count
+
   = nav_link(path: 'branches#index') do
-    = link_to 'All branches', project_branches_path(@project)
+    = link_to project_branches_path(@project) do
+      All branches
+      .pull-right
+        = @repository.branch_names.count
 
 
 %hr
