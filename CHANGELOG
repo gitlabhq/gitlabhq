@@ -17,6 +17,7 @@ v 6.3.0
   - Fix 500 error for repos with newline in file name
   - Extended html titles
   - API: create/update repo files
+  - Admin can transfer project to any namespace
 
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
