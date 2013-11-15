@@ -11,6 +11,9 @@ server {
   server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
   server_tokens off;     # don't show the version number, a security best practice
   root /home/git/gitlab/public;
+  
+  # Set value of client_max_body_size to at least the value of git.max_size in gitlab.yml
+  client_max_body_size 5m;
 
   # individual nginx logs for this gitlab vhost
   access_log  /var/log/nginx/gitlab_access.log;
