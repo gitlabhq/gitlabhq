@@ -1,22 +1,3 @@
-.ajax-users-select {
-  width: 400px;
-
-  &.input-large {
-    width: 210px;
-  }
-}
-
-.user-result {
-  .user-image {
-    float: left;
-  }
-  .user-name {
-  }
-  .user-username {
-    color: #999;
-  }
-}
-
 /** Chosen.js selectbox style override **/
 .chosen-container {
   min-width: 100px;
