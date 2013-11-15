@@ -136,5 +136,9 @@ module API
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
     end
+
+    class Namespace < Grape::Entity
+      expose :id, :path, :kind
+    end
   end
 end
