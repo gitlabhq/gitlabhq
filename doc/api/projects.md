@@ -2,7 +2,7 @@
 
 ### List projects
 
-Get a list of projects acessed by the authenticated user.
+Get a list of projects accessible by the authenticated user.
 
 ```
 GET /projects
