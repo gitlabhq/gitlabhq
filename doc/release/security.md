@@ -13,12 +13,14 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 
 1. Verify that the issue can be repoduced
 1. Acknowledge the issue to the researcher that disclosed it
-1. Fix the issue on a feature branch, do this on the private dev.gitlab.org server and update the VERSION and CHANGELOG
+1. Fix the issue on a feature branch, do this on the private GitLab development server and update the VERSION and CHANGELOG in this branch
 1. Consider creating and testing workarounds
 1. Create feature branches for the blog posts on GitLab.org and GitLab.com and link them from the code branch
-1. Merge the code feature branch
-1. Create a git tag vX.X.X for CE and another one for EE
+1. Merge the code feature branch into master
+1. Cherry-pick the code into the latest stable branch
+1. Create a git tag vX.X.X for CE and another patch release for EE
 1. Push the code and the tags to all the CE and EE repositories
+1. Apply the patch to GitLab Cloud and the private GitLab development server
 1. Merge and publish the blog posts
 1. Send tweets about the release from @gitlabhq and @git_lab
 1. Send out an email to the subscribers mailing list on MailChimp
@@ -27,13 +29,17 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 1. Post a signed copy of our announcement to [oss-security](http://www.openwall.com/lists/oss-security/) and request a CVE number
 1. Add the security researcher to the [Security Researcher Acknowledgments list](http://www.gitlab.com/vulnerability-acknowledgements/)
 1. Thank the security researcher in an email for their cooperation
-1. Update the blogposts when we receive a CVE number
+1. Update the blogposts when we receive the CVE number
+
+The timing of the code merge into master should be coordinated in advance.
+After the merge we strive to publish the announcements within 60 minutes.
 
 ## Blog post template
 
 XXX Security Advisory for GitLab
 
 A recently discovered critical vulnerability in GitLab allows [unauthenticated API access|remote code execution|unauthorized access to repositories|XXX|PICKSOMETHING]. All users should update GitLab and gitlab-shell immediately.
+We [have|haven't|XXX|PICKSOMETHING|] heard of this vulnerability being actively exploited.
 
 ### Version affected
 
