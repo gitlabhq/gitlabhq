@@ -13,9 +13,20 @@
       = f.label :title
       .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
     .control-group
-      = f.label "Private?"
+      = f.label "Access"
       .controls
-        = f.check_box :private, {class: ''}
+        = f.label :private_true, class: 'radio-label' do
+          = f.radio_button :private, true
+          %span
+            %strong Private
+            (only you can see this snippet)
+        %br
+        = f.label :private_false, class: 'radio-label' do
+          = f.radio_button :private, false
+          %span
+            %strong Public
+            (GitLab users can can see this snippet)
+
     .control-group
       .file-editor
         = f.label :file_name, "File"
@@ -33,9 +44,10 @@
       - else
         = f.submit 'Save', class: "btn-save btn"
 
-      = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
       - unless @snippet.new_record?
-        .pull-right= link_to 'Destroy', snippet_path(@snippet), confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+        .pull-right.prepend-left-20
+          = link_to 'Remove', snippet_path(@snippet), confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn btn-remove delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+      = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
 
 
 :javascript
