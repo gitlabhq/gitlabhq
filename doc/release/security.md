@@ -27,7 +27,7 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 1. Post a signed copy of our complete announcement to [oss-security](http://www.openwall.com/lists/oss-security/) and request a CVE number
 1. Add the security researcher to the [Security Researcher Acknowledgments list](http://www.gitlab.com/vulnerability-acknowledgements/)
 1. Thank the security researcher in an email for their cooperation
-1. Update the blogposts when we receive a CVE number
+1. Update the blogposts and the CHANGELOG when we receive a CVE number
 
 ## Blog post template
 
