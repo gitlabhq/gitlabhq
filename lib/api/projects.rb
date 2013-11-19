@@ -31,6 +31,16 @@ module API
         present @projects, with: Entities::Project
       end
 
+      # Get all projects for admin user
+      #
+      # Example Request:
+      #   GET /projects/all
+      get '/all' do
+        authenticated_as_admin!
+        @projects = paginate Project
+        present @projects, with: Entities::Project
+      end
+
       # Get a single project
       #
       # Parameters:

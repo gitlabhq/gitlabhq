@@ -2,10 +2,9 @@ require_relative 'file_action'
 
 module Gitlab
   module Satellite
-    class NewFileAction < FileAction
-      # Updates the files content and creates a new commit for it
+    class DeleteFileAction < FileAction
+      # Deletes file and creates a new commit for it
       #
-      # Returns false if the ref has been updated while editing the file
       # Returns false if committing the change fails
       # Returns false if pushing from the satellite to bare repo failed or was rejected
       # Returns true otherwise
@@ -18,10 +17,10 @@ module Gitlab
 
           # update the file in the satellite's working dir
           file_path_in_satellite = File.join(repo.working_dir, file_path)
-          File.open(file_path_in_satellite, 'w') { |f| f.write(content) }
+          File.delete(file_path_in_satellite)
 
-          # add new file
-          repo.add(file_path_in_satellite)
+          # add removed file
+          repo.remove(file_path_in_satellite)
 
           # commit the changes
           # will raise CommandFailed when commit fails

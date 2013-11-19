@@ -2,7 +2,7 @@
 
 ### List projects
 
-Get a list of projects owned by the authenticated user.
+Get a list of projects accessible by the authenticated user.
 
 ```
 GET /projects
@@ -81,6 +81,22 @@ GET /projects
 ]
 ```
 
+
+#### List owned projects
+
+Get a list of projects owned by the authenticated user.
+
+```
+GET /projects/owned
+```
+
+#### List ALL projects
+
+Get a list of all GitLab projects (admin only).
+
+```
+GET /projects/all
+```
 
 ### Get single project
 

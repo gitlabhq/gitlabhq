@@ -93,6 +93,12 @@ pre.well-pre {
   font-size: 12px;
   font-style: normal;
   font-weight: normal;
+
+  &.label-gray {
+    background-color: #eee;
+    color: #999;
+    text-shadow: none;
+  }
 }
 
 /** Big Labels **/
