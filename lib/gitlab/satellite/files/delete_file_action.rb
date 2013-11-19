@@ -20,7 +20,7 @@ module Gitlab
           File.delete(file_path_in_satellite)
 
           # add removed file
-          repo.add(file_path_in_satellite)
+          repo.remove(file_path_in_satellite)
 
           # commit the changes
           # will raise CommandFailed when commit fails
