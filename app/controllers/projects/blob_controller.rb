@@ -7,9 +7,30 @@ class Projects::BlobController < Projects::ApplicationController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  def show
-    @blob = @repository.blob_at(@commit.id, @path)
+  before_filter :blob
 
-    not_found! unless @blob
+  def show
+  end
+
+  def destroy
+    result = Files::DeleteContext.new(@project, current_user, params, @ref, @path).execute
+
+    if result[:status] == :success
+      flash[:notice] = "Your changes have been successfully commited"
+      redirect_to project_tree_path(@project, @ref)
+    else
+      flash[:alert] = result[:error]
+      render :show
+    end
+  end
+
+  private
+
+  def blob
+    @blob ||= @repository.blob_at(@commit.id, @path)
+
+    return not_found! unless @blob
+
+    @blob
   end
 end

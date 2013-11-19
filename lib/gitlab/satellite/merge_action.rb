@@ -28,7 +28,7 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           if merge_in_satellite!(merge_repo)
-            # push merge back to Gitolite
+            # push merge back to bare repo
             # will raise CommandFailed when push fails
             merge_repo.git.push(default_options, :origin, merge_request.target_branch)
             # remove source branch
