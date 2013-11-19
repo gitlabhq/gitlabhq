@@ -397,3 +397,15 @@ Parameters:
 + `branch_name` (required) - The name of branch
 + `content` (required) - New file content
 + `commit_message` (required) - Commit message
+
+## Delete existing file in repository
+
+```
+DELETE /projects/:id/repository/files
+```
+
+Parameters:
+
++ `file_path` (required) - Full path to file. Ex. lib/class.rb
++ `branch_name` (required) - The name of branch
++ `commit_message` (required) - Commit message
