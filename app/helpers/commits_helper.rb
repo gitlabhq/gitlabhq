@@ -125,7 +125,9 @@ module CommitsHelper
             source_name
           end
 
-    user = User.where('name like ? or email like ?', source_name, source_email).first
+    # Prefer email match over name match
+    user = User.where(email: source_email).first
+    user ||= User.where(name: source_name).first
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",
