@@ -69,7 +69,8 @@ module TestEnv
       remove_repository: true,
       update_repository_head: true,
       add_key: true,
-      remove_key: true
+      remove_key: true,
+      version: '6.3.0'
     )
 
     Gitlab::Satellite::Satellite.any_instance.stub(
