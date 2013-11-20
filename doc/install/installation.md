@@ -278,9 +278,11 @@ sudo -u git cp config/database.yml.mysql config/database.yml
 # Change 'secure password' with the value you have given to $password
 # You can keep the double quotes around the password
 sudo -u git -H editor config/database.yml
+```
 
 or
 
+```
 # PostgreSQL
 sudo -u git cp config/database.yml.postgresql config/database.yml
 
@@ -440,11 +442,13 @@ production: unix:/path/to/redis/socket
 
 If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
 
-    # Add to /home/git/.ssh/config
-    host localhost          # Give your setup a name (here: override localhost)
-        user git            # Your remote git user
-        port 2222           # Your port number
-        hostname 127.0.0.1; # Your server name or IP
+```yaml
+# Add to /home/git/.ssh/config
+host localhost          # Give your setup a name (here: override localhost)
+    user git            # Your remote git user
+    port 2222           # Your port number
+    hostname 127.0.0.1; # Your server name or IP
+```
 
 You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
 
