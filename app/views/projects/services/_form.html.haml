@@ -1,11 +1,6 @@
 %h3.page-title
-  - if @service.activated?
-    %span.cgreen
-      %i.icon-circle
-  - else
-    %span.cgray
-      %i.icon-circle-blank
   = @service.title
+  = boolean_to_icon @service.activated?
 
 %p= @service.description
 
