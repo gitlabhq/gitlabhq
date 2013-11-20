@@ -99,6 +99,21 @@ module API
         present commits, with: Entities::RepoCommit
       end
 
+      # Get project repository commits between two trees
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   from (optional) - The name of a repository branch or tag, if not given the default branch is used
+      #   to (optional) - The name of a repository branch or tag, if not given the default branch is used
+      # Example Request:
+      #   GET /projects/:id/repository/commits/diff?from=1.0.1&to=1.0
+      get ":id/repository/commits/diff" do
+        from = params[:from] || user_project.try(:default_branch) || 'master'
+        to = params[:to] || user_project.try(:default_branch) || 'master'
+        commits = user_project.repository.commits_between(from, to)
+        present commits, with: Entities::RepoCommit
+      end
+
       # Get a specific commit of a project
       #
       # Parameters:
