@@ -282,7 +282,7 @@ sudo -u git -H editor config/database.yml
 
 or
 
-```
+```bash
 # PostgreSQL
 sudo -u git cp config/database.yml.postgresql config/database.yml
 
