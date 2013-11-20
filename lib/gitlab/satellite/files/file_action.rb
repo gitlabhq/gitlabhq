@@ -8,6 +8,10 @@ module Gitlab
         @file_path = file_path
         @ref = ref
       end
+
+      def safe_path?(path)
+        File.absolute_path(path) == path
+      end
     end
   end
 end

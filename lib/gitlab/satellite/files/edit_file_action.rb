@@ -19,6 +19,13 @@ module Gitlab
 
           # update the file in the satellite's working dir
           file_path_in_satellite = File.join(repo.working_dir, file_path)
+
+          # Prevent relative links
+          unless safe_path?(file_path_in_satellite)
+            Gitlab::GitLogger.error("FileAction: Relative path not allowed")
+            return false
+          end
+
           File.open(file_path_in_satellite, 'w') { |f| f.write(content) }
 
           # commit the changes

@@ -16,15 +16,19 @@ module Gitlab
           # create target branch in satellite at the corresponding commit from bare repo
           repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
 
-          # update the file in the satellite's working dir
           file_path_in_satellite = File.join(repo.working_dir, file_path)
+          dir_name_in_satellite = File.dirname(file_path_in_satellite)
 
           # Prevent relative links
-          unless File.absolute_path(file_path_in_satellite) == file_path_in_satellite
-            Gitlab::GitLogger.error("NewFileAction: Relative path not allowed")
+          unless safe_path?(file_path_in_satellite)
+            Gitlab::GitLogger.error("FileAction: Relative path not allowed")
             return false
           end
 
+          # Create dir if not exists
+          FileUtils.mkdir_p(dir_name_in_satellite)
+
+          # Write file
           File.open(file_path_in_satellite, 'w') { |f| f.write(content) }
 
           # add new file
