@@ -611,10 +611,7 @@ namespace :gitlab do
     end
 
     def gitlab_shell_version
-      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
-      if File.readable?(gitlab_shell_version_file)
-        File.read(gitlab_shell_version_file)
-      end
+      Gitlab::Shell.new.version
     end
 
     def has_gitlab_shell3?

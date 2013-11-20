@@ -52,6 +52,19 @@
           ago
 
   .span4
+    %h4 Latest groups
+    %hr
+    - @groups.each do |group|
+      %p
+        = link_to [:admin, group] do
+          = group.name
+        %span.light.pull-right
+          = time_ago_in_words group.created_at
+          ago
+
+%br
+.row
+  .span4
     %h4 Stats
     %hr
     %p
@@ -82,3 +95,34 @@
       Milestones
       %span.light.pull-right
         = Milestone.count
+  .span4
+    %h4
+      Features
+    %hr
+    %p
+      Sign up
+      %span.light.pull-right
+        = boolean_to_icon gitlab_config.signup_enabled
+    %p
+      LDAP
+      %span.light.pull-right
+        = boolean_to_icon Gitlab.config.ldap.enabled
+    %p
+      Gravatar
+      %span.light.pull-right
+        = boolean_to_icon Gitlab.config.gravatar.enabled
+    %p
+      OmniAuth
+      %span.light.pull-right
+        = boolean_to_icon Gitlab.config.omniauth.enabled
+  .span4
+    %h4 Components
+    %hr
+    %p
+      GitLab
+      %span.pull-right
+        = Gitlab::VERSION
+    %p
+      GitLab Shell
+      %span.pull-right
+        = Gitlab::Shell.new.version
