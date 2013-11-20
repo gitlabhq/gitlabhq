@@ -82,13 +82,17 @@ module Grack
       when 'git-upload-pack'
         project.public || can?(user, :download_code, project)
       when'git-receive-pack'
-        action = if project.protected_branch?(ref)
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
-                 end
+        refs.each do |ref|
+          action = if project.protected_branch?(ref)
+                     :push_code_to_protected_branches
+                   else
+                     :push_code
+                   end
 
-        can?(user, action, project)
+          return false unless can?(user, action, project)
+        end
+
+        true
       else
         false
       end
@@ -108,11 +112,11 @@ module Grack
       @project ||= project_by_path(@request.path_info)
     end
 
-    def ref
-      @ref ||= parse_ref
+    def refs
+      @refs ||= parse_refs
     end
 
-    def parse_ref
+    def parse_refs
       input = if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
                 Zlib::GzipReader.new(@request.body).read
               else
@@ -121,7 +125,7 @@ module Grack
 
       # Need to reset seek point
       @request.body.rewind
-      /refs\/heads\/([\/\w\.-]+)/n.match(input.force_encoding('ascii-8bit')).to_a.last
+      input.force_encoding('ascii-8bit').scan(/refs\/heads\/([\/\w\.-]+)/n).flatten.compact
     end
   end
 end
