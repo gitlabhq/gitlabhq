@@ -51,9 +51,13 @@ module Gitlab
           update_satellite_source_and_target!(merge_repo)
 
           if merge_request.for_fork?
-            diff = merge_repo.git.native(:diff, default_options, "origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
+            diff = merge_repo.git.native(:diff, default_options,
+                                         "origin/#{merge_request.target_branch}",
+                                         "source/#{merge_request.source_branch}", "--")
           else
-            diff = merge_repo.git.native(:diff, default_options, "#{merge_request.target_branch}", "#{merge_request.source_branch}")
+            diff = merge_repo.git.native(:diff, default_options,
+                                         "#{merge_request.target_branch}",
+                                         "#{merge_request.source_branch}", "--")
           end
 
           return diff
@@ -72,7 +76,7 @@ module Gitlab
           if merge_request.for_fork?
             common_commit = merge_repo.git.native(:merge_base, default_options, ["origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}"]).strip
             #this method doesn't take default options
-            diffs = merge_repo.diff(common_commit, "source/#{merge_request.source_branch}")
+            diffs = merge_repo.diff(common_commit, "source/#{merge_request.source_branch}", "--")
           else
             raise "Attempt to determine diffs between for a non forked merge request in satellite MergeRequest.id:[#{merge_request.id}]"
           end
@@ -146,7 +150,7 @@ module Gitlab
           repo.remote_fetch('source')
           repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
         else
-          repo.git.checkout(default_options, "#{merge_request.source_branch}")
+          repo.git.checkout(default_options, "#{merge_request.source_branch}", "--")
           repo.git.checkout(default_options({t: true}), "origin/#{merge_request.target_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
