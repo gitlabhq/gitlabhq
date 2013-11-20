@@ -15,17 +15,12 @@ module Files
         return error("You can only create files if you are on top of a branch")
       end
 
-      file_name = params[:file_name]
+      file_name = File.basename(path)
+      file_path = path
 
       unless file_name =~ Gitlab::Regex.path_regex
         return error("Your changes could not be commited, because file name contains not allowed characters")
       end
-
-      file_path = if path.blank?
-                    file_name
-                  else
-                    File.join(path, file_name)
-                  end
 
       blob = repository.blob_at(ref, file_path)
 

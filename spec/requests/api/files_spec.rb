@@ -12,7 +12,7 @@ describe API::API do
   describe "POST /projects/:id/repository/files" do
     let(:valid_params) {
       {
-        file_name: 'newfile.rb',
+        file_path: 'newfile.rb',
         branch_name: 'master',
         content: 'puts 8',
         commit_message: 'Added newfile'
@@ -26,7 +26,7 @@ describe API::API do
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
       response.status.should == 201
-      json_response['file_name'].should == 'newfile.rb'
+      json_response['file_path'].should == 'newfile.rb'
     end
 
     it "should return a 400 bad request if no params given" do

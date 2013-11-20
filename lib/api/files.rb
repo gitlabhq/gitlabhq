@@ -8,8 +8,7 @@ module API
       # Create new file in repository
       #
       # Parameters:
-      #   file_name (required) - The name of new file. Ex. class.rb
-      #   file_path (optional) - The path to new file. Ex. lib/
+      #   file_path (optional) - The path to new file. Ex. lib/class.rb
       #   branch_name (required) - The name of branch
       #   content (required) - File content
       #   commit_message (required) - Commit message
@@ -18,8 +17,8 @@ module API
       #   POST /projects/:id/repository/files
       #
       post ":id/repository/files" do
-        required_attributes! [:file_name, :branch_name, :content, :commit_message]
-        attrs = attributes_for_keys [:file_name, :file_path, :branch_name, :content, :commit_message]
+        required_attributes! [:file_path, :branch_name, :content, :commit_message]
+        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message]
         branch_name = attrs.delete(:branch_name)
         file_path = attrs.delete(:file_path)
         result = ::Files::CreateContext.new(user_project, current_user, attrs, branch_name, file_path).execute
@@ -28,7 +27,6 @@ module API
           status(201)
 
           {
-            file_name: attrs[:file_name],
             file_path: file_path,
             branch_name: branch_name
           }
