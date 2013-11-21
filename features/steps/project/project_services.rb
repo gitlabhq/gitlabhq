@@ -12,6 +12,7 @@ class ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Campfire'
     page.should have_content 'Hipchat'
     page.should have_content 'GitLab CI'
+    page.should have_content 'Assembla'
   end
 
   And 'I click gitlab-ci service link' do
@@ -70,6 +71,20 @@ class ProjectServices < Spinach::FeatureSteps
   end
 
   Then 'I should see Flowdock service settings saved' do
+    find_field('Token').value.should == 'verySecret'
+  end
+
+  And 'I click Assembla service link' do
+    click_link 'Assembla'
+  end
+
+  And 'I fill Assembla settings' do
+    check 'Active'
+    fill_in 'Token', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  Then 'I should see Assembla service settings saved' do
     find_field('Token').value.should == 'verySecret'
   end
 end
