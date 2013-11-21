@@ -28,7 +28,10 @@
 
         .repo-info
           - unless project.empty_repo?
-            = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
+            - unless project.default_branch.nil?
+              = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
+            - else
+              = pluralize(project.repository.round_commit_count, 'commit')
             &middot;
             = link_to pluralize(project.repository.branch_names.count, 'branch'), project_branches_path(project)
             &middot;
