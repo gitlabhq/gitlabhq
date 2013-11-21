@@ -304,15 +304,6 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-## Double-check Application Status
-
-To make sure you didn't miss anything run a more thorough check with:
-
-    sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
-
-If all items are green, then congratulations on successfully installing GitLab!
-However there are still a few steps left.
-
 
 # 7. Nginx
 
@@ -343,7 +334,17 @@ Make sure to edit the config file to match your setup:
 
 # Done!
 
-Visit YOUR_SERVER for your first GitLab login.
+## Double-check Application Status
+
+To make sure you didn't miss anything run a more thorough check with:
+
+    sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+
+## Initial Login
+
+Visit YOUR_SERVER in your web browser for your first GitLab login.
 The setup has created an admin account for you. You can use it to log in:
 
     admin@local.host
