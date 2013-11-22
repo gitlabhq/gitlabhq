@@ -16,26 +16,36 @@ module Gitlab
 
         def create(auth)
           @auth = auth
-          password = Devise.friendly_token[0, 8].downcase
-          opts = {
-            extern_uid: uid,
-            provider: provider,
-            name: name,
-            username: username,
-            email: email,
-            password: password,
-            password_confirmation: password,
-          }
+          if (user = model.where(email: email).first)
+            # User already exist: set the oauth params
+            user.extern_uid = uid
+            user.provider = provider
+            user.save!
+            user.confirm!
+            log.info "(OAuth) Setting oauth info for user #{email} from login with extern_uid => #{uid}"
+          else
+            # Create the user
+            password = Devise.friendly_token[0, 8].downcase
+            opts = {
+                extern_uid: uid,
+                provider: provider,
+                name: name,
+                username: username,
+                email: email,
+                password: password,
+                password_confirmation: password,
+            }
 
-          user = model.build_user(opts, as: :admin)
-          user.save!
-          user.confirm!
-          log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
+            user = model.build_user(opts, as: :admin)
+            user.save!
+            user.confirm!
+            log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
-          if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
-            user.block
+            if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
+              user.block
+            end
+
           end
-
           user
         end
 
