@@ -114,6 +114,11 @@ describe API::API do
       response.status.should == 400
     end
 
+    it "should return 400 error if password is too short" do
+      post api("/users", admin), attributes_for(:user, projects_limit: 3, password: 'abc')
+      response.status.should == 400
+    end
+
     it "shouldn't available for non admin users" do
       post api("/users", user), attributes_for(:user)
       response.status.should == 403
@@ -192,7 +197,7 @@ describe API::API do
 
     it "should not allow invalid update" do
       put api("/users/#{user.id}", admin), {email: 'invalid email'}
-      response.status.should == 404
+      response.status.should == 400
       user.reload.email.should_not == 'invalid email'
     end
 
@@ -204,6 +209,11 @@ describe API::API do
     it "should return 404 for non-existing user" do
       put api("/users/999999", admin), {bio: 'update should fail'}
       response.status.should == 404
+    end
+
+    it "should return 400 error if password is too short" do
+      put api("/users/#{user.id}", admin), {password: 'abc'}
+      response.status.should == 400
     end
 
     context "with existing user" do

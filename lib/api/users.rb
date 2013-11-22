@@ -47,7 +47,9 @@ module API
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        attributes_list = [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        valid_attributes! User, attributes_list
+        attrs = attributes_for_keys attributes_list
         user = User.build_user(attrs, as: :admin)
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
@@ -78,7 +80,9 @@ module API
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        attributes_list = [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        valid_attributes! User, attributes_list
+        attrs = attributes_for_keys attributes_list
         user = User.find(params[:id])
         not_found!("User not found") unless user
 

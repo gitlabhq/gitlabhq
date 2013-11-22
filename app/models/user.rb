@@ -47,6 +47,8 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  include AttributesCheckable
+
   devise :database_authenticatable, :token_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
