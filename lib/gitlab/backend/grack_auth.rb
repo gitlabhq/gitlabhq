@@ -132,7 +132,7 @@ module Grack
       # Cleanup grabare from refs
       # if push to multiple branches
       refs.map do |ref|
-        ref.gsub(/0000PACK.*/, "")
+        ref.gsub(/00.*/, "")
       end
     end
   end
