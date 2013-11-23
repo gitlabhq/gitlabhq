@@ -1,3 +1,6 @@
+v 6.4.0
+  - Added sorting to project issues page
+
 v 6.3.0
   - API for adding gitlab-ci service
   - Init script now waits for pids to appear after (re)starting before reporting status (Rovanion Luckey)

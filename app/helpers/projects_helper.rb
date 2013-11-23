@@ -70,6 +70,8 @@ module ProjectsHelper
       scope: params[:scope],
       label_name: params[:label_name],
       milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+      sort: params[:sort],
     }
 
     options = exist_opts.merge(options)
