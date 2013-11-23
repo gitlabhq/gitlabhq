@@ -30,3 +30,9 @@ Feature: Project Services
     And I click Flowdock service link
     And I fill Flowdock settings
     Then I should see Flowdock service settings saved
+
+  Scenario: Activate Assembla service
+    When I visit project "Shop" services page
+    And I click Assembla service link
+    And I fill Assembla settings
+    Then I should see Assembla service settings saved
