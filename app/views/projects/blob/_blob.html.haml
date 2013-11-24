@@ -24,7 +24,9 @@
         = blob.name
         %small= number_to_human_size blob.size
       %span.options= render "actions"
-    - if blob.text?
+    - if blob.csv?
+      = render "csv", blob: blob
+    - elsif blob.text?
       = render "text", blob: blob
     - elsif blob.image?
       = render "image", blob: blob

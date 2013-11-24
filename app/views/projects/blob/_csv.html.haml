@@ -1,0 +1,11 @@
+.file-content.code
+  - unless blob.empty?
+    %div{class: user_color_scheme_class}
+      %table
+        - blob.to_csv.each do |row|
+          %tr
+            - row.each do |col|
+              %td 
+                = col
+  - else
+    %p.nothing_here_message Empty file

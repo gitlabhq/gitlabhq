@@ -1,0 +1,30 @@
+- random_id = SecureRandom.hex
+- too_big = diff.diff.lines.count > 1000
+- if too_big
+  %a.supp_diff_link Diff suppressed. Click to show
+
+:javascript
+
+  $(document).ready(function () {
+
+    var old_table = new coopy.CoopyTableView(#{old_file.data ? old_file.to_csv.to_json : '[]'});
+    var new_table = new coopy.CoopyTableView(#{file.to_csv.to_json});
+
+    var alignment = coopy.compareTables(old_table,new_table).align();
+    
+    var data_diff = [];      
+    var table_diff = new coopy.CoopyTableView(data_diff);
+    
+    var flags = new coopy.CompareFlags();
+    var highlighter = new coopy.TableDiff(alignment,flags);
+    highlighter.hilite(table_diff);
+
+    var diff2html = new coopy.DiffRender();
+    diff2html.render(table_diff);
+    diff_html = diff2html.html()
+
+    $("#csv-diff-#{random_id}").html(diff_html);
+
+  });
+
+%div{id:"csv-diff-#{random_id}", class:"csvdiff highlighter tabular #{'hide' if too_big}"}

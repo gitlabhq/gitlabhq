@@ -1,0 +1,11 @@
+.csvdiff td.modify {
+  background-color: #aaf !important;
+}
+
+.csvdiff td.add, .csvdiff tr.add {
+  background-color: #CFD !important;
+}
+
+.csvdiff td.remove, .csvdiff tr.remove {
+  background-color: #FDD !important;
+}
