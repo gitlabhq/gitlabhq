@@ -235,6 +235,8 @@ Parameters:
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
 + `public` (optional)
++ `namespace_id` (optional)
+
 
 
 ### Create project for user
