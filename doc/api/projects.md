@@ -238,7 +238,6 @@ Parameters:
 + `namespace_id` (optional)
 
 
-
 ### Create project for user
 
 Creates a new project owned by user. Available only for admins.
