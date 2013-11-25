@@ -127,3 +127,8 @@ pre.well-pre {
 .dropdown-menu > li > a {
   text-shadow: none;
 }
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background: #29b;
+}
