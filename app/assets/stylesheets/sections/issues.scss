@@ -109,3 +109,13 @@ input.check_all_issues {
     text-shadow: none;
   }
 }
+
+.issue-search-form {
+  margin: 0;
+  height: 24px;
+
+  .issue_search {
+    border: 1px solid #DDD !important;
+    background-color: #f4f4f4;
+  }
+}

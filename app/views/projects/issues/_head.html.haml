@@ -1,11 +1,29 @@
 %ul.nav.nav-tabs
   = nav_link(controller: :issues) do
-    = link_to 'Browse Issues', project_issues_path(@project), class: "tab"
+    = link_to project_issues_path(@project), class: "tab" do
+      Browse Issues
+      - if current_controller?(:issues)
+        %span.badge.issue_counter #{@issues.total_count}
   = nav_link(controller: :milestones) do
     = link_to 'Milestones', project_milestones_path(@project), class: "tab"
   = nav_link(controller: :labels) do
     = link_to 'Labels', project_labels_path(@project), class: "tab"
-  - if current_user
+
+  - if current_controller?(:issues)
+    - if current_user
+      %li
+        = link_to project_issues_path(@project, :atom, { private_token: current_user.private_token }) do
+          %i.icon-rss
+
     %li.pull-right
-      = link_to project_issues_path(@project, :atom, { private_token: current_user.private_token }) do
-        %i.icon-rss
+      .pull-right
+        - if can? current_user, :write_issue, @project
+          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-right", title: "New Issue", id: "new_issue_link" do
+            %i.icon-plus
+            New Issue
+        = form_tag project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: 'pull-right issue-search-form'  do
+          = hidden_field_tag :status, params[:status], id: 'search_status'
+          = hidden_field_tag :assignee_id, params[:assignee_id], id: 'search_assignee_id'
+          = hidden_field_tag :milestone_id, params[:milestone_id], id: 'search_milestone_id'
+          = hidden_field_tag :label_name, params[:label_name], id: 'search_label_name'
+          = search_field_tag :issue_search, nil, { placeholder: 'Filter by title or description', class: 'input-xpadding issue_search input-xlarge append-right-10 search-text-input' }
