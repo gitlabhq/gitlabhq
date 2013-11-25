@@ -234,7 +234,13 @@ Devise.setup do |config|
       # A Hash from the configuration will be passed as is.
       config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
     else
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+      case provider['name']
+      when 'google_apps'
+        config.omniauth provider['name'].to_sym,
+        domain: provider['domain']
+      else
+        config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+      end
     end
   end
 end
