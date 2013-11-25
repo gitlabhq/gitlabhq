@@ -39,7 +39,7 @@ gem "gitlab-pygments.rb", '~> 0.5.4', require: 'pygments.rb'
 gem "gitlab-gollum-lib", "~> 1.0.2", require: 'gollum-lib'
 
 # Language detection
-gem "gitlab-linguist", "~> 2.9.5", require: "linguist"
+gem "gitlab-linguist", "~> 2.9.6", require: "linguist"
 
 # API
 gem "grape", "~> 0.4.1"
