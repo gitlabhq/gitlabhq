@@ -61,12 +61,12 @@ GEM
     charlock_holmes (0.6.9.4)
     childprocess (0.3.9)
       ffi (~> 1.0, >= 1.0.11)
-    chosen-rails (1.0.0)
+    chosen-rails (1.0.1)
       coffee-rails (>= 3.2)
       compass-rails (>= 1.0)
       railties (>= 3.0)
       sass-rails (>= 3.2)
-    chunky_png (1.2.8)
+    chunky_png (1.2.9)
     cliver (0.2.1)
     code_analyzer (0.4.3)
       sexp_processor
@@ -77,7 +77,7 @@ GEM
     coffee-script (2.2.0)
       coffee-script-source
       execjs
-    coffee-script-source (1.6.2)
+    coffee-script-source (1.6.3)
     colored (1.2)
     colorize (0.5.8)
     compass (0.12.2)
@@ -119,8 +119,7 @@ GEM
     escape_utils (0.2.4)
     eventmachine (1.0.3)
     excon (0.13.4)
-    execjs (1.4.0)
-      multi_json (~> 1.0)
+    execjs (2.0.2)
     factory_girl (4.2.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.2.1)
@@ -429,7 +428,7 @@ GEM
     safe_yaml (0.9.3)
     sanitize (2.0.3)
       nokogiri (>= 1.4.4, < 1.6)
-    sass (3.2.11)
+    sass (3.2.12)
     sass-rails (3.2.6)
       railties (~> 3.2.0)
       sass (>= 3.1.10)
@@ -557,7 +556,7 @@ DEPENDENCIES
   bootstrap-sass
   capybara
   carrierwave
-  chosen-rails (= 1.0.0)
+  chosen-rails (= 1.0.1)
   coffee-rails
   colored
   coveralls

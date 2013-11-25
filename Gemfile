@@ -135,7 +135,7 @@ group :assets do
   gem 'turbolinks'
   gem 'jquery-turbolinks'
 
-  gem 'chosen-rails',     "1.0.0"
+  gem 'chosen-rails',     "1.0.1"
   gem 'select2-rails'
   gem 'jquery-atwho-rails', "0.3.0"
   gem "jquery-rails",     "2.1.3"
