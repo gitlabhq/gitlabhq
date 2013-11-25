@@ -81,7 +81,10 @@
         .dropdown.inline.prepend-left-10
           %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
             %span.light sort:
-            = @sort
+            - if @sort.present?
+              = @sort
+            - else
+              Newest
             %b.caret
           %ul.dropdown-menu
             %li
