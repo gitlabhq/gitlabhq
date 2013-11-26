@@ -37,8 +37,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       # Create user if does not exist
       # and allow_single_sign_on is true
-      if Gitlab.config.omniauth['allow_single_sign_on']
-        @user ||= Gitlab::OAuth::User.create(oauth)
+      if (!@user) && Gitlab.config.omniauth['allow_single_sign_on']
+        if Gitlab.config.omniauth['email_domain'] && (oauth.info.email.nil? || (Mail::Address.new(oauth.info.email.downcase).domain != Gitlab.config.omniauth['email_domain']))
+          flash[:alert] = "Email #{oauth['email']} does not match the required domain #{Gitlab.config.omniauth['email_domain']}"
+        else
+          @user = Gitlab::OAuth::User.create(oauth)
+        end
       end
 
       if @user

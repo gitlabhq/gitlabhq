@@ -132,6 +132,8 @@ production: &base
     allow_single_sign_on: false
     # Locks down those users until they have been cleared by the admin (default: true).
     block_auto_created_users: true
+    # Limit email domain of users to a specific one like example.com (default: false)
+    email_domain: false
 
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use

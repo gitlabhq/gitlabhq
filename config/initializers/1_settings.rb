@@ -43,6 +43,7 @@ Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_u
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []
+Settings.omniauth['email_domain']  ||= false
 
 Settings['issues_tracker']  ||= {}
 
