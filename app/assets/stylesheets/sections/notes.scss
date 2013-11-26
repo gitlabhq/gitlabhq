@@ -131,6 +131,11 @@ ul.notes {
       text-align: center;
       padding: 10px 0;
     }
+    &.notes_line2 {
+      text-align: center;
+      padding: 10px 0;
+      border-left: 1px solid #ddd !important;
+    }
     &.notes_content {
       background-color: $white;
       border-width: 1px 0;
@@ -357,4 +362,8 @@ ul.notes {
 
 .js-note-attachment-delete {
   display: none;
+}
+
+.parallel-comment {
+  padding: 6px;
 }
