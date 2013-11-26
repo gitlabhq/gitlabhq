@@ -1,6 +1,6 @@
 .project-home-panel
   .row
-    .span4
+    .span5
       %h4.project-home-title
         = @project.name_with_namespace
         - if @project.public
@@ -8,7 +8,7 @@
         - else
           %span.public-label Private
 
-    .span8
+    .span7
       .project-home-dropdown
         = render "dropdown"
       .form-horizontal
