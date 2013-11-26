@@ -4,6 +4,7 @@ v 6.4.0
   - Fixed another 500 error with submodules
   - UI: More compact issues page
   - Minimal password length increased to 8 symbols
+  - Parallel diff view (Steven Thonus)
 
 v 6.3.0
   - API for adding gitlab-ci service
