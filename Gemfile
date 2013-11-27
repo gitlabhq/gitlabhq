@@ -27,7 +27,7 @@ gem 'omniauth-github'
 gem "gitlab_git", "~> 3.1.0"
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+gem 'gitlab-grack', '~> 1.1.0', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
