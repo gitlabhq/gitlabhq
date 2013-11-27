@@ -11,6 +11,13 @@ module API
           end
           not_found!
         end
+        
+        def map_public_to_visibility_level(attrs)
+          publik = attrs.delete(:public)
+          publik = [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(publik)
+          attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
+          attrs
+        end
       end
 
       # Get a projects list for authenticated user
@@ -76,7 +83,8 @@ module API
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
       #   namespace_id (optional) - defaults to user namespace
-      #   public (optional) - false by default
+      #   public (optional) - if true same as setting visibility_level = 20
+      #   visibility_level (optional) - 0 by default
       # Example Request
       #   POST /projects
       post do
@@ -90,7 +98,9 @@ module API
                                      :wiki_enabled,
                                      :snippets_enabled,
                                      :namespace_id,
-                                     :public]
+                                     :public,
+                                     :visibility_level]
+        attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateContext.new(current_user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
@@ -114,7 +124,8 @@ module API
       #   merge_requests_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
-      #   public (optional)
+      #   public (optional) - if true same as setting visibility_level = 20
+      #   visibility_level (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -128,7 +139,9 @@ module API
                                      :merge_requests_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
-                                     :public]
+                                     :public,
+                                     :visibility_level]
+        attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateContext.new(user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
@@ -290,7 +303,8 @@ module API
       #   GET /projects/search/:query
       get "/search/:query" do
         ids = current_user.authorized_projects.map(&:id)
-        projects = Project.where("(id in (?) OR public = true) AND (name LIKE (?))", ids, "%#{params[:query]}%")
+        visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
+        projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
         present paginate(projects), with: Entities::Project
       end
     end

@@ -15,6 +15,7 @@ GET /projects
     "description": null,
     "default_branch": "master",
     "public": false,
+    "visibility_level": 0,
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
@@ -49,6 +50,7 @@ GET /projects
     "description": null,
     "default_branch": "master",
     "public": false,
+    "visibility_level": 0,
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
@@ -117,6 +119,7 @@ Parameters:
   "description": null,
   "default_branch": "master",
   "public": false,
+  "visibility_level": 0,
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -234,7 +237,8 @@ Parameters:
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
-+ `public` (optional)
++ `public` (optional) - if `true` same as setting visibility_level = 20
++ `visibility_level` (optional)
 
 
 ### Create project for user
@@ -256,7 +260,8 @@ Parameters:
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
-+ `public` (optional)
++ `public` (optional) - if `true` same as setting visibility_level = 20
++ `visibility_level` (optional)
 
 
 ## Remove project

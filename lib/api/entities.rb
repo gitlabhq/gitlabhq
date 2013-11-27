@@ -31,11 +31,13 @@ module API
     end
 
     class Project < Grape::Entity
-      expose :id, :description, :default_branch, :public, :ssh_url_to_repo, :http_url_to_repo, :web_url
+      expose :id, :description, :default_branch
+      expose :public?, as: :public
+      expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :owner, using: Entities::UserBasic
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at, :public
+      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, :if => lambda{ | project, options | project.forked? }
     end

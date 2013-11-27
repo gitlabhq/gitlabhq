@@ -19,6 +19,12 @@
   padding-bottom: 25px;
   margin-bottom: 30px;
 
+  &.empty-project {
+      border-bottom: 0px;
+      padding-bottom: 15px;
+      margin-bottom: 0px;
+  }
+
   .project-home-title {
     font-size: 18px;
     color: #777;
@@ -45,7 +51,7 @@
     }
   }
 
-  .public-label {
+  .visibility-level-label {
     font-size: 14px;
     background: #f1f1f1;
     padding: 8px 10px;
@@ -53,6 +59,10 @@
     margin-left: 10px;
     color: #888;
     text-shadow: 0 1px 1px #FFF;
+
+    i {
+      color: inherit;
+    }
   }
 }
 
@@ -87,9 +97,40 @@
   }
 }
 
-.project-public-holder {
-  .help-inline {
-    padding-top: 7px;
+.project-visibility-level-holder {
+  .controls {
+    padding-bottom: 9px;
+  }
+
+  .controls {
+    input {
+      float: left;
+    }
+    .descr {
+      display: block;
+      margin-left: 1.5em;
+      &.restricted {
+        color: #888;
+      }
+
+      label {
+        float: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+      }
+    }
+    .info {
+      display: block;
+      margin-top: 5px;
+    }
+    strong {
+      display: inline-block;
+      width: 4em;
+    }
+  }
+  i {
+    color: inherit;
   }
 }
 
@@ -130,7 +171,8 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects {
+.my-projects,
+.public-projects {
   li {
     .project-info {
       margin-bottom: 10px;

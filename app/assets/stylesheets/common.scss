@@ -365,6 +365,10 @@ table {
   &.input-large {
     width: 210px;
   }
+
+  &.input-clamp {
+    max-width: 100%;
+  }
 }
 
 .user-result {
