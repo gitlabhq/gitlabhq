@@ -14,12 +14,12 @@ Feature: Project Browse commits
   Scenario: I browse commit from list
     Given I click on commit link
     Then I see commit info
-    And I see parallel diff button
+    And I see side-by-side diff button
 
-  Scenario: I browse commit with parallel diff view
+  Scenario: I browse commit with side-by-side diff view
     Given I click on commit link
-    And I click parallel diff button
-    Then I see unified diff button
+    And I click side-by-side diff button
+    Then I see inline diff button
 
   Scenario: I compare refs
     Given I visit compare refs page

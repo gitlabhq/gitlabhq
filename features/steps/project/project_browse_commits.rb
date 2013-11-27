@@ -89,16 +89,16 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     links[1]['href'].should =~ %r{blob/cc1ba255d6c5ffdce87a357ba7ccc397a4f4026b}
   end
 
-  Given 'I click parallel diff button' do
-    click_link "Parallel Diff"
+  Given 'I click side-by-side diff button' do
+    click_link "side-by-side Diff"
   end
 
-  Then 'I see parallel diff button' do
-    page.should have_content "Parallel Diff"
+  Then 'I see side-by-side diff button' do
+    page.should have_content "Side-by-side Diff"
   end
 
-  Then 'I see unified diff button' do
-    page.should have_content "Unified Diff"
+  Then 'I see inline diff button' do
+    page.should have_content "Inline Diff"
   end
 
 end
