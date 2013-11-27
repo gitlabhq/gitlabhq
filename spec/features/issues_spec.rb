@@ -101,21 +101,21 @@ describe "Issues" do
     titles.each_with_index do |title, index|
       let!(title.to_sym) { create(:issue, title: title, project: project, created_at: Time.now - (index * 60)) }
     end
-    let(:newer_due_milestone) { create(:milestone, :due_date => '2013-12-11') }
-    let(:later_due_milestone) { create(:milestone, :due_date => '2013-12-12') }
+    let(:newer_due_milestone) { create(:milestone, due_date: '2013-12-11') }
+    let(:later_due_milestone) { create(:milestone, due_date: '2013-12-12') }
 
     it 'sorts by newest' do
       visit project_issues_path(project, sort: 'newest')
-      
-      page.should have_selector("ul.issues-list li:first-child", :text => 'foo')
-      page.should have_selector("ul.issues-list li:last-child", :text => 'baz')
+
+      page.should have_selector("ul.issues-list li:first-child", text: 'foo')
+      page.should have_selector("ul.issues-list li:last-child", text: 'baz')
     end
 
     it 'sorts by oldest' do
       visit project_issues_path(project, sort: 'oldest')
 
-      page.should have_selector("ul.issues-list li:first-child", :text => 'baz')
-      page.should have_selector("ul.issues-list li:last-child", :text => 'foo')
+      page.should have_selector("ul.issues-list li:first-child", text: 'baz')
+      page.should have_selector("ul.issues-list li:last-child", text: 'foo')
     end
 
     it 'sorts by most recently updated' do
@@ -123,7 +123,7 @@ describe "Issues" do
       baz.save
       visit project_issues_path(project, sort: 'recently_updated')
 
-      page.should have_selector("ul.issues-list li:first-child", :text => 'baz')
+      page.should have_selector("ul.issues-list li:first-child", text: 'baz')
     end
 
     it 'sorts by least recently updated' do
@@ -131,12 +131,11 @@ describe "Issues" do
       baz.save
       visit project_issues_path(project, sort: 'last_updated')
 
-      page.should have_selector("ul.issues-list li:first-child", :text => 'baz')
+      page.should have_selector("ul.issues-list li:first-child", text: 'baz')
     end
 
     describe 'sorting by milestone' do
-      
-      before :each do 
+      before :each do
         foo.milestone = newer_due_milestone
         foo.save
         bar.milestone = later_due_milestone
@@ -146,18 +145,17 @@ describe "Issues" do
       it 'sorts by recently due milestone' do
         visit project_issues_path(project, sort: 'milestone_due_soon')
 
-        page.should have_selector("ul.issues-list li:first-child", :text => 'foo')
+        page.should have_selector("ul.issues-list li:first-child", text: 'foo')
       end
 
       it 'sorts by least recently due milestone' do
         visit project_issues_path(project, sort: 'milestone_due_later')
 
-        page.should have_selector("ul.issues-list li:first-child", :text => 'bar')
+        page.should have_selector("ul.issues-list li:first-child", text: 'bar')
       end
     end
 
     describe 'combine filter and sort' do
-
       let(:user2) { create(:user) }
 
       before :each do
@@ -170,12 +168,10 @@ describe "Issues" do
       it 'sorts with a filter applied' do
         visit project_issues_path(project, sort: 'oldest', assignee_id: user2.id)
 
-        page.should have_selector("ul.issues-list li:first-child", :text => 'bar')
-        page.should have_selector("ul.issues-list li:last-child", :text => 'foo')
+        page.should have_selector("ul.issues-list li:first-child", text: 'bar')
+        page.should have_selector("ul.issues-list li:last-child", text: 'foo')
         page.should_not have_content 'baz'
-
       end
     end
   end
-
 end
