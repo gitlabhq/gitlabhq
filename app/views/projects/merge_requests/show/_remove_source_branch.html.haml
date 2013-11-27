@@ -1,0 +1,18 @@
+- if @source_branch.blank?
+  .alert.alert-info Source branch has been removed
+
+- elsif @allowed_to_remove_source_branch && @merge_request.merged?
+  .remove_source_branch_widget
+    .alert.alert-info
+      = link_to project_branch_path(@merge_request.source_project, @source_branch), remote: true, method: :delete, class: "btn remove_source_branch" do
+        %i.icon-remove
+        Remove Source Branch
+
+  .remove_source_branch_widget.failed.hide
+    .alert.alert-error Failed to remove source branch '#{@merge_request.source_branch}'
+
+  .remove_source_branch_in_progress.hide
+    %span.cgray
+      %i.icon-refresh.icon-spin
+      &nbsp;
+      Removing source branch '#{@merge_request.source_branch}'. Please wait. Page will be automatically reloaded. &nbsp;
