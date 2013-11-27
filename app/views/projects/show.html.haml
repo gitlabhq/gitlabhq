@@ -1,32 +1,4 @@
-.project-home-panel
-  .row
-    .span5
-      %h4.project-home-title
-        = @project.name_with_namespace
-        - if @project.public
-          %span.public-label Public
-        - else
-          %span.public-label Private
-
-    .span7
-      .project-home-dropdown
-        = render "dropdown"
-      .form-horizontal
-        = render "shared/clone_panel"
-
-  .project-home-extra.clearfix
-    .project-home-desc
-      - if @project.description.present?
-        = @project.description
-      - if can?(current_user, :admin_project, @project)
-        &ndash;
-        %strong= link_to 'Edit', edit_project_path
-
-    .project-home-links
-      = link_to pluralize(@repository.round_commit_count, 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
-      = link_to pluralize(@repository.branch_names.count, 'branch'), project_branches_path(@project)
-      = link_to pluralize(@repository.tag_names.count, 'tag'), project_tags_path(@project)
-      %span.light.prepend-left-20= repository_size
+= render "home_panel"
 
 .row
   .span9

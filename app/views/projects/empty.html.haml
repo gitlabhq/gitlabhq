@@ -1,7 +1,4 @@
-%h3.page-title
-  = @project.name_with_namespace
-  .form-horizontal.pull-right
-    = render "shared/clone_panel"
+= render "home_panel"
 
 - if @project.import? && !@project.imported
   .save-project-loader

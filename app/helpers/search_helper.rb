@@ -1,10 +1,10 @@
 module SearchHelper
   def search_autocomplete_source
     return unless current_user
-
     [
       groups_autocomplete,
       projects_autocomplete,
+      public_projects_autocomplete,
       default_autocomplete,
       project_autocomplete,
       help_autocomplete
@@ -72,6 +72,13 @@ module SearchHelper
   # Autocomplete results for the current user's projects
   def projects_autocomplete
     current_user.authorized_projects.map do |p|
+      { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) }
+    end
+  end
+
+  # Autocomplete results for the current user's projects
+  def public_projects_autocomplete
+    Project.public_or_internal_only(current_user).map do |p|
       { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) }
     end
   end

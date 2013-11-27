@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131112114325) do
+ActiveRecord::Schema.define(:version => 20131112220935) do
 
   create_table "broadcast_messages", :force => true do |t|
     t.text     "message",    :null => false
@@ -185,13 +185,13 @@ ActiveRecord::Schema.define(:version => 20131112114325) do
     t.boolean  "merge_requests_enabled", :default => true,     :null => false
     t.boolean  "wiki_enabled",           :default => true,     :null => false
     t.integer  "namespace_id"
-    t.boolean  "public",                 :default => false,    :null => false
     t.string   "issues_tracker",         :default => "gitlab", :null => false
     t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",       :default => true,     :null => false
     t.datetime "last_activity_at"
     t.boolean  "imported",               :default => false,    :null => false
     t.string   "import_url"
+    t.integer  "visibility_level",       :default => 0,        :null => false
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"

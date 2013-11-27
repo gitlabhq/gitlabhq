@@ -55,6 +55,10 @@ production: &base
     # default: false - Account passwords are not sent via the email if signup is enabled. 
     # signup_enabled: true
 
+    # Restrict setting visibility levels for non-admin users.
+    # The default is to allow all levels.
+    #restricted_visibility_levels: [ "public" ]
+
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
@@ -68,7 +72,7 @@ production: &base
       wiki: true
       wall: false
       snippets: false
-      public: false
+      visibility_level: "private"  # can be "private" | "internal" | "public"
 
   ## External issues trackers
   issues_tracker:

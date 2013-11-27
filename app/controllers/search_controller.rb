@@ -14,7 +14,7 @@ class SearchController < ApplicationController
       project_ids.select! { |id| id == project_id.to_i}
     end
 
-    result = SearchContext.new(project_ids, params).execute
+    result = SearchContext.new(project_ids, current_user, params).execute
 
     @projects       = result[:projects]
     @merge_requests = result[:merge_requests]
