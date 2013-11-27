@@ -26,7 +26,7 @@
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   extend Enumerize
-   
+
   ActsAsTaggableOn.strict_case_match = true
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
@@ -450,5 +450,10 @@ class Project < ActiveRecord::Base
 
   def default_branch
     @default_branch ||= repository.root_ref if repository.exists?
+  end
+
+  def reload_default_branch
+    @default_branch = nil
+    default_branch
   end
 end
