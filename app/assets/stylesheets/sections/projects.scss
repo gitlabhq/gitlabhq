@@ -18,7 +18,7 @@
   border-bottom: 1px solid #DDD;
   padding-bottom: 25px;
   margin-bottom: 30px;
-  
+
   &.empty-project {
       border-bottom: 0px;
       padding-bottom: 15px;
@@ -111,6 +111,13 @@
       margin-left: 1.5em;
       &.restricted {
         color: #888;
+      }
+
+      label {
+        float: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
       }
     }
     .info {

@@ -1,15 +1,18 @@
 .control-group.project-visibility-level-holder
-  = f.label :visibility_level, "Visibility Level"
+  = f.label :visibility_level do
+    Visibility Level
+    = link_to "(?)", help_public_access_path
   - if can_change_visibility_level
     - Gitlab::VisibilityLevel.values.each do |level|
       - restricted = restricted_visibility_levels.include?(level)
       .controls
         = f.radio_button :visibility_level, level, checked: (visibility_level == level), disabled: restricted
         %span.descr{:class => ("restricted" if restricted)}
-          = visibility_level_icon(level)
-          %strong
-            = visibility_level_label(level)
-          = visibility_level_description(level)
+          = label :project_visibility_level, level do
+            = visibility_level_icon(level)
+            %strong
+              = visibility_level_label(level)
+          .light= visibility_level_description(level)
     - unless restricted_visibility_levels.empty?
       .controls
         %span.info
@@ -20,4 +23,4 @@
         = visibility_level_icon(visibility_level)
         %strong
           = visibility_level_label(visibility_level)
-        = visibility_level_description(visibility_level)
+        .light= visibility_level_description(visibility_level)
