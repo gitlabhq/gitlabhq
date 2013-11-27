@@ -107,15 +107,15 @@ describe "Issues" do
     it 'sorts by newest' do
       visit project_issues_path(project, sort: 'newest')
 
-      page.should have_selector("ul.issues-list li:first-child", text: 'foo')
-      page.should have_selector("ul.issues-list li:last-child", text: 'baz')
+      first_issue.should include("foo")
+      last_issue.should include("baz")
     end
 
     it 'sorts by oldest' do
       visit project_issues_path(project, sort: 'oldest')
 
-      page.should have_selector("ul.issues-list li:first-child", text: 'baz')
-      page.should have_selector("ul.issues-list li:last-child", text: 'foo')
+      first_issue.should include("baz")
+      last_issue.should include("foo")
     end
 
     it 'sorts by most recently updated' do
@@ -123,7 +123,7 @@ describe "Issues" do
       baz.save
       visit project_issues_path(project, sort: 'recently_updated')
 
-      page.should have_selector("ul.issues-list li:first-child", text: 'baz')
+      first_issue.should include("baz")
     end
 
     it 'sorts by least recently updated' do
@@ -131,7 +131,7 @@ describe "Issues" do
       baz.save
       visit project_issues_path(project, sort: 'last_updated')
 
-      page.should have_selector("ul.issues-list li:first-child", text: 'baz')
+      first_issue.should include("baz")
     end
 
     describe 'sorting by milestone' do
@@ -145,13 +145,13 @@ describe "Issues" do
       it 'sorts by recently due milestone' do
         visit project_issues_path(project, sort: 'milestone_due_soon')
 
-        page.should have_selector("ul.issues-list li:first-child", text: 'foo')
+        first_issue.should include("foo")
       end
 
       it 'sorts by least recently due milestone' do
         visit project_issues_path(project, sort: 'milestone_due_later')
 
-        page.should have_selector("ul.issues-list li:first-child", text: 'bar')
+        first_issue.should include("bar")
       end
     end
 
@@ -168,10 +168,18 @@ describe "Issues" do
       it 'sorts with a filter applied' do
         visit project_issues_path(project, sort: 'oldest', assignee_id: user2.id)
 
-        page.should have_selector("ul.issues-list li:first-child", text: 'bar')
-        page.should have_selector("ul.issues-list li:last-child", text: 'foo')
+        first_issue.should include("bar")
+        last_issue.should include("foo")
         page.should_not have_content 'baz'
       end
     end
+  end
+
+  def first_issue
+    all("ul.issues-list li").first.text
+  end
+
+  def last_issue
+    all("ul.issues-list li").last.text
   end
 end
