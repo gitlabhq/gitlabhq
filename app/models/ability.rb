@@ -29,7 +29,7 @@ class Ability
                   nil
                 end
 
-      if project && project.public
+      if project && project.public?
         [
           :read_project,
           :read_wiki,
@@ -71,7 +71,7 @@ class Ability
         rules << project_guest_rules
       end
 
-      if project.public?
+      if project.public? || project.internal?
         rules << public_project_rules
       end
 
@@ -89,7 +89,7 @@ class Ability
     def public_project_rules
       project_guest_rules + [
         :download_code,
-        :fork_project,
+        :fork_project
       ]
     end
 
@@ -145,7 +145,7 @@ class Ability
     def project_admin_rules
       project_master_rules + [
         :change_namespace,
-        :change_public_mode,
+        :change_visibility_level,
         :rename_project,
         :remove_project
       ]

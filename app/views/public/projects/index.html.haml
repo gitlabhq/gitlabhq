@@ -19,6 +19,10 @@
         %h4
           = link_to project_path(project) do
             = project.name_with_namespace
+          - if project.internal?
+            %small.access-icon
+              = internal_icon
+              Internal
           .pull-right
             %pre.public-clone git clone #{project.http_url_to_repo}
 

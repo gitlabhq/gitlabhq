@@ -2,14 +2,20 @@
   %h3.page-title Public Access
 
   %p
-    GitLab allows you to open selected projects to be accessed publicly.
-    These projects will be cloneable
+    GitLab allows you to open selected projects to be accessed publicly or internally.
+    Projects with either of these visibility levels will be listed in the #{link_to "public access directory", public_root_path}. Internal projects will only be available to authenticated users.
+  %p
+    = public_icon
+    Public projects will be cloneable
     %em without any
     authentication.
-    Also they will be listed on the #{link_to "public access directory", public_root_path}.
+  %p
+    = internal_icon
+    Internal projects will be cloneable by
+    %em any authenticated user.
 
   %ol
     %li Go to your project dashboard
     %li Click on the "Edit" tab
-    %li Select "Public clone access"
+    %li Change "Visibility Level"
 

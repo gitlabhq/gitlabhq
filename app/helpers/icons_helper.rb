@@ -11,6 +11,10 @@ module IconsHelper
     content_tag :i, nil, class: 'icon-globe cblue'
   end
 
+  def internal_icon
+    content_tag :i, nil, class: 'icon-shield camber'
+  end
+
   def private_icon
     content_tag :i, nil, class: 'icon-lock cgreen'
   end

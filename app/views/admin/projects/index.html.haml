@@ -10,11 +10,15 @@
         .control-group
           = label_tag :owner_id, 'Owner:', class: 'control-label'
           .controls
-            = users_select_tag :owner_id, selected: params[:owner_id], class: 'input-large'
-        .control-group
-          = label_tag :public_only, 'Public Only', class: 'control-label'
-          .controls
-            = check_box_tag :public_only, 1, params[:public_only]
+            = users_select_tag :owner_id, selected: params[:owner_id], class: 'input-large input-clamp'
+        .control-group.visibility-levels
+          = label_tag :visibility_level, 'Visibility Levels', class: 'control-label'
+          - Project.visibility_levels.each do |label, level|
+            .controls
+              = check_box_tag 'visibility_levels[]', level, params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
+              %span.descr
+                = visibility_level_icon(level)
+                = label
         .control-group
           = label_tag :with_push, 'Not empty', class: 'control-label'
           .controls
@@ -42,10 +46,7 @@
       %ul.well-list
         - @projects.each do |project|
           %li
-            - if project.public
-              = public_icon
-            - else
-              = private_icon
+            = visibility_level_icon(project.visibility_level)
             = link_to project.name_with_namespace, [:admin, project]
             .pull-right
               = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"

@@ -66,14 +66,10 @@
         %li
           %span.light access:
           %strong
-            - if @project.public
-              %span.cblue
-                %i.icon-share
-                Public
-            - else
-              %span.cgreen
-                %i.icon-lock
-                Private
+            %span{ class: visibility_level_color(@project.visibility_level) }
+              = visibility_level_icon(@project.visibility_level)
+              = visibility_level_label(@project.visibility_level)
+
     .ui-box
       .title
         Transfer project
@@ -87,9 +83,6 @@
           .control-group
             .controls
               = f.submit 'Transfer', class: 'btn btn-primary'
-
-
-
 
   .span6
     - if @group

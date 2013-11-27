@@ -7,6 +7,7 @@ describe Projects::CreateContext do
   describe :create_by_user do
     before do
       @user = create :user
+      @admin = create :user, admin: true
       @opts = {
         name: "GitLab",
         namespace: @user.namespace
@@ -37,7 +38,7 @@ describe Projects::CreateContext do
       it { @project.namespace.should == @group }
     end
 
-    context 'respect configured public setting' do
+    context 'respect configured visibility setting' do
       before(:each) do
         @settings = double("settings")
         @settings.stub(:issues) { true }
@@ -46,25 +47,90 @@ describe Projects::CreateContext do
         @settings.stub(:wall) { true }
         @settings.stub(:snippets) { true }
         stub_const("Settings", Class.new)
+        @restrictions = double("restrictions")
+        @restrictions.stub(:restricted_visibility_levels) { [] }
+        Settings.stub_chain(:gitlab).and_return(@restrictions)
         Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
       end
 
       context 'should be public when setting is public' do
         before do
-          @settings.stub(:public) { true }
+          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
           @project = create_project(@user, @opts)
         end
 
-        it { @project.public.should be_true }
+        it { @project.public?.should be_true }
       end
 
-      context 'should be private when setting is not public' do
+      context 'should be private when setting is private' do
         before do
-          @settings.stub(:public) { false }
+          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
           @project = create_project(@user, @opts)
         end
 
-        it { @project.public.should be_false }
+        it { @project.private?.should be_true }
+      end
+
+      context 'should be internal when setting is internal' do
+        before do
+          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+          @project = create_project(@user, @opts)
+        end
+
+        it { @project.internal?.should be_true }
+      end
+    end
+
+    context 'respect configured visibility restrictions setting' do
+      before(:each) do
+        @settings = double("settings")
+        @settings.stub(:issues) { true }
+        @settings.stub(:merge_requests) { true }
+        @settings.stub(:wiki) { true }
+        @settings.stub(:wall) { true }
+        @settings.stub(:snippets) { true }
+        @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+        stub_const("Settings", Class.new)
+        @restrictions = double("restrictions")
+        @restrictions.stub(:restricted_visibility_levels) { [ Gitlab::VisibilityLevel::PUBLIC ] }
+        Settings.stub_chain(:gitlab).and_return(@restrictions)
+        Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
+      end
+
+      context 'should be private when option is public' do
+        before do
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          @project = create_project(@user, @opts)
+        end
+
+        it { @project.private?.should be_true }
+      end
+
+      context 'should be public when option is public for admin' do
+        before do
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          @project = create_project(@admin, @opts)
+        end
+
+        it { @project.public?.should be_true }
+      end
+
+      context 'should be private when option is private' do
+        before do
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          @project = create_project(@user, @opts)
+        end
+
+        it { @project.private?.should be_true }
+      end
+
+      context 'should be internal when option is internal' do
+        before do
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          @project = create_project(@user, @opts)
+        end
+
+        it { @project.internal?.should be_true }
       end
     end
   end
@@ -73,3 +139,4 @@ describe Projects::CreateContext do
     Projects::CreateContext.new(user, opts).execute
   end
 end
+
