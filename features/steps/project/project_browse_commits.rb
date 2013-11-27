@@ -90,7 +90,7 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   Given 'I click side-by-side diff button' do
-    click_link "side-by-side Diff"
+    click_link "Side-by-side Diff"
   end
 
   Then 'I see side-by-side diff button' do
