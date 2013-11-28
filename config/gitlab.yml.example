@@ -114,6 +114,7 @@ production: &base
   # ==========================
 
   ## LDAP settings
+  # You can check your LDAP settings by running `bundle exec rake gitlab:ldap:check RAILS_ENV=production`
   ldap:
     enabled: false
     host: '_your_ldap_server'
