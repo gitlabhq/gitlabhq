@@ -21,13 +21,18 @@ module Gitlab
       # pushes it back to the repository.
       # It also removes the source branch if requested in the merge request (and this is permitted by the merge request).
       #
+      # @param options [{ Symbol => Object }] hash of options
+      #
+      # @option options [Boolean] :fast_forward if true, will perform a standard merge,
+      #   otherwise will perform a non fast-forward merge
+      #
       # Returns false if the merge produced conflicts
       # Returns false if pushing from the satellite to the repository failed or was rejected
       # Returns true otherwise
-      def merge!
+      def merge!(options = {})
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
-          if merge_in_satellite!(merge_repo)
+          if merge_in_satellite!(merge_repo, options)
             # push merge back to bare repo
             # will raise CommandFailed when push fails
             merge_repo.git.push(default_options, :origin, merge_request.target_branch)
@@ -123,17 +128,23 @@ module Gitlab
       #
       # Note: it will clear out the satellite before doing anything
       #
+      # @param options [{ Symbol => Object }] hash of options
+      #
+      # @option options [Boolean] :fast_forward if true, will perform a standard merge,
+      #   otherwise will perform a non fast-forward merge
+      #
       # Returns false if the merge produced conflicts
       # Returns true otherwise
-      def merge_in_satellite!(repo)
+      def merge_in_satellite!(repo, options = {})
         update_satellite_source_and_target!(repo)
+        options = default_options(no_ff: !options[:fast_forward])
 
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
         if merge_request.for_fork?
-          repo.git.pull(default_options({no_ff: true}), 'source', merge_request.source_branch)
+          repo.git.pull(options, 'source', merge_request.source_branch)
         else
-          repo.git.pull(default_options({no_ff: true}), 'origin', merge_request.source_branch)
+          repo.git.pull(options, 'origin', merge_request.source_branch)
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)

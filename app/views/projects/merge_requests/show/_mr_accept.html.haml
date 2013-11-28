@@ -18,9 +18,14 @@
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
             - unless @merge_request.disallow_source_branch_removal?
               .remove_branch_holder
-                = label_tag :should_remove_source_branch, class: "checkbox" do
-                  = check_box_tag :should_remove_source_branch
-                  Remove source-branch
+                %div
+                  = label_tag :should_remove_source_branch, class: "checkbox" do
+                    = check_box_tag :should_remove_source_branch
+                    Remove source-branch
+                %div
+                  = label_tag :fast_forward, class: "checkbox" do
+                    = check_box_tag :fast_forward, 1, @fast_forward
+                    Fast-forward merge
           .clearfix
 
 

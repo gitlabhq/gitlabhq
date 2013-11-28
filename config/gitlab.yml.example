@@ -191,6 +191,10 @@ production: &base
     max_size: 5242880 # 5.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
+    # Setting this to true will by default check the "fast-forward merge"
+    # checkbox for merge requests. When this checkbox is checked a standard
+    # fast-forward merge will be performed when accepting merge requests.
+    # fast_forward: true
 
   #
   # 4. Extra customization
