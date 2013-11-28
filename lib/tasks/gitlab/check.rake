@@ -682,12 +682,14 @@ namespace :gitlab do
 
   namespace :ldap do
     task check: :environment do
-      next unless ldap_config.enabled
-
       warn_user_is_not_gitlab
       start_checking "LDAP"
 
-      print_users
+      if ldap_config.enabled
+        print_users
+      else
+        puts 'LDAP is disabled in config/gitlab.yml'
+      end
 
       finished_checking "LDAP"
     end
