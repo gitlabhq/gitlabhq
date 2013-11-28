@@ -422,5 +422,5 @@ These steps are fairly general and you will need to figure out the exact details
 ### Examples
 
 If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
-You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-Custom-Omniauth-Provider-Configurations).
+You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.
