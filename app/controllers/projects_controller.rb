@@ -73,7 +73,7 @@ class ProjectsController < ApplicationController
           render :show, layout: user_layout
         end
       end
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
     end
   end
 
