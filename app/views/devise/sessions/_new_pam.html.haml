@@ -1,0 +1,5 @@
+= form_tag(user_omniauth_callback_path(:pam), id: 'new_pam_user' ) do
+  = text_field_tag :username, nil, {class: "text top", placeholder: "PAM Login", autofocus: "autofocus"}
+  = password_field_tag :password, nil, {class: "text bottom", placeholder: "Password"}
+  %br/
+  = submit_tag "PAM Sign in", class: "btn-create btn"

@@ -48,6 +48,7 @@ namespace :gitlab do
       puts "HTTP Clone URL:\t#{http_clone_url}"
       puts "SSH Clone URL:\t#{ssh_clone_url}"
       puts "Using LDAP:\t#{Gitlab.config.ldap.enabled ? "yes".green : "no"}"
+      puts "Using PAM:\t#{Gitlab.config.pam.enabled ? "yes".green : "no"}"
       puts "Using Omniauth:\t#{Gitlab.config.omniauth.enabled ? "yes".green : "no"}"
       puts "Omniauth Providers: #{omniauth_providers.map(&:magenta).join(', ')}" if Gitlab.config.omniauth.enabled
 

@@ -31,7 +31,7 @@ module Gitlab
           user.save!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
-          if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
+          if Gitlab.config.omniauth['block_auto_created_users'] && !ldap? && !pam?
             user.block
           end
 
@@ -49,7 +49,17 @@ module Gitlab
         end
 
         def email
-          auth.info.email.downcase unless auth.info.email.nil?
+          email = auth.info.email.downcase unless auth.info.email.nil?
+
+          # we can workaround missing emails in omniauth provider
+          # by setting email_domain option for that provider
+          if email.nil? || email.blank?
+            email_domain = Devise.omniauth_configs[provider.to_sym].strategy[:email_domain]
+            email_user = auth.info.nickname
+            email = "#{email_user}@#{email_domain}" unless email_user.nil? or email_domain.nil?
+          end
+
+          email
         end
 
         def name
@@ -78,6 +88,10 @@ module Gitlab
 
         def ldap?
           provider == 'ldap'
+        end
+
+        def pam?
+          provider == 'pam'
         end
       end
     end

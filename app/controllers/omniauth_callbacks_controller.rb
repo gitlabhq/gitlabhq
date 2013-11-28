@@ -23,6 +23,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     sign_in_and_redirect(@user)
   end
 
+  def pam
+    @user = Gitlab::PAM::User.find_or_create(oauth)
+    @user.remember_me = true if @user.persisted?
+    sign_in_and_redirect(@user)
+  end
+
   private
 
   def handle_omniauth

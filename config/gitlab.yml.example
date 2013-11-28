@@ -109,6 +109,16 @@ production: &base
     password: '_the_password_of_the_bind_user'
     allow_username_or_email_login: true
 
+  ## PAM settings
+  #  Currently unix_pam do not work as expected, so pam works only with modules like ldap, sssd, krb
+  #  or you need to run gitlab as root (NOT RECOMMENDED!)
+  #  Read more from: https://github.com/canweriotnow/rpam-ruby19/issues/5
+  pam:
+    enabled: false
+    email_domain: 'example.org', # if gecos do not provide email, you need to use this option
+    gecos_map: ['name', 'location', 'phone', 'home_phone', 'email'], # map for gecos attributes
+    service: 'gitlab', # what pam service to use
+
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers
