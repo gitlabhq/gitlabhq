@@ -174,4 +174,18 @@ class ApplicationController < ActionController::Base
     filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
   end
+
+  # JSON for infinite scroll via Pager object
+  def pager_json(partial, count)
+    html = render_to_string(
+      partial,
+      layout: false,
+      formats: [:html]
+    )
+
+    render json: {
+      html: html,
+      count: count
+    }
+  end
 end
