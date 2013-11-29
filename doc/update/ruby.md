@@ -32,6 +32,7 @@ cd ruby-2.0.0-p353
 ./configure --disable-install-rdoc
 make
 sudo make install # overwrite the existing Ruby in /usr/local/bin
+sudo gem install bundler
 ```
 
 ### 5. Reinstall GitLab gem bundle
