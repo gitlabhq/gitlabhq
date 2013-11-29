@@ -39,6 +39,8 @@
           %li
             %strong
               = link_to project.name_with_namespace, [:admin, project]
+              %span.label.label-gray
+                = repository_size(project)
             %span.pull-right.light
               %span.monospace= project.path_with_namespace + ".git"
 
