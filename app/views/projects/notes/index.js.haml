@@ -1,4 +1,0 @@
-- unless @notes.blank?
-  var notesHtml = "#{escape_javascript(render 'projects/notes/notes')}";
-  - new_note_ids = @notes.map(&:id)
-  NoteList.setContent(#{new_note_ids}, notesHtml);
