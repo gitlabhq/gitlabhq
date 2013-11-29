@@ -31,6 +31,12 @@
             %span Download
           = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
             Compare code
+
+        - if @repository.readme
+          - readme = @repository.readme
+          = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)), class: 'btn btn-block' do
+            = readme.name
+
     .prepend-top-10
       %p
         %span.light Created on
