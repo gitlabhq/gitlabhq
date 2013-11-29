@@ -17,14 +17,8 @@ class Projects::NotesController < Projects::ApplicationController
     respond_to do |format|
       format.html { redirect_to :back }
       format.json do
-        html = render_to_string(
-          "projects/notes/_notes",
-          layout: false,
-          formats: [:html]
-        )
-
         render json: {
-          html: html,
+          html: view_to_html_string("projects/notes/_notes")
         }
       end
     end

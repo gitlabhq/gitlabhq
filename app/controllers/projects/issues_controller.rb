@@ -11,7 +11,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow modify issue
   before_filter :authorize_modify_issue!, only: [:edit, :update]
 
-  respond_to :js, :html
+  respond_to :html
 
   def index
     terms = params['issue_search']
@@ -28,9 +28,13 @@ class Projects::IssuesController < Projects::ApplicationController
 
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.js
+      format.html
       format.atom { render layout: false }
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/issues/_issues")
+        }
+      end
     end
   end
 
@@ -48,10 +52,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @target_type = :issue
     @target_id = @issue.id
 
-    respond_to do |format|
-      format.html
-      format.js
-    end
+    respond_with(@issue)
   end
 
   def create
