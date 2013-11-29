@@ -54,15 +54,20 @@
   .span9
     %ul.bordered-list.my-projects.top-list
       - @projects.each do |project|
-        %li
+        %li.my-project-row
           %h4.project-title
-            %span.access-icon
-              - if project.public
-                = public_icon
-              - else
-                = private_icon
             = link_to project_path(project), class: dom_class(project) do
-              %strong= project.name_with_namespace
+              = project.name_with_namespace
+            - if project.public
+              %small.access-icon
+                = public_icon
+                Public
+
+            - if current_user.can_leave_project?(project)
+              .pull-right
+                = link_to leave_project_team_members_path(project), confirm: "Leave project?", method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
+                  %i.icon-signout
+                  Leave
 
             - if project.forked_from_project
               %small.pull-right
@@ -80,6 +85,7 @@
             .last-activity
               %span.light Last activity:
               %span.date= project_last_activity(project)
+
 
         - if @projects.blank?
           %li

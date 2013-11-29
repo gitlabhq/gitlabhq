@@ -13,13 +13,14 @@
   .ui-box-body
     %div
       %cite.cgray
-        Created at #{@merge_request.created_at.stamp("Aug 21, 2011")} by #{link_to_member(@project, @merge_request.author)}
+        Created on #{@merge_request.created_at.stamp("Aug 21, 2011")} by #{link_to_member(@project, @merge_request.author)}.
         - if @merge_request.assignee
-          \, currently assigned to #{link_to_member(@project, @merge_request.assignee)}
+          Currently assigned to #{link_to_member(@project, @merge_request.assignee)}.
       - if @merge_request.milestone
         - milestone = @merge_request.milestone
-        %cite.cgray and attached to milestone
+        %cite.cgray Attached to milestone
         %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
+        \.
 
 
   - if @merge_request.description.present?

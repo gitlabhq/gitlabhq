@@ -11,7 +11,7 @@
           %fieldset
             .control-group.project_name_holder
               = f.label :name do
-                Project name is
+                Project name
               .controls
                 = f.text_field :name, placeholder: "Example Project", class: "span5"
 
@@ -21,7 +21,7 @@
                 Project description
                 %span.light (optional)
               .controls
-                = f.text_area :description, placeholder: "awesome project", class: "span5", rows: 3, maxlength: 250
+                = f.text_area :description, placeholder: "Awesome project", class: "span5", rows: 3, maxlength: 250
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
               .control-group
@@ -67,7 +67,7 @@
             - if Project.issues_tracker.values.count > 1
               .control-group
                 = f.label :issues_tracker, "Issues tracker", class: 'control-label'
-                .controls= f.select(:issues_tracker, project_issues_trackers, {}, { disabled: !@project.issues_enabled })
+                .controls= f.select(:issues_tracker, project_issues_trackers(@project.issues_tracker), {}, { disabled: !@project.issues_enabled })
 
               .control-group
                 = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
@@ -124,7 +124,7 @@
                   %span Namespace
                 .controls
                   .control-group
-                    = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+                    = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'chosen' }
                   %ul
                     %li Be careful. Changing the project's namespace can have unintended side effects.
                     %li You can only transfer the project to namespaces you manage.
@@ -144,7 +144,9 @@
                 %span Path
               .controls
                 .control-group
-                  = f.text_field :path
+                  .input-append
+                    = f.text_field :path
+                    %span.add-on .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.

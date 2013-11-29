@@ -87,4 +87,8 @@ class Namespace < ActiveRecord::Base
   def send_update_instructions
     projects.each(&:send_move_instructions)
   end
+
+  def kind
+    type == 'Group' ? 'group' : 'user'
+  end
 end

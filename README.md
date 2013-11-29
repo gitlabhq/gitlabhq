@@ -64,9 +64,10 @@ If you want to contribute, please first read our [Contributing Guidelines](https
 
 * [Installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) public wiki with unofficial guides to install GitLab on different operating systems.
 
-* [BitNami one-click installers](http://bitnami.com/stack/gitlab)
 
-* [TurnKey Linux virtual appliance](http://www.turnkeylinux.org/gitlab)
+* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app as GitLab. Look for GitLab under 'Select Image' => 'Applications' when creating a droplet.
+
+* [BitNami one-click installers](http://bitnami.com/stack/gitlab) Get an image with GitLab and GitLab CI preinstalled for Amazon Web Services, Azure, VMware or your local server.
 
 
 ### New versions and upgrading
@@ -99,7 +100,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 or start each component separately
 
     bundle exec rails s
-    bundle exec rake sidekiq:start
+    script/background_jobs start
 
 ### Run the tests
 

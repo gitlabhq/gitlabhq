@@ -25,7 +25,7 @@ class HipchatService < Service
   end
 
   def description
-    'Simple web-based real-time group chat'
+    'Private group chat and IM'
   end
 
   def to_param
@@ -71,5 +71,4 @@ class HipchatService < Service
 
     message
   end
-
 end

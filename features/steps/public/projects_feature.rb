@@ -23,7 +23,7 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'public project "Community"' do
-    create :project_with_code, name: 'Community', public: true, default_branch: 'master'
+    create :project_with_code, name: 'Community', public: true
   end
 
   step 'public empty project "Empty Public Project"' do
@@ -49,7 +49,9 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'I should see project "Community" home page' do
-    page.should have_content 'Repo size is'
+    within '.project-home-title' do
+      page.should have_content 'Community'
+    end
   end
 
   private

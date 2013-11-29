@@ -36,6 +36,11 @@
 #  notification_level     :integer          default(1), not null
 #  password_expires_at    :datetime
 #  created_by_id          :integer
+#  avatar                 :string(255)
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  unconfirmed_email      :string(255)
 #
 
 require 'spec_helper'
@@ -135,7 +140,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should include(@user.namespace) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
   end
@@ -162,7 +166,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_false }
-    it { @user.namespaces.should == [@user.namespace] }
   end
 
   describe 'blocking user' do

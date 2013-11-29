@@ -5,8 +5,17 @@ This guide details how to use issues and pull requests to improve GitLab.
 -  [Closing policy for issues and pull requests](#closing-policy-for-issues-and-pull-requests)
 -  [Issue tracker](#issue-tracker)
 -  [Pull requests](#pull-requests)
+-  [Security vulnerabilities](#security-vulnerabilities)
 
 If you want to know how the GitLab team handles contributions have a look at [the GitLab contributing process](PROCESS.md).
+
+## Contributor license agreement
+
+By submitting code as an individual you agree to the [individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md). By submitting code as an entity you agree to the [corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+
+## Security vulnerability disclosure
+
+Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://www.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Closing policy for issues and pull requests
 

@@ -3,7 +3,7 @@
 # 2. Edit settings inside this file
 # 3. Restart GitLab instance
 #
-if Rails.env.production? do
+if Rails.env.production?
   Gitlab::Application.config.action_mailer.delivery_method = :smtp
 
   ActionMailer::Base.smtp_settings = {

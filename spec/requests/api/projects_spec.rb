@@ -36,6 +36,32 @@ describe API::API do
     end
   end
 
+  describe "GET /projects/all" do
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/projects/all")
+        response.status.should == 401
+      end
+    end
+
+    context "when authenticated as regular user" do
+      it "should return authentication error" do
+        get api("/projects/all", user)
+        response.status.should == 403
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should return an array of all projects" do
+        get api("/projects/all", admin)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first['name'].should == project.name
+        json_response.first['owner']['email'].should == user.email
+      end
+    end
+  end
+
   describe "POST /projects" do
     context "maximum number of projects reached" do
       before do
@@ -91,7 +117,6 @@ describe API::API do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
-        default_branch: 'stable',
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,
@@ -110,16 +135,13 @@ describe API::API do
       project = attributes_for(:project, { public: true })
       post api("/projects", user), project
       json_response['public'].should be_true
-
     end
 
     it "should set a project as private" do
       project = attributes_for(:project, { public: false })
       post api("/projects", user), project
       json_response['public'].should be_false
-
     end
-
   end
 
   describe "POST /projects/user/:id" do
@@ -146,7 +168,6 @@ describe API::API do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
-        default_branch: 'stable',
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,

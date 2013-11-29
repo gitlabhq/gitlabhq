@@ -1,3 +1,43 @@
+v 6.3.0
+  - API for adding gitlab-ci service
+  - Init script now waits for pids to appear after (re)starting before reporting status (Rovanion Luckey)
+  - Restyle project home page
+  - Grammar fixes
+  - Show branches list (which branches contains commit) on commit page (Andrew Kumanyaev)
+  - Security improvements
+  - Added support for GitLab CI 4.0
+  - Fixed issue with 500 error when group did not exist
+  - Ability to leave project
+  - You can create file in repo using UI
+  - You can remove file from repo using UI
+  - API: dropped default_branch attribute from project during creation
+  - Project default_branch is not stored in db any more. It takes from repo now.
+  - Admin broadcast messages
+  - UI improvements
+  - Dont show last push widget if user removed this branch
+  - Fix 500 error for repos with newline in file name
+  - Extended html titles
+  - API: create/update/delete repo files
+  - Admin can transfer project to any namespace
+  - API: projects/all for admin users
+  - Fix recent branches order
+
+v 6.2.4
+  - Security: Cast API private_token to string (CVE-2013-4580)
+  - Security: Require gitlab-shell 1.7.8 (CVE-2013-4581, CVE-2013-4582, CVE-2013-4583)
+  - Fix for Git SSH access for LDAP users
+
+v 6.2.3
+  - Security: More protection against CVE-2013-4489
+  - Security: Require gitlab-shell 1.7.4 (CVE-2013-4490, CVE-2013-4546)
+  - Fix sidekiq rake tasks
+
+v 6.2.2
+  - Security: Update gitlab_git (CVE-2013-4489)
+
+v 6.2.1
+  - Security: Fix issue with generated passwords for new users
+
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
     THIS MEANS YOUR ISSUES AND WIKI FOR PUBLIC PROJECTS ARE PUBLICLY VISIBLE AFTER THE UPGRADE
@@ -15,7 +55,7 @@ v 6.2.0
   - Extended User API to expose admin and can_create_group for user creation/updating (Boyan Tabakov)
   - API: Remove group
   - API: Remove project
-  - Avatar upload on profile page with a maximum of 200KB (Steven Thonus)
+  - Avatar upload on profile page with a maximum of 100KB (Steven Thonus)
   - Store the sessions in Redis instead of the cookie store
   - Fixed relative links in markdown
   - User must confirm his email if signup enabled
@@ -82,6 +122,14 @@ v 6.0.0
   - Fixed bug with loosing MR comments
   - Improved MR comments logic
   - Render readme file for projects in public area
+
+v 5.4.2
+  - Security: Cast API private_token to string (CVE-2013-4580)
+  - Security: Require gitlab-shell 1.7.8 (CVE-2013-4581, CVE-2013-4582, CVE-2013-4583)
+
+v 5.4.1
+  - Security: Fixes for CVE-2013-4489
+  - Security: Require gitlab-shell 1.7.4 (CVE-2013-4490, CVE-2013-4546)
 
 v 5.4.0
   - Ability to edit own comments

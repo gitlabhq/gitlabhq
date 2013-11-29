@@ -84,8 +84,8 @@ module ApplicationHelper
     repository = @project.repository
 
     options = [
-      ["Branch", repository.branch_names ],
-      [ "Tag", repository.tag_names ]
+      ["Branches", repository.branch_names],
+      ["Tags", repository.tag_names]
     ]
 
     # If reference is commit id -
@@ -125,6 +125,9 @@ module ApplicationHelper
 
     # Skip if user already created appropriate MR
     return false if project.merge_requests.where(source_branch: event.branch_name).opened.any?
+
+    # Skip if user removed branch right after that
+    return false unless project.repository.branch_names.include?(event.branch_name)
 
     true
   end
@@ -184,14 +187,6 @@ module ApplicationHelper
     Gitlab.config.extra
   end
 
-  def public_icon
-    content_tag :i, nil, class: 'icon-globe cblue'
-  end
-
-  def private_icon
-    content_tag :i, nil, class: 'icon-lock cgreen'
-  end
-
   def search_placeholder
     if @project && @project.persisted?
       "Search in this project"
@@ -207,5 +202,9 @@ module ApplicationHelper
     line = lines.first
     line += "..." if lines.size > 1
     line
+  end
+
+  def broadcast_message
+    BroadcastMessage.current
   end
 end

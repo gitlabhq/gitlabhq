@@ -24,7 +24,6 @@ class GitPushService
     create_push_event
 
     project.ensure_satellite_exists
-    project.discover_default_branch
     project.repository.expire_cache
 
     if push_to_existing_branch?(ref, oldrev)

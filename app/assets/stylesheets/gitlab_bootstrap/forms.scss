@@ -3,6 +3,16 @@ form {
 
   label {
     @extend .control-label;
+
+    &.radio-label {
+      text-align: left;
+      width: 100%;
+      margin-left: 0;
+
+      input[type="radio"] {
+        margin-top: 1px !important;
+      }
+    }
   }
 }
 
@@ -48,4 +58,10 @@ input[type='text'].danger {
 fieldset legend {
   font-size: 16px;
   margin-bottom: 10px;
+}
+
+.datetime-controls {
+  select {
+    width: 100px;
+  }
 }

@@ -1,96 +1,106 @@
 .btn {
   display: inline-block;
-  padding: 6px 12px;
   margin-bottom: 0;
-  font-size: 13px;
-  line-height: $baseLineHeight;
+  font-weight: normal;
   text-align: center;
   vertical-align: middle;
   cursor: pointer;
-  border: 1px solid #BBB;
-  color: $style_color;
-  @include border-radius($baseBorderRadius);
-  @include box-shadow(inset 0 1px 0 rgba(255,255,255,.2));
-  @include linear-gradient(#f1f1f1, #e1e1e1);
-  text-shadow: 0 1px 1px #FFF;
-  text-decoration: none;
+  background-image: none;
+  border: 1px solid transparent;
+  white-space: nowrap;
+  padding: 6px 12px;
+  font-size: 13px;
+  line-height: 18px;
+  border-radius: 4px;
+  -webkit-user-select: none;
+  -moz-user-select: none;
+  -ms-user-select: none;
+  -o-user-select: none;
+  user-select: none;
+  color: #444444;
+  background-color: #fff;
+  border-color: #ccc;
+  text-shadow: none;
 
   &.hover,
   &:hover {
-    color: $style_color;
-    background: #f1f1f1;
-    border-color: #AAA;
+    color: #444444;
     text-decoration: none;
-    @include linear-gradient(#fAfAfA, #f1f1f1);
+    background-color: #ebebeb;
+    border-color: #adadad;
   }
 
   &.focus,
   &:focus {
+    color: #444444;
     text-decoration: none;
-    @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
+    outline: thin dotted #333;
+    outline: 5px auto -webkit-focus-ring-color;
+    outline-offset: -2px;
   }
 
   &.active,
   &:active {
-    background-image: none;
     outline: 0;
-    text-decoration: none;
-    @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
+    background-image: none;
+    -webkit-box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
+    box-shadow: inset 0 3px 5px rgba(0, 0, 0, 0.125);
   }
 
   &.disabled,
   &[disabled] {
-    cursor: default;
-    background-image: none;
-    @include opacity(65);
-    @include box-shadow(none);
+    cursor: not-allowed;
+    pointer-events: none;
+    opacity: 0.65;
+    filter: alpha(opacity=65);
+    -webkit-box-shadow: none;
+    box-shadow: none;
   }
 
   &.btn-primary {
-    color: #FFF;
-    border-color: #189;
-    text-shadow: 0 1px 1px #189;
-    @include linear-gradient(#4AC, #289);
+    color: #ffffff;
+    background-color: #429bca;
+    border-color: #358ebd;
 
     &.hover,
     &:hover,
     &.disabled,
     &[disabled] {
-      color: #FFF;
-      background: #389;
+      color: #ffffff;
+      background-color: #3286b1;
+      border-color: #286e8e;
     }
   }
 
   &.btn-success {
-    color: #FFF;
-    border-color: #1A1;
-    text-shadow: 0 1px 1px #FFF;
-    text-shadow: 0 1px 1px #181;
-    @include linear-gradient(#62C452, #51a351);
+    color: #ffffff;
+    background-color: #5cb85c;
+    border-color: #4cae4c;
 
 
     &.hover,
     &:hover,
     &.disabled,
     &[disabled] {
-      color: #FFF;
-      background: #2A2;
+      color: #ffffff;
+      background-color: #47a447;
+      border-color: #398439;
     }
   }
 
   &.btn-danger {
-    color: #FFF;
-    text-shadow: 0 1px 1px #811;
-    border-color: #BD362F;
-    @include linear-gradient(#EE5F5B, #BD362F);
+    color: #ffffff;
+    background-color: #d9534f;
+    border-color: #d43f3a;
 
 
     &.hover,
     &:hover,
     &.disabled,
     &[disabled] {
-      color: #FFF;
-      background: #A22;
+      color: #ffffff;
+      background-color: #d2322d;
+      border-color: #ac2925;
     }
   }
 
@@ -137,5 +147,12 @@
   &.grouped {
     margin-right: 7px;
     float: left;
+  }
+
+  &.btn-block {
+    width: 100%;
+    margin: 0;
+    padding: 6px 0;
+    margin-bottom: 15px;
   }
 }

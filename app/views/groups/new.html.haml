@@ -4,7 +4,7 @@
       %span= @group.errors.full_messages.first
   .control-group
     = f.label :name do
-      Group name is
+      Group name
     .controls
       = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
 
@@ -16,11 +16,11 @@
   .control-group
     .controls
       %ul
-        %li Group is kind of directory for several projects
-        %li All created groups are private
-        %li People within a group see only projects they have access to
-        %li All projects of group will be stored in a group directory
-        %li You will be able to move existing projects into group
+        %li A group is a collection of several projects
+        %li Groups are private by default
+        %li Members of a group may only view projects they have permission to access
+        %li Group project URLs are prefixed with the group namespace
+        %li Existing projects may be moved into a group
 
   .form-actions
     = f.submit 'Create group', class: "btn btn-create"

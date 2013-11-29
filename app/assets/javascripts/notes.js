@@ -233,10 +233,12 @@ var NoteList = {
     form.show();
 
     var textarea = form.find("textarea");
-    var p = $("<p></p>").text(textarea.val());
-    var hidden_div = $('<div class="note-original-content"></div>').append(p);
-    form.append(hidden_div);
-    hidden_div.hide();
+    if (form.find(".note-original-content").length === 0) {
+      var p = $("<p></p>").text(textarea.val());
+      var hidden_div = $('<div class="note-original-content"></div>').append(p);
+      form.append(hidden_div);
+      hidden_div.hide();
+    }
     textarea.focus();
   },
 
@@ -532,6 +534,8 @@ var NoteList = {
       note_text.html(response.note).show();
 
       var note_form = note_li.find(".note-edit-form");
+      var original_content = note_form.find(".note-original-content");
+      original_content.remove();
       note_form.hide();
       note_form.find(".btn-save").enableButton();
 

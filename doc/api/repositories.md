@@ -369,3 +369,42 @@ GET /projects/:id/repository/archive
 Parameters:
 + `id` (required) - The ID of a project
 + `sha` (optional) - The commit sha to download defaults to the tip of the default branch
+
+
+## Create new file in repository
+
+```
+POST /projects/:id/repository/files
+```
+
+Parameters:
+
++ `file_path` (optional) - Full path to new file. Ex. lib/class.rb
++ `branch_name` (required) - The name of branch
++ `content` (required) - File content
++ `commit_message` (required) - Commit message
+
+## Update existing file in repository
+
+```
+PUT /projects/:id/repository/files
+```
+
+Parameters:
+
++ `file_path` (required) - Full path to file. Ex. lib/class.rb
++ `branch_name` (required) - The name of branch
++ `content` (required) - New file content
++ `commit_message` (required) - Commit message
+
+## Delete existing file in repository
+
+```
+DELETE /projects/:id/repository/files
+```
+
+Parameters:
+
++ `file_path` (required) - Full path to file. Ex. lib/class.rb
++ `branch_name` (required) - The name of branch
++ `commit_message` (required) - Commit message

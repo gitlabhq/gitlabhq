@@ -39,6 +39,19 @@
   - @commit.parents.each do |parent|
     = link_to parent.id[0...10], project_commit_path(@project, parent)
 
+- if @branches.any?
+  .commit-info-row
+    %span.cgray
+      Exists in
+    %span
+      - branch = commit_default_branch(@project, @branches)
+      = link_to(branch, project_tree_path(@project, branch))
+      - if @branches.any?
+        and in
+        = link_to("#{pluralize(@branches.count, "other branch")}", "#", class: "js-details-expand")
+        %span.js-details-contain.hide
+          = commit_branches_links(@project, @branches)
+
 .commit-box
   %h3.commit-title
     = gfm escape_once(@commit.title)

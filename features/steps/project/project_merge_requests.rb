@@ -109,7 +109,6 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   And 'I click on the first commit in the merge request' do
-
     click_link merge_request.commits.first.short_id(8)
   end
 
