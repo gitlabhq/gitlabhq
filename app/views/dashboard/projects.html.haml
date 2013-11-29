@@ -82,6 +82,10 @@
                 = link_to project.forked_from_project.name_with_namespace, project_path(project.forked_from_project)
           .project-info
             .pull-right
+              - if project.archived?
+                %span.label
+                  %i.icon-book
+                  Archived
               - project.labels.each do |label|
                 %span.label.label-info
                   %i.icon-tag

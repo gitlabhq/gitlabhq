@@ -192,6 +192,7 @@ ActiveRecord::Schema.define(version: 20131214224427) do
     t.boolean  "imported",               default: false,    null: false
     t.string   "import_url"
     t.integer  "visibility_level",       default: 0,        null: false
+    t.boolean  "archived",               default: false,    null: false
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_owner_id", using: :btree

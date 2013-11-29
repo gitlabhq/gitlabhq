@@ -7,6 +7,10 @@
         %span.visibility-level-label
           = visibility_level_icon(@project.visibility_level)
           = visibility_level_label(@project.visibility_level)
+        - if @project.archived?
+          %span.visibility-level-label
+            %i.icon-book
+            Archived
 
     .span7
       - unless empty_repo

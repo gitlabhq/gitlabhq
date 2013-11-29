@@ -170,6 +170,8 @@ Gitlab::Application.routes.draw do
     member do
       put :transfer
       post :fork
+      post :archive
+      post :unarchive
       get :autocomplete_sources
     end
 
