@@ -350,6 +350,7 @@ table {
 .navbar-gitlab .navbar-inner .nav > li .btn-sign-in {
   @extend .btn-new;
   padding: 5px 15px;
+  text-shadow: none;
 }
 
 .broadcast-message {
