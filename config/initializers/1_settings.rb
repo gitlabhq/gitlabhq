@@ -30,7 +30,7 @@ class Settings < Settingslogic
         gitlab.relative_url_root
       ].join('')
     end
-    
+
     # check that values in `current` (string or integer) is a contant in `modul`.
     def verify_constant_array(modul, current, default)
       values = default || []

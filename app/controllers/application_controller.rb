@@ -188,4 +188,12 @@ class ApplicationController < ActionController::Base
       count: count
     }
   end
+
+  def view_to_html_string(partial)
+    render_to_string(
+      partial,
+      layout: false,
+      formats: [:html]
+    )
+  end
 end

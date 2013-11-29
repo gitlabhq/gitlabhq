@@ -21,9 +21,5 @@
           = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-right", title: "New Issue", id: "new_issue_link" do
             %i.icon-plus
             New Issue
-        = form_tag project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: 'pull-right issue-search-form'  do
-          = hidden_field_tag :status, params[:status], id: 'search_status'
-          = hidden_field_tag :assignee_id, params[:assignee_id], id: 'search_assignee_id'
-          = hidden_field_tag :milestone_id, params[:milestone_id], id: 'search_milestone_id'
-          = hidden_field_tag :label_name, params[:label_name], id: 'search_label_name'
+        = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'pull-right issue-search-form'  do
           = search_field_tag :issue_search, nil, { placeholder: 'Filter by title or description', class: 'input-xpadding issue_search input-xlarge append-right-10 search-text-input' }
