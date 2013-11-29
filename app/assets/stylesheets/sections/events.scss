@@ -47,7 +47,7 @@
   .event-title {
     color: #333;
     font-weight: normal;
-    font-size: 15px;
+    font-size: 14px;
     .author_name {
       color: #333;
     }
@@ -60,14 +60,14 @@
       color: #666;
     }
     .event-note {
-      color: #555;
+      color: #666;
       margin-top: 5px;
 
       pre {
         border: none;
         background: #f9f9f9;
         border-radius: 0;
-        color: #555;
+        color: #666;
         margin: 0 20px;
       }
 
@@ -142,19 +142,19 @@
   .filter_icon {
     a {
       text-align:center;
-      border-left: 3px solid $primary_color;
-      background: #f9f9f9;
+      background: #EEE;
       margin-bottom: 10px;
       float: left;
-      padding: 9px 7px;
+      padding: 9px 6px;
       font-size: 18px;
       width: 26px;
+      @include border-radius(3px);
     }
 
     &.inactive {
       a {
         color: #DDD;
-        border-left: 3px solid #EEE;
+        background: #f9f9f9;
       }
     }
   }

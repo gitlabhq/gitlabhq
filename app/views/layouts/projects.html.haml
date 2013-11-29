@@ -1,7 +1,8 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: @project.name_with_namespace
+  = render "layouts/head", title: project_head_title
   %body{class: "#{app_theme} project", :'data-page' => body_data_page, :'data-project-id' => @project.id }
+    = render "layouts/broadcast"
     = render "layouts/head_panel", title: project_title(@project)
     = render "layouts/init_auto_complete"
     = render "layouts/flash"

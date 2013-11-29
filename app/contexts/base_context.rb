@@ -17,4 +17,3 @@ class BaseContext
     abilities.allowed?(object, action, subject)
   end
 end
-

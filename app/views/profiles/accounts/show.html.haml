@@ -45,7 +45,7 @@
         Username
       = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
         %p
-          Changing your username will change path to all personl projects!
+          Changing your username will change path to all personal projects!
         %div
           = f.text_field :username, required: true, class: 'input-xlarge input-xpadding'
           &nbsp;
@@ -68,6 +68,6 @@
             %li #{pluralize rp, 'personal project'} will be removed and cannot be restored
           - if current_user.solo_owned_groups.present?
             %li
-              Next groups will be abandoned. You should transfer or remove them:
+              The following groups will be abandoned. You should transfer or remove them:
               %strong #{current_user.solo_owned_groups.map(&:name).join(', ')}
         = link_to 'Delete account', user_registration_path, confirm: "REMOVE #{current_user.name}? Are you sure?", method: :delete, class: "btn btn-remove"

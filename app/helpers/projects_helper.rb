@@ -45,7 +45,10 @@ module ProjectsHelper
         link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name
       end
     else
-      project.name
+      owner = project.namespace.owner
+      content_tag :span do
+        link_to(simple_sanitize(owner.name), user_path(owner)) + " / " + project.name
+      end
     end
   end
 
@@ -80,7 +83,7 @@ module ProjectsHelper
     @project.milestones.active.order("due_date, title ASC").all
   end
 
-  def project_issues_trackers
+  def project_issues_trackers(current_tracker = nil)
     values = Project.issues_tracker.values.map do |tracker_key|
       if tracker_key.to_sym == :gitlab
         ['GitLab', tracker_key]
@@ -89,7 +92,7 @@ module ProjectsHelper
       end
     end
 
-    options_for_select(values)
+    options_for_select(values, current_tracker)
   end
 
   private
@@ -139,5 +142,39 @@ module ProjectsHelper
     # when application cannot allocate memory
     # to calculate repo size - just show 'Unknown'
     'unknown'
+  end
+
+  def project_head_title
+    title = @project.name_with_namespace
+
+    title = if current_controller?(:tree)
+              "#{@project.path}\/#{@path} at #{@ref} - " + title
+            elsif current_controller?(:issues)
+              if current_action?(:show)
+                "Issue ##{@issue.iid} - " + title
+              else
+                "Issues - " + title
+              end
+            elsif current_controller?(:blob)
+              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+            elsif current_controller?(:commits)
+              "Commits at #{@ref} - " + title
+            elsif current_controller?(:merge_requests)
+              if current_action?(:show)
+                "Merge request ##{@merge_request.iid} - " + title
+              else
+                "Merge requests - " + title
+              end
+            elsif current_controller?(:wikis)
+              "Wiki - " + title
+            elsif current_controller?(:network)
+              "Network graph - " + title
+            elsif current_controller?(:graphs)
+              "Graphs - " + title
+            else
+              title
+            end
+
+    title
   end
 end

@@ -38,6 +38,16 @@ module Grack
         # Authentication with username and password
         login, password = @auth.credentials
 
+        # Allow authentication for GitLab CI service
+        # if valid token passed
+        if login == "gitlab-ci-token" && project.gitlab_ci?
+          token = project.gitlab_ci_service.token
+
+          if token.present? && token == password && service_name == 'git-upload-pack'
+            return @app.call(env)
+          end
+        end
+
         @user = authenticate_user(login, password)
 
         if @user
@@ -59,14 +69,7 @@ module Grack
     end
 
     def authorized_git_request?
-      # Git upload and receive
-      if @request.get?
-        authorize_request(@request.params['service'])
-      elsif @request.post?
-        authorize_request(File.basename(@request.path))
-      else
-        false
-      end
+      authorize_request(service_name)
     end
 
     def authenticate_user(login, password)
@@ -79,15 +82,29 @@ module Grack
       when 'git-upload-pack'
         project.public || can?(user, :download_code, project)
       when'git-receive-pack'
-        action = if project.protected_branch?(ref)
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
-                 end
+        refs.each do |ref|
+          action = if project.protected_branch?(ref)
+                     :push_code_to_protected_branches
+                   else
+                     :push_code
+                   end
 
-        can?(user, action, project)
+          return false unless can?(user, action, project)
+        end
+
+        true
       else
         false
+      end
+    end
+
+    def service_name
+      if @request.get?
+        @request.params['service']
+      elsif @request.post?
+        File.basename(@request.path)
+      else
+        nil
       end
     end
 
@@ -95,11 +112,11 @@ module Grack
       @project ||= project_by_path(@request.path_info)
     end
 
-    def ref
-      @ref ||= parse_ref
+    def refs
+      @refs ||= parse_refs
     end
 
-    def parse_ref
+    def parse_refs
       input = if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
                 Zlib::GzipReader.new(@request.body).read
               else
@@ -108,7 +125,15 @@ module Grack
 
       # Need to reset seek point
       @request.body.rewind
-      /refs\/heads\/([\/\w\.-]+)/n.match(input.force_encoding('ascii-8bit')).to_a.last
+
+      # Parse refs
+      refs = input.force_encoding('ascii-8bit').scan(/refs\/heads\/([\/\w\.-]+)/n).flatten.compact
+
+      # Cleanup grabare from refs
+      # if push to multiple branches
+      refs.map do |ref|
+        ref.gsub(/00.*/, "")
+      end
     end
   end
 end

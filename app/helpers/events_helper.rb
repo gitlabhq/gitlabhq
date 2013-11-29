@@ -127,4 +127,10 @@ module EventsHelper
     text = truncate(text, length: 150)
     sanitize(markdown(text), tags: %w(a img b pre p))
   end
+
+  def event_commit_title(message)
+    escape_once(truncate(message.split("\n").first, length: 70))
+  rescue
+    "--broken encoding"
+  end
 end

@@ -27,6 +27,11 @@ Feature: Admin active tab
     Then the active main tab should be Logs
     And no other main tabs should be active
 
+  Scenario: On Admin Messages
+    Given I visit admin messages page
+    Then the active main tab should be Messages
+    And no other main tabs should be active
+
   Scenario: On Admin Hooks
     Given I visit admin hooks page
     Then the active main tab should be Hooks

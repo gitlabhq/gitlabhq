@@ -28,7 +28,7 @@
                   %span= @group.errors.full_messages.first
               .control-group
                 = f.label :name do
-                  Group name is
+                  Group name
                 .controls
                   = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
 
@@ -90,7 +90,7 @@
           .title Remove group
           .ui-box-body
             %p
-              Remove of group will cause removing all child projects and resources.
+              Removing group will cause all child projects and resources to be removed.
             %p
               %strong Removed group can not be restored!
 

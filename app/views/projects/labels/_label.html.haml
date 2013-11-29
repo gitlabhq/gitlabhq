@@ -1,15 +1,13 @@
 - frequency = @project.issues.tagged_with(label.name).count
 %li
-  %strong
-    %span{class: "label #{label_css_class(label.name)}"}
-      %i.icon-tag
-    - if frequency.zero?
-      %span.light= label.name
-    - else
-      = label.name
+  %span{class: "label #{label_css_class(label.name)}"}
+    %i.icon-tag
+  - if frequency.zero?
+    %span.light= label.name
+  - else
+    = label.name
   .pull-right
     - unless frequency.zero?
       = link_to project_issues_path(label_name: label.name) do
-        %strong
-          = pluralize(frequency, 'issue')
-          = "»"
+        = pluralize(frequency, 'issue')
+        = "»"

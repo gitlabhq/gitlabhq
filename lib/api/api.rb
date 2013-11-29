@@ -39,5 +39,8 @@ module API
     mount DeployKeys
     mount ProjectHooks
     mount Ldap
+    mount Services
+    mount Files
+    mount Namespaces
   end
 end

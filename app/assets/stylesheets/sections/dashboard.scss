@@ -51,7 +51,7 @@
   li {
     &.active {
       a {
-        @include linear-gradient(#f5f5f5, #eee);
+        background-color: #EEE;
         border-bottom: 1px solid #EEE !important;
         &:hover {
           background: #eee;
@@ -74,7 +74,7 @@
   }
 
   .project-name, .group-name {
-    font-size: 16px;
+    font-size: 15px;
   }
 
   .arrow {

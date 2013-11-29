@@ -35,7 +35,7 @@
             = @project.creator.try(:name) || '(deleted)'
 
         %li
-          %span.light Created at:
+          %span.light Created on:
           %strong
             = @project.created_at.stamp("March 1, 1999")
 
@@ -74,6 +74,23 @@
               %span.cgreen
                 %i.icon-lock
                 Private
+    .ui-box
+      .title
+        Transfer project
+      .ui-box-body
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
+          .control-group
+            = f.label :namespace_id, "Namespace"
+            .controls
+              = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
+
+          .control-group
+            .controls
+              = f.submit 'Transfer', class: 'btn btn-primary'
+
+
+
+
   .span6
     - if @group
       .ui-box

@@ -1,4 +1,32 @@
-= render 'clone_panel'
+.project-home-panel
+  .row
+    .span4
+      %h4.project-home-title
+        = @project.name_with_namespace
+        - if @project.public
+          %span.public-label Public
+        - else
+          %span.public-label Private
+
+    .span8
+      .project-home-dropdown
+        = render "dropdown"
+      .form-horizontal
+        = render "shared/clone_panel"
+
+  .project-home-extra.clearfix
+    .project-home-desc
+      - if @project.description.present?
+        = @project.description
+      - if can?(current_user, :admin_project, @project)
+        &ndash;
+        %strong= link_to 'Edit', edit_project_path
+
+    .project-home-links
+      = link_to pluralize(@repository.round_commit_count, 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
+      = link_to pluralize(@repository.branch_names.count, 'branch'), project_branches_path(@project)
+      = link_to pluralize(@repository.tag_names.count, 'tag'), project_tags_path(@project)
+      %span.light.prepend-left-20= repository_size
 
 .row
   .span9
@@ -6,20 +34,34 @@
     = render 'shared/event_filter'
     .content_list
     .loading.hide
-  .span3
-    .light-well
-      %h3.page-title
-        = @project.name
-      - if @project.description.present?
-        %p.light= @project.description
+  .span3.project-side
+    .clearfix
+      - if @project.forked_from_project
+        .alert.alert-success
+          %i.icon-code-fork.project-fork-icon
+          Forked from:
+          %br
+          = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+      - unless @project.empty_repo?
+        - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
+          - if current_user.already_forked?(@project)
+            = link_to project_path(current_user.fork_of(@project)), class: 'btn btn-block' do
+              %i.icon-compass
+              Go to fork
+          - else
+            = link_to fork_project_path(@project), title: "Fork", class: "btn btn-block", method: "POST" do
+              %i.icon-code-fork
+              Fork repository
 
-      %hr
+        - if can? current_user, :download_code, @project
+          = link_to archive_project_repository_path(@project), class: "btn btn-block" do
+            %i.icon-download-alt
+            %span Download
+          = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+            Compare code
+    .prepend-top-10
       %p
-      %p
-        %span.light Repo size is
-        = repository_size
-      %p
-        %span.light Created at
+        %span.light Created on
         #{@project.created_at.stamp('Aug 22, 2013')}
       %p
         %span.light Owned by
@@ -27,19 +69,7 @@
           #{link_to @project.group.name, @project.group} Group
         - else
           #{link_to @project.owner_name, @project.owner}
-      - if @project.forked_from_project
-        %p
-          %i.icon-code-fork
-          Forked from:
-          = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 
-      %hr
-      %p
-        = link_to pluralize(@repository.round_commit_count, 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
-      %p
-        = link_to pluralize(@repository.branch_names.count, 'branch'), project_branches_path(@project)
-      %p
-        = link_to pluralize(@repository.tag_names.count, 'tag'), project_tags_path(@project)
 
       - if @project.gitlab_ci?
         %hr

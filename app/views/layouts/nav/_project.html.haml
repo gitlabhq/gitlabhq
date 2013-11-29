@@ -4,7 +4,7 @@
       %i.icon-home
 
   - if project_nav_tab? :files
-    = nav_link(controller: %w(tree blob blame edit_tree)) do
+    = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
       = link_to 'Files', project_tree_path(@project, @ref || @repository.root_ref)
 
   - if project_nav_tab? :commits

@@ -31,6 +31,16 @@ module API
         present @projects, with: Entities::Project
       end
 
+      # Get all projects for admin user
+      #
+      # Example Request:
+      #   GET /projects/all
+      get '/all' do
+        authenticated_as_admin!
+        @projects = paginate Project
+        present @projects, with: Entities::Project
+      end
+
       # Get a single project
       #
       # Parameters:
@@ -60,7 +70,6 @@ module API
       # Parameters:
       #   name (required) - name for new project
       #   description (optional) - short project description
-      #   default_branch (optional) - 'master' by default
       #   issues_enabled (optional)
       #   wall_enabled (optional)
       #   merge_requests_enabled (optional)
@@ -75,7 +84,6 @@ module API
         attrs = attributes_for_keys [:name,
                                      :path,
                                      :description,
-                                     :default_branch,
                                      :issues_enabled,
                                      :wall_enabled,
                                      :merge_requests_enabled,

@@ -1,4 +1,4 @@
-# Things to do when creating new release
+# Things to do when creating new monthly minor or major release
 NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
 
 ## Install guide up to date?
@@ -58,13 +58,18 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked.
 
-- 5 days before release: feature freeze
-- 3 days before release: UI freeze
-- 1 day before release: code freeze
+* 5 days before release: feature freeze
+* 3 days before release: UI freeze
+* 1 day before release: code freeze
+
+# Write a blog post
+
+* Mention what GitLab is on the second line: GitLab is open source software to collaborate on code.
+* Select and thank the the Most Valuable Person (MVP) of this release.
+* Note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 
 ## Last actions
 
-1. Write a blog post (mention what GitLab is on the first line, select a MVP)
 1. Update VERSION and CHANGELOG
 1. Create a git tag vX.X.X
 1. Publish the blog post

@@ -1,9 +1,14 @@
 language: ruby
 env:
-  - DB=mysql TRAVIS=true
+  global:
+    - DB=mysql
+    - TRAVIS=true
+  matrix:
+    - TASK=spinach
+    - TASK=spec
+    - TASK=jasmine:ci
 before_install:
   - sudo apt-get install libicu-dev -y
-  - gem install charlock_holmes -v="0.6.9"
 branches:
   only:
     - 'master'
@@ -11,8 +16,9 @@ rvm:
   - 2.0.0
 services:
   - mysql
-  - postgresql
 before_script:
   - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
-script: "bundle exec rake gitlab:test --trace"
+  - "bundle exec rake db:setup"
+  - "bundle exec rake db:seed_fu"
+script: "bundle exec rake $TASK --trace"

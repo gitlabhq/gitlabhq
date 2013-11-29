@@ -2,7 +2,7 @@
 
 ### List projects
 
-Get a list of projects owned by the authenticated user.
+Get a list of projects accessible by the authenticated user.
 
 ```
 GET /projects
@@ -81,6 +81,22 @@ GET /projects
 ]
 ```
 
+
+#### List owned projects
+
+Get a list of projects owned by the authenticated user.
+
+```
+GET /projects/owned
+```
+
+#### List ALL projects
+
+Get a list of all GitLab projects (admin only).
+
+```
+GET /projects/all
+```
 
 ### Get single project
 
@@ -213,7 +229,6 @@ Parameters:
 
 + `name` (required) - new project name
 + `description` (optional) - short project description
-+ `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
 + `wall_enabled` (optional)
 + `merge_requests_enabled` (optional)

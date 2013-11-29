@@ -19,7 +19,7 @@ class SnippetsFeature < Spinach::FeatureSteps
   end
 
   And 'I click link "Destroy"' do
-    click_link "Destroy"
+    click_link "Remove"
   end
 
   And 'I submit new snippet "Personal snippet three"' do
@@ -46,7 +46,7 @@ class SnippetsFeature < Spinach::FeatureSteps
   end
 
   And 'I uncheck "Private" checkbox' do
-    find(:xpath, "//input[@id='personal_snippet_private']").set true
+    choose "Public"
     click_button "Save"
   end
 

@@ -6,7 +6,7 @@
       %span= @group.errors.full_messages.first
   .control-group.group_name_holder
     = f.label :name do
-      Group name is
+      Group name
     .controls
       = f.text_field :name, placeholder: "Example Group", class: "input-xxlarge"
 
@@ -17,7 +17,7 @@
 
   .control-group.group_name_holder
     = f.label :path do
-      %span.cred Group path is
+      %span.cred Group path
     .controls
       = f.text_field :path, placeholder: "example-group", class: "input-xxlarge danger"
       %ul.cred

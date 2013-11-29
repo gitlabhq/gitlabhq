@@ -3,6 +3,7 @@
   user_path: "/api/:version/users/:id.json"
   notes_path: "/api/:version/projects/:id/notes.json"
   ldap_groups_path: "/api/:version/ldap/groups.json"
+  namespaces_path: "/api/:version/namespaces.json"
 
   # Get 20 (depends on api) recent notes
   # and sort the ascending from oldest to newest
@@ -49,6 +50,20 @@
       dataType: "json"
     ).done (users) ->
       callback(users)
+
+  # Return namespaces list. Filtered by query
+  namespaces: (query, callback) ->
+    url = Api.buildUrl(Api.namespaces_path)
+
+    $.ajax(
+      url: url
+      data:
+        private_token: gon.api_token
+        search: query
+        per_page: 20
+      dataType: "json"
+    ).done (namespaces) ->
+      callback(namespaces)
 
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?

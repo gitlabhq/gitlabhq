@@ -1,0 +1,9 @@
+%li
+  issue:
+  = link_to [issue.project, issue] do
+    %span ##{issue.iid}
+    %strong.term
+      = truncate issue.title, length: 50
+  %span.light (#{issue.project.name_with_namespace})
+  - if issue.closed?
+    %span.label Closed

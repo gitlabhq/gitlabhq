@@ -30,12 +30,6 @@ class ProjectObserver < BaseObserver
   def after_update(project)
     project.send_move_instructions if project.namespace_id_changed?
     project.rename_repo if project.path_changed?
-
-    GitlabShellWorker.perform_async(
-      :update_repository_head,
-      project.path_with_namespace,
-      project.default_branch
-    ) if project.default_branch_changed?
   end
 
   def before_destroy(project)

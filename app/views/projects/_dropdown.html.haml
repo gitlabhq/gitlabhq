@@ -1,0 +1,33 @@
+- if current_user
+  .dropdown.pull-right
+    %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
+      %i.icon-reorder
+    %ul.dropdown-menu
+      - if @project.issues_enabled && can?(current_user, :write_issue, @project)
+        %li
+          = link_to url_for_new_issue, title: "New Issue" do
+            New issue
+      - if @project.merge_requests_enabled && can?(current_user, :write_merge_request, @project)
+        %li
+          = link_to new_project_merge_request_path(@project), title: "New Merge Request" do
+            New merge request
+      - if @project.snippets_enabled && can?(current_user, :write_snippet, @project)
+        %li
+          = link_to new_project_snippet_path(@project), title: "New Snippet" do
+            New snippet
+      - if can?(current_user, :admin_team_member, @project)
+        %li
+          = link_to new_project_team_member_path(@project), title: "New project member" do
+            New project member
+      - if can? current_user, :push_code, @project
+        %li.divider
+        %li
+          = link_to new_project_branch_path(@project) do
+            %i.icon-code-fork
+            Git branch
+        %li
+          = link_to new_project_tag_path(@project) do
+            %i.icon-tag
+            Git tag
+
+

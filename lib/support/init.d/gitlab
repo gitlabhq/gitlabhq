@@ -20,8 +20,8 @@ RAILS_ENV="production"
 
 # Script variable names should be lower-case not to conflict with internal
 # /bin/sh variables such as PATH, EDITOR or SHELL.
-app_root="/home/git/gitlab"
 app_user="git"
+app_root="/home/$app_user/gitlab"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 web_server_pid_path="$pid_path/unicorn.pid"
@@ -44,6 +44,7 @@ fi
 
 ### Init Script functions
 
+## Gets the pids from the files
 check_pids(){
   if ! mkdir -p "$pid_path"; then
     echo "Could not create the path $pid_path needed to store the pids."
@@ -62,12 +63,29 @@ check_pids(){
   fi
 }
 
+## Called when we have started the two processes and are waiting for their pid files.
+wait_for_pids(){
+  # We are sleeping a bit here mostly because sidekiq is slow at writing it's pid
+  i=0;
+  while [ ! -f $web_server_pid_path -o ! -f $sidekiq_pid_path ]; do
+    sleep 0.1;
+    i=$((i+1))
+    if [ $((i%10)) = 0 ]; then
+      echo -n "."
+    elif [ $((i)) = 301 ]; then
+      echo "Waited 30s for the processes to write their pids, something probably went wrong."
+      exit 1;
+    fi
+  done
+  echo
+}
+
 # We use the pids in so many parts of the script it makes sense to always check them.
 # Only after start() is run should the pids change. Sidekiq sets it's own pid.
 check_pids
 
 
-# Checks whether the different parts of the service are already running or not.
+## Checks whether the different parts of the service are already running or not.
 check_status(){
   check_pids
   # If the web server is running kill -0 $wpid returns true, or rather 0.
@@ -84,9 +102,16 @@ check_status(){
   else
     sidekiq_status="-1"
   fi
+  if [ $web_status = 0 -a $sidekiq_status = 0 ]; then
+    gitlab_status=0
+  else
+    # http://refspecs.linuxbase.org/LSB_4.1.0/LSB-Core-generic/LSB-Core-generic/iniscrptact.html
+    # code 3 means 'program is not running'
+    gitlab_status=3
+  fi
 }
 
-# Check for stale pids and remove them if necessary
+## Check for stale pids and remove them if necessary.
 check_stale_pids(){
   check_status
   # If there is a pid it is something else than 0, the service is running if
@@ -94,7 +119,7 @@ check_stale_pids(){
   if [ "$wpid" != "0" -a "$web_status" != "0" ]; then
     echo "Removing stale Unicorn web server pid. This is most likely caused by the web server crashing the last time it ran."
     if ! rm "$web_server_pid_path"; then
-      echo "Unable to remove stale pid, exiting"
+      echo "Unable to remove stale pid, exiting."
       exit 1
     fi
   fi
@@ -107,7 +132,7 @@ check_stale_pids(){
   fi
 }
 
-# If no parts of the service is running, bail out.
+## If no parts of the service is running, bail out.
 exit_if_not_running(){
   check_stale_pids
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
@@ -116,86 +141,92 @@ exit_if_not_running(){
   fi
 }
 
-# Starts Unicorn and Sidekiq.
+## Starts Unicorn and Sidekiq if they're not running.
 start() {
   check_stale_pids
+
+  if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
+    echo -n "Starting both the GitLab Unicorn and Sidekiq"
+  elif [ "$web_status" != "0" ]; then
+    echo -n "Starting GitLab Sidekiq"
+  elif [ "$sidekiq_status" != "0" ]; then
+    echo -n "Starting GitLab Unicorn"
+  fi
 
   # Then check if the service is running. If it is: don't start again.
   if [ "$web_status" = "0" ]; then
     echo "The Unicorn web server already running with pid $wpid, not restarting."
   else
-    echo "Starting the GitLab Unicorn web server..."
     # Remove old socket if it exists
     rm -f "$socket_path"/gitlab.socket 2>/dev/null
-    # Start the webserver
-    RAILS_ENV=$RAILS_ENV script/web start
+    # Start the web server
+    RAILS_ENV=$RAILS_ENV script/web start &
   fi
 
   # If sidekiq is already running, don't start it again.
   if [ "$sidekiq_status" = "0" ]; then
     echo "The Sidekiq job dispatcher is already running with pid $spid, not restarting"
   else
-    echo "Starting the GitLab Sidekiq event dispatcher..."
-    RAILS_ENV=$RAILS_ENV script/background_jobs start
-    # We are sleeping a bit here because sidekiq is slow at writing it's pid
-    sleep 2
+    RAILS_ENV=$RAILS_ENV script/background_jobs start &
   fi
 
+  # Wait for the pids to be planted
+  wait_for_pids
   # Finally check the status to tell wether or not GitLab is running
-  status
+  print_status
 }
 
-# Asks the Unicorn and the Sidekiq if they would be so kind as to stop, if not kills them.
+## Asks the Unicorn and the Sidekiq if they would be so kind as to stop, if not kills them.
 stop() {
   exit_if_not_running
+
+  if [ "$web_status" = "0" -a "$sidekiq_status" = "0" ]; then
+    echo -n "Shutting down both Unicorn and Sidekiq"
+  elif [ "$web_status" = "0" ]; then
+    echo -n "Shutting down Sidekiq"
+  elif [ "$sidekiq_status" = "0" ]; then
+    echo -n "Shutting down Unicorn"
+  fi
+
   # If the Unicorn web server is running, tell it to stop;
   if [ "$web_status" = "0" ]; then
-    RAILS_ENV=$RAILS_ENV script/web stop
-    echo "Stopping the GitLab Unicorn web server..."
-    stopping=true
-  else
-    echo "The Unicorn web was not running, doing nothing."
+     RAILS_ENV=$RAILS_ENV script/web stop
   fi
   # And do the same thing for the Sidekiq.
   if [ "$sidekiq_status" = "0" ]; then
-    printf "Stopping Sidekiq job dispatcher."
     RAILS_ENV=$RAILS_ENV script/background_jobs stop
-    stopping=true
-  else
-    echo "The Sidekiq was not running, must have run out of breath."
   fi
 
-
   # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
-  while [ "$stopping" = "true" ]; do
+  while [ "$web_status" = "0" -o "$sidekiq_status" = "0" ]; do
     sleep 1
     check_status
-    if [ "$web_status" = "0" -o "$sidekiq_status" = "0" ]; then
-      printf "."
-    else
+    printf "."
+    if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
       printf "\n"
       break
     fi
   done
+
   sleep 1
   # Cleaning up unused pids
   rm "$web_server_pid_path" 2>/dev/null
   # rm "$sidekiq_pid_path" # Sidekiq seems to be cleaning up it's own pid.
 
-  status
+  print_status
 }
 
-# Returns the status of GitLab and it's components
-status() {
+## Prints the status of GitLab and it's components.
+print_status() {
   check_status
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
     echo "GitLab is not running."
     return
   fi
   if [ "$web_status" = "0" ]; then
-      echo "The GitLab Unicorn webserver with pid $wpid is running."
+      echo "The GitLab Unicorn web server with pid $wpid is running."
   else
-      printf "The GitLab Unicorn webserver is \033[31mnot running\033[0m.\n"
+      printf "The GitLab Unicorn web server is \033[31mnot running\033[0m.\n"
   fi
   if [ "$sidekiq_status" = "0" ]; then
       echo "The GitLab Sidekiq job dispatcher with pid $spid is running."
@@ -207,6 +238,7 @@ status() {
   fi
 }
 
+## Tells unicorn to reload it's config and Sidekiq to restart
 reload(){
   exit_if_not_running
   if [ "$wpid" = "0" ];then
@@ -218,11 +250,12 @@ reload(){
   echo "Done."
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
   RAILS_ENV=$RAILS_ENV script/background_jobs restart
-  # Waiting 2 seconds for sidekiq to write it.
-  sleep 2
-  status
+
+  wait_for_pids
+  print_status
 }
 
+## Restarts Sidekiq and Unicorn.
 restart(){
   check_status
   if [ "$web_status" = "0" -o "$sidekiq_status" = "0" ]; then
@@ -232,7 +265,7 @@ restart(){
 }
 
 
-## Finally the input handling.
+### Finally the input handling.
 
 case "$1" in
   start)
@@ -248,7 +281,8 @@ case "$1" in
 	reload
         ;;
   status)
-        status
+        print_status
+        exit $gitlab_status
         ;;
   *)
         echo "Usage: service gitlab {start|stop|restart|reload|status}"

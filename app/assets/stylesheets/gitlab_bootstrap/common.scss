@@ -1,5 +1,6 @@
 /** COLORS **/
 .cgray { color: gray }
+.clgray { color: #BBB }
 .cred { color: #D12F19 }
 .cgreen { color: #4a2 }
 .cblue { color: #29A }
@@ -88,6 +89,19 @@ pre.well-pre {
   @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
 }
 
+.label {
+  padding: 2px 4px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: normal;
+
+  &.label-gray {
+    background-color: #eee;
+    color: #999;
+    text-shadow: none;
+  }
+}
+
 /** Big Labels **/
 .state-label {
   font-size: 14px;
@@ -108,4 +122,8 @@ pre.well-pre {
     background: #DA4E49;
     color: #FFF;
   }
+}
+
+.dropdown-menu > li > a {
+  text-shadow: none;
 }

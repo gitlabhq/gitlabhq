@@ -611,10 +611,7 @@ namespace :gitlab do
     end
 
     def gitlab_shell_version
-      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
-      if File.readable?(gitlab_shell_version_file)
-        File.read(gitlab_shell_version_file)
-      end
+      Gitlab::Shell.new.version
     end
 
     def has_gitlab_shell3?
@@ -648,7 +645,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          sudo_gitlab("bundle exec rake sidekiq:start RAILS_ENV=production")
+          sudo_gitlab("RAILS_ENV=production script/background_jobs start")
         )
         for_more_information(
           see_installation_guide_section("Install Init Script"),
@@ -736,7 +733,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 7, 4)
+    required_version = Gitlab::VersionInfo.new(1, 7, 9)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
