@@ -25,19 +25,19 @@ GitLab supports the following databases:
     # Create a user for GitLab
     # do not type the 'mysql>', this is part of the prompt
     # change $password in the command below to a real password you pick
-    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
+    mysql> CREATE USER 'git'@'localhost' IDENTIFIED BY '$password';
 
     # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
     # Grant the GitLab user necessary permissions on the table.
-    mysql> GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
+    mysql> GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'git'@'localhost';
 
     # Quit the database session
     mysql> \q
 
     # Try connecting to the new database with the new user
-    sudo -u git -H mysql -u gitlab -p -D gitlabhq_production
+    sudo -u git -H mysql -u git -p -D gitlabhq_production
 
     # Type the password you replaced $password with earlier
 
