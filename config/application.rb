@@ -70,7 +70,7 @@ module Gitlab
     config.assets.version = '1.0'
 
     # Uncomment and customize the last line to run in a non-root path
-    # WARNING: We recommend creating a FQDN to host GitLab in a root path.
+    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
     # Note that three settings need to be changed for this to work.
     # 1) In your application.rb file: config.relative_url_root = "/gitlab"
     # 2) In your gitlab.yml file: relative_url_root: /gitlab
