@@ -44,31 +44,23 @@
 
 ** More details are in the [requirements doc](doc/install/requirements.md)
 
-### Installation
+### Official installation methods
 
-#### Official production installation
+* [Manual installation guide for a production server](doc/install/installation.md)
 
-* [Installation guide for a production server](doc/install/installation.md)
+* [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation on a virtual machine with Vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
 
+### Third party one-click installers
 
-#### Official development installation
+* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab.
 
-If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working with all dependencies.
+* [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
 
-* [Vagrant virtual machine for development](https://github.com/gitlabhq/gitlab-vagrant-vm)
-
-
-#### Unofficial production installations
+#### Unofficial installation methods
 
 * [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes) repository with unofficial guides for using GitLab with different software (operating systems, webservers, etc.) than the official version.
 
 * [Installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) public wiki with unofficial guides to install GitLab on different operating systems.
-
-
-* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app as GitLab. Look for GitLab under 'Select Image' => 'Applications' when creating a droplet.
-
-* [BitNami one-click installers](http://bitnami.com/stack/gitlab) Get an image with GitLab and GitLab CI preinstalled for Amazon Web Services, Azure, VMware or your local server.
-
 
 ### New versions and upgrading
 
@@ -79,7 +71,6 @@ Since 2011 GitLab is released on the 22nd of every month. Every new release incl
 * [Changelog](CHANGELOG)
 
 * Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
-
 
 ### Run in production mode
 
