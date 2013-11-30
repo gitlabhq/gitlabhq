@@ -29,11 +29,11 @@ Feature: Project Network Graph
   @javascript
   Scenario: I should filter selected tag
     When I switch ref to "v2.1.0"
-    Then page should have content not cotaining "v2.1.0"
+    Then page should have content not containing "v2.1.0"
     When click "Show only selected branch" checkbox
-    Then page should not have content not cotaining "v2.1.0"
+    Then page should not have content not containing "v2.1.0"
     When click "Show only selected branch" checkbox
-    Then page should have content not cotaining "v2.1.0"
+    Then page should have content not containing "v2.1.0"
 
   Scenario: I should fail to look for a commit
     When I look for a commit by ";"
