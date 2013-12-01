@@ -19,7 +19,7 @@ class NotificationService
 
   # When create an issue we should send next emails:
   #
-  #  * issue assignee if his notification level is not Disabled
+  #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
   def new_issue(issue, current_user)
@@ -28,8 +28,8 @@ class NotificationService
 
   # When we close an issue we should send next emails:
   #
-  #  * issue author if his notification level is not Disabled
-  #  * issue assignee if his notification level is not Disabled
+  #  * issue author if their notification level is not Disabled
+  #  * issue assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
   def close_issue(issue, current_user)
@@ -38,8 +38,8 @@ class NotificationService
 
   # When we reassign an issue we should send next emails:
   #
-  #  * issue old assignee if his notification level is not Disabled
-  #  * issue new assignee if his notification level is not Disabled
+  #  * issue old assignee if their notification level is not Disabled
+  #  * issue new assignee if their notification level is not Disabled
   #
   def reassigned_issue(issue, current_user)
     reassign_resource_email(issue, issue.project, current_user, 'reassigned_issue_email')
@@ -48,7 +48,7 @@ class NotificationService
 
   # When create a merge request we should send next emails:
   #
-  #  * mr assignee if his notification level is not Disabled
+  #  * mr assignee if their notification level is not Disabled
   #
   def new_merge_request(merge_request, current_user)
     new_resource_email(merge_request, merge_request.target_project, 'new_merge_request_email')
@@ -56,8 +56,8 @@ class NotificationService
 
   # When we reassign a merge_request we should send next emails:
   #
-  #  * merge_request old assignee if his notification level is not Disabled
-  #  * merge_request assignee if his notification level is not Disabled
+  #  * merge_request old assignee if their notification level is not Disabled
+  #  * merge_request assignee if their notification level is not Disabled
   #
   def reassigned_merge_request(merge_request, current_user)
     reassign_resource_email(merge_request, merge_request.target_project, current_user, 'reassigned_merge_request_email')
@@ -65,8 +65,8 @@ class NotificationService
 
   # When we close a merge request we should send next emails:
   #
-  #  * merge_request author if his notification level is not Disabled
-  #  * merge_request assignee if his notification level is not Disabled
+  #  * merge_request author if their notification level is not Disabled
+  #  * merge_request assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
   def close_mr(merge_request, current_user)
@@ -75,8 +75,8 @@ class NotificationService
 
   # When we merge a merge request we should send next emails:
   #
-  #  * merge_request author if his notification level is not Disabled
-  #  * merge_request assignee if his notification level is not Disabled
+  #  * merge_request author if their notification level is not Disabled
+  #  * merge_request assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
   def merge_mr(merge_request)
