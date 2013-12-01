@@ -38,7 +38,7 @@ var TextileHighlightRules = require("./textile_highlight_rules").TextileHighligh
 var MatchingBraceOutdent = require("./matching_brace_outdent").MatchingBraceOutdent;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new TextileHighlightRules().getRules());
+    this.HighlightRules = TextileHighlightRules;
     this.$outdent = new MatchingBraceOutdent();
 };
 oop.inherits(Mode, TextMode);
@@ -161,12 +161,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);

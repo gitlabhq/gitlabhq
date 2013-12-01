@@ -28,21 +28,29 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/mode/lua', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/lua_highlight_rules', 'ace/range'], function(require, exports, module) {
+ace.define('ace/mode/lua', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/text', 'ace/tokenizer', 'ace/mode/lua_highlight_rules', 'ace/mode/folding/lua', 'ace/range', 'ace/worker/worker_client'], function(require, exports, module) {
 
 
 var oop = require("../lib/oop");
 var TextMode = require("./text").Mode;
 var Tokenizer = require("../tokenizer").Tokenizer;
 var LuaHighlightRules = require("./lua_highlight_rules").LuaHighlightRules;
+var LuaFoldMode = require("./folding/lua").FoldMode;
 var Range = require("../range").Range;
+var WorkerClient = require("../worker/worker_client").WorkerClient;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new LuaHighlightRules().getRules());
+    this.HighlightRules = LuaHighlightRules;
+    
+    this.foldingRules = new LuaFoldMode();
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
+   
+    this.lineCommentStart = "--";
+    this.blockComment = {start: "--[", end: "]--"};
+    
     var indentKeywords = {
         "function": 1,
         "then": 1,
@@ -51,7 +59,7 @@ oop.inherits(Mode, TextMode);
         "elseif": 1,
         "repeat": 1,
         "end": -1,
-        "until": -1,
+        "until": -1
     };
     var outdentKeywords = [
         "else",
@@ -62,9 +70,7 @@ oop.inherits(Mode, TextMode);
 
     function getNetIndentLevel(tokens) {
         var level = 0;
-        // Support single-line blocks by decrementing the indent level if
-        // an ending token is found
-        for (var i in tokens){
+        for (var i = 0; i < tokens.length; i++) {
             var token = tokens[i];
             if (token.type == "keyword") {
                 if (token.value in indentKeywords) {
@@ -76,8 +82,6 @@ oop.inherits(Mode, TextMode);
                 level --;
             }
         }
-        // Limit the level to +/- 1 since usually users only indent one level
-        // at a time regardless of the logical nesting level
         if (level < 0) {
             return -1;
         } else if (level > 0) {
@@ -91,7 +95,7 @@ oop.inherits(Mode, TextMode);
         var indent = this.$getIndent(line);
         var level = 0;
 
-        var tokenizedLine = this.$tokenizer.getLineTokens(line, state);
+        var tokenizedLine = this.getTokenizer().getLineTokens(line, state);
         var tokens = tokenizedLine.tokens;
 
         if (state == "start") {
@@ -100,7 +104,6 @@ oop.inherits(Mode, TextMode);
         if (level > 0) {
             return indent + tab;
         } else if (level < 0 && indent.substr(indent.length - tab.length) == tab) {
-            // Don't do a next-line outdent if we're going to do a real outdent of this line
             if (!this.checkOutdent(state, line, "\n")) {
                 return indent.substr(0, indent.length - tab.length);
             }
@@ -115,7 +118,7 @@ oop.inherits(Mode, TextMode);
         if (line.match(/^\s*[\)\}\]]$/))
             return true;
 
-        var tokens = this.$tokenizer.getLineTokens(line.trim(), state).tokens;
+        var tokens = this.getTokenizer().getLineTokens(line.trim(), state).tokens;
 
         if (!tokens || !tokens.length)
             return false;
@@ -126,15 +129,29 @@ oop.inherits(Mode, TextMode);
     this.autoOutdent = function(state, session, row) {
         var prevLine = session.getLine(row - 1);
         var prevIndent = this.$getIndent(prevLine).length;
-        var prevTokens = this.$tokenizer.getLineTokens(prevLine, "start").tokens;
+        var prevTokens = this.getTokenizer().getLineTokens(prevLine, "start").tokens;
         var tabLength = session.getTabString().length;
         var expectedIndent = prevIndent + tabLength * getNetIndentLevel(prevTokens);
         var curIndent = this.$getIndent(session.getLine(row)).length;
         if (curIndent < expectedIndent) {
-            // User already outdented //
             return;
         }
         session.outdentRows(new Range(row, 0, row + 2, 0));
+    };
+
+    this.createWorker = function(session) {
+        var worker = new WorkerClient(["ace"], "ace/mode/lua_worker", "Worker");
+        worker.attachToDocument(session.getDocument());
+        
+        worker.on("error", function(e) {
+            session.setAnnotations([e.data]);
+        });
+        
+        worker.on("ok", function(e) {
+            session.clearAnnotations();
+        });
+        
+        return worker;
     };
 
 }).call(Mode.prototype);
@@ -158,7 +175,6 @@ var LuaHighlightRules = function() {
     var builtinConstants = ("true|false|nil|_G|_VERSION");
 
     var functions = (
-      // builtinFunctions
         "string|xpcall|package|tostring|print|os|unpack|require|"+
         "getfenv|setmetatable|next|assert|tonumber|io|rawequal|"+
         "collectgarbage|getmetatable|module|rawset|math|debug|"+
@@ -179,7 +195,6 @@ var LuaHighlightRules = function() {
         "setupvalue|getlocal|getregistry|getfenv|setn|insert|getn|"+
         "foreachi|maxn|foreach|concat|sort|remove|resume|yield|"+
         "status|wrap|create|running|"+
-      // metatableMethods
         "__add|__sub|__mod|__unm|__concat|__lt|__index|__call|__gc|__metatable|"+
          "__mul|__div|__pow|__len|__eq|__le|__newindex|__tostring|__mode|__tonumber"
     );
@@ -200,8 +215,6 @@ var LuaHighlightRules = function() {
         "variable.language": "this"
     }, "identifier");
 
-    var strPre = "";
-
     var decimalInteger = "(?:(?:[1-9]\\d*)|(?:0))";
     var hexInteger = "(?:0[xX][\\dA-Fa-f]+)";
     var integer = "(?:" + decimalInteger + "|" + hexInteger + ")";
@@ -211,150 +224,71 @@ var LuaHighlightRules = function() {
     var pointFloat = "(?:(?:" + intPart + "?" + fraction + ")|(?:" + intPart + "\\.))";
     var floatNumber = "(?:" + pointFloat + ")";
 
-    var comment_stack = [];
-
     this.$rules = {
-        "start" :
-
-
-        // bracketed comments
-        [{
-            token : "comment",           // --[[ comment
-            regex : strPre + '\\-\\-\\[\\[.*\\]\\]'
-        }, {
-            token : "comment",           // --[=[ comment
-            regex : strPre + '\\-\\-\\[\\=\\[.*\\]\\=\\]'
-        }, {
-            token : "comment",           // --[==[ comment
-            regex : strPre + '\\-\\-\\[\\={2}\\[.*\\]\\={2}\\]'
-        }, {
-            token : "comment",           // --[===[ comment
-            regex : strPre + '\\-\\-\\[\\={3}\\[.*\\]\\={3}\\]'
-        }, {
-            token : "comment",           // --[====[ comment
-            regex : strPre + '\\-\\-\\[\\={4}\\[.*\\]\\={4}\\]'
-        }, {
-            token : "comment",           // --[====+[ comment
-            regex : strPre + '\\-\\-\\[\\={5}\\=*\\[.*\\]\\={5}\\=*\\]'
-        },
-
-        // multiline bracketed comments
-        {
-            token : "comment",           // --[[ comment
-            regex : strPre + '\\-\\-\\[\\[.*$',
-            merge : true,
-            next  : "qcomment"
-        }, {
-            token : "comment",           // --[=[ comment
-            regex : strPre + '\\-\\-\\[\\=\\[.*$',
-            merge : true,
-            next  : "qcomment1"
-        }, {
-            token : "comment",           // --[==[ comment
-            regex : strPre + '\\-\\-\\[\\={2}\\[.*$',
-            merge : true,
-            next  : "qcomment2"
-        }, {
-            token : "comment",           // --[===[ comment
-            regex : strPre + '\\-\\-\\[\\={3}\\[.*$',
-            merge : true,
-            next  : "qcomment3"
-        }, {
-            token : "comment",           // --[====[ comment
-            regex : strPre + '\\-\\-\\[\\={4}\\[.*$',
-            merge : true,
-            next  : "qcomment4"
-        }, {
-            token : function(value){     // --[====+[ comment
-                // WARNING: EXTREMELY SLOW, but this is the only way to circumvent the
-                // limits imposed by the current automaton.
-                // I've never personally seen any practical code where 5 or more '='s are
-                // used for string or commenting, so this will rarely be invoked.
-                var pattern = /\-\-\[(\=+)\[/, match;
-                // you can never be too paranoid ;)
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined)
-                    comment_stack.push(match.length);
-
+        "start" : [{
+            stateName: "bracketedComment",
+            onMatch : function(value, currentState, stack){
+                stack.unshift(this.next, value.length - 2, currentState);
                 return "comment";
             },
-            regex : strPre + '\\-\\-\\[\\={5}\\=*\\[.*$',
-            merge : true,
-            next  : "qcomment5"
+            regex : /\-\-\[=*\[/,
+            next  : [
+                {
+                    onMatch : function(value, currentState, stack) {
+                        if (value.length == stack[1]) {
+                            stack.shift();
+                            stack.shift();
+                            this.next = stack.shift();
+                        } else {
+                            this.next = "";
+                        }
+                        return "comment";
+                    },
+                    regex : /\]=*\]/,
+                    next  : "start"
+                }, {
+                    defaultToken : "comment"
+                }
+            ]
         },
 
-        // single line comments
         {
             token : "comment",
             regex : "\\-\\-.*$"
         },
-
-        // bracketed strings
         {
-            token : "string",           // [[ string
-            regex : strPre + '\\[\\[.*\\]\\]'
-        }, {
-            token : "string",           // [=[ string
-            regex : strPre + '\\[\\=\\[.*\\]\\=\\]'
-        }, {
-            token : "string",           // [==[ string
-            regex : strPre + '\\[\\={2}\\[.*\\]\\={2}\\]'
-        }, {
-            token : "string",           // [===[ string
-            regex : strPre + '\\[\\={3}\\[.*\\]\\={3}\\]'
-        }, {
-            token : "string",           // [====[ string
-            regex : strPre + '\\[\\={4}\\[.*\\]\\={4}\\]'
-        }, {
-            token : "string",           // [====+[ string
-            regex : strPre + '\\[\\={5}\\=*\\[.*\\]\\={5}\\=*\\]'
-        },
-
-        // multiline bracketed strings
-        {
-            token : "string",           // [[ string
-            regex : strPre + '\\[\\[.*$',
-            merge : true,
-            next  : "qstring"
-        }, {
-            token : "string",           // [=[ string
-            regex : strPre + '\\[\\=\\[.*$',
-            merge : true,
-            next  : "qstring1"
-        }, {
-            token : "string",           // [==[ string
-            regex : strPre + '\\[\\={2}\\[.*$',
-            merge : true,
-            next  : "qstring2"
-        }, {
-            token : "string",           // [===[ string
-            regex : strPre + '\\[\\={3}\\[.*$',
-            merge : true,
-            next  : "qstring3"
-        }, {
-            token : "string",           // [====[ string
-            regex : strPre + '\\[\\={4}\\[.*$',
-            merge : true,
-            next  : "qstring4"
-        }, {
-            token : function(value){     // --[====+[ string
-                // WARNING: EXTREMELY SLOW, see above.
-                var pattern = /\[(\=+)\[/, match;
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined)
-                    comment_stack.push(match.length);
-
-                return "string";
+            stateName: "bracketedString",
+            onMatch : function(value, currentState, stack){
+                stack.unshift(this.next, value.length, currentState);
+                return "comment";
             },
-            regex : strPre + '\\[\\={5}\\=*\\[.*$',
-            merge : true,
-            next  : "qstring5"
+            regex : /\[=*\[/,
+            next  : [
+                {
+                    onMatch : function(value, currentState, stack) {
+                        if (value.length == stack[1]) {
+                            stack.shift();
+                            stack.shift();
+                            this.next = stack.shift();
+                        } else {
+                            this.next = "";
+                        }
+                        return "comment";
+                    },
+                    
+                    regex : /\]=*\]/,
+                    next  : "start"
+                }, {
+                    defaultToken : "comment"
+                }
+            ]
         },
-
         {
             token : "string",           // " string
-            regex : strPre + '"(?:[^\\\\]|\\\\.)*?"'
+            regex : '"(?:[^\\\\]|\\\\.)*?"'
         }, {
             token : "string",           // ' string
-            regex : strPre + "'(?:[^\\\\]|\\\\.)*?'"
+            regex : "'(?:[^\\\\]|\\\\.)*?'"
         }, {
             token : "constant.numeric", // float
             regex : floatNumber
@@ -375,150 +309,148 @@ var LuaHighlightRules = function() {
             regex : "[\\]\\)\\}]"
         }, {
             token : "text",
-            regex : "\\s+"
-        } ],
-
-        "qcomment": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment1": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\=\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment2": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={2}\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment3": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={3}\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment4": [ {
-            token : "comment",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={4}\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qcomment5": [ {
-            token : function(value){
-                // very hackish, mutates the qcomment5 field on the fly.
-                var pattern = /\](\=+)\]/, rule = this.rules.qcomment5[0], match;
-                rule.next = "start";
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined){
-                    var found = match.length, expected;
-                    if ((expected = comment_stack.pop()) != found){
-                        comment_stack.push(expected);
-                        rule.next = "qcomment5";
-                    }
-                }
-
-                return "comment";
-            },
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={5}\\=*\\]",
-            next  : "start"
-        }, {
-            token : "comment",
-            merge : true,
-            regex : '.+'
-        } ],
-
-        "qstring": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring1": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\=\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring2": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={2}\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring3": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={3}\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring4": [ {
-            token : "string",
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={4}\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
-        } ],
-        "qstring5": [ {
-            token : function(value){
-                // very hackish, mutates the qstring5 field on the fly.
-                var pattern = /\](\=+)\]/, rule = this.rules.qstring5[0], match;
-                rule.next = "start";
-                if ((match = pattern.exec(value)) != null && (match = match[1]) != undefined){
-                    var found = match.length, expected;
-                    if ((expected = comment_stack.pop()) != found){
-                        comment_stack.push(expected);
-                        rule.next = "qstring5";
-                    }
-                }
-
-                return "string";
-            },
-            regex : "(?:[^\\\\]|\\\\.)*?\\]\\={5}\\=*\\]",
-            next  : "start"
-        }, {
-            token : "string",
-            merge : true,
-            regex : '.+'
+            regex : "\\s+|\\w+"
         } ]
-
     };
-
+    
+    this.normalizeRules();
 }
 
 oop.inherits(LuaHighlightRules, TextHighlightRules);
 
 exports.LuaHighlightRules = LuaHighlightRules;
+});
+
+ace.define('ace/mode/folding/lua', ['require', 'exports', 'module' , 'ace/lib/oop', 'ace/mode/folding/fold_mode', 'ace/range', 'ace/token_iterator'], function(require, exports, module) {
+
+
+var oop = require("../../lib/oop");
+var BaseFoldMode = require("./fold_mode").FoldMode;
+var Range = require("../../range").Range;
+var TokenIterator = require("../../token_iterator").TokenIterator;
+
+
+var FoldMode = exports.FoldMode = function() {};
+
+oop.inherits(FoldMode, BaseFoldMode);
+
+(function() {
+
+    this.foldingStartMarker = /\b(function|then|do|repeat)\b|{\s*$|(\[=*\[)/;
+    this.foldingStopMarker = /\bend\b|^\s*}|\]=*\]/;
+
+    this.getFoldWidget = function(session, foldStyle, row) {
+        var line = session.getLine(row);
+        var isStart = this.foldingStartMarker.test(line);
+        var isEnd = this.foldingStopMarker.test(line);
+
+        if (isStart && !isEnd) {
+            var match = line.match(this.foldingStartMarker);
+            if (match[1] == "then" && /\belseif\b/.test(line))
+                return;
+            if (match[1]) {
+                if (session.getTokenAt(row, match.index + 1).type === "keyword")
+                    return "start";
+            } else if (match[2]) {
+                var type = session.bgTokenizer.getState(row) || "";
+                if (type[0] == "bracketedComment" || type[0] == "bracketedString")
+                    return "start";
+            } else {
+                return "start";
+            }
+        }
+        if (foldStyle != "markbeginend" || !isEnd || isStart && isEnd)
+            return "";
+
+        var match = line.match(this.foldingStopMarker);
+        if (match[0] === "end") {
+            if (session.getTokenAt(row, match.index + 1).type === "keyword")
+                return "end";
+        } else if (match[0][0] === "]") {
+            var type = session.bgTokenizer.getState(row - 1) || "";
+            if (type[0] == "bracketedComment" || type[0] == "bracketedString")
+                return "end";
+        } else
+            return "end";
+    };
+
+    this.getFoldWidgetRange = function(session, foldStyle, row) {
+        var line = session.doc.getLine(row);
+        var match = this.foldingStartMarker.exec(line);
+        if (match) {
+            if (match[1])
+                return this.luaBlock(session, row, match.index + 1);
+
+            if (match[2])
+                return session.getCommentFoldRange(row, match.index + 1);
+
+            return this.openingBracketBlock(session, "{", row, match.index);
+        }
+
+        var match = this.foldingStopMarker.exec(line);
+        if (match) {
+            if (match[0] === "end") {
+                if (session.getTokenAt(row, match.index + 1).type === "keyword")
+                    return this.luaBlock(session, row, match.index + 1);
+            }
+
+            if (match[0][0] === "]")
+                return session.getCommentFoldRange(row, match.index + 1);
+
+            return this.closingBracketBlock(session, "}", row, match.index + match[0].length);
+        }
+    };
+
+    this.luaBlock = function(session, row, column) {
+        var stream = new TokenIterator(session, row, column);
+        var indentKeywords = {
+            "function": 1,
+            "do": 1,
+            "then": 1,
+            "elseif": -1,
+            "end": -1,
+            "repeat": 1,
+            "until": -1
+        };
+
+        var token = stream.getCurrentToken();
+        if (!token || token.type != "keyword")
+            return;
+
+        var val = token.value;
+        var stack = [val];
+        var dir = indentKeywords[val];
+
+        if (!dir)
+            return;
+
+        var startColumn = dir === -1 ? stream.getCurrentTokenColumn() : session.getLine(row).length;
+        var startRow = row;
+
+        stream.step = dir === -1 ? stream.stepBackward : stream.stepForward;
+        while(token = stream.step()) {
+            if (token.type !== "keyword")
+                continue;
+            var level = dir * indentKeywords[token.value];
+
+            if (level > 0) {
+                stack.unshift(token.value);
+            } else if (level <= 0) {
+                stack.shift();
+                if (!stack.length && token.value != "elseif")
+                    break;
+                if (level === 0)
+                    stack.unshift(token.value);
+            }
+        }
+
+        var row = stream.getCurrentTokenRow();
+        if (dir === -1)
+            return new Range(row, session.getLine(row).length, startRow, startColumn);
+        else
+            return new Range(startRow, startColumn, row, stream.getCurrentTokenColumn());
+    };
+
+}).call(FoldMode.prototype);
+
 });
