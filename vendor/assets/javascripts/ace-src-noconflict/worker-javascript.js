@@ -3843,7 +3843,7 @@ var JSHINT = (function () {
 			immed       : true, // if immediate invocations must be wrapped in parens
 			iterator    : true, // if the `__iterator__` property should be allowed
 			jquery      : true, // if jQuery globals should be predefined
-			lastsemic   : true, // if semicolons may be ommitted for the trailing
+			lastsemic   : true, // if semicolons may be omitted for the trailing
 			laxbreak    : true, // if line breaks should not be checked
 			laxcomma    : true, // if line breaks should not be checked around commas
 			loopfunc    : true, // if functions should be allowed to be defined within
