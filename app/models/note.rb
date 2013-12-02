@@ -157,7 +157,8 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def downvote?
     votable? && (note.start_with?('-1') ||
-                 note.start_with?(':-1:')
+                 note.start_with?(':-1:') ||
+                 note.start_with?(':thumbsdown:')
                 )
   end
 
@@ -206,7 +207,8 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def upvote?
     votable? && (note.start_with?('+1') ||
-                 note.start_with?(':+1:')
+                 note.start_with?(':+1:') ||
+                 note.start_with?(':thumbsup:')
                 )
   end
 

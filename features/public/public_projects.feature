@@ -38,3 +38,14 @@ Feature: Public Projects Feature
     Given I sign in as a user
     When I visit project "Internal" page
     Then I should see project "Internal" home page
+
+  Scenario: I visit public project page
+    When I visit project "Community" page
+    Then I should see project "Community" home page
+    And I should see a http link to the repository
+
+  Scenario: I visit public area as user
+    Given I sign in as a user
+    When I visit project "Community" page
+    Then I should see project "Community" home page
+    And I should see a ssh link to the repository
