@@ -27,6 +27,11 @@ Feature: Profile
     Then I change my avatar
     And I should see new avatar
 
+  Scenario: I delete my avatar
+    Given I visit profile page
+    Then I remove my avatar
+    And I should see no avatar
+
   Scenario: My password is expired
     Given my password is expired
     And I am not an ldap user
