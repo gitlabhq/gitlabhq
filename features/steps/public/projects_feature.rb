@@ -83,5 +83,15 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
       page.should have_content 'Internal'
     end
   end
+
+  Then 'I should see a http link to the repository' do
+    project = Project.find_by_name 'Community'
+    page.should have_field('project_clone', with: project.http_url_to_repo)
+  end
+
+  Then 'I should see a ssh link to the repository' do
+    project = Project.find_by_name 'Community'
+    page.should have_field('project_clone', with: project.url_to_repo)
+  end
 end
 
