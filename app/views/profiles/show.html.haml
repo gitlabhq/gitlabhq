@@ -59,9 +59,14 @@
         .clearfix
           .profile-avatar-form-option
             %p.light
-              You can upload an avatar here
-              %br
-              or change it at #{link_to "gravatar.com", "http://gravatar.com"}
+              - if @user.avatar?
+                You can change your avatar here
+                %br
+                or remove the current avatar to revert to #{link_to "gravatar.com", "http://gravatar.com"}
+              - else
+                You can upload an avatar here
+                %br
+                or change it at #{link_to "gravatar.com", "http://gravatar.com"}
             %hr
             %a.choose-btn.btn.btn-small.js-choose-user-avatar-button
               %i.icon-paper-clip
@@ -70,6 +75,8 @@
             %span.file_name.js-avatar-filename File name...
             = f.file_field :avatar, class: "js-user-avatar-input hide"
           %span.help-block The maximum file size allowed is 100KB.
+          - if @user.avatar?
+            = link_to 'Remove avatar', profile_avatar_path, confirm: "Avatar will be removed. Are you sure?", method: :delete, class: "btn btn-remove remove_avatar"
 
   .form-actions
     = f.submit 'Save changes', class: "btn btn-save"

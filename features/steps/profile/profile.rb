@@ -31,6 +31,29 @@ class Profile < Spinach::FeatureSteps
     @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
   end
 
+  step 'I should see the "Remove avatar" button' do
+    page.should have_link("Remove avatar")
+  end
+
+  step 'I have an avatar' do
+    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button "Save changes"
+    @user.reload
+  end
+
+  step 'I remove my avatar' do
+    click_link "Remove avatar"
+    @user.reload
+  end
+
+  step 'I should see my gravatar' do
+    @user.avatar?.should be_false
+  end
+
+  step 'I should not see the "Remove avatar" button' do
+    page.should_not have_link("Remove avatar")
+  end
+
   step 'I try change my password w/o old one' do
     within '.update-password' do
       fill_in "user_password", with: "22233344"

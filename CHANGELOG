@@ -6,6 +6,7 @@ v 6.4.0
   - Minimal password length increased to 8 symbols
   - Side-by-side diff view (Steven Thonus)
   - Internal projects (Jason Hollingsworth)
+  - Allow removal of avatar (Drew Blessing)
 
 v 6.3.0
   - API for adding gitlab-ci service
