@@ -31,6 +31,17 @@ class Profile < Spinach::FeatureSteps
     @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
   end
 
+  step 'I remove my avatar' do
+    check 'user_remove_avatar'
+    click_button "Save changes"
+    @user.reload
+  end
+
+  step 'I should see no avatar' do
+    @user.avatar.should be_instance_of AttachmentUploader
+    @user.avatar.url.should == nil
+  end
+
   step 'I try change my password w/o old one' do
     within '.update-password' do
       fill_in "user_password", with: "22233344"

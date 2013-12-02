@@ -52,7 +52,7 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at, :avatar,
+                  :extern_uid, :provider, :password_expires_at, :avatar, :remove_avatar,
                   as: [:default, :admin]
 
   attr_accessible :projects_limit, :can_create_group,
