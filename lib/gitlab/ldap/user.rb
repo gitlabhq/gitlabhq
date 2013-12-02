@@ -23,8 +23,8 @@ module Gitlab
             # Look for user with same emails
             #
             # Possible cases:
-            # * When user already has account and need to link his LDAP account.
-            # * LDAP uid changed for user with same email and we need to update his uid
+            # * When user already has account and need to link their LDAP account.
+            # * LDAP uid changed for user with same email and we need to update their uid
             #
             user = find_user(email)
 
@@ -47,7 +47,7 @@ module Gitlab
           user = model.find_by_email(email)
 
           # If no user found and allow_username_or_email_login is true
-          # we look for user by extracting part of his email
+          # we look for user by extracting part of their email
           if !user && email && ldap_conf['allow_username_or_email_login']
             uname = email.partition('@').first
             user = model.find_by_username(uname)

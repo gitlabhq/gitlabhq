@@ -67,7 +67,7 @@ v 6.2.0
   - Avatar upload on profile page with a maximum of 100KB (Steven Thonus)
   - Store the sessions in Redis instead of the cookie store
   - Fixed relative links in markdown
-  - User must confirm his email if signup enabled
+  - User must confirm their email if signup enabled
   - User must confirm changed email 
 
 v 6.1.0
@@ -89,7 +89,7 @@ v 6.1.0
   - Add links to create branch/tag from project home page
   - Add public-project? checkbox to new-project view
   - Improved compare page. Added link to proceed into Merge Request
-  - Send email to user when he was added to group
+  - Send an email to a user when they are added to group
   - New landing page when you have 0 projects
 
 v 6.0.0
