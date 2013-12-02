@@ -23,3 +23,5 @@ before_script:
   - "bundle exec rake db:setup"
   - "bundle exec rake db:seed_fu"
 script: "bundle exec rake $TASK --trace"
+notifications:
+  email: false
