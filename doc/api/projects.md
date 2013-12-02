@@ -478,7 +478,7 @@ Parameters:
         "id":"3f94fc7c85061973edc9906ae170cc269b07ca55"
       }],
       "tree": "c68537c6534a02cc2b176ca1549f4ffa190b58ee",
-      "message":"give caolan his credit where it's due (up top)",
+      "message":"give caolan credit where it's due (up top)",
       "author": {
         "name":"Jeremy Ashkenas",
         "email":"jashkenas@example.com"
