@@ -7,7 +7,7 @@
   = link_to 'New Group', new_admin_group_path, class: "btn btn-new pull-right"
 %br
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
-  = text_field_tag :name, params[:name], class: "span6"
+  = text_field_tag :name, params[:name], class: "span6 input-xpadding"
   = submit_tag "Search", class: "btn submit btn-primary"
 
 %hr
