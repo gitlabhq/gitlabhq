@@ -13,6 +13,13 @@ form {
         margin-top: 1px !important;
       }
     }
+
+    &.list-label {
+      float: none;
+      padding: 0 !important;
+      margin: 0;
+      text-align: left;
+    }
   }
 }
 
