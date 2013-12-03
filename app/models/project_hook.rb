@@ -15,4 +15,8 @@ class ProjectHook < WebHook
   belongs_to :project
 
   attr_accessible :push_events, :issues_events, :merge_requests_events
+
+  scope :push_hooks, -> { where(push_events: true) }
+  scope :issue_hooks, -> { where(issues_events: true) }
+  scope :merge_request_hooks, -> { where(merge_requests_events: true) }
 end
