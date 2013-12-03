@@ -46,8 +46,8 @@ header {
 
       h1 {
         margin: 0;
-        background: url('logo-black.png') no-repeat center 1px;
-        background-size: 38px;
+        background: url('logo-black.png') no-repeat center center;
+        background-size: 32px;
         float: left;
         height: 40px;
         width: 40px;
@@ -152,8 +152,8 @@ header {
     .app_logo {
       a {
         h1 {
-          background: url('logo-white.png') no-repeat center 1px;
-          background-size: 38px;
+          background: url('logo-white.png') no-repeat center center;
+          background-size: 32px;
           color: #fff;
           text-shadow: 0 1px 1px #444;
         }
