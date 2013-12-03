@@ -127,6 +127,7 @@ Gitlab::Application.routes.draw do
           delete :leave
         end
       end
+      resource :avatar, only: [:destroy]
     end
   end
 
