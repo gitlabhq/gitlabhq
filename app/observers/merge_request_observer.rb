@@ -64,6 +64,8 @@ class MergeRequestObserver < ActivityObserver
   end
 
   def execute_hooks(merge_request)
-    merge_request.project.execute_hooks(merge_request.to_hook_data, :merge_request_hooks)
+    if merge_request.project
+      merge_request.project.execute_hooks(merge_request.to_hook_data, :merge_request_hooks)
+    end
   end
 end
