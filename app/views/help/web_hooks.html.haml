@@ -1,12 +1,64 @@
 = render layout: 'help/layout' do
-  %h3.page-title Web hooks
+  %h3.page-title Project web hooks
+  %p.light
+    Project web hooks allow you to trigger url if new code is pushed or new issue is created
+  %hr
 
-  %p.slead
-    Every GitLab project can trigger a web server whenever the repo is pushed to.
+  %p
+    You can configure web hook to listen for specific events like pushes, issues, merge requests.
+    %br
+    GitLab will send POST request with data to web hook url.
     %br
     Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
-    %br
-    GitLab will send POST request with commits information on every push.
-  %h5 Hooks request example:
+
+
+  %h4 Push events
   = render "projects/hooks/data_ex"
 
+
+  %h4 Issues events
+  %pre
+    :preserve
+      {
+        "object_kind":"issue",
+        "object_attributes":{
+          "id":301,
+          "title":"New API: create/update/delete file",
+          "assignee_id":51,
+          "author_id":51,
+          "project_id":14,
+          "created_at":"2013-12-03T17:15:43Z",
+          "updated_at":"2013-12-03T17:15:43Z",
+          "position":0,
+          "branch_name":null,
+          "description":"Create new API for manipulations with repository",
+          "milestone_id":null,
+          "state":"opened",
+          "iid":23
+        }
+      }
+  %h4 Merge request events
+  %pre
+    :preserve
+      {
+        "object_kind":"merge_request",
+        "object_attributes":{
+          "id":99,
+          "target_branch":"master",
+          "source_branch":"ms-viewport",
+          "source_project_id":14,
+          "author_id":51,
+          "assignee_id":6,
+          "title":"MS-Viewport",
+          "created_at":"2013-12-03T17:23:34Z",
+          "updated_at":"2013-12-03T17:23:34Z",
+          "st_commits":null,
+          "st_diffs":null,
+          "milestone_id":null,
+          "state":"opened",
+          "merge_status":"unchecked",
+          "target_project_id":14,
+          "iid":1,
+          "description":""
+        }
+      }
