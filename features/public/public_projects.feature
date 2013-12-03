@@ -16,11 +16,11 @@ Feature: Public Projects Feature
 
   Scenario: I visit internal project page
     When I visit project "Internal" page
-    Then page status code should be 404
+    Then I should be redirected to sign in page
 
   Scenario: I visit private project page
     When I visit project "Enterprise" page
-    Then page status code should be 404
+    Then I should be redirected to sign in page
 
   Scenario: I visit an empty public project page
     Given public empty project "Empty Public Project"

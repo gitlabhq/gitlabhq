@@ -81,6 +81,9 @@ class ApplicationController < ActionController::Base
 
     if @project and can?(current_user, :read_project, @project)
       @project
+    elsif current_user.nil?
+      @project = nil
+      authenticate_user!
     else
       @project = nil
       render_404 and return
