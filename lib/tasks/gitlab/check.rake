@@ -681,12 +681,13 @@ namespace :gitlab do
   end
 
   namespace :ldap do
-    task check: :environment do
+    task :check, [:limit] => :environment do |t, args|
+      args.with_defaults(limit: 100)
       warn_user_is_not_gitlab
       start_checking "LDAP"
 
       if ldap_config.enabled
-        print_users
+        print_users(args.limit)
       else
         puts 'LDAP is disabled in config/gitlab.yml'
       end
@@ -694,9 +695,9 @@ namespace :gitlab do
       finished_checking "LDAP"
     end
 
-    def print_users
-      puts 'The following LDAP users can log in to your GitLab server:'
-      ldap.search(attributes: attributes, filter: filter, return_result: false) do |entry|
+    def print_users(limit)
+      puts "LDAP users with access to your GitLab server (limit: #{limit}):"
+      ldap.search(attributes: attributes, filter: filter, size: limit, return_result: false) do |entry|
         puts "DN: #{entry.dn}\t#{ldap_config.uid}: #{entry[ldap_config.uid]}"
       end
     end
