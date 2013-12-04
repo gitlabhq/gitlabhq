@@ -7,6 +7,7 @@ v 6.4.0
   - Side-by-side diff view (Steven Thonus)
   - Internal projects (Jason Hollingsworth)
   - Allow removal of avatar (Drew Blessing)
+  - Project web hooks now support issues and merge request events
 
 v 6.3.0
   - API for adding gitlab-ci service
