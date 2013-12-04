@@ -74,38 +74,19 @@ describe GitPushService do
   end
 
   describe "Web Hooks" do
-    context "with web hooks" do
-      before do
-        @project_hook = create(:project_hook)
-        @project_hook_2 = create(:project_hook)
-        project.hooks << [@project_hook, @project_hook_2]
-
-        stub_request(:post, @project_hook.url)
-        stub_request(:post, @project_hook_2.url)
-      end
-
-      it "executes multiple web hook" do
-        @project_hook.should_receive(:async_execute).once
-        @project_hook_2.should_receive(:async_execute).once
-
-        service.execute(project, user, @oldrev, @newrev, @ref)
-      end
-    end
-
     context "execute web hooks" do
-      before do
-        @project_hook = create(:project_hook)
-        project.hooks << [@project_hook]
-        stub_request(:post, @project_hook.url)
-      end
-
       it "when pushing a branch for the first time" do
-        @project_hook.should_receive(:async_execute)
+        project.should_receive(:execute_hooks)
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
+      it "when pushing new commits to existing branch" do
+        project.should_receive(:execute_hooks)
+        service.execute(project, user, 'oldrev', 'newrev', 'refs/heads/master')
+      end
+
       it "when pushing tags" do
-        @project_hook.should_not_receive(:async_execute)
+        project.should_not_receive(:execute_hooks)
         service.execute(project, user, 'newrev', 'newrev', 'refs/tags/v1.0.0')
       end
     end

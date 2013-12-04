@@ -24,6 +24,10 @@ module API
       expose :id, :url, :created_at
     end
 
+    class ProjectHook < Hook
+      expose :project_id, :push_events, :issues_events, :merge_requests_events
+    end
+
     class ForkedFromProject < Grape::Entity
       expose :id
       expose :name, :name_with_namespace

@@ -207,4 +207,12 @@ module ApplicationHelper
   def broadcast_message
     BroadcastMessage.current
   end
+
+  def highlight_js(&block)
+    string = capture(&block)
+
+    content_tag :div, class: user_color_scheme_class do
+      Pygments::Lexer[:js].highlight(string).html_safe
+    end
+  end
 end

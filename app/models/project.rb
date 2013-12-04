@@ -298,8 +298,10 @@ class Project < ActiveRecord::Base
     ProjectTransferService.new.transfer(self, new_namespace)
   end
 
-  def execute_hooks(data)
-    hooks.each { |hook| hook.async_execute(data) }
+  def execute_hooks(data, hooks_scope = :push_hooks)
+    hooks.send(hooks_scope).each do |hook|
+      hook.async_execute(data)
+    end
   end
 
   def execute_services(data)

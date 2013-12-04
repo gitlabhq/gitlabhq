@@ -11,7 +11,7 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131112220935) do
+ActiveRecord::Schema.define(:version => 20131202192556) do
 
   create_table "broadcast_messages", :force => true do |t|
     t.text     "message",    :null => false
@@ -334,10 +334,13 @@ ActiveRecord::Schema.define(:version => 20131112220935) do
   create_table "web_hooks", :force => true do |t|
     t.string   "url"
     t.integer  "project_id"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
-    t.string   "type",       :default => "ProjectHook"
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+    t.string   "type",                  :default => "ProjectHook"
     t.integer  "service_id"
+    t.boolean  "push_events",           :default => true,          :null => false
+    t.boolean  "issues_events",         :default => false,         :null => false
+    t.boolean  "merge_requests_events", :default => false,         :null => false
   end
 
   add_index "web_hooks", ["project_id"], :name => "index_web_hooks_on_project_id"

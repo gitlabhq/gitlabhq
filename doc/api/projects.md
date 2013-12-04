@@ -402,6 +402,10 @@ Parameters:
 {
   "id": 1,
   "url": "http://example.com/hook",
+  "project_id": 3,
+  "push_events": "true",
+  "issues_events": "true",
+  "merge_requests_events": "true",
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
@@ -419,6 +423,9 @@ Parameters:
 
 + `id` (required) - The ID or NAME of a project
 + `url` (required) - The hook URL
++ `push_events` - Trigger hook on push events
++ `issues_events` - Trigger hook on issues events
++ `merge_requests_events` - Trigger hook on merge_requests events
 
 
 ### Edit project hook
@@ -434,6 +441,9 @@ Parameters:
 + `id` (required) - The ID or NAME of a project
 + `hook_id` (required) - The ID of a project hook
 + `url` (required) - The hook URL
++ `push_events` - Trigger hook on push events
++ `issues_events` - Trigger hook on issues events
++ `merge_requests_events` - Trigger hook on merge_requests events
 
 
 ### Delete project hook
