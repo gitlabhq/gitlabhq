@@ -66,7 +66,7 @@ describe API::API, 'ProjectHooks' do
     it "should add hook to project" do
       expect {
         post api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com"
+          url: "http://example.com", issues_events: true
       }.to change {project.hooks.count}.by(1)
       response.status.should == 201
     end
@@ -85,7 +85,7 @@ describe API::API, 'ProjectHooks' do
   describe "PUT /projects/:id/hooks/:hook_id" do
     it "should update an existing project hook" do
       put api("/projects/#{project.id}/hooks/#{hook.id}", user),
-        url: 'http://example.org'
+        url: 'http://example.org', push_events: false
       response.status.should == 200
       json_response['url'].should == 'http://example.org'
     end

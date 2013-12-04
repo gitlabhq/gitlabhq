@@ -47,8 +47,9 @@ module API
       #   POST /projects/:id/hooks
       post ":id/hooks" do
         required_attributes! [:url]
+        attrs = attributes_for_keys [:url, :push_events, :issues_events, :merge_requests_events]
+        @hook = user_project.hooks.new(attrs)
 
-        @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
           present @hook, with: Entities::ProjectHook
         else
@@ -70,8 +71,8 @@ module API
       put ":id/hooks/:hook_id" do
         @hook = user_project.hooks.find(params[:hook_id])
         required_attributes! [:url]
+        attrs = attributes_for_keys [:url, :push_events, :issues_events, :merge_requests_events]
 
-        attrs = attributes_for_keys [:url]
         if @hook.update_attributes attrs
           present @hook, with: Entities::ProjectHook
         else
