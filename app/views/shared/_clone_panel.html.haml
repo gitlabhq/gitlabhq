@@ -1,4 +1,4 @@
 .git-clone-holder
-  %button{class: "btn #{ current_user ? 'active' : '' }", :"data-clone" => @project.ssh_url_to_repo} SSH
-  %button{class: "btn #{ current_user ? '' : 'active' }", :"data-clone" => @project.http_url_to_repo}= gitlab_config.protocol.upcase
-  = text_field_tag :project_clone, (current_user ? @project.url_to_repo : @project.http_url_to_repo), class: "one_click_select span5", readonly: true
+  %button{class: "btn #{ 'active' if default_clone_protocol == 'ssh' }", :"data-clone" => @project.ssh_url_to_repo} SSH
+  %button{class: "btn #{ 'active' if default_clone_protocol == 'http' }", :"data-clone" => @project.http_url_to_repo}= gitlab_config.protocol.upcase
+  = text_field_tag :project_clone, default_url_to_repo, class: "one_click_select span5", readonly: true
