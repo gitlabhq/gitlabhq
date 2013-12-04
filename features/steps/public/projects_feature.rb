@@ -46,6 +46,20 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
     page.should have_content 'Git global setup'
   end
 
+  step 'I should see empty public project details with http clone info' do
+    project = Project.find_by_name('Empty Public Project')
+    page.all(:css, '.git-empty .clone').each do |element|
+      element.text.should include(project.http_url_to_repo)
+    end
+  end
+
+  step 'I should see empty public project details with ssh clone info' do
+    project = Project.find_by_name('Empty Public Project')
+    page.all(:css, '.git-empty .clone').each do |element|
+      element.text.should include(project.url_to_repo)
+    end
+  end
+
   step 'private project "Enterprise"' do
     create :project, name: 'Enterprise'
   end
@@ -84,12 +98,12 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
     end
   end
 
-  Then 'I should see a http link to the repository' do
+  step 'I should see an http link to the repository' do
     project = Project.find_by_name 'Community'
     page.should have_field('project_clone', with: project.http_url_to_repo)
   end
 
-  Then 'I should see a ssh link to the repository' do
+  step 'I should see an ssh link to the repository' do
     project = Project.find_by_name 'Community'
     page.should have_field('project_clone', with: project.url_to_repo)
   end

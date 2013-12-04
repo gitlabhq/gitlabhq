@@ -29,7 +29,7 @@
           touch README
           git add README
           git commit -m 'first commit'
-        %span.clone= "git remote add origin #{@project.url_to_repo}"
+        %span.clone= "git remote add origin #{default_url_to_repo}"
         :preserve
           git push -u origin master
 
@@ -38,7 +38,7 @@
       %pre.dark
         :preserve
           cd existing_git_repo
-        %span.clone= "git remote add origin #{@project.url_to_repo}"
+        %span.clone= "git remote add origin #{default_url_to_repo}"
         :preserve
           git push -u origin master
 
