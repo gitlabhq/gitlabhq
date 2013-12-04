@@ -114,6 +114,8 @@ production: &base
   # ==========================
 
   ## LDAP settings
+  # You can inspect the first 100 LDAP users with login access by running:
+  #   bundle exec rake gitlab:ldap:check[100] RAILS_ENV=production
   ldap:
     enabled: false
     host: '_your_ldap_server'
