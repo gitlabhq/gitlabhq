@@ -102,6 +102,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.opened? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
+      @merge_request.fast_forward = params[:fast_forward]
       @merge_request.automerge!(current_user)
       @status = true
     else
@@ -184,6 +185,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @target_type = :merge_request
     @target_id = @merge_request.id
+
+    @fast_forward = Gitlab.config.git[:fast_forward]
   end
 
   def allowed_to_merge?

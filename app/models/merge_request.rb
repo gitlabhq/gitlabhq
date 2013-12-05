@@ -34,6 +34,7 @@ class MergeRequest < ActiveRecord::Base
   attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event, :description
 
   attr_accessor :should_remove_source_branch
+  attr_accessor :fast_forward
 
   state_machine :state, initial: :opened do
     event :close do
@@ -211,7 +212,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user)
-    if Gitlab::Satellite::MergeAction.new(current_user, self).merge! && self.unmerged_commits.empty?
+    merge_result = Gitlab::Satellite::MergeAction.new(current_user, self).merge!(fast_forward: fast_forward)
+    if merge_result && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end

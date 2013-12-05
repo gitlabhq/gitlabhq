@@ -25,11 +25,23 @@
     .accept_merge_request {
       font-size: 13px;
       float: left;
+      line-height: 22px;
     }
     .remove_branch_holder {
       margin-left: 20px;
       margin-right: 10px;
       float: left;
+
+      div {
+        line-height: normal;
+
+        label {
+          margin-top: 0;
+          margin-bottom: 0;
+          padding-top: 0;
+          width: auto;
+        }
+      }
     }
     label {
       color: #444;
