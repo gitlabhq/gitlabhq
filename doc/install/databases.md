@@ -25,13 +25,13 @@ GitLab supports the following databases:
     # Create a user for GitLab
     # do not type the 'mysql>', this is part of the prompt
     # change $password in the command below to a real password you pick
-    mysql> CREATE USER 'git'@'localhost' IDENTIFIED BY '$password';
+    mysql> CREATE USER 'gitlab'@'localhost' IDENTIFIED BY '$password';
 
     # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 
     # Grant the GitLab user necessary permissions on the table.
-    mysql> GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'git'@'localhost';
+    mysql> GRANT SELECT, LOCK TABLES, INSERT, UPDATE, DELETE, CREATE, DROP, INDEX, ALTER ON `gitlabhq_production`.* TO 'gitlab'@'localhost';
 
     # Quit the database session
     mysql> \q
@@ -58,10 +58,10 @@ GitLab supports the following databases:
     sudo -u postgres psql -d template1
 
     # Create a user for GitLab. (change $password to a real password)
-    template1=# CREATE USER git;
+    template1=# CREATE USER gitlab;
 
     # Create the GitLab production database & grant all privileges on database
-    template1=# CREATE DATABASE gitlabhq_production OWNER git;
+    template1=# CREATE DATABASE gitlabhq_production OWNER gitlab;
 
     # Quit the database session
     template1=# \q
