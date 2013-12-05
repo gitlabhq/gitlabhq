@@ -278,7 +278,7 @@ ul.notes {
     > a {
       position: absolute;
       right: 5px;
-      top: 116px;
+      bottom: -60px;
     }
     .note_preview {
       background: #f5f5f5;
@@ -311,10 +311,8 @@ ul.notes {
 
 .common-note-form {
   margin: 0;
-  height: 140px;
   background: #F9F9F9;
   padding: 3px;
-  padding-bottom: 25px;
   border: 1px solid #DDD;
 }
 
