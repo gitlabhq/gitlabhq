@@ -23,7 +23,7 @@ sudo apt-get install build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-d
 ```
 
 ### 4. Download, compile and install Ruby
-Find the latest stable version of Ruby 1.9 or 2.0 at https://www.ruby-lang.org/en/downloads/ . We recommend at least 2.0.0p353, which is patched against [CVE-2013-4164](https://www.ruby-lang.org/en/news/2013/11/22/heap-overflow-in-floating-point-parsing-cve-2013-4164/).
+Find the latest stable version of Ruby 1.9 or 2.0 at https://www.ruby-lang.org/en/downloads/ . We recommend at least 2.0.0-p353, which is patched against [CVE-2013-4164](https://www.ruby-lang.org/en/news/2013/11/22/heap-overflow-in-floating-point-parsing-cve-2013-4164/).
 
 ```bash
 cd /tmp
