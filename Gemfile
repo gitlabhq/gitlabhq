@@ -8,15 +8,21 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.16"
+gem "rails", "~> 4.0.0"
+
+gem "protected_attributes"
+gem 'rails-observers'
+gem 'actionpack-page_caching'
+gem 'actionpack-action_caching'
+gem 'activerecord-deprecated_finders'
 
 # Supported DBs
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise", '~> 2.2'
-gem "devise-async"
+gem "devise", '3.0.4'
+gem "devise-async", '0.8.0'
 gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
@@ -24,10 +30,10 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 3.1.0"
+gem "gitlab_git", "~> 3.1.0", path: '../gitlab_git'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 1.1.0', require: 'grack'
+gem 'gitlab-grack', '~> 1.1.0', require: 'grack', path: '../grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
@@ -143,9 +149,9 @@ group :assets do
   gem "jquery-ui-rails",  "2.0.2"
   gem "modernizr",        "2.6.2"
   gem "raphael-rails", "~> 2.1.2"
-  gem 'bootstrap-sass'
-  gem "font-awesome-rails"
-  gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
+  gem 'bootstrap-sass', '~> 2.3'
+  gem "font-awesome-rails", '~> 3.2'
+  gem "gemoji", "~> 1.3.0"
   gem "gon"
 end
 
@@ -170,7 +176,7 @@ end
 
 group :development, :test do
   gem 'coveralls', require: false
-  gem 'rails-dev-tweaks'
+  # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
