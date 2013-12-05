@@ -102,7 +102,7 @@ or start each component separately
 
 * Run all tests
 
-        bundle exec rake gitlab:test
+        bundle exec rake gitlab:test RAILS_ENV=test
 
 * [RSpec](http://rspec.info/) unit and functional tests
 
