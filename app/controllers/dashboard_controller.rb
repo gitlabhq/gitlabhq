@@ -40,6 +40,7 @@ class DashboardController < ApplicationController
                 end
 
     @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
+    @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = @projects.includes(:namespace).sorted_by_activity
 
     @labels = current_user.authorized_projects.tags_on(:labels)
