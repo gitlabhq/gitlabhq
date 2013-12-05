@@ -8,6 +8,7 @@ v 6.4.0
   - Internal projects (Jason Hollingsworth)
   - Allow removal of avatar (Drew Blessing)
   - Project web hooks now support issues and merge request events
+  - Visiting project page while not logged in will redirect to sign-in instead of 404 (Jason Hollingsworth)
 
 v 6.3.0
   - API for adding gitlab-ci service

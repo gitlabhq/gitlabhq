@@ -88,10 +88,6 @@ class Profile < Spinach::FeatureSteps
     page.should have_content "Password doesn't match confirmation"
   end
 
-  step 'I should be redirected to sign in page' do
-    current_path.should == new_user_session_path
-  end
-
   step 'I reset my token' do
     within '.update-token' do
       @old_token = @user.private_token
