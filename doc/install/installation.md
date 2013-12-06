@@ -144,12 +144,9 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git -b v1.7.9
 
     cd gitlab-shell
-
-    # switch to right version
-    sudo -u git -H git checkout v1.7.9
 
     sudo -u git -H cp config.yml.example config.yml
 
@@ -174,13 +171,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git gitlab
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git -b 6-3-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
-
-    # Checkout to stable release
-    sudo -u git -H git checkout 6-3-stable
 
 **Note:**
 You can change `6-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
