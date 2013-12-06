@@ -100,3 +100,21 @@
     padding: 2px 5px;
   }
 }
+
+.project-access-icon {
+  margin-left: 10px;
+  float: left;
+  margin-right: 15px;
+  font-size: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #EEE;
+  padding: 8px 12px;
+  border-radius: 50px;
+  background: #f5f5f5;
+  width: 16px;
+  text-align: center;
+
+  i {
+    color: #BBB;
+  }
+}
