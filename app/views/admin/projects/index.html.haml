@@ -46,7 +46,8 @@
       %ul.well-list
         - @projects.each do |project|
           %li
-            = visibility_level_icon(project.visibility_level)
+            %span{ class: visibility_level_color(project.visibility_level) }
+              = visibility_level_icon(project.visibility_level)
             = link_to project.name_with_namespace, [:admin, project]
             .pull-right
               %span.label.label-gray
