@@ -18,7 +18,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 
 ```bash
 cd /home/git/gitlab
-sudo -u git -H git pull origin 6-2-stable
+sudo -u git -H git pull origin 6-3-stable
 ```
 
 ### 3. Update gitlab-shell if necessary
