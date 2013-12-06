@@ -1,18 +1,3 @@
-PATH
-  remote: ../gitlab_git
-  specs:
-    gitlab_git (3.1.0)
-      activesupport (~> 4.0.0)
-      gitlab-grit (~> 2.6.1)
-      gitlab-linguist (~> 2.9.5)
-      gitlab-pygments.rb (~> 0.5.4)
-
-PATH
-  remote: ../grack
-  specs:
-    gitlab-grack (1.1.0)
-      rack (~> 1.5.1)
-
 GEM
   remote: https://rubygems.org/
   specs:
@@ -190,6 +175,8 @@ GEM
       nokogiri (~> 1.5.9)
       sanitize (~> 2.0.3)
       stringex (~> 1.5.1)
+    gitlab-grack (2.0.0.pre)
+      rack (~> 1.5.1)
     gitlab-grit (2.6.3)
       charlock_holmes (~> 0.6.9)
       diff-lcs (~> 1.1)
@@ -203,6 +190,11 @@ GEM
     gitlab-pygments.rb (0.5.4)
       posix-spawn (~> 0.3.6)
       yajl-ruby (~> 1.1.0)
+    gitlab_git (4.0.0.pre)
+      activesupport (~> 4.0.0)
+      gitlab-grit (~> 2.6.1)
+      gitlab-linguist (~> 2.9.5)
+      gitlab-pygments.rb (~> 0.5.4)
     gitlab_meta (6.0)
     gitlab_omniauth-ldap (1.0.3)
       net-ldap (~> 0.3.1)
@@ -603,10 +595,10 @@ DEPENDENCIES
   github-markup (~> 0.7.4)
   gitlab-flowdock-git-hook (~> 0.4.2)
   gitlab-gollum-lib (~> 1.0.2)
-  gitlab-grack (~> 1.1.0)!
+  gitlab-grack (~> 2.0.0.pre)
   gitlab-linguist (~> 2.9.6)
   gitlab-pygments.rb (~> 0.5.4)
-  gitlab_git (~> 3.1.0)!
+  gitlab_git (~> 4.0.0.pre)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.3)
   gon

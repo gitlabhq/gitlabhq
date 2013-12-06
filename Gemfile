@@ -30,10 +30,10 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 3.1.0", path: '../gitlab_git'
+gem "gitlab_git", "~> 4.0.0.pre"
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 1.1.0', require: 'grack', path: '../grack'
+gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
