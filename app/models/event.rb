@@ -18,7 +18,7 @@ class Event < ActiveRecord::Base
   attr_accessible :project, :action, :data, :author_id, :project_id,
                   :target_id, :target_type
 
-  default_scope where("author_id IS NOT NULL")
+  default_scope { where("author_id IS NOT NULL") }
 
   CREATED   = 1
   UPDATED   = 2
