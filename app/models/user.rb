@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   #
   validates :name, presence: true
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }
-  validates :bio, length: { within: 0..255 }
+  validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :username, presence: true, uniqueness: true,
