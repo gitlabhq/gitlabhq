@@ -1,4 +1,4 @@
-# Universal update guide for patch versions. Ex. from From 6.2.0 to 6.2.1
+# Universal update guide for patch versions. For example from 6.2.0 to 6.2.1, also see the [semantic versioning specification](http://semver.org/).
 
 ### 0. Backup
 
@@ -14,20 +14,24 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 
     sudo service gitlab stop
 
-### 2. Get latest code for your current stable branch
+### 2. Get latest code for the stable branch
 
 ```bash
 cd /home/git/gitlab
-sudo -u git -H git pull origin 6-2-stable
+sudo -u git -H git pull origin STABLE_BRANCH
 ```
 
-### 3. Update gitlab-shell if necessary
+Replace STABLE_BRANCH with the minor version you want to upgrade to, for example `6-3-stable`.
+
+### 3. Update gitlab-shell if it is not the latest version
 
 ```bash
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
-sudo -u git -H git checkout v1.7.9
+sudo -u git -H git checkout LATEST_TAG
 ```
+
+Replace LATEST_TAG with the latest GitLab Shell tag you want to upgrade to, for example `v1.7.9`.
 
 ### 4. Install libs, migrations, etc.
 
