@@ -77,7 +77,7 @@ class Project < ActiveRecord::Base
 
   # Validations
   validates :creator, presence: true
-  validates :description, length: { within: 0..2000 }
+  validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter or digit should be first" }
@@ -87,7 +87,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :issues_tracker_id, length: { within: 0..255 }
+  validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
 
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id

@@ -1,3 +1,5 @@
+require 'gon'
+
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
