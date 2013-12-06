@@ -4,6 +4,6 @@ class UsersGroupObserver < BaseObserver
   end
 
   def after_update(membership)
-    notification.update_group_member(membership)
+    notification.update_group_member(membership) if membership.group_access_changed?
   end
 end
