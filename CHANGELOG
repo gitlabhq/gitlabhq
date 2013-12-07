@@ -1,4 +1,5 @@
 v 6.4.0
+  - Added cp Rake:Attack config information to Upgrade Guide 6.3.0
   - Added sorting to project issues page (Jason Blanchard)
   - Assembla integration (Carlos Paramio)
   - Fixed another 500 error with submodules
