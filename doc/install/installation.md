@@ -310,8 +310,26 @@ To make sure you didn't miss anything run a more thorough check with:
 
     sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
-If all items are green, then congratulations on successfully installing GitLab!
-However there are still a few steps left.
+do this after Nginx be installed,or you will get:
+----------------------------------------------------------------------------
+Running /home/git/gitlab-shell/bin/check
+Check GitLab API access: /usr/local/lib/ruby/2.0.0/net/http.rb:878:in `initialize': Connection refused - connect(2) (Errno::ECONNREFUSED)
+	from /usr/local/lib/ruby/2.0.0/net/http.rb:878:in `open'
+	from /usr/local/lib/ruby/2.0.0/net/http.rb:878:in `block in connect'
+	from /usr/local/lib/ruby/2.0.0/timeout.rb:52:in `timeout'
+	from /usr/local/lib/ruby/2.0.0/net/http.rb:877:in `connect'
+	from /usr/local/lib/ruby/2.0.0/net/http.rb:862:in `do_start'
+	from /usr/local/lib/ruby/2.0.0/net/http.rb:851:in `start'
+	from /home/git/gitlab-shell/lib/gitlab_net.rb:62:in `get'
+	from /home/git/gitlab-shell/lib/gitlab_net.rb:29:in `check'
+	from /home/git/gitlab-shell/bin/check:11:in `<main>'
+gitlab-shell self-check failed
+  Try fixing it:
+  Make sure GitLab is running;
+  Check the gitlab-shell configuration file:
+  sudo -u git -H editor /home/git/gitlab-shell/config.yml
+  Please fix the error above and rerun the checks.
+----------------------------------------------------------------------
 
 
 # 7. Nginx
