@@ -8,7 +8,9 @@ module SearchHelper
       default_autocomplete,
       project_autocomplete,
       help_autocomplete
-    ].flatten.to_json
+    ].flatten.uniq do |item|
+      item[:label]
+    end.to_json
   end
 
   private
