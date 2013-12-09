@@ -39,6 +39,66 @@ Parameters:
 ]
 ```
 
+## Create a branch
+
+Create a new branch.
+
+```
+POST /projects/:id/repository/branches/:branch/:ref
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:branch` (required) - The name of the branch being created
++ `:ref` (required) - Reference branch is built from (Branch/Tag/SHA1/etc)
+
+```json
+{
+    "name": "test_branch",
+    "commit": {
+        "id": "d67868df74c26c88b2cf1d25d91a269f237963e8",
+        "parents": [
+            {
+                "id": "ccd7a20d618558b2ac17d49200500de01e6adce1"
+            },
+            {
+                "id": "de60b9aa1c2c66f4cb7c76541e01a15ebdef0838"
+            }
+        ],
+        "tree": "90b63cf2244f93d0b3eef162dc05f8c94f3527ec",
+        "message": "Merge pull request #1249 from braddunbar/throttle\n\nPrevent false negatives for _.throttle tests.",
+        "author": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "committer": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "authored_date": "2013-08-07T15:35:30+00:00",
+        "committed_date": "2013-08-07T15:35:30+00:00"
+    },
+    "protected": false
+}
+```
+
+## Delete a branch
+
+Delete a new branch.
+
+```
+DELETE /projects/:id/repository/branches/:branch
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:branch` (required) - The name of the branch being deleted
+
+```json
+{
+    "success": true
+}
+```
 
 ## Get single repository branch
 
@@ -77,6 +137,67 @@ Parameters:
     "committed_date": "2012-06-28T03:44:20-07:00"
   },
   "protected": true
+}
+```
+
+## Create a tag
+
+Create a new tag.
+
+```
+POST /projects/:id/repository/tags/:tag/:ref
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:tag` (required) - The name of the tag being created
++ `:ref` (required) - Reference tag is built from (Branch/Tag/SHA1/etc)
+
+```json
+{
+    "name": "v1.1",
+    "commit": {
+        "id": "d67868df74c26c88b2cf1d25d91a269f237963e8",
+        "parents": [
+            {
+                "id": "ccd7a20d618558b2ac17d49200500de01e6adce1"
+            },
+            {
+                "id": "de60b9aa1c2c66f4cb7c76541e01a15ebdef0838"
+            }
+        ],
+        "tree": "90b63cf2244f93d0b3eef162dc05f8c94f3527ec",
+        "message": "Merge pull request #1249 from braddunbar/throttle\n\nPrevent false negatives for _.throttle tests.",
+        "author": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "committer": {
+            "name": "Jeremy Ashkenas",
+            "email": "jashkenas@gmail.com"
+        },
+        "authored_date": "2013-08-07T15:35:30+00:00",
+        "committed_date": "2013-08-07T15:35:30+00:00"
+    },
+    "protected": false
+}
+```
+
+## Delete a tag
+
+Delete a new tag.
+
+```
+DELETE /projects/:id/repository/tags/:tag
+```
+
+Parameters:
++ `id` (required) - The ID of the project
++ `:tag` (required) - The name of the tag being deleted
+
+```json
+{
+  "success": true
 }
 ```
 

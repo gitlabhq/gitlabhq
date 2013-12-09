@@ -24,6 +24,43 @@ module API
         present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject, project: user_project
       end
 
+
+      # Create a branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      #   ref (required) - SHA1 ref of branch.
+      # Example Request:
+      #   POST /projects/:id/repository/branches/:branch/:ref
+      post ":id/repository/branches/:branch/:ref",
+        :requirements => { :branch => /.*/, :ref => /.*/ } do
+
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        resource_exists! if @branch
+
+        user_project.repository.add_branch(params[:branch], params[:ref])
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+
+        present @branch, with: Entities::RepoObject, project: user_project
+      end
+
+      # Deletes a branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   DELETE /projects/:id/repository/branches/:branch
+      delete ":id/repository/branches/:branch",
+        :requirements => { :branch => /.*/ } do
+        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        not_found! unless @branch
+
+        user_project.repository.rm_branch(params[:branch])
+        present({ 'success' => true })
+      end
+
       # Get a single branch
       #
       # Parameters:
@@ -81,6 +118,41 @@ module API
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
         present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
+      end
+
+      # Create a tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag (required) - The name of the tag
+      #   ref (required) - SHA1 ref of tag.
+      # Example Request:
+      #   POST /projects/:id/repository/tags/:tag/:ref
+      post ":id/repository/tags/:tag/:ref",
+        :requirements => { :tag => /.*/, :ref => /.*/ } do
+        @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
+        resource_exists! if @tag
+
+        user_project.repository.add_tag(params[:tag], params[:ref])
+        @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
+
+        present @tag, with: Entities::RepoObject, project: user_project
+      end
+
+      # Deletes a tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag (required) - The name of the tag
+      # Example Request:
+      #   DELETE /projects/:id/repository/tags/:tag
+      delete ":id/repository/tags/:tag",
+        :requirements => { :tag => /.*/ } do
+        @tag = user_project.repo.tags.find { |item| item.name == params[:tag] }
+        not_found! unless @tag
+
+        user_project.repository.rm_tag(params[:tag])
+        present({ 'success' => true })
       end
 
       # Get a project repository commits
