@@ -16,8 +16,14 @@
 
 .project-home-panel {
   border-bottom: 1px solid #DDD;
-  padding-bottom: 30px;
+  padding-bottom: 25px;
   margin-bottom: 30px;
+
+  &.empty-project {
+      border-bottom: 0px;
+      padding-bottom: 15px;
+      margin-bottom: 0px;
+  }
 
   .project-home-title {
     font-size: 18px;
@@ -45,7 +51,7 @@
     }
   }
 
-  .public-label {
+  .visibility-level-label {
     font-size: 14px;
     background: #f1f1f1;
     padding: 8px 10px;
@@ -53,6 +59,10 @@
     margin-left: 10px;
     color: #888;
     text-shadow: 0 1px 1px #FFF;
+
+    i {
+      color: inherit;
+    }
   }
 }
 
@@ -87,9 +97,40 @@
   }
 }
 
-.project-public-holder {
-  .help-inline {
-    padding-top: 7px;
+.project-visibility-level-holder {
+  .controls {
+    padding-bottom: 9px;
+  }
+
+  .controls {
+    input {
+      float: left;
+    }
+    .descr {
+      display: block;
+      margin-left: 1.5em;
+      &.restricted {
+        color: #888;
+      }
+
+      label {
+        float: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+      }
+    }
+    .info {
+      display: block;
+      margin-top: 5px;
+    }
+    strong {
+      display: inline-block;
+      width: 4em;
+    }
+  }
+  i {
+    color: inherit;
   }
 }
 
@@ -130,7 +171,8 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects {
+.my-projects,
+.public-projects {
   li {
     .project-info {
       margin-bottom: 10px;
@@ -164,5 +206,63 @@ ul.nav.nav-projects-tabs {
 
   a {
     color: #777;
+  }
+}
+
+.project-side {
+  .btn-block {
+    background-image: none;
+    background-color: #F1f1f1;
+    border-color: #EEE;
+    &:hover {
+      background-color: #eee;
+      border-color: #DDD;
+    }
+  }
+  .project-fork-icon {
+    float: left;
+    font-size: 26px;
+    margin-right: 10px;
+    line-height: 1.5;
+  }
+}
+
+.transfer-project .chosen-container {
+  min-width: 200px;
+}
+
+/** Branch/tag selector **/
+.project-refs-form {
+  margin: 0;
+  span {
+    background:none !important;
+    position:static !important;
+    width:auto !important;
+    height:auto !important;
+  }
+}
+.project-refs-select {
+  width: 120px;
+}
+
+.project-refs-form .chosen-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-right: 10px;
+
+  .chosen-single span {
+    font-weight: bold;
+    color: #555;
+  }
+
+  &.chosen-container-active {
+    .chosen-drop {
+      min-width: 400px;
+    }
+
+    .chosen-results {
+      max-height: 400px;
+    }
   }
 }

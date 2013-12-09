@@ -7,17 +7,28 @@ module Gitlab
       #
       # Returns false if the ref has been updated while editing the file
       # Returns false if committing the change fails
-      # Returns false if pushing from the satellite to Gitolite failed or was rejected
+      # Returns false if pushing from the satellite to bare repo failed or was rejected
       # Returns true otherwise
-      def commit!(content, commit_message, file_name)
+      def commit!(content, commit_message)
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
 
-          # create target branch in satellite at the corresponding commit from Gitolite
+          # create target branch in satellite at the corresponding commit from bare repo
           repo.git.checkout({raise: true, timeout: true, b: true}, ref, "origin/#{ref}")
 
-          # update the file in the satellite's working dir
-          file_path_in_satellite = File.join(repo.working_dir, file_path, file_name)
+          file_path_in_satellite = File.join(repo.working_dir, file_path)
+          dir_name_in_satellite = File.dirname(file_path_in_satellite)
+
+          # Prevent relative links
+          unless safe_path?(file_path_in_satellite)
+            Gitlab::GitLogger.error("FileAction: Relative path not allowed")
+            return false
+          end
+
+          # Create dir if not exists
+          FileUtils.mkdir_p(dir_name_in_satellite)
+
+          # Write file
           File.open(file_path_in_satellite, 'w') { |f| f.write(content) }
 
           # add new file
@@ -28,7 +39,7 @@ module Gitlab
           repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
 
 
-          # push commit back to Gitolite
+          # push commit back to bare repo
           # will raise CommandFailed when push fails
           repo.git.push({raise: true, timeout: true}, :origin, ref)
 

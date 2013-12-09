@@ -2,8 +2,8 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]
-  before_filter :closes_issues, only: [:edit, :update, :show, :commits, :diffs]
+  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status]
+  before_filter :closes_issues, only: [:edit, :update, :show, :diffs]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
 
@@ -26,8 +26,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.js
-
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -44,6 +42,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     diff_line_count = Commit::diff_line_count(@merge_request.diffs)
     @suppress_diff = Commit::diff_suppress?(@merge_request.diffs, diff_line_count) && !params[:force_show_diff]
     @force_suppress_diff = Commit::diff_force_suppress?(@merge_request.diffs, diff_line_count)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
+    end
   end
 
   def new

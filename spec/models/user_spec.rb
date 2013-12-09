@@ -36,6 +36,11 @@
 #  notification_level     :integer          default(1), not null
 #  password_expires_at    :datetime
 #  created_by_id          :integer
+#  avatar                 :string(255)
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  unconfirmed_email      :string(255)
 #
 
 require 'spec_helper'
@@ -85,8 +90,8 @@ describe User do
     end
 
     it "should not generate password by default" do
-      user = create(:user, password: 'abcdefg')
-      user.password.should == 'abcdefg'
+      user = create(:user, password: 'abcdefghe')
+      user.password.should == 'abcdefghe'
     end
 
     it "should generate password when forcing random password" do

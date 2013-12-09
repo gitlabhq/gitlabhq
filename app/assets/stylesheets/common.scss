@@ -220,7 +220,6 @@ li.note {
 .error-message {
   padding: 10px;
   background: #C67;
-  padding-left: 20px;
   margin: 0;
   color: #FFF;
 
@@ -228,8 +227,18 @@ li.note {
     color: #fff;
     text-decoration: underline;
   }
-  &.centered {
-    text-align: center;
+}
+
+.no-ssh-key-message {
+  padding: 10px 0;
+  background: #C67;
+  margin: 0;
+  color: #FFF;
+  text-align: center;
+
+  a {
+    color: #fff;
+    text-decoration: underline;
   }
 }
 
@@ -341,4 +350,46 @@ table {
 .navbar-gitlab .navbar-inner .nav > li .btn-sign-in {
   @extend .btn-new;
   padding: 5px 15px;
+  text-shadow: none;
+}
+
+.broadcast-message {
+  padding: 10px;
+  text-align: center;
+  background: #555;
+  color: #BBB;
+}
+
+.ajax-users-select {
+  width: 400px;
+
+  &.input-large {
+    width: 210px;
+  }
+
+  &.input-clamp {
+    max-width: 100%;
+  }
+}
+
+.user-result {
+  .user-image {
+    float: left;
+  }
+  .user-name {
+  }
+  .user-username {
+    color: #999;
+  }
+}
+
+.namespace-result {
+  .namespace-kind {
+    color: #AAA;
+    font-weight: normal;
+  }
+  .namespace-path {
+    margin-left: 10px;
+    font-weight: bolder;
+  }
 }

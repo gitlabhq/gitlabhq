@@ -9,32 +9,36 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  creator_id             :integer
-#  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  public                 :boolean          default(FALSE), not null
 #  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
+#  visibility_level       :integer          default(0), not null
 #
 
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
+  include Gitlab::VisibilityLevel
   extend Enumerize
 
-  attr_accessible :name, :path, :description, :default_branch, :issues_tracker, :label_list,
+  ActsAsTaggableOn.strict_case_match = true
+
+  attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
   acts_as_taggable_on :labels, :issues_default_labels
+
+  attr_accessor :new_default_branch
 
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
@@ -47,6 +51,7 @@ class Project < ActiveRecord::Base
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
+  has_one :assembla_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
 
@@ -104,7 +109,8 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public_only, -> { where(public: true) }
+  scope :public_only, -> { where(visibility_level: PUBLIC) }
+  scope :public_or_internal_only, ->(user) { where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ]) }
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
@@ -136,6 +142,10 @@ class Project < ActiveRecord::Base
         where(path: id, namespace_id: nil).last
       end
     end
+
+    def visibility_levels
+      Gitlab::VisibilityLevel.options
+    end
   end
 
   def team
@@ -143,7 +153,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, default_branch)
+    @repository ||= Repository.new(path_with_namespace)
   end
 
   def saved?
@@ -221,7 +231,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla)
   end
 
   def gitlab_ci?
@@ -288,8 +298,10 @@ class Project < ActiveRecord::Base
     ProjectTransferService.new.transfer(self, new_namespace)
   end
 
-  def execute_hooks(data)
-    hooks.each { |hook| hook.async_execute(data) }
+  def execute_hooks(data, hooks_scope = :push_hooks)
+    hooks.send(hooks_scope).each do |hook|
+      hook.async_execute(data)
+    end
   end
 
   def execute_services(data)
@@ -297,14 +309,6 @@ class Project < ActiveRecord::Base
 
       # Call service hook only if it is active
       service.execute(data) if service.active
-    end
-  end
-
-  def discover_default_branch
-    # Discover the default branch, but only if it hasn't already been set to
-    # something else
-    if repository.exists? && default_branch.nil?
-      update_attributes(default_branch: self.repository.discover_default_branch)
     end
   end
 
@@ -390,7 +394,7 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system
@@ -450,5 +454,18 @@ class Project < ActiveRecord::Base
 
   def project_member(user)
     users_projects.where(user_id: user).first
+  end
+
+  def default_branch
+    @default_branch ||= repository.root_ref if repository.exists?
+  end
+
+  def reload_default_branch
+    @default_branch = nil
+    default_branch
+  end
+
+  def visibility_level_field
+    visibility_level
   end
 end

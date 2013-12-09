@@ -77,8 +77,8 @@ input.check_all_issues {
 @media (min-width: 800px)  { .issues_filters select { width: 160px; }  }
 @media (min-width: 1200px) { .issues_filters select { width: 220px; }  }
 
-@media (min-width: 800px)  { .issues_bulk_update select { width: 120px; }  }
-@media (min-width: 1200px) { .issues_bulk_update select { width: 160px; }  }
+@media (min-width: 800px)  { .issues_bulk_update .chosen-container { min-width: 120px; }  }
+@media (min-width: 1200px) { .issues_bulk_update .chosen-container { min-width: 160px; }  }
 
 .issues-holder {
   .issues_filters {
@@ -102,4 +102,20 @@ input.check_all_issues {
 
 .participants {
   margin-bottom: 10px;
+}
+
+.issues_bulk_update {
+  .chosen-container {
+    text-shadow: none;
+  }
+}
+
+.issue-search-form {
+  margin: 0;
+  height: 24px;
+
+  .issue_search {
+    border: 1px solid #DDD !important;
+    background-color: #f4f4f4;
+  }
 }

@@ -6,12 +6,8 @@
   - @services.each do |service|
     %li
       %h4
-        - if service.activated?
-          %span.cgreen
-            %i.icon-circle
-        - else
-          %span.cgray
-            %i.icon-circle-blank
         = link_to edit_project_service_path(@project, service.to_param) do
           = service.title
+        .pull-right
+          = boolean_to_icon service.activated?
       %p= service.description

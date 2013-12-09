@@ -116,13 +116,13 @@ describe MergeRequest do
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      subject.project.default_branch = subject.target_branch
+      subject.project.stub(default_branch: subject.target_branch)
 
       subject.closes_issues.should == [issue0, issue1].sort_by(&:id)
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
-      subject.project.default_branch = 'master'
+      subject.project.stub(default_branch: 'master')
       subject.target_branch = 'something-else'
 
       subject.closes_issues.should be_empty

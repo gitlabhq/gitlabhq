@@ -32,7 +32,9 @@
 
 * GitLab.com commercial services: [Homepage](http://www.gitlab.com/) | [Subscription](http://www.gitlab.com/subscription/) | [Consultancy](http://www.gitlab.com/consultancy/) | [GitLab Cloud](http://www.gitlab.com/cloud/) | [Blog](http://blog.gitlab.com/)
 
-* GitLab CI: [Readme](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) of the GitLab open-source continuous integration server
+* [GitLab Enterprise Edition](https://www.gitlab.com/features/) offers additional features that are useful for larger organizations (100+ users).
+
+* [GitLab CI](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
 
 ### Requirements
 
@@ -44,30 +46,23 @@
 
 ** More details are in the [requirements doc](doc/install/requirements.md)
 
-### Installation
+### Official installation methods
 
-#### Official production installation
+* [Manual installation guide for a production server](doc/install/installation.md)
 
-* [Installation guide for a production server](doc/install/installation.md)
+* [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation on a virtual machine with Vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
 
+### Third party one-click installers
 
-#### Official development installation
+* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab.
 
-If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working with all dependencies.
+* [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
 
-* [Vagrant virtual machine for development](https://github.com/gitlabhq/gitlab-vagrant-vm)
-
-
-#### Unofficial production installations
+#### Unofficial installation methods
 
 * [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes) repository with unofficial guides for using GitLab with different software (operating systems, webservers, etc.) than the official version.
 
 * [Installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) public wiki with unofficial guides to install GitLab on different operating systems.
-
-* [BitNami one-click installers](http://bitnami.com/stack/gitlab)
-
-* [TurnKey Linux virtual appliance](http://www.turnkeylinux.org/gitlab)
-
 
 ### New versions and upgrading
 
@@ -78,7 +73,6 @@ Since 2011 GitLab is released on the 22nd of every month. Every new release incl
 * [Changelog](CHANGELOG)
 
 * Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
-
 
 ### Run in production mode
 
@@ -110,7 +104,7 @@ or start each component separately
 
 * Run all tests
 
-        bundle exec rake gitlab:test
+        bundle exec rake gitlab:test RAILS_ENV=test
 
 * [RSpec](http://rspec.info/) unit and functional tests
 
@@ -147,15 +141,17 @@ or start each component separately
 
 * [Mailing list](https://groups.google.com/forum/#!forum/gitlabhq) and [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) are the best places to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and has resolved it. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
 
-* [Unofficial #gitlab IRC on Freenode](http://www.freenode.net/) is another way to get in touch with other GitLab users who may be able to help you.
-
 * [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
 * [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
 * [Support subscription](http://www.gitlab.com/subscription/) connects you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
 
-* [Consultancy](http://www.gitlab.com/consultancy/) allows you hire GitLab experts for installations, upgrades and customizations.
+* [Consultancy](http://www.gitlab.com/consultancy/) from the GitLab experts for installations, upgrades and customizations.
+
+* [#gitlab IRC channel](http://www.freenode.net/) on Freenode is unofficial but offers a way to get in touch with other GitLab users who may be able to help you.
+
+* [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
 
 
 ### Getting in touch

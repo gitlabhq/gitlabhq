@@ -2,7 +2,7 @@
 
 ### List projects
 
-Get a list of projects owned by the authenticated user.
+Get a list of projects accessible by the authenticated user.
 
 ```
 GET /projects
@@ -15,6 +15,7 @@ GET /projects
     "description": null,
     "default_branch": "master",
     "public": false,
+    "visibility_level": 0,
     "ssh_url_to_repo": "git@example.com:diaspora/diaspora-client.git",
     "http_url_to_repo": "http://example.com/diaspora/diaspora-client.git",
     "web_url": "http://example.com/diaspora/diaspora-client",
@@ -49,6 +50,7 @@ GET /projects
     "description": null,
     "default_branch": "master",
     "public": false,
+    "visibility_level": 0,
     "ssh_url_to_repo": "git@example.com:brightbox/puppet.git",
     "http_url_to_repo": "http://example.com/brightbox/puppet.git",
     "web_url": "http://example.com/brightbox/puppet",
@@ -82,6 +84,22 @@ GET /projects
 ```
 
 
+#### List owned projects
+
+Get a list of projects owned by the authenticated user.
+
+```
+GET /projects/owned
+```
+
+#### List ALL projects
+
+Get a list of all GitLab projects (admin only).
+
+```
+GET /projects/all
+```
+
 ### Get single project
 
 Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME , which is owned by the authentication user.
@@ -101,6 +119,7 @@ Parameters:
   "description": null,
   "default_branch": "master",
   "public": false,
+  "visibility_level": 0,
   "ssh_url_to_repo": "git@example.com:diaspora/diaspora-project-site.git",
   "http_url_to_repo": "http://example.com/diaspora/diaspora-project-site.git",
   "web_url": "http://example.com/diaspora/diaspora-project-site",
@@ -213,13 +232,13 @@ Parameters:
 
 + `name` (required) - new project name
 + `description` (optional) - short project description
-+ `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
 + `wall_enabled` (optional)
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
-+ `public` (optional)
++ `public` (optional) - if `true` same as setting visibility_level = 20
++ `visibility_level` (optional)
 
 
 ### Create project for user
@@ -241,7 +260,8 @@ Parameters:
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
-+ `public` (optional)
++ `public` (optional) - if `true` same as setting visibility_level = 20
++ `visibility_level` (optional)
 
 
 ## Remove project
@@ -382,6 +402,10 @@ Parameters:
 {
   "id": 1,
   "url": "http://example.com/hook",
+  "project_id": 3,
+  "push_events": "true",
+  "issues_events": "true",
+  "merge_requests_events": "true",
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
@@ -399,6 +423,9 @@ Parameters:
 
 + `id` (required) - The ID or NAME of a project
 + `url` (required) - The hook URL
++ `push_events` - Trigger hook on push events
++ `issues_events` - Trigger hook on issues events
++ `merge_requests_events` - Trigger hook on merge_requests events
 
 
 ### Edit project hook
@@ -414,6 +441,9 @@ Parameters:
 + `id` (required) - The ID or NAME of a project
 + `hook_id` (required) - The ID of a project hook
 + `url` (required) - The hook URL
++ `push_events` - Trigger hook on push events
++ `issues_events` - Trigger hook on issues events
++ `merge_requests_events` - Trigger hook on merge_requests events
 
 
 ### Delete project hook
@@ -458,7 +488,7 @@ Parameters:
         "id":"3f94fc7c85061973edc9906ae170cc269b07ca55"
       }],
       "tree": "c68537c6534a02cc2b176ca1549f4ffa190b58ee",
-      "message":"give caolan his credit where it's due (up top)",
+      "message":"give caolan credit where it's due (up top)",
       "author": {
         "name":"Jeremy Ashkenas",
         "email":"jashkenas@example.com"

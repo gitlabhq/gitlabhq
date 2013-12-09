@@ -9,19 +9,18 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  creator_id             :integer
-#  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  public                 :boolean          default(FALSE), not null
 #  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
+#  visibility_level       :integer          default(0), not null
 #
 
 require 'spec_helper'

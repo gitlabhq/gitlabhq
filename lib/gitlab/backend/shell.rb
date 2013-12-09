@@ -196,6 +196,15 @@ module Gitlab
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
 
+    # Return GitLab shell version
+    def version
+      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
+
+      if File.readable?(gitlab_shell_version_file)
+        File.read(gitlab_shell_version_file)
+      end
+    end
+
     protected
 
     def gitlab_shell_user_home

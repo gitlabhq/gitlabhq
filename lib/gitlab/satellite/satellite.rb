@@ -123,7 +123,7 @@ module Gitlab
         remotes.each { |name| repo.git.remote(default_options,'rm', name)}
       end
 
-      # Updates the satellite from Gitolite
+      # Updates the satellite from bare repo
       #
       # Note: this will only update remote branches (i.e. origin/*)
       def update_from_source!

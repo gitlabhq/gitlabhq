@@ -24,7 +24,6 @@ class GitPushService
     create_push_event
 
     project.ensure_satellite_exists
-    project.discover_default_branch
     project.repository.expire_cache
 
     if push_to_existing_branch?(ref, oldrev)
@@ -33,7 +32,7 @@ class GitPushService
     end
 
     if push_to_branch?(ref)
-      project.execute_hooks(@push_data.dup)
+      project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup)
     end
 

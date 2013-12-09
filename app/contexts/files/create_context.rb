@@ -15,17 +15,12 @@ module Files
         return error("You can only create files if you are on top of a branch")
       end
 
-      file_name = params[:file_name]
+      file_name = File.basename(path)
+      file_path = path
 
       unless file_name =~ Gitlab::Regex.path_regex
         return error("Your changes could not be commited, because file name contains not allowed characters")
       end
-
-      file_path = if path.blank?
-                    file_name
-                  else
-                    File.join(path, file_name)
-                  end
 
       blob = repository.blob_at(ref, file_path)
 
@@ -33,11 +28,10 @@ module Files
         return error("Your changes could not be commited, because file with such name exists")
       end
 
-      new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, path)
+      new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, file_path)
       created_successfully = new_file_action.commit!(
         params[:content],
-        params[:commit_message],
-        file_name,
+        params[:commit_message]
       )
 
       if created_successfully

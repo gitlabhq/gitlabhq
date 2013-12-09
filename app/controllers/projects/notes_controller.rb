@@ -14,7 +14,14 @@ class Projects::NotesController < Projects::ApplicationController
       @discussions   = discussions_from_notes
     end
 
-    respond_with(@notes)
+    respond_to do |format|
+      format.html { redirect_to :back }
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/notes/_notes")
+        }
+      end
+    end
   end
 
   def create

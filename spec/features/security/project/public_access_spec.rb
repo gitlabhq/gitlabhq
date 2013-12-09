@@ -9,7 +9,7 @@ describe "Public Project Access" do
 
   before do
     # public project
-    project.public = true
+    project.visibility_level = Gitlab::VisibilityLevel::PUBLIC
     project.save!
 
     # full access

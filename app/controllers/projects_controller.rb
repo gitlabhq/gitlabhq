@@ -55,16 +55,12 @@ class ProjectsController < ApplicationController
   end
 
   def show
-    return authenticate_user! unless @project.public || current_user
+    return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
-
-    # Ensure project default branch is set if it possible
-    # Normally it defined on push or during creation
-    @project.discover_default_branch
 
     respond_to do |format|
       format.html do
@@ -77,7 +73,7 @@ class ProjectsController < ApplicationController
           render :show, layout: user_layout
         end
       end
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
     end
   end
 

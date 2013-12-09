@@ -86,9 +86,16 @@ Gitlab::Application.routes.draw do
       get :test
     end
 
+    resources :broadcast_messages, only: [:index, :create, :destroy]
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
-    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show]
+
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
+      member do
+        put :transfer
+      end
+    end
+
     root to: "dashboard#index"
   end
 
@@ -120,6 +127,7 @@ Gitlab::Application.routes.draw do
           delete :leave
         end
       end
+      resource :avatar, only: [:destroy]
     end
   end
 
@@ -166,7 +174,7 @@ Gitlab::Application.routes.draw do
     end
 
     scope module: :projects do
-      resources :blob,      only: [:show], constraints: {id: /.+/}
+      resources :blob,      only: [:show, :destroy], constraints: {id: /.+/}
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
       resources :edit_tree, only: [:show, :update], constraints: {id: /.+/}, path: 'edit'

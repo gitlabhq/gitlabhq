@@ -21,6 +21,8 @@ class Issue < ActiveRecord::Base
   include Issuable
   include InternalId
 
+  ActsAsTaggableOn.strict_case_match = true
+
   belongs_to :project
   validates :project, presence: true
 

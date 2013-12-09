@@ -11,8 +11,8 @@
   }
 
   .file-title {
-    border-bottom: 1px solid #bbb;
-    @include bg-dark-gray-gradient;
+    background: #DDD;
+    border-bottom: 1px solid #CCC;
     text-shadow: 0 1px 1px #fff;
     margin: 0;
     font-weight: normal;

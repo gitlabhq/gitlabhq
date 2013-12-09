@@ -4,7 +4,7 @@ describe MergeRequestObserver do
   let(:some_user) { create :user }
   let(:assignee) { create :user }
   let(:author) { create :user }
-  let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author) }
+  let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author).as_null_object }
   let(:assigned_mr) { create(:merge_request, assignee: assignee, author: author, target_project: create(:project)) }
   let(:unassigned_mr) { create(:merge_request, author: author, target_project: create(:project)) }
   let(:closed_assigned_mr) { create(:closed_merge_request, assignee: assignee, author: author, target_project: create(:project)) }

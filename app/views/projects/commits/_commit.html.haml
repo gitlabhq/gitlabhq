@@ -7,7 +7,7 @@
     .notes_count
       - notes = project.notes.for_commit_id(commit.id)
       - if notes.any?
-        %span.badge.badge-info
+        %span.label.label-gray
           %i.icon-comment
           = notes.count
 

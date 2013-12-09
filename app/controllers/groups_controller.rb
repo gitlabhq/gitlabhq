@@ -38,7 +38,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
       format.atom { render layout: false }
     end
   end

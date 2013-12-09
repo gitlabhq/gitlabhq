@@ -1,6 +1,3 @@
-window.updatePage = (data) ->
-  $.ajax({type: "GET", url: location.href, data: data, dataType: "script"})
-
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
 

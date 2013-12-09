@@ -168,7 +168,7 @@ class Event < ActiveRecord::Base
   end
 
   def valid_push?
-    data[:ref]
+    data[:ref] && ref_name.present?
   rescue => ex
     false
   end
@@ -223,7 +223,7 @@ class Event < ActiveRecord::Base
 
   # Max 20 commits from push DESC
   def commits
-    @commits ||= data[:commits].reverse
+    @commits ||= (data[:commits] || []).reverse
   end
 
   def commits_count

@@ -33,7 +33,7 @@ class GollumWiki
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Returns the Gollum::Wiki object.

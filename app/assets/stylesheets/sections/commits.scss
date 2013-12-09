@@ -16,37 +16,29 @@
 
   .header {
     @extend .clearfix;
+    background: #DDD;
+    border-bottom: 1px solid #CCC;
     padding: 5px 5px 5px 10px;
     color: #555;
-    border-bottom: 1px solid #CCC;
-    background: #eee;
-    // TODO Replace with linear-gradient mixin
-    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -ms-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
-
-    a{
-      color: $style_color;
-    }
 
     > span {
       font-family: $monospace_font;
       font-size: 14px;
-      line-height: 30px;
+      line-height: 2;
     }
 
-    a.view-file{
+    .view-file {
       font-weight: bold;
+      float: right;
+      background-color: #EEE;
     }
 
-    .commit-short-id{
+    .commit-short-id {
       font-family: $monospace_font;
       font-size: smaller;
     }
 
-    .file-mode{
+    .file-mode {
       font-family: $monospace_font;
     }
   }
@@ -56,13 +48,13 @@
     background: #FFF;
     color: #333;
     font-size: 12px;
-    .old{
-      span.idiff{
+    .old {
+      span.idiff {
         background-color: #FAA;
       }
     }
-    .new{
-      span.idiff{
+    .new {
+      span.idiff {
         background-color: #AFA;
       }
     }
@@ -78,7 +70,7 @@
         font-size: 12px;
       }
     }
-    .old_line, .new_line {
+    .old_line, .new_line, .diff_line {
       margin: 0px;
       padding: 0px;
       border: none;
@@ -100,6 +92,15 @@
           text-decoration: underline;
         }
       }
+      &.new {
+        background: #CFD;
+      }
+      &.old {
+        background: #FDD;
+      }
+    }
+    .diff_line {
+      padding: 0;
     }
     .line_holder {
       &.old .old_line,
@@ -129,6 +130,11 @@
       &.matched {
         color: #ccc;
         background: #fafafa;
+      }
+      &.parallel {
+        display: table-cell;
+        overflow: hidden;
+        width: 50%;
       }
     }
   }

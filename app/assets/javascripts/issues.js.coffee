@@ -22,7 +22,7 @@
           backgroundColor: '#DDD'
           opacity: .4
       )
-  
+
   reload: ->
     Issues.initSelects()
     Issues.initChecks()
@@ -54,7 +54,16 @@
       unless terms is last_terms
         last_terms = terms
         if terms.length >= 2 or terms.length is 0
-          form.submit()
+          $.ajax
+            type: "GET"
+            url: location.href
+            data: "issue_search=" + terms
+            complete: ->
+              $(".loading").hide()
+            success: (data) ->
+              $('.issues-holder').html(data.html)
+              Issues.reload()
+            dataType: "json"
 
   checkChanged: ->
     checked_issues = $(".selected_issue:checked")

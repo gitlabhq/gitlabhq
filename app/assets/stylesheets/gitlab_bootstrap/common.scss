@@ -1,10 +1,12 @@
 /** COLORS **/
 .cgray { color: gray }
+.clgray { color: #BBB }
 .cred { color: #D12F19 }
 .cgreen { color: #4a2 }
 .cblue { color: #29A }
 .cblack { color: #111 }
 .cdark { color: #444 }
+.camber { color: #ffc000 }
 .cwhite { color: #fff!important }
 .bgred { background: #F2DEDE!important }
 
@@ -93,6 +95,12 @@ pre.well-pre {
   font-size: 12px;
   font-style: normal;
   font-weight: normal;
+
+  &.label-gray {
+    background-color: #eee;
+    color: #999;
+    text-shadow: none;
+  }
 }
 
 /** Big Labels **/
@@ -115,4 +123,13 @@ pre.well-pre {
     background: #DA4E49;
     color: #FFF;
   }
+}
+
+.dropdown-menu > li > a {
+  text-shadow: none;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background: #29b;
 }

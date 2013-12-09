@@ -6,7 +6,7 @@ var NoteList = {
   target_type: null,
 
   init: function(tid, tt, path) {
-    NoteList.notes_path = path + ".js";
+    NoteList.notes_path = path + ".json";
     NoteList.target_id = tid;
     NoteList.target_type = tt;
     NoteList.target_params = "target_type=" + NoteList.target_type + "&target_id=" + NoteList.target_id;
@@ -233,10 +233,12 @@ var NoteList = {
     form.show();
 
     var textarea = form.find("textarea");
-    var p = $("<p></p>").text(textarea.val());
-    var hidden_div = $('<div class="note-original-content"></div>').append(p);
-    form.append(hidden_div);
-    hidden_div.hide();
+    if (form.find(".note-original-content").length === 0) {
+      var p = $("<p></p>").text(textarea.val());
+      var hidden_div = $('<div class="note-original-content"></div>').append(p);
+      form.append(hidden_div);
+      hidden_div.hide();
+    }
     textarea.focus();
   },
 
@@ -409,7 +411,10 @@ var NoteList = {
       data: NoteList.target_params,
       complete: function(){ $('.js-notes-busy').removeClass("loading")},
       beforeSend: function() { $('.js-notes-busy').addClass("loading") },
-      dataType: "script"
+      success: function(data) {
+        NoteList.setContent(data.html);
+      },
+      dataType: "json"
     });
   },
 
@@ -417,7 +422,7 @@ var NoteList = {
    * Called in response to getContent().
    * Replaces the content of #notes-list with the given html.
    */
-  setContent: function(newNoteIds, html) {
+  setContent: function(html) {
     $("#notes-list").html(html);
   },
 
@@ -532,6 +537,8 @@ var NoteList = {
       note_text.html(response.note).show();
 
       var note_form = note_li.find(".note-edit-form");
+      var original_content = note_form.find(".note-original-content");
+      original_content.remove();
       note_form.hide();
       note_form.find(".btn-save").enableButton();
 

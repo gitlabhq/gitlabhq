@@ -51,10 +51,7 @@
           %ul.well-list
             - @group.projects.each do |project|
               %li
-                - if project.public
-                  = public_icon
-                - else
-                  = private_icon
+                = visibility_level_icon(project.visibility_level)
                 = link_to project.name_with_namespace, project
                 .pull-right
                   = link_to 'Members', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"

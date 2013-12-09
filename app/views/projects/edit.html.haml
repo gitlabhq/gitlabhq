@@ -29,22 +29,7 @@
                 .controls= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
 
 
-          - if can?(current_user, :change_public_mode, @project)
-            %fieldset.public-mode
-              %legend
-                Public mode:
-              .control-group
-                = f.label :public, class: 'control-label' do
-                  %span Public access
-                .controls
-                  = f.check_box :public
-                  %span.descr
-                    If checked, this project can be cloned
-                    %em without any
-                    authentication.
-                    It will also be listed on the #{link_to "public access directory", public_root_path}.
-                    %em Any
-                    user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+          = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
 
           %fieldset.features
             %legend
@@ -124,7 +109,7 @@
                   %span Namespace
                 .controls
                   .control-group
-                    = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+                    = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'chosen' }
                   %ul
                     %li Be careful. Changing the project's namespace can have unintended side effects.
                     %li You can only transfer the project to namespaces you manage.
@@ -144,7 +129,9 @@
                 %span Path
               .controls
                 .control-group
-                  = f.text_field :path
+                  .input-append
+                    = f.text_field :path
+                    %span.add-on .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.

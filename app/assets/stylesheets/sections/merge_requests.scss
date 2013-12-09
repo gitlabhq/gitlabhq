@@ -110,9 +110,29 @@
 
 .merge-request-angle {
   text-align: center;
-  margin: 0;
+  margin: 0 auto;
+  background: #eee;
+  border-radius: 100px;
+  width: 60px;
+  line-height: 60px;
+  color: #777;
+  text-shadow: 0 1px 2px #FFF;
 }
 
 .merge-request-form-info {
-  padding: 15px 0;
+  padding-top: 15px;
+}
+
+.merge-request-branches {
+  .commit-row-message {
+    font-weight: normal !important;
+  }
+
+  .chosen-container .chosen-single {
+    padding: 2px 0 2px 10px;
+    span {
+      font-weight: bold;
+      color: #555;
+    }
+  }
 }

@@ -118,8 +118,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p247.tar.gz | tar xz
-    cd ruby-2.0.0-p247
+    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz | tar xz
+    cd ruby-2.0.0-p353
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -149,7 +149,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd gitlab-shell
 
     # switch to right version
-    sudo -u git -H git checkout v1.7.4
+    sudo -u git -H git checkout v1.7.9
 
     sudo -u git -H cp config.yml.example config.yml
 
@@ -180,10 +180,10 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     cd /home/git/gitlab
 
     # Checkout to stable release
-    sudo -u git -H git checkout 6-2-stable
+    sudo -u git -H git checkout 6-3-stable
 
 **Note:**
-You can change `6-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -227,10 +227,6 @@ You can change `6-2-stable` to `master` if you want the *bleeding edge* version,
     # Copy the example Rack attack config
     sudo -u git -H cp config/initializers/rack_attack.rb.example config/initializers/rack_attack.rb
 
-    # Enable rack attack middleware
-    # Find and uncomment the line 'config.middleware.use Rack::Attack'
-    sudo -u git -H editor config/application.rb
-
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
@@ -264,8 +260,6 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 ## Install Gems
 
     cd /home/git/gitlab
-
-    sudo gem install charlock_holmes --version '0.6.9.4'
 
     # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
@@ -428,5 +422,5 @@ These steps are fairly general and you will need to figure out the exact details
 ### Examples
 
 If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
-You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-Custom-Omniauth-Provider-Configurations).
+You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.

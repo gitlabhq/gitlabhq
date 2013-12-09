@@ -3,6 +3,7 @@ namespace :gitlab do
   task check: %w{gitlab:env:check
                  gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
+                 gitlab:ldap:check
                  gitlab:app:check}
 
 
@@ -611,10 +612,7 @@ namespace :gitlab do
     end
 
     def gitlab_shell_version
-      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
-      if File.readable?(gitlab_shell_version_file)
-        File.read(gitlab_shell_version_file)
-      end
+      Gitlab::Shell.new.version
     end
 
     def has_gitlab_shell3?
@@ -682,6 +680,44 @@ namespace :gitlab do
     end
   end
 
+  namespace :ldap do
+    task :check, [:limit] => :environment do |t, args|
+      args.with_defaults(limit: 100)
+      warn_user_is_not_gitlab
+      start_checking "LDAP"
+
+      if ldap_config.enabled
+        print_users(args.limit)
+      else
+        puts 'LDAP is disabled in config/gitlab.yml'
+      end
+
+      finished_checking "LDAP"
+    end
+
+    def print_users(limit)
+      puts "LDAP users with access to your GitLab server (limit: #{limit}):"
+      ldap.search(attributes: attributes, filter: filter, size: limit, return_result: false) do |entry|
+        puts "DN: #{entry.dn}\t#{ldap_config.uid}: #{entry[ldap_config.uid]}"
+      end
+    end
+
+    def attributes
+      [ldap_config.uid]
+    end
+
+    def filter
+      Net::LDAP::Filter.present?(ldap_config.uid)
+    end
+
+    def ldap
+      @ldap ||= OmniAuth::LDAP::Adaptor.new(ldap_config).connection
+    end
+
+    def ldap_config
+      @ldap_config ||= Gitlab.config.ldap
+    end
+  end
 
   # Helper methods
   ##########################
@@ -736,7 +772,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 7, 4)
+    required_version = Gitlab::VersionInfo.new(1, 7, 9)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "

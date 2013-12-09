@@ -70,7 +70,7 @@ module Gitlab
     config.assets.version = '1.0'
 
     # Uncomment and customize the last line to run in a non-root path
-    # WARNING: This feature is known to work, but unsupported
+    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
     # Note that four settings need to be changed for this to work.
     # 1) In your application.rb file: config.relative_url_root = "/gitlab"
     # 2) In your gitlab.yml file: relative_url_root: /gitlab
@@ -80,7 +80,14 @@ module Gitlab
     #
     # config.relative_url_root = "/gitlab"
 
-    # Uncomment to enable rack attack middleware
-    # config.middleware.use Rack::Attack
+    config.middleware.use Rack::Attack
+
+    # Allow access to GitLab API from other domains
+    config.middleware.use Rack::Cors do
+      allow do
+        origins '*'
+        resource '/api/*', headers: :any, methods: [:get, :post, :options, :put]
+      end
+    end
   end
 end

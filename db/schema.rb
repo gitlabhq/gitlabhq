@@ -11,7 +11,16 @@
 #
 # It's strongly recommended to check this file into your version control system.
 
-ActiveRecord::Schema.define(:version => 20131009115346) do
+ActiveRecord::Schema.define(:version => 20131202192556) do
+
+  create_table "broadcast_messages", :force => true do |t|
+    t.text     "message",    :null => false
+    t.datetime "starts_at"
+    t.datetime "ends_at"
+    t.integer  "alert_type"
+    t.datetime "created_at", :null => false
+    t.datetime "updated_at", :null => false
+  end
 
   create_table "deploy_keys_projects", :force => true do |t|
     t.integer  "deploy_key_id", :null => false
@@ -171,19 +180,18 @@ ActiveRecord::Schema.define(:version => 20131009115346) do
     t.datetime "created_at",                                   :null => false
     t.datetime "updated_at",                                   :null => false
     t.integer  "creator_id"
-    t.string   "default_branch"
     t.boolean  "issues_enabled",         :default => true,     :null => false
     t.boolean  "wall_enabled",           :default => true,     :null => false
     t.boolean  "merge_requests_enabled", :default => true,     :null => false
     t.boolean  "wiki_enabled",           :default => true,     :null => false
     t.integer  "namespace_id"
-    t.boolean  "public",                 :default => false,    :null => false
     t.string   "issues_tracker",         :default => "gitlab", :null => false
     t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",       :default => true,     :null => false
     t.datetime "last_activity_at"
     t.boolean  "imported",               :default => false,    :null => false
     t.string   "import_url"
+    t.integer  "visibility_level",       :default => 0,        :null => false
   end
 
   add_index "projects", ["creator_id"], :name => "index_projects_on_owner_id"
@@ -326,10 +334,13 @@ ActiveRecord::Schema.define(:version => 20131009115346) do
   create_table "web_hooks", :force => true do |t|
     t.string   "url"
     t.integer  "project_id"
-    t.datetime "created_at",                            :null => false
-    t.datetime "updated_at",                            :null => false
-    t.string   "type",       :default => "ProjectHook"
+    t.datetime "created_at",                                       :null => false
+    t.datetime "updated_at",                                       :null => false
+    t.string   "type",                  :default => "ProjectHook"
     t.integer  "service_id"
+    t.boolean  "push_events",           :default => true,          :null => false
+    t.boolean  "issues_events",         :default => false,         :null => false
+    t.boolean  "merge_requests_events", :default => false,         :null => false
   end
 
   add_index "web_hooks", ["project_id"], :name => "index_web_hooks_on_project_id"
