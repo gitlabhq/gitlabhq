@@ -11,3 +11,10 @@ Feature: Admin Broadcast Messages
     When submit form with new broadcast message
     Then I should be redirected to admin messages page
     And I should see newly created broadcast message
+
+  Scenario: Create a customized broadcast message
+    When submit form with new customized broadcast message
+    Then I should be redirected to admin messages page
+    And I should see newly created broadcast message
+    Then I visit dashboard page
+    And I should see a customized broadcast message

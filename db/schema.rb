@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20131217102743) do
     t.integer  "alert_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "color"
+    t.string   "font"
   end
 
   create_table "deploy_keys_projects", force: true do |t|

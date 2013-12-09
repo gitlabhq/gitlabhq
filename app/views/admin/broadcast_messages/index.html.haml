@@ -2,7 +2,9 @@
   Broadcast Messages
 %p.light
   Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more.
-%hr
+.broadcast-message-preview
+  %i.icon-bullhorn
+  %span Your message here
 
 = form_for [:admin, @broadcast_message] do |f|
   -if @broadcast_message.errors.any?
@@ -13,6 +15,17 @@
     = f.label :message
     .controls
       = f.text_area :message, class: "input-xxlarge", rows: 2, required: true
+      %div
+        = link_to '#', class: 'js-toggle-colors-link' do
+          Customize colors
+  .control-group.js-toggle-colors-container.hide
+    = f.label :color, "Background Color"
+    .controls
+      = f.text_field :color
+  .control-group.js-toggle-colors-container.hide
+    = f.label :font, "Font Color"
+    .controls
+      = f.text_field :font
   .control-group
     = f.label :starts_at
     .controls.datetime-controls
