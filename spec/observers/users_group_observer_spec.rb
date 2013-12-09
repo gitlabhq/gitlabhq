@@ -23,5 +23,10 @@ describe UsersGroupObserver do
       subject.should_receive(:notification)
       @membership.update_attribute(:group_access, UsersGroup::MASTER)
     end
+
+    it "does not send an email when the access level has not changed" do
+      subject.should_not_receive(:notification)
+      @membership.update_attribute(:group_access, UsersGroup::OWNER)
+    end
   end
 end
