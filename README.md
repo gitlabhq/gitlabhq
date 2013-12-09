@@ -46,13 +46,15 @@
 
 ** More details are in the [requirements doc](doc/install/requirements.md)
 
-### Official installation methods
+### Installation
+
+#### Official installation methods
 
 * [Manual installation guide for a production server](doc/install/installation.md)
 
 * [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation on a virtual machine with Vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
 
-### Third party one-click installers
+#### Third party one-click installers
 
 * [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab.
 
