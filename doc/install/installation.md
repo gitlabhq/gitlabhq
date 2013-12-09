@@ -281,7 +281,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 Download the init script (will be /etc/init.d/gitlab):
 
-    sudo ln -s lib/support/init.d/gitlab /etc/init.d/gitlab
+    sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
     sudo cp lib/support/init.d/gitlab /etc/default/gitlab
 
 If you installed gitlab in another directory or as a user other than the default you should change these settings in /etc/default/gitlab. Do not edit /etc/init.d/gitlab as it will be changed on upgrade.
