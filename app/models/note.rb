@@ -76,7 +76,7 @@ class Note < ActiveRecord::Base
       commit_id: (noteable.sha if noteable.respond_to? :sha),
       project: project,
       author: author,
-      note: "_mentioned in #{mentioner.gfm_reference}_",
+      note: "_mentioned in #{mentioner.gfm_reference}_" + ((mentioner.kind_of? Commit) ? ":  #{mentioner.message}" : "") + ((mentioner.kind_of? Issue) ? ": #{mentioner.title}" : ""),
       system: true
     }, without_protection: true)
   end
