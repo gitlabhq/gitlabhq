@@ -151,7 +151,7 @@ or start each component separately
 
 * [#gitlab IRC channel](http://www.freenode.net/) on Freenode is unofficial but offers a way to get in touch with other GitLab users who may be able to help you.
 
-* [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthousiast Jonathan M. Hethey is unofficial but it offers a good overview.
+* [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
 
 
 ### Getting in touch
