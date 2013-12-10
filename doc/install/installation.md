@@ -1,6 +1,6 @@
 # Select Version to Install
 Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
-this should be the highest numbered stable branch (example shown below). 
+this should be the highest numbered stable branch (example shown below).
 
 ![capture](https://f.cloud.github.com/assets/1192780/564911/2f9f3e1e-c5b7-11e2-9f89-98e527d1adec.png)
 
@@ -105,7 +105,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install -y postfix 
+	sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
@@ -247,7 +247,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # PostgreSQL
     sudo -u git cp config/database.yml.postgresql config/database.yml
 
-    
+
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
 
@@ -276,7 +276,12 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 Download the init script (will be /etc/init.d/gitlab):
 
     sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
-    sudo chmod +x /etc/init.d/gitlab
+
+And if you are installing with a non-default folder or user copy and edit the defaults file:
+
+    sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
+
+If you installed gitlab in another directory or as a user other than the default you should change these settings in /etc/default/gitlab. Do not edit /etc/init.d/gitlab as it will be changed on upgrade.
 
 Make GitLab start on boot:
 
@@ -364,7 +369,7 @@ a different host, you can configure its connection string via the
     # example
     production: redis://redis.example.tld:6379
 
-If you want to connect the Redis server via socket, then use the "unix:" URL scheme 
+If you want to connect the Redis server via socket, then use the "unix:" URL scheme
 and the path to the Redis socket file in the `config/resque.yml` file.
 
     # example
@@ -400,7 +405,7 @@ These steps are fairly general and you will need to figure out the exact details
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example) as a reference)
 
 * Add the gem to your [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile)
-                `gem "omniauth-your-auth-provider"` 
+                `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
 		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
 
