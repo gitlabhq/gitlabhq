@@ -39,7 +39,7 @@
                   %i.icon-lock
               .pull-right
                 - if can? current_user, :admin_project, @project
-                  = link_to 'Unprotect', [@project, branch], confirm: 'Branch will be writable for developers. Are you sure?', method: :delete, class: "btn btn-remove btn-small"
+                  = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
 
             - if commit = branch.commit
               = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do

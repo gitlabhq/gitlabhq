@@ -53,7 +53,7 @@
               %span.label.label-gray
                 = repository_size(project)
               = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-              = link_to 'Destroy', [project], confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
+              = link_to 'Destroy', [project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-small btn-remove"
         - if @projects.blank?
           %p.nothing_here_message 0 projects matches
     = paginate @projects, theme: "gitlab"

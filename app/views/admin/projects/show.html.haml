@@ -117,5 +117,5 @@
                 %span.light Owner
               - else
                 %span.light= users_project.human_access
-                = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, remote: true, class: "btn btn-small btn-remove" do
+                = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-small btn-remove" do
                   %i.icon-remove

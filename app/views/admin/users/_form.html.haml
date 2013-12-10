@@ -68,7 +68,7 @@
                 = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
               - else
                 %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                = link_to 'Block User', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
+                = link_to 'Block User', block_admin_user_path(@user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
       .control-group

@@ -46,7 +46,7 @@
 
       - unless @snippet.new_record?
         .pull-right.prepend-left-20
-          = link_to 'Remove', snippet_path(@snippet), confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn btn-remove delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+          = link_to 'Remove', snippet_path(@snippet), data: { confirm: 'Removed snippet cannot be restored! Are you sure?'}, method: :delete, class: "btn btn-remove delete-snippet", id: "destroy_snippet_#{@snippet.id}"
       = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
 
 
