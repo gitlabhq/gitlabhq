@@ -1,8 +1,4 @@
 class UsersProjectObserver < BaseObserver
-  def after_commit(users_project)
-    return if users_project.destroyed?
-  end
-
   def after_create(users_project)
     Event.create(
       project_id: users_project.project.id,

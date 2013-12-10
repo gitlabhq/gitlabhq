@@ -7,7 +7,7 @@ describe UsersProjectObserver do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   subject { UsersProjectObserver.instance }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
 
   describe "#after_commit" do
     it "should called when UsersProject created" do
@@ -35,7 +35,7 @@ describe UsersProjectObserver do
     end
 
     it "should called when UsersProject updated" do
-      subject.should_receive(:after_commit)
+      subject.should_receive(:after_update)
       @users_project.update_attribute(:project_access, UsersProject::MASTER)
     end
 
@@ -45,7 +45,7 @@ describe UsersProjectObserver do
     end
 
     it "should not called after UsersProject destroyed" do
-      subject.should_not_receive(:after_commit)
+      subject.should_not_receive(:after_update)
       @users_project.destroy
     end
   end
