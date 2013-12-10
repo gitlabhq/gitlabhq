@@ -203,7 +203,7 @@ group :development, :test do
   gem 'poltergeist', '~> 1.4.1'
 
   gem 'spork', '~> 1.0rc'
-  gem 'jasmine'
+  gem 'jasmine', '2.0.0.rc5'
 end
 
 group :test do
