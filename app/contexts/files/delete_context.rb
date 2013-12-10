@@ -1,3 +1,5 @@
+require_relative "base_context"
+
 module Files
   class DeleteContext < BaseContext
     def execute
