@@ -11,7 +11,7 @@ describe MergeRequestObserver do
   let(:closed_unassigned_mr) { create(:closed_merge_request, author: author, target_project: create(:project)) }
 
   before { subject.stub(:current_user).and_return(some_user) }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
   before { mr_mock.stub(:author_id) }
   before { mr_mock.stub(:target_project) }
   before { mr_mock.stub(:source_project) }

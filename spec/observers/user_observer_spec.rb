@@ -4,7 +4,7 @@ describe UserObserver do
   before(:each) { enable_observers }
   after(:each) {disable_observers}
   subject { UserObserver.instance }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
 
   it 'calls #after_create when new users are created' do
     new_user = build(:user)
