@@ -54,5 +54,5 @@
                   = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-small success"
                 - else
                   = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
-                = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+                = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! All tickets linked to this user will also be removed! Maybe block the user instead? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
     = paginate @users, theme: "gitlab"
