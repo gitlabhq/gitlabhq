@@ -71,7 +71,7 @@
 
             - if current_user.can_leave_project?(project)
               .pull-right
-                = link_to leave_project_team_members_path(project), confirm: "Leave project?", method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
+                = link_to leave_project_team_members_path(project), data: { confirm: "Leave project?"}, method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
                   %i.icon-signout
                   Leave
 
