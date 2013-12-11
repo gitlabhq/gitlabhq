@@ -404,4 +404,18 @@ class User < ActiveRecord::Base
     project.namespace != namespace &&
       project.project_member(self)
   end
+
+  # Reset project events cache related to this user
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when the user changes their avatar
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(author_id: self.id).
+      order('id DESC').limit(1000).
+      update_all(updated_at: Time.now)
+  end
 end
