@@ -82,7 +82,7 @@ module ProjectsHelper
   end
 
   def project_active_milestones
-    @project.milestones.active.order("due_date, title ASC").all
+    @project.milestones.active.order("due_date, title ASC")
   end
 
   def project_issues_trackers(current_tracker = nil)

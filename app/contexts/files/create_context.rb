@@ -1,3 +1,5 @@
+require_relative "base_context"
+
 module Files
   class CreateContext < BaseContext
     def execute

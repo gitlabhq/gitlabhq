@@ -42,10 +42,10 @@ class Project < ActiveRecord::Base
 
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
-  belongs_to :group,        foreign_key: "namespace_id", conditions: "type = 'Group'"
+  belongs_to :group, -> { where(type: Group) }, foreign_key: "namespace_id"
   belongs_to :namespace
 
-  has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
+  has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
@@ -59,7 +59,7 @@ class Project < ActiveRecord::Base
   has_many :events,             dependent: :destroy
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
   has_many :fork_merge_requests,dependent: :destroy, foreign_key: "source_project_id", class_name: MergeRequest
-  has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
+  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
   has_many :milestones,         dependent: :destroy
   has_many :notes,              dependent: :destroy
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
@@ -77,7 +77,7 @@ class Project < ActiveRecord::Base
 
   # Validations
   validates :creator, presence: true
-  validates :description, length: { within: 0..2000 }
+  validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter or digit should be first" }
@@ -87,7 +87,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :issues_tracker_id, length: { within: 0..255 }
+  validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
 
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id

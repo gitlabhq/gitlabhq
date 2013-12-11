@@ -308,6 +308,11 @@ If all items are green, then congratulations on successfully installing GitLab!
 However there are still a few steps left.
 
 
+## Compile assets
+
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+
+
 # 7. Nginx
 
 **Note:**

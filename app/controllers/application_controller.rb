@@ -1,3 +1,5 @@
+require 'gon'
+
 class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
@@ -7,6 +9,7 @@ class ApplicationController < ActionController::Base
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
   before_filter :add_gon_variables
+  before_filter :configure_permitted_parameters, if: :devise_controller?
 
   protect_from_forgery
 
@@ -198,5 +201,10 @@ class ApplicationController < ActionController::Base
       layout: false,
       formats: [:html]
     )
+  end
+
+  def configure_permitted_parameters
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password) }
+    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :name, :password, :password_confirmation) }
   end
 end

@@ -37,7 +37,7 @@
                 %i.icon-download-alt
                 Download
             - if can?(current_user, :admin_project, @project)
-              = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row', method: :delete, confirm: 'Removed tag cannot be restored. Are you sure?', remote: true do
+              = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
                 %i.icon-trash
 
   = paginate @tags, theme: 'gitlab'

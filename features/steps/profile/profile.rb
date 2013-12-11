@@ -85,7 +85,7 @@ class Profile < Spinach::FeatureSteps
   end
 
   step "I should see a password error message" do
-    page.should have_content "Password doesn't match confirmation"
+    page.should have_content "Password confirmation doesn't match"
   end
 
   step 'I reset my token' do
