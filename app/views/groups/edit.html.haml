@@ -56,7 +56,7 @@
                 .pull-right
                   = link_to 'Members', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
                   = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-                  = link_to 'Remove', project, confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
+                  = link_to 'Remove', project, data: { confirm: remove_project_message(project)}, method: :delete, class: "btn btn-small btn-remove"
             - if @group.projects.blank?
               %p.nothing_here_message This group has no projects yet
 
@@ -69,4 +69,4 @@
             %p
               %strong Removed group can not be restored!
 
-            = link_to 'Remove Group', @group, confirm: 'Removed group can not be restored! Are you sure?', method: :delete, class: "btn btn-remove"
+            = link_to 'Remove Group', @group, data: {confirm: 'Removed group can not be restored! Are you sure?'}, method: :delete, class: "btn btn-remove"
