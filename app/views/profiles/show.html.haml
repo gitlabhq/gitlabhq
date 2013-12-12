@@ -8,7 +8,7 @@
 
 
 
-= form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit_user form-horizontal" }  do |f|
+= form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit_user form-horizontal" }, authenticity_token: true do |f|
   -if @user.errors.any?
     %div.alert.alert-error
       %ul
