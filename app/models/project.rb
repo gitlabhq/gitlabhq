@@ -55,11 +55,15 @@ class Project < ActiveRecord::Base
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
 
+  # Merge Requests for target project should be removed with it
+  has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
+
+  # Merge requests from source project should be kept when source project was removed
+  has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
+
+  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
-  has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
-  has_many :fork_merge_requests,dependent: :destroy, foreign_key: "source_project_id", class_name: MergeRequest
-  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
   has_many :milestones,         dependent: :destroy
   has_many :notes,              dependent: :destroy
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"

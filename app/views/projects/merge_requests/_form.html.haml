@@ -10,7 +10,7 @@
       .span5
         .clearfix
           .pull-left
-            = f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span3'})
+            = f.select(:source_project_id,[[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span3'})
           .pull-left
             &nbsp;
             = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span2'})

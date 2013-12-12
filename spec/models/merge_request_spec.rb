@@ -112,7 +112,7 @@ describe MergeRequest do
     let(:commit2) { mock('commit2', closes_issues: [issue1]) }
 
     before do
-      subject.stub(unmerged_commits: [commit0, commit1, commit2])
+      subject.stub(commits: [commit0, commit1, commit2])
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do

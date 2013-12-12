@@ -79,6 +79,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
+    # If we close MergeRequest we want to ignore validation
+    # so we can close broken one (Ex. fork project removed)
+    if params[:merge_request] == {"state_event"=>"close"}
+      @merge_request.allow_broken = true
+
+      if @merge_request.close
+        opts = { notice: 'Merge request was successfully closed.' }
+      else
+        opts = { alert: 'Failed to close merge request.' }
+      end
+
+      redirect_to [@merge_request.target_project, @merge_request], opts
+      return
+    end
+
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
       @merge_request.reload_code
       @merge_request.mark_as_unchecked
@@ -160,14 +175,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def validates_merge_request
+    # If source project was removed (Ex. mr from fork to origin)
+    return invalid_mr unless @merge_request.source_project
+
     # Show git not found page
     # if there is no saved commits between source & target branch
     if @merge_request.commits.blank?
-       # and if source target doesn't exist
-       return invalid_mr unless @merge_request.target_project.repository.branch_names.include?(@merge_request.target_branch)
+      # and if target branch doesn't exist
+      return invalid_mr unless @merge_request.target_branch_exists?
 
-       # or if source branch doesn't exist
-       return invalid_mr unless @merge_request.source_project.repository.branch_names.include?(@merge_request.source_branch)
+      # or if source branch doesn't exist
+      return invalid_mr unless @merge_request.source_branch_exists?
     end
   end
 
