@@ -12,7 +12,6 @@ before_install:
 branches:
   only:
     - 'master'
-    - 'rails4'
 rvm:
   - 2.0.0
 services:
