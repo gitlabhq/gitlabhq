@@ -262,7 +262,7 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues
     if target_branch == project.default_branch
-      unmerged_commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
+      commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
     else
       []
     end
@@ -271,6 +271,34 @@ class MergeRequest < ActiveRecord::Base
   # Mentionable override.
   def gfm_reference
     "merge request !#{iid}"
+  end
+
+  def target_project_path
+    if target_project
+      target_project.path_with_namespace
+    else
+      "(removed)"
+    end
+  end
+
+  def source_project_path
+    if source_project
+      source_project.path_with_namespace
+    else
+      "(removed)"
+    end
+  end
+
+  def source_branch_exists?
+    return false unless self.source_project
+
+    self.source_project.repository.branch_names.include?(self.source_branch)
+  end
+
+  def target_branch_exists?
+    return false unless self.target_project
+
+    self.target_project.repository.branch_names.include?(self.target_branch)
   end
 
   private
