@@ -10,7 +10,7 @@
         %strong Step 1.
         Checkout target branch and get recent objects from GitLab
         Assuming remote for  #{@merge_request.target_project.path_with_namespace} is called #{target_remote}
-        remote for  #{@merge_request.source_project.path_with_namespace} is called #{source_remote}
+        remote for  #{@merge_request.source_project_path} is called #{source_remote}
       %pre.dark
         :preserve
           git checkout #{target_remote} #{@merge_request.target_branch}
