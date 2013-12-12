@@ -15,5 +15,7 @@ if File.exists?(aws_file)
     config.fog_directory  = AWS_CONFIG['bucket']                    # required
     config.fog_public     = false                                   # optional, defaults to true
     config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}  # optional, defaults to {}
+    config.fog_authenticated_url_expiration = 1 << 29               # optional time (in seconds) that authenticated urls will be valid.
+                                                                    # when fog_public is false and provider is AWS or Google, defaults to 600
   end
 end
