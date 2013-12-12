@@ -24,7 +24,7 @@
             %li= link_to "Email Patches", project_merge_request_path(@project, @merge_request, format: :patch)
             %li= link_to "Plain Diff",    project_merge_request_path(@project, @merge_request, format: :diff)
 
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: { state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
 
         = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn grouped", id:"edit_merge_request" do
           %i.icon-edit

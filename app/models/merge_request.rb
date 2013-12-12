@@ -35,6 +35,10 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
+  # When this attribute is true some MR validation is ignored
+  # It allows us to close or modify broken merge requests
+  attr_accessor :allow_broken
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -80,7 +84,7 @@ class MergeRequest < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  validates :source_project, presence: true
+  validates :source_project, presence: true, unless: :allow_broken
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true

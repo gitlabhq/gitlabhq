@@ -79,6 +79,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
+    # If we close MergeRequest we want to ignore validation
+    # so we can close broken one (Ex. fork project removed)
+    if params[:merge_request] == {"state_event"=>"close"}
+      @merge_request.allow_broken = true
+
+      if @merge_request.close
+        opts = { notice: 'Merge request was successfully closed.' }
+      else
+        opts = { alert: 'Failed to close merge request.' }
+      end
+
+      redirect_to [@merge_request.target_project, @merge_request], opts
+      return
+    end
+
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
       @merge_request.reload_code
       @merge_request.mark_as_unchecked
