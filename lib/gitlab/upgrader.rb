@@ -12,7 +12,11 @@ module Gitlab
         puts "You use latest GitLab version"
       else
         puts "Newer GitLab version is available"
-        answer = prompt("Do you want to upgrade (yes/no)? ".blue, %w{yes no})
+        answer = if ENV['force'] == "yes"
+                   "yes"
+                 else
+                   prompt("Do you want to upgrade (yes/no)? ".blue, %w{yes no})
+                 end
 
         if answer == "yes"
           upgrade
