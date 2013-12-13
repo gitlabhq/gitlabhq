@@ -39,6 +39,7 @@ class Projects::NotesController < Projects::ApplicationController
     @note = @project.notes.find(params[:id])
     return access_denied! unless can?(current_user, :admin_note, @note)
     @note.destroy
+    @note.reset_events_cache
 
     respond_to do |format|
       format.js { render nothing: true }
@@ -50,6 +51,7 @@ class Projects::NotesController < Projects::ApplicationController
     return access_denied! unless can?(current_user, :admin_note, @note)
 
     @note.update_attributes(params[:note])
+    @note.reset_events_cache
 
     respond_to do |format|
       format.js do
