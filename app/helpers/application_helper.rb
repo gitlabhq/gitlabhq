@@ -72,7 +72,7 @@ module ApplicationHelper
 
   def last_commit(project)
     if project.repo_exists?
-      time_ago_in_words(project.repository.commit.committed_date) + " ago"
+      time_ago_with_tooltip(project.repository.commit.committed_date) + " ago"
     else
       "Never"
     end
@@ -136,9 +136,9 @@ module ApplicationHelper
     Digest::SHA1.hexdigest string
   end
 
-  def project_last_activity project
+  def project_last_activity(project)
     if project.last_activity_at
-      time_ago_in_words(project.last_activity_at) + " ago"
+      time_ago_with_tooltip(project.last_activity_at, 'bottom', 'last_activity_time_ago') + " ago"
     else
       "Never"
     end
@@ -214,5 +214,15 @@ module ApplicationHelper
     content_tag :div, class: user_color_scheme_class do
       Pygments::Lexer[:js].highlight(string).html_safe
     end
+  end
+
+  def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
+    capture_haml do
+      haml_tag :time, time_ago_in_words(date),
+        class: html_class, datetime: date, title: date.stamp("Aug 21, 2011 9:23pm"),
+        data: { toggle: 'tooltip', placement: placement }
+
+      haml_tag :script, "$('." + html_class + "').tooltip()"
+    end.html_safe
   end
 end

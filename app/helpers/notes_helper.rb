@@ -31,8 +31,14 @@ module NotesHelper
 
   def note_timestamp(note)
     # Shows the created at time and the updated at time if different
-    ts = "#{time_ago_in_words(note.created_at)} ago"
-    ts << content_tag(:small, " (Edited #{time_ago_in_words(note.updated_at)} ago)") if note.updated_at != note.created_at
+    ts = "#{time_ago_with_tooltip(note.created_at, 'bottom', 'note_created_ago')} ago"
+    if note.updated_at != note.created_at
+      ts << capture_haml do
+        haml_tag :small do
+          haml_concat " (Edited #{time_ago_with_tooltip(note.updated_at, 'bottom', 'note_edited_ago')} ago)"
+        end
+      end
+    end
     ts.html_safe
   end
 end

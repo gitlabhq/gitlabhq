@@ -24,8 +24,7 @@
           .pull-right
             %small.cdark
               %i.icon-calendar
-              = time_ago_in_words(commit.committed_date)
-              ago
+              #{time_ago_with_tooltip(commit.committed_date)} ago
         %p.prepend-left-20
           = link_to commit.short_id(8), project_commit_path(@project, commit), class: "monospace"
           &ndash;
