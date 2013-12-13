@@ -44,14 +44,11 @@ module Gitlab
       last_tag = git_tags.last.match(/v\d\.\d\.\d/).to_s
     end
 
-    def git_las_tags
-    end
-
     def update_commands
       {
         "Stash changed files" => "git stash",
         "Get latest code" => "git fetch",
-        "Switch to new version" => "git checkout v#{latest_version}",
+        "Switch to new version" => "git checkout -b v#{latest_version}",
         "Install gems" => "bundle",
         "Migrate DB" => "bundle exec rake db:migrate RAILS_ENV=production",
         "Recompile assets" => "bundle exec rake assets:clean assets:precompile RAILS_ENV=production",
