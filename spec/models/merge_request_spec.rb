@@ -107,9 +107,9 @@ describe MergeRequest do
   describe 'detection of issues to be closed' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
-    let(:commit0) { mock('commit0', closes_issues: [issue0]) }
-    let(:commit1) { mock('commit1', closes_issues: [issue0]) }
-    let(:commit2) { mock('commit2', closes_issues: [issue1]) }
+    let(:commit0) { double('commit0', closes_issues: [issue0]) }
+    let(:commit1) { double('commit1', closes_issues: [issue0]) }
+    let(:commit2) { double('commit2', closes_issues: [issue1]) }
 
     before do
       subject.stub(commits: [commit0, commit1, commit2])

@@ -59,7 +59,7 @@ end
 
 def fork_project(from_project, user)
   context = Projects::ForkContext.new(from_project, user)
-  shell = mock("gitlab_shell")
+  shell = double("gitlab_shell")
   shell.stub(fork_repository: true)
   context.stub(gitlab_shell: shell)
   context.execute

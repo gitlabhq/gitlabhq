@@ -87,8 +87,8 @@ class ProjectTeam
   def import(source_project)
     target_project = project
 
-    source_team = source_project.users_projects.all
-    target_team = target_project.users_projects.all
+    source_team = source_project.users_projects.to_a
+    target_team = target_project.users_projects.to_a
     target_user_ids = target_team.map(&:user_id)
 
     source_team.reject! do |tm|
