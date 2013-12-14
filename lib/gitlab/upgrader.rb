@@ -14,7 +14,7 @@ module Gitlab
         answer = if ARGV.first == "-y"
                    "yes"
                  else
-                   prompt("Do you want to upgrade (yes/no)? ".blue, %w{yes no})
+                   prompt("Do you want to upgrade (yes/no)? ", %w{yes no})
                  end
 
         if answer == "yes"
