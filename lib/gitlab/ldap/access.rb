@@ -40,13 +40,22 @@ module Gitlab
         end
       end
 
+      # Add user to GitLab group
+      # In case user already exists: update his access level
+      # only if existing permissions are lower than ldap one.
       def add_user_to_groups(user_id, group_cn)
         groups = ::Group.where(ldap_cn: group_cn)
         groups.each do |group|
-          group.add_users([user_id], group.ldap_access) if group.ldap_access.present?
+          next unless group.ldap_access.present?
+
+          group_access = group.users_groups.find_by_user_id(user_id)
+          next if group_access && group_access.group_access >= group.ldap_access
+
+          group.add_users([user_id], group.ldap_access)
         end
       end
 
+      # Remove user from GitLab group
       def remove_user_from_groups(user_id, group_cn)
         groups = ::Group.where(ldap_cn: group_cn)
         groups.each do |group|
