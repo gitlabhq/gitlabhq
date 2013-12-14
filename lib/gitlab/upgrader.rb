@@ -1,10 +1,9 @@
-require "colored"
 require_relative "version_info"
 
 module Gitlab
   class Upgrader
     def execute
-      puts "GitLab #{current_version.major} upgrade tool".yellow
+      puts "GitLab #{current_version.major} upgrade tool"
       puts "Your version is #{current_version}"
       puts "Latest available version for GitLab #{current_version.major} is #{latest_version}"
 
@@ -62,12 +61,12 @@ module Gitlab
 
     def upgrade
       update_commands.each do |title, cmd|
-        puts title.yellow
+        puts title
         puts " -> #{cmd}"
         if system(cmd)
-          puts " -> OK".green
+          puts " -> OK"
         else
-          puts " -> FAILED".red
+          puts " -> FAILED"
           puts "Failed to upgrade. Try to repeat task or proceed with upgrade manually "
           exit 1
         end
