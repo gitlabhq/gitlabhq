@@ -41,6 +41,7 @@
 #  confirmed_at           :datetime
 #  confirmation_sent_at   :datetime
 #  unconfirmed_email      :string(255)
+#  hide_no_ssh_key        :boolean          default(FALSE), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -52,7 +53,7 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at, :avatar,
+                  :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
                   as: [:default, :admin]
 
   attr_accessible :projects_limit, :can_create_group,
