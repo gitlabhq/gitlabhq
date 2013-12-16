@@ -64,4 +64,18 @@ class Issue < ActiveRecord::Base
   def gfm_reference
     "issue ##{iid}"
   end
+
+  # Reset issue events cache
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when an issue is updated
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(target_id: self.id, target_type: 'Issue').
+      order('id DESC').limit(100).
+      update_all(updated_at: Time.now)
+  end
 end

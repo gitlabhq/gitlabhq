@@ -97,6 +97,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
       @merge_request.reload_code
       @merge_request.mark_as_unchecked
+      @merge_request.reset_events_cache
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
     else
       render "edit"
