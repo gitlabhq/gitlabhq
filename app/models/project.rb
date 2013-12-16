@@ -472,4 +472,9 @@ class Project < ActiveRecord::Base
   def visibility_level_field
     visibility_level
   end
+
+  def change_head(branch)
+    gitlab_shell.update_repository_head(self.path_with_namespace, branch)
+    reload_default_branch
+  end
 end
