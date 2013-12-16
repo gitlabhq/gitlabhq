@@ -32,7 +32,7 @@ module Files
       if created_successfully
         success
       else
-        error("Your changes could not be commited, because the file has been changed")
+        error("Your changes could not be committed, because the file has been changed")
       end
     end
   end
