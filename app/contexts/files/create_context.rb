@@ -21,13 +21,13 @@ module Files
       file_path = path
 
       unless file_name =~ Gitlab::Regex.path_regex
-        return error("Your changes could not be commited, because file name contains not allowed characters")
+        return error("Your changes could not be committed, because file name contains not allowed characters")
       end
 
       blob = repository.blob_at(ref, file_path)
 
       if blob
-        return error("Your changes could not be commited, because file with such name exists")
+        return error("Your changes could not be committed, because file with such name exists")
       end
 
       new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, file_path)
@@ -39,7 +39,7 @@ module Files
       if created_successfully
         success
       else
-        error("Your changes could not be commited, because the file has been changed")
+        error("Your changes could not be committed, because the file has been changed")
       end
     end
   end
