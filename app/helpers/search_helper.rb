@@ -73,14 +73,14 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete
-    current_user.authorized_projects.map do |p|
+    current_user.authorized_projects.non_archived.map do |p|
       { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) }
     end
   end
 
   # Autocomplete results for the current user's projects
   def public_projects_autocomplete
-    Project.public_or_internal_only(current_user).map do |p|
+    Project.public_or_internal_only(current_user).non_archived.map do |p|
       { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) }
     end
   end

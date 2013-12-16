@@ -116,6 +116,8 @@ class Project < ActiveRecord::Base
   scope :public_only, -> { where(visibility_level: PUBLIC) }
   scope :public_or_internal_only, ->(user) { where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ]) }
 
+  scope :non_archived, -> { where(archived: false) }
+
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
   class << self
@@ -132,7 +134,7 @@ class Project < ActiveRecord::Base
     end
 
     def search query
-      joins(:namespace).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
+      joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
     def find_with_namespace(id)
@@ -471,5 +473,13 @@ class Project < ActiveRecord::Base
 
   def visibility_level_field
     visibility_level
+  end
+
+  def archive!
+    update_attribute(:archived, true)
+  end
+
+  def unarchive!
+    update_attribute(:archived, false)
   end
 end

@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
   layout 'navless', only: [:new, :create, :fork]
@@ -113,6 +113,24 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => @suggestions }
+    end
+  end
+
+  def archive
+    return access_denied! unless can?(current_user, :archive_project, project)
+    project.archive!
+
+    respond_to do |format|
+      format.html { redirect_to @project }
+    end
+  end
+
+  def unarchive
+    return access_denied! unless can?(current_user, :archive_project, project)
+    project.unarchive!
+
+    respond_to do |format|
+      format.html { redirect_to @project }
     end
   end
 

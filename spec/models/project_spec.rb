@@ -21,6 +21,7 @@
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
+#  archived               :boolean          default(FALSE), not null
 #
 
 require 'spec_helper'

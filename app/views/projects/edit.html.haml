@@ -98,6 +98,33 @@
         %i.icon-chevron-down
 
     .js-toggle-visibility-container.hide
+      - if can? current_user, :archive_project, @project
+        .ui-box.ui-box-danger
+          .title
+            - if @project.archived?
+              Unarchive project
+            - else
+              Archive project
+          .ui-box-body
+            - if @project.archived?
+              %p
+                Unarchiving the project will mark its repository as active.
+                %br
+                The project can be committed to.
+                %br
+                %strong Once active this project shows up in the search and on the dashboard.
+              = link_to 'Unarchive', unarchive_project_path(@project), confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be comitted to again.", method: :post, class: "btn btn-remove"
+            - else
+              %p
+                Archiving the project will mark its repository as read-only.
+                %br
+                It is hidden from the dashboard and doesn't show up in searches.
+                %br
+                %strong Archived projects cannot be committed to!
+              = link_to 'Archive', archive_project_path(@project), confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to.", method: :post, class: "btn btn-remove"
+      - else
+        %p.nothing_here_message Only the project owner can archive a project
+
       - if can?(current_user, :change_namespace, @project)
         .ui-box.ui-box-danger
           .title Transfer project
