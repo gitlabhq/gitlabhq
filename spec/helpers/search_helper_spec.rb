@@ -8,7 +8,9 @@ describe SearchHelper do
 
   describe 'search_autocomplete_source' do
     context "with no current user" do
-      before { stub!(:current_user).and_return(nil) }
+      before do
+        allow(self).to receive(:current_user).and_return(nil)
+      end
 
       it "it returns nil" do
         search_autocomplete_source.should be_nil
@@ -20,7 +22,7 @@ describe SearchHelper do
       let(:result) { JSON.parse(search_autocomplete_source) }
 
       before do
-        stub!(:current_user).and_return(user)
+        allow(self).to receive(:current_user).and_return(user)
       end
 
       it "includes Help sections" do

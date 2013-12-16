@@ -322,14 +322,14 @@ class Project < ActiveRecord::Base
     c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
     # Update code for merge requests into project between project branches
-    mrs = self.merge_requests.opened.by_branch(branch_name).all
+    mrs = self.merge_requests.opened.by_branch(branch_name).to_a
     # Update code for merge requests between project and project fork
-    mrs += self.fork_merge_requests.opened.by_branch(branch_name).all
+    mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
 
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests
-    mrs = self.merge_requests.opened.where(target_branch: branch_name).all
+    mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
     mrs.each { |merge_request| merge_request.merge!(user.id) }
 

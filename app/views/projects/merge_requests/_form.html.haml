@@ -44,7 +44,7 @@
         = f.label :milestone_id do
           %i.icon-time
           Milestone
-        .controls= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+        .controls= f.select(:milestone_id, @project.milestones.active.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
     .control-group
       = f.label :description, "Description"
       .controls

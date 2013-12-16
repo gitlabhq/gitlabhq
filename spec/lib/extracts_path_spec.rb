@@ -7,7 +7,7 @@ describe ExtractsPath do
 
   before do
     @project = project
-    project.stub(repository: stub(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0']))
+    project.stub(repository: double(ref_names: ['master', 'foo/bar/baz', 'v1.0.0', 'v2.0.0']))
     project.stub(path_with_namespace: 'gitlab/gitlab-ci')
   end
 

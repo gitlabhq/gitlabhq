@@ -34,7 +34,7 @@ describe Issue, "Issuable" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it "matches by title" do
-      described_class.search('able').all.should == [searchable_issue]
+      described_class.search('able').should == [searchable_issue]
     end
   end
 

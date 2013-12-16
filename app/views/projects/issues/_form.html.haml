@@ -29,7 +29,7 @@
             = f.label :milestone_id do
               %i.icon-time
               Milestone
-            .controls= f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+            .controls= f.select(:milestone_id, @project.milestones.active.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
 
       .ui-box-bottom
         .control-group

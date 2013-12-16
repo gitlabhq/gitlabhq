@@ -3,7 +3,7 @@ require 'spec_helper'
 describe ApplicationHelper do
   describe 'current_controller?' do
     before do
-      controller.stub!(:controller_name).and_return('foo')
+      controller.stub(:controller_name).and_return('foo')
     end
 
     it "returns true when controller matches argument" do
@@ -22,7 +22,7 @@ describe ApplicationHelper do
 
   describe 'current_action?' do
     before do
-      stub!(:action_name).and_return('foo')
+      allow(self).to receive(:action_name).and_return('foo')
     end
 
     it "returns true when action matches argument" do
@@ -52,7 +52,7 @@ describe ApplicationHelper do
     it "should call gravatar_icon when no avatar is present" do
       user = create(:user)
       user.save!
-      stub!(:gravatar_icon).and_return('gravatar_method_called')
+      allow(self).to receive(:gravatar_icon).and_return('gravatar_method_called')
       avatar_icon(user.email).to_s.should == "gravatar_method_called"
     end
   end
@@ -70,33 +70,33 @@ describe ApplicationHelper do
     end
 
     it "should return default gravatar url" do
-      stub!(:request).and_return(double(:ssl? => false))
+      allow(self).to receive(:request).and_return(double(:ssl? => false))
       gravatar_icon(user_email).should match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
     end
 
     it "should use SSL when appropriate" do
-      stub!(:request).and_return(double(:ssl? => true))
+      allow(self).to receive(:request).and_return(double(:ssl? => true))
       gravatar_icon(user_email).should match('https://secure.gravatar.com')
     end
 
     it "should return custom gravatar path when gravatar_url is set" do
-      stub!(:request).and_return(double(:ssl? => false))
+      allow(self).to receive(:request).and_return(double(:ssl? => false))
       Gitlab.config.gravatar.stub(:plain_url).and_return('http://example.local/?s=%{size}&hash=%{hash}')
       gravatar_icon(user_email, 20).should == 'http://example.local/?s=20&hash=b58c6f14d292556214bd64909bcdb118'
     end
 
     it "should accept a custom size" do
-      stub!(:request).and_return(double(:ssl? => false))
+      allow(self).to receive(:request).and_return(double(:ssl? => false))
       gravatar_icon(user_email, 64).should match(/\?s=64/)
     end
 
     it "should use default size when size is wrong" do
-      stub!(:request).and_return(double(:ssl? => false))
+      allow(self).to receive(:request).and_return(double(:ssl? => false))
       gravatar_icon(user_email, nil).should match(/\?s=40/)
     end
 
     it "should be case insensitive" do
-      stub!(:request).and_return(double(:ssl? => false))
+      allow(self).to receive(:request).and_return(double(:ssl? => false))
       gravatar_icon(user_email).should == gravatar_icon(user_email.upcase + " ")
     end
 
@@ -105,7 +105,7 @@ describe ApplicationHelper do
   describe "user_color_scheme_class" do
     context "with current_user is nil" do
       it "should return a string" do
-        stub!(:current_user).and_return(nil)
+        allow(self).to receive(:current_user).and_return(nil)
         user_color_scheme_class.should be_kind_of(String)
       end
     end
@@ -115,7 +115,7 @@ describe ApplicationHelper do
         context "with color_scheme_id == #{color_scheme_id}" do
           it "should return a string" do
             current_user = double(:color_scheme_id => color_scheme_id)
-            stub!(:current_user).and_return(current_user)
+            allow(self).to receive(:current_user).and_return(current_user)
             user_color_scheme_class.should be_kind_of(String)
           end
         end

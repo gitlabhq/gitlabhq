@@ -435,7 +435,7 @@ describe GitlabMarkdownHelper do
 
   describe "#render_wiki_content" do
     before do
-      @wiki = stub('WikiPage')
+      @wiki = double('WikiPage')
       @wiki.stub(:content).and_return('wiki content')
     end
 
@@ -449,7 +449,7 @@ describe GitlabMarkdownHelper do
 
     it "should use the Gollum renderer for all other file types" do
       @wiki.stub(:format).and_return(:rdoc)
-      formatted_content_stub = stub('formatted_content')
+      formatted_content_stub = double('formatted_content')
       formatted_content_stub.should_receive(:html_safe)
       @wiki.stub(:formatted_content).and_return(formatted_content_stub)
 
