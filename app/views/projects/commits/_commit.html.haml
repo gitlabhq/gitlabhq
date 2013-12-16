@@ -13,7 +13,4 @@
 
   .commit-row-info
     = commit_author_link(commit, avatar: true, size: 16)
-    %time.committed_ago{ datetime: commit.committed_date, title: commit.committed_date.stamp("Aug 21, 2011 9:23pm") }
-      = time_ago_in_words(commit.committed_date)
-      ago
-      &nbsp;
+    #{time_ago_with_tooltip(commit.committed_date)} ago &nbsp;
