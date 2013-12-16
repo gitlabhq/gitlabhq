@@ -53,7 +53,7 @@ window.unbindEvents = ->
 
 document.addEventListener("page:fetch", startSpinner)
 document.addEventListener("page:fetch", unbindEvents)
-document.addEventListener("page:receive", stopSpinner)
+document.addEventListener("page:change", stopSpinner)
 
 $ ->
   # Click a .one_click_select field, select the contents
