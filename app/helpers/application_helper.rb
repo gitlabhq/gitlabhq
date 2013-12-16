@@ -62,7 +62,7 @@ module ApplicationHelper
     size = 40 if size.nil? || size <= 0
 
     if !Gitlab.config.gravatar.enabled || user_email.blank?
-      'no_avatar.png'
+      '/assets/no_avatar.png'
     else
       gravatar_url = request.ssl? || gitlab_config.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
