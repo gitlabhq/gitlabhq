@@ -25,7 +25,7 @@ class EmailsOnPushService < Service
   end
 
   def description
-    'Send emails to recipients on push'
+    'Email the commits and diff of each push to a list of recipients.'
   end
 
   def to_param
