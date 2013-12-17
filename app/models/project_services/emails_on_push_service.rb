@@ -38,7 +38,7 @@ class EmailsOnPushService < Service
 
   def fields
     [
-      { type: 'textarea', name: 'recipients', placeholder: 'Recipients' },
+      { type: 'textarea', name: 'recipients', placeholder: 'Emails separated by whitespace' },
     ]
   end
 end
