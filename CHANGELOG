@@ -10,6 +10,19 @@ v 6.4.0
   - Project web hooks now support issues and merge request events
   - Visiting project page while not logged in will redirect to sign-in instead of 404 (Jason Hollingsworth)
   - Expire event cache on avatar creation/removal (Drew Blessing)
+  - Archiving old projects (Steven Thonus)
+  - Rails 4
+  - Add time ago tooltips to show actual date/time
+  - UI: Fixed UI for admin system hooks
+  - Ruby script for easier GitLab upgrade
+  - Do not remove Merge requests if fork project was removed
+  - Improve sign-in/signup UX
+  - Add resend confirmation link to sign-in page
+  - Set noreply@HOSTNAME for reply_to field in all emails
+  - Show GitLab API version on Admin#dashboard
+  - API Cross-origin resource sharing
+  - Show READMe link at project home page
+  - Show repo size for projects in Admin area
 
 v 6.3.0
   - API for adding gitlab-ci service
