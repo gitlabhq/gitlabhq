@@ -32,8 +32,16 @@ class EmailsOnPushService < Service
     'emails_on_push'
   end
 
-  def execute
-    true
+  def execute(push_data)
+    before_sha = push_data[:before]
+    after_sha = push_data[:after]
+    branch = push_data[:ref]
+
+    compare = Gitlab::Git::Compare.new(project.repository.raw_repository, before_sha, after_sha)
+
+    recipients.split(" ").each do |recipient|
+      Notify.delay.repository_push_email(project_id, recipient, branch, compare)
+    end
   end
 
   def fields
