@@ -23,6 +23,13 @@
 #  visibility_level       :integer          default(0), not null
 #
 
+require_relative "project_services/assembla_service"
+require_relative "project_services/campfire_service"
+require_relative "project_services/flowdock_service"
+require_relative "project_services/gitlab_ci_service"
+require_relative "project_services/hipchat_service"
+require_relative "project_services/pivotaltracker_service"
+
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
