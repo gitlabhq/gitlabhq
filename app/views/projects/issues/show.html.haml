@@ -26,7 +26,12 @@
 .back-link
   = link_to project_issues_path(@project) do
     &larr; To issues list
-
+  %span.milestone-nav-link
+    - if @issue.milestone
+      | 
+      = link_to project_milestone_path(@project, @issue.milestone) do
+        <strong>Milestone:</strong>
+        = @issue.milestone.title
 
 .ui-box.ui-box-show
   .ui-box-head
@@ -39,21 +44,7 @@
 
   .ui-box-body
     %cite.cgray
-      Created by #{link_to_member(@project, @issue.author)}
-      - if @issue.assignee
-        \ and currently assigned to #{link_to_member(@project, @issue.assignee)}
-
-    - if @issue.milestone
-      - milestone = @issue.milestone
-      %cite.cgray and attached to milestone
-      %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
-
-    .pull-right
-      - @issue.labels.each do |label|
-        %span{class: "label #{label_css_class(label.name)}"}
-          %i.icon-tag
-          = label.name
-        &nbsp;
+      = render partial: 'issue_context', locals: { issue: @issue }
 
   - if @issue.description.present?
     .ui-box-bottom
