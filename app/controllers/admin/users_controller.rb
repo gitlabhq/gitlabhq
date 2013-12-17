@@ -88,7 +88,13 @@ class Admin::UsersController < Admin::ApplicationController
     # 1. Remove groups where user is the only owner
     user.solo_owned_groups.map(&:destroy)
 
-    # 2. Remove user with all authored content including personal projects
+    # 2. Pass the issues of the deleted user to Orphan Issues Collector
+    orphan_issues_collector = User.find_by_username("orphan_issues_collector")
+    user.issues.each do |issue|
+	issue.id = orphan_issues_collector.id
+    end
+    
+    # 3. Remove user with all authored content including personal projects
     user.destroy
 
     respond_to do |format|
