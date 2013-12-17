@@ -25,6 +25,7 @@
 
 require_relative "project_services/assembla_service"
 require_relative "project_services/campfire_service"
+require_relative "project_services/emails_on_push_service"
 require_relative "project_services/flowdock_service"
 require_relative "project_services/gitlab_ci_service"
 require_relative "project_services/hipchat_service"
@@ -55,6 +56,7 @@ class Project < ActiveRecord::Base
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :emails_on_push_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
@@ -244,7 +246,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push)
   end
 
   def gitlab_ci?
