@@ -38,7 +38,7 @@ describe ApplicationHelper do
       current_action?(:baz, :bar, :foo).should be_true
     end
   end
-  
+
   describe "avatar_icon" do
     avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
 
@@ -62,11 +62,11 @@ describe ApplicationHelper do
 
     it "should return a generic avatar path when Gravatar is disabled" do
       Gitlab.config.gravatar.stub(:enabled).and_return(false)
-      gravatar_icon(user_email).should == 'no_avatar.png'
+      gravatar_icon(user_email).should == '/assets/no_avatar.png'
     end
 
     it "should return a generic avatar path when email is blank" do
-      gravatar_icon('').should == 'no_avatar.png'
+      gravatar_icon('').should == '/assets/no_avatar.png'
     end
 
     it "should return default gravatar url" do
