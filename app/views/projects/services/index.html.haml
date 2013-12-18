@@ -3,7 +3,7 @@
 %hr
 
 %ul.bordered-list
-  - @services.each do |service|
+  - @services.sort_by(&:title).each do |service|
     %li
       %h4
         = link_to edit_project_service_path(@project, service.to_param) do

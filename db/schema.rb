@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131214224427) do
+ActiveRecord::Schema.define(version: 20131217102743) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -219,6 +219,7 @@ ActiveRecord::Schema.define(version: 20131214224427) do
     t.string   "project_url"
     t.string   "subdomain"
     t.string   "room"
+    t.text     "recipients"
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
