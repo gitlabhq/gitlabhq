@@ -81,7 +81,7 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
 
   # Validations
-  validates :creator, presence: true
+  validates :creator, presence: true, on: :create
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
