@@ -8,7 +8,7 @@ class ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see list of available services' do
-    page.should have_content 'Services'
+    page.should have_content 'Project services'
     page.should have_content 'Campfire'
     page.should have_content 'Hipchat'
     page.should have_content 'GitLab CI'
