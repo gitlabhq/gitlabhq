@@ -86,6 +86,7 @@ gem  "asciidoctor"
 
 # Application server
 gem "unicorn", '~> 4.6.3', group: :unicorn
+gem 'unicorn-worker-killer', group: :unicorn
 
 # State machine
 gem "state_machine"

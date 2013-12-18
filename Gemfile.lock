@@ -539,6 +539,8 @@ GEM
       kgio (~> 2.6)
       rack
       raindrops (~> 0.7)
+    unicorn-worker-killer (0.4.2)
+      unicorn (~> 4)
     virtus (1.0.1)
       axiom-types (~> 0.0.5)
       coercible (~> 1.0)
@@ -660,4 +662,5 @@ DEPENDENCIES
   uglifier
   underscore-rails (~> 1.4.4)
   unicorn (~> 4.6.3)
+  unicorn-worker-killer
   webmock
