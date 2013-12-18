@@ -28,7 +28,7 @@ class Issue < ActiveRecord::Base
 
   scope :of_group, ->(group) { where(project_id: group.project_ids) }
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
-  scope :opened, -> { with_state(:opened) }
+  scope :opened, -> { with_state(:opened, :reopened) }
   scope :closed, -> { with_state(:closed) }
 
   attr_accessible :title, :assignee_id, :position, :description,
@@ -55,9 +55,6 @@ class Issue < ActiveRecord::Base
 
     state :closed
   end
-
-  # Both open and reopened issues should be listed as opened
-  scope :opened, -> { with_state(:opened, :reopened) }
 
   # Mentionable overrides.
 
