@@ -71,13 +71,24 @@
   border: 1px solid #E1E1E1;
   @include border-radius(4px);
 
+  input[type="text"],
   .btn {
-    margin-left: 3px;
     border: none;
-    background: none;
+    @include border-radius(0px);
+    border-left: 1px solid #E1E1E1;
     box-shadow: none;
+    padding: 6px 10px;
+  }
+
+  .btn {
+    float: left;
+    background: none;
     color: #29b;
-    padding: 6px;
+
+    &:first-child {
+      @include border-radius-left(4px);
+      border-left: 0px;
+    }
 
     &.active {
       color: #333;
@@ -86,14 +97,9 @@
   }
 
   input[type="text"] {
-    margin-left: 2px;
-    border: none;
-    border-radius: 0;
-    border-left: 1px solid #E1E1E1;
+    cursor: auto;
     @extend .monospace;
-    box-shadow: none;
     background: #FAFAFA;
-    padding: 6px 10px;
   }
 }
 
