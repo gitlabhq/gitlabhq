@@ -8,6 +8,14 @@
     .loading.hide
   .span3.project-side
     .clearfix
+      - if @project.archived?
+        .alert
+          %h5
+            %i.icon-warning-sign
+            Archived project!
+          %p Repository is read-only
+
+
       - if @project.forked_from_project
         .alert.alert-success
           %i.icon-code-fork.project-fork-icon
