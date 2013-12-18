@@ -482,8 +482,8 @@ li.commit {
     }
 
     .commit-row-message {
-      color: #555;
-      font-weight: bolder;
+      color: #333;
+      font-weight: 500;
       &:hover {
         color: #444;
         text-decoration: underline;
@@ -492,13 +492,14 @@ li.commit {
   }
 
   .commit-row-info {
+    color: #777;
+
     a {
       color: #777;
     }
 
     .committed_ago {
       float: right;
-      @extend .cgray;
     }
   }
 
