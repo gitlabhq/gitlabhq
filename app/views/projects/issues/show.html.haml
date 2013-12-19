@@ -64,7 +64,7 @@
   - @issue.participants.each do |participant|
     = link_to_member(@project, participant, name: false, size: 24)
 
-  .issue-labels.pull-right
+  .issue-show-labels.pull-right
     - @issue.labels.each do |label|
       %span{class: "label #{label_css_class(label.name)}"}
         %i.icon-tag
