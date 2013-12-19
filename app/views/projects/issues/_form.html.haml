@@ -21,7 +21,7 @@
               Assign to
             .controls
               .pull-left
-                = f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select a user" }, {class: 'chosen'})
+                = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'chosen'})
               .pull-right
                 &nbsp;
                 = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
@@ -29,7 +29,7 @@
             = f.label :milestone_id do
               %i.icon-time
               Milestone
-            .controls= f.select(:milestone_id, @project.milestones.active.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+            .controls= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
 
       .ui-box-bottom
         .control-group
