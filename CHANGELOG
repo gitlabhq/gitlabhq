@@ -26,6 +26,7 @@ v 6.4.0
   - API Cross-origin resource sharing
   - Show READMe link at project home page
   - Show repo size for projects in Admin area
+	- Add color custimization and previewing to broadcast messages
 
 v 6.3.0
   - API for adding gitlab-ci service
