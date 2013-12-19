@@ -30,7 +30,7 @@
     - if @issue.milestone
       |
       = link_to project_milestone_path(@project, @issue.milestone) do
-        <strong>Milestone:</strong>
+        %span.light Milestone
         = @issue.milestone.title
 
 .ui-box.ui-box-show
