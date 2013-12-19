@@ -21,11 +21,13 @@
   .control-group.js-toggle-colors-container.hide
     = f.label :color, "Background Color"
     .controls
-      = f.text_field :color
+      = f.text_field :color, placeholder: "#AA33EE"
+      .light Hex values as 3 double digit numbers, starting with a # sign.
   .control-group.js-toggle-colors-container.hide
     = f.label :font, "Font Color"
     .controls
-      = f.text_field :font
+      = f.text_field :font, placeholder: "#224466"
+      .light Hex values as 3 double digit numbers, starting with a # sign.
   .control-group
     = f.label :starts_at
     .controls.datetime-controls
