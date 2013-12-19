@@ -54,6 +54,11 @@
               = @repository.path_to_repo
 
           %li
+            %span.light Size
+            %strong
+              = repository_size(@project)
+
+          %li
             %span.light last commit:
             %strong
               = last_commit(@project)
