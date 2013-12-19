@@ -21,7 +21,7 @@ FactoryGirl.define do
     starts_at "2013-11-12 13:43:25"
     ends_at "2013-11-12 13:43:25"
     alert_type 1
-    color "#555"
-    font "#BBB"
+    color "#555555"
+    font "#BBBBBB"
   end
 end
