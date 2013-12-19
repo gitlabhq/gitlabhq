@@ -5,6 +5,11 @@
     created at
     = @issue.created_at.stamp("Aug 21, 2011")
 
+  - if @issue.closed?
+    %span.state-label.state-label-red Closed
+  - else
+    %span.state-label.state-label-green Open
+
   %span.pull-right
     - if can?(current_user, :write_issue, @project)
       = link_to new_project_issue_path(@project), class: "btn grouped", title: "New Issue", id: "new_issue_link" do
@@ -36,10 +41,6 @@
 .ui-box.ui-box-show
   .ui-box-head
     %h4.box-title
-      - if @issue.closed?
-        .state-label.state-label-red Closed
-      - else
-        .state-label.state-label-green Open
       = gfm escape_once(@issue.title)
 
   .ui-box-body
