@@ -1,12 +1,12 @@
-= form_for [@project, @issue], :remote => true, :html => {:class => 'edit-issue inline-update'} do |f|
+= form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
   .pull-right
-  Created by #{link_to_member(@project, issue.author)}
+  Created by #{link_to_member(@project, issue.author)}&nbsp;
   - if issue.assignee
     \ and currently assigned to
 
   - if can?(current_user, :modify_issue, @issue)
     = link_to profile_path(issue.assignee) do
-      = image_tag(avatar_icon(issue.assignee.email), :class => 'avatar avatar-inline s16 assignee') if issue.assignee
+      = image_tag(avatar_icon(issue.assignee.email), class: 'avatar avatar-inline s16 assignee') if issue.assignee
     = f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Assign to user (none):" }, {class: 'chosen'})
   - elsif issue.assignee
     = link_to_member(@project, @issue.assignee)
@@ -14,18 +14,11 @@
   - if issue.milestone
     - milestone = issue.milestone
     %cite.cgray and attached to milestone
-  
+
   - if can?(current_user, :modify_issue, @issue)
     = f.select(:milestone_id, @project.milestones.active.all.collect {|p| [ p.title, p.id ] }, { include_blank: "Select milestone (none):" }, {class: 'chosen'})
 
     = hidden_field_tag :issue_context
-    = f.submit :class => 'btn'
+    = f.submit class: 'btn'
   - elsif issue.milestone
     = link_to issue.milestone.title, project_milestone_path
-
-.pull-right
-  - issue.labels.each do |label|
-    %span{class: "label #{label_css_class(label.name)}"}
-      %i.icon-tag
-      = label.name
-    &nbsp;

@@ -122,5 +122,13 @@ input.check_all_issues {
 
 .edit-issue.inline-update select {
   width: 100%;
-  max-width: 230px;
+  max-width: 200px;
+}
+
+.issue-labels .label {
+  padding: 6px 10px;
+}
+
+form.edit-issue {
+  margin: 0;
 }
