@@ -119,3 +119,8 @@ input.check_all_issues {
     background-color: #f4f4f4;
   }
 }
+
+.edit-issue.inline-update select {
+  width: 100%;
+  max-width: 230px;
+}
