@@ -17,10 +17,10 @@
         - if @merge_request.assignee
           Currently assigned to #{link_to_member(@project, @merge_request.assignee)}.
       - if @merge_request.milestone
-        - milestone = @merge_request.milestone
-        %cite.cgray Attached to milestone
-        %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
-        \.
+        .pull-right
+          - milestone = @merge_request.milestone
+          %cite.cgray Attached to milestone
+          %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
 
   - if @merge_request.description.present?

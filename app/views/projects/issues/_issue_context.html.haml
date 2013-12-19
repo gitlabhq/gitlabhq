@@ -11,14 +11,16 @@
   - elsif issue.assignee
     = link_to_member(@project, @issue.assignee)
 
-  - if issue.milestone
-    - milestone = issue.milestone
-    %cite.cgray and attached to milestone
 
-  - if can?(current_user, :modify_issue, @issue)
-    = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone (none):" }, {class: 'chosen'})
+  .pull-right
+    - if issue.milestone
+      - milestone = issue.milestone
+      %cite.cgray Attached to milestone
 
-    = hidden_field_tag :issue_context
-    = f.submit class: 'btn'
-  - elsif issue.milestone
-    = link_to issue.milestone.title, project_milestone_path
+    - if can?(current_user, :modify_issue, @issue)
+      = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone (none):" }, {class: 'chosen chosen-compact'})
+
+      = hidden_field_tag :issue_context
+      = f.submit class: 'btn'
+    - elsif issue.milestone
+      = link_to issue.milestone.title, project_milestone_path
