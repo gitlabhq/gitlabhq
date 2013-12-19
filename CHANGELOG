@@ -1,5 +1,6 @@
 v 6.5.0
   - Dropdown menus on issue#show page for assignee and milestone (Jason Blanchard)
+	- Add color custimization and previewing to broadcast messages
 
 v 6.4.0
   - Added sorting to project issues page (Jason Blanchard)
@@ -26,7 +27,6 @@ v 6.4.0
   - API Cross-origin resource sharing
   - Show READMe link at project home page
   - Show repo size for projects in Admin area
-	- Add color custimization and previewing to broadcast messages
 
 v 6.3.0
   - API for adding gitlab-ci service
