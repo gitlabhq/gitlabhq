@@ -86,7 +86,7 @@
                 .controls
                   = f.select :ldap_access, options_for_select(UsersGroup.group_access_roles, @group.ldap_access)
                   .help-block
-                    Default, minimum permission level for new LDAP group members who gain access to #{@group.name}.
+                    Default, minimum permission level for LDAP group members of #{@group.name}.
                     %br
                     You can manage permission levels for individual group members in the Members tab.
 
