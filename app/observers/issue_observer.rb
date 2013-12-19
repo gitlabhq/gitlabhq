@@ -13,6 +13,7 @@ class IssueObserver < BaseObserver
 
   def after_reopen(issue, transition)
     create_note(issue)
+    execute_hooks(issue)
   end
 
   def after_update(issue)
@@ -21,6 +22,7 @@ class IssueObserver < BaseObserver
     end
 
     issue.notice_added_references(issue.project, current_user)
+    execute_hooks(issue)
   end
 
   protected

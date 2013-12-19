@@ -38,12 +38,14 @@ class MergeRequestObserver < ActivityObserver
   def after_reopen(merge_request, transition)
     create_event(merge_request, Event::REOPENED)
     create_note(merge_request)
+    execute_hooks(merge_request)
   end
 
   def after_update(merge_request)
     notification.reassigned_merge_request(merge_request, current_user) if merge_request.is_being_reassigned?
 
     merge_request.notice_added_references(merge_request.project, current_user)
+    execute_hooks(merge_request)
   end
 
   def create_event(record, status)
