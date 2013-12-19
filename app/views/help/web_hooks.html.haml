@@ -61,7 +61,7 @@
 
   %h4.prepend-top-20 Issues events
   %p.light
-    Triggered when new issue created or existing issue was closed.
+    Triggered when new issue created or existing issue was updated/closed/reopened.
     %br
     Request body:
   = highlight_js do
@@ -86,7 +86,7 @@
       }
   %h4.prepend-top-20 Merge request events
   %p.light
-    Triggered when new merge request created or existing merge request was merged/closed.
+    Triggered when new merge request created or existing merge request was updated/merged/closed.
     %br
     Request body:
   = highlight_js do
