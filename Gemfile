@@ -85,7 +85,10 @@ gem "github-markup", "~> 0.7.4", require: 'github/markup'
 gem  "asciidoctor"
 
 # Application server
-gem "unicorn", '~> 4.6.3', group: :unicorn
+group :unicorn do
+  gem "unicorn", '~> 4.6.3'
+  gem 'unicorn-worker-killer'
+end
 
 # State machine
 gem "state_machine"
