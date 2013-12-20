@@ -10,7 +10,7 @@
       .span5
         .clearfix
           .pull-left
-            = f.select(:source_project_id,[[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span3'})
+            = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project chosen span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
             = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span2'})
@@ -22,7 +22,7 @@
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-            = f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span3'})
+            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project chosen span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
             = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span2'})

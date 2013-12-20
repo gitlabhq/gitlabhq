@@ -94,6 +94,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       return
     end
 
+    # We dont allow change of source/target projects
+    # after merge request was created
+    params[:merge_request].delete(:source_project_id)
+    params[:merge_request].delete(:target_project_id)
+
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
       @merge_request.reload_code
       @merge_request.mark_as_unchecked
