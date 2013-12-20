@@ -1,2 +1,4 @@
 :plain
-  $(".mr_target_commit").html("#{commit_to_html(@commit, @target_project, false)}");
+  $(".mr_target_commit").html("#{commit_to_html(@target_commit, @target_project, false)}");
+
+= render "branch", title: @title, description: @description, source_commit: @source_commit

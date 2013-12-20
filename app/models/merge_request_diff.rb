@@ -39,9 +39,10 @@ class MergeRequestDiff < ActiveRecord::Base
 
   after_create :reload_content
 
-  def reload_content
+  def reload_content(save = true)
     reload_commits
     reload_diffs
+    self.save if save
   end
 
   def diffs
@@ -108,8 +109,6 @@ class MergeRequestDiff < ActiveRecord::Base
     if commit_objects.present?
       self.st_commits = dump_commits(commit_objects)
     end
-
-    save
   end
 
   # Reload diffs between branches related to current merge request from repo
@@ -143,7 +142,6 @@ class MergeRequestDiff < ActiveRecord::Base
     end
 
     self.st_diffs = new_diffs
-    self.save
   end
 
   # Collect array of Git::Diff objects

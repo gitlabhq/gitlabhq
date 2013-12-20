@@ -125,12 +125,19 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def branch_from
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
-    @commit = @repository.commit(params[:ref]) if params[:ref].present?
+    define_branch_vars
+
+    if params[:ref].present?
+      @source_commit ||= @repository.commit(params[:ref])
+    end
   end
 
   def branch_to
-    @target_project = selected_target_project
-    @commit = @target_project.repository.commit(params[:ref]) if params[:ref].present?
+    define_branch_vars
+
+    if params[:ref].present?
+      @target_commit ||= @target_project.repository.commit(params[:ref])
+    end
   end
 
   def update_branches
@@ -211,6 +218,40 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
     @allowed_to_remove_source_branch = allowed_to_remove_source_branch?
     @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
+  end
+
+  def define_branch_vars
+    merge_request = MergeRequest.new(params[:merge_request])
+    merge_request.author = current_user
+
+    unless merge_request.merge_request_diff
+      merge_request.build_merge_request_diff
+      merge_request.merge_request_diff.merge_request = merge_request
+    end
+
+    source_branch = merge_request.source_branch
+
+    if source_branch.present?
+      @source_commit = @repository.commit(source_branch)
+    end
+
+    @target_project = selected_target_project
+
+    if merge_request.target_branch.present?
+      repository = @target_project.repository
+      @target_commit = repository.commit(merge_request.target_branch)
+    end
+
+    if @source_commit && @target_commit
+      merge_request.reload_code(false)
+
+      if merge_request.commits.length == 1
+        @description = @source_commit.description.try(:strip)
+        @title = @source_commit.title
+      end
+    end
+
+    @title = source_branch.try(:titleize) if @title.blank?
   end
 
   def allowed_to_merge?
