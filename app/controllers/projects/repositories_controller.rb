@@ -16,7 +16,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
     storage_path = Rails.root.join("tmp", "repositories")
 
-    file_path = @repository.archive_repo(params[:ref], storage_path)
+    file_path = @repository.archive_repo(params[:ref], storage_path, params[:format].downcase)
 
     if file_path
       # Send file to user

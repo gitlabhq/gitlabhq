@@ -17,6 +17,11 @@ module Gitlab
     def path_regex
       default_regex
     end
+    
+    def archive_formats_regex
+      #|zip|tar|    tar.gz    |         tar.bz2         |
+      /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
+    end
 
     def git_reference_regex
       # Valid git ref regex, see:
