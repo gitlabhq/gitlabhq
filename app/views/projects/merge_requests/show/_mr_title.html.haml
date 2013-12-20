@@ -1,8 +1,7 @@
 %h3.page-title
   = "Merge Request ##{@merge_request.iid}"
   %small
-    created at
-    = @merge_request.created_at.stamp("Aug 21, 2011")
+    created #{time_ago_with_tooltip(@merge_request.created_at)} ago
 
   - if @merge_request.merged?
     %span.state-label.state-label-green
