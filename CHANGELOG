@@ -1,3 +1,6 @@
+v 6.5.0
+  - Dropdown menus on issue#show page for assignee and milestone (Jason Blanchard)
+
 v 6.4.0
   - Added sorting to project issues page (Jason Blanchard)
   - Assembla integration (Carlos Paramio)
