@@ -192,9 +192,9 @@ describe "Issues" do
     end
 
     context 'by unauthorized user' do
-    
+
       let(:guest) { create(:user) }
-      
+
       before :each do
         project.team << [[guest], :guest]
         issue.assignee = @user
@@ -227,15 +227,15 @@ describe "Issues" do
         find('.edit-issue.inline-update').select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
-        page.should have_content "and attached to milestone"
+        page.should have_content "Attached to milestone"
         page.has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end
 
     context 'by unauthorized user' do
-      
+
       let(:guest) { create(:user) }
-      
+
       before :each do
         project.team << [[guest], :guest]
         issue.milestone = milestone
@@ -248,7 +248,7 @@ describe "Issues" do
 
         visit project_issue_path(project, issue)
 
-        page.should have_content "attached to milestone #{milestone.title}"
+        page.should have_content "Attached to milestone #{milestone.title}"
       end
     end
   end
