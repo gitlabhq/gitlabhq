@@ -39,12 +39,12 @@
         = f.label :assignee_id do
           %i.icon-user
           Assign to
-        .controls= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
+        .controls= f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select user" }, {class: 'chosen span3'})
       .left
         = f.label :milestone_id do
           %i.icon-time
           Milestone
-        .controls= f.select(:milestone_id, @project.milestones.active.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
+        .controls= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'chosen'})
     .control-group
       = f.label :description, "Description"
       .controls

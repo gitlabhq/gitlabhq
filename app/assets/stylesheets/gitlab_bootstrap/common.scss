@@ -106,13 +106,11 @@ pre.well-pre {
 /** Big Labels **/
 .state-label {
   font-size: 14px;
-  padding: 5px 15px;
+  padding: 6px 25px;
   text-align: center;
-  float: right;
-  position: relative;
-  top: -5px;
   @include border-radius(4px);
   text-shadow: none;
+  margin-left: 10px;
 
   &.state-label-green {
     background: #4A4;

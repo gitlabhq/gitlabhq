@@ -361,6 +361,11 @@ table {
   color: #BBB;
 }
 
+.broadcast-message-preview {
+  @extend .broadcast-message;
+  margin-bottom: 20px;
+}
+
 .ajax-users-select {
   width: 400px;
 

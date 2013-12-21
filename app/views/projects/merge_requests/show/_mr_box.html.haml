@@ -2,25 +2,18 @@
   .ui-box-head
     %h4.box-title
       = gfm escape_once(@merge_request.title)
-      - if @merge_request.merged?
-        .state-label.state-label-green
-          %i.icon-ok
-          Merged
-      - elsif @merge_request.closed?
-        .state-label.state-label-red
-          Closed
 
   .ui-box-body
     %div
       %cite.cgray
-        Created on #{@merge_request.created_at.stamp("Aug 21, 2011")} by #{link_to_member(@project, @merge_request.author)}.
+        Created by #{link_to_member(@project, @merge_request.author)}.
         - if @merge_request.assignee
           Currently assigned to #{link_to_member(@project, @merge_request.assignee)}.
       - if @merge_request.milestone
-        - milestone = @merge_request.milestone
-        %cite.cgray Attached to milestone
-        %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
-        \.
+        .pull-right
+          - milestone = @merge_request.milestone
+          %cite.cgray Attached to milestone
+          %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
 
 
   - if @merge_request.description.present?

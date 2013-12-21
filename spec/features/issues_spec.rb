@@ -175,6 +175,84 @@ describe "Issues" do
     end
   end
 
+  describe 'update assignee from issue#show' do
+    let(:issue) { create(:issue, project: project, author: @user) }
+
+    context 'by autorized user' do
+
+      it 'with dropdown menu' do
+        visit project_issue_path(project, issue)
+
+        find('.edit-issue.inline-update').select(project.team.members.first.name, from: 'issue_assignee_id')
+        click_button 'Update Issue'
+
+        page.should have_content "currently assigned to"
+        page.has_select?('issue_assignee_id', :selected => project.team.members.first.name)
+      end
+    end
+
+    context 'by unauthorized user' do
+
+      let(:guest) { create(:user) }
+
+      before :each do
+        project.team << [[guest], :guest]
+        issue.assignee = @user
+        issue.save
+      end
+
+      it 'shows assignee text' do
+        logout
+        login_with guest
+
+        visit project_issue_path(project, issue)
+        page.should have_content "currently assigned to #{issue.assignee.name}"
+
+      end
+    end
+
+  end
+
+  describe 'update milestone from issue#show' do
+    let!(:issue) { create(:issue, project: project, author: @user) }
+    let!(:milestone) { create(:milestone, project: project) }
+
+    context 'by authorized user' do
+
+      it 'with dropdown menu' do
+        visit project_issue_path(project, issue)
+
+        p find('.edit-issue.inline-update').text
+
+        find('.edit-issue.inline-update').select(milestone.title, from: 'issue_milestone_id')
+        click_button 'Update Issue'
+
+        page.should have_content "Attached to milestone"
+        page.has_select?('issue_assignee_id', :selected => milestone.title)
+      end
+    end
+
+    context 'by unauthorized user' do
+
+      let(:guest) { create(:user) }
+
+      before :each do
+        project.team << [[guest], :guest]
+        issue.milestone = milestone
+        issue.save
+      end
+
+      it 'shows milestone text' do
+        logout
+        login_with guest
+
+        visit project_issue_path(project, issue)
+
+        page.should have_content "Attached to milestone #{milestone.title}"
+      end
+    end
+  end
+
   def first_issue
     all("ul.issues-list li").first.text
   end

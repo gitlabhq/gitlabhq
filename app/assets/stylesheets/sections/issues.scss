@@ -119,3 +119,16 @@ input.check_all_issues {
     background-color: #f4f4f4;
   }
 }
+
+.edit-issue.inline-update select {
+  width: 100%;
+  max-width: 200px;
+}
+
+.issue-show-labels .label {
+  padding: 6px 10px;
+}
+
+form.edit-issue {
+  margin: 0;
+}
