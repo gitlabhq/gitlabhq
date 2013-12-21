@@ -9,10 +9,12 @@
 #  alert_type :integer
 #  created_at :datetime         not null
 #  updated_at :datetime         not null
+#  color      :string(255)
+#  font       :string(255)
 #
 
 class BroadcastMessage < ActiveRecord::Base
-  attr_accessible :alert_type, :ends_at, :message, :starts_at
+  attr_accessible :alert_type, :color, :ends_at, :font, :message, :starts_at
 
   validates :message, presence: true
   validates :starts_at, presence: true
