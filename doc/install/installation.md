@@ -92,8 +92,8 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --progress https://git-core.googlecode.com/files/git-1.8.4.1.tar.gz | tar xz
-    cd git-1.8.4.1/
+    curl --progress https://git-core.googlecode.com/files/git-1.8.5.2.tar.gz | tar xz
+    cd git-1.8.5.2/
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
@@ -266,7 +266,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
-    # Type 'yes' to create the database.
+    # Type 'yes' to create the database tables.
 
     # When done you see 'Administrator account created:'
 
