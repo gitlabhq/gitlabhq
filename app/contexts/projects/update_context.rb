@@ -9,7 +9,7 @@ module Projects
 
       new_branch = params[:project].delete(:default_branch)
 
-      if project.repository.exists? && new_branch != project.default_branch
+      if project.repository.exists? && new_branch && new_branch != project.default_branch
         project.change_head(new_branch)
       end
 
