@@ -113,9 +113,8 @@ class User < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
-
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
-
+  validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -241,6 +240,12 @@ class User < ActiveRecord::Base
     namespace_name = self.username
     if Namespace.find_by_path(namespace_name)
       self.errors.add :username, "already exist"
+    end
+  end
+
+  def avatar_type
+    unless self.avatar.image?
+      self.errors.add :avatar, "only images allowed"
     end
   end
 
