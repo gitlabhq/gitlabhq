@@ -4,14 +4,14 @@ describe MergeRequestObserver do
   let(:some_user) { create :user }
   let(:assignee) { create :user }
   let(:author) { create :user }
-  let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author) }
+  let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author).as_null_object }
   let(:assigned_mr) { create(:merge_request, assignee: assignee, author: author, target_project: create(:project)) }
   let(:unassigned_mr) { create(:merge_request, author: author, target_project: create(:project)) }
   let(:closed_assigned_mr) { create(:closed_merge_request, assignee: assignee, author: author, target_project: create(:project)) }
   let(:closed_unassigned_mr) { create(:closed_merge_request, author: author, target_project: create(:project)) }
 
   before { subject.stub(:current_user).and_return(some_user) }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
   before { mr_mock.stub(:author_id) }
   before { mr_mock.stub(:target_project) }
   before { mr_mock.stub(:source_project) }

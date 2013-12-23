@@ -3,6 +3,7 @@ namespace :gitlab do
   task check: %w{gitlab:env:check
                  gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
+                 gitlab:ldap:check
                  gitlab:app:check}
 
 
@@ -679,6 +680,44 @@ namespace :gitlab do
     end
   end
 
+  namespace :ldap do
+    task :check, [:limit] => :environment do |t, args|
+      args.with_defaults(limit: 100)
+      warn_user_is_not_gitlab
+      start_checking "LDAP"
+
+      if ldap_config.enabled
+        print_users(args.limit)
+      else
+        puts 'LDAP is disabled in config/gitlab.yml'
+      end
+
+      finished_checking "LDAP"
+    end
+
+    def print_users(limit)
+      puts "LDAP users with access to your GitLab server (limit: #{limit}):"
+      ldap.search(attributes: attributes, filter: filter, size: limit, return_result: false) do |entry|
+        puts "DN: #{entry.dn}\t#{ldap_config.uid}: #{entry[ldap_config.uid]}"
+      end
+    end
+
+    def attributes
+      [ldap_config.uid]
+    end
+
+    def filter
+      Net::LDAP::Filter.present?(ldap_config.uid)
+    end
+
+    def ldap
+      @ldap ||= OmniAuth::LDAP::Adaptor.new(ldap_config).connection
+    end
+
+    def ldap_config
+      @ldap_config ||= Gitlab.config.ldap
+    end
+  end
 
   # Helper methods
   ##########################

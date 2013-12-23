@@ -102,15 +102,11 @@ module EventsHelper
         end
       elsif event.note_project_snippet?
         link_to(project_snippet_path(event.project, event.note_target)) do
-          content_tag :strong do
-            "#{event.note_target_type} ##{truncate event.note_target_id}"
-          end
+          "#{event.note_target_type} ##{truncate event.note_target_id}"
         end
       else
         link_to event_note_target_path(event) do
-          content_tag :strong do
-            "#{event.note_target_type} ##{truncate event.note_target_iid}"
-          end
+          "#{event.note_target_type} ##{truncate event.note_target_iid}"
         end
       end
     elsif event.wall_note?

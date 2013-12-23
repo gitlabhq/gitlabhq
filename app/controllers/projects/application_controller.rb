@@ -10,7 +10,7 @@ class Projects::ApplicationController < ApplicationController
       id = params[:project_id] || params[:id]
       @project = Project.find_with_namespace(id)
 
-      return if @project && @project.public
+      return if @project && @project.public?
     end
 
     super

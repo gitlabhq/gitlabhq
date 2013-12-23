@@ -15,7 +15,7 @@ FactoryGirl.define do
     email { Faker::Internet.email }
     name
     sequence(:username) { |n| "#{Faker::Internet.user_name}#{n}" }
-    password "123456"
+    password "12345678"
     password_confirmation { password }
     confirmed_at { Time.now }
     confirmation_token { nil }

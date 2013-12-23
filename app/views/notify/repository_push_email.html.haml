@@ -1,0 +1,23 @@
+%h3 #{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
+
+%h4 Commits:
+
+%ul
+  - @commits.each do |commit|
+    %li
+      #{commit.short_id} - #{commit.title}
+
+%h4 Diff:
+- @diffs.each do |diff|
+  %li
+    %strong
+      - if diff.old_path == diff.new_path
+        = diff.new_path
+      - elsif diff.new_path && diff.old_path
+        #{diff.old_path} &rarr; #{diff.new_path}
+      - else
+        = diff.new_path || diff.old_path
+    %hr
+    %pre
+      = diff.diff
+    %br

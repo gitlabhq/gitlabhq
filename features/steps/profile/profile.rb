@@ -31,26 +31,49 @@ class Profile < Spinach::FeatureSteps
     @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
   end
 
+  step 'I should see the "Remove avatar" button' do
+    page.should have_link("Remove avatar")
+  end
+
+  step 'I have an avatar' do
+    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button "Save changes"
+    @user.reload
+  end
+
+  step 'I remove my avatar' do
+    click_link "Remove avatar"
+    @user.reload
+  end
+
+  step 'I should see my gravatar' do
+    @user.avatar?.should be_false
+  end
+
+  step 'I should not see the "Remove avatar" button' do
+    page.should_not have_link("Remove avatar")
+  end
+
   step 'I try change my password w/o old one' do
     within '.update-password' do
-      fill_in "user_password", with: "222333"
-      fill_in "user_password_confirmation", with: "222333"
+      fill_in "user_password", with: "22233344"
+      fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
     end
   end
 
   step 'I change my password' do
     within '.update-password' do
-      fill_in "user_current_password", with: "123456"
-      fill_in "user_password", with: "222333"
-      fill_in "user_password_confirmation", with: "222333"
+      fill_in "user_current_password", with: "12345678"
+      fill_in "user_password", with: "22233344"
+      fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
     end
   end
 
   step 'I unsuccessfully change my password' do
     within '.update-password' do
-      fill_in "user_current_password", with: "123456"
+      fill_in "user_current_password", with: "12345678"
       fill_in "user_password", with: "password"
       fill_in "user_password_confirmation", with: "confirmation"
       click_button "Save"
@@ -62,11 +85,7 @@ class Profile < Spinach::FeatureSteps
   end
 
   step "I should see a password error message" do
-    page.should have_content "Password doesn't match confirmation"
-  end
-
-  step 'I should be redirected to sign in page' do
-    current_path.should == new_user_session_path
+    page.should have_content "Password confirmation doesn't match"
   end
 
   step 'I reset my token' do

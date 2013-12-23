@@ -13,5 +13,15 @@ module Emails
       mail(to: @user.email,
            subject: subject("Project was moved"))
     end
+
+    def repository_push_email(project_id, recipient, author_id, branch, compare)
+      @project = Project.find(project_id)
+      @author  = User.find(author_id)
+      @commits = Commit.decorate(compare.commits)
+      @diffs   = compare.diffs
+      @branch  = branch
+
+      mail(to: recipient, subject: subject("New push to repository"))
+    end
   end
 end

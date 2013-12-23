@@ -6,7 +6,7 @@ class Public::ProjectsController < ApplicationController
   layout 'public'
 
   def index
-    @projects = Project.public_only
+    @projects = Project.public_or_internal_only(current_user)
     @projects = @projects.search(params[:search]) if params[:search].present?
     @projects = @projects.includes(:namespace).order("namespaces.path, projects.name ASC").page(params[:page]).per(20)
   end

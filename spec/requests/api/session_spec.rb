@@ -8,7 +8,7 @@ describe API::API do
   describe "POST /session" do
     context "when valid password" do
       it "should return private token" do
-        post api("/session"), email: user.email, password: '123456'
+        post api("/session"), email: user.email, password: '12345678'
         response.status.should == 201
 
         json_response['email'].should == user.email

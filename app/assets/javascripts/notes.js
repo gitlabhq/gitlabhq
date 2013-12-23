@@ -6,7 +6,7 @@ var NoteList = {
   target_type: null,
 
   init: function(tid, tt, path) {
-    NoteList.notes_path = path + ".js";
+    NoteList.notes_path = path + ".json";
     NoteList.target_id = tid;
     NoteList.target_type = tt;
     NoteList.target_params = "target_type=" + NoteList.target_type + "&target_id=" + NoteList.target_id;
@@ -411,7 +411,10 @@ var NoteList = {
       data: NoteList.target_params,
       complete: function(){ $('.js-notes-busy').removeClass("loading")},
       beforeSend: function() { $('.js-notes-busy').addClass("loading") },
-      dataType: "script"
+      success: function(data) {
+        NoteList.setContent(data.html);
+      },
+      dataType: "json"
     });
   },
 
@@ -419,7 +422,7 @@ var NoteList = {
    * Called in response to getContent().
    * Replaces the content of #notes-list with the given html.
    */
-  setContent: function(newNoteIds, html) {
+  setContent: function(html) {
     $("#notes-list").html(html);
   },
 

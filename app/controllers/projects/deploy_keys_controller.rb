@@ -7,7 +7,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @enabled_keys = @project.deploy_keys.all
+    @enabled_keys = @project.deploy_keys
     @available_keys = available_keys - @enabled_keys
   end
 

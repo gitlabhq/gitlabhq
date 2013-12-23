@@ -41,6 +41,7 @@
 #  confirmed_at           :datetime
 #  confirmation_sent_at   :datetime
 #  unconfirmed_email      :string(255)
+#  hide_no_ssh_key        :boolean          default(FALSE), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -52,7 +53,7 @@ class User < ActiveRecord::Base
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at, :avatar,
+                  :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
                   as: [:default, :admin]
 
   attr_accessible :projects_limit, :can_create_group,
@@ -72,7 +73,7 @@ class User < ActiveRecord::Base
   #
 
   # Namespace for personal projects
-  has_one :namespace, dependent: :destroy, foreign_key: :owner_id, class_name: "Namespace", conditions: 'type IS NULL'
+  has_one :namespace, -> { where type: nil }, dependent: :destroy, foreign_key: :owner_id, class_name: "Namespace"
 
   # Profile
   has_many :keys, dependent: :destroy
@@ -80,8 +81,7 @@ class User < ActiveRecord::Base
   # Groups
   has_many :users_groups, dependent: :destroy
   has_many :groups, through: :users_groups
-  has_many :owned_groups, through: :users_groups, source: :group, conditions: { users_groups: { group_access: UsersGroup::OWNER } }
-
+  has_many :owned_groups, -> { where users_groups: { group_access: UsersGroup::OWNER } }, through: :users_groups, source: :group
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
@@ -94,7 +94,7 @@ class User < ActiveRecord::Base
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
   has_many :events,                   dependent: :destroy, foreign_key: :author_id,   class_name: "Event"
-  has_many :recent_events,                                 foreign_key: :author_id,   class_name: "Event", order: "id DESC"
+  has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
 
@@ -104,7 +104,7 @@ class User < ActiveRecord::Base
   #
   validates :name, presence: true
   validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }
-  validates :bio, length: { within: 0..255 }
+  validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :username, presence: true, uniqueness: true,
@@ -164,7 +164,7 @@ class User < ActiveRecord::Base
   scope :alphabetically, -> { order('name ASC') }
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
-  scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : scoped }
+  scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
   scope :ldap, -> { where(provider:  'ldap') }
 
@@ -199,7 +199,7 @@ class User < ActiveRecord::Base
     end
 
     def by_username_or_id(name_or_id)
-      where('username = ? OR id = ?', name_or_id, name_or_id).first
+      where('users.username = ? OR users.id = ?', name_or_id, name_or_id.to_i).first
     end
 
     def build_user(attrs = {}, options= {})
@@ -377,7 +377,7 @@ class User < ActiveRecord::Base
   end
 
   def accessible_deploy_keys
-    DeployKey.in_projects(self.authorized_projects).uniq
+    DeployKey.in_projects(self.authorized_projects.pluck(:id)).uniq
   end
 
   def created_by
@@ -412,5 +412,19 @@ class User < ActiveRecord::Base
   def can_leave_project?(project)
     project.namespace != namespace &&
       project.project_member(self)
+  end
+
+  # Reset project events cache related to this user
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when the user changes their avatar
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(author_id: self.id).
+      order('id DESC').limit(1000).
+      update_all(updated_at: Time.now)
   end
 end

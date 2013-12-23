@@ -12,7 +12,7 @@ module API
       # Example Request:
       #  GET /namespaces
       get do
-        @namespaces = Namespace.scoped
+        @namespaces = Namespace.all
         @namespaces = @namespaces.search(params[:search]) if params[:search].present?
         @namespaces = paginate @namespaces
 

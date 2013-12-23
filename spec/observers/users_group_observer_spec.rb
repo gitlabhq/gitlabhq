@@ -5,7 +5,7 @@ describe UsersGroupObserver do
   after(:each) { disable_observers }
 
   subject { UsersGroupObserver.instance }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
 
   describe "#after_create" do
     it "should send email to user" do

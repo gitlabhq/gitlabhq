@@ -21,3 +21,4 @@
       - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
       - unless comments.empty?
         = render "projects/notes/diff_notes_with_reply", notes: comments, line: line
+

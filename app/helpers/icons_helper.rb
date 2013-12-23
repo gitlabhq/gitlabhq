@@ -8,10 +8,14 @@ module IconsHelper
   end
 
   def public_icon
-    content_tag :i, nil, class: 'icon-globe cblue'
+    content_tag :i, nil, class: 'icon-globe'
+  end
+
+  def internal_icon
+    content_tag :i, nil, class: 'icon-shield'
   end
 
   def private_icon
-    content_tag :i, nil, class: 'icon-lock cgreen'
+    content_tag :i, nil, class: 'icon-lock'
   end
 end

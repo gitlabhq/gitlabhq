@@ -1,6 +1,6 @@
 # Select Version to Install
 Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
-this should be the highest numbered stable branch (example shown below). 
+this should be the highest numbered stable branch (example shown below).
 
 ![capture](https://f.cloud.github.com/assets/1192780/564911/2f9f3e1e-c5b7-11e2-9f89-98e527d1adec.png)
 
@@ -105,7 +105,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install -y postfix 
+	sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
@@ -144,12 +144,9 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git -b v1.8.0
 
     cd gitlab-shell
-
-    # switch to right version
-    sudo -u git -H git checkout v1.7.9
 
     sudo -u git -H cp config.yml.example config.yml
 
@@ -174,16 +171,13 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git gitlab
+    sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git -b 6-4-stable-ee gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
-    # Checkout to stable release
-    sudo -u git -H git checkout 6-3-stable-ee
-
 **Note:**
-You can change `6-3-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-4-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -253,7 +247,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # PostgreSQL
     sudo -u git cp config/database.yml.postgresql config/database.yml
 
-    
+
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
 
@@ -282,7 +276,12 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 Download the init script (will be /etc/init.d/gitlab):
 
     sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
-    sudo chmod +x /etc/init.d/gitlab
+
+And if you are installing with a non-default folder or user copy and edit the defaults file:
+
+    sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
+
+If you installed gitlab in another directory or as a user other than the default you should change these settings in /etc/default/gitlab. Do not edit /etc/init.d/gitlab as it will be changed on upgrade.
 
 Make GitLab start on boot:
 
@@ -304,14 +303,10 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-## Double-check Application Status
 
-To make sure you didn't miss anything run a more thorough check with:
+## Compile assets
 
-    sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
-
-If all items are green, then congratulations on successfully installing GitLab!
-However there are still a few steps left.
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 
 
 # 7. Nginx
@@ -343,7 +338,17 @@ Make sure to edit the config file to match your setup:
 
 # Done!
 
-Visit YOUR_SERVER for your first GitLab login.
+## Double-check Application Status
+
+To make sure you didn't miss anything run a more thorough check with:
+
+    sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+
+If all items are green, then congratulations on successfully installing GitLab!
+
+## Initial Login
+
+Visit YOUR_SERVER in your web browser for your first GitLab login.
 The setup has created an admin account for you. You can use it to log in:
 
     admin@local.host
@@ -370,7 +375,7 @@ a different host, you can configure its connection string via the
     # example
     production: redis://redis.example.tld:6379
 
-If you want to connect the Redis server via socket, then use the "unix:" URL scheme 
+If you want to connect the Redis server via socket, then use the "unix:" URL scheme
 and the path to the Redis socket file in the `config/resque.yml` file.
 
     # example
@@ -406,7 +411,7 @@ These steps are fairly general and you will need to figure out the exact details
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example) as a reference)
 
 * Add the gem to your [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile)
-                `gem "omniauth-your-auth-provider"` 
+                `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
 		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
 
@@ -422,5 +427,5 @@ These steps are fairly general and you will need to figure out the exact details
 ### Examples
 
 If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
-You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-Custom-Omniauth-Provider-Configurations).
+You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.

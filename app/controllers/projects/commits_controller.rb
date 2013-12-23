@@ -16,7 +16,7 @@ class Projects::CommitsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html # index.html.erb
-      format.js
+      format.json { pager_json("projects/commits/_commits", @commits.size) }
       format.atom { render layout: false }
     end
   end

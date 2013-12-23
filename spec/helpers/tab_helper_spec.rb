@@ -5,8 +5,8 @@ describe TabHelper do
 
   describe 'nav_link' do
     before do
-      controller.stub!(:controller_name).and_return('foo')
-      stub!(:action_name).and_return('foo')
+      controller.stub(:controller_name).and_return('foo')
+      allow(self).to receive(:action_name).and_return('foo')
     end
 
     it "captures block output" do

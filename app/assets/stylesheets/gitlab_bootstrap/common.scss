@@ -6,6 +6,7 @@
 .cblue { color: #29A }
 .cblack { color: #111 }
 .cdark { color: #444 }
+.camber { color: #ffc000 }
 .cwhite { color: #fff!important }
 .bgred { background: #F2DEDE!important }
 
@@ -126,4 +127,9 @@ pre.well-pre {
 
 .dropdown-menu > li > a {
   text-shadow: none;
+}
+
+.dropdown-menu > li > a:hover,
+.dropdown-menu > li > a:focus {
+  background: #29b;
 }

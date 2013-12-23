@@ -29,22 +29,7 @@
                 .controls= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
 
 
-          - if can?(current_user, :change_public_mode, @project)
-            %fieldset.public-mode
-              %legend
-                Public mode:
-              .control-group
-                = f.label :public, class: 'control-label' do
-                  %span Public access
-                .controls
-                  = f.check_box :public
-                  %span.descr
-                    If checked, this project can be cloned
-                    %em without any
-                    authentication.
-                    It will also be listed on the #{link_to "public access directory", public_root_path}.
-                    %em Any
-                    user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+          = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
 
           %fieldset.features
             %legend
@@ -113,6 +98,33 @@
         %i.icon-chevron-down
 
     .js-toggle-visibility-container.hide
+      - if can? current_user, :archive_project, @project
+        .ui-box.ui-box-danger
+          .title
+            - if @project.archived?
+              Unarchive project
+            - else
+              Archive project
+          .ui-box-body
+            - if @project.archived?
+              %p
+                Unarchiving the project will mark its repository as active.
+                %br
+                The project can be committed to.
+                %br
+                %strong Once active this project shows up in the search and on the dashboard.
+              = link_to 'Unarchive', unarchive_project_path(@project), confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be comitted to again.", method: :post, class: "btn btn-remove"
+            - else
+              %p
+                Archiving the project will mark its repository as read-only.
+                %br
+                It is hidden from the dashboard and doesn't show up in searches.
+                %br
+                %strong Archived projects cannot be committed to!
+              = link_to 'Archive', archive_project_path(@project), confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to.", method: :post, class: "btn btn-remove"
+      - else
+        %p.nothing_here_message Only the project owner can archive a project
+
       - if can?(current_user, :change_namespace, @project)
         .ui-box.ui-box-danger
           .title Transfer project
@@ -162,7 +174,7 @@
               %br
               %strong Removed projects cannot be restored!
 
-            = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove"
+            = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project) }, method: :delete, class: "btn btn-remove"
       - else
         %p.nothing_here_message Only project owner can remove a project
 

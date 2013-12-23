@@ -1,6 +1,8 @@
 module CompareHelper
   def compare_to_mr_button?
-    params[:from].present? && params[:to].present? &&
+    @project.merge_requests_enabled &&
+      params[:from].present? && 
+      params[:to].present? &&
       @repository.branch_names.include?(params[:from]) &&
       @repository.branch_names.include?(params[:to]) &&
       params[:from] != params[:to] &&

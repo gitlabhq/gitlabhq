@@ -21,7 +21,7 @@ class MergeRequest
     this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
-    
+
     modal = $('#modal_merge_info').modal(show: false)
 
   # Local jQuery finder
@@ -83,12 +83,12 @@ class MergeRequest
       url: this.$('.nav-tabs .diffs-tab a').attr('href')
       beforeSend: =>
         this.$('.status').addClass 'loading'
-
       complete: =>
         @diffs_loaded = true
         this.$('.status').removeClass 'loading'
-
-      dataType: 'script'
+      success: (data) =>
+        this.$(".diffs").html(data.html)
+      dataType: 'json'
 
   showAllCommits: ->
     this.$('.first-commits').remove()
