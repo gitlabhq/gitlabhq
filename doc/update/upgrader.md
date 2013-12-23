@@ -4,7 +4,7 @@ GitLab Upgrader - ruby script that allows you easily upgrade GitLab to latest mi
 Ex. it can update your application from 6.4 to latest GitLab 6 version (like 6.5.1).
 You still need to create backup and manually restart GitLab but all other operations can be done by upgrade tool.
 
-__GitLab Upgrader is available only for version 6.4 or higher__
+__GitLab Upgrader is available only for version 6.4.2 or higher__
 
 ### 0. Backup
 
