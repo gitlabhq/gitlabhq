@@ -32,7 +32,7 @@ class GitPushService
     end
 
     if push_to_branch?(ref)
-      project.execute_hooks(@push_data.dup)
+      project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup)
     end
 

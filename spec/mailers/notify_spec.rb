@@ -391,4 +391,28 @@ describe Notify do
       should have_body_text /#{example_site_path}/
     end
   end
+
+  describe 'email on push' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user) }
+    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, 'cd5c4bac', 'b1e6a9db') }
+
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+
+    it 'is sent to recipient' do
+      should deliver_to 'devs@company.name'
+    end
+
+    it 'has the correct subject' do
+      should have_subject /New push to repository/
+    end
+
+    it 'includes commits list' do
+      should have_body_text /tree css fixes/
+    end
+
+    it 'includes diffs' do
+      should have_body_text /Checkout wiki pages for installation information/
+    end
+  end
 end

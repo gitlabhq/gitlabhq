@@ -22,7 +22,7 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
       format.atom { render layout: false }
     end
   end
@@ -40,6 +40,7 @@ class DashboardController < ApplicationController
                 end
 
     @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
+    @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = @projects.includes(:namespace).sorted_by_activity
 
     @labels = current_user.authorized_projects.tags_on(:labels)
@@ -72,6 +73,6 @@ class DashboardController < ApplicationController
   protected
 
   def load_projects
-    @projects = current_user.authorized_projects.sorted_by_activity
+    @projects = current_user.authorized_projects.sorted_by_activity.non_archived
   end
 end

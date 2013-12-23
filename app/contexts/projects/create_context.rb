@@ -8,6 +8,11 @@ module Projects
       # get namespace id
       namespace_id = params.delete(:namespace_id)
 
+      # check that user is allowed to set specified visibility_level
+      unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
+        params.delete(:visibility_level)
+      end
+
       # Load default feature settings
       default_features = Gitlab.config.gitlab.default_projects_features
 
@@ -17,7 +22,7 @@ module Projects
         wall_enabled: default_features.wall,
         snippets_enabled: default_features.snippets,
         merge_requests_enabled: default_features.merge_requests,
-        public: default_features.public
+        visibility_level: default_features.visibility_level
       }.stringify_keys
 
       @project = Project.new(default_opts.merge(params))

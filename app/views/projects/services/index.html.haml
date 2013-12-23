@@ -1,9 +1,9 @@
-%h3.page-title Services
-%p.light Services allow you to integrate GitLab with other applications
+%h3.page-title Project services
+%p.light Project services allow you to integrate GitLab with other applications
 %hr
 
 %ul.bordered-list
-  - @services.each do |service|
+  - @services.sort_by(&:title).each do |service|
     %li
       %h4
         = link_to edit_project_service_path(@project, service.to_param) do

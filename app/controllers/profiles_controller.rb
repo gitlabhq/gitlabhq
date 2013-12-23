@@ -13,6 +13,8 @@ class ProfilesController < ApplicationController
   end
 
   def update
+    params[:user].delete(:email) if @user.ldap_user?
+
     if @user.update_attributes(params[:user])
       flash[:notice] = "Profile was successfully updated"
     else

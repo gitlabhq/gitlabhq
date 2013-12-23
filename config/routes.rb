@@ -22,7 +22,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.gitlab_shell.repos_path,
     upload_pack:  Gitlab.config.gitlab_shell.upload_pack,
     receive_pack: Gitlab.config.gitlab_shell.receive_pack
-  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }
+  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   #
   # Help
@@ -127,10 +127,11 @@ Gitlab::Application.routes.draw do
           delete :leave
         end
       end
+      resource :avatar, only: [:destroy]
     end
   end
 
-  match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }
+  match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
 
 
 
@@ -169,6 +170,8 @@ Gitlab::Application.routes.draw do
     member do
       put :transfer
       post :fork
+      post :archive
+      post :unarchive
       get :autocomplete_sources
     end
 

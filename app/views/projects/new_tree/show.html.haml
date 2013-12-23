@@ -33,7 +33,7 @@
         .message
           to branch
           %strong= @ref
-      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", confirm: leave_edit_message
+      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")

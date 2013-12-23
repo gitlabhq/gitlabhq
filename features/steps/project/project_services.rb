@@ -3,73 +3,101 @@ class ProjectServices < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  When 'I visit project "Shop" services page' do
+  step 'I visit project "Shop" services page' do
     visit project_services_path(@project)
   end
 
-  Then 'I should see list of available services' do
-    page.should have_content 'Services'
+  step 'I should see list of available services' do
+    page.should have_content 'Project services'
     page.should have_content 'Campfire'
     page.should have_content 'Hipchat'
     page.should have_content 'GitLab CI'
+    page.should have_content 'Assembla'
   end
 
-  And 'I click gitlab-ci service link' do
+  step 'I click gitlab-ci service link' do
     click_link 'GitLab CI'
   end
 
-  And 'I fill gitlab-ci settings' do
+  step 'I fill gitlab-ci settings' do
     check 'Active'
     fill_in 'Project url', with: 'http://ci.gitlab.org/projects/3'
     fill_in 'Token', with: 'verySecret'
     click_button 'Save'
   end
 
-  Then 'I should see service settings saved' do
+  step 'I should see service settings saved' do
     find_field('Project url').value.should == 'http://ci.gitlab.org/projects/3'
   end
 
-  And 'I click hipchat service link' do
+  step 'I click hipchat service link' do
     click_link 'Hipchat'
   end
 
-  And 'I fill hipchat settings' do
+  step 'I fill hipchat settings' do
     check 'Active'
     fill_in 'Room', with: 'gitlab'
     fill_in 'Token', with: 'verySecret'
     click_button 'Save'
   end
 
-  Then 'I should see hipchat service settings saved' do
+  step 'I should see hipchat service settings saved' do
     find_field('Room').value.should == 'gitlab'
   end
 
 
-  And 'I click pivotaltracker service link' do
+  step 'I click pivotaltracker service link' do
     click_link 'PivotalTracker'
   end
 
-  And 'I fill pivotaltracker settings' do
+  step 'I fill pivotaltracker settings' do
     check 'Active'
     fill_in 'Token', with: 'verySecret'
     click_button 'Save'
   end
 
-  Then 'I should see pivotaltracker service settings saved' do
+  step 'I should see pivotaltracker service settings saved' do
     find_field('Token').value.should == 'verySecret'
   end
 
-  And 'I click Flowdock service link' do
+  step 'I click Flowdock service link' do
     click_link 'Flowdock'
   end
 
-  And 'I fill Flowdock settings' do
+  step 'I fill Flowdock settings' do
     check 'Active'
     fill_in 'Token', with: 'verySecret'
     click_button 'Save'
   end
 
-  Then 'I should see Flowdock service settings saved' do
+  step 'I should see Flowdock service settings saved' do
     find_field('Token').value.should == 'verySecret'
+  end
+
+  step 'I click Assembla service link' do
+    click_link 'Assembla'
+  end
+
+  step 'I fill Assembla settings' do
+    check 'Active'
+    fill_in 'Token', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see Assembla service settings saved' do
+    find_field('Token').value.should == 'verySecret'
+  end
+
+  step 'I click email on push service link' do
+    click_link 'Emails on push'
+  end
+
+  step 'I fill email on push settings' do
+    fill_in 'Recipients', with: 'qa@company.name'
+    click_button 'Save'
+  end
+
+  step 'I should see email on push service settings saved' do
+    find_field('Recipients').value.should == 'qa@company.name'
   end
 end

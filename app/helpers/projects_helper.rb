@@ -70,6 +70,8 @@ module ProjectsHelper
       scope: params[:scope],
       label_name: params[:label_name],
       milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+      sort: params[:sort],
     }
 
     options = exist_opts.merge(options)
@@ -80,7 +82,7 @@ module ProjectsHelper
   end
 
   def project_active_milestones
-    @project.milestones.active.order("due_date, title ASC").all
+    @project.milestones.active.order("due_date, title ASC")
   end
 
   def project_issues_trackers(current_tracker = nil)
@@ -135,8 +137,8 @@ module ProjectsHelper
     end
   end
 
-  def repository_size
-    "#{@project.repository.size} MB"
+  def repository_size(project = nil)
+    "#{(project || @project).repository.size} MB"
   rescue
     # In order to prevent 500 error
     # when application cannot allocate memory
@@ -176,5 +178,13 @@ module ProjectsHelper
             end
 
     title
+  end
+  
+  def default_url_to_repo
+    current_user ? @project.url_to_repo : @project.http_url_to_repo
+  end
+  
+  def default_clone_protocol
+    current_user ? "ssh" : "http"
   end
 end

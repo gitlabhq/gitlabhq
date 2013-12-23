@@ -5,6 +5,7 @@ html {
 /** LAYOUT **/
 
 body {
+  -webkit-font-smoothing: antialiased;
   margin-bottom: 20px;
 }
 
@@ -354,6 +355,7 @@ table {
 .navbar-gitlab .navbar-inner .nav > li .btn-sign-in {
   @extend .btn-new;
   padding: 5px 15px;
+  text-shadow: none;
 }
 
 .broadcast-message {
@@ -368,6 +370,10 @@ table {
 
   &.input-large {
     width: 210px;
+  }
+
+  &.input-clamp {
+    max-width: 100%;
   }
 }
 

@@ -61,6 +61,11 @@ describe Note do
       note.should be_upvote
     end
 
+    it "recognizes a thumbsup emoji as a vote" do
+      note = build(:votable_note, note: ":thumbsup: for this")
+      note.should be_upvote
+    end
+
     it "recognizes a -1 note" do
       note = create(:votable_note, note: "-1 for this")
       note.should be_downvote
@@ -68,6 +73,11 @@ describe Note do
 
     it "recognizes a -1 emoji as a vote" do
       note = build(:votable_note, note: ":-1: for this")
+      note.should be_downvote
+    end
+
+    it "recognizes a thumbsdown emoji as a vote" do
+      note = build(:votable_note, note: ":thumbsdown: for this")
       note.should be_downvote
     end
   end

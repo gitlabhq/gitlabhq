@@ -17,13 +17,19 @@
 
 
   = render 'devise/sessions/oauth_providers' if devise_mapping.omniauthable?
+  %hr
 
   - if gitlab_config.signup_enabled
-    %hr
-    %div
-      Don't have an account?
+    %p
+      %span.light
+        Don't have an account?
       %strong
         = link_to "Sign up", new_registration_path(resource_name)
+
+  %p
+    %span.light Did not receive confirmation email?
+    = link_to "Send again", new_confirmation_path(resource_name)
+
 
   - if extra_config.has_key?('sign_in_text')
     %hr

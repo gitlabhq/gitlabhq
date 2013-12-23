@@ -9,7 +9,7 @@ module API
       # Example Request:
       #  GET /users
       get do
-        @users = User.scoped
+        @users = User.all
         @users = @users.active if params[:active].present?
         @users = @users.search(params[:search]) if params[:search].present?
         @users = paginate @users

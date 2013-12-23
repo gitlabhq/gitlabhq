@@ -16,9 +16,12 @@ rvm:
   - 2.0.0
 services:
   - mysql
+  - redis-server
 before_script:
   - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
   - "bundle exec rake db:setup"
   - "bundle exec rake db:seed_fu"
 script: "bundle exec rake $TASK --trace"
+notifications:
+  email: false

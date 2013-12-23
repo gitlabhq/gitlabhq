@@ -1,7 +1,4 @@
-%h3.page-title
-  = @project.name_with_namespace
-  .form-horizontal.pull-right
-    = render "shared/clone_panel"
+= render "home_panel"
 
 - if @project.import? && !@project.imported
   .save-project-loader
@@ -32,7 +29,7 @@
           touch README
           git add README
           git commit -m 'first commit'
-        %span.clone= "git remote add origin #{@project.url_to_repo}"
+        %span.clone= "git remote add origin #{default_url_to_repo}"
         :preserve
           git push -u origin master
 
@@ -41,10 +38,10 @@
       %pre.dark
         :preserve
           cd existing_git_repo
-        %span.clone= "git remote add origin #{@project.url_to_repo}"
+        %span.clone= "git remote add origin #{default_url_to_repo}"
         :preserve
           git push -u origin master
 
   - if can? current_user, :remove_project, @project
     .prepend-top-20
-      = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove pull-right"
+      = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

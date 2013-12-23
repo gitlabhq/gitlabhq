@@ -19,4 +19,4 @@
       = @key.key
 
 .pull-right
-  = link_to 'Remove', profile_key_path(@key), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove delete-key"
+  = link_to 'Remove', profile_key_path(@key), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"

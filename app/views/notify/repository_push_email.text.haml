@@ -1,0 +1,20 @@
+#{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
+
+\
+Commits:
+- @commits.each do |commit|
+  #{commit.short_id} - #{truncate(commit.title, length: 40)}
+\
+\
+Diff:
+- @diffs.each do |diff|
+  \
+  \=====================================
+  - if diff.old_path == diff.new_path
+    = diff.new_path
+  - elsif diff.new_path && diff.old_path
+    #{diff.old_path} &rarr; #{diff.new_path}
+  - else
+    = diff.new_path || diff.old_path
+  \=====================================
+  = diff.diff

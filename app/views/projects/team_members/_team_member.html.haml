@@ -7,7 +7,7 @@
           = form_for(member, as: :team_member, url: project_team_member_path(@project, member.user)) do |f|
             = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, class: "medium project-access-select span2 trigger-submit"
           &nbsp;
-        = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from team' do
+        = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from team' do
           %i.icon-minus.icon-white
   = image_tag avatar_icon(user.email, 32), class: "avatar s32"
   %p

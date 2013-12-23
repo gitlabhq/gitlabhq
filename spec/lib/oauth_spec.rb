@@ -6,7 +6,7 @@ describe Gitlab::OAuth::User do
   before do
     Gitlab.config.stub(omniauth: {})
 
-    @info = mock(
+    @info = double(
       uid: '12djsak321',
       name: 'John',
       email: 'john@mail.com'
@@ -15,7 +15,7 @@ describe Gitlab::OAuth::User do
 
   describe :create do
     it "should create user from LDAP" do
-      @auth = mock(info: @info, provider: 'ldap')
+      @auth = double(info: @info, provider: 'ldap')
       user = gl_auth.create(@auth)
 
       user.should be_valid
@@ -24,7 +24,7 @@ describe Gitlab::OAuth::User do
     end
 
     it "should create user from Omniauth" do
-      @auth = mock(info: @info, provider: 'twitter')
+      @auth = double(info: @info, provider: 'twitter')
       user = gl_auth.create(@auth)
 
       user.should be_valid
@@ -33,7 +33,7 @@ describe Gitlab::OAuth::User do
     end
 
     it "should apply defaults to user" do
-      @auth = mock(info: @info, provider: 'ldap')
+      @auth = double(info: @info, provider: 'ldap')
       user = gl_auth.create(@auth)
 
       user.should be_valid

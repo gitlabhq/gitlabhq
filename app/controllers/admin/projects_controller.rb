@@ -7,8 +7,8 @@ class Admin::ProjectsController < Admin::ApplicationController
     owner_id = params[:owner_id]
     user = User.find_by_id(owner_id)
 
-    @projects = user ? user.owned_projects : Project.scoped
-    @projects = @projects.where(public: true) if params[:public_only].present?
+    @projects = user ? user.owned_projects : Project.all
+    @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
     @projects = @projects.search(params[:name]) if params[:name].present?

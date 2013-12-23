@@ -35,6 +35,10 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
+  # When this attribute is true some MR validation is ignored
+  # It allows us to close or modify broken merge requests
+  attr_accessor :allow_broken
+
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed
@@ -80,7 +84,7 @@ class MergeRequest < ActiveRecord::Base
   serialize :st_commits
   serialize :st_diffs
 
-  validates :source_project, presence: true
+  validates :source_project, presence: true, unless: :allow_broken
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
@@ -262,7 +266,7 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues
     if target_branch == project.default_branch
-      unmerged_commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
+      commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
     else
       []
     end
@@ -271,6 +275,48 @@ class MergeRequest < ActiveRecord::Base
   # Mentionable override.
   def gfm_reference
     "merge request !#{iid}"
+  end
+
+  def target_project_path
+    if target_project
+      target_project.path_with_namespace
+    else
+      "(removed)"
+    end
+  end
+
+  def source_project_path
+    if source_project
+      source_project.path_with_namespace
+    else
+      "(removed)"
+    end
+  end
+
+  def source_branch_exists?
+    return false unless self.source_project
+
+    self.source_project.repository.branch_names.include?(self.source_branch)
+  end
+
+  def target_branch_exists?
+    return false unless self.target_project
+
+    self.target_project.repository.branch_names.include?(self.target_branch)
+  end
+
+  # Reset merge request events cache
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when a merge request is updated
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(target_id: self.id, target_type: 'MergeRequest').
+        order('id DESC').limit(100).
+        update_all(updated_at: Time.now)
   end
 
   private

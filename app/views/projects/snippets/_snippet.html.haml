@@ -18,4 +18,5 @@
       by
       = image_tag avatar_icon(snippet.author_email), class: "avatar avatar-inline s16"
       = snippet.author_name
-      %span.light #{time_ago_in_words(snippet.created_at)} ago
+      %span.light
+        #{time_ago_with_tooltip(snippet.created_at)} ago

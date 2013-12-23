@@ -187,7 +187,7 @@ GFM will recognize the following:
 * !123 : for merge requests
 * $123 : for snippets
 * 1234567 : for commits
-* [file](path/to/file) : for file references
+* \[file\](path/to/file) : for file references
 
 <a name="standard"/>
 
