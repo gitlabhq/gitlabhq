@@ -130,7 +130,7 @@
           .title Transfer project
           .errors-holder
           .form-holder
-            = form_for(@project, url: transfer_project_path(@project), remote: true, html: { class: 'transfer-project' }) do |f|
+            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project' }) do |f|
               .control-group
                 = f.label :namespace_id do
                   %span Namespace
