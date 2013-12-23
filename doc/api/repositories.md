@@ -343,9 +343,9 @@ Parameters:
 ```
 
 
-## Raw blob content
+## Raw file content
 
-Get the raw file contents for a file.
+Get the raw file contents for a file by commit sha and path.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -356,6 +356,20 @@ Parameters:
 + `id` (required) - The ID of a project
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
+
+
+## Raw blob content
+
+Get the raw file contents for a blob by blob sha.
+
+```
+GET /projects/:id/repository/raw_blobs/:sha
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `sha` (required) - The blob sha
 
 
 ## Get file archive
