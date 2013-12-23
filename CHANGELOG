@@ -1,6 +1,6 @@
 v 6.5.0
   - Dropdown menus on issue#show page for assignee and milestone (Jason Blanchard)
-	- Add color custimization and previewing to broadcast messages
+  - Add color custimization and previewing to broadcast messages
 
 v6.4.2
   - Fixed wrong behaviour of script/upgrade.rb
