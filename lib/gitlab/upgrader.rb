@@ -43,15 +43,15 @@ module Gitlab
 
     def latest_version_raw
       git_tags = `git ls-remote --tags origin | grep tags\/v#{current_version.major}`
-      git_tags = git_tags.lines.to_a.select { |version| version =~ /v\d\.\d\.\d\Z/ }
-      last_tag = git_tags.last.match(/v\d\.\d\.\d/).to_s
+      git_tags = git_tags.lines.to_a.select { |version| version =~ /v\d\.\d\.\d-ee\Z/ }
+      last_tag = git_tags.last.match(/v\d\.\d\.\d-ee/).to_s
     end
 
     def update_commands
       {
         "Stash changed files" => "git stash",
         "Get latest code" => "git fetch",
-        "Switch to new version" => "git checkout -b v#{latest_version}",
+        "Switch to new version" => "git checkout -b v#{latest_version}-ee",
         "Install gems" => "bundle",
         "Migrate DB" => "bundle exec rake db:migrate RAILS_ENV=production",
         "Recompile assets" => "bundle exec rake assets:clean assets:precompile RAILS_ENV=production",

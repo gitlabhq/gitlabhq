@@ -17,8 +17,8 @@ describe Gitlab::Upgrader do
 
   describe 'latest_version_raw' do
     it 'should be latest version for GitLab 5' do
-      upgrader.stub(current_version_raw: "5.3.0")
-      upgrader.latest_version_raw.should == "v5.4.2"
+      upgrader.stub(current_version_raw: "6.3.0-ee")
+      upgrader.latest_version_raw.should match(/v6\.\d\.\d-ee/)
     end
   end
 end
