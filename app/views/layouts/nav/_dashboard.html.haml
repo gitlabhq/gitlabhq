@@ -12,7 +12,7 @@
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to merge_requests_dashboard_path do
       Merge Requests
-      %span.count= current_user.cared_merge_requests.opened.count
+      %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :help) do
     = link_to "Help", help_path
 

@@ -1,5 +1,17 @@
 = form_tag filter_path(entity), method: 'get' do
-  %fieldset
+  %fieldset.scope-filter
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: ("active" if params[:scope].blank?)}
+        = link_to filter_path(entity, scope: nil) do
+          Assigned to me
+      %li{class: ("active" if params[:scope] == 'authored')}
+        = link_to filter_path(entity, scope: 'authored') do
+          Authored by me
+      %li{class: ("active" if params[:scope] == 'all')}
+        = link_to filter_path(entity, scope: 'all') do
+          All
+
+  %fieldset.status-filter
     %ul.nav.nav-pills.nav-stacked
       %li{class: ("active" if params[:status].blank?)}
         = link_to filter_path(entity, status: nil) do
