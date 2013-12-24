@@ -1,0 +1,46 @@
+/**
+ * Issue box:
+ * Huge block (one per page) for storing title, descripion and other information.
+ * Used for Issue#show page, MergeRequest#show page etc
+ *
+ * CLasses:
+ *   .issue-box - Regular box
+ */
+
+.issue-box {
+  color: #666;
+  margin:20px 0;
+  background: #FAFAFA;
+  border: 1px solid #DDD;
+
+  .control-group {
+    margin-bottom: 0;
+  }
+
+  .title {
+    font-size: 20px;
+    font-weight: 500;
+    line-height: 28px;
+    margin: 0;
+    color: #444;
+  }
+
+  .context {
+    border: none;
+    background-color: #f5f5f5;
+    border: none;
+    border-top: 1px solid #eee;
+  }
+
+  .description {
+    border-top: 1px solid #eee;
+  }
+
+  .title, .context, .description {
+    padding: 15px;
+
+    .clearfix {
+      margin: 0;
+    }
+  }
+}
