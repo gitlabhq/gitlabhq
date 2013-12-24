@@ -24,20 +24,20 @@ module Gitlab
 
       %r{
         (?!
-           # doesn't begins with
-           \/|                    # (rule #6)
-           # doesn't contain
+           (?# doesn't begins with)
+           \/|                    (?# rule #6)
+           (?# doesn't contain)
            .*(?:
-              [\/.]\.|            # (rule #1,3)
-              \/\/|               # (rule #6)
-              @\{|                # (rule #8)
-              \\                  # (rule #9)
+              [\/.]\.|            (?# rule #1,3)
+              \/\/|               (?# rule #6)
+              @\{|                (?# rule #8)
+              \\                  (?# rule #9)
            )
         )
-        [^\000-\040\177~^:?*\[]+  # (rule #4-5)
-         # doesn't end with
-        (?<!\.lock)               # (rule #1)
-        (?<![\/.])                # (rule #6-7)
+        [^\000-\040\177~^:?*\[]+  (?# rule #4-5)
+        (?# doesn't end with)
+        (?<!\.lock)               (?# rule #1)
+        (?<![\/.])                (?# rule #6-7)
       }x
     end
 
