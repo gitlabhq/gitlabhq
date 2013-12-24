@@ -279,4 +279,18 @@ describe User do
       User.by_username_or_id('bar').should be_nil
     end
   end
+
+  describe :avatar_type do
+    let(:user) { create(:user) }
+
+    it "should be true if avatar is image" do
+      user.update_attribute(:avatar, 'uploads/avatar.png')
+      user.avatar_type.should be_true
+    end
+
+    it "should be false if avatar is html page" do
+      user.update_attribute(:avatar, 'uploads/avatar.html')
+      user.avatar_type.should == ["only images allowed"]
+    end
+  end
 end
