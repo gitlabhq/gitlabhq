@@ -78,7 +78,7 @@
     .ui-box
       .title
         Transfer project
-      .ui-box-body
+      .body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
           .control-group
             = f.label :namespace_id, "Namespace"
