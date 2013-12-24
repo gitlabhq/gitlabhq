@@ -6,14 +6,14 @@
         - @issue.errors.full_messages.each do |msg|
           %span= msg
           %br
-    .ui-box.ui-box-show
-      .ui-box-head
+    .issue-box
+      .title
         .control-group
           = f.label :title do
             %strong= "Subject *"
           .controls
             = f.text_field :title, maxlength: 255, class: "input-xxlarge js-gfm-input", autofocus: true, required: true
-      .ui-box-body
+      .context
         .control-group
           .issue_assignee.pull-left
             = f.label :assignee_id do
@@ -31,7 +31,7 @@
               Milestone
             .controls= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
 
-      .ui-box-bottom
+      .description
         .control-group
           = f.label :label_list do
             %i.icon-tag

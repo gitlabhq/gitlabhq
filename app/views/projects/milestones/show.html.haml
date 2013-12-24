@@ -28,13 +28,11 @@
     &larr; To milestones list
 
 
-.ui-box.ui-box-show
-  .ui-box-head
-    %h4.box-title
+.issue-box
+  %h4.title
+    = gfm escape_once(@milestone.title)
 
-      = gfm escape_once(@milestone.title)
-
-  .ui-box-body
+  .context
     %p
       Progress:
       #{@milestone.closed_items_count} closed
@@ -46,7 +44,7 @@
 
 
   - if @milestone.description.present?
-    .ui-box-bottom
+    .description
       = preserve do
         = markdown @milestone.description
 
