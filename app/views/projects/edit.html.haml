@@ -105,7 +105,7 @@
               Unarchive project
             - else
               Archive project
-          .ui-box-body
+          .body
             - if @project.archived?
               %p
                 Unarchiving the project will mark its repository as active.
@@ -168,7 +168,7 @@
       - if can?(current_user, :remove_project, @project)
         .ui-box.ui-box-danger
           .title Remove project
-          .ui-box-body
+          .body
             %p
               Removing the project will delete its repository and all related resources including issues, merge requests etc.
               %br

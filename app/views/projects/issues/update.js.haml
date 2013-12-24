@@ -3,8 +3,8 @@
     :plain
       $("##{dom_id(@issue)}").fadeOut();
 - elsif params[:issue_context]
-  $('.ui-box-body').html("#{escape_javascript(render partial: 'issue_context', locals: { issue: @issue })}");
-  $('.ui-box-body').effect('highlight');
+  $('.issue-box .context').html("#{escape_javascript(render partial: 'issue_context', locals: { issue: @issue })}");
+  $('.issue-box .context').effect('highlight');
   $('.chosen').chosen();
   $('.edit-issue.inline-update input[type="submit"]').hide();
   - if @issue.milestone
