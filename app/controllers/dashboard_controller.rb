@@ -50,16 +50,30 @@ class DashboardController < ApplicationController
     @projects = @projects.page(params[:page]).per(30)
   end
 
-  # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests
+    @merge_requests = case params[:scope]
+                      when 'authored' then
+                        current_user.merge_requests
+                      when 'all' then
+                        MergeRequest.where(target_project_id: current_user.authorized_projects.pluck(:id))
+                      else
+                        current_user.assigned_merge_requests
+                      end
+
     @merge_requests = FilterContext.new(@merge_requests, params).execute
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
-  # Get only assigned issues
   def issues
-    @issues = current_user.assigned_issues
+    @issues = case params[:scope]
+              when 'authored' then
+                current_user.issues
+              when 'all' then
+                Issue.where(project_id: current_user.authorized_projects.pluck(:id))
+              else
+                current_user.assigned_issues
+              end
+
     @issues = FilterContext.new(@issues, params).execute
     @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
