@@ -13,9 +13,6 @@ var NoteList = {
 
     NoteList.setupMainTargetNoteForm();
 
-    // get initial set of notes
-    NoteList.getContent();
-
     // Unbind events to prevent firing twice
     $(document).off("click", ".js-add-diff-note-button");
     $(document).off("click", ".js-discussion-reply-button");

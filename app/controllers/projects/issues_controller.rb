@@ -49,7 +49,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @issue)
-    @target_type = :issue
+    @notes = @issue.notes.inc_author.fresh
+    @target_type = 'Issue'
     @target_id = @issue.id
 
     respond_with(@issue)

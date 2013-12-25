@@ -11,7 +11,7 @@ class Projects::NotesController < Projects::ApplicationController
     @target_id = params[:target_id]
 
     if params[:target_type] == "merge_request"
-      @discussions   = discussions_from_notes
+      @discussions = Note.discussions_from_notes(@notes)
     end
 
     respond_to do |format|
@@ -75,37 +75,5 @@ class Projects::NotesController < Projects::ApplicationController
 
   def preview
     render text: view_context.markdown(params[:note])
-  end
-
-  protected
-
-  def discussion_notes_for(note)
-    @notes.select do |other_note|
-      note.discussion_id == other_note.discussion_id
-    end
-  end
-
-  def discussions_from_notes
-    discussion_ids = []
-    discussions = []
-
-    @notes.each do |note|
-      next if discussion_ids.include?(note.discussion_id)
-
-      # don't group notes for the main target
-      if note_for_main_target?(note)
-        discussions << [note]
-      else
-        discussions << discussion_notes_for(note)
-        discussion_ids << note.discussion_id
-      end
-    end
-
-    discussions
-  end
-
-  # Helps to distinguish e.g. commit notes in mr notes list
-  def note_for_main_target?(note)
-    (@target_type.camelize == note.noteable_type && !note.for_diff_line?)
   end
 end

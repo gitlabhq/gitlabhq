@@ -24,7 +24,8 @@ class Projects::CommitController < Projects::ApplicationController
     @line_notes  = result[:line_notes]
     @branches    = result[:branches]
     @notes_count = result[:notes_count]
-    @target_type = :commit
+    @target_type = "Commit"
+    @notes = project.notes.for_commit_id(@commit.id).not_inline.fresh
     @target_id   = @commit.id
 
     @comments_allowed = @reply_allowed = true
