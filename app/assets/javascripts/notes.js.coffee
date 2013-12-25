@@ -41,6 +41,9 @@ class Notes
     # add diff note
     $(document).on "click", ".js-add-diff-note-button", @addDiffNote
 
+    # hide diff note form
+    $(document).on "click", ".js-close-discussion-note-form", @cancelDiscussionForm
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -350,6 +353,15 @@ class Notes
     form.removeClass "js-new-note-form"
     form.removeClass "js-new-note-form"
     GitLab.GfmAutoComplete.setup()
+
+    # setup preview buttons
+    previewButton = form.find(".js-note-preview-button")
+    form.find(".js-note-text").on "input", ->
+      if $(this).val().trim() isnt ""
+        previewButton.removeClass("turn-off").addClass "turn-on"
+      else
+        previewButton.removeClass("turn-on").addClass "turn-off"
+
     form.show()
 
   ###
@@ -393,5 +405,12 @@ class Notes
     else
       # only remove the form
       form.remove()
+
+
+  cancelDiscussionForm: (e) =>
+    e.preventDefault()
+    form = $(".js-new-note-form")
+    form = $(e.target).closest(".js-discussion-note-form")
+    @removeDiscussionNoteForm(form)
 
 @Notes = Notes
