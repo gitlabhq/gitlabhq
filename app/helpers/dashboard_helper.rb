@@ -14,17 +14,11 @@ module DashboardHelper
   end
 
   def entities_per_project(project, entity)
-    items = project.items_for(entity)
-
-    items = case params[:status]
-            when 'closed'
-              items.closed
-            when 'all'
-              items
-            else
-              items.opened
-            end
-
-    items.cared(current_user).count
+    case entity.to_sym
+    when :issue then @issues.where(project_id: project.id)
+    when :merge_request then @merge_requests.where(target_project_id: project.id)
+    else
+      []
+    end.count
   end
 end

@@ -34,7 +34,7 @@ class DashboardIssues < Spinach::FeatureSteps
 
   step 'I click "Authored by me" link' do
     within ".scope-filter" do
-      click_link 'Authored by me'
+      click_link 'Created by me'
     end
   end
 

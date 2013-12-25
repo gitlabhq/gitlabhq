@@ -6,7 +6,7 @@
           Assigned to me
       %li{class: ("active" if params[:scope] == 'authored')}
         = link_to filter_path(entity, scope: 'authored') do
-          Authored by me
+          Created by me
       %li{class: ("active" if params[:scope] == 'all')}
         = link_to filter_path(entity, scope: 'all') do
           All
