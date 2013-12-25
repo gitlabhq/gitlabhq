@@ -2,71 +2,54 @@ class Projects::NotesController < Projects::ApplicationController
   # Authorize
   before_filter :authorize_read_note!
   before_filter :authorize_write_note!, only: [:create]
-
-  respond_to :js
+  before_filter :authorize_admin_note!, only: [:update, :destroy]
 
   def index
     @notes = Notes::LoadContext.new(project, current_user, params).execute
-    @target_type = params[:target_type].camelize
-    @target_id = params[:target_id]
 
-    if params[:target_type] == "merge_request"
-      @discussions = Note.discussions_from_notes(@notes)
+    notes_json = { notes: [] }
+
+    @notes.each do |note|
+      notes_json[:notes] << {
+        id: note.id,
+        html: note_to_html(note)
+      }
     end
 
-    respond_to do |format|
-      format.html { redirect_to :back }
-      format.json do
-        render json: {
-          html: view_to_html_string("projects/notes/_notes")
-        }
-      end
-    end
+    render json: notes_json
   end
 
   def create
     @note = Notes::CreateContext.new(project, current_user, params).execute
-    @target_type = params[:target_type].camelize
-    @target_id = params[:target_id]
 
     respond_to do |format|
-      format.html {redirect_to :back}
-      format.js
+      format.json { render_note_json(@note) }
+      format.html { redirect_to :back }
+    end
+  end
+
+  def update
+    note.update_attributes(params[:note])
+    note.reset_events_cache
+
+    respond_to do |format|
+      format.json { render_note_json(note) }
+      format.html { redirect_to :back }
     end
   end
 
   def destroy
-    @note = @project.notes.find(params[:id])
-    return access_denied! unless can?(current_user, :admin_note, @note)
-    @note.destroy
-    @note.reset_events_cache
+    note.destroy
+    note.reset_events_cache
 
     respond_to do |format|
       format.js { render nothing: true }
     end
   end
 
-  def update
-    @note = @project.notes.find(params[:id])
-    return access_denied! unless can?(current_user, :admin_note, @note)
-
-    @note.update_attributes(params[:note])
-    @note.reset_events_cache
-
-    respond_to do |format|
-      format.js do
-        render js: { success: @note.valid?, id: @note.id, note: view_context.markdown(@note.note) }.to_json
-      end
-      format.html do
-        redirect_to :back
-      end
-    end
-  end
-
   def delete_attachment
-    @note = @project.notes.find(params[:id])
-    @note.remove_attachment!
-    @note.update_attribute(:attachment, nil)
+    note.remove_attachment!
+    note.update_attribute(:attachment, nil)
 
     respond_to do |format|
       format.js { render nothing: true }
@@ -75,5 +58,42 @@ class Projects::NotesController < Projects::ApplicationController
 
   def preview
     render text: view_context.markdown(params[:note])
+  end
+
+  private
+
+  def note
+    @note ||= @project.notes.find(params[:id])
+  end
+
+  def note_to_html(note)
+    render_to_string(
+      "projects/notes/_note",
+      layout: false,
+      formats: [:html],
+      locals: { note: note }
+    )
+  end
+
+  def note_to_discussion_html(note)
+    render_to_string(
+      "projects/notes/_diff_notes_with_reply",
+      layout: false,
+      formats: [:html],
+      locals: { notes: [note] }
+    )
+  end
+
+  def render_note_json(note)
+    render json: {
+      id: note.id,
+      discussion_id: note.discussion_id,
+      html: note_to_html(note),
+      discussion_html: note_to_discussion_html(note)
+    }
+  end
+
+  def authorize_admin_note!
+    return access_denied! unless can?(current_user, :admin_note, note)
   end
 end
