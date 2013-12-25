@@ -2,6 +2,7 @@ module DashboardHelper
   def filter_path(entity, options={})
     exist_opts = {
       status: params[:status],
+      scope: params[:scope],
       project_id: params[:project_id],
     }
 
@@ -12,7 +13,7 @@ module DashboardHelper
     path
   end
 
-  def entities_per_project project, entity
+  def entities_per_project(project, entity)
     items = project.items_for(entity)
 
     items = case params[:status]
