@@ -49,8 +49,7 @@ class Projects::SnippetsController < Projects::ApplicationController
   def show
     @note = @project.notes.new(noteable: @snippet)
     @notes = @snippet.notes.fresh
-    @target_type = 'Snippet'
-    @target_id = @snippet.id
+    @noteable = @snippet
   end
 
   def destroy

@@ -200,8 +200,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @note = @project.notes.new(noteable: @merge_request)
     @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
     @discussions = Note.discussions_from_notes(@notes)
-    @target_type = 'MergeRequest'
-    @target_id = @merge_request.id
+    @noteable = @merge_request
 
     # Get commits from repository
     # or from cache if already merged
