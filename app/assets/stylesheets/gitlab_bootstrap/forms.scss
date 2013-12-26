@@ -21,6 +21,10 @@ form {
       text-align: left;
     }
   }
+
+  &.form-tiny {
+    margin: 0;
+  }
 }
 
 input.input-xpadding,

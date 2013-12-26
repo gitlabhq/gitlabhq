@@ -29,7 +29,7 @@ module Issues
       if params[:milestone_id].present?
         @issues = @issues.where(milestone_id: (params[:milestone_id] == '0' ? nil : params[:milestone_id]))
       end
-      
+
       # Sort by :sort param
       @issues = sort(@issues, params[:sort])
 
@@ -49,6 +49,5 @@ module Issues
       else issues
       end
     end
-
   end
 end
