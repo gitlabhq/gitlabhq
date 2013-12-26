@@ -43,6 +43,16 @@
           %span.light Member since:
           %strong
             = @user.created_at.stamp("Nov 12, 2031")
+        - if @user.confirmed_at
+          %li
+            %span.light Confirmed at:
+            %strong
+              = @user.confirmed_at.stamp("Nov 12, 2031")
+        - else
+          %li
+            %span.light Confirmed:
+            %strong.cred
+              No
 
         %li
           %span.light Last sign-in at:
