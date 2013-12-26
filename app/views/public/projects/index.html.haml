@@ -15,12 +15,14 @@
       %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
         %span.light sort:
         - if @sort.present?
-          = @sort
+          = @sort.humanize
         - else
-          Newest
+          Name
         %b.caret
       %ul.dropdown-menu
         %li
+          = link_to public_projects_path(sort: nil) do
+            Name
           = link_to public_projects_path(sort: 'newest') do
             Newest
           = link_to public_projects_path(sort: 'oldest') do
