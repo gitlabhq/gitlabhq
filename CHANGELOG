@@ -1,6 +1,13 @@
 v 6.5.0
   - Dropdown menus on issue#show page for assignee and milestone (Jason Blanchard)
   - Add color custimization and previewing to broadcast messages
+  - Fixed notes anchors
+  - Load new comments in issues dynamically
+  - Added sort options to Public page
+  - Added new filters(assigned/authored/all) to Dashboard#issues, Dashboard#merge_request pages 
+  - Add project visibility icons to dashboard
+  - Enable secure cookies if https used
+  - Protect users/confirmation with rack_attack
 
 v6.4.2
   - Fixed wrong behaviour of script/upgrade.rb
