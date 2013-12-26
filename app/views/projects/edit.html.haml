@@ -113,7 +113,9 @@
                 The project can be committed to.
                 %br
                 %strong Once active this project shows up in the search and on the dashboard.
-              = link_to 'Unarchive', unarchive_project_path(@project), confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be comitted to again.", method: :post, class: "btn btn-remove"
+              = link_to 'Unarchive', unarchive_project_path(@project),
+                  data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be comitted to again." },
+                  method: :post, class: "btn btn-remove"
             - else
               %p
                 Archiving the project will mark its repository as read-only.
@@ -121,7 +123,9 @@
                 It is hidden from the dashboard and doesn't show up in searches.
                 %br
                 %strong Archived projects cannot be committed to!
-              = link_to 'Archive', archive_project_path(@project), confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to.", method: :post, class: "btn btn-remove"
+              = link_to 'Archive', archive_project_path(@project),
+                  data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                  method: :post, class: "btn btn-remove"
       - else
         %p.nothing_here_message Only the project owner can archive a project
 

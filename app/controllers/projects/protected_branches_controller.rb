@@ -6,7 +6,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   before_filter :authorize_admin_project!, only: [:destroy, :create]
 
   def index
-    @branches = @project.protected_branches.all
+    @branches = @project.protected_branches.to_a
     @protected_branch = @project.protected_branches.new
   end
 
