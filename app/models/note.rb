@@ -56,29 +56,52 @@ class Note < ActiveRecord::Base
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
 
-  def self.create_status_change_note(noteable, project, author, status, source)
-    body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
+  class << self
+    def create_status_change_note(noteable, project, author, status, source)
+      body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
 
-    create({
-      noteable: noteable,
-      project: project,
-      author: author,
-      note: body,
-      system: true
-    }, without_protection: true)
-  end
+      create({
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      }, without_protection: true)
+    end
 
-  # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
-  # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
-  def self.create_cross_reference_note(noteable, mentioner, author, project)
-    create({
-      noteable: noteable,
-      commit_id: (noteable.sha if noteable.respond_to? :sha),
-      project: project,
-      author: author,
-      note: "_mentioned in #{mentioner.gfm_reference}_",
-      system: true
-    }, without_protection: true)
+    # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
+    # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
+    def create_cross_reference_note(noteable, mentioner, author, project)
+      create({
+        noteable: noteable,
+        commit_id: (noteable.sha if noteable.respond_to? :sha),
+        project: project,
+        author: author,
+        note: "_mentioned in #{mentioner.gfm_reference}_",
+        system: true
+      }, without_protection: true)
+    end
+
+    def discussions_from_notes(notes)
+      discussion_ids = []
+      discussions = []
+
+      notes.each do |note|
+        next if discussion_ids.include?(note.discussion_id)
+
+        # don't group notes for the main target
+        if !note.for_diff_line? && note.noteable_type == "MergeRequest"
+          discussions << [note]
+        else
+          discussions << notes.select do |other_note|
+            note.discussion_id == other_note.discussion_id
+          end
+          discussion_ids << note.discussion_id
+        end
+      end
+
+      discussions
+    end
   end
 
   # Determine whether or not a cross-reference note already exists.
@@ -89,7 +112,7 @@ class Note < ActiveRecord::Base
   def commit_author
     @commit_author ||=
       project.users.find_by_email(noteable.author_email) ||
-        project.users.find_by_name(noteable.author_name)
+      project.users.find_by_name(noteable.author_name)
   rescue
     nil
   end

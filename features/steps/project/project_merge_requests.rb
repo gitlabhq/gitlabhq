@@ -115,19 +115,26 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   And 'I leave a comment on the diff page' do
     init_diff_note
 
-    within('.js-temp-notes-holder') do
+    within('.js-discussion-note-form') do
       fill_in "note_note", with: "One comment to rule them all"
       click_button "Add Comment"
+    end
+
+    within ".note-text" do
+      page.should have_content "One comment to rule them all"
     end
   end
 
   And 'I leave a comment like "Line is wrong" on line 185 of the first file' do
     init_diff_note
 
-    within(".js-temp-notes-holder") do
+    within(".js-discussion-note-form") do
       fill_in "note_note", with: "Line is wrong"
       click_button "Add Comment"
-      sleep 0.05
+    end
+
+    within ".note-text" do
+      page.should have_content "Line is wrong"
     end
   end
 

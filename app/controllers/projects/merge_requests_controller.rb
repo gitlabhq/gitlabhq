@@ -198,6 +198,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
+    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
+    @discussions = Note.discussions_from_notes(@notes)
+    @noteable = @merge_request
 
     # Get commits from repository
     # or from cache if already merged
@@ -205,9 +208,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
-
-    @target_type = :merge_request
-    @target_id = @merge_request.id
   end
 
   def allowed_to_merge?

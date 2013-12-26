@@ -34,7 +34,7 @@
         = markdown(note.note)
 
     .note-edit-form
-      = form_for note, url: project_note_path(@project, note), method: :put, remote: true do |f|
+      = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
         = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
 
         .form-actions
