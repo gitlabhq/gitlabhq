@@ -66,7 +66,7 @@
 }
 
 .project-row, .group-row {
-  padding: 10px 15px !important;
+  padding: 10px 12px !important;
 
   .namespace-name {
     color: #666;
@@ -121,4 +121,14 @@
   i {
     color: #BBB;
   }
+}
+
+.dash-project-access-icon {
+  float: left;
+  margin-right: 10px;
+  font-size: 18px;
+  color: #BBB;
+  margin-bottom: 10px;
+  margin-top: 2px;
+  width: 16px;
 }
