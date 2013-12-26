@@ -1,5 +1,6 @@
 = link_to project_path(project), class: dom_class(project) do
-  = visibility_level_icon(project.visibility_level)
+  .dash-project-access-icon
+    = visibility_level_icon(project.visibility_level)
   %span.namespace-name
     - if project.namespace
       = project.namespace.human_name
