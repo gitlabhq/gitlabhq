@@ -108,7 +108,7 @@ describe "On a merge request", js: true do
 
         within("#note_#{note.id}") do
           should have_css(".note-last-update small")
-          find(".note-last-update small").text.should match(/Edited just now/)
+          find(".note-last-update small").text.should match(/Edited less than a minute ago/)
         end
       end
     end

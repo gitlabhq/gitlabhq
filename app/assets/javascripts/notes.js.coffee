@@ -379,7 +379,9 @@ class Notes
 
     # does it already have notes?
     if nextRow.is(".notes_holder")
-      $.proxy(@replyToDiscussionNote, nextRow.find(".js-discussion-reply-button")).call()
+      replyButton = nextRow.find(".js-discussion-reply-button")
+      if replyButton.length > 0
+        $.proxy(@replyToDiscussionNote, replyButton).call()
     else
       # add a notes row and insert the form
       row.after "<tr class=\"notes_holder js-temp-notes-holder\"><td class=\"notes_line\" colspan=\"2\"></td><td class=\"notes_content\"></td></tr>"
