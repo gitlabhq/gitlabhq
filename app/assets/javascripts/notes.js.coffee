@@ -1,4 +1,6 @@
 class Notes
+  @interval: null
+
   constructor: (notes_url, note_ids) ->
     @notes_url = notes_url
     @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
@@ -60,7 +62,8 @@ class Notes
 
 
   initRefresh: ->
-    setInterval =>
+    clearInterval(Notes.interval)
+    Notes.interval = setInterval =>
       @refresh()
     , 15000
 
@@ -74,11 +77,7 @@ class Notes
       success: (data) =>
         notes = data.notes
         $.each notes, (i, note) =>
-          # render note if it not present in loaded list
-          # or skip if rendered
-          if $.inArray(note.id, @note_ids) == -1
-            @note_ids.push(note.id)
-            @renderNote(note)
+          @renderNote(note)
 
 
   ###
@@ -87,7 +86,19 @@ class Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderNote: (note) ->
-    $('ul.main-notes-list').append(note.html)
+    # render note if it not present in loaded list
+    # or skip if rendered
+    if @isNewNote(note)
+      @note_ids.push(note.id)
+      $('ul.main-notes-list').append(note.html)
+
+
+  ###
+  Check if note does not exists on page
+  ###
+  isNewNote: (note) ->
+    $.inArray(note.id, @note_ids) == -1
+
 
   ###
   Render note in discussion area.
@@ -95,6 +106,7 @@ class Notes
   Note: for rendering inline notes use renderDiscussionNote
   ###
   renderDiscussionNote: (note) ->
+    @note_ids.push(note.id)
     form = $("form[rel='" + note.discussion_id + "']")
     row = form.closest("tr")
 
@@ -219,7 +231,6 @@ class Notes
   Adds new note to list.
   ###
   addNote: (xhr, note, status) =>
-    @note_ids.push(note.id)
     @renderNote(note)
 
   ###
@@ -228,7 +239,6 @@ class Notes
   Adds new note to list.
   ###
   addDiscussionNote: (xhr, note, status) =>
-    @note_ids.push(note.id)
     @renderDiscussionNote(note)
 
   ###
