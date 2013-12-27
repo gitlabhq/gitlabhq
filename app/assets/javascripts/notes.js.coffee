@@ -232,6 +232,7 @@ class Notes
   ###
   addNote: (xhr, note, status) =>
     @renderNote(note)
+    @updateVotes()
 
   ###
   Called in response to the new note form being submitted
@@ -424,5 +425,8 @@ class Notes
     form = $(".js-new-note-form")
     form = $(e.target).closest(".js-discussion-note-form")
     @removeDiscussionNoteForm(form)
+
+  updateVotes: ->
+    (new NotesVotes).updateVotes()
 
 @Notes = Notes
