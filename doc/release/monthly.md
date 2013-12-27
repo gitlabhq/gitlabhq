@@ -58,9 +58,11 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked.
 
-* 5 days before release: feature freeze
-* 3 days before release: UI freeze
-* 1 day before release: code freeze
+* 5 days before release: feature freeze (stop merging new features)
+* 4 days before release: UI freeze (stop merging changes to the user interface)
+* 3 days before release: code freeze (stop merging non-essential code improvements)
+* 2 days before release: release candidate 1 (tag and tweet about x.x.rc1)
+* 1 day before release: release candidate 2 (optional, only if rc1 had problems)
 
 # Write a blog post
 
