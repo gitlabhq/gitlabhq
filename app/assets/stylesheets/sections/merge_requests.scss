@@ -53,7 +53,7 @@
   }
 }
 
-.merge-in-progress {
+.merge-in-progress, .remove_source_branch_in_progress {
   @extend .padded;
   @extend .append-bottom-10;
 }

@@ -7,6 +7,7 @@
       = render "projects/merge_requests/show/mr_accept"
     - else
       = render "projects/merge_requests/show/no_accept"
+  = render "projects/merge_requests/show/remove_source_branch"
   - if @merge_request.source_project.gitlab_ci?
     = render "projects/merge_requests/show/mr_ci"
   = render "projects/merge_requests/show/commits"
