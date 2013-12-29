@@ -21,4 +21,18 @@ module DashboardHelper
       []
     end.count
   end
+
+  def projects_dashboard_filter_path(options={})
+    exist_opts = {
+      sort: params[:sort],
+      scope: params[:scope],
+      group: params[:group],
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
 end

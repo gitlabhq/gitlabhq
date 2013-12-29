@@ -153,6 +153,16 @@ class Project < ActiveRecord::Base
     def visibility_levels
       Gitlab::VisibilityLevel.options
     end
+
+    def sort(method)
+      case method.to_s
+      when 'newest' then reorder('projects.created_at DESC')
+      when 'oldest' then reorder('projects.created_at ASC')
+      when 'recently_updated' then reorder('projects.updated_at DESC')
+      when 'last_updated' then reorder('projects.updated_at ASC')
+      else reorder("namespaces.path, projects.name ASC")
+      end
+    end
   end
 
   def team
