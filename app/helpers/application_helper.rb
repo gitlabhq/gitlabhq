@@ -136,14 +136,6 @@ module ApplicationHelper
     Digest::SHA1.hexdigest string
   end
 
-  def project_last_activity(project)
-    if project.last_activity_at
-      time_ago_with_tooltip(project.last_activity_at, 'bottom', 'last_activity_time_ago') + " ago"
-    else
-      "Never"
-    end
-  end
-
   def authbutton(provider, size = 64)
     file_name = "#{provider.to_s.split('_').first}_#{size}.png"
     image_tag("authbuttons/#{file_name}",

@@ -67,41 +67,33 @@
 
 .project-row, .group-row {
   padding: 10px 12px !important;
-
-  .namespace-name {
-    color: #666;
-    font-weight: bold;
-  }
+  font-size: 14px;
+  line-height: 24px;
 
   a {
     display: block;
   }
 
   .project-name, .group-name {
-    font-size: 15px;
+    font-weight: 500;
   }
 
   .arrow {
     float: right;
-    padding: 10px 5px;
+    padding: 0px 5px;
     margin: 0;
     font-size: 20px;
     color: #666;
   }
 
   .last-activity {
+    float: right;
+    font-size: 12px;
     color: #AAA;
     display: block;
-    margin-top: 5px;
     .date {
       color: #777;
     }
-  }
-}
-
-.group-row {
-  .arrow {
-    padding: 2px 5px;
   }
 }
 
@@ -125,10 +117,8 @@
 
 .dash-project-access-icon {
   float: left;
-  margin-right: 5px;
-  font-size: 18px;
-  color: #BBB;
+  margin-right: 3px;
+  color: #999;
   margin-bottom: 10px;
-  margin-top: 2px;
   width: 16px;
 }

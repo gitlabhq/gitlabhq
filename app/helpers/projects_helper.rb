@@ -187,4 +187,12 @@ module ProjectsHelper
   def default_clone_protocol
     current_user ? "ssh" : "http"
   end
+
+  def project_last_activity(project)
+    if project.last_activity_at
+      time_ago_with_tooltip(project.last_activity_at, 'bottom', 'last_activity_time_ago') + " ago"
+    else
+      "Never"
+    end
+  end
 end
