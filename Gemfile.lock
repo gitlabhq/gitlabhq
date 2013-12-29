@@ -7,6 +7,13 @@ GIT
       actionpack (>= 2.3.0)
       json
 
+GIT
+  remote: https://github.com/gitlabhq/markup.git
+  revision: 61ade389c1e1c159359338f570d18464a44ddbc4
+  ref: 61ade389c1e1c159359338f570d18464a44ddbc4
+  specs:
+    github-markup (0.7.6)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -168,7 +175,6 @@ GEM
     gherkin-ruby (0.3.1)
       racc
     github-markdown (0.5.5)
-    github-markup (0.7.5)
     gitlab-flowdock-git-hook (0.4.2.2)
       gitlab-grit (>= 2.4.1)
       multi_json
@@ -588,7 +594,7 @@ DEPENDENCIES
   font-awesome-rails (~> 3.2)
   foreman
   gemoji (~> 1.3.0)
-  github-markup (~> 0.7.4)
+  github-markup (~> 0.7.4)!
   gitlab-flowdock-git-hook (~> 0.4.2)
   gitlab-gollum-lib (~> 1.0.2)
   gitlab-grack (~> 2.0.0.pre)
