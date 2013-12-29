@@ -19,6 +19,6 @@
 
   %p.light.prepend-top-10
     - deploy_key.projects.map(&:name_with_namespace).each do |project_name|
-      %span.label= project_name
+      %span.label.label-gray.deploy-project-label= project_name
     %small.pull-right
       Created #{time_ago_with_tooltip(deploy_key.created_at)} ago
