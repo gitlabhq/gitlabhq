@@ -225,6 +225,13 @@ describe API::API do
     end
   end
 
+  describe "GET /projects/:id/repository/raw_blobs/:sha" do
+    it "should get the raw file contents" do
+      get api("/projects/#{project.id}/repository/raw_blobs/d1aff2896d99d7acc4d9780fbb716b113c45ecf7", user)
+      response.status.should == 200
+    end
+  end
+
   describe "GET /projects/:id/repository/archive/:sha" do
     it "should get the archive" do
       get api("/projects/#{project.id}/repository/archive", user)

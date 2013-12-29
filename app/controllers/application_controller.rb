@@ -160,6 +160,7 @@ class ApplicationController < ActionController::Base
   def default_headers
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
+    headers['X-UA-Compatible'] = 'IE=edge'
   end
 
   def add_gon_variables

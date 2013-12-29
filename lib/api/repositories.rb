@@ -177,6 +177,28 @@ module API
         present blob.data
       end
 
+      # Get a raw blob contents by blob sha
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (required) - The blob's sha
+      # Example Request:
+      #   GET /projects/:id/repository/raw_blobs/:sha
+      get ":id/repository/raw_blobs/:sha" do
+        ref = params[:sha]
+
+        repo = user_project.repository
+
+        blob = Gitlab::Git::Blob.raw(repo, ref)
+
+        not_found! "Blob" unless blob
+
+        env['api.format'] = :txt
+
+        content_type blob.mime_type
+        present blob.data
+      end
+
       # Get a an archive of the repository
       #
       # Parameters:
