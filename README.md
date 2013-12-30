@@ -1,6 +1,6 @@
 ## GitLab: self hosted Git management software
 
-![logo](https://raw.github.com/gitlabhq/gitlabhq/master/public/gitlab_logo.png)
+![logo](https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/gitlab_logo.png)
 
 ![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
 
@@ -34,7 +34,7 @@
 
 * [GitLab Enterprise Edition](https://www.gitlab.com/features/) offers additional features that are useful for larger organizations (100+ users).
 
-* [GitLab CI](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
+* [GitLab CI](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
 
 ### Requirements
 
@@ -145,7 +145,7 @@ or start each component separately
 
 * [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
-* [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
+* [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterCONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
 * [Support subscription](http://www.gitlab.com/subscription/) connects you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
 

@@ -27,16 +27,16 @@ NOTE: This is a guide for GitLab developers. If you are trying to install GitLab
 
 Check if any of these changed since last release (~22nd of last month depending on when last release branch was created):
 
-* https://github.com/gitlabhq/gitlabhq/commits/master/lib/support/nginx/gitlab
-* https://github.com/gitlabhq/gitlab-shell/commits/master/config.yml.example
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/gitlab.yml.example
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/unicorn.rb.example
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/database.yml.mysql
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/database.yml.postgresql
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/nginx/gitlab
+* https://gitlab.com/gitlab-org/gitlab-shell/commits/master/config.yml.example
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/gitlab.yml.example
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql
 
 #### 8. Need to update init script?
 
-Check if changed since last release (~22nd of last month depending on when last release branch was created): https://github.com/gitlabhq/gitlabhq/commits/master/lib/support/init.d/gitlab
+Check if changed since last release (~22nd of last month depending on when last release branch was created): https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/init.d/gitlab
 
 #### 9. Start application
 
