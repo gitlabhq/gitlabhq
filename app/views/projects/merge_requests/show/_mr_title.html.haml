@@ -35,7 +35,7 @@
           Edit
 
 .pull-right
-  .span3#votes= render 'votes/votes_block', votable: @merge_request
+  .col-md-3#votes= render 'votes/votes_block', votable: @merge_request
 
 .back-link
   = link_to project_merge_requests_path(@project) do

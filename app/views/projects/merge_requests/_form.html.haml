@@ -7,7 +7,7 @@
 
   .merge-request-branches
     .row
-      .span5
+      .col-md-5
         .clearfix
           .pull-left
             = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project chosen span3', disabled: @merge_request.persisted? })
@@ -15,10 +15,10 @@
             &nbsp;
             = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span2'})
         .mr_source_commit.prepend-top-10
-      .span2
+      .col-md-2
         %h2.merge-request-angle.light
           %i.icon-long-arrow-right
-      .span5
+      .col-md-5
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]

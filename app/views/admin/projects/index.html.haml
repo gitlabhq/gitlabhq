@@ -1,5 +1,5 @@
 .row
-  .span4
+  .col-md-4
     .admin-filter
       = form_tag admin_projects_path, method: :get, class: 'form-inline' do
         .control-group
@@ -37,7 +37,7 @@
         .form-actions
           = submit_tag "Search", class: "btn submit btn-primary"
           = link_to "Reset", admin_projects_path, class: "btn"
-  .span8
+  .col-md-8
     .ui-box
       .title
         Projects (#{@projects.total_count})

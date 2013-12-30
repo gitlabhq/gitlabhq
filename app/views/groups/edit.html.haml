@@ -1,5 +1,5 @@
 .row
-  .span2
+  .col-md-2
     %ul.nav.nav-pills.nav-stacked.nav-stacked-menu
       %li.active
         = link_to '#tab-edit', 'data-toggle' => 'tab' do
@@ -12,7 +12,7 @@
       %li
         = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
 
-  .span10
+  .col-md-10
     .tab-content
       .tab-pane.active#tab-edit
         .ui-box

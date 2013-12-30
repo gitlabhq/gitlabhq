@@ -1,8 +1,8 @@
 = render "projects/commits/head"
 .row
-  .span3
+  .col-md-3
     = render "projects/branches/filter"
-  .span9
+  .col-md-9
     .alert.alert-info
       %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
       %p This ability allows:
@@ -21,7 +21,7 @@
 
         .entry.clearfix
           = f.label :name, "Branch"
-          .span3
+          .col-md-3
             = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
           &nbsp;
           = f.submit 'Protect', class: "btn-create btn"

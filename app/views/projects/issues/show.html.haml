@@ -25,7 +25,7 @@
         Edit
 
 .pull-right
-  .span3#votes= render 'votes/votes_block', votable: @issue
+  .col-md-3#votes= render 'votes/votes_block', votable: @issue
 
 .back-link
   = link_to project_issues_path(@project) do

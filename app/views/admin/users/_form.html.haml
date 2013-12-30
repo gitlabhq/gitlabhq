@@ -47,7 +47,7 @@
     %fieldset
       %legend Access
       .row
-        .span8
+        .col-md-8
           .control-group
             = f.label :projects_limit
             .controls= f.number_field :projects_limit
@@ -60,7 +60,7 @@
             = f.label :admin do
               %strong.cred Administrator
             .controls= f.check_box :admin
-        .span4
+        .col-md-4
           - unless @user.new_record?
             .alert.alert-error
               - if @user.blocked?

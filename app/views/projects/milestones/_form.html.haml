@@ -12,7 +12,7 @@
         - @milestone.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span6
+    .col-md-6
       .control-group
         = f.label :title, "Title", class: "control-label"
         .controls
@@ -23,7 +23,7 @@
         .controls
           = f.text_area :description, maxlength: 2000, class: "input-xlarge", rows: 10
           %p.hint Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
-    .span6
+    .col-md-6
       .control-group
         = f.label :due_date, "Due Date", class: "control-label"
         .controls= f.hidden_field :due_date

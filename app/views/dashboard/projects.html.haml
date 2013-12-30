@@ -25,7 +25,7 @@
   All projects you have access to are listed here. Public projects are not included here unless you are a member
 %hr
 .row
-  .span3
+  .col-md-3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
         = link_to projects_dashboard_filter_path(scope: nil) do
@@ -81,7 +81,7 @@
                 %i.icon-tag
                 = label.name
 
-  .span9
+  .col-md-9
     %ul.bordered-list.my-projects.top-list
       - @projects.each do |project|
         %li.my-project-row

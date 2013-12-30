@@ -15,7 +15,7 @@
         - @user.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span7
+    .col-md-7
       .control-group
         = f.label :name, class: "control-label"
         .controls
@@ -52,7 +52,7 @@
           = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
 
-    .span5.pull-right
+    .col-md-5.pull-right
       .light-well
         = image_tag avatar_icon(@user.email, 160), alt: '', class: 'avatar s160'
 

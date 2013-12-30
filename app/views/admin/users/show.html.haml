@@ -13,7 +13,7 @@
 %hr
 
 .row
-  .span6
+  .col-md-6
     .ui-box
       .title
         Account:
@@ -116,7 +116,7 @@
               %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
         = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
 
-  .span6
+  .col-md-6
     - if @user.users_groups.present?
       .ui-box
         .title Groups:
