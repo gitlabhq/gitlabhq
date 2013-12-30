@@ -161,6 +161,8 @@ class ApplicationController < ActionController::Base
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
+    headers['X-Content-Type-Options'] = 'nosniff'
+    headers['Strict-Transport-Security'] = 'max-age=31536000; includeSubDomains' if Gitlab.config.gitlab.https
   end
 
   def add_gon_variables
