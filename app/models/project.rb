@@ -201,6 +201,10 @@ class Project < ActiveRecord::Base
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
   end
 
+  def web_url_without_scheme
+    [Gitlab.config.gitlab.host, path_with_namespace].join("/")
+  end
+
   def build_commit_note(commit)
     notes.new(commit_id: commit.id, noteable_type: "Commit")
   end

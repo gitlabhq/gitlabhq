@@ -3,7 +3,7 @@
 
   -# Go repository retrieval support.
   - if controller_name == 'projects' && action_name == 'show'
-    %meta{name: "go-import", content: "#{Gitlab.config.gitlab.host}/#{@project.namespace.path}/#{@project.path} git http://#{Gitlab.config.gitlab.host}/#{@project.namespace.path}/#{@project.path}.git"}
+    %meta{name: "go-import", content: "#{@project.web_url_without_scheme} git #{@project.web_url}.git"}
 
   %title
     = "#{title} | " if defined?(title)
