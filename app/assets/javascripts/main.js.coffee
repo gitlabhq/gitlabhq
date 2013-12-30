@@ -81,6 +81,7 @@ $ ->
     $(@).parents('form').submit()
 
   $("abbr.timeago").timeago()
+  $('.js-timeago').timeago()
 
   # Flash
   if (flash = $(".flash-container")).length > 0
