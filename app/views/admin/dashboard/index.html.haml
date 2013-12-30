@@ -37,7 +37,7 @@
       %p
         = link_to project.name_with_namespace, [:admin, project]
         %span.light.pull-right
-          #{time_ago_with_tooltip(project.created_at)} ago
+          #{time_ago_with_tooltip(project.created_at)}
 
   .span4
     %h4 Latest users
@@ -47,7 +47,7 @@
         = link_to [:admin, user] do
           = user.name
         %span.light.pull-right
-          #{time_ago_with_tooltip(user.created_at)} ago
+          #{time_ago_with_tooltip(user.created_at)}
 
   .span4
     %h4 Latest groups
@@ -57,7 +57,7 @@
         = link_to [:admin, group] do
           = group.name
         %span.light.pull-right
-          #{time_ago_with_tooltip(group.created_at)} ago
+          #{time_ago_with_tooltip(group.created_at)}
 
 %br
 .row

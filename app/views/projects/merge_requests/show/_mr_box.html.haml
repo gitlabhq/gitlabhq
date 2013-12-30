@@ -25,13 +25,13 @@
       %span
         %i.icon-remove
         Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
-        #{time_ago_with_tooltip(@merge_request.closed_event.created_at)} ago.
+        #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}.
   - if @merge_request.merged?
     .description.alert-success
       %span
         %i.icon-ok
         Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
-        #{time_ago_with_tooltip(@merge_request.merge_event.created_at)} ago.
+        #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}.
   - if !@closes_issues.empty? && @merge_request.opened?
     .description.alert-info
       %span

@@ -46,6 +46,6 @@
                 = commit.short_id
               %span.light
                 = gfm escape_once(truncate(commit.title, length: 40))
-              #{time_ago_with_tooltip(commit.committed_date)} ago
+              #{time_ago_with_tooltip(commit.committed_date)}
             - else
               (branch was removed from repository)
