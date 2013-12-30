@@ -8,18 +8,18 @@
           %br
     .issue-box
       .title
-        .control-group
+        .form-group
           = f.label :title do
             %strong= "Subject *"
-          .controls
+          .col-sm-10
             = f.text_field :title, maxlength: 255, class: "input-xxlarge js-gfm-input", autofocus: true, required: true
       .context
-        .control-group
+        .form-group
           .issue_assignee.pull-left
             = f.label :assignee_id do
               %i.icon-user
               Assign to
-            .controls
+            .col-sm-10
               .pull-left
                 = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'chosen'})
               .pull-right
@@ -29,20 +29,20 @@
             = f.label :milestone_id do
               %i.icon-time
               Milestone
-            .controls= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
+            .col-sm-10= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
 
       .description
-        .control-group
+        .form-group
           = f.label :label_list do
             %i.icon-tag
             Labels
-          .controls
+          .col-sm-10
             = f.text_field :label_list, maxlength: 2000, class: "input-xxlarge"
             %p.hint Separate labels with commas.
 
-        .control-group
+        .form-group
           = f.label :description, "Details"
-          .controls
+          .col-sm-10
             = f.text_area :description, class: "input-xxlarge js-gfm-input", rows: 14
             %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
 

@@ -15,10 +15,10 @@
       .file-content.code
         %pre#editor= @blob.data
 
-    .control-group.commit_message-group
+    .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
         Commit message
-      .controls
+      .col-sm-10
         = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit

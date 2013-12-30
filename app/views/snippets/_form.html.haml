@@ -9,12 +9,12 @@
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
 
-    .control-group
+    .form-group
       = f.label :title
-      .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
-    .control-group
+      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
+    .form-group
       = f.label "Access"
-      .controls
+      .col-sm-10
         = f.label :private_true, class: 'radio-label' do
           = f.radio_button :private, true
           %span
@@ -27,10 +27,10 @@
             %strong Public
             (GitLab users can see this snippet)
 
-    .control-group
+    .form-group
       .file-editor
         = f.label :file_name, "File"
-        .controls
+        .col-sm-10
           .file-holder.snippet
             .file-title
               = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true

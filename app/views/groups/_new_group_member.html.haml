@@ -6,14 +6,14 @@
       group
 
     %p 1. Choose users you want in the group
-    .control-group
+    .form-group
       = f.label :user_ids, "People"
-      .controls= users_select_tag(:user_ids, multiple: true, class: 'input-large')
+      .col-sm-10= users_select_tag(:user_ids, multiple: true, class: 'input-large')
 
     %p 2. Set access level for them
-    .control-group
+    .form-group
       = f.label :group_access, "Group Access"
-      .controls= select_tag :group_access, options_for_select(UsersGroup.group_access_roles, @users_group.group_access), class: "project-access-select chosen"
+      .col-sm-10= select_tag :group_access, options_for_select(UsersGroup.group_access_roles, @users_group.group_access), class: "project-access-select chosen"
 
     .form-actions
       = f.submit 'Add users into group', class: "btn btn-create"

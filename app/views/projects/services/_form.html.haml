@@ -18,9 +18,9 @@
           %li= msg
 
 
-  .control-group
+  .form-group
     = f.label :active, "Active", class: "control-label"
-    .controls
+    .col-sm-10
       = f.check_box :active
 
   - @service.fields.each do |field|
@@ -28,9 +28,9 @@
     - type = field[:type]
     - placeholder = field[:placeholder]
 
-    .control-group
+    .form-group
       = f.label name, class: "control-label"
-      .controls
+      .col-sm-10
         - if type == 'text'
           = f.text_field name, class: "input-xlarge", placeholder: placeholder
         - elsif type == 'textarea'

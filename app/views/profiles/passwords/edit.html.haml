@@ -14,19 +14,19 @@
           %ul
             - @user.errors.full_messages.each do |msg|
               %li= msg
-      .control-group
+      .form-group
         = f.label :current_password
-        .controls
+        .col-sm-10
           = f.password_field :current_password, required: true
           %div
             = link_to "Forgot your password?", reset_profile_password_path, method: :put
 
-      .control-group
+      .form-group
         = f.label :password, 'New password'
-        .controls= f.password_field :password, required: true
-      .control-group
+        .col-sm-10= f.password_field :password, required: true
+      .form-group
         = f.label :password_confirmation
-        .controls
+        .col-sm-10
           = f.password_field :password_confirmation, required: true
       .form-actions
         = f.submit 'Save password', class: "btn btn-save"

@@ -13,21 +13,21 @@
           %li= msg
   .row
     .col-md-6
-      .control-group
+      .form-group
         = f.label :title, "Title", class: "control-label"
-        .controls
+        .col-sm-10
           = f.text_field :title, maxlength: 255, class: "input-xlarge"
           %p.hint Required
-      .control-group
+      .form-group
         = f.label :description, "Description", class: "control-label"
-        .controls
+        .col-sm-10
           = f.text_area :description, maxlength: 2000, class: "input-xlarge", rows: 10
           %p.hint Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
     .col-md-6
-      .control-group
+      .form-group
         = f.label :due_date, "Due Date", class: "control-label"
-        .controls= f.hidden_field :due_date
-        .controls
+        .col-sm-10= f.hidden_field :due_date
+        .col-sm-10
           .datepicker
 
   .form-actions

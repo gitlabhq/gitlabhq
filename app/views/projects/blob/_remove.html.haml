@@ -8,12 +8,12 @@
 
   .modal-body
     = form_tag project_blob_path(@project, @id), method: :delete do
-      .control-group.commit_message-group
+      .form-group.commit_message-group
         = label_tag 'commit_message', class: "control-label" do
           Commit message
-        .controls
+        .col-sm-10
           = text_area_tag 'commit_message', params[:commit_message], placeholder: "Removed this file because...", required: true, rows: 3
-      .control-group
-        .controls
+      .form-group
+        .col-sm-10
           = submit_tag 'Remove file', class: 'btn btn-remove'
           = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"

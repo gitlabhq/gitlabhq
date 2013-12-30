@@ -12,15 +12,15 @@
     .alert.alert-error
       - @hook.errors.full_messages.each do |msg|
         %p= msg
-  .control-group
+  .form-group
     = f.label :url, "URL"
-    .controls
+    .col-sm-10
       = f.text_field :url, class: "text_field input-xxlarge input-xpadding", placeholder: 'http://example.com/trigger-ci.json'
       &nbsp;
       = f.submit "Add Web Hook", class: "btn btn-create"
-  .control-group
+  .form-group
     = f.label :url, "Trigger"
-    .controls
+    .col-sm-10
       %div
         = f.check_box :push_events, class: 'pull-left'
         .prepend-left-20

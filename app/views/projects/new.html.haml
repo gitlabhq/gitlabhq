@@ -4,48 +4,48 @@
   .project-edit-content
 
     = form_for @project, remote: true do |f|
-      .control-group.project-name-holder
+      .form-group.project-name-holder
         = f.label :name do
           %strong Project name
-        .controls
+        .col-sm-10
           = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
           %span.help-inline
             = link_to "#", class: 'js-toggle-visibility-link' do
               %span Customize repository name?
 
-      .control-group.js-toggle-visibility-container.gl-hide
+      .form-group.js-toggle-visibility-container.gl-hide
         = f.label :path do
           %span Repository name
-        .controls
+        .col-sm-10
           .input-append
             = f.text_field :path
             %span.add-on .git
 
 
       - if current_user.can_select_namespace?
-        .control-group
+        .form-group
           = f.label :namespace_id do
             %span Namespace
-          .controls
+          .col-sm-10
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen', tabindex: 2}
 
-      .control-group
-        .controls
+      .form-group
+        .col-sm-10
           = link_to "#", class: 'appear-link' do
             %i.icon-upload-alt
             %span Import existing repository?
-      .control-group.appear-data.import-url-data
+      .form-group.appear-data.import-url-data
         = f.label :import_url do
           %span Import existing repo
-        .controls
+        .col-sm-10
           = f.text_field :import_url, class: 'input-xlarge', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
-      .control-group
+      .form-group
         = f.label :description do
           Description
           %span.light (optional)
-        .controls
+        .col-sm-10
           = f.text_area :description, placeholder: "Awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
       = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
@@ -54,7 +54,7 @@
 
         - if current_user.can_create_group?
           .pull-right
-            .controls.light
+            .col-sm-10.light
               Need a group for several dependent projects?
               = link_to new_group_path, class: "btn btn-tiny" do
                 Create a group

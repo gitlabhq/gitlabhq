@@ -80,13 +80,13 @@
         Transfer project
       .body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
-          .control-group
+          .form-group
             = f.label :namespace_id, "Namespace"
-            .controls
+            .col-sm-10
               = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
 
-          .control-group
-            .controls
+          .form-group
+            .col-sm-10
               = f.submit 'Transfer', class: 'btn btn-primary'
 
   .col-md-6

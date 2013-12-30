@@ -11,30 +11,30 @@
     .alert.alert-error
       - @broadcast_message.errors.full_messages.each do |msg|
         %p= msg
-  .control-group
+  .form-group
     = f.label :message
-    .controls
+    .col-sm-10
       = f.text_area :message, class: "input-xxlarge", rows: 2, required: true
       %div
         = link_to '#', class: 'js-toggle-colors-link' do
           Customize colors
-  .control-group.js-toggle-colors-container.gl-hide
+  .form-group.js-toggle-colors-container.gl-hide
     = f.label :color, "Background Color"
-    .controls
+    .col-sm-10
       = f.text_field :color, placeholder: "#AA33EE"
       .light Hex values as 3 double digit numbers, starting with a # sign.
-  .control-group.js-toggle-colors-container.gl-hide
+  .form-group.js-toggle-colors-container.gl-hide
     = f.label :font, "Font Color"
-    .controls
+    .col-sm-10
       = f.text_field :font, placeholder: "#224466"
       .light Hex values as 3 double digit numbers, starting with a # sign.
-  .control-group
+  .form-group
     = f.label :starts_at
-    .controls.datetime-controls
+    .col-sm-10.datetime-controls
       = f.datetime_select :starts_at
-  .control-group
+  .form-group
     = f.label :ends_at
-    .controls.datetime-controls
+    .col-sm-10.datetime-controls
       = f.datetime_select :ends_at
   .form-actions
     = f.submit "Add broadcast message", class: "btn btn-create"

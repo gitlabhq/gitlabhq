@@ -4,11 +4,11 @@
       - if params[:to] && params[:from]
         = link_to 'switch', {from: params[:to], to: params[:from]}, {class: 'commits-compare-switch has_tooltip', title: 'Switch base of comparison'}
       .input-prepend
-        %span.add-on.input-xpadding from
+        %span.add-on from
         = text_field_tag :from, params[:from], class: "span3 input-xpadding"
       = "..."
       .input-prepend
-        %span.add-on.input-xpadding to
+        %span.add-on to
         = text_field_tag :to, params[:to], class: "span3 input-xpadding"
     .pull-left
       &nbsp;

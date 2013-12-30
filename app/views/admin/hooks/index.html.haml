@@ -13,9 +13,9 @@
     .alert.alert-error
       - @hook.errors.full_messages.each do |msg|
         %p= msg
-  .control-group
+  .form-group
     = f.label :url, "URL:"
-    .controls
+    .col-sm-10
       = f.text_field :url, class: "text_field input-xxlarge input-xpadding"
       &nbsp;
       = f.submit "Add System Hook", class: "btn btn-create"

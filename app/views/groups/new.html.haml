@@ -2,19 +2,19 @@
   - if @group.errors.any?
     .alert.alert-error
       %span= @group.errors.full_messages.first
-  .control-group
+  .form-group
     = f.label :name do
       Group name
-    .controls
+    .col-sm-10
       = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
 
-  .control-group.group-description-holder
+  .form-group.group-description-holder
     = f.label :description, "Details"
-    .controls
+    .col-sm-10
       = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
 
-  .control-group
-    .controls
+  .form-group
+    .col-sm-10
       %ul
         %li A group is a collection of several projects
         %li Groups are private by default

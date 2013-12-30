@@ -30,24 +30,24 @@
 
   %hr
   .merge-request-form-info
-    .control-group
+    .form-group
       = f.label :title do
         %strong= "Title *"
-      .controls= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
-    .control-group
+      .col-sm-10= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
+    .form-group
       .left
         = f.label :assignee_id do
           %i.icon-user
           Assign to
-        .controls= f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select user" }, {class: 'chosen span3'})
+        .col-sm-10= f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select user" }, {class: 'chosen span3'})
       .left
         = f.label :milestone_id do
           %i.icon-time
           Milestone
-        .controls= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'chosen'})
-    .control-group
+        .col-sm-10= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'chosen'})
+    .form-group
       = f.label :description, "Description"
-      .controls
+      .col-sm-10
         = f.text_area :description, class: "input-xxlarge js-gfm-input", rows: 14
         %p.hint Description is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
 
