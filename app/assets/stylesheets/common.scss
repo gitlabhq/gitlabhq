@@ -209,7 +209,7 @@ li.note {
 }
 
 .git_error_tips {
-  @extend .span6;
+  @extend .col-md-6;
   text-align: left;
   margin-top: 40px;
   pre {

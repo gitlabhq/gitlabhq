@@ -42,7 +42,7 @@
       line-height: 20px;
     }
     textarea {
-      @extend .span8;
+      @extend .col-md-8;
     }
   }
 }

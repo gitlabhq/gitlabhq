@@ -5,6 +5,9 @@
 header {
   &.navbar-gitlab {
     margin-bottom: 0;
+    height: 40px;
+    overflow: hidden;
+
     .navbar-inner {
       /*height: 40px;*/
       padding: 3px;
@@ -92,12 +95,19 @@ header {
   .search {
     margin-right: 10px;
     margin-left: 10px;
+    margin-top: 5px;
+
+    form {
+      margin: 0;
+    }
 
     .search-input {
-      @extend .span3;
+      width: 300px;
       background-image: url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
+      height: inherit;
+      padding: 4px 6px;
       padding-left: 25px;
       font-size: 13px;
       @include border-radius(3px);
@@ -105,7 +115,7 @@ header {
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
       &:focus {
-        @extend .span4;
+        @extend .col-md-4;
       }
     }
   }
