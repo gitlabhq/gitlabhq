@@ -151,7 +151,7 @@ gem "jquery-rails",     "2.1.3"
 gem "jquery-ui-rails",  "2.0.2"
 gem "modernizr",        "2.6.2"
 gem "raphael-rails", "~> 2.1.2"
-gem 'bootstrap-sass', '~> 2.3'
+gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'
 gem "gemoji", "~> 1.3.0"
 gem "gon", git: "https://github.com/gitlabhq/gon.git", ref: '58ca8e17273051cb370182cabd3602d1da6783ab'
