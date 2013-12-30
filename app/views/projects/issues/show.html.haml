@@ -2,7 +2,7 @@
   Issue ##{@issue.iid}
 
   %small
-    created #{time_ago_with_tooltip(@issue.created_at)} ago
+    created #{time_ago_with_tooltip(@issue.created_at)}
 
   - if @issue.closed?
     %span.state-label.state-label-red Closed
