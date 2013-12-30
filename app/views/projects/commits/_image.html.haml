@@ -11,7 +11,7 @@
         .frame.deleted
           %a{href: project_blob_path(@project, tree_join(@commit.parent_id, diff.old_path))}
             %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
-        %p.image-info.hide
+        %p.image-info.gl-hide
           %span.meta-filesize= "#{number_to_human_size old_file.size}"
           |
           %b W:
@@ -23,7 +23,7 @@
         .frame.added
           %a{href: project_blob_path(@project, tree_join(@commit.id, diff.new_path))}
             %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
-        %p.image-info.hide
+        %p.image-info.gl-hide
           %span.meta-filesize= "#{number_to_human_size file.size}"
           |
           %b W:
@@ -32,7 +32,7 @@
           %b H:
           %span.meta-height
 
-    %div.swipe.view.hide
+    %div.swipe.view.gl-hide
       .swipe-frame
         .frame.deleted
           %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
@@ -43,7 +43,7 @@
           %span.top-handle
           %span.bottom-handle
 
-    %div.onion-skin.view.hide
+    %div.onion-skin.view.gl-hide
       .onion-skin-frame
         .frame.deleted
           %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
@@ -56,7 +56,7 @@
           .opaque
 
 
-  .view-modes.hide
+  .view-modes.gl-hide
     %ul.view-modes-menu
       %li.two-up{data: {mode: 'two-up'}} 2-up
       %li.swipe{data: {mode: 'swipe'}} Swipe

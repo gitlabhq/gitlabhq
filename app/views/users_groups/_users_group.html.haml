@@ -16,7 +16,7 @@
       = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
         %i.icon-minus.icon-white
 
-  .edit-member.hide.js-toggle-content
+  .edit-member.gl-hide.js-toggle-content
     = form_for [@group, member], remote: true do |f|
       .alert.prepend-top-20
         = f.select :group_access, options_for_select(UsersGroup.group_access_roles, member.group_access)

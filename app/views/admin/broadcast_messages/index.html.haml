@@ -18,12 +18,12 @@
       %div
         = link_to '#', class: 'js-toggle-colors-link' do
           Customize colors
-  .control-group.js-toggle-colors-container.hide
+  .control-group.js-toggle-colors-container.gl-hide
     = f.label :color, "Background Color"
     .controls
       = f.text_field :color, placeholder: "#AA33EE"
       .light Hex values as 3 double digit numbers, starting with a # sign.
-  .control-group.js-toggle-colors-container.hide
+  .control-group.js-toggle-colors-container.gl-hide
     = f.label :font, "Font Color"
     .controls
       = f.text_field :font, placeholder: "#224466"

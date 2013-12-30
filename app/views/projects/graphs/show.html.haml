@@ -21,14 +21,14 @@
       %ol.contributors-list.clearfix
 
 :javascript
-  $(".stat-graph").hide();
+  $(".stat-graph").gl-hide();
 
   $.ajax({
     type: "GET",
     url: location.href,
     complete: function() {
       $(".stat-graph").fadeIn();
-      $(".loading-graph").hide();
+      $(".loading-graph").gl-hide();
     },
     dataType: "script"
   });
