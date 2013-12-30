@@ -4,8 +4,9 @@
  */
 header {
   &.navbar-gitlab {
+    margin-bottom: 0;
     .navbar-inner {
-      height: 40px;
+      /*height: 40px;*/
       padding: 3px;
       background: #F1F1F1;
       filter: none;
