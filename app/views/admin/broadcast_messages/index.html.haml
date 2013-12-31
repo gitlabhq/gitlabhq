@@ -8,7 +8,7 @@
 
 = form_for [:admin, @broadcast_message] do |f|
   -if @broadcast_message.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       - @broadcast_message.errors.full_messages.each do |msg|
         %p= msg
   .form-group

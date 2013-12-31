@@ -5,7 +5,7 @@
       %br
       After successful password update you will be redirected to login screen
     -if @user.errors.any?
-      .alert.alert-error
+      .alert.alert-danger
         %ul
           - @user.errors.full_messages.each do |msg|
             %li= msg

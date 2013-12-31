@@ -21,7 +21,7 @@
           = markdown @merge_request.description
 
   - if @merge_request.closed?
-    .description.alert-error
+    .description.alert-danger
       %span
         %i.icon-remove
         Closed by #{link_to_member(@project, @merge_request.closed_event.author)}

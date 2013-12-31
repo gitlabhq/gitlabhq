@@ -2,7 +2,7 @@
   = form_for [:admin, @user] do |f|
     -if @user.errors.any?
       #error_explanation
-        %ul.unstyled.alert.alert-error
+        %ul.unstyled.alert.alert-danger
           - @user.errors.full_messages.each do |msg|
             %li= msg
 
@@ -62,7 +62,7 @@
             .col-sm-10= f.check_box :admin
         .col-md-4
           - unless @user.new_record?
-            .alert.alert-error
+            .alert.alert-danger
               - if @user.blocked?
                 %p This user is blocked and is not able to login to GitLab
                 = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"

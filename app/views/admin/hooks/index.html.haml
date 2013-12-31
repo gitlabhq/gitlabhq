@@ -10,7 +10,7 @@
 
 = form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-inline' } do |f|
   -if @hook.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       - @hook.errors.full_messages.each do |msg|
         %p= msg
   .form-group

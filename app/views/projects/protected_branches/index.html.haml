@@ -14,7 +14,7 @@
     - if can? current_user, :admin_project, @project
       = form_for [@project, @protected_branch] do |f|
         -if @protected_branch.errors.any?
-          .alert.alert-error
+          .alert.alert-danger
             %ul
               - @protected_branch.errors.full_messages.each do |msg|
                 %li= msg

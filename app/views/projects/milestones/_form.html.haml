@@ -7,7 +7,7 @@
 
 = form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
   -if @milestone.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @milestone.errors.full_messages.each do |msg|
           %li= msg

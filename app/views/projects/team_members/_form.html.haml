@@ -3,7 +3,7 @@
 
 = form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project) do |f|
   -if @user_project_relation.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @user_project_relation.errors.full_messages.each do |msg|
           %li= msg

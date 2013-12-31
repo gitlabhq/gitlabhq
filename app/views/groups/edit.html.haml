@@ -22,7 +22,7 @@
           %div.form-holder
             = form_for @group do |f|
               - if @group.errors.any?
-                .alert.alert-error
+                .alert.alert-danger
                   %span= @group.errors.full_messages.first
               .form-group
                 = f.label :name do

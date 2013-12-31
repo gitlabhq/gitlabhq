@@ -1,7 +1,7 @@
 %div
   = form_for [:profile, @key], html: { class: 'form-horizontal' } do |f|
     - if @key.errors.any?
-      .alert.alert-error
+      .alert.alert-danger
         %ul
           - @key.errors.full_messages.each do |msg|
             %li= msg

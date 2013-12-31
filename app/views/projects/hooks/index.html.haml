@@ -9,7 +9,7 @@
 
 = form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-horizontal' } do |f|
   -if @hook.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       - @hook.errors.full_messages.each do |msg|
         %p= msg
   .form-group

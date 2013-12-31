@@ -2,7 +2,7 @@
 %hr
 = form_for [:admin, @group] do |f|
   - if @group.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %span= @group.errors.full_messages.first
   .form-group.group_name_holder
     = f.label :name do

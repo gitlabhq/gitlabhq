@@ -2,7 +2,7 @@
   = render "projects/merge_requests/show/mr_title"
   = render "projects/merge_requests/show/mr_box"
 
-  .alert.alert-error
+  .alert.alert-danger
     %p
       We cannot render this merge request properly because
       - if @merge_request.for_fork? && !@merge_request.source_project

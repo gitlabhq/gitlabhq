@@ -12,7 +12,7 @@
 
 = form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put) do |f|
   - if @service.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @service.errors.full_messages.each do |msg|
           %li= msg
