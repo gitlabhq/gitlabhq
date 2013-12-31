@@ -20,6 +20,7 @@
 .append-right-10 { margin-right:10px }
 .append-right-20 { margin-right:20px }
 .append-bottom-10 { margin-bottom:10px }
+.append-bottom-15 { margin-bottom:15px }
 .append-bottom-20 { margin-bottom:20px }
 .inline { display: inline-block }
 
@@ -128,4 +129,10 @@ pre.well-pre {
 
 .gl-hide {
   display: none;
+}
+
+.breadcrumb > li + li:before {
+  content: "/";
+  padding: 0;
+  color: #666;
 }

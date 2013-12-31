@@ -103,7 +103,6 @@ header {
     }
 
     .search-input {
-      width: 300px;
       background-image: url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
@@ -115,9 +114,6 @@ header {
       border: 1px solid #c6c6c6;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
-      &:focus {
-        width: 400px;
-      }
     }
   }
 
@@ -201,3 +197,18 @@ header {
   }
 }
 
+.search .search-input {
+  width: 300px;
+  &:focus {
+    width: 400px;
+  }
+}
+
+@media (max-width: 1200px)  {
+  .search .search-input {
+    width: 200px;
+    &:focus {
+      width: 300px;
+    }
+  }
+}

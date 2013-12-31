@@ -3,6 +3,7 @@
   min-width: 100px;
 
   .chosen-single {
+    height: 26px;
     background: #EEE !important;
     border: 1px solid #DDD !important;
     @include box-shadow(none !important);
