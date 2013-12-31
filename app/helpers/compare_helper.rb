@@ -6,7 +6,8 @@ module CompareHelper
       @repository.branch_names.include?(params[:from]) &&
       @repository.branch_names.include?(params[:to]) &&
       params[:from] != params[:to] &&
-      !@refs_are_same
+      !@refs_are_same &&
+      @project.merge_requests_enabled
   end
 
   def compare_mr_path
