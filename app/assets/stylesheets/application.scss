@@ -9,10 +9,26 @@
  *= require_self
 */
 
+/** Override bootstrap variables **/
+$font-size-base: 13px !default;
+
 /**
- * GitLab bootstrap:
+ * Twitter bootstrap:
  */
-@import "gitlab_bootstrap.scss";
+@import 'bootstrap';
+
+/**
+ * Font icons
+ *
+ */
+@import "font-awesome";
+
+/**
+ * Generic css (forms, nav etc):
+ */
+@import "generic.scss";
+
+
 
 @import "common.scss";
 @import "selects.scss";
