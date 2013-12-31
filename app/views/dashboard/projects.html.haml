@@ -25,28 +25,29 @@
   All projects you have access to are listed here. Public projects are not included here unless you are a member
 %hr
 .row
-  .col-md-3.hidden-sm.hidden-xs
-    %ul.nav.nav-pills.nav-stacked
-      = nav_tab :scope, nil do
-        = link_to projects_dashboard_filter_path(scope: nil) do
-          All
-          %span.pull-right
-            = current_user.authorized_projects.count
-      = nav_tab :scope, 'personal' do
-        = link_to projects_dashboard_filter_path(scope: 'personal') do
-          Personal
-          %span.pull-right
-            = current_user.personal_projects.count
-      = nav_tab :scope, 'joined' do
-        = link_to projects_dashboard_filter_path(scope: 'joined') do
-          Joined
-          %span.pull-right
-            = current_user.authorized_projects.joined(current_user).count
-      = nav_tab :scope, 'owned' do
-        = link_to projects_dashboard_filter_path(scope: 'owned') do
-          Owned
-          %span.pull-right
-            = current_user.owned_projects.count
+  .col-md-3.hidden-sm.hidden-xs.side-filters
+    %fieldset
+      %ul.nav.nav-pills.nav-stacked
+        = nav_tab :scope, nil do
+          = link_to projects_dashboard_filter_path(scope: nil) do
+            All
+            %span.pull-right
+              = current_user.authorized_projects.count
+        = nav_tab :scope, 'personal' do
+          = link_to projects_dashboard_filter_path(scope: 'personal') do
+            Personal
+            %span.pull-right
+              = current_user.personal_projects.count
+        = nav_tab :scope, 'joined' do
+          = link_to projects_dashboard_filter_path(scope: 'joined') do
+            Joined
+            %span.pull-right
+              = current_user.authorized_projects.joined(current_user).count
+        = nav_tab :scope, 'owned' do
+          = link_to projects_dashboard_filter_path(scope: 'owned') do
+            Owned
+            %span.pull-right
+              = current_user.owned_projects.count
 
     %fieldset
       %legend Visibility
