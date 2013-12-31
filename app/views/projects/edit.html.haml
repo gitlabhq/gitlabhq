@@ -7,26 +7,26 @@
       %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
       %hr
       .form-holder
-        = form_for(@project, remote: true) do |f|
+        = form_for @project, remote: true, html: { class: "edit_project form-horizontal" } do |f|
           %fieldset
             .form-group.project_name_holder
-              = f.label :name do
+              = f.label :name, class: 'control-label' do
                 Project name
               .col-sm-10
-                = f.text_field :name, placeholder: "Example Project", class: "span5"
+                = f.text_field :name, placeholder: "Example Project", class: "form-control"
 
 
             .form-group
-              = f.label :description do
+              = f.label :description, class: 'control-label' do
                 Project description
                 %span.light (optional)
               .col-sm-10
-                = f.text_area :description, placeholder: "Awesome project", class: "span5", rows: 3, maxlength: 250
+                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
               .form-group
-                = f.label :default_branch, "Default Branch"
-                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
+                = f.label :default_branch, "Default Branch", class: 'control-label'
+                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen select-wide'})
 
 
           = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
@@ -37,7 +37,7 @@
             .form-group
               = f.label :label_list, "Labels", class: 'control-label'
               .col-sm-10
-                = f.text_field :label_list, maxlength: 2000, class: "span5"
+                = f.text_field :label_list, maxlength: 2000, class: "form-control"
                 %p.hint Separate labels with commas.
 
           %fieldset.features
