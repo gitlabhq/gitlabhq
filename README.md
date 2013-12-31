@@ -66,6 +66,8 @@
 
 * [Installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) public wiki with unofficial guides to install GitLab on different operating systems.
 
+* [Docker install](https://github.com/crashsystems/gitlab-docker) Install gitlab via docker.io
+
 ### New versions and upgrading
 
 Since 2011 GitLab is released on the 22nd of every month. Every new release includes an upgrade guide.
