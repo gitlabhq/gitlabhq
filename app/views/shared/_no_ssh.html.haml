@@ -1,4 +1,4 @@
-- if cookies[:hide_no_ssh_message].blank? && current_user.require_ssh_key? && !current_user.gl-hide_no_ssh_key
+- if cookies[:hide_no_ssh_message].blank? && current_user.require_ssh_key? && !current_user.hide_no_ssh_key
   .no-ssh-key-message
     .container
       You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_profile_key_path} to your profile
