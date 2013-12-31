@@ -33,3 +33,7 @@ fieldset legend {
 label.control-label {
   @extend .col-sm-2;
 }
+
+.inline-input-group {
+  width: 250px;
+}

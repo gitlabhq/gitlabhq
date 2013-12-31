@@ -10,7 +10,7 @@
 
 %hr
 
-= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put) do |f|
+= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |f|
   - if @service.errors.any?
     .alert.alert-danger
       %ul
@@ -32,9 +32,9 @@
       = f.label name, class: "control-label"
       .col-sm-10
         - if type == 'text'
-          = f.text_field name, class: "input-lg", placeholder: placeholder
+          = f.text_field name, class: "form-control", placeholder: placeholder
         - elsif type == 'textarea'
-          = f.text_area name, rows: 5, class: "input-lg", placeholder: placeholder
+          = f.text_area name, rows: 5, class: "form-control", placeholder: placeholder
         - elsif type == 'checkbox'
           = f.check_box name
 

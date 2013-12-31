@@ -134,9 +134,9 @@
           .title Transfer project
           .errors-holder
           .form-holder
-            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project' }) do |f|
+            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
               .form-group
-                = f.label :namespace_id do
+                = f.label :namespace_id, class: 'control-label' do
                   %span Namespace
                 .col-sm-10
                   .form-group
@@ -154,15 +154,15 @@
         .title Rename repository
         .errors-holder
         .form-holder
-          = form_for(@project) do |f|
+          = form_for(@project, html: { class: 'form-horizontal' }) do |f|
             .form-group
-              = f.label :path do
+              = f.label :path, class: 'control-label' do
                 %span Path
-              .col-sm-10
+              .col-sm-9
                 .form-group
-                  .input-append
-                    = f.text_field :path
-                    %span.add-on .git
+                  .input-group
+                    = f.text_field :path, class: 'form-control'
+                    %span.input-group-addon .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
