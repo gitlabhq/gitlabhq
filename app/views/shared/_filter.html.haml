@@ -1,4 +1,4 @@
-.side-filters
+.side-filters.hidden-xs.hidden-sm
   = form_tag filter_path(entity), method: 'get' do
     %fieldset.scope-filter
       %ul.nav.nav-pills.nav-stacked
@@ -24,7 +24,7 @@
           = link_to filter_path(entity, status: 'all') do
             All
 
-    %fieldset.hidden-xs.hidden-sm
+    %fieldset
       %legend Projects
       %ul.nav.nav-pills.nav-pills-small.nav-stacked
         - @projects.each do |project|
