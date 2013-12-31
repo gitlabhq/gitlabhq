@@ -6,6 +6,12 @@ production:
   bucket: mygitlab.production.us
   region: us-east-1
 
+staging:
+  access_key_id: AKIA1111111111111UA
+  secret_access_key: secret
+  bucket: mygitlab.staging.us
+  region: us-east-1
+
 development:
   access_key_id: AKIA1111111111111UA
   secret_access_key: secret

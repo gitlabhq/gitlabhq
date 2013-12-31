@@ -13,6 +13,20 @@ production:
   # socket: /tmp/mysql.sock
 
 #
+# Staging
+#
+staging:
+  adapter: mysql2
+  encoding: utf8
+  reconnect: false
+  database: gitlabhq_staging
+  pool: 5
+  username: gitlab
+  password: "secure password"
+  # host: localhost
+  # socket: /tmp/mysql.sock
+
+#
 # Development specific
 #
 development:
