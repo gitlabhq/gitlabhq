@@ -9,8 +9,9 @@
  *= require_self
 */
 
-/** Override bootstrap variables **/
-$font-size-base: 13px !default;
+@import "main/variables.scss";
+@import "main/mixins.scss";
+@import "main/fonts.scss";
 
 /**
  * Twitter bootstrap:
@@ -28,6 +29,10 @@ $font-size-base: 13px !default;
  */
 @import "generic.scss";
 
+
+/**
+ * Unrefactored css
+ */
 @import "common.scss";
 
 
