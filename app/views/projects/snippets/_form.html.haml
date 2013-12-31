@@ -11,7 +11,7 @@
 
     .form-group
       = f.label :title
-      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
+      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'input-lg', required: true
     .form-group
       = f.label "Lifetime"
       .col-sm-10= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}

@@ -23,8 +23,9 @@
 
           %p.cgray
             - if current_user.private_token
-              = text_field_tag "token", current_user.private_token, class: "input-xlarge input-xpadding pull-left"
-              = f.submit 'Reset', data: { confirm: "Are you sure?" }, class: "btn btn-primary btn-build-token prepend-left-10"
+              = text_field_tag "token", current_user.private_token, class: "form-control"
+              %div
+                = f.submit 'Reset', data: { confirm: "Are you sure?" }, class: "btn btn-primary btn-build-token"
             - else
               %span You don`t have one yet. Click generate to fix it.
               = f.submit 'Generate', class: "btn success btn-build-token"
@@ -47,7 +48,7 @@
         %p
           Changing your username will change path to all personal projects!
         %div
-          = f.text_field :username, required: true, class: 'input-xlarge input-xpadding'
+          = f.text_field :username, required: true, class: 'form-control'
           &nbsp;
           %span.loading-gif.gl-hide= image_tag "ajax_loader.gif"
         %p.light

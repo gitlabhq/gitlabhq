@@ -1,5 +1,5 @@
 %div
-  = form_for [:profile, @key] do |f|
+  = form_for [:profile, @key], html: { class: 'form-horizontal' } do |f|
     - if @key.errors.any?
       .alert.alert-error
         %ul
@@ -7,14 +7,12 @@
             %li= msg
 
     .form-group
-      = f.label :title
-      .col-sm-10= f.text_field :title, class: "input-xlarge"
+      = f.label :title, class: 'control-label'
+      .col-sm-10= f.text_field :title, class: "form-control"
     .form-group
-      = f.label :key
+      = f.label :key, class: 'control-label'
       .col-sm-10
-        %p.light
-          Paste your public key here. Read more about how to generate a key on #{link_to "the SSH help page", help_ssh_path}.
-        = f.text_area :key, class: "input-xxlarge thin_area"
+        = f.text_area :key, class: "form-control", rows: 8
 
 
     .form-actions

@@ -8,7 +8,7 @@
         = f.label :name do
           %strong Project name
         .col-sm-10
-          = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
+          = f.text_field :name, placeholder: "Example Project", class: "input-lg", tabindex: 1, autofocus: true
           %span.help-inline
             = link_to "#", class: 'js-toggle-visibility-link' do
               %span Customize repository name?
@@ -38,7 +38,7 @@
         = f.label :import_url do
           %span Import existing repo
         .col-sm-10
-          = f.text_field :import_url, class: 'input-xlarge', placeholder: 'https://github.com/randx/six.git'
+          = f.text_field :import_url, class: 'input-lg', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
       .form-group
@@ -46,7 +46,7 @@
           Description
           %span.light (optional)
         .col-sm-10
-          = f.text_area :description, placeholder: "Awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
+          = f.text_area :description, placeholder: "Awesome project", class: "input-lg", rows: 3, maxlength: 250, tabindex: 3
       = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
       .form-actions

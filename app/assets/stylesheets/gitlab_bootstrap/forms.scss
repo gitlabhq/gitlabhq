@@ -1,44 +1,8 @@
-input[type="text"], input[type="password"], input[type="search"], input[type="email"] {
-  @extend .form-control;
-}
-
-form {
-  @extend .form-horizontal;
-
-  label {
-    @extend .control-label;
-    @extend .col-sm-2;
-
-    &.radio-label {
-      text-align: left;
-      width: 100%;
-      margin-left: 0;
-
-      input[type="radio"] {
-        margin-top: 1px !important;
-      }
-    }
-
-    &.list-label {
-      float: none;
-      padding: 0 !important;
-      margin: 0;
-      text-align: left;
-    }
-  }
-
-  &.form-tiny {
-    margin: 0;
-  }
-}
-
 input[type='search'].search-text-input {
   background-image: url("icon-search.png");
   background-repeat: no-repeat;
   background-position: 10px;
   padding-left: 25px;
-  @include border-radius(4px);
-  border: 1px solid #ccc;
 }
 
 input[type='text'].danger {
@@ -63,5 +27,9 @@ fieldset legend {
   margin-bottom: 18px;
   background-color: whitesmoke;
   border-top: 1px solid #e5e5e5;
-  padding-left: 180px;
+  padding-left: 17%;
+}
+
+label.control-label {
+  @extend .col-sm-2;
 }

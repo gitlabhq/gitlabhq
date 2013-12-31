@@ -67,7 +67,7 @@
 }
 
 .git-clone-holder {
-  float: right;
+  margin-right: 45px;
   border: 1px solid #E1E1E1;
   @include border-radius(4px);
 
@@ -100,6 +100,11 @@
     cursor: auto;
     @extend .monospace;
     background: #FAFAFA;
+    width: 100%;
+  }
+
+  .protocol-clone {
+    overflow: hidden;
   }
 }
 

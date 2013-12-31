@@ -19,18 +19,18 @@
       .form-group
         = f.label :name, class: "control-label"
         .col-sm-10
-          = f.text_field :name, class: "input-xlarge", required: true
+          = f.text_field :name, class: "form-control", required: true
           %span.help-block Enter your name, so people you know can recognize you.
 
       .form-group
         = f.label :email, class: "control-label"
         .col-sm-10
           - if @user.ldap_user?
-            = f.text_field :email, class: "input-xlarge", required: true, readonly: true
+            = f.text_field :email, class: "form-control", required: true, readonly: true
             %span.help-block.light
               Email is read-only for LDAP user
           - else
-            = f.text_field :email, class: "input-xlarge", required: true
+            = f.text_field :email, class: "form-control", required: true
             - if @user.unconfirmed_email.present?
               %span.help-block
                 We sent confirmation email to
@@ -39,17 +39,17 @@
               %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .form-group
         = f.label :skype, class: "control-label"
-        .col-sm-10= f.text_field :skype, class: "input-xlarge"
+        .col-sm-10= f.text_field :skype, class: "form-control"
       .form-group
         = f.label :linkedin, class: "control-label"
-        .col-sm-10= f.text_field :linkedin, class: "input-xlarge"
+        .col-sm-10= f.text_field :linkedin, class: "form-control"
       .form-group
         = f.label :twitter, class: "control-label"
-        .col-sm-10= f.text_field :twitter, class: "input-xlarge"
+        .col-sm-10= f.text_field :twitter, class: "form-control"
       .form-group
         = f.label :bio, class: "control-label"
         .col-sm-10
-          = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
+          = f.text_area :bio, rows: 6, class: "form-control", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
 
     .col-md-5.pull-right

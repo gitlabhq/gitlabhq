@@ -32,14 +32,15 @@
   .dash-filter {
     margin: 7px 0;
     padding: 4px 6px;
-    width: 202px;
+    width: 220px;
     float: left;
+    height: inherit;
   }
 }
 
 @media (max-width: 1200px) {
   .dashboard .dash-filter {
-    width: 132px;
+    width: 150px;
   }
 }
 

@@ -8,18 +8,18 @@
     = f.label :name do
       Group name
     .col-sm-10
-      = f.text_field :name, placeholder: "Example Group", class: "input-xxlarge"
+      = f.text_field :name, placeholder: "Example Group", class: "input-lg"
 
   .form-group.group-description-holder
     = f.label :description, "Details"
     .col-sm-10
-      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
+      = f.text_area :description, maxlength: 250, class: "input-lg js-gfm-input", rows: 4
 
   .form-group.group_name_holder
     = f.label :path do
       %span.cred Group path
     .col-sm-10
-      = f.text_field :path, placeholder: "example-group", class: "input-xxlarge danger"
+      = f.text_field :path, placeholder: "example-group", class: "input-lg danger"
       %ul.cred
         %li Changing group path can have unintended side effects.
         %li Renaming group path will rename directory for all related projects

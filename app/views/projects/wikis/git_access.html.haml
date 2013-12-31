@@ -7,7 +7,7 @@
     .git-clone-holder
       %button{class: "btn active", :"data-clone" => @gollum_wiki.ssh_url_to_repo} SSH
       %button{class: "btn", :"data-clone" => @gollum_wiki.http_url_to_repo}= gitlab_config.protocol.upcase
-      = text_field_tag :project_clone, @gollum_wiki.url_to_repo, class: "one_click_select input-xxlarge", readonly: true
+      = text_field_tag :project_clone, @gollum_wiki.url_to_repo, class: "one_click_select input-lg", readonly: true
 
 .git-empty
   %fieldset

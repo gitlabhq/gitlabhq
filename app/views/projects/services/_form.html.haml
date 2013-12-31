@@ -32,9 +32,9 @@
       = f.label name, class: "control-label"
       .col-sm-10
         - if type == 'text'
-          = f.text_field name, class: "input-xlarge", placeholder: placeholder
+          = f.text_field name, class: "input-lg", placeholder: placeholder
         - elsif type == 'textarea'
-          = f.text_area name, rows: 5, class: "input-xxlarge", placeholder: placeholder
+          = f.text_area name, rows: 5, class: "input-lg", placeholder: placeholder
         - elsif type == 'checkbox'
           = f.check_box name
 
