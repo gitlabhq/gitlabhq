@@ -1,8 +1,7 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel{:class => ("empty-project" if empty_repo)}
-  .visibility-level-label
+  .visibility-level-label.has_tooltip{'data-title' => "#{visibility_level_label(@project.visibility_level)} project" }
     = visibility_level_icon(@project.visibility_level)
-    = visibility_level_label(@project.visibility_level)
   .row
     .col-sm-6
       %h4.project-home-title
