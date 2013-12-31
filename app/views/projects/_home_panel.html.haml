@@ -1,14 +1,14 @@
 - empty_repo = @project.empty_repo?
 .project-home-panel{:class => ("empty-project" if empty_repo)}
+  .visibility-level-label
+    = visibility_level_icon(@project.visibility_level)
+    = visibility_level_label(@project.visibility_level)
   .row
-    .col-md-6
+    .col-sm-6
       %h4.project-home-title
         = @project.name_with_namespace
-        %span.visibility-level-label
-          = visibility_level_icon(@project.visibility_level)
-          = visibility_level_label(@project.visibility_level)
 
-    .col-md-6
+    .col-sm-6
       - unless empty_repo
         .project-home-dropdown
           = render "dropdown"

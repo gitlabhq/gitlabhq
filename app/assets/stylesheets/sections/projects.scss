@@ -52,12 +52,14 @@
   }
 
   .visibility-level-label {
-    font-size: 14px;
+    font-size: 13px;
     background: #f1f1f1;
-    padding: 8px 10px;
+    padding: 8px;
     border-radius: 4px;
     margin-left: 10px;
     color: #888;
+    position: absolute;
+    margin-left: -80px;
     text-shadow: 0 1px 1px #FFF;
 
     i {
