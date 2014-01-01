@@ -1,8 +1,9 @@
 = render 'nav'
+.pull-right
+  = render 'main_links'
 %h3.page-title
   Editing -
   %span.light #{@wiki.title.titleize}
-= render 'main_links'
 %hr
 = render 'form'
 

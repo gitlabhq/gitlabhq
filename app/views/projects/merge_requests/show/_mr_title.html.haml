@@ -34,8 +34,8 @@
           %i.icon-edit
           Edit
 
-.pull-right
-  .col-md-3#votes= render 'votes/votes_block', votable: @merge_request
+.votes-holder
+  #votes= render 'votes/votes_block', votable: @merge_request
 
 .back-link
   = link_to project_merge_requests_path(@project) do

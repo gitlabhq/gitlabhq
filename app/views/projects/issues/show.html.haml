@@ -24,8 +24,8 @@
         %i.icon-edit
         Edit
 
-.pull-right
-  .col-md-3#votes= render 'votes/votes_block', votable: @issue
+.votes-holder
+  #votes= render 'votes/votes_block', votable: @issue
 
 .back-link
   = link_to project_issues_path(@project) do

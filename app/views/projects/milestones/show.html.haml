@@ -40,7 +40,7 @@
       #{@milestone.open_items_count} open
       %span.pull-right= @milestone.expires_at
     .progress.progress-info
-      .bar{style: "width: #{@milestone.percent_complete}%;"}
+      .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
   - if @milestone.description.present?
