@@ -57,6 +57,12 @@
   max-width: 170px !important;
 }
 
-select.chosen {
-  min-width: 200px;
+select {
+  &.chosen {
+    min-width: 200px;
+  }
+
+  &.chosen-sm {
+    min-width: 100px;
+  }
 }
