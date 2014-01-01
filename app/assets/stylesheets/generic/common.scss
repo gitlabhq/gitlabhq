@@ -96,6 +96,10 @@ pre.well-pre {
     color: #999;
     text-shadow: none;
   }
+
+  &.label-inverse {
+    background-color: #333333;
+  }
 }
 
 /** Big Labels **/
