@@ -19,7 +19,7 @@
         %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
     %hr
     .form-group
-      .issue_assignee
+      .issue-assignee
         = f.label :assignee_id, class: 'control-label' do
           %i.icon-user
           Assign to
@@ -28,7 +28,7 @@
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group
-      .issue_milestone
+      .issue-milestone
         = f.label :milestone_id, class: 'control-label' do
           %i.icon-time
           Milestone

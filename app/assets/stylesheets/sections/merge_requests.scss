@@ -91,12 +91,8 @@
 .merge-request-angle {
   text-align: center;
   margin: 0 auto;
-  background: #eee;
-  border-radius: 100px;
-  width: 60px;
-  line-height: 60px;
-  color: #777;
-  text-shadow: 0 1px 2px #FFF;
+  font-size: 2em;
+  line-height: 1.1;
 }
 
 .merge-request-form-info {
@@ -109,7 +105,6 @@
   }
 
   .chosen-container .chosen-single {
-    padding: 2px 0 2px 10px;
     span {
       font-weight: bold;
       color: #555;
