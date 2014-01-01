@@ -50,7 +50,7 @@
         %div
           = f.text_field :username, required: true, class: 'form-control'
           &nbsp;
-          %span.loading-gif.gl-hide= image_tag "ajax_loader.gif"
+          %span.loading-gif.hide= image_tag "ajax_loader.gif"
         %p.light
           = user_url(@user)
         %div

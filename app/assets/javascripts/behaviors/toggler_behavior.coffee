@@ -9,7 +9,7 @@ $ ->
       toggleClass('icon-chevron-down').
       toggleClass('icon-chevron-up')
     container = $(".js-toggle-visibility-container")
-    container.toggleClass("gl-hide")
+    container.toggleClass("hide")
     e.preventDefault()
 
   $("body").on "click", ".js-toggle-button", (e) ->

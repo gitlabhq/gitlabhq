@@ -40,7 +40,7 @@
           .file= render "projects/notes/discussion_diff", discussion_notes: discussion_notes, note: note
       - else
         = link_to 'show outdated discussion', '#', class: 'js-show-outdated-discussion'
-        %div.gl-hide.outdated-discussion
+        %div.hide.outdated-discussion
           .content
             .notes{ rel: discussion_notes.first.discussion_id }
               = render discussion_notes
@@ -53,7 +53,7 @@
         = render "projects/notes/discussion_reply_button", note: discussion_notes.first
 
     -# will be shown when the other one is hidden
-    .discussion-hidden.content.gl-hide
+    .discussion-hidden.content.hide
       .note
         %em Hidden discussion.
         = link_to "javascript:;", class: "js-details-target js-toggler-target" do

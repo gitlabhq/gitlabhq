@@ -80,7 +80,6 @@ ul.notes {
     overflow: hidden;
     display: block;
     position:relative;
-    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     p { color: $style_color; }
 
     .avatar {
@@ -122,6 +121,7 @@ ul.notes {
 .file .notes_holder {
   font-size: 13px;
   line-height: 18px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   td {
     border: 1px solid #ddd;

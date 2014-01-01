@@ -2,7 +2,7 @@
   .title
     = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left"
     .clearfix
-      .issues_bulk_update.gl-hide
+      .issues_bulk_update.hide
         = form_tag bulk_update_project_issues_path(@project), method: :post  do
           %span Update selected issues with &nbsp;
           = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")

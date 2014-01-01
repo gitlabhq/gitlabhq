@@ -1,4 +1,4 @@
-%div#modal_merge_info.modal.gl-hide
+%div#modal_merge_info.modal.hide
   .modal-header
     %a.close{href: "#", "data-dismiss" => "modal"} ×
     %h3 How to merge
@@ -46,6 +46,6 @@
       modal.show();
     });
     $('.modal-header .close').bind("click", function(){
-      modal.gl-hide();
+      modal.hide();
     })
   })
