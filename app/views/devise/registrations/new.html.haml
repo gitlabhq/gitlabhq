@@ -3,15 +3,15 @@
   .devise-errors
     = devise_error_messages!
   %div
-    = f.text_field :name, class: "text top", placeholder: "Name", required: true
+    = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
   %div
-    = f.text_field :username, class: "text middle", placeholder: "Username", required: true
+    = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
   %div
-    = f.email_field :email, class: "text middle", placeholder: "Email", required: true
+    = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
   %div
-    = f.password_field :password, class: "text middle", placeholder: "Password", required: true
+    = f.password_field :password, class: "form-control middle", placeholder: "Password", required: true
   %div
-    = f.password_field :password_confirmation, class: "text bottom", placeholder: "Confirm password", required: true
+    = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm password", required: true
   %div
     = f.submit "Sign up", class: "btn-create btn"
   %hr

@@ -2,7 +2,7 @@
  * Notes
  */
 
-@-webkit-keyframes target-note {
+@-webkit-keyframes targe3-note {
   from { background:#fffff0; }
   50% { background:#ffffd3; }
   to { background:#fffff0; }
@@ -80,6 +80,7 @@ ul.notes {
     overflow: hidden;
     display: block;
     position:relative;
+    font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
     p { color: $style_color; }
 
     .avatar {
