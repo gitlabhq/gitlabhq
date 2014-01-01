@@ -8,14 +8,14 @@
 
     .form-group
       = f.label :title
-      .col-sm-10= f.text_field :title, class: 'input-lg'
+      .col-sm-10= f.text_field :title, class: 'form-control'
     .form-group
       = f.label :key
       .col-sm-10
         %p.light
           Paste a machine public key here. Read more about how to generate it
           = link_to "here", help_ssh_path
-        = f.text_area :key, class: "input-lg thin_area"
+        = f.text_area :key, class: "form-control thin_area"
 
     .form-actions
       = f.submit 'Create', class: "btn-create btn"

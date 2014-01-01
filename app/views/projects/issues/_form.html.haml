@@ -1,50 +1,47 @@
 %div.issue-form-holder
   %h3.page-title= @issue.new_record? ? "New Issue" : "Edit Issue ##{@issue.iid}"
-  = form_for [@project, @issue] do |f|
+  %hr
+  = form_for [@project, @issue], html: { class: 'form-horizontal issue-form' } do |f|
     -if @issue.errors.any?
       .alert.alert-danger
         - @issue.errors.full_messages.each do |msg|
           %span= msg
           %br
-    .issue-box
-      .title
-        .form-group
-          = f.label :title do
-            %strong= "Subject *"
-          .col-sm-10
-            = f.text_field :title, maxlength: 255, class: "input-lg js-gfm-input", autofocus: true, required: true
-      .context
-        .form-group
-          .issue_assignee.pull-left
-            = f.label :assignee_id do
-              %i.icon-user
-              Assign to
-            .col-sm-10
-              .pull-left
-                = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'chosen'})
-              .pull-right
-                &nbsp;
-                = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
-          .issue_milestone.pull-left
-            = f.label :milestone_id do
-              %i.icon-time
-              Milestone
-            .col-sm-10= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
+    .form-group
+      = f.label :title, class: 'control-label' do
+        %strong= "Subject *"
+      .col-sm-10
+        = f.text_field :title, maxlength: 255, class: "form-control js-gfm-input", autofocus: true, required: true
+    .form-group
+      = f.label :description, "Details", class: 'control-label'
+      .col-sm-10
+        = f.text_area :description, class: "form-control js-gfm-input", rows: 14
+        %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+    %hr
+    .form-group
+      .issue_assignee
+        = f.label :assignee_id, class: 'control-label' do
+          %i.icon-user
+          Assign to
+        .col-sm-10
+          = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'chosen'})
+          &nbsp;
+          = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+    .form-group
+      .issue_milestone
+        = f.label :milestone_id, class: 'control-label' do
+          %i.icon-time
+          Milestone
+        .col-sm-10= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
 
-      .description
-        .form-group
-          = f.label :label_list do
-            %i.icon-tag
-            Labels
-          .col-sm-10
-            = f.text_field :label_list, maxlength: 2000, class: "input-lg"
-            %p.hint Separate labels with commas.
+    .form-group
+      = f.label :label_list, class: 'control-label' do
+        %i.icon-tag
+        Labels
+      .col-sm-10
+        = f.text_field :label_list, maxlength: 2000, class: "form-control"
+        %p.hint Separate labels with commas.
 
-        .form-group
-          = f.label :description, "Details"
-          .col-sm-10
-            = f.text_area :description, class: "input-lg js-gfm-input", rows: 14
-            %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
 
 
     .form-actions

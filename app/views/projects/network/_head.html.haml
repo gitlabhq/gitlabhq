@@ -15,7 +15,7 @@
       .form-group
         = label_tag :search , "Looking for commit:", class: 'control-label light'
         .col-sm-10
-          = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input input-lg"
+          = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control"
           = button_tag type: 'submit', class: 'btn vtop' do
             %i.icon-search
           - @options.each do |key, value|
