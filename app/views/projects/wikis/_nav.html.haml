@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs
+%ul.nav.nav-tabs.append-bottom-20
   = nav_link(html_options: {class: params[:id] == 'home' ? 'active' : '' }) do
     = link_to 'Home', project_wiki_path(@project, :home)
 
