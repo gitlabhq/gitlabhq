@@ -143,16 +143,27 @@
     line-height: 16px;
     margin: 2px;
   }
+}
 
+.btn-block {
+  width: 100%;
+  margin: 0;
+  margin-bottom: 15px;
+  &.btn {
+    padding: 6px 0;
+  }
+}
+
+.btn,
+.btn-group {
   &.grouped {
     margin-right: 7px;
     float: left;
-  }
-
-  &.btn-block {
-    width: 100%;
-    margin: 0;
-    padding: 6px 0;
-    margin-bottom: 15px;
+    &:last-child {
+      margin-right: 0px;
+    }
   }
 }
+
+.btn-group-small > .btn { @extend .btn.btn-small; }
+.btn-group-tiny > .btn { @extend .btn.btn-tiny; }

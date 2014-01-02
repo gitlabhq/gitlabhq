@@ -228,11 +228,26 @@ ul.nav.nav-projects-tabs {
 .project-side {
   .btn-block {
     background-image: none;
-    background-color: #F1f1f1;
-    border-color: #EEE;
-    &:hover {
-      background-color: #eee;
-      border-color: #DDD;
+    .btn,
+    &.btn,
+    &.btn-group ul.dropdown-menu {
+      background-color: #F1f1f1;
+      border-color: #EEE;
+      &:hover {
+        background-color: #eee;
+        border-color: #DDD;
+      }
+    }
+    &.btn-group-justified {
+        .btn {
+            width: 100%;
+        }
+        .dropdown-toggle {
+            width: 26px;
+        }
+    }
+    ul {
+        width: 100%;
     }
   }
   .project-fork-icon {

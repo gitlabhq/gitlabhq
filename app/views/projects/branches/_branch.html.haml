@@ -10,9 +10,7 @@
           %i.icon-lock
     .pull-right
       - if can?(current_user, :download_code, @project)
-        = link_to archive_project_repository_path(@project, ref: branch.name), class: 'btn grouped btn-small' do
-          %i.icon-download-alt
-          Download
+        = render 'projects/repositories/download_archive', ref: branch.name, btn_class: 'grouped btn-group-small'
       = link_to project_compare_index_path(@project, from: branch.name, to: branch.name), class: 'btn grouped btn-small', title: "Compare" do
         %i.icon-copy
         Compare
