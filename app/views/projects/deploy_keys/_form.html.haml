@@ -1,5 +1,5 @@
 %div
-  = form_for [@project, @key], url: project_deploy_keys_path do |f|
+  = form_for [@project, @key], url: project_deploy_keys_path, html: { class: 'deploy-key-form form-horizontal' } do |f|
     -if @key.errors.any?
       .alert.alert-danger
         %ul
@@ -7,15 +7,15 @@
             %li= msg
 
     .form-group
-      = f.label :title
+      = f.label :title, class: "control-label"
       .col-sm-10= f.text_field :title, class: 'form-control'
     .form-group
-      = f.label :key
+      = f.label :key, class: "control-label"
       .col-sm-10
         %p.light
           Paste a machine public key here. Read more about how to generate it
           = link_to "here", help_ssh_path
-        = f.text_area :key, class: "form-control thin_area"
+        = f.text_area :key, class: "form-control thin_area", rows: 5
 
     .form-actions
       = f.submit 'Create', class: "btn-create btn"

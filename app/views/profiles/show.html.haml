@@ -73,7 +73,7 @@
               %span Choose File ...
             &nbsp;
             %span.file_name.js-avatar-filename File name...
-            = f.file_field :avatar, class: "js-user-avatar-input hide"
+            = f.file_field :avatar, class: "js-user-avatar-input hidden"
             .light The maximum file size allowed is 100KB.
             - if @user.avatar?
               %hr
