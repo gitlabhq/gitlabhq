@@ -313,7 +313,7 @@ Check if GitLab and its environment are configured correctly:
 
 **Note:**
 Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
-[GitLab recipes](https://github.com/gitlabhq/gitlab-recipes).
+[GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ## Installation
     sudo apt-get install -y nginx
