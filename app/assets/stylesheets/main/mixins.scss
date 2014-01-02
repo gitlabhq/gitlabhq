@@ -79,11 +79,15 @@
   color: $style_color;
   text-shadow: 0 1px 1px #FFF;
   font-size: 16px;
-  line-height: 40px;
+  line-height: 44px;
   font-weight: normal;
 }
 
 @mixin md-typography {
+  img {
+    max-width: 100%;
+  }
+
   *:first-child {
     margin-top: 0;
   }

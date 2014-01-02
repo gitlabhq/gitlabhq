@@ -1,8 +1,8 @@
 = render "projects/commits/head"
 .row
-  .span3
+  .col-md-3
     = render "filter"
-  .span9
+  .col-md-9
     - unless @branches.empty?
       %ul.bordered-list.top-list
         - @branches.each do |branch|

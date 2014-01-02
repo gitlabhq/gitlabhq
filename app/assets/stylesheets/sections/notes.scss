@@ -2,7 +2,7 @@
  * Notes
  */
 
-@-webkit-keyframes target-note {
+@-webkit-keyframes targe3-note {
   from { background:#fffff0; }
   50% { background:#ffffd3; }
   to { background:#fffff0; }
@@ -119,9 +119,9 @@ ul.notes {
 }
 
 .file .notes_holder {
-  font-family: $sansFontFamily;
   font-size: 13px;
   line-height: 18px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   td {
     border: 1px solid #ddd;
@@ -138,7 +138,7 @@ ul.notes {
       border-left: 1px solid #ddd !important;
     }
     &.notes_content {
-      background-color: $white;
+      background-color: #fff;
       border-width: 1px 0;
       padding-top: 0;
 
@@ -303,7 +303,7 @@ ul.notes {
 }
 
 .note-image-attach {
-  @extend .span4;
+  @extend .col-md-4;
   @extend .thumbnail;
   margin-left: 45px;
 }

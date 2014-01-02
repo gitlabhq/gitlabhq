@@ -1,5 +1,5 @@
 .dashboard
-  .activities.span8
+  .activities.col-md-8
     = render "events/event_last_push", event: @last_push
     = link_to dashboard_path, class: 'btn btn-tiny' do
       &larr; To dashboard
@@ -12,7 +12,7 @@
     - else
       %p.nothing_here_message Project activity will be displayed here
     .loading.hide
-  .side.span4
+  .side.col-md-4
     - if @group.description.present?
       .description-block
         = @group.description

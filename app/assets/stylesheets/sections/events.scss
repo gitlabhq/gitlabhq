@@ -75,6 +75,7 @@
         margin-top: 4px;
         margin-left: 0px;
         max-width: 200px;
+        float: none;
       }
 
       p:last-child {
@@ -147,7 +148,7 @@
       float: left;
       padding: 9px 6px;
       font-size: 18px;
-      width: 26px;
+      width: 40px;
       @include border-radius(3px);
     }
 

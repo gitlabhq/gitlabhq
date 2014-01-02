@@ -1,12 +1,14 @@
 %div#modal-new-wiki.modal.hide
-  .modal-header
-    %a.close{href: "#", "data-dismiss" => "modal"} ×
-    %h3.page-title New Wiki Page
-  .modal-body
-    = label_tag :new_wiki_path do
-      %span Page slug
-    = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'input-xlarge', required: true, :'data-wikis-path' => project_wikis_path(@project)
-    %p.hint
-      Please don't use spaces and slashes
-  .modal-footer
-    = link_to 'Build', '#', class: 'build-new-wiki btn btn-create'
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3.page-title New Wiki Page
+      .modal-body
+        = label_tag :new_wiki_path do
+          %span Page slug
+        = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => project_wikis_path(@project)
+        %p.hint
+          Please don't use spaces and slashes
+      .modal-footer
+        = link_to 'Build', '#', class: 'build-new-wiki btn btn-create'

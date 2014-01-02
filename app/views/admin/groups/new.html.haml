@@ -2,17 +2,17 @@
 %hr
 = form_for [:admin, @group] do |f|
   - if @group.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %span= @group.errors.full_messages.first
-  .control-group
+  .form-group
     = f.label :name do
       Group name
-    .controls
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
-  .control-group.group-description-holder
+    .col-sm-10
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control left"
+  .form-group.group-description-holder
     = f.label :description, "Details"
-    .controls
-      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
+    .col-sm-10
+      = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
 
   .form-actions
     = f.submit 'Create group', class: "btn btn-create"

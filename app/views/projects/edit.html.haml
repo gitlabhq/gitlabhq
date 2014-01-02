@@ -7,26 +7,26 @@
       %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
       %hr
       .form-holder
-        = form_for(@project, remote: true) do |f|
+        = form_for @project, remote: true, html: { class: "edit_project form-horizontal" } do |f|
           %fieldset
-            .control-group.project_name_holder
-              = f.label :name do
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
                 Project name
-              .controls
-                = f.text_field :name, placeholder: "Example Project", class: "span5"
+              .col-sm-10
+                = f.text_field :name, placeholder: "Example Project", class: "form-control"
 
 
-            .control-group
-              = f.label :description do
+            .form-group
+              = f.label :description, class: 'control-label' do
                 Project description
                 %span.light (optional)
-              .controls
-                = f.text_area :description, placeholder: "Awesome project", class: "span5", rows: 3, maxlength: 250
+              .col-sm-10
+                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
-              .control-group
-                = f.label :default_branch, "Default Branch"
-                .controls= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
+              .form-group
+                = f.label :default_branch, "Default Branch", class: 'control-label'
+                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen select-wide'})
 
 
           = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
@@ -34,51 +34,51 @@
           %fieldset.features
             %legend
               Labels:
-            .control-group
+            .form-group
               = f.label :label_list, "Labels", class: 'control-label'
-              .controls
-                = f.text_field :label_list, maxlength: 2000, class: "span5"
+              .col-sm-10
+                = f.text_field :label_list, maxlength: 2000, class: "form-control"
                 %p.hint Separate labels with commas.
 
           %fieldset.features
             %legend
               Features:
-            .control-group
+            .form-group
               = f.label :issues_enabled, "Issues", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :issues_enabled
                 %span.descr Lightweight issue tracking system for this project
 
             - if Project.issues_tracker.values.count > 1
-              .control-group
+              .form-group
                 = f.label :issues_tracker, "Issues tracker", class: 'control-label'
-                .controls= f.select(:issues_tracker, project_issues_trackers(@project.issues_tracker), {}, { disabled: !@project.issues_enabled })
+                .col-sm-10= f.select(:issues_tracker, project_issues_trackers(@project.issues_tracker), {}, { disabled: !@project.issues_enabled })
 
-              .control-group
+              .form-group
                 = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
-                .controls= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
+                .col-sm-10= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
 
-            .control-group
+            .form-group
               = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :merge_requests_enabled
                 %span.descr Submit changes to be merged upstream.
 
-            .control-group
+            .form-group
               = f.label :wiki_enabled, "Wiki", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :wiki_enabled
                 %span.descr Pages for project documentation
 
-            .control-group
+            .form-group
               = f.label :wall_enabled, "Wall", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :wall_enabled
                 %span.descr Simple chat system for broadcasting inside project
 
-            .control-group
+            .form-group
               = f.label :snippets_enabled, "Snippets", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :snippets_enabled
                 %span.descr Share code pastes with others out of git repository
 
@@ -134,12 +134,12 @@
           .title Transfer project
           .errors-holder
           .form-holder
-            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project' }) do |f|
-              .control-group
-                = f.label :namespace_id do
+            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+              .form-group
+                = f.label :namespace_id, class: 'control-label' do
                   %span Namespace
-                .controls
-                  .control-group
+                .col-sm-10
+                  .form-group
                     = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'chosen' }
                   %ul
                     %li Be careful. Changing the project's namespace can have unintended side effects.
@@ -154,15 +154,15 @@
         .title Rename repository
         .errors-holder
         .form-holder
-          = form_for(@project) do |f|
-            .control-group
-              = f.label :path do
+          = form_for(@project, html: { class: 'form-horizontal' }) do |f|
+            .form-group
+              = f.label :path, class: 'control-label' do
                 %span Path
-              .controls
-                .control-group
-                  .input-append
-                    = f.text_field :path
-                    %span.add-on .git
+              .col-sm-9
+                .form-group
+                  .input-group
+                    = f.text_field :path, class: 'form-control'
+                    %span.input-group-addon .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.

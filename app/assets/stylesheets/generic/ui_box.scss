@@ -43,6 +43,7 @@
 
   ul {
     margin: 0;
+    padding: 0;
   }
 
   .title {
@@ -157,7 +158,8 @@
   .title {
     background: #D65;
     color: #fff;
-    text-shadow: 0 1px 1px #900;
+    text-shadow: none;
+    font-weight: 500;
   }
 }
 

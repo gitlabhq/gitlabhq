@@ -9,36 +9,41 @@
  *= require_self
 */
 
+@import "main/variables.scss";
+@import "main/mixins.scss";
+@import "main/fonts.scss";
+
 /**
- * GitLab bootstrap:
+ * Customized Twitter bootstrap
  */
-@import "gitlab_bootstrap.scss";
+@import 'gl_bootstrap';
 
+/**
+ * Font icons
+ *
+ */
+@import "font-awesome";
+
+/**
+ * Generic css (forms, nav etc):
+ */
+@import "generic.scss";
+
+
+/**
+ * Unrefactored css
+ */
 @import "common.scss";
-@import "selects.scss";
 
-@import "sections/header.scss";
-@import "sections/nav.scss";
-@import "sections/commits.scss";
-@import "sections/issues.scss";
-@import "sections/projects.scss";
-@import "sections/snippets.scss";
-@import "sections/votes.scss";
-@import "sections/merge_requests.scss";
-@import "sections/graph.scss";
-@import "sections/events.scss";
-@import "sections/themes.scss";
-@import "sections/tree.scss";
-@import "sections/notes.scss";
-@import "sections/profile.scss";
-@import "sections/login.scss";
-@import "sections/editor.scss";
-@import "sections/admin.scss";
-@import "sections/wiki.scss";
-@import "sections/wall.scss";
-@import "sections/dashboard.scss";
-@import "sections/stat_graph.scss";
 
+/**
+ * Page specific styles (issues, projects etc):
+ */
+@import "sections.scss";
+
+/**
+ * Code ighlight
+ */
 @import "highlight/white.scss";
 @import "highlight/dark.scss";
 @import "highlight/solarized_dark.scss";
@@ -57,4 +62,3 @@
  * Styles for JS behaviors.
  */
 @import "behaviors.scss";
-

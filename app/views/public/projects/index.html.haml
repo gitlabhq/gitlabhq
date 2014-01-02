@@ -6,8 +6,9 @@
 .clearfix
   .pull-left
     = form_tag public_projects_path, method: :get, class: 'form-inline form-tiny' do |f|
-      .search-holder
-        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "span4 search-text-input", id: "projects_search"
+      .form-group
+        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input", id: "projects_search"
+      .form-group
         = submit_tag 'Search', class: "btn btn-primary wide"
 
   .pull-right

@@ -20,6 +20,7 @@
 .append-right-10 { margin-right:10px }
 .append-right-20 { margin-right:20px }
 .append-bottom-10 { margin-bottom:10px }
+.append-bottom-15 { margin-bottom:15px }
 .append-bottom-20 { margin-bottom:20px }
 .inline { display: inline-block }
 
@@ -69,12 +70,6 @@
   }
 }
 
-.pagination ul > li > a, .pagination ul > li >span {
-  @include linear-gradient(#f1f1f1, #e1e1e1);
-  color: #333;
-  text-shadow: 0 1px 1px #FFF;
-}
-
 pre.well-pre {
   border: 1px solid #EEE;
   background: #f9f9f9;
@@ -100,6 +95,10 @@ pre.well-pre {
     background-color: #eee;
     color: #999;
     text-shadow: none;
+  }
+
+  &.label-inverse {
+    background-color: #333333;
   }
 }
 
@@ -130,4 +129,10 @@ pre.well-pre {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: #29b;
+}
+
+.breadcrumb > li + li:before {
+  content: "/";
+  padding: 0;
+  color: #666;
 }

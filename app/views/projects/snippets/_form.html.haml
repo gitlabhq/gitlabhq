@@ -4,21 +4,21 @@
 .snippet-form-holder
   = form_for [@project, @snippet], as: :project_snippet, url: url do |f|
     -if @snippet.errors.any?
-      .alert.alert-error
+      .alert.alert-danger
         %ul
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
 
-    .control-group
+    .form-group
       = f.label :title
-      .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
-    .control-group
+      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true
+    .form-group
       = f.label "Lifetime"
-      .controls= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
-    .control-group
+      .col-sm-10= f.select :expires_at, lifetime_select_options, {}, {class: 'chosen span2'}
+    .form-group
       .file-editor
         = f.label :file_name, "File"
-        .controls
+        .col-sm-10
           .file-holder.snippet
             .file-title
               = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true

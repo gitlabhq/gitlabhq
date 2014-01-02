@@ -8,7 +8,7 @@
   group. To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 %hr
 .row
-  .span3
+  .col-md-3
     = render 'shared/filter', entity: 'merge_request'
-  .span9
+  .col-md-9
     = render 'shared/merge_requests'

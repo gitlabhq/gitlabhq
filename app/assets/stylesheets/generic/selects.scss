@@ -3,6 +3,7 @@
   min-width: 100px;
 
   .chosen-single {
+    height: 26px;
     background: #EEE !important;
     border: 1px solid #DDD !important;
     @include box-shadow(none !important);
@@ -54,4 +55,14 @@
 
 .chosen-compact {
   max-width: 170px !important;
+}
+
+select {
+  &.chosen {
+    min-width: 200px;
+  }
+
+  &.chosen-sm {
+    min-width: 100px;
+  }
 }

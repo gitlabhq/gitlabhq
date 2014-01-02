@@ -1,6 +1,6 @@
 = render "projects/commits/head"
 .row
-  .span6
+  .col-md-6
     %div#activity-chart.chart
     %hr
     %p
@@ -14,7 +14,7 @@
       %span= @stats.authors_count
 
 
-  .span6
+  .col-md-6
     %h4 Top 50 Committers:
     %ol.styled
       - @stats.authors[0...50].each do |author|
