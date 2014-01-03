@@ -16,14 +16,14 @@
 
   - [:running, :pending].each do |status|
     .ci_widget{class: "ci-#{status}", style: "display:none"}
-      .alert
+      .alert.alert-warning
         %i.icon-time
         %strong CI build #{status}
         for #{@merge_request.last_commit_short_sha}.
         = link_to "Build page", ci_build_details_path(@merge_request)
 
   .ci_widget
-    .alert
+    .alert.alert-warning
       %strong
         %i.icon-refresh
         Checking for CI status for #{@merge_request.last_commit_short_sha}
