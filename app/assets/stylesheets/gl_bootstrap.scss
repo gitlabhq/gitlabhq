@@ -74,3 +74,22 @@
 }
 
 @import "bootstrap/responsive-utilities";
+
+// Labels
+.label {
+  padding: 2px 4px;
+  font-size: 12px;
+  font-style: normal;
+  font-weight: normal;
+  display: inline-block;
+
+  &.label-gray {
+    background-color: #eee;
+    color: #999;
+    text-shadow: none;
+  }
+
+  &.label-inverse {
+    background-color: #333333;
+  }
+}

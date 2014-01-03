@@ -1,7 +1,7 @@
 .side-filters.hidden-xs.hidden-sm
   = form_tag project_entities_path, method: 'get' do
-    %fieldset
-      - if current_user
+    - if current_user
+      %fieldset
         %ul.nav.nav-pills.nav-stacked
           %li{class: ("active" if params[:scope].blank?)}
             = link_to project_filter_path(scope: nil) do
@@ -13,6 +13,7 @@
             = link_to project_filter_path(scope: 'created-by-me') do
               Created by me
 
+    %fieldset
       %ul.nav.nav-pills.nav-stacked
         %li{class: ("active" if params[:state].blank?)}
           = link_to project_filter_path(state: nil) do
