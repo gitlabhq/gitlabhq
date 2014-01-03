@@ -93,3 +93,37 @@
     background-color: #333333;
   }
 }
+
+// Nav tabs
+.nav.nav-tabs {
+  li {
+    > a {
+      padding: 8px 20px;
+      margin-right: 7px;
+      line-height: 20px;
+      border-color: #EEE;
+      color: #888;
+      border-bottom: 1px solid #ddd;
+      .badge {
+        background-color: #eee;
+        color: #888;
+        text-shadow: 0 1px 1px #fff;
+      }
+      i[class^="icon-"] {
+        line-height: 14px;
+      }
+    }
+    &.active {
+      > a {
+        border-color: #CCC;
+        border-bottom: 1px solid #fff;
+        color: #333;
+        font-weight: bold;
+      }
+    }
+  }
+
+  &.nav-small-tabs > li > a {
+    padding: 6px 9px;
+  }
+}
