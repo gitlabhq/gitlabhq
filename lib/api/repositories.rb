@@ -1,3 +1,5 @@
+require 'mime/types'
+
 module API
   # Projects API
   class Repositories < Grape::API
@@ -206,18 +208,20 @@ module API
       #   sha (optional) - the commit sha to download defaults to the tip of the default branch
       # Example Request:
       #   GET /projects/:id/repository/archive
-      get ":id/repository/archive" do
+      get ":id/repository/archive", requirements: { format: Gitlab::Regex.archive_formats_regex } do
         authorize! :download_code, user_project
         repo = user_project.repository
         ref = params[:sha]
+        format = params[:format]
         storage_path = Rails.root.join("tmp", "repositories")
 
-        file_path = repo.archive_repo(ref, storage_path)
+        file_path = repo.archive_repo(ref, storage_path, format)
         if file_path && File.exists?(file_path)
           data = File.open(file_path, 'rb').read
 
-          header "Content-Disposition:", " infile; filename=\"#{File.basename(file_path)}\""
-          content_type 'application/x-gzip'
+          header["Content-Disposition"] = "attachment; filename=\"#{File.basename(file_path)}\""
+
+          content_type MIME::Types.type_for(file_path).first.content_type
 
           env['api.format'] = :binary
 

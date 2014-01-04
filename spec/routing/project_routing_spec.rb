@@ -130,6 +130,14 @@ describe Projects::RepositoriesController, "routing" do
     get("/gitlab/gitlabhq/repository/archive").should route_to('projects/repositories#archive', project_id: 'gitlab/gitlabhq')
   end
 
+  it "to #archive format:zip" do
+    get("/gitlab/gitlabhq/repository/archive.zip").should route_to('projects/repositories#archive', project_id: 'gitlab/gitlabhq', format: 'zip')
+  end
+
+  it "to #archive format:tar.bz2" do
+    get("/gitlab/gitlabhq/repository/archive.tar.bz2").should route_to('projects/repositories#archive', project_id: 'gitlab/gitlabhq', format: 'tar.bz2')
+  end
+
   it "to #show" do
     get("/gitlab/gitlabhq/repository").should route_to('projects/repositories#show', project_id: 'gitlab/gitlabhq')
   end
