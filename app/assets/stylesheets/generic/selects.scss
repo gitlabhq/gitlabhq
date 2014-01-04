@@ -59,10 +59,36 @@
 
 select {
   &.chosen {
-    min-width: 200px;
+    min-width: 100px;
   }
 
   &.chosen-sm {
     min-width: 100px;
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  select {
+    &.chosen {
+      min-width: 150px;
+    }
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $screen-md-min) {
+  select {
+    &.chosen {
+      min-width: 170px;
+    }
+  }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $screen-lg-min) {
+  select {
+    &.chosen {
+      min-width: 200px;
+    }
   }
 }

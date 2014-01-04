@@ -1,5 +1,4 @@
 = form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
-  .pull-right
   Created by #{link_to_member(@project, issue.author)}&nbsp;
   - if issue.assignee
     \ and currently assigned to
@@ -12,7 +11,7 @@
     = link_to_member(@project, @issue.assignee)
 
 
-  .pull-right
+  .pull-right.hidden-sm
     - if issue.milestone
       - milestone = issue.milestone
       %cite.cgray Attached to milestone
