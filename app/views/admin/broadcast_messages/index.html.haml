@@ -6,34 +6,34 @@
   %i.icon-bullhorn
   %span Your message here
 
-= form_for [:admin, @broadcast_message] do |f|
+= form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal'} do |f|
   -if @broadcast_message.errors.any?
     .alert.alert-danger
       - @broadcast_message.errors.full_messages.each do |msg|
         %p= msg
   .form-group
-    = f.label :message
+    = f.label :message, class: 'control-label'
     .col-sm-10
       = f.text_area :message, class: "form-control", rows: 2, required: true
       %div
         = link_to '#', class: 'js-toggle-colors-link' do
           Customize colors
   .form-group.js-toggle-colors-container.hide
-    = f.label :color, "Background Color"
+    = f.label :color, "Background Color", class: 'control-label'
     .col-sm-10
-      = f.text_field :color, placeholder: "#AA33EE"
+      = f.text_field :color, placeholder: "#AA33EE", class: "form-control"
       .light Hex values as 3 double digit numbers, starting with a # sign.
   .form-group.js-toggle-colors-container.hide
-    = f.label :font, "Font Color"
+    = f.label :font, "Font Color", class: 'control-label'
     .col-sm-10
-      = f.text_field :font, placeholder: "#224466"
+      = f.text_field :font, placeholder: "#224466", class: "form-control"
       .light Hex values as 3 double digit numbers, starting with a # sign.
   .form-group
-    = f.label :starts_at
+    = f.label :starts_at, class: 'control-label'
     .col-sm-10.datetime-controls
       = f.datetime_select :starts_at
   .form-group
-    = f.label :ends_at
+    = f.label :ends_at, class: 'control-label'
     .col-sm-10.datetime-controls
       = f.datetime_select :ends_at
   .form-actions
