@@ -1,7 +1,7 @@
 = render "home_panel"
 
 .row
-  .col-md-9
+  .col-md-9.hidden-sm
     = render "events/event_last_push", event: @last_push
     = render 'shared/event_filter'
     .content_list

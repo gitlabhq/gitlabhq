@@ -2,9 +2,11 @@
   .col-md-3
     .admin-filter
       = form_tag admin_users_path, method: :get, class: 'form-inline' do
-        = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'input-xpadding span2'
-        = button_tag type: 'submit', class: 'btn btn-primary' do
-          %i.icon-search
+        .append-bottom-10
+          .form-group
+            = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
+          = button_tag type: 'submit', class: 'btn btn-primary' do
+            %i.icon-search
       %ul.nav.nav-pills.nav-stacked
         %li{class: "#{'active' unless params[:filter]}"}
           = link_to admin_users_path do

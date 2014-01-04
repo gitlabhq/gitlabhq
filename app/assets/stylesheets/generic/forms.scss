@@ -30,10 +30,20 @@ fieldset legend {
   padding-left: 17%;
 }
 
-label.control-label {
-  @extend .col-sm-2;
+label {
+  &.control-label {
+    @extend .col-sm-2;
+  }
+
+  &.inline-label {
+    margin: 0;
+  }
 }
 
 .inline-input-group {
   width: 250px;
+}
+
+.input-mx-250 {
+  max-width: 250px;
 }

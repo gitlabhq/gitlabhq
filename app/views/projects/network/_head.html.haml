@@ -1,23 +1,15 @@
-.clearfix
-  .pull-left
+.row.append-bottom-20
+  .col-sm-2
     = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
-  .pull-left
-    = form_tag project_network_path(@project, @id), method: :get do |f|
-      .form-group
-        = label_tag :filter_ref, "Begin with the selected commit", class: 'control-label light'
-        .col-sm-10
-          = check_box_tag :filter_ref, 1, @options[:filter_ref]
-    - @options.each do |key, value|
-      = hidden_field_tag(key, value, id: nil) unless key == "filter_ref"
+  .col-sm-10
+    = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline' do |f|
+      = label_tag :search , "Looking for", class: 'light inline-label'
+      = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control input-mx-250"
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        %i.icon-search
 
-  .search.pull-right
-    = form_tag project_network_path(@project, @id), method: :get do |f|
-      .form-group
-        = label_tag :search , "Looking for commit:", class: 'control-label light'
-        .col-sm-10
-          = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control"
-          = button_tag type: 'submit', class: 'btn vtop' do
-            %i.icon-search
-          - @options.each do |key, value|
-            = hidden_field_tag(key, value, id: nil) unless key == "extended_sha1"
-
+      .inline.prepend-left-20
+        .checkbox.light
+          = label_tag :filter_ref do
+            = check_box_tag :filter_ref, 1, @options[:filter_ref]
+            %span Begin with the selected commit
