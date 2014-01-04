@@ -20,18 +20,18 @@
             %strong= @group.name
             group settings:
           %div.form-holder
-            = form_for @group do |f|
+            = form_for @group, html: { class: "form-horizontal" } do |f|
               - if @group.errors.any?
                 .alert.alert-danger
                   %span= @group.errors.full_messages.first
               .form-group
-                = f.label :name do
+                = f.label :name, class: 'control-label' do
                   Group name
                 .col-sm-10
                   = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control left"
 
               .form-group.group-description-holder
-                = f.label :description, "Details"
+                = f.label :description, "Details", class: 'control-label'
                 .col-sm-10
                   = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
 
