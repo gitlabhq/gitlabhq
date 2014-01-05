@@ -84,7 +84,6 @@ class window.ContributorsMasterGraph extends ContributorsGraph
       x(d.date)
     ).y0(@height).y1((d) ->
       xa = d.commits = d.commits ? d.additions ? d.deletions
-      console.log(xa)
       y(xa)
     ).interpolate("basis")
   create_brush: ->
