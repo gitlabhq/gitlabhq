@@ -1,7 +1,7 @@
 .row.append-bottom-20
-  .col-sm-2
+  .col-md-2.append-bottom-10
     = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
-  .col-sm-10
+  .col-md-10
     = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
       = label_tag :search , "Looking for", class: 'light inline-label'
       = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control input-mx-250"
