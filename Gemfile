@@ -154,7 +154,7 @@ gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'
 gem "gemoji", "~> 1.3.0"
-gem "gon", git: "https://github.com/gitlabhq/gon.git", ref: '58ca8e17273051cb370182cabd3602d1da6783ab'
+gem "gon", '~> 5.0.0'
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"

@@ -1,13 +1,4 @@
 GIT
-  remote: https://github.com/gitlabhq/gon.git
-  revision: 58ca8e17273051cb370182cabd3602d1da6783ab
-  ref: 58ca8e17273051cb370182cabd3602d1da6783ab
-  specs:
-    gon (4.1.1)
-      actionpack (>= 2.3.0)
-      json
-
-GIT
   remote: https://github.com/gitlabhq/markup.git
   revision: 61ade389c1e1c159359338f570d18464a44ddbc4
   ref: 61ade389c1e1c159359338f570d18464a44ddbc4
@@ -212,6 +203,9 @@ GEM
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
+    gon (5.0.1)
+      actionpack (>= 2.3.0)
+      json
     grape (0.6.1)
       activesupport
       builder
@@ -603,7 +597,7 @@ DEPENDENCIES
   gitlab_git (~> 4.0.0)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.3)
-  gon!
+  gon (~> 5.0.0)
   grape (~> 0.6.1)
   grape-entity (~> 0.3.0)
   growl
