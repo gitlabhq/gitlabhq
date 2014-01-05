@@ -59,18 +59,21 @@
 
 select {
   &.chosen {
-    min-width: 100px;
+    width: 100px;
   }
 
   &.chosen-sm {
-    min-width: 100px;
+    width: 100px;
   }
 }
 
 @media (min-width: $screen-sm-min) {
   select {
     &.chosen {
-      min-width: 150px;
+      width: 150px;
+    }
+    &.chosen-sm {
+      width: 120px;
     }
   }
 }
@@ -79,7 +82,10 @@ select {
 @media (min-width: $screen-md-min) {
   select {
     &.chosen {
-      min-width: 170px;
+      width: 170px;
+    }
+    &.chosen-sm {
+      width: 140px;
     }
   }
 }
@@ -88,7 +94,10 @@ select {
 @media (min-width: $screen-lg-min) {
   select {
     &.chosen {
-      min-width: 200px;
+      width: 200px;
+    }
+    &.chosen-sm {
+      width: 150px;
     }
   }
 }
