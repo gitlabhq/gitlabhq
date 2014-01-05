@@ -1,5 +1,5 @@
 .row
-  .span3
+  .col-md-3
     .append-bottom-20
       = link_to help_path, class: 'btn btn-small' do
         %i.icon-angle-left
@@ -9,5 +9,5 @@
         %li{class: file == @category ? 'active' : nil}
           = link_to file.titleize, help_api_file_path(file)
 
-  .span9.pull-right
+  .col-md-9.pull-right
     = yield

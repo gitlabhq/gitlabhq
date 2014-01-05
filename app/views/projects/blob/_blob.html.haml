@@ -4,7 +4,6 @@
     = link_to project_tree_path(@project, @ref) do
       = @project.path
   - tree_breadcrumbs(@tree, 6) do |title, path|
-    \/
     %li
       - if path
         - if path.end_with?(@path)

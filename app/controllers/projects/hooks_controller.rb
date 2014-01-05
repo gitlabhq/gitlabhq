@@ -7,7 +7,7 @@ class Projects::HooksController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @hooks = @project.hooks.all
+    @hooks = @project.hooks
     @hook = ProjectHook.new
   end
 
@@ -18,7 +18,7 @@ class Projects::HooksController < Projects::ApplicationController
     if @hook.valid?
       redirect_to project_hooks_path(@project)
     else
-      @hooks = @project.hooks.all
+      @hooks = @project.hooks
       render :index
     end
   end

@@ -11,7 +11,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow modify issue
   before_filter :authorize_modify_issue!, only: [:edit, :update]
 
-  respond_to :js, :html
+  respond_to :html
 
   def index
     terms = params['issue_search']
@@ -23,11 +23,18 @@ class Projects::IssuesController < Projects::ApplicationController
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
+    sort_param = params[:sort] || 'newest'
+    @sort = sort_param.humanize unless sort_param.empty?
+
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.js
+      format.html
       format.atom { render layout: false }
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/issues/_issues")
+        }
+      end
     end
   end
 
@@ -42,13 +49,10 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @issue)
-    @target_type = :issue
-    @target_id = @issue.id
+    @notes = @issue.notes.inc_author.fresh
+    @noteable = @issue
 
-    respond_to do |format|
-      format.html
-      format.js
-    end
+    respond_with(@issue)
   end
 
   def create
@@ -70,6 +74,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def update
     @issue.update_attributes(params[:issue].merge(author_id_of_changes: current_user.id))
+    @issue.reset_events_cache
 
     respond_to do |format|
       format.js

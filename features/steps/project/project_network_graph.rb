@@ -43,13 +43,13 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
-  Then 'page should have content not cotaining "v2.1.0"' do
+  Then 'page should have content not containing "v2.1.0"' do
     within '.network-graph' do
       page.should have_content 'cleaning'
     end
   end
 
-  Then 'page should not have content not cotaining "v2.1.0"' do
+  Then 'page should not have content not containing "v2.1.0"' do
     within '.network-graph' do
       page.should_not have_content 'cleaning'
     end
@@ -70,7 +70,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   When 'I looking for a commit by SHA of "v2.1.0"' do
-    within ".content .search" do
+    within ".network-form" do
       fill_in 'extended_sha1', with: '98d6492'
       find('button').click
     end
@@ -84,7 +84,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   When 'I look for a commit by ";"' do
-    within ".content .search" do
+    within ".network-form" do
       fill_in 'extended_sha1', with: ';'
       find('button').click
     end

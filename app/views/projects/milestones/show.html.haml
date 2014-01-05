@@ -3,15 +3,21 @@
   Milestone ##{@milestone.iid}
   %small
     = @milestone.expires_at
+  - if @milestone.closed?
+    %span.state-label.state-label-red Closed
+  - elsif @milestone.expired?
+    %span.state-label.state-label-red Expired
+  - else
+    %span.state-label.state-label-green Open
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn grouped" do
         %i.icon-edit
         Edit
       - if @milestone.active?
-        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove"
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove grouped"
       - else
-        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn"
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn grouped"
 
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success
@@ -22,17 +28,11 @@
     &larr; To milestones list
 
 
-.ui-box.ui-box-show
-  .ui-box-head
-    %h4.box-title
-      - if @milestone.closed?
-        .state-label.state-label-red Closed
-      - elsif @milestone.expired?
-        .state-label.state-label-red Expired
+.issue-box
+  %h4.title
+    = gfm escape_once(@milestone.title)
 
-      = gfm escape_once(@milestone.title)
-
-  .ui-box-body
+  .context
     %p
       Progress:
       #{@milestone.closed_items_count} closed
@@ -40,11 +40,11 @@
       #{@milestone.open_items_count} open
       %span.pull-right= @milestone.expires_at
     .progress.progress-info
-      .bar{style: "width: #{@milestone.percent_complete}%;"}
+      .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
   - if @milestone.description.present?
-    .ui-box-bottom
+    .description
       = preserve do
         = markdown @milestone.description
 
@@ -72,22 +72,22 @@
 .tab-content
   .tab-pane.active#tab-issues
     .row
-      .span4
+      .col-md-4
         = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
-      .span4
+      .col-md-4
         = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
-      .span4
+      .col-md-4
         = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
 
   .tab-pane#tab-merge-requests
     .row
-      .span6
+      .col-md-6
         .ui-box
           .title Open
           %ul.well-list
             - @merge_requests.opened.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
-      .span6
+      .col-md-6
         .ui-box
           .title Closed
           %ul.well-list

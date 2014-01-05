@@ -124,7 +124,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
 
   Then 'I see new wiki page named test' do
     current_path.should ==  project_wiki_path(@project, "test")
-    page.should have_content "Editing page"
+    page.should have_content "Editing"
   end
 
   When 'I go back to wiki page home' do

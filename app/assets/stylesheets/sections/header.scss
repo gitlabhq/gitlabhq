@@ -4,17 +4,24 @@
  */
 header {
   &.navbar-gitlab {
+    margin-bottom: 0;
+    min-height: 40px;
+
     .navbar-inner {
-      height: 40px;
-      padding: 3px;
       background: #F1F1F1;
+      border-bottom: 1px solid #DDD;
       filter: none;
 
       .nav > li > a {
         color: $style_color;
         text-shadow: 0 1px 0 #fff;
         font-size: 14px;
-        padding: 10px;
+        line-height: 32px;
+        padding: 6px 10px;
+
+        &:hover {
+          background: none;
+        }
       }
 
       /** NAV block with links and profile **/
@@ -35,9 +42,6 @@ header {
   .app_logo {
     float: left;
     margin-right: 9px;
-    position: relative;
-    top: -5px;
-    padding-top: 5px;
 
     a {
       float: left;
@@ -46,10 +50,10 @@ header {
 
       h1 {
         margin: 0;
-        background: url('logo-black.png') no-repeat center 1px;
-        background-size: 38px;
+        background: url('logo-black.png') no-repeat center center;
+        background-size: 32px;
         float: left;
-        height: 40px;
+        height: 46px;
         width: 40px;
         @include header-font;
         text-indent: -9999px;
@@ -75,7 +79,7 @@ header {
 
   .profile-pic {
     position: relative;
-    top: -4px;
+    top: -1px;
     img {
       width: 26px;
       height: 26px;
@@ -91,21 +95,25 @@ header {
   .search {
     margin-right: 10px;
     margin-left: 10px;
+    margin-top: 8px;
+
+    form {
+      margin: 0;
+      padding: 0;
+    }
 
     .search-input {
-      @extend .span3;
       background-image: url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
+      height: inherit;
+      padding: 4px 6px;
       padding-left: 25px;
       font-size: 13px;
       @include border-radius(3px);
       border: 1px solid #c6c6c6;
       box-shadow: none;
       @include transition(all 0.15s ease-in 0s);
-      &:focus {
-        @extend .span4;
-      }
     }
   }
 
@@ -152,8 +160,8 @@ header {
     .app_logo {
       a {
         h1 {
-          background: url('logo-white.png') no-repeat center 1px;
-          background-size: 38px;
+          background: url('logo-white.png') no-repeat center center;
+          background-size: 32px;
           color: #fff;
           text-shadow: 0 1px 1px #444;
         }
@@ -181,12 +189,26 @@ header {
   .separator {
     float: left;
     height: 46px;
-    width: 1px;
+    width: 2px;
     background: white;
     border-left: 1px solid #DDD;
-    margin-top: -3px;
     margin-left: 10px;
     margin-right: 10px;
   }
 }
 
+.search .search-input {
+  width: 300px;
+  &:focus {
+    width: 400px;
+  }
+}
+
+@media (max-width: 1200px)  {
+  .search .search-input {
+    width: 200px;
+    &:focus {
+      width: 300px;
+    }
+  }
+}

@@ -5,7 +5,7 @@
     Edit
 %hr
 .row
-  .span6
+  .col-md-6
     .ui-box
       .title
         Project info:
@@ -54,6 +54,11 @@
               = @repository.path_to_repo
 
           %li
+            %span.light Size
+            %strong
+              = repository_size(@project)
+
+          %li
             %span.light last commit:
             %strong
               = last_commit(@project)
@@ -66,15 +71,25 @@
         %li
           %span.light access:
           %strong
-            - if @project.public
-              %span.cblue
-                %i.icon-share
-                Public
-            - else
-              %span.cgreen
-                %i.icon-lock
-                Private
-  .span6
+            %span{ class: visibility_level_color(@project.visibility_level) }
+              = visibility_level_icon(@project.visibility_level)
+              = visibility_level_label(@project.visibility_level)
+
+    .ui-box
+      .title
+        Transfer project
+      .body
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
+          .form-group
+            = f.label :namespace_id, "Namespace"
+            .col-sm-10
+              = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
+
+          .form-group
+            .col-sm-10
+              = f.submit 'Transfer', class: 'btn btn-primary'
+
+  .col-md-6
     - if @group
       .ui-box
         .title
@@ -107,5 +122,5 @@
                 %span.light Owner
               - else
                 %span.light= users_project.human_access
-                = link_to project_team_member_path(@project, user), confirm: remove_from_project_team_message(@project, user), method: :delete, remote: true, class: "btn btn-small btn-remove" do
+                = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-small btn-remove" do
                   %i.icon-remove

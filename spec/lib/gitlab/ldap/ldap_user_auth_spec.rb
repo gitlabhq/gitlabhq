@@ -6,7 +6,7 @@ describe Gitlab::LDAP do
   before do
     Gitlab.config.stub(omniauth: {})
 
-    @info = mock(
+    @info = double(
       uid: '12djsak321',
       name: 'John',
       email: 'john@mail.com'
@@ -15,7 +15,7 @@ describe Gitlab::LDAP do
 
   describe :find_for_ldap_auth do
     before do
-      @auth = mock(
+      @auth = double(
         uid: '12djsak321',
         info: @info,
         provider: 'ldap'

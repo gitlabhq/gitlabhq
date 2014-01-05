@@ -38,22 +38,22 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
       format.atom { render layout: false }
     end
   end
 
   # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests.of_group(@group)
-    @merge_requests = FilterContext.new(@merge_requests, params).execute
+    @merge_requests = FilterContext.new(MergeRequest, current_user, params).execute
+    @merge_requests = @merge_requests.of_group(@group)
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
   # Get only assigned issues
   def issues
-    @issues = current_user.assigned_issues.of_group(@group)
-    @issues = FilterContext.new(@issues, params).execute
+    @issues = FilterContext.new(Issue, current_user, params).execute
+    @issues = @issues.of_group(@group)
     @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
@@ -102,7 +102,7 @@ class GroupsController < ApplicationController
 
   # Dont allow unauthorized access to group
   def authorize_read_group!
-    unless projects.present? or can?(current_user, :read_group, @group)
+    unless @group and (projects.present? or can?(current_user, :read_group, @group))
       return render_404
     end
   end

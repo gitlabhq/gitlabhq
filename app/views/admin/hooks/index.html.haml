@@ -1,5 +1,5 @@
 %h3.page-title
-  System Hooks
+  System hooks
 
 %p.light
   #{link_to "System hooks ", help_system_hooks_path, class: "vlink"} can be
@@ -8,35 +8,28 @@
 %hr
 
 
-= form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-inline' } do |f|
+= form_for @hook, as: :hook, url: admin_hooks_path, html: { class: 'form-horizontal' } do |f|
   -if @hook.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       - @hook.errors.full_messages.each do |msg|
         %p= msg
-  .control-group
-    = f.label :url, "URL:"
-    .controls
-      = f.text_field :url, class: "text_field input-xxlarge input-xpadding"
-      &nbsp;
-      = f.submit "Add System Hook", class: "btn btn-create"
+  .form-group
+    = f.label :url, "URL:", class: 'control-label'
+    .col-sm-10
+      = f.text_field :url, class: "form-control"
+  .form-actions
+    = f.submit "Add System Hook", class: "btn btn-create"
 %hr
 
 -if @hooks.any?
-  %h3
-    Hooks
-    %small (#{@hooks.count})
-  %br
-  %table
-    %tr
-      %th URL
-      %th Method
-      %th
-    - @hooks.each do |hook|
-      %tr
-        %td
+  .ui-box
+    .title
+      System hooks (#{@hooks.count})
+    %ul.well-list
+      - @hooks.each do |hook|
+        %li
+          .pull-right
+            = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-small"
+            = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
           = link_to admin_hook_path(hook) do
             %strong= hook.url
-          = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-small pull-right"
-        %td POST
-        %td
-          = link_to 'Remove', admin_hook_path(hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-small pull-right"

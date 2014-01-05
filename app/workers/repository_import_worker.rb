@@ -14,7 +14,6 @@ class RepositoryImportWorker
       project.imported = true
       project.save
       project.satellite.create unless project.satellite.exists?
-      project.discover_default_branch
     else
       project.imported = false
     end

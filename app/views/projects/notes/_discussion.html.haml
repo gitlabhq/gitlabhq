@@ -32,8 +32,7 @@
       last updated by
       = link_to_member(@project, last_note.author, avatar: false)
       %span.discussion-last-update
-        = time_ago_in_words(last_note.updated_at)
-        ago
+        #{time_ago_with_tooltip(last_note.updated_at, 'bottom', 'discussion_updated_ago')}
   .discussion-body
     - if note.for_diff_line?
       - if note.active?

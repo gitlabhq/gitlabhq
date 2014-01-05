@@ -9,19 +9,19 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  creator_id             :integer
-#  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  public                 :boolean          default(FALSE), not null
 #  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
+#  visibility_level       :integer          default(0), not null
+#  archived               :boolean          default(FALSE), not null
 #
 
 require 'spec_helper'
@@ -71,7 +71,7 @@ describe Project do
 
     it "should not allow new projects beyond user limits" do
       project2 = build(:project)
-      project2.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 0))
+      project2.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       project2.should_not be_valid
       project2.errors[:limit_reached].first.should match(/Your own projects limit is 0/)
     end

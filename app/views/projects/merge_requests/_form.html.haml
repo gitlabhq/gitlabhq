@@ -1,57 +1,61 @@
-= form_for [@project, @merge_request], html: { class: "#{controller.action_name}-merge-request form-horizontal" } do |f|
+= form_for [@project, @merge_request], html: { class: "merge-request-form form-horizontal" } do |f|
   -if @merge_request.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @merge_request.errors.full_messages.each do |msg|
           %li= msg
 
   .merge-request-branches
     .row
-      .span5
+      .col-md-5
         .clearfix
           .pull-left
-            = f.select(:source_project_id,[[@merge_request.source_project.path_with_namespace,@merge_request.source_project.id]] , {}, {class: 'source_project chosen span3'})
+            = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project chosen span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            %i.icon-code-fork
             = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span2'})
         .mr_source_commit.prepend-top-10
-      .span2
-        %h2.merge-request-angle.light
+      .col-md-2
+        .merge-request-angle
           %i.icon-long-arrow-right
-      .span5
+      .col-md-5
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-            = f.select(:target_project_id, projects.map { |proj| [proj.path_with_namespace,proj.id] }, {include_blank: "Select Target Project" }, {class: 'target_project chosen span3'})
+            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project chosen span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            %i.icon-code-fork
             = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span2'})
         .mr_target_commit.prepend-top-10
 
   %hr
   .merge-request-form-info
-    .control-group
-      = f.label :title do
+    .form-group
+      = f.label :title, class: 'control-label' do
         %strong= "Title *"
-      .controls= f.text_field :title, class: "input-xxlarge pad js-gfm-input", maxlength: 255, rows: 5, required: true
-    .control-group
-      .left
-        = f.label :assignee_id do
+      .col-sm-10= f.text_field :title, class: "form-control pad js-gfm-input", maxlength: 255, rows: 5, required: true
+    .form-group
+      = f.label :description, "Description", class: 'control-label'
+      .col-sm-10
+        = f.text_area :description, class: "form-control js-gfm-input", rows: 14
+        %p.hint Description is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+
+    %hr
+    .form-group
+      .merge-request-assignee
+        = f.label :assignee_id, class: 'control-label' do
           %i.icon-user
           Assign to
-        .controls= f.select(:assignee_id, @project.team.members.sort_by(&:name).map {|p| [ p.name, p.id ] }, { include_blank: "Select user" }, {class: 'chosen span3'})
-      .left
-        = f.label :milestone_id do
+        .col-sm-10
+          = f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select a user" }, {class: 'chosen'})
+          &nbsp;
+          = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+    .form-group
+      .merge-request-milestone
+        = f.label :milestone_id, class: 'control-label' do
           %i.icon-time
           Milestone
-        .controls= f.select(:milestone_id, @project.milestones.active.all.map {|p| [ p.title, p.id ] }, { include_blank: "Select milestone" }, {class: 'chosen'})
-    .control-group
-      = f.label :description, "Description"
-      .controls
-        = f.text_area :description, class: "input-xxlarge js-gfm-input", rows: 14
-        %p.hint Description is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        .col-sm-10= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'chosen'})
 
 
   .form-actions
@@ -84,4 +88,8 @@
   });
   target_branch.on("change", function() {
     $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
+  });
+  $('.assign-to-me-link').on('click', function(e){
+    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("chosen:updated");
+    e.preventDefault();
   });

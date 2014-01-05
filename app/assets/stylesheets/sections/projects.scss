@@ -16,12 +16,18 @@
 
 .project-home-panel {
   border-bottom: 1px solid #DDD;
-  padding-bottom: 30px;
+  padding-bottom: 25px;
   margin-bottom: 30px;
+
+  &.empty-project {
+      border-bottom: 0px;
+      padding-bottom: 15px;
+      margin-bottom: 0px;
+  }
 
   .project-home-title {
     font-size: 18px;
-    color: #777;
+    color: #444;
     margin: 0;
     line-height: 32px;
   }
@@ -34,7 +40,7 @@
 
     .project-home-desc {
       float: left;
-      color: #999;
+      color: #777;
     }
 
     .project-home-links {
@@ -45,29 +51,47 @@
     }
   }
 
-  .public-label {
-    font-size: 14px;
+  .visibility-level-label {
+    font-size: 17px;
     background: #f1f1f1;
-    padding: 8px 10px;
     border-radius: 4px;
-    margin-left: 10px;
     color: #888;
+    position: absolute;
+    margin-left: -55px;
     text-shadow: 0 1px 1px #FFF;
+    width: 40px;
+    text-align: center;
+    padding: 6px;
+
+    i {
+      color: inherit;
+    }
   }
 }
 
 .git-clone-holder {
-  float: right;
+  margin-right: 45px;
   border: 1px solid #E1E1E1;
   @include border-radius(4px);
 
+  input[type="text"],
   .btn {
-    margin-left: 3px;
     border: none;
-    background: none;
+    @include border-radius(0px);
+    border-left: 1px solid #E1E1E1;
     box-shadow: none;
+    padding: 6px 9px;
+  }
+
+  .btn {
+    float: left;
+    background: none;
     color: #29b;
-    padding: 6px;
+
+    &:first-child {
+      @include border-radius-left(4px);
+      border-left: 0px;
+    }
 
     &.active {
       color: #333;
@@ -76,20 +100,51 @@
   }
 
   input[type="text"] {
-    margin-left: 2px;
-    border: none;
-    border-radius: 0;
-    border-left: 1px solid #E1E1E1;
+    cursor: auto;
     @extend .monospace;
-    box-shadow: none;
     background: #FAFAFA;
-    padding: 6px 10px;
+    width: 100%;
+  }
+
+  .protocol-clone {
+    overflow: hidden;
   }
 }
 
-.project-public-holder {
-  .help-inline {
-    padding-top: 7px;
+.project-visibility-level-holder {
+  .controls {
+    padding-bottom: 9px;
+  }
+
+  .controls {
+    input {
+      float: left;
+    }
+    .descr {
+      display: block;
+      margin-left: 1.5em;
+      &.restricted {
+        color: #888;
+      }
+
+      label {
+        float: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+      }
+    }
+    .info {
+      display: block;
+      margin-top: 5px;
+    }
+    strong {
+      display: inline-block;
+      width: 4em;
+    }
+  }
+  i {
+    color: inherit;
   }
 }
 
@@ -130,7 +185,8 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects {
+.my-projects,
+.public-projects {
   li {
     .project-info {
       margin-bottom: 10px;
@@ -165,4 +221,63 @@ ul.nav.nav-projects-tabs {
   a {
     color: #777;
   }
+}
+
+.project-side {
+  .btn-block {
+    background-image: none;
+    background-color: #F1f1f1;
+    border-color: #EEE;
+    &:hover {
+      background-color: #eee;
+      border-color: #DDD;
+    }
+  }
+  .project-fork-icon {
+    float: left;
+    font-size: 26px;
+    margin-right: 10px;
+    line-height: 1.5;
+  }
+}
+
+.transfer-project .chosen-container {
+  min-width: 200px;
+}
+
+/** Branch/tag selector **/
+.project-refs-form {
+  margin: 0;
+  span {
+    background:none !important;
+    position:static !important;
+    width:auto !important;
+    height:auto !important;
+  }
+}
+
+.project-refs-form .chosen-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-right: 10px;
+
+  .chosen-single span {
+    font-weight: bold;
+    color: #555;
+  }
+
+  &.chosen-container-active {
+    .chosen-drop {
+      min-width: 400px;
+    }
+
+    .chosen-results {
+      max-height: 400px;
+    }
+  }
+}
+
+.deploy-project-label {
+  margin: 1px;
 }

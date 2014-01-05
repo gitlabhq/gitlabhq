@@ -26,7 +26,7 @@
         %i.icon-time
         = issue.milestone.title
     .pull-right
-      %small updated #{time_ago_in_words(issue.updated_at)} ago
+      %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
 
     .issue-labels
       - issue.labels.each do |label|

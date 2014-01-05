@@ -4,7 +4,7 @@
     - if note_for_main_target?(note)
       = render discussion_notes
     - else
-      = render 'discussion', discussion_notes: discussion_notes
+      = render 'projects/notes/discussion', discussion_notes: discussion_notes
 - else
   - @notes.each do |note|
     - next unless note.author

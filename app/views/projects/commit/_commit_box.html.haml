@@ -23,16 +23,14 @@
   %span.light Authored by
   %strong
     = commit_author_link(@commit, avatar: true, size: 24)
-  %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
-    #{time_ago_in_words(@commit.authored_date)} ago
+  #{time_ago_with_tooltip(@commit.authored_date)}
 
 - if @commit.different_committer?
   .commit-info-row
     %span.light Committed by
     %strong
       = commit_committer_link(@commit, avatar: true, size: 24)
-    %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
-      #{time_ago_in_words(@commit.committed_date)} ago
+    #{time_ago_with_tooltip(@commit.committed_date)}
 
 .commit-info-row
   %span.cgray= pluralize(@commit.parents.count, "parent")

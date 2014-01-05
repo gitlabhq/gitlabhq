@@ -36,6 +36,11 @@
 #  notification_level     :integer          default(1), not null
 #  password_expires_at    :datetime
 #  created_by_id          :integer
+#  avatar                 :string(255)
+#  confirmation_token     :string(255)
+#  confirmed_at           :datetime
+#  confirmation_sent_at   :datetime
+#  unconfirmed_email      :string(255)
 #
 
 require 'spec_helper'
@@ -85,8 +90,8 @@ describe User do
     end
 
     it "should not generate password by default" do
-      user = create(:user, password: 'abcdefg')
-      user.password.should == 'abcdefg'
+      user = create(:user, password: 'abcdefghe')
+      user.password.should == 'abcdefghe'
     end
 
     it "should generate password when forcing random password" do
@@ -135,7 +140,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should include(@user.namespace) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
   end
@@ -162,7 +166,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_false }
-    it { @user.namespaces.should == [@user.namespace] }
   end
 
   describe 'blocking user' do
@@ -274,6 +277,20 @@ describe User do
       User.by_username_or_id('foo').should == user1
       User.by_username_or_id(-1).should be_nil
       User.by_username_or_id('bar').should be_nil
+    end
+  end
+
+  describe :avatar_type do
+    let(:user) { create(:user) }
+
+    it "should be true if avatar is image" do
+      user.update_attribute(:avatar, 'uploads/avatar.png')
+      user.avatar_type.should be_true
+    end
+
+    it "should be false if avatar is html page" do
+      user.update_attribute(:avatar, 'uploads/avatar.html')
+      user.avatar_type.should == ["only images allowed"]
     end
   end
 end

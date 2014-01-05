@@ -15,6 +15,12 @@ describe "Private Project Access" do
     project.team << [reporter, :reporter]
   end
 
+  describe "Project should be private" do
+    subject { project }
+
+    its(:private?) { should be_true }
+  end
+
   describe "GET /:project_path" do
     subject { project_path(project) }
 

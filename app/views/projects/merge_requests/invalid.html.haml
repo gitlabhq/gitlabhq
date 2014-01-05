@@ -2,16 +2,22 @@
   = render "projects/merge_requests/show/mr_title"
   = render "projects/merge_requests/show/mr_box"
 
-  .alert.alert-error
-    %h5
-      %i.icon-exclamation-sign
-      We cannot find
-      %span.label-branch= @merge_request.source_branch
-      or
-      %span.label-branch= @merge_request.target_branch
-      branches in the repository.
+  .alert.alert-danger
     %p
-      Maybe it was removed or never pushed.
-    %p
+      We cannot render this merge request properly because
+      - if @merge_request.for_fork? && !@merge_request.source_project
+        fork project was removed
+      - elsif !@merge_request.source_branch_exists?
+        %span.label.label-inverse= @merge_request.source_branch
+        does not exist in
+        %span.label.label-info= @merge_request.source_project_path
+      - elsif !@merge_request.target_branch_exists?
+        %span.label.label-inverse= @merge_request.target_branch
+        does not exist in
+        %span.label.label-info= @merge_request.target_project_path
+      - else
+        of internal error
+
+    %strong
       Please close Merge Request or change branches with existing one
 

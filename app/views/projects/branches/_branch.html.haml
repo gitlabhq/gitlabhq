@@ -18,7 +18,7 @@
         Compare
 
       - if can?(current_user, :admin_project, @project) && branch.name != @repository.root_ref
-        = link_to project_branch_path(@project, branch.name), class: 'btn grouped btn-small remove-row', method: :delete, confirm: 'Removed branch cannot be restored. Are you sure?', remote: true do
+        = link_to project_branch_path(@project, branch.name), class: 'btn grouped btn-small remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
           %i.icon-trash
 
   %p
@@ -27,6 +27,4 @@
     = image_tag avatar_icon(commit.author_email), class: "avatar s16", alt: ''
     %span.light
       = gfm escape_once(truncate(commit.title, length: 40))
-    %span
-      = time_ago_in_words(commit.committed_date)
-      ago
+    #{time_ago_with_tooltip(commit.committed_date)}

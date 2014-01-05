@@ -64,6 +64,10 @@ class ProjectTeam
     UsersProject.truncate_team(project)
   end
 
+  def users
+    members
+  end
+
   def members
     @members ||= fetch_members
   end
@@ -87,9 +91,8 @@ class ProjectTeam
   def import(source_project)
     target_project = project
 
-    source_team = source_project.users_projects.all
-    target_team = target_project.users_projects.all
-    target_user_ids = target_team.map(&:user_id)
+    source_team = source_project.users_projects.to_a
+    target_user_ids = target_project.users_projects.pluck(:user_id)
 
     source_team.reject! do |tm|
       # Skip if user already present in team

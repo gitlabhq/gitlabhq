@@ -2,34 +2,34 @@
   = form_for [:admin, @user] do |f|
     -if @user.errors.any?
       #error_explanation
-        %ul.unstyled.alert.alert-error
+        %ul.unstyled.alert.alert-danger
           - @user.errors.full_messages.each do |msg|
             %li= msg
 
     %fieldset
       %legend Account
-      .control-group
+      .form-group
         = f.label :name
-        .controls
+        .col-sm-10
           = f.text_field :name, required: true, autocomplete: "off"
           %span.help-inline * required
-      .control-group
+      .form-group
         = f.label :username
-        .controls
+        .col-sm-10
           = f.text_field :username, required: true, autocomplete: "off"
           %span.help-inline * required
-      .control-group
+      .form-group
         = f.label :email
-        .controls
+        .col-sm-10
           = f.text_field :email, required: true, autocomplete: "off"
           %span.help-inline * required
 
     - if @user.new_record?
       %fieldset
         %legend Password
-        .control-group
+        .form-group
           = f.label :password
-          .controls
+          .col-sm-10
             %strong
               A temporary password will be generated and sent to user.
               %br
@@ -37,49 +37,49 @@
     - else
       %fieldset
         %legend Password
-        .control-group
+        .form-group
           = f.label :password
-          .controls= f.password_field :password, disabled: f.object.force_random_password
-        .control-group
+          .col-sm-10= f.password_field :password, disabled: f.object.force_random_password
+        .form-group
           = f.label :password_confirmation
-          .controls= f.password_field :password_confirmation, disabled: f.object.force_random_password
+          .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password
 
     %fieldset
       %legend Access
       .row
-        .span8
-          .control-group
+        .col-md-8
+          .form-group
             = f.label :projects_limit
-            .controls= f.number_field :projects_limit
+            .col-sm-10= f.number_field :projects_limit
 
-          .control-group
+          .form-group
             = f.label :can_create_group
-            .controls= f.check_box :can_create_group
+            .col-sm-10= f.check_box :can_create_group
 
-          .control-group
+          .form-group
             = f.label :admin do
               %strong.cred Administrator
-            .controls= f.check_box :admin
-        .span4
+            .col-sm-10= f.check_box :admin
+        .col-md-4
           - unless @user.new_record?
-            .alert.alert-error
+            .alert.alert-danger
               - if @user.blocked?
                 %p This user is blocked and is not able to login to GitLab
                 = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
               - else
                 %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                = link_to 'Block User', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
+                = link_to 'Block User', block_admin_user_path(@user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
-      .control-group
+      .form-group
         = f.label :skype
-        .controls= f.text_field :skype
-      .control-group
+        .col-sm-10= f.text_field :skype
+      .form-group
         = f.label :linkedin
-        .controls= f.text_field :linkedin
-      .control-group
+        .col-sm-10= f.text_field :linkedin
+      .form-group
         = f.label :twitter
-        .controls= f.text_field :twitter
+        .col-sm-10= f.text_field :twitter
 
     .form-actions
       - if @user.new_record?

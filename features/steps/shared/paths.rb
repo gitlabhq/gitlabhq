@@ -105,6 +105,10 @@ module SharedPaths
     visit admin_logs_path
   end
 
+  step 'I visit admin messages page' do
+    visit admin_broadcast_messages_path
+  end
+
   step 'I visit admin hooks page' do
     visit admin_hooks_path
   end

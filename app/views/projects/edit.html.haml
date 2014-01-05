@@ -7,93 +7,78 @@
       %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
       %hr
       .form-holder
-        = form_for(@project, remote: true) do |f|
+        = form_for @project, remote: true, html: { class: "edit_project form-horizontal" } do |f|
           %fieldset
-            .control-group.project_name_holder
-              = f.label :name do
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
                 Project name
-              .controls
-                = f.text_field :name, placeholder: "Example Project", class: "span5"
+              .col-sm-10
+                = f.text_field :name, placeholder: "Example Project", class: "form-control"
 
 
-            .control-group
-              = f.label :description do
+            .form-group
+              = f.label :description, class: 'control-label' do
                 Project description
                 %span.light (optional)
-              .controls
-                = f.text_area :description, placeholder: "Awesome project", class: "span5", rows: 3, maxlength: 250
+              .col-sm-10
+                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
-              .control-group
-                = f.label :default_branch, "Default Branch"
-                .controls= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen'})
+              .form-group
+                = f.label :default_branch, "Default Branch", class: 'control-label'
+                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen select-wide'})
 
 
-          - if can?(current_user, :change_public_mode, @project)
-            %fieldset.public-mode
-              %legend
-                Public mode:
-              .control-group
-                = f.label :public, class: 'control-label' do
-                  %span Public access
-                .controls
-                  = f.check_box :public
-                  %span.descr
-                    If checked, this project can be cloned
-                    %em without any
-                    authentication.
-                    It will also be listed on the #{link_to "public access directory", public_root_path}.
-                    %em Any
-                    user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+          = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
 
           %fieldset.features
             %legend
               Labels:
-            .control-group
+            .form-group
               = f.label :label_list, "Labels", class: 'control-label'
-              .controls
-                = f.text_field :label_list, maxlength: 2000, class: "span5"
+              .col-sm-10
+                = f.text_field :label_list, maxlength: 2000, class: "form-control"
                 %p.hint Separate labels with commas.
 
           %fieldset.features
             %legend
               Features:
-            .control-group
+            .form-group
               = f.label :issues_enabled, "Issues", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :issues_enabled
                 %span.descr Lightweight issue tracking system for this project
 
             - if Project.issues_tracker.values.count > 1
-              .control-group
+              .form-group
                 = f.label :issues_tracker, "Issues tracker", class: 'control-label'
-                .controls= f.select(:issues_tracker, project_issues_trackers, {}, { disabled: !@project.issues_enabled })
+                .col-sm-10= f.select(:issues_tracker, project_issues_trackers(@project.issues_tracker), {}, { disabled: !@project.issues_enabled })
 
-              .control-group
+              .form-group
                 = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
-                .controls= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
+                .col-sm-10= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
 
-            .control-group
+            .form-group
               = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :merge_requests_enabled
                 %span.descr Submit changes to be merged upstream.
 
-            .control-group
+            .form-group
               = f.label :wiki_enabled, "Wiki", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :wiki_enabled
                 %span.descr Pages for project documentation
 
-            .control-group
+            .form-group
               = f.label :wall_enabled, "Wall", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :wall_enabled
                 %span.descr Simple chat system for broadcasting inside project
 
-            .control-group
+            .form-group
               = f.label :snippets_enabled, "Snippets", class: 'control-label'
-              .controls
+              .col-sm-10
                 = f.check_box :snippets_enabled
                 %span.descr Share code pastes with others out of git repository
 
@@ -113,18 +98,49 @@
         %i.icon-chevron-down
 
     .js-toggle-visibility-container.hide
+      - if can? current_user, :archive_project, @project
+        .ui-box.ui-box-danger
+          .title
+            - if @project.archived?
+              Unarchive project
+            - else
+              Archive project
+          .body
+            - if @project.archived?
+              %p
+                Unarchiving the project will mark its repository as active.
+                %br
+                The project can be committed to.
+                %br
+                %strong Once active this project shows up in the search and on the dashboard.
+              = link_to 'Unarchive', unarchive_project_path(@project),
+                  data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be comitted to again." },
+                  method: :post, class: "btn btn-remove"
+            - else
+              %p
+                Archiving the project will mark its repository as read-only.
+                %br
+                It is hidden from the dashboard and doesn't show up in searches.
+                %br
+                %strong Archived projects cannot be committed to!
+              = link_to 'Archive', archive_project_path(@project),
+                  data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                  method: :post, class: "btn btn-remove"
+      - else
+        %p.nothing_here_message Only the project owner can archive a project
+
       - if can?(current_user, :change_namespace, @project)
         .ui-box.ui-box-danger
           .title Transfer project
           .errors-holder
           .form-holder
-            = form_for(@project, url: transfer_project_path(@project), remote: true, html: { class: 'transfer-project' }) do |f|
-              .control-group
-                = f.label :namespace_id do
+            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
+              .form-group
+                = f.label :namespace_id, class: 'control-label' do
                   %span Namespace
-                .controls
-                  .control-group
-                    = f.select :namespace_id, namespaces_options(@project.namespace_id), {prompt: 'Choose a project namespace'}, {class: 'chosen'}
+                .col-sm-10
+                  .form-group
+                    = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'chosen' }
                   %ul
                     %li Be careful. Changing the project's namespace can have unintended side effects.
                     %li You can only transfer the project to namespaces you manage.
@@ -138,13 +154,15 @@
         .title Rename repository
         .errors-holder
         .form-holder
-          = form_for(@project) do |f|
-            .control-group
-              = f.label :path do
+          = form_for(@project, html: { class: 'form-horizontal' }) do |f|
+            .form-group
+              = f.label :path, class: 'control-label' do
                 %span Path
-              .controls
-                .control-group
-                  = f.text_field :path
+              .col-sm-9
+                .form-group
+                  .input-group
+                    = f.text_field :path, class: 'form-control'
+                    %span.input-group-addon .git
                 %ul
                   %li Be careful. Renaming a project's repository can have unintended side effects.
                   %li You will need to update your local repositories to point to the new location.
@@ -154,13 +172,13 @@
       - if can?(current_user, :remove_project, @project)
         .ui-box.ui-box-danger
           .title Remove project
-          .ui-box-body
+          .body
             %p
               Removing the project will delete its repository and all related resources including issues, merge requests etc.
               %br
               %strong Removed projects cannot be restored!
 
-            = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove"
+            = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project) }, method: :delete, class: "btn btn-remove"
       - else
         %p.nothing_here_message Only project owner can remove a project
 

@@ -1,9 +1,10 @@
 - if @merge_requests.any?
   - @merge_requests.group_by(&:target_project).each do |group|
-    .ui-box.small-box
+    .ui-box.ui-box-small
       - project = group[0]
       .title
         = link_to_project project
+        = link_to 'show all', project_merge_requests_path(project), class: 'pull-right'
       %ul.well-list.mr-list
         - group[1].each do |merge_request|
           = render 'projects/merge_requests/merge_request', merge_request: merge_request

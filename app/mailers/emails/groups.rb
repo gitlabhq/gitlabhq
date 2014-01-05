@@ -5,7 +5,7 @@ module Emails
       @group = @membership.group
 
       mail(to: @membership.user.email,
-           subject: subject("access to group was granted"))
+           subject: subject("Access to group was granted"))
     end
   end
 end

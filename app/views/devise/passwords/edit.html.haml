@@ -1,11 +1,12 @@
 = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "login-box" }) do |f|
   %h3 Change your password
-  = devise_error_messages!
+  .devise-errors
+    = devise_error_messages!
   = f.hidden_field :reset_password_token
   %div
-    = f.password_field :password, class: "text top", placeholder: "New password"
+    = f.password_field :password, class: "form-control top", placeholder: "New password", required: true
   %div
-    = f.password_field :password_confirmation, class: "text bottom", placeholder: "Confirm new password"
+    = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
   %div
   .clearfix.append-bottom-10
     = f.submit "Change my password", class: "btn btn-primary"

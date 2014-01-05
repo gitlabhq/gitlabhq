@@ -24,10 +24,10 @@
       th {
         font-weight: normal;
         font-size: 15px;
-        border-bottom: 1px solid #CCC;
+        border-bottom: 1px solid #CCC !important;
       }
       td {
-        border-color: #F1F1F1;
+        border-color: #F1F1F1 !important;
       }
       &:hover {
         td {
@@ -111,5 +111,16 @@
 
 .tree-ref-holder {
   float: left;
-  margin-top: 5px;
+  margin-top: 8px;
+}
+
+.readme-holder {
+  border-top: 1px dashed #CCC;
+  padding-top: 10px;
+
+  h4 {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #777;
+  }
 }

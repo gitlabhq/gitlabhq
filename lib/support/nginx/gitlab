@@ -11,6 +11,9 @@ server {
   server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
   server_tokens off;     # don't show the version number, a security best practice
   root /home/git/gitlab/public;
+  
+  # Set value of client_max_body_size to at least the value of git.max_size in gitlab.yml
+  client_max_body_size 5m;
 
   # individual nginx logs for this gitlab vhost
   access_log  /var/log/nginx/gitlab_access.log;
@@ -25,13 +28,14 @@ server {
   # if a file, which is not found in the root folder is requested,
   # then the proxy pass the request to the upsteam (gitlab unicorn)
   location @gitlab {
-    proxy_read_timeout 300; # https://github.com/gitlabhq/gitlabhq/issues/694
-    proxy_connect_timeout 300; # https://github.com/gitlabhq/gitlabhq/issues/694
+    proxy_read_timeout 300; # Some requests take more than 30 seconds.
+    proxy_connect_timeout 300; # Some requests take more than 30 seconds.
     proxy_redirect     off;
 
     proxy_set_header   X-Forwarded-Proto $scheme;
     proxy_set_header   Host              $http_host;
     proxy_set_header   X-Real-IP         $remote_addr;
+    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
 
     proxy_pass http://gitlab;
   }

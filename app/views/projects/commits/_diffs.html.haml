@@ -1,6 +1,6 @@
 - @suppress_diff ||= @suppress_diff || @force_suppress_diff
 - if @suppress_diff
-  .alert.alert-block
+  .alert.alert-warning
     %p
       %strong Warning! This is a large diff.
     %p
@@ -30,6 +30,10 @@
       %strong.cgreen #{@commit.stats.additions} additions
       and
       %strong.cred #{@commit.stats.deletions} deletions
+  - if params[:view] == 'parallel'
+    = link_to "Inline Diff", url_for(view: 'inline'), {id: "commit-diff-viewtype", class: 'btn btn-tiny pull-right'}
+  - else
+    = link_to "Side-by-side Diff", url_for(view: 'parallel'), {id: "commit-diff-viewtype", class: 'btn btn-tiny pull-right'}
 .file-stats
   = render "projects/commits/diff_head", diffs: diffs
 
@@ -46,7 +50,7 @@
             %span= diff.old_path
 
             - if @commit.parent_ids.present?
-              = link_to project_blob_path(project, tree_join(@commit.parent_id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
+              = link_to project_blob_path(project, tree_join(@commit.parent_id, diff.new_path)), { class: 'btn btn-small view-file' } do
                 View file @
                 %span.commit-short-id= @commit.short_id(6)
           - else
@@ -54,7 +58,7 @@
             - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
               %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
-            = link_to project_blob_path(project, tree_join(@commit.id, diff.new_path)), {:class => 'btn btn-tiny pull-right view-file'} do
+            = link_to project_blob_path(project, tree_join(@commit.id, diff.new_path)), { class: 'btn btn-small view-file' } do
               View file @
               %span.commit-short-id= @commit.short_id(6)
 
@@ -62,7 +66,10 @@
           -# Skipp all non non-supported blobs
           - next unless file.respond_to?('text?')
           - if file.text?
-            = render "projects/commits/text_file", diff: diff, index: i
+            - if params[:view] == 'parallel'
+              = render "projects/commits/parallel_view", diff: diff, project: project, file: file, index: i
+            - else
+              = render "projects/commits/text_file", diff: diff, index: i
           - elsif file.image?
             - old_file = project.repository.blob_at(@commit.parent_id, diff.old_path) if @commit.parent_id
             = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i

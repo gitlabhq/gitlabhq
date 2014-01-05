@@ -13,7 +13,7 @@
     - if show_controls && can?(current_user, :manage_group, @group) && current_user != user
       = link_to '#', class: "btn-tiny btn js-toggle-button", title: 'Edit access level' do
         %i.icon-edit
-      = link_to group_users_group_path(@group, member), confirm: remove_user_from_group_message(@group, user), method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+      = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
         %i.icon-minus.icon-white
 
   .edit-member.hide.js-toggle-content

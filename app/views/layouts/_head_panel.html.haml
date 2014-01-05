@@ -7,34 +7,36 @@
           %h1 GITLAB
         %span.separator
       %h1.project_name= title
-      %ul.nav
-        %li
-          %a
-            %div.hide.turbolink-spinner
-              %i.icon-refresh.icon-spin
-              Loading...
-        %li
-          = render "layouts/search"
-        %li
-          = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
-            %i.icon-globe
-        %li
-          = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
-            %i.icon-paste
-        - if current_user.is_admin?
+
+      .navbar-collapse.collapse
+        %ul.nav.navbar-nav
           %li
-            = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
-              %i.icon-cogs
-        - if current_user.can_create_project?
+            %a
+              %div.hide.turbolink-spinner
+                %i.icon-refresh.icon-spin
+                Loading...
+          %li.hidden-sm
+            = render "layouts/search"
           %li
-            = link_to new_project_path, title: "New project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
-              %i.icon-plus
-        %li
-          = link_to profile_path, title: "Profile settings", class: 'has_bottom_tooltip', 'data-original-title' => 'Profile settings"'  do
-            %i.icon-user
-        %li
-          = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
-            %i.icon-signout
-        %li
-          = link_to current_user, class: "profile-pic", id: 'profile-pic' do
-            = image_tag avatar_icon(current_user.email, 26), alt: 'User activity'
+            = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
+              %i.icon-globe
+          %li
+            = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
+              %i.icon-paste
+          - if current_user.is_admin?
+            %li
+              = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
+                %i.icon-cogs
+          - if current_user.can_create_project?
+            %li
+              = link_to new_project_path, title: "New project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
+                %i.icon-plus
+          %li
+            = link_to profile_path, title: "Profile settings", class: 'has_bottom_tooltip', 'data-original-title' => 'Profile settings"'  do
+              %i.icon-user
+          %li
+            = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
+              %i.icon-signout
+          %li
+            = link_to current_user, class: "profile-pic", id: 'profile-pic' do
+              = image_tag avatar_icon(current_user.email, 26), alt: 'User activity'

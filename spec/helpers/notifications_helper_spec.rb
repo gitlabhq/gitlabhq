@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe NotificationsHelper do
   describe 'notification_icon' do
-    let(:notification) { stub(disabled?: false, participating?: false, watch?: false) }
+    let(:notification) { double(disabled?: false, participating?: false, watch?: false) }
 
     context "disabled notification" do
       before { notification.stub(disabled?: true) }

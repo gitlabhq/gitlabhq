@@ -15,28 +15,8 @@
     }
   }
 
-  .accept_group {
-    float: left;
-    border: 1px solid #ADA;
-    padding: 2px;
-    @include border-radius(5px);
-    background: #CEB;
-
-    .accept_merge_request {
-      font-size: 13px;
-      float: left;
-    }
-    .remove_branch_holder {
-      margin-left: 20px;
-      margin-right: 10px;
-      float: left;
-    }
-    label {
-      color: #444;
-      text-align: left
-    }
+  .accept-group {
   }
-
 
   .how_to_merge_link {
     @extend .primary;
@@ -110,9 +90,24 @@
 
 .merge-request-angle {
   text-align: center;
-  margin: 0;
+  margin: 0 auto;
+  font-size: 2em;
+  line-height: 1.1;
 }
 
 .merge-request-form-info {
-  padding: 15px 0;
+  padding-top: 15px;
+}
+
+.merge-request-branches {
+  .commit-row-message {
+    font-weight: normal !important;
+  }
+
+  .chosen-container .chosen-single {
+    span {
+      font-weight: bold;
+      color: #555;
+    }
+  }
 }

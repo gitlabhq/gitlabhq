@@ -1,17 +1,13 @@
-%h3.page-title Services
-%p.light Services allow you to integrate GitLab with other applications
+%h3.page-title Project services
+%p.light Project services allow you to integrate GitLab with other applications
 %hr
 
 %ul.bordered-list
-  - @services.each do |service|
+  - @services.sort_by(&:title).each do |service|
     %li
       %h4
-        - if service.activated?
-          %span.cgreen
-            %i.icon-circle
-        - else
-          %span.cgray
-            %i.icon-circle-blank
         = link_to edit_project_service_path(@project, service.to_param) do
           = service.title
+        .pull-right
+          = boolean_to_icon service.activated?
       %p= service.description

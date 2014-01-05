@@ -14,7 +14,7 @@
             %strong
               = link_to "click here", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
             for instructions
-          .accept_group
+          .accept-group
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
             - unless @merge_request.disallow_source_branch_removal?
               .remove_branch_holder
@@ -25,7 +25,7 @@
 
 
   .automerge_widget.no_satellite{style: "display:none"}
-    .alert.alert-error
+    .alert.alert-danger
       %span
         %strong This repository does not have satellite. Ask an administrator to fix this issue
 
@@ -37,7 +37,7 @@
         %strong This request can't be merged with GitLab. You should do it manually
 
   .automerge_widget.unchecked
-    .alert
+    .alert.alert-warning
       %strong
         %i.icon-refresh
         Checking for ability to automatically merge…

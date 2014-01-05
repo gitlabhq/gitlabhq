@@ -1,23 +1,6 @@
 = render "head"
-.issues_content
-  %h3.page-title
-    Issues
-    %span (<span class=issue_counter>#{@issues.total_count}</span>)
-    .pull-right
-      .span6
-        - if can? current_user, :write_issue, @project
-          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-right", title: "New Issue", id: "new_issue_link" do
-            %i.icon-plus
-            New Issue
-        = form_tag project_issues_path(@project), method: :get, remote: true, id: "issue_search_form", class: 'pull-right'  do
-          = hidden_field_tag :status, params[:status], id: 'search_status'
-          = hidden_field_tag :assignee_id, params[:assignee_id], id: 'search_assignee_id'
-          = hidden_field_tag :milestone_id, params[:milestone_id], id: 'search_milestone_id'
-          = hidden_field_tag :label_name, params[:label_name], id: 'search_label_name'
-          = search_field_tag :issue_search, nil, { placeholder: 'Filter by title or description', class: 'input-xpadding issue_search input-xlarge append-right-10 search-text-input' }
-
 .row
-  .span3
+  .col-md-3
     = render 'shared/project_filter', project_entities_path: project_issues_path(@project)
-  .span9.issues-holder
+  .col-md-9.issues-holder
     = render "issues"

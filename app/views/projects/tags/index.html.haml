@@ -24,8 +24,7 @@
           .pull-right
             %small.cdark
               %i.icon-calendar
-              = time_ago_in_words(commit.committed_date)
-              ago
+              #{time_ago_with_tooltip(commit.committed_date)}
         %p.prepend-left-20
           = link_to commit.short_id(8), project_commit_path(@project, commit), class: "monospace"
           &ndash;
@@ -37,7 +36,7 @@
                 %i.icon-download-alt
                 Download
             - if can?(current_user, :admin_project, @project)
-              = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row', method: :delete, confirm: 'Removed tag cannot be restored. Are you sure?', remote: true do
+              = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
                 %i.icon-trash
 
   = paginate @tags, theme: 'gitlab'

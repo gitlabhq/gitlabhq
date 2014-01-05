@@ -378,9 +378,10 @@ describe GitlabMarkdownHelper do
     it "should leave code blocks untouched" do
       helper.stub(:user_color_scheme_class).and_return(:white)
 
-      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should include("<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div></div>")
+      target_html = "<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> <span class=\"err\">$</span><span class=\"mi\">#{snippet.id}</span>"
 
-      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should include("<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> $#{snippet.id}\n<span class=\"n\">here</span> <span class=\"n\">too</span>\n</pre></div></div>")
+      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should include(target_html)
+      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should include(target_html)
     end
 
     it "should leave inline code untouched" do
@@ -392,7 +393,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave ref-like href of 'manual' links untouched" do
-      markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})").should == "<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a href=\"#{project_merge_request_url(project, merge_request)}\" class=\"gfm gfm-merge_request \" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n"
+      markdown("why not [inspect !#{merge_request.iid}](http://example.tld/#!#{merge_request.iid})").should == "<p>why not <a href=\"http://example.tld/#!#{merge_request.iid}\">inspect </a><a class=\"gfm gfm-merge_request \" href=\"#{project_merge_request_url(project, merge_request)}\" title=\"Merge Request: #{merge_request.title}\">!#{merge_request.iid}</a><a href=\"http://example.tld/#!#{merge_request.iid}\"></a></p>\n"
     end
 
     it "should leave ref-like src of images untouched" do
@@ -434,7 +435,7 @@ describe GitlabMarkdownHelper do
 
   describe "#render_wiki_content" do
     before do
-      @wiki = stub('WikiPage')
+      @wiki = double('WikiPage')
       @wiki.stub(:content).and_return('wiki content')
     end
 
@@ -448,7 +449,7 @@ describe GitlabMarkdownHelper do
 
     it "should use the Gollum renderer for all other file types" do
       @wiki.stub(:format).and_return(:rdoc)
-      formatted_content_stub = stub('formatted_content')
+      formatted_content_stub = double('formatted_content')
       formatted_content_stub.should_receive(:html_safe)
       @wiki.stub(:formatted_content).and_return(formatted_content_stub)
 

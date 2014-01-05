@@ -1,3 +1,8 @@
-- if current_user.require_ssh_key? && alert.blank? && notice.blank?
-  %p.error-message.centered
-    You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_profile_key_path} to your profile
+- if cookies[:hide_no_ssh_message].blank? && current_user.require_ssh_key? && !current_user.hide_no_ssh_key
+  .no-ssh-key-message
+    .container
+      You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_profile_key_path} to your profile
+      %div.pull-right
+        = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'hide-no-ssh-message', remote: true
+        |
+        = link_to 'Remind later', '#', class: 'hide-no-ssh-message'

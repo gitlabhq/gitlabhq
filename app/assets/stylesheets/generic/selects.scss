@@ -1,0 +1,103 @@
+/** Chosen.js selectbox style override **/
+.chosen-container {
+  min-width: 100px;
+
+  .chosen-single {
+    height: 26px;
+    background: #EEE !important;
+    border: 1px solid #DDD !important;
+    @include box-shadow(none !important);
+    @include border-radius(4px !important);
+  }
+
+  .chosen-results li.highlighted {
+    background: #29b;
+  }
+
+  .chosen-drop {
+    margin-top: 10px;
+    border: 1px solid #DDD !important;
+    @include border-radius(4px !important);
+  }
+
+  .chosen-search input {
+    border: 1px solid #CCC !important;
+    @include box-shadow(none !important);
+  }
+}
+
+/** Select2 styling **/
+.select2-container .select2-choice {
+  @include bg-light-gray-gradient;
+}
+
+.select2-container .select2-choice div {
+  border: none;
+  background: none;
+}
+
+.select2-drop {
+  padding-top: 8px;
+}
+
+.select2-no-results, .select2-searching {
+  padding: 7px;
+  color: #666;
+}
+
+.chosen-container .chosen-single div b {
+  background-position-y: 0px !important;
+}
+
+.chosen-container .chosen-drop .chosen-search input {
+  background-position-y: -24px !important;
+}
+
+.chosen-compact {
+  max-width: 170px !important;
+}
+
+select {
+  &.chosen {
+    width: 100px;
+  }
+
+  &.chosen-sm {
+    width: 100px;
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  select {
+    &.chosen {
+      width: 150px;
+    }
+    &.chosen-sm {
+      width: 120px;
+    }
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $screen-md-min) {
+  select {
+    &.chosen {
+      width: 170px;
+    }
+    &.chosen-sm {
+      width: 140px;
+    }
+  }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $screen-lg-min) {
+  select {
+    &.chosen {
+      width: 200px;
+    }
+    &.chosen-sm {
+      width: 150px;
+    }
+  }
+}

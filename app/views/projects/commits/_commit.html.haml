@@ -7,13 +7,11 @@
     .notes_count
       - notes = project.notes.for_commit_id(commit.id)
       - if notes.any?
-        %span.badge.badge-info
+        %span.label.label-gray
           %i.icon-comment
           = notes.count
 
   .commit-row-info
     = commit_author_link(commit, avatar: true, size: 16)
-    %time.committed_ago{ datetime: commit.committed_date, title: commit.committed_date.stamp("Aug 21, 2011 9:23pm") }
-      = time_ago_in_words(commit.committed_date)
-      ago
-      &nbsp;
+    .committed_ago
+      #{time_ago_with_tooltip(commit.committed_date)} &nbsp;
