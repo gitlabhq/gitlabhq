@@ -1,3 +1,10 @@
+v 6.4.0
+  - Respect existing group permissions during sync with LDAP group (d3844662ec7ce816b0a85c8b40f66ee6c5ae90a1)
+
+v 6.3.0
+  - When looking up a user by DN, use single scope (bc8a875df1609728f1c7674abef46c01168a0d20)
+  - Try sAMAccountName if omniauth nickname is nil (9b7174c333fa07c44cc53b80459a115ef1856e38)
+
 v 6.2.0
   - API: expose ldap_cn and ldap_access group attributes
   - Use omniauth-ldap nickname attribute as GitLab username
