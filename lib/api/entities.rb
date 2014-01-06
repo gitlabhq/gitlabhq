@@ -91,6 +91,10 @@ module API
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
     end
 
+    class RepoCommitDetail < RepoCommit
+      expose :parent_ids, :committed_date, :authored_date
+    end
+
     class ProjectSnippet < Grape::Entity
       expose :id, :title, :file_name
       expose :author, using: Entities::UserBasic

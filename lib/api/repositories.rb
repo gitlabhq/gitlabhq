@@ -112,7 +112,7 @@ module API
         sha = params[:sha]
         commit = user_project.repository.commit(sha)
         not_found! "Commit" unless commit
-        present commit, with: Entities::RepoCommit
+        present commit, with: Entities::RepoCommitDetail
       end
 
       # Get the diff for a specific commit of a project
