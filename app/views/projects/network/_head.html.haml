@@ -3,7 +3,7 @@
     = render partial: 'shared/ref_switcher', locals: {destination: 'graph'}
   .col-md-10
     = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
-      = label_tag :search , "Looking for", class: 'light inline-label'
+      = label_tag :extended_sha1 , "Looking for", class: 'light inline-label'
       = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control input-mx-250"
       = button_tag type: 'submit', class: 'btn btn-success' do
         %i.icon-search
