@@ -4,10 +4,6 @@
  *
  */
 .automerge_widget {
-  &.can_be_merged {
-    background: #DFF0D8;
-  }
-
   form {
     margin-bottom: 0;
     .clearfix {
@@ -16,10 +12,10 @@
   }
 
   .accept-group {
-  }
-
-  .how_to_merge_link {
-    @extend .primary;
+    label {
+      margin: 5px;
+      margin-left: 20px;
+    }
   }
 }
 
@@ -31,11 +27,6 @@
       text-align: center;
     }
   }
-}
-
-.merge-in-progress {
-  @extend .padded;
-  @extend .append-bottom-10;
 }
 
 .mr_source_commit,
