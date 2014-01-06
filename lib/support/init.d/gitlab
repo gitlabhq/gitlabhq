@@ -39,11 +39,6 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
-# Switch to the app_user if it is not he/she who is running the script.
-if [ "$USER" != "$app_user" ]; then
-  sudo -u "$app_user" -H -i $0 "$@"; exit;
-fi
-
 # Switch to the gitlab path, exit on failure.
 if ! cd "$app_root" ; then
  echo "Failed to cd into $app_root, exiting!";  exit 1
@@ -168,14 +163,14 @@ start() {
     # Remove old socket if it exists
     rm -f "$socket_path"/gitlab.socket 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV script/web start &
+    su -lm "$app_user" -c "cd $app_root;env RAILS_ENV=$RAILS_ENV script/web start" &
   fi
 
   # If sidekiq is already running, don't start it again.
   if [ "$sidekiq_status" = "0" ]; then
     echo "The Sidekiq job dispatcher is already running with pid $spid, not restarting"
   else
-    RAILS_ENV=$RAILS_ENV script/background_jobs start &
+    su -lm "$app_user" -c "cd $app_root;env RAILS_ENV=$RAILS_ENV script/background_jobs start" &
   fi
 
   # Wait for the pids to be planted
@@ -198,11 +193,11 @@ stop() {
 
   # If the Unicorn web server is running, tell it to stop;
   if [ "$web_status" = "0" ]; then
-     RAILS_ENV=$RAILS_ENV script/web stop
+    su -lm "$app_user" -c "cd $app_root;env RAILS_ENV=$RAILS_ENV script/web stop"
   fi
   # And do the same thing for the Sidekiq.
   if [ "$sidekiq_status" = "0" ]; then
-    RAILS_ENV=$RAILS_ENV script/background_jobs stop
+    su -lm "$app_user" -c "cd $app_root;env RAILS_ENV=$RAILS_ENV script/background_jobs stop"
   fi
 
   # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
@@ -224,7 +219,7 @@ stop() {
   print_status
 }
 
-## Prints the status of GitLab and it's components.
+## Prints the status of GitLab and its components.
 print_status() {
   check_status
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
@@ -254,10 +249,10 @@ reload(){
     exit 1
   fi
   printf "Reloading GitLab Unicorn configuration... "
-  RAILS_ENV=$RAILS_ENV script/web reload
+  su -lm "$app_user" -c "cd $app_root;env RAILS_ENV=$RAILS_ENV script/web reload"
   echo "Done."
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
-  RAILS_ENV=$RAILS_ENV script/background_jobs restart
+  su -lm "$app_user" -c "cd $app_root;env RAILS_ENV=$RAILS_ENV script/background_jobs restart"
 
   wait_for_pids
   print_status
