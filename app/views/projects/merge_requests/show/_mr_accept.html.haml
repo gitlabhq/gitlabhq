@@ -31,10 +31,12 @@
 
   .automerge_widget.cannot_be_merged.hide
     .bs-callout.bs-callout-disabled
+      %h4
+        This request can't be merged with GitLab.
       %span
-        = link_to "Show how to merge", "#modal_merge_info", class: "how_to_merge_link btn padded", title: "How To Merge", "data-toggle" => "modal"
-        &nbsp;
-        %strong This request can't be merged with GitLab. You should do it manually
+        You should do it manually with
+        %strong
+          = link_to "command line", "#modal_merge_info", class: "how_to_merge_link", title: "How To Merge", "data-toggle" => "modal"
 
   .automerge_widget.unchecked
     .bs-callout.bs-callout-warning
