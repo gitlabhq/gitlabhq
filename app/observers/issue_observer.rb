@@ -18,6 +18,7 @@ class IssueObserver < BaseObserver
   def after_update(issue)
     if issue.is_being_reassigned?
       notification.reassigned_issue(issue, current_user)
+      Note.create_assignee_change_note(issue, issue.project, current_user, issue.assignee, current_commit)
     end
 
     issue.notice_added_references(issue.project, current_user)

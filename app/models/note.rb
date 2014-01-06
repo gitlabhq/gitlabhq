@@ -68,6 +68,18 @@ class Note < ActiveRecord::Base
     }, without_protection: true)
   end
 
+  def self.create_assignee_change_note(noteable, project, author, assignee, source)
+    body = "_Reassigned to @#{assignee.username}_"
+
+    create({
+      noteable: noteable,
+      project: project,
+      author: author,
+      note: body,
+      system: true
+    }, without_protection: true)
+  end
+
   # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
   # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
   def self.create_cross_reference_note(noteable, mentioner, author, project)
