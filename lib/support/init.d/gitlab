@@ -30,7 +30,7 @@ RAILS_ENV="production"
 # Script variable names should be lower-case not to conflict with
 # internal /bin/sh variables such as PATH, EDITOR or SHELL.
 app_user="git"
-app_root="/home/$app_user/gitlab"
+app_root="`eval echo ~${app_user}/gitlab`"
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 web_server_pid_path="$pid_path/unicorn.pid"
