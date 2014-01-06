@@ -1,12 +1,12 @@
 = render "home_panel"
 
 .row
-  .col-md-9.hidden-sm
+  .col-md-9
     = render "events/event_last_push", event: @last_push
     = render 'shared/event_filter'
     .content_list
     .loading.hide
-  .col-md-3.project-side
+  .col-md-3.project-side.hidden-sm
     .clearfix
       - if @project.archived?
         .alert

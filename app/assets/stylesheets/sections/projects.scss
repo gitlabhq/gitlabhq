@@ -16,7 +16,7 @@
 
 .project-home-panel {
   border-bottom: 1px solid #DDD;
-  padding-bottom: 25px;
+  padding-bottom: 15px;
   margin-bottom: 30px;
 
   &.empty-project {
@@ -41,12 +41,14 @@
     .project-home-desc {
       float: left;
       color: #777;
+      margin-bottom: 10px;
     }
 
     .project-home-links {
       float: right;
       a {
         margin-left: 10px;
+        font-weight: 500;
       }
     }
   }
