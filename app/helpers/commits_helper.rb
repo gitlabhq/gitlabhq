@@ -94,6 +94,21 @@ module CommitsHelper
     crumbs.html_safe
   end
 
+  # Return Project default branch, if it present in array
+  # Else - first branch in array (mb last actual branch)
+  def commit_default_branch(project, branches)
+    branches.include?(project.default_branch) ? branches.delete(project.default_branch) : branches.pop
+  end
+
+  # Returns the sorted alphabetically links to branches, separated by a comma
+  def commit_branches_links(project, branches)
+    branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
+  end
+
+  def get_old_file(project, commit, diff)
+    project.repository.blob_at(commit.parent_id, diff.old_path) if commit.parent_id
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and
@@ -114,7 +129,9 @@ module CommitsHelper
             source_name
           end
 
-    user = User.where('name like ? or email like ?', source_name, source_email).first
+    # Prefer email match over name match
+    user = User.where(email: source_email).first
+    user ||= User.where(name: source_name).first
 
     options = {
       class: "commit-#{options[:source]}-link has_tooltip",

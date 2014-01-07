@@ -1,4 +1,4 @@
-= form_for [@project, @wiki] do |f|
+= form_for [@project, @wiki], method: @wiki.persisted? ? :put : :post do |f|
   -if @wiki.errors.any?
     #error_explanation
       %h2= "#{pluralize(@wiki.errors.count, "error")} prohibited this wiki from being saved:"
@@ -25,11 +25,11 @@
     .ui-box-bottom
       .control-group
         = f.label :content
-        .controls= f.text_area :content, class: 'span8 js-gfm-input'
+        .controls= f.text_area :content, class: 'span8 js-gfm-input', rows: 18
     .ui-box-bottom
       .control-group
         = f.label :commit_message
-        .controls= f.text_field :message, class: 'span8'
+        .controls= f.text_field :message, class: 'span8', rows: 18
   .form-actions
     - if @wiki && @wiki.persisted?
       = f.submit 'Save changes', class: "btn-save btn"

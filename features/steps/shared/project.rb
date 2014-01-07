@@ -14,6 +14,13 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  # Create another specific project called "Forum"
+  And 'I own project "Forum"' do
+    @project = Project.find_by_name "Forum"
+    @project ||= create(:project_with_code, name: "Forum", namespace: @user.namespace, path: 'forum_project')
+    @project.team << [@user, :master]
+  end
+
   And 'project "Shop" has push event' do
     @project = Project.find_by_name("Shop")
 
@@ -47,7 +54,7 @@ module SharedProject
 
   Then 'I should see project settings' do
     current_path.should == edit_project_path(@project)
-    page.should have_content("Project name is")
+    page.should have_content("Project name")
     page.should have_content("Features:")
   end
 

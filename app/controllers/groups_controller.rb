@@ -38,7 +38,7 @@ class GroupsController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
       format.atom { render layout: false }
     end
   end
@@ -102,7 +102,7 @@ class GroupsController < ApplicationController
 
   # Dont allow unauthorized access to group
   def authorize_read_group!
-    unless projects.present? or can?(current_user, :read_group, @group)
+    unless @group and (projects.present? or can?(current_user, :read_group, @group))
       return render_404
     end
   end

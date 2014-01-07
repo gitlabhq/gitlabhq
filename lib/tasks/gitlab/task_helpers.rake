@@ -2,6 +2,16 @@ module Gitlab
   class TaskAbortedByUserError < StandardError; end
 end
 
+unless STDOUT.isatty
+  module Colored
+    extend self
+
+    def colorize(string, options={})
+      string
+    end
+  end
+end
+
 namespace :gitlab do
 
   # Ask if the user wants to continue

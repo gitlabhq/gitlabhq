@@ -185,6 +185,13 @@ describe Profiles::KeysController, "routing" do
   end
 end
 
+# profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
+describe Profiles::AvatarsController, "routing" do
+  it "to #destroy" do
+    delete("/profile/avatar").should route_to('profiles/avatars#destroy')
+  end
+end
+
 #                dashboard GET    /dashboard(.:format)                dashboard#show
 #         dashboard_issues GET    /dashboard/issues(.:format)         dashboard#issues
 # dashboard_merge_requests GET    /dashboard/merge_requests(.:format) dashboard#merge_requests

@@ -1,7 +1,8 @@
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "#{@group.name}"
+  = render "layouts/head", title: group_head_title
   %body{class: "#{app_theme} application", :'data-page' => body_data_page}
+    = render "layouts/broadcast"
     = render "layouts/head_panel", title: "group: #{@group.name}"
     = render "layouts/flash"
     %nav.main-nav

@@ -14,31 +14,129 @@
   }
 }
 
-.project_clone_panel {
+.project-home-panel {
+  border-bottom: 1px solid #DDD;
+  padding-bottom: 25px;
+  margin-bottom: 30px;
+
+  &.empty-project {
+      border-bottom: 0px;
+      padding-bottom: 15px;
+      margin-bottom: 0px;
+  }
+
+  .project-home-title {
+    font-size: 18px;
+    color: #777;
+    margin: 0;
+    line-height: 32px;
+  }
+  .project-home-dropdown {
+    margin-left: 10px;
+    float: right;
+  }
+  .project-home-extra {
+    margin-top: 15px;
+
+    .project-home-desc {
+      float: left;
+      color: #999;
+    }
+
+    .project-home-links {
+      float: right;
+      a {
+        margin-left: 10px;
+      }
+    }
+  }
+
+  .visibility-level-label {
+    font-size: 14px;
+    background: #f1f1f1;
+    padding: 8px 10px;
+    border-radius: 4px;
+    margin-left: 10px;
+    color: #888;
+    text-shadow: 0 1px 1px #FFF;
+
+    i {
+      color: inherit;
+    }
+  }
+}
+
+.git-clone-holder {
+  float: right;
+  border: 1px solid #E1E1E1;
   @include border-radius(4px);
-  @include bg-gray-gradient;
-  padding: 4px 7px;
-  border: 1px solid #CCC;
-  margin-bottom: 20px;
+
+  input[type="text"],
+  .btn {
+    border: none;
+    @include border-radius(0px);
+    border-left: 1px solid #E1E1E1;
+    box-shadow: none;
+    padding: 6px 10px;
+  }
 
   .btn {
-    padding: 4px 12px;
-  }
-}
+    float: left;
+    background: none;
+    color: #29b;
 
-.project_clone_holder {
+    &:first-child {
+      @include border-radius-left(4px);
+      border-left: 0px;
+    }
+
+    &.active {
+      color: #333;
+      font-weight: bold;
+    }
+  }
+
   input[type="text"] {
+    cursor: auto;
     @extend .monospace;
-    border: 1px solid #BBB;
-    box-shadow: none;
-    margin-left: -1px;
-    background: #FFF;
+    background: #FAFAFA;
   }
 }
 
-.project-public-holder {
-  .help-inline {
-    padding-top: 7px;
+.project-visibility-level-holder {
+  .controls {
+    padding-bottom: 9px;
+  }
+
+  .controls {
+    input {
+      float: left;
+    }
+    .descr {
+      display: block;
+      margin-left: 1.5em;
+      &.restricted {
+        color: #888;
+      }
+
+      label {
+        float: none;
+        padding: 0;
+        margin: 0;
+        text-align: left;
+      }
+    }
+    .info {
+      display: block;
+      margin-top: 5px;
+    }
+    strong {
+      display: inline-block;
+      width: 4em;
+    }
+  }
+  i {
+    color: inherit;
   }
 }
 
@@ -79,18 +177,19 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects {
+.my-projects,
+.public-projects {
   li {
-    .project-title {
-      font-size: 14px;
-    }
-
     .project-info {
       margin-bottom: 10px;
     }
 
-    .access-icon i {
+    .access-icon {
       color: #AAA;
+      margin-left: 10px;
+      i {
+        color: #AAA;
+      }
     }
   }
 }
@@ -113,5 +212,63 @@ ul.nav.nav-projects-tabs {
 
   a {
     color: #777;
+  }
+}
+
+.project-side {
+  .btn-block {
+    background-image: none;
+    background-color: #F1f1f1;
+    border-color: #EEE;
+    &:hover {
+      background-color: #eee;
+      border-color: #DDD;
+    }
+  }
+  .project-fork-icon {
+    float: left;
+    font-size: 26px;
+    margin-right: 10px;
+    line-height: 1.5;
+  }
+}
+
+.transfer-project .chosen-container {
+  min-width: 200px;
+}
+
+/** Branch/tag selector **/
+.project-refs-form {
+  margin: 0;
+  span {
+    background:none !important;
+    position:static !important;
+    width:auto !important;
+    height:auto !important;
+  }
+}
+.project-refs-select {
+  width: 120px;
+}
+
+.project-refs-form .chosen-container {
+  position: relative;
+  top: 0;
+  left: 0;
+  margin-right: 10px;
+
+  .chosen-single span {
+    font-weight: bold;
+    color: #555;
+  }
+
+  &.chosen-container-active {
+    .chosen-drop {
+      min-width: 400px;
+    }
+
+    .chosen-results {
+      max-height: 400px;
+    }
   }
 }

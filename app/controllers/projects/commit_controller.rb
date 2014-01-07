@@ -22,6 +22,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     @note        = result[:note]
     @line_notes  = result[:line_notes]
+    @branches    = result[:branches]
     @notes_count = result[:notes_count]
     @target_type = :commit
     @target_id   = @commit.id

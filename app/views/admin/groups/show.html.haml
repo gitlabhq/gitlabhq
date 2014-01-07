@@ -25,7 +25,7 @@
             = @group.description
 
         %li
-          %span.light Created at:
+          %span.light Created on:
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
@@ -39,6 +39,8 @@
           %li
             %strong
               = link_to project.name_with_namespace, [:admin, project]
+              %span.label.label-gray
+                = repository_size(project)
             %span.pull-right.light
               %span.monospace= project.path_with_namespace + ".git"
 
@@ -72,5 +74,5 @@
               = link_to user.name, admin_user_path(user)
             %span.pull-right.light
               = member.human_access
-              = link_to group_users_group_path(@group, member), confirm: remove_user_from_group_message(@group, user), method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+              = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                 %i.icon-minus.icon-white

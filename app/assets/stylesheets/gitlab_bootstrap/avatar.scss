@@ -2,8 +2,8 @@
   float: left;
   margin-right: 12px;
   width: 40px;
-  border: 1px solid #ddd;
   padding: 1px;
+  @include border-radius(4px);
 
   &.avatar-inline {
     float: none;

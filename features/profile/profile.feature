@@ -26,6 +26,14 @@ Feature: Profile
     Given I visit profile page
     Then I change my avatar
     And I should see new avatar
+    And I should see the "Remove avatar" button
+
+  Scenario: I remove my avatar
+    Given I visit profile page
+    And I have an avatar
+    When I remove my avatar
+    Then I should see my gravatar
+    And I should not see the "Remove avatar" button
 
   Scenario: My password is expired
     Given my password is expired

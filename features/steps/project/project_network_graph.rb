@@ -43,13 +43,13 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
-  Then 'page should have content not cotaining "v2.1.0"' do
+  Then 'page should have content not containing "v2.1.0"' do
     within '.network-graph' do
       page.should have_content 'cleaning'
     end
   end
 
-  Then 'page should not have content not cotaining "v2.1.0"' do
+  Then 'page should not have content not containing "v2.1.0"' do
     within '.network-graph' do
       page.should_not have_content 'cleaning'
     end

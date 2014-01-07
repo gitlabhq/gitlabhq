@@ -21,12 +21,14 @@ class Issue < ActiveRecord::Base
   include Issuable
   include InternalId
 
+  ActsAsTaggableOn.strict_case_match = true
+
   belongs_to :project
   validates :project, presence: true
 
   scope :of_group, ->(group) { where(project_id: group.project_ids) }
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
-  scope :opened, -> { with_state(:opened) }
+  scope :opened, -> { with_state(:opened, :reopened) }
   scope :closed, -> { with_state(:closed) }
 
   attr_accessible :title, :assignee_id, :position, :description,
@@ -54,12 +56,23 @@ class Issue < ActiveRecord::Base
     state :closed
   end
 
-  # Both open and reopened issues should be listed as opened
-  scope :opened, -> { with_state(:opened, :reopened) }
-
   # Mentionable overrides.
 
   def gfm_reference
     "issue ##{iid}"
+  end
+
+  # Reset issue events cache
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when an issue is updated
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(target_id: self.id, target_type: 'Issue').
+      order('id DESC').limit(100).
+      update_all(updated_at: Time.now)
   end
 end

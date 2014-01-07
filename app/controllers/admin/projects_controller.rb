@@ -1,12 +1,14 @@
 class Admin::ProjectsController < Admin::ApplicationController
-  before_filter :project, only: [:edit, :show, :update, :destroy, :team_update]
+  before_filter :project, only: [:show, :transfer]
+  before_filter :group, only: [:show, :transfer]
+  before_filter :repository, only: [:show, :transfer]
 
   def index
     owner_id = params[:owner_id]
     user = User.find_by_id(owner_id)
 
-    @projects = user ? user.owned_projects : Project.scoped
-    @projects = @projects.where(public: true) if params[:public_only].present?
+    @projects = user ? user.owned_projects : Project.all
+    @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
     @projects = @projects.search(params[:name]) if params[:name].present?
@@ -14,8 +16,16 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def show
-    @repository = @project.repository
-    @group = @project.group
+  end
+
+  def transfer
+    result = ::Projects::TransferContext.new(@project, current_user, project: params).execute(:admin)
+
+    if result
+      redirect_to [:admin, @project]
+    else
+      render :show
+    end
   end
 
   protected
@@ -25,5 +35,13 @@ class Admin::ProjectsController < Admin::ApplicationController
 
     @project = Project.find_with_namespace(id)
     @project || render_404
+  end
+
+  def group
+    @group ||= project.group
+  end
+
+  def repository
+    @repository ||= project.repository
   end
 end

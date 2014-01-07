@@ -37,8 +37,7 @@
       %p
         = link_to project.name_with_namespace, [:admin, project]
         %span.light.pull-right
-          = time_ago_in_words project.created_at
-          ago
+          #{time_ago_with_tooltip(project.created_at)} ago
 
   .span4
     %h4 Latest users
@@ -48,9 +47,20 @@
         = link_to [:admin, user] do
           = user.name
         %span.light.pull-right
-          = time_ago_in_words user.created_at
-          ago
+          #{time_ago_with_tooltip(user.created_at)} ago
 
+  .span4
+    %h4 Latest groups
+    %hr
+    - @groups.each do |group|
+      %p
+        = link_to [:admin, group] do
+          = group.name
+        %span.light.pull-right
+          #{time_ago_with_tooltip(group.created_at)} ago
+
+%br
+.row
   .span4
     %h4 Stats
     %hr
@@ -82,3 +92,47 @@
       Milestones
       %span.light.pull-right
         = Milestone.count
+  .span4
+    %h4
+      Features
+    %hr
+    %p
+      Sign up
+      %span.light.pull-right
+        = boolean_to_icon gitlab_config.signup_enabled
+    %p
+      LDAP
+      %span.light.pull-right
+        = boolean_to_icon Gitlab.config.ldap.enabled
+    %p
+      Gravatar
+      %span.light.pull-right
+        = boolean_to_icon Gitlab.config.gravatar.enabled
+    %p
+      OmniAuth
+      %span.light.pull-right
+        = boolean_to_icon Gitlab.config.omniauth.enabled
+  .span4
+    %h4 Components
+    %hr
+    %p
+      GitLab
+      %span.pull-right
+        = Gitlab::VERSION
+    %p
+      GitLab Shell
+      %span.pull-right
+        = Gitlab::Shell.new.version
+    %p
+      GitLab API
+      %span.pull-right
+        = API::API::version
+    %p
+      Ruby
+      %span.pull-right
+        #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
+
+    %p
+      Rails
+      %span.pull-right
+        #{Rails::VERSION::STRING}

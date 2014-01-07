@@ -7,27 +7,7 @@ describe UsersProjectObserver do
   let(:user) { create(:user) }
   let(:project) { create(:project) }
   subject { UsersProjectObserver.instance }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
-
-  describe "#after_commit" do
-    it "should called when UsersProject created" do
-      subject.should_receive(:after_commit)
-      create(:users_project)
-    end
-
-    it "should send email to user" do
-      subject.should_receive(:notification)
-      Event.stub(create: true)
-
-      create(:users_project)
-    end
-
-    it "should create new event" do
-      Event.should_receive(:create)
-
-      create(:users_project)
-    end
-  end
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
 
   describe "#after_update" do
     before do
@@ -35,7 +15,7 @@ describe UsersProjectObserver do
     end
 
     it "should called when UsersProject updated" do
-      subject.should_receive(:after_commit)
+      subject.should_receive(:after_update)
       @users_project.update_attribute(:project_access, UsersProject::MASTER)
     end
 
@@ -45,7 +25,7 @@ describe UsersProjectObserver do
     end
 
     it "should not called after UsersProject destroyed" do
-      subject.should_not_receive(:after_commit)
+      subject.should_not_receive(:after_update)
       @users_project.destroy
     end
   end
@@ -89,6 +69,19 @@ describe UsersProjectObserver do
 
         it { File.exists?(@path).should be_false }
       end
+    end
+
+    it "should send email to user" do
+      subject.should_receive(:notification)
+      Event.stub(create: true)
+
+      create(:users_project)
+    end
+
+    it "should create new event" do
+      Event.should_receive(:create)
+
+      create(:users_project)
     end
   end
 end

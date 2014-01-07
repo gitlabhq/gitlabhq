@@ -6,7 +6,7 @@
     = form_for @project, remote: true do |f|
       .control-group.project-name-holder
         = f.label :name do
-          %strong Project name is
+          %strong Project name
         .controls
           = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
           %span.help-inline
@@ -46,13 +46,8 @@
           Description
           %span.light (optional)
         .controls
-          = f.text_area :description, placeholder: "awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
-      .control-group.project-public-holder
-        = f.label :public do
-          %span Public project
-        .controls
-          = f.check_box :public, { checked: gitlab_config.default_projects_features.public }, true, false
-          %span.help-inline Make project visible to everyone
+          = f.text_area :description, placeholder: "Awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
+      = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4

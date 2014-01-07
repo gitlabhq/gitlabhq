@@ -107,22 +107,22 @@ describe MergeRequest do
   describe 'detection of issues to be closed' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
-    let(:commit0) { mock('commit0', closes_issues: [issue0]) }
-    let(:commit1) { mock('commit1', closes_issues: [issue0]) }
-    let(:commit2) { mock('commit2', closes_issues: [issue1]) }
+    let(:commit0) { double('commit0', closes_issues: [issue0]) }
+    let(:commit1) { double('commit1', closes_issues: [issue0]) }
+    let(:commit2) { double('commit2', closes_issues: [issue1]) }
 
     before do
-      subject.stub(unmerged_commits: [commit0, commit1, commit2])
+      subject.stub(commits: [commit0, commit1, commit2])
     end
 
     it 'accesses the set of issues that will be closed on acceptance' do
-      subject.project.default_branch = subject.target_branch
+      subject.project.stub(default_branch: subject.target_branch)
 
       subject.closes_issues.should == [issue0, issue1].sort_by(&:id)
     end
 
     it 'only lists issues as to be closed if it targets the default branch' do
-      subject.project.default_branch = 'master'
+      subject.project.stub(default_branch: 'master')
       subject.target_branch = 'something-else'
 
       subject.closes_issues.should be_empty

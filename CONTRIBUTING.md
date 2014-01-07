@@ -5,8 +5,17 @@ This guide details how to use issues and pull requests to improve GitLab.
 -  [Closing policy for issues and pull requests](#closing-policy-for-issues-and-pull-requests)
 -  [Issue tracker](#issue-tracker)
 -  [Pull requests](#pull-requests)
+-  [Security vulnerabilities](#security-vulnerabilities)
 
 If you want to know how the GitLab team handles contributions have a look at [the GitLab contributing process](PROCESS.md).
+
+## Contributor license agreement
+
+By submitting code as an individual you agree to the [individual contributor license agreement](doc/legal/individual_contributor_license_agreement.md). By submitting code as an entity you agree to the [corporate contributor license agreement](doc/legal/corporate_contributor_license_agreement.md).
+
+## Security vulnerability disclosure
+
+Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://www.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Closing policy for issues and pull requests
 
@@ -56,8 +65,13 @@ If you can, please submit a pull request with the fix or improvements including 
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
-1. Submit a pull request
-2. [Search for issues](https://github.com/gitlabhq/gitlabhq/search?q=&ref=cmdform&type=Issues) related to your pull request and mention them in the pull request description
+1. Submit a pull request (PR)
+1. The PR title should describes the change you want to make
+1. The PR description should give a motive for your change and the method you used to achieve it
+* If the PR changes the UI it should include before and after screenshots
+1. [Search for issues](https://github.com/gitlabhq/gitlabhq/search?q=&ref=cmdform&type=Issues) related to your pull request and mention them in the pull request description
+
+Please keep the change in a single PR as small as possible. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a PR is the more likely it is it will be merged, after that you can send more PR's to enhance it.
 
 We will accept pull requests if:
 
@@ -65,11 +79,9 @@ We will accept pull requests if:
 * It can be merged without problems (if not please use: `git rebase master`)
 * It does not break any existing functionality
 * It's quality code that conforms to the [Ruby](https://github.com/bbatsov/ruby-style-guide) and [Rails](https://github.com/bbatsov/rails-style-guide) style guides and best practices
-* The description includes a motive for your change and the method you used to achieve it
 * It is not a catch all pull request but rather fixes a specific issue or implements a specific feature
 * It keeps the GitLab code base clean and well structured
 * We think other users will benefit from the same functionality
-* If it makes changes to the UI the pull request should include screenshots
 * It is a single commit (please use `git rebase -i` to squash commits)
 
 For examples of feedback on pull requests please look at already [closed pull requests](https://github.com/gitlabhq/gitlabhq/pulls?direction=desc&page=1&sort=created&state=closed).

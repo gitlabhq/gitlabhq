@@ -26,7 +26,7 @@ class Group < Namespace
 
   def add_users(user_ids, group_access)
     user_ids.compact.each do |user_id|
-      user = self.users_groups.find_or_initialize_by_user_id(user_id)
+      user = self.users_groups.find_or_initialize_by(user_id: user_id)
       user.update_attributes(group_access: group_access)
     end
   end

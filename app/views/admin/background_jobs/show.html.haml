@@ -1,38 +1,50 @@
 %h3.page-title Background Jobs
-%br
+%p.light GitLab use #{link_to "sidekiq", "http://sidekiq.org/"} library for async job processing
+
+%hr
+
+.ui-box
+  .title Sidekiq running processes
+  .ui-box-body
+    - if @sidekiq_processes.empty?
+      %h4.cred
+        %i.icon-warning-sign
+        There are no running sidekiq processes. Please restart GitLab
+    - else
+      %table.table
+        %thead
+          %th USER
+          %th
+          %th PID
+          %th
+          %th CPU
+          %th
+          %th MEM
+          %th
+          %th STATE
+          %th
+          %th START
+          %th
+          %th COMMAND
+          %th
+          - @sidekiq_processes.split("\n").each do |process|
+            - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
+            - data = process.gsub!(/\s+/m, '|').strip.split('|')
+            %tr
+              - 6.times do
+                %td= data.shift
+                %td
+              %td= data.join(" ")
+
+      .clearfix
+        %p
+          %i.icon-exclamation-sign
+          If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
+        %p
+          %i.icon-exclamation-sign
+          If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{Settings.gitlab.user} -f sidekiq) and restart GitLab.
+
+
+
 .ui-box
   %iframe{src: sidekiq_path, width: '100%', height: 900, style: "border: none"}
-%h4 Sidekiq running processes
-- sidekiq_processes = `ps -eo euser,pid,pcpu,pmem,stat,start,command | grep sidekiq | grep -v grep`
-- if sidekiq_processes.empty?
-  %b There are no running sidekiq processes
-  %b Please restart GitLab
-- else
-  .ui-box
-    %table.zebra-striped
-      %thead
-        %th USER
-        %th
-        %th PID
-        %th
-        %th CPU
-        %th
-        %th MEM
-        %th
-        %th STATE
-        %th
-        %th START
-        %th
-        %th COMMAND
-        %th
-        - sidekiq_processes.split("\n").each do |process|
-          - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
-          - data = process.gsub!(/\s+/m, '|').strip.split('|')
-          %tr
-            - 6.times do
-              %td= data.shift
-              %td
-            %td= data.join(" ")
-  %b If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
-  %br
-  %b If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u git -f sidekiq) and restart GitLab.

@@ -20,11 +20,13 @@ production: &base
     https: false
 
     # Uncomment and customize the last line to run in a non-root path
-    # WARNING: This feature is known to work, but unsupported
-    # Note that three settings need to be changed for this to work.
+    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this. 
+    # Note that four settings need to be changed for this to work.
     # 1) In your application.rb file: config.relative_url_root = "/gitlab"
     # 2) In your gitlab.yml file: relative_url_root: /gitlab
     # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
+    # 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
+    # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
     #
     # relative_url_root: /gitlab
 
@@ -55,11 +57,15 @@ production: &base
     # default: false - Account passwords are not sent via the email if signup is enabled. 
     # signup_enabled: true
 
+    # Restrict setting visibility levels for non-admin users.
+    # The default is to allow all levels.
+    #restricted_visibility_levels: [ "public" ]
+
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
-    # This  happends when the commit is pushed or merged into the default branch of a project.
+    # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
-    # issue_closing_pattern: ([Cc]loses|[Ff]ixes) +#\d+
+    # issue_closing_pattern: ([Cc]lose[sd]|[Ff]ixe[sd]) +#\d+
 
     ## Default project features settings
     default_projects_features:
@@ -68,7 +74,7 @@ production: &base
       wiki: true
       wall: false
       snippets: false
-      public: false
+      visibility_level: "private"  # can be "private" | "internal" | "public"
 
   ## External issues trackers
   issues_tracker:
@@ -110,6 +116,8 @@ production: &base
   # ==========================
 
   ## LDAP settings
+  # You can inspect the first 100 LDAP users with login access by running:
+  #   bundle exec rake gitlab:ldap:check[100] RAILS_ENV=production
   ldap:
     enabled: false
     host: '_your_ldap_server'
@@ -136,7 +144,7 @@ production: &base
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
-    # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
+    # see https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-custom-omniauth-provider-configurations
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
     # arguments, followed by optional 'args' which can be either a hash or an array.
     providers:
@@ -166,6 +174,8 @@ production: &base
 
   ## GitLab Shell settings
   gitlab_shell:
+    path: /home/git/gitlab-shell/
+
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
     repos_path: /home/git/repositories/
     hooks_path: /home/git/gitlab-shell/hooks/
