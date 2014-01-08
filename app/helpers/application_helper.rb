@@ -217,4 +217,8 @@ module ApplicationHelper
       haml_tag :script, "$('." + html_class + "').timeago().tooltip()"
     end.html_safe
   end
+
+  def render_markup(file_name, file_content)
+    GitHub::Markup.render(file_name, file_content).html_safe
+  end
 end
