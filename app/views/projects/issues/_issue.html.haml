@@ -5,7 +5,8 @@
 
   .issue-title
     %span.light= "##{issue.iid}"
-    = link_to_gfm truncate(issue.title, length: 100), project_issue_path(issue.project, issue), class: "row_title"
+    %span.str-truncated
+      = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
     - if issue.closed?
       %small.pull-right
         = "CLOSED"

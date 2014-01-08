@@ -119,3 +119,12 @@ pre.well-pre {
   padding: 0;
   color: #666;
 }
+
+.str-truncated {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  white-space: nowrap;
+  max-width: 82%;
+}

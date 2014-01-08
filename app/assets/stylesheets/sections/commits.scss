@@ -481,6 +481,10 @@ li.commit {
       font-family: $monospace_font;
     }
 
+    .str-truncated {
+      max-width: 70%;
+    }
+
     .commit-row-message {
       color: #333;
       font-weight: 500;
