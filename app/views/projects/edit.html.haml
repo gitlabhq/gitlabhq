@@ -46,8 +46,9 @@
             .form-group
               = f.label :issues_enabled, "Issues", class: 'control-label'
               .col-sm-10
-                = f.check_box :issues_enabled
-                %span.descr Lightweight issue tracking system for this project
+                .checkbox
+                  = f.check_box :issues_enabled
+                  %span.descr Lightweight issue tracking system for this project
 
             - if Project.issues_tracker.values.count > 1
               .form-group
@@ -56,31 +57,35 @@
 
               .form-group
                 = f.label :issues_tracker_id, "Project name or id in issues tracker", class: 'control-label'
-                .col-sm-10= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?
+                .col-sm-10= f.text_field :issues_tracker_id, disabled: !@project.can_have_issues_tracker_id?, class: 'form-control'
 
             .form-group
               = f.label :merge_requests_enabled, "Merge Requests", class: 'control-label'
               .col-sm-10
-                = f.check_box :merge_requests_enabled
-                %span.descr Submit changes to be merged upstream.
+                .checkbox
+                  = f.check_box :merge_requests_enabled
+                  %span.descr Submit changes to be merged upstream.
 
             .form-group
               = f.label :wiki_enabled, "Wiki", class: 'control-label'
               .col-sm-10
-                = f.check_box :wiki_enabled
-                %span.descr Pages for project documentation
+                .checkbox
+                  = f.check_box :wiki_enabled
+                  %span.descr Pages for project documentation
 
             .form-group
               = f.label :wall_enabled, "Wall", class: 'control-label'
               .col-sm-10
-                = f.check_box :wall_enabled
-                %span.descr Simple chat system for broadcasting inside project
+                .checkbox
+                  = f.check_box :wall_enabled
+                  %span.descr Simple chat system for broadcasting inside project
 
             .form-group
               = f.label :snippets_enabled, "Snippets", class: 'control-label'
               .col-sm-10
-                = f.check_box :snippets_enabled
-                %span.descr Share code pastes with others out of git repository
+                .checkbox
+                  = f.check_box :snippets_enabled
+                  %span.descr Share code pastes with others out of git repository
 
 
           .form-actions
