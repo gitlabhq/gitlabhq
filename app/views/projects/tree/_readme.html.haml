@@ -9,5 +9,5 @@
     - elsif plain_text_readme?(readme.name)
       %pre.clean
         = readme.data
-    - else
-      = raw GitHub::Markup.render(readme.name, readme.data)
+    - elsif markup?(readme.name)
+      = render_markup(readme.name, readme.data)
