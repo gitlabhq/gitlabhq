@@ -114,39 +114,23 @@
 }
 
 .project-visibility-level-holder {
-  .controls {
-    padding-bottom: 9px;
-  }
+  .radio {
+    margin-bottom: 10px;
 
-  .controls {
-    input {
-      float: left;
+    i {
+      margin: 0 3px;
+      font-size: 20px;
     }
-    .descr {
-      display: block;
-      margin-left: 1.5em;
-      &.restricted {
-        color: #888;
-      }
 
-      label {
-        float: none;
-        padding: 0;
-        margin: 0;
-        text-align: left;
-      }
-    }
-    .info {
-      display: block;
-      margin-top: 5px;
-    }
-    strong {
+    .option-title {
+      font-weight: bold;
       display: inline-block;
-      width: 4em;
     }
-  }
-  i {
-    color: inherit;
+
+    .option-descr {
+      margin-left: 24px;
+      color: #666;
+    }
   }
 }
 

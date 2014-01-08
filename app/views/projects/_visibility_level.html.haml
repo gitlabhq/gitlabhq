@@ -5,15 +5,15 @@
   .col-sm-10
     - if can_change_visibility_level
       - Gitlab::VisibilityLevel.values.each do |level|
-        .append-bottom-10
+        .radio
           - restricted = restricted_visibility_levels.include?(level)
           = f.radio_button :visibility_level, level, checked: (visibility_level == level), disabled: restricted
-          %span.descr{:class => ("restricted" if restricted)}
-            = label :project_visibility_level, level do
-              = visibility_level_icon(level)
-              %strong
-                = visibility_level_label(level)
-            .light.prepend-left-20= visibility_level_description(level)
+          = label :project_visibility_level, level do
+            = visibility_level_icon(level)
+            .option-title
+              = visibility_level_label(level)
+            .option-descr
+              = visibility_level_description(level)
       - unless restricted_visibility_levels.empty?
         .col-sm-10
           %span.info
