@@ -51,3 +51,57 @@
   font-weight: 200;
   color: #666;
 }
+
+/*
+ * Appearance settings
+ *
+ */
+.themes_opts {
+  label {
+    margin-right: 20px;
+    text-align: center;
+
+    .prev {
+      @extend .thumbnail;
+      height: 30px;
+      width: 175px;
+      margin-bottom: 10px;
+
+      &.classic {
+        background: #31363e;
+      }
+
+      &.default {
+        background: #f1f1f1;
+      }
+
+      &.modern {
+        background: #345;
+      }
+
+      &.gray {
+        background: #373737;
+      }
+
+      &.violet {
+        background: #547;
+      }
+    }
+  }
+}
+
+.code_highlight_opts {
+  margin-top: 10px;
+
+  label {
+    margin-right: 20px;
+    text-align: center;
+
+    .prev {
+      @extend .thumbnail;
+      height: 151px;
+      width: 220px;
+      margin-bottom: 10px;
+    }
+  }
+}
