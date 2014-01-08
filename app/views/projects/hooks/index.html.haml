@@ -3,7 +3,7 @@
 
 %p.light
   #{link_to "Web hooks ", help_web_hooks_path, class: "vlink"} can be
-  used for binding events when something happends to the the project.
+  used for binding events when something is happening within the project.
 
 %hr.clearfix
 
@@ -25,21 +25,21 @@
           = f.label :push_events, class: 'list-label' do
             %strong Push events
           %p.light
-            This url will be triggered in case of push to repository
+            This url will be triggered by a push to the repository
       %div
         = f.check_box :issues_events, class: 'pull-left'
         .prepend-left-20
           = f.label :issues_events, class: 'list-label' do
             %strong Issues events
           %p.light
-            This url will be triggered for created issues
+            This url will be triggered when an issue is created
       %div
         = f.check_box :merge_requests_events, class: 'pull-left'
         .prepend-left-20
           = f.label :merge_requests_events, class: 'list-label' do
             %strong Merge Request events
           %p.light
-            This url will be triggered for created merge requests
+            This url will be triggered when a merge request is created
   .form-actions
     = f.submit "Add Web Hook", class: "btn btn-create"
 
