@@ -7,12 +7,9 @@
     background: $primary_color;
   }
 
-  > li > a {
-    @include border-radius(0);
-  }
-
   &.nav-stacked {
     > li > a {
+      @include border-radius(0);
       border-left: 4px solid #EEE;
       padding: 12px;
       color: #777;
