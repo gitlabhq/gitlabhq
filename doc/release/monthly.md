@@ -62,8 +62,8 @@ After making the release branch new commits are cherry-picked from master. When 
 * 18th: UI freeze (stop cherry-picking changes to the user interface)
 * 19th: code freeze (stop cherry-picking non-essential code improvements)
 * 20th: release candidate 1 (tag and tweet about x.x.rc1)
-* 21th: release candidate 2 (optional, only if rc1 had problems)
-* 22th: release (update VERSION and CHANGELOG, tag, blog and tweet)
+* 21st: release candidate 2 (optional, only if rc1 had problems)
+* 22nd: release (update VERSION and CHANGELOG, tag, blog and tweet)
 
 # Write a blog post
 
