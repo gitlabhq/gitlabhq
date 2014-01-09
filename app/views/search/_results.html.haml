@@ -1,7 +1,7 @@
 %fieldset
   %legend
     Search results
-    %span.cgray (#{@total_results})
+    %span.cgray (#{@search_results[:total_results]})
 
 - if @project
   = render "project_results"

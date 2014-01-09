@@ -1,4 +1,4 @@
-%ul.nav.nav-pills
+%ul.nav.nav-pills.append-bottom-20
   %li{class: ("active" if params[:search_code].present?)}
     = link_to search_path(params.merge(search_code: true)) do
       Repository Code
@@ -9,9 +9,9 @@
 .search_results
   - if params[:search_code].present?
     .blob-results
-      = render partial: "search/results/blob", collection: @blobs
-      = paginate @blobs, theme: 'gitlab'
+      = render partial: "search/results/blob", collection: @search_results[:blobs]
+      = paginate @search_results[:blobs], theme: 'gitlab'
   - else
     %ul.bordered-list
-      = render partial: "search/results/merge_request", collection: @merge_requests
-      = render partial: "search/results/issue", collection: @issues
+      = render partial: "search/results/merge_request", collection: @search_results[:merge_requests]
+      = render partial: "search/results/issue", collection: @search_results[:issues]
