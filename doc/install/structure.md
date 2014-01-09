@@ -1,6 +1,6 @@
 # GitLab directory structure
 
-This is the directory structure you will end up with following the instructions in the Installation Guide.
+This is the default directory structure you will end up with following the instructions in the Installation Guide.
 
     |-- home
     |   |-- git
