@@ -49,6 +49,7 @@
 
   .tree-item {
     .tree-item-file-name {
+      max-width: 320px;
       vertical-align: middle;
       a {
         &:hover {
@@ -60,6 +61,10 @@
         position: relative;
         top:-1px;
       }
+    }
+
+    .tree_commit {
+      max-width: 320px;
     }
 
     .tree_time_ago {
