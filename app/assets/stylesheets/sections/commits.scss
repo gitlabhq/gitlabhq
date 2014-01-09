@@ -60,6 +60,9 @@
     }
 
     table {
+      &.text-file {
+        border-collapse: separate;
+      }
       width: 100%;
       font-family: $monospace_font;
       border: none;
