@@ -11,22 +11,17 @@ module Search
       query = Shellwords.shellescape(query) if query.present?
       return result unless query.present?
 
+      authorized_projects_ids = []
+      authorized_projects_ids += current_user.authorized_projects.pluck(:id) if current_user
+      authorized_projects_ids += Project.public_or_internal_only(current_user).pluck(:id)
 
-      projects = current_user.authorized_projects
-
-      if params[:group_id].present?
-        group = Group.find_by_id(params[:group_id])
-        projects = projects.where(namespace_id: group.id) if group
-      end
-
+      group = Group.find_by_id(params[:group_id]) if params[:group_id].present?
+      projects = Project.where(id: authorized_projects_ids)
+      projects = projects.where(namespace_id: group.id) if group
+      projects = projects.search(query)
       project_ids = projects.pluck(:id)
 
-      visibility_levels = if current_user
-                            [Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC]
-                          else
-                            [Gitlab::VisibilityLevel::PUBLIC]
-                          end
-      result[:projects] = Project.where("projects.id in (?) OR projects.visibility_level in (?)", project_ids, visibility_levels).search(query).limit(20)
+      result[:projects] = projects.limit(20)
       result[:merge_requests] = MergeRequest.in_projects(project_ids).search(query).order('updated_at DESC').limit(20)
       result[:issues] = Issue.where(project_id: project_ids).search(query).order('updated_at DESC').limit(20)
       result[:total_results] = %w(projects issues merge_requests).sum { |items| result[items.to_sym].size }
