@@ -118,6 +118,7 @@ class Project < ActiveRecord::Base
   scope :public_or_internal_only, ->(user) { where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ]) }
 
   scope :non_archived, -> { where(archived: false) }
+  scope :forked_to, ->(project) { joins(:forked_project_link).where("forked_project_links.forked_from_project_id = ?", project.id)}
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
@@ -421,6 +422,18 @@ class Project < ActiveRecord::Base
 
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
+  end
+
+  def forked_to?
+    !(Project.forked_to(self)).empty?
+  end
+
+  def mergeable_to
+    projects = []
+    projects << self
+    projects << forked_from_project if forked?
+    projects = projects + Project.forked_to(self) if forked_to?
+    projects
   end
 
   def personal?
