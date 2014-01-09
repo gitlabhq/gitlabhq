@@ -1,10 +1,10 @@
-%ul.nav.nav-pills.append-bottom-20
+%ul.nav.nav-tabs.append-bottom-10
   %li{class: ("active" if params[:search_code].present?)}
     = link_to search_path(params.merge(search_code: true)) do
       Repository Code
   %li{class: ("active" if params[:search_code].blank?)}
     = link_to search_path(params.merge(search_code: nil)) do
-      Everything else
+      Issues and Merge requests
 
 .search_results
   - if params[:search_code].present?
