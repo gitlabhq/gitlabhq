@@ -180,8 +180,9 @@ module ProjectsHelper
     title
   end
 
-  def default_url_to_repo
-    current_user ? @project.url_to_repo : @project.http_url_to_repo
+  def default_url_to_repo(project = nil)
+    project = project || @project
+    current_user ? project.url_to_repo : project.http_url_to_repo
   end
 
   def default_clone_protocol

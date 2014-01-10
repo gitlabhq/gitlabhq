@@ -72,28 +72,20 @@
 }
 
 .git-clone-holder {
-  margin-right: 45px;
-  border: 1px solid #E1E1E1;
-  @include border-radius(4px);
-
-  input[type="text"],
-  .btn {
-    border: none;
-    @include border-radius(0px);
-    border-left: 1px solid #E1E1E1;
+  .project-home-dropdown + & {
+    margin-right: 45px;
+  }
+  
+  .btn,
+  .form-control {
+    border: 1px solid #E1E1E1;
     box-shadow: none;
     padding: 6px 9px;
   }
 
   .btn {
-    float: left;
     background: none;
     color: #29b;
-
-    &:first-child {
-      @include border-radius-left(4px);
-      border-left: 0px;
-    }
 
     &.active {
       color: #333;
@@ -101,15 +93,11 @@
     }
   }
 
-  input[type="text"] {
+  .form-control {
     cursor: auto;
     @extend .monospace;
     background: #FAFAFA;
     width: 100%;
-  }
-
-  .protocol-clone {
-    overflow: hidden;
   }
 }
 

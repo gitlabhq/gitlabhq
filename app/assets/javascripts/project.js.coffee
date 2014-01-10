@@ -35,7 +35,7 @@ $ ->
       $('a, button', scope).removeClass 'active'
       $(@).addClass 'active'
       $('#project_clone', scope).val $(@).data 'clone'
-      $(".clone").text("").append 'git remote add origin ' + $(@).data 'clone'
+      $(".clone").text("").append $(@).data 'clone'
 
   # Ref switcher
   $('.project-refs-select').on 'change', ->
