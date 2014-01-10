@@ -1,3 +1,12 @@
+/*
+ * Twitter bootstrap with GitLab customizations/additions
+ *
+ * Some unused bootstrap compontents like panels are not included.
+ * Other components like tabs are modified to GitLab style.
+ *
+ */
+
+
 // Core variables and mixins
 @import "bootstrap/variables";
 @import "bootstrap/mixins";
@@ -128,6 +137,50 @@
   }
 }
 
+.nav-tabs > li > a, .nav-pills > li > a { color: $style_color; }
+
+// Nav pills
+.nav-pills {
+  .active a {
+    background: $primary_color;
+  }
+
+  &.nav-stacked {
+    > li > a {
+      @include border-radius(0);
+      border-left: 4px solid #EEE;
+      padding: 12px;
+      color: #777;
+    }
+    > .active > a {
+      border-color: $primary_color;
+      background: none;
+      color: #333;
+      font-weight: bolder;
+
+      &:hover {
+        background: none;
+        color: #333;
+      }
+    }
+
+    &.nav-stacked-menu {
+      li > a {
+        padding: 16px;
+      }
+    }
+  }
+
+  &.nav-pills-small {
+    > li > a {
+      padding: 8px 12px;
+      font-size: 12px;
+    }
+  }
+}
+
+.nav-pills > .active > a > i[class^="icon-"] { background: inherit; }
+
 /*
  * Callouts from Bootstrap3 docs
  *
@@ -171,4 +224,27 @@
   background-color: #dff0d8;
   border-color: #5cA64d;
   color: #3c763d;
+}
+
+// Breadcrumb
+ul.breadcrumb {
+  background: white;
+  border: none;
+  li {
+    display: inline;
+    text-shadow: 0 1px 0 white
+  }
+
+  a {
+    font-size: 16px;
+  }
+}
+
+/**
+ * fix to keep tooltips position in top navigation bar
+ *
+ */
+.navbar .nav > li {
+  position: relative;
+  white-space: nowrap;
 }
