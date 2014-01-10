@@ -39,7 +39,7 @@ sudo gem install bundler
 Just to be sure we will reinstall the gems used by GitLab. Note that the `bundle install` command [depends on your choice of database](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterdoc/install/installation.md#install-gems).
 
 ```bash
-cd /home/git/gitlab
+cd ~git/gitlab
 sudo -u git -H rm -rf vendor/bundle  # remove existing Gem bundle
 sudo -u git -H bundle install --deployment --without development test postgres aws # Assuming MySQL
 ```

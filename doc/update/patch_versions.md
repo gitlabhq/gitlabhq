@@ -6,7 +6,7 @@ It's useful to make a backup just in case things go south:
 (With MySQL, this may require granting "LOCK TABLES" privileges to the GitLab user on the database version)
 
 ```bash
-cd /home/git/gitlab
+cd ~git/gitlab
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
@@ -17,7 +17,7 @@ sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ### 2. Get latest code for the stable branch
 
 ```bash
-cd /home/git/gitlab
+cd ~git/gitlab
 sudo -u git -H git pull origin STABLE_BRANCH
 ```
 
@@ -26,7 +26,7 @@ Replace STABLE_BRANCH with the minor version you want to upgrade to, for example
 ### 3. Update gitlab-shell if it is not the latest version
 
 ```bash
-cd /home/git/gitlab-shell
+cd ~git/gitlab-shell
 sudo -u git -H git fetch
 sudo -u git -H git checkout LATEST_TAG
 ```
@@ -36,7 +36,7 @@ Replace LATEST_TAG with the latest GitLab Shell tag you want to upgrade to, for 
 ### 4. Install libs, migrations, etc.
 
 ```bash
-cd /home/git/gitlab
+cd ~git/gitlab
 
 # MySQL
 sudo -u git -H bundle install --without development test postgres --deployment

@@ -141,7 +141,7 @@ Create a `git` user for Gitlab:
 GitLab Shell is an ssh access and repository management software developed specially for GitLab.
 
     # Go to home directory
-    cd /home/git
+    cd ~git
 
     # Clone gitlab shell
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0
@@ -166,7 +166,7 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 # 6. GitLab
 
     # We'll install GitLab into home directory of the user "git"
-    cd /home/git
+    cd ~git
 
 ## Clone the Source
 
@@ -174,14 +174,14 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-4-stable gitlab
 
     # Go to gitlab dir
-    cd /home/git/gitlab
+    cd ~git/gitlab
 
 **Note:**
 You can change `6-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
-    cd /home/git/gitlab
+    cd ~git/gitlab
 
     # Copy the example GitLab config
     sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
@@ -199,7 +199,7 @@ You can change `6-4-stable` to `master` if you want the *bleeding edge* version,
     sudo chmod -R u+rwX  tmp/
 
     # Create directory for satellites
-    sudo -u git -H mkdir /home/git/gitlab-satellites
+    sudo -u git -H mkdir ~git/gitlab-satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
@@ -253,7 +253,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Install Gems
 
-    cd /home/git/gitlab
+    cd ~git/gitlab
 
     # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
@@ -385,7 +385,7 @@ and the path to the Redis socket file in the `config/resque.yml` file.
 
 If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
 
-    # Add to /home/git/.ssh/config
+    # Add to ~git/.ssh/config
     host localhost          # Give your setup a name (here: override localhost)
         user git            # Your remote git user
         port 2222           # Your port number

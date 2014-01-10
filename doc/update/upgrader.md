@@ -8,7 +8,7 @@ __GitLab Upgrader is available only for version 6.4.2 or higher__
 
 ### 0. Backup
 
-    cd /home/git/gitlab
+    cd ~git/gitlab
     sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 
 ### 1. Stop server
@@ -17,7 +17,7 @@ __GitLab Upgrader is available only for version 6.4.2 or higher__
 
 ### 2. Run gitlab upgrade tool
 
-    cd /home/git/gitlab
+    cd ~git/gitlab
     sudo -u git -H ruby script/upgrade.rb
 
     # it also supports -y option to avouid user input
