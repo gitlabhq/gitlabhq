@@ -12,11 +12,12 @@
         - else
           Public Projects
 
-      %ul.nav
+      .pull-right
+        = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in btn-new'
+
+      %ul.nav.navbar-nav
         %li
           %a
             %div.hide.turbolink-spinner
               %i.icon-refresh.icon-spin
               Loading...
-        %li
-          = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in'

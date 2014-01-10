@@ -333,12 +333,6 @@ table {
   min-height: 100px;
 }
 
-.navbar-gitlab .navbar-inner .nav > li .btn-sign-in {
-  @extend .btn-new;
-  padding: 5px 15px;
-  text-shadow: none;
-}
-
 .broadcast-message {
   padding: 10px;
   text-align: center;
@@ -390,3 +384,9 @@ table {
     margin-bottom: 15px;
   }
 }
+
+.btn-sign-in {
+  margin-top: 7px;
+  text-shadow: none;
+}
+
