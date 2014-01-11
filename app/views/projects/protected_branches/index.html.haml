@@ -22,7 +22,7 @@
         .entry.clearfix
           = f.label :name, "Branch"
           .col-md-3
-            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
+            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2 span3"})
           &nbsp;
           = f.submit 'Protect', class: "btn-create btn"
     - unless @branches.empty?

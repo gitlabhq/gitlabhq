@@ -230,7 +230,7 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-.transfer-project .chosen-container {
+.transfer-project .select2-container {
   min-width: 200px;
 }
 
@@ -245,23 +245,23 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-.project-refs-form .chosen-container {
+.project-refs-form .select2-container {
   position: relative;
   top: 0;
   left: 0;
   margin-right: 10px;
 
-  .chosen-single span {
+  .select2-single span {
     font-weight: bold;
     color: #555;
   }
 
-  &.chosen-container-active {
-    .chosen-drop {
+  &.select2-container-active {
+    .select2-drop {
       min-width: 400px;
     }
 
-    .chosen-results {
+    .select2-results {
       max-height: 400px;
     }
   }

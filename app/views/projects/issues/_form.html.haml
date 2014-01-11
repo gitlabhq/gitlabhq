@@ -24,7 +24,7 @@
           %i.icon-user
           Assign to
         .col-sm-10
-          = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'chosen'})
+          = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'select2'})
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group
@@ -32,7 +32,7 @@
         = f.label :milestone_id, class: 'control-label' do
           %i.icon-time
           Milestone
-        .col-sm-10= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'chosen'})
+        .col-sm-10= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'select2'})
 
     .form-group
       = f.label :label_list, class: 'control-label' do
@@ -87,6 +87,6 @@
     });
 
   $('.assign-to-me-link').on('click', function(e){
-    $('#issue_assignee_id').val("#{current_user.id}").trigger("chosen:updated");
+    $('#issue_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
