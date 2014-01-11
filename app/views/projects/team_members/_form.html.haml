@@ -17,7 +17,7 @@
   %p 2. Set access level for them
   .form-group
     = f.label :project_access, "Project Access", class: 'control-label'
-    .col-sm-10= select_tag :project_access, options_for_select(Gitlab::Access.options, @user_project_relation.project_access), class: "project-access-select chosen"
+    .col-sm-10= select_tag :project_access, options_for_select(Gitlab::Access.options, @user_project_relation.project_access), class: "project-access-select select2"
 
   .form-actions
     = f.submit 'Add users', class: "btn btn-create"

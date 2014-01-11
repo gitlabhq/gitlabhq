@@ -19,7 +19,6 @@
 //= require jquery.turbolinks
 //= require bootstrap
 //= require modernizr
-//= require chosen-jquery
 //= require select2
 //= require raphael
 //= require g.raphael-min

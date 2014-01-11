@@ -75,7 +75,7 @@
   .project-home-dropdown + & {
     margin-right: 45px;
   }
-  
+
   .btn,
   .form-control {
     border: 1px solid #E1E1E1;
@@ -230,41 +230,8 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-.transfer-project .chosen-container {
+.transfer-project .select2-container {
   min-width: 200px;
-}
-
-/** Branch/tag selector **/
-.project-refs-form {
-  margin: 0;
-  span {
-    background:none !important;
-    position:static !important;
-    width:auto !important;
-    height:auto !important;
-  }
-}
-
-.project-refs-form .chosen-container {
-  position: relative;
-  top: 0;
-  left: 0;
-  margin-right: 10px;
-
-  .chosen-single span {
-    font-weight: bold;
-    color: #555;
-  }
-
-  &.chosen-container-active {
-    .chosen-drop {
-      min-width: 400px;
-    }
-
-    .chosen-results {
-      max-height: 400px;
-    }
-  }
 }
 
 .deploy-project-label {

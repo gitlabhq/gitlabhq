@@ -67,8 +67,8 @@ $ ->
     $('.appear-data').fadeIn()
     e.preventDefault()
 
-  # Initialize chosen selects
-  $('select.chosen').chosen()
+  # Initialize select2 selects
+  $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)
 
   # Initialize tooltips
   $('.has_tooltip').tooltip()
@@ -126,12 +126,6 @@ $ ->
     $(@).remove()
 
 (($) ->
-  _chosen = $.fn.chosen
-  $.fn.extend chosen: (options) ->
-    default_options = search_contains: "true"
-    $.extend default_options, options
-    _chosen.apply @, [default_options]
-
   # Disable an element and add the 'disabled' Bootstrap class
   $.fn.extend disable: ->
     $(@).attr('disabled', 'disabled').addClass('disabled')

@@ -10,10 +10,10 @@
       .col-md-5
         .clearfix
           .pull-left
-            = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project chosen span3', disabled: @merge_request.persisted? })
+            = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch chosen span2'})
+            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
         .mr_source_commit.prepend-top-10
       .col-md-2
         .merge-request-angle
@@ -22,10 +22,10 @@
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project chosen span3', disabled: @merge_request.persisted? })
+            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch chosen span2'})
+            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
         .mr_target_commit.prepend-top-10
 
   %hr
@@ -47,7 +47,7 @@
           %i.icon-user
           Assign to
         .col-sm-10
-          = f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select a user" }, {class: 'chosen'})
+          = f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select a user" }, {class: 'select2'})
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group
@@ -55,7 +55,7 @@
         = f.label :milestone_id, class: 'control-label' do
           %i.icon-time
           Milestone
-        .col-sm-10= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'chosen'})
+        .col-sm-10= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2'})
 
 
   .form-actions
@@ -90,6 +90,6 @@
     $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
   });
   $('.assign-to-me-link').on('click', function(e){
-    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("chosen:updated");
+    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("select2:updated");
     e.preventDefault();
   });

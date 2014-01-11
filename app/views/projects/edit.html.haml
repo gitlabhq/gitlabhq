@@ -26,7 +26,7 @@
             - if @project.repository.exists? && @project.repository.branch_names.any?
               .form-group
                 = f.label :default_branch, "Default Branch", class: 'control-label'
-                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'chosen select-wide'})
+                .col-sm-10= f.select(:default_branch, @repository.branch_names, {}, {class: 'select2 select-wide'})
 
 
           = render "visibility_level", f: f, visibility_level: @project.visibility_level, can_change_visibility_level: can?(current_user, :change_visibility_level, @project)
@@ -145,7 +145,7 @@
                   %span Namespace
                 .col-sm-10
                   .form-group
-                    = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'chosen' }
+                    = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'select2' }
                   %ul
                     %li Be careful. Changing the project's namespace can have unintended side effects.
                     %li You can only transfer the project to namespaces you manage.

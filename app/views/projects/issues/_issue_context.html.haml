@@ -6,7 +6,7 @@
   - if can?(current_user, :modify_issue, @issue)
     = link_to profile_path(issue.assignee) do
       = image_tag(avatar_icon(issue.assignee.email), class: 'avatar avatar-inline s16 assignee') if issue.assignee
-    = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Assign to user (none):" }, {class: 'chosen'})
+    = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Assign to user (none):" }, {class: 'select2'})
   - elsif issue.assignee
     = link_to_member(@project, @issue.assignee)
 
@@ -17,7 +17,7 @@
       %cite.cgray Attached to milestone
 
     - if can?(current_user, :modify_issue, @issue)
-      = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone (none):" }, {class: 'chosen chosen-compact'})
+      = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone (none):" }, {class: 'select2 select2-compact'})
 
       = hidden_field_tag :issue_context
       = f.submit class: 'btn'
