@@ -2,9 +2,18 @@
 
 .select2-container {
   .select2-choice {
-    background: #EEE;
+    background: #FFF;
     border-color: #BBB;
+
+    .select2-arrow {
+      background: #FFF;
+    }
   }
+}
+
+.select2-drop-active {
+  border: 1px solid #BBB;
+  margin-top: 4px;
 }
 
 select {
@@ -50,4 +59,10 @@ select {
       width: 150px;
     }
   }
+}
+
+
+/** Branch/tag selector **/
+.project-refs-form .select2-container {
+  margin-right: 10px;
 }

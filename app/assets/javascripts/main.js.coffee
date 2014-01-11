@@ -68,7 +68,7 @@ $ ->
     e.preventDefault()
 
   # Initialize select2 selects
-  $('select.select2').select2(width: 'resolve')
+  $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)
 
   # Initialize tooltips
   $('.has_tooltip').tooltip()
