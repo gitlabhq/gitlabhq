@@ -3,6 +3,10 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
 
+  step 'I should see the list of public projects' do
+    expect(page.title).to match(/^\s+Public Projects/)
+  end
+
   step 'I should see project "Community"' do
     page.should have_content "Community"
   end

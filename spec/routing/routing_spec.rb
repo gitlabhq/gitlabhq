@@ -223,3 +223,19 @@ end
 describe "Authentication", "routing" do
   # pending
 end
+
+describe Public::ProjectsController, "routing" do
+  it "to root" do
+    get("/public").should route_to('public/projects#index')
+  end
+
+  it "to #index" do
+    get("/public/projects").should route_to('public/projects#index')
+  end
+end
+
+describe Public::UsersController, "routing" do
+  it "to #index" do
+    get("/public/users").should route_to('public/users#index')
+  end
+end

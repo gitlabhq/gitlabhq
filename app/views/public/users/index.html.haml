@@ -1,0 +1,34 @@
+.row
+  .span6
+    %h3.page-title
+      Users (#{@users.total_count})
+  .span6
+    .pull-right
+      = form_tag public_users_path, method: :get, class: 'form-inline' do |f|
+        .search-holder
+          = search_field_tag :search, params[:search], placeholder: "Filter by username or name", class: "span3 search-text-input", id: "users_search"
+          = submit_tag 'Search', class: "btn btn-primary wide"
+%hr
+.public-users
+  - if @users.present?
+    %table
+      %tr
+        %th
+        %th
+          Username
+        %th
+          Name
+      - @users.each do |user|
+        %tr
+          %td
+            = link_to user_path(user) do
+              = image_tag avatar_icon(user.email, 26), alt: ''
+          %td
+            = link_to user_path(user) do
+              = user.username
+          %td
+            = link_to user_path(user) do
+              = user.name
+  - else
+    %h3.nothing_here_message There are no users in the system
+  = paginate @users, theme: "gitlab"
