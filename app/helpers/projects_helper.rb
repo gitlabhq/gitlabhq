@@ -153,7 +153,7 @@ module ProjectsHelper
               "#{@project.path}\/#{@path} at #{@ref} - " + title
             elsif current_controller?(:issues)
               if current_action?(:show)
-                "Issue ##{@issue.iid} - " + title
+                "Issue ##{@issue.iid} - #{@issue.title} - " + title
               else
                 "Issues - " + title
               end
