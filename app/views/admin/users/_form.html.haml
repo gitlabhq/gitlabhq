@@ -56,8 +56,12 @@
 
       .form-group
         = f.label :admin, class: 'control-label'
-        .col-sm-10= f.check_box :admin
-      - unless @user.new_record?
+        - if current_user == @user
+          .col-sm-10= f.check_box :admin, disabled: true
+          .col-sm-10 You cannot remove your own admin rights
+        - else
+          .col-sm-10= f.check_box :admin
+      - unless @user.new_record? || current_user == @user
         .alert.alert-danger
           - if @user.blocked?
             %p This user is blocked and is not able to login to GitLab
