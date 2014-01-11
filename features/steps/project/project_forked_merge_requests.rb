@@ -3,7 +3,6 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
-  include ChosenHelper
 
   step 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
