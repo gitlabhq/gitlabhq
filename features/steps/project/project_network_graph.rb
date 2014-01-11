@@ -15,11 +15,11 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'page should select "master" in select box' do
-    page.should have_selector '.chosen-single span', text: "master"
+    page.should have_selector '.select2-chosen', text: "master"
   end
 
   And 'page should select "v2.1.0" in select box' do
-    page.should have_selector '.chosen-single span', text: "v2.1.0"
+    page.should have_selector '.select2-chosen', text: "v2.1.0"
   end
 
   And 'page should have "master" on graph' do
@@ -56,11 +56,11 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   And 'page should select "stable" in select box' do
-    page.should have_selector '.chosen-single span', text: "stable"
+    page.should have_selector '.select2-chosen', text: "stable"
   end
 
   And 'page should select "v2.1.0" in select box' do
-    page.should have_selector '.chosen-single span', text: "v2.1.0"
+    page.should have_selector '.select2-chosen', text: "v2.1.0"
   end
 
   And 'page should have "stable" on graph' do
