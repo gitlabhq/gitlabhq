@@ -180,6 +180,31 @@ describe Note do
     end
   end
 
+  describe '#create_assignee_change_note' do
+    let(:project) { create(:project) }
+    let(:thing) { create(:issue, project: project) }
+    let(:author) { create(:user) }
+    let(:assignee) { create(:user) }
+
+    subject { Note.create_assignee_change_note(thing, project, author, assignee) }
+
+    context 'creates and saves a Note' do
+      it { should be_a Note }
+      its(:id) { should_not be_nil }
+    end
+
+    its(:noteable) { should == thing }
+    its(:project) { should == thing.project }
+    its(:author) { should == author }
+    its(:note) { should =~ /Reassigned to @#{assignee.username}/ }
+
+    context 'assignee is removed' do
+      let(:assignee) { nil }
+
+      its(:note) { should =~ /Assignee removed/ }
+    end
+  end
+
   describe '#create_cross_reference_note' do
     let(:project)    { create(:project_with_code) }
     let(:author)     { create(:user) }
@@ -252,6 +277,7 @@ describe Note do
     let(:issue)   { create(:issue, project: project) }
     let(:other)   { create(:issue, project: project) }
     let(:author)  { create(:user) }
+    let(:assignee) { create(:user) }
 
     it 'should recognize user-supplied notes as non-system' do
       @note = create(:note_on_issue)
@@ -265,6 +291,11 @@ describe Note do
 
     it 'should identify cross-reference notes as system notes' do
       @note = Note.create_cross_reference_note(issue, other, author, project)
+      @note.should be_system
+    end
+
+    it 'should identify assignee-change notes as system notes' do
+      @note = Note.create_assignee_change_note(issue, project, author, assignee)
       @note.should be_system
     end
   end
