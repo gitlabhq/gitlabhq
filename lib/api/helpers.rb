@@ -89,7 +89,20 @@ module API
     #   keys (required) - A hash consisting of keys that must be present
     def required_attributes!(keys)
       keys.each do |key|
-        bad_request!(key) unless params[key].present?
+        missing_attribute!(key) unless params[key].present?
+      end
+    end
+
+    # Checks the validity of required attributes, each attribute must be valid in the params hash
+    # or a Bad Request error is invoked.
+    #
+    # Parameters:
+    #   keys (required) - A hash consisting of keys that must be valid
+    def valid_attributes!(object, keys)
+      keys.each do |key|
+        if params.key? key
+          invalid_attribute!(key) unless object.valid_attribute_value?(key, params[key])
+        end
       end
     end
 
@@ -107,10 +120,18 @@ module API
       render_api_error!('403 Forbidden', 403)
     end
 
-    def bad_request!(attribute)
-      message = ["400 (Bad request)"]
-      message << "\"" + attribute.to_s + "\" not given"
+    def bad_request!(attribute, error_message)
+      message = ['400 (Bad request)']
+      message << "\"" + attribute.to_s + "\" #{error_message}"
       render_api_error!(message.join(' '), 400)
+    end
+
+    def missing_attribute!(attribute)
+      bad_request! attribute, 'not given'
+    end
+
+    def invalid_attribute!(attribute)
+      bad_request! attribute, 'has an invalid value'
     end
 
     def not_found!(resource = nil)

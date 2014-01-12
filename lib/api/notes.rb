@@ -51,7 +51,7 @@ module API
             present @note, with: Entities::Note
           else
             # :note is exposed as :body, but :note is set on error
-            bad_request!(:note) if @note.errors[:note].any?
+            missing_attribute!(:note) if @note.errors[:note].any?
             not_found!
           end
         end
