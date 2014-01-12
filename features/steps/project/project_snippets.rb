@@ -53,7 +53,6 @@ class ProjectSnippets < Spinach::FeatureSteps
 
   And 'I submit new snippet "Snippet three"' do
     fill_in "project_snippet_title", :with => "Snippet three"
-    select "forever", :from => "project_snippet_expires_at"
     fill_in "project_snippet_file_name", :with => "my_snippet.rb"
     within('.file-editor') do
       find(:xpath, "//input[@id='project_snippet_content']").set 'Content of snippet three'
