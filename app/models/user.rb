@@ -216,6 +216,14 @@ class User < ActiveRecord::Base
         theme_id: Gitlab.config.gitlab.default_theme
       }
     end
+
+    def sort(method)
+      case method.to_s
+      when 'name' then reorder('users.name ASC')
+      when 'username' then reorder('users.username ASC')
+      else reorder("users.name ASC")
+      end
+    end
   end
 
   #

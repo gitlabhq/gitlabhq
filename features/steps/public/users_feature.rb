@@ -2,11 +2,11 @@ class Spinach::Features::PublicUsersFeature < Spinach::FeatureSteps
   include SharedPaths
 
   step 'user "John Smith"' do
-    create(:user, name: 'John Smith', email: 'john.smith@mail.com')
+    create(:user, name: 'John Smith', username: 'johnsmith')
   end
 
   step 'user "Mary Jane"' do
-    create(:user, name: 'Mary Jane', email: 'mary.jane@mail.com')
+    create(:user, name: 'Mary Jane', username: 'maryjane')
   end
 
   step 'I should see user "John Smith"' do
@@ -26,4 +26,3 @@ class Spinach::Features::PublicUsersFeature < Spinach::FeatureSteps
     click_button('Search')
   end
 end
-
