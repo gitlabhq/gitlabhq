@@ -41,8 +41,8 @@ var WorkerClient = require("../worker/worker_client").WorkerClient;
 var oop = require("../lib/oop");
 
 function Mode() {
-    this.$tokenizer = new Tokenizer(new Rules().getRules());
-    this.$outdent   = new Outdent();
+    this.HighlightRules = Rules;
+    this.$outdent = new Outdent();
     this.foldingRules = new FoldMode();
 }
 
@@ -57,7 +57,7 @@ oop.inherits(Mode, TextMode);
     
     this.getNextLineIndent = function(state, line, tab) {
         var indent = this.$getIndent(line);
-        var tokens = this.$tokenizer.getLineTokens(line, state).tokens;
+        var tokens = this.getTokenizer().getLineTokens(line, state).tokens;
     
         if (!(tokens.length && tokens[tokens.length - 1].type === 'comment') &&
             state === 'start' && indenter.test(line))
@@ -123,37 +123,39 @@ ace.define('ace/mode/coffee_highlight_rules', ['require', 'exports', 'module' , 
 
     function CoffeeHighlightRules() {
         var identifier = "[$A-Za-z_\\x7f-\\uffff][$\\w\\x7f-\\uffff]*";
-        var stringfill = {
-            token : "string",
-            merge : true,
-            regex : ".+"
-        };
 
         var keywords = (
-            "this|throw|then|try|typeof|super|switch|return|break|by)|continue|" +
+            "this|throw|then|try|typeof|super|switch|return|break|by|continue|" +
             "catch|class|in|instanceof|is|isnt|if|else|extends|for|forown|" +
             "finally|function|while|when|new|no|not|delete|debugger|do|loop|of|off|" +
             "or|on|unless|until|and|yes"
         );
 
         var langConstant = (
-            "true|false|null|undefined"
+            "true|false|null|undefined|NaN|Infinity"
         );
 
         var illegal = (
             "case|const|default|function|var|void|with|enum|export|implements|" +
             "interface|let|package|private|protected|public|static|yield|" +
-            "__hasProp|extends|slice|bind|indexOf"
+            "__hasProp|slice|bind|indexOf"
         );
 
         var supportClass = (
-            "Array|Boolean|Date|Function|Number|Object|RegExp|ReferenceError|" +
-            "String|RangeError|SyntaxError|Error|EvalError|TypeError|URIError"
+            "Array|Boolean|Date|Function|Number|Object|RegExp|ReferenceError|String|" +
+            "Error|EvalError|InternalError|RangeError|ReferenceError|StopIteration|" +
+            "SyntaxError|TypeError|URIError|"  +
+            "ArrayBuffer|Float32Array|Float64Array|Int16Array|Int32Array|Int8Array|" +
+            "Uint16Array|Uint32Array|Uint8Array|Uint8ClampedArray"
         );
 
         var supportFunction = (
             "Math|JSON|isNaN|isFinite|parseInt|parseFloat|encodeURI|" +
             "encodeURIComponent|decodeURI|decodeURIComponent|String|"
+        );
+
+        var variableLanguage = (
+            "window|arguments|prototype|document"
         );
 
         var keywordMapper = this.createKeywordMapper({
@@ -162,69 +164,119 @@ ace.define('ace/mode/coffee_highlight_rules', ['require', 'exports', 'module' , 
             "invalid.illegal": illegal,
             "language.support.class": supportClass,
             "language.support.function": supportFunction,
+            "variable.language": variableLanguage
         }, "identifier");
+
+        var functionRule = {
+            token: ["paren.lparen", "variable.parameter", "paren.rparen", "text", "storage.type"],
+            regex: /(?:(\()((?:"[^")]*?"|'[^')]*?'|\/[^\/)]*?\/|[^()\"'\/])*?)(\))(\s*))?([\-=]>)/.source
+        };
+
+        var stringEscape = /\\(?:x[0-9a-fA-F]{2}|u[0-9a-fA-F]{4}|[0-2][0-7]{0,2}|3[0-6][0-7]?|37[0-7]?|[4-7][0-7]?|.)/;
 
         this.$rules = {
             start : [
                 {
-                    token : "identifier",
-                    regex : "(?:(?:\\.|::)\\s*)" + identifier
-                }, {
-                    token : "variable",
-                    regex : "@(?:" + identifier + ")?"
-                }, {
-                    token: keywordMapper,
-                    regex : identifier
-                }, {
                     token : "constant.numeric",
                     regex : "(?:0x[\\da-fA-F]+|(?:\\d+(?:\\.\\d+)?|\\.\\d+)(?:[eE][+-]?\\d+)?)"
                 }, {
-                    token : "string",
-                    merge : true,
-                    regex : "'''",
-                    next : "qdoc"
+                    stateName: "qdoc",
+                    token : "string", regex : "'''", next : [
+                        {token : "string", regex : "'''", next : "start"},
+                        {token : "constant.language.escape", regex : stringEscape},
+                        {defaultToken: "string"}
+                    ]
                 }, {
+                    stateName: "qqdoc",
                     token : "string",
-                    merge : true,
                     regex : '"""',
-                    next : "qqdoc"
+                    next : [
+                        {token : "string", regex : '"""', next : "start"},
+                        {token : "paren.string", regex : '#{', push : "start"},
+                        {token : "constant.language.escape", regex : stringEscape},
+                        {defaultToken: "string"}
+                    ]
                 }, {
-                    token : "string",
-                    merge : true,
-                    regex : "'",
-                    next : "qstring"
+                    stateName: "qstring",
+                    token : "string", regex : "'", next : [
+                        {token : "string", regex : "'", next : "start"},
+                        {token : "constant.language.escape", regex : stringEscape},
+                        {defaultToken: "string"}
+                    ]
                 }, {
-                    token : "string",
-                    merge : true,
-                    regex : '"',
-                    next : "qqstring"
+                    stateName: "qqstring",
+                    token : "string.start", regex : '"', next : [
+                        {token : "string.end", regex : '"', next : "start"},
+                        {token : "paren.string", regex : '#{', push : "start"},
+                        {token : "constant.language.escape", regex : stringEscape},
+                        {defaultToken: "string"}
+                    ]
                 }, {
-                    token : "string",
-                    merge : true,
-                    regex : "`",
-                    next : "js"
+                    stateName: "js",
+                    token : "string", regex : "`", next : [
+                        {token : "string", regex : "`", next : "start"},
+                        {token : "constant.language.escape", regex : stringEscape},
+                        {defaultToken: "string"}
+                    ]
+                }, {
+                    regex: "[{}]", onMatch: function(val, state, stack) {
+                        this.next = "";
+                        if (val == "{" && stack.length) {
+                            stack.unshift("start", state);
+                            return "paren";
+                        }
+                        if (val == "}" && stack.length) {
+                            stack.shift();
+                            this.next = stack.shift();
+                            if (this.next.indexOf("string") != -1)
+                                return "paren.string";
+                        }
+                        return "paren";
+                    }
                 }, {
                     token : "string.regex",
-                    merge : true,
                     regex : "///",
                     next : "heregex"
                 }, {
                     token : "string.regex",
-                    regex : "/(?!\\s)[^[/\\n\\\\]*(?: (?:\\\\.|\\[[^\\]\\n\\\\]*(?:\\\\.[^\\]\\n\\\\]*)*\\])[^[/\\n\\\\]*)*/[imgy]{0,4}(?!\\w)"
+                    regex : /(?:\/(?![\s=])[^[\/\n\\]*(?:(?:\\[\s\S]|\[[^\]\n\\]*(?:\\[\s\S][^\]\n\\]*)*])[^[\/\n\\]*)*\/)(?:[imgy]{0,4})(?!\w)/
                 }, {
                     token : "comment",
-                    merge : true,
                     regex : "###(?!#)",
                     next : "comment"
                 }, {
                     token : "comment",
                     regex : "#.*"
                 }, {
+                    token : ["punctuation.operator", "text", "identifier"],
+                    regex : "(\\.)(\\s*)(" + illegal + ")"
+                }, {
                     token : "punctuation.operator",
-                    regex : "\\?|\\:|\\,|\\."
+                    regex : "\\."
+                }, {
+                    token : ["keyword", "text", "language.support.class",
+                     "text", "keyword", "text", "language.support.class"],
+                    regex : "(class)(\\s+)(" + identifier + ")(?:(\\s+)(extends)(\\s+)(" + identifier + "))?"
+                }, {
+                    token : ["entity.name.function", "text", "keyword.operator", "text"].concat(functionRule.token),
+                    regex : "(" + identifier + ")(\\s*)([=:])(\\s*)" + functionRule.regex
+                }, 
+                functionRule, 
+                {
+                    token : "variable",
+                    regex : "@(?:" + identifier + ")?"
+                }, {
+                    token: keywordMapper,
+                    regex : identifier
+                }, {
+                    token : "punctuation.operator",
+                    regex : "\\,|\\."
+                }, {
+                    token : "storage.type",
+                    regex : "[\\-=]>"
                 }, {
                     token : "keyword.operator",
-                    regex : "(?:[\\-=]>|[-+*/%<>&|^!?=]=|>>>=?|\\-\\-|\\+\\+|::|&&=|\\|\\|=|<<=|>>=|\\?\\.|\\.{2,3}|[!*+-=><])"
+                    regex : "(?:[-+*/%<>&|^!?=]=|>>>=?|\\-\\-|\\+\\+|::|&&=|\\|\\|=|<<=|>>=|\\?\\.|\\.{2,3}|[!*+-=><])"
                 }, {
                     token : "paren.lparen",
                     regex : "[({[]"
@@ -236,38 +288,6 @@ ace.define('ace/mode/coffee_highlight_rules', ['require', 'exports', 'module' , 
                     regex : "\\s+"
                 }],
 
-            qdoc : [{
-                token : "string",
-                regex : ".*?'''",
-                next : "start"
-            }, stringfill],
-
-            qqdoc : [{
-                token : "string",
-                regex : '.*?"""',
-                next : "start"
-            }, stringfill],
-
-            qstring : [{
-                token : "string",
-                regex : "[^\\\\']*(?:\\\\.[^\\\\']*)*'",
-                merge : true,
-                next : "start"
-            }, stringfill],
-
-            qqstring : [{
-                token : "string",
-                regex : '[^\\\\"]*(?:\\\\.[^\\\\"]*)*"',
-                merge : true,
-                next : "start"
-            }, stringfill],
-
-            js : [{
-                token : "string",
-                merge : true,
-                regex : "[^\\\\`]*(?:\\\\.[^\\\\`]*)*`",
-                next : "start"
-            }, stringfill],
 
             heregex : [{
                 token : "string.regex",
@@ -278,20 +298,18 @@ ace.define('ace/mode/coffee_highlight_rules', ['require', 'exports', 'module' , 
                 regex : "\\s+(?:#.*)?"
             }, {
                 token : "string.regex",
-                merge : true,
                 regex : "\\S+"
             }],
 
             comment : [{
                 token : "comment",
-                regex : '.*?###',
+                regex : '###',
                 next : "start"
             }, {
-                token : "comment",
-                merge : true,
-                regex : ".+"
+                defaultToken : "comment"
             }]
         };
+        this.normalizeRules();
     }
 
     exports.CoffeeHighlightRules = CoffeeHighlightRules;
@@ -329,12 +347,7 @@ var MatchingBraceOutdent = function() {};
     };
 
     this.$getIndent = function(line) {
-        var match = line.match(/^(\s+)/);
-        if (match) {
-            return match[1];
-        }
-
-        return "";
+        return line.match(/^\s*/)[0];
     };
 
 }).call(MatchingBraceOutdent.prototype);
@@ -388,8 +401,6 @@ oop.inherits(FoldMode, BaseFoldMode);
             return new Range(startRow, startColumn, endRow, endColumn);
         }
     };
-
-    // must return "" if there's no fold, to enable caching
     this.getFoldWidget = function(session, foldStyle, row) {
         var line = session.getLine(row);
         var indent = line.search(/\S/);
@@ -402,8 +413,6 @@ oop.inherits(FoldMode, BaseFoldMode);
             session.foldWidgets[row - 1] = prevIndent!= -1 && prevIndent < nextIndent ? "start" : "";
             return "";
         }
-
-        // documentation comments
         if (prevIndent == -1) {
             if (indent == nextIndent && line[indent] == "#" && next[indent] == "#") {
                 session.foldWidgets[row - 1] = "";
@@ -427,85 +436,6 @@ oop.inherits(FoldMode, BaseFoldMode);
             return "start";
         else
             return "";
-    };
-
-}).call(FoldMode.prototype);
-
-});
-
-ace.define('ace/mode/folding/fold_mode', ['require', 'exports', 'module' , 'ace/range'], function(require, exports, module) {
-
-
-var Range = require("../../range").Range;
-
-var FoldMode = exports.FoldMode = function() {};
-
-(function() {
-
-    this.foldingStartMarker = null;
-    this.foldingStopMarker = null;
-
-    // must return "" if there's no fold, to enable caching
-    this.getFoldWidget = function(session, foldStyle, row) {
-        var line = session.getLine(row);
-        if (this.foldingStartMarker.test(line))
-            return "start";
-        if (foldStyle == "markbeginend"
-                && this.foldingStopMarker
-                && this.foldingStopMarker.test(line))
-            return "end";
-        return "";
-    };
-
-    this.getFoldWidgetRange = function(session, foldStyle, row) {
-        return null;
-    };
-
-    this.indentationBlock = function(session, row, column) {
-        var re = /\S/;
-        var line = session.getLine(row);
-        var startLevel = line.search(re);
-        if (startLevel == -1)
-            return;
-
-        var startColumn = column || line.length;
-        var maxRow = session.getLength();
-        var startRow = row;
-        var endRow = row;
-
-        while (++row < maxRow) {
-            var level = session.getLine(row).search(re);
-
-            if (level == -1)
-                continue;
-
-            if (level <= startLevel)
-                break;
-
-            endRow = row;
-        }
-
-        if (endRow > startRow) {
-            var endColumn = session.getLine(endRow).length;
-            return new Range(startRow, startColumn, endRow, endColumn);
-        }
-    };
-
-    this.openingBracketBlock = function(session, bracket, row, column, typeRe) {
-        var start = {row: row, column: column + 1};
-        var end = session.$findClosingBracket(bracket, start, typeRe);
-        if (!end)
-            return;
-
-        var fw = session.foldWidgets[end.row];
-        if (fw == null)
-            fw = this.getFoldWidget(session, end.row);
-
-        if (fw == "start" && end.row > start.row) {
-            end.row --;
-            end.column = session.getLine(end.row).length;
-        }
-        return Range.fromPoints(start, end);
     };
 
 }).call(FoldMode.prototype);

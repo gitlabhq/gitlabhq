@@ -3,7 +3,7 @@
  *
  * Copyright (c) 2010, Ajax.org B.V.
  * All rights reserved.
- * 
+ *
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
  *     * Redistributions of source code must retain the above copyright
@@ -28,148 +28,105 @@
  *
  * ***** END LICENSE BLOCK ***** */
 
-ace.define('ace/theme/kr_theme', ['require', 'exports', 'module', 'ace/lib/dom'], function(require, exports, module) {
+ace.define('ace/theme/kr_theme', ['require', 'exports', 'module' , 'ace/lib/dom'], function(require, exports, module) {
 
 exports.isDark = true;
 exports.cssClass = "ace-kr-theme";
-exports.cssText = ".ace-kr-theme .ace_editor {\
-  border: 2px solid rgb(159, 159, 159)\
+exports.cssText = ".ace-kr-theme .ace_gutter {\
+background: #1c1917;\
+color: #FCFFE0\
 }\
-\
-.ace-kr-theme .ace_editor.ace_focus {\
-  border: 2px solid #327fbd\
+.ace-kr-theme .ace_print-margin {\
+width: 1px;\
+background: #1c1917\
 }\
-\
-.ace-kr-theme .ace_gutter {\
-  background: #1c1917;\
-  color: #FCFFE0\
+.ace-kr-theme {\
+background-color: #0B0A09;\
+color: #FCFFE0\
 }\
-\
-.ace-kr-theme .ace_print_margin {\
-  width: 1px;\
-  background: #1c1917\
-}\
-\
-.ace-kr-theme .ace_scroller {\
-  background-color: #0B0A09\
-}\
-\
-.ace-kr-theme .ace_text-layer {\
-  color: #FCFFE0\
-}\
-\
 .ace-kr-theme .ace_cursor {\
-  border-left: 2px solid #FF9900\
+color: #FF9900\
 }\
-\
-.ace-kr-theme .ace_cursor.ace_overwrite {\
-  border-left: 0px;\
-  border-bottom: 1px solid #FF9900\
-}\
-\
 .ace-kr-theme .ace_marker-layer .ace_selection {\
-  background: rgba(170, 0, 255, 0.45)\
+background: rgba(170, 0, 255, 0.45)\
 }\
-\
-.ace-kr-theme.multiselect .ace_selection.start {\
-  box-shadow: 0 0 3px 0px #0B0A09;\
-  border-radius: 2px\
+.ace-kr-theme.ace_multiselect .ace_selection.ace_start {\
+box-shadow: 0 0 3px 0px #0B0A09;\
+border-radius: 2px\
 }\
-\
 .ace-kr-theme .ace_marker-layer .ace_step {\
-  background: rgb(102, 82, 0)\
+background: rgb(102, 82, 0)\
 }\
-\
 .ace-kr-theme .ace_marker-layer .ace_bracket {\
-  margin: -1px 0 0 -1px;\
-  border: 1px solid rgba(255, 177, 111, 0.32)\
+margin: -1px 0 0 -1px;\
+border: 1px solid rgba(255, 177, 111, 0.32)\
 }\
-\
-.ace-kr-theme .ace_marker-layer .ace_active_line {\
-  background: #38403D\
+.ace-kr-theme .ace_marker-layer .ace_active-line {\
+background: #38403D\
 }\
-\
-.ace-kr-theme .ace_gutter_active_line {\
-  background-color : #38403D\
+.ace-kr-theme .ace_gutter-active-line {\
+background-color : #38403D\
 }\
-\
-.ace-kr-theme .ace_marker-layer .ace_selected_word {\
-  border: 1px solid rgba(170, 0, 255, 0.45)\
+.ace-kr-theme .ace_marker-layer .ace_selected-word {\
+border: 1px solid rgba(170, 0, 255, 0.45)\
 }\
-\
 .ace-kr-theme .ace_invisible {\
-  color: rgba(255, 177, 111, 0.32)\
+color: rgba(255, 177, 111, 0.32)\
 }\
-\
 .ace-kr-theme .ace_keyword,\
 .ace-kr-theme .ace_meta {\
-  color: #949C8B\
+color: #949C8B\
 }\
-\
 .ace-kr-theme .ace_constant,\
 .ace-kr-theme .ace_constant.ace_character,\
 .ace-kr-theme .ace_constant.ace_character.ace_escape,\
 .ace-kr-theme .ace_constant.ace_other {\
-  color: rgba(210, 117, 24, 0.76)\
+color: rgba(210, 117, 24, 0.76)\
 }\
-\
 .ace-kr-theme .ace_invalid {\
-  color: #F8F8F8;\
-  background-color: #A41300\
+color: #F8F8F8;\
+background-color: #A41300\
 }\
-\
 .ace-kr-theme .ace_support {\
-  color: #9FC28A\
+color: #9FC28A\
 }\
-\
 .ace-kr-theme .ace_support.ace_constant {\
-  color: #C27E66\
+color: #C27E66\
 }\
-\
 .ace-kr-theme .ace_fold {\
-  background-color: #949C8B;\
-  border-color: #FCFFE0\
+background-color: #949C8B;\
+border-color: #FCFFE0\
 }\
-\
 .ace-kr-theme .ace_support.ace_function {\
-  color: #85873A\
+color: #85873A\
 }\
-\
 .ace-kr-theme .ace_storage {\
-  color: #FFEE80\
+color: #FFEE80\
 }\
-\
+.ace-kr-theme .ace_string {\
+color: rgba(164, 161, 181, 0.8)\
+}\
 .ace-kr-theme .ace_string.ace_regexp {\
-  color: rgba(125, 255, 192, 0.65)\
+color: rgba(125, 255, 192, 0.65)\
 }\
-\
 .ace-kr-theme .ace_comment {\
-  font-style: italic;\
-  color: #706D5B\
+font-style: italic;\
+color: #706D5B\
 }\
-\
 .ace-kr-theme .ace_variable {\
-  color: #D1A796\
+color: #D1A796\
 }\
-\
 .ace-kr-theme .ace_variable.ace_language {\
-  color: #FF80E1\
+color: #FF80E1\
 }\
-\
 .ace-kr-theme .ace_meta.ace_tag {\
-  color: #BABD9C\
+color: #BABD9C\
 }\
-\
-.ace-kr-theme .ace_markup.ace_underline {\
-  text-decoration: underline\
+.ace-kr-theme .ace_list {\
+background-color: #0F0040\
 }\
-\
-.ace-kr-theme .ace_markup.ace_list {\
-  background-color: #0F0040\
-}\
-\
 .ace-kr-theme .ace_indent-guide {\
-  background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWPg5uL8zzBz5sz/AA1WA+hUYIqjAAAAAElFTkSuQmCC) right repeat-y\
+background: url(data:image/png;base64,iVBORw0KGgoAAAANSUhEUgAAAAEAAAACCAYAAACZgbYnAAAAEklEQVQImWNgYGBgYFBXV/8PAAJoAXX4kT2EAAAAAElFTkSuQmCC) right repeat-y;\
 }";
 
 var dom = require("../lib/dom");

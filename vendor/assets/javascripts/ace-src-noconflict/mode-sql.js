@@ -38,40 +38,13 @@ var SqlHighlightRules = require("./sql_highlight_rules").SqlHighlightRules;
 var Range = require("../range").Range;
 
 var Mode = function() {
-    this.$tokenizer = new Tokenizer(new SqlHighlightRules().getRules());
+    this.HighlightRules = SqlHighlightRules;
 };
 oop.inherits(Mode, TextMode);
 
 (function() {
 
-    this.toggleCommentLines = function(state, doc, startRow, endRow) {
-        var outdent = true;
-        var outentedRows = [];
-        var re = /^(\s*)--/;
-
-        for (var i=startRow; i<= endRow; i++) {
-            if (!re.test(doc.getLine(i))) {
-                outdent = false;
-                break;
-            }
-        }
-
-        if (outdent) {
-            var deleteRange = new Range(0, 0, 0, 0);
-            for (var i=startRow; i<= endRow; i++)
-            {
-                var line = doc.getLine(i);
-                var m = line.match(re);
-                deleteRange.start.row = i;
-                deleteRange.end.row = i;
-                deleteRange.end.column = m[0].length;
-                doc.replace(deleteRange, m[1]);
-            }
-        }
-        else {
-            doc.indentRows(startRow, endRow, "--");
-        }
-    };
+    this.lineCommentStart = "--";
 
 }).call(Mode.prototype);
 
@@ -88,7 +61,7 @@ var TextHighlightRules = require("./text_highlight_rules").TextHighlightRules;
 var SqlHighlightRules = function() {
 
     var keywords = (
-        "select|from|where|and|or|group|by|order|limit|offset|having|as|case|" +
+        "select|insert|update|delete|from|where|and|or|group|by|order|limit|offset|having|as|case|" +
         "when|else|end|type|left|right|join|on|outer|desc|asc"
     );
 
