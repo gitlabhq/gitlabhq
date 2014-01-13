@@ -6,13 +6,13 @@
       = label_tag 'file_name', class: "control-label" do
         File name
       .col-sm-10
-        %span.monospace= @path[-1] == "/" ? @path : @path + "/"
-        &nbsp;
-        = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control'
-        %span
-          &nbsp;
-          on
-          %span.label-branch= @ref
+        .input-group
+          %span.input-group-addon
+            = @path[-1] == "/" ? @path : @path + "/"
+          = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control'
+          %span.input-group-addon
+            on
+            %span= @ref
 
     .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
