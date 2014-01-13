@@ -176,6 +176,14 @@ ul.nav.nav-projects-tabs {
   }
 }
 
+.public-projects {
+  li {
+    .project-info {
+      margin-bottom: 10px;
+    }
+  }
+}
+
 .public-clone {
   background: #333;
   color: #f5f5f5;

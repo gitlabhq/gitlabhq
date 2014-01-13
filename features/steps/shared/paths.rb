@@ -284,11 +284,19 @@ module SharedPaths
   end
 
   # ----------------------------------------
-  # Public Projects
+  # Public
   # ----------------------------------------
 
-  step 'I visit the public projects area' do
+  step 'I visit the public area' do
     visit public_root_path
+  end
+
+  step 'I visit the public projects area' do
+    visit public_projects_path
+  end
+
+  step 'I visit the public users area' do
+    visit public_users_path
   end
 
   step 'I visit public page for "Community" project' do
