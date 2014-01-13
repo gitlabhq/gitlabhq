@@ -24,10 +24,10 @@ module Gitlab
       # Returns false if the merge produced conflicts
       # Returns false if pushing from the satellite to the repository failed or was rejected
       # Returns true otherwise
-      def merge!
+      def merge!(merge_commit_message = nil)
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
-          if merge_in_satellite!(merge_repo)
+          if merge_in_satellite!(merge_repo, merge_commit_message)
             # push merge back to bare repo
             # will raise CommandFailed when push fails
             merge_repo.git.push(default_options, :origin, merge_request.target_branch)
@@ -114,16 +114,11 @@ module Gitlab
       def merge_in_satellite!(repo, message = nil)
         update_satellite_source_and_target!(repo)
 
-        merge_message = "Merge branch '#{merge_request.source_branch}' into '#{merge_request.target_branch}'"
-
-        if message
-          merge_message << "\n\n"
-          merge_message << message
-        end
+        message ||= "Merge branch '#{merge_request.source_branch}' into '#{merge_request.target_branch}'"
 
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
-        repo.git.merge(default_options({no_ff: true}), "-m #{merge_message}", "source/#{merge_request.source_branch}")
+        repo.git.merge(default_options({no_ff: true}), "-m #{message}", "source/#{merge_request.source_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
