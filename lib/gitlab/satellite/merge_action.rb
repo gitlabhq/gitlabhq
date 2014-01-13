@@ -125,34 +125,31 @@ module Gitlab
       #
       # Returns false if the merge produced conflicts
       # Returns true otherwise
-      def merge_in_satellite!(repo)
+      def merge_in_satellite!(repo, message = nil)
         update_satellite_source_and_target!(repo)
+
+        merge_message = "Merge branch '#{merge_request.source_branch}' into '#{merge_request.target_branch}'"
+
+        if message
+          merge_message << "\n\n"
+          merge_message << message
+        end
 
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
-        if merge_request.for_fork?
-          repo.git.pull(default_options({no_ff: true}), 'source', merge_request.source_branch)
-        else
-          repo.git.pull(default_options({no_ff: true}), 'origin', merge_request.source_branch)
-        end
+        repo.git.merge(default_options({no_ff: true}), "-m #{merge_message}", "source/#{merge_request.source_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
 
       # Assumes a satellite exists that is a fresh clone of the projects repo, prepares satellite for merges, diffs etc
       def update_satellite_source_and_target!(repo)
-        if merge_request.for_fork?
-          repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
-          repo.remote_fetch('source')
-          repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
-        else
-          repo.git.checkout(default_options, "#{merge_request.source_branch}")
-          repo.git.checkout(default_options({t: true}), "origin/#{merge_request.target_branch}")
-        end
+        repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
+        repo.remote_fetch('source')
+        repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
-
     end
   end
 end
