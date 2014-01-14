@@ -115,7 +115,7 @@ class Commit
   # Discover issues should be closed when this commit is pushed to a project's
   # default branch.
   def closes_issues project
-    md = safe_message.scan(issue_closing_regex)
+    md = safe_message.to_enum(:scan, issue_closing_regex).map { $~ }
     if !md.empty?
       extractor = Gitlab::ReferenceExtractor.new
       extractor.analyze(md.join(' '))
