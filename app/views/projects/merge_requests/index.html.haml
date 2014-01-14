@@ -5,8 +5,7 @@
 %h3.page-title
   Merge Requests
   %span (#{@merge_requests.total_count})
-
-
+%hr
 .row
   .col-md-3
     = render 'shared/project_filter', project_entities_path: project_merge_requests_path(@project)
