@@ -14,7 +14,8 @@
               Created by me
 
     %fieldset
-      %ul.nav.nav-pills.nav-stacked
+      %legend State
+      %ul.nav.nav-pills
         %li{class: ("active" if params[:state].blank?)}
           = link_to project_filter_path(state: nil) do
             Open

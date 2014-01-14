@@ -10,10 +10,11 @@
             Created by me
         %li{class: ("active" if params[:scope] == 'all')}
           = link_to filter_path(entity, scope: 'all') do
-            All
+            Everyone's
 
     %fieldset.status-filter
-      %ul.nav.nav-pills.nav-stacked
+      %legend State
+      %ul.nav.nav-pills
         %li{class: ("active" if params[:status].blank?)}
           = link_to filter_path(entity, status: nil) do
             Open
@@ -26,7 +27,7 @@
 
     %fieldset
       %legend Projects
-      %ul.nav.nav-pills.nav-pills-small.nav-stacked
+      %ul.nav.nav-pills.nav-stacked.nav-small
         - @projects.each do |project|
           - unless entities_per_project(project, entity).zero?
             %li{class: ("active" if params[:project_id] == project.id.to_s)}
