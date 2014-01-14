@@ -14,6 +14,15 @@
 .select2-drop-active {
   border: 1px solid #BBB;
   margin-top: 4px;
+
+  .select2-search input {
+    background: #fafafa;
+    border-color: #DDD;
+  }
+
+  .select2-results .select2-highlighted {
+    background: $bg_style_color;
+  }
 }
 
 select {
