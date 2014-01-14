@@ -54,8 +54,8 @@
   - if note.attachment.url
     .note-attachment
       - if note.attachment.image?
-        = link_to note.attachment.url, target: '_blank' do
-          = image_tag note.attachment.url, class: 'note-image-attach'
+        = link_to note.attachment.secure_url, target: '_blank' do
+          = image_tag note.attachment.secure_url, class: 'note-image-attach'
       .attachment.pull-right
         = link_to note.attachment.secure_url, target: "_blank" do
           %i.icon-paper-clip
