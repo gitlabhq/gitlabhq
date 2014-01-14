@@ -31,23 +31,9 @@ module Issues
       end
 
       # Sort by :sort param
-      @issues = sort(@issues, params[:sort])
+      @issues = @issues.sort(params[:sort])
 
       @issues
-    end
-
-    private
-
-    def sort(issues, condition)
-      case condition
-      when 'newest' then issues.except(:order).order('created_at DESC')
-      when 'oldest' then issues.except(:order).order('created_at ASC')
-      when 'recently_updated' then issues.except(:order).order('updated_at DESC')
-      when 'last_updated' then issues.except(:order).order('updated_at ASC')
-      when 'milestone_due_soon' then issues.except(:order).joins(:milestone).order("milestones.due_date ASC")
-      when 'milestone_due_later' then issues.except(:order).joins(:milestone).order("milestones.due_date DESC")
-      else issues
-      end
     end
   end
 end
