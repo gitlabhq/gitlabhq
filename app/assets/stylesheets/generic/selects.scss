@@ -20,8 +20,11 @@
     border-color: #DDD;
   }
 
-  .select2-results .select2-highlighted {
-    background: $bg_style_color;
+  .select2-results {
+    max-height: 350px;
+    .select2-highlighted {
+      background: $bg_style_color;
+    }
   }
 }
 
