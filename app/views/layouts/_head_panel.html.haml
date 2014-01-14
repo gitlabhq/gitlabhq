@@ -28,7 +28,7 @@
             = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
               %i.icon-globe
           %li
-            = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
+            = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'My snippets' do
               %i.icon-paste
           - if current_user.is_admin?
             %li
