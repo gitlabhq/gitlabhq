@@ -17,6 +17,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
+    sort_param = params[:sort] || 'newest'
+    @sort = sort_param.humanize unless sort_param.empty?
     @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?

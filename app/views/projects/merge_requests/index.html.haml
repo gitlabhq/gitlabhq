@@ -60,6 +60,8 @@
                     %strong= milestone.title
                     %small.light= milestone.expires_at
 
+          = render 'shared/sort_dropdown'
+
       %ul.well-list.mr-list
         = render @merge_requests
         - if @merge_requests.blank?

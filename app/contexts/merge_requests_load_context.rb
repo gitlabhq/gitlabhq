@@ -30,6 +30,9 @@ class MergeRequestsLoadContext < BaseContext
       merge_requests = merge_requests.where(milestone_id: (params[:milestone_id] == '0' ? nil : params[:milestone_id]))
     end
 
+    # Sort by :sort param
+    merge_requests = merge_requests.sort(params[:sort])
+
     merge_requests
   end
 end
