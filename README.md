@@ -145,7 +145,7 @@ or start each component separately
 
 * [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
-* [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterCONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
+* [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
 * [Support subscription](http://www.gitlab.com/subscription/) connects you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
 
