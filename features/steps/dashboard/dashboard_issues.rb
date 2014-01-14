@@ -40,7 +40,7 @@ class DashboardIssues < Spinach::FeatureSteps
 
   step 'I click "All" link' do
     within ".scope-filter" do
-      click_link 'All'
+      click_link "Everyone's"
     end
   end
 
