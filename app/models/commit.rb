@@ -134,7 +134,7 @@ class Commit
     @raw.send(m, *args, &block)
   end
 
-  def respond_to?(method)
+  def respond_to?(method, opt = nil)
     return true if @raw.respond_to?(method)
 
     super
