@@ -222,8 +222,6 @@ describe "Issues" do
       it 'with dropdown menu' do
         visit project_issue_path(project, issue)
 
-        p find('.edit-issue.inline-update').text
-
         find('.edit-issue.inline-update').select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
