@@ -69,15 +69,16 @@ If you can, please submit a merge request with the fix or improvements including
 
 Please keep the change in a single MR as small as possible. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
 
-We will accept merge requests if:
+We will accept a merge requests if it:
 
-* The code has proper tests and all tests pass (or it is a test exposing a failure in existing code)
-* It can be merged without problems (if not please use: `git rebase master`)
-* It does not break any existing functionality
-* It's quality code that conforms to the [Ruby](https://github.com/bbatsov/ruby-style-guide) and [Rails](https://github.com/bbatsov/rails-style-guide) style guides and best practices
-* It is not a catch all merge request but rather fixes a specific issue or implements a specific feature
-* It keeps the GitLab code base clean and well structured
-* We think other users will benefit from the same functionality
-* It is a single commit (please use `git rebase -i` to squash commits)
+* Includes proper tests and all tests pass (unless it contains a test exposing a bug in existing code)
+* Can be merged without problems (if not please use: `git rebase master`)
+* Do not break any existing functionality
+* Conforms to the [Ruby](https://github.com/bbatsov/ruby-style-guide) and [Rails](https://github.com/bbatsov/rails-style-guide) style guides and best practices
+* Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
+* Keeps the GitLab code base clean and well structured
+* Contains functionality we think other users will benefit from too
+* Doesn't add unnessecary configuration options since they complicate future changes
+* Contains a single commit (please use `git rebase -i` to squash commits)
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed).
