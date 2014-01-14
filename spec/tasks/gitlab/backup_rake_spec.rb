@@ -39,7 +39,7 @@ describe 'gitlab:app namespace rake task' do
         YAML.stub load_file: {gitlab_version: gitlab_version}
         Rake::Task["gitlab:backup:db:restore"].should_receive :invoke
         Rake::Task["gitlab:backup:repo:restore"].should_receive :invoke
-        expect { run_rake_task }.to_not raise_error
+        expect { run_rake_task }.to_not raise_error SystemExit
       end
     end
 
