@@ -1,9 +1,12 @@
+require 'webmock'
+
 class ProjectHooks < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
   include RSpec::Matchers
   include RSpec::Mocks::ExampleMethods
+  include WebMock::API
 
   Given 'project has hook' do
     @hook = create(:project_hook, project: current_project)
@@ -25,8 +28,7 @@ class ProjectHooks < Spinach::FeatureSteps
   end
 
   When 'I click test hook button' do
-    test_hook_context = double(execute: true)
-    TestHookContext.should_receive(:new).and_return(test_hook_context)
+    stub_request(:post, @hook.url).to_return(status: 200)
     click_link 'Test Hook'
   end
 
