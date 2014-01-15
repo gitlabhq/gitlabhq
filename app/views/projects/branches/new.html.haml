@@ -5,12 +5,11 @@
   .form-group
     = label_tag :branch_name, 'Name for new branch', class: 'control-label'
     .col-sm-10
-      = text_field_tag :branch_name, nil, placeholder: 'feature/dashboard', required: true, tabindex: 1, class: 'form-control'
+      = text_field_tag :branch_name, nil, placeholder: 'branch name, tag or commit SHA', required: true, tabindex: 1, class: 'form-control'
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10
-      = text_field_tag :ref, nil, placeholder: 'master', required: true, tabindex: 2, class: 'form-control'
-      .light branch name or commit SHA
+      = text_field_tag :ref, nil, placeholder: 'branch name, tag or commit SHA', required: true, tabindex: 2, class: 'form-control'
   .form-actions
     = submit_tag 'Create branch', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'
