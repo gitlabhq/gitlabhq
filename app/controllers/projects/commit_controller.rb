@@ -34,7 +34,7 @@ class Projects::CommitController < Projects::ApplicationController
 
     respond_to do |format|
       format.html do
-        if result[:status] == :huge_commit
+        if @status == :huge_commit
           render "huge_commit" and return
         end
       end
