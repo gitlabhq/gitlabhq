@@ -270,9 +270,7 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    team.members.each do |user|
-      Notify.delay.project_was_moved_email(self.id, user.id)
-    end
+    NotificationService.new.project_was_moved(self)
   end
 
   def owner
