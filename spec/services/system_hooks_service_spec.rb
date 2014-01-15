@@ -24,10 +24,10 @@ describe SystemHooksService do
   end
 
   def event_data(*args)
-    SystemHooksService.build_event_data(*args)
+    SystemHooksService.new.send :build_event_data, *args
   end
 
   def event_name(*args)
-    SystemHooksService.build_event_name(*args)
+    SystemHooksService.new.send :build_event_name, *args
   end
 end
