@@ -116,7 +116,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issues_filtered
-    @issues = Issues::ListContext.new(project, current_user, params).execute
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+    params[:project_id] = @project.id
+    @issues = FilteringService.new.execute(Issue, current_user, params)
   end
 
   # Since iids are implemented only in 6.1
