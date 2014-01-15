@@ -157,6 +157,15 @@ class NotificationService
     mailer.group_access_granted_email(users_group.id)
   end
 
+  def project_was_moved(project)
+    recipients = project.team.members
+    recipients = reject_muted_users(recipients, project)
+
+    recipients.each do |recipient|
+      mailer.project_was_moved_email(project.id, recipient.id)
+    end
+  end
+
   protected
 
   # Get project users with WATCH notification level
