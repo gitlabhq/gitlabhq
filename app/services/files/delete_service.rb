@@ -1,7 +1,7 @@
 require_relative "base_context"
 
 module Files
-  class UpdateContext < BaseContext
+  class DeleteService < BaseService
     def execute
       allowed = if project.protected_branch?(ref)
                   can?(current_user, :push_code_to_protected_branches, project)
@@ -23,13 +23,14 @@ module Files
         return error("You can only edit text files")
       end
 
-      new_file_action = Gitlab::Satellite::EditFileAction.new(current_user, project, ref, path)
-      created_successfully = new_file_action.commit!(
-        params[:content],
+      delete_file_action = Gitlab::Satellite::DeleteFileAction.new(current_user, project, ref, path)
+
+      deleted_successfully = delete_file_action.commit!(
+        nil,
         params[:commit_message]
       )
 
-      if created_successfully
+      if deleted_successfully
         success
       else
         error("Your changes could not be committed, because the file has been changed")

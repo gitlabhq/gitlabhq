@@ -1,5 +1,5 @@
 module Search
-  class ProjectContext
+  class ProjectService
     attr_accessor :project, :current_user, :params
 
     def initialize(project, user, params)

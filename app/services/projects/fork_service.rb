@@ -1,5 +1,5 @@
 module Projects
-  class ForkContext < BaseContext
+  class ForkService < BaseService
     include Gitlab::ShellAdapter
 
     def initialize(project, user)

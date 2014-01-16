@@ -1,5 +1,5 @@
 module Notes
-  class LoadContext < BaseContext
+  class LoadService < BaseService
     def execute
       target_type = params[:target_type]
       target_id   = params[:target_id]

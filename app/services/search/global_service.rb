@@ -1,5 +1,5 @@
 module Search
-  class GlobalContext
+  class GlobalService
     attr_accessor :current_user, :params
 
     def initialize(user, params)

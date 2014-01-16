@@ -1,5 +1,5 @@
 module Notes
-  class CreateContext < BaseContext
+  class CreateService < BaseService
     def execute
       note = project.notes.new(params[:note])
       note.author = current_user

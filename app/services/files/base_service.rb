@@ -1,5 +1,5 @@
 module Files
-  class BaseContext < ::BaseContext
+  class BaseService < ::BaseService
     attr_reader :ref, :path
 
     def initialize(project, user, params, ref, path = nil)
