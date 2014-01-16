@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateContext do
+describe Projects::UpdateService do
   before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
@@ -106,6 +106,6 @@ describe Projects::UpdateContext do
   end
 
   def update_project(project, user, opts)
-    Projects::UpdateContext.new(project, user, opts).execute
+    Projects::UpdateService.new(project, user, opts).execute
   end
 end

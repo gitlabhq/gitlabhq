@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateContext do
+describe Projects::CreateService do
   before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
@@ -136,7 +136,7 @@ describe Projects::CreateContext do
   end
 
   def create_project(user, opts)
-    Projects::CreateContext.new(user, opts).execute
+    Projects::CreateService.new(user, opts).execute
   end
 end
 
