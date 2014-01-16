@@ -400,6 +400,7 @@ Parameters:
 
 + `file_path` (optional) - Full path to new file. Ex. lib/class.rb
 + `branch_name` (required) - The name of branch
++ `encoding` (optional) - 'text' or 'base64'. Text is default.
 + `content` (required) - File content
 + `commit_message` (required) - Commit message
 
@@ -413,6 +414,7 @@ Parameters:
 
 + `file_path` (required) - Full path to file. Ex. lib/class.rb
 + `branch_name` (required) - The name of branch
++ `encoding` (optional) - 'text' or 'base64'. Text is default.
 + `content` (required) - New file content
 + `commit_message` (required) - Commit message
 
