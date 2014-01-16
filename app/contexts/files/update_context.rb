@@ -27,7 +27,7 @@ module Files
       created_successfully = edit_file_action.commit!(
         params[:content],
         params[:commit_message],
-        params[:encooding]
+        params[:encoding]
       )
 
       if created_successfully
