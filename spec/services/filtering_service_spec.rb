@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe FilterContext do
+describe FilteringService do
   let(:user) { create :user }
   let(:user2) { create :user }
   let(:project1) { create(:project) }
@@ -25,14 +25,14 @@ describe FilterContext do
     end
 
     it 'should filter by scope' do
-      params = { scope: 'authored' }
-      merge_requests = FilterContext.new(MergeRequest, user, params).execute
+      params = { scope: 'authored', state: 'opened' }
+      merge_requests = FilteringService.new.execute(MergeRequest, user, params)
       merge_requests.size.should == 3
     end
 
     it 'should filter by project' do
-      params = { project_id: project1.id, scope: 'authored' }
-      merge_requests = FilterContext.new(MergeRequest, user, params).execute
+      params = { project_id: project1.id, scope: 'authored', state: 'opened' }
+      merge_requests = FilteringService.new.execute(MergeRequest, user, params)
       merge_requests.size.should == 1
     end
   end
@@ -45,20 +45,20 @@ describe FilterContext do
     end
 
     it 'should filter by all' do
-      params = { scope: "all" }
-      issues = FilterContext.new(Issue, user, params).execute
+      params = { scope: "all", state: 'opened' }
+      issues = FilteringService.new.execute(Issue, user, params)
       issues.size.should == 3
     end
 
     it 'should filter by assignee' do
-      params = {}
-      issues = FilterContext.new(Issue, user, params).execute
+      params = { scope: "assigned-to-me", state: 'opened' }
+      issues = FilteringService.new.execute(Issue, user, params)
       issues.size.should == 2
     end
 
     it 'should filter by project' do
-      params = { project_id: project1.id }
-      issues = FilterContext.new(Issue, user, params).execute
+      params = { scope: "assigned-to-me", state: 'opened', project_id: project1.id }
+      issues = FilteringService.new.execute(Issue, user, params)
       issues.size.should == 1
     end
   end
