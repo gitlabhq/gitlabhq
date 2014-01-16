@@ -44,7 +44,11 @@ class FilteringService
     when 'created-by-me', 'authored' then
       current_user.send(table_name)
     when 'all' then
-      klass.of_projects(current_user.authorized_projects.pluck(:id))
+      if current_user
+        klass.of_projects(current_user.authorized_projects.pluck(:id))
+      else
+        klass.of_projects(Project.public_only)
+      end
     when 'assigned-to-me' then
       current_user.send("assigned_#{table_name}")
     else
