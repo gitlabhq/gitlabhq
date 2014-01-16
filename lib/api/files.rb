@@ -18,7 +18,7 @@ module API
       #
       post ":id/repository/files" do
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
-        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message]
+        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
         branch_name = attrs.delete(:branch_name)
         file_path = attrs.delete(:file_path)
         result = ::Files::CreateContext.new(user_project, current_user, attrs, branch_name, file_path).execute
@@ -48,7 +48,7 @@ module API
       #
       put ":id/repository/files" do
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
-        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message]
+        attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
         branch_name = attrs.delete(:branch_name)
         file_path = attrs.delete(:file_path)
         result = ::Files::UpdateContext.new(user_project, current_user, attrs, branch_name, file_path).execute
