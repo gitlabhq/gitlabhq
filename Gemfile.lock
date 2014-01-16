@@ -114,6 +114,8 @@ GEM
     email_spec (1.5.0)
       launchy (~> 2.1)
       mail (~> 2.2)
+    email_validator (1.4.0)
+      activemodel
     enumerize (0.7.0)
       activesupport (>= 3.2)
     equalizer (0.0.8)
@@ -567,6 +569,7 @@ DEPENDENCIES
   devise (= 3.0.4)
   devise-async (= 0.8.0)
   email_spec
+  email_validator (~> 1.4.0)
   enumerize
   factory_girl_rails
   ffaker
