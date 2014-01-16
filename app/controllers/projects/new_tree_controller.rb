@@ -5,7 +5,7 @@ class Projects::NewTreeController < Projects::BaseTreeController
   end
 
   def update
-    file_path = File.join(@path, File.basename(params[:file_name]))
+    file_path = File.join(@path, params[:file_name])
     result = Files::CreateContext.new(@project, current_user, params, @ref, file_path).execute
 
     if result[:status] == :success
