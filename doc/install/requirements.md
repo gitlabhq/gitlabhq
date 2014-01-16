@@ -76,3 +76,11 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 If you have troubles installing GitLab following the [official installation guide](installation.md)
 or want to share your experience installing GitLab on a not officially supported
 platform, please follow the the [contribution guide](/CONTRIBUTING.md).
+
+# Supported webbrowsers
+
+- Chrome (Latest stable version)
+- Firefox (Latest released version) 
+- Safari 7+ (Know problem: required fields in html5 do not work)
+- Opera (Latest released version)
+- IE 10+
