@@ -30,6 +30,7 @@
       %tr
         %th
         %th
+        %th
           Name
         %th
           Username
@@ -39,11 +40,13 @@
             = link_to user_path(user) do
               = image_tag avatar_icon(user.email, 26), alt: ''
           %td
+            = visibility_level_icon(user.visibility_level)
+          %td
             = link_to user_path(user) do
               = user.name
           %td
             = link_to user_path(user) do
               = user.username
   - else
-    %h3.nothing_here_message There are no users in the system
+    %h3.nothing_here_message No visible users
   = paginate @users, theme: "gitlab"

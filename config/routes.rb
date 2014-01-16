@@ -112,6 +112,7 @@ Gitlab::Application.routes.draw do
 
       put :reset_private_token
       put :update_username
+      put :update_visibility_level
     end
 
     scope module: :profiles do

@@ -47,6 +47,11 @@ class ProfilesController < ApplicationController
     end
   end
 
+  def update_visibility_level
+    @user.update_attributes(visibility_level: params[:user][:visibility_level])
+    redirect_to profile_account_path
+  end
+
   private
 
   def user

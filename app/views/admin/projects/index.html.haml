@@ -5,7 +5,6 @@
         .form-group
           = label_tag :name, 'Name:'
           = text_field_tag :name, params[:name], class: "form-control"
-
         .form-group
           = label_tag :owner_id, 'Owner:'
           %div
@@ -20,17 +19,7 @@
           = check_box_tag :abandoned, 1, params[:abandoned]
           &nbsp;
           %span.light No activity over 6 month
-
-        %fieldset
-          %strong Visibility level:
-          .visibility-levels
-            - Project.visibility_levels.each do |label, level|
-              .checkbox
-                %label
-                  = check_box_tag 'visibility_levels[]', level, params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
-                  %span.descr
-                    = visibility_level_icon(level)
-                    = label
+        = render "shared/visibility_level_filter"
         .form-actions
           = submit_tag "Search", class: "btn submit btn-primary"
           = link_to "Reset", admin_projects_path, class: "btn"

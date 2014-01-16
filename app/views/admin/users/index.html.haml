@@ -1,12 +1,6 @@
 .row
-  .col-md-3
+  .col-md-4
     .admin-filter
-      = form_tag admin_users_path, method: :get, class: 'form-inline' do
-        .append-bottom-10
-          .form-group
-            = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
-          = button_tag type: 'submit', class: 'btn btn-primary' do
-            %i.icon-search
       %ul.nav.nav-pills.nav-stacked
         %li{class: "#{'active' unless params[:filter]}"}
           = link_to admin_users_path do
@@ -25,9 +19,16 @@
             Without projects
             %small.pull-right= User.without_projects.count
       %hr
-      = link_to 'Reset', admin_users_path, class: "btn btn-cancel"
+      = form_tag admin_users_path, method: :get, class: '' do
+        .form-group
+          = label_tag :name, 'Name:'
+          = text_field_tag :name, params[:name], placeholder: 'Name, email or username', class: "form-control"
+        = render "shared/visibility_level_filter"
+        .form-actions
+          = submit_tag "Search", class: "btn submit btn-primary"
+          = link_to 'Reset', admin_users_path, class: "btn"
 
-  .col-md-9
+  .col-md-8
     .ui-box
       .title
         Users (#{@users.total_count})
@@ -40,6 +41,8 @@
               %i.icon-lock.cred
             - else
               %i.icon-user.cgreen
+            %span{ class: visibility_level_color(user.visibility_level) }
+              = visibility_level_icon(user.visibility_level)
             = link_to user.name, [:admin, user]
             - if user.admin?
               %strong.cred (Admin)

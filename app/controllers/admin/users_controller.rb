@@ -3,6 +3,7 @@ class Admin::UsersController < Admin::ApplicationController
 
   def index
     @users = User.filter(params[:filter])
+    @users = @users.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @users = @users.search(params[:name]) if params[:name].present?
     @users = @users.alphabetically.page(params[:page])
   end

@@ -15,14 +15,11 @@ module VisibilityLevelHelper
       haml_tag :span do
         case level
         when Gitlab::VisibilityLevel::PRIVATE
-          haml_concat "Project access must be granted explicitly for each user."
+          haml_concat "Visible only to you and explicitly allowed users."
         when Gitlab::VisibilityLevel::INTERNAL
-          haml_concat "The project can be cloned by"
-          haml_concat "any logged in user."
+          haml_concat "Visible to any logged in user."
         when Gitlab::VisibilityLevel::PUBLIC
-          haml_concat "The project can be cloned"
-          haml_concat "without any"
-          haml_concat "authentication."
+          haml_concat "Visible without any authentication."
         end
       end
     end
@@ -40,7 +37,7 @@ module VisibilityLevelHelper
   end
 
   def visibility_level_label(level)
-    Project.visibility_levels.key(level)
+    Gitlab::VisibilityLevel::options.key(level)
   end
 
   def restricted_visibility_levels

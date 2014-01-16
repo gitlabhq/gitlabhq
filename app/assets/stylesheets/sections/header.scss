@@ -69,7 +69,7 @@ header {
    * Project / Area name
    *
    */
-  .project_name {
+  .title {
     position: relative;
     float: left;
     margin: 0;
@@ -167,7 +167,7 @@ header {
         }
       }
     }
-    .project_name {
+    .title {
       a {
         color: #BBB;
         &:hover {

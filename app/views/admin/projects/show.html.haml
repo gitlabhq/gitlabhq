@@ -40,16 +40,16 @@
             = @project.created_at.stamp("March 1, 1999")
 
         %li
-          %span.light http:
+          %span.light HTTP:
           %strong
             = link_to @project.http_url_to_repo
         %li
-          %span.light ssh:
+          %span.light SSH:
           %strong
             = link_to @project.ssh_url_to_repo
         - if @project.repository.exists?
           %li
-            %span.light fs:
+            %span.light FS:
             %strong
               = @repository.path_to_repo
 
@@ -59,7 +59,7 @@
               = repository_size(@project)
 
           %li
-            %span.light last commit:
+            %span.light Last commit:
             %strong
               = last_commit(@project)
         - else
@@ -69,7 +69,7 @@
               does not exist
 
         %li
-          %span.light access:
+          %span.light Access:
           %strong
             %span{ class: visibility_level_color(@project.visibility_level) }
               = visibility_level_icon(@project.visibility_level)

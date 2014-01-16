@@ -58,6 +58,22 @@ module SharedPaths
   end
 
   # ----------------------------------------
+  # User
+  # ----------------------------------------
+
+  step 'I visit user "John Van Public" page' do
+    visit user_path("john_van_public")
+  end
+
+  step 'I visit user "John Van Internal" page' do
+    visit user_path("john_van_internal")
+  end
+
+  step 'I visit user "John Van Private" page' do
+    visit user_path("john_van_private")
+  end
+
+  # ----------------------------------------
   # Profile
   # ----------------------------------------
 

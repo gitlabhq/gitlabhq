@@ -1,4 +1,4 @@
-.form-group.project-visibility-level-holder
+.form-group.visibility-level-holder
   = f.label :visibility_level, class: 'control-label' do
     Visibility Level
     = link_to "(?)", help_public_access_path
@@ -8,7 +8,7 @@
         .radio
           - restricted = restricted_visibility_levels.include?(level)
           = f.radio_button :visibility_level, level, checked: (visibility_level == level), disabled: restricted
-          = label :project_visibility_level, level do
+          = f.label :visibility_level, level do
             = visibility_level_icon(level)
             .option-title
               = visibility_level_label(level)

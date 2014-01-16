@@ -93,6 +93,7 @@ end
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
+Settings.gitlab['user_default_visibility_level'] = Settings.send(:verify_constant, Gitlab::VisibilityLevel, Settings.gitlab['user_default_visibility_level'], Gitlab::VisibilityLevel::INTERNAL)
 Settings.gitlab['issue_closing_pattern'] = '([Cc]loses|[Ff]ixes) #(\d+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
 Settings.gitlab.default_projects_features['issues']         = true if Settings.gitlab.default_projects_features['issues'].nil?

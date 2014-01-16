@@ -72,3 +72,7 @@
               The following groups will be abandoned. You should transfer or remove them:
               %strong #{current_user.solo_owned_groups.map(&:name).join(', ')}
         = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
+
+  = form_for @user, url: update_visibility_level_profile_path,  method: :put do |f|
+    = render "shared/visibility_level", f: f, visibility_level: @user.visibility_level, can_change_visibility_level: true
+    = f.submit 'Update', class: "btn btn-save"

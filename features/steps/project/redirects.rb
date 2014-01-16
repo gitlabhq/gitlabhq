@@ -2,6 +2,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
+  include Shared
 
   step 'public project "Community"' do
     create :project_with_code, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC

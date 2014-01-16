@@ -26,6 +26,7 @@
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
+  extend Gitlab::VisibilityLevel::ClassMethods
   extend Enumerize
 
   ActsAsTaggableOn.strict_case_match = true
@@ -114,8 +115,6 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public_only, -> { where(visibility_level: PUBLIC) }
-  scope :public_or_internal_only, ->(user) { where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ]) }
 
   scope :non_archived, -> { where(archived: false) }
 
@@ -148,10 +147,6 @@ class Project < ActiveRecord::Base
       else
         where(path: id, namespace_id: nil).last
       end
-    end
-
-    def visibility_levels
-      Gitlab::VisibilityLevel.options
     end
 
     def sort(method)
@@ -480,10 +475,6 @@ class Project < ActiveRecord::Base
   def reload_default_branch
     @default_branch = nil
     default_branch
-  end
-
-  def visibility_level_field
-    visibility_level
   end
 
   def archive!

@@ -1,4 +1,4 @@
-Feature: Public Projects Feature
+Feature: Public Projects
   Background:
     Given public project "Community"
     And internal project "Internal"
@@ -9,10 +9,6 @@ Feature: Public Projects Feature
     Then I should see project "Community"
     And I should not see project "Internal"
     And I should not see project "Enterprise"
-
-  Scenario: I should see the list of public projects
-    When I visit the public projects area
-    Then I should see the list of public projects
 
   Scenario: I visit public project page
     When I visit project "Community" page

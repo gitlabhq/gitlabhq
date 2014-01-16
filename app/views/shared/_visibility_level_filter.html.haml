@@ -1,0 +1,10 @@
+%fieldset
+  %strong Visibility level:
+  .visibility-levels
+    - Gitlab::VisibilityLevel::options.each do |label, level|
+      .checkbox
+        %label
+          = check_box_tag 'visibility_levels[]', level, params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
+          %span.descr
+            = visibility_level_icon(level)
+            = label

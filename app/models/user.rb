@@ -42,18 +42,23 @@
 #  confirmation_sent_at   :datetime
 #  unconfirmed_email      :string(255)
 #  hide_no_ssh_key        :boolean          default(FALSE), not null
+#  visibility_level       :integer
 #
 
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+
+  include Gitlab::VisibilityLevel
+  extend Gitlab::VisibilityLevel::ClassMethods
+
   devise :database_authenticatable, :token_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
                   :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
+                  :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key, :visibility_level,
                   as: [:default, :admin]
 
   attr_accessible :projects_limit, :can_create_group,
@@ -121,6 +126,9 @@ class User < ActiveRecord::Base
   before_validation :sanitize_attrs
 
   before_save :ensure_authentication_token
+  # Set default values.
+  # Seems to be the best currently available method <http://stackoverflow.com/a/5127684/895245>.
+  after_initialize :default_values
 
   alias_attribute :private_token, :authentication_token
 
@@ -213,7 +221,7 @@ class User < ActiveRecord::Base
       {
         projects_limit: Gitlab.config.gitlab.default_projects_limit,
         can_create_group: Gitlab.config.gitlab.default_can_create_group,
-        theme_id: Gitlab.config.gitlab.default_theme
+        theme_id: Gitlab.config.gitlab.default_theme,
       }
     end
 
@@ -431,5 +439,11 @@ class User < ActiveRecord::Base
     Event.where(author_id: self.id).
       order('id DESC').limit(1000).
       update_all(updated_at: Time.now)
+  end
+
+  private
+
+  def default_values
+    self.visibility_level ||= Gitlab.config.gitlab.user_default_visibility_level if self.has_attribute? :visibility_level
   end
 end

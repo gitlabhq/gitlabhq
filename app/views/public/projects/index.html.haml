@@ -63,6 +63,6 @@
             %i.icon-warning-sign
             Empty repository
     - unless @projects.present?
-      %h3.nothing_here_message No public projects
+      %h3.nothing_here_message No visible projects
 
   = paginate @projects, theme: "gitlab"

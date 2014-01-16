@@ -2,45 +2,65 @@
   %h3.page-title Public Access
 
   %p.slead
-    GitLab allows you to open selected projects to be accessed
+    GitLab allows you to open selected data to be visible
     %strong publicly
+    = public_icon
     or
     %strong internally
+    = internal_icon
     \.
     %br
-    Projects with either of these visibility levels will be listed in the #{link_to "public access directory", public_root_path}.
+    Data that has no public access is
+    %strong private
+    = private_icon
     %br
-    Internal projects will only be available to authenticated users.
+    This is currently possible for
+    %strong projects
+    and
+    %strong users
+    \.
+    %br
+    %strong Public data
+    = public_icon
+    will be visible to anyone
+    %strong without any
+    authentication.
+    %br
+    %strong Internal data
+    = internal_icon
+    will only be visible to authenticated users.
+    %br
+    %strong Private data
+    = private_icon
+    will only be visible to the owner of the data or explicitly allowed users.
+    %br
+    Public and internal data will be listed in the
+    #{link_to "public area", public_root_path} to users who can see them.
 
-  .clearfix
-    .dashboard-intro-icon
-      = public_icon
-    %h4
-      Public projects
-    %p
-      Public project can be cloned
-      %strong without any
-      authentication.
-      %br
-      It will also be listed on the #{link_to "public access directory", public_root_path}.
-      %br
-      %strong Any logged in user
-      will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+  %h4 Projects
+  %p
+    Visible projects can be cloned and metadata such as issues can be seen.
+    %br
+    Logged in user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+    %br
+    Users who are not logged in cannot edit any data: create issues, leave comments, etc.
+    %br
 
-  .clearfix
-    .dashboard-intro-icon
-      = internal_icon
-    %h4
-      Internal projects
-    %p
-      Internal project can be cloned by any logged in user.
-      %br
-      It will also be listed on the #{link_to "public access directory", public_root_path} for logged in users.
-      %br
-      Any logged in user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
-
-  %h4 How to change project visibility
+  %p To change project visibility:
   %ol
     %li Go to your project dashboard
     %li Click on the "Edit" tab
+    %li Change "Visibility Level"
+
+  %h4 Users
+  %p
+    Visible users can have their profile page seen.
+    %br
+    Sensitive information such as your email will not be shown.
+    %br
+    Currently, if your account is private only you will be able to see your profile page.
+
+  %p To change your visibility:
+  %ol
+    %li Go to your #{link_to "profile's account settings", profile_account_path}.
     %li Change "Visibility Level"

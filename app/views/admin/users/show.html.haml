@@ -53,7 +53,6 @@
             %span.light Confirmed:
             %strong.cred
               No
-
         %li
           %span.light Last sign-in at:
           %strong
@@ -61,13 +60,17 @@
               = @user.last_sign_in_at.stamp("Nov 12, 2031")
             - else
               never
-
+        %li
+          %span.light Access:
+          %strong
+            %span{ class: visibility_level_color(@user.visibility_level) }
+              = visibility_level_icon(@user.visibility_level)
+              = visibility_level_label(@user.visibility_level)
         - if @user.ldap_user?
           %li
             %span.light LDAP uid:
             %strong
               = @user.extern_uid
-
         - if @user.created_by
           %li
             %span.light Created by:

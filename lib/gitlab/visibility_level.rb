@@ -21,22 +21,32 @@ module Gitlab
           'Public'   => PUBLIC
         }
       end
-      
+
       def allowed_for?(user, level)
         user.is_admin? || !Gitlab.config.gitlab.restricted_visibility_levels.include?(level)
       end
     end
 
+    module ClassMethods
+      def public_only
+        where(visibility_level: PUBLIC)
+      end
+
+      def public_or_internal_only(user)
+        where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ])
+      end
+    end
+
     def private?
-      visibility_level_field == PRIVATE
+      visibility_level == PRIVATE
     end
 
     def internal?
-      visibility_level_field == INTERNAL
+      visibility_level == INTERNAL
     end
 
     def public?
-      visibility_level_field == PUBLIC
+      visibility_level == PUBLIC
     end
   end
 end

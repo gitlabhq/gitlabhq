@@ -57,6 +57,10 @@
           %p Get familiar with GitLab's permission levels.
 
         %li
+          %strong= link_to "Public Access", help_public_access_path
+          %p Learn how you can allow public access to your data.
+
+        %li
           %strong= link_to "API", help_api_file_path(category: 'README')
           %p Explore how you can access GitLab via a simple and powerful API.
 
@@ -77,10 +81,6 @@
         %li
           %strong= link_to "System Hooks", help_system_hooks_path
           %p Let GitLab notify you when certain management tasks need to be carried out.
-
-        %li
-          %strong= link_to "Public Access", help_public_access_path
-          %p Learn how you can allow public access to a project.
 
         %li
           %strong= link_to "Security", help_security_path
