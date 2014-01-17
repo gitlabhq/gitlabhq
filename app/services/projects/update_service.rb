@@ -1,5 +1,5 @@
 module Projects
-  class UpdateContext < BaseContext
+  class UpdateService < BaseService
     def execute(role = :default)
       params[:project].delete(:namespace_id)
       # check that user is allowed to set specified visibility_level

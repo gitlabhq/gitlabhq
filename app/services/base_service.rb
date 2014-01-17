@@ -1,4 +1,4 @@
-class BaseContext
+class BaseService
   attr_accessor :project, :current_user, :params
 
   def initialize(project, user, params)

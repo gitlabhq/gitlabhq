@@ -66,7 +66,7 @@ namespace :gitlab do
             project_params[:namespace_id] = group.id
           end
 
-          project = Projects::CreateContext.new(user, project_params).execute
+          project = Projects::CreateService.new(user, project_params).execute
 
           if project.valid?
             puts " * Created #{project.name} (#{repo_path})".green

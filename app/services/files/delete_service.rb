@@ -1,7 +1,7 @@
-require_relative "base_context"
+require_relative "base_service"
 
 module Files
-  class DeleteContext < BaseContext
+  class DeleteService < BaseService
     def execute
       allowed = if project.protected_branch?(ref)
                   can?(current_user, :push_code_to_protected_branches, project)

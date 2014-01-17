@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ForkContext do
+describe Projects::ForkService do
   describe :fork_by_user do
     before do
       @from_namespace = create(:namespace)
@@ -47,7 +47,7 @@ describe Projects::ForkContext do
   end
 
   def fork_project(from_project, user, fork_success = true)
-    context = Projects::ForkContext.new(from_project, user)
+    context = Projects::ForkService.new(from_project, user)
     shell = double("gitlab_shell")
     shell.stub(fork_repository: fork_success)
     context.stub(gitlab_shell: shell)

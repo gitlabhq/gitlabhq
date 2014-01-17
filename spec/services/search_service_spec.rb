@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Search::GlobalContext' do
+describe 'Search::GlobalService' do
   let(:found_namespace) { create(:namespace, name: 'searchable namespace', path:'another_thing') }
   let(:user) { create(:user, namespace: found_namespace) }
   let!(:found_project) { create(:project, name: 'searchable_project', creator_id: user.id, namespace: found_namespace, visibility_level: Gitlab::VisibilityLevel::PRIVATE) }
@@ -19,7 +19,7 @@ describe 'Search::GlobalContext' do
   describe '#execute' do
     context 'unauthenticated' do
       it 'should return public projects only' do
-        context = Search::GlobalContext.new(nil, search: "searchable")
+        context = Search::GlobalService.new(nil, search: "searchable")
         results = context.execute
         results[:projects].should have(1).items
         results[:projects].should include(public_project)
@@ -28,7 +28,7 @@ describe 'Search::GlobalContext' do
 
     context 'authenticated' do
       it 'should return public, internal and private projects' do
-        context = Search::GlobalContext.new(user, search: "searchable")
+        context = Search::GlobalService.new(user, search: "searchable")
         results = context.execute
         results[:projects].should have(3).items
         results[:projects].should include(public_project)
@@ -37,7 +37,7 @@ describe 'Search::GlobalContext' do
       end
 
       it 'should return only public & internal projects' do
-        context = Search::GlobalContext.new(internal_user, search: "searchable")
+        context = Search::GlobalService.new(internal_user, search: "searchable")
         results = context.execute
         results[:projects].should have(2).items
         results[:projects].should include(internal_project)
@@ -45,7 +45,7 @@ describe 'Search::GlobalContext' do
       end
 
       it 'namespace name should be searchable' do
-        context = Search::GlobalContext.new(user, search: "searchable namespace")
+        context = Search::GlobalService.new(user, search: "searchable namespace")
         results = context.execute
         results[:projects].should == [found_project]
       end

@@ -1,5 +1,5 @@
 module Issues
-  class BulkUpdateContext < BaseContext
+  class BulkUpdateService < BaseService
     def execute
       update_data = params[:update]
 

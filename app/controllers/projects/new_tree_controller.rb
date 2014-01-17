@@ -6,7 +6,7 @@ class Projects::NewTreeController < Projects::BaseTreeController
 
   def update
     file_path = File.join(@path, File.basename(params[:file_name]))
-    result = Files::CreateContext.new(@project, current_user, params, @ref, file_path).execute
+    result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"

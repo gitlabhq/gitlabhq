@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Issues::BulkUpdateContext do
+describe Issues::BulkUpdateService do
   before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
@@ -14,7 +14,7 @@ describe Issues::BulkUpdateContext do
       name: "GitLab",
       namespace: @user.namespace
     }
-    @project = Projects::CreateContext.new(@user, opts).execute
+    @project = Projects::CreateService.new(@user, opts).execute
   end
 
   describe :close_issue do
@@ -32,7 +32,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       result[:success].should be_true
       result[:count].should == @issues.count
 
@@ -57,7 +57,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       result[:success].should be_true
       result[:count].should == @issues.count
 
@@ -80,7 +80,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       result[:success].should be_true
       result[:count].should == 1
 
@@ -102,7 +102,7 @@ describe Issues::BulkUpdateContext do
     end
 
     it {
-      result = Issues::BulkUpdateContext.new(@project, @user, @params).execute
+      result = Issues::BulkUpdateService.new(@project, @user, @params).execute
       result[:success].should be_true
       result[:count].should == 1
 
