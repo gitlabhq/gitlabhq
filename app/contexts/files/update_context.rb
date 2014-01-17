@@ -23,10 +23,11 @@ module Files
         return error("You can only edit text files")
       end
 
-      new_file_action = Gitlab::Satellite::EditFileAction.new(current_user, project, ref, path)
-      created_successfully = new_file_action.commit!(
+      edit_file_action = Gitlab::Satellite::EditFileAction.new(current_user, project, ref, path)
+      created_successfully = edit_file_action.commit!(
         params[:content],
-        params[:commit_message]
+        params[:commit_message],
+        params[:encoding]
       )
 
       if created_successfully

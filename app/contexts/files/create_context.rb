@@ -33,7 +33,8 @@ module Files
       new_file_action = Gitlab::Satellite::NewFileAction.new(current_user, project, ref, file_path)
       created_successfully = new_file_action.commit!(
         params[:content],
-        params[:commit_message]
+        params[:commit_message],
+        params[:encoding]
       )
 
       if created_successfully
