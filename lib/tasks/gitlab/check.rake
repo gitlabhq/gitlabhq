@@ -682,6 +682,8 @@ namespace :gitlab do
 
   namespace :ldap do
     task :check, [:limit] => :environment do |t, args|
+      # Only show up to 100 results because LDAP directories can be very big.
+      # This setting only affects the `rake gitlab:check` script.
       args.with_defaults(limit: 100)
       warn_user_is_not_gitlab
       start_checking "LDAP"
