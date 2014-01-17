@@ -41,6 +41,8 @@
 #  confirmed_at           :datetime
 #  confirmation_sent_at   :datetime
 #  unconfirmed_email      :string(255)
+#  hide_no_ssh_key        :boolean          default(FALSE)
+#  website_url            :string(255)      default(""), not null
 #
 
 require 'spec_helper'
@@ -291,6 +293,50 @@ describe User do
     it "should be false if avatar is html page" do
       user.update_attribute(:avatar, 'uploads/avatar.html')
       user.avatar_type.should == ["only images allowed"]
+    end
+  end
+
+  describe '#full_website_url' do
+    let(:user) { create(:user) }
+
+    it 'begins with http if website url omits it' do
+      user.website_url = 'test.com'
+
+      expect(user.full_website_url).to eq 'http://test.com'
+    end
+
+    it 'begins with http if website url begins with http' do
+      user.website_url = 'http://test.com'
+
+      expect(user.full_website_url).to eq 'http://test.com'
+    end
+
+    it 'begins with https if website url begins with https' do
+      user.website_url = 'https://test.com'
+
+      expect(user.full_website_url).to eq 'https://test.com'
+    end
+  end
+
+  describe '#short_website_url' do
+    let(:user) { create(:user) }
+
+    it 'does not begin with http if website url omits it' do
+      user.website_url = 'test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
+    end
+
+    it 'does not begin with http if website url begins with http' do
+      user.website_url = 'http://test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
+    end
+
+    it 'does not begin with https if website url begins with https' do
+      user.website_url = 'https://test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
     end
   end
 end

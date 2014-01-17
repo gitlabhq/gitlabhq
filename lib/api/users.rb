@@ -36,6 +36,7 @@ module API
       #   skype                             - Skype ID
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
+      #   website_url                       - Website url
       #   projects_limit                    - Number of projects user can create
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
@@ -67,6 +68,7 @@ module API
       #   skype                             - Skype ID
       #   linkedin                          - Linkedin
       #   twitter                           - Twitter account
+      #   website_url                       - Website url
       #   projects_limit                    - Limit projects each user can create
       #   extern_uid                        - External authentication provider UID
       #   provider                          - External provider
@@ -78,7 +80,7 @@ module API
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
         user = User.find(params[:id])
         not_found!("User not found") unless user
 
