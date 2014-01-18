@@ -31,13 +31,16 @@ RAILS_ENV="production"
 # internal /bin/sh variables such as PATH, EDITOR or SHELL.
 app_user="git"
 app_root="/home/$app_user/gitlab"
+
+# Read configuration variable file if it is present
+test -f /etc/default/gitlab && . /etc/default/gitlab
+
+# if default/gitlab is sourced with $app_user or/add $app_root modified,
+# variables delow will not be affected...
 pid_path="$app_root/tmp/pids"
 socket_path="$app_root/tmp/sockets"
 web_server_pid_path="$pid_path/unicorn.pid"
 sidekiq_pid_path="$pid_path/sidekiq.pid"
-
-# Read configuration variable file if it is present
-test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Switch to the app_user if it is not he/she who is running the script.
 if [ "$USER" != "$app_user" ]; then
