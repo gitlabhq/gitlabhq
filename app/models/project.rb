@@ -138,6 +138,10 @@ class Project < ActiveRecord::Base
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
+    def search_by_title query
+      where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
+    end
+
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")

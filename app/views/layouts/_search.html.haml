@@ -7,4 +7,4 @@
       = hidden_field_tag :search_code, true
     = hidden_field_tag :repository_ref, @ref
     = submit_tag 'Go' if ENV['RAILS_ENV'] == 'test'
-    .search-autocomplete-json.hide{:'data-autocomplete-opts' => search_autocomplete_source }
+    .search-autocomplete-opts.hide{:'data-autocomplete-path' => search_autocomplete_path, :'data-autocomplete-project-id' => @project.try(:id), :'data-autocomplete-project-ref' => @ref }
