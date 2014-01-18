@@ -47,5 +47,9 @@ class Dispatcher
 
 
   initSearch: ->
-    autocomplete_json = $('.search-autocomplete-json').data('autocomplete-opts')
-    new SearchAutocomplete(autocomplete_json)
+    opts = $('.search-autocomplete-opts')
+    path = opts.data('autocomplete-path')
+    project_id = opts.data('autocomplete-project-id')
+    project_ref = opts.data('autocomplete-project-ref')
+
+    new SearchAutocomplete(path, project_id, project_ref)

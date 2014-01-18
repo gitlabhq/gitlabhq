@@ -6,6 +6,7 @@ Gitlab::Application.routes.draw do
   # Search
   #
   get 'search' => "search#show"
+  get 'search/autocomplete' => "search#autocomplete", as: :search_autocomplete
 
   # API
   API::API.logger Rails.logger
