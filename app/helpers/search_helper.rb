@@ -49,7 +49,7 @@ module SearchHelper
   # Autocomplete results for the current project, if it's defined
   def project_autocomplete
     if @project && @project.repository.exists? && @project.repository.root_ref
-      prefix = simple_sanitize(@project.name_with_namespace)
+      prefix = search_result_sanitize(@project.name_with_namespace)
       ref    = @ref || @project.repository.root_ref
 
       [
@@ -74,7 +74,7 @@ module SearchHelper
   def groups_autocomplete(term, limit = 5)
     current_user.authorized_groups.search(term).limit(limit).map do |group|
       {
-        label: "group: #{simple_sanitize(group.name)}",
+        label: "group: #{search_result_sanitize(group.name)}",
         url: group_path(group)
       }
     end
@@ -84,7 +84,7 @@ module SearchHelper
   def projects_autocomplete(term, limit = 5)
     current_user.authorized_projects.search_by_title(term).non_archived.limit(limit).map do |p|
       {
-        label: "project: #{simple_sanitize(p.name_with_namespace)}",
+        label: "project: #{search_result_sanitize(p.name_with_namespace)}",
         url: project_path(p)
       }
     end
@@ -94,13 +94,13 @@ module SearchHelper
   def public_projects_autocomplete(term, limit = 5)
     Project.public_or_internal_only(current_user).search_by_title(term).non_archived.limit(limit).map do |p|
       {
-        label: "project: #{simple_sanitize(p.name_with_namespace)}",
+        label: "project: #{search_result_sanitize(p.name_with_namespace)}",
         url: project_path(p)
       }
     end
   end
 
-  def simple_sanitize(str)
+  def search_result_sanitize(str)
     Sanitize.clean(str)
   end
 end
