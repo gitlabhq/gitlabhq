@@ -139,7 +139,7 @@ class Project < ActiveRecord::Base
     end
 
     def search_by_title query
-      where("projects.archived = ?", false).where("projects.name LIKE :query", query: "%#{query}%")
+      where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
     end
 
     def find_with_namespace(id)
