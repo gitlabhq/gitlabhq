@@ -104,13 +104,13 @@ check_status(){
   # If the web server is running kill -0 $wpid returns true, or rather 0.
   # Checks of *_status should only check for == 0 or != 0, never anything else.
   if [ $wpid -ne 0 ]; then
-    kill -0 "$wpid" 2>/dev/null
+    ps  -p "$wpid" 2>&1 1>/dev/null
     web_status="$?"
   else
     web_status="-1"
   fi
   if [ $spid -ne 0 ]; then
-    kill -0 "$spid" 2>/dev/null
+    ps  -p "$spid" 2>&1 1>/dev/null
     sidekiq_status="$?"
   else
     sidekiq_status="-1"
