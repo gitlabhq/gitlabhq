@@ -76,6 +76,27 @@ describe User do
     it { should_not allow_value(-1).for(:projects_limit) }
 
     it { should ensure_length_of(:bio).is_within(0..255) }
+
+    describe 'email' do
+      it 'accepts info@example.com' do
+        user = build(:user, email: 'info@example.com')
+        expect(user).to be_valid
+      end
+      it 'accepts info+test@example.com' do
+        user = build(:user, email: 'info+test@example.com')
+        expect(user).to be_valid
+      end
+
+      it 'rejects test@test@example.com' do
+        user = build(:user, email: 'test@test@example.com')
+        expect(user).to be_invalid
+      end
+
+      it 'rejects mailto:test@example.com' do
+        user = build(:user, email: 'mailto:test@example.com')
+        expect(user).to be_invalid
+      end
+    end
   end
 
   describe "Respond to" do
