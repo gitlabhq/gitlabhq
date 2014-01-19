@@ -238,7 +238,7 @@ class User < ActiveRecord::Base
 
   def namespace_uniq
     namespace_name = self.username
-    if Namespace.find_by_path(namespace_name)
+    if Namespace.find_by(path: namespace_name)
       self.errors.add :username, "already exist"
     end
   end
@@ -382,7 +382,7 @@ class User < ActiveRecord::Base
   end
 
   def created_by
-    User.find_by_id(created_by_id) if created_by_id
+    User.find_by(id: created_by_id) if created_by_id
   end
 
   def sanitize_attrs

@@ -19,7 +19,7 @@ project_urls = [
 project_urls.each_with_index do |url, i|
   group_path, project_path = url.split('/')[-2..-1]
 
-  group = Group.find_by_path(group_path)
+  group = Group.find_by(path: group_path)
 
   unless group
     group = Group.new(

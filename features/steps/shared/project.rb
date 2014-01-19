@@ -9,20 +9,20 @@ module SharedProject
 
   # Create a specific project called "Shop"
   And 'I own project "Shop"' do
-    @project = Project.find_by_name "Shop"
+    @project = Project.find_by(name: "Shop")
     @project ||= create(:project_with_code, name: "Shop", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
   # Create another specific project called "Forum"
   And 'I own project "Forum"' do
-    @project = Project.find_by_name "Forum"
+    @project = Project.find_by(name: "Forum")
     @project ||= create(:project_with_code, name: "Forum", namespace: @user.namespace, path: 'forum_project')
     @project.team << [@user, :master]
   end
 
   And 'project "Shop" has push event' do
-    @project = Project.find_by_name("Shop")
+    @project = Project.find_by(name: "Shop")
 
     data = {
       before: "0000000000000000000000000000000000000000",
@@ -48,7 +48,7 @@ module SharedProject
   end
 
   Then 'I should see project "Shop" activity feed' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     page.should have_content "#{@user.name} pushed new branch new_design at #{project.name_with_namespace}"
   end
 

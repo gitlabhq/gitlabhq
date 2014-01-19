@@ -27,7 +27,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see closed merge request "Bug NS-04"' do
-    merge_request = MergeRequest.find_by_title!("Bug NS-04")
+    merge_request = MergeRequest.find_by!(title: "Bug NS-04")
     merge_request.closed?.should be_true
     page.should have_content "Closed by"
   end
@@ -180,11 +180,11 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def project
-    @project ||= Project.find_by_name!("Shop")
+    @project ||= Project.find_by!(name: "Shop")
   end
 
   def merge_request
-    @merge_request ||= MergeRequest.find_by_title!("Bug NS-05")
+    @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
 
   def init_diff_note

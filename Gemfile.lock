@@ -549,7 +549,6 @@ PLATFORMS
 DEPENDENCIES
   actionpack-action_caching
   actionpack-page_caching
-  activerecord-deprecated_finders
   acts-as-taggable-on
   annotate (~> 2.6.0.beta2)
   asciidoctor

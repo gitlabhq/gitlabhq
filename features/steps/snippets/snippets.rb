@@ -59,6 +59,6 @@ class SnippetsFeature < Spinach::FeatureSteps
   end
 
   def snippet
-    @snippet ||= PersonalSnippet.find_by_title!("Personal snippet one")
+    @snippet ||= PersonalSnippet.find_by!(title: "Personal snippet one")
   end
 end

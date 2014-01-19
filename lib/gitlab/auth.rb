@@ -1,7 +1,7 @@
 module Gitlab
   class Auth
     def find(login, password)
-      user = User.find_by_email(login) || User.find_by_username(login)
+      user = User.find_by(email: login) || User.find_by(username: login)
 
       if user.nil? || user.ldap_user?
         # Second chance - try LDAP authentication

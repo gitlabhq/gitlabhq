@@ -81,7 +81,7 @@ module API
             merge_request.target_project = user_project
           else
             if target_matches_fork(target_project_id,user_project)
-              merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+              merge_request.target_project = Project.find_by(id: attrs[:target_project_id])
             else
               render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
             end

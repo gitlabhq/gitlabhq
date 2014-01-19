@@ -19,7 +19,7 @@ describe PostReceive do
     end
 
     it "does not run if the author is not in the project" do
-      Key.stub(find_by_id: nil)
+      Key.stub(:find_by).with(hash_including(id: anything())) { nil }
 
       project.should_not_receive(:execute_hooks)
 

@@ -141,10 +141,10 @@ class Project < ActiveRecord::Base
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")
-        namespace = Namespace.find_by_path(id.first)
+        namespace = Namespace.find_by(path: id.first)
         return nil unless namespace
 
-        where(namespace_id: namespace.id).find_by_path(id.second)
+        where(namespace_id: namespace.id).find_by(path: id.second)
       else
         where(path: id, namespace_id: nil).last
       end
@@ -288,7 +288,7 @@ class Project < ActiveRecord::Base
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by_user_id(user_id)
+    users_projects.find_by(user_id: user_id)
   end
 
   def name_with_namespace

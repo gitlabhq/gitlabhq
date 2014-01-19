@@ -14,7 +14,6 @@ gem "protected_attributes"
 gem 'rails-observers'
 gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
-gem 'activerecord-deprecated_finders'
 
 # Supported DBs
 gem "mysql2", group: :mysql
