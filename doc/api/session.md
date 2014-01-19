@@ -26,6 +26,7 @@ __You can login with both GitLab and LDAP credentials now__
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "website_url": "",
   "dark_scheme": false,
   "theme_id": 1,
   "is_admin": false,
