@@ -39,6 +39,11 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
+# Not all systems set $USER
+if [ "x$USER" == "x" ]; then
+  USER=$(id -nu)
+fi
+
 # Switch to the app_user if it is not he/she who is running the script.
 if [ "$USER" != "$app_user" ]; then
   sudo -u "$app_user" -H -i $0 "$@"; exit;
