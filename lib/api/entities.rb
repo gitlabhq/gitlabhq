@@ -1,7 +1,7 @@
 module API
   module Entities
     class User < Grape::Entity
-      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
+      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter, :website_url,
              :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group

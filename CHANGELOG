@@ -17,6 +17,7 @@ v 6.5.0
   - Fix 500 error for rdoc files
   - Ability to customize merge commit message (sponsored by Say Media)
   - Search autocomplete via ajax
+  - Add website url to user profile
 
 v6.4.3
   - Don't use unicorn worker killer if PhusionPassenger is defined
