@@ -201,7 +201,7 @@ class Project < ActiveRecord::Base
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
   end
 
-  def web_url_without_scheme
+  def web_url_without_protocol
     web_url.split("://")[1]
   end
 
