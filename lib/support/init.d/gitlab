@@ -40,7 +40,7 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
 # Not all systems set $USER
-if [ "x$USER" == "x" ]; then
+if [ "x$USER" = "x" ]; then
   USER=$(id -nu)
 fi
 
