@@ -151,7 +151,7 @@ or start each component separately
 
 * [Consultancy](http://www.gitlab.com/consultancy/) from the GitLab experts for installations, upgrades and customizations.
 
-* [#gitlab IRC channel](http://www.freenode.net/) on Freenode to get in touch with other GitLab users and get help, it's managed by James Newton, Drew Blessing and Sam Gleske
+* [#gitlab IRC channel](http://www.freenode.net/) on Freenode to get in touch with other GitLab users and get help, it's managed by James Newton (newton), Drew Blessing (dblessing), and Sam Gleske (sag47).
 
 * [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
 
