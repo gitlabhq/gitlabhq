@@ -90,6 +90,6 @@
     $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
   });
   $('.assign-to-me-link').on('click', function(e){
-    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("select2:updated");
+    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
