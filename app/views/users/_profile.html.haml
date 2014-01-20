@@ -19,7 +19,7 @@
         %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}"
     - unless user.website_url.blank?
       %li
-        %span.light Website url:
+        %span.light Website:
         %strong= link_to user.short_website_url, user.full_website_url
     - unless user.bio.blank?
       %li
