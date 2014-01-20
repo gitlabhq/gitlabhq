@@ -2,12 +2,12 @@ namespace :gitlab do
   namespace :import do
     # How to use:
     #
-    #  1. copy your bare repos under git repos_path
-    #  2. run bundle exec rake gitlab:import:repos RAILS_ENV=production
+    #  1. copy the bare repos under the repos_path (commonly /home/git/repositories)
+    #  2. run: bundle exec rake gitlab:import:repos RAILS_ENV=production
     #
     # Notes:
-    #  * project owner will be a first admin
-    #  * existing projects will be skipped
+    #  * The project owner will set to the first administator of the system
+    #  * Existing projects will be skipped
     #
     desc "GITLAB | Import bare repositories from gitlab_shell -> repos_path into GitLab project instance"
     task repos: :environment do
