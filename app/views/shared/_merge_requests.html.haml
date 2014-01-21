@@ -1,6 +1,6 @@
 - if @merge_requests.any?
   - @merge_requests.group_by(&:target_project).each do |group|
-    .ui-box.small-box
+    .ui-box.ui-box-small
       - project = group[0]
       .title
         = link_to_project project

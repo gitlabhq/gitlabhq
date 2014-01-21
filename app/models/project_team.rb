@@ -64,6 +64,10 @@ class ProjectTeam
     UsersProject.truncate_team(project)
   end
 
+  def users
+    members
+  end
+
   def members
     @members ||= fetch_members
   end

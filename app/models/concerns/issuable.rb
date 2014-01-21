@@ -45,6 +45,18 @@ module Issuable
     def search(query)
       where("title like :query", query: "%#{query}%")
     end
+
+    def sort(method)
+      case method.to_s
+      when 'newest' then reorder('created_at DESC')
+      when 'oldest' then reorder('created_at ASC')
+      when 'recently_updated' then reorder('updated_at DESC')
+      when 'last_updated' then reorder('updated_at ASC')
+      when 'milestone_due_soon' then joins(:milestone).reorder("milestones.due_date ASC")
+      when 'milestone_due_later' then joins(:milestone).reorder("milestones.due_date DESC")
+      else reorder('created_at DESC')
+      end
+    end
   end
 
   def today?

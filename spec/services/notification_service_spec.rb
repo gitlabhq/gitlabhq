@@ -233,6 +233,31 @@ describe NotificationService do
     end
   end
 
+  describe 'Projects' do
+    let(:project) { create :project }
+
+    before do
+      build_team(project)
+    end
+
+    describe :project_was_moved do
+      it do
+        should_email(@u_watcher.id)
+        should_email(@u_participating.id)
+        should_not_email(@u_disabled.id)
+        notification.project_was_moved(project)
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:project_was_moved_email).with(project.id, user_id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:project_was_moved_email).with(project.id, user_id)
+      end
+    end
+  end
+
   def build_team(project)
     @u_watcher = create(:user, notification_level: Notification::N_WATCH)
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)

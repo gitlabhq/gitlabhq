@@ -1,5 +1,5 @@
 %h3.page-title
-  Issues assigned to me
+  Issues
   %span.pull-right #{@issues.total_count} issues
 
 %p.light
@@ -9,7 +9,7 @@
 %hr
 
 .row
-  .span3
+  .col-md-3
     = render 'shared/filter', entity: 'issue'
-  .span9
+  .col-md-9
     = render 'shared/issues'

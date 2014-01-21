@@ -9,7 +9,7 @@ module Gitlab
       # Returns false if committing the change fails
       # Returns false if pushing from the satellite to bare repo failed or was rejected
       # Returns true otherwise
-      def commit!(content, commit_message)
+      def commit!(content, commit_message, encoding)
         in_locked_and_timed_satellite do |repo|
           prepare_satellite!(repo)
 
@@ -29,7 +29,7 @@ module Gitlab
           FileUtils.mkdir_p(dir_name_in_satellite)
 
           # Write file
-          File.open(file_path_in_satellite, 'w') { |f| f.write(content) }
+          write_file(file_path_in_satellite, content, encoding)
 
           # add new file
           repo.add(file_path_in_satellite)

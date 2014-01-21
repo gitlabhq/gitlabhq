@@ -3,12 +3,12 @@
   %span.pull-right #{@merge_requests.total_count} merge requests
 
 %p.light
-  Authored or assigned to you from
+  Only merge requests from
   %strong #{@group.name}
-  group. To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+  group are listed here. To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 %hr
 .row
-  .span3
+  .col-md-3
     = render 'shared/filter', entity: 'merge_request'
-  .span9
+  .col-md-9
     = render 'shared/merge_requests'

@@ -17,7 +17,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params.merge(project_id: @project.id))
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
+
+    @sort = params[:sort].humanize
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
@@ -123,7 +130,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.opened? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user)
+      @merge_request.automerge!(current_user, params[:merge_commit_message])
       @status = true
     else
       @status = false
@@ -198,6 +205,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
+    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
+    @discussions = Note.discussions_from_notes(@notes)
+    @noteable = @merge_request
 
     # Get commits from repository
     # or from cache if already merged
@@ -205,9 +215,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
-
-    @target_type = :merge_request
-    @target_id = @merge_request.id
   end
 
   def allowed_to_merge?

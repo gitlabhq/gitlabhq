@@ -41,7 +41,8 @@
 #  confirmed_at           :datetime
 #  confirmation_sent_at   :datetime
 #  unconfirmed_email      :string(255)
-#  hide_no_ssh_key        :boolean          default(FALSE), not null
+#  hide_no_ssh_key        :boolean          default(FALSE)
+#  website_url            :string(255)      default(""), not null
 #
 
 require 'carrierwave/orm/activerecord'
@@ -52,7 +53,7 @@ class User < ActiveRecord::Base
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
-                  :skype, :linkedin, :twitter, :color_scheme_id, :theme_id, :force_random_password,
+                  :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
                   :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
                   as: [:default, :admin]
 
@@ -103,7 +104,7 @@ class User < ActiveRecord::Base
   # Validations
   #
   validates :name, presence: true
-  validates :email, presence: true, format: { with: /\A([^@\s]+)@((?:[-a-z0-9]+\.)+[a-z]{2,})\Z/ }
+  validates :email, presence: true, email: {strict_mode: true}, uniqueness: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
@@ -113,9 +114,8 @@ class User < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
-
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
-
+  validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -199,7 +199,7 @@ class User < ActiveRecord::Base
     end
 
     def by_username_or_id(name_or_id)
-      where('users.username = ? OR users.id = ?', name_or_id, name_or_id.to_i).first
+      where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
     end
 
     def build_user(attrs = {}, options= {})
@@ -241,6 +241,12 @@ class User < ActiveRecord::Base
     namespace_name = self.username
     if Namespace.find_by_path(namespace_name)
       self.errors.add :username, "already exist"
+    end
+  end
+
+  def avatar_type
+    unless self.avatar.image?
+      self.errors.add :avatar, "only images allowed"
     end
   end
 
@@ -426,5 +432,15 @@ class User < ActiveRecord::Base
     Event.where(author_id: self.id).
       order('id DESC').limit(1000).
       update_all(updated_at: Time.now)
+  end
+
+  def full_website_url
+    return "http://#{website_url}" if website_url !~ /^https?:\/\//
+
+    website_url
+  end
+
+  def short_website_url
+    website_url.gsub(/https?:\/\//, '')
   end
 end

@@ -6,7 +6,7 @@ Gitlab::Seeder.quiet do
     project = Project.all.sample
 
     # Random user
-    user = project.users.sample
+    user = project.team.users.sample
 
     next unless user
 

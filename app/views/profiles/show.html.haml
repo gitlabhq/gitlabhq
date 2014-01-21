@@ -10,49 +10,52 @@
 
 = form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit_user form-horizontal" }, authenticity_token: true do |f|
   -if @user.errors.any?
-    %div.alert.alert-error
+    %div.alert.alert-danger
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span7
-      .control-group
+    .col-md-7
+      .form-group
         = f.label :name, class: "control-label"
-        .controls
-          = f.text_field :name, class: "input-xlarge", required: true
+        .col-sm-10
+          = f.text_field :name, class: "form-control", required: true
           %span.help-block Enter your name, so people you know can recognize you.
 
-      .control-group
+      .form-group
         = f.label :email, class: "control-label"
-        .controls
+        .col-sm-10
           - if @user.ldap_user?
-            = f.text_field :email, class: "input-xlarge", required: true, readonly: true
+            = f.text_field :email, class: "form-control", required: true, readonly: true
             %span.help-block.light
               Email is read-only for LDAP user
           - else
-            = f.text_field :email, class: "input-xlarge", required: true
+            = f.text_field :email, class: "form-control", required: true
             - if @user.unconfirmed_email.present?
               %span.help-block
                 We sent confirmation email to
                 %strong #{@user.unconfirmed_email}
             - else
               %span.help-block We also use email for avatar detection if no avatar is uploaded.
-      .control-group
+      .form-group
         = f.label :skype, class: "control-label"
-        .controls= f.text_field :skype, class: "input-xlarge"
-      .control-group
+        .col-sm-10= f.text_field :skype, class: "form-control"
+      .form-group
         = f.label :linkedin, class: "control-label"
-        .controls= f.text_field :linkedin, class: "input-xlarge"
-      .control-group
+        .col-sm-10= f.text_field :linkedin, class: "form-control"
+      .form-group
         = f.label :twitter, class: "control-label"
-        .controls= f.text_field :twitter, class: "input-xlarge"
-      .control-group
+        .col-sm-10= f.text_field :twitter, class: "form-control"
+      .form-group
+        = f.label :website_url, 'Website', class: "control-label"
+        .col-sm-10= f.text_field :website_url, class: "form-control"
+      .form-group
         = f.label :bio, class: "control-label"
-        .controls
-          = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
+        .col-sm-10
+          = f.text_area :bio, rows: 6, class: "form-control", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
 
-    .span5.pull-right
+    .col-md-5
       .light-well
         = image_tag avatar_icon(@user.email, 160), alt: '', class: 'avatar s160'
 
@@ -73,7 +76,7 @@
               %span Choose File ...
             &nbsp;
             %span.file_name.js-avatar-filename File name...
-            = f.file_field :avatar, class: "js-user-avatar-input hide"
+            = f.file_field :avatar, class: "js-user-avatar-input hidden"
             .light The maximum file size allowed is 100KB.
             - if @user.avatar?
               %hr

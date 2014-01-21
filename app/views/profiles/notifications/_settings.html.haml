@@ -1,6 +1,6 @@
 %li
   .row
-    .span4
+    .col-sm-4
       %span
         = notification_icon(notification)
 
@@ -8,24 +8,24 @@
           = link_to membership.group.name, membership.group
         - else
           = link_to_project(membership.project)
-    .span7
+    .col-sm-8
       = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
         = hidden_field_tag :notification_type, type, id: dom_id(membership, 'notification_type')
         = hidden_field_tag :notification_id, membership.id, id: dom_id(membership, 'notification_id')
 
-        = label_tag do
+        = label_tag nil, class: 'radio-inline' do
           = radio_button_tag :notification_level, Notification::N_GLOBAL, notification.global?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
           %span Use global setting
 
-        = label_tag do
+        = label_tag nil, class: 'radio-inline' do
           = radio_button_tag :notification_level, Notification::N_DISABLED, notification.disabled?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
           %span Disabled
 
-        = label_tag do
+        = label_tag nil, class: 'radio-inline' do
           = radio_button_tag :notification_level, Notification::N_PARTICIPATING, notification.participating?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
           %span Participating
 
-        = label_tag do
+        = label_tag nil, class: 'radio-inline' do
           = radio_button_tag :notification_level, Notification::N_WATCH, notification.watch?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
           %span Watch
 

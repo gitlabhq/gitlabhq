@@ -9,7 +9,7 @@
     %b.caret
   %ul.dropdown-menu
     %li
-      = link_to search_path(group_id: nil) do
+      = link_to search_path(group_id: nil, search: params[:search]) do
         Any
     - current_user.authorized_groups.sort_by(&:name).each do |group|
       %li
@@ -27,7 +27,7 @@
     %b.caret
   %ul.dropdown-menu
     %li
-      = link_to search_path(project_id: nil) do
+      = link_to search_path(project_id: nil, search: params[:search]) do
         Any
     - current_user.authorized_projects.sort_by(&:name_with_namespace).each do |project|
       %li

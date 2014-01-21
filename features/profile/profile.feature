@@ -8,8 +8,8 @@ Feature: Profile
 
   Scenario: I edit profile
     Given I visit profile page
-    Then I change my contact info
-    And I should see new contact info
+    Then I change my profile info
+    And I should see new profile info
 
   Scenario: I change my password without old one
     Given I visit profile password page

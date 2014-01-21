@@ -1,15 +1,19 @@
-= form_tag search_path, method: :get, class: 'form-inline' do |f|
-  .search-holder
-    = label_tag :search do
-      %span Looking for
-    .controls
-      = search_field_tag :search, params[:search], placeholder: "issue 143", class: "input-xxlarge search-text-input", id: "dashboard_search"
+= form_tag search_path, method: :get, class: 'form-horizontal' do |f|
+  .search-holder.clearfix
+    .form-group
+      = label_tag :search, class: 'control-label' do
+        %span Looking for
+      .col-sm-6
+        = search_field_tag :search, params[:search], placeholder: "issue 143", class: "form-control search-text-input", id: "dashboard_search"
+      .col-sm-4
+        = submit_tag 'Search', class: "btn btn-create"
+    .form-group
+      .col-sm-2
+      .col-sm-10
+        = render 'filter', f: f
       = hidden_field_tag :project_id, params[:project_id]
       = hidden_field_tag :group_id, params[:group_id]
       = hidden_field_tag :search_code, params[:search_code]
-      = submit_tag 'Search', class: "btn btn-create"
-      .prepend-top-10
-        = render 'filter', f: f
 
   .results.prepend-top-10
     - if params[:search].present?

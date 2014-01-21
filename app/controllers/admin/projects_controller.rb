@@ -19,7 +19,7 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def transfer
-    result = ::Projects::TransferContext.new(@project, current_user, project: params).execute(:admin)
+    result = ::Projects::TransferService.new(@project, current_user, project: params).execute(:admin)
 
     if result
       redirect_to [:admin, @project]

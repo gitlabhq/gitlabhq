@@ -92,6 +92,9 @@ module Grack
           return false unless can?(user, action, project)
         end
 
+        # Never let git-receive-pack trough unauthenticated; it's
+        # harmless but git < 1.8 doesn't like it
+        return false if user.nil?
         true
       else
         false

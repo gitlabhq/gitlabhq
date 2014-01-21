@@ -1,0 +1,55 @@
+%fieldset
+  %ul.nav.nav-pills.nav-stacked
+    = nav_tab :scope, nil do
+      = link_to projects_dashboard_filter_path(scope: nil) do
+        All
+        %span.pull-right
+          = current_user.authorized_projects.count
+    = nav_tab :scope, 'personal' do
+      = link_to projects_dashboard_filter_path(scope: 'personal') do
+        Personal
+        %span.pull-right
+          = current_user.personal_projects.count
+    = nav_tab :scope, 'joined' do
+      = link_to projects_dashboard_filter_path(scope: 'joined') do
+        Joined
+        %span.pull-right
+          = current_user.authorized_projects.joined(current_user).count
+    = nav_tab :scope, 'owned' do
+      = link_to projects_dashboard_filter_path(scope: 'owned') do
+        Owned
+        %span.pull-right
+          = current_user.owned_projects.count
+
+%fieldset
+  %legend Visibility
+  %ul.nav.nav-pills.nav-stacked.nav-small.visibility-filter
+    - Gitlab::VisibilityLevel.values.each do |level|
+      %li{ class: (level.to_s == params[:visibility_level]) ? 'active' : 'light' }
+        = link_to projects_dashboard_filter_path(visibility_level: level) do
+          = visibility_level_icon(level)
+          = visibility_level_label(level)
+
+- if @groups.present?
+  %fieldset
+    %legend Groups
+    %ul.nav.nav-pills.nav-stacked.nav-small
+      - @groups.each do |group|
+        %li{ class: (group.name == params[:group]) ? 'active' : 'light' }
+          = link_to projects_dashboard_filter_path(group: group.name) do
+            %i.icon-folder-close-alt
+            = group.name
+            %small.pull-right
+              = group.projects.count
+
+
+
+- if @labels.present?
+  %fieldset
+    %legend Labels
+    %ul.nav.nav-pills.nav-stacked.nav-small
+      - @labels.each do |label|
+        %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
+          = link_to projects_dashboard_filter_path(scope: params[:scope], label: label.name) do
+            %i.icon-tag
+            = label.name
