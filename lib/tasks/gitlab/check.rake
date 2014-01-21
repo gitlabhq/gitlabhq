@@ -698,7 +698,7 @@ namespace :gitlab do
     end
 
     def print_users(limit)
-      puts "LDAP users with access to your GitLab server (limit: #{limit}):"
+      puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
       ldap.search(attributes: attributes, filter: filter, size: limit, return_result: false) do |entry|
         puts "DN: #{entry.dn}\t#{ldap_config.uid}: #{entry[ldap_config.uid]}"
       end
