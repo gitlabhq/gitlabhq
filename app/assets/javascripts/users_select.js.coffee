@@ -6,12 +6,12 @@ $ ->
       avatar = gon.gravatar_url
       avatar = avatar.replace('%{hash}', md5(user.email))
       avatar = avatar.replace('%{size}', '24')
-    markup = "<div class='user-result'>"
-    markup += "<div class='user-image'><img class='avatar s24' src='" + avatar + "'></div>"
-    markup += "<div class='user-name'>" + user.name + "</div>"
-    markup += "<div class='user-username'>" + user.username + "</div>"
-    markup += "</div>"
-    markup
+
+    "<div class='user-result'>
+       <div class='user-image'><img class='avatar s24' src='#{avatar}'></div>
+       <div class='user-name'>#{user.name}</div>
+       <div class='user-username'>#{user.username}</div>
+     </div>"
 
   userFormatSelection = (user) ->
     user.name

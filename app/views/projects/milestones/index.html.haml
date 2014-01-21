@@ -8,7 +8,7 @@
         New Milestone
 
   .row
-    .span3
+    .col-md-3.hidden-sm
       %ul.nav.nav-pills.nav-stacked
         %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
           = link_to project_milestones_path(@project, f: "active") do
@@ -19,7 +19,7 @@
         %li{class: ("active" if params[:f] == "all")}
           = link_to project_milestones_path(@project, f: "all") do
             All
-    .span9
+    .col-md-9
       .ui-box
         %ul.well-list
           = render @milestones

@@ -67,3 +67,13 @@ Feature: Project Merge Requests
     And I leave a comment on the diff page
     And I switch to the merge request's comments tab
     Then I should see a discussion has started on commit bcf03b5de6c
+
+  @javascript
+  Scenario: I accept merge request with custom commit message
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And merge request "Bug NS-05" is mergeable
+    And I visit merge request page "Bug NS-05"
+    And merge request is mergeable
+    Then I modify merge commit message
+    And I accept this merge request
+    Then I should see merged request

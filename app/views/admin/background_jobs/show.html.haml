@@ -1,11 +1,11 @@
 %h3.page-title Background Jobs
-%p.light GitLab use #{link_to "sidekiq", "http://sidekiq.org/"} library for async job processing
+%p.light GitLab uses #{link_to "sidekiq", "http://sidekiq.org/"} library for async job processing
 
 %hr
 
 .ui-box
   .title Sidekiq running processes
-  .ui-box-body
+  .body
     - if @sidekiq_processes.empty?
       %h4.cred
         %i.icon-warning-sign

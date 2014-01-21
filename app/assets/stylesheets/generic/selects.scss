@@ -1,0 +1,80 @@
+/** Select2 selectbox style override **/
+
+.select2-container, .select2-container.select2-drop-above {
+  .select2-choice {
+    background: #FFF;
+    border-color: #BBB;
+
+    .select2-arrow {
+      background: #FFF;
+    }
+  }
+}
+
+.select2-drop-active {
+  border: 1px solid #BBB;
+  margin-top: 4px;
+
+  .select2-search input {
+    background: #fafafa;
+    border-color: #DDD;
+  }
+
+  .select2-results {
+    max-height: 350px;
+    .select2-highlighted {
+      background: $bg_style_color;
+    }
+  }
+}
+
+select {
+  &.select2 {
+    width: 100px;
+  }
+
+  &.select2-sm {
+    width: 100px;
+  }
+}
+
+@media (min-width: $screen-sm-min) {
+  select {
+    &.select2 {
+      width: 150px;
+    }
+    &.select2-sm {
+      width: 120px;
+    }
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $screen-md-min) {
+  select {
+    &.select2 {
+      width: 170px;
+    }
+    &.select2-sm {
+      width: 140px;
+    }
+  }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $screen-lg-min) {
+  select {
+    &.select2 {
+      width: 200px;
+    }
+    &.select2-sm {
+      width: 150px;
+    }
+  }
+}
+
+
+/** Branch/tag selector **/
+.project-refs-form .select2-container {
+  margin-right: 10px;
+}

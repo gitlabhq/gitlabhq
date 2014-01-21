@@ -259,7 +259,12 @@ Parameters:
   "title": "Sanitize for network graph",
   "author_name": "randx",
   "author_email": "dmitriy.zaporozhets@gmail.com",
-  "created_at": "2012-09-20T09:06:12+03:00"
+  "created_at": "2012-09-20T09:06:12+03:00",
+  "committed_date": "2012-09-20T09:06:12+03:00",
+  "authored_date": "2012-09-20T09:06:12+03:00",
+  "parent_ids" : [
+      "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
+   ]
 }
 ```
 
@@ -343,9 +348,9 @@ Parameters:
 ```
 
 
-## Raw blob content
+## Raw file content
 
-Get the raw file contents for a file.
+Get the raw file contents for a file by commit sha and path.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -356,6 +361,20 @@ Parameters:
 + `id` (required) - The ID of a project
 + `sha` (required) - The commit or branch name
 + `filepath` (required) - The path the file
+
+
+## Raw blob content
+
+Get the raw file contents for a blob by blob sha.
+
+```
+GET /projects/:id/repository/raw_blobs/:sha
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `sha` (required) - The blob sha
 
 
 ## Get file archive
@@ -381,6 +400,7 @@ Parameters:
 
 + `file_path` (optional) - Full path to new file. Ex. lib/class.rb
 + `branch_name` (required) - The name of branch
++ `encoding` (optional) - 'text' or 'base64'. Text is default.
 + `content` (required) - File content
 + `commit_message` (required) - Commit message
 
@@ -394,6 +414,7 @@ Parameters:
 
 + `file_path` (required) - Full path to file. Ex. lib/class.rb
 + `branch_name` (required) - The name of branch
++ `encoding` (optional) - 'text' or 'base64'. Text is default.
 + `content` (required) - New file content
 + `commit_message` (required) - Commit message
 

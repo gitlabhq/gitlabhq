@@ -1,19 +1,22 @@
-%div#modal-remove-blob.modal.hide
-  .modal-header
-    %a.close{href: "#", "data-dismiss" => "modal"} ×
-    %h3.page-title Remove #{@blob.name}
-    %p.light
-      From branch
-      %strong= @ref
+#modal-remove-blob.modal.hide
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3.page-title Remove #{@blob.name}
+        %p.light
+          From branch
+          %strong= @ref
 
-  .modal-body
-    = form_tag project_blob_path(@project, @id), method: :delete do
-      .control-group.commit_message-group
-        = label_tag 'commit_message', class: "control-label" do
-          Commit message
-        .controls
-          = text_area_tag 'commit_message', params[:commit_message], placeholder: "Removed this file because...", required: true, rows: 3
-      .control-group
-        .controls
-          = submit_tag 'Remove file', class: 'btn btn-remove'
-          = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"
+      .modal-body
+        = form_tag project_blob_path(@project, @id), method: :delete, class: 'form-horizontal' do
+          .form-group.commit_message-group
+            = label_tag 'commit_message', class: "control-label" do
+              Commit message
+            .col-sm-10
+              = text_area_tag 'commit_message', params[:commit_message], placeholder: "Removed this file because...", required: true, rows: 3, class: 'form-control'
+          .form-group
+            .col-sm-2
+            .col-sm-10
+              = submit_tag 'Remove file', class: 'btn btn-remove'
+              = link_to "Cancel", '#', class: "btn btn-cancel", "data-dismiss" => "modal"

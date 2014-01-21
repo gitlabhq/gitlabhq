@@ -1,8 +1,8 @@
 = render "projects/commits/head"
 .row
-  .span3
+  .col-md-3
     = render "projects/branches/filter"
-  .span9
+  .col-md-9
     .alert.alert-info
       %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
       %p This ability allows:
@@ -14,15 +14,15 @@
     - if can? current_user, :admin_project, @project
       = form_for [@project, @protected_branch] do |f|
         -if @protected_branch.errors.any?
-          .alert.alert-error
+          .alert.alert-danger
             %ul
               - @protected_branch.errors.full_messages.each do |msg|
                 %li= msg
 
         .entry.clearfix
           = f.label :name, "Branch"
-          .span3
-            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "chosen span3"})
+          .col-md-3
+            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2 span3"})
           &nbsp;
           = f.submit 'Protect', class: "btn-create btn"
     - unless @branches.empty?
@@ -46,6 +46,6 @@
                 = commit.short_id
               %span.light
                 = gfm escape_once(truncate(commit.title, length: 40))
-              #{time_ago_with_tooltip(commit.committed_date)} ago
+              #{time_ago_with_tooltip(commit.committed_date)}
             - else
               (branch was removed from repository)

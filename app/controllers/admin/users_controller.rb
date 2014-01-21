@@ -47,7 +47,7 @@ class Admin::UsersController < Admin::ApplicationController
     @user.admin = (admin && admin.to_i > 0)
     @user.created_by_id = current_user.id
     @user.generate_password
-    @user.confirm!
+    @user.skip_confirmation!
 
     respond_to do |format|
       if @user.save

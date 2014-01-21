@@ -99,6 +99,11 @@ describe Project do
     project.web_url.should == "#{Gitlab.config.gitlab.url}/somewhere"
   end
 
+  it "returns the web URL without the protocol for this repo" do
+    project = Project.new(path: "somewhere")
+    project.web_url_without_protocol.should == "#{Gitlab.config.gitlab.host}/somewhere"
+  end
+
   describe "last_activity methods" do
     let(:project) { create(:project) }
     let(:last_event) { double(created_at: Time.now) }

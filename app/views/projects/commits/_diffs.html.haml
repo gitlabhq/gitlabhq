@@ -1,6 +1,6 @@
 - @suppress_diff ||= @suppress_diff || @force_suppress_diff
 - if @suppress_diff
-  .alert.alert-block
+  .alert.alert-warning
     %p
       %strong Warning! This is a large diff.
     %p
@@ -67,7 +67,7 @@
           - next unless file.respond_to?('text?')
           - if file.text?
             - if params[:view] == 'parallel'
-              = render "projects/commits/parallel_view", diff: diff, project: project, file: file, index: i            
+              = render "projects/commits/parallel_view", diff: diff, project: project, file: file, index: i
             - else
               = render "projects/commits/text_file", diff: diff, index: i
           - elsif file.image?

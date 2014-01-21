@@ -80,7 +80,7 @@
       border-right: 1px solid #ccc;
       text-align: right;
       min-width: 35px;
-      max-width: 35px;
+      max-width: 50px;
       width: 35px;
       @include user-select(none);
       a {
@@ -399,8 +399,8 @@
 
 .commits-compare-switch{
   background: url("switch_icon.png") no-repeat center center;
-  width: 22px;
-  height: 22px;
+  width: 32px;
+  height: 32px;
   text-indent: -9999px;
   float: left;
   margin-right: 9px;
@@ -479,6 +479,10 @@ li.commit {
     .commit_short_id {
       min-width: 65px;
       font-family: $monospace_font;
+    }
+
+    .str-truncated {
+      max-width: 70%;
     }
 
     .commit-row-message {

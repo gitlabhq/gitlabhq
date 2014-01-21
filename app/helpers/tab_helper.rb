@@ -92,7 +92,12 @@ module TabHelper
   def nav_tab key, value, &block
     o = {}
     o[:class] = ""
-    o[:class] << " active" if params[key] == value
+
+    if value.nil?
+      o[:class] << " active" if params[key].blank?
+    else
+      o[:class] << " active" if params[key] == value
+    end
 
     if block_given?
       content_tag(:li, capture(&block), o)

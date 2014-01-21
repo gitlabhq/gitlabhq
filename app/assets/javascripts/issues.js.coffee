@@ -29,12 +29,10 @@
     $('#filter_issue_search').val($('#issue_search').val())
 
   initSelects: ->
-    $("#update_status").chosen()
-    $("#update_assignee_id").chosen()
-    $("#update_milestone_id").chosen()
-    $("#label_name").chosen()
-    $("#assignee_id").chosen()
-    $("#milestone_id").chosen()
+    $("select#update_status").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#update_assignee_id").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#update_milestone_id").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#label_name").select2(width: 'resolve', dropdownAutoWidth: true)
     $("#milestone_id, #assignee_id, #label_name").on "change", ->
       $(this).closest("form").submit()
 
@@ -79,3 +77,9 @@
       $("#update_issues_ids").val []
       $(".issues_bulk_update").hide()
       $(".issues-filters").show()
+
+$ ->
+  $('.edit-issue.inline-update input[type="submit"]').hide();
+  $("body").on "change", ".edit-issue.inline-update select", ->
+      $(this).submit()
+

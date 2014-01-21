@@ -7,27 +7,27 @@
 
 = form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
   -if @milestone.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @milestone.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span6
-      .control-group
+    .col-md-6
+      .form-group
         = f.label :title, "Title", class: "control-label"
-        .controls
-          = f.text_field :title, maxlength: 255, class: "input-xlarge"
+        .col-sm-10
+          = f.text_field :title, maxlength: 255, class: "form-control"
           %p.hint Required
-      .control-group
+      .form-group
         = f.label :description, "Description", class: "control-label"
-        .controls
-          = f.text_area :description, maxlength: 2000, class: "input-xlarge", rows: 10
+        .col-sm-10
+          = f.text_area :description, maxlength: 2000, class: "form-control", rows: 10
           %p.hint Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
-    .span6
-      .control-group
+    .col-md-6
+      .form-group
         = f.label :due_date, "Due Date", class: "control-label"
-        .controls= f.hidden_field :due_date
-        .controls
+        .col-sm-10= f.hidden_field :due_date
+        .col-sm-10
           .datepicker
 
   .form-actions

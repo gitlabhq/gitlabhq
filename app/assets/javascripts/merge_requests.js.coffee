@@ -2,8 +2,8 @@
 # * Filter merge requests
 #
 @merge_requestsPage = ->
-  $('#assignee_id').chosen()
-  $('#milestone_id').chosen()
+  $('#assignee_id').select2()
+  $('#milestone_id').select2()
   $('#milestone_id, #assignee_id').on 'change', ->
     $(this).closest('form').submit()
 
@@ -23,6 +23,8 @@ class MergeRequest
       this.showAllCommits()
 
     modal = $('#modal_merge_info').modal(show: false)
+
+    disableButtonIfEmptyField '#merge_commit_message', '.accept_merge_request'
 
   # Local jQuery finder
   $: (selector) ->
