@@ -129,9 +129,13 @@ production: &base
     password: '_the_password_of_the_bind_user'
     # If allow_username_or_email_login is enabled, GitLab will ignore everything
     # after the first '@' in the LDAP username submitted by the user on login.
+    #
     # Example:
     # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
     # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
+    #
+    # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+    # disable this setting, because the userPrincipalName contains an '@'.
     allow_username_or_email_login: true
 
   ## OmniAuth settings
