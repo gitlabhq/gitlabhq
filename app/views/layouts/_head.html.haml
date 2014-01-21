@@ -22,3 +22,8 @@
         = auto_discovery_link_tag(:atom, project_commits_url(@project, @ref, format: :atom, private_token: current_user.private_token), title: "Recent commits to #{@project.name}:#{@ref}")
       - if current_controller?(:issues)
         = auto_discovery_link_tag(:atom, project_issues_url(@project, :atom, private_token: current_user.private_token), title: "#{@project.name} issues")
+
+  -# Go repository retrieval support.
+  - if controller_name == 'projects' && action_name == 'show'
+    %meta{name: "go-import", content: "#{@project.web_url_without_protocol} git #{@project.web_url}.git"}
+
