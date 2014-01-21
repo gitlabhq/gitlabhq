@@ -134,7 +134,8 @@ production: &base
     # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
     # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
     #
-    # Disable this setting if you are using "uid: 'userPrincipalName'" on ActiveDirectory.
+    # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+    # disable this setting, because the userPrincipalName contains an '@'.
     allow_username_or_email_login: true
 
   ## OmniAuth settings
