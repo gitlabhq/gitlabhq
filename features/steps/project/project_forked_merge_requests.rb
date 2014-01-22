@@ -7,7 +7,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
 
   step 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
-    @project ||= create(:project_with_code, name: "Shop")
+    @project ||= create(:project, name: "Shop")
     @project.team << [@user, :reporter]
   end
 
@@ -15,7 +15,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     @forking_user = @user
     forked_project_link = build(:forked_project_link)
     @forked_project = Project.find_by_name "Forked Shop"
-    @forked_project ||= create(:source_project_with_code, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
+    @forked_project ||= create(:source_project, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
 
     forked_project_link.forked_from_project = @project
     forked_project_link.forked_to_project = @forked_project

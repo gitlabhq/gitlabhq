@@ -128,7 +128,7 @@ describe Project do
   end
 
   describe :update_merge_requests do
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
 
     before do
       @merge_request = create(:merge_request, source_project: project, target_project: project)
@@ -237,7 +237,7 @@ describe Project do
   end
 
   describe :open_branches do
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
 
     before do
       project.protected_branches.create(name: 'master')

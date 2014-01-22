@@ -12,7 +12,7 @@ class ForkProject < Spinach::FeatureSteps
 
   step 'I am a member of project "Shop"' do
     @project = Project.find_by_name "Shop"
-    @project ||= create(:project_with_code, name: "Shop", group: create(:group))
+    @project ||= create(:project, name: "Shop", group: create(:group))
     @project.team << [@user, :reporter]
   end
 
@@ -26,7 +26,7 @@ class ForkProject < Spinach::FeatureSteps
     current_user.namespace ||= create(:namespace)
     current_user.namespace.should_not be_nil
     current_user.namespace.path.should_not be_nil
-    @my_project = create(:project_with_code, name: "Shop", namespace: current_user.namespace)
+    @my_project = create(:project, name: "Shop", namespace: current_user.namespace)
   end
 
   step 'I should see a "Name has already been taken" warning' do

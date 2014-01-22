@@ -49,7 +49,7 @@ describe Service do
     end
 
     describe "With commits" do
-      let (:project) { create :project_with_code }
+      let (:project) { create :project }
 
       before do
         @service.stub(

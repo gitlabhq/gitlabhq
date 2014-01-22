@@ -5,7 +5,7 @@ describe API::API do
   before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
   let(:user) { create(:user) }
-  let!(:project) {create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
   before {
     project.team << [user, :reporters]
@@ -80,8 +80,8 @@ describe API::API do
     context 'forked projects' do
       let!(:user2) {create(:user)}
       let!(:forked_project_link) { build(:forked_project_link) }
-      let!(:fork_project) {  create(:source_project_with_code, forked_project_link: forked_project_link,  namespace: user2.namespace, creator_id: user2.id)  }
-      let!(:unrelated_project) {  create(:target_project_with_code,  namespace: user2.namespace, creator_id: user2.id)  }
+      let!(:fork_project) {  create(:source_project, forked_project_link: forked_project_link,  namespace: user2.namespace, creator_id: user2.id)  }
+      let!(:unrelated_project) {  create(:target_project,  namespace: user2.namespace, creator_id: user2.id)  }
 
       before :each do |each|
         fork_project.team << [user2, :reporters]

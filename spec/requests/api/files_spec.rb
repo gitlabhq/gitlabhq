@@ -6,7 +6,7 @@ describe API::API do
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:user) { create(:user) }
-  let!(:project) { create(:project_with_code, namespace: user.namespace ) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   before { project.team << [user, :developer] }
 
   describe "POST /projects/:id/repository/files" do

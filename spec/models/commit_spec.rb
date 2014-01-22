@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Commit do
-  let(:project) { create :project_with_code }
+  let(:project) { create :project }
   let(:commit) { project.repository.commit }
 
   describe '#title' do
