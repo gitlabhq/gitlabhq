@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140122114406) do
+ActiveRecord::Schema.define(version: 20140122122549) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -96,29 +96,27 @@ ActiveRecord::Schema.define(version: 20140122114406) do
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
   create_table "merge_request_diffs", force: true do |t|
-    t.string   "state",                               default: "valid", null: false
+    t.string   "state",                               default: "collected", null: false
     t.text     "st_commits",       limit: 2147483647
     t.text     "st_diffs",         limit: 2147483647
-    t.integer  "merge_request_id",                                      null: false
+    t.integer  "merge_request_id",                                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
 
   create_table "merge_requests", force: true do |t|
-    t.string   "target_branch",                        null: false
-    t.string   "source_branch",                        null: false
-    t.integer  "source_project_id",                    null: false
+    t.string   "target_branch",     null: false
+    t.string   "source_branch",     null: false
+    t.integer  "source_project_id", null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "st_commits",        limit: 2147483647
-    t.text     "st_diffs",          limit: 2147483647
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id",                    null: false
+    t.integer  "target_project_id", null: false
     t.integer  "iid"
     t.text     "description"
   end
