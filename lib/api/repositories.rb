@@ -51,7 +51,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -69,7 +69,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         protected_branch.destroy if protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project

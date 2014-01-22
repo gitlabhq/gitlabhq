@@ -168,7 +168,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
+    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
 
   def closes_issues

@@ -18,7 +18,7 @@ class ProfileSshKeys < Spinach::FeatureSteps
   end
 
   Then 'I should see new ssh key "Laptop"' do
-    key = Key.find_by_title("Laptop")
+    key = Key.find_by(title: "Laptop")
     page.should have_content(key.title)
     page.should have_content(key.key)
     current_path.should == profile_key_path(key)

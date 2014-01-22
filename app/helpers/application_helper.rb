@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def avatar_icon(user_email = '', size = nil)
-    user = User.find_by_email(user_email)
+    user = User.find_by(email: user_email)
     if user && user.avatar.present?
       user.avatar.url
     else

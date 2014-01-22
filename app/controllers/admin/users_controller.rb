@@ -100,6 +100,6 @@ class Admin::UsersController < Admin::ApplicationController
   protected
 
   def user
-    @user ||= User.find_by_username!(params[:id])
+    @user ||= User.find_by!(username: params[:id])
   end
 end

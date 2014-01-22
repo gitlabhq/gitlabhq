@@ -4,7 +4,7 @@ class ProjectIssueTracker < Spinach::FeatureSteps
   include SharedPaths
 
   step 'project "Shop" has issues enabled' do
-    @project = Project.find_by_name "Shop"
+    @project = Project.find_by(name: "Shop")
     @project ||= create(:project_with_code, name: "Shop", namespace: @user.namespace)
     @project.issues_enabled = true
   end

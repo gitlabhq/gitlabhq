@@ -22,22 +22,22 @@ class ProjectTeam
   end
 
   def find(user_id)
-    user = project.users.find_by_id(user_id)
+    user = project.users.find_by(id: user_id)
 
     if group
-      user ||= group.users.find_by_id(user_id)
+      user ||= group.users.find_by(id: user_id)
     end
 
     user
   end
 
   def find_tm(user_id)
-    tm = project.users_projects.find_by_user_id(user_id)
+    tm = project.users_projects.find_by(user_id: user_id)
 
     # If user is not in project members
     # we should check for group membership
     if group && !tm
-      tm = group.users_groups.find_by_user_id(user_id)
+      tm = group.users_groups.find_by(user_id: user_id)
     end
 
     tm
