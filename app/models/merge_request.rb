@@ -150,7 +150,10 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def mr_and_commit_notes
-    commit_ids = commits.map(&:id)
+    # Fetch comments only from last 100 commits
+    commits_for_notes_limit = 100
+    commit_ids = commits.last(commits_for_notes_limit).map(&:id)
+
     project.notes.where(
       "(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
       mr_id: id,

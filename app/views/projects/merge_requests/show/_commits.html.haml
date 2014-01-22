@@ -12,9 +12,16 @@
             8 of #{@commits.count} commits displayed.
             %strong
               %a.show-all-commits Click here to show all
-        %ul.all-commits.hide.well-list
-          - @commits.each do |commit|
-            = render "projects/commits/commit", commit: commit, project: @merge_request.source_project
+        - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+          %ul.all-commits.hide.well-list
+            - @commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE).each do |commit|
+              = render "projects/commits/inline_commit", commit: commit, project: @merge_request.source_project
+            %li
+              other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden top prevent performance issues.
+        - else
+          %ul.all-commits.hide.well-list
+            - @commits.each do |commit|
+              = render "projects/commits/inline_commit", commit: commit, project: @merge_request.source_project
 
       - else
         %ul.well-list
