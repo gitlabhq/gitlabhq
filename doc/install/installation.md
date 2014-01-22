@@ -113,6 +113,8 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
 
+The use of ruby version managers such as RVM, rbenv and chruby with GitLab in production frequently lead to hard to diagnose problems. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
+
 Remove the old Ruby 1.8 if present
 
     sudo apt-get remove ruby1.8
