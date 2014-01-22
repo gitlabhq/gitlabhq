@@ -173,13 +173,13 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-4-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-5-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
