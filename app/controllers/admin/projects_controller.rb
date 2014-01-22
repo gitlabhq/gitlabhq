@@ -5,7 +5,7 @@ class Admin::ProjectsController < Admin::ApplicationController
 
   def index
     owner_id = params[:owner_id]
-    user = User.find_by_id(owner_id)
+    user = User.find_by(id: owner_id)
 
     @projects = user ? user.owned_projects : Project.all
     @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?

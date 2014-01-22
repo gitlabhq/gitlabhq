@@ -18,7 +18,7 @@ class SnippetsController < ApplicationController
   end
 
   def user_index
-    @user = User.find_by_username(params[:username])
+    @user = User.find_by(username: params[:username])
     @snippets = @user.snippets.fresh.non_expired
 
     if @user == current_user
