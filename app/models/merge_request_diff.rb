@@ -130,7 +130,10 @@ class MergeRequestDiff < ActiveRecord::Base
       end
     end
 
-    new_diffs = dump_commits(new_diffs) if new_diffs.present?
+    if new_diffs.present?
+      new_diffs = dump_commits(new_diffs)
+      self.state = :collected
+    end
 
     self.st_diffs = new_diffs
     self.save
