@@ -6,6 +6,7 @@ class MergeRequestObserver < ActivityObserver
       create_event(merge_request, Event.determine_action(merge_request))
     end
 
+    merge_request.create_merge_request_diff
     notification.new_merge_request(merge_request, current_user)
     merge_request.create_cross_references!(merge_request.project, current_user)
     execute_hooks(merge_request)

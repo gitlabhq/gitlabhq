@@ -30,6 +30,9 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
+  has_one :merge_request_diff, dependent: :destroy
+
+  delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
   attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event, :description
 
@@ -53,11 +56,8 @@ class MergeRequest < ActiveRecord::Base
     end
 
     state :opened
-
     state :reopened
-
     state :closed
-
     state :merged
   end
 
@@ -75,14 +75,9 @@ class MergeRequest < ActiveRecord::Base
     end
 
     state :unchecked
-
     state :can_be_merged
-
     state :cannot_be_merged
   end
-
-  serialize :st_commits
-  serialize :st_diffs
 
   validates :source_project, presence: true, unless: :allow_broken
   validates :source_branch, presence: true
@@ -105,7 +100,7 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_states(:closed, :merged) }
 
   def validate_branches
-    if target_project==source_project && target_branch == source_branch
+    if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
 
@@ -120,8 +115,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_code
-    self.reloaded_commits
-    self.reloaded_diffs
+    merge_request_diff.reload_content if opened?
   end
 
   def check_if_can_be_merged
@@ -132,81 +126,12 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def diffs
-    @diffs ||= (load_diffs(st_diffs) || [])
-  end
-
-  def reloaded_diffs
-    if opened? && unmerged_diffs.any?
-      self.st_diffs = dump_diffs(unmerged_diffs)
-      self.save
-    end
-  end
-
-  def broken_diffs?
-    diffs == broken_diffs
-  rescue
-    true
-  end
-
-  def valid_diffs?
-    !broken_diffs?
-  end
-
-  def unmerged_diffs
-    diffs = if for_fork?
-              Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
-            else
-              Gitlab::Git::Diff.between(target_project.repository, source_branch, target_branch)
-            end
-
-    diffs ||= []
-    diffs
-  end
-
-  def last_commit
-    commits.first
-  end
-
   def merge_event
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end
 
   def closed_event
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
-  end
-
-  def commits
-    load_commits(st_commits || [])
-  end
-
-  def probably_merged?
-    unmerged_commits.empty? &&
-      commits.any? && opened?
-  end
-
-  def reloaded_commits
-    if opened? && unmerged_commits.any?
-      self.st_commits = dump_commits(unmerged_commits)
-      save
-
-    end
-    commits
-  end
-
-  def unmerged_commits
-    if for_fork?
-      commits = Gitlab::Satellite::MergeAction.new(self.author, self).commits_between
-    else
-      commits = target_project.repository.commits_between(self.target_branch, self.source_branch)
-    end
-
-    if commits.present?
-      commits = Commit.decorate(commits).
-      sort_by(&:created_at).
-      reverse
-    end
-    commits
   end
 
   def merge!(user_id)
@@ -245,10 +170,6 @@ class MergeRequest < ActiveRecord::Base
   # see "git format-patch"
   def to_patch(current_user)
     Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
-  end
-
-  def last_commit_short_sha
-    @last_commit_short_sha ||= last_commit.sha[0..10]
   end
 
   def for_fork?
@@ -326,35 +247,5 @@ class MergeRequest < ActiveRecord::Base
     message << "\n\n"
     message << description.to_s
     message
-  end
-
-  private
-
-  def dump_commits(commits)
-    commits.map(&:to_hash)
-  end
-
-  def load_commits(array)
-    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash)) }
-  end
-
-  def dump_diffs(diffs)
-    if diffs == broken_diffs
-      broken_diffs
-    elsif diffs.respond_to?(:map)
-      diffs.map(&:to_hash)
-    end
-  end
-
-  def load_diffs(raw)
-    if raw == broken_diffs
-      broken_diffs
-    elsif raw.respond_to?(:map)
-      raw.map { |hash| Gitlab::Git::Diff.new(hash) }
-    end
-  end
-
-  def broken_diffs
-    [Gitlab::Git::Diff::BROKEN_DIFF]
   end
 end
