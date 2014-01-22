@@ -69,10 +69,17 @@ module GitlabMarkdownHelper
     project_path_with_namespace = project.path_with_namespace
     paths = extract_paths(text)
     paths.each do |file_path|
-      new_path = rebuild_path(project_path_with_namespace, file_path, requested_path, ref)
-      # Replacing old string with a new one with brackets ]() to prevent replacing occurence of a word
-      # e.g. If we have a markdown like [test](test) this will replace ](test) and not the word test
-      text.gsub!("](#{file_path})", "](/#{new_path})")
+      original_file_path = extract(file_path)
+      new_path = rebuild_path(project_path_with_namespace, original_file_path, requested_path, ref)
+      if reference_path?(file_path)
+        # Replacing old string with a new one that contains updated path
+        # eg. [some document]: document.md will be replaced with [some document] /namespace/project/master/blob/document.md
+        text.gsub!(file_path, file_path.gsub(original_file_path, "/#{new_path}"))
+      else
+        # Replacing old string with a new one with brackets ]() to prevent replacing occurence of a word
+        # e.g. If we have a markdown like [test](test) this will replace ](test) and not the word test
+        text.gsub!("](#{file_path})", "](/#{new_path})")
+      end
     end
     text
   end
@@ -83,9 +90,11 @@ module GitlabMarkdownHelper
     select_relative(paths)
   end
 
-  # Split the markdown text to each line and find all paths, this will match anything with - ]("some_text")
+  # Split the markdown text to each line and find all paths, this will match anything with - ]("some_text") and [some text]: file.md
   def pick_out_paths(markdown_text)
-    markdown_text.split("\n").map { |text| text.scan(/\]\(([^(]+)\)/) }
+    inline_paths = markdown_text.split("\n").map { |text| text.scan(/\]\(([^(]+)\)/) }
+    reference_paths = markdown_text.split("\n").map { |text| text.scan(/\[.*\]:.*/) }
+    inline_paths + reference_paths
   end
 
   # Removes any empty result produced by not matching the regexp
@@ -93,10 +102,20 @@ module GitlabMarkdownHelper
     paths.reject{|l| l.empty? }.flatten
   end
 
+  # If a path is a reference style link we need to omit ]:
+  def extract(path)
+    path.split("]: ").last
+  end
+
   # Reject any path that contains ignored protocol
   # eg. reject "https://gitlab.org} but accept "doc/api/README.md"
   def select_relative(paths)
     paths.reject{|path| ignored_protocols.map{|protocol| path.include?(protocol)}.any?}
+  end
+
+  # Check whether a path is a reference-style link
+  def reference_path?(path)
+    path.include?("]: ")
   end
 
   def ignored_protocols
