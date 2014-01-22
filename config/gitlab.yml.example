@@ -204,6 +204,7 @@ production: &base
     bin_path: /usr/bin/git
     # Max size of a git object (e.g. a commit), in bytes
     # This value can be increased if you have very large commits
+    # Please also change the limit for your webserver (for Nginx see lib/support/nginx/gitlab)
     max_size: 5242880 # 5.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10

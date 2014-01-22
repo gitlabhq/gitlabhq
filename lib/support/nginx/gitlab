@@ -13,6 +13,7 @@ server {
   root /home/git/gitlab/public;
   
   # Set value of client_max_body_size to at least the value of git.max_size in gitlab.yml
+  # Also increase this if you want to upload large attachments
   client_max_body_size 5m;
 
   # individual nginx logs for this gitlab vhost
