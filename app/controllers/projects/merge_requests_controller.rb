@@ -213,6 +213,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
   end
