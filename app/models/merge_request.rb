@@ -30,7 +30,9 @@ class MergeRequest < ActiveRecord::Base
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
+
   has_one :merge_request_diff, dependent: :destroy
+  after_create :create_merge_request_diff
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 

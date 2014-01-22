@@ -76,7 +76,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.author = current_user
     @target_branches ||= []
     if @merge_request.save
-      @merge_request.reload_code
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
