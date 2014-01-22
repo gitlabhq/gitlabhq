@@ -75,6 +75,8 @@ production: &base
       wall: false
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
+      auto_init: true # if set to true gitlab will add a README file and inits the repo
+
 
   ## External issues trackers
   issues_tracker:
