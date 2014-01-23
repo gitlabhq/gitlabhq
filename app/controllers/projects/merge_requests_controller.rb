@@ -152,6 +152,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = selected_target_project
     @target_branches = @target_project.repository.branch_names
     @target_branches
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def ci_status
