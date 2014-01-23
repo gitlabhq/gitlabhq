@@ -1,6 +1,6 @@
 # This file is used by Rack-based servers to start the application.
 
-unless defined?(PhusionPassenger)
+if defined?(Unicorn)
   require 'unicorn'
   # Unicorn self-process killer
   require 'unicorn/worker_killer'
