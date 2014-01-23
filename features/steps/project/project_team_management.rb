@@ -79,7 +79,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   end
 
   Given 'I own project "Website"' do
-    @project = create(:project, name: "Website", namespace: @user.namespace)
+    @project = create(:empty_project, name: "Website", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
