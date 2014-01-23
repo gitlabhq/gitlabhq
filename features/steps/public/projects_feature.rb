@@ -29,7 +29,7 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'public empty project "Empty Public Project"' do
-    create :project, name: 'Empty Public Project', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    create :empty_project, name: 'Empty Public Project', visibility_level: Gitlab::VisibilityLevel::PUBLIC
   end
 
   step 'I visit empty project page' do
