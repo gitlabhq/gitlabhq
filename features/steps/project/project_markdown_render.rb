@@ -4,7 +4,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
 
   And 'I own project "Delta"' do
     @project = Project.find_by(name: "Delta")
-    @project ||= create(:project_with_code, name: "Delta", namespace: @user.namespace)
+    @project ||= create(:project, name: "Delta", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 

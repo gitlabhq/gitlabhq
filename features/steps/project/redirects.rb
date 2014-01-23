@@ -4,7 +4,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   include SharedProject
 
   step 'public project "Community"' do
-    create :project_with_code, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
   end
 
   step 'private project "Enterprise"' do

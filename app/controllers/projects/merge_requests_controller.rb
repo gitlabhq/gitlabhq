@@ -76,7 +76,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.author = current_user
     @target_branches ||= []
     if @merge_request.save
-      @merge_request.reload_code
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
@@ -217,6 +216,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
   end

@@ -88,7 +88,6 @@ module API
           end
 
           if merge_request.save
-            merge_request.reload_code
             present merge_request, with: Entities::MergeRequest
           else
             handle_merge_request_errors! merge_request.errors

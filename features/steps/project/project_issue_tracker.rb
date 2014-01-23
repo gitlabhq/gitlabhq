@@ -5,7 +5,7 @@ class ProjectIssueTracker < Spinach::FeatureSteps
 
   step 'project "Shop" has issues enabled' do
     @project = Project.find_by(name: "Shop")
-    @project ||= create(:project_with_code, name: "Shop", namespace: @user.namespace)
+    @project ||= create(:project, name: "Shop", namespace: @user.namespace)
     @project.issues_enabled = true
   end
 

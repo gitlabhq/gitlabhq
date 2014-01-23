@@ -25,7 +25,7 @@ describe AssemblaService do
 
   describe "Execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
 
     before do
       @assembla_service = AssemblaService.new

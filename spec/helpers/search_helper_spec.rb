@@ -43,7 +43,7 @@ describe SearchHelper do
       end
 
       context "with a current project" do
-        before { @project = create(:project_with_code) }
+        before { @project = create(:project) }
 
         it "includes project-specific sections" do
           search_autocomplete_opts("Files").size.should == 1

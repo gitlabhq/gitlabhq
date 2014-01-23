@@ -25,11 +25,11 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'public project "Community"' do
-    create :project_with_code, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
   end
 
   step 'public empty project "Empty Public Project"' do
-    create :project, name: 'Empty Public Project', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    create :empty_project, name: 'Empty Public Project', visibility_level: Gitlab::VisibilityLevel::PUBLIC
   end
 
   step 'I visit empty project page' do
@@ -76,7 +76,7 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'internal project "Internal"' do
-    create :project_with_code, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
+    create :project, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
   end
 
   step 'I should see project "Internal"' do

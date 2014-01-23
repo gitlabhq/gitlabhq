@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
   let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, target_branch: "stable", source_branch: "master") }
 
