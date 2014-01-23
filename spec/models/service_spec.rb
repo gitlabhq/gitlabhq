@@ -44,7 +44,7 @@ describe Service do
       end
 
       describe :can_test do
-        it { @testable.should == false }
+        it { @testable.should == true }
       end
     end
 
