@@ -83,4 +83,38 @@
       padding-top: 2px;
     }
   }
+
+  @media (max-width: $screen-xs-max) {
+    font-size: 18px;
+    margin: 0;
+
+    max-height: none;
+
+    &, .container {
+      padding: 0;
+      border-top: 0;
+    }
+
+    ul {
+      height: auto;
+
+      li {
+        display: list-item;
+        width: auto;
+        padding: 5px 0;
+
+        &.active {
+          background-color: $primary_color;
+
+          a {
+            color: #fff;
+            font-weight: normal;
+            text-shadow: none;
+
+            &:after { display: none; }
+          }
+        }
+      }
+    }
+  }
 }

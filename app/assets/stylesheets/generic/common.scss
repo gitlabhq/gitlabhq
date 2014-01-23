@@ -327,6 +327,12 @@ li.note {
     color: #fff;
     text-decoration: underline;
   }
+
+  .links-xs {
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+  }
 }
 
 .warning_message {
@@ -484,4 +490,8 @@ table {
   fieldset {
     margin-bottom: 15px;
   }
+}
+
+@media (max-width: $screen-xs-max) {
+  .container .content { margin-top: 20px; }
 }

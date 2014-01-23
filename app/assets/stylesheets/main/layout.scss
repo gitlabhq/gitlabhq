@@ -1,5 +1,7 @@
 html {
   overflow-y: scroll;
+
+  &.touch .tooltip { display: none !important; }
 }
 
 body {
