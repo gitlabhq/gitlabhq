@@ -17,7 +17,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params.merge(project_id: @project.id))
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
+
+    @sort = params[:sort].humanize
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
@@ -123,7 +130,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.opened? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user)
+      @merge_request.automerge!(current_user, params[:merge_commit_message])
       @status = true
     else
       @status = false
@@ -145,6 +152,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = selected_target_project
     @target_branches = @target_project.repository.branch_names
     @target_branches
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def ci_status
@@ -161,7 +172,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
+    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
 
   def closes_issues

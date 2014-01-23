@@ -1,5 +1,5 @@
 .search_results
   %ul.bordered-list
-    = render partial: "search/results/project", collection: @projects
-    = render partial: "search/results/merge_request", collection: @merge_requests
-    = render partial: "search/results/issue", collection: @issues
+    = render partial: "search/results/project", collection: @search_results[:projects]
+    = render partial: "search/results/merge_request", collection: @search_results[:merge_requests]
+    = render partial: "search/results/issue", collection: @search_results[:issues]

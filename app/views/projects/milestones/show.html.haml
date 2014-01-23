@@ -40,7 +40,7 @@
       #{@milestone.open_items_count} open
       %span.pull-right= @milestone.expires_at
     .progress.progress-info
-      .bar{style: "width: #{@milestone.percent_complete}%;"}
+      .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
   - if @milestone.description.present?
@@ -49,7 +49,7 @@
         = markdown @milestone.description
 
 
-%ul.nav.nav-tabs
+%ul.nav.nav-tabs.append-bottom-10
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab' do
       Issues
@@ -72,22 +72,22 @@
 .tab-content
   .tab-pane.active#tab-issues
     .row
-      .span4
+      .col-md-4
         = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
-      .span4
+      .col-md-4
         = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
-      .span4
+      .col-md-4
         = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
 
   .tab-pane#tab-merge-requests
     .row
-      .span6
+      .col-md-6
         .ui-box
           .title Open
           %ul.well-list
             - @merge_requests.opened.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
-      .span6
+      .col-md-6
         .ui-box
           .title Closed
           %ul.well-list

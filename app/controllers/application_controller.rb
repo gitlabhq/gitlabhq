@@ -161,6 +161,8 @@ class ApplicationController < ActionController::Base
     headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
+    headers['X-Content-Type-Options'] = 'nosniff'
+    headers['Strict-Transport-Security'] = 'max-age=31536000' if Gitlab.config.gitlab.https
   end
 
   def add_gon_variables
@@ -205,7 +207,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password) }
+    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me) }
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :name, :password, :password_confirmation) }
   end
 end

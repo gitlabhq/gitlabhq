@@ -3,7 +3,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   include SharedPaths
 
   And 'I own project "Delta"' do
-    @project = Project.find_by_name "Delta"
+    @project = Project.find_by(name: "Delta")
     @project ||= create(:project_with_code, name: "Delta", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
@@ -124,7 +124,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
 
   Then 'I see new wiki page named test' do
     current_path.should ==  project_wiki_path(@project, "test")
-    page.should have_content "Editing page"
+    page.should have_content "Editing"
   end
 
   When 'I go back to wiki page home' do

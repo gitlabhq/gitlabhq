@@ -89,7 +89,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def bulk_update
-    result = Issues::BulkUpdateContext.new(project, current_user, params).execute
+    result = Issues::BulkUpdateService.new(project, current_user, params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
@@ -97,7 +97,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     @issue ||= begin
-                 @project.issues.find_by_iid!(params[:id])
+                 @project.issues.find_by!(iid: params[:id])
                rescue ActiveRecord::RecordNotFound
                  redirect_old
                end
@@ -116,7 +116,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issues_filtered
-    @issues = Issues::ListContext.new(project, current_user, params).execute
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+    @issues = FilteringService.new.execute(Issue, current_user, params.merge(project_id: @project.id))
   end
 
   # Since iids are implemented only in 6.1
@@ -125,7 +127,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
   #
   def redirect_old
-    issue = @project.issues.find_by_id(params[:id])
+    issue = @project.issues.find_by(id: params[:id])
 
     if issue
       redirect_to project_issue_path(@project, issue)

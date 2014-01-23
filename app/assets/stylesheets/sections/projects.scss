@@ -16,7 +16,7 @@
 
 .project-home-panel {
   border-bottom: 1px solid #DDD;
-  padding-bottom: 25px;
+  padding-bottom: 15px;
   margin-bottom: 30px;
 
   &.empty-project {
@@ -41,24 +41,29 @@
     .project-home-desc {
       float: left;
       color: #777;
+      margin-bottom: 10px;
     }
 
     .project-home-links {
       float: right;
       a {
         margin-left: 10px;
+        font-weight: 500;
       }
     }
   }
 
   .visibility-level-label {
-    font-size: 14px;
+    font-size: 17px;
     background: #f1f1f1;
-    padding: 8px 10px;
     border-radius: 4px;
-    margin-left: 10px;
     color: #888;
+    position: absolute;
+    margin-left: -55px;
     text-shadow: 0 1px 1px #FFF;
+    width: 40px;
+    text-align: center;
+    padding: 6px;
 
     i {
       color: inherit;
@@ -67,28 +72,20 @@
 }
 
 .git-clone-holder {
-  float: right;
-  border: 1px solid #E1E1E1;
-  @include border-radius(4px);
+  .project-home-dropdown + & {
+    margin-right: 45px;
+  }
 
-  input[type="text"],
-  .btn {
-    border: none;
-    @include border-radius(0px);
-    border-left: 1px solid #E1E1E1;
+  .btn,
+  .form-control {
+    border: 1px solid #E1E1E1;
     box-shadow: none;
     padding: 6px 9px;
   }
 
   .btn {
-    float: left;
     background: none;
     color: #29b;
-
-    &:first-child {
-      @include border-radius-left(4px);
-      border-left: 0px;
-    }
 
     &.active {
       color: #333;
@@ -96,47 +93,32 @@
     }
   }
 
-  input[type="text"] {
+  .form-control {
     cursor: auto;
     @extend .monospace;
     background: #FAFAFA;
+    width: 100%;
   }
 }
 
 .project-visibility-level-holder {
-  .controls {
-    padding-bottom: 9px;
-  }
+  .radio {
+    margin-bottom: 10px;
 
-  .controls {
-    input {
-      float: left;
+    i {
+      margin: 0 3px;
+      font-size: 20px;
     }
-    .descr {
-      display: block;
-      margin-left: 1.5em;
-      &.restricted {
-        color: #888;
-      }
 
-      label {
-        float: none;
-        padding: 0;
-        margin: 0;
-        text-align: left;
-      }
-    }
-    .info {
-      display: block;
-      margin-top: 5px;
-    }
-    strong {
+    .option-title {
+      font-weight: bold;
       display: inline-block;
-      width: 4em;
     }
-  }
-  i {
-    color: inherit;
+
+    .option-descr {
+      margin-left: 24px;
+      color: #666;
+    }
   }
 }
 
@@ -218,11 +200,26 @@ ul.nav.nav-projects-tabs {
 .project-side {
   .btn-block {
     background-image: none;
-    background-color: #F1f1f1;
-    border-color: #EEE;
-    &:hover {
-      background-color: #eee;
-      border-color: #DDD;
+    .btn,
+    &.btn,
+    &.btn-group ul.dropdown-menu {
+      background-color: #F1f1f1;
+      border-color: #EEE;
+      &:hover {
+        background-color: #eee;
+        border-color: #DDD;
+      }
+    }
+    &.btn-group-justified {
+        .btn {
+            width: 100%;
+        }
+        .dropdown-toggle {
+            width: 26px;
+        }
+    }
+    ul {
+        width: 100%;
     }
   }
   .project-fork-icon {
@@ -233,44 +230,8 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-.transfer-project .chosen-container {
+.transfer-project .select2-container {
   min-width: 200px;
-}
-
-/** Branch/tag selector **/
-.project-refs-form {
-  margin: 0;
-  span {
-    background:none !important;
-    position:static !important;
-    width:auto !important;
-    height:auto !important;
-  }
-}
-.project-refs-select {
-  width: 120px;
-}
-
-.project-refs-form .chosen-container {
-  position: relative;
-  top: 0;
-  left: 0;
-  margin-right: 10px;
-
-  .chosen-single span {
-    font-weight: bold;
-    color: #555;
-  }
-
-  &.chosen-container-active {
-    .chosen-drop {
-      min-width: 400px;
-    }
-
-    .chosen-results {
-      max-height: 400px;
-    }
-  }
 }
 
 .deploy-project-label {

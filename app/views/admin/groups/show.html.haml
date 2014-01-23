@@ -6,7 +6,7 @@
     Edit
 %hr
 .row
-  .span6
+  .col-md-6
     .ui-box
       .title
         Group info:
@@ -44,7 +44,7 @@
             %span.pull-right.light
               %span.monospace= project.path_with_namespace + ".git"
 
-  .span6
+  .col-md-6
     .ui-box
       .title
         Add user(s) to the group:
@@ -57,7 +57,7 @@
           %div
             = users_select_tag(:user_ids, multiple: true)
           %div.prepend-top-10
-            = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select chosen"
+            = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select select2"
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
     .ui-box

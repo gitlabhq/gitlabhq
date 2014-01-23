@@ -1,7 +1,7 @@
 module API
   module Entities
     class User < Grape::Entity
-      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
+      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter, :website_url,
              :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group
@@ -48,19 +48,19 @@ module API
 
     class ProjectMember < UserBasic
       expose :project_access, as: :access_level do |user, options|
-        options[:project].users_projects.find_by_user_id(user.id).project_access
+        options[:project].users_projects.find_by(user_id: user.id).project_access
       end
     end
 
     class TeamMember < UserBasic
       expose :permission, as: :access_level do |user, options|
-        options[:user_team].user_team_user_relationships.find_by_user_id(user.id).permission
+        options[:user_team].user_team_user_relationships.find_by(user_id: user.id).permission
       end
     end
 
     class TeamProject < Project
       expose :greatest_access, as: :greatest_access_level do |project, options|
-        options[:user_team].user_team_project_relationships.find_by_project_id(project.id).greatest_access
+        options[:user_team].user_team_project_relationships.find_by(project_id: project.id).greatest_access
       end
     end
 
@@ -74,7 +74,7 @@ module API
 
     class GroupMember < UserBasic
       expose :group_access, as: :access_level do |user, options|
-        options[:group].users_groups.find_by_user_id(user.id).group_access
+        options[:group].users_groups.find_by(user_id: user.id).group_access
       end
     end
 
@@ -89,6 +89,10 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+    end
+
+    class RepoCommitDetail < RepoCommit
+      expose :parent_ids, :committed_date, :authored_date
     end
 
     class ProjectSnippet < Grape::Entity

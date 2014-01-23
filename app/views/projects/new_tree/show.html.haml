@@ -2,23 +2,29 @@
 %hr
 .file-editor
   = form_tag(project_new_tree_path(@project, @id), method: :put, class: "form-horizontal") do
-    .control-group.commit_message-group
+    .form-group.commit_message-group
       = label_tag 'file_name', class: "control-label" do
         File name
-      .controls
-        %span.monospace= @path[-1] == "/" ? @path : @path + "/"
-        &nbsp;
-        = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true
-        %span
-          &nbsp;
-          on
-          %span.label-branch= @ref
+      .col-sm-10
+        .input-group
+          %span.input-group-addon
+            = @path[-1] == "/" ? @path : @path + "/"
+          = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control'
+          %span.input-group-addon
+            on
+            %span= @ref
 
-    .control-group.commit_message-group
+    .form-group.commit_message-group
+      = label_tag :encoding, class: "control-label" do
+        Encoding
+      .col-sm-10
+        = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'form-control'
+
+    .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
         Commit message
-      .controls
-        = text_area_tag 'commit_message', params[:commit_message], placeholder: "Added new file", required: true, rows: 3
+      .col-sm-10
+        = text_area_tag 'commit_message', params[:commit_message], placeholder: "Added new file", required: true, rows: 3, class: 'form-control'
 
     .file-holder
       .file-title

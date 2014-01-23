@@ -1,3 +1,5 @@
+require 'mime/types'
+
 module API
   # Projects API
   class Repositories < Grape::API
@@ -49,7 +51,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -67,7 +69,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         protected_branch.destroy if protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -110,7 +112,7 @@ module API
         sha = params[:sha]
         commit = user_project.repository.commit(sha)
         not_found! "Commit" unless commit
-        present commit, with: Entities::RepoCommit
+        present commit, with: Entities::RepoCommitDetail
       end
 
       # Get the diff for a specific commit of a project
@@ -122,9 +124,9 @@ module API
       #   GET /projects/:id/repository/commits/:sha/diff
       get ":id/repository/commits/:sha/diff" do
         sha = params[:sha]
-        result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
-        not_found! "Commit" unless result[:commit]
-        result[:commit].diffs
+        commit = user_project.repository.commit(sha)
+        not_found! "Commit" unless commit
+        commit.diffs
       end
 
       # Get a project repository tree
@@ -206,18 +208,20 @@ module API
       #   sha (optional) - the commit sha to download defaults to the tip of the default branch
       # Example Request:
       #   GET /projects/:id/repository/archive
-      get ":id/repository/archive" do
+      get ":id/repository/archive", requirements: { format: Gitlab::Regex.archive_formats_regex } do
         authorize! :download_code, user_project
         repo = user_project.repository
         ref = params[:sha]
+        format = params[:format]
         storage_path = Rails.root.join("tmp", "repositories")
 
-        file_path = repo.archive_repo(ref, storage_path)
+        file_path = repo.archive_repo(ref, storage_path, format)
         if file_path && File.exists?(file_path)
           data = File.open(file_path, 'rb').read
 
-          header "Content-Disposition:", " infile; filename=\"#{File.basename(file_path)}\""
-          content_type 'application/x-gzip'
+          header["Content-Disposition"] = "attachment; filename=\"#{File.basename(file_path)}\""
+
+          content_type MIME::Types.type_for(file_path).first.content_type
 
           env['api.format'] = :binary
 

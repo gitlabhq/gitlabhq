@@ -138,13 +138,17 @@ class Project < ActiveRecord::Base
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
+    def search_by_title query
+      where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
+    end
+
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")
-        namespace = Namespace.find_by_path(id.first)
+        namespace = Namespace.find_by(path: id.first)
         return nil unless namespace
 
-        where(namespace_id: namespace.id).find_by_path(id.second)
+        where(namespace_id: namespace.id).find_by(path: id.second)
       else
         where(path: id, namespace_id: nil).last
       end
@@ -199,6 +203,10 @@ class Project < ActiveRecord::Base
 
   def web_url
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
+  end
+
+  def web_url_without_protocol
+    web_url.split("://")[1]
   end
 
   def build_commit_note(commit)
@@ -270,9 +278,7 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    team.members.each do |user|
-      Notify.delay.project_was_moved_email(self.id, user.id)
-    end
+    NotificationService.new.project_was_moved(self)
   end
 
   def owner
@@ -290,7 +296,7 @@ class Project < ActiveRecord::Base
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by_user_id(user_id)
+    users_projects.find_by(user_id: user_id)
   end
 
   def name_with_namespace

@@ -5,7 +5,7 @@
     Edit
 %hr
 .row
-  .span6
+  .col-md-6
     .ui-box
       .title
         Project info:
@@ -79,17 +79,18 @@
       .title
         Transfer project
       .body
-        = form_for @project, url: transfer_admin_project_path(@project), method: :put do |f|
-          .control-group
-            = f.label :namespace_id, "Namespace"
-            .controls
+        = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
+          .form-group
+            = f.label :namespace_id, "Namespace", class: 'control-label'
+            .col-sm-10
               = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
 
-          .control-group
-            .controls
+          .form-group
+            .col-sm-2
+            .col-sm-10
               = f.submit 'Transfer', class: 'btn btn-primary'
 
-  .span6
+  .col-md-6
     - if @group
       .ui-box
         .title

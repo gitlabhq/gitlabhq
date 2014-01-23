@@ -37,7 +37,7 @@
       = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
         = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
 
-        .form-actions
+        .form-actions.clearfix
           = f.submit 'Save changes', class: "btn btn-primary btn-save"
 
           .note-form-option
@@ -46,7 +46,7 @@
               %span Choose File ...
             &nbsp;
             %span.file_name.js-attachment-filename File name...
-            = f.file_field :attachment, class: "js-note-attachment-input hide"
+            = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
           = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
 

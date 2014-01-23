@@ -52,7 +52,7 @@ GitLab supports the following databases:
 ## PostgreSQL
 
     # Install the database packages
-    sudo apt-get install -y postgresql-9.1 libpq-dev
+    sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
 
     # Login to PostgreSQL
     sudo -u postgres psql -d template1

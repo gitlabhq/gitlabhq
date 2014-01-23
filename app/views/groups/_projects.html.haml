@@ -14,7 +14,8 @@
         = link_to project_path(project), class: dom_class(project) do
           .dash-project-access-icon
             = visibility_level_icon(project.visibility_level)
-          %span.project-name
-            = truncate(project.name, length: 25)
+          %span.str-truncated
+            %span.project-name
+              = truncate(project.name, length: 25)
           %span.arrow
             %i.icon-angle-right

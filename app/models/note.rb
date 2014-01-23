@@ -82,6 +82,18 @@ class Note < ActiveRecord::Base
       }, without_protection: true)
     end
 
+    def create_assignee_change_note(noteable, project, author, assignee)
+      body = assignee.nil? ? '_Assignee removed_' : "_Reassigned to @#{assignee.username}_"
+
+      create({
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      }, without_protection: true)
+    end
+
     def discussions_from_notes(notes)
       discussion_ids = []
       discussions = []
@@ -111,8 +123,8 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-      project.users.find_by_email(noteable.author_email) ||
-      project.users.find_by_name(noteable.author_name)
+      project.users.find_by(email: noteable.author_email) ||
+      project.users.find_by(name: noteable.author_name)
   rescue
     nil
   end

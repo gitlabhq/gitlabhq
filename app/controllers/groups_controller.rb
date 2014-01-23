@@ -10,6 +10,8 @@ class GroupsController < ApplicationController
   # Load group projects
   before_filter :projects, except: [:new, :create]
 
+  before_filter :default_filter, only: [:issues, :merge_requests]
+
   layout :determine_layout
 
   before_filter :set_title, only: [:new, :create]
@@ -43,18 +45,14 @@ class GroupsController < ApplicationController
     end
   end
 
-  # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = FilterContext.new(MergeRequest, current_user, params).execute
-    @merge_requests = @merge_requests.of_group(@group)
-    @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
+    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params)
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
   end
 
-  # Get only assigned issues
   def issues
-    @issues = FilterContext.new(Issue, current_user, params).execute
-    @issues = @issues.of_group(@group)
-    @issues = @issues.recent.page(params[:page]).per(20)
+    @issues = FilteringService.new.execute(Issue, current_user, params)
+    @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
     respond_to do |format|
@@ -89,7 +87,7 @@ class GroupsController < ApplicationController
   protected
 
   def group
-    @group ||= Group.find_by_path(params[:id])
+    @group ||= Group.find_by(path: params[:id])
   end
 
   def projects
@@ -129,5 +127,11 @@ class GroupsController < ApplicationController
     else
       'group'
     end
+  end
+
+  def default_filter
+    params[:scope] = 'assigned-to-me' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+    params[:group_id] = @group.id
   end
 end

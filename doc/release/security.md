@@ -22,7 +22,7 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 1. Push the code and the tags to all the CE and EE repositories
 1. Apply the patch to GitLab Cloud and the private GitLab development server
 1. Merge and publish the blog posts
-1. Send tweets about the release from @gitlabhq and @git_lab
+1. Send tweets about the release from @gitlabhq
 1. Send out an email to the subscribers mailing list on MailChimp
 1. Send out an email to [the community google mailing list](https://groups.google.com/forum/#!forum/gitlabhq)
 1. Send out an email to [the GitLab newsletter list](http://gitlab.us5.list-manage.com/subscribe?u=498dccd07cf3e9482bee33ba4&id=98a9a4992c)

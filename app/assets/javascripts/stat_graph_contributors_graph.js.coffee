@@ -46,11 +46,7 @@ class window.ContributorsGraph
 
 class window.ContributorsMasterGraph extends ContributorsGraph
   constructor: (@data) ->
-    if $(window).width() > 1214
-      @width = 1100
-    else
-      @width = 870
-
+    @width = $('.container').width() - 70
     @height = 200
     @x = null
     @y = null
@@ -88,7 +84,6 @@ class window.ContributorsMasterGraph extends ContributorsGraph
       x(d.date)
     ).y0(@height).y1((d) ->
       xa = d.commits = d.commits ? d.additions ? d.deletions
-      console.log(xa)
       y(xa)
     ).interpolate("basis")
   create_brush: ->
@@ -124,11 +119,7 @@ class window.ContributorsMasterGraph extends ContributorsGraph
 
 class window.ContributorsAuthorGraph extends ContributorsGraph
   constructor: (@data) ->
-    if $(window).width() > 1214
-      @width = 490
-    else
-      @width = 380
-
+    @width = $('.container').width()/2 - 100
     @height = 200
     @x = null
     @y = null

@@ -24,10 +24,10 @@ module Gitlab
       # Returns false if the merge produced conflicts
       # Returns false if pushing from the satellite to the repository failed or was rejected
       # Returns true otherwise
-      def merge!
+      def merge!(merge_commit_message = nil)
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
-          if merge_in_satellite!(merge_repo)
+          if merge_in_satellite!(merge_repo, merge_commit_message)
             # push merge back to bare repo
             # will raise CommandFailed when push fails
             merge_repo.git.push(default_options, :origin, merge_request.target_branch)
@@ -49,14 +49,7 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
-
-          if merge_request.for_fork?
-            diff = merge_repo.git.native(:diff, default_options, "origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
-          else
-            diff = merge_repo.git.native(:diff, default_options, "#{merge_request.target_branch}", "#{merge_request.source_branch}")
-          end
-
-          return diff
+          diff = merge_repo.git.native(:diff, default_options, "origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
@@ -88,14 +81,7 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
-
-          if (merge_request.for_fork?)
-            patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}..source/#{merge_request.source_branch}")
-          else
-            patch = merge_repo.git.format_patch(default_options({stdout: true}), "#{merge_request.target_branch}..#{merge_request.source_branch}")
-          end
-
-          return patch
+          patch = merge_repo.git.format_patch(default_options({stdout: true}), "origin/#{merge_request.target_branch}..source/#{merge_request.source_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
@@ -125,34 +111,26 @@ module Gitlab
       #
       # Returns false if the merge produced conflicts
       # Returns true otherwise
-      def merge_in_satellite!(repo)
+      def merge_in_satellite!(repo, message = nil)
         update_satellite_source_and_target!(repo)
+
+        message ||= "Merge branch '#{merge_request.source_branch}' into '#{merge_request.target_branch}'"
 
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
-        if merge_request.for_fork?
-          repo.git.pull(default_options({no_ff: true}), 'source', merge_request.source_branch)
-        else
-          repo.git.pull(default_options({no_ff: true}), 'origin', merge_request.source_branch)
-        end
+        repo.git.merge(default_options({no_ff: true}), "-m #{message}", "source/#{merge_request.source_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
 
       # Assumes a satellite exists that is a fresh clone of the projects repo, prepares satellite for merges, diffs etc
       def update_satellite_source_and_target!(repo)
-        if merge_request.for_fork?
-          repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
-          repo.remote_fetch('source')
-          repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
-        else
-          repo.git.checkout(default_options, "#{merge_request.source_branch}")
-          repo.git.checkout(default_options({t: true}), "origin/#{merge_request.target_branch}")
-        end
+        repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
+        repo.remote_fetch('source')
+        repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
-
     end
   end
 end

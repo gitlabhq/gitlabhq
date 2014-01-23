@@ -50,7 +50,7 @@ module ApplicationHelper
   end
 
   def avatar_icon(user_email = '', size = nil)
-    user = User.find_by_email(user_email)
+    user = User.find_by(email: user_email)
     if user && user.avatar.present?
       user.avatar.url
     else
@@ -72,7 +72,7 @@ module ApplicationHelper
 
   def last_commit(project)
     if project.repo_exists?
-      time_ago_with_tooltip(project.repository.commit.committed_date) + " ago"
+      time_ago_with_tooltip(project.repository.commit.committed_date)
     else
       "Never"
     end
@@ -210,11 +210,15 @@ module ApplicationHelper
 
   def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
     capture_haml do
-      haml_tag :time, time_ago_in_words(date),
-        class: html_class, datetime: date, title: date.stamp("Aug 21, 2011 9:23pm"),
+      haml_tag :time, date.to_s,
+        class: html_class, datetime: date.getutc.iso8601, title: date.stamp("Aug 21, 2011 9:23pm"),
         data: { toggle: 'tooltip', placement: placement }
 
-      haml_tag :script, "$('." + html_class + "').tooltip()"
+      haml_tag :script, "$('." + html_class + "').timeago().tooltip()"
     end.html_safe
+  end
+
+  def render_markup(file_name, file_content)
+    GitHub::Markup.render(file_name, file_content).html_safe
   end
 end

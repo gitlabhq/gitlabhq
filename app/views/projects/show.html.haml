@@ -1,12 +1,12 @@
 = render "home_panel"
 
 .row
-  .span9
+  .col-md-9
     = render "events/event_last_push", event: @last_push
     = render 'shared/event_filter'
     .content_list
     .loading.hide
-  .span3.project-side
+  .col-md-3.project-side.hidden-sm
     .clearfix
       - if @project.archived?
         .alert
@@ -34,11 +34,10 @@
               Fork repository
 
         - if can? current_user, :download_code, @project
-          = link_to archive_project_repository_path(@project), class: "btn btn-block" do
-            %i.icon-download-alt
-            %span Download
-          = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
-            Compare code
+          = render 'projects/repositories/download_archive', btn_class: 'btn-block btn-group-justified', split_button: true
+
+        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+          Compare code
 
         - if @repository.readme
           - readme = @repository.readme

@@ -27,16 +27,16 @@ NOTE: This is a guide for GitLab developers. If you are trying to install GitLab
 
 Check if any of these changed since last release (~22nd of last month depending on when last release branch was created):
 
-* https://github.com/gitlabhq/gitlabhq/commits/master/lib/support/nginx/gitlab
-* https://github.com/gitlabhq/gitlab-shell/commits/master/config.yml.example
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/gitlab.yml.example
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/unicorn.rb.example
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/database.yml.mysql
-* https://github.com/gitlabhq/gitlabhq/commits/master/config/database.yml.postgresql
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/nginx/gitlab
+* https://gitlab.com/gitlab-org/gitlab-shell/commits/master/config.yml.example
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/gitlab.yml.example
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql
+* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql
 
 #### 8. Need to update init script?
 
-Check if changed since last release (~22nd of last month depending on when last release branch was created): https://github.com/gitlabhq/gitlabhq/commits/master/lib/support/init.d/gitlab
+Check if changed since last release (~22nd of last month depending on when last release branch was created): https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/init.d/gitlab
 
 #### 9. Start application
 
@@ -56,23 +56,17 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 ## Make a release branch
 
-After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked.
+After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
 
-* 5 days before release: feature freeze (stop merging new features)
-* 4 days before release: UI freeze (stop merging changes to the user interface)
-* 3 days before release: code freeze (stop merging non-essential code improvements)
-* 2 days before release: release candidate 1 (tag and tweet about x.x.rc1)
-* 1 day before release: release candidate 2 (optional, only if rc1 had problems)
+* 17th: feature freeze (branch and stop merging new features)
+* 18th: UI freeze (stop cherry-picking changes to the user interface)
+* 19th: code freeze (stop cherry-picking non-essential code improvements)
+* 20th: release candidate 1 (tag and tweet about x.x.rc1)
+* 21st: release candidate 2 (optional, only if rc1 had problems)
+* 22nd: release (update VERSION and CHANGELOG, tag, blog and tweet)
 
 # Write a blog post
 
 * Mention what GitLab is on the second line: GitLab is open source software to collaborate on code.
 * Select and thank the the Most Valuable Person (MVP) of this release.
-* Note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
-
-## Last actions
-
-1. Update VERSION and CHANGELOG
-1. Create a git tag vX.X.X
-1. Publish the blog post
-1. Tweet about the release
+* Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.

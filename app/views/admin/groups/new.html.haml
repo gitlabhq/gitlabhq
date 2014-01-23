@@ -1,27 +1,31 @@
 %h3.page-title New Group
 %hr
-= form_for [:admin, @group] do |f|
+= form_for [:admin, @group], html: { class: 'group-form form-horizontal' } do |f|
   - if @group.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %span= @group.errors.full_messages.first
-  .control-group
-    = f.label :name do
+  .form-group
+    = f.label :name, class: 'control-label' do
       Group name
-    .controls
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
-  .control-group.group-description-holder
-    = f.label :description, "Details"
-    .controls
-      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
+    .col-sm-10
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control"
+
+  .form-group.group-description-holder
+    = f.label :description, "Details", class: 'control-label'
+    .col-sm-10
+      = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
+
+  .form-group
+    .col-sm-2
+    .col-sm-10
+      %ul
+        %li A group is a collection of several projects
+        %li Groups are private by default
+        %li Members of a group may only view projects they have permission to access
+        %li Group project URLs are prefixed with the group namespace
+        %li Existing projects may be moved into a group
 
   .form-actions
     = f.submit 'Create group', class: "btn btn-create"
 
-  %hr
-  .padded
-    %ul
-      %li Group is kind of directory for several projects
-      %li All created groups are private
-      %li People within a group see only projects they have access to
-      %li All projects of group will be stored in a group directory
-      %li You will be able to move existing projects into group
+

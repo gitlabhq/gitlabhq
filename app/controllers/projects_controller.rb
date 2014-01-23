@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateContext.new(current_user, params[:project]).execute
+    @project = ::Projects::CreateService.new(current_user, params[:project]).execute
 
     respond_to do |format|
       flash[:notice] = 'Project was successfully created.' if @project.saved?
@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateContext.new(@project, current_user, params).execute
+    status = ::Projects::UpdateService.new(@project, current_user, params).execute
 
     respond_to do |format|
       if status
@@ -51,7 +51,7 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferContext.new(project, current_user, params).execute
+    ::Projects::TransferService.new(project, current_user, params).execute
   end
 
   def show
@@ -89,7 +89,7 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    @forked_project = ::Projects::ForkContext.new(project, current_user).execute
+    @forked_project = ::Projects::ForkService.new(project, current_user).execute
 
     respond_to do |format|
       format.html do

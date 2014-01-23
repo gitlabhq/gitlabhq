@@ -37,6 +37,9 @@ class Notes
     # attachment button
     $(document).on "click", ".js-choose-note-attachment-button", @chooseNoteAttachment
 
+    # update the file name when an attachment is selected
+    $(document).on "change", ".js-note-attachment-input", @updateFormAttachment
+
     # reply to diff/discussion notes
     $(document).on "click", ".js-discussion-reply-button", @replyToDiscussionNote
 
@@ -428,5 +431,17 @@ class Notes
 
   updateVotes: ->
     (new NotesVotes).updateVotes()
+
+  ###
+  Called after an attachment file has been selected.
+
+  Updates the file name for the selected attachment.
+  ###
+  updateFormAttachment: ->
+    form = $(this).closest("form")
+
+    # get only the basename
+    filename = $(this).val().replace(/^.*[\\\/]/, "")
+    form.find(".js-attachment-filename").text filename
 
 @Notes = Notes

@@ -1,11 +1,5 @@
 .dashboard {
-  @extend .row;
-  .activities {
-  }
-
   .side {
-    @extend .pull-right;
-
     .ui-box {
       margin: 0px;
       box-shadow: none;
@@ -20,7 +14,7 @@
 
   .search-text-input {
     float:left;
-    @extend .span2;
+    @extend .col-md-2;
   }
   .btn {
     margin-left: 5px;
@@ -32,14 +26,15 @@
   .dash-filter {
     margin: 7px 0;
     padding: 4px 6px;
-    width: 202px;
+    width: 220px;
     float: left;
+    height: inherit;
   }
 }
 
 @media (max-width: 1200px) {
   .dashboard .dash-filter {
-    width: 132px;
+    width: 150px;
   }
 }
 
@@ -107,7 +102,6 @@
   padding: 8px 12px;
   border-radius: 50px;
   background: #f5f5f5;
-  width: 16px;
   text-align: center;
 
   i {

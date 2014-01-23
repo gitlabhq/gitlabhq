@@ -99,9 +99,10 @@ module API
                                      :snippets_enabled,
                                      :namespace_id,
                                      :public,
-                                     :visibility_level]
+                                     :visibility_level,
+                                     :import_url]
         attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateContext.new(current_user, attrs).execute
+        @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
         else
@@ -142,7 +143,7 @@ module API
                                      :public,
                                      :visibility_level]
         attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateContext.new(user, attrs).execute
+        @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
         else
@@ -265,7 +266,7 @@ module API
         authorize! :admin_project, user_project
         required_attributes! [:access_level]
 
-        team_member = user_project.users_projects.find_by_user_id(params[:user_id])
+        team_member = user_project.users_projects.find_by(user_id: params[:user_id])
         not_found!("User can not be found") if team_member.nil?
 
         if team_member.update_attributes(project_access: params[:access_level])
@@ -285,7 +286,7 @@ module API
       #   DELETE /projects/:id/members/:user_id
       delete ":id/members/:user_id" do
         authorize! :admin_project, user_project
-        team_member = user_project.users_projects.find_by_user_id(params[:user_id])
+        team_member = user_project.users_projects.find_by(user_id: params[:user_id])
         unless team_member.nil?
           team_member.destroy
         else

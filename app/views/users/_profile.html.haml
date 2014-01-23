@@ -8,7 +8,7 @@
     - unless user.skype.blank?
       %li
         %span.light Skype:
-        %strong= user.skype
+        %strong= link_to user.skype, "skype:#{user.skype}"
     - unless user.linkedin.blank?
       %li
         %span.light LinkedIn:
@@ -16,7 +16,11 @@
     - unless user.twitter.blank?
       %li
         %span.light Twitter:
-        %strong= user.twitter
+        %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}"
+    - unless user.website_url.blank?
+      %li
+        %span.light Website:
+        %strong= link_to user.short_website_url, user.full_website_url
     - unless user.bio.blank?
       %li
         %span.light Bio:

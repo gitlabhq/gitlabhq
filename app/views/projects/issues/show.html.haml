@@ -2,7 +2,7 @@
   Issue ##{@issue.iid}
 
   %small
-    created #{time_ago_with_tooltip(@issue.created_at)} ago
+    created #{time_ago_with_tooltip(@issue.created_at)}
 
   - if @issue.closed?
     %span.state-label.state-label-red Closed
@@ -24,8 +24,8 @@
         %i.icon-edit
         Edit
 
-.pull-right
-  .span3#votes= render 'votes/votes_block', votable: @issue
+.votes-holder
+  #votes= render 'votes/votes_block', votable: @issue
 
 .back-link
   = link_to project_issues_path(@project) do
@@ -33,8 +33,8 @@
   %span.milestone-nav-link
     - if @issue.milestone
       |
+      %span.light Milestone
       = link_to project_milestone_path(@project, @issue.milestone) do
-        %span.light Milestone
         = @issue.milestone.title
 
 .issue-box
