@@ -21,6 +21,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     page.should have_link "GitLab API website"
     page.should have_link "Rake tasks"
     page.should have_link "backup and restore procedure"
+    page.should have_link "GitLab API doc directory"
+    page.should have_link "Maintenance"
   end
 
   And 'I click on Gitlab API in README' do
@@ -40,6 +42,26 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     current_path.should == project_tree_path(@project, "master/doc/raketasks")
     page.should have_content "backup_restore.md"
     page.should have_content "maintenance.md"
+  end
+
+
+  And 'I click on GitLab API doc directory in README' do
+    click_link "GitLab API doc directory"
+  end
+
+  Then 'I should see correct doc/api directory rendered' do
+    current_path.should == project_tree_path(@project, "master/doc/api")
+    page.should have_content "README.md"
+    page.should have_content "users.md"
+  end
+
+  And 'I click on Maintenance in README' do
+    click_link "Maintenance"
+  end
+
+  Then 'I should see correct maintenance file rendered' do
+    current_path.should == project_blob_path(@project, "doc/raketasks/maintenance.md")
+    page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
 
   And 'I navigate to the doc/api/README' do
