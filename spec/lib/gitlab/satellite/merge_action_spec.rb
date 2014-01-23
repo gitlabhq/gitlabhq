@@ -12,9 +12,10 @@ describe 'Gitlab::Satellite::MergeAction' do
     @close_commit2 = ['scss_refactoring', 'f0f14c8eaba69ebddd766498a9d0b0e79becd633']
   end
 
-  let(:project) { create(:project) }
+  let(:project) { create(:project, namespace: create(:group)) }
+  let(:fork_project) { create(:project, namespace: create(:group)) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let(:merge_request_fork) { create(:merge_request) }
+  let(:merge_request_fork) { create(:merge_request, source_project: fork_project, target_project: project) }
 
   describe '#commits_between' do
     def verify_commits(commits, first_commit_sha, last_commit_sha)
