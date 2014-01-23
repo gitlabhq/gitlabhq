@@ -17,7 +17,7 @@ module Gitlab
                    prompt("Do you want to upgrade (yes/no)? ", %w{yes no})
                  end
 
-        if answer == "yes"
+        if answer == "yes" || answer == "y"
           upgrade
         else
           exit 0

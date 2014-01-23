@@ -19,10 +19,8 @@ __GitLab Upgrader is available only for version 6.4.2 or higher__
 
     cd /home/git/gitlab
     sudo -u git -H ruby script/upgrade.rb
-
-    # it also supports -y option to avouid user input
+    # to perform a non-interactive install (no user input required) you can add -y
     # sudo -u git -H ruby script/upgrade.rb -y
-   
 
 ### 3. Start application
 
