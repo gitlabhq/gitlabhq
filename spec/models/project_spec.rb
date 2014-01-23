@@ -167,10 +167,10 @@ describe Project do
     context 'with namespace' do
       before do
         @group = create :group, name: 'gitlab'
-        @project = create(:project, name: 'gitlab-ci', namespace: @group)
+        @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
-      it { @project.to_param.should == "gitlab/gitlab-ci" }
+      it { @project.to_param.should == "gitlab/gitlabhq" }
     end
   end
 
