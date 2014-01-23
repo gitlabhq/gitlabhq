@@ -50,7 +50,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct doc/api directory rendered' do
-    current_path.should == project_tree_path(@project, "master/doc/api")
+    current_path.should == project_tree_path(@project, "master/doc/api/")
     page.should have_content "README.md"
     page.should have_content "users.md"
   end
@@ -60,7 +60,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct maintenance file rendered' do
-    current_path.should == project_blob_path(@project, "doc/raketasks/maintenance.md")
+    current_path.should == project_blob_path(@project, "master/doc/raketasks/maintenance.md")
     page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
 
