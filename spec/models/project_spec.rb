@@ -137,17 +137,17 @@ describe Project do
 
     it "should close merge request if last commit from source branch was pushed to target branch" do
       @merge_request.reloaded_commits
-      @merge_request.last_commit.id.should == "b1e6a9dbf1c85e6616497a5e7bad9143a4bd0828"
-      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "b1e6a9dbf1c85e6616497a5e7bad9143a4bd0828", "refs/heads/stable", @key.user)
+      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
+      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/stable", @key.user)
       @merge_request.reload
       @merge_request.merged?.should be_true
     end
 
     it "should update merge request commits with new one if pushed to source branch" do
       @merge_request.last_commit.should == nil
-      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "b1e6a9dbf1c85e6616497a5e7bad9143a4bd0828", "refs/heads/master", @key.user)
+      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/master", @key.user)
       @merge_request.reload
-      @merge_request.last_commit.id.should == "b1e6a9dbf1c85e6616497a5e7bad9143a4bd0828"
+      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
     end
   end
 
