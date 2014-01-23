@@ -15,7 +15,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     @forking_user = @user
     forked_project_link = build(:forked_project_link)
     @forked_project = Project.find_by_name "Forked Shop"
-    @forked_project ||= create(:source_project, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
+    @forked_project ||= create(:project, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
 
     forked_project_link.forked_from_project = @project
     forked_project_link.forked_to_project = @forked_project

@@ -142,7 +142,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user, commit_message = nil)
-    if Gitlab::Satellite::MergeAction.new(current_user, self).merge!(commit_message) && self.unmerged_commits.empty?
+    if Gitlab::Satellite::MergeAction.new(current_user, self).merge!(commit_message)
       self.merge!(current_user.id)
       true
     end
