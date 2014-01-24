@@ -16,6 +16,8 @@
 #
 
 class AssemblaService < Service
+  attr_accessible :subdomain
+
   include HTTParty
 
   validates :token, presence: true, if: :activated?
@@ -34,12 +36,13 @@ class AssemblaService < Service
 
   def fields
     [
-      { type: 'text', name: 'token', placeholder: '' }
+      { type: 'text', name: 'token', placeholder: '' },
+      { type: 'text', name: 'subdomain', placeholder: '' }
     ]
   end
 
   def execute(push)
-    url = "https://atlas.assembla.com/spaces/ouposp/github_tool?secret_key=#{token}"
+    url = "https://atlas.assembla.com/spaces/#{subdomain}/github_tool?secret_key=#{token}"
     AssemblaService.post(url, body: { payload: push }.to_json, headers: { 'Content-Type' => 'application/json' })
   end
 end
