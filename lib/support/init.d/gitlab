@@ -38,6 +38,11 @@ sidekiq_pid_path="$pid_path/sidekiq.pid"
 # Read configuration variable file if it is present
 test -f /etc/default/gitlab && . /etc/default/gitlab
 
+# Not all systems set $USER
+if [ "x$USER" = "x" ]; then
+  USER=$(id -nu)
+fi
+
 # Switch to the app_user if it is not he/she who is running the script.
 if [ "$USER" != "$app_user" ]; then
   sudo -u "$app_user" -H -i $0 "$@"; exit;
@@ -95,16 +100,16 @@ check_pids
 ## Checks whether the different parts of the service are already running or not.
 check_status(){
   check_pids
-  # If the web server is running kill -0 $wpid returns true, or rather 0.
+  # If the web server is running ps -p $wpid returns true, or rather 0.
   # Checks of *_status should only check for == 0 or != 0, never anything else.
   if [ $wpid -ne 0 ]; then
-    kill -0 "$wpid" 2>/dev/null
+    ps  -p "$wpid" 2>&1 1>/dev/null
     web_status="$?"
   else
     web_status="-1"
   fi
   if [ $spid -ne 0 ]; then
-    kill -0 "$spid" 2>/dev/null
+    ps  -p "$spid" 2>&1 1>/dev/null
     sidekiq_status="$?"
   else
     sidekiq_status="-1"
@@ -279,7 +284,8 @@ case "$1" in
         start
         ;;
   stop)
-        stop
+        # Some systems, e.g. Illumos have an alias for stop in /bin/sh that prevents the call to the stop function
+        \stop
         ;;
   restart)
         restart
