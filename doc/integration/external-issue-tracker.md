@@ -4,4 +4,4 @@ GitLab has a great issue tracker but you can also use an external issue tracker 
 - clicking 'New issue' on the project dashboard creates a new JIRA issue;
 - textual references to PROJECT-1234 in comments, commit messages get turned into HTML links to the corresponding JIRA issue.
 
-Also see the [screenshot](jira-intergration-points.png) below.
+[jira screenshot](jira-intergration-points.png)
