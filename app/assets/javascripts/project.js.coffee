@@ -10,6 +10,8 @@ class Project
   initEvents: ->
     disableButtonIfEmptyField '#project_name', '.project-submit'
 
+    auto_init_checked = $('#project_auto_init').is(':checked')
+
     $('#project_issues_enabled').change ->
       if ($(this).is(':checked') == true)
         $('#project_issues_tracker').removeAttr('disabled')
@@ -23,6 +25,17 @@ class Project
         $('#project_issues_tracker_id').attr('disabled', 'disabled')
       else
         $('#project_issues_tracker_id').removeAttr('disabled')
+
+    $('#project_import_url').change ->
+      if ($(this).val().length > 0)
+        $('#project_auto_init').attr('disabled', 'disabled')
+        $('#project_auto_init').attr('checked', false)
+      else
+        $('#project_auto_init').removeAttr('disabled')
+        if (auto_init_checked)
+          $('#project_auto_init').attr('checked', true)
+        else 
+          $('#project_auto_init').attr('checked', false)
 
 
 @Project = Project

@@ -505,4 +505,16 @@ class Project < ActiveRecord::Base
   def auto_init?
     auto_init
   end
+
+  def auto_init_from_template?
+    auto_init_template_dir_exists(Gitlab.config.gitlab.auto_init_template_dir)
+  end
+
+  def auto_init_template_dir_exists(directory)
+    if File.directory?(directory)
+      Dir.entries("#{directory}").size > 2
+    else
+     false
+    end
+  end
 end

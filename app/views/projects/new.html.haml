@@ -32,7 +32,7 @@
       .form-group
         .col-sm-2
         .col-sm-10
-          = link_to "#", class: 'appear-link' do
+          = link_to "#", id: 'import_project_appear_link', class: 'appear-link' do
             %i.icon-upload-alt
             %span Import existing repository?
       .form-group.appear-data.import-url-data
@@ -54,7 +54,10 @@
         .col-sm-10
           %span.checkbox.auto_init
             = f.check_box :auto_init, checked: (gitlab_config.default_projects_features.auto_init == true), tabindex: 4
-            Project will be initialized with a README file (only if you're creating a new project without importing from another one).
+            - if @project.auto_init_from_template?
+              Initialize the repository with default template.
+            - else
+              Initialize the repository with a README file.
       = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
       .form-actions

@@ -15,13 +15,11 @@ module Projects
     end
 
     def execute
-      if !exists(config_auto_init_template_dir) || !has_files(config_auto_init_template_dir)
+      if !project.auto_init_from_template?
         init_from_template = "false"
       else
         init_from_template = "true"
       end
-
-      Gitlab::AppLogger.info("init_from_template = #{init_from_template}")
 
       GitlabShellWorker.perform_in(
         1.seconds,
@@ -33,18 +31,6 @@ module Projects
         project.owner.name,
         project.owner.email
       )
-    end
-
-    def exists(directory)
-      File.directory?(directory)
-    end
-
-    def has_files(directory)
-      if exists(directory)
-        Dir.entries("#{directory}").size > 2
-      else
-        false
-      end
     end
 
   end
