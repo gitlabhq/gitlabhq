@@ -50,17 +50,26 @@ class MergeRequest < ActiveRecord::Base
     end
 
     event :merge do
-      transition [:reopened, :opened] => :merged
+      transition [:reopened, :opened, :locked] => :merged
     end
 
     event :reopen do
       transition closed: :reopened
     end
 
+    event :lock do
+      transition [:reopened, :opened] => :locked
+    end
+
+    event :unlock do
+      transition locked: :reopened
+    end
+
     state :opened
     state :reopened
     state :closed
     state :merged
+    state :locked
   end
 
   state_machine :merge_status, initial: :unchecked do
@@ -136,19 +145,8 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def merge!(user_id)
-    self.author_id_of_changes = user_id
-    self.merge
-  end
-
   def automerge!(current_user, commit_message = nil)
-    if Gitlab::Satellite::MergeAction.new(current_user, self).merge!(commit_message)
-      self.merge!(current_user.id)
-      true
-    end
-  rescue
-    mark_as_unmergeable
-    false
+    MergeRequests::AutoMergeService.new.execute(self, current_user, commit_message)
   end
 
   def mr_and_commit_notes
