@@ -126,7 +126,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_code
-    merge_request_diff.reload_content if opened?
+    if merge_request_diff && opened?
+      merge_request_diff.reload_content
+    end
   end
 
   def check_if_can_be_merged
