@@ -9,7 +9,7 @@ class Projects::IssuesController < Projects::ApplicationController
   before_filter :authorize_write_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_filter :authorize_modify_issue!, only: [:edit, :update]
+  before_filter :authorize_modify_issue!, only: [:edit, :update, :bulk_update]
 
   respond_to :html
 

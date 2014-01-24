@@ -125,6 +125,7 @@ class Ability
       project_report_rules + [
         :write_merge_request,
         :write_wiki,
+        :modify_issue,
         :push_code
       ]
     end
