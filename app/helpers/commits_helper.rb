@@ -182,6 +182,66 @@ module CommitsHelper
     return old_lines, new_lines
   end
 
+  def get_side_by_side_lines(project, commit, diff, index, file)
+    old_file = get_old_file(project, commit, diff)
+
+    max_length = [old_file.loc, file.loc, 0].max if old_file
+    max_length ||= [file.loc, 0].max if file
+    max_length ||= 0
+
+    if old_file && old_file.loc > 0
+      old_lines = Array.new(max_length, {type: :empty})
+      old_file.lines.each_with_index{|line, index| old_lines[index] = {line: line, type: :same, nr: index + 1}}
+    end
+    old_lines ||= []
+
+    if file && file.loc > 0
+      new_lines = Array.new(max_length, {type: :empty})
+      file.lines.each_with_index{|line, index| new_lines[index] = {line: line, type: :same, nr: index + 1}}
+    end
+    new_lines ||= []
+
+    diff_lines = {}
+    each_diff_line(diff, index) do |line, type, line_code, line_new, line_old, raw_line|
+      line_index = (type == 'new') ? line_new : line_old
+      type ||= :same
+      diff_lines[type.to_sym] ||= {}
+      diff_lines[type.to_sym][line_index] ||= {line: line, type: type, line_code: line_code, line_new: line_new, line_old: line_old, raw_line: raw_line} if line_index
+    end
+
+    diff_lines[:same] ||= {}
+    diff_lines[:new]  ||= {}
+    diff_lines[:old]  ||= {}
+
+    # set line_codes and type for diff lines
+    [:same, :old, :new].each do |type|
+      my_lines = diff_lines[type]
+      my_lines.each do |line_index, line_hash|
+        if type == :new
+          new_lines[line_index - 1][:type] = type
+          new_lines[line_index - 1][:line_code] = line_hash[:line_code]
+        else
+          old_lines[line_index - 1][:type] = type
+          old_lines[line_index - 1][:line_code] = line_hash[:line_code]
+        end
+      end
+    end
+
+    # add white lines for changes on either side
+    [:old, :new].each do |type|
+      my_lines = diff_lines[type]
+      my_lines.each do |line_index, line_hash|
+        if type == :new
+          old_lines.insert(line_index, {type: :empty}) unless diff_lines[:old][line_index]
+        else
+          new_lines.insert(line_index - 1, {type: :empty}) unless diff_lines[:new][line_index]
+        end
+      end
+    end
+
+    [max_length, old_lines, new_lines]
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and
