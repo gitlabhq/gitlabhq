@@ -1,3 +1,6 @@
+v 6.6.0
+  - Permissions: Developer now can manage issue tracker (modify any issue)
+
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
 
