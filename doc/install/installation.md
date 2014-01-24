@@ -84,24 +84,21 @@ Make sure you have the right version of Git installed
     # Make sure Git is version 1.7.10 or higher, for example 1.7.12 or 1.8.4
     git --version
 
-Is the system packaged Git too old? Remove it and compile from source.
+Is the system packaged Git too old? Remove it and install it from PPA.
 
     # Remove packaged Git
     sudo apt-get remove git-core
 
-    # Install dependencies
-    sudo apt-get install -y libcurl4-openssl-dev libexpat1-dev gettext libz-dev libssl-dev build-essential
+    # Install PPA helper
+    sudo apt-get install -y python-software-properties
 
-    # Download and compile from source
-    cd /tmp
-    curl --progress https://git-core.googlecode.com/files/git-1.8.4.1.tar.gz | tar xz
-    cd git-1.8.4.1/
-    make prefix=/usr/local all
-
-    # Install into /usr/local/bin
-    sudo make prefix=/usr/local install
-
-    # When editing config/gitlab.yml (Step 6), change the git bin_path to /usr/local/bin/git
+    # Download and install from PPA
+    sudo add-apt-repository ppa:git-core/ppa
+    sudo apt-get update
+    sudo apt-get install git-core
+    
+    # Verify the installed git version from PPA
+    git --version
 
 **Note:** In order to receive mail notifications, make sure to install a
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
