@@ -431,6 +431,24 @@ describe GitlabMarkdownHelper do
       expected = "<p><a href=\"/#{project.path_with_namespace}/wikis/test/link\">Link</a></p>\n"
       markdown(actual).should match(expected)
     end
+
+    it "should handle relative urls in reference links for a file in master" do
+      actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+    it "should handle relative urls in reference links for a directory in master" do
+      actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api/\">GitLab API doc directory</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+     it "should not handle malformed relative urls in reference links for a file in master" do
+      actual = "[GitLab readme]: doc/api/README.md\n"
+      expected = ""
+      markdown(actual).should match(expected)
+    end
   end
 
   describe "#render_wiki_content" do

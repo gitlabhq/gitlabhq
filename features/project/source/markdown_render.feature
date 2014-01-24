@@ -16,6 +16,18 @@ Feature: Project markdown render
     And I click on Rake tasks in README
     Then I should see correct directory rendered
 
+  Scenario: I view README in master branch to see reference links to directory
+    Then I should see files from repository in master
+    And I should see rendered README which contains correct links
+    And I click on GitLab API doc directory in README
+    Then I should see correct doc/api directory rendered
+
+  Scenario: I view README in master branch to see reference links to file
+    Then I should see files from repository in master
+    And I should see rendered README which contains correct links
+    And I click on Maintenance in README
+    Then I should see correct maintenance file rendered
+
   Scenario: I navigate to doc directory to view documentation in master
     And I navigate to the doc/api/README
     And I see correct file rendered
