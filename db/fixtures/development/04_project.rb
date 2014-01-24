@@ -40,7 +40,7 @@ project_urls.each_with_index do |url, i|
     description: Faker::Lorem.sentence
   }
 
-  project = Projects::CreateContext.new(User.first, params).execute
+  project = Projects::CreateService.new(User.first, params).execute
 
   if project.valid?
     print '.'
