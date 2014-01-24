@@ -18,23 +18,6 @@ class MergeRequestObserver < ActivityObserver
     execute_hooks(merge_request)
   end
 
-  def after_merge(merge_request, transition)
-    notification.merge_mr(merge_request)
-    # Since MR can be merged via sidekiq
-    # to prevent event duplication do this check
-    return true if merge_request.merge_event
-
-    Event.create(
-      project: merge_request.target_project,
-      target_id: merge_request.id,
-      target_type: merge_request.class.name,
-      action: Event::MERGED,
-      author_id: merge_request.author_id_of_changes
-    )
-
-    execute_hooks(merge_request)
-  end
-
   def after_reopen(merge_request, transition)
     create_event(merge_request, Event::REOPENED)
     create_note(merge_request)
