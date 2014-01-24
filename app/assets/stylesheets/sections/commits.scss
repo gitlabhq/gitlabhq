@@ -48,6 +48,10 @@
     background: #FFF;
     color: #333;
     font-size: 12px;
+    .text-file-parallel {
+      max-height: 600px;
+      overflow-x: auto;
+    }
     .old {
       span.idiff {
         background-color: #FAA;
