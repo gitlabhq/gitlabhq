@@ -6,11 +6,10 @@
   }
 
   .login-box{
-    width: 304px;
+    max-width: 304px;
     position: relative;
     @include border-radius(5px);
     margin: auto;
-    padding: 20px;
     background: white;
   }
 
@@ -23,7 +22,7 @@
     background-color: #f1f1f1;
     font-size: 16px;
     padding: 14px 10px;
-    width: 280px;
+    width: 100%;
     height: auto;
 
     &.top {

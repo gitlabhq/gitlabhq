@@ -55,18 +55,18 @@ Feature: Project Merge Requests
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the first commit in the merge request
-    And I leave a comment like "Line is wrong" on line 185 of the first file
+    And I leave a comment like "Line is wrong" on line 185 of the first file in commit
     And I switch to the merge request's comments tab
-    Then I should see a discussion has started on commit bcf03b5de6c:L185
+    Then I should see a discussion has started on commit b1e6a9dbf1:L185
 
   @javascript
   Scenario: I comment on a commit in merge request
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I click on the first commit in the merge request
-    And I leave a comment on the diff page
+    And I leave a comment on the diff page in commit
     And I switch to the merge request's comments tab
-    Then I should see a discussion has started on commit bcf03b5de6c
+    Then I should see a discussion has started on commit b1e6a9dbf1
 
   @javascript
   Scenario: I accept merge request with custom commit message

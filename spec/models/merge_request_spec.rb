@@ -73,14 +73,13 @@ describe MergeRequest do
 
   describe '#for_fork?' do
     it 'returns true if the merge request is for a fork' do
-      subject.source_project = create(:source_project)
-      subject.target_project = create(:target_project)
+      subject.source_project = create(:project, namespace: create(:group))
+      subject.target_project = create(:project, namespace: create(:group))
 
       subject.for_fork?.should be_true
     end
+
     it 'returns false if is not for a fork' do
-      subject.source_project = create(:source_project)
-      subject.target_project = subject.source_project
       subject.for_fork?.should be_false
     end
   end

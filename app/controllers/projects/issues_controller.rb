@@ -97,7 +97,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     @issue ||= begin
-                 @project.issues.find_by_iid!(params[:id])
+                 @project.issues.find_by!(iid: params[:id])
                rescue ActiveRecord::RecordNotFound
                  redirect_old
                end
@@ -127,7 +127,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
   #
   def redirect_old
-    issue = @project.issues.find_by_id(params[:id])
+    issue = @project.issues.find_by(id: params[:id])
 
     if issue
       redirect_to project_issue_path(@project, issue)

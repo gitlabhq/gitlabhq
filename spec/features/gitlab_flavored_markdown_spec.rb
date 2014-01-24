@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "GitLab Flavored Markdown" do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:fred) do

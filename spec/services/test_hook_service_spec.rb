@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe TestHookService do
   let (:user)    { create :user }
-  let (:project) { create :project_with_code }
+  let (:project) { create :project }
   let (:hook)    { create :project_hook, project: project }
 
   describe :execute do

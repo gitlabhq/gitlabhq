@@ -90,10 +90,10 @@ class ProjectSnippets < Spinach::FeatureSteps
   end
 
   def project
-    @project ||= Project.find_by_name!("Shop")
+    @project ||= Project.find_by!(name: "Shop")
   end
 
   def project_snippet
-    @project_snippet ||= ProjectSnippet.find_by_title!("Snippet One")
+    @project_snippet ||= ProjectSnippet.find_by!(title: "Snippet one")
   end
 end

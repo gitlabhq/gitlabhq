@@ -87,7 +87,7 @@ class GroupsController < ApplicationController
   protected
 
   def group
-    @group ||= Group.find_by_path(params[:id])
+    @group ||= Group.find_by(path: params[:id])
   end
 
   def projects

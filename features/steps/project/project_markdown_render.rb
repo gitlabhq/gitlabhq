@@ -3,8 +3,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   include SharedPaths
 
   And 'I own project "Delta"' do
-    @project = Project.find_by_name "Delta"
-    @project ||= create(:project_with_code, name: "Delta", namespace: @user.namespace)
+    @project = Project.find_by(name: "Delta")
+    @project ||= create(:project, name: "Delta", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 

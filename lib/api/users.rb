@@ -119,7 +119,7 @@ module API
       #   DELETE /users/:id
       delete ":id" do
         authenticated_as_admin!
-        user = User.find_by_id(params[:id])
+        user = User.find_by(id: params[:id])
 
         if user
           user.destroy

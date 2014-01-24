@@ -76,7 +76,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.author = current_user
     @target_branches ||= []
     if @merge_request.save
-      @merge_request.reload_code
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
@@ -152,6 +151,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = selected_target_project
     @target_branches = @target_project.repository.branch_names
     @target_branches
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def ci_status
@@ -168,7 +171,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
+    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
 
   def closes_issues
@@ -213,6 +216,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
   end

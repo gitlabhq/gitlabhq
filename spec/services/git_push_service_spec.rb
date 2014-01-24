@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GitPushService do
   let (:user)          { create :user }
-  let (:project)       { create :project_with_code }
+  let (:project)       { create :project }
   let (:service) { GitPushService.new }
 
   before do

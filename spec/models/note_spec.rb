@@ -206,7 +206,7 @@ describe Note do
   end
 
   describe '#create_cross_reference_note' do
-    let(:project)    { create(:project_with_code) }
+    let(:project)    { create(:project) }
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
     let(:mergereq)   { create(:merge_request, target_project: project) }

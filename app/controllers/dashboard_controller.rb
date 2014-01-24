@@ -41,7 +41,7 @@ class DashboardController < ApplicationController
                   current_user.authorized_projects
                 end
 
-    @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
+    @projects = @projects.where(namespace_id: Group.find_by(name: params[:group])) if params[:group].present?
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = @projects.includes(:namespace)
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?

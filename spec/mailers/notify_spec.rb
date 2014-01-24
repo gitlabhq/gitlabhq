@@ -5,7 +5,7 @@ describe Notify do
   include EmailSpec::Matchers
 
   let(:recipient) { create(:user, email: 'recipient@example.com') }
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
 
   shared_examples 'a multiple recipients email' do
     it 'is sent to the given recipient' do

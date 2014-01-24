@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "On a merge request", js: true do
-  let!(:project) { create(:project_with_code) }
+  let!(:project) { create(:project) }
   let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let!(:note) { create(:note_on_merge_request_with_attachment,  project: project) }
 
@@ -135,7 +135,7 @@ describe "On a merge request", js: true do
 end
 
 describe "On a merge request diff", js: true, focus: true do
-  let!(:project) { create(:source_project_with_code) }
+  let!(:project) { create(:project) }
   let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
 
   before do
@@ -149,7 +149,7 @@ describe "On a merge request diff", js: true, focus: true do
 
   describe "when adding a note" do
     before do
-      find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
+      find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
     end
 
     describe "the notes holder" do
@@ -159,23 +159,14 @@ describe "On a merge request diff", js: true, focus: true do
     end
 
     describe "the note form" do
-      # FIXME
-      #it 'should be valid' do
-        #within(".js-temp-notes-holder") { find("#note_noteable_type").value.should == "MergeRequest" }
-        #within(".js-temp-notes-holder") { find("#note_noteable_id").value.should == merge_request.id.to_s }
-        #within(".js-temp-notes-holder") { find("#note_commit_id").value.should == "" }
-        #within(".js-temp-notes-holder") { find("#note_line_code").value.should == "4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185" }
-        #should have_css(".js-close-discussion-note-form", text: "Cancel")
-      #end
-
       it "shouldn't add a second form for same row" do
-        find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
+        find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
 
-        should have_css("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185'] + .js-temp-notes-holder form", count: 1)
+        should have_css("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185'] + .js-temp-notes-holder form", count: 1)
       end
 
       it "should be removed when canceled" do
-        within(".file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185']") do
+        within(".file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185']") do
           find(".js-close-discussion-note-form").trigger("click")
         end
 
@@ -185,11 +176,11 @@ describe "On a merge request diff", js: true, focus: true do
   end
 
   describe "with muliple note forms" do
-    let!(:project) { create(:source_project_with_code) }
+    let!(:project) { create(:project) }
     let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
 
     before do
-      find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
+      find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
       find('a[data-line-code="342e16cbbd482ac2047dc679b2749d248cc1428f_18_17"]').click
     end
 
@@ -198,7 +189,7 @@ describe "On a merge request diff", js: true, focus: true do
     describe "previewing them separately" do
       before do
         # add two separate texts and trigger previews on both
-        within("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185'] + .js-temp-notes-holder") do
+        within("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185'] + .js-temp-notes-holder") do
           fill_in "note[note]", with: "One comment on line 185"
           find(".js-note-preview-button").trigger("click")
         end

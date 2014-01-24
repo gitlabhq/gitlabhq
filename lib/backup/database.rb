@@ -11,23 +11,29 @@ module Backup
     end
 
     def dump
-      case config["adapter"]
+      success = case config["adapter"]
       when /^mysql/ then
+        print "Dumping MySQL database #{config['database']} ... "
         system('mysqldump', *mysql_args, config['database'], out: db_file_name)
       when "postgresql" then
+        print "Dumping PostgreSQL database #{config['database']} ... "
         pg_env
         system('pg_dump', config['database'], out: db_file_name)
       end
+      report_success(success)
     end
 
     def restore
-      case config["adapter"]
+      success = case config["adapter"]
       when /^mysql/ then
+        print "Restoring MySQL database #{config['database']} ... "
         system('mysql', *mysql_args, config['database'], in: db_file_name)
       when "postgresql" then
+        print "Restoring PostgreSQL database #{config['database']} ... "
         pg_env
         system('psql', config['database'], '-f', db_file_name)
       end
+      report_success(success)
     end
 
     protected
@@ -53,6 +59,14 @@ module Backup
       ENV['PGHOST']     = config["host"] if config["host"]
       ENV['PGPORT']     = config["port"].to_s if config["port"]
       ENV['PGPASSWORD'] = config["password"].to_s if config["password"]
+    end
+
+    def report_success(success)
+      if success
+        puts '[DONE]'.green
+      else
+        puts '[FAILED]'.red
+      end
     end
   end
 end
