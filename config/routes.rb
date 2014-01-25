@@ -100,8 +100,6 @@ Gitlab::Application.routes.draw do
     root to: "dashboard#index"
   end
 
-  get "errors/githost"
-
   #
   # Profile Area
   #
