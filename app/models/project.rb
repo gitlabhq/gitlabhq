@@ -21,6 +21,7 @@
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
+#  avatar                 :string(255)
 #
 
 class Project < ActiveRecord::Base
@@ -32,7 +33,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :avatar, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
@@ -103,6 +104,11 @@ class Project < ActiveRecord::Base
     if: :import?
 
   validate :check_limit, on: :create
+
+  validate :avatar_type, if: ->(project) { project.avatar_changed? }
+  validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
+
+  mount_uploader :avatar, AttachmentUploader
 
   # Scopes
   scope :without_user, ->(user)  { where("projects.id NOT IN (:ids)", ids: user.authorized_projects.map(&:id) ) }
@@ -261,6 +267,19 @@ class Project < ActiveRecord::Base
 
   def gitlab_ci?
     gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def avatar_type
+    unless self.avatar.image?
+      self.errors.add :avatar, "only images allowed"
+    end
+  end
+
+  def avatar_in_git
+    @avatar_file ||= 'logo.png' if repository.blob_at('HEAD', 'logo.png')
+    @avatar_file ||= 'logo.jpg' if repository.blob_at('HEAD', 'logo.jpg')
+    @avatar_file ||= 'logo.gif' if repository.blob_at('HEAD', 'logo.gif')
+    @avatar_file
   end
 
   # For compatibility with old code
@@ -465,6 +484,7 @@ class Project < ActiveRecord::Base
   # Since we do cache @event we need to reset cache in special cases:
   # * when project was moved
   # * when project was renamed
+  # * when the project avatar changes
   # Events cache stored like  events/23-20130109142513.
   # The cache key includes updated_at timestamp.
   # Thus it will automatically generate a new fragment

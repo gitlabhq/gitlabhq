@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140122122549) do
+ActiveRecord::Schema.define(version: 20140125162722) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -202,6 +202,7 @@ ActiveRecord::Schema.define(version: 20140122122549) do
     t.string   "import_url"
     t.integer  "visibility_level",       default: 0,        null: false
     t.boolean  "archived",               default: false,    null: false
+    t.string   "avatar"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_owner_id", using: :btree
