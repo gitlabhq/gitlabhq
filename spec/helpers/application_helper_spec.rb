@@ -56,6 +56,28 @@ describe ApplicationHelper do
     end
   end
 
+  describe 'project_icon' do
+    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+
+    it 'should return an url for the avatar' do
+      project = create(:project)
+      project.avatar = File.open(avatar_file_path)
+      project.save!
+      project_icon(project.to_param).to_s.should ==
+        "/uploads/project/avatar/#{ project.id }/gitlab_logo.png"
+    end
+
+    it "should give uploaded icon when present" do
+      project = create(:project)
+      project.save!
+
+      Project.any_instance.stub(:avatar_in_git).and_return(true)
+
+      project_icon(project.to_param).to_s.should match(
+        image_tag(project_avatar_path(project)))
+    end
+  end
+
   describe "avatar_icon" do
     avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
 

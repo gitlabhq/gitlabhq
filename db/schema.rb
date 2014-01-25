@@ -246,6 +246,7 @@ ActiveRecord::Schema.define(version: 20140730111702) do
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
     t.integer  "star_count",             default: 0,        null: false
+    t.string   "avatar"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree

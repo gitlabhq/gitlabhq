@@ -21,3 +21,16 @@
   &.s90 { width: 90px; height: 90px; margin-right: 15px; }
   &.s160 { width: 160px; height: 160px; margin-right: 20px; }
 }
+
+.identicon {
+  text-align: center;
+  vertical-align: top;
+
+  &.s16 { font-size: 12px; line-height: 1.33; }
+  &.s24 { font-size: 18px; line-height: 1.33; }
+  &.s26 { font-size: 20px; line-height: 1.33; }
+  &.s32 { font-size: 24px; line-height: 1.33; }
+  &.s60 { font-size: 45px; line-height: 1.33; }
+  &.s90 { font-size: 68px; line-height: 1.33; }
+  &.s160 { font-size: 120px; line-height: 1.33; }
+}

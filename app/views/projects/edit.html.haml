@@ -7,7 +7,8 @@
       %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below.
       %hr
       .panel-body
-        = form_for @project, remote: true, html: { class: "edit_project form-horizontal" } do |f|
+        = form_for @project, remote: true, html: { multipart: true, class: "edit_project form-horizontal" }, authenticity_token: true do |f|
+
           %fieldset
             .form-group.project_name_holder
               = f.label :name, class: 'control-label' do
@@ -80,6 +81,31 @@
                   = f.check_box :snippets_enabled
                   %span.descr Share code pastes with others out of git repository
 
+          %fieldset.features
+            %legend
+              Project avatar:
+            .form-group
+              .col-sm-2
+              .col-sm-10
+                = project_icon(@project.to_param, alt: '', class: 'avatar s160', only_uploaded: true)
+                %p.light
+                  - if @project.avatar_in_git
+                    Project avatar in repository: #{ @project.avatar_in_git }
+                %p.light
+                  - if @project.avatar?
+                    You can change your project avatar here
+                  - else
+                    You can upload an project avatar here
+                %a.choose-btn.btn.btn-small.js-choose-project-avatar-button
+                  %i.icon-paper-clip
+                  %span Choose File ...
+                &nbsp;
+                %span.file_name.js-avatar-filename File name...
+                = f.file_field :avatar, class: "js-project-avatar-input hidden"
+                .light The maximum file size allowed is 100KB.
+                - if @project.avatar?
+                  %hr
+                  = link_to 'Remove avatar', project_avatar_path(@project), data: { confirm: "Project avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"

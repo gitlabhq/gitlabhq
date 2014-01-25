@@ -2,8 +2,10 @@
 .project-home-panel{:class => ("empty-project" if empty_repo)}
   .visibility-level-label.has_tooltip{'data-title' => "#{visibility_level_label(@project.visibility_level)} project" }
     = visibility_level_icon(@project.visibility_level)
+
   .row
     .col-sm-6
+      = project_icon(@project.to_param, alt: '', class: 'avatar s32')
       %h4.project-home-title
         = @project.name_with_namespace
 

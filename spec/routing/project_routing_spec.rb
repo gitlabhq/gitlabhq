@@ -462,3 +462,11 @@ describe Projects::GraphsController, "routing" do
     get("/gitlab/gitlabhq/graphs/master").should route_to('projects/graphs#show', project_id: 'gitlab/gitlabhq', id: 'master')
   end
 end
+
+# project_avatar DELETE /project/avatar(.:format) projects/avatars#destroy
+describe Projects::AvatarsController, 'routing' do
+  it 'to #destroy' do
+    delete('/gitlab/gitlabhq/avatar').should route_to(
+      'projects/avatars#destroy', project_id: 'gitlab/gitlabhq')
+  end
+end

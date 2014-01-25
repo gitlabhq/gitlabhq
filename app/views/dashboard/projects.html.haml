@@ -32,6 +32,8 @@
       - @projects.each do |project|
         %li.my-project-row
           %h4.project-title
+            .project-avatar
+              = project_icon(project.to_param, alt: '', class: 'avatar s60')
             .project-access-icon
               = visibility_level_icon(project.visibility_level)
             = link_to project_path(project), class: dom_class(project) do
@@ -70,4 +72,3 @@
             .nothing-here-block There are no projects here.
     .bottom
       = paginate @projects, theme: "gitlab"
-
