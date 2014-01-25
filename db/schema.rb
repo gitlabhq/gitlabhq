@@ -327,6 +327,7 @@ ActiveRecord::Schema.define(version: 20150116234544) do
     t.integer  "star_count",             default: 0,        null: false
     t.string   "import_type"
     t.string   "import_source"
+    t.string   "avatar"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree

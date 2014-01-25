@@ -2,6 +2,7 @@
 .project-home-panel{:class => ("empty-project" if empty_repo)}
   .project-home-row
     .project-home-desc
+      = project_icon(@project.to_param, alt: '', class: 'avatar s32')
       - if @project.description.present?
         = escaped_autolink(@project.description)
       - if can?(current_user, :admin_project, @project)

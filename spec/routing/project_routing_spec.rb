@@ -489,4 +489,11 @@ describe Projects::ForksController, "routing" do
   it "to #create" do
     post("/gitlab/gitlabhq/fork").should route_to("projects/forks#create", project_id: 'gitlab/gitlabhq')
   end
+
+# project_avatar DELETE /project/avatar(.:format) projects/avatars#destroy
+describe Projects::AvatarsController, 'routing' do
+  it 'to #destroy' do
+    delete('/gitlab/gitlabhq/avatar').should route_to(
+      'projects/avatars#destroy', project_id: 'gitlab/gitlabhq')
+  end
 end

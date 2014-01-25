@@ -353,6 +353,8 @@ Gitlab::Application.routes.draw do
           delete :delete_attachment
         end
       end
+
+      resource :avatar, only: [:show, :destroy]
     end
   end
 

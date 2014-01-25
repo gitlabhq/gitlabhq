@@ -14,6 +14,9 @@ module Projects
       project.name = @from_project.name
       project.path = @from_project.path
       project.creator = @current_user
+      if @from_project.avatar && @from_project.avatar.image?
+        project.avatar = @from_project.avatar
+      end
 
       if namespace = @params[:namespace]
         project.namespace = namespace

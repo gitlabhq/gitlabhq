@@ -26,6 +26,7 @@
 #  star_count             :integer          default(0), not null
 #  import_type            :string(255)
 #  import_source          :string(255)
+#  avatar                 :string(255)
 #
 
 require 'spec_helper'
@@ -308,6 +309,20 @@ describe Project do
       user.destroy
       project.reload
       expect(project.star_count).to eq(0)
+    end
+  end
+
+  describe :avatar_type do
+    let(:project) { create(:project) }
+
+    it 'should be true if avatar is image' do
+      project.update_attribute(:avatar, 'uploads/avatar.png')
+      project.avatar_type.should be_true
+    end
+
+    it 'should be false if avatar is html page' do
+      project.update_attribute(:avatar, 'uploads/avatar.html')
+      project.avatar_type.should == ['only images allowed']
     end
   end
 end
