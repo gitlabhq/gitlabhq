@@ -70,6 +70,14 @@ class GollumWiki
     end
   end
 
+  def find_file(title, version = nil)
+    if wiki_file = wiki.file(title)
+      wiki_file
+    else
+      nil
+    end
+  end
+
   def create_page(title, content, format = :markdown, message = nil)
     commit = commit_details(:created, message, title)
 
