@@ -59,6 +59,8 @@ $ ->
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 
+  hljs.initHighlightingOnLoad()
+
   $('.remove-row').bind 'ajax:success', ->
     $(this).closest('li').fadeOut()
 

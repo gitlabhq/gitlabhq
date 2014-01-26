@@ -144,7 +144,7 @@
     &.code {
       padding: 0;
 
-      table.lines {
+      .highlighted-data {
         border: none;
         box-shadow: none;
         margin: 0px;
@@ -158,47 +158,34 @@
           font-size: 12px !important;
           line-height: 16px !important;
           margin: 0;
-          padding: 10px 0;
         }
-        td {
-          border: none;
-          margin: 0;
+
+        .hljs {
           padding: 0;
-          vertical-align: top;
-
-          &:first-child {
-            background: #eee;
-            width: 50px;
-          }
-          &:last-child {
-          }
-        }
-        tr:hover {
-          background: none;
         }
 
-        pre.line_numbers {
-          color: #666;
-          padding: 10px 6px 10px 0;
+        .line-numbers {
+          padding: 10px;
           text-align: right;
-          background: #EEE;
+          float: left;
+          width: 60px;
 
           a {
-            color: #666;
+            display: block;
+            font-size: 12px !important;
+            line-height: 16px !important;
 
             i {
               display: none;
-              font-size: 14px;
-              line-height: 14px;
             }
+
             &:hover i {
-              display: inherit;
+              display: inline;
             }
           }
         }
 
         .highlight {
-          border-left: 1px solid #DEE2E3;
           overflow: auto;
           overflow-y: hidden;
 
