@@ -158,6 +158,11 @@
           font-size: 12px !important;
           line-height: 16px !important;
           margin: 0;
+
+          code {
+            white-space: pre;
+            word-wrap: normal;
+          }
         }
 
         .hljs {
@@ -171,6 +176,7 @@
           width: 60px;
 
           a {
+            font-family: $monospace_font;
             display: block;
             font-size: 12px !important;
             line-height: 16px !important;

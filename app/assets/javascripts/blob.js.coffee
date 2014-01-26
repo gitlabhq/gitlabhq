@@ -17,7 +17,7 @@ class BlobView
 
       setHash(hash)
       e.preventDefault()
- 
+
     # See if there are lines selected
     # "#L12" and "#L34-56" supported
     highlightBlobLines = (e) ->
