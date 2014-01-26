@@ -1,3 +1,4 @@
+= render 'layouts/mathjax' if extra_config.has_key?('mathjax_url')
 %div.tree-ref-holder
   = render 'shared/ref_switcher', destination: 'tree', path: @path
 %div#tree-holder.tree-holder

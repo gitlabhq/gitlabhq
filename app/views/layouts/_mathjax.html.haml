@@ -1,0 +1,14 @@
+:javascript
+  $(document).ready(function() {
+    $.ajax({
+      url: '#{extra_config.mathjax_url}',
+      dataType: 'script',
+      crossDomain: true,
+      cache: true,
+      success: function() {
+        $('.wiki').each(function(k, item) {
+          MathJax.Hub.Queue(["Typeset",MathJax.Hub,item]);
+        });
+      }
+    });
+  });
