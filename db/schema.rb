@@ -170,7 +170,7 @@ ActiveRecord::Schema.define(version: 20140122122549) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.text     "st_diff"
+    t.text     "st_diff",       limit: 2147483647
     t.boolean  "system",        default: false, null: false
   end
 
