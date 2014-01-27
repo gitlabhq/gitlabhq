@@ -203,8 +203,14 @@ module ApplicationHelper
   def highlight_js(&block)
     string = capture(&block)
 
-    content_tag :div, class: user_color_scheme_class do
-      Pygments::Lexer[:js].highlight(string).html_safe
+    content_tag :div, class: "highlighted-data #{user_color_scheme_class}" do
+      content_tag :div, class: 'highlight' do
+        content_tag :pre do
+          content_tag :code do
+            string.html_safe
+          end
+        end
+      end
     end
   end
 

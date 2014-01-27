@@ -8,16 +8,6 @@
 - else
   .file-content.code
     - unless blob.empty?
-      %div.highlighted-data{class: user_color_scheme_class}
-        .line-numbers
-          - blob.data.lines.size.times do |index|
-            - i = index + 1
-            = link_to "#L#{i}", id: "L#{i}", rel: "#L#{i}" do
-              %i.icon-link
-              = i
-        .highlight
-          %pre
-            %code
-              = raw blob.data
+      = render 'shared/file_hljs', blob: blob
     - else
       %p.nothing_here_message Empty file
