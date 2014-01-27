@@ -56,9 +56,6 @@ document.addEventListener("page:fetch", unbindEvents)
 document.addEventListener("page:change", stopSpinner)
 
 $ ->
-  $('pre code').each (i, e) ->
-    hljs.highlightBlock(e)
-
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 

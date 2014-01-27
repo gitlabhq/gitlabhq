@@ -5,6 +5,10 @@
     border-left: 1px solid #113b46;
   }
 
+  .line.hll {
+    background: #000;
+  }
+
   pre {
     background-color: #002B36;
     color: #eee;
@@ -16,7 +20,6 @@
 
   .hljs {
     display: block;
-    padding: 0.5em;
     background: #002b36;
     color: #839496;
   }

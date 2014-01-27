@@ -16,6 +16,11 @@
     code {
       white-space: pre;
       word-wrap: normal;
+      padding: 0;
+
+      .line {
+        display: inline;
+      }
     }
   }
 

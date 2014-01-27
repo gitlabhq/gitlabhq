@@ -5,6 +5,10 @@
     border-left: 1px solid #444;
   }
 
+  .line.hll {
+    background: #558;
+  }
+
   .line-numbers a {
     color: #666;
   }
@@ -15,7 +19,7 @@
   }
 
   .hljs {
-    display: block; padding: 0.5em;
+    display: block;
     background: #272822;
   }
 

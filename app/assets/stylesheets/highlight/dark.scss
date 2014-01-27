@@ -1,6 +1,10 @@
 .dark {
   background-color: #232323;
 
+  .line.hll {
+    background: #558;
+  }
+
   .highlight{
     border-left: 1px solid #444;
   }
@@ -15,7 +19,6 @@
 
   .hljs {
     display: block;
-    padding: 0.5em;
     background: #232323;
     color: #E6E1DC;
   }

@@ -64,7 +64,7 @@ class BlobView
         nodes.attr("id", hash)
 
     # initialize multi-line select
-    $("#tree-content-holder .line_numbers a[id^=L]").on("click", handleMultiSelect)
+    $("#tree-content-holder .line-numbers a[id^=L]").on("click", handleMultiSelect)
 
     # Highlight the correct lines on load
     highlightBlobLines()

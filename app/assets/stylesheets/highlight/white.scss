@@ -1,6 +1,10 @@
 .white {
   background-color: #fff;
 
+  .line.hll {
+    background: #FFA;
+  }
+
   .highlight{
     border-left: 1px solid #eee;
   }
@@ -19,7 +23,7 @@
   }
 
   .hljs {
-    display: block; padding: 0.5em;
+    display: block;
     background: #fff; color: black;
   }
 
