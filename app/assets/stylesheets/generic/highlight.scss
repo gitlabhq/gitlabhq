@@ -6,6 +6,7 @@
   table-layout: fixed;
 
   pre {
+    padding: 10px;
     border: none;
     border-radius: 0;
     font-family: $monospace_font;
@@ -57,10 +58,6 @@
     pre {
       white-space: pre;
       word-wrap: normal;
-
-      .line {
-        padding: 0 10px;
-      }
     }
   }
 }

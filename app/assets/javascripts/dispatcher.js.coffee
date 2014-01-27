@@ -56,7 +56,7 @@ class Dispatcher
     new SearchAutocomplete(path, project_id, project_ref)
 
   initHighlight: ->
-    $('pre code').each (i, e) ->
+    $('.highlight pre code').each (i, e) ->
       hljs.highlightBlock(e)
       $(e).html($.map($(e).html().split("\n"), (line, i) ->
         "<div class='line' id='LC" + (i + 1) + "'>" + line + "</div>"
