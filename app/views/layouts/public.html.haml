@@ -5,7 +5,6 @@
     - if current_user
       = render "layouts/head_panel", title: "Public Projects"
     - else
-      = render "layouts/public_head_panel"
-
+      = render "layouts/public_head_panel", title: "Public Projects"
     .container.navless-container
       .content= yield

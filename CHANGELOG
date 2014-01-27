@@ -2,7 +2,7 @@ v 6.6.0
   - Permissions: Developer now can manage issue tracker (modify any issue)
   - Improve Code Compare page performance
   - Group avatar
-  - Pygments.rb replaced with highlight.js   
+  - Pygments.rb replaced with highlight.js
   - Improve Merge request diff store logic
   - Improve render performnace for MR show page
   - Fixed Assembla hardcoded project name
@@ -12,6 +12,7 @@ v 6.6.0
   - Mobile UI improvements (Drew Blessing)
   - Fix block/remove UI for admin::users#show page
   - Show users' group membership on users' activity page
+  - User pages are visible without login if user is authorized to a public project
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
@@ -45,7 +46,7 @@ v6.4.3
 v6.4.2
   - Fixed wrong behaviour of script/upgrade.rb
 
-v6.4.1 
+v6.4.1
   - Fixed bug with repository rename
   - Fixed bug with project transfer
 
