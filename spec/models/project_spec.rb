@@ -101,7 +101,7 @@ describe Project do
 
   it "returns the web URL without the protocol for this repo" do
     project = Project.new(path: "somewhere")
-    project.web_url_without_protocol.should == "#{Gitlab.config.gitlab.host}/somewhere"
+    project.web_url_without_protocol.should == "#{Gitlab.config.gitlab.url.split("://")[1]}/somewhere"
   end
 
   describe "last_activity methods" do
