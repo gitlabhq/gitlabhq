@@ -378,10 +378,10 @@ describe GitlabMarkdownHelper do
     it "should leave code blocks untouched" do
       helper.stub(:user_color_scheme_class).and_return(:white)
 
-      target_html = "<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> <span class=\"err\">$</span><span class=\"mi\">#{snippet.id}</span>"
+      target_html = "\n<div class=\"highlighted-data white\">\n  <div class=\"highlight\">\n    <pre>\n      <code class=\"\">some code from $#{snippet.id}\nhere too\n</code>\n    </pre>\n  </div>\n</div>\n\n"
 
-      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should include(target_html)
-      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should include(target_html)
+      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should == target_html
+      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == target_html
     end
 
     it "should leave inline code untouched" do
