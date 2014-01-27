@@ -91,11 +91,11 @@
     }
   }
 }
-
-.project-access-icon {
-  margin-left: 10px;
+.project-avatar {
   float: left;
-  margin-right: 15px;
+}
+.project-access-icon {
+  float: left;
   font-size: 20px;
   margin-bottom: 15px;
   border: 1px solid #EEE;
@@ -103,16 +103,23 @@
   border-radius: 50px;
   background: #f5f5f5;
   text-align: center;
+  position: relative;
+  left: -35px;
+  top: 54px;
 
   i {
     color: #BBB;
   }
 }
 
+.dash-project-avatar {
+  float: left;
+}
 .dash-project-access-icon {
   float: left;
-  margin-right: 3px;
   color: #999;
-  margin-bottom: 10px;
   width: 16px;
+  position: relative;
+  left: -10px;
+  top: 12px;
 }

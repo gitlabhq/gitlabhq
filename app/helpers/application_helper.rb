@@ -49,6 +49,25 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
+  def project_icon(project_id, only_uploaded = false)
+    project = Project.find_with_namespace(project_id)
+    if project && project.avatar.present?
+      project.avatar.url
+    elsif only_uploaded
+      '/assets/no_project_icon.png'
+    else
+      project_added_icon(project)
+    end
+  end
+
+  def project_added_icon(project)
+    if project && project.avatar_in_git
+      project_avatar_path(project)
+    else
+      '/assets/no_project_icon.png'
+    end
+  end
+
   def avatar_icon(user_email = '', size = nil)
     user = User.find_by(email: user_email)
     if user && user.avatar.present?

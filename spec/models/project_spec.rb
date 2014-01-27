@@ -22,6 +22,7 @@
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
+#  avatar                 :string(255)
 #
 
 require 'spec_helper'
@@ -244,5 +245,19 @@ describe Project do
 
     it { project.open_branches.map(&:name).should include('bootstrap') }
     it { project.open_branches.map(&:name).should_not include('master') }
+  end
+
+  describe :avatar_type do
+    let(:project) { create(:project) }
+
+    it "should be true if avatar is image" do
+      project.update_attribute(:avatar, 'uploads/avatar.png')
+      project.avatar_type.should be_true
+    end
+
+    it "should be false if avatar is html page" do
+      project.update_attribute(:avatar, 'uploads/avatar.html')
+      project.avatar_type.should == ["only images allowed"]
+    end
   end
 end
