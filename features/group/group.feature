@@ -31,3 +31,17 @@ Feature: Groups
     And I change group name
     Then I should see new group name
 
+  Scenario: I edit my group avatar
+    When I visit group settings page
+    And I change my group avatar
+    And I visit group settings page
+    Then I should see new group avatar
+    And I should see the "Remove avatar" button
+
+  Scenario: I remove my group avatar
+    When I visit group settings page
+    And I have an group avatar
+    And I visit group settings page
+    And I remove my group avatar
+    Then I should not see my group avatar
+    And I should not see the "Remove avatar" button
