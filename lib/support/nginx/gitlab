@@ -25,7 +25,8 @@ server {
   server_tokens off;     # don't show the version number, a security best practice
   root /home/git/gitlab/public;
   
-  # Set value of client_max_body_size to at least the value of git.max_size in gitlab.yml
+  # Increase this if you want to upload large attachments
+  # Or if you want to accept large git objects over http
   client_max_body_size 5m;
 
   # individual nginx logs for this gitlab vhost
