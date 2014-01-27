@@ -65,6 +65,9 @@ After making the release branch new commits are cherry-picked from master. When 
 * 21st: optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
 * 22nd: release (VERSION x.x.0, create x-x-stable branch, tag, blog and tweet)
 * 23nd: optional patch releases (x.x.1, x.x.2, etc., only if there are serious problems)
+* 24-end of month: release Enterprise Edition and upgrade GitLab Cloud
+* 1-7th: official merge window (see contributing guide)
+* 8-16th: bugfixes and sponsored features
 
 # Write a blog post
 
