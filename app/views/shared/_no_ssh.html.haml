@@ -2,7 +2,13 @@
   .no-ssh-key-message
     .container
       You won't be able to pull or push project code via SSH until you #{link_to 'add an SSH key', new_profile_key_path} to your profile
-      %div.pull-right
+      .pull-right.hidden-xs
         = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'hide-no-ssh-message', remote: true
         |
         = link_to 'Remind later', '#', class: 'hide-no-ssh-message'
+      .links-xs.visible-xs
+        = link_to "Add key", new_profile_key_path
+        |
+        = link_to "Don't show again", profile_path(user: {hide_no_ssh_key: true}), method: :put, class: 'hide-no-ssh-message', remote: true
+        |
+        = link_to 'Later', '#', class: 'hide-no-ssh-message'

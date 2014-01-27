@@ -29,6 +29,59 @@ header {
         float: right;
         margin-right: 0;
       }
+
+      .navbar-toggle {
+        color: $style_color;
+        margin: 0 -15px 0 0;
+        padding: 10px;
+        border-radius: 0;
+
+        button i { font-size: 22px; }
+
+        &.collapsed { background-color: transparent !important;}
+
+        &:hover {
+          background-color: #EEE;
+        }
+      }
+    }
+
+    @media (max-width: $screen-xs-max) {
+      border-width: 0;
+      font-size: 18px;
+
+      .app_logo { margin-left: -15px; }
+      .project_name {
+        display: inline-block;
+        overflow: hidden;
+        text-overflow: ellipsis;
+        vertical-align: top;
+        white-space: nowrap;
+        max-width: 70%;
+      }
+
+      .navbar-collapse {
+        padding-right: 0;
+        padding-left: 0;
+      }
+
+      .navbar-nav {
+        margin: 5px 0;
+
+        .visible-xs, .visable-sm {
+          display: table-cell !important;
+        }
+      }
+
+      li {
+        display: table-cell;
+        width: 1%;
+
+        a {
+          text-align: center;
+          font-size: 18px !important;
+        }
+      }
     }
   }
 
@@ -127,6 +180,8 @@ header {
       .navbar-inner {
         background: #708090;
         border-bottom: 1px solid #AAA;
+
+        .navbar-toggle { color: #fff; }
 
         .nav > li > a {
           color: #AAA;
