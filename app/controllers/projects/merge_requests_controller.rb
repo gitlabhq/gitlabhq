@@ -246,6 +246,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @target_type = :merge_request
     @target_id = @merge_request.id
+
+    @protected_source_branch = project.protected_branch?(@merge_request.source_branch)
   end
 
   def allowed_to_merge?
