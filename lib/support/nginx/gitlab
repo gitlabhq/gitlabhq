@@ -53,5 +53,7 @@ server {
 
     proxy_pass http://gitlab;
   }
+
+  error_page 502 /502.html;
 }
 
