@@ -18,8 +18,7 @@
         = render_markup(@snippet.file_name, @snippet.data)
     - else
       .file-content.code
-        %div{class: user_color_scheme_class}
-          = raw @snippet.colorize(formatter: :gitlab)
+        = render 'shared/file_hljs', blob: @snippet
   - else
     .file-content.code
       %p.nothing_here_message Empty file
