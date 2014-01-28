@@ -78,3 +78,18 @@ Restoring repositories:
 - Restoring repository abcd... [DONE]
 Deleting tmp directories...[DONE]
 ```
+
+### Configure cron to make daily backups
+
+```
+cd /home/git/gitlab
+sudo -u git -H editor config/gitlab.yml # Enable keep_time in the backup section to automatically delete old backups
+sudo -u git crontab -e # Edit the crontab for the git user
+```
+
+Add the following lines at the bottom:
+
+```
+# Create a full backup of the GitLab repositories and SQL database every day at 2am
+0 2 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+```
