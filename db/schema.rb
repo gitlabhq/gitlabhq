@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140122122549) do
+ActiveRecord::Schema.define(version: 20140127170938) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -152,6 +152,7 @@ ActiveRecord::Schema.define(version: 20140122122549) do
     t.datetime "updated_at",               null: false
     t.string   "type"
     t.string   "description", default: "", null: false
+    t.string   "avatar"
   end
 
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
