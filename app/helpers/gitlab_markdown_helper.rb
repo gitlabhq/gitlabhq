@@ -173,6 +173,7 @@ module GitlabMarkdownHelper
   # eg. doc/api is directory and doc/README.md is file
   def local_path(path)
     return "tree" if Tree.new(@repository, current_ref, path).entries.any?
+    return "raw" if @repository.blob_at(current_ref, path).image?
     return "blob"
   end
 
