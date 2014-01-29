@@ -16,6 +16,7 @@ describe GitlabMarkdownHelper do
   before do
     # Helper expects a @project instance variable
     @project = project
+    @repository = project.repository
   end
 
   describe "#gfm" do
