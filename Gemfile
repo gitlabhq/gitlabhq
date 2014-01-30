@@ -29,7 +29,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 4.0.0"
+gem "gitlab_git", "~> 4.1.0"
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -37,14 +37,11 @@ gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
 
-# Syntax highlighter
-gem "gitlab-pygments.rb", '~> 0.5.4', require: 'pygments.rb'
-
 # Git Wiki
-gem "gitlab-gollum-lib", "~> 1.0.2", require: 'gollum-lib'
+gem "gitlab-gollum-lib", "~> 1.1.0", require: 'gollum-lib'
 
 # Language detection
-gem "gitlab-linguist", "~> 2.9.6", require: "linguist"
+gem "gitlab-linguist", "~> 2.9.6", require: "linguist", git: 'https://gitlab.com/gitlab-org/linguist.git', ref: 'b337f7013333863503a8a7894cceb568478fda66'
 
 # API
 gem "grape", "~> 0.6.1"
