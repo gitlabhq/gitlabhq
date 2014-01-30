@@ -3,7 +3,7 @@
   .col-md-3
     = render "projects/branches/filter"
   .col-md-9
-    .alert.alert-info
+    .bs-callout.bs-callout-info
       %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
       %p This ability allows:
       %ul
@@ -12,18 +12,18 @@
       %p Read more about project permissions #{link_to "here", help_permissions_path, class: "underlined_link"}
 
     - if can? current_user, :admin_project, @project
-      = form_for [@project, @protected_branch] do |f|
+      = form_for [@project, @protected_branch], html: { class: 'form-horizontal' } do |f|
         -if @protected_branch.errors.any?
           .alert.alert-danger
             %ul
               - @protected_branch.errors.full_messages.each do |msg|
                 %li= msg
 
-        .entry.clearfix
-          = f.label :name, "Branch"
-          .col-md-3
-            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2 span3"})
-          &nbsp;
+        .form-group
+          = f.label :name, "Branch", class: 'control-label'
+          .col-sm-10
+            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2"})
+        .form-actions
           = f.submit 'Protect', class: "btn-create btn"
     - unless @branches.empty?
       %h5 Already Protected:
