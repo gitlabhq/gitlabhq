@@ -5,6 +5,16 @@ GIT
   specs:
     github-markup (0.7.6)
 
+GIT
+  remote: https://gitlab.com/gitlab-org/linguist.git
+  revision: b337f7013333863503a8a7894cceb568478fda66
+  ref: b337f7013333863503a8a7894cceb568478fda66
+  specs:
+    gitlab-linguist (2.9.6)
+      charlock_holmes (~> 0.6.6)
+      escape_utils (~> 0.2.4)
+      mime-types (~> 1.19)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -158,11 +168,10 @@ GEM
     gitlab-flowdock-git-hook (0.4.2.2)
       gitlab-grit (>= 2.4.1)
       multi_json
-    gitlab-gollum-lib (1.0.2)
+    gitlab-gollum-lib (1.1.0)
       github-markdown (~> 0.5.3)
       github-markup (>= 0.7.5, < 1.0.0)
       gitlab-grit (~> 2.6.1)
-      gitlab-pygments.rb (~> 0.5.4)
       nokogiri (~> 1.5.9)
       sanitize (~> 2.0.3)
       stringex (~> 1.5.1)
@@ -173,19 +182,10 @@ GEM
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
       posix-spawn (~> 0.3.6)
-    gitlab-linguist (2.9.6)
-      charlock_holmes (~> 0.6.6)
-      escape_utils (~> 0.2.4)
-      gitlab-pygments.rb (~> 0.5.4)
-      mime-types (~> 1.19)
-    gitlab-pygments.rb (0.5.4)
-      posix-spawn (~> 0.3.6)
-      yajl-ruby (~> 1.1.0)
-    gitlab_git (4.0.0)
+    gitlab_git (4.1.0)
       activesupport (~> 4.0.0)
       gitlab-grit (~> 2.6.1)
       gitlab-linguist (~> 2.9.5)
-      gitlab-pygments.rb (~> 0.5.4)
     gitlab_meta (6.0)
     gitlab_omniauth-ldap (1.0.3)
       net-ldap (~> 0.3.1)
@@ -543,7 +543,6 @@ GEM
     websocket-driver (0.3.1)
     xpath (2.0.0)
       nokogiri (~> 1.3)
-    yajl-ruby (1.1.0)
 
 PLATFORMS
   ruby
@@ -578,11 +577,10 @@ DEPENDENCIES
   gemoji (~> 1.3.0)
   github-markup (~> 0.7.4)!
   gitlab-flowdock-git-hook (~> 0.4.2)
-  gitlab-gollum-lib (~> 1.0.2)
+  gitlab-gollum-lib (~> 1.1.0)
   gitlab-grack (~> 2.0.0.pre)
-  gitlab-linguist (~> 2.9.6)
-  gitlab-pygments.rb (~> 0.5.4)
-  gitlab_git (~> 4.0.0)
+  gitlab-linguist (~> 2.9.6)!
+  gitlab_git (~> 4.1.0)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.3)
   gon (~> 5.0.0)
