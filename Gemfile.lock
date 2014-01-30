@@ -60,6 +60,8 @@ GEM
       json (>= 1.7)
     celluloid (0.15.2)
       timers (~> 1.1.0)
+    cf-uaa-lib (1.3.10)
+      multi_json
     charlock_holmes (0.6.9.4)
     cliver (0.2.2)
     code_analyzer (0.4.3)
@@ -316,6 +318,10 @@ GEM
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
+    omniauth-uaa-oauth2 (0.0.3)
+      cf-uaa-lib
+      cf-uaa-lib
+      omniauth (~> 1.0)
     orm_adapter (0.5.0)
     pg (0.15.1)
     phantomjs (1.9.2.0)
@@ -566,6 +572,7 @@ DEPENDENCIES
   bootstrap-sass (~> 3.0)
   capybara
   carrierwave
+  cf-uaa-lib (= 1.3.10)
   coffee-rails
   colored
   coveralls
@@ -616,6 +623,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter
+  omniauth-uaa-oauth2
   pg
   poltergeist (~> 1.4.1)
   protected_attributes
