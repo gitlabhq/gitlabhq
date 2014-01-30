@@ -56,9 +56,6 @@ Install the required packages:
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
-    # For reStructuredText markup language support install required package:
-    sudo apt-get install -y python-docutils
-
 Make sure you have the right version of Git installed
 
     # Install Git
