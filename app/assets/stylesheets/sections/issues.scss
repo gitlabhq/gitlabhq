@@ -67,7 +67,6 @@ input.check_all_issues {
 .btn.reopen_issue {
   color: #468847;
   font-weight: bold;
-  @include shade;
   &:hover {
     color: #468847;
   }
