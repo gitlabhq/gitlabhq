@@ -33,20 +33,21 @@
     padding: 10px;
     text-align: right;
     float: left;
-    width: 60px;
 
     a {
       font-family: $monospace_font;
       display: block;
       font-size: 12px !important;
       line-height: 16px !important;
+      white-space: nowrap;
 
       i {
-        display: none;
+        visibility: hidden;
+        @extend .pull-left;
       }
 
       &:hover i {
-        display: inline;
+        visibility: visible;
       }
     }
   }
