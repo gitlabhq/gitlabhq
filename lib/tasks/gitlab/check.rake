@@ -279,8 +279,6 @@ namespace :gitlab do
       start_checking "Environment"
 
       check_gitlab_git_config
-      check_python2_exists
-      check_python2_version
 
       finished_checking "Environment"
     end
