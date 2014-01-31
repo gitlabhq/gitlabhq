@@ -45,7 +45,11 @@ class FilteringService
       current_user.send(table_name)
     when 'all' then
       if current_user
-        klass.of_projects(current_user.authorized_projects.pluck(:id))
+        if project && (project.public? || project.internal?)
+          klass.of_projects(Project.public_or_internal_only(current_user))
+        else
+          klass.of_projects(current_user.authorized_projects.pluck(:id))
+        end
       else
         klass.of_projects(Project.public_only)
       end
@@ -119,5 +123,9 @@ class FilteringService
     end
 
     items
+  end
+
+  def project
+    Project.where(id: params[:project_id]).first if params[:project_id].present?
   end
 end
