@@ -60,7 +60,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request = MergeRequest.new(params[:merge_request])
     @merge_request.source_project = @project unless @merge_request.source_project
     @merge_request.target_project = @project unless @merge_request.target_project
-    @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
     @source_project = @merge_request.source_project
     @merge_request
   end
@@ -167,7 +166,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   protected
 
   def selected_target_project
-    ((@project.id.to_s == params[:target_project_id]) || @project.forked_project_link.nil?) ? @project : @project.forked_project_link.forked_from_project
+    if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?
+      @project
+    else
+      @project.forked_project_link.forked_from_project
+    end
   end
 
   def merge_request

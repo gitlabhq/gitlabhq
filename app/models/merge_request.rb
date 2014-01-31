@@ -253,4 +253,24 @@ class MergeRequest < ActiveRecord::Base
     message << description.to_s
     message
   end
+
+  # Return array of possible target branches
+  # dependes on target project of MR
+  def target_branches
+    if target_project.nil?
+      []
+    else
+      target_project.repository.branch_names
+    end
+  end
+
+  # Return array of possible source branches
+  # dependes on source project of MR
+  def source_branches
+    if source_project.nil?
+      []
+    else
+      source_project.repository.branch_names
+    end
+  end
 end
