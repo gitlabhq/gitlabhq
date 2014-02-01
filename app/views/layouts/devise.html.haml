@@ -6,11 +6,12 @@
     .container
       .content
         %center
-          %h1 GitLab
+          %h1
+            = t("gitlab.name")
           %p.light
-            GitLab is open source software to collaborate on code.
+            = t("gitlab.description")
             %br
-            #{link_to "Sign in", new_user_session_path} or browse for #{link_to "public projects", public_projects_path}.
+            #{link_to t("gitlab.login.sign_in"), new_user_session_path} #{t("gitlab.login.or_browse_for")} #{link_to t("gitlab.public_projects"), public_projects_path}.
     %hr
     .container
       .content

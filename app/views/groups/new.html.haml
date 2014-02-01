@@ -4,12 +4,12 @@
       %span= @group.errors.full_messages.first
   .form-group
     = f.label :name, class: 'control-label' do
-      Group name
+      = t("gitlab.groups.group_name")
     .col-sm-10
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control"
+      = f.text_field :name, placeholder: t("gitlab.groups.group_name_example"), class: "form-control"
 
   .form-group.group-description-holder
-    = f.label :description, "Details", class: 'control-label'
+    = f.label :description, t("gitlab.groups.details"), class: 'control-label'
     .col-sm-10
       = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
 
@@ -17,13 +17,13 @@
     .col-sm-2
     .col-sm-10
       %ul
-        %li A group is a collection of several projects
-        %li Groups are private by default
-        %li Members of a group may only view projects they have permission to access
-        %li Group project URLs are prefixed with the group namespace
-        %li Existing projects may be moved into a group
+        %li #{t("gitlab.groups.desc_1")}
+        %li #{t("gitlab.groups.desc_2")}
+        %li #{t("gitlab.groups.desc_3")}
+        %li #{t("gitlab.groups.desc_4")}
+        %li #{t("gitlab.groups.desc_5")}
 
   .form-actions
-    = f.submit 'Create group', class: "btn btn-create"
+    = f.submit t("gitlab.groups.create_group"), class: "btn btn-create"
 
 

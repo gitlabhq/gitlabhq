@@ -5,29 +5,29 @@
         %ul.nav.nav-pills.nav-stacked
           %li{class: ("active" if params[:scope] == 'assigned-to-me')}
             = link_to filter_path(entity, scope: 'assigned-to-me') do
-              Assigned to me
+              = t("gitlab.filter.assigned_to_me")
           %li{class: ("active" if params[:scope] == 'authored')}
             = link_to filter_path(entity, scope: 'authored') do
-              Created by me
+              = t("gitlab.filter.created_by_me")
           %li{class: ("active" if params[:scope] == 'all')}
             = link_to filter_path(entity, scope: 'all') do
-              Everyone's
+              = t("gitlab.filter.everyones")
 
     %fieldset.status-filter
-      %legend State
+      %legend #{t("gitlab.filter.state")}
       %ul.nav.nav-pills
         %li{class: ("active" if params[:state] == 'opened')}
           = link_to filter_path(entity, state: 'opened') do
-            Open
+            = t("gitlab.filter.open")
         %li{class: ("active" if params[:state] == 'closed')}
           = link_to filter_path(entity, state: 'closed') do
-            Closed
+            = t("gitlab.filter.closed")
         %li{class: ("active" if params[:state] == 'all')}
           = link_to filter_path(entity, state: 'all') do
-            All
+            = t("gitlab.filter.all")
 
     %fieldset
-      %legend Projects
+      %legend #{t("gitlab.filter.projects")}
       %ul.nav.nav-pills.nav-stacked.nav-small
         - @projects.each do |project|
           - unless entities_per_project(project, entity).zero?
@@ -40,5 +40,5 @@
       - if params[:state].present? || params[:project_id].present?
         = link_to filter_path(entity, state: nil, project_id: nil), class: 'pull-right cgray' do
           %i.icon-remove
-          %strong Clear filter
+          %strong #{t("gitlab.filter.clear_filter")}
 

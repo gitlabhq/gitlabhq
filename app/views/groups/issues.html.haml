@@ -1,13 +1,12 @@
 %h3.page-title
-  Issues
-  %span.pull-right #{@issues.total_count} issues
+  = t("gitlab.issues.issues")
+  %span.pull-right
+    = t("gitlab.issues.issues_no", :count => @issues.total_count)
 
 %p.light
-  Only issues from
-  %strong #{@group.name}
-  group are listed here.
+  = t("gitlab.groups.only_issues_from_group", :group => @group.name)
   - if current_user
-    To see all issues you should visit #{link_to 'dashboard', issues_dashboard_path} page.
+    = t("gitlab.groups.all_groups_dashboard", :dashboard_link => link_to('dashboard', issues_dashboard_path)).html_safe
 %hr
 
 .row

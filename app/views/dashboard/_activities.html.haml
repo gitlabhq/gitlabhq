@@ -4,6 +4,7 @@
 - if @events.any?
   .content_list
 - else
-  .nothing-here-block Projects activity will be displayed here
+  .nothing-here-block
+    = t("gitlab.dashboard.no_activity")
 
 = spinner

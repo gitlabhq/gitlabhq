@@ -1,13 +1,13 @@
 %h3.page-title
-  My Snippets
+  = t("gitlab.snippets.my_snippets")
   .pull-right
     = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
-      Add new snippet
+      = t("gitlab.snippets.add_new_snippet")
     = link_to snippets_path, class: "btn btn-grouped"  do
-      Discover snippets
+      = t("gitlab.snippets.discover_snippets")
 
 %p.light
-  Share code pastes with others out of git repository
+  = t("gitlab.snippets.description")
 %hr
 
 .row
@@ -15,17 +15,17 @@
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
         = link_to user_snippets_path(@user) do
-          All
+          = t("gitlab.filter.all")
           %span.pull-right
             = @user.snippets.count
       = nav_tab :scope, 'private' do
         = link_to user_snippets_path(@user, scope: 'private') do
-          Private
+          = t("gitlab.filter.private")
           %span.pull-right
             = @user.snippets.private.count
       = nav_tab :scope, 'public' do
         = link_to user_snippets_path(@user, scope: 'public') do
-          Public
+          = t("gitlab.filter.public")
           %span.pull-right
             = @user.snippets.public.count
 

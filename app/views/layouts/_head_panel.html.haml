@@ -3,8 +3,8 @@
     .container
       %div.app_logo
         %span.separator
-        = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
-          %h1 GITLAB
+        = link_to root_path, class: "home has_bottom_tooltip", title: t("gitlab.dashboard.dashboard") do
+          %h1 #{t("gitlab.name")}
         %span.separator
       %h1.title= title
 
@@ -24,25 +24,25 @@
             = link_to search_path, title: "Search", class: 'has_bottom_tooltip', 'data-original-title' => 'Search area' do
               %i.icon-search
           %li
-            = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
+            = link_to public_root_path, title: t("gitlab.panel.public_area"), class: 'has_bottom_tooltip', 'data-original-title' => t("gitlab.panel.public_area") do
               %i.icon-globe
           %li
-            = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'My snippets' do
+            = link_to user_snippets_path(current_user), title: t("gitlab.panel.my_snippets"), class: 'has_bottom_tooltip', 'data-original-title' => t("gitlab.panel.my_snippets") do
               %i.icon-paste
           - if current_user.is_admin?
             %li
-              = link_to admin_root_path, title: "Admin area", class: 'has_bottom_tooltip', 'data-original-title' => 'Admin area' do
+              = link_to admin_root_path, title: t("gitlab.panel.admin_area"), class: 'has_bottom_tooltip', 'data-original-title' => t("gitlab.panel.admin_area") do
                 %i.icon-cogs
           - if current_user.can_create_project?
             %li
-              = link_to new_project_path, title: "New project", class: 'has_bottom_tooltip', 'data-original-title' => 'New project'  do
+              = link_to new_project_path, title: t("gitlab.panel.new_project"), class: 'has_bottom_tooltip', 'data-original-title' => t("gitlab.panel.new_project")  do
                 %i.icon-plus
           %li
-            = link_to profile_path, title: "Profile settings", class: 'has_bottom_tooltip', 'data-original-title' => 'Profile settings"'  do
+            = link_to profile_path, title: t("gitlab.panel.profile_settings"), class: 'has_bottom_tooltip', 'data-original-title' => t("gitlab.panel.profile_settings")  do
               %i.icon-user
           %li
-            = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
+            = link_to destroy_user_session_path, class: "logout", method: :delete, title: t("gitlab.panel.logout"), class: 'has_bottom_tooltip', 'data-original-title' => t("gitlab.panel.logout")  do
               %i.icon-signout
           %li
             = link_to current_user, class: "profile-pic", id: 'profile-pic' do
-              = image_tag avatar_icon(current_user.email, 26), alt: 'User activity'
+              = image_tag avatar_icon(current_user.email, 26), alt: t("gitlab.panel.user_activity")
