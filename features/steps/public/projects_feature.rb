@@ -129,5 +129,27 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
     page.should have_content project.name
     page.should have_content "New feature"
   end
+
+  step 'I visit "Internal" issues page' do
+    project = Project.find_by(name: 'Internal')
+    create(:issue,
+       title: "Internal Bug",
+       project: project
+      )
+    create(:issue,
+       title: "New internal feature",
+       project: project
+      )
+    visit project_issues_path(project)
+  end
+
+
+  step 'I should see list of issues for "Internal" project' do
+    project = Project.find_by(name: 'Internal')
+
+    page.should have_content "Internal Bug"
+    page.should have_content project.name
+    page.should have_content "New internal feature"
+  end
 end
 
