@@ -7,15 +7,15 @@
             %li= msg
 
     .form-group
-      = f.label :title, class: 'control-label'
+      = f.label :title, t("gitlab.profile.ssh_keys.title"), class: 'control-label'
       .col-sm-10= f.text_field :title, class: "form-control"
     .form-group
-      = f.label :key, class: 'control-label'
+      = f.label :key, t("gitlab.profile.ssh_keys.key"), class: 'control-label'
       .col-sm-10
         = f.text_area :key, class: "form-control", rows: 8
 
 
     .form-actions
-      = f.submit 'Add key', class: "btn btn-create"
-      = link_to "Cancel", profile_keys_path, class: "btn btn-cancel"
+      = f.submit t("gitlab.profile.ssh_keys.add_key"), class: "btn btn-create"
+      = link_to t("gitlab.profile.ssh_keys.cancel"), profile_keys_path, class: "btn btn-cancel"
 

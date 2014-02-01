@@ -137,7 +137,7 @@ class ProjectsController < ApplicationController
   private
 
   def set_title
-    @title = 'New Project'
+    @title = I18n.t("gitlab.projects.new_project")
   end
 
   def user_layout

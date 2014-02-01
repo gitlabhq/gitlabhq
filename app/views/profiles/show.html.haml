@@ -1,7 +1,7 @@
 %h3.page-title
-  Profile settings
+  = t("gitlab.profile.profile_settings")
 %p.light
-  This information appears on your profile.
+  = t("gitlab.profile.this_information_appears_on_your_profile")
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
 %hr
@@ -17,13 +17,14 @@
   .row
     .col-md-7
       .form-group
-        = f.label :name, class: "control-label"
+        = f.label :name, t("gitlab.profile.name"), class: "control-label"
         .col-sm-10
           = f.text_field :name, class: "form-control", required: true
-          %span.help-block Enter your name, so people you know can recognize you.
+          %span.help-block
+            = t("gitlab.profile.enter_your_name")
 
       .form-group
-        = f.label :email, class: "control-label"
+        = f.label :email, t("gitlab.profile.email"), class: "control-label"
         .col-sm-10
           - if @user.ldap_user?
             = f.text_field :email, class: "form-control", required: true, readonly: true
@@ -36,7 +37,8 @@
                 We sent confirmation email to
                 %strong #{@user.unconfirmed_email}
             - else
-              %span.help-block We also use email for avatar detection if no avatar is uploaded.
+              %span.help-block
+                = t("gitlab.profile.email_for_avatar_detection")
       .form-group
         = f.label :skype, class: "control-label"
         .col-sm-10= f.text_field :skype, class: "form-control"
@@ -47,13 +49,14 @@
         = f.label :twitter, class: "control-label"
         .col-sm-10= f.text_field :twitter, class: "form-control"
       .form-group
-        = f.label :website_url, 'Website', class: "control-label"
+        = f.label :website_url, t("gitlab.profile.website"), class: "control-label"
         .col-sm-10= f.text_field :website_url, class: "form-control"
       .form-group
-        = f.label :bio, class: "control-label"
+        = f.label :bio, t("gitlab.profile.bio"), class: "control-label"
         .col-sm-10
           = f.text_area :bio, rows: 6, class: "form-control", maxlength: 250
-          %span.help-block Tell us about yourself in fewer than 250 characters.
+          %span.help-block
+            = t("gitlab.profile.bio_description")
 
     .col-md-5
       .light-well
@@ -83,4 +86,4 @@
               = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
   .form-actions
-    = f.submit 'Save changes', class: "btn btn-save"
+    = f.submit t("gitlab.profile.save_changes"), class: "btn btn-save"

@@ -1,17 +1,18 @@
-.dashboard
-  .activities.col-md-8.hidden-sm
+.dasctivities.col-md-8.hidden-sm
     - if current_user
       = render "events/event_last_push", event: @last_push
       = link_to dashboard_path, class: 'btn btn-tiny' do
-        &larr; To dashboard
+        &larr; #{ t("gitlab.groups.to_dashboard") }
       &nbsp;
-    %span.cgray You will only see events from projects in this group
+    %span.cgray
+      = t("gitlab.groups.desc")
     %hr
     = render 'shared/event_filter'
     - if @events.any?
       .content_list
     - else
-      .nothing-here-block Project activity will be displayed here
+      .nothing-here-block
+        = t("gitlab.groups.no_activity") }
     = spinner
   .side.col-md-4
     .light-well.append-bottom-20
@@ -24,10 +25,10 @@
     = render "projects", projects: @projects
     - if current_user
       .prepend-top-20
-        = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed" do
+        = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: t("gitlab.feed") do
           %strong
             %i.icon-rss
-            News Feed
+            = t("gitlab.news_feed")
 
     %hr
     = render 'shared/promo'

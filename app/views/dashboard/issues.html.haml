@@ -1,9 +1,9 @@
 %h3.page-title
-  Issues
-  %span.pull-right #{@issues.total_count} issues
-
+  = t("gitlab.issues.issues")
+  %span.pull-right
+    = t("gitlab.issues.issues_no", :count => @issues.total_count)
 %p.light
-  List all issues from all projects you have access to.
+  = t("gitlab.issues.list_of_all_issues")
 %hr
 
 .row

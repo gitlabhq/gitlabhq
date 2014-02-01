@@ -1,6 +1,7 @@
-%h3.page-title Add an SSH Key
+%h3.page-title
+  = t("gitlab.profile.ssh_keys.add_ssh_key")
 %p.light
-  Paste your public key here. Read more about how to generate a key on #{link_to "the SSH help page", help_ssh_path}.
+  #{t("gitlab.profile.ssh_keys.paste_your_public_key_here")}  #{link_to t("gitlab.profile.ssh_keys.ssh_help_page"), help_ssh_path}.
 %hr
 = render 'form'
 

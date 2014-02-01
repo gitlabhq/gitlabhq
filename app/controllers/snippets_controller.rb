@@ -104,6 +104,6 @@ class SnippetsController < ApplicationController
   end
 
   def set_title
-    @title = 'Snippets'
+    @title = I18n.t("gitlab.snippets.snippets")
   end
 end

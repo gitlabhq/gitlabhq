@@ -1,11 +1,11 @@
 %ul.nav.nav-tabs.dash-sidebar-tabs
   %li.active
     = link_to '#projects', 'data-toggle' => 'tab', id: 'sidebar-projects-tab' do
-      Projects
+      = t("gitlab.projects.projects")
       %span.badge= @projects_count
   %li
     = link_to '#groups', 'data-toggle' => 'tab', id: 'sidebar-groups-tab' do
-      Groups
+      = t("gitlab.groups.groups")
       %span.badge= @groups.count
 
 .tab-content

@@ -1,5 +1,5 @@
 %h3.page-title
-  My Projects
+  = t("gitlab.projects.my_projects")
 .pull-right
   .dropdown.inline
     %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
@@ -7,22 +7,22 @@
       - if @sort.present?
         = @sort.humanize
       - else
-        Name
+        = t("gitlab.sort.name")
       %b.caret
     %ul.dropdown-menu
       %li
         = link_to projects_dashboard_filter_path(sort: nil) do
-          Name
+          = t("gitlab.sort.name")
         = link_to projects_dashboard_filter_path(sort: 'newest') do
-          Newest
+          = t("gitlab.sort.newest")
         = link_to projects_dashboard_filter_path(sort: 'oldest') do
-          Oldest
+          = t("gitlab.sort.oldest")
         = link_to projects_dashboard_filter_path(sort: 'recently_updated') do
-          Recently updated
+          = t("gitlab.sort.recently_updated")
         = link_to projects_dashboard_filter_path(sort: 'last_updated') do
-          Last updated
+          = t("gitlab.sort.last_updated")
 %p.light
-  All projects you have access to are listed here. Public projects are not included here unless you are a member
+  = t("gitlab.projects.all_projects_you_have_access_to_are_listed_here")
 %hr
 .row
   .col-md-3.hidden-sm.hidden-xs.side-filters

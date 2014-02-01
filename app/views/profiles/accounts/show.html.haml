@@ -1,7 +1,7 @@
 %h3.page-title
-  Account settings
+  = t("gitlab.profile.account.account_settings")
 %p.light
-  You can change your username and private token here.
+  = t("gitlab.profile.account.you_can_change_username_here")
   - if current_user.ldap_user?
     Some options are unavailable for LDAP accounts
 %hr
@@ -10,22 +10,22 @@
 .account-page
   %fieldset.update-token
     %legend
-      Private token
+      = t("gitlab.profile.account.private_token")
     %div
       = form_for @user, url: reset_private_token_profile_path, method: :put do |f|
         .data
           %p
-            Your private token is used to access application resources without authentication.
+            = t("gitlab.profile.account.token_desc_1")
             %br
-            It can be used for atom feeds or the API.
+            = t("gitlab.profile.account.token_desc_2")
             %span.cred
-              Keep it secret!
+              = t("gitlab.profile.account.keep_it_secret")
 
           %p.cgray
             - if current_user.private_token
               = text_field_tag "token", current_user.private_token, class: "form-control"
               %div
-                = f.submit 'Reset', data: { confirm: "Are you sure?" }, class: "btn btn-primary btn-build-token"
+                = f.submit t("gitlab.profile.account.reset"), data: { confirm: t("gitlab.profile.account.are_you_sure") }, class: "btn btn-primary btn-build-token"
             - else
               %span You don`t have one yet. Click generate to fix it.
               = f.submit 'Generate', class: "btn success btn-build-token"
@@ -43,10 +43,10 @@
   - if show_profile_username_tab?
     %fieldset.update-username
       %legend
-        Username
+        = t("gitlab.profile.account.username")
       = form_for @user, url: update_username_profile_path,  method: :put, remote: true do |f|
         %p
-          Changing your username will change path to all personal projects!
+          = t("gitlab.profile.account.path_change_msg")
         %div
           = f.text_field :username, required: true, class: 'form-control'
           &nbsp;
@@ -57,7 +57,7 @@
         %p.light
           = user_url(@user)
         %div
-          = f.submit 'Save username', class: "btn btn-save"
+          = f.submit t("gitlab.profile.account.save_username"), class: "btn btn-save"
 
   - if show_profile_remove_tab?
     %fieldset.remove-account

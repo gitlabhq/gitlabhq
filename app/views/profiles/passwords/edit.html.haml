@@ -1,33 +1,34 @@
-%h3.page-title Password
+%h3.page-title
+  = t("gitlab.profile.password.title")
 %p.light
-  Change your password or recover your current one.
+  = t("gitlab.profile.password.change_your_password_description")
 %hr
 .update-password
   = form_for @user, url: profile_password_path, method: :put, html: { class: 'form-horizontal' }  do |f|
     %div
       %p.slead
-        You must provide current password in order to change it.
+        = t("gitlab.profile.password.must_provide_current_password")
         %br
-        After a successful password update you will be redirected to login page where you should login with your new password
+        = t("gitlab.profile.password.you_will_be_redirected_to_login_page")
       -if @user.errors.any?
         .alert.alert-danger
           %ul
             - @user.errors.full_messages.each do |msg|
               %li= msg
       .form-group
-        = f.label :current_password, class: 'control-label'
+        = f.label :current_password, t("gitlab.profile.password.current_password"), class: 'control-label'
         .col-sm-10
           = f.password_field :current_password, required: true, class: 'form-control'
           %div
-            = link_to "Forgot your password?", reset_profile_password_path, method: :put
+            = link_to t("gitlab.login.forgot_your_password"), reset_profile_password_path, method: :put
 
       .form-group
-        = f.label :password, 'New password', class: 'control-label'
+        = f.label :password, t("gitlab.profile.password.new_password"), class: 'control-label'
         .col-sm-10
           = f.password_field :password, required: true, class: 'form-control'
       .form-group
-        = f.label :password_confirmation, class: 'control-label'
+        = f.label :password_confirmation, t("gitlab.profile.password.password_confirmation"), class: 'control-label'
         .col-sm-10
           = f.password_field :password_confirmation, required: true, class: 'form-control'
       .form-actions
-        = f.submit 'Save password', class: "btn btn-save"
+        = f.submit t("gitlab.profile.password.save_password"), class: "btn btn-save"

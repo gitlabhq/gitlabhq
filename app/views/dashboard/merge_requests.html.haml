@@ -1,10 +1,10 @@
 %h3.page-title
-  Merge Requests
-  %span.pull-right #{@merge_requests.total_count} merge requests
+  = t("gitlab.merge_requests.merge_requests")
+  %span.pull-right #{@merge_requests.total_count} #{t("gitlab.merge_requests.total_count__merge_requests")}
 
 
 %p.light
-  List all merge requests from all projects you have access to.
+  = t("gitlab.merge_requests.list_of_all_merge_requests")
 %hr
 .row
   .col-md-3
