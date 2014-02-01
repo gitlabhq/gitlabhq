@@ -62,3 +62,14 @@ Feature: Public Projects Feature
     Given public empty project "Empty Public Project"
     When I visit empty project page
     Then I should see empty public project details
+
+  Scenario: I visit public project issues page as a non authorized user
+    Given I visit project "Community" page
+    And I visit "Community" issues page
+    Then I should see list of issues for "Community" project
+@bug
+  Scenario: I visit public project issues page as authorized user
+    Given I sign in as a user
+    Given I visit project "Community" page
+    And I visit "Community" issues page
+    Then I should see list of issues for "Community" project

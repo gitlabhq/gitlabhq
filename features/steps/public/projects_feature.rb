@@ -107,5 +107,27 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
     project = Project.find_by(name: 'Community')
     page.should have_field('project_clone', with: project.url_to_repo)
   end
+
+  step 'I visit "Community" issues page' do
+    project = Project.find_by(name: 'Community')
+    create(:issue,
+       title: "Bug",
+       project: project
+      )
+    create(:issue,
+       title: "New feature",
+       project: project
+      )
+    visit project_issues_path(project)
+  end
+
+
+  step 'I should see list of issues for "Community" project' do
+    project = Project.find_by(name: 'Community')
+
+    page.should have_content "Bug"
+    page.should have_content project.name
+    page.should have_content "New feature"
+  end
 end
 
