@@ -151,5 +151,59 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
     page.should have_content project.name
     page.should have_content "New internal feature"
   end
+
+  step 'I visit "Community" merge requests page' do
+    project = Project.find_by(name: 'Community')
+    create(:merge_request,
+      title: "Bug fix",
+      source_project: project,
+      target_project: project,
+      source_branch: 'stable',
+      target_branch: 'master',
+    )
+    create(:merge_request,
+      title: "Feature created",
+      source_project: project,
+      target_project: project,
+      source_branch: 'stable',
+      target_branch: 'master',
+    )
+    visit project_merge_requests_path(project)
+  end
+
+  step 'I should see list of merge requests for "Community" project' do
+    project = Project.find_by(name: 'Community')
+
+    page.should have_content "Bug fix"
+    page.should have_content project.name
+    page.should have_content "Feature created"
+  end
+
+  step 'I visit "Internal" merge requests page' do
+    project = Project.find_by(name: 'Internal')
+    create(:merge_request,
+      title: "Bug fix internal",
+      source_project: project,
+      target_project: project,
+      source_branch: 'stable',
+      target_branch: 'master',
+    )
+    create(:merge_request,
+      title: "Feature created for internal",
+      source_project: project,
+      target_project: project,
+      source_branch: 'stable',
+      target_branch: 'master',
+    )
+    visit project_merge_requests_path(project)
+  end
+
+  step 'I should see list of merge requests for "Internal" project' do
+    project = Project.find_by(name: 'Internal')
+
+    page.should have_content "Bug fix internal"
+    page.should have_content project.name
+    page.should have_content "Feature created for internal"
+  end
 end
 
