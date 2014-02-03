@@ -57,7 +57,7 @@ class Repository
 
   def recent_branches(limit = 20)
     branches.sort do |a, b|
-      b.commit.committed_date <=> a.commit.committed_date
+      commit(b.target).committed_date <=> commit(a.target).committed_date
     end[0..limit]
   end
 
