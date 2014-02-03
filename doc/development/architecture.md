@@ -30,7 +30,7 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
     ps aux | grep '^git'
 
-GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the gitlab user there are normally 6 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `python pygments` (2 processes), `sidekiq` (1 process).  Pygments is used by GitLab for syntax highlighting in the web interface.
+GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the gitlab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
 
 ## Repository access
 
