@@ -109,101 +109,92 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   end
 
   step 'I visit "Community" issues page' do
-    project = Project.find_by(name: 'Community')
     create(:issue,
        title: "Bug",
-       project: project
+       project: public_project
       )
     create(:issue,
        title: "New feature",
-       project: project
+       project: public_project
       )
-    visit project_issues_path(project)
+    visit project_issues_path(public_project)
   end
 
 
   step 'I should see list of issues for "Community" project' do
-    project = Project.find_by(name: 'Community')
-
     page.should have_content "Bug"
-    page.should have_content project.name
+    page.should have_content public_project.name
     page.should have_content "New feature"
   end
 
   step 'I visit "Internal" issues page' do
-    project = Project.find_by(name: 'Internal')
     create(:issue,
        title: "Internal Bug",
-       project: project
+       project: internal_project
       )
     create(:issue,
        title: "New internal feature",
-       project: project
+       project: internal_project
       )
-    visit project_issues_path(project)
+    visit project_issues_path(internal_project)
   end
 
 
   step 'I should see list of issues for "Internal" project' do
-    project = Project.find_by(name: 'Internal')
-
     page.should have_content "Internal Bug"
-    page.should have_content project.name
+    page.should have_content internal_project.name
     page.should have_content "New internal feature"
   end
 
   step 'I visit "Community" merge requests page' do
-    project = Project.find_by(name: 'Community')
+    visit project_merge_requests_path(public_project)
+  end
+
+  step 'project "Community" has "Bug fix" open merge request' do
     create(:merge_request,
-      title: "Bug fix",
-      source_project: project,
-      target_project: project,
-      source_branch: 'stable',
-      target_branch: 'master',
+      title: "Bug fix for public project",
+      source_project: public_project,
+      target_project: public_project,
     )
-    create(:merge_request,
-      title: "Feature created",
-      source_project: project,
-      target_project: project,
-      source_branch: 'stable',
-      target_branch: 'master',
-    )
-    visit project_merge_requests_path(project)
   end
 
   step 'I should see list of merge requests for "Community" project' do
-    project = Project.find_by(name: 'Community')
-
-    page.should have_content "Bug fix"
-    page.should have_content project.name
-    page.should have_content "Feature created"
+    page.should have_content public_project.name
+    page.should have_content public_merge_request.source_project.name
   end
 
   step 'I visit "Internal" merge requests page' do
-    project = Project.find_by(name: 'Internal')
+    visit project_merge_requests_path(internal_project)
+  end
+
+  step 'project "Internal" has "Feature implemented" open merge request' do
     create(:merge_request,
-      title: "Bug fix internal",
-      source_project: project,
-      target_project: project,
-      source_branch: 'stable',
-      target_branch: 'master',
+      title: "Feature implemented",
+      source_project: internal_project,
+      target_project: internal_project
     )
-    create(:merge_request,
-      title: "Feature created for internal",
-      source_project: project,
-      target_project: project,
-      source_branch: 'stable',
-      target_branch: 'master',
-    )
-    visit project_merge_requests_path(project)
   end
 
   step 'I should see list of merge requests for "Internal" project' do
-    project = Project.find_by(name: 'Internal')
+    page.should have_content internal_project.name
+    page.should have_content internal_merge_request.source_project.name
+  end
 
-    page.should have_content "Bug fix internal"
-    page.should have_content project.name
-    page.should have_content "Feature created for internal"
+  def internal_project
+    @internal_project ||= Project.find_by!(name: 'Internal')
+  end
+
+  def public_project
+    @public_project ||= Project.find_by!(name: 'Community')
+  end
+
+
+  def internal_merge_request
+    @internal_merge_request ||= MergeRequest.find_by!(title: 'Feature implemented')
+  end
+
+  def public_merge_request
+    @public_merge_request ||= MergeRequest.find_by!(title: 'Bug fix for public project')
   end
 end
 

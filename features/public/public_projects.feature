@@ -84,15 +84,18 @@ Feature: Public Projects Feature
     Given I sign in as a user
     Given I visit project "Community" page
     And I visit "Community" merge requests page
+    And project "Community" has "Bug fix" open merge request
     Then I should see list of merge requests for "Community" project
 
   Scenario: I visit public project merge requests page as a non authorized user
     Given I visit project "Community" page
     And I visit "Community" merge requests page
+    And project "Community" has "Bug fix" open merge request
     Then I should see list of merge requests for "Community" project
 
   Scenario: I visit internal project merge requests page as an authorized user
     Given I sign in as a user
     Given I visit project "Internal" page
     And I visit "Internal" merge requests page
+    And project "Internal" has "Feature implemented" open merge request
     Then I should see list of merge requests for "Internal" project
