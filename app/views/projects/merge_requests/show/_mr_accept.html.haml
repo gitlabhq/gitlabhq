@@ -16,11 +16,12 @@
             for instructions
           .accept_group
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
-            - unless @merge_request.disallow_source_branch_removal?
-              .remove_branch_holder
-                = label_tag :should_remove_source_branch, class: "checkbox" do
-                  = check_box_tag :should_remove_source_branch
-                  Remove source-branch
+            - unless @protected_source_branch
+              - unless @merge_request.disallow_source_branch_removal?
+                .remove_branch_holder
+                  = label_tag :should_remove_source_branch, class: "checkbox" do
+                    = check_box_tag :should_remove_source_branch
+                    Remove source-branch
           .clearfix
 
 
@@ -54,14 +55,15 @@
 
 - if @allowed_to_review
   - if @show_accept_button
-    %span
+    %span.merge-request-review-button
       = form_for [:accept_without_merge, @project, @merge_request], remote: true, method: :get do |f|
         = f.submit "Accept Without Merge", class: "btn btn-success accept_without_merge"
   - if @show_reject_button
-    %span
+    %span.merge-request-review-button
       = form_for [:reject, @project, @merge_request], remote: true, method: :get do |f|
         = f.submit "Reject", class: "btn btn-danger reject"
   - if @show_mark_fixed_button
-    %span
+    %span.merge-request-review-button
       = form_for [:mark_fixed, @project, @merge_request], remote: true, method: :get do |f|
         = f.submit "Mark as fixed", class: "btn btn-success mark_fixed"
+  .clearfix
