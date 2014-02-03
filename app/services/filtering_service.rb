@@ -28,6 +28,7 @@ class FilteringService
     items = by_scope(items)
     items = by_state(items)
     items = by_group(items)
+    items = by_project(items)
     items = by_search(items)
     items = by_milestone(items)
     items = by_assignee(items)
