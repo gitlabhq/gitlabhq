@@ -7,8 +7,8 @@ GIT
 
 GIT
   remote: https://gitlab.com/gitlab-org/gitlab_git.git
-  revision: 53f5faf462f2773619179222a70247f051ee13df
-  ref: 53f5faf
+  revision: 39bc4f043414f1e49f802ed633fa20e6400bfa49
+  ref: 39bc4f043414f1e49f802ed633fa20e6400bfa49
   specs:
     gitlab_git (5.1.0.pre)
       activesupport (~> 4.0.0)
