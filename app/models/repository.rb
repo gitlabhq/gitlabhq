@@ -163,7 +163,19 @@ class Repository
 
   def readme
     Rails.cache.fetch(cache_key(:readme)) do
-      Tree.new(self, self.root_ref).readme
+      tree(:head).readme
     end
+  end
+
+  def head_commit
+    commit(self.root_ref)
+  end
+
+  def tree(sha = :head, path = nil)
+    if sha == :head
+      sha = head_commit.sha
+    end
+
+    Tree.new(self, sha, path)
   end
 end
