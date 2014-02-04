@@ -57,7 +57,7 @@ class Repository
 
   def recent_branches(limit = 20)
     branches.sort do |a, b|
-      b.commit.committed_date <=> a.commit.committed_date
+      commit(b.target).committed_date <=> commit(a.target).committed_date
     end[0..limit]
   end
 
@@ -163,7 +163,19 @@ class Repository
 
   def readme
     Rails.cache.fetch(cache_key(:readme)) do
-      Tree.new(self, self.root_ref).readme
+      tree(:head).readme
     end
+  end
+
+  def head_commit
+    commit(self.root_ref)
+  end
+
+  def tree(sha = :head, path = nil)
+    if sha == :head
+      sha = head_commit.sha
+    end
+
+    Tree.new(self, sha, path)
   end
 end

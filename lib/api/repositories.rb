@@ -82,7 +82,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
+        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject, project: user_project
       end
 
       # Get a project repository commits
@@ -141,15 +141,9 @@ module API
         path = params[:path] || nil
 
         commit = user_project.repository.commit(ref)
-        tree = Tree.new(user_project.repository, commit.id, path)
+        tree = user_project.repository.tree(commit.id, path)
 
-        trees = []
-
-        %w(trees blobs submodules).each do |type|
-          trees += tree.send(type).map { |t| {name: t.name, type: type.singularize, mode: t.mode, id: t.id} }
-        end
-
-        trees
+        present tree.sorted_entries, with: Entities::RepoTreeObject
       end
 
       # Get a raw file contents
@@ -233,4 +227,3 @@ module API
     end
   end
 end
-
