@@ -28,14 +28,16 @@ module GitlabMarkdownHelper
     link_to(gfm_body.html_safe, url, html_options)
   end
 
-  def markdown(text)
-    unless @markdown
-      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
-                          # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
-                          filter_html: true,
-                          with_toc_data: true,
-                          hard_wrap: true,
-                          safe_links_only: true)
+  def markdown(text, options={})
+    unless (@markdown and options == @options)
+      @options = options
+      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self, {
+                            # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
+                            filter_html: true,
+                            with_toc_data: true,
+                            hard_wrap: true,
+                            safe_links_only: true
+                          }.merge(options))
       @markdown = Redcarpet::Markdown.new(gitlab_renderer,
                       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
                       no_intra_emphasis: true,
@@ -47,7 +49,6 @@ module GitlabMarkdownHelper
                       space_after_headers: true,
                       superscript: true)
     end
-
     @markdown.render(text).html_safe
   end
 

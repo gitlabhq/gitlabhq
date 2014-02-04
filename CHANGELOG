@@ -12,6 +12,7 @@ v 6.6.0
   - Mobile UI improvements (Drew Blessing)
   - Fix block/remove UI for admin::users#show page
   - Show users' group membership on users' activity page
+  - Markdown rendered headers have id derived from their name and link to their id
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork

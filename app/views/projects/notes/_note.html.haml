@@ -31,7 +31,7 @@
   .note-body
     .note-text
       = preserve do
-        = markdown(note.note)
+        = markdown(note.note, {no_header_anchors: true})
 
     .note-edit-form
       = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|

@@ -3,6 +3,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
+  include SharedMarkdown
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -83,7 +84,9 @@ class ProjectMergeRequests < Spinach::FeatureSteps
            target_project: project,
            source_branch: 'stable',
            target_branch: 'master',
-           author: project.users.first)
+           author: project.users.first,
+           description: "# Description header"
+          )
   end
 
   step 'project "Shop" have "Bug NS-05" open merge request with diffs inside' do
