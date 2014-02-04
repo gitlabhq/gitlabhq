@@ -68,11 +68,9 @@
 
 ### New versions and upgrading
 
-Since 2011 GitLab is released on the 22nd of every month. Every new release includes an upgrade guide.
+Since 2011 GitLab is released on the 22nd of every month. Every new release includes an [upgrade guide](doc/update) and new features are detailed in the [Changelog](CHANGELOG).
 
-* [Upgrade guides](doc/update)
-
-* [Changelog](CHANGELOG)
+It is recommended to follow a monthly upgrade schedule. Security releases come out when needed. For more information about the release process see the documentation for [monthly](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/monthly.md) and [security](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/security.md) releases.
 
 * Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
