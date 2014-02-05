@@ -43,8 +43,8 @@ class MergeRequestsLoadContext < BaseContext
     end
 
     # Filter by specific state
-    if params[:state].present?
-      merge_requests = merge_requests.where(state: params[:state])
+    if params[:mr_state].present?
+      merge_requests = merge_requests.where(state: params[:mr_state])
     end
 
     merge_requests

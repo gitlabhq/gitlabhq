@@ -28,7 +28,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # Merge request states, which will be available in the corresponding filter.
     # We want to display all states, which displayed in the list MRs can have (i.e. everything what can be merged).
     @available_states = MergeRequest::VALID_STATES_FOR_MERGE
-    @state = params[:state]
+    @mr_state = params[:mr_state]
   end
 
   def show

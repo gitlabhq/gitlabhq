@@ -127,7 +127,7 @@ class MergeRequest < ActiveRecord::Base
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
 
-  VALID_STATES_FOR_MERGE = ["opened", "reopened", "accepted", "rejected", "fixed"]
+  VALID_STATES_FOR_MERGE = ["opened", "reopened", "accepted", "rejected", "fixed", "closed", "merged"]
   VALID_STATES_FOR_ACCEPT = ["opened", "reopened", "rejected", "fixed"]
   VALID_STATES_FOR_REJECT = ["opened", "reopened", "accepted", "fixed"]
   VALID_STATES_FOR_MARK_FIXED = ["rejected"]

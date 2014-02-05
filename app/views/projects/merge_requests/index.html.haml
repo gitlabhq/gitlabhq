@@ -102,19 +102,19 @@
           .dropdown.inline.prepend-left-10
             %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
               %span.light state:
-              - if @state.present?
-                %strong= @state.capitalize
+              - if @mr_state.present?
+                %strong= @mr_state.capitalize
               - else
                 Any
               %b.caret
             %ul.dropdown-menu
               %li
-                = link_to project_filter_path(state: nil) do
+                = link_to project_filter_path(mr_state: nil) do
                   Any
-              - @available_states.each do |state|
+              - @available_states.each do |mr_state|
                 %li
-                  = link_to project_filter_path(state: state) do
-                    = state.capitalize
+                  = link_to project_filter_path(mr_state: mr_state) do
+                    = mr_state.capitalize
 
       %ul.well-list.mr-list
         = render @merge_requests

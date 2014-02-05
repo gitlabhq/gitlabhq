@@ -70,6 +70,7 @@ module ProjectsHelper
       assigned_group_id: params[:assigned_group_id],
       created_group_id: params[:created_group_id],
       state: params[:state],
+      mr_state: params[:mr_state],
       scope: params[:scope],
       label_name: params[:label_name],
       milestone_id: params[:milestone_id],
