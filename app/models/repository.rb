@@ -178,4 +178,14 @@ class Repository
 
     Tree.new(self, sha, path)
   end
+
+  def blob_at_branch(branch_name, path)
+     last_commit = commit(branch_name)
+
+     if last_commit
+       blob_at(last_commit.sha, path)
+     else
+       nil
+     end
+  end
 end

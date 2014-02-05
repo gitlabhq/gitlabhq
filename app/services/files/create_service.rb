@@ -24,8 +24,7 @@ module Files
         return error("Your changes could not be committed, because file name contains not allowed characters")
       end
 
-      commit = repository.commit(ref)
-      blob = repository.blob_at(commit.sha, file_path)
+      blob = repository.blob_at_branch(ref, file_path)
 
       if blob
         return error("Your changes could not be committed, because file with such name exists")
