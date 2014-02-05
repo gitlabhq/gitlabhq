@@ -16,6 +16,11 @@ class Projects::CompareController < Projects::ApplicationController
     @refs_are_same = compare.same
     @line_notes    = []
 
+    if @diffs == [Gitlab::Git::Diff::BROKEN_DIFF]
+      @diffs = []
+      @timeout = true
+    end
+
     diff_line_count = Commit::diff_line_count(@diffs)
     @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count) && !params[:force_show_diff]
     @force_suppress_diff = Commit::diff_force_suppress?(@diffs, diff_line_count)
