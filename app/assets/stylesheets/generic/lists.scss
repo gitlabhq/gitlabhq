@@ -23,6 +23,12 @@
       }
     }
 
+    &.warning-row {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+    }
+
     &.smoke { background-color: #f5f5f5; }
 
     &:hover {
