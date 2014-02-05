@@ -5,12 +5,6 @@
 
 = render "form"
 
-- if @commits.size > 100
-  .alert.alert-warning
-    %p
-      %strong Warning! This comparison includes more than 100 commits.
-    %p To preserve performance the line diff is not shown.
-
 - if @commits.present?
   %div.ui-box
     .title
@@ -24,9 +18,15 @@
     - else
       %ul.well-list= render Commit.decorate(@commits), project: @project
 
-  - unless @diffs.empty?
-    %h4 Diff
+  %h4 Diff
+  - if @diffs.present?
     = render "projects/commits/diffs", diffs: @diffs, project: @project
+  - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+    .alert.alert-warning
+      %p
+        %strong Warning! This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
+      %p To preserve performance the line diff is not shown.
+
 - else
   .light-well
     %center
