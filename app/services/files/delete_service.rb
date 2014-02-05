@@ -17,7 +17,8 @@ module Files
         return error("You can only create files if you are on top of a branch")
       end
 
-      blob = repository.blob_at(ref, path)
+      commit = repository.commit(ref)
+      blob = repository.blob_at(commit.sha, path)
 
       unless blob
         return error("You can only edit text files")
