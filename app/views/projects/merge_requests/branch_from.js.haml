@@ -3,5 +3,5 @@
   var mrTitle = $('#merge_request_title');
 
   if(mrTitle.val().length == 0) {
-    mrTitle.val("#{params[:ref].titleize}");
+    mrTitle.val("#{params[:ref]}");
   }

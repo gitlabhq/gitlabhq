@@ -31,6 +31,7 @@ class UsersProject < ActiveRecord::Base
   scope :guests, -> { where(project_access: GUEST) }
   scope :reporters, -> { where(project_access: REPORTER) }
   scope :developers, -> { where(project_access: DEVELOPER) }
+  scope :extended_developers, -> { where(project_access: EXTENDED_DEVELOPER) }
   scope :masters,  -> { where(project_access: MASTER) }
 
   scope :in_project, ->(project) { where(project_id: project.id) }

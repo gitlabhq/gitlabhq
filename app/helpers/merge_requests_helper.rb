@@ -19,7 +19,7 @@ module MergeRequestsHelper
       target_project_id: target_project.id,
       source_branch: event.branch_name,
       target_branch: target_project.repository.root_ref,
-      title: event.branch_name.titleize
+      title: event.branch_name
     }
   end
 

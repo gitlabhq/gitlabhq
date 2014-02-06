@@ -20,6 +20,13 @@ module Emails
       mail(to: recipient(recipient_id), subject: subject("Closed merge request ##{@merge_request.iid}", @merge_request.title))
     end
 
+    def reviewed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id, action)
+      @merge_request = MergeRequest.find(merge_request_id)
+      @updated_by = User.find updated_by_user_id
+      @action = action
+      mail(to: recipient(recipient_id), subject: subject("#{@updated_by.name} #{action} merge request !#{@merge_request.iid}", @merge_request.title))
+    end
+
     def merged_merge_request_email(recipient_id, merge_request_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
