@@ -4,13 +4,15 @@
       %li.active
         = link_to '#tab-edit', 'data-toggle' => 'tab' do
           %i.icon-edit
-          Edit Group
+          Group
       %li
         = link_to '#tab-projects', 'data-toggle' => 'tab' do
           %i.icon-folder-close
           Projects
       %li
-        = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
+        = link_to '#tab-remove', 'data-toggle' => 'tab' do
+          %i.icon-remove-sign
+          Remove
 
   .col-md-10
     .tab-content
