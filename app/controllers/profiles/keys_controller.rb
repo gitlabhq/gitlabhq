@@ -40,7 +40,7 @@ class Profiles::KeysController < ApplicationController
     if params[:username].present?
       begin
         user = User.find_by_username(params[:username])
-        user.present? ? (render :text => user.all_ssh_keys) :
+        user.present? ? (render :text => user.all_ssh_keys.join('\n')) :
           (render_404 and return)
       rescue => e
         render text: e.message
