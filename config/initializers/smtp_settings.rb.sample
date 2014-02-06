@@ -1,11 +1,11 @@
 # To enable smtp email delivery for your GitLab instance do next: 
-# 1. Change config/environments/production.rb to use smtp
-#    config.action_mailer.delivery_method = :smtp
-# 2. Rename this file to smtp_settings.rb
-# 3. Edit settings inside this file
-# 4. Restart GitLab instance
+# 1. Rename this file to smtp_settings.rb
+# 2. Edit settings inside this file
+# 3. Restart GitLab instance
 #
-if Gitlab::Application.config.action_mailer.delivery_method == :smtp
+if Rails.env.production?
+  Gitlab::Application.config.action_mailer.delivery_method = :smtp
+
   ActionMailer::Base.smtp_settings = {
     address: "email.server.com",
     port: 456,

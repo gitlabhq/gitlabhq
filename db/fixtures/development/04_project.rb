@@ -19,13 +19,14 @@ project_urls = [
 project_urls.each_with_index do |url, i|
   group_path, project_path = url.split('/')[-2..-1]
 
-  group = Group.find_by_path(group_path)
+  group = Group.find_by(path: group_path)
 
   unless group
     group = Group.new(
       name: group_path.titleize,
       path: group_path
     )
+    group.description = Faker::Lorem.sentence
     group.owner = User.first
     group.save
   end
@@ -35,10 +36,11 @@ project_urls.each_with_index do |url, i|
   params = {
     import_url: url,
     namespace_id: group.id,
-    name: project_path.titleize
+    name: project_path.titleize,
+    description: Faker::Lorem.sentence
   }
 
-  project = Projects::CreateContext.new(User.first, params).execute
+  project = Projects::CreateService.new(User.first, params).execute
 
   if project.valid?
     print '.'

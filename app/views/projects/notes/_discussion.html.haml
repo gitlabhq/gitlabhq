@@ -8,7 +8,7 @@
       = link_to "javascript:;", class: "js-details-target turn-off js-toggler-target" do
         %i.icon-eye-open
         Show discussion
-    = image_tag gravatar_icon(note.author_email), class: "avatar s32"
+    = image_tag avatar_icon(note.author_email), class: "avatar s32"
     %div
       = link_to_member(@project, note.author, avatar: false)
       - if note.for_merge_request?
@@ -32,8 +32,7 @@
       last updated by
       = link_to_member(@project, last_note.author, avatar: false)
       %span.discussion-last-update
-        = time_ago_in_words(last_note.updated_at)
-        ago
+        #{time_ago_with_tooltip(last_note.updated_at, 'bottom', 'discussion_updated_ago')}
   .discussion-body
     - if note.for_diff_line?
       - if note.active?

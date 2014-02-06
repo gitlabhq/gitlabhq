@@ -1,6 +1,6 @@
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|
-    .ui-box.small-box
+    .ui-box.ui-box-small
       - project = group[0]
       .title
         = link_to_project project

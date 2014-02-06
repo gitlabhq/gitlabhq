@@ -12,7 +12,7 @@ xml.feed "xmlns" => "http://www.w3.org/2005/Atom", "xmlns:media" => "http://sear
       xml.link    :href => project_issue_url(@project, issue)
       xml.title   truncate(issue.title, :length => 80)
       xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
-      xml.media   :thumbnail, :width => "40", :height => "40", :url => gravatar_icon(issue.author_email)
+      xml.media   :thumbnail, :width => "40", :height => "40", :url => avatar_icon(issue.author_email)
       xml.author do |author|
         xml.name issue.author_name
         xml.email issue.author_email

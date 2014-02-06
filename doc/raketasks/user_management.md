@@ -1,6 +1,6 @@
 ### Add user as a developer to all projects
 
-```
+```bash
 bundle exec rake gitlab:import:user_to_projects[username@domain.tld]
 ```
 
@@ -11,6 +11,6 @@ Notes:
 
 * admin users are added as masters
 
-```
+```bash
 bundle exec rake gitlab:import:all_users_to_all_projects
 ```

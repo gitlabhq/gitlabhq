@@ -7,7 +7,7 @@ class Projects::HooksController < Projects::ApplicationController
   layout "project_settings"
 
   def index
-    @hooks = @project.hooks.all
+    @hooks = @project.hooks
     @hook = ProjectHook.new
   end
 
@@ -18,21 +18,26 @@ class Projects::HooksController < Projects::ApplicationController
     if @hook.valid?
       redirect_to project_hooks_path(@project)
     else
-      @hooks = @project.hooks.all
+      @hooks = @project.hooks
       render :index
     end
   end
 
   def test
-    TestHookContext.new(project, current_user, params).execute
+    TestHookService.new.execute(hook, current_user)
 
     redirect_to :back
   end
 
   def destroy
-    @hook = @project.hooks.find(params[:id])
-    @hook.destroy
+    hook.destroy
 
     redirect_to project_hooks_path(@project)
+  end
+
+  private
+
+  def hook
+    @hook ||= @project.hooks.find(params[:id])
   end
 end

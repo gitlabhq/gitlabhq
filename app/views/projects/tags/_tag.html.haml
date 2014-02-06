@@ -1,0 +1,22 @@
+- commit = @repository.commit(tag.target)
+%li
+  %h4
+    = link_to project_commits_path(@project, tag.name), class: "" do
+      %i.icon-tag
+      = tag.name
+    .pull-right
+      %small.cdark
+        %i.icon-calendar
+        #{time_ago_with_tooltip(commit.committed_date)}
+  %p.prepend-left-20
+    = link_to commit.short_id(8), project_commit_path(@project, commit), class: "monospace"
+    &ndash;
+    = link_to_gfm truncate(commit.title, length: 70), project_commit_path(@project, commit.id), class: "cdark"
+
+    %span.pull-right
+      - if can? current_user, :download_code, @project
+        = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'grouped btn-group-small'
+      - if can?(current_user, :admin_project, @project)
+        = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row grouped', method: :delete, data: { confirm: 'Removed tag cannot be restored. Are you sure?'}, remote: true do
+          %i.icon-trash
+

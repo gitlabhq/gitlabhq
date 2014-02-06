@@ -10,4 +10,4 @@
 %hr
 %pre= @key.key
 .pull-right
-  = link_to 'Remove', project_deploy_key_path(@project, @key), confirm: 'Are you sure?', method: :delete, class: "btn-remove btn delete-key"
+  = link_to 'Remove', project_deploy_key_path(@project, @key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn-remove btn delete-key"

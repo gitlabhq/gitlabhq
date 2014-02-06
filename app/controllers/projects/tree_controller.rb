@@ -1,13 +1,8 @@
 # Controller for viewing a repository's file structure
-class Projects::TreeController < Projects::ApplicationController
-  include ExtractsPath
-
-  # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
-  before_filter :require_non_empty_project
-
+class Projects::TreeController < Projects::BaseTreeController
   def show
+    return not_found! if tree.entries.empty?
+
     respond_to do |format|
       format.html
       # Disable cache so browser history works

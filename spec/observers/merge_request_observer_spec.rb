@@ -4,16 +4,17 @@ describe MergeRequestObserver do
   let(:some_user) { create :user }
   let(:assignee) { create :user }
   let(:author) { create :user }
-  let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author) }
-  let(:assigned_mr) { create(:merge_request, assignee: assignee, author: author, target_project: create(:project)) }
-  let(:unassigned_mr) { create(:merge_request, author: author, target_project: create(:project)) }
-  let(:closed_assigned_mr) { create(:closed_merge_request, assignee: assignee, author: author, target_project: create(:project)) }
-  let(:closed_unassigned_mr) { create(:closed_merge_request, author: author, target_project: create(:project)) }
+  let(:project) { create :project }
+  let(:mr_mock) { double(:merge_request, id: 42, assignee: assignee, author: author).as_null_object }
+  let(:assigned_mr) { create(:merge_request, assignee: assignee, author: author, source_project: project) }
+  let(:unassigned_mr) { create(:merge_request, author: author, source_project: project) }
+  let(:closed_assigned_mr) { create(:closed_merge_request, assignee: assignee, author: author, source_project: project) }
+  let(:closed_unassigned_mr) { create(:closed_merge_request, author: author, source_project: project) }
 
   before { subject.stub(:current_user).and_return(some_user) }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
   before { mr_mock.stub(:author_id) }
-  before { mr_mock.stub(:target_project) }
+  before { mr_mock.stub(:source_project) }
   before { mr_mock.stub(:source_project) }
   before { mr_mock.stub(:project) }
   before { mr_mock.stub(:create_cross_references!).and_return(true) }
@@ -46,7 +47,7 @@ describe MergeRequestObserver do
     end
 
     it 'is called when a merge request is changed' do
-      changed = create(:merge_request, source_project: create(:project))
+      changed = create(:merge_request, source_project: project)
       subject.should_receive(:after_update)
 
       MergeRequest.observers.enable :merge_request_observer do
@@ -81,13 +82,13 @@ describe MergeRequestObserver do
   context '#after_close' do
     context 'a status "closed"' do
       it 'note is created if the merge request is being closed' do
-        Note.should_receive(:create_status_change_note).with(assigned_mr, assigned_mr.target_project, some_user, 'closed', nil)
+        Note.should_receive(:create_status_change_note).with(assigned_mr, assigned_mr.source_project, some_user, 'closed', nil)
 
         assigned_mr.close
       end
 
       it 'notification is delivered only to author if the merge request is being closed' do
-        Note.should_receive(:create_status_change_note).with(unassigned_mr, unassigned_mr.target_project, some_user, 'closed', nil)
+        Note.should_receive(:create_status_change_note).with(unassigned_mr, unassigned_mr.source_project, some_user, 'closed', nil)
 
         unassigned_mr.close
       end
@@ -97,13 +98,13 @@ describe MergeRequestObserver do
   context '#after_reopen' do
     context 'a status "reopened"' do
       it 'note is created if the merge request is being reopened' do
-        Note.should_receive(:create_status_change_note).with(closed_assigned_mr, closed_assigned_mr.target_project, some_user, 'reopened', nil)
+        Note.should_receive(:create_status_change_note).with(closed_assigned_mr, closed_assigned_mr.source_project, some_user, 'reopened', nil)
 
         closed_assigned_mr.reopen
       end
 
       it 'notification is delivered only to author if the merge request is being reopened' do
-        Note.should_receive(:create_status_change_note).with(closed_unassigned_mr, closed_unassigned_mr.target_project, some_user, 'reopened', nil)
+        Note.should_receive(:create_status_change_note).with(closed_unassigned_mr, closed_unassigned_mr.source_project, some_user, 'reopened', nil)
 
         closed_unassigned_mr.reopen
       end
@@ -118,20 +119,13 @@ describe MergeRequestObserver do
       it { @event.project.should == project }
     end
 
-    let(:project) { create(:project) }
     before do
-      TestEnv.enable_observers
-      @merge_request = create(:merge_request, source_project: project, target_project: project)
+      @merge_request = create(:merge_request, source_project: project, source_project: project)
       @event = Event.last
-    end
-
-    after do
-      TestEnv.disable_observers
     end
 
     it_should_be_valid_event
     it { @event.action.should == Event::CREATED }
     it { @event.target.should == @merge_request }
   end
-
 end

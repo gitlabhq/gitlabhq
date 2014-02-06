@@ -1,5 +1,9 @@
 :plain
   $(".target_branch").html("#{escape_javascript(options_for_select(@target_branches))}");
-  $(".target_branch").trigger("chosen:updated");
+
+  $('select.target_branch').select2({
+    width: 'resolve',
+    dropdownAutoWidth: true
+  });
+
   $(".mr_target_commit").html("");
-  $(".target_branch").trigger("change");

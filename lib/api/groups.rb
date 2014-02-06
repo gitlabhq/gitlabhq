@@ -7,12 +7,14 @@ module API
       helpers do
         def find_group(id)
           group = Group.find(id)
-          if current_user.admin or current_user.groups.include? group
+
+          if can?(current_user, :read_group, group)
             group
           else
             render_api_error!("403 Forbidden - #{current_user.username} lacks sufficient access to #{group.name}", 403)
           end
         end
+
         def validate_access_level?(level)
           Gitlab::Access.options_with_owner.values.include? level.to_i
         end
@@ -64,6 +66,18 @@ module API
         present group, with: Entities::GroupDetail
       end
 
+      # Remove group
+      #
+      # Parameters:
+      #   id (required) - The ID of a group
+      # Example Request:
+      #   DELETE /groups/:id
+      delete ":id" do
+        group = find_group(params[:id])
+        authorize! :manage_group, group
+        group.destroy
+      end
+
       # Transfer a project to the Group namespace
       #
       # Parameters:
@@ -107,11 +121,11 @@ module API
           render_api_error!("Wrong access level", 422)
         end
         group = find_group(params[:id])
-        if group.users_groups.find_by_user_id(params[:user_id])
+        if group.users_groups.find_by(user_id: params[:user_id])
           render_api_error!("Already exists", 409)
         end
         group.add_users([params[:user_id]], params[:access_level])
-        member = group.users_groups.find_by_user_id(params[:user_id])
+        member = group.users_groups.find_by(user_id: params[:user_id])
         present member.user, with: Entities::GroupMember, group: group
       end
 
@@ -125,14 +139,13 @@ module API
       #   DELETE /groups/:id/members/:user_id
       delete ":id/members/:user_id" do
         group = find_group(params[:id])
-        member =  group.users_groups.find_by_user_id(params[:user_id])
+        member =  group.users_groups.find_by(user_id: params[:user_id])
         if member.nil?
           render_api_error!("404 Not Found - user_id:#{params[:user_id]} not a member of group #{group.name}",404)
         else
           member.destroy
         end
       end
-
     end
   end
 end

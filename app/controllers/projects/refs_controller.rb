@@ -24,13 +24,14 @@ class Projects::RefsController < Projects::ApplicationController
       format.js do
         @ref = params[:ref]
         define_tree_vars
+        tree
         render "tree"
       end
     end
   end
 
   def logs_tree
-    contents = @tree.entries
+    contents = tree.entries
     @logs = contents.map do |content|
       file = params[:path] ? File.join(params[:path], content.name) : content.name
       last_commit = @repo.commits(@commit.id, file, 1).last

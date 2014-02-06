@@ -25,7 +25,7 @@ class ProjectWiki < Spinach::FeatureSteps
     page.should have_content "link test"
 
     click_link "link test"
-    page.should have_content "Editing page"
+    page.should have_content "Editing"
   end
 
   Given 'I have an existing Wiki page' do

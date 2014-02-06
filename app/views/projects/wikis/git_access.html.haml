@@ -1,36 +1,31 @@
 = render 'nav'
-%h3.page-title
-  Git access for
-  %strong= @gollum_wiki.path_with_namespace
-  = render 'main_links'
+.row
+  .col-sm-6
+    %h3.page-title
+      Git access for
+      %strong= @gollum_wiki.path_with_namespace
 
-.content
-  .project_clone_panel
-    .row
-      .span7
-        .form-horizontal
-          .input-prepend.project_clone_holder
-            %button{class: "btn active", :"data-clone" => @gollum_wiki.ssh_url_to_repo} SSH
-            %button{class: "btn", :"data-clone" => @gollum_wiki.http_url_to_repo}= Gitlab.config.gitlab.protocol.upcase
-            = text_field_tag :project_clone, @gollum_wiki.url_to_repo, class: "one_click_select input-xxlarge", readonly: true
-  .git-empty
-    %fieldset
-      %legend Install Gollum:
-      %pre.dark
-        :preserve
-          gem install gollum
+  .col-sm-6
+    = render "shared/clone_panel", project: @gollum_wiki
 
-      %legend Clone Your Wiki:
-      %pre.dark
-        :preserve
-          git clone #{@gollum_wiki.ssh_url_to_repo}
-          cd #{@gollum_wiki.path}
+.git-empty
+  %fieldset
+    %legend Install Gollum:
+    %pre.dark
+      :preserve
+        gem install gollum
 
-      %legend Start Gollum And Edit Locally:
-      %pre.dark
-        :preserve
-          gollum
-          == Sinatra/1.3.5 has taken the stage on 4567 for development with backup from Thin
-          >> Thin web server (v1.5.0 codename Knife)
-          >> Maximum connections set to 1024
-          >> Listening on 0.0.0.0:4567, CTRL+C to stop
+    %legend Clone Your Wiki:
+    %pre.dark
+      :preserve
+        git clone #{ content_tag(:span, default_url_to_repo(@gollum_wiki), class: 'clone')}
+        cd #{@gollum_wiki.path}
+
+    %legend Start Gollum And Edit Locally:
+    %pre.dark
+      :preserve
+        gollum
+        == Sinatra/1.3.5 has taken the stage on 4567 for development with backup from Thin
+        >> Thin web server (v1.5.0 codename Knife)
+        >> Maximum connections set to 1024
+        >> Listening on 0.0.0.0:4567, CTRL+C to stop

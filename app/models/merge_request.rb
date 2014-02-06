@@ -31,9 +31,18 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
+  has_one :merge_request_diff, dependent: :destroy
+  after_create :create_merge_request_diff
+
+  delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
+
   attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event, :description
 
   attr_accessor :should_remove_source_branch
+
+  # When this attribute is true some MR validation is ignored
+  # It allows us to close or modify broken merge requests
+  attr_accessor :allow_broken
 
   state_machine :state, initial: :opened do
     event :close do
@@ -41,20 +50,26 @@ class MergeRequest < ActiveRecord::Base
     end
 
     event :merge do
-      transition [:reopened, :opened] => :merged
+      transition [:reopened, :opened, :locked] => :merged
     end
 
     event :reopen do
       transition closed: :reopened
     end
 
+    event :lock do
+      transition [:reopened, :opened] => :locked
+    end
+
+    event :unlock do
+      transition locked: :reopened
+    end
+
     state :opened
-
     state :reopened
-
     state :closed
-
     state :merged
+    state :locked
   end
 
   state_machine :merge_status, initial: :unchecked do
@@ -71,16 +86,11 @@ class MergeRequest < ActiveRecord::Base
     end
 
     state :unchecked
-
     state :can_be_merged
-
     state :cannot_be_merged
   end
 
-  serialize :st_commits
-  serialize :st_diffs
-
-  validates :source_project, presence: true
+  validates :source_project, presence: true, unless: :allow_broken
   validates :source_branch, presence: true
   validates :target_project, presence: true
   validates :target_branch, presence: true
@@ -101,7 +111,7 @@ class MergeRequest < ActiveRecord::Base
   scope :closed, -> { with_states(:closed, :merged) }
 
   def validate_branches
-    if target_project==source_project && target_branch == source_branch
+    if target_project == source_project && target_branch == source_branch
       errors.add :branch_conflict, "You can not use same project/branch for source and target"
     end
 
@@ -116,8 +126,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_code
-    self.reloaded_commits
-    self.reloaded_diffs
+    if merge_request_diff && opened?
+      merge_request_diff.reload_content
+    end
   end
 
   def check_if_can_be_merged
@@ -128,42 +139,6 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
-  def diffs
-    @diffs ||= (load_diffs(st_diffs) || [])
-  end
-
-  def reloaded_diffs
-    if opened? && unmerged_diffs.any?
-      self.st_diffs = dump_diffs(unmerged_diffs)
-      self.save
-    end
-  end
-
-  def broken_diffs?
-    diffs == broken_diffs
-  rescue
-    true
-  end
-
-  def valid_diffs?
-    !broken_diffs?
-  end
-
-  def unmerged_diffs
-    diffs = if for_fork?
-              Gitlab::Satellite::MergeAction.new(author, self).diffs_between_satellite
-            else
-              Gitlab::Git::Diff.between(target_project.repository, source_branch, target_branch)
-            end
-
-    diffs ||= []
-    diffs
-  end
-
-  def last_commit
-    commits.first
-  end
-
   def merge_event
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::MERGED).last
   end
@@ -172,57 +147,20 @@ class MergeRequest < ActiveRecord::Base
     self.target_project.events.where(target_id: self.id, target_type: "MergeRequest", action: Event::CLOSED).last
   end
 
-  def commits
-    load_commits(st_commits || [])
-  end
-
-  def probably_merged?
-    unmerged_commits.empty? &&
-      commits.any? && opened?
-  end
-
-  def reloaded_commits
-    if opened? && unmerged_commits.any?
-      self.st_commits = dump_commits(unmerged_commits)
-      save
-
-    end
-    commits
-  end
-
-  def unmerged_commits
-    if for_fork?
-      commits = Gitlab::Satellite::MergeAction.new(self.author, self).commits_between
-    else
-      commits = target_project.repository.commits_between(self.target_branch, self.source_branch)
-    end
-
-    if commits.present?
-      commits = Commit.decorate(commits).
-      sort_by(&:created_at).
-      reverse
-    end
-    commits
-  end
-
-  def merge!(user_id)
-    self.author_id_of_changes = user_id
-    self.merge
-  end
-
-  def automerge!(current_user)
-    if Gitlab::Satellite::MergeAction.new(current_user, self).merge! && self.unmerged_commits.empty?
-      self.merge!(current_user.id)
-      true
-    end
-  rescue
-    mark_as_unmergeable
-    false
+  def automerge!(current_user, commit_message = nil)
+    MergeRequests::AutoMergeService.new.execute(self, current_user, commit_message)
   end
 
   def mr_and_commit_notes
-    commit_ids = commits.map(&:id)
-    Note.where("(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND commit_id IN (:commit_ids))", mr_id: id, commit_ids: commit_ids)
+    # Fetch comments only from last 100 commits
+    commits_for_notes_limit = 100
+    commit_ids = commits.last(commits_for_notes_limit).map(&:id)
+
+    project.notes.where(
+      "(noteable_type = 'MergeRequest' AND noteable_id = :mr_id) OR (noteable_type = 'Commit' AND commit_id IN (:commit_ids))",
+      mr_id: id,
+      commit_ids: commit_ids
+    )
   end
 
   # Returns the raw diff for this merge request
@@ -237,10 +175,6 @@ class MergeRequest < ActiveRecord::Base
   # see "git format-patch"
   def to_patch(current_user)
     Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
-  end
-
-  def last_commit_short_sha
-    @last_commit_short_sha ||= last_commit.sha[0..10]
   end
 
   def for_fork?
@@ -258,7 +192,7 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues
     if target_branch == project.default_branch
-      unmerged_commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
+      commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
     else
       []
     end
@@ -269,33 +203,74 @@ class MergeRequest < ActiveRecord::Base
     "merge request !#{iid}"
   end
 
-  private
-
-  def dump_commits(commits)
-    commits.map(&:to_hash)
-  end
-
-  def load_commits(array)
-    array.map { |hash| Commit.new(Gitlab::Git::Commit.new(hash)) }
-  end
-
-  def dump_diffs(diffs)
-    if diffs == broken_diffs
-      broken_diffs
-    elsif diffs.respond_to?(:map)
-      diffs.map(&:to_hash)
+  def target_project_path
+    if target_project
+      target_project.path_with_namespace
+    else
+      "(removed)"
     end
   end
 
-  def load_diffs(raw)
-    if raw == broken_diffs
-      broken_diffs
-    elsif raw.respond_to?(:map)
-      raw.map { |hash| Gitlab::Git::Diff.new(hash) }
+  def source_project_path
+    if source_project
+      source_project.path_with_namespace
+    else
+      "(removed)"
     end
   end
 
-  def broken_diffs
-    [Gitlab::Git::Diff::BROKEN_DIFF]
+  def source_branch_exists?
+    return false unless self.source_project
+
+    self.source_project.repository.branch_names.include?(self.source_branch)
+  end
+
+  def target_branch_exists?
+    return false unless self.target_project
+
+    self.target_project.repository.branch_names.include?(self.target_branch)
+  end
+
+  # Reset merge request events cache
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when a merge request is updated
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(target_id: self.id, target_type: 'MergeRequest').
+        order('id DESC').limit(100).
+        update_all(updated_at: Time.now)
+  end
+
+  def merge_commit_message
+    message = "Merge branch '#{source_branch}' into '#{target_branch}'"
+    message << "\n\n"
+    message << title.to_s
+    message << "\n\n"
+    message << description.to_s
+    message
+  end
+
+  # Return array of possible target branches
+  # dependes on target project of MR
+  def target_branches
+    if target_project.nil?
+      []
+    else
+      target_project.repository.branch_names
+    end
+  end
+
+  # Return array of possible source branches
+  # dependes on source project of MR
+  def source_branches
+    if source_project.nil?
+      []
+    else
+      source_project.repository.branch_names
+    end
   end
 end

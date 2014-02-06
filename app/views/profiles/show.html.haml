@@ -1,90 +1,86 @@
-= image_tag gravatar_icon(@user.email, 60), alt: '', class: 'avatar s60'
 %h3.page-title
-  = @user.name
-  %br
-  %small
-    = @user.email
-
-  .pull-right
-    = link_to destroy_user_session_path, class: "logout", method: :delete do
-      %small
-        %i.icon-signout
-        Logout
+  Profile settings
+%p.light
+  This information appears on your profile.
+  - if current_user.ldap_user?
+    Some options are unavailable for LDAP accounts
 %hr
 
-= form_for @user, url: profile_path, method: :put, html: { class: "edit_user form-horizontal" }  do |f|
+
+
+= form_for @user, url: profile_path, method: :put, html: { multipart: true, class: "edit_user form-horizontal" }, authenticity_token: true do |f|
   -if @user.errors.any?
-    %div.alert.alert-error
+    %div.alert.alert-danger
       %ul
         - @user.errors.full_messages.each do |msg|
           %li= msg
   .row
-    .span7
-      .control-group
+    .col-md-7
+      .form-group
         = f.label :name, class: "control-label"
-        .controls
-          = f.text_field :name, class: "input-xlarge", required: true
+        .col-sm-10
+          = f.text_field :name, class: "form-control", required: true
           %span.help-block Enter your name, so people you know can recognize you.
-      .control-group
+
+      .form-group
         = f.label :email, class: "control-label"
-        .controls
-          = f.text_field :email, class: "input-xlarge", required: true
-          %span.help-block We also use email for avatar detection.
-      .control-group
+        .col-sm-10
+          - if @user.ldap_user?
+            = f.text_field :email, class: "form-control", required: true, readonly: true
+            %span.help-block.light
+              Email is read-only for LDAP user
+          - else
+            = f.text_field :email, class: "form-control", required: true
+            - if @user.unconfirmed_email.present?
+              %span.help-block
+                We sent confirmation email to
+                %strong #{@user.unconfirmed_email}
+            - else
+              %span.help-block We also use email for avatar detection if no avatar is uploaded.
+      .form-group
         = f.label :skype, class: "control-label"
-        .controls= f.text_field :skype, class: "input-xlarge"
-      .control-group
+        .col-sm-10= f.text_field :skype, class: "form-control"
+      .form-group
         = f.label :linkedin, class: "control-label"
-        .controls= f.text_field :linkedin, class: "input-xlarge"
-      .control-group
+        .col-sm-10= f.text_field :linkedin, class: "form-control"
+      .form-group
         = f.label :twitter, class: "control-label"
-        .controls= f.text_field :twitter, class: "input-xlarge"
-      .control-group
+        .col-sm-10= f.text_field :twitter, class: "form-control"
+      .form-group
+        = f.label :website_url, 'Website', class: "control-label"
+        .col-sm-10= f.text_field :website_url, class: "form-control"
+      .form-group
         = f.label :bio, class: "control-label"
-        .controls
-          = f.text_area :bio, rows: 6, class: "input-xlarge", maxlength: 250
+        .col-sm-10
+          = f.text_area :bio, rows: 6, class: "form-control", maxlength: 250
           %span.help-block Tell us about yourself in fewer than 250 characters.
 
-    .span5.pull-right
-      %fieldset.tips
-        %legend Tips:
-        %ul
-          %li
-            %p You can change your password on the Account page
-          - if Gitlab.config.gravatar.enabled
-            %li
-              %p You can change your avatar at #{link_to "gravatar.com", "http://gravatar.com"}
+    .col-md-5
+      .light-well
+        = image_tag avatar_icon(@user.email, 160), alt: '', class: 'avatar s160'
 
-          - if Gitlab.config.omniauth.enabled && @user.provider?
-            %li
-              %p
-                You can login through #{@user.provider.titleize}!
-                = link_to "click here to change", account_profile_path
-          - if current_user.can_create_group?
-            %li
-              %p
-                Need a group for several dependent projects?
-                = link_to new_group_path, class: "btn btn-tiny" do
-                  Create a group
-      - unless current_user.projects_limit_left > 100
-        %fieldset
-          %legend
-            Personal projects:
-            %small.pull-right
-              %span= current_user.personal_projects.count
-              of
-              %span= current_user.projects_limit
-          .padded
-            .progress
-              .bar{style: "width: #{current_user.projects_limit_percent}%;"}
-
-      %fieldset
-        %legend
-          SSH public keys:
-          %span.pull-right
-            = link_to pluralize(current_user.keys.count, 'key'), profile_keys_path
-        .padded
-          = link_to "Add Public Key", new_profile_key_path, class: "btn btn-small"
+        .clearfix
+          .profile-avatar-form-option
+            %p.light
+              - if @user.avatar?
+                You can change your avatar here
+                %br
+                or remove the current avatar to revert to #{link_to "gravatar.com", "http://gravatar.com"}
+              - else
+                You can upload an avatar here
+                %br
+                or change it at #{link_to "gravatar.com", "http://gravatar.com"}
+            %hr
+            %a.choose-btn.btn.btn-small.js-choose-user-avatar-button
+              %i.icon-paper-clip
+              %span Choose File ...
+            &nbsp;
+            %span.file_name.js-avatar-filename File name...
+            = f.file_field :avatar, class: "js-user-avatar-input hidden"
+            .light The maximum file size allowed is 100KB.
+            - if @user.avatar?
+              %hr
+              = link_to 'Remove avatar', profile_avatar_path, data: { confirm: "Avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
   .form-actions
     = f.submit 'Save changes', class: "btn btn-save"

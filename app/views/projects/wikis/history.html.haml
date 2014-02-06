@@ -3,7 +3,7 @@
   %span.light History for
   = link_to @wiki.title.titleize, project_wiki_path(@project, @wiki)
 
-%table
+%table.table
   %thead
     %tr
       %th Page version
@@ -23,8 +23,7 @@
         %td
           = commit.title
         %td
-          = time_ago_in_words(version.date)
-          ago
+          #{time_ago_with_tooltip(version.date)}
         %td
           %strong
             = @wiki.page.wiki.page(@wiki.page.name, commit.id).try(:format)

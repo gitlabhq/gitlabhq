@@ -1,26 +1,23 @@
 class SearchController < ApplicationController
+  include SearchHelper
+
   def show
-    project_id = params[:project_id]
-    group_id = params[:group_id]
+    @project = Project.find_by(id: params[:project_id]) if params[:project_id].present?
+    @group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
 
-    project_ids = current_user.authorized_projects.map(&:id)
-
-    if group_id.present?
-      @group = Group.find(group_id)
-      group_project_ids = @group.projects.map(&:id)
-      project_ids.select! { |id| group_project_ids.include?(id)}
-    elsif project_id.present?
-      @project = Project.find(params[:project_id])
-      project_ids.select! { |id| id == project_id.to_i}
+    if @project
+      return access_denied! unless can?(current_user, :download_code, @project)
+      @search_results = Search::ProjectService.new(@project, current_user, params).execute
+    else
+      @search_results = Search::GlobalService.new(current_user, params).execute
     end
+  end
 
-    result = SearchContext.new(project_ids, params).execute
+  def autocomplete
+    term = params[:term]
+    @project = Project.find(params[:project_id]) if params[:project_id].present?
+    @ref = params[:project_ref] if params[:project_ref].present?
 
-    @projects       = result[:projects]
-    @merge_requests = result[:merge_requests]
-    @issues         = result[:issues]
-    @wiki_pages     = result[:wiki_pages]
-    @blobs          = Kaminari.paginate_array(result[:blobs]).page(params[:page]).per(20)
-    @total_results = @projects.count + @merge_requests.count + @issues.count + @wiki_pages.count + @blobs.total_count
+    render json: search_autocomplete_opts(term).to_json
   end
 end

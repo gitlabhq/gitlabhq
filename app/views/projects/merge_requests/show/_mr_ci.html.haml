@@ -8,7 +8,7 @@
 
 
   .ci_widget.ci-failed{style: "display:none"}
-    .alert.alert-error
+    .alert.alert-danger
       %i.icon-remove
       %strong CI build failed
       for #{@merge_request.last_commit_short_sha}.
@@ -16,20 +16,20 @@
 
   - [:running, :pending].each do |status|
     .ci_widget{class: "ci-#{status}", style: "display:none"}
-      .alert
+      .alert.alert-warning
         %i.icon-time
         %strong CI build #{status}
         for #{@merge_request.last_commit_short_sha}.
         = link_to "Build page", ci_build_details_path(@merge_request)
 
   .ci_widget
-    .alert
+    .alert.alert-warning
       %strong
-        %i.icon-refresh
+        %i.icon-spinner
         Checking for CI status for #{@merge_request.last_commit_short_sha}
 
   .ci_widget.ci-error{style: "display:none"}
-    .alert.alert-error
+    .alert.alert-danger
       %i.icon-remove
       %strong Cannot connect to CI server. Please check your setting
 

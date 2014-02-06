@@ -23,21 +23,32 @@
   %span.light Authored by
   %strong
     = commit_author_link(@commit, avatar: true, size: 24)
-  %time{title: @commit.authored_date.stamp("Aug 21, 2011 9:23pm")}
-    #{time_ago_in_words(@commit.authored_date)} ago
+  #{time_ago_with_tooltip(@commit.authored_date)}
 
 - if @commit.different_committer?
   .commit-info-row
     %span.light Committed by
     %strong
       = commit_committer_link(@commit, avatar: true, size: 24)
-    %time{title: @commit.committed_date.stamp("Aug 21, 2011 9:23pm")}
-      #{time_ago_in_words(@commit.committed_date)} ago
+    #{time_ago_with_tooltip(@commit.committed_date)}
 
 .commit-info-row
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
     = link_to parent.id[0...10], project_commit_path(@project, parent)
+
+- if @branches.any?
+  .commit-info-row
+    %span.cgray
+      Exists in
+    %span
+      - branch = commit_default_branch(@project, @branches)
+      = link_to(branch, project_tree_path(@project, branch))
+      - if @branches.any?
+        and in
+        = link_to("#{pluralize(@branches.count, "other branch")}", "#", class: "js-details-expand")
+        %span.js-details-contain.hide
+          = commit_branches_links(@project, @branches)
 
 .commit-box
   %h3.commit-title

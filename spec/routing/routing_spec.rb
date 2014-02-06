@@ -111,13 +111,6 @@ describe HelpController, "routing" do
   end
 end
 
-# errors_githost GET    /errors/githost(.:format) errors#githost
-describe ErrorsController, "routing" do
-  it "to #githost" do
-    get("/errors/githost").should route_to('errors#githost')
-  end
-end
-
 #             profile_account GET    /profile/account(.:format)             profile#account
 #             profile_history GET    /profile/history(.:format)             profile#history
 #            profile_password PUT    /profile/password(.:format)            profile#password_update
@@ -128,7 +121,7 @@ end
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
   it "to #account" do
-    get("/profile/account").should route_to('profiles#account')
+    get("/profile/account").should route_to('profiles/accounts#show')
   end
 
   it "to #history" do
@@ -187,6 +180,13 @@ describe Profiles::KeysController, "routing" do
   # get all the ssh-keys of a user
   it "to #get_keys" do
     get("/foo.keys").should route_to('profiles/keys#get_keys', username: 'foo')
+  end
+end
+
+# profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
+describe Profiles::AvatarsController, "routing" do
+  it "to #destroy" do
+    delete("/profile/avatar").should route_to('profiles/avatars#destroy')
   end
 end
 

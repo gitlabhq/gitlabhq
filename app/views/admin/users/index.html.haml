@@ -1,10 +1,12 @@
 .row
-  .span3
+  .col-md-3
     .admin-filter
       = form_tag admin_users_path, method: :get, class: 'form-inline' do
-        = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'search-text-input span2'
-        = button_tag type: 'submit', class: 'btn' do
-          %i.icon-search
+        .append-bottom-10
+          .form-group
+            = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
+          = button_tag type: 'submit', class: 'btn btn-primary' do
+            %i.icon-search
       %ul.nav.nav-pills.nav-stacked
         %li{class: "#{'active' unless params[:filter]}"}
           = link_to admin_users_path do
@@ -25,7 +27,7 @@
       %hr
       = link_to 'Reset', admin_users_path, class: "btn btn-cancel"
 
-  .span9
+  .col-md-9
     .ui-box
       .title
         Users (#{@users.total_count})
@@ -53,6 +55,6 @@
                 - if user.blocked?
                   = link_to 'Unblock', unblock_admin_user_path(user), method: :put, class: "btn btn-small success"
                 - else
-                  = link_to 'Block', block_admin_user_path(user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
-                = link_to 'Destroy', [:admin, user], confirm: "USER #{user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+                  = link_to 'Block', block_admin_user_path(user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-small btn-remove"
+                = link_to 'Destroy', [:admin, user], data: { confirm: "USER #{user.name} WILL BE REMOVED! All tickets linked to this user will also be removed! Maybe block the user instead? Are you sure?" }, method: :delete, class: "btn btn-small btn-remove"
     = paginate @users, theme: "gitlab"

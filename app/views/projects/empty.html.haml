@@ -1,12 +1,13 @@
-= render 'clone_panel'
+= render "home_panel"
 
 - if @project.import? && !@project.imported
   .save-project-loader
     %center
-      = image_tag "ajax_loader.gif"
-      %h3 Importing repository.
+      %h2
+        %i.icon-spinner.icon-spin
+        Importing repository.
       %p.monospace git clone --bare #{@project.import_url}
-      %p Please wait until we import repository for you. Refresh at will.
+      %p Please wait while we import the repository for you. Refresh at will.
       :javascript
         new ProjectImport();
 
@@ -29,8 +30,7 @@
           touch README
           git add README
           git commit -m 'first commit'
-        %span.clone= "git remote add origin #{@project.url_to_repo}"
-        :preserve
+          git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
           git push -u origin master
 
     %fieldset
@@ -38,10 +38,9 @@
       %pre.dark
         :preserve
           cd existing_git_repo
-        %span.clone= "git remote add origin #{@project.url_to_repo}"
-        :preserve
+          git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
           git push -u origin master
 
   - if can? current_user, :remove_project, @project
     .prepend-top-20
-      = link_to 'Remove project', @project, confirm: remove_project_message(@project), method: :delete, class: "btn btn-remove pull-right"
+      = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

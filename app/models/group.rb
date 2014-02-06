@@ -12,9 +12,19 @@
 #  description :string(255)      default(""), not null
 #
 
+require 'carrierwave/orm/activerecord'
+require 'file_size_validator'
+
 class Group < Namespace
   has_many :users_groups, dependent: :destroy
   has_many :users, through: :users_groups
+
+  attr_accessible :avatar
+
+  validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
+
+  mount_uploader :avatar, AttachmentUploader
 
   def human_name
     name
@@ -26,7 +36,8 @@ class Group < Namespace
 
   def add_users(user_ids, group_access)
     user_ids.compact.each do |user_id|
-      self.users_groups.create(user_id: user_id, group_access: group_access)
+      user = self.users_groups.find_or_initialize_by(user_id: user_id)
+      user.update_attributes(group_access: group_access)
     end
   end
 
@@ -48,5 +59,11 @@ class Group < Namespace
 
   def members
     users_groups
+  end
+
+  def avatar_type
+    unless self.avatar.image?
+      self.errors.add :avatar, "only images allowed"
+    end
   end
 end

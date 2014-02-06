@@ -10,6 +10,7 @@
 #  updated_at  :datetime         not null
 #  type        :string(255)
 #  description :string(255)      default(""), not null
+#  avatar      :string(255)
 #
 
 class Namespace < ActiveRecord::Base
@@ -86,5 +87,9 @@ class Namespace < ActiveRecord::Base
 
   def send_update_instructions
     projects.each(&:send_move_instructions)
+  end
+
+  def kind
+    type == 'Group' ? 'group' : 'user'
   end
 end

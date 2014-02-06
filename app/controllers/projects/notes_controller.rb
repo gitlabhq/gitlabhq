@@ -2,62 +2,54 @@ class Projects::NotesController < Projects::ApplicationController
   # Authorize
   before_filter :authorize_read_note!
   before_filter :authorize_write_note!, only: [:create]
-
-  respond_to :js
+  before_filter :authorize_admin_note!, only: [:update, :destroy]
 
   def index
-    @notes = Notes::LoadContext.new(project, current_user, params).execute
-    @target_type = params[:target_type].camelize
-    @target_id = params[:target_id]
+    @notes = Notes::LoadService.new(project, current_user, params).execute
 
-    if params[:target_type] == "merge_request"
-      @discussions   = discussions_from_notes
+    notes_json = { notes: [] }
+
+    @notes.each do |note|
+      notes_json[:notes] << {
+        id: note.id,
+        html: note_to_html(note)
+      }
     end
 
-    respond_with(@notes)
+    render json: notes_json
   end
 
   def create
-    @note = Notes::CreateContext.new(project, current_user, params).execute
-    @target_type = params[:target_type].camelize
-    @target_id = params[:target_id]
+    @note = Notes::CreateService.new(project, current_user, params).execute
 
     respond_to do |format|
-      format.html {redirect_to :back}
-      format.js
+      format.json { render_note_json(@note) }
+      format.html { redirect_to :back }
+    end
+  end
+
+  def update
+    note.update_attributes(params[:note])
+    note.reset_events_cache
+
+    respond_to do |format|
+      format.json { render_note_json(note) }
+      format.html { redirect_to :back }
     end
   end
 
   def destroy
-    @note = @project.notes.find(params[:id])
-    return access_denied! unless can?(current_user, :admin_note, @note)
-    @note.destroy
+    note.destroy
+    note.reset_events_cache
 
     respond_to do |format|
       format.js { render nothing: true }
     end
   end
 
-  def update
-    @note = @project.notes.find(params[:id])
-    return access_denied! unless can?(current_user, :admin_note, @note)
-
-    @note.update_attributes(params[:note])
-
-    respond_to do |format|
-      format.js do
-        render js: { success: @note.valid?, id: @note.id, note: view_context.markdown(@note.note) }.to_json
-      end
-      format.html do
-        redirect_to :back
-      end
-    end
-  end
-
   def delete_attachment
-    @note = @project.notes.find(params[:id])
-    @note.remove_attachment!
-    @note.update_attribute(:attachment, nil)
+    note.remove_attachment!
+    note.update_attribute(:attachment, nil)
 
     respond_to do |format|
       format.js { render nothing: true }
@@ -68,35 +60,40 @@ class Projects::NotesController < Projects::ApplicationController
     render text: view_context.markdown(params[:note])
   end
 
-  protected
+  private
 
-  def discussion_notes_for(note)
-    @notes.select do |other_note|
-      note.discussion_id == other_note.discussion_id
-    end
+  def note
+    @note ||= @project.notes.find(params[:id])
   end
 
-  def discussions_from_notes
-    discussion_ids = []
-    discussions = []
-
-    @notes.each do |note|
-      next if discussion_ids.include?(note.discussion_id)
-
-      # don't group notes for the main target
-      if note_for_main_target?(note)
-        discussions << [note]
-      else
-        discussions << discussion_notes_for(note)
-        discussion_ids << note.discussion_id
-      end
-    end
-
-    discussions
+  def note_to_html(note)
+    render_to_string(
+      "projects/notes/_note",
+      layout: false,
+      formats: [:html],
+      locals: { note: note }
+    )
   end
 
-  # Helps to distinguish e.g. commit notes in mr notes list
-  def note_for_main_target?(note)
-    (@target_type.camelize == note.noteable_type && !note.for_diff_line?)
+  def note_to_discussion_html(note)
+    render_to_string(
+      "projects/notes/_diff_notes_with_reply",
+      layout: false,
+      formats: [:html],
+      locals: { notes: [note] }
+    )
+  end
+
+  def render_note_json(note)
+    render json: {
+      id: note.id,
+      discussion_id: note.discussion_id,
+      html: note_to_html(note),
+      discussion_html: note_to_discussion_html(note)
+    }
+  end
+
+  def authorize_admin_note!
+    return access_denied! unless can?(current_user, :admin_note, note)
   end
 end

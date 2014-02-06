@@ -1,16 +1,20 @@
 %h3.page-title
-  = "Merge Request ##{@merge_request.iid}:"
-  &nbsp;
-  -if @merge_request.for_fork?
-    %span.label-branch
-      %span.label-project= truncate(@merge_request.source_project.path_with_namespace, length: 25)
-      #{@merge_request.source_branch}
-    &rarr;
-    %span.label-branch= @merge_request.target_branch
+  = "Merge Request ##{@merge_request.iid}"
+  %small
+    created #{time_ago_with_tooltip(@merge_request.created_at)}
+
+  - if @merge_request.merged?
+    %span.state-label.state-label-green
+      %i.icon-ok
+      Merged
+  - elsif @merge_request.closed?
+    %span.state-label.state-label-red
+      Closed
   - else
-    %span.label-branch= @merge_request.source_branch
-    &rarr;
-    %span.label-branch= @merge_request.target_branch
+    %span.state-label.state-label-green
+      Open
+
+
 
   %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
@@ -24,15 +28,28 @@
             %li= link_to "Email Patches", project_merge_request_path(@project, @merge_request, format: :patch)
             %li= link_to "Plain Diff",    project_merge_request_path(@project, @merge_request, format: :diff)
 
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: { state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
 
         = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn grouped", id:"edit_merge_request" do
           %i.icon-edit
           Edit
 
-.pull-right
-  .span3#votes= render 'votes/votes_block', votable: @merge_request
+.votes-holder
+  #votes= render 'votes/votes_block', votable: @merge_request
 
 .back-link
   = link_to project_merge_requests_path(@project) do
     &larr; To merge requests
+
+  %span.prepend-left-20.monospace
+    -if @merge_request.for_fork?
+      %span
+        %strong
+          #{truncate(@merge_request.source_project_path, length: 25)}:
+        #{@merge_request.source_branch}
+      &rarr;
+      %span= @merge_request.target_branch
+    - else
+      %span= @merge_request.source_branch
+      &rarr;
+      %spanh= @merge_request.target_branch

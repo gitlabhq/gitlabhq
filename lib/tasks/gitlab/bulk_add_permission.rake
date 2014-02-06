@@ -15,7 +15,7 @@ namespace :gitlab do
 
     desc "GITLAB | Add a specific user to all projects (as a developer)"
     task :user_to_projects, [:email] => :environment  do |t, args|
-      user = User.find_by_email args.email
+      user = User.find_by(email: args.email)
       project_ids = Project.pluck(:id)
       puts "Importing #{user.email} users into #{project_ids.size} projects"
       UsersProject.add_users_into_projects(project_ids, Array.wrap(user.id), UsersProject::DEVELOPER)

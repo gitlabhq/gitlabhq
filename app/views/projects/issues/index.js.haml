@@ -1,4 +1,0 @@
-:plain
-  $('.issues-holder').html("#{escape_javascript(render('issues'))}");
-  History.replaceState({path: "#{request.url}"}, document.title, "#{request.url}");
-  Issues.reload();

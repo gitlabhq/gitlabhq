@@ -1,7 +1,10 @@
 .btn-group.tree-btn-group
   -# only show edit link for text files
   - if @blob.text?
-    = link_to "edit", project_edit_tree_path(@project, @id), class: "btn btn-small", disabled: !allowed_tree_edit?
+    - if allowed_tree_edit?
+      = link_to "edit", project_edit_tree_path(@project, @id), class: "btn btn-small"
+    - else
+      %span.btn.btn-small.disabled edit
   = link_to "raw", project_raw_path(@project, @id), class: "btn btn-small", target: "_blank"
   -# only show normal/blame view links for text files
   - if @blob.text?
@@ -10,3 +13,7 @@
     - else
       = link_to "blame", project_blame_path(@project, @id), class: "btn btn-small" unless @blob.empty?
   = link_to "history", project_commits_path(@project, @id), class: "btn btn-small"
+
+  - if allowed_tree_edit?
+    = link_to '#modal-remove-blob', class: "remove-blob btn btn-small btn-remove", "data-toggle" => "modal" do
+      remove

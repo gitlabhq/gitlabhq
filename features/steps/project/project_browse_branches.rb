@@ -29,7 +29,7 @@ class ProjectBrowseBranches < Spinach::FeatureSteps
   end
 
   And 'project "Shop" has protected branches' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     project.protected_branches.create(name: "stable")
   end
 end

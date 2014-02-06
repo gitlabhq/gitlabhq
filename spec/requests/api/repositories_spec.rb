@@ -1,4 +1,5 @@
 require 'spec_helper'
+require 'mime/types'
 
 describe API::API do
   include ApiHelpers
@@ -7,7 +8,7 @@ describe API::API do
 
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
-  let!(:project) { create(:project_with_code, creator_id: user.id) }
+  let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:guest) { create(:users_project, user: user2, project: project, project_access: UsersProject::GUEST) }
 
@@ -225,4 +226,41 @@ describe API::API do
     end
   end
 
+  describe "GET /projects/:id/repository/raw_blobs/:sha" do
+    it "should get the raw file contents" do
+      get api("/projects/#{project.id}/repository/raw_blobs/d1aff2896d99d7acc4d9780fbb716b113c45ecf7", user)
+      response.status.should == 200
+    end
+  end
+
+  describe "GET /projects/:id/repository/archive(.:format)?:sha" do
+    it "should get the archive" do
+      get api("/projects/#{project.id}/repository/archive", user)
+      repo_name = project.repository.name.gsub("\.git", "")
+      response.status.should == 200
+      response.headers['Content-Disposition'].should =~ /filename\=\"#{repo_name}\-[^\.]+\.tar.gz\"/
+      response.content_type.should == MIME::Types.type_for('file.tar.gz').first.content_type
+    end
+
+    it "should get the archive.zip" do
+      get api("/projects/#{project.id}/repository/archive.zip", user)
+      repo_name = project.repository.name.gsub("\.git", "")
+      response.status.should == 200
+      response.headers['Content-Disposition'].should =~ /filename\=\"#{repo_name}\-[^\.]+\.zip\"/
+      response.content_type.should == MIME::Types.type_for('file.zip').first.content_type
+    end
+
+    it "should get the archive.tar.bz2" do
+      get api("/projects/#{project.id}/repository/archive.tar.bz2", user)
+      repo_name = project.repository.name.gsub("\.git", "")
+      response.status.should == 200
+      response.headers['Content-Disposition'].should =~ /filename\=\"#{repo_name}\-[^\.]+\.tar.bz2\"/
+      response.content_type.should == MIME::Types.type_for('file.tar.bz2').first.content_type
+    end
+
+    it "should return 404 for invalid sha" do
+      get api("/projects/#{project.id}/repository/archive/?sha=xxx", user)
+      response.status.should == 404
+    end
+  end
 end

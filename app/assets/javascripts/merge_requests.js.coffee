@@ -2,8 +2,8 @@
 # * Filter merge requests
 #
 @merge_requestsPage = ->
-  $('#assignee_id').chosen()
-  $('#milestone_id').chosen()
+  $('#assignee_id').select2()
+  $('#milestone_id').select2()
   $('#milestone_id, #assignee_id').on 'change', ->
     $(this).closest('form').submit()
 
@@ -21,8 +21,10 @@ class MergeRequest
     this.initMergeWidget()
     this.$('.show-all-commits').on 'click', =>
       this.showAllCommits()
-    
+
     modal = $('#modal_merge_info').modal(show: false)
+
+    disableButtonIfEmptyField '#merge_commit_message', '.accept_merge_request'
 
   # Local jQuery finder
   $: (selector) ->
@@ -83,12 +85,12 @@ class MergeRequest
       url: this.$('.nav-tabs .diffs-tab a').attr('href')
       beforeSend: =>
         this.$('.status').addClass 'loading'
-
       complete: =>
         @diffs_loaded = true
         this.$('.status').removeClass 'loading'
-
-      dataType: 'script'
+      success: (data) =>
+        this.$(".diffs").html(data.html)
+      dataType: 'json'
 
   showAllCommits: ->
     this.$('.first-commits').remove()

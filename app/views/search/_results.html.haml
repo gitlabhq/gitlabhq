@@ -1,0 +1,17 @@
+%h4
+  #{@search_results[:total_results]} results found
+  - if @project
+    for #{link_to @project.name_with_namespace, @project}
+  - elsif @group
+    for #{link_to @group.name, @group}
+
+%hr
+
+- if @project
+  = render "project_results"
+- else
+  = render "global_results"
+
+:javascript
+  $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
+

@@ -16,29 +16,31 @@ class Commit
   DIFF_HARD_LIMIT_FILES = 500
   DIFF_HARD_LIMIT_LINES = 10000
 
-  def self.decorate(commits)
-    commits.map { |c| self.new(c) }
-  end
+  class << self
+    def decorate(commits)
+      commits.map { |c| self.new(c) }
+    end
 
-  # Calculate number of lines to render for diffs
-  def self.diff_line_count(diffs)
-    diffs.reduce(0){|sum, d| sum + d.diff.lines.count}
-  end
+    # Calculate number of lines to render for diffs
+    def diff_line_count(diffs)
+      diffs.reduce(0){|sum, d| sum + d.diff.lines.count}
+    end
 
-  def self.diff_suppress?(diffs, line_count = nil)
-    # optimize - check file count first
-    return true if diffs.size > DIFF_SAFE_FILES
+    def diff_suppress?(diffs, line_count = nil)
+      # optimize - check file count first
+      return true if diffs.size > DIFF_SAFE_FILES
 
-    line_count ||= Commit::diff_line_count(diffs)
-    line_count > DIFF_SAFE_LINES
-  end
+      line_count ||= Commit::diff_line_count(diffs)
+      line_count > DIFF_SAFE_LINES
+    end
 
-  def self.diff_force_suppress?(diffs, line_count = nil)
-    # optimize - check file count first
-    return true if diffs.size > DIFF_HARD_LIMIT_FILES
+    def diff_force_suppress?(diffs, line_count = nil)
+      # optimize - check file count first
+      return true if diffs.size > DIFF_HARD_LIMIT_FILES
 
-    line_count ||= Commit::diff_line_count(diffs)
-    line_count > DIFF_HARD_LIMIT_LINES
+      line_count ||= Commit::diff_line_count(diffs)
+      line_count > DIFF_HARD_LIMIT_LINES
+    end
   end
 
   attr_accessor :raw

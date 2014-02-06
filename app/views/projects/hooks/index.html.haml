@@ -1,35 +1,61 @@
 %h3.page-title
-  Post-receive hooks
+  Web hooks
 
 %p.light
-  #{link_to "Post-receive hooks ", help_web_hooks_path, class: "vlink"} can be
-  used for binding events when someone pushes to the repository.
+  #{link_to "Web hooks ", help_web_hooks_path, class: "vlink"} can be
+  used for binding events when something is happening within the project.
 
 %hr.clearfix
 
-= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-inline' } do |f|
+= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-horizontal' } do |f|
   -if @hook.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       - @hook.errors.full_messages.each do |msg|
         %p= msg
-  .control-group
-    = f.label :url, "URL:"
-    .controls
-      = f.text_field :url, class: "text_field input-xxlarge input-xpadding", placeholder: 'http://example.com/trigger-ci.json'
-      &nbsp;
-      = f.submit "Add Web Hook", class: "btn btn-create"
-%hr
+  .form-group
+    = f.label :url, "URL", class: 'control-label'
+    .col-sm-10
+      = f.text_field :url, class: "form-control", placeholder: 'http://example.com/trigger-ci.json'
+  .form-group
+    = f.label :url, "Trigger", class: 'control-label'
+    .col-sm-10
+      %div
+        = f.check_box :push_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :push_events, class: 'list-label' do
+            %strong Push events
+          %p.light
+            This url will be triggered by a push to the repository
+      %div
+        = f.check_box :issues_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :issues_events, class: 'list-label' do
+            %strong Issues events
+          %p.light
+            This url will be triggered when an issue is created
+      %div
+        = f.check_box :merge_requests_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :merge_requests_events, class: 'list-label' do
+            %strong Merge Request events
+          %p.light
+            This url will be triggered when a merge request is created
+  .form-actions
+    = f.submit "Add Web Hook", class: "btn btn-create"
 
 -if @hooks.any?
   .ui-box
     .title
-      Hooks (#{@hooks.count})
+      Web hooks (#{@hooks.count})
     %ul.well-list
       - @hooks.each do |hook|
         %li
-          %span.badge.badge-info POST
-          &rarr;
-          %span.monospace= hook.url
           .pull-right
             = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small grouped"
-            = link_to 'Remove', project_hook_path(@project, hook), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove btn-small grouped"
+            = link_to 'Remove', project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small grouped"
+          .clearfix
+            %span.monospace= hook.url
+          %p
+            - %w(push_events issues_events merge_requests_events).each do |trigger|
+              - if hook.send(trigger)
+                %span.label.label-gray= trigger.titleize

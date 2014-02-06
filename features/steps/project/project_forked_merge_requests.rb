@@ -3,19 +3,19 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
-  include ChosenHelper
+  include Select2Helper
 
   step 'I am a member of project "Shop"' do
-    @project = Project.find_by_name "Shop"
-    @project ||= create(:project_with_code, name: "Shop")
+    @project = Project.find_by(name: "Shop")
+    @project ||= create(:project, name: "Shop")
     @project.team << [@user, :reporter]
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
     @forking_user = @user
     forked_project_link = build(:forked_project_link)
-    @forked_project = Project.find_by_name "Forked Shop"
-    @forked_project ||= create(:source_project_with_code, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
+    @forked_project = Project.find_by(name: "Forked Shop")
+    @forked_project ||= create(:project, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
 
     forked_project_link.forked_from_project = @project
     forked_project_link.forked_to_project = @forked_project
@@ -42,14 +42,14 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
-    chosen @forked_project.id, from: "#merge_request_source_project_id"
-    chosen @project.id, from: "#merge_request_target_project_id"
+    select2 @forked_project.id, from: "#merge_request_source_project_id"
+    select2 @project.id, from: "#merge_request_target_project_id"
 
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
     find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
 
-    chosen "master", from: "#merge_request_source_branch"
-    chosen "stable", from: "#merge_request_target_branch"
+    select2 "master", from: "#merge_request_source_branch"
+    select2 "stable", from: "#merge_request_target_branch"
 
     find(:select, "merge_request_source_branch", {}).value.should == 'master'
     find(:select, "merge_request_target_branch", {}).value.should == 'stable'
@@ -114,7 +114,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'project "Forked Shop" has push event' do
-    @forked_project = Project.find_by_name("Forked Shop")
+    @forked_project = Project.find_by(name: "Forked Shop")
 
     data = {
       before: "0000000000000000000000000000000000000000",
@@ -172,7 +172,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   def project
-    @project ||= Project.find_by_name!("Shop")
+    @project ||= Project.find_by!(name: "Shop")
   end
 
   # Verify a link is generated against the correct project

@@ -194,11 +194,14 @@ class BranchGraph
       fill: @colors[commit.space]
       stroke: "none"
     )
-    r.rect(@offsetX + @unitSpace * @mspace + 10, y - 10, 20, 20).attr(
-      fill: "url(#{commit.author.icon})"
+
+    avatar_box_x = @offsetX + @unitSpace * @mspace + 10
+    avatar_box_y = y - 10
+    r.rect(avatar_box_x, avatar_box_y, 20, 20).attr(
       stroke: @colors[commit.space]
       "stroke-width": 2
     )
+    r.image(commit.author.icon, avatar_box_x, avatar_box_y, 20, 20)
     r.text(@offsetX + @unitSpace * @mspace + 35, y, commit.message.split("\n")[0]).attr(
       "text-anchor": "start"
       font: "14px Monaco, monospace"

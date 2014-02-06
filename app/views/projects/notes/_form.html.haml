@@ -1,5 +1,4 @@
-= form_for [@project, @note], remote: true, html: { multipart: true, id: nil, class: "new_note js-new-note-form common-note-form" } do |f|
-
+= form_for [@project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form" }, authenticity_token: true do |f|
   = note_target_fields
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
@@ -7,10 +6,12 @@
   = f.hidden_field :noteable_type
 
   .note_text_and_preview.js-toggler-container
-    %a.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", title: "Preview", data: {url: preview_project_notes_path(@project)} }
+    %a.btn.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", data: {url: preview_project_notes_path(@project)} }
       %i.icon-eye-open
-    %a.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;", title: "Edit" }
+      Preview
+    %a.btn.btn-primary.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;" }
       %i.icon-edit
+      Write
 
     = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
     .note_preview.js-note-preview.turn-off
@@ -27,11 +28,11 @@
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
     .note-form-option
-      %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
+      %a.choose-btn.btn.js-choose-note-attachment-button
         %i.icon-paper-clip
         %span Choose File ...
       &nbsp;
       %span.file_name.js-attachment-filename File name...
-      = f.file_field :attachment, class: "js-note-attachment-input hide"
+      = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
     .clearfix

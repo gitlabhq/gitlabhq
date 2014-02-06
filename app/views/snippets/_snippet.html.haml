@@ -3,7 +3,7 @@
     = link_to reliable_snippet_path(snippet) do
       = truncate(snippet.title, length: 60)
       - if snippet.private?
-        %span.label.label-success
+        %span.label.label-gray
           %i.icon-lock
           private
     %span.cgray.monospace.tiny.pull-right
@@ -18,6 +18,6 @@
     %span
       by
       = link_to user_snippets_path(snippet.author) do
-        = image_tag gravatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
+        = image_tag avatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
         = snippet.author_name
-      %span.light #{time_ago_in_words(snippet.created_at)} ago
+      %span.light #{time_ago_with_tooltip(snippet.created_at)}

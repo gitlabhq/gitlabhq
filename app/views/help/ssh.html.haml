@@ -5,18 +5,24 @@
     SSH key allows you to establish a secure connection between your computer and GitLab
 
   %p.slead
-    To generate a new SSH key just open your terminal and use code below.
+    Before generating an SSH key, check if your system already has one by running cat ~/.ssh/id_rsa.pub
+    If your see a long string starting with 'ssh-rsa' or 'ssh-dsa', you can skip the ssh-keygen step.
+
+  %p.slead
+    To generate a new SSH key just open your terminal and use code below. The ssh-keygen command prompts you for a location and filename to store the key pair and for a password. 
+    When prompted for the location and filename you can press enter to use the default. 
+    It is a best practice to use a password for an SSH key but it is not required and you can skip creating a password by pressing enter. 
+    Note that the password you choose here can't be altered or retrieved.
 
   %pre.dark
     ssh-keygen -t rsa -C "#{current_user.email}"
 
-    \# Creates a new ssh key using the provided email
-    \# Generating public/private rsa key pair...
-
   %p.slead
-    Next just use code below to dump your public key and add to GitLab SSH Keys
+    Use code below to show your public key.
 
   %pre.dark
     cat ~/.ssh/id_rsa.pub
 
-    \# ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC6eNtGpNGwstc....
+  %p.slead
+    Copy-paste the key to the 'My SSH Keys' section under the 'SSH' tab in your user profile. 
+    Please copy the complete key starting with 'ssh-' and ending with your username and host.

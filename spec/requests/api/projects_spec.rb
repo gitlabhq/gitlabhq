@@ -9,15 +9,14 @@ describe API::API do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:project) { create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
-  let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
-  let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
-
-  before { project.team << [user, :reporter] }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
+  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
+  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
 
   describe "GET /projects" do
+    before { project }
+
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/projects")
@@ -28,6 +27,34 @@ describe API::API do
     context "when authenticated" do
       it "should return an array of projects" do
         get api("/projects", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first['name'].should == project.name
+        json_response.first['owner']['email'].should == user.email
+      end
+    end
+  end
+
+  describe "GET /projects/all" do
+    before { project }
+
+    context "when unauthenticated" do
+      it "should return authentication error" do
+        get api("/projects/all")
+        response.status.should == 401
+      end
+    end
+
+    context "when authenticated as regular user" do
+      it "should return authentication error" do
+        get api("/projects/all", user)
+        response.status.should == 403
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should return an array of all projects" do
+        get api("/projects/all", admin)
         response.status.should == 200
         json_response.should be_an Array
         json_response.first['name'].should == project.name
@@ -91,7 +118,6 @@ describe API::API do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
-        default_branch: 'stable',
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,
@@ -107,22 +133,50 @@ describe API::API do
     end
 
     it "should set a project as public" do
+      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+      post api("/projects", user), project
+      json_response['public'].should be_true
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+    end
+
+    it "should set a project as public using :public" do
       project = attributes_for(:project, { public: true })
       post api("/projects", user), project
       json_response['public'].should be_true
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+    end
 
+    it "should set a project as internal" do
+      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      post api("/projects", user), project
+      json_response['public'].should be_false
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
+    end
+
+    it "should set a project as internal overriding :public" do
+      project = attributes_for(:project, { public: true, visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      post api("/projects", user), project
+      json_response['public'].should be_false
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
     end
 
     it "should set a project as private" do
+      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+      post api("/projects", user), project
+      json_response['public'].should be_false
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
+    end
+
+    it "should set a project as private using :public" do
       project = attributes_for(:project, { public: false })
       post api("/projects", user), project
       json_response['public'].should be_false
-
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
     end
-
   end
 
   describe "POST /projects/user/:id" do
+    before { project }
     before { admin }
 
     it "should create new project without path" do
@@ -146,7 +200,6 @@ describe API::API do
     it "should assign attributes to project" do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
-        default_branch: 'stable',
         issues_enabled: false,
         wall_enabled: false,
         merge_requests_enabled: false,
@@ -162,22 +215,51 @@ describe API::API do
     end
 
     it "should set a project as public" do
+      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_true
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+    end
+
+    it "should set a project as public using :public" do
       project = attributes_for(:project, { public: true })
       post api("/projects/user/#{user.id}", admin), project
       json_response['public'].should be_true
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+    end
 
+    it "should set a project as internal" do
+      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_false
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
+    end
+
+    it "should set a project as internal overriding :public" do
+      project = attributes_for(:project, { public: true, visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_false
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
     end
 
     it "should set a project as private" do
+      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+      post api("/projects/user/#{user.id}", admin), project
+      json_response['public'].should be_false
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
+    end
+
+    it "should set a project as private using :public" do
       project = attributes_for(:project, { public: false })
       post api("/projects/user/#{user.id}", admin), project
       json_response['public'].should be_false
-
+      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
     end
-
   end
 
   describe "GET /projects/:id" do
+    before { project }
+
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
       response.status.should == 200
@@ -205,6 +287,8 @@ describe API::API do
   end
 
   describe "GET /projects/:id/events" do
+    before { users_project }
+
     it "should return a project events" do
       get api("/projects/#{project.id}/events", user)
       response.status.should == 200
@@ -228,6 +312,9 @@ describe API::API do
   end
 
   describe "GET /projects/:id/members" do
+    before { users_project }
+    before { users_project2 }
+
     it "should return project team members" do
       get api("/projects/#{project.id}/members", user)
       response.status.should == 200
@@ -251,6 +338,8 @@ describe API::API do
   end
 
   describe "GET /projects/:id/members/:user_id" do
+    before { users_project }
+
     it "should return project team member" do
       get api("/projects/#{project.id}/members/#{user.id}", user)
       response.status.should == 200
@@ -306,6 +395,8 @@ describe API::API do
   end
 
   describe "PUT /projects/:id/members/:user_id" do
+    before { users_project2 }
+
     it "should update project team member" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: UsersProject::MASTER
       response.status.should == 200
@@ -330,6 +421,9 @@ describe API::API do
   end
 
   describe "DELETE /projects/:id/members/:user_id" do
+    before { users_project }
+    before { users_project2 }
+
     it "should remove user from project team" do
       expect {
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
@@ -348,9 +442,7 @@ describe API::API do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       response.status.should == 200
     end
-  end
 
-  describe "DELETE /projects/:id/members/:user_id" do
     it "should return 200 OK when the user was not member" do
       expect {
         delete api("/projects/#{project.id}/members/1000000", user)
@@ -361,122 +453,9 @@ describe API::API do
     end
   end
 
-  describe "GET /projects/:id/hooks" do
-    context "authorized user" do
-      it "should return project hooks" do
-        get api("/projects/#{project.id}/hooks", user)
-        response.status.should == 200
-
-        json_response.should be_an Array
-        json_response.count.should == 1
-        json_response.first['url'].should == "http://example.com"
-      end
-    end
-
-    context "unauthorized user" do
-      it "should not access project hooks" do
-        get api("/projects/#{project.id}/hooks", user3)
-        response.status.should == 403
-      end
-    end
-  end
-
-  describe "GET /projects/:id/hooks/:hook_id" do
-    context "authorized user" do
-      it "should return a project hook" do
-        get api("/projects/#{project.id}/hooks/#{hook.id}", user)
-        response.status.should == 200
-        json_response['url'].should == hook.url
-      end
-
-      it "should return a 404 error if hook id is not available" do
-        get api("/projects/#{project.id}/hooks/1234", user)
-        response.status.should == 404
-      end
-    end
-
-    context "unauthorized user" do
-      it "should not access an existing hook" do
-        get api("/projects/#{project.id}/hooks/#{hook.id}", user3)
-        response.status.should == 403
-      end
-    end
-
-    it "should return a 404 error if hook id is not available" do
-      get api("/projects/#{project.id}/hooks/1234", user)
-      response.status.should == 404
-    end
-  end
-
-  describe "POST /projects/:id/hooks" do
-    it "should add hook to project" do
-      expect {
-        post api("/projects/#{project.id}/hooks", user),
-          url: "http://example.com"
-      }.to change {project.hooks.count}.by(1)
-      response.status.should == 201
-    end
-
-    it "should return a 400 error if url not given" do
-      post api("/projects/#{project.id}/hooks", user)
-      response.status.should == 400
-    end
-
-    it "should return a 422 error if url not valid" do
-      post api("/projects/#{project.id}/hooks", user), "url" => "ftp://example.com"
-      response.status.should == 422
-    end
-  end
-
-  describe "PUT /projects/:id/hooks/:hook_id" do
-    it "should update an existing project hook" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user),
-        url: 'http://example.org'
-      response.status.should == 200
-      json_response['url'].should == 'http://example.org'
-    end
-
-    it "should return 404 error if hook id not found" do
-      put api("/projects/#{project.id}/hooks/1234", user), url: 'http://example.org'
-      response.status.should == 404
-    end
-
-    it "should return 400 error if url is not given" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      response.status.should == 400
-    end
-
-    it "should return a 422 error if url is not valid" do
-      put api("/projects/#{project.id}/hooks/#{hook.id}", user), url: 'ftp://example.com'
-      response.status.should == 422
-    end
-  end
-
-  describe "DELETE /projects/:id/hooks/:hook_id" do
-    it "should delete hook from project" do
-      expect {
-        delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      }.to change {project.hooks.count}.by(-1)
-      response.status.should == 200
-    end
-
-    it "should return success when deleting hook" do
-      delete api("/projects/#{project.id}/hooks/#{hook.id}", user)
-      response.status.should == 200
-    end
-
-    it "should return success when deleting non existent hook" do
-      delete api("/projects/#{project.id}/hooks/42", user)
-      response.status.should == 200
-    end
-
-    it "should return a 405 error if hook id not given" do
-      delete api("/projects/#{project.id}/hooks", user)
-      response.status.should == 405
-    end
-  end
-
   describe "GET /projects/:id/snippets" do
+    before { snippet }
+
     it "should return an array of project snippets" do
       get api("/projects/#{project.id}/snippets", user)
       response.status.should == 200
@@ -543,6 +522,8 @@ describe API::API do
   end
 
   describe "DELETE /projects/:id/snippets/:snippet_id" do
+    before { snippet }
+
     it "should delete existing project snippet" do
       expect {
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
@@ -628,10 +609,10 @@ describe API::API do
 
   describe :fork_admin do
     let(:project_fork_target) { create(:project) }
-    let(:project_fork_source) { create(:project, public: true) }
+    let(:project_fork_source) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
     describe "POST /projects/:id/fork/:forked_from_id" do
-      let(:new_project_fork_source) { create(:project, public: true) }
+      let(:new_project_fork_source) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
       it "shouldn't available for non admin users" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
@@ -695,13 +676,15 @@ describe API::API do
 
   describe "GET /projects/search/:query" do
     let!(:query) { 'query'}
-    let!(:search) { create(:project, name: query, creator_id: user.id, namespace: user.namespace) }
-    let!(:pre) { create(:project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
-    let!(:post) { create(:project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:pre_post) { create(:project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:unfound) { create(:project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
-    let!(:public) { create(:project, name: "another #{query}",public: true) }
-    let!(:unfound_public) { create(:project, name: 'unfound public', public: true) }
+    let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
+    let!(:pre)              { create(:empty_project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
+    let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:pre_post)         { create(:empty_project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:unfound)          { create(:empty_project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
+    let!(:internal)         { create(:empty_project, name: "internal #{query}", visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+    let!(:unfound_internal) { create(:empty_project, name: 'unfound internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+    let!(:public)           { create(:empty_project, name: "public #{query}", visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let!(:unfound_public)   { create(:empty_project, name: 'unfound public', visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
     context "when unauthenticated" do
       it "should return authentication error" do
@@ -715,7 +698,7 @@ describe API::API do
         get api("/projects/search/#{query}",user)
         response.status.should == 200
         json_response.should be_an Array
-        json_response.size.should == 5
+        json_response.size.should == 6
         json_response.each {|project| project['name'].should =~ /.*query.*/}
       end
     end
@@ -725,8 +708,46 @@ describe API::API do
         get api("/projects/search/#{query}", user2)
         response.status.should == 200
         json_response.should be_an Array
-        json_response.size.should == 1
-        json_response.first['name'].should == "another #{query}"
+        json_response.size.should == 2
+        json_response.each {|project| project['name'].should =~ /(internal|public) query/}
+      end
+    end
+  end
+
+  describe "DELETE /projects/:id" do
+    context "when authenticated as user" do
+      it "should remove project" do
+        delete api("/projects/#{project.id}", user)
+        response.status.should == 200
+      end
+
+      it "should not remove a project if not an owner" do
+        user3 = create(:user)
+        project.team << [user3, :developer]
+        delete api("/projects/#{project.id}", user3)
+        response.status.should == 403
+      end
+
+      it "should not remove a non existing project" do
+        delete api("/projects/1328", user)
+        response.status.should == 404
+      end
+
+      it "should not remove a project not attached to user" do
+        delete api("/projects/#{project.id}", user2)
+        response.status.should == 404
+      end
+    end
+
+    context "when authenticated as admin" do
+      it "should remove any existing project" do
+        delete api("/projects/#{project.id}", admin)
+        response.status.should == 200
+      end
+
+      it "should not remove a non existing project" do
+        delete api("/projects/1328", admin)
+        response.status.should == 404
       end
     end
   end

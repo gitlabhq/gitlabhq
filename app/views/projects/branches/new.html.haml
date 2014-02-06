@@ -1,16 +1,15 @@
 %h3.page-title
   %i.icon-code-fork
   New branch
-= form_tag project_branches_path, method: :post do
-  .control-group
+= form_tag project_branches_path, method: :post, class: "form-horizontal" do
+  .form-group
     = label_tag :branch_name, 'Name for new branch', class: 'control-label'
-    .controls
-      = text_field_tag :branch_name, nil, placeholder: 'feature/dashboard', required: true, tabindex: 1
-  .control-group
+    .col-sm-10
+      = text_field_tag :branch_name, nil, placeholder: 'enter new branch name', required: true, tabindex: 1, class: 'form-control'
+  .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
-    .controls
-      = text_field_tag :ref, nil, placeholder: 'master', required: true, tabindex: 2
-      .light branch name or commit SHA
+    .col-sm-10
+      = text_field_tag :ref, nil, placeholder: 'existing branch name, tag or commit SHA', required: true, tabindex: 2, class: 'form-control'
   .form-actions
     = submit_tag 'Create branch', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'

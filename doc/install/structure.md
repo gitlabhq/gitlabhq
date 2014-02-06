@@ -10,18 +10,12 @@ This is the directory structure you will end up with following the instructions 
     |       |-- gitlab-shell
     |       |-- repositories
 
+* `/home/git/.ssh` - contains openssh settings.  Specifically the `authorized_keys` file managed by gitlab-shell.
+* `/home/git/gitlab` - GitLab core software.
+* `/home/git/gitlab-satellites` - checked out repositories for merge requests and file editing from web UI.  This can be treated as a temporary files directory.
+* `/home/git/gitlab-shell` - Core add-on component of gitlab.  Maintains SSH cloning and other functionality.
+* `/home/git/repositories` - bare repositories for all projects organized by namespace.  This is where the git repositories which are pushed/pulled are maintained for all projects.  **This area is critical data for projects.  [Keep a backup](../raketasks/backup_restore.md)**
 
-**/home/git/.ssh**
+*Note: the default locations for gitlab-satellites and repositories can be configured in `config/gitlab.yml` of gitlab and `config.yml` of gitlab-shell.*
 
-**/home/git/gitlab**
-  This is where GitLab lives.
-
-**/home/git/gitlab-satellites**
-  Contains a copy of all repositories with a working tree.
-  It's used for merge requests, editing files, etc.
-
-**/home/git/repositories**
-  Holds all your repositories in bare format.
-  This is the place Git uses when you pull/push to your projects.
-
-You can change them in your `config/gitlab.yml` file.
+To see a more in-depth overview see the [GitLab architecture doc](../development/architecture.md).

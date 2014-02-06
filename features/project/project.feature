@@ -19,3 +19,8 @@ Feature: Project Feature
     And change project settings
     And I save project
     Then I should see project with new settings
+
+  Scenario: I change project path
+    When I visit edit project "Shop" page
+    And change project path settings
+    Then I should see project with new path settings

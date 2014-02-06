@@ -20,6 +20,10 @@ Feature: Project Browse files
     And I click link "raw"
     Then I should see raw file content
 
+  Scenario: I can create file
+    Given I click on "new file" link in repo
+    Then I can see new file page
+
   @javascript
   Scenario: I can edit file
     Given I click on "Gemfile.lock" file in repo

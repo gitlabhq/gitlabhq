@@ -1,15 +1,46 @@
 = render layout: 'help/layout' do
   %h3.page-title Public Access
 
-  %p
-    GitLab allows you to open selected projects to be accessed publicly.
-    These projects will be cloneable
-    %em without any
-    authentication.
-    Also they will be listed on the #{link_to "public access directory", public_root_path}.
+  %p.slead
+    GitLab allows you to open selected projects to be accessed
+    %strong publicly
+    or
+    %strong internally
+    \.
+    %br
+    Projects with either of these visibility levels will be listed in the #{link_to "public access directory", public_root_path}.
+    %br
+    Internal projects will only be available to authenticated users.
 
+  .clearfix
+    .dashboard-intro-icon
+      = public_icon
+    %h4
+      Public projects
+    %p
+      Public project can be cloned
+      %strong without any
+      authentication.
+      %br
+      It will also be listed on the #{link_to "public access directory", public_root_path}.
+      %br
+      %strong Any logged in user
+      will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+
+  .clearfix
+    .dashboard-intro-icon
+      = internal_icon
+    %h4
+      Internal projects
+    %p
+      Internal project can be cloned by any logged in user.
+      %br
+      It will also be listed on the #{link_to "public access directory", public_root_path} for logged in users.
+      %br
+      Any logged in user will have #{link_to "Guest", help_permissions_path} permissions on the repository.
+
+  %h4 How to change project visibility
   %ol
     %li Go to your project dashboard
     %li Click on the "Edit" tab
-    %li Select "Public clone access"
-
+    %li Change "Visibility Level"

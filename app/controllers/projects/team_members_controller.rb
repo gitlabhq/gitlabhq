@@ -1,6 +1,6 @@
 class Projects::TeamMembersController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_admin_project!
+  before_filter :authorize_admin_project!, except: :leave
 
   layout "project_settings"
 
@@ -26,7 +26,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def update
-    @user_project_relation = project.users_projects.find_by_user_id(member)
+    @user_project_relation = project.users_projects.find_by(user_id: member)
     @user_project_relation.update_attributes(params[:team_member])
 
     unless @user_project_relation.valid?
@@ -36,11 +36,20 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def destroy
-    @user_project_relation = project.users_projects.find_by_user_id(member)
+    @user_project_relation = project.users_projects.find_by(user_id: member)
     @user_project_relation.destroy
 
     respond_to do |format|
       format.html { redirect_to project_team_index_path(@project) }
+      format.js { render nothing: true }
+    end
+  end
+
+  def leave
+    project.users_projects.find_by(user_id: current_user).destroy
+
+    respond_to do |format|
+      format.html { redirect_to :back }
       format.js { render nothing: true }
     end
   end
@@ -56,6 +65,6 @@ class Projects::TeamMembersController < Projects::ApplicationController
   protected
 
   def member
-    @member ||= User.find_by_username(params[:id])
+    @member ||= User.find_by(username: params[:id])
   end
 end

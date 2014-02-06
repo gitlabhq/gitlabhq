@@ -1,3 +1,5 @@
+require 'mime/types'
+
 module API
   # Projects API
   class Repositories < Grape::API
@@ -49,7 +51,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -67,7 +69,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         protected_branch.destroy if protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -80,7 +82,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
+        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject, project: user_project
       end
 
       # Get a project repository commits
@@ -110,7 +112,7 @@ module API
         sha = params[:sha]
         commit = user_project.repository.commit(sha)
         not_found! "Commit" unless commit
-        present commit, with: Entities::RepoCommit
+        present commit, with: Entities::RepoCommitDetail
       end
 
       # Get the diff for a specific commit of a project
@@ -122,9 +124,9 @@ module API
       #   GET /projects/:id/repository/commits/:sha/diff
       get ":id/repository/commits/:sha/diff" do
         sha = params[:sha]
-        result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
-        not_found! "Commit" unless result[:commit]
-        result[:commit].diffs
+        commit = user_project.repository.commit(sha)
+        not_found! "Commit" unless commit
+        commit.diffs
       end
 
       # Get a project repository tree
@@ -139,15 +141,9 @@ module API
         path = params[:path] || nil
 
         commit = user_project.repository.commit(ref)
-        tree = Tree.new(user_project.repository, commit.id, ref, path)
+        tree = user_project.repository.tree(commit.id, path)
 
-        trees = []
-
-        %w(trees blobs submodules).each do |type|
-          trees += tree.send(type).map { |t| { name: t.name, type: type.singularize, mode: t.mode, id: t.id } }
-        end
-
-        trees
+        present tree.sorted_entries, with: Entities::RepoTreeObject
       end
 
       # Get a raw file contents
@@ -168,15 +164,66 @@ module API
         commit = repo.commit(ref)
         not_found! "Commit" unless commit
 
-        blob = Gitlab::Git::Blob.new(repo, commit.id, ref, params[:filepath])
-        not_found! "File" unless blob.exists?
+        blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
+        not_found! "File" unless blob
 
         env['api.format'] = :txt
 
         content_type blob.mime_type
         present blob.data
       end
+
+      # Get a raw blob contents by blob sha
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (required) - The blob's sha
+      # Example Request:
+      #   GET /projects/:id/repository/raw_blobs/:sha
+      get ":id/repository/raw_blobs/:sha" do
+        ref = params[:sha]
+
+        repo = user_project.repository
+
+        blob = Gitlab::Git::Blob.raw(repo, ref)
+
+        not_found! "Blob" unless blob
+
+        env['api.format'] = :txt
+
+        content_type blob.mime_type
+        present blob.data
+      end
+
+      # Get a an archive of the repository
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   sha (optional) - the commit sha to download defaults to the tip of the default branch
+      # Example Request:
+      #   GET /projects/:id/repository/archive
+      get ":id/repository/archive", requirements: { format: Gitlab::Regex.archive_formats_regex } do
+        authorize! :download_code, user_project
+        repo = user_project.repository
+        ref = params[:sha]
+        format = params[:format]
+        storage_path = Rails.root.join("tmp", "repositories")
+
+        file_path = repo.archive_repo(ref, storage_path, format)
+        if file_path && File.exists?(file_path)
+          data = File.open(file_path, 'rb').read
+
+          header["Content-Disposition"] = "attachment; filename=\"#{File.basename(file_path)}\""
+
+          content_type MIME::Types.type_for(file_path).first.content_type
+
+          env['api.format'] = :binary
+
+          present data
+        else
+          not_found!
+        end
+      end
     end
   end
 end
-

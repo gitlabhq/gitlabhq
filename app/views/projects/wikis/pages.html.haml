@@ -8,4 +8,4 @@
         = link_to wiki_page.title.titleize, project_wiki_path(@project, wiki_page)
         %small (#{wiki_page.format})
         .pull-right
-          %small Last edited #{time_ago_in_words(wiki_page.commit.created_at)} ago
+          %small Last edited #{time_ago_with_tooltip(wiki_page.commit.created_at)}

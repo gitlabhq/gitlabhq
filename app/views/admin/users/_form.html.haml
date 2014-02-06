@@ -1,35 +1,35 @@
 .user_new
-  = form_for [:admin, @user] do |f|
+  = form_for [:admin, @user], html: { class: 'form-horizontal' } do |f|
     -if @user.errors.any?
       #error_explanation
-        %ul.unstyled.alert.alert-error
+        %ul.unstyled.alert.alert-danger
           - @user.errors.full_messages.each do |msg|
             %li= msg
 
     %fieldset
       %legend Account
-      .control-group
-        = f.label :name
-        .controls
-          = f.text_field :name, required: true, autocomplete: "off"
+      .form-group
+        = f.label :name, class: 'control-label'
+        .col-sm-10
+          = f.text_field :name, required: true, autocomplete: "off", class: 'form-control'
           %span.help-inline * required
-      .control-group
-        = f.label :username
-        .controls
-          = f.text_field :username, required: true, autocomplete: "off"
+      .form-group
+        = f.label :username, class: 'control-label'
+        .col-sm-10
+          = f.text_field :username, required: true, autocomplete: "off", class: 'form-control'
           %span.help-inline * required
-      .control-group
-        = f.label :email
-        .controls
-          = f.text_field :email, required: true, autocomplete: "off"
+      .form-group
+        = f.label :email, class: 'control-label'
+        .col-sm-10
+          = f.text_field :email, required: true, autocomplete: "off", class: 'form-control'
           %span.help-inline * required
 
     - if @user.new_record?
       %fieldset
         %legend Password
-        .control-group
-          = f.label :password
-          .controls
+        .form-group
+          = f.label :password, class: 'control-label'
+          .col-sm-10
             %strong
               A temporary password will be generated and sent to user.
               %br
@@ -37,49 +37,52 @@
     - else
       %fieldset
         %legend Password
-        .control-group
-          = f.label :password
-          .controls= f.password_field :password, disabled: f.object.force_random_password
-        .control-group
-          = f.label :password_confirmation
-          .controls= f.password_field :password_confirmation, disabled: f.object.force_random_password
+        .form-group
+          = f.label :password, class: 'control-label'
+          .col-sm-10= f.password_field :password, disabled: f.object.force_random_password, class: 'form-control'
+        .form-group
+          = f.label :password_confirmation, class: 'control-label'
+          .col-sm-10= f.password_field :password_confirmation, disabled: f.object.force_random_password, class: 'form-control'
 
     %fieldset
       %legend Access
-      .row
-        .span8
-          .control-group
-            = f.label :projects_limit
-            .controls= f.number_field :projects_limit
+      .form-group
+        = f.label :projects_limit, class: 'control-label'
+        .col-sm-10= f.number_field :projects_limit, class: 'form-control'
 
-          .control-group
-            = f.label :can_create_group
-            .controls= f.check_box :can_create_group
+      .form-group
+        = f.label :can_create_group, class: 'control-label'
+        .col-sm-10= f.check_box :can_create_group
 
-          .control-group
-            = f.label :admin do
-              %strong.cred Administrator
-            .controls= f.check_box :admin
-        .span4
-          - unless @user.new_record?
-            .alert.alert-error
-              - if @user.blocked?
-                %p This user is blocked and is not able to login to GitLab
-                = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
-              - else
-                %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-                = link_to 'Block User', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-small btn-remove"
+      .form-group
+        = f.label :admin, class: 'control-label'
+        - if current_user == @user
+          .col-sm-10= f.check_box :admin, disabled: true
+          .col-sm-10 You cannot remove your own admin rights
+        - else
+          .col-sm-10= f.check_box :admin
+      - unless @user.new_record? || current_user == @user
+        .alert.alert-danger
+          - if @user.blocked?
+            %p This user is blocked and is not able to login to GitLab
+            = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
+          - else
+            %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
+            = link_to 'Block User', block_admin_user_path(@user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
-      .control-group
-        = f.label :skype
-        .controls= f.text_field :skype
-      .control-group
-        = f.label :linkedin
-        .controls= f.text_field :linkedin
-      .control-group
-        = f.label :twitter
-        .controls= f.text_field :twitter
+      .form-group
+        = f.label :skype, class: 'control-label'
+        .col-sm-10= f.text_field :skype, class: 'form-control'
+      .form-group
+        = f.label :linkedin, class: 'control-label'
+        .col-sm-10= f.text_field :linkedin, class: 'form-control'
+      .form-group
+        = f.label :twitter, class: 'control-label'
+        .col-sm-10= f.text_field :twitter, class: 'form-control'
+      .form-group
+        = f.label :website_url, 'Website', class: 'control-label'
+        .col-sm-10= f.text_field :website_url, class: 'form-control'
 
     .form-actions
       - if @user.new_record?

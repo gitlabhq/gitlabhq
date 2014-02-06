@@ -5,12 +5,11 @@
 %h3.page-title
   Merge Requests
   %span (#{@merge_requests.total_count})
-
-
+%hr
 .row
-  .span3
+  .col-md-3
     = render 'shared/project_filter', project_entities_path: project_merge_requests_path(@project)
-  .span9
+  .col-md-9
     .ui-box
       .title
         .mr-filters
@@ -35,7 +34,7 @@
               - @project.team.members.sort_by(&:name).each do |user|
                 %li
                   = link_to project_filter_path(assignee_id: user.id) do
-                    = image_tag gravatar_icon(user.email), class: "avatar s16", alt: ''
+                    = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
                     = user.name
 
           .dropdown.inline.prepend-left-10
@@ -60,6 +59,9 @@
                   = link_to project_filter_path(milestone_id: milestone.id) do
                     %strong= milestone.title
                     %small.light= milestone.expires_at
+
+          .pull-right
+            = render 'shared/sort_dropdown'
 
       %ul.well-list.mr-list
         = render @merge_requests

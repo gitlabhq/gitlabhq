@@ -6,8 +6,8 @@
         = form_tag bulk_update_project_issues_path(@project), method: :post  do
           %span Update selected issues with &nbsp;
           = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")
-          = select_tag('update[assignee_id]', options_from_collection_for_select(@project.team.members, "id", "name", params[:assignee_id]), prompt: "Assignee")
-          = select_tag('update[milestone_id]', options_from_collection_for_select(project_active_milestones, "id", "title", params[:milestone_id]), prompt: "Milestone")
+          = select_tag('update[assignee_id]', bulk_update_assignee_options, prompt: "Assignee")
+          = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :status, params[:status]
           = button_tag "Save", class: "btn update_selected_issues btn-small btn-save"
@@ -52,7 +52,7 @@
             - @project.team.members.sort_by(&:name).each do |user|
               %li
                 = link_to project_filter_path(assignee_id: user.id) do
-                  = image_tag gravatar_icon(user.email), class: "avatar s16", alt: ''
+                  = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
                   = user.name
 
         .dropdown.inline.prepend-left-10
@@ -78,6 +78,9 @@
                   %strong= milestone.title
                   %small.light= milestone.expires_at
 
+        .pull-right
+          = render 'shared/sort_dropdown'
+
 
   %ul.well-list.issues-list
     = render @issues
@@ -90,4 +93,4 @@
     %span.issue_counter #{@issues.total_count}
     issues for this filter
 
-  = paginate @issues, remote: true, theme: "gitlab"
+  = paginate @issues, theme: "gitlab"

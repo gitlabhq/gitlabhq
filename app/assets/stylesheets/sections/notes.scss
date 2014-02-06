@@ -2,7 +2,7 @@
  * Notes
  */
 
-@-webkit-keyframes target-note {
+@-webkit-keyframes targe3-note {
   from { background:#fffff0; }
   50% { background:#ffffd3; }
   to { background:#fffff0; }
@@ -92,10 +92,6 @@ ul.notes {
     .note-body {
       @include md-typography;
       margin-left: 45px;
-
-      .highlight {
-        @include border-radius(4px);
-      }
     }
     .note-header {
       padding-bottom: 5px;
@@ -119,9 +115,9 @@ ul.notes {
 }
 
 .file .notes_holder {
-  font-family: $sansFontFamily;
   font-size: 13px;
   line-height: 18px;
+  font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
 
   td {
     border: 1px solid #ddd;
@@ -130,9 +126,15 @@ ul.notes {
     &.notes_line {
       text-align: center;
       padding: 10px 0;
+      background: #eee;
+    }
+    &.notes_line2 {
+      text-align: center;
+      padding: 10px 0;
+      border-left: 1px solid #ddd !important;
     }
     &.notes_content {
-      background-color: $white;
+      background-color: #fff;
       border-width: 1px 0;
       padding-top: 0;
 
@@ -251,12 +253,12 @@ ul.notes {
 .file,
 .discussion {
   .new_note {
-    margin: 8px 5px 8px 0;
+    margin: 0;
+    border: none;
   }
 }
 .new_note {
   display: none;
-
   .buttons {
     float: left;
     margin-top: 8px;
@@ -270,10 +272,9 @@ ul.notes {
 
     // preview/edit buttons
     > a {
-      font-size: 24px;
-      padding: 4px;
       position: absolute;
-      right: 10px;
+      right: 5px;
+      bottom: -60px;
     }
     .note_preview {
       background: #f5f5f5;
@@ -287,7 +288,7 @@ ul.notes {
       box-shadow: none;
       font-size: 14px;
       height: 80px;
-      width: 98.6%;
+      width: 100%;
     }
   }
 }
@@ -298,7 +299,7 @@ ul.notes {
 }
 
 .note-image-attach {
-  @extend .span4;
+  @extend .col-md-4;
   @extend .thumbnail;
   margin-left: 45px;
 }
@@ -306,10 +307,8 @@ ul.notes {
 
 .common-note-form {
   margin: 0;
-  height: 140px;
   background: #F9F9F9;
   padding: 3px;
-  padding-bottom: 25px;
   border: 1px solid #DDD;
 }
 
@@ -320,7 +319,7 @@ ul.notes {
   padding: 0 5px;
 
   .note-form-option {
-    margin-top: 10px;
+    margin-top: 8px;
     margin-left: 30px;
     @extend .pull-left;
   }
@@ -338,7 +337,7 @@ ul.notes {
     box-shadow: none;
     font-size: 14px;
     height: 80px;
-    width: 98.6%;
+    width: 100%;
   }
 
   .form-actions {
@@ -357,4 +356,8 @@ ul.notes {
 
 .js-note-attachment-delete {
   display: none;
+}
+
+.parallel-comment {
+  padding: 6px;
 }

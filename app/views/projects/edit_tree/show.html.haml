@@ -11,15 +11,15 @@
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-tiny btn-cancel", confirm: leave_edit_message
+            = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
       .file-content.code
         %pre#editor= @blob.data
 
-    .control-group.commit_message-group
+    .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
         Commit message
-      .controls
-        = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3
+      .col-sm-10
+        = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control'
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"
@@ -28,7 +28,7 @@
         .message
           to branch
           %strong= @ref
-      = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-cancel", confirm: leave_edit_message
+      = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
