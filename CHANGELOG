@@ -106,7 +106,6 @@ v 6.2.1
   - Security: Fix issue with generated passwords for new users
 
 v 6.2.0
-  - Public projects are visible from the outside
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
     THIS MEANS YOUR ISSUES AND WIKI FOR PUBLIC PROJECTS ARE PUBLICLY VISIBLE AFTER THE UPGRADE
   - Add group access to permissions page
