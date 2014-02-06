@@ -57,7 +57,9 @@ class ProjectActiveTab < Spinach::FeatureSteps
   end
 
   Given 'I click the "Edit" tab' do
-    click_link('Edit')
+    within '.project-settings-nav' do
+      click_link('Project')
+    end
   end
 
   Given 'I click the "Hooks" tab' do
@@ -73,7 +75,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   end
 
   Then 'the active sub nav should be Edit' do
-    ensure_active_sub_nav('Edit Project')
+    ensure_active_sub_nav('Project')
   end
 
   Then 'the active sub nav should be Hooks' do
