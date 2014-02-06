@@ -17,7 +17,7 @@ gem 'actionpack-action_caching'
 
 # Supported DBs
 gem "mysql2", group: :mysql
-#gem "pg", group: :postgres
+gem "pg", group: :postgres
 
 # Auth
 gem "devise", '3.0.4'
