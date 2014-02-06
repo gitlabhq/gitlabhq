@@ -173,12 +173,10 @@ table a code {
 
 .loading {
   margin: 20px auto;
-  background: url(ajax_loader.gif) no-repeat center center;
-  width: 40px;
   height: 40px;
-  &.loading-gray {
-    background: url(ajax_loader_gray.gif) no-repeat center center;
-  }
+  color: #555;
+  font-size: 32px;
+  text-align: center;
 }
 
 span.update-author {
