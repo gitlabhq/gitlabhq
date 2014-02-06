@@ -31,6 +31,9 @@ class FilteringService
     items = by_search(items)
     items = by_milestone(items)
     items = by_assignee(items)
+    items = by_assigned_group_id(items)
+    items = by_created_group_id(items)
+    items = by_mr_state(items)
     items = by_label(items)
     items = sort(items)
   end
@@ -108,6 +111,30 @@ class FilteringService
   def by_assignee(items)
     if params[:assignee_id].present?
       items = items.where(assignee_id: (params[:assignee_id] == '0' ? nil : params[:assignee_id]))
+    end
+
+    items
+  end
+
+  def by_assigned_group_id(items)
+    if params[:assigned_group_id].present?
+      items = items.joins(assignee: :users_groups).where(users_groups: {group_id: params[:assigned_group_id]})
+    end
+
+    items
+  end
+
+  def by_created_group_id(items)
+    if params[:created_group_id].present?
+      items = items.joins(author: :users_groups).where(users_groups: {group_id: params[:created_group_id]})
+    end
+
+    items
+  end
+
+  def by_mr_state(items)
+    if params[:mr_state].present?
+      items = items.where(state: params[:mr_state])
     end
 
     items
