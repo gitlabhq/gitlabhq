@@ -1,11 +1,9 @@
-%ul.nav.nav-pills.nav-stacked.nav-stacked-menu
+%ul.nav.nav-pills.nav-stacked.nav-stacked-menu.append-bottom-20
   = nav_link(path: 'projects#edit') do
     = link_to edit_project_path(@project), class: "stat-tab tab " do
-      %i.icon-edit
       Edit Project
   = nav_link(controller: [:team_members, :teams]) do
     = link_to project_team_index_path(@project), class: "team-tab tab" do
-      %i.icon-group
       Members
   = nav_link(controller: :deploy_keys) do
     = link_to project_deploy_keys_path(@project) do

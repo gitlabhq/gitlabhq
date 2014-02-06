@@ -6,8 +6,8 @@
 -#    remote:        data-remote
 -#    paginator:     the paginator that renders the pagination tags inside
 = paginator.render do
-  %div.pagination
-    %ul
+  %div.gl-pagination
+    %ul.pagination
       = prev_page_tag unless current_page.first?
       - each_page do |page|
         - if page.left_outer? || page.right_outer? || page.inside_window?

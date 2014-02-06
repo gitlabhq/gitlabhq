@@ -20,6 +20,7 @@ GET /users
     "skype": "",
     "linkedin": "",
     "twitter": "",
+    "website_url": "",
     "extern_uid": "john.smith",
     "provider": "provider_name",
     "theme_id": 1,
@@ -38,12 +39,14 @@ GET /users
     "skype": "",
     "linkedin": "",
     "twitter": "",
+    "website_url": "",
     "extern_uid": "jack.smith",
     "provider": "provider_name",
     "theme_id": 1,
     "color_scheme_id": 3,
     "is_admin": false,
-    "can_create_group": true
+    "can_create_group": true,
+    "can_create_project": true
   }
 ]
 ```
@@ -73,12 +76,14 @@ Parameters:
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "website_url": "",
   "extern_uid": "john.smith",
   "provider": "provider_name",
   "theme_id": 1,
   "color_scheme_id": 2,
   "is_admin": false,
-  "can_create_group": true
+  "can_create_group": true,
+  "can_create_project": true
 }
 ```
 
@@ -100,6 +105,7 @@ Parameters:
 + `skype` (optional)            - Skype ID
 + `linkedin` (optional)         - Linkedin
 + `twitter` (optional)          - Twitter account
++ `website_url` (optional)      - Website url
 + `projects_limit` (optional)   - Number of projects user can create
 + `extern_uid` (optional)       - External UID
 + `provider` (optional)         - External provider name
@@ -125,6 +131,7 @@ Parameters:
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
++ `website_url`                       - Website url
 + `projects_limit`                    - Limit projects each user can create
 + `extern_uid`                        - External UID
 + `provider`                          - External provider name
@@ -172,6 +179,7 @@ GET /user
   "skype": "",
   "linkedin": "",
   "twitter": "",
+  "website_url": "",
   "theme_id": 1,
   "color_scheme_id": 2,
   "is_admin": false,

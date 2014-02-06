@@ -1,4 +1,4 @@
 - if @project.errors.any?
-  .alert.alert-error
+  .alert.alert-danger
     %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
     = @project.errors.full_messages.first

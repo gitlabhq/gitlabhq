@@ -5,21 +5,32 @@
 
 = render "form"
 
-- if @commits.size > 100
-  .alert.alert-block
-    %p
-      %strong Warning! This comparison includes more than 100 commits.
-    %p To preserve performance the line diff is not shown.
-
 - if @commits.present?
   %div.ui-box
     .title
       Commits (#{@commits.count})
-    %ul.well-list= render Commit.decorate(@commits), project: @project
+    - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+      %ul.well-list
+        - Commit.decorate(@commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE)).each do |commit|
+          = render "projects/commits/inline_commit", commit: commit, project: @project
+        %li.warning-row.unstyled
+          other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden to prevent performance issues.
+    - else
+      %ul.well-list= render Commit.decorate(@commits), project: @project
 
-  - unless @diffs.empty?
-    %h4 Diff
+  %h4 Diff
+  - if @diffs.present?
     = render "projects/commits/diffs", diffs: @diffs, project: @project
+  - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+    .bs-callout.bs-callout-danger
+      %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
+      %p To preserve performance the line diff is not shown.
+  - elsif @timeout
+    .bs-callout.bs-callout-danger
+      %h4 Diff for this comparison is extremely large.
+      %p Use command line to browse diff for this comparison.
+
+
 - else
   .light-well
     %center

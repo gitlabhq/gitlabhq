@@ -3,10 +3,10 @@
 %p.light
   Only project members will be imported. Group members will be skipped.
 %hr
-= form_tag apply_import_project_team_members_path(@project), method: 'post' do
-  .padded
-    = label_tag :source_project_id, "Project"
-    .controls= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "Select project", class: "chosen xxlarge", required: true)
+= form_tag apply_import_project_team_members_path(@project), method: 'post', class: 'form-horizontal' do
+  .form-group
+    = label_tag :source_project_id, "Project", class: 'control-label'
+    .col-sm-10= select_tag(:source_project_id, options_from_collection_for_select(current_user.authorized_projects, :id, :name_with_namespace), prompt: "Select project", class: "select2 lg", required: true)
 
   .form-actions
     = submit_tag 'Import project members', class: "btn btn-create"

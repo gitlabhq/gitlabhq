@@ -1,5 +1,5 @@
 .dashboard
-  .activities.span8
+  .activities.col-md-8.hidden-sm
     = render "events/event_last_push", event: @last_push
     = link_to dashboard_path, class: 'btn btn-tiny' do
       &larr; To dashboard
@@ -11,11 +11,15 @@
       .content_list
     - else
       %p.nothing_here_message Project activity will be displayed here
-    .loading.hide
-  .side.span4
-    - if @group.description.present?
-      .description-block
-        = @group.description
+    = spinner
+  .side.col-md-4
+    .light-well.append-bottom-20
+      = image_tag group_icon(@group.path), class: "avatar s90"
+      .clearfix.light
+        %h3.page-title
+          = @group.name
+        - if @group.description.present?
+          %p= @group.description
     = render "projects", projects: @projects
     .prepend-top-20
       = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed" do

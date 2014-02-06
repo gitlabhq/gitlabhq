@@ -67,12 +67,12 @@ describe Event do
   end
 
   describe 'Team events' do
-    let(:user_project) { stub.as_null_object }
+    let(:user_project) { double.as_null_object }
     let(:observer) { UsersProjectObserver.instance }
 
     before {
       Event.should_receive :create
-      observer.stub(notification: stub.as_null_object)
+      observer.stub(notification: double.as_null_object)
     }
 
     describe "Joined project team" do

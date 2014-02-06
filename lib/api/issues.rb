@@ -2,7 +2,6 @@ module API
   # Issues API
   class Issues < Grape::API
     before { authenticate! }
-    before { Thread.current[:current_user] = current_user }
 
     resource :issues do
       # Get currently authenticated user's issues
@@ -49,15 +48,17 @@ module API
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
-        required_attributes! [:title]
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
-        attrs[:label_list] = params[:labels] if params[:labels].present?
-        @issue = user_project.issues.new attrs
-        @issue.author = current_user
-        if @issue.save
-          present @issue, with: Entities::Issue
-        else
-          not_found!
+        set_current_user_for_thread do
+          required_attributes! [:title]
+          attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+          attrs[:label_list] = params[:labels] if params[:labels].present?
+          @issue = user_project.issues.new attrs
+          @issue.author = current_user
+          if @issue.save
+            present @issue, with: Entities::Issue
+          else
+            not_found!
+          end
         end
       end
 
@@ -75,16 +76,18 @@ module API
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
-        @issue = user_project.issues.find(params[:issue_id])
-        authorize! :modify_issue, @issue
+        set_current_user_for_thread do
+          @issue = user_project.issues.find(params[:issue_id])
+          authorize! :modify_issue, @issue
 
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
-        attrs[:label_list] = params[:labels] if params[:labels].present?
+          attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
+          attrs[:label_list] = params[:labels] if params[:labels].present?
 
-        if @issue.update_attributes attrs
-          present @issue, with: Entities::Issue
-        else
-          not_found!
+          if @issue.update_attributes attrs
+            present @issue, with: Entities::Issue
+          else
+            not_found!
+          end
         end
       end
 

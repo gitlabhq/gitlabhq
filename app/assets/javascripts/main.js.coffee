@@ -1,6 +1,3 @@
-window.updatePage = (data) ->
-  $.ajax({type: "GET", url: location.href, data: data, dataType: "script"})
-
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
 
@@ -56,7 +53,7 @@ window.unbindEvents = ->
 
 document.addEventListener("page:fetch", startSpinner)
 document.addEventListener("page:fetch", unbindEvents)
-document.addEventListener("page:receive", stopSpinner)
+document.addEventListener("page:change", stopSpinner)
 
 $ ->
   # Click a .one_click_select field, select the contents
@@ -70,8 +67,8 @@ $ ->
     $('.appear-data').fadeIn()
     e.preventDefault()
 
-  # Initialize chosen selects
-  $('select.chosen').chosen()
+  # Initialize select2 selects
+  $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)
 
   # Initialize tooltips
   $('.has_tooltip').tooltip()
@@ -84,6 +81,7 @@ $ ->
     $(@).parents('form').submit()
 
   $("abbr.timeago").timeago()
+  $('.js-timeago').timeago()
 
   # Flash
   if (flash = $(".flash-container")).length > 0
@@ -123,13 +121,11 @@ $ ->
     $(@).next('table').show()
     $(@).remove()
 
-(($) ->
-  _chosen = $.fn.chosen
-  $.fn.extend chosen: (options) ->
-    default_options = search_contains: "true"
-    $.extend default_options, options
-    _chosen.apply @, [default_options]
+  $(".content").on "click", ".js-details-expand", ->
+    $(@).next('.js-details-contain').removeClass("hide")
+    $(@).remove()
 
+(($) ->
   # Disable an element and add the 'disabled' Bootstrap class
   $.fn.extend disable: ->
     $(@).attr('disabled', 'disabled').addClass('disabled')

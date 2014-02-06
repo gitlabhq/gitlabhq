@@ -2,13 +2,17 @@
   = render "projects/merge_requests/show/mr_title"
   = render "projects/merge_requests/show/how_to_merge"
   = render "projects/merge_requests/show/mr_box"
-  = render "projects/merge_requests/show/mr_accept"
+  - if @merge_request.opened?
+    - if @merge_request.source_branch_exists? && @merge_request.target_branch_exists?
+      = render "projects/merge_requests/show/mr_accept"
+    - else
+      = render "projects/merge_requests/show/no_accept"
   - if @merge_request.source_project.gitlab_ci?
     = render "projects/merge_requests/show/mr_ci"
   = render "projects/merge_requests/show/commits"
 
   - if @commits.present?
-    %ul.nav.nav-tabs
+    %ul.nav.nav-tabs.append-bottom-10
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
           %i.icon-comment

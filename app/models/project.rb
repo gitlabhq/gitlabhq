@@ -9,50 +9,62 @@
 #  created_at             :datetime         not null
 #  updated_at             :datetime         not null
 #  creator_id             :integer
-#  default_branch         :string(255)
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
 #  merge_requests_enabled :boolean          default(TRUE), not null
 #  wiki_enabled           :boolean          default(TRUE), not null
 #  namespace_id           :integer
-#  public                 :boolean          default(FALSE), not null
 #  issues_tracker         :string(255)      default("gitlab"), not null
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
+#  visibility_level       :integer          default(0), not null
 #
 
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
+  include Gitlab::VisibilityLevel
   extend Enumerize
 
-  attr_accessible :name, :path, :description, :default_branch, :issues_tracker, :label_list,
+  ActsAsTaggableOn.strict_case_match = true
+
+  attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :public, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
   acts_as_taggable_on :labels, :issues_default_labels
 
+  attr_accessor :new_default_branch
+
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"
-  belongs_to :group,        foreign_key: "namespace_id", conditions: "type = 'Group'"
+  belongs_to :group, -> { where(type: Group) }, foreign_key: "namespace_id"
   belongs_to :namespace
 
-  has_one :last_event, class_name: 'Event', order: 'events.created_at DESC', foreign_key: 'project_id'
+  has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
+  has_one :emails_on_push_service, dependent: :destroy
   has_one :pivotaltracker_service, dependent: :destroy
   has_one :hipchat_service, dependent: :destroy
+  has_one :flowdock_service, dependent: :destroy
+  has_one :assembla_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
 
+  # Merge Requests for target project should be removed with it
+  has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
+
+  # Merge requests from source project should be kept when source project was removed
+  has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
+
+  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
-  has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
-  has_many :issues,             dependent: :destroy, order: "state DESC, created_at DESC"
   has_many :milestones,         dependent: :destroy
   has_many :notes,              dependent: :destroy
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
@@ -69,8 +81,8 @@ class Project < ActiveRecord::Base
   delegate :members, to: :team, prefix: true
 
   # Validations
-  validates :creator, presence: true
-  validates :description, length: { within: 0..2000 }
+  validates :creator, presence: true, on: :create
+  validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter or digit should be first" }
@@ -80,7 +92,7 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
-  validates :issues_tracker_id, length: { within: 0..255 }
+  validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
 
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
@@ -102,7 +114,10 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public_only, -> { where(public: true) }
+  scope :public_only, -> { where(visibility_level: PUBLIC) }
+  scope :public_or_internal_only, ->(user) { where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ]) }
+
+  scope :non_archived, -> { where(archived: false) }
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
@@ -120,18 +135,36 @@ class Project < ActiveRecord::Base
     end
 
     def search query
-      where("projects.name LIKE :query OR projects.path LIKE :query", query: "%#{query}%")
+      joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
+    end
+
+    def search_by_title query
+      where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
     end
 
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")
-        namespace = Namespace.find_by_path(id.first)
+        namespace = Namespace.find_by(path: id.first)
         return nil unless namespace
 
-        where(namespace_id: namespace.id).find_by_path(id.second)
+        where(namespace_id: namespace.id).find_by(path: id.second)
       else
         where(path: id, namespace_id: nil).last
+      end
+    end
+
+    def visibility_levels
+      Gitlab::VisibilityLevel.options
+    end
+
+    def sort(method)
+      case method.to_s
+      when 'newest' then reorder('projects.created_at DESC')
+      when 'oldest' then reorder('projects.created_at ASC')
+      when 'recently_updated' then reorder('projects.updated_at DESC')
+      when 'last_updated' then reorder('projects.updated_at ASC')
+      else reorder("namespaces.path, projects.name ASC")
       end
     end
   end
@@ -141,7 +174,7 @@ class Project < ActiveRecord::Base
   end
 
   def repository
-    @repository ||= Repository.new(path_with_namespace, default_branch)
+    @repository ||= Repository.new(path_with_namespace)
   end
 
   def saved?
@@ -170,6 +203,10 @@ class Project < ActiveRecord::Base
 
   def web_url
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
+  end
+
+  def web_url_without_protocol
+    web_url.split("://")[1]
   end
 
   def build_commit_note(commit)
@@ -219,7 +256,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push)
   end
 
   def gitlab_ci?
@@ -241,9 +278,7 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    team.members.each do |user|
-      Notify.delay.project_was_moved_email(self.id, user.id)
-    end
+    NotificationService.new.project_was_moved(self)
   end
 
   def owner
@@ -261,7 +296,7 @@ class Project < ActiveRecord::Base
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by_user_id(user_id)
+    users_projects.find_by(user_id: user_id)
   end
 
   def name_with_namespace
@@ -286,8 +321,10 @@ class Project < ActiveRecord::Base
     ProjectTransferService.new.transfer(self, new_namespace)
   end
 
-  def execute_hooks(data)
-    hooks.each { |hook| hook.async_execute(data) }
+  def execute_hooks(data, hooks_scope = :push_hooks)
+    hooks.send(hooks_scope).each do |hook|
+      hook.async_execute(data)
+    end
   end
 
   def execute_services(data)
@@ -298,27 +335,22 @@ class Project < ActiveRecord::Base
     end
   end
 
-  def discover_default_branch
-    # Discover the default branch, but only if it hasn't already been set to
-    # something else
-    if repository.exists? && default_branch.nil?
-      update_attributes(default_branch: self.repository.discover_default_branch)
-    end
-  end
-
   def update_merge_requests(oldrev, newrev, ref, user)
     return true unless ref =~ /heads/
     branch_name = ref.gsub("refs/heads/", "")
     c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
-    # Update code for merge requests
-    mrs = self.merge_requests.opened.by_branch(branch_name).all
+    # Update code for merge requests into project between project branches
+    mrs = self.merge_requests.opened.by_branch(branch_name).to_a
+    # Update code for merge requests between project and project fork
+    mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
+
     mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     # Close merge requests
-    mrs = self.merge_requests.opened.where(target_branch: branch_name).all
+    mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
-    mrs.each { |merge_request| merge_request.merge!(user.id) }
+    mrs.each { |merge_request| MergeRequests::MergeService.new.execute(merge_request, user, nil) }
 
     true
   end
@@ -385,7 +417,7 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    http_url = [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system
@@ -441,5 +473,35 @@ class Project < ActiveRecord::Base
     Event.where(project_id: self.id).
       order('id DESC').limit(100).
       update_all(updated_at: Time.now)
+  end
+
+  def project_member(user)
+    users_projects.where(user_id: user).first
+  end
+
+  def default_branch
+    @default_branch ||= repository.root_ref if repository.exists?
+  end
+
+  def reload_default_branch
+    @default_branch = nil
+    default_branch
+  end
+
+  def visibility_level_field
+    visibility_level
+  end
+
+  def archive!
+    update_attribute(:archived, true)
+  end
+
+  def unarchive!
+    update_attribute(:archived, false)
+  end
+
+  def change_head(branch)
+    gitlab_shell.update_repository_head(self.path_with_namespace, branch)
+    reload_default_branch
   end
 end

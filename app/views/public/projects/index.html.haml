@@ -1,16 +1,38 @@
-.row
-  .span6
-    %h3.page-title
-      Projects (#{@projects.total_count})
-    .light
-      You can browse public projects in read-only mode until signed in.
+%h3.page-title
+  Projects (#{@projects.total_count})
+.light
+  You can browse public projects in read-only mode until signed in.
+%hr
+.clearfix
+  .pull-left
+    = form_tag public_projects_path, method: :get, class: 'form-inline form-tiny' do |f|
+      .form-group
+        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input input-mn-300", id: "projects_search"
+      .form-group
+        = submit_tag 'Search', class: "btn btn-primary wide"
 
-  .span6
-    .pull-right
-      = form_tag public_projects_path, method: :get, class: 'form-inline' do |f|
-        .search-holder
-          = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "span3 search-text-input", id: "projects_search"
-          = submit_tag 'Search', class: "btn btn-primary wide"
+  .pull-right
+    .dropdown.inline
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %span.light sort:
+        - if @sort.present?
+          = @sort.humanize
+        - else
+          Name
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to public_projects_path(sort: nil) do
+            Name
+          = link_to public_projects_path(sort: 'newest') do
+            Newest
+          = link_to public_projects_path(sort: 'oldest') do
+            Oldest
+          = link_to public_projects_path(sort: 'recently_updated') do
+            Recently updated
+          = link_to public_projects_path(sort: 'last_updated') do
+            Last updated
+
 %hr
 .public-projects
   %ul.bordered-list.top-list
@@ -19,6 +41,10 @@
         %h4
           = link_to project_path(project) do
             = project.name_with_namespace
+          - if project.internal?
+            %small.access-icon
+              = internal_icon
+              Internal
           .pull-right
             %pre.public-clone git clone #{project.http_url_to_repo}
 

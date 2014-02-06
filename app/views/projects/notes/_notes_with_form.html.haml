@@ -1,4 +1,5 @@
-%ul#notes-list.notes
+%ul#notes-list.notes.main-notes-list
+  = render "projects/notes/notes"
 .js-notes-busy
 
 .js-main-target-form
@@ -6,4 +7,4 @@
   = render "projects/notes/form"
 
 :javascript
-  NoteList.init("#{@target_id}", "#{@target_type}", "#{project_notes_path(@project)}");
+  new Notes("#{project_notes_path(target_id: @noteable.id, target_type: @noteable.class.name.underscore)}", #{@notes.map(&:id).to_json})

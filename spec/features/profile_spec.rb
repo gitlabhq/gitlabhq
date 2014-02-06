@@ -12,7 +12,7 @@ describe "Profile account page" do
   describe "when signup is enabled" do
     before do
       Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
-      visit account_profile_path
+      visit profile_account_path
     end
 
     it { page.should have_content("Remove account") }
@@ -26,12 +26,12 @@ describe "Profile account page" do
   describe "when signup is disabled" do
     before do
       Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
-      visit account_profile_path
+      visit profile_account_path
     end
 
     it "should not have option to remove account" do
       page.should_not have_content("Remove account")
-      current_path.should == account_profile_path
+      current_path.should == profile_account_path
     end
   end
 end

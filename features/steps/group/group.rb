@@ -39,8 +39,8 @@ class Groups < Spinach::FeatureSteps
   end
 
   And 'I select user "John" from list with role "Reporter"' do
-    user = User.find_by_name("John")
-    within ".new_users_group" do
+    user = User.find_by(name: "John")
+    within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "group_access"
     end
@@ -96,6 +96,40 @@ class Groups < Spinach::FeatureSteps
     within ".navbar-gitlab" do
       page.should have_content "group: new-name"
     end
+  end
+
+  step 'I change my group avatar' do
+    attach_file(:group_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button "Save group"
+    @group.reload
+  end
+
+  step 'I should see new group avatar' do
+    @group.avatar.should be_instance_of AttachmentUploader
+    @group.avatar.url.should == "/uploads/group/avatar/#{ @group.id }/gitlab_logo.png"
+  end
+
+  step 'I should see the "Remove avatar" button' do
+    page.should have_link("Remove avatar")
+  end
+
+  step 'I have an group avatar' do
+    attach_file(:group_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button "Save group"
+    @group.reload
+  end
+
+  step 'I remove my group avatar' do
+    click_link "Remove avatar"
+    @group.reload
+  end
+
+  step 'I should not see my group avatar' do
+    @group.avatar?.should be_false
+  end
+
+  step 'I should not see the "Remove avatar" button' do
+    page.should_not have_link("Remove avatar")
   end
 
   protected

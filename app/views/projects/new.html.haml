@@ -3,69 +3,66 @@
     = render 'projects/errors'
   .project-edit-content
 
-    = form_for @project, remote: true do |f|
-      .control-group.project-name-holder
-        = f.label :name do
-          %strong Project name is
-        .controls
-          = f.text_field :name, placeholder: "Example Project", class: "input-xlarge", tabindex: 1, autofocus: true
-          %span.help-inline
+    = form_for @project, remote: true, html: { class: 'new_project form-horizontal' } do |f|
+      .form-group.project-name-holder
+        = f.label :name, class: 'control-label' do
+          %strong Project name
+        .col-sm-10
+          = f.text_field :name, placeholder: "Example Project", class: "form-control", tabindex: 1, autofocus: true
+          .help-inline
             = link_to "#", class: 'js-toggle-visibility-link' do
               %span Customize repository name?
 
-      .control-group.js-toggle-visibility-container.hide
-        = f.label :path do
+      .form-group.js-toggle-visibility-container.hide
+        = f.label :path, class: 'control-label' do
           %span Repository name
-        .controls
-          .input-append
-            = f.text_field :path
-            %span.add-on .git
+        .col-sm-10
+          .input-group
+            = f.text_field :path, class: 'form-control'
+            %span.input-group-addon .git
 
 
       - if current_user.can_select_namespace?
-        .control-group
-          = f.label :namespace_id do
+        .form-group
+          = f.label :namespace_id, class: 'control-label' do
             %span Namespace
-          .controls
-            = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'chosen', tabindex: 2}
+          .col-sm-10
+            = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
 
-      .control-group
-        .controls
+      .form-group
+        .col-sm-2
+        .col-sm-10
           = link_to "#", class: 'appear-link' do
             %i.icon-upload-alt
             %span Import existing repository?
-      .control-group.appear-data.import-url-data
-        = f.label :import_url do
+      .form-group.appear-data.import-url-data
+        = f.label :import_url, class: 'control-label' do
           %span Import existing repo
-        .controls
-          = f.text_field :import_url, class: 'input-xlarge', placeholder: 'https://github.com/randx/six.git'
+        .col-sm-10
+          = f.text_field :import_url, class: 'form-control', placeholder: 'https://github.com/randx/six.git'
           .light
             URL must be cloneable
-      .control-group
-        = f.label :description do
+      .form-group
+        = f.label :description, class: 'control-label' do
           Description
           %span.light (optional)
-        .controls
-          = f.text_area :description, placeholder: "awesome project", class: "input-xlarge", rows: 3, maxlength: 250, tabindex: 3
-      .control-group.project-public-holder
-        = f.label :public do
-          %span Public project
-        .controls
-          = f.check_box :public, { checked: Gitlab.config.gitlab.default_projects_features.public }, true, false
-          %span.help-inline Make project visible to everyone
+        .col-sm-10
+          = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, tabindex: 3
+      = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
       .form-actions
         = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
 
         - if current_user.can_create_group?
           .pull-right
-            .controls.light
+            .light
               Need a group for several dependent projects?
               = link_to new_group_path, class: "btn btn-tiny" do
                 Create a group
 
 .save-project-loader.hide
   %center
-    = image_tag "ajax_loader.gif"
-    %h3 Creating project &amp; repository.
+    %h2
+      %i.icon-spinner.icon-spin
+      Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.

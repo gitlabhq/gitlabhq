@@ -1,23 +1,23 @@
 %h3.page-title
   = "New project member(s)"
 
-= form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project) do |f|
+= form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project), html: { class: "form-horizontal users-project-form" } do |f|
   -if @user_project_relation.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @user_project_relation.errors.full_messages.each do |msg|
           %li= msg
 
   %p 1. Choose people you want in the project
-  .control-group
-    = f.label :user_ids, "People"
-    .controls
+  .form-group
+    = f.label :user_ids, "People", class: 'control-label'
+    .col-sm-10
       = users_select_tag(:user_ids, multiple: true)
 
   %p 2. Set access level for them
-  .control-group
-    = f.label :project_access, "Project Access"
-    .controls= select_tag :project_access, options_for_select(Gitlab::Access.options, @user_project_relation.project_access), class: "project-access-select chosen"
+  .form-group
+    = f.label :project_access, "Project Access", class: 'control-label'
+    .col-sm-10= select_tag :project_access, options_for_select(Gitlab::Access.options, @user_project_relation.project_access), class: "project-access-select select2"
 
   .form-actions
     = f.submit 'Add users', class: "btn btn-create"

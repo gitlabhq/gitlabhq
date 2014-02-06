@@ -18,7 +18,7 @@ module Backup
         # Create namespace dir if missing
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
 
-        if system("cd #{path_to_repo(project)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(project)} --all > /dev/null 2>&1")
+        if system(*%W(git --git-dir=#{path_to_repo(project)} bundle create #{path_to_bundle(project)} --all), silent)
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -28,7 +28,9 @@ module Backup
 
         if File.exists?(path_to_repo(wiki))
           print " * #{wiki.path_with_namespace} ... "
-          if system("cd #{path_to_repo(wiki)} > /dev/null 2>&1 && git bundle create #{path_to_bundle(wiki)} --all > /dev/null 2>&1")
+          if wiki.empty?
+            puts " [SKIPPED]".cyan
+          elsif system(*%W(git --git-dir=#{path_to_repo(wiki)} bundle create #{path_to_bundle(wiki)} --all), silent)
             puts " [DONE]".green
           else
             puts " [FAILED]".red
@@ -51,7 +53,7 @@ module Backup
 
         project.namespace.ensure_dir_exist if project.namespace
 
-        if system("git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)} > /dev/null 2>&1")
+        if system(*%W(git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)}), silent)
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -61,7 +63,7 @@ module Backup
 
         if File.exists?(path_to_bundle(wiki))
           print " * #{wiki.path_with_namespace} ... "
-          if system("git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)} > /dev/null 2>&1")
+          if system(*%W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)}), silent)
             puts " [DONE]".green
           else
             puts " [FAILED]".red
@@ -71,7 +73,7 @@ module Backup
 
       print 'Put GitLab hooks in repositories dirs'.yellow
       gitlab_shell_user_home = File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
-      if system("#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh #{Gitlab.config.gitlab_shell.repos_path}")
+      if system("#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh", Gitlab.config.gitlab_shell.repos_path)
         puts " [DONE]".green
       else
         puts " [FAILED]".red
@@ -100,6 +102,10 @@ module Backup
     def prepare
       FileUtils.rm_rf(backup_repos_path)
       FileUtils.mkdir_p(backup_repos_path)
+    end
+
+    def silent
+      {err: '/dev/null', out: '/dev/null'}
     end
   end
 end

@@ -2,8 +2,7 @@ class Admin::UsersController < Admin::ApplicationController
   before_filter :user, only: [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.scoped
-    @users = @users.filter(params[:filter])
+    @users = User.filter(params[:filter])
     @users = @users.search(params[:name]) if params[:name].present?
     @users = @users.alphabetically.page(params[:page])
   end
@@ -47,6 +46,8 @@ class Admin::UsersController < Admin::ApplicationController
     @user = User.build_user(params[:user].merge(opts), as: :admin)
     @user.admin = (admin && admin.to_i > 0)
     @user.created_by_id = current_user.id
+    @user.generate_password
+    @user.skip_confirmation!
 
     respond_to do |format|
       if @user.save
@@ -71,6 +72,7 @@ class Admin::UsersController < Admin::ApplicationController
 
     respond_to do |format|
       if user.update_attributes(params[:user], as: :admin)
+        user.confirm!
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
       else
@@ -98,6 +100,6 @@ class Admin::UsersController < Admin::ApplicationController
   protected
 
   def user
-    @user ||= User.find_by_username!(params[:id])
+    @user ||= User.find_by!(username: params[:id])
   end
 end

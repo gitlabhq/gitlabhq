@@ -1,0 +1,31 @@
+- empty_repo = @project.empty_repo?
+.project-home-panel{:class => ("empty-project" if empty_repo)}
+  .visibility-level-label.has_tooltip{'data-title' => "#{visibility_level_label(@project.visibility_level)} project" }
+    = visibility_level_icon(@project.visibility_level)
+  .row
+    .col-sm-6
+      %h4.project-home-title
+        = @project.name_with_namespace
+
+    .col-sm-6
+      - unless empty_repo
+        .project-home-dropdown
+          = render "dropdown"
+      = render "shared/clone_panel"
+
+  .project-home-extra.row
+    .col-md-8
+      .project-home-desc
+        - if @project.description.present?
+          = @project.description
+        - if can?(current_user, :admin_project, @project)
+          &ndash;
+          %strong= link_to 'Edit', edit_project_path
+
+    - unless empty_repo
+      .col-md-4
+        .project-home-links
+          = link_to pluralize(@repository.round_commit_count, 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
+          = link_to pluralize(@repository.branch_names.count, 'branch'), project_branches_path(@project)
+          = link_to pluralize(@repository.tag_names.count, 'tag'), project_tags_path(@project)
+          %span.light.prepend-left-20= repository_size

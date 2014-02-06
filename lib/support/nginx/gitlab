@@ -1,6 +1,19 @@
 # GITLAB
 # Maintainer: @randx
-# App Version: 5.0
+
+# CHUNKED TRANSFER
+# It is a known issue that Git-over-HTTP requires chunked transfer encoding [0] which is not
+# supported by Nginx < 1.3.9 [1]. As a result, pushing a large object with Git (i.e. a single large file)
+# can lead to a 411 error. In theory you can get around this by tweaking this configuration file and either
+# - installing an old version of Nginx with the chunkin module [2] compiled in, or
+# - using a newer version of Nginx.
+#
+# At the time of writing we do not know if either of these theoretical solutions works. As a workaround
+# users can use Git over SSH to push large files.
+#
+# [0] https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/http-protocol.txt#n99
+# [1] https://github.com/agentzh/chunkin-nginx-module#status
+# [2] https://github.com/agentzh/chunkin-nginx-module
 
 upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
@@ -11,6 +24,10 @@ server {
   server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
   server_tokens off;     # don't show the version number, a security best practice
   root /home/git/gitlab/public;
+  
+  # Increase this if you want to upload large attachments
+  # Or if you want to accept large git objects over http
+  client_max_body_size 5m;
 
   # individual nginx logs for this gitlab vhost
   access_log  /var/log/nginx/gitlab_access.log;
@@ -25,15 +42,18 @@ server {
   # if a file, which is not found in the root folder is requested,
   # then the proxy pass the request to the upsteam (gitlab unicorn)
   location @gitlab {
-    proxy_read_timeout 300; # https://github.com/gitlabhq/gitlabhq/issues/694
-    proxy_connect_timeout 300; # https://github.com/gitlabhq/gitlabhq/issues/694
+    proxy_read_timeout 300; # Some requests take more than 30 seconds.
+    proxy_connect_timeout 300; # Some requests take more than 30 seconds.
     proxy_redirect     off;
 
     proxy_set_header   X-Forwarded-Proto $scheme;
     proxy_set_header   Host              $http_host;
     proxy_set_header   X-Real-IP         $remote_addr;
+    proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
 
     proxy_pass http://gitlab;
   }
+
+  error_page 502 /502.html;
 }
 

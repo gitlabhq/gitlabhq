@@ -14,7 +14,7 @@ class Projects::MilestonesController < Projects::ApplicationController
     @milestones = case params[:f]
                   when 'all'; @project.milestones.order("state, due_date DESC")
                   when 'closed'; @project.milestones.closed.order("due_date DESC")
-                  else @project.milestones.active.order("due_date DESC")
+                  else @project.milestones.active.order("due_date ASC")
                   end
 
     @milestones = @milestones.includes(:project)
@@ -34,11 +34,6 @@ class Projects::MilestonesController < Projects::ApplicationController
     @issues = @milestone.issues
     @users = @milestone.participants.uniq
     @merge_requests = @milestone.merge_requests
-
-    respond_to do |format|
-      format.html
-      format.js
-    end
   end
 
   def create
@@ -81,7 +76,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   protected
 
   def milestone
-    @milestone ||= @project.milestones.find_by_iid!(params[:id])
+    @milestone ||= @project.milestones.find_by!(iid: params[:id])
   end
 
   def authorize_admin_milestone!

@@ -2,19 +2,20 @@
 %html{ lang: "en"}
   = render "layouts/head", title: @project.name_with_namespace
   %body{class: "#{app_theme} project", :'data-page' => body_data_page, :'data-project-id' => @project.id }
+    = render "layouts/broadcast"
     = render "layouts/head_panel", title: project_title(@project)
     = render "layouts/init_auto_complete"
     = render "layouts/flash"
     - if can?(current_user, :download_code, @project)
       = render 'shared/no_ssh'
 
-    %nav.main-nav
+    %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/nav/project'
 
     .container
       .content
         .row
-          .span2
+          .col-md-2
             = render "projects/settings_nav"
-          .span10
+          .col-md-10
             = yield

@@ -28,6 +28,7 @@ module Gitlab
           }
 
           user = model.build_user(opts, as: :admin)
+          user.skip_confirmation!
           user.save!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 

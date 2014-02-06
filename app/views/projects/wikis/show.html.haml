@@ -7,9 +7,14 @@
     This is an old version of this page.
     You can view the #{link_to "most recent version", project_wiki_path(@project, @wiki)} or browse the #{link_to "history", history_project_wiki_path(@project, @wiki)}.
 
-.file-holder
-  .file-content.wiki
+%hr
+
+.wiki-holder
+  .wiki
     = preserve do
       = render_wiki_content(@wiki)
 
-%p.time Last edited by #{commit_author_link(@wiki.commit, avatar: true, size: 16)} #{time_ago_in_words @wiki.commit.created_at} ago
+%hr
+
+.wiki-last-edit-by
+  Last edited by #{commit_author_link(@wiki.commit, avatar: true, size: 16)} #{time_ago_with_tooltip(@wiki.commit.created_at)}

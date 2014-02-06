@@ -66,7 +66,7 @@ var DiffHighlightRules = function() {
                 "regex": "^(?:\\*{15}|={67}|-{3}|\\+{3})$",
                 "token": "punctuation.definition.separator.diff",
                 "name": "keyword"
-            }, { //diff.range.unified
+            }, { //diff.range.inline
                 "regex": "^(@@)(\\s*.+?\\s*)(@@)(.*)$",
                 "token": [
                     "constant",

@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
   layout 'navless', only: [:new, :create, :fork]
@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateContext.new(current_user, params[:project]).execute
+    @project = ::Projects::CreateService.new(current_user, params[:project]).execute
 
     respond_to do |format|
       flash[:notice] = 'Project was successfully created.' if @project.saved?
@@ -36,7 +36,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateContext.new(@project, current_user, params).execute
+    status = ::Projects::UpdateService.new(@project, current_user, params).execute
 
     respond_to do |format|
       if status
@@ -51,20 +51,16 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferContext.new(project, current_user, params).execute
+    ::Projects::TransferService.new(project, current_user, params).execute
   end
 
   def show
-    return authenticate_user! unless @project.public || current_user
+    return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
-
-    # Ensure project default branch is set if it possible
-    # Normally it defined on push or during creation
-    @project.discover_default_branch
 
     respond_to do |format|
       format.html do
@@ -77,7 +73,7 @@ class ProjectsController < ApplicationController
           render :show, layout: user_layout
         end
       end
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
     end
   end
 
@@ -93,7 +89,7 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    @forked_project = ::Projects::ForkContext.new(project, current_user).execute
+    @forked_project = ::Projects::ForkService.new(project, current_user).execute
 
     respond_to do |format|
       format.html do
@@ -117,6 +113,24 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.json { render :json => @suggestions }
+    end
+  end
+
+  def archive
+    return access_denied! unless can?(current_user, :archive_project, project)
+    project.archive!
+
+    respond_to do |format|
+      format.html { redirect_to @project }
+    end
+  end
+
+  def unarchive
+    return access_denied! unless can?(current_user, :archive_project, project)
+    project.unarchive!
+
+    respond_to do |format|
+      format.html { redirect_to @project }
     end
   end
 

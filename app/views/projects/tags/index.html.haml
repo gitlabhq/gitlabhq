@@ -13,32 +13,7 @@
 - unless @tags.empty?
   %ul.bordered-list
     - @tags.each do |tag|
-      - commit = Commit.new(Gitlab::Git::Commit.new(tag.commit))
-      %li
-        %h4
-          = link_to project_commits_path(@project, tag.name), class: "" do
-            %i.icon-tag
-            = tag.name
-          %small
-            = truncate(tag.message || '', length: 70)
-          .pull-right
-            %small.cdark
-              %i.icon-calendar
-              = time_ago_in_words(commit.committed_date)
-              ago
-        %p.prepend-left-20
-          = link_to commit.short_id(8), project_commit_path(@project, commit), class: "monospace"
-          &ndash;
-          = link_to_gfm truncate(commit.title, length: 70), project_commit_path(@project, commit.id), class: "cdark"
-
-          %span.pull-right
-            - if can? current_user, :download_code, @project
-              = link_to archive_project_repository_path(@project, ref: tag.name), class: 'btn grouped btn-small' do
-                %i.icon-download-alt
-                Download
-            - if can?(current_user, :admin_project, @project)
-              = link_to project_tag_path(@project, tag.name), class: 'btn btn-small remove-row', method: :delete, confirm: 'Removed tag cannot be restored. Are you sure?', remote: true do
-                %i.icon-trash
+      = render 'tag', tag: tag
 
   = paginate @tags, theme: 'gitlab'
 

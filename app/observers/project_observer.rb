@@ -14,17 +14,22 @@ class ProjectObserver < BaseObserver
 
       log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
     end
+
+    if project.wiki_enabled?
+      begin
+        # force the creation of a wiki,
+        GollumWiki.new(project, project.owner).wiki
+      rescue GollumWiki::CouldNotCreateWikiError => ex
+        # Prevent project observer crash
+        # if failed to create wiki
+        nil
+      end
+    end
   end
 
   def after_update(project)
     project.send_move_instructions if project.namespace_id_changed?
     project.rename_repo if project.path_changed?
-
-    GitlabShellWorker.perform_async(
-      :update_repository_head,
-      project.path_with_namespace,
-      project.default_branch
-    ) if project.default_branch_changed?
   end
 
   def before_destroy(project)

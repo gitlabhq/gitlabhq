@@ -1,0 +1,20 @@
+html {
+  overflow-y: scroll;
+
+  &.touch .tooltip { display: none !important; }
+}
+
+body {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  margin-bottom: 20px;
+}
+
+.container {
+  padding-top: 0;
+  z-index: 5;
+}
+
+.container .content {
+  margin: 0 0;
+}

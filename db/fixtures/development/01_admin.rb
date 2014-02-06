@@ -11,3 +11,5 @@ User.seed(:id, [
     theme_id: Gitlab::Theme::MARS
   }
 ])
+
+User.find(1).confirm!

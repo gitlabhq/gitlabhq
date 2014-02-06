@@ -1,11 +1,6 @@
 %h3.page-title
-  - if @service.activated?
-    %span.cgreen
-      %i.icon-circle
-  - else
-    %span.cgray
-      %i.icon-circle-blank
   = @service.title
+  = boolean_to_icon @service.activated?
 
 %p= @service.description
 
@@ -15,17 +10,17 @@
 
 %hr
 
-= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put) do |f|
+= form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |f|
   - if @service.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %ul
         - @service.errors.full_messages.each do |msg|
           %li= msg
 
 
-  .control-group
+  .form-group
     = f.label :active, "Active", class: "control-label"
-    .controls
+    .col-sm-10
       = f.check_box :active
 
   - @service.fields.each do |field|
@@ -33,11 +28,13 @@
     - type = field[:type]
     - placeholder = field[:placeholder]
 
-    .control-group
+    .form-group
       = f.label name, class: "control-label"
-      .controls
+      .col-sm-10
         - if type == 'text'
-          = f.text_field name, class: "input-xlarge", placeholder: placeholder
+          = f.text_field name, class: "form-control", placeholder: placeholder
+        - elsif type == 'textarea'
+          = f.text_area name, rows: 5, class: "form-control", placeholder: placeholder
         - elsif type == 'checkbox'
           = f.check_box name
 

@@ -1,6 +1,6 @@
 .ui-box
   .title.clearfix
-    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter'
+    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_group?
       %span.pull-right
         = link_to new_group_path, class: "btn btn-new" do
@@ -10,6 +10,7 @@
     - groups.each do |group|
       %li.group-row
         = link_to group_path(id: group.path), class: dom_class(group) do
+          = image_tag group_icon(group.path), class: "avatar s24"
           %span.group-name.filter-title
             = truncate(group.name, length: 35)
           %span.arrow

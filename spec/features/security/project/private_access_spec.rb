@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Private Project Access" do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
 
   let(:master)   { create(:user) }
   let(:guest)    { create(:user) }
@@ -13,6 +13,12 @@ describe "Private Project Access" do
 
     # readonly
     project.team << [reporter, :reporter]
+  end
+
+  describe "Project should be private" do
+    subject { project }
+
+    its(:private?) { should be_true }
   end
 
   describe "GET /:project_path" do

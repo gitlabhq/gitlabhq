@@ -2,8 +2,11 @@
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: "Profile" do
       %i.icon-home
-  = nav_link(path: 'profiles#account') do
-    = link_to "Account", account_profile_path
+  = nav_link(controller: :accounts) do
+    = link_to "Account", profile_account_path
+  - unless current_user.ldap_user?
+    = nav_link(controller: :passwords) do
+      = link_to "Password", edit_profile_password_path
   = nav_link(controller: :notifications) do
     = link_to "Notifications", profile_notifications_path
   = nav_link(controller: :keys) do

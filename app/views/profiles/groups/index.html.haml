@@ -22,7 +22,7 @@
               %i.icon-cogs
               Settings
 
-          = link_to leave_profile_group_path(group), confirm: "Are you sure you want to leave #{group.name} group?", method: :delete, class: "btn-small btn grouped", title: 'Remove user from group' do
+          = link_to leave_profile_group_path(group), data: { confirm: "Are you sure you want to leave #{group.name} group?"}, method: :delete, class: "btn-small btn grouped", title: 'Remove user from group' do
             %i.icon-signout
             Leave
 

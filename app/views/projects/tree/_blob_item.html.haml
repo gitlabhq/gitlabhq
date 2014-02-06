@@ -1,9 +1,8 @@
 %tr{ class: "tree-item #{tree_hex_class(blob_item)}" }
   %td.tree-item-file-name
     = tree_icon(type)
-    %span= link_to truncate(blob_item.name, length: 40), project_blob_path(@project, tree_join(@id || @commit.id, blob_item.name))
+    %span.str-truncated
+      = link_to blob_item.name, project_blob_path(@project, tree_join(@id || @commit.id, blob_item.name))
   %td.tree_time_ago.cgray
-    %span.log_loading.hide
-      Loading commit data...
-      = image_tag "ajax_loader_tree.gif", width: 14
+    = render 'spinner'
   %td.tree_commit{ colspan: 2 }

@@ -3,6 +3,8 @@ class DashboardController < ApplicationController
 
   before_filter :load_projects, except: [:projects]
   before_filter :event_filter, only: :show
+  before_filter :default_filter, only: [:issues, :merge_requests]
+
 
   def show
     # Fetch only 30 projects.
@@ -22,7 +24,7 @@ class DashboardController < ApplicationController
 
     respond_to do |format|
       format.html
-      format.js
+      format.json { pager_json("events/_events", @events.count) }
       format.atom { render layout: false }
     end
   end
@@ -39,27 +41,24 @@ class DashboardController < ApplicationController
                   current_user.authorized_projects
                 end
 
-    @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
-    @projects = @projects.includes(:namespace).sorted_by_activity
+    @projects = @projects.where(namespace_id: Group.find_by(name: params[:group])) if params[:group].present?
+    @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
+    @projects = @projects.includes(:namespace)
+    @projects = @projects.tagged_with(params[:label]) if params[:label].present?
+    @projects = @projects.sort(@sort = params[:sort])
+    @projects = @projects.page(params[:page]).per(30)
 
     @labels = current_user.authorized_projects.tags_on(:labels)
     @groups = current_user.authorized_groups
-
-    @projects = @projects.tagged_with(params[:label]) if params[:label].present?
-    @projects = @projects.page(params[:page]).per(30)
   end
 
-  # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = current_user.cared_merge_requests
-    @merge_requests = FilterContext.new(@merge_requests, params).execute
+    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params)
     @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
   end
 
-  # Get only assigned issues
   def issues
-    @issues = current_user.assigned_issues
-    @issues = FilterContext.new(@issues, params).execute
+    @issues = FilteringService.new.execute(Issue, current_user, params)
     @issues = @issues.recent.page(params[:page]).per(20)
     @issues = @issues.includes(:author, :project)
 
@@ -72,6 +71,11 @@ class DashboardController < ApplicationController
   protected
 
   def load_projects
-    @projects = current_user.authorized_projects.sorted_by_activity
+    @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+  end
+
+  def default_filter
+    params[:scope] = 'assigned-to-me' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
   end
 end

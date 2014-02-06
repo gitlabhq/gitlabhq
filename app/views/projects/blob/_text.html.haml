@@ -4,11 +4,10 @@
       = markdown(blob.data)
 - elsif markup?(blob.name)
   .file-content.wiki
-    = raw GitHub::Markup.render(blob.name, blob.data)
+    = render_markup(blob.name, blob.data)
 - else
   .file-content.code
     - unless blob.empty?
-      %div{class: user_color_scheme_class}
-        = raw blob.colorize(formatter: :gitlab)
+      = render 'shared/file_hljs', blob: blob
     - else
       %p.nothing_here_message Empty file

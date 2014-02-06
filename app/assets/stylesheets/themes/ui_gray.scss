@@ -18,7 +18,7 @@
       .navbar-inner {
         background: #373737;
         border-bottom: 1px solid #272727;
-        .app_logo {
+        .app_logo, .navbar-toggle {
           &:hover {
             background-color: #272727;
           }

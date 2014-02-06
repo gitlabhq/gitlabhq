@@ -34,7 +34,7 @@ Parameters:
     "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:00:58Z"
   },
   "expires_at": null,
@@ -57,7 +57,6 @@ Parameters:
 + `id` (required) - The ID of a project
 + `title` (required) - The title of a snippet
 + `file_name` (required) - The name of a snippet file
-+ `lifetime` (optional) - The expiration date of a snippet
 + `code` (required) - The content of a snippet
 
 
@@ -75,7 +74,6 @@ Parameters:
 + `snippet_id` (required) - The ID of a project's snippet
 + `title` (optional) - The title of a snippet
 + `file_name` (optional) - The name of a snippet file
-+ `lifetime` (optional) - The expiration date of a snippet
 + `code` (optional) - The content of a snippet
 
 

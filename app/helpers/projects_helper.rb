@@ -5,10 +5,10 @@ module ProjectsHelper
 
   def link_to_project project
     link_to project do
-      title = content_tag(:strong, project.name)
+      title = content_tag(:span, project.name, class: 'projet-name')
 
       if project.namespace
-        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'tiny')
+        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'namespace-name')
         title = namespace + title
       end
 
@@ -25,7 +25,7 @@ module ProjectsHelper
     author_html =  ""
 
     # Build avatar image tag
-    author_html << image_tag(gravatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
+    author_html << image_tag(avatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
 
     # Build name span tag
     author_html << content_tag(:span, sanitize(author.name), class: 'author') if opts[:name]
@@ -45,7 +45,10 @@ module ProjectsHelper
         link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name
       end
     else
-      project.name
+      owner = project.namespace.owner
+      content_tag :span do
+        link_to(simple_sanitize(owner.name), user_path(owner)) + " / " + project.name
+      end
     end
   end
 
@@ -67,6 +70,8 @@ module ProjectsHelper
       scope: params[:scope],
       label_name: params[:label_name],
       milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+      sort: params[:sort],
     }
 
     options = exist_opts.merge(options)
@@ -77,7 +82,19 @@ module ProjectsHelper
   end
 
   def project_active_milestones
-    @project.milestones.active.order("id desc").all
+    @project.milestones.active.order("due_date, title ASC")
+  end
+
+  def project_issues_trackers(current_tracker = nil)
+    values = Project.issues_tracker.values.map do |tracker_key|
+      if tracker_key.to_sym == :gitlab
+        ['GitLab', tracker_key]
+      else
+        [Gitlab.config.issues_tracker[tracker_key]['title'] || tracker_key, tracker_key]
+      end
+    end
+
+    options_for_select(values, current_tracker)
   end
 
   private
@@ -117,6 +134,66 @@ module ProjectsHelper
       current_user.email
     else
       "your@email.com"
+    end
+  end
+
+  def repository_size(project = nil)
+    "#{(project || @project).repository.size} MB"
+  rescue
+    # In order to prevent 500 error
+    # when application cannot allocate memory
+    # to calculate repo size - just show 'Unknown'
+    'unknown'
+  end
+
+  def project_head_title
+    title = @project.name_with_namespace
+
+    title = if current_controller?(:tree)
+              "#{@project.path}\/#{@path} at #{@ref} - " + title
+            elsif current_controller?(:issues)
+              if current_action?(:show)
+                "Issue ##{@issue.iid} - #{@issue.title} - " + title
+              else
+                "Issues - " + title
+              end
+            elsif current_controller?(:blob)
+              "#{@project.path}\/#{@blob.path} at #{@ref} - " + title
+            elsif current_controller?(:commits)
+              "Commits at #{@ref} - " + title
+            elsif current_controller?(:merge_requests)
+              if current_action?(:show)
+                "Merge request ##{@merge_request.iid} - " + title
+              else
+                "Merge requests - " + title
+              end
+            elsif current_controller?(:wikis)
+              "Wiki - " + title
+            elsif current_controller?(:network)
+              "Network graph - " + title
+            elsif current_controller?(:graphs)
+              "Graphs - " + title
+            else
+              title
+            end
+
+    title
+  end
+
+  def default_url_to_repo(project = nil)
+    project = project || @project
+    current_user ? project.url_to_repo : project.http_url_to_repo
+  end
+
+  def default_clone_protocol
+    current_user ? "ssh" : "http"
+  end
+
+  def project_last_activity(project)
+    if project.last_activity_at
+      time_ago_with_tooltip(project.last_activity_at, 'bottom', 'last_activity_time_ago')
+    else
+      "Never"
     end
   end
 end

@@ -1,39 +1,41 @@
 .row
-  .span4
+  .col-md-4
     .admin-filter
-      = form_tag admin_projects_path, method: :get, class: 'form-inline' do
-        .control-group
-          = label_tag :name, 'Name:', class: 'control-label'
-          .controls
-            = text_field_tag :name, params[:name], class: "span2"
+      = form_tag admin_projects_path, method: :get, class: '' do
+        .form-group
+          = label_tag :name, 'Name:'
+          = text_field_tag :name, params[:name], class: "form-control"
 
-        .control-group
-          = label_tag :owner_id, 'Owner:', class: 'control-label'
-          .controls
-            = users_select_tag :owner_id, selected: params[:owner_id], class: 'input-large'
-        .control-group
-          = label_tag :public_only, 'Public Only', class: 'control-label'
-          .controls
-            = check_box_tag :public_only, 1, params[:public_only]
-        .control-group
-          = label_tag :with_push, 'Not empty', class: 'control-label'
-          .controls
-            = check_box_tag :with_push, 1, params[:with_push]
-            &nbsp;
-            %span.light Projects with push events
-        .control-group
-          = label_tag :abandoned, 'Abandoned', class: 'control-label'
-          .controls
-            = check_box_tag :abandoned, 1, params[:abandoned]
-            &nbsp;
-            %span.light No activity over 6 month
+        .form-group
+          = label_tag :owner_id, 'Owner:'
+          %div
+            = users_select_tag :owner_id, selected: params[:owner_id], class: 'input-large input-clamp'
+        .checkbox
+          = label_tag :with_push, 'Not empty'
+          = check_box_tag :with_push, 1, params[:with_push]
+          &nbsp;
+          %span.light Projects with push events
+        .checkbox
+          = label_tag :abandoned, 'Abandoned'
+          = check_box_tag :abandoned, 1, params[:abandoned]
+          &nbsp;
+          %span.light No activity over 6 month
 
-
-
+        %fieldset
+          %strong Visibility level:
+          .visibility-levels
+            - Project.visibility_levels.each do |label, level|
+              .checkbox
+                %label
+                  = check_box_tag 'visibility_levels[]', level, params[:visibility_levels].present? && params[:visibility_levels].include?(level.to_s)
+                  %span.descr
+                    = visibility_level_icon(level)
+                    = label
         .form-actions
           = submit_tag "Search", class: "btn submit btn-primary"
           = link_to "Reset", admin_projects_path, class: "btn"
-  .span8
+
+  .col-md-8
     .ui-box
       .title
         Projects (#{@projects.total_count})
@@ -42,14 +44,14 @@
       %ul.well-list
         - @projects.each do |project|
           %li
-            - if project.public
-              = public_icon
-            - else
-              = private_icon
+            %span{ class: visibility_level_color(project.visibility_level) }
+              = visibility_level_icon(project.visibility_level)
             = link_to project.name_with_namespace, [:admin, project]
             .pull-right
+              %span.label.label-gray
+                = repository_size(project)
               = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
-              = link_to 'Destroy', [project], confirm: remove_project_message(project), method: :delete, class: "btn btn-small btn-remove"
+              = link_to 'Destroy', [project], data: { confirm: remove_project_message(project) }, method: :delete, class: "btn btn-small btn-remove"
         - if @projects.blank?
           %p.nothing_here_message 0 projects matches
     = paginate @projects, theme: "gitlab"

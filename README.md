@@ -1,6 +1,6 @@
 ## GitLab: self hosted Git management software
 
-![logo](https://raw.github.com/gitlabhq/gitlabhq/master/public/gitlab_logo.png)
+![logo](https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/gitlab_logo.png)
 
 ![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
 
@@ -32,7 +32,9 @@
 
 * GitLab.com commercial services: [Homepage](http://www.gitlab.com/) | [Subscription](http://www.gitlab.com/subscription/) | [Consultancy](http://www.gitlab.com/consultancy/) | [GitLab Cloud](http://www.gitlab.com/cloud/) | [Blog](http://blog.gitlab.com/)
 
-* GitLab CI: [Readme](https://github.com/gitlabhq/gitlab-ci/blob/master/README.md) of the GitLab open-source continuous integration server
+* [GitLab Enterprise Edition](https://www.gitlab.com/features/) offers additional features that are useful for larger organizations (100+ users).
+
+* [GitLab CI](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
 
 ### Requirements
 
@@ -46,39 +48,31 @@
 
 ### Installation
 
-#### Official production installation
+#### Official installation methods
 
-* [Installation guide for a production server](doc/install/installation.md)
+* [Manual installation guide for a production server](doc/install/installation.md)
 
+* [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation on a virtual machine with Vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
 
-#### Official development installation
+#### Third party one-click installers
 
-If you want to contribute, please first read our [Contributing Guidelines](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) and then we suggest you to use the Vagrant virtual machine project to get an environment working with all dependencies.
+* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab.
 
-* [Vagrant virtual machine for development](https://github.com/gitlabhq/gitlab-vagrant-vm)
+* [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
 
+#### Unofficial installation methods
 
-#### Unofficial production installations
-
-* [GitLab recipes](https://github.com/gitlabhq/gitlab-recipes) repository with unofficial guides for using GitLab with different software (operating systems, webservers, etc.) than the official version.
+* [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/) repository with unofficial guides for using GitLab with different software (operating systems, webservers, etc.) than the official version.
 
 * [Installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) public wiki with unofficial guides to install GitLab on different operating systems.
 
-* [BitNami one-click installers](http://bitnami.com/stack/gitlab)
-
-* [TurnKey Linux virtual appliance](http://www.turnkeylinux.org/gitlab)
-
-
 ### New versions and upgrading
 
-Since 2011 GitLab is released on the 22nd of every month. Every new release includes an upgrade guide.
+Since 2011 GitLab is released on the 22nd of every month. Every new release includes an [upgrade guide](doc/update) and new features are detailed in the [Changelog](CHANGELOG).
 
-* [Upgrade guides](doc/update)
-
-* [Changelog](CHANGELOG)
+It is recommended to follow a monthly upgrade schedule. Security releases come out when needed. For more information about the release process see the documentation for [monthly](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/monthly.md) and [security](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/security.md) releases.
 
 * Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
-
 
 ### Run in production mode
 
@@ -99,7 +93,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 or start each component separately
 
     bundle exec rails s
-    bundle exec rake sidekiq:start
+    script/background_jobs start
 
 ### Run the tests
 
@@ -110,7 +104,7 @@ or start each component separately
 
 * Run all tests
 
-        bundle exec rake gitlab:test
+        bundle exec rake gitlab:test RAILS_ENV=test
 
 * [RSpec](http://rspec.info/) unit and functional tests
 
@@ -127,14 +121,17 @@ or start each component separately
 
 ### GitLab interfaces
 
-* [GitLab API](doc/api/README.md)
+* [GitLab API doc](doc/api/README.md) or see the [GitLab API website](http://api.gitlab.org/)
 
-* [Rake tasks](doc/raketasks)
+* [Rake tasks](doc/raketasks) including a [backup and restore procedure](doc/raketasks/backup_restore.md)
 
 * [Directory structure](doc/install/structure.md)
 
-* [Databases](doc/install/databases.md)
+* [Database installation](doc/install/databases.md)
 
+* [Markdown specification](doc/markdown/markdown.md)
+
+* [Security guide](doc/security/rack_attack.md) to throttle abusive requests
 
 ### Getting help
 
@@ -144,23 +141,23 @@ or start each component separately
 
 * [Mailing list](https://groups.google.com/forum/#!forum/gitlabhq) and [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) are the best places to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and has resolved it. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
 
-* [Unofficial #gitlab IRC on Freenode](http://www.freenode.net/) is another way to get in touch with other GitLab users who may be able to help you.
-
 * [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
-* [Contributing guide](https://github.com/gitlabhq/gitlabhq/blob/master/CONTRIBUTING.md) describes how to submit pull requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
+* [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
 * [Support subscription](http://www.gitlab.com/subscription/) connects you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
 
-* [Consultancy](http://www.gitlab.com/consultancy/) allows you hire GitLab experts for installations, upgrades and customizations.
+* [Consultancy](http://www.gitlab.com/consultancy/) from the GitLab experts for installations, upgrades and customizations.
+
+* [#gitlab IRC channel](http://www.freenode.net/) on Freenode to get in touch with other GitLab users and get help, it's managed by James Newton (newton), Drew Blessing (dblessing), and Sam Gleske (sag47).
+
+* [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
 
 
 ### Getting in touch
 
-* [Core team](https://github.com/gitlabhq?tab=members)
+* [Core team](http://gitlab.org/team/)
 
-* [Contributors](https://github.com/gitlabhq/gitlabhq/graphs/contributors)
+* [Contributors](http://contributors.gitlab.org/)
 
-* [Leader](https://github.com/randx)
-
-* [Contact page](http://gitlab.org/contact/)
+* [Community](http://gitlab.org/community/)

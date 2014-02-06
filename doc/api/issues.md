@@ -11,6 +11,7 @@ GET /issues
 [
   {
     "id": 43,
+    "iid": 3,
     "project_id": 8,
     "title": "4xx/5xx pages",
     "description": "",
@@ -22,15 +23,16 @@ GET /issues
       "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
-      "blocked": false,
+      "state": "active",
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "state": 'closed',
+    "state": "closed",
     "updated_at": "2012-07-02T17:53:12Z",
     "created_at": "2012-07-02T17:53:12Z"
   },
   {
     "id": 42,
+    "iid": 4,
     "project_id": 8,
     "title": "Add user settings",
     "description": "",
@@ -42,7 +44,7 @@ GET /issues
       "title": "v1.0",
       "description": "",
       "due_date": "2012-07-20",
-      "state": 'reopenend',
+      "state": "reopenend",
       "updated_at": "2012-07-04T13:42:48Z",
       "created_at": "2012-07-04T13:42:48Z"
     },
@@ -51,7 +53,7 @@ GET /issues
       "username": "jack_smith",
       "email": "jack@example.com",
       "name": "Jack Smith",
-      "blocked": false,
+      "state": "active",
       "created_at": "2012-05-23T08:01:01Z"
     },
     "author": {
@@ -59,10 +61,10 @@ GET /issues
       "username": "john_smith",
       "email": "john@example.com",
       "name": "John Smith",
-      "blocked": false,
+      "state": "active",
       "created_at": "2012-05-23T08:00:58Z"
     },
-    "state": 'opened',
+    "state": "opened",
     "updated_at": "2012-07-12T13:43:19Z",
     "created_at": "2012-06-28T12:58:06Z"
   }
@@ -100,6 +102,7 @@ Parameters:
 ```json
 {
   "id": 42,
+  "iid": 3,
   "project_id": 8,
   "title": "Add user settings",
   "description": "",
@@ -111,7 +114,7 @@ Parameters:
     "title": "v1.0",
     "description": "",
     "due_date": "2012-07-20",
-    "state": 'closed',
+    "state": "closed",
     "updated_at": "2012-07-04T13:42:48Z",
     "created_at": "2012-07-04T13:42:48Z"
   },
@@ -120,7 +123,7 @@ Parameters:
     "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:01:01Z"
   },
   "author": {
@@ -128,10 +131,10 @@ Parameters:
     "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:00:58Z"
   },
-  "state": 'opened',
+  "state": "opened",
   "updated_at": "2012-07-12T13:43:19Z",
   "created_at": "2012-06-28T12:58:06Z"
 }
@@ -190,4 +193,3 @@ Parameters:
 
 + `id` (required) - The project ID
 + `issue_id` (required) - The ID of the issue
-

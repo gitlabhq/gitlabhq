@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe "Public Project Access" do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
 
   let(:master) { create(:user) }
   let(:guest) { create(:user) }
@@ -9,7 +9,7 @@ describe "Public Project Access" do
 
   before do
     # public project
-    project.public = true
+    project.visibility_level = Gitlab::VisibilityLevel::PUBLIC
     project.save!
 
     # full access

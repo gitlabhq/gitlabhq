@@ -1,12 +1,17 @@
 class Repository
   include Gitlab::ShellAdapter
 
-  attr_accessor :raw_repository
+  attr_accessor :raw_repository, :path_with_namespace
 
-  def initialize(path_with_namespace, default_branch)
-    @raw_repository = Gitlab::Git::Repository.new(path_with_namespace, default_branch)
+  def initialize(path_with_namespace, default_branch = nil)
+    @path_with_namespace = path_with_namespace
+    @raw_repository = Gitlab::Git::Repository.new(path_to_repo) if path_with_namespace
   rescue Gitlab::Git::Repository::NoRepository
     nil
+  end
+
+  def path_to_repo
+    @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
   end
 
   def exists?
@@ -52,7 +57,7 @@ class Repository
 
   def recent_branches(limit = 20)
     branches.sort do |a, b|
-      a.commit.committed_date <=> b.commit.committed_date
+      commit(b.target).committed_date <=> commit(a.target).committed_date
     end[0..limit]
   end
 
@@ -128,6 +133,7 @@ class Repository
     Rails.cache.delete(cache_key(:tag_names))
     Rails.cache.delete(cache_key(:commit_count))
     Rails.cache.delete(cache_key(:graph_log))
+    Rails.cache.delete(cache_key(:readme))
   end
 
   def graph_log
@@ -149,5 +155,37 @@ class Repository
     return true if raw_repository.respond_to?(method)
 
     super
+  end
+
+  def blob_at(sha, path)
+    Gitlab::Git::Blob.find(self, sha, path)
+  end
+
+  def readme
+    Rails.cache.fetch(cache_key(:readme)) do
+      tree(:head).readme
+    end
+  end
+
+  def head_commit
+    commit(self.root_ref)
+  end
+
+  def tree(sha = :head, path = nil)
+    if sha == :head
+      sha = head_commit.sha
+    end
+
+    Tree.new(self, sha, path)
+  end
+
+  def blob_at_branch(branch_name, path)
+     last_commit = commit(branch_name)
+
+     if last_commit
+       blob_at(last_commit.sha, path)
+     else
+       nil
+     end
   end
 end

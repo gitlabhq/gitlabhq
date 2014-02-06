@@ -1,9 +1,9 @@
 require 'spec_helper'
 
 describe Projects::MergeRequestsController do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
-  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, target_branch: "bcf03b5d~3", source_branch: "bcf03b5d") }
+  let(:merge_request) { create(:merge_request_with_diffs, target_project: project, source_project: project, target_branch: "stable", source_branch: "master") }
 
   before do
     sign_in(user)
@@ -61,7 +61,7 @@ describe Projects::MergeRequestsController do
       it "should really be a git email patch with commit" do
         get :show, project_id: project.to_param, id: merge_request.iid, format: format
 
-        expect(response.body[0..100]).to start_with("From #{merge_request.commits.last.id}")
+        expect(response.body[0..100]).to start_with("From 6ea87c47f0f8a24ae031c3fff17bc913889ecd00")
       end
 
       it "should contain git diffs" do

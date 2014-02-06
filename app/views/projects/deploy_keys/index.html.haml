@@ -12,7 +12,7 @@
 %hr.clearfix
 
 .row
-  .span5.enabled-keys
+  .col-md-6.enabled-keys
     %h5
       %strong.cgreen Enabled deploy keys
       for this project
@@ -21,7 +21,7 @@
       - if @enabled_keys.blank?
         .light-well
           %p.nothing_here_message Create a #{link_to 'new deploy key', new_project_deploy_key_path(@project)} or add an existing one
-  .span5.available-keys
+  .col-md-6.available-keys
     %h5
       %strong Deploy keys
       from projects available to you

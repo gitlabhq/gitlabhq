@@ -1,6 +1,6 @@
 .ui-box
   .title.clearfix
-    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter'
+    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_project?
       %span.pull-right
         = link_to new_project_path, class: "btn btn-new" do
