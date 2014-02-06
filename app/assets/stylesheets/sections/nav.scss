@@ -35,7 +35,7 @@
       width: 1%;
       &.active {
         a {
-          color: $style_color;
+          color: #333;
           font-weight: bolder;
 
           &:after {
@@ -46,7 +46,7 @@
             left: 50%;
             width: 0;
             height: 0;
-            border-color: transparent transparent #777 transparent;
+            border-color: transparent transparent #333 transparent;
             border-style: solid;
             border-width: 6px;
             margin-left: -6px;
