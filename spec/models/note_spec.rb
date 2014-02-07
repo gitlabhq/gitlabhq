@@ -250,6 +250,16 @@ describe Note do
       its(:project) { should == project }
       its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
     end
+
+    context 'commit from issue' do
+      subject { Note.create_cross_reference_note(commit, issue, author, project) }
+
+      it { should be_valid }
+      its(:noteable_type) { should == "Commit" }
+      its(:noteable_id) { should be_nil }
+      its(:commit_id) { should == commit.id }
+      its(:note) { should == "_mentioned in issue ##{issue.iid}_" }
+    end
   end
 
   describe '#cross_reference_exists?' do
