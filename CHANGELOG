@@ -2,6 +2,15 @@ v 6.6.0
   - Permissions: Developer now can manage issue tracker (modify any issue)
   - Improve Code Compare page performance
   - Group avatar
+  - Pygments.rb replaced with highlight.js   
+  - Improve Merge request diff store logic
+  - Improve render performnace for MR show page
+  - Fixed Assembla hardcoded project name
+  - Jira integration documentation
+  - Refactored app/services
+  - Remove snippet expiration
+  - Mobile UI improvements (Drew Blessing)
+  - Fix block/remove UI for admin::users#show page
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
