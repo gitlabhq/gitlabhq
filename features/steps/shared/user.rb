@@ -1,11 +1,17 @@
 module SharedUser
   include Spinach::DSL
 
-  step 'Create user "John Doe"' do
-    create(:user, name: "John Doe", username: "john_doe")
+  step 'User "John Doe" exists' do
+    user_exists("John Doe", {username: "john_doe"})
   end
 
-  step 'I sign in as "John Doe"' do
-    login_with(User.find_by(name: "John Doe"))
+  step 'User "Mary Jane" exists' do
+    user_exists("Mary Jane", {username: "mary_jane"})
+  end
+
+  protected
+
+  def user_exists(name, options = {})
+    User.find_by(name: name) || create(:user, {name: name, admin: false}.merge(options))
   end
 end

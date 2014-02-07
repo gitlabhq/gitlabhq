@@ -9,12 +9,17 @@
 
   %span.pull-right
     %strong= member.human_access
-
-    - if show_controls && can?(current_user, :manage_group, @group) && current_user != user
-      = link_to '#', class: "btn-tiny btn js-toggle-button", title: 'Edit access level' do
-        %i.icon-edit
-      = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
-        %i.icon-minus.icon-white
+    - if show_controls
+      - if can?(current_user, :modify, member)
+        = link_to '#', class: "btn-tiny btn js-toggle-button", title: 'Edit access level' do
+          %i.icon-edit
+      - if can?(current_user, :destroy, member)
+        - if current_user == member.user
+          = link_to leave_profile_group_path(@group), data: { confirm: leave_group_message(@group.name)}, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+            %i.icon-minus.icon-white
+        - else
+          = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+            %i.icon-minus.icon-white
 
   .edit-member.hide.js-toggle-content
     = form_for [@group, member], remote: true do |f|
