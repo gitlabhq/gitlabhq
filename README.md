@@ -4,17 +4,14 @@
 
 ![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
 
-### GitLab allows you to
- * keep your code secure on your own server
- * manage repositories, users and access permissions
- * communicate through issues, line-comments and wiki pages
- * perform code review with merge requests
+### Gitlab is open source software to collaborate on code
 
-### GitLab is
-
-* powered by Ruby on Rails
-* completely free and open source (MIT license)
-* used by more than 25.000 organizations to keep their code secure
+* Manage git repositories with fine grained access controls that keep your code secure
+* Perform code reviews and enhance collaboration with merge requests
+* Each project can also have an issue tracker and a wiki
+* Used by than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises
+* Completely free and open source (MIT Expat license)
+* Powered by Ruby on Rails
 
 ### Code status
 
