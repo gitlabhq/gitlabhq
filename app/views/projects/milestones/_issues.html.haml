@@ -4,7 +4,7 @@
     - issues.each do |issue|
       %li
         = link_to [@project, issue] do
-          %span.badge{class: issue.closed? ? 'badge-important' : 'badge-info'} ##{issue.iid}
+          %span.label{class: issue.closed? ? 'label-danger' : 'label-info'} ##{issue.iid}
         = link_to_gfm truncate(issue.title, length: 40), [@project, issue]
         - if issue.assignee
           .pull-right
