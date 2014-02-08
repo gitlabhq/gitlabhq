@@ -14,11 +14,17 @@ class Projects::WikisController < Projects::ApplicationController
     if @wiki
       render 'show'
     else
-      return render('empty') unless can?(current_user, :write_wiki, @project)
-      @wiki = WikiPage.new(@gollum_wiki)
-      @wiki.title = params[:id]
+      wiki_file = @gollum_wiki.find_file(params[:id], params[:version_id])
 
-      render 'edit'
+      if wiki_file
+        send_data(wiki_file.raw_data, type: wiki_file.mime_type())
+      else
+        return render('empty') unless can?(current_user, :write_wiki, @project)
+        @wiki = WikiPage.new(@gollum_wiki)
+        @wiki.title = params[:id]
+
+        render 'edit'
+      end
     end
   end
 
