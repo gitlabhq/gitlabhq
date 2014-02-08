@@ -13,6 +13,8 @@
       %br
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     .clearfix
+    %h4 Groups:
+    = render 'groups', groups: @user.groups 
     %hr
     %h4 User Activity:
     = render @events

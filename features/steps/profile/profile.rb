@@ -173,4 +173,17 @@ class Profile < Spinach::FeatureSteps
       page.should have_content current_user.name
     end
   end
+
+  step 'I have group with projects' do
+    @group   = create(:group)
+    @group.add_owner(current_user)
+    @project = create(:project, namespace: @group)
+    @event   = create(:closed_issue_event, project: @project)
+    
+    @project.team << [current_user, :master]
+  end
+
+  step 'I should see groups I belong to' do
+    page.should have_css('.profile-groups-avatars', visible: true)
+  end
 end
