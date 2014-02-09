@@ -217,6 +217,13 @@ production: &base
     ## Google analytics. Uncomment if you want it
     # google_analytics_id: '_your_tracking_id'
 
+    ## Piwik analytics. Uncomment if you need it
+    ## To track the user properly, both piwik_url and piwik_site_id have to be setup right.
+    ## Make sure, to NOT add the protocol http(s) or a trailing slash.
+    ## E.g.: https://gitlab.example.com/piwik/ turns to gitlab.example.com/piwik
+    #piwik_url: gitlab.example.com/piwik
+    #piwik_site_id: 1
+
     ## Text under sign-in page (Markdown enabled)
     # sign_in_text: |
     #   ![Company Logo](http://www.companydomain.com/logo.png)
