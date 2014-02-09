@@ -1,9 +1,10 @@
 class ProjectIssues < Spinach::FeatureSteps
   include SharedAuthentication
-  include SharedProject
+  include SharedIssue
+  include SharedMarkdown
   include SharedNote
   include SharedPaths
-  include SharedMarkdown
+  include SharedProject
 
   Given 'I should see "Release 0.4" in issues' do
     page.should have_content "Release 0.4"

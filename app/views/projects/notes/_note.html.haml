@@ -31,11 +31,11 @@
   .note-body
     .note-text
       = preserve do
-        = markdown(note.note, {no_header_anchors: true})
+        = markdown(note.note, {header_anchors: notes_header_anchors?})
 
     .note-edit-form
       = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
-        = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
+        = render 'shared/markup_input_and_preview', {f: f, text_area_args: [:note, {}], header_anchors: notes_header_anchors?}
 
         .form-actions.clearfix
           = f.submit 'Save changes', class: "btn btn-primary btn-save"

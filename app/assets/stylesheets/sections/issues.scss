@@ -143,3 +143,13 @@ form.edit-issue {
     border-color: #E5E5E5;
   }
 }
+
+.issue-form {
+  .description {
+    .gfm-input-and-preview {
+      .preview-container {
+        padding: 15px $md-header-anchor-container-left-padding;
+      }
+    }
+  }
+}

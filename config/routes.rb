@@ -181,6 +181,7 @@ Gitlab::Application.routes.draw do
       get :autocomplete_sources
       get :import
       put :retry_import
+      post :markup_preview
     end
 
     scope module: :projects do

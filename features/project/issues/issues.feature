@@ -56,6 +56,15 @@ Feature: Project Issues
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
 
+  Scenario: Issues on empty project
+    Given empty project "Empty Project"
+    When I visit empty project page
+    And I see empty project details with ssh clone info
+    When I visit empty project's issues page
+    Given I click link "New Issue"
+    And I submit new issue "500 error on profile"
+    Then I should see issue "500 error on profile"
+
   # Markdown
 
   Scenario: Headers inside the description should have ids generated for them.
@@ -68,11 +77,30 @@ Feature: Project Issues
     And I leave a comment with a header containing "Comment with a header"
     Then The comment with the header should not have an ID
 
-  Scenario: Issues on empty project
-    Given empty project "Empty Project"
-    When I visit empty project page
-    And I see empty project details with ssh clone info
-    When I visit empty project's issues page
+  # Preview
+
+  @javascript
+  Scenario: I can't preview description without text
     Given I click link "New Issue"
-    And I submit new issue "500 error on profile"
-    Then I should see issue "500 error on profile"
+    Then The description preview button should be disabled
+
+  @javascript
+  Scenario: I can preview non empty description before I start editing
+    Given I click link "Release 0.4"
+    And I click link "Edit"
+    Then The description preview button should be enabled
+
+  @javascript
+  Scenario: I preview issue description while creating it
+    Given I click link "New Issue"
+    And I input a description with a header
+    And I click on the description preview button
+    Then The description preview header should have an id
+
+  @javascript
+  Scenario: I preview issue description while editing it
+    Given I click link "Release 0.4"
+    And I click link "Edit"
+    And I input a description with a header
+    And I click on the description preview button
+    Then The description preview header should have an id

@@ -270,29 +270,21 @@ ul.notes {
   .clearfix {
     margin-bottom: 0;
   }
-  .note_text_and_preview {
-    // makes the "absolute" position for links relative to this
-    position: relative;
+}
 
-    // preview/edit buttons
-    > a {
-      position: absolute;
-      right: 5px;
-      bottom: -60px;
+.new_note, .note-edit-form {
+  .gfm-input-and-preview {
+    height: 200px;
+    .preview-container {
+      padding: 15px;
     }
-    .note_preview {
-      background: #f5f5f5;
-      border: 1px solid #ddd;
-      @include border-radius(4px);
-      min-height: 80px;
-      padding: 4px 6px;
-    }
-    .note_text {
-      border: 1px solid #DDD;
-      box-shadow: none;
-      font-size: 14px;
-      height: 80px;
-      width: 100%;
+  }
+}
+
+.diff-content {
+  .new_note, .note-edit-form {
+    .gfm-input-and-preview {
+      height: 100px;
     }
   }
 }
@@ -309,14 +301,12 @@ ul.notes {
   float: none;
 }
 
-
 .common-note-form {
   margin: 0;
   background: #F9F9F9;
   padding: 3px;
   border: 1px solid #DDD;
 }
-
 
 .note-form-actions {
   background: #F9F9F9;
@@ -327,10 +317,6 @@ ul.notes {
     margin-top: 8px;
     margin-left: 30px;
     @extend .pull-left;
-  }
-
-  .js-notify-commit-author {
-    float: left;
   }
 }
 

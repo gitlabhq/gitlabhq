@@ -162,6 +162,14 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def markup_preview
+    params_sym = params.symbolize_keys
+    params_sym[:header_anchors] = to_bool(params_sym[:header_anchors], true)
+    text = params_sym.delete(:text)
+    params_sym.slice!(:header_anchors)
+    render text: view_context.markdown(text, params_sym)
+  end
+
   private
 
   def set_title

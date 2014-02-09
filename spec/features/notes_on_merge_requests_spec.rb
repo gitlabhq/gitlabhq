@@ -14,10 +14,15 @@ describe "On a merge request", js: true, feature: true do
 
   describe "the note form" do
     it 'should be valid' do
-      should have_css(".js-main-target-form", visible: true, count: 1)
-      find(".js-main-target-form input[type=submit]").value.should == "Add Comment"
-      within(".js-main-target-form") { should_not have_link("Cancel") }
-      within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
+      should have_css('.js-main-target-form', visible: true, count: 1)
+      find('.js-main-target-form input[type=submit]')
+        .value.should == 'Add Comment'
+      within('.js-main-target-form') do
+        should_not have_link('Cancel')
+      end
+      within('.js-main-target-form') do
+        should have_css('.js-gfm-preview-button', visible: true)
+      end
     end
 
     describe "with text" do
@@ -28,47 +33,66 @@ describe "On a merge request", js: true, feature: true do
       end
 
       it 'should have enable submit button and preview button' do
-        within(".js-main-target-form") { should_not have_css(".js-comment-button[disabled]") }
-        within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: true) }
+        within('.js-main-target-form') do
+          should_not have_css('.js-comment-button[disabled]')
+        end
+        within('.js-main-target-form') do
+          should have_css('.js-gfm-preview-button', visible: true)
+        end
       end
     end
 
-    describe "with preview" do
+    describe 'with preview' do
       before do
-        within(".js-main-target-form") do
-          fill_in "note[note]", with: "This is awesome"
-          find(".js-note-preview-button").trigger("click")
+        within('.js-main-target-form') do
+          fill_in 'note[note]', with: 'This is awesome'
+          find('.js-gfm-preview-button').trigger('click')
         end
       end
 
       it 'should have text and visible edit button' do
-        within(".js-main-target-form") { should have_css(".js-note-preview", text: "This is awesome", visible: true) }
-        within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
-        within(".js-main-target-form") { should have_css(".js-note-edit-button", visible: true) }
+        within('.js-main-target-form') do
+          should have_css('.js-gfm-preview', text: 'This is awesome',
+                          visible: true)
+        end
+        within('.js-main-target-form') do
+          should_not have_css('.js-gfm-preview-button', visible: true)
+        end
+        within('.js-main-target-form') do
+          should have_css('.js-gfm-edit-button', visible: true)
+        end
       end
     end
   end
 
   describe "when posting a note" do
     before do
-      within(".js-main-target-form") do
-        fill_in "note[note]", with: "This is awsome!"
-        find(".js-note-preview-button").trigger("click")
-        click_button "Add Comment"
+      within('.js-main-target-form') do
+        fill_in 'note[note]', with: 'This is awsome!'
+        find('.js-gfm-preview-button').trigger('click')
+        click_button 'Add Comment'
       end
     end
 
     it 'should be added and form reset' do
-      should have_content("This is awsome!")
-      within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!") }
-      within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) }
-      within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
+      should have_content('This is awsome!')
+      within('.js-main-target-form') do
+        should have_no_field('note[note]', with: 'This is awesome!')
+      end
+      within('.js-main-target-form') do
+        should_not have_css('.js-gfm-preview', visible: true)
+      end
+      within('.js-main-target-form') do
+        should have_css('.js-gfm-input', visible: true)
+      end
     end
   end
 
   describe "when editing a note", js: true do
-    it "should contain the hidden edit form" do
-      within("#note_#{note.id}") { should have_css(".note-edit-form", visible: false) }
+    it 'should contain the hidden edit form' do
+      within("#note_#{note.id}") do
+        should_not have_css('.note-edit-form', visible: true)
+      end
     end
 
     describe "editing the note" do
@@ -91,7 +115,7 @@ describe "On a merge request", js: true, feature: true do
         within(".note-edit-form") do
           fill_in "note[note]", with: "Some new content"
           find(".btn-cancel").click
-          find(".js-note-text", visible: false).text.should == note.note
+          find('.js-gfm-input', visible: false).text.should == note.note
         end
       end
 

@@ -5,7 +5,7 @@
 
 %hr
 
-= form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
+= form_for [@project, @milestone], html: {class: "issue-form form-horizontal"}  do |f|
   -if @milestone.errors.any?
     .alert.alert-danger
       %ul
@@ -20,9 +20,8 @@
           %p.hint Required
       .form-group
         = f.label :description, "Description", class: "control-label"
-        .col-sm-10
-          = f.text_area :description, maxlength: 2000, class: "form-control", rows: 10
-          %p.hint Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        .col-sm-10.description
+          = render 'shared/markup_input_and_preview', {f: f, text_area_args: [:description, {maxlength: 2000, rows: 14}]}
     .col-md-6
       .form-group
         = f.label :due_date, "Due Date", class: "control-label"
@@ -45,3 +44,5 @@
     dateFormat: "yy-mm-dd",
     onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
   }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));
+
+  new MarkupPreview()

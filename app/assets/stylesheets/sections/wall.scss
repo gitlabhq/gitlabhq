@@ -53,3 +53,14 @@
     }
   }
 }
+
+.new-wall-note {
+  position: relative;
+  .note_text {
+    border: 1px solid #DDD;
+    box-shadow: none;
+    font-size: 14px;
+    height: 80px;
+    width: 100%;
+  }
+}

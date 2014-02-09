@@ -36,12 +36,12 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def header(text, level)
-    if @options[:no_header_anchors]
-      "<h#{level}>#{text}</h#{level}>"
-    else
+    if @options[:header_anchors]
       id = ActionController::Base.helpers.strip_tags(h.gfm(text)).downcase() \
           .gsub(/[^a-z0-9_-]/, '-').gsub(/-+/, '-').gsub(/^-/, '').gsub(/-$/, '')
       "<h#{level} id=\"#{id}\">#{text}<a href=\"\##{id}\"></a></h#{level}>"
+    else
+      "<h#{level}>#{text}</h#{level}>"
     end
   end
 
