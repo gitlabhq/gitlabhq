@@ -3,7 +3,10 @@ module SubmoduleHelper
 
   # links to files listing for submodule if submodule is a project on this server
   def submodule_links(submodule_item)
-    url = submodule_item.submodule_url
+    submodule = @repository.submodules(@ref)[submodule_item.path]
+
+    url = submodule['url'] if submodule
+
     return url, nil unless url =~ /([^\/:]+\/[^\/]+\.git)\Z/
 
     project = $1
@@ -19,7 +22,7 @@ module SubmoduleHelper
       return url, nil
     end
   end
-  
+
   protected
 
   def github_dot_com_url?(url)
@@ -29,12 +32,12 @@ module SubmoduleHelper
   def gitlab_dot_com_url?(url)
     url =~ /gitlab\.com[\/:][^\/]+\/[^\/]+\Z/
   end
-  
+
   def self_url?(url, project)
     return true if url == [ Gitlab.config.gitlab.url, '/', project, '.git' ].join('')
     url == gitlab_shell.url_to_repo(project)
   end
-  
+
   def standard_links(host, project, commit)
     base = [ 'https://', host, '/', project ].join('')
     return base, [ base, '/tree/', commit ].join('')
