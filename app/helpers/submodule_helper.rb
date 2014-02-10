@@ -3,9 +3,7 @@ module SubmoduleHelper
 
   # links to files listing for submodule if submodule is a project on this server
   def submodule_links(submodule_item)
-    submodule = @repository.submodules(@ref)[submodule_item.path]
-
-    url = submodule['url'] if submodule
+    url = @repository.submodule_url_for(@ref, submodule_item.path)
 
     return url, nil unless url =~ /([^\/:]+\/[^\/]+\.git)\Z/
 

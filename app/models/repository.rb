@@ -188,4 +188,20 @@ class Repository
        nil
      end
   end
+
+  # Returns url for submodule
+  #
+  # Ex.
+  #   @repository.submodule_url_for('master', 'rack')
+  #   # => git@localhost:rack.git
+  #
+  def submodule_url_for(ref, path)
+    if submodules.any?
+      submodule = submodules(ref)[path]
+
+      if submodule
+        submodule['url']
+      end
+    end
+  end
 end
