@@ -32,7 +32,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 A typical install of GitLab will be on Ubuntu Linux or RHEL/CentOS.
 It uses Nginx or Apache as a web front end to proxypass the Unicorn web server.
-Communication between Unicorn and the front end is usually HTTP but access via socket is also supported.
+By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported.
 The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets.
 GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/api) using the Unicorn web server.
 It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incomming jobs.
