@@ -9,7 +9,10 @@ class Projects::IssuesController < Projects::ApplicationController
   before_filter :authorize_write_issue!, only: [:new, :create]
 
   # Allow modify issue
-  before_filter :authorize_modify_issue!, only: [:edit, :update, :bulk_update]
+  before_filter :authorize_modify_issue!, only: [:edit, :update]
+
+  # Allow issues bulk update
+  before_filter :authorize_admin_issues!, only: [:bulk_update]
 
   respond_to :html
 
@@ -107,8 +110,8 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :modify_issue, @issue)
   end
 
-  def authorize_admin_issue!
-    return render_404 unless can?(current_user, :admin_issue, @issue)
+  def authorize_admin_issues!
+    return render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def module_enabled

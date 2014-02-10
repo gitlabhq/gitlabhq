@@ -126,6 +126,7 @@ class Ability
         :write_merge_request,
         :write_wiki,
         :modify_issue,
+        :admin_issue,
         :push_code
       ]
     end
