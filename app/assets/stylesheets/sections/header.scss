@@ -6,6 +6,8 @@ header {
   &.navbar-gitlab {
     margin-bottom: 0;
     min-height: 40px;
+    position: fixed;
+    width: 100%;
 
     .navbar-inner {
       background: #F1F1F1;
