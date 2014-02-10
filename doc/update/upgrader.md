@@ -23,8 +23,13 @@ __GitLab Upgrader is available only for GitLab version 6.4.2 or higher__
 
     # it also supports -y option to avoid waiting for user input
     # sudo -u git -H ruby script/upgrade.rb -y
+    
+### 3. Update the init.d script
 
-### 3. Start application
+    cd /home/git/gitlab
+    sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+
+### 4. Start application
 
     sudo service gitlab start
     sudo service nginx restart
