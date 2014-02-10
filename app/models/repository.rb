@@ -204,4 +204,8 @@ class Repository
       end
     end
   end
+
+  def last_commit_for_path(sha, path)
+    commits(sha, path, 1).last
+  end
 end

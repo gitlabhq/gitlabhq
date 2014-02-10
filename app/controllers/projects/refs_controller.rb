@@ -34,7 +34,7 @@ class Projects::RefsController < Projects::ApplicationController
     contents = tree.entries
     @logs = contents.map do |content|
       file = params[:path] ? File.join(params[:path], content.name) : content.name
-      last_commit = @repo.commits(@commit.id, file, 1).last
+      last_commit = @repo.last_commit_for_path(@commit.id, file)
       {
         file_name: content.name,
         commit: last_commit
