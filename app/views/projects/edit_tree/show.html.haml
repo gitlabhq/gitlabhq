@@ -31,7 +31,7 @@
       = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
-  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
+  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
   if (ace_mode) {
