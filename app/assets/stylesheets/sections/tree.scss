@@ -133,3 +133,21 @@
     color: #777;
   }
 }
+
+.blob-commit-info {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 10px;
+
+  .commit {
+    .commit-row-title {
+      font-size: 13px;
+
+      .commit-row-message {
+        font-weight: normal;
+        color: #555;
+      }
+    }
+  }
+}
