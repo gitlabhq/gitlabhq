@@ -9,7 +9,7 @@
 * Manage git repositories with fine grained access controls that keep your code secure
 * Perform code reviews and enhance collaboration with merge requests
 * Each project can also have an issue tracker and a wiki
-* Used by than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises
+* Used by more than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises
 * Completely free and open source (MIT Expat license)
 * Powered by Ruby on Rails
 
