@@ -11,6 +11,7 @@ v 6.6.0
   - Remove snippet expiration
   - Mobile UI improvements (Drew Blessing)
   - Fix block/remove UI for admin::users#show page
+  - Show users' group membership on users' activity page
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
