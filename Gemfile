@@ -136,6 +136,9 @@ gem "sanitize"
 # Protect against bruteforcing
 gem "rack-attack"
 
+# Ace editor
+gem 'ace-rails-ap'
+
 gem "sass-rails"
 gem "coffee-rails"
 gem "uglifier"

@@ -8,6 +8,7 @@ GIT
 GEM
   remote: https://rubygems.org/
   specs:
+    ace-rails-ap (2.0.1)
     actionmailer (4.0.2)
       actionpack (= 4.0.2)
       mail (~> 2.5.4)
@@ -545,6 +546,7 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  ace-rails-ap
   actionpack-action_caching
   actionpack-page_caching
   acts-as-taggable-on
