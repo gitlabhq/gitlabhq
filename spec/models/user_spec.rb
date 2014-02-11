@@ -367,10 +367,8 @@ describe User do
 
     it 'does not begin with https if website url begins with https' do
       user.website_url = 'https://test.com'
-      
+
       expect(user.short_website_url).to eq 'test.com'
     end
   end
-
 end
-
