@@ -14,6 +14,7 @@ v 6.6.0
   - Fix block/remove UI for admin::users#show page
   - Show users' group membership on users' activity page
   - User pages are visible without login if user is authorized to a public project
+  - Markdown rendered headers have id derived from their name and link to their id
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork

@@ -2,6 +2,7 @@ class ProjectMilestones < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include SharedMarkdown
 
   Then 'I should see milestone "v2.2"' do
     milestone = @project.milestones.find_by(title: "v2.2")
@@ -32,8 +33,11 @@ class ProjectMilestones < Spinach::FeatureSteps
 
   And 'project "Shop" has milestone "v2.2"' do
     project = Project.find_by(name: "Shop")
-    milestone = create(:milestone, title: "v2.2", project: project)
-
+    milestone = create(:milestone,
+                       title: "v2.2",
+                       project: project,
+                       description: "# Description header"
+                      )
     3.times { create(:issue, project: project, milestone: milestone) }
   end
 

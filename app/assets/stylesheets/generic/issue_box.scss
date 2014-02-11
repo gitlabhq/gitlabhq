@@ -23,11 +23,12 @@
     line-height: 28px;
     margin: 0;
     color: #444;
+    border-bottom: 1px solid #eee;
   }
 
   .context {
     border: none;
-    border-top: 1px solid #eee;
+    border-bottom: 1px solid #eee;
   }
 
   .description {
@@ -35,7 +36,7 @@
   }
 
   .title, .context, .description {
-    padding: 15px;
+    padding: 15px 15px 15px 30px;
 
     .clearfix {
       margin: 0;
