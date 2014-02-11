@@ -176,6 +176,11 @@ describe Profiles::KeysController, "routing" do
   it "to #destroy" do
     delete("/profile/keys/1").should route_to('profiles/keys#destroy', id: '1')
   end
+
+  # get all the ssh-keys of a user
+  it "to #get_keys" do
+    get("/foo.keys").should route_to('profiles/keys#get_keys', username: 'foo')
+  end
 end
 
 # profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy

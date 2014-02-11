@@ -12,6 +12,9 @@ Gitlab::Application.routes.draw do
   API::API.logger Rails.logger
   mount API::API => '/api'
 
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
+
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
     mount Sidekiq::Web, at: "/admin/sidekiq", as: :sidekiq

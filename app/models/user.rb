@@ -435,4 +435,8 @@ class User < ActiveRecord::Base
   def short_website_url
     website_url.gsub(/https?:\/\//, '')
   end
+
+  def all_ssh_keys
+    keys.map(&:key)
+  end
 end
