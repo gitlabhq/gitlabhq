@@ -21,10 +21,10 @@ Feature: Groups
 
   @javascript
   Scenario: I should add user to projects in Group
-    Given I have new user "John"
+    Given Create user "John Doe"
     When I visit group members page
-    And I select user "John" from list with role "Reporter"
-    Then I should see user "John" in team list
+    And I select user "John Doe" from list with role "Reporter"
+    Then I should see user "John Doe" in team list
 
   Scenario: I should see edit group page
     When I visit group settings page

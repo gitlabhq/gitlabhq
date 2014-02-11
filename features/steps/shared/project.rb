@@ -65,4 +65,68 @@ module SharedProject
   def current_project
     @project ||= Project.first
   end
+
+  # ----------------------------------------
+  # Visibility level
+  # ----------------------------------------
+
+  step 'private project "Enterprise"' do
+    create :project, name: 'Enterprise'
+  end
+
+  step 'I should see project "Enterprise"' do
+    page.should have_content "Enterprise"
+  end
+
+  step 'I should not see project "Enterprise"' do
+    page.should_not have_content "Enterprise"
+  end
+
+  step 'internal project "Internal"' do
+    create :project, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
+  end
+
+  step 'I should see project "Internal"' do
+    page.should have_content "Internal"
+  end
+
+  step 'I should not see project "Internal"' do
+    page.should_not have_content "Internal"
+  end
+
+  step 'public project "Community"' do
+    create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+  end
+
+  step 'I should see project "Community"' do
+    page.should have_content "Community"
+  end
+
+  step 'I should not see project "Community"' do
+    page.should_not have_content "Community"
+  end
+
+  step '"John Doe" is authorized to private project "Enterprise"' do
+    user = User.find_by(name: "John Doe")
+    user ||= create(:user, name: "John Doe", username: "john_doe")
+    project = Project.find_by(name: "Enterprise")
+    project ||= create(:project, name: "Enterprise", namespace: user.namespace)
+    project.team << [user, :master]
+  end
+
+  step '"John Doe" is authorized to internal project "Internal"' do
+    user = User.find_by(name: "John Doe")
+    user ||= create(:user, name: "John Doe", username: "john_doe")
+    project = Project.find_by(name: "Internal")
+    project ||= create :project, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
+    project.team << [user, :master]
+  end
+
+  step '"John Doe" is authorized to public project "Community"' do
+    user = User.find_by(name: "John Doe")
+    user ||= create(:user, name: "John Doe", username: "john_doe")
+    project = Project.find_by(name: "Community")
+    project ||= create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    project.team << [user, :master]
+  end
 end

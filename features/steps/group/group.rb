@@ -1,6 +1,7 @@
 class Groups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include SharedUser
   include Select2Helper
 
   Then 'I should see projects list' do
@@ -34,12 +35,8 @@ class Groups < Spinach::FeatureSteps
     end
   end
 
-  Given 'I have new user "John"' do
-    create(:user, name: "John")
-  end
-
-  And 'I select user "John" from list with role "Reporter"' do
-    user = User.find_by(name: "John")
+  And 'I select user "John Doe" from list with role "Reporter"' do
+    user = User.find_by(name: "John Doe")
     within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "group_access"
@@ -47,9 +44,9 @@ class Groups < Spinach::FeatureSteps
     click_button "Add users into group"
   end
 
-  Then 'I should see user "John" in team list' do
+  Then 'I should see user "John Doe" in team list' do
     projects_with_access = find(".ui-box .well-list")
-    projects_with_access.should have_content("John")
+    projects_with_access.should have_content("John Doe")
   end
 
   Given 'project from group has issues assigned to me' do
