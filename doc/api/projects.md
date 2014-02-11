@@ -162,7 +162,7 @@ GET /projects/:id/events
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 
 ```json
 
@@ -290,7 +290,7 @@ GET /projects/:id/members
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `query` (optional) - Query string to search for members
 
 
@@ -304,7 +304,7 @@ GET /projects/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `user_id` (required) - The ID of a user
 
 ```json
@@ -332,7 +332,7 @@ POST /projects/:id/members
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `user_id` (required) - The ID of a user to add
 + `access_level` (required) - Project access level
 
@@ -347,7 +347,7 @@ PUT /projects/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `user_id` (required) - The ID of a team member
 + `access_level` (required) - Project access level
 
@@ -362,7 +362,7 @@ DELETE /projects/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `user_id` (required) - The ID of a team member
 
 This method is idempotent and can be called multiple times with the same parameters.
@@ -383,7 +383,7 @@ GET /projects/:id/hooks
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 
 
 ### Get project hook
@@ -396,7 +396,7 @@ GET /projects/:id/hooks/:hook_id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `hook_id` (required) - The ID of a project hook
 
 ```json
@@ -422,7 +422,7 @@ POST /projects/:id/hooks
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `url` (required) - The hook URL
 + `push_events` - Trigger hook on push events
 + `issues_events` - Trigger hook on issues events
@@ -439,7 +439,7 @@ PUT /projects/:id/hooks/:hook_id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `hook_id` (required) - The ID of a project hook
 + `url` (required) - The hook URL
 + `push_events` - Trigger hook on push events
@@ -458,7 +458,7 @@ DELETE /projects/:id/hooks/:hook_id
 
 Parameters:
 
-+ `id` (required) - The ID or NAME of a project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `hook_id` (required) - The ID of hook to delete
 
 Note the JSON response differs if the hook is available or not. If the project hook
@@ -477,7 +477,7 @@ GET /projects/:id/repository/branches
 
 Parameters:
 
-+ `id` (required) - The ID of the project
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 
 ```json
 [
@@ -539,7 +539,7 @@ GET /projects/:id/repository/branches/:branch
 
 Parameters:
 
-+ `id` (required) - The ID of the project.
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `branch` (required) - The name of the branch.
 
 
@@ -553,7 +553,7 @@ PUT /projects/:id/repository/branches/:branch/protect
 
 Parameters:
 
-+ `id` (required) - The ID of the project.
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `branch` (required) - The name of the branch.
 
 
@@ -567,7 +567,7 @@ PUT /projects/:id/repository/branches/:branch/unprotect
 
 Parameters:
 
-+ `id` (required) - The ID of the project.
++ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
 + `branch` (required) - The name of the branch.
 
 
