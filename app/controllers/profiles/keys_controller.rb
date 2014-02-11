@@ -34,14 +34,17 @@ class Profiles::KeysController < ApplicationController
     end
   end
 
-  #get all keys of a user(params[:username]) in a text format
-  #helpful for sysadmins to put in respective servers
+  # Get all keys of a user(params[:username]) in a text format
+  # Helpful for sysadmins to put in respective servers
   def get_keys
     if params[:username].present?
       begin
         user = User.find_by_username(params[:username])
-        user.present? ? (render :text => user.all_ssh_keys.join('\n')) :
-          (render_404 and return)
+        if user.present?
+          render text: user.all_ssh_keys.join('\n')
+        else
+          render_404 and return
+        end
       rescue => e
         render text: e.message
       end

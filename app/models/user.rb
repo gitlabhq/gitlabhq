@@ -437,6 +437,6 @@ class User < ActiveRecord::Base
   end
 
   def all_ssh_keys
-    keys.collect{|x| x.key}.join("\n")
+    keys.map(&:key)
   end
 end
