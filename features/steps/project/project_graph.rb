@@ -7,7 +7,7 @@ class ProjectGraph < Spinach::FeatureSteps
   end
 
   When 'I visit project "Shop" graph page' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     visit project_graph_path(project, "master")
   end
 end

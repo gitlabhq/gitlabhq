@@ -6,17 +6,17 @@ module Gitlab
       if identifier.blank?
         # Local push from gitlab
         email = project.repository.commit(newrev).author_email rescue nil
-        User.find_by_email(email) if email
+        User.find_by(email: email) if email
 
       elsif identifier =~ /\Auser-\d+\Z/
         # git push over http
         user_id = identifier.gsub("user-", "")
-        User.find_by_id(user_id)
+        User.find_by(id: user_id)
 
       elsif identifier =~ /\Akey-\d+\Z/
         # git push over ssh
         key_id = identifier.gsub("key-", "")
-        Key.find_by_id(key_id).try(:user)
+        Key.find_by(id: key_id).try(:user)
       end
     end
   end

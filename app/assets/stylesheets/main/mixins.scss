@@ -106,12 +106,12 @@
 
   h3 {
     margin-top: 35px;
-    font-size: 2em;
+    font-size: 1.5em;
   }
 
   h4 {
     margin-top: 30px;
-    font-size: 1.5em;
+    font-size: 1.2em;
   }
 
   blockquote p {
@@ -128,7 +128,7 @@
     }
   }
 
-  code {
+  p > code {
     font-size: inherit;
     font-weight: inherit;
     color: #555;

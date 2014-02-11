@@ -123,14 +123,9 @@
 }
 
 .save-project-loader {
-  img {
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-  h3 {
-    @extend .page-title;
-  }
-
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: #555;
 }
 
 ul.nav.nav-projects-tabs {

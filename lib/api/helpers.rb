@@ -7,7 +7,7 @@ module API
 
     def current_user
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
-      @current_user ||= User.find_by_authentication_token(private_token)
+      @current_user ||= User.find_by(authentication_token: private_token)
       identifier = sudo_identifier()
 
       # If the sudo is the current user do nothing
@@ -47,7 +47,7 @@ module API
     end
 
     def find_project(id)
-      project = Project.find_by_id(id) || Project.find_with_namespace(id)
+      project = Project.find_by(id: id) || Project.find_with_namespace(id)
 
       if project && can?(current_user, :read_project, project)
         project

@@ -173,12 +173,10 @@ table a code {
 
 .loading {
   margin: 20px auto;
-  background: url(ajax_loader.gif) no-repeat center center;
-  width: 40px;
   height: 40px;
-  &.loading-gray {
-    background: url(ajax_loader_gray.gif) no-repeat center center;
-  }
+  color: #555;
+  font-size: 32px;
+  text-align: center;
 }
 
 span.update-author {
@@ -326,6 +324,12 @@ li.note {
   a {
     color: #fff;
     text-decoration: underline;
+  }
+
+  .links-xs {
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
   }
 }
 
@@ -493,4 +497,8 @@ table {
   fieldset {
     margin-bottom: 15px;
   }
+}
+
+@media (max-width: $screen-xs-max) {
+  .container .content { margin-top: 20px; }
 }

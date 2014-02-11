@@ -4,7 +4,7 @@ class DashboardWithArchivedProjects < Spinach::FeatureSteps
   include SharedProject
 
   When 'project "Forum" is archived' do
-    project = Project.find_by_name "Forum"
+    project = Project.find_by(name: "Forum")
     project.update_attribute(:archived, true)
   end
 

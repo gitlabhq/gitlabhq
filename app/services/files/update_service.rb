@@ -17,7 +17,7 @@ module Files
         return error("You can only create files if you are on top of a branch")
       end
 
-      blob = repository.blob_at(ref, path)
+      blob = repository.blob_at_branch(ref, path)
 
       unless blob
         return error("You can only edit text files")

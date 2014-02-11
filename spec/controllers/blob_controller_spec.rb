@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe Projects::BlobController do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
   let(:user)    { create(:user) }
 
   before do

@@ -50,7 +50,7 @@ namespace :gitlab do
 
           # find group namespace
           if group_name
-            group = Group.find_by_path(group_name)
+            group = Group.find_by(path: group_name)
             # create group namespace
             if !group
               group = Group.new(:name => group_name)

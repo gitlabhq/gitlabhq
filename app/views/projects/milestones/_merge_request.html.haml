@@ -1,5 +1,5 @@
 %li
   = link_to [@project, merge_request] do
-    %span.badge.badge-info ##{merge_request.iid}
+    %span.label.label-info ##{merge_request.iid}
   &ndash;
   = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]

@@ -1,89 +1,148 @@
-$monokai-fg: #f8f8f2;
-$monokai-comment: #75715e;
-$monokai-pink: #f92672;
-$monokai-blue: #66d9ef;
-$monokai-green: #a6e22e;
-$monokai-gold: #e6db74;
-$monokai-dark: #3b3a32;
-$monokai-purple: #ae81ff;
-
-.monokai .highlight {
-
+.monokai {
   background-color: #272822;
+
+  .highlight{
+    border-left: 1px solid #444;
+  }
+
+  .line.hll {
+    background: #558;
+  }
+
+  .no-highlight {
+    color: #DDD;
+  }
+
+  .line-numbers a {
+    color: #666;
+  }
 
   pre {
     background-color: #272822;
-    color: $monokai-fg;
+    color: #f8f8f2;
   }
 
-  .hll { background-color: darken($hover, 65%) }
-  .c  { color: $monokai-comment } /* Comment */
-  .err { color: $monokai-fg } /* Error */
-  .g  { color: $monokai-fg } /* Generic */
-  .k  { color: $monokai-pink } /* Keyword */
-  .l  { color: $monokai-fg } /* Literal */
-  .n  { color: $monokai-blue } /* Name */
-  .o  { color: $monokai-fg } /* Operator */
-  .x  { color: $monokai-fg } /* Other */
-  .p  { color: $monokai-fg } /* Punctuation */
-  .cm { color: $monokai-comment } /* Comment.Multiline */
-  .cp { color: $monokai-comment } /* Comment.Preproc */
-  .c1 { color: $monokai-comment } /* Comment.Single */
-  .cs { color: $monokai-comment } /* Comment.Special */
-  .gd { color: #8b0807 } /* Generic.Deleted */
-  .ge { color: $monokai-fg; text-decoration: underline } /* Generic.Emph */
-  .gr { color: $monokai-fg } /* Generic.Error */
-  .gh { color: $monokai-fg; font-weight: bold } /* Generic.Heading */
-  .gi { color: $monokai-fg; font-weight: bold; background-color: #46830c } /* Generic.Inserted */
-  .go { color: $monokai-dark; background-color: #31322c } /* Generic.Output */
-  .gp { color: $monokai-fg } /* Generic.Prompt */
-  .gs { color: $monokai-fg } /* Generic.Strong */
-  .gu { color: $monokai-fg; font-weight: bold } /* Generic.Subheading */
-  .gt { color: #f8f8f0; background-color: $monokai-pink } /* Generic.Traceback */
-  .kc { color: $monokai-purple } /* Keyword.Constant */
-  .kd { color: $monokai-pink } /* Keyword.Declaration */
-  .kn { color: $monokai-pink } /* Keyword.Namespace */
-  .kp { color: $monokai-pink } /* Keyword.Pseudo */
-  .kr { color: $monokai-pink } /* Keyword.Reserved */
-  .kt { color: $monokai-fg } /* Keyword.Type */
-  .ld { color: $monokai-fg } /* Literal.Date */
-  .m  { color: $monokai-purple } /* Literal.Number */
-  .s  { color: $monokai-gold } /* Literal.String */
-  .na { color: $monokai-purple } /* Name.Attribute */
-  .nb { color: $monokai-blue } /* Name.Builtin */
-  .nc { color: $monokai-fg } /* Name.Class */
-  .no { color: $monokai-fg } /* Name.Constant */
-  .nd { color: $monokai-fg } /* Name.Decorator */
-  .ni { color: $monokai-fg } /* Name.Entity */
-  .ne { color: $monokai-fg } /* Name.Exception */
-  .nf { color: $monokai-green } /* Name.Function */
-  .nl { color: $monokai-gold } /* Name.Label */
-  .nn { color: $monokai-fg } /* Name.Namespace */
-  .nx { color: $monokai-fg } /* Name.Other */
-  .nt { color: $monokai-pink } /* Name.Tag */
-  .nv { color: $monokai-blue; font-style: italic } /* Name.Variable */
-  .py { color: $monokai-fg } /* Name.Property */
-  .ow { color: $monokai-pink } /* Operator.Word */
-  .w  { color: $monokai-fg } /* Text.Whitespace */
-  .mf { color: $monokai-purple } /* Literal.Number.Float */
-  .mh { color: $monokai-purple } /* Literal.Number.Hex */
-  .mi { color: $monokai-purple } /* Literal.Number.Integer */
-  .mo { color: $monokai-purple } /* Literal.Number.Oct */
-  .sb { color: $monokai-gold } /* Literal.String.Backtick */
-  .sc { color: $monokai-gold } /* Literal.String.Char */
-  .sd { color: $monokai-gold } /* Literal.String.Doc */
-  .s2 { color: $monokai-gold } /* Literal.String.Double */
-  .se { color: $monokai-gold } /* Literal.String.Escape */
-  .sh { color: $monokai-gold } /* Literal.String.Heredoc */
-  .si { color: $monokai-gold } /* Literal.String.Interpol */
-  .sx { color: $monokai-gold } /* Literal.String.Other */
-  .sr { color: $monokai-gold } /* Literal.String.Regex */
-  .s1 { color: $monokai-gold } /* Literal.String.Single */
-  .ss { color: $monokai-gold } /* Literal.String.Symbol */
-  .bp { color: $monokai-fg } /* Name.Builtin.Pseudo */
-  .vc { color: $monokai-blue; font-style: italic } /* Name.Variable.Class */
-  .vg { color: $monokai-blue; font-style: italic } /* Name.Variable.Global */
-  .vi { color: $monokai-blue; font-style: italic } /* Name.Variable.Instance */
-  .il { color: $monokai-purple } /* Literal.Number.Integer.Long */
-}
+  .hljs {
+    display: block;
+    background: #272822;
+  }
 
+  .hljs-tag,
+  .hljs-tag .hljs-title,
+  .hljs-keyword,
+  .hljs-literal,
+  .hljs-strong,
+  .hljs-change,
+  .hljs-winutils,
+  .hljs-flow,
+  .lisp .hljs-title,
+  .clojure .hljs-built_in,
+  .nginx .hljs-title,
+  .tex .hljs-special {
+    color: #F92672;
+  }
+
+  .hljs {
+    color: #DDD;
+  }
+
+  .hljs .hljs-constant,
+  .asciidoc .hljs-code {
+    color: #66D9EF;
+  }
+
+  .hljs-code,
+  .hljs-class .hljs-title,
+  .hljs-header {
+    color: white;
+  }
+
+  .hljs-link_label,
+  .hljs-attribute,
+  .hljs-symbol,
+  .hljs-symbol .hljs-string,
+  .hljs-value,
+  .hljs-regexp {
+    color: #BF79DB;
+  }
+
+  .hljs-link_url,
+  .hljs-tag .hljs-value,
+  .hljs-string,
+  .hljs-bullet,
+  .hljs-subst,
+  .hljs-title,
+  .hljs-emphasis,
+  .haskell .hljs-type,
+  .hljs-preprocessor,
+  .hljs-pragma,
+  .ruby .hljs-class .hljs-parent,
+  .hljs-built_in,
+  .sql .hljs-aggregate,
+  .django .hljs-template_tag,
+  .django .hljs-variable,
+  .smalltalk .hljs-class,
+  .hljs-javadoc,
+  .django .hljs-filter .hljs-argument,
+  .smalltalk .hljs-localvars,
+  .smalltalk .hljs-array,
+  .hljs-attr_selector,
+  .hljs-pseudo,
+  .hljs-addition,
+  .hljs-stream,
+  .hljs-envvar,
+  .apache .hljs-tag,
+  .apache .hljs-cbracket,
+  .tex .hljs-command,
+  .hljs-prompt {
+    color: #A6E22E;
+  }
+
+  .hljs-comment,
+  .java .hljs-annotation,
+  .smartquote,
+  .hljs-blockquote,
+  .hljs-horizontal_rule,
+  .python .hljs-decorator,
+  .hljs-template_comment,
+  .hljs-pi,
+  .hljs-doctype,
+  .hljs-deletion,
+  .hljs-shebang,
+  .apache .hljs-sqbracket,
+  .tex .hljs-formula {
+    color: #75715E;
+  }
+
+  .hljs-keyword,
+  .hljs-literal,
+  .css .hljs-id,
+  .hljs-phpdoc,
+  .hljs-title,
+  .hljs-header,
+  .haskell .hljs-type,
+  .vbscript .hljs-built_in,
+  .sql .hljs-aggregate,
+  .rsl .hljs-built_in,
+  .smalltalk .hljs-class,
+  .diff .hljs-header,
+  .hljs-chunk,
+  .hljs-winutils,
+  .bash .hljs-variable,
+  .apache .hljs-tag,
+  .tex .hljs-special,
+  .hljs-request,
+  .hljs-status {
+    font-weight: bold;
+  }
+
+  .coffeescript .javascript,
+  .javascript .xml,
+  .tex .hljs-formula,
+  .xml .javascript,
+  .xml .vbscript,
+  .xml .css,
+  .xml .hljs-cdata {
+    opacity: 0.5;
+  }
+}

@@ -6,7 +6,7 @@ describe API::API do
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:user) { create(:user) }
-  let(:project) {create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
+  let(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
 
   describe "POST /projects/:id/services/gitlab-ci" do
     it "should update gitlab-ci settings" do

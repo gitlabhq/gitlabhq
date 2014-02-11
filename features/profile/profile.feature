@@ -6,6 +6,13 @@ Feature: Profile
     Given I visit profile page
     Then I should see my profile info
 
+  Scenario: I can see groups I belong to
+    Given I have group with projects
+    When I visit profile page
+    And I click on my profile picture
+    Then I should see my user page
+    And I should see groups I belong to
+
   Scenario: I edit profile
     Given I visit profile page
     Then I change my profile info

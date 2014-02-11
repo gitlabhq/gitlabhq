@@ -73,7 +73,7 @@ module Projects
     end
 
     def allowed_namespace?(user, namespace_id)
-      namespace = Namespace.find_by_id(namespace_id)
+      namespace = Namespace.find_by(id: namespace_id)
       current_user.can?(:manage_namespace, namespace)
     end
   end

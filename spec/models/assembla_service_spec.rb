@@ -25,7 +25,7 @@ describe AssemblaService do
 
   describe "Execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
 
     before do
       @assembla_service = AssemblaService.new
@@ -33,14 +33,15 @@ describe AssemblaService do
         project_id: project.id,
         project: project,
         service_hook: true,
-        token: 'verySecret'
+        token: 'verySecret',
+        subdomain: 'project_name'
       )
       @sample_data = GitPushService.new.sample_data(project, user)
-      @api_url = 'https://atlas.assembla.com/spaces/ouposp/github_tool?secret_key=verySecret'
+      @api_url = 'https://atlas.assembla.com/spaces/project_name/github_tool?secret_key=verySecret'
       WebMock.stub_request(:post, @api_url)
     end
 
-    it "should call FlowDock API" do
+    it "should call Assembla API" do
       @assembla_service.execute(@sample_data)
       WebMock.should have_requested(:post, @api_url).with(
         body: /#{@sample_data[:before]}.*#{@sample_data[:after]}.*#{project.path}/

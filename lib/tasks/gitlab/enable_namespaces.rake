@@ -43,13 +43,13 @@ namespace :gitlab do
     username.gsub!("+", ".")
 
     # return username if no matches
-    return username unless User.find_by_username(username)
+    return username unless User.find_by(username: username)
 
     # look for same username
     (1..10).each do |i|
       suffixed_username = "#{username}#{i}"
 
-      return suffixed_username unless User.find_by_username(suffixed_username)
+      return suffixed_username unless User.find_by(username: suffixed_username)
     end
   end
 

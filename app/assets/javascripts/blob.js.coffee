@@ -17,7 +17,7 @@ class BlobView
 
       setHash(hash)
       e.preventDefault()
- 
+
     # See if there are lines selected
     # "#L12" and "#L34-56" supported
     highlightBlobLines = (e) ->
@@ -64,7 +64,7 @@ class BlobView
         nodes.attr("id", hash)
 
     # initialize multi-line select
-    $("#tree-content-holder .line_numbers a[id^=L]").on("click", handleMultiSelect)
+    $("#tree-content-holder .line-numbers a[id^=L]").on("click", handleMultiSelect)
 
     # Highlight the correct lines on load
     highlightBlobLines()

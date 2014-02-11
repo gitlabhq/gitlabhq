@@ -4,17 +4,14 @@
 
 ![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
 
-### GitLab allows you to
- * keep your code secure on your own server
- * manage repositories, users and access permissions
- * communicate through issues, line-comments and wiki pages
- * perform code review with merge requests
+### Gitlab is open source software to collaborate on code
 
-### GitLab is
-
-* powered by Ruby on Rails
-* completely free and open source (MIT license)
-* used by more than 25.000 organizations to keep their code secure
+* Manage git repositories with fine grained access controls that keep your code secure
+* Perform code reviews and enhance collaboration with merge requests
+* Each project can also have an issue tracker and a wiki
+* Used by more than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises
+* Completely free and open source (MIT Expat license)
+* Powered by Ruby on Rails
 
 ### Code status
 
@@ -68,11 +65,9 @@
 
 ### New versions and upgrading
 
-Since 2011 GitLab is released on the 22nd of every month. Every new release includes an upgrade guide.
+Since 2011 GitLab is released on the 22nd of every month. Every new release includes an [upgrade guide](doc/update) and new features are detailed in the [Changelog](CHANGELOG).
 
-* [Upgrade guides](doc/update)
-
-* [Changelog](CHANGELOG)
+It is recommended to follow a monthly upgrade schedule. Security releases come out when needed. For more information about the release process see the documentation for [monthly](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/monthly.md) and [security](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/security.md) releases.
 
 * Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 

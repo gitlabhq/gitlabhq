@@ -100,8 +100,6 @@ Gitlab::Application.routes.draw do
     root to: "dashboard#index"
   end
 
-  get "errors/githost"
-
   #
   # Profile Area
   #
@@ -158,6 +156,9 @@ Gitlab::Application.routes.draw do
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
+    scope module: :groups do
+      resource :avatar, only: [:destroy]
+    end
   end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]

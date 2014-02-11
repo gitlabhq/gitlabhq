@@ -6,5 +6,4 @@
         %strong
           = blob.filename
     .file-content.code.term
-      %div{class: user_color_scheme_class}
-        = raw blob.colorize( formatter: :gitlab, options: { first_line_number: blob.startline } )
+      = render 'shared/file_hljs', blob: blob, first_line_number: blob.startline

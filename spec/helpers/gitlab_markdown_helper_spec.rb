@@ -4,7 +4,7 @@ describe GitlabMarkdownHelper do
   include ApplicationHelper
   include IssuesHelper
 
-  let!(:project) { create(:project_with_code) }
+  let!(:project) { create(:project) }
 
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
@@ -16,6 +16,7 @@ describe GitlabMarkdownHelper do
   before do
     # Helper expects a @project instance variable
     @project = project
+    @repository = project.repository
   end
 
   describe "#gfm" do
@@ -378,10 +379,10 @@ describe GitlabMarkdownHelper do
     it "should leave code blocks untouched" do
       helper.stub(:user_color_scheme_class).and_return(:white)
 
-      target_html = "<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> <span class=\"err\">$</span><span class=\"mi\">#{snippet.id}</span>"
+      target_html = "\n<div class=\"highlighted-data white\">\n  <div class=\"highlight\">\n    <pre><code class=\"\">some code from $#{snippet.id}\nhere too\n</code></pre>\n  </div>\n</div>\n\n"
 
-      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should include(target_html)
-      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should include(target_html)
+      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should == target_html
+      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == target_html
     end
 
     it "should leave inline code untouched" do
@@ -429,6 +430,24 @@ describe GitlabMarkdownHelper do
     it "should handle wiki urls" do
       actual = "[Link](test/link)\n"
       expected = "<p><a href=\"/#{project.path_with_namespace}/wikis/test/link\">Link</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+    it "should handle relative urls in reference links for a file in master" do
+      actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+    it "should handle relative urls in reference links for a directory in master" do
+      actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api/\">GitLab API doc directory</a></p>\n"
+      markdown(actual).should match(expected)
+    end
+
+     it "should not handle malformed relative urls in reference links for a file in master" do
+      actual = "[GitLab readme]: doc/api/README.md\n"
+      expected = ""
       markdown(actual).should match(expected)
     end
   end

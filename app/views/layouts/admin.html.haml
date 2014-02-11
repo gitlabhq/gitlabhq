@@ -4,7 +4,7 @@
   %body{class: "#{app_theme} admin", :'data-page' => body_data_page}
     = render "layouts/head_panel", title: "Admin area"
     = render "layouts/flash"
-    %nav.main-nav
+    %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/nav/admin'
 
     .container

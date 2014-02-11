@@ -43,7 +43,7 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   And 'user with name "John Doe" left project "Shop"' do
-    user = User.find_by_name "John Doe"
+    user = User.find_by(name: "John Doe")
     Event.create(
       project: project,
       author_id: user.id,
@@ -85,6 +85,6 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   def project
-    @project ||= Project.find_by_name "Shop"
+    @project ||= Project.find_by(name: "Shop")
   end
 end

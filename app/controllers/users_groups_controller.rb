@@ -30,7 +30,7 @@ class UsersGroupsController < ApplicationController
   protected
 
   def group
-    @group ||= Group.find_by_path(params[:group_id])
+    @group ||= Group.find_by(path: params[:group_id])
   end
 
   def authorize_admin_group!

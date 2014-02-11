@@ -72,14 +72,20 @@ class Note < ActiveRecord::Base
     # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
     # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
     def create_cross_reference_note(noteable, mentioner, author, project)
-      create({
-        noteable: noteable,
-        commit_id: (noteable.sha if noteable.respond_to? :sha),
+      note_options = {
         project: project,
         author: author,
         note: "_mentioned in #{mentioner.gfm_reference}_",
         system: true
-      }, without_protection: true)
+      }
+
+      if noteable.kind_of?(Commit)
+        note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
+      else
+        note_options.merge!(noteable: noteable)
+      end
+
+      create(note_options, without_protection: true)
     end
 
     def create_assignee_change_note(noteable, project, author, assignee)
@@ -123,8 +129,8 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-      project.users.find_by_email(noteable.author_email) ||
-      project.users.find_by_name(noteable.author_name)
+      project.users.find_by(email: noteable.author_email) ||
+      project.users.find_by(name: noteable.author_name)
   rescue
     nil
   end

@@ -7,7 +7,7 @@ describe API::API, 'ProjectHooks' do
 
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
-  let!(:project) { create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
+  let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:hook) { create(:project_hook, project: project, url: "http://example.com") }
 
   before do

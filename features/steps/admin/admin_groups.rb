@@ -40,7 +40,7 @@ class AdminGroups < Spinach::FeatureSteps
   end
 
   When 'I select user "John" from user list as "Reporter"' do
-    user = User.find_by_name("John")
+    user = User.find_by(name: "John")
     select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
       select "Reporter", from: "group_access"
