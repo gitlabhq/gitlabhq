@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140116231608) do
+ActiveRecord::Schema.define(version: 20140127170938) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -95,21 +95,28 @@ ActiveRecord::Schema.define(version: 20140116231608) do
 
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
+  create_table "merge_request_diffs", force: true do |t|
+    t.string   "state",                               default: "collected", null: false
+    t.text     "st_commits",       limit: 2147483647
+    t.text     "st_diffs",         limit: 2147483647
+    t.integer  "merge_request_id",                                          null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "merge_requests", force: true do |t|
-    t.string   "target_branch",                        null: false
-    t.string   "source_branch",                        null: false
-    t.integer  "source_project_id",                    null: false
+    t.string   "target_branch",     null: false
+    t.string   "source_branch",     null: false
+    t.integer  "source_project_id", null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.text     "st_commits",        limit: 2147483647
-    t.text     "st_diffs",          limit: 2147483647
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id",                    null: false
+    t.integer  "target_project_id", null: false
     t.integer  "iid"
     t.text     "description"
   end
@@ -147,6 +154,7 @@ ActiveRecord::Schema.define(version: 20140116231608) do
     t.string   "description", default: "", null: false
     t.string   "ldap_cn"
     t.integer  "ldap_access"
+    t.string   "avatar"
   end
 
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
@@ -309,7 +317,7 @@ ActiveRecord::Schema.define(version: 20140116231608) do
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",                      default: false
-    t.string   "website_url",            default: "",    null: false
+    t.string   "website_url",                          default: "",    null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

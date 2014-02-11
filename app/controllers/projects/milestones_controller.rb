@@ -76,7 +76,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   protected
 
   def milestone
-    @milestone ||= @project.milestones.find_by_iid!(params[:id])
+    @milestone ||= @project.milestones.find_by!(iid: params[:id])
   end
 
   def authorize_admin_milestone!

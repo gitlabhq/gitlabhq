@@ -326,12 +326,12 @@ Some text to show that the reference links can follow later.
     Here's our logo (hover to see the title text):
 
     Inline-style: 
-    ![alt text](/assets/logo-white.png "Logo Title Text 1")
+    ![alt text](assets/logo-white.png)
 
     Reference-style: 
-    ![alt text][logo]
+    ![alt text1][logo]
 
-    [logo]: /assets/logo-white.png "Logo Title Text 2"
+    [logo]: assets/logo-white.png
 
 Here's our logo (hover to see the title text):
 

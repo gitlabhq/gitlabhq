@@ -8,9 +8,11 @@ If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installa
 
 # Important notes
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and operating system requirements.
+This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. An unofficial guide for RHEL/CentOS can be found in the [GitLab recipes repository](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/install/centos).
+
+This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
 The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
@@ -54,23 +56,6 @@ Install the required packages:
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
-Make sure you have the right version of Python installed.
-
-    # Install Python
-    sudo apt-get install -y python
-
-    # Make sure that Python is 2.5+ (3.x is not supported at the moment)
-    python --version
-
-    # If it's Python 3 you might need to install Python 2 separately
-    sudo apt-get install -y python2.7
-
-    # Make sure you can access Python via python2
-    python2 --version
-
-    # If you get a "command not found" error create a link to the python binary
-    sudo ln -s /usr/bin/python /usr/bin/python2
-
     # For reStructuredText markup language support install required package:
     sudo apt-get install -y python-docutils
 
@@ -92,8 +77,8 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --progress https://git-core.googlecode.com/files/git-1.8.4.1.tar.gz | tar xz
-    cd git-1.8.4.1/
+    curl --progress https://git-core.googlecode.com/files/git-1.8.5.2.tar.gz | tar xz
+    cd git-1.8.5.2/
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
@@ -110,6 +95,8 @@ does not ship with one. The recommended mail server is postfix and you can insta
 Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
+
+The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
 
 Remove the old Ruby 1.8 if present
 
@@ -266,7 +253,7 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
     sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
 
-    # Type 'yes' to create the database.
+    # Type 'yes' to create the database tables.
 
     # When done you see 'Administrator account created:'
 

@@ -8,18 +8,4 @@
           = link_to "Edit", edit_snippet_path(@snippet), class: "btn btn-tiny", title: 'Edit Snippet'
           = link_to "Delete", snippet_path(@snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-tiny", title: 'Delete Snippet'
         = link_to "Raw", raw_snippet_path(@snippet), class: "btn btn-tiny", target: "_blank"
-  - unless @snippet.content.empty?
-    - if gitlab_markdown?(@snippet.file_name)
-      .file-content.wiki
-        = preserve do
-          = markdown(@snippet.data)
-    - elsif markup?(@snippet.file_name)
-      .file-content.wiki
-        = render_markup(@snippet.file_name, @snippet.data)
-    - else
-      .file-content.code
-        %div{class: user_color_scheme_class}
-          = raw @snippet.colorize(formatter: :gitlab)
-  - else
-    .file-content.code
-      %p.nothing_here_message Empty file
+  = render 'snippets/blob_content'

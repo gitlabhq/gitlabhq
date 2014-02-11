@@ -11,6 +11,9 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow modify issue
   before_filter :authorize_modify_issue!, only: [:edit, :update]
 
+  # Allow issues bulk update
+  before_filter :authorize_admin_issues!, only: [:bulk_update]
+
   respond_to :html
 
   def index
@@ -97,7 +100,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     @issue ||= begin
-                 @project.issues.find_by_iid!(params[:id])
+                 @project.issues.find_by!(iid: params[:id])
                rescue ActiveRecord::RecordNotFound
                  redirect_old
                end
@@ -107,8 +110,8 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :modify_issue, @issue)
   end
 
-  def authorize_admin_issue!
-    return render_404 unless can?(current_user, :admin_issue, @issue)
+  def authorize_admin_issues!
+    return render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def module_enabled
@@ -127,7 +130,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
   #
   def redirect_old
-    issue = @project.issues.find_by_id(params[:id])
+    issue = @project.issues.find_by(id: params[:id])
 
     if issue
       redirect_to project_issue_path(@project, issue)

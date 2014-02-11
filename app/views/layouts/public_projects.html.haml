@@ -3,7 +3,7 @@
   = render "layouts/head", title: @project.name_with_namespace
   %body{class: "#{app_theme} application", :'data-page' => body_data_page}
     = render "layouts/public_head_panel"
-    %nav.main-nav
+    %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/nav/project'
     .container
       .content= yield

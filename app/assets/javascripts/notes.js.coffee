@@ -94,6 +94,9 @@ class Notes
     if @isNewNote(note)
       @note_ids.push(note.id)
       $('ul.main-notes-list').append(note.html)
+      code = "#note_" + note.id + " .highlight pre code"
+      $(code).each (i, e) ->
+        hljs.highlightBlock(e)
 
 
   ###
@@ -253,6 +256,9 @@ class Notes
   updateNote: (xhr, note, status) =>
     note_li = $("#note_" + note.id)
     note_li.replaceWith(note.html)
+    code = "#note_" + note.id + " .highlight pre code"
+    $(code).each (i, e) ->
+      hljs.highlightBlock(e)
 
   ###
   Called in response to clicking the edit note link

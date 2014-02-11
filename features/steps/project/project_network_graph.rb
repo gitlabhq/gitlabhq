@@ -10,7 +10,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     # Stub Graph max_size to speed up test (10 commits vs. 650)
     Network::Graph.stub(max_count: 10)
 
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     visit project_network_path(project, "master")
   end
 

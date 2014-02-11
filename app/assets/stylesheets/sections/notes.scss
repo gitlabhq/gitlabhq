@@ -92,10 +92,6 @@ ul.notes {
     .note-body {
       @include md-typography;
       margin-left: 45px;
-
-      .highlight {
-        @include border-radius(4px);
-      }
     }
     .note-header {
       padding-bottom: 5px;
@@ -292,7 +288,7 @@ ul.notes {
       box-shadow: none;
       font-size: 14px;
       height: 80px;
-      width: 98.6%;
+      width: 100%;
     }
   }
 }
@@ -341,7 +337,7 @@ ul.notes {
     box-shadow: none;
     font-size: 14px;
     height: 80px;
-    width: 98.6%;
+    width: 100%;
   }
 
   .form-actions {

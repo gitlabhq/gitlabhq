@@ -10,6 +10,7 @@
 #  updated_at  :datetime         not null
 #  type        :string(255)
 #  description :string(255)      default(""), not null
+#  avatar      :string(255)
 #
 
 class Namespace < ActiveRecord::Base

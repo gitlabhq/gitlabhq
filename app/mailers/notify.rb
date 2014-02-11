@@ -12,7 +12,7 @@ class Notify < ActionMailer::Base
 
   default_url_options[:host]     = Gitlab.config.gitlab.host
   default_url_options[:protocol] = Gitlab.config.gitlab.protocol
-  default_url_options[:port]     = Gitlab.config.gitlab.port if Gitlab.config.gitlab_on_non_standard_port?
+  default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
   default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
 
   default from: Gitlab.config.gitlab.email_from

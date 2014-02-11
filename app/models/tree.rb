@@ -23,4 +23,8 @@ class Tree
   def submodules
     @entries.select(&:submodule?)
   end
+
+  def sorted_entries
+    trees + blobs + submodules
+  end
 end

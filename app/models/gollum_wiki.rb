@@ -1,4 +1,5 @@
 class GollumWiki
+  include Gitlab::ShellAdapter
 
   MARKUPS = {
     "Markdown" => :markdown,
@@ -111,10 +112,6 @@ class GollumWiki
 
   def default_message(action, title)
     "#{@user.username} #{action} page: #{title}"
-  end
-
-  def gitlab_shell
-    @gitlab_shell ||= Gitlab::Shell.new
   end
 
   def path_to_repo

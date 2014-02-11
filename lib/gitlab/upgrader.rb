@@ -8,7 +8,7 @@ module Gitlab
       puts "Latest available version for GitLab #{current_version.major} is #{latest_version}"
 
       if latest_version?
-        puts "You use latest GitLab version"
+        puts "You are using the latest GitLab version"
       else
         puts "Newer GitLab version is available"
         answer = if ARGV.first == "-y"

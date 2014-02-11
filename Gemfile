@@ -14,7 +14,6 @@ gem "protected_attributes"
 gem 'rails-observers'
 gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
-gem 'activerecord-deprecated_finders'
 
 # Supported DBs
 gem "mysql2", group: :mysql
@@ -30,23 +29,20 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 4.0.0"
+gem "gitlab_git", '~> 5.3.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '1.0.4', require: "omniauth-ldap"
 gem 'net-ldap'
 
-# Syntax highlighter
-gem "gitlab-pygments.rb", '~> 0.5.4', require: 'pygments.rb'
-
 # Git Wiki
-gem "gitlab-gollum-lib", "~> 1.0.2", require: 'gollum-lib'
+gem "gitlab-gollum-lib", "~> 1.1.0", require: 'gollum-lib'
 
 # Language detection
-gem "gitlab-linguist", "~> 2.9.6", require: "linguist"
+gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"
@@ -140,6 +136,9 @@ gem "sanitize"
 
 # Protect against bruteforcing
 gem "rack-attack"
+
+# Ace editor
+gem 'ace-rails-ap'
 
 gem "sass-rails"
 gem "coffee-rails"

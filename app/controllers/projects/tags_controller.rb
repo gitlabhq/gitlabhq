@@ -8,7 +8,7 @@ class Projects::TagsController < Projects::ApplicationController
   before_filter :authorize_admin_project!, only: [:destroy]
 
   def index
-    @tags = Kaminari.paginate_array(@repository.tags).page(params[:page]).per(30)
+    @tags = Kaminari.paginate_array(@repository.tags.reverse).page(params[:page]).per(30)
   end
 
   def create

@@ -4,17 +4,17 @@ class ProjectArchived < Spinach::FeatureSteps
   include SharedPaths
 
   When 'project "Forum" is archived' do
-    project = Project.find_by_name "Forum"
+    project = Project.find_by(name: "Forum")
     project.update_attribute(:archived, true)
   end
 
   When 'project "Shop" is archived' do
-    project = Project.find_by_name "Shop"
+    project = Project.find_by(name: "Shop")
     project.update_attribute(:archived, true)
   end
 
   When 'I visit project "Forum" page' do
-    project = Project.find_by_name "Forum"
+    project = Project.find_by(name: "Forum")
     visit project_path(project)
   end
 

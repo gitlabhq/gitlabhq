@@ -43,7 +43,7 @@ describe Gitlab::ReferenceExtractor do
   end
 
   context 'with a project' do
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
 
     it 'accesses valid user objects on the project team' do
       @u_foo = create(:user, username: 'foo')

@@ -1,10 +1,15 @@
+- tree, commit = submodule_links(submodule_item)
 %tr{ class: "tree-item" }
   %td.tree-item-file-name
     = image_tag "submodule.png"
     %span
-      = link_to truncate(submodule_item.name, length: 40), submodule_item.submodule_url
+      = link_to truncate(submodule_item.name, length: 40), tree
     @
-    %span.monospace #{submodule_item.id[0..10]}
+    %span.monospace
+      - if commit.nil?
+        #{submodule_item.id[0..10]}
+      - else
+        = link_to "#{submodule_item.id[0..10]}", commit
   %td
   %td
   %td

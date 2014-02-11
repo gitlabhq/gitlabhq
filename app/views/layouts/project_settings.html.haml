@@ -9,7 +9,7 @@
     - if can?(current_user, :download_code, @project)
       = render 'shared/no_ssh'
 
-    %nav.main-nav
+    %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/nav/project'
 
     .container

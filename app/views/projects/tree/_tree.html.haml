@@ -9,7 +9,7 @@
         = link_to truncate(title, length: 40), project_tree_path(@project, path)
       - else
         = link_to title, '#'
-  - if @repository.branch_names.include?(@ref)
+  - if current_user && @repository.branch_names.include?(@ref) && current_user.can?(:push_code, @project)
     %li
       = link_to project_new_tree_path(@project, @id), title: 'New file', id: 'new-file-link' do
         %small

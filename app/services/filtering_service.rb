@@ -24,7 +24,8 @@ class FilteringService
     @current_user = current_user
     @params = params
 
-    items = by_scope
+    items = init_collection
+    items = by_scope(items)
     items = by_state(items)
     items = by_group(items)
     items = by_project(items)
@@ -37,20 +38,30 @@ class FilteringService
 
   private
 
-  def by_scope
+  def init_collection
     table_name = klass.table_name
 
+    return klass.of_projects(Project.public_only) unless current_user
+
+    if project
+      if current_user.can?(:read_project, project)
+        project.send(table_name)
+      else
+        []
+      end
+    else
+      klass.of_projects(current_user.authorized_projects)
+    end
+  end
+
+  def by_scope(items)
     case params[:scope]
     when 'created-by-me', 'authored' then
-      current_user.send(table_name)
+      items.where(author_id: current_user.id)
     when 'all' then
-      if current_user
-        klass.of_projects(current_user.authorized_projects.pluck(:id))
-      else
-        klass.of_projects(Project.public_only)
-      end
+      items
     when 'assigned-to-me' then
-      current_user.send("assigned_#{table_name}")
+      items.where(assignee_id: current_user.id)
     else
       raise 'You must specify default scope'
     end
@@ -119,5 +130,9 @@ class FilteringService
     end
 
     items
+  end
+
+  def project
+    Project.where(id: params[:project_id]).first if params[:project_id].present?
   end
 end

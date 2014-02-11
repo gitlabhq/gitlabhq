@@ -9,7 +9,7 @@ describe PostReceive do
   end
 
   context "web hook" do
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
     let(:key) { create(:key, user: project.owner) }
     let(:key_id) { key.shell_id }
 
@@ -19,7 +19,7 @@ describe PostReceive do
     end
 
     it "does not run if the author is not in the project" do
-      Key.stub(find_by_id: nil)
+      Key.stub(:find_by).with(hash_including(id: anything())) { nil }
 
       project.should_not_receive(:execute_hooks)
 

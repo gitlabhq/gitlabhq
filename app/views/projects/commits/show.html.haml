@@ -9,7 +9,7 @@
 %div{id: dom_id(@project)}
   #commits-list= render "commits"
 .clear
-.loading{ style: "display:none;"}
+= spinner
 
 - if @commits.count == @limit
   :javascript
