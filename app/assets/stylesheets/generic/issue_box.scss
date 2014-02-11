@@ -18,17 +18,16 @@
   }
 
   .title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
-    line-height: 28px;
+    line-height: 1.5;
     margin: 0;
-    color: #444;
-    border-bottom: 1px solid #eee;
+    color: #333;
   }
 
   .context {
     border: none;
-    border-bottom: 1px solid #eee;
+    border-top: 1px solid #eee;
   }
 
   .description {
@@ -36,7 +35,7 @@
   }
 
   .title, .context, .description {
-    padding: 15px 15px 15px 30px;
+    padding: 15px 25px;
 
     .clearfix {
       margin: 0;

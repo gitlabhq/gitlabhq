@@ -15,9 +15,10 @@
 
 
   - if @merge_request.description.present?
-    .wiki
-      = preserve do
-        = markdown @merge_request.description
+    .description
+      .wiki
+        = preserve do
+          = markdown @merge_request.description
 
   - if @merge_request.closed?
     .description.alert-danger

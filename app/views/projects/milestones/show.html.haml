@@ -43,9 +43,10 @@
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
   - if @milestone.description.present?
-    .wiki
-      = preserve do
-        = markdown @milestone.description
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
 
 %ul.nav.nav-tabs.append-bottom-10
   %li.active
