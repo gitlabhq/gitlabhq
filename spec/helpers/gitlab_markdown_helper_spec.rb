@@ -348,8 +348,21 @@ describe GitlabMarkdownHelper do
     it "should handle references in headers" do
       actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
 
-      markdown(actual).should match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
-      markdown(actual).should match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
+      markdown(actual, {no_header_anchors:true}).should match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
+      markdown(actual, {no_header_anchors:true}).should match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
+    end
+
+    it "should add ids and links to headers" do
+      # Test every rule except nested tags.
+      text = '..Ab_c-d. e..'
+      id = 'ab_c-d-e'
+      markdown("# #{text}").should match(%r{<h1 id="#{id}">#{text}<a href="[^"]*##{id}"></a></h1>})
+      markdown("# #{text}", {no_header_anchors:true}).should == "<h1>#{text}</h1>"
+
+      id = 'link-text'
+      markdown("# [link text](url) ![img alt](url)").should match(
+        %r{<h1 id="#{id}"><a href="[^"]*url">link text</a> <img[^>]*><a href="[^"]*##{id}"></a></h1>}
+      )
     end
 
     it "should handle references in lists" do

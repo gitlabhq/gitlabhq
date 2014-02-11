@@ -114,6 +114,10 @@
     font-size: 1.2em;
   }
 
+  // Larger 30px left margin is required for the header link icon.
+  // Use on all markdown including those without header links for uniformity.
+  margin: 20px 20px 20px 30px;
+
   blockquote p {
     color: #888;
     font-size: 14px;
