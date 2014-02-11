@@ -2,9 +2,16 @@ The GitLab Enterprise Edition (EE) license
 
 Copyright (c) 2013 GitLab.com
 
-This software and associated documentation files (the "Software") can only be used with a valid GitLab subscription for the correct number of users. You are free to modify this Software and publish patches. It is forbidden to copy, merge, publish, distribute, sublicense, and/or sell copies of the Software.
+This software and associated documentation files (the "Software") can only be
+used with a valid GitLab subscription for the correct number of users. You are
+free to modify this Software and publish patches. It is forbidden to copy,
+merge, publish, distribute, sublicense, and/or sell copies of the Software.
 
-The above copyright notice applies only to the part of this Software that is not distributed as part of GitLab Community Edition (CE). Any part of this Software distributed as part of GitLab CE is copyrighted under the MIT Expat license. The above copyright notice and this permission notice shall be included in all copies or substantial portions of the Software.
+The above copyright notice applies only to the part of this Software that is
+not distributed as part of GitLab Community Edition (CE). Any part of this
+Software distributed as part of GitLab CE is copyrighted under the MIT Expat
+license. The above copyright notice and this permission notice shall be
+included in all copies or substantial portions of the Software.
 
 THE SOFTWARE IS PROVIDED "AS IS", WITHOUT WARRANTY OF ANY KIND, EXPRESS OR
 IMPLIED, INCLUDING BUT NOT LIMITED TO THE WARRANTIES OF MERCHANTABILITY,
