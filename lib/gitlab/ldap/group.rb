@@ -12,6 +12,7 @@ module Gitlab
       end
 
       def initialize(entry)
+        Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
       end
 
