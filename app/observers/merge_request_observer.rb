@@ -19,7 +19,7 @@ class MergeRequestObserver < ActivityObserver
   end
 
   def after_merge(merge_request, transition)
-    notification.merge_mr(merge_request)
+    notification.merge_mr(merge_request, current_user)
     # Since MR can be merged via sidekiq
     # to prevent event duplication do this check
     return true if merge_request.merge_event
