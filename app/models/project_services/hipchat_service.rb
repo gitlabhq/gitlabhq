@@ -40,7 +40,7 @@ class HipchatService < Service
   end
 
   def execute(push_data)
-    gate[room].send('Gitlab', create_message(push_data))
+    gate[room].send('GitLab', create_message(push_data))
   end
 
   private
