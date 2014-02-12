@@ -17,6 +17,7 @@ module Emails
     def repository_push_email(project_id, recipient, author_id, branch, compare)
       @project = Project.find(project_id)
       @author  = User.find(author_id)
+      @compare = compare
       @commits = Commit.decorate(compare.commits)
       @diffs   = compare.diffs
       @branch  = branch
