@@ -45,6 +45,10 @@ You can use GFM in
 * milestones
 * wiki pages
 
+You can also use other rich text files in GitLab.
+You might have to install a depency to do so.
+Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+
 Newlines
 --------
 The biggest difference that GFM introduces is in the handling of linebreaks. With traditional Markdown you can hard wrap paragraphs of text and they will be combined into a single paragraph. We find this to be the cause of a huge number of unintentional formatting errors. GFM treats newlines in paragraph-like content as real line breaks, which is probably what you intended.
