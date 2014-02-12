@@ -51,15 +51,36 @@ If you are not familiar with vim please skip this and keep using the default edi
     # Install vim and set as default editor
     sudo apt-get install -y vim
     sudo update-alternatives --set editor /usr/bin/vim.basic
+    
+    # Or if you prefer nano as default editor
+    sudo apt-get install -y nano
+    sudo update-alternatives --set editor /usr/bin/nano
 
 Install the required packages:
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
+Make sure you have the right version of Python installed.
+
+    # Install Python
+    sudo apt-get install -y python
+
+    # Make sure that Python is 2.7 (3.x is not supported at the moment)
+    python --version
+
+    # If it's Python 3 you might need to install Python 2 separately
+    sudo apt-get install python2.7
+
+    # Make sure you can access Python via python2
+    python2 --version
+
+    # If you get a "command not found" error create a link to the python binary
+    sudo ln -s /usr/bin/python /usr/bin/python2
+
     # For reStructuredText markup language support install required package:
     sudo apt-get install -y python-docutils
 
-Make sure you have the right version of Git installed
+Make sure you have the right version of Git installed.
 
     # Install Git
     sudo apt-get install -y git-core
@@ -94,13 +115,41 @@ does not ship with one. The recommended mail server is postfix and you can insta
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
+
 # 2. Ruby
+
+The Ruby interpreter is required to execute the GitLab scripts.
 
 The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
 
-Remove the old Ruby 1.8 if present
+Remove the old Ruby 1.8 if present:
 
-    sudo apt-get remove ruby1.8
+    sudo apt-get remove -y ruby1.8
+
+## a) Install from the repositories
+
+In the latest versions of Debian and Ubuntu, you can install Ruby 1.9.x directly from the repositories.
+
+    # For Debian 7/Wheezy, Ubuntu 12.10/Quantal and 13.04/Raring:
+    sudo apt-get install -y ruby ruby-dev
+    
+    # For Debian 6/Squeeze, Ubuntu 10.04/Lucid LTS and 12.04/Precise LTS:
+    sudo apt-get install -y ruby1.9.1 ruby1.9.1-dev
+
+Update alternatives for Ruby and RubyGems, and confirm version:
+
+    sudo update-alternatives --config ruby
+    sudo update-alternatives --config gem
+    ruby --version
+
+Then install the Bundler Gem:
+
+    sudo gem install bundler --no-ri --no-rdoc
+
+## b) Compile and install from source code
+
+For older versions of Debian and Ubuntu, or if Ruby 1.9.x isn't available on your distro repo,
+you have build and install it manually.
 
 Download Ruby and compile it:
 
@@ -111,7 +160,13 @@ Download Ruby and compile it:
     make
     sudo make install
 
-Install the Bundler Gem:
+Update alternatives for Ruby and RubyGems, and confirm version:
+
+    sudo update-alternatives --config ruby
+    sudo update-alternatives --config gem
+    ruby --version
+
+Then install the Bundler Gem:
 
     sudo gem install bundler --no-ri --no-rdoc
 
@@ -131,10 +186,15 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git gitlab-shell
 
+    # Go to gitlab-shell dir
     cd gitlab-shell
 
+    # Checkout the stable and supported version
+    sudo -u git -H git checkout v1.8.0
+
+    # Copy the example GitLab-Shell config
     sudo -u git -H cp config.yml.example config.yml
 
     # Edit config and replace gitlab_url
@@ -158,16 +218,20 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-5-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
+
+    # Checkout the stable and supported version
+    sudo -u git -H git checkout 6-5-stable
 
 **Note:**
 You can change `6-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
+    # Go to gitlab dir
     cd /home/git/gitlab
 
     # Copy the example GitLab config
@@ -222,6 +286,11 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # Mysql
     sudo -u git cp config/database.yml.mysql config/database.yml
 
+    or
+
+    # PostgreSQL
+    sudo -u git cp config/database.yml.postgresql config/database.yml
+
     # Make sure to update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
     # If you followed the database guide then please do as follows:
@@ -229,25 +298,19 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # You can keep the double quotes around the password
     sudo -u git -H editor config/database.yml
 
-    or
-
-    # PostgreSQL
-    sudo -u git cp config/database.yml.postgresql config/database.yml
-
-
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
 
 ## Install Gems
 
+    # Go to gitlab dir
     cd /home/git/gitlab
 
     # For MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
 
     # Or for PostgreSQL (note, the option says "without ... mysql")
-    sudo -u git -H bundle install --deployment --without development test mysql aws
-
+    sudo -u git -H bundle install --deployment --without development test mysql awS
 
 ## Initialize Database and Activate Advanced Features
 
@@ -256,7 +319,6 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     # Type 'yes' to create the database tables.
 
     # When done you see 'Administrator account created:'
-
 
 ## Install Init Script
 
@@ -289,7 +351,6 @@ Check if GitLab and its environment are configured correctly:
     sudo service gitlab start
     # or
     sudo /etc/init.d/gitlab restart
-
 
 ## Compile assets
 
