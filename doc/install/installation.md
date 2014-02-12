@@ -144,7 +144,7 @@ GitLab Shell is an ssh access and repository management software developed speci
 
 # 5. Database
 
-To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](./databases.md).
+To setup the MySQL/PostgreSQL database and dependencies please see [doc/install/databases.md](./databases.md).
 
 
 # 6. GitLab
