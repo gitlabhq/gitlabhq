@@ -41,7 +41,7 @@ class Profiles::KeysController < ApplicationController
       begin
         user = User.find_by_username(params[:username])
         if user.present?
-          render text: user.all_ssh_keys.join('\n')
+          render text: user.all_ssh_keys.join("\n")
         else
           render_404 and return
         end
