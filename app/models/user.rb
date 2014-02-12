@@ -258,6 +258,14 @@ class User < ActiveRecord::Base
                            end
   end
 
+  # Groups user has access to (including public)
+  def all_groups
+    @all_groups ||= begin
+                      group_ids = (groups.pluck(:id) + all_projects.pluck(:namespace_id))
+                      Group.where(id: group_ids).order('namespaces.name ASC')
+                    end
+  end
+
 
   # Projects user has access to
   def authorized_projects
@@ -265,6 +273,14 @@ class User < ActiveRecord::Base
                                project_ids = (personal_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id)).uniq
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
+  end
+
+  # Projects user has access to (including public)
+  def all_projects
+    @all_projects ||= begin
+                        project_ids = (personal_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id) + Project.public_only.pluck(:id)).uniq
+                        Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
+                      end
   end
 
   def owned_projects

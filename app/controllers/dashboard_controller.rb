@@ -37,6 +37,8 @@ class DashboardController < ApplicationController
                   current_user.authorized_projects.joined(current_user)
                 when 'owned' then
                   current_user.owned_projects
+                when 'all' then
+                  current_user.all_projects
                 else
                   current_user.authorized_projects
                 end
