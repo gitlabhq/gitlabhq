@@ -148,6 +148,8 @@ or start each component separately
 
 * [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
 
+* [Gitter](https://gitter.im/gitlabhq/gitlabhq#) here you can ask questions when you need help.
+
 
 ### Getting in touch
 
