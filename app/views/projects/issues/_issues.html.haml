@@ -6,7 +6,7 @@
         = form_tag bulk_update_project_issues_path(@project), method: :post  do
           %span Update selected issues with &nbsp;
           = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")
-          = project_users_select_tag('update[assignee_id]')
+          = project_users_select_tag('update[assignee_id]', placeholder: 'Assignee')
           = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
           = hidden_field_tag 'update[issues_ids]', []
           = hidden_field_tag :status, params[:status]
