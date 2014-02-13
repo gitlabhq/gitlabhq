@@ -58,7 +58,7 @@ module Gitlab
         end
 
         def username
-          email.match(/^[^@]*/)[0]
+          uid.gsub('@','.')
         end
 
         def provider
