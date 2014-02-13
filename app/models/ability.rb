@@ -61,8 +61,8 @@ class Ability
       if team.masters.include?(user)
         rules += project_master_rules
 
-      elsif team.extended_developers.include?(user)
-        rules += project_ext_dev_rules
+      elsif team.developers_with_merge.include?(user)
+        rules += project_dev_with_merge_rules
 
       elsif team.developers.include?(user)
         rules += project_dev_rules
@@ -134,7 +134,7 @@ class Ability
       ]
     end
 
-    def project_ext_dev_rules
+    def project_dev_with_merge_rules
       project_dev_rules + [
         :merge_merge_request
       ]

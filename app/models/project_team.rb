@@ -84,8 +84,8 @@ class ProjectTeam
     @developers ||= fetch_members(:developers)
   end
 
-  def extended_developers
-    @extended_developers ||= fetch_members(:extended_developers)
+  def developers_with_merge
+    @developers_with_merge ||= fetch_members(:developers_with_merge)
   end
 
   def masters
