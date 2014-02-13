@@ -1,7 +1,7 @@
 $ ->
   userFormatResult = (user) ->
-    if user.avatar
-      avatar = user.avatar.url
+    if user.avatar_url
+      avatar = user.avatar_url
     else if gon.gravatar_enabled
       avatar = gon.gravatar_url
       avatar = avatar.replace('%{hash}', md5(user.email))
