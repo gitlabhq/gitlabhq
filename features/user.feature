@@ -1,6 +1,6 @@
 Feature: User
   Background:
-    Given Create user "John Doe"
+    Given User "John Doe" exists
     And "John Doe" is authorized to private project "Enterprise"
 
   # Signed out

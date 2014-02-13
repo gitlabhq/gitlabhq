@@ -58,10 +58,6 @@ module SharedProject
     page.should have_content("Features:")
   end
 
-  Then 'page status code should be 404' do
-    page.status_code.should == 404
-  end
-
   def current_project
     @project ||= Project.first
   end
@@ -107,24 +103,21 @@ module SharedProject
   end
 
   step '"John Doe" is authorized to private project "Enterprise"' do
-    user = User.find_by(name: "John Doe")
-    user ||= create(:user, name: "John Doe", username: "john_doe")
+    user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Enterprise")
     project ||= create(:project, name: "Enterprise", namespace: user.namespace)
     project.team << [user, :master]
   end
 
   step '"John Doe" is authorized to internal project "Internal"' do
-    user = User.find_by(name: "John Doe")
-    user ||= create(:user, name: "John Doe", username: "john_doe")
+    user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Internal")
     project ||= create :project, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
     project.team << [user, :master]
   end
 
   step '"John Doe" is authorized to public project "Community"' do
-    user = User.find_by(name: "John Doe")
-    user ||= create(:user, name: "John Doe", username: "john_doe")
+    user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Community")
     project ||= create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
     project.team << [user, :master]

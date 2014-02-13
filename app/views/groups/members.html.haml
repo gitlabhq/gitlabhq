@@ -6,7 +6,6 @@
   %strong= link_to "here", help_permissions_path, class: "vlink"
 
 %hr
-- can_manage_group =  current_user.can? :manage_group, @group
 .ui-box
   .title
     %strong #{@group.name}
@@ -15,6 +14,6 @@
       (#{@members.count})
   %ul.well-list
     - @members.each do |member|
-      = render 'users_groups/users_group', member: member, show_controls: can_manage_group
-- if can_manage_group
+      = render 'users_groups/users_group', member: member, show_controls: true
+- if current_user.can? :manage_group, @group
   = render "new_group_member"

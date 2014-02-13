@@ -2,7 +2,7 @@ Feature: Admin Groups
   Background:
     Given I sign in as an admin
     And I have group with projects
-    And Create user "John Doe"
+    And User "John Doe" exists
     And I visit admin groups page
 
   Scenario: See group list
