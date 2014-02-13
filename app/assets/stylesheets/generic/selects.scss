@@ -79,6 +79,8 @@ select {
   margin-right: 10px;
 }
 
-.ajax-users-dropdown .select2-search {
-  padding-top: 4px;
+.ajax-users-dropdown, .ajax-project-users-dropdown {
+  .select2-search {
+    padding-top: 4px;
+  }
 }
