@@ -25,6 +25,12 @@ class Group < Namespace
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
 
   mount_uploader :avatar, AttachmentUploader
+  
+  def self.accessible_to(user)
+    accessible_ids = Project.accessible_to(user).pluck(:namespace_id)
+    accessible_ids += user.groups.pluck(:id) if user
+    where(id: accessible_ids)
+  end
 
   def human_name
     name

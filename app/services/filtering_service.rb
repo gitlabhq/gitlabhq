@@ -41,16 +41,16 @@ class FilteringService
   def init_collection
     table_name = klass.table_name
 
-    return klass.of_projects(Project.public_only) unless current_user
-
     if project
-      if current_user.can?(:read_project, project)
+      if project.public? || (current_user && current_user.can?(:read_project, project))
         project.send(table_name)
       else
         []
       end
-    else
+    elsif current_user && params[:authorized_only].presence
       klass.of_projects(current_user.authorized_projects)
+    else
+      klass.of_projects(Project.accessible_to(current_user))
     end
   end
 
