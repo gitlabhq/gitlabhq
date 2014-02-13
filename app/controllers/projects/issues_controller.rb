@@ -29,6 +29,7 @@ class Projects::IssuesController < Projects::ApplicationController
     sort_param = params[:sort] || 'newest'
     @sort = sort_param.humanize unless sort_param.empty?
 
+    @assignees = User.where(id: @project.issues.pluck(:assignee_id))
 
     respond_to do |format|
       format.html

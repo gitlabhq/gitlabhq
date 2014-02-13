@@ -49,7 +49,7 @@
                 Any
               = link_to project_filter_path(assignee_id: 0) do
                 Unassigned
-            - @project.team.members.sort_by(&:name).each do |user|
+            - @assignees.sort_by(&:name).each do |user|
               %li
                 = link_to project_filter_path(assignee_id: user.id) do
                   = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
