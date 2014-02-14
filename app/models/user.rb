@@ -78,6 +78,7 @@ class User < ActiveRecord::Base
 
   # Profile
   has_many :keys, dependent: :destroy
+  has_many :emails, dependent: :destroy
 
   # Groups
   has_many :users_groups, dependent: :destroy
@@ -116,6 +117,7 @@ class User < ActiveRecord::Base
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
+  validate :unique_email, if: ->(user) { user.email_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
@@ -183,6 +185,13 @@ class User < ActiveRecord::Base
         where(conditions).first
       end
     end
+    
+    def find_for_commit(email, name)
+      # Prefer email match over name match
+      User.where(email: email).first ||
+        User.joins(:emails).where(emails: { email: email }).first ||
+        User.where(name: name).first
+    end
 
     def filter filter_name
       case filter_name
@@ -248,6 +257,10 @@ class User < ActiveRecord::Base
     unless self.avatar.image?
       self.errors.add :avatar, "only images allowed"
     end
+  end
+
+  def unique_email
+    self.errors.add(:email, 'has already been taken') if Email.exists?(email: self.email)
   end
 
   # Groups user has access to

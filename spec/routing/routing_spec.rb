@@ -183,6 +183,23 @@ describe Profiles::KeysController, "routing" do
   end
 end
 
+#   emails GET    /emails(.:format)        emails#index
+#          POST   /keys(.:format)          emails#create
+#          DELETE /keys/:id(.:format)      keys#destroy
+describe Profiles::EmailsController, "routing" do
+  it "to #index" do
+    get("/profile/emails").should route_to('profiles/emails#index')
+  end
+
+  it "to #create" do
+    post("/profile/emails").should route_to('profiles/emails#create')
+  end
+
+  it "to #destroy" do
+    delete("/profile/emails/1").should route_to('profiles/emails#destroy', id: '1')
+  end
+end
+
 # profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
 describe Profiles::AvatarsController, "routing" do
   it "to #destroy" do

@@ -219,6 +219,19 @@ FactoryGirl.define do
       end
     end
   end
+  
+  factory :email do
+    user
+    email do
+      Faker::Internet.email('alias')
+    end
+
+    factory :another_email do
+      email do
+        Faker::Internet.email('another.alias')
+      end
+    end
+  end
 
   factory :milestone do
     title
