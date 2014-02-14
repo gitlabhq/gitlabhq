@@ -115,8 +115,7 @@
                   = link_to project_filter_path(mr_state: mr_state) do
                     = mr_state.capitalize
 
-          .pull-right
-            = render 'shared/sort_dropdown'
+          = render 'shared/sort_dropdown'
 
       %ul.well-list.mr-list
         = render @merge_requests
