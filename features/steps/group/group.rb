@@ -29,6 +29,7 @@ class Groups < Spinach::FeatureSteps
 
   And 'I select user "Mary Jane" from list with role "Reporter"' do
     user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
+    click_link 'Add members'
     within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "group_access"

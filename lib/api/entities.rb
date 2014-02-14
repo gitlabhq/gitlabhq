@@ -6,6 +6,12 @@ module API
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
+
+      expose :avatar_url do |user, options|
+        if user.avatar.present?
+          user.avatar.url
+        end
+      end
     end
 
     class UserSafe < Grape::Entity

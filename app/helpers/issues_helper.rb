@@ -70,11 +70,11 @@ module IssuesHelper
   end
 
   def bulk_update_milestone_options
-    options_for_select(["None (backlog)", nil]) + options_from_collection_for_select(project_active_milestones, "id", "title", params[:milestone_id])
+    options_for_select(["None (backlog)"]) + options_from_collection_for_select(project_active_milestones, "id", "title", params[:milestone_id])
   end
 
   def bulk_update_assignee_options
-    options_for_select(["None (unassigned)", nil]) + options_from_collection_for_select(@project.team.members, "id", "name", params[:assignee_id])
+    options_for_select(["None (unassigned)"]) + options_from_collection_for_select(@project.team.members, "id", "name", params[:assignee_id])
   end
 
   def assignee_options object

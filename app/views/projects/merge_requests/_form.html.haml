@@ -47,7 +47,7 @@
           %i.icon-user
           Assign to
         .col-sm-10
-          = f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select a user" }, {class: 'select2'})
+          = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control')
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group

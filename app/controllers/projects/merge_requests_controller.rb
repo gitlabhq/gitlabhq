@@ -28,6 +28,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
+    @assignees = User.where(id: @project.merge_requests.pluck(:assignee_id))
   end
 
   def show

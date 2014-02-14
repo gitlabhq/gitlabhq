@@ -1,5 +1,4 @@
 /** Select2 selectbox style override **/
-
 .select2-container, .select2-container.select2-drop-above {
   .select2-choice {
     background: #FFF;
@@ -12,8 +11,12 @@
 }
 
 .select2-drop-active {
-  border: 1px solid #BBB;
+  border: 1px solid #BBB !important;
   margin-top: 4px;
+
+  &.select2-drop-above {
+    margin-bottom: 8px;
+  }
 
   .select2-search input {
     background: #fafafa;
@@ -77,4 +80,10 @@ select {
 /** Branch/tag selector **/
 .project-refs-form .select2-container {
   margin-right: 10px;
+}
+
+.ajax-users-dropdown, .ajax-project-users-dropdown {
+  .select2-search {
+    padding-top: 4px;
+  }
 }
