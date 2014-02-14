@@ -15,6 +15,9 @@ v 6.6.0
   - Show users' group membership on users' activity page
   - User pages are visible without login if user is authorized to a public project
   - Markdown rendered headers have id derived from their name and link to their id
+  - Improve application to work faster with large groups (100+ members)
+  - Multiple emails per user
+  - Show last commit for file when view file source
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
