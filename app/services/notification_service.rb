@@ -17,6 +17,13 @@ class NotificationService
     end
   end
 
+  # Always notify user about email added to profile
+  def new_email(email)
+    if email.user
+      mailer.new_email_email(email.id)
+    end
+  end
+
   # When create an issue we should send next emails:
   #
   #  * issue assignee if their notification level is not Disabled
