@@ -31,13 +31,13 @@
   .hljs-template_comment,
   .hljs-javadoc,
   .hljs-comment * {
-    color: #006a00;
+    color: #4183c4;
   }
 
   .hljs-keyword,
   .hljs-literal,
   .nginx .hljs-title {
-    color: #aa0d91;
+    color: #dd1144;
   }
   .method,
   .hljs-list .hljs-title,
@@ -48,16 +48,16 @@
   .http .hljs-title,
   .hljs-request,
   .hljs-status {
-    color: #008;
+    color: #445588;
   }
 
   .hljs-envvar,
   .tex .hljs-special {
-    color: #660;
+    color: #578080;
   }
 
   .hljs-string {
-    color: #c41a16;
+    color: #dd1144;
   }
   .hljs-tag .hljs-value,
   .hljs-cdata,
@@ -66,7 +66,7 @@
   .apache .hljs-cbracket,
   .hljs-date,
   .hljs-regexp {
-    color: #080;
+    color: #3F8083;
   }
 
   .hljs-sub .hljs-identifier,
@@ -87,7 +87,7 @@
   .clojure .hljs-built_in,
   .hljs-function .hljs-title,
   .coffeescript .hljs-attribute {
-    color: #1c00cf;
+    color: #4183C4;
   }
 
   .hljs-class .hljs-title,
@@ -104,11 +104,11 @@
   .setting,
   .hljs-params,
   .clojure .hljs-attribute {
-    color: #5c2699;
+    color: #0086B3;
   }
 
   .hljs-variable {
-   color: #3f6e74;
+   color: #3F8083;
   }
   .css .hljs-tag,
   .hljs-rules .hljs-property,
@@ -119,28 +119,28 @@
 
   .css .hljs-class,
   .css .hljs-id {
-    color: #9B703F;
+    color: #990000;
   }
 
   .hljs-value .hljs-important {
-    color: #ff7700;
+    color: #DD1144;
     font-weight: bold;
   }
 
   .hljs-rules .hljs-keyword {
-    color: #C5AF75;
+    color: #99006F;
   }
 
   .hljs-annotation,
   .apache .hljs-sqbracket,
   .nginx .hljs-built_in {
-    color: #9B859D;
+    color: #E3D2D2;
   }
 
   .hljs-preprocessor,
   .hljs-preprocessor *,
   .hljs-pragma {
-    color: #643820;
+    color: #990000;
   }
 
   .tex .hljs-formula {
@@ -155,15 +155,15 @@
   }
 
   .diff .hljs-change {
-    background-color: #BCCFF9;
+    background-color: #95AFC9;
   }
 
   .hljs-addition {
-    background-color: #BAEEBA;
+    background-color: #3F8083;
   }
 
   .hljs-deletion {
-    background-color: #FFC8BD;
+    background-color: #DE1155;
   }
 
   .hljs-comment .hljs-yardoctag {
