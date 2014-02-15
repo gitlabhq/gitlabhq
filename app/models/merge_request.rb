@@ -219,6 +219,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def source_project_namespace
+    if source_project && source_project.namespace
+      source_project.namespace.path
+    else
+      "(removed)"
+    end
+  end
+
   def source_branch_exists?
     return false unless self.source_project
 
