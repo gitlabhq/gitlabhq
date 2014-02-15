@@ -229,9 +229,9 @@ header {
     }
     .title {
       a {
-        color: #BBB;
+        color: #FFF;
         &:hover {
-          color: #FFF;
+          text-decoration: underline;
         }
       }
       color: #fff;
