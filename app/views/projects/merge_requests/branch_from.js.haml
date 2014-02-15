@@ -1,5 +1,5 @@
 :plain
-  $(".mr_source_commit").html("#{commit_to_html(@commit, @source_project)}");
+  $(".mr_source_commit").html("#{commit_to_html(@commit, @source_project, false)}");
   var mrTitle = $('#merge_request_title');
 
   if(mrTitle.val().length == 0) {

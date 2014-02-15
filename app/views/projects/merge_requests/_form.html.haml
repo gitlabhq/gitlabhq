@@ -6,19 +6,22 @@
           %li= msg
 
   .merge-request-branches
-    .row
-      .col-md-5
+    .form-group
+      = label_tag nil, class: 'control-label' do
+        From
+      .col-sm-10
         .clearfix
           .pull-left
             = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
             = f.select(:source_branch, @merge_request.source_branches, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
-        .mr_source_commit.prepend-top-10
-      .col-md-2
-        .merge-request-angle
-          %i.icon-long-arrow-right
-      .col-md-5
+        .mr_source_commit
+    %br
+    .form-group
+      = label_tag nil, class: 'control-label' do
+        To
+      .col-sm-10
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
@@ -26,7 +29,7 @@
           .pull-left
             &nbsp;
             = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
-        .mr_target_commit.prepend-top-10
+        .mr_target_commit
 
   %hr
   .merge-request-form-info
