@@ -61,7 +61,7 @@ After making the release branch new commits are cherry-picked from master. When 
 * 17th: feature freeze (stop merging new features in master)
 * 18th: UI freeze (stop merging changes to the user interface)
 * 19th: code freeze (stop merging non-essential code improvements)
-* 20th: release candidate 1 (VERSION x.x.0.pre, tag and tweet about x.x.0.rc1)
+* 20th: release candidate 1 (VERSION x.x.0.rc1, tag and tweet about x.x.0.rc1)
 * 21st: optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
 * 22nd: release (VERSION x.x.0, create x-x-stable branch, tag, blog and tweet)
 * 23nd: optional patch releases (x.x.1, x.x.2, etc., only if there are serious problems)
