@@ -208,6 +208,10 @@ group :development, :test do
 
   gem 'spork', '~> 1.0rc'
   gem 'jasmine', '2.0.0.rc5'
+
+  gem "spring", '1.1.1'
+  gem "spring-commands-rspec", '1.0.1'
+  gem "spring-commands-spinach", '1.0.0'
 end
 
 group :test do
