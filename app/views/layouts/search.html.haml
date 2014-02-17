@@ -2,6 +2,7 @@
 %html{ lang: "en"}
   = render "layouts/head", title: "Search"
   %body{class: "#{app_theme} application", :'data-page' => body_data_page}
+    = render "layouts/broadcast"
     = render "layouts/head_panel", title: "Search"
     = render "layouts/flash"
 
