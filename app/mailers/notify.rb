@@ -18,7 +18,7 @@ class Notify < ActionMailer::Base
   default from: Gitlab.config.gitlab.email_from
   default reply_to: "noreply@#{Gitlab.config.gitlab.host}"
 
-  # Just send email with 3 seconds delay
+  # Just send email with 2 seconds delay
   def self.delay
     delay_for(2.seconds)
   end
