@@ -8,6 +8,5 @@ class ProfileNotifications < Spinach::FeatureSteps
 
   step 'I should see global notifications settings' do
     page.should have_content "Notifications settings"
-    page.should have_content "Global setting"
   end
 end
