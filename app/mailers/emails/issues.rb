@@ -3,15 +3,17 @@ module Emails
     def new_issue_email(recipient_id, issue_id)
       @issue = Issue.find(issue_id)
       @project = @issue.project
-      mail(to: recipient(recipient_id),
+      mail(from: sender(@issue.author_id),
+           to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
-    def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id)
+    def reassigned_issue_email(recipient_id, issue_id, previous_assignee_id, updated_by_user_id)
       @issue = Issue.find(issue_id)
       @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
       @project = @issue.project
-      mail(to: recipient(recipient_id),
+      mail(from: sender(updated_by_user_id),
+           to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
@@ -19,7 +21,8 @@ module Emails
       @issue = Issue.find issue_id
       @project = @issue.project
       @updated_by = User.find updated_by_user_id
-      mail(to: recipient(recipient_id),
+      mail(from: sender(updated_by_user_id),
+           to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
@@ -28,7 +31,8 @@ module Emails
       @issue_status = status
       @project = @issue.project
       @updated_by = User.find updated_by_user_id
-      mail(to: recipient(recipient_id),
+      mail(from: sender(updated_by_user_id),
+           to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
   end

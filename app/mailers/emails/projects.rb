@@ -22,7 +22,9 @@ module Emails
       @diffs   = compare.diffs
       @branch  = branch
 
-      mail(to: recipient, subject: subject("New push to repository"))
+      mail(from: sender(author_id),
+           to: recipient,
+           subject: subject("New push to repository"))
     end
   end
 end

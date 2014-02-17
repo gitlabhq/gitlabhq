@@ -257,7 +257,7 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, target.assignee_id_was)
+      mailer.send(method, recipient.id, target.id, target.assignee_id_was, current_user.id)
     end
   end
 
