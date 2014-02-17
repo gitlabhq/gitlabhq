@@ -57,7 +57,7 @@ module Emails
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
   #   => "GitLab Merge Request | Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    subject = "GitLab Merge Request |"
+    subject = "Merge Request | "
     if @merge_request.for_fork?
       subject << "#{@merge_request.source_project.name_with_namespace}:#{merge_request.source_branch} >> #{@merge_request.target_project.name_with_namespace}:#{merge_request.target_branch}"
     else

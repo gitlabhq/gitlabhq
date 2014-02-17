@@ -24,7 +24,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| Account was created for you$/i
+      should have_subject /^Account was created for you$/i
     end
 
     it 'contains the new user\'s login name' do
@@ -52,7 +52,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| Account was created for you$/i
+      should have_subject /^Account was created for you$/i
     end
 
     it 'contains the new user\'s login name' do
@@ -78,7 +78,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| SSH key was added to your account$/i
+      should have_subject /^SSH key was added to your account$/i
     end
 
     it 'contains the new ssh key title' do

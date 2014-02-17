@@ -43,21 +43,21 @@ class Notify < ActionMailer::Base
   # Examples
   #
   #   >> subject('Lorem ipsum')
-  #   => "GitLab | Lorem ipsum"
+  #   => "Lorem ipsum"
   #
   #   # Automatically inserts Project name when @project is set
   #   >> @project = Project.last
   #   => #<Project id: 1, name: "Ruby on Rails", path: "ruby_on_rails", ...>
   #   >> subject('Lorem ipsum')
-  #   => "GitLab | Ruby on Rails | Lorem ipsum "
+  #   => "Ruby on Rails | Lorem ipsum "
   #
   #   # Accepts multiple arguments
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
-  #   => "GitLab | Lorem ipsum | Dolor sit amet"
+  #   => "Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    subject = "GitLab"
-    subject << (@project ? " | #{@project.name_with_namespace}" : "")
-    subject << " | " + extra.join(' | ') if extra.present?
+    subject = ""
+    subject << "#{@project.name_with_namespace} | " if @project
+    subject << extra.join(' | ') if extra.present?
     subject
   end
 end
