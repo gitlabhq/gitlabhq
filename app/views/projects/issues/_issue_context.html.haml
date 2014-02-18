@@ -6,7 +6,8 @@
   - if can?(current_user, :modify_issue, @issue)
     = link_to profile_path(issue.assignee) do
       = image_tag(avatar_icon(issue.assignee.email), class: 'avatar avatar-inline s16 assignee') if issue.assignee
-    = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Assign to user (none):" }, {class: 'select2'})
+
+    = project_users_select_tag('issue[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @issue.assignee_id)
   - elsif issue.assignee
     = link_to_member(@project, @issue.assignee)
 
