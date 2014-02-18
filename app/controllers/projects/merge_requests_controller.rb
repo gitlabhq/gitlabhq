@@ -106,9 +106,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params[:merge_request].delete(:target_project_id)
 
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
-      @merge_request.reload_code
-      @merge_request.mark_as_unchecked
-
       @merge_request.reset_events_cache
 
       respond_to do |format|
