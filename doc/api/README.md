@@ -128,6 +128,7 @@ But when you want to create a link to web page - use  `http:://host/project/issu
 + [Project Snippets](project_snippets.md)
 + [Repositories](repositories.md)
 + [Repository Files](repository_files.md)
++ [Commits](commits.md)
 + [Merge Requests](merge_requests.md)
 + [Issues](issues.md)
 + [Milestones](milestones.md)
