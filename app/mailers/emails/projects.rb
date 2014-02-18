@@ -3,6 +3,7 @@ module Emails
     def project_access_granted_email(user_project_id)
       @users_project = UsersProject.find user_project_id
       @project = @users_project.project
+      @target_url = project_url(@project)
       mail(to: @users_project.user.email,
            subject: subject("Access to project was granted"))
     end
@@ -10,6 +11,7 @@ module Emails
     def project_was_moved_email(project_id, user_id)
       @user = User.find user_id
       @project = Project.find project_id
+      @target_url = project_url(@project)
       mail(to: @user.email,
            subject: subject("Project was moved"))
     end
@@ -21,6 +23,11 @@ module Emails
       @commits = Commit.decorate(compare.commits)
       @diffs   = compare.diffs
       @branch  = branch
+      if @commits.length > 1
+        @target_url = project_compare_url(@project, from: @commits.first, to: @commits.last)
+      else
+        @target_url = project_commit_url(@project, @compare.commit)
+      end
 
       mail(from: sender(author_id),
            to: recipient,

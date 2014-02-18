@@ -20,3 +20,6 @@
           %p{style: "font-size:small;color:#777"}
             - if @project
               You're receiving this notification because you are a member of the #{@project.name_with_namespace} project team.
+              %br
+            - if @target_url
+              #{link_to "View in GitLab", @target_url}

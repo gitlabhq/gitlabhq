@@ -4,6 +4,7 @@ module Emails
       @note = Note.find(note_id)
       @commit = @note.noteable
       @project = @note.project
+      @target_url = project_commit_url(@project, @commit, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
            to: recipient(recipient_id),
            subject: subject("#{@commit.title} (#{@commit.short_id})"))
@@ -13,6 +14,7 @@ module Emails
       @note = Note.find(note_id)
       @issue = @note.noteable
       @project = @note.project
+      @target_url = project_issue_url(@project, @issue)
       mail(from: sender(@note.author_id),
            to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
@@ -22,6 +24,7 @@ module Emails
       @note = Note.find(note_id)
       @merge_request = @note.noteable
       @project = @note.project
+      @target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
            to: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
@@ -30,6 +33,7 @@ module Emails
     def note_wall_email(recipient_id, note_id)
       @note = Note.find(note_id)
       @project = @note.project
+      @target_url = project_wall_url(@note.project, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
            to: recipient(recipient_id),
            subject: subject("Note on wall"))

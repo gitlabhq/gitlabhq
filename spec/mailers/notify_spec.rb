@@ -468,6 +468,8 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, 'cd5c4bac', 'b1e6a9db') }
+    let(:commits) { Commit.decorate(compare.commits) }
+    let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
 
@@ -491,6 +493,10 @@ describe Notify do
 
     it 'includes diffs' do
       should have_body_text /Checkout wiki pages for installation information/
+    end
+
+    it 'contains a link to the diff' do
+      should have_body_text /#{diff_path}/
     end
   end
 end
