@@ -45,13 +45,17 @@
 
 #### Official installation methods
 
-* [Manual installation guide for a production server](doc/install/installation.md)
+* [GitLab packages (beta)](https://www.gitlab.com/downloads/) These packages contain GitLab and all its depencies (PostgreSQL, Redis, Nginx, Unicorn, etc.). They are made with [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) that also contains the installation instructions. These packages currently support a reduced selection of GitLab's normal features. For instance, it is not yet possible to create/restore application backups or to use HTTPS.
+
+* [GitLab virtual machine images](https://www.gitlab.com/downloads/) contain an operating system and a preinstalled GitLab. They are made with [GitLab Packer](https://gitlab.com/gitlab-org/gitlab-packer/blob/master/README.md) that also contains the installation instructions.
 
 * [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation on a virtual machine with Vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
 
+* [Manual installation guide](doc/install/installation.md) This guide to set up a production server offers detailed and complete step-by-step instructions.
+
 #### Third party one-click installers
 
-* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab.
+* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab. We recommend selecting a droplet with [1GB of memory](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md).
 
 * [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
 
