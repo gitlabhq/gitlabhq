@@ -19,7 +19,7 @@
         %td{align: "left", style: "margin: 0; padding: 10px;"}
           %p{style: "font-size:small;color:#777"}
             - if @project
-              You're receiving this notification because you are a member of the #{@project.name_with_namespace} project team.
+              You're receiving this notification because you are a member of the #{link_to @project.name_with_namespace, project_url(@project)} project team.
               %br
             - if @target_url
               #{link_to "View in GitLab", @target_url}
