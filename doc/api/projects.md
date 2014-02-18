@@ -255,7 +255,6 @@ Parameters:
 
 + `user_id` (required) - user_id of owner
 + `name` (required) - new project name
-+ `namespace_id` (optional) - namespace for the new project (defaults to user)
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
