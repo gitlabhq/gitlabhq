@@ -2,7 +2,7 @@
   .check-all-holder
     = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left"
   .issues-filters
-    .dropdown.inline.prepend-left-10
+    .dropdown.inline
       %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
         %i.icon-user
         %span.light assignee:
