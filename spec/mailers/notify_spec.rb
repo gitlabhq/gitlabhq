@@ -353,10 +353,6 @@ describe Notify do
           should deliver_to recipient.email
         end
 
-        it 'contains the name of the note\'s author' do
-          should have_body_text /#{note_author.name}/
-        end
-
         it 'contains the message from the note' do
           should have_body_text /#{note.note}/
         end
