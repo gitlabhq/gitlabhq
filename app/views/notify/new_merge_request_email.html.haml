@@ -1,6 +1,4 @@
-%p
-  = "New Merge Request ##{@merge_request.iid}"
-%p
+%p.details
   != merge_path_description(@merge_request, '&rarr;')
 
 - if @merge_request.assignee_id.present?
