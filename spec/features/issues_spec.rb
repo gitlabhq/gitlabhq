@@ -183,7 +183,7 @@ describe "Issues" do
       it 'with dropdown menu' do
         visit project_issue_path(project, issue)
 
-        find('.edit-issue.inline-update').select(project.team.members.first.name, from: 'issue_assignee_id')
+        find('.edit-issue.inline-update #issue_assignee_id').set project.team.members.first.id
         click_button 'Update Issue'
 
         page.should have_content "currently assigned to"
