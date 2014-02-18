@@ -42,6 +42,7 @@ module API
     mount ProjectHooks
     mount Services
     mount Files
+    mount Commits
     mount Namespaces
   end
 end
