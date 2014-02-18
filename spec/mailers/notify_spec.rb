@@ -146,7 +146,8 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project ) }
+        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: Faker::Lorem.sentence) }
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
@@ -159,6 +160,14 @@ describe Notify do
 
           it 'contains a link to the new issue' do
             should have_body_text /#{project_issue_path project, issue}/
+          end
+        end
+
+        describe 'that are new with a description' do
+          subject { Notify.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+
+          it 'contains the description' do
+            should have_body_text /#{issue_with_description.description}/
           end
         end
 
@@ -221,6 +230,7 @@ describe Notify do
 
       context 'for merge requests' do
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
+        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: Faker::Lorem.sentence) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -241,6 +251,14 @@ describe Notify do
 
           it 'contains the target branch for the merge request' do
             should have_body_text /#{merge_request.target_branch}/
+          end
+        end
+
+        describe 'that are new with a description' do
+          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+
+          it 'contains the description' do
+            should have_body_text /#{merge_request_with_description.description}/
           end
         end
 
