@@ -1,7 +1,2 @@
 %p
-  = "Merge Request #{@merge_request.iid} was merged"
-%p
-  != merge_path_description(@merge_request, '&rarr;')
-%p
-  Assignee: #{@merge_request.author_name} &rarr; #{@merge_request.assignee_name}
-
+  = "Merge Request !#{@merge_request.iid} was merged"
