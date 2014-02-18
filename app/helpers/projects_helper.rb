@@ -83,9 +83,9 @@ module ProjectsHelper
 
   def label_filter_class(label_name)
     if selected_label?(label_name)
-      'list-group-item active'
+      'label-filter-item active'
     else
-      'list-group-item'
+      'label-filter-item light'
     end
   end
 

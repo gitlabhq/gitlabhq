@@ -4,19 +4,19 @@ class ProjectFilterLabels < Spinach::FeatureSteps
   include SharedPaths
 
   Then 'I should see "bug" in labels filter' do
-    within ".list-group" do
+    within ".labels-filter" do
       page.should have_content "bug"
     end
   end
 
   And 'I should see "feature" in labels filter' do
-    within ".list-group" do
+    within ".labels-filter" do
       page.should have_content "feature"
     end
   end
 
   And 'I should see "enhancement" in labels filter' do
-    within ".list-group" do
+    within ".labels-filter" do
       page.should have_content "enhancement"
     end
   end
