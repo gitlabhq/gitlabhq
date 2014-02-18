@@ -13,12 +13,13 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  api_key     :string(255)
 #
 
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
-  attr_accessible :title, :token, :type, :active
+  attr_accessible :title, :token, :type, :active, :api_key
 
   belongs_to :project
   has_one :service_hook

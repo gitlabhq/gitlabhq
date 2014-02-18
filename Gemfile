@@ -124,6 +124,9 @@ gem "hipchat", "~> 0.14.0"
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 
+# Gemnasium integration
+gem "gemnasium-gitlab-service", "~> 0.2"
+
 # d3
 gem "d3_rails", "~> 3.1.4"
 
