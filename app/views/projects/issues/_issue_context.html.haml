@@ -4,7 +4,7 @@
     \ and currently assigned to
 
   - if can?(current_user, :modify_issue, @issue)
-    = project_users_select_tag('issue[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @issue.assignee_id)
+    = project_users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control', selected: @issue.assignee_id)
   - elsif issue.assignee
     = link_to_member(@project, @issue.assignee)
 
