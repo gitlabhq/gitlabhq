@@ -231,6 +231,7 @@ POST /projects
 Parameters:
 
 + `name` (required) - new project name
++ `namespace_id` (optional) - namespace for the new project (defaults to user)
 + `description` (optional) - short project description
 + `issues_enabled` (optional)
 + `wall_enabled` (optional)
