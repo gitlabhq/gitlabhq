@@ -31,6 +31,8 @@
 
 * [GitLab CI](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
 
+* Unofficial third-party [iPhone app](http://gitlabcontrol.com/) and [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en) for GitLab
+
 ### Requirements
 
 * Ubuntu/Debian**
