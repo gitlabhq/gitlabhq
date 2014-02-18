@@ -2,9 +2,9 @@
 %hr
 = form_for @user, url: profile_password_path, method: :post, html: { class: 'form-horizontal '} do |f|
   %p.slead
-    Please set new password before proceed.
+    Please set a new password before proceeding.
     %br
-    After successful password update you will be redirected to login screen
+    After a successful password update you will be redirected to login screen.
   -if @user.errors.any?
     .alert.alert-danger
       %ul
