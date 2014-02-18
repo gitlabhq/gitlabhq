@@ -1,9 +1,6 @@
 %h3.page-title
   Issue ##{@issue.iid}
 
-  %small
-    created #{time_ago_with_tooltip(@issue.created_at)}
-
   - if @issue.closed?
     %span.state-label.state-label-red Closed
   - else
@@ -38,6 +35,9 @@
         = @issue.milestone.title
 
 .issue-box
+  .creator
+    Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}
+
   %h4.title
     = gfm escape_once(@issue.title)
 
