@@ -14,7 +14,7 @@ module Emails
       @note = Note.find(note_id)
       @issue = @note.noteable
       @project = @note.project
-      @target_url = project_issue_url(@project, @issue)
+      @target_url = project_issue_url(@project, @issue, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
            to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
