@@ -1,6 +1,16 @@
 .issue-box
-  .creator
-    Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
+  .state{ class: merge_request_alert_class(@merge_request) }
+    - if @merge_request.merged?
+      %span.state-label.state-label-blue
+        Merged
+    - elsif @merge_request.closed?
+      %span.state-label.state-label-red
+        Closed
+    - else
+      %span.state-label.state-label-green
+        Open
+    %span.creator
+      Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
   %h4.title
     = gfm escape_once(@merge_request.title)
@@ -16,13 +26,13 @@
           = markdown @merge_request.description
 
   - if @merge_request.closed?
-    .description.alert-danger
+    .description
       %span
         %i.icon-remove
         Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
         #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}.
   - if @merge_request.merged?
-    .description.alert-success
+    .description
       %span
         %i.icon-ok
         Merged by #{link_to_member(@project, @merge_request.merge_event.author)}

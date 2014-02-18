@@ -1,11 +1,6 @@
 %h3.page-title
   Issue ##{@issue.iid}
 
-  - if @issue.closed?
-    %span.state-label.state-label-red Closed
-  - else
-    %span.state-label.state-label-green Open
-
   %span.pull-right
     - if can?(current_user, :write_issue, @project)
       = link_to new_project_issue_path(@project), class: "btn grouped", title: "New Issue", id: "new_issue_link" do
@@ -35,8 +30,14 @@
         = @issue.milestone.title
 
 .issue-box
-  .creator
-    Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}
+  .state{ class: issue_alert_class(@issue) }
+    - if @issue.closed?
+      %span.state-label.state-label-red Closed
+    - else
+      %span.state-label.state-label-green Open
+
+    %span.creator
+      Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}
 
   %h4.title
     = gfm escape_once(@issue.title)
