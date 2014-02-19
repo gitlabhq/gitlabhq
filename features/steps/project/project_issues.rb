@@ -3,6 +3,7 @@ class ProjectIssues < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
+  include SharedMarkdown
 
   Given 'I should see "Release 0.4" in issues' do
     page.should have_content "Release 0.4"
@@ -121,7 +122,9 @@ class ProjectIssues < Spinach::FeatureSteps
     create(:issue,
            title: "Release 0.4",
            project: project,
-           author: project.users.first)
+           author: project.users.first,
+           description: "# Description header"
+          )
   end
 
   And 'project "Shop" have "Tweet control" open issue' do

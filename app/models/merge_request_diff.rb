@@ -148,13 +148,11 @@ class MergeRequestDiff < ActiveRecord::Base
               Gitlab::Git::Diff.between(repository, source_branch, target_branch)
             end
 
-    if diffs == broken_diffs
-      self.state = :timeout
-      diffs = []
-    end
-
     diffs ||= []
     diffs
+  rescue Gitlab::Git::Diff::TimeoutError => ex
+    self.state = :timeout
+    diffs = []
   end
 
   def repository

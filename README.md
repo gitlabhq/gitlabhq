@@ -15,11 +15,9 @@
 
 ### Code status
 
-* [![build status](http://ci.gitlab.org/projects/1/status.png?ref=master)](http://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
+* [![build status](https://ci.gitlab.org/projects/1/status.png?ref=master)](https://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
 
 * [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
-
-* [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq) this button can be yellow (small updates are available) but must not be red (a security fix or an important update is available), gems are updated in major releases of GitLab.
 
 * [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 
@@ -32,6 +30,8 @@
 * [GitLab Enterprise Edition](https://www.gitlab.com/features/) offers additional features that are useful for larger organizations (100+ users).
 
 * [GitLab CI](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
+
+* Unofficial third-party [iPhone app](http://gitlabcontrol.com/) and [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en) for GitLab
 
 ### Requirements
 
@@ -47,13 +47,17 @@
 
 #### Official installation methods
 
-* [Manual installation guide for a production server](doc/install/installation.md)
+* [GitLab packages (beta)](https://www.gitlab.com/downloads/) These packages contain GitLab and all its depencies (PostgreSQL, Redis, Nginx, Unicorn, etc.). They are made with [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) that also contains the installation instructions. These packages currently support a reduced selection of GitLab's normal features. For instance, it is not yet possible to create/restore application backups or to use HTTPS.
+
+* [GitLab virtual machine images](https://www.gitlab.com/downloads/) contain an operating system and a preinstalled GitLab. They are made with [GitLab Packer](https://gitlab.com/gitlab-org/gitlab-packer/blob/master/README.md) that also contains the installation instructions.
 
 * [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation on a virtual machine with Vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
 
+* [Manual installation guide](doc/install/installation.md) This guide to set up a production server offers detailed and complete step-by-step instructions.
+
 #### Third party one-click installers
 
-* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab.
+* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab. We recommend selecting a droplet with [1GB of memory](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md).
 
 * [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
 
@@ -149,6 +153,8 @@ or start each component separately
 * [#gitlab IRC channel](http://www.freenode.net/) on Freenode to get in touch with other GitLab users and get help, it's managed by James Newton (newton), Drew Blessing (dblessing), and Sam Gleske (sag47).
 
 * [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
+
+* [Gitter chat room](https://gitter.im/gitlabhq/gitlabhq#) here you can ask questions when you need help.
 
 
 ### Getting in touch

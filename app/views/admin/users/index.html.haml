@@ -1,12 +1,6 @@
 .row
   .col-md-3
     .admin-filter
-      = form_tag admin_users_path, method: :get, class: 'form-inline' do
-        .append-bottom-10
-          .form-group
-            = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
-          = button_tag type: 'submit', class: 'btn btn-primary' do
-            %i.icon-search
       %ul.nav.nav-pills.nav-stacked
         %li{class: "#{'active' unless params[:filter]}"}
           = link_to admin_users_path do
@@ -24,6 +18,12 @@
           = link_to admin_users_path(filter: "wop") do
             Without projects
             %small.pull-right= User.without_projects.count
+      %hr
+      = form_tag admin_users_path, method: :get, class: 'form-inline' do
+        .form-group
+          = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
+        = button_tag type: 'submit', class: 'btn btn-primary' do
+          %i.icon-search
       %hr
       = link_to 'Reset', admin_users_path, class: "btn btn-cancel"
 

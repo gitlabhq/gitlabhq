@@ -162,15 +162,6 @@ module ApplicationHelper
 
   alias_method :url_to_image, :image_url
 
-  def users_select_tag(id, opts = {})
-    css_class = "ajax-users-select "
-    css_class << "multiselect " if opts[:multiple]
-    css_class << (opts[:class] || '')
-    value = opts[:selected] || ''
-
-    hidden_field_tag(id, value, class: css_class)
-  end
-
   def body_data_page
     path = controller.controller_path.split('/')
     namespace = path.first if path.second

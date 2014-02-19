@@ -8,6 +8,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     @project = @template.instance_variable_get("@project")
     @ref = @template.instance_variable_get("@ref")
     @request_path = @template.instance_variable_get("@path")
+    @options = options.dup
     super options
   end
 
@@ -32,6 +33,16 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
   def link(link, title, content)
     h.link_to_gfm(content, link, title: title)
+  end
+
+  def header(text, level)
+    if @options[:no_header_anchors]
+      "<h#{level}>#{text}</h#{level}>"
+    else
+      id = ActionController::Base.helpers.strip_tags(h.gfm(text)).downcase() \
+          .gsub(/[^a-z0-9_-]/, '-').gsub(/-+/, '-').gsub(/^-/, '').gsub(/-$/, '')
+      "<h#{level} id=\"#{id}\">#{text}<a href=\"\##{id}\"></a></h#{level}>"
+    end
   end
 
   def preprocess(full_document)

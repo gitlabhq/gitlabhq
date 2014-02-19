@@ -24,7 +24,7 @@
           %i.icon-user
           Assign to
         .col-sm-10
-          = f.select(:assignee_id, assignee_options(@issue), { include_blank: "Select a user" }, {class: 'select2'})
+          = project_users_select_tag('issue[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @issue.assignee_id)
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group

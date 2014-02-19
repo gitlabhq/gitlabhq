@@ -1,6 +1,8 @@
 = render layout: 'help/layout' do
   %h3.page-title Workflow
 
+  %h4 Summary
+
   %ol.help
     %li
       %p Clone project
@@ -35,3 +37,37 @@
     %li
       %p Your team lead will review code &amp; merge it to main branch
 
+  %h3 Authorization for Merge Requests
+  %p
+    There are two main ways to have a merge request flow with GitLab: working with protected branches in a single repository, or working with forks of an authoritative project.
+
+  %h4 Protected branch flow
+  %p
+    With the protected branch flow everybody works within the same GitLab project.
+    The project maintainers get Master access and the regular developers get Developer access.
+    The maintainers mark the authoritative branches as 'Protected'.
+    The developers push feature branches to the project and create merge requests to have their feature branches reviewed and merged into one of the protected branches.
+    Only users with Master access can merge changes into a protected branch.
+
+  %h5 Advantages
+  %ul
+    %li fewer projects means less clutter
+    %li developers need to consider only one remote repository
+
+  %h5 Disadvantages
+  %ul
+    %li manual setup of protected branch required for each new project
+
+  %h4 Forking workflow
+  %p
+    With the forking workflow the maintainers get Master access and the regular developers get Reporter access to the authoritative repository, which prohibits them from pushing any changes to it.
+    Developers create forks of the authoritative project and push their feature branches to their own forks.
+    To get their changes into master they need to create a merge request across forks.
+
+  %h5 Advantages
+  %ul
+    %li in an appropriately configured GitLab group, new projects automatically get the required access restrictions for regular developers: fewer manual steps to configure authorization for new projects
+
+  %h5 Disadvantages
+  %ul
+    %li all developers on the project need to keep their forks up to date, which requires more advanced Git skills (managing multiple remotes)

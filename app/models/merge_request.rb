@@ -32,7 +32,9 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
   has_one :merge_request_diff, dependent: :destroy
+
   after_create :create_merge_request_diff
+  after_update :update_merge_request_diff
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
@@ -125,6 +127,13 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def update_merge_request_diff
+    if source_branch_changed? || target_branch_changed?
+      reload_code
+      mark_as_unchecked
+    end
+  end
+
   def reload_code
     if merge_request_diff && opened?
       merge_request_diff.reload_content
@@ -214,6 +223,14 @@ class MergeRequest < ActiveRecord::Base
   def source_project_path
     if source_project
       source_project.path_with_namespace
+    else
+      "(removed)"
+    end
+  end
+
+  def source_project_namespace
+    if source_project && source_project.namespace
+      source_project.namespace.path
     else
       "(removed)"
     end

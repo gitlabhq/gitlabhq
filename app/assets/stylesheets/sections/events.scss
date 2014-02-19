@@ -37,8 +37,8 @@
 
   &.event-inline {
     .avatar {
-      width: 16px;
-      height: 16px;
+      position: relative;
+      top: -2px;
     }
   }
 

@@ -9,12 +9,23 @@ class Notification
 
   attr_accessor :target
 
-  def self.notification_levels
-    [N_DISABLED, N_PARTICIPATING, N_WATCH]
-  end
+  class << self
+    def notification_levels
+      [N_DISABLED, N_PARTICIPATING, N_WATCH]
+    end
 
-  def self.project_notification_levels
-    [N_DISABLED, N_PARTICIPATING, N_WATCH, N_GLOBAL]
+    def options_with_labels
+      {
+        disabled: N_DISABLED,
+        participating: N_PARTICIPATING,
+        watch: N_WATCH,
+        global: N_GLOBAL
+      }
+    end
+
+    def project_notification_levels
+      [N_DISABLED, N_PARTICIPATING, N_WATCH, N_GLOBAL]
+    end
   end
 
   def initialize(target)
@@ -35,5 +46,9 @@ class Notification
 
   def global?
     target.notification_level == N_GLOBAL
+  end
+
+  def level
+    target.notification_level
   end
 end

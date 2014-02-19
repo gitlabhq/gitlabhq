@@ -3,6 +3,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
+  include SharedMarkdown
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -54,25 +55,15 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Close"' do
-    click_link "Close"
+    within '.page-title' do
+      click_link "Close"
+    end
   end
 
   step 'I submit new merge request "Wiki Feature"' do
     fill_in "merge_request_title", with: "Wiki Feature"
-
-    # this must come first, so that the target branch is set
-    # by the time the "select" for "notes_refactoring" is executed
-    select project.path_with_namespace, from: "merge_request_target_project_id"
     select "master", from: "merge_request_source_branch"
-
-    find(:select, "merge_request_target_project_id", {}).value.should == project.id.to_s
-    find(:select, "merge_request_source_project_id", {}).value.should == project.id.to_s
-
-    # using "notes_refactoring" because "Bug NS-04" uses master/stable,
-    # this will fail merge_request validation if the branches are the same
-    find(:select, "merge_request_target_branch", {}).find(:option, "notes_refactoring", {}).value.should == "notes_refactoring"
     select "notes_refactoring", from: "merge_request_target_branch"
-
     click_button "Submit merge request"
   end
 
@@ -83,7 +74,9 @@ class ProjectMergeRequests < Spinach::FeatureSteps
            target_project: project,
            source_branch: 'stable',
            target_branch: 'master',
-           author: project.users.first)
+           author: project.users.first,
+           description: "# Description header"
+          )
   end
 
   step 'project "Shop" have "Bug NS-05" open merge request with diffs inside' do
@@ -172,7 +165,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merged request' do
-    within '.page-title' do
+    within '.issue-box' do
       page.should have_content "Merged"
     end
   end

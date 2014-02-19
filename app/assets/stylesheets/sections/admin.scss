@@ -2,7 +2,7 @@
  * Admin area
  *
  */
-.admin_dash {
+.admin-dashboard {
   .data {
     a {
       h1 {
@@ -13,6 +13,10 @@
         font-weight: normal;
       }
     }
+  }
+
+  .str-truncated {
+    max-width: 60%;
   }
 }
 

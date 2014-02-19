@@ -84,7 +84,7 @@ We will accept a merge requests if it:
 * Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
 * Keeps the GitLab code base clean and well structured
 * Contains functionality we think other users will benefit from too
-* Doesn't add avoidable configuration options since these complicate future changes
+* Doesn't add configuration options since these complicate future changes
 * Contains a single commit (please use `git rebase -i` to squash commits)
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed).

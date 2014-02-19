@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs.append-bottom-10
+%ul.nav.nav-tabs
   %li{class: ("active" if params[:search_code].present?)}
     = link_to search_path(params.merge(search_code: true)) do
       Repository Code

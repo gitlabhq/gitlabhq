@@ -14,6 +14,7 @@ class Ability
       when "MergeRequest" then merge_request_abilities(user, subject)
       when "Group" then group_abilities(user, subject)
       when "Namespace" then namespace_abilities(user, subject)
+      when "UsersGroup" then users_group_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -218,6 +219,20 @@ class Ability
           subject.respond_to?(:project) ? project_abilities(user, subject.project) : []
         end
       end
+    end
+
+    def users_group_abilities(user, subject)
+      rules = []
+      target_user = subject.user
+      group = subject.group
+      can_manage = group_abilities(user, group).include?(:manage_group)
+      if can_manage && (user != target_user)
+        rules << :modify
+      end
+      if !group.last_owner?(user) && (can_manage || (user == target_user))
+        rules << :destroy
+      end
+      rules
     end
   end
 end

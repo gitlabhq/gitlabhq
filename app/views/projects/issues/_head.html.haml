@@ -1,4 +1,4 @@
-%ul.nav.nav-tabs.append-bottom-15
+%ul.nav.nav-tabs
   = nav_link(controller: :issues) do
     = link_to project_issues_path(@project), class: "tab" do
       Browse Issues
@@ -17,10 +17,10 @@
 
     %li.pull-right
       .pull-right
-        = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'inline issue-search-form'  do
+        = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'pull-left issue-search-form'  do
           .append-right-10.hidden-xs.hidden-sm
             = search_field_tag :issue_search, nil, { placeholder: 'Filter by title or description', class: 'form-control issue_search search-text-input input-mn-300' }
         - if can? current_user, :write_issue, @project
-          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new", title: "New Issue", id: "new_issue_link" do
+          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-left", title: "New Issue", id: "new_issue_link" do
             %i.icon-plus
             New Issue
