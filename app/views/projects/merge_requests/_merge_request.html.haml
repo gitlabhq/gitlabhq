@@ -10,14 +10,14 @@
       %span.pull-right
         - if merge_request.for_fork?
           %span.light
-            = "#{merge_request.source_project_path}"
-          = "#{merge_request.source_branch}"
+            #{merge_request.source_project_namespace}:
+          = merge_request.source_branch
           %i.icon-angle-right.light
-          = "#{merge_request.target_branch}"
+          = merge_request.target_branch
         - else
-          = "#{merge_request.source_branch}"
+          = merge_request.source_branch
           %i.icon-angle-right.light
-          = "#{merge_request.target_branch}"
+          = merge_request.target_branch
   .merge-request-info
     - if merge_request.author
       authored by #{link_to_member(merge_request.source_project, merge_request.author)}

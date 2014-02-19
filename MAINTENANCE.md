@@ -21,3 +21,5 @@ release where the minor version is increased numerically by increments of one
 (eg. `5.0 -> 5.1`).
 
 We encourage everyone to run the latest stable release to ensure that you can easily upgrade to the most secure and feature rich GitLab experience. In order to make sure you can easily run the most recent stable release, we are working hard to keep the update process simple and reliable.
+
+More information about the release procedures can be found in the doc/release directory.

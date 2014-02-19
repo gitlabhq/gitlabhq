@@ -2,7 +2,8 @@
   %h3.page-title Reset password
   .devise-errors
     = devise_error_messages!
-  = f.email_field :email, placeholder: "Email",  class: "form-control", required: true
+  .clearfix.append-bottom-20
+    = f.email_field :email, placeholder: "Email",  class: "form-control", required: true
   .clearfix.append-bottom-10
     = f.submit "Reset password", class: "btn-primary btn"
   %hr

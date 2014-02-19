@@ -26,6 +26,20 @@
           = link_to project_filter_path(state: 'all') do
             All
 
+    - if defined?(labels)
+      %fieldset
+        %legend Labels
+        %ul.nav.nav-pills.nav-stacked.nav-small.labels-filter
+          - issue_label_names.each do |label_name|
+            %li{class: label_filter_class(label_name)}
+              = link_to labels_filter_path(label_name) do
+                %span{class: "label #{label_css_class(label_name)}"}
+                  %i.icon-tag
+                = label_name
+                - if selected_label?(label_name)
+                  .pull-right
+                    %i.icon-remove
+
     %fieldset
       - if %w(state scope milestone_id assignee_id label_name).select { |k| params[k].present? }.any?
         = link_to project_entities_path, class: 'cgray pull-right' do

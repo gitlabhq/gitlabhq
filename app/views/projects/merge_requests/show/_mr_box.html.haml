@@ -1,18 +1,19 @@
 .issue-box
+  .state{ class: merge_request_alert_class(@merge_request) }
+    - if @merge_request.merged?
+      %span.state-label.state-label-blue
+        Merged
+    - elsif @merge_request.closed?
+      %span.state-label.state-label-red
+        Closed
+    - else
+      %span.state-label.state-label-green
+        Open
+    %span.creator
+      Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
+
   %h4.title
     = gfm escape_once(@merge_request.title)
-
-  .context
-    %cite.cgray
-      Created by #{link_to_member(@project, @merge_request.author)}.
-      - if @merge_request.assignee
-        Currently assigned to #{link_to_member(@project, @merge_request.assignee)}.
-    - if @merge_request.milestone
-      .pull-right
-        - milestone = @merge_request.milestone
-        %cite.cgray Attached to milestone
-        %strong= link_to_gfm truncate(milestone.title, length: 20), project_milestone_path(milestone.project, milestone)
-
 
   - if @merge_request.description.present?
     .description
@@ -20,22 +21,26 @@
         = preserve do
           = markdown @merge_request.description
 
-  - if @merge_request.closed?
-    .description.alert-danger
-      %span
-        %i.icon-remove
-        Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
-        #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}.
-  - if @merge_request.merged?
-    .description.alert-success
-      %span
-        %i.icon-ok
-        Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
-        #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}.
-  - if !@closes_issues.empty? && @merge_request.opened?
-    .description.alert-info
-      %span
-        %i.icon-ok
-        Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
-        = succeed '.' do
-          != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)
+  .context
+    %cite.cgray
+      = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
+
+- if @merge_request.closed?
+  .alert.alert-info
+    %span
+      %i.icon-remove
+      Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
+      #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}.
+- if @merge_request.merged?
+  .alert.alert-info
+    %span
+      %i.icon-ok
+      Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
+      #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}.
+- if !@closes_issues.empty? && @merge_request.opened?
+  .alert.alert-info.alert-info
+    %span
+      %i.icon-ok
+      Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
+      = succeed '.' do
+        != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)

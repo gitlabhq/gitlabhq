@@ -56,9 +56,6 @@ Install the required packages:
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
-    # For reStructuredText markup language support install required package:
-    sudo apt-get install -y python-docutils
-
 Make sure you have the right version of Git installed
 
     # Install Git
@@ -147,7 +144,7 @@ GitLab Shell is an ssh access and repository management software developed speci
 
 # 5. Database
 
-To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](./databases.md).
+To setup the MySQL/PostgreSQL database and dependencies please see [doc/install/databases.md](./databases.md).
 
 
 # 6. GitLab
@@ -352,6 +349,15 @@ nobody can access your GitLab by using this login information later on.
 
 
 # Advanced Setup Tips
+
+## Additional markup styles
+
+Apart from the always supported markdown style there are other rich text files that GitLab can display.
+But you might have to install a depency to do so.
+Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+For example, reStructuredText markup language support requires python-docutils:
+
+    sudo apt-get install -y python-docutils
 
 ## Custom Redis Connection
 

@@ -1,87 +1,67 @@
-.ui-box
-  .title
+.append-bottom-10
+  .check-all-holder
     = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left"
-    .clearfix
-      .issues_bulk_update.hide
-        = form_tag bulk_update_project_issues_path(@project), method: :post  do
-          %span Update selected issues with &nbsp;
-          = select_tag('update[status]', options_for_select(['open', 'closed']), prompt: "Status")
-          = select_tag('update[assignee_id]', bulk_update_assignee_options, prompt: "Assignee")
-          = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
-          = hidden_field_tag 'update[issues_ids]', []
-          = hidden_field_tag :status, params[:status]
-          = button_tag "Save", class: "btn update_selected_issues btn-small btn-save"
-      .issues-filters
-        %span Filter by
-        .dropdown.inline.prepend-left-10
-          %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-            %i.icon-tags
-            %span.light labels:
-            - if params[:label_name].present?
-              %strong= params[:label_name]
-            - else
-              Any
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to project_filter_path(label_name: nil) do
-                Any
-            - issue_label_names.each do |label_name|
-              %li
-                = link_to project_filter_path(label_name: label_name) do
-                  %span{class: "label #{label_css_class(label_name)}"}
-                    %i.icon-tag
-                  = label_name
-        .dropdown.inline.prepend-left-10
-          %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-            %i.icon-user
-            %span.light assignee:
-            - if @assignee.present?
-              %strong= @assignee.name
-            - elsif params[:assignee_id] == "0"
-              Unassigned
-            - else
-              Any
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to project_filter_path(assignee_id: nil) do
-                Any
-              = link_to project_filter_path(assignee_id: 0) do
-                Unassigned
-            - @project.team.members.sort_by(&:name).each do |user|
-              %li
-                = link_to project_filter_path(assignee_id: user.id) do
-                  = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
-                  = user.name
+  .issues-filters
+    .dropdown.inline
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %i.icon-user
+        %span.light assignee:
+        - if @assignee.present?
+          %strong= @assignee.name
+        - elsif params[:assignee_id] == "0"
+          Unassigned
+        - else
+          Any
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to project_filter_path(assignee_id: nil) do
+            Any
+          = link_to project_filter_path(assignee_id: 0) do
+            Unassigned
+        - @assignees.sort_by(&:name).each do |user|
+          %li
+            = link_to project_filter_path(assignee_id: user.id) do
+              = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
+              = user.name
 
-        .dropdown.inline.prepend-left-10
-          %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-            %i.icon-time
-            %span.light milestone:
-            - if @milestone.present?
-              %strong= @milestone.title
-            - elsif params[:milestone_id] == "0"
-              None (backlog)
-            - else
-              Any
-            %b.caret
-          %ul.dropdown-menu
-            %li
-              = link_to project_filter_path(milestone_id: nil) do
-                Any
-              = link_to project_filter_path(milestone_id: 0) do
-                None (backlog)
-            - project_active_milestones.each do |milestone|
-              %li
-                = link_to project_filter_path(milestone_id: milestone.id) do
-                  %strong= milestone.title
-                  %small.light= milestone.expires_at
+    .dropdown.inline.prepend-left-10
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %i.icon-time
+        %span.light milestone:
+        - if @milestone.present?
+          %strong= @milestone.title
+        - elsif params[:milestone_id] == "0"
+          None (backlog)
+        - else
+          Any
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to project_filter_path(milestone_id: nil) do
+            Any
+          = link_to project_filter_path(milestone_id: 0) do
+            None (backlog)
+        - project_active_milestones.each do |milestone|
+          %li
+            = link_to project_filter_path(milestone_id: milestone.id) do
+              %strong= milestone.title
+              %small.light= milestone.expires_at
 
-        .pull-right
-          = render 'shared/sort_dropdown'
+    .pull-right
+      = render 'shared/sort_dropdown'
 
+  .clearfix
+    .issues_bulk_update.hide
+      = form_tag bulk_update_project_issues_path(@project), method: :post  do
+        = select_tag('update[status]', options_for_select(['Open', 'Closed']), prompt: "Status")
+        = project_users_select_tag('update[assignee_id]', placeholder: 'Assignee')
+        = select_tag('update[milestone_id]', bulk_update_milestone_options, prompt: "Milestone")
+        = hidden_field_tag 'update[issues_ids]', []
+        = hidden_field_tag :status, params[:status]
+        = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
+.ui-box
   %ul.well-list.issues-list
     = render @issues
     - if @issues.blank?

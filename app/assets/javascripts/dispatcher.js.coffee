@@ -19,6 +19,8 @@ class Dispatcher
     switch page
       when 'projects:issues:index'
         Issues.init()
+      when 'projects:issues:show'
+        new Issue()
       when 'projects:issues:new', 'projects:merge_requests:new'
         GitLab.GfmAutoComplete.setup()
       when 'dashboard:show'

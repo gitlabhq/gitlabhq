@@ -29,7 +29,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 5.3.0'
+gem "gitlab_git", '~> 5.4.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -209,6 +209,10 @@ group :development, :test do
 
   gem 'spork', '~> 1.0rc'
   gem 'jasmine', '2.0.0.rc5'
+
+  gem "spring", '1.1.1'
+  gem "spring-commands-rspec", '1.0.1'
+  gem "spring-commands-spinach", '1.0.0'
 end
 
 group :test do

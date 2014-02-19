@@ -4,6 +4,10 @@
       %i.icon-home
   = nav_link(controller: :accounts) do
     = link_to "Account", profile_account_path
+  = nav_link(controller: :emails) do
+    = link_to profile_emails_path do
+      Emails
+      %span.count= current_user.emails.count + 1
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
       = link_to "Password", edit_profile_password_path
