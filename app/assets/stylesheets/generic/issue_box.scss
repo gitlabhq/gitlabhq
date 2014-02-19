@@ -17,26 +17,33 @@
     margin-bottom: 0;
   }
 
+  .state {
+    height: 34px;
+    border-bottom: 1px solid #DDD;
+    line-height: 32px;
+  }
+
   .title {
     font-size: 22px;
     font-weight: 500;
     line-height: 1.5;
     margin: 0;
     color: #333;
+    padding-bottom: 0;
+    padding: 15px 25px;
   }
 
   .context {
     border: none;
     border-top: 1px solid #eee;
+    padding: 15px 25px;
   }
 
   .description {
-    border-top: 1px solid #eee;
+    padding: 0 25px 15px 25px;
   }
 
   .title, .context, .description {
-    padding: 15px 25px;
-
     .clearfix {
       margin: 0;
     }

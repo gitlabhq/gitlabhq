@@ -41,4 +41,14 @@ module MergeRequestsHelper
       "Branches: #{@merge_request.source_branch} #{separator} #{@merge_request.target_branch}"
     end
   end
+
+  def merge_request_alert_class(merge_request)
+    if merge_request.merged?
+      'alert-info'
+    elsif merge_request.closed?
+      'alert-danger'
+    else
+      'alert-success'
+    end
+  end
 end

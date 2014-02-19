@@ -84,4 +84,12 @@ module IssuesHelper
   def milestone_options object
     options_from_collection_for_select(@project.milestones.active, 'id', 'title', object.milestone_id)
   end
+
+  def issue_alert_class(issue)
+    if issue.closed?
+      'alert-danger'
+    else
+      'alert-success'
+    end
+  end
 end
