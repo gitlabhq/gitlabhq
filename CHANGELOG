@@ -18,6 +18,8 @@ v 6.6.0
   - Improve application to work faster with large groups (100+ members)
   - Multiple emails per user
   - Show last commit for file when view file source
+  - Restyle Issue#show page and MR#show page
+  - Ability to filter by multiple labels for Issues page
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
