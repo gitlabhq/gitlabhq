@@ -15,15 +15,15 @@
   %h4.title
     = gfm escape_once(@merge_request.title)
 
-  .context
-    %cite.cgray
-      = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
-
   - if @merge_request.description.present?
     .description
       .wiki
         = preserve do
           = markdown @merge_request.description
+
+  .context
+    %cite.cgray
+      = render partial: 'projects/merge_requests/show/context', locals: { merge_request: @merge_request }
 
 - if @merge_request.closed?
   .alert.alert-info

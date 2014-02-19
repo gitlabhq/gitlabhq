@@ -55,7 +55,9 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Close"' do
-    click_link "Close"
+    within '.page-title' do
+      click_link "Close"
+    end
   end
 
   step 'I submit new merge request "Wiki Feature"' do
@@ -163,7 +165,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see merged request' do
-    within '.page-title' do
+    within '.issue-box' do
       page.should have_content "Merged"
     end
   end

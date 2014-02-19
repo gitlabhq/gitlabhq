@@ -42,15 +42,15 @@
   %h4.title
     = gfm escape_once(@issue.title)
 
-  .context
-    %cite.cgray
-      = render partial: 'issue_context', locals: { issue: @issue }
-
   - if @issue.description.present?
     .description
       .wiki
         = preserve do
           = markdown @issue.description
+  .context
+    %cite.cgray
+      = render partial: 'issue_context', locals: { issue: @issue }
+
 
 - content_for :note_actions do
   - if can?(current_user, :modify_issue, @issue)
