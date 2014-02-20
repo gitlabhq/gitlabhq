@@ -3,19 +3,13 @@
   Milestone ##{@milestone.iid}
   %small
     = @milestone.expires_at
-  - if @milestone.closed?
-    %span.state-label.state-label-red Closed
-  - elsif @milestone.expired?
-    %span.state-label.state-label-red Expired
-  - else
-    %span.state-label.state-label-green Open
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
         %i.icon-edit
         Edit
       - if @milestone.active?
-        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove grouped"
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove btn-grouped"
       - else
         = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped"
 
@@ -29,6 +23,14 @@
 
 
 .issue-box
+  .state
+    - if @milestone.closed?
+      %span.state-label.state-label-red Closed
+    - elsif @milestone.expired?
+      %span.state-label.state-label-red Expired
+    - else
+      %span.state-label.state-label-green Open
+
   %h4.title
     = gfm escape_once(@milestone.title)
 

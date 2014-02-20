@@ -125,3 +125,21 @@
 form.edit-issue {
   margin: 0;
 }
+
+.merge-request,
+.issue {
+  &.today {
+    background: #EFE;
+    border-color: #CEC;
+  }
+
+  &.closed {
+    background: #F5f5f5;
+    border-color: #E5E5E5;
+  }
+
+  &.merged {
+    background: #F5f5f5;
+    border-color: #E5E5E5;
+  }
+}
