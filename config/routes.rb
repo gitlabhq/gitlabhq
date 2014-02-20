@@ -159,6 +159,14 @@ Gitlab::Application.routes.draw do
       get :members
     end
 
+    scope module: :groups do
+      resource :ldap, only: [] do
+        member do
+          put :reset_access
+        end
+      end
+    end
+
     resources :users_groups, only: [:create, :update, :destroy]
     scope module: :groups do
       resource :avatar, only: [:destroy]

@@ -76,4 +76,8 @@ class Group < Namespace
       self.errors.add :avatar, "only images allowed"
     end
   end
+
+  def human_ldap_access
+    Gitlab::Access.options_with_owner.key ldap_access
+  end
 end

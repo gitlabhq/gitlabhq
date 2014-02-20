@@ -233,4 +233,8 @@ module ApplicationHelper
       content_tag(:i, nil, class: 'icon-spinner icon-spin') + text
     end
   end
+
+  def ldap_enabled?
+    Gitlab.config.ldap.enabled
+  end
 end
