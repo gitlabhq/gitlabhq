@@ -12,7 +12,7 @@
       %ul.dropdown-menu
         %li= link_to "Email Patches", project_commit_path(@project, @commit, format: :patch)
         %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
-    = link_to project_tree_path(@project, @commit), class: "btn btn-primary grouped" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-primary btn-grouped" do
       %span Browse Code »
   %div
 
