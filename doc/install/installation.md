@@ -144,7 +144,25 @@ GitLab Shell is an ssh access and repository management software developed speci
 
 # 5. Database
 
-To setup the MySQL/PostgreSQL database and dependencies please see [doc/install/databases.md](./databases.md).
+We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](doc/install/database_mysql.md).
+
+    # Install the database packages
+    sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
+
+    # Login to PostgreSQL
+    sudo -u postgres psql -d template1
+
+    # Create a user for GitLab.
+    template1=# CREATE USER git;
+
+    # Create the GitLab production database & grant all privileges on database
+    template1=# CREATE DATABASE gitlabhq_production OWNER git;
+
+    # Quit the database session
+    template1=# \q
+
+    # Try connecting to the new database with the new user
+    sudo -u git -H psql -d gitlabhq_production
 
 
 # 6. GitLab
