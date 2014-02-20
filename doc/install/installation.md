@@ -234,8 +234,8 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
-    # Mysql
-    sudo -u git cp config/database.yml.mysql config/database.yml
+    # PostgreSQL
+    sudo -u git cp config/database.yml.postgresql config/database.yml
 
     # Make sure to update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
@@ -245,10 +245,8 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo -u git -H editor config/database.yml
 
     or
-
-    # PostgreSQL
-    sudo -u git cp config/database.yml.postgresql config/database.yml
-
+    # Mysql
+    sudo -u git cp config/database.yml.mysql config/database.yml
 
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
@@ -257,11 +255,11 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
     cd /home/git/gitlab
 
-    # For MySQL (note, the option says "without ... postgres")
-    sudo -u git -H bundle install --deployment --without development test postgres aws
-
-    # Or for PostgreSQL (note, the option says "without ... mysql")
+    # For PostgreSQL (note, the option says "without ... mysql")
     sudo -u git -H bundle install --deployment --without development test mysql aws
+
+    # Or if you use MySQL (note, the option says "without ... postgres")
+    sudo -u git -H bundle install --deployment --without development test postgres aws
 
 
 ## Initialize Database and Activate Advanced Features
