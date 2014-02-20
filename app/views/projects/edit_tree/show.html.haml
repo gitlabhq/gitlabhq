@@ -23,6 +23,7 @@
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"
+      = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
       .commit-button-annotation
         = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-primary'
         .message
