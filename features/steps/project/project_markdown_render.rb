@@ -1,3 +1,6 @@
+# If you need to modify the existing seed repository for your tests,
+# it is recommended that you make the changes on the `markdown` branch of the seed project repository,
+# which should only be used by tests in this file. See `/spec/factories.rb#project` for more info.
 class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
@@ -50,7 +53,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct doc/api directory rendered' do
-    current_path.should == project_tree_path(@project, "master/doc/api/")
+    current_path.should == project_tree_path(@project, "master/doc/api")
     page.should have_content "README.md"
     page.should have_content "users.md"
   end
@@ -62,6 +65,18 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   Then 'I should see correct maintenance file rendered' do
     current_path.should == project_blob_path(@project, "master/doc/raketasks/maintenance.md")
     page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
+  end
+
+  And 'I click on link "empty" in the README' do
+    within('.readme-holder') do
+      click_link "empty"
+    end
+  end
+
+  And 'I click on link "id" in the README' do
+    within('.readme-holder') do
+      click_link "#id"
+    end
   end
 
   And 'I navigate to the doc/api/README' do
@@ -90,8 +105,22 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     click_link "Rake tasks"
   end
 
+  # Markdown branch
+
   When 'I visit markdown branch' do
     visit project_tree_path(@project, "markdown")
+  end
+
+  When 'I visit markdown branch "README.md" blob' do
+    visit project_blob_path(@project, "markdown/README.md")
+  end
+
+  When 'I visit markdown branch "d" tree' do
+    visit project_tree_path(@project, "markdown/d")
+  end
+
+  When 'I visit markdown branch "d/README.md" blob' do
+    visit project_blob_path(@project, "markdown/d/README.md")
   end
 
   Then 'I should see files from repository in markdown branch' do
@@ -123,6 +152,50 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     current_path.should == project_blob_path(@project, "markdown/doc/api/users.md")
     page.should have_content "Get a list of users."
   end
+
+  # Expected link contents
+
+  Then 'The link with text "empty" should have url "tree/markdown"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown")
+  end
+
+  Then 'The link with text "empty" should have url "blob/markdown/README.md"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md")
+  end
+
+  Then 'The link with text "empty" should have url "tree/markdown/d"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown/d")
+  end
+
+  Then 'The link with text "empty" should have url "blob/markdown/d/README.md"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/d/README.md")
+  end
+
+  Then 'The link with text "ID" should have url "tree/markdownID"' do
+    find('a', text: /^#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+  end
+
+  Then 'The link with text "/ID" should have url "tree/markdownID"' do
+    find('a', text: /^\/#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+  end
+
+  Then 'The link with text "README.mdID" should have url "blob/markdown/README.mdID"' do
+    find('a', text: /^README.md#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+  end
+
+  Then 'The link with text "d/README.mdID" should have url "blob/markdown/d/README.mdID"' do
+    find('a', text: /^d\/README.md#id$/)['href'] == current_host + project_blob_path(@project, "d/markdown/README.md") + '#id'
+  end
+
+  Then 'The link with text "ID" should have url "blob/markdown/README.mdID"' do
+    find('a', text: /^#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+  end
+
+  Then 'The link with text "/ID" should have url "blob/markdown/README.mdID"' do
+    find('a', text: /^\/#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+  end
+
+  # Wiki
 
   Given 'I go to wiki page' do
     click_link "Wiki"

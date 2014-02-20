@@ -124,12 +124,14 @@ module GitlabMarkdownHelper
   end
 
   def rebuild_path(path_with_namespace, path, requested_path, ref)
+    path.gsub!(/(#.*)/, "")
+    id = $1 || ""
     file_path = relative_file_path(path, requested_path)
     [
       path_with_namespace,
       path_with_ref(file_path, ref),
       file_path
-    ].compact.join("/")
+    ].compact.join("/").gsub(/\/*$/, '') + id
   end
 
   # Checks if the path exists in the repo
@@ -154,6 +156,7 @@ module GitlabMarkdownHelper
   # If we are at doc/api and the README.md shown in below the tree view
   # this takes the rquest path(doc/api) and adds users.md so the path looks like doc/api/users.md
   def build_nested_path(path, request_path)
+    return request_path if path == ""
     return path unless request_path
     if local_path(request_path) == "tree"
       base = request_path.split("/").push(path)
@@ -166,7 +169,7 @@ module GitlabMarkdownHelper
   end
 
   def file_exists?(path)
-    return false if path.nil? || path.empty?
+    return false if path.nil?
     return @repository.blob_at(current_sha, path).present? || @repository.tree(current_sha, path).entries.any?
   end
 
