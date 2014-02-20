@@ -1,3 +1,6 @@
+v 6.5.0
+  - Add reset permissions button to Group#members page
+
 v 6.4.0
   - Respect existing group permissions during sync with LDAP group (d3844662ec7ce816b0a85c8b40f66ee6c5ae90a1)
 
