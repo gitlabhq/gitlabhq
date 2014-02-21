@@ -1,5 +1,6 @@
 v 6.7.0
   - Add support for Gemnasium as a Project Service
+  - Add edit file button to MergeRequest diff
 
 v 6.6.0
   - Retrieving user ssh keys publically(github style): http://__HOST__/__USERNAME__.keys

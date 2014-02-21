@@ -12,7 +12,16 @@ class Projects::EditTreeController < Projects::BaseTreeController
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"
-      redirect_to project_blob_path(@project, @id)
+
+      # If blob edit was initiated from merge request page
+      from_merge_request = MergeRequest.find_by(id: params[:from_merge_request_id])
+
+      if from_merge_request
+        from_merge_request.reload_code
+        redirect_to diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request)
+      else
+        redirect_to project_blob_path(@project, @id)
+      end
     else
       flash[:alert] = result[:error]
       render :show

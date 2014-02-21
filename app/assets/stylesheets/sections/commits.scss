@@ -27,10 +27,14 @@
       line-height: 2;
     }
 
-    .view-file {
-      font-weight: bold;
+    .diff-btn-group {
       float: right;
-      background-color: #EEE;
+
+      .btn {
+        background-color: #EEE;
+        color: #666;
+        font-weight: bolder;
+      }
     }
 
     .commit-short-id {
