@@ -6,7 +6,7 @@ module Emails
       @project = @note.project
       @target_url = project_commit_url(@project, @commit, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@commit.title} (#{@commit.short_id})"))
     end
 
@@ -17,7 +17,7 @@ module Emails
       @target_url = project_issue_url(@project, @issue, anchor: "note_#{@note.id}")
       set_reference("issue_#{@issue.id}")
       mail(from: sender(@note.author_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
@@ -28,7 +28,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{@note.id}")
       set_reference("merge_request_#{@merge_request.id}")
       mail(from: sender(@note.author_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
@@ -37,7 +37,7 @@ module Emails
       @project = @note.project
       @target_url = project_wall_url(@note.project, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("Note on wall"))
     end
   end

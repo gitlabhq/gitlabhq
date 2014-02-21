@@ -4,7 +4,7 @@ module Emails
       @membership = UsersGroup.find(user_group_id)
       @group = @membership.group
       @target_url = group_url(@group)
-      mail(to: @membership.user.email,
+      mail(cc: @membership.user.email,
            subject: subject("Access to group was granted"))
     end
   end

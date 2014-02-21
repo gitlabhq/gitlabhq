@@ -6,7 +6,7 @@ module Emails
       @target_url = project_issue_url(@project, @issue)
       set_message_id("issue_#{issue_id}")
       mail(from: sender(@issue.author_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
@@ -17,7 +17,7 @@ module Emails
       @target_url = project_issue_url(@project, @issue)
       set_reference("issue_#{issue_id}")
       mail(from: sender(updated_by_user_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
@@ -28,7 +28,7 @@ module Emails
       @target_url = project_issue_url(@project, @issue)
       set_reference("issue_#{issue_id}")
       mail(from: sender(updated_by_user_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
 
@@ -40,7 +40,7 @@ module Emails
       @target_url = project_issue_url(@project, @issue)
       set_reference("issue_#{issue_id}")
       mail(from: sender(updated_by_user_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
     end
   end

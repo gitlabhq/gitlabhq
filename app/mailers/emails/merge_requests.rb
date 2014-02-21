@@ -6,7 +6,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       set_message_id("merge_request_#{merge_request_id}")
       mail(from: sender(@merge_request.author_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
@@ -17,7 +17,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       set_reference("merge_request_#{merge_request_id}")
       mail(from: sender(updated_by_user_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
@@ -28,7 +28,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       set_reference("merge_request_#{merge_request_id}")
       mail(from: sender(updated_by_user_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
@@ -38,7 +38,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       set_reference("merge_request_#{merge_request_id}")
       mail(from: sender(updated_by_user_id),
-           to: recipient(recipient_id),
+           cc: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
   end

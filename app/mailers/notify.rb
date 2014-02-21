@@ -1,4 +1,6 @@
 class Notify < ActionMailer::Base
+  include ActionDispatch::Routing::PolymorphicRoutes
+
   include Emails::Issues
   include Emails::MergeRequests
   include Emails::Notes
@@ -16,6 +18,7 @@ class Notify < ActionMailer::Base
   default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
 
   default from: Proc.new { default_sender_address.format }
+  default to:   Proc.new { project_sender_address.format }
   default reply_to: "noreply@#{Gitlab.config.gitlab.host}"
 
   # Just send email with 2 seconds delay
@@ -30,6 +33,17 @@ class Notify < ActionMailer::Base
     address = Mail::Address.new(Gitlab.config.gitlab.email_from)
     address.display_name = "GitLab"
     address
+  end
+
+  # The default email address to send emails to. Includes the project name if possible.
+  def project_sender_address
+    if @project
+      address = default_sender_address
+      address.display_name = @project.name_with_namespace
+      address
+    else
+      default_sender_address
+    end
   end
 
   # Return an email address that displays the name of the sender.
