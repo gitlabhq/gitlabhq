@@ -48,7 +48,7 @@ Please send a merge request with a tested solution or a merge request with a fai
 
 ## Merge requests
 
-We welcome merge requests with fixes and improvements to GitLab code, tests, and/or documentation. The features we would really like a merge request for are listed with the [status 'accepting merge/merge requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome.
+We welcome merge requests with fixes and improvements to GitLab code, tests, and/or documentation. The features we would really like a merge request for are listed with the [status 'accepting merge requests' on our feedback forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome. If you want to add a new feature that is not marked it is best to first create a feedback issue (if there isn't one already) and leave a comment asking for it to be marked accepting merge requests. Please include screenshots or wireframes if the feature will also change the UI.
 
 ### Merge request guidelines
 
@@ -67,10 +67,16 @@ If you can, please submit a merge request with the fix or improvements including
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feedback items](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
 
-Please keep the change in a single MR as small as possible. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it. For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
+The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab.com team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version.
+This means there is less time to fix the issues created by merging large new features.
+
+Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
+
+For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
 
 ## Contribution acceptance criteria
 
+1. The change is as small as possible (see the above paragraph for details)
 1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
 1. Can merge without problems (if not please use: `git rebase master`)
 1. Does not break any existing functionality
