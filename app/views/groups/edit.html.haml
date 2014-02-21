@@ -4,13 +4,15 @@
       %li.active
         = link_to '#tab-edit', 'data-toggle' => 'tab' do
           %i.icon-edit
-          Edit Group
+          Group
       %li
         = link_to '#tab-projects', 'data-toggle' => 'tab' do
           %i.icon-folder-close
           Projects
       %li
-        = link_to 'Remove', '#tab-remove', 'data-toggle' => 'tab'
+        = link_to '#tab-remove', 'data-toggle' => 'tab' do
+          %i.icon-remove-sign
+          Remove
 
   .col-md-10
     .tab-content
@@ -20,7 +22,7 @@
             %strong= @group.name
             group settings:
           %div.form-holder
-            = form_for @group, html: { class: "form-horizontal" } do |f|
+            = form_for @group, html: { multipart: true, class: "form-horizontal" }, authenticity_token: true do |f|
               - if @group.errors.any?
                 .alert.alert-danger
                   %span= @group.errors.full_messages.first
@@ -34,6 +36,26 @@
                 = f.label :description, "Details", class: 'control-label'
                 .col-sm-10
                   = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
+
+              .form-group
+                .col-sm-2
+                .col-sm-10
+                  = image_tag group_icon(@group.to_param), alt: '', class: 'avatar s160'
+                  %p.light
+                    - if @group.avatar?
+                      You can change your group avatar here
+                    - else
+                      You can upload an group avatar here
+                  %a.choose-btn.btn.btn-small.js-choose-group-avatar-button
+                    %i.icon-paper-clip
+                    %span Choose File ...
+                  &nbsp;
+                  %span.file_name.js-avatar-filename File name...
+                  = f.file_field :avatar, class: "js-group-avatar-input hidden"
+                  .light The maximum file size allowed is 100KB.
+                  - if @group.avatar?
+                    %hr
+                    = link_to 'Remove avatar', group_avatar_path(@group.to_param), data: { confirm: "Group avatar will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-avatar"
 
               .form-actions
                 = f.submit 'Save group', class: "btn btn-save"

@@ -29,7 +29,6 @@ Feature: Project Merge Requests
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
-  @javascript
   Scenario: I submit new unassigned merge request
     Given I click link "New Merge Request"
     And I submit new merge request "Wiki Feature"
@@ -77,3 +76,15 @@ Feature: Project Merge Requests
     Then I modify merge commit message
     And I accept this merge request
     Then I should see merged request
+
+  # Markdown
+
+  Scenario: Headers inside the description should have ids generated for them.
+    When I visit merge request page "Bug NS-04"
+    Then Header "Description header" should have correct id and link
+
+  @javascript
+  Scenario: Headers inside comments should not have ids generated for them.
+    Given I visit merge request page "Bug NS-04"
+    And I leave a comment with a header containing "Comment with a header"
+    Then The comment with the header should not have an ID

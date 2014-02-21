@@ -135,12 +135,12 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def render_404
-    render file: Rails.root.join("public", "404"), layout: false, status: "404"
+  def render_403
+    head :forbidden
   end
 
-  def render_403
-    render file: Rails.root.join("public", "403"), layout: false, status: "403"
+  def render_404
+    render file: Rails.root.join("public", "404"), layout: false, status: "404"
   end
 
   def require_non_empty_project
@@ -171,6 +171,7 @@ class ApplicationController < ActionController::Base
     gon.api_token = current_user.private_token if current_user
     gon.gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
+    gon.gravatar_enabled = Gitlab.config.gravatar.enabled
   end
 
   def check_password_expiration

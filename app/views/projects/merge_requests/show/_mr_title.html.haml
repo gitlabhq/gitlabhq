@@ -1,20 +1,5 @@
 %h3.page-title
   = "Merge Request ##{@merge_request.iid}"
-  %small
-    created #{time_ago_with_tooltip(@merge_request.created_at)}
-
-  - if @merge_request.merged?
-    %span.state-label.state-label-green
-      %i.icon-ok
-      Merged
-  - elsif @merge_request.closed?
-    %span.state-label.state-label-red
-      Closed
-  - else
-    %span.state-label.state-label-green
-      Open
-
-
 
   %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
@@ -34,7 +19,7 @@
           %i.icon-edit
           Edit
 
-.votes-holder
+.votes-holder.hidden-sm.hidden-xs
   #votes= render 'votes/votes_block', votable: @merge_request
 
 .back-link

@@ -88,11 +88,15 @@ pre.well-pre {
 /** Big Labels **/
 .state-label {
   font-size: 14px;
-  padding: 6px 25px;
+  padding: 9px 25px;
   text-align: center;
-  @include border-radius(4px);
   text-shadow: none;
-  margin-left: 10px;
+  margin-right: 20px;
+
+  &.state-label-blue {
+    background: #31708f;
+    color: #FFF;
+  }
 
   &.state-label-green {
     background: #4A4;
@@ -112,6 +116,7 @@ pre.well-pre {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: #29b;
+  color: #FFF
 }
 
 .breadcrumb > li + li:before {
@@ -173,12 +178,10 @@ table a code {
 
 .loading {
   margin: 20px auto;
-  background: url(ajax_loader.gif) no-repeat center center;
-  width: 40px;
   height: 40px;
-  &.loading-gray {
-    background: url(ajax_loader_gray.gif) no-repeat center center;
-  }
+  color: #555;
+  font-size: 32px;
+  text-align: center;
 }
 
 span.update-author {

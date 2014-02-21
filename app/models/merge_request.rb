@@ -32,7 +32,9 @@ class MergeRequest < ActiveRecord::Base
   belongs_to :source_project, foreign_key: :source_project_id, class_name: "Project"
 
   has_one :merge_request_diff, dependent: :destroy
+
   after_create :create_merge_request_diff
+  after_update :update_merge_request_diff
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
@@ -122,6 +124,13 @@ class MergeRequest < ActiveRecord::Base
       if similar_mrs.any?
         errors.add :base, "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
       end
+    end
+  end
+
+  def update_merge_request_diff
+    if source_branch_changed? || target_branch_changed?
+      reload_code
+      mark_as_unchecked
     end
   end
 
@@ -219,6 +228,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  def source_project_namespace
+    if source_project && source_project.namespace
+      source_project.namespace.path
+    else
+      "(removed)"
+    end
+  end
+
   def source_branch_exists?
     return false unless self.source_project
 
@@ -252,5 +269,25 @@ class MergeRequest < ActiveRecord::Base
     message << "\n\n"
     message << description.to_s
     message
+  end
+
+  # Return array of possible target branches
+  # dependes on target project of MR
+  def target_branches
+    if target_project.nil?
+      []
+    else
+      target_project.repository.branch_names
+    end
+  end
+
+  # Return array of possible source branches
+  # dependes on source project of MR
+  def source_branches
+    if source_project.nil?
+      []
+    else
+      source_project.repository.branch_names
+    end
   end
 end

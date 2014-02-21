@@ -117,7 +117,7 @@ module ExtractsPath
   end
 
   def tree
-    @tree ||= Tree.new(@repo, @commit.id, @path)
+    @tree ||= @repo.tree(@commit.id, @path)
   end
 
   private

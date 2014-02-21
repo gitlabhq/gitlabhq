@@ -5,7 +5,7 @@
         %i.icon-angle-left
         Back to help
     %ul.nav.nav-pills.nav-stacked
-      - %w(README projects project_snippets repositories deploy_keys users groups session issues milestones merge_requests notes system_hooks).each do |file|
+      - %w(README projects project_snippets repositories repository_files commits deploy_keys users groups session issues milestones merge_requests notes system_hooks).each do |file|
         %li{class: file == @category ? 'active' : nil}
           = link_to file.titleize, help_api_file_path(file)
 

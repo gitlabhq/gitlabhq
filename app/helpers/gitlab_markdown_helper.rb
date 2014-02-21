@@ -28,14 +28,16 @@ module GitlabMarkdownHelper
     link_to(gfm_body.html_safe, url, html_options)
   end
 
-  def markdown(text)
-    unless @markdown
-      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self,
-                          # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
-                          filter_html: true,
-                          with_toc_data: true,
-                          hard_wrap: true,
-                          safe_links_only: true)
+  def markdown(text, options={})
+    unless (@markdown and options == @options)
+      @options = options
+      gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self, {
+                            # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
+                            filter_html: true,
+                            with_toc_data: true,
+                            hard_wrap: true,
+                            safe_links_only: true
+                          }.merge(options))
       @markdown = Redcarpet::Markdown.new(gitlab_renderer,
                       # see https://github.com/vmg/redcarpet#and-its-like-really-simple-to-use
                       no_intra_emphasis: true,
@@ -47,7 +49,6 @@ module GitlabMarkdownHelper
                       space_after_headers: true,
                       superscript: true)
     end
-
     @markdown.render(text).html_safe
   end
 
@@ -166,18 +167,27 @@ module GitlabMarkdownHelper
 
   def file_exists?(path)
     return false if path.nil? || path.empty?
-    File.exists?(path_on_fs(path))
+    return @repository.blob_at(current_sha, path).present? || @repository.tree(current_sha, path).entries.any?
   end
 
   # Check if the path is pointing to a directory(tree) or a file(blob)
   # eg. doc/api is directory and doc/README.md is file
   def local_path(path)
-    File.directory?(path_on_fs(path)) ? "tree" : "blob"
+    return "tree" if @repository.tree(current_sha, path).entries.any?
+    return "raw" if @repository.blob_at(current_sha, path).image?
+    return "blob"
   end
 
-  # Path to the file in the satellites repository on the filesystem
-  def path_on_fs(path)
-    [@path_to_satellite, path].join("/")
+  def current_ref
+    @commit.nil? ? "master" : @commit.id
+  end
+
+  def current_sha
+    if @commit
+      @commit.id
+    else
+      @repository.head_commit.sha
+    end
   end
 
   # We will assume that if no ref exists we can point to master

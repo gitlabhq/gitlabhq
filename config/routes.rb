@@ -12,6 +12,9 @@ Gitlab::Application.routes.draw do
   API::API.logger Rails.logger
   mount API::API => '/api'
 
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
+
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
     mount Sidekiq::Web, at: "/admin/sidekiq", as: :sidekiq
@@ -121,6 +124,7 @@ Gitlab::Application.routes.draw do
         end
       end
       resources :keys
+      resources :emails, only: [:index, :create, :destroy]
       resources :groups, only: [:index] do
         member do
           delete :leave
@@ -156,6 +160,9 @@ Gitlab::Application.routes.draw do
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
+    scope module: :groups do
+      resource :avatar, only: [:destroy]
+    end
   end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]

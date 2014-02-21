@@ -6,6 +6,12 @@ module API
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
+
+      expose :avatar_url do |user, options|
+        if user.avatar.present?
+          user.avatar.url
+        end
+      end
     end
 
     class UserSafe < Grape::Entity
@@ -79,11 +85,30 @@ module API
     end
 
     class RepoObject < Grape::Entity
-      expose :name, :commit
+      expose :name
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
+      end
+
       expose :protected do |repo, options|
         if options[:project]
           options[:project].protected_branch? repo.name
         end
+      end
+    end
+
+    class RepoTreeObject < Grape::Entity
+      expose :id, :name, :type
+
+      expose :mode do |obj, options|
+        filemode = obj.mode.to_s(8)
+        filemode = "0" + filemode if filemode.length < 6
+        filemode
       end
     end
 

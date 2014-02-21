@@ -77,9 +77,3 @@
       $("#update_issues_ids").val []
       $(".issues_bulk_update").hide()
       $(".issues-filters").show()
-
-$ ->
-  $('.edit-issue.inline-update input[type="submit"]').hide();
-  $("body").on "change", ".edit-issue.inline-update select", ->
-      $(this).submit()
-

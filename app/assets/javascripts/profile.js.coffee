@@ -26,3 +26,5 @@ $ ->
     form = $(this).closest("form")
     filename = $(this).val().replace(/^.*[\\\/]/, '')
     form.find(".js-avatar-filename").text(filename)
+
+  $('.profile-groups-avatars').tooltip("placement": "top")

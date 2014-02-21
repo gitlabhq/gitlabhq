@@ -183,10 +183,10 @@ describe "Issues" do
       it 'with dropdown menu' do
         visit project_issue_path(project, issue)
 
-        find('.edit-issue.inline-update').select(project.team.members.first.name, from: 'issue_assignee_id')
+        find('.edit-issue.inline-update #issue_assignee_id').set project.team.members.first.id
         click_button 'Update Issue'
 
-        page.should have_content "currently assigned to"
+        page.should have_content "Assignee:"
         page.has_select?('issue_assignee_id', :selected => project.team.members.first.name)
       end
     end
@@ -206,11 +206,9 @@ describe "Issues" do
         login_with guest
 
         visit project_issue_path(project, issue)
-        page.should have_content "currently assigned to #{issue.assignee.name}"
-
+        page.should have_content issue.assignee.name
       end
     end
-
   end
 
   describe 'update milestone from issue#show' do
@@ -225,17 +223,16 @@ describe "Issues" do
         find('.edit-issue.inline-update').select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
-        page.should have_content "Attached to milestone"
+        page.should have_content "Milestone"
         page.has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end
 
     context 'by unauthorized user' do
-
       let(:guest) { create(:user) }
 
       before :each do
-        project.team << [[guest], :guest]
+        project.team << [guest, :guest]
         issue.milestone = milestone
         issue.save
       end
@@ -245,8 +242,7 @@ describe "Issues" do
         login_with guest
 
         visit project_issue_path(project, issue)
-
-        page.should have_content "Attached to milestone #{milestone.title}"
+        page.should have_content milestone.title
       end
     end
   end

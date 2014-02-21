@@ -1,4 +1,4 @@
-- commit = Commit.new(Gitlab::Git::Commit.new(branch.commit))
+- commit = @repository.commit(branch.target)
 %li
   %h4
     = link_to project_commits_path(@project, branch.name) do
@@ -11,18 +11,23 @@
     .pull-right
       - if can?(current_user, :download_code, @project)
         = render 'projects/repositories/download_archive', ref: branch.name, btn_class: 'grouped btn-group-small'
-      = link_to project_compare_index_path(@project, from: branch.name, to: branch.name), class: 'btn grouped btn-small', title: "Compare" do
-        %i.icon-copy
-        Compare
+      - if branch.name != @repository.root_ref
+        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: branch.name), class: 'btn grouped btn-small', method: :post, title: "Compare" do
+          %i.icon-copy
+          Compare
 
       - if can?(current_user, :admin_project, @project) && branch.name != @repository.root_ref
         = link_to project_branch_path(@project, branch.name), class: 'btn grouped btn-small remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
           %i.icon-trash
 
-  %p
-    = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
-      = commit.short_id
-    = image_tag avatar_icon(commit.author_email), class: "avatar s16", alt: ''
-    %span.light
-      = gfm escape_once(truncate(commit.title, length: 40))
-    #{time_ago_with_tooltip(commit.committed_date)}
+  - if commit
+    %p
+      = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
+        = commit.short_id
+      = image_tag avatar_icon(commit.author_email), class: "avatar s16", alt: ''
+      %span.light
+        = gfm escape_once(truncate(commit.title, length: 40))
+      #{time_ago_with_tooltip(commit.committed_date)}
+  - else
+    %p
+      Cant find HEAD commit for this branch

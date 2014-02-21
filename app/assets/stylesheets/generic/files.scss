@@ -50,9 +50,9 @@
     }
 
     &.wiki {
-      padding: 20px;
       font-size: 14px;
       line-height: 1.6;
+      padding: 25px;
 
       .highlight {
         margin-bottom: 9px;
@@ -143,75 +143,6 @@
      */
     &.code {
       padding: 0;
-
-      table.lines {
-        border: none;
-        box-shadow: none;
-        margin: 0px;
-        padding: 0px;
-        table-layout: fixed;
-
-        pre {
-          border: none;
-          border-radius: 0;
-          font-family: $monospace_font;
-          font-size: 12px !important;
-          line-height: 16px !important;
-          margin: 0;
-          padding: 10px 0;
-        }
-        td {
-          border: none;
-          margin: 0;
-          padding: 0;
-          vertical-align: top;
-
-          &:first-child {
-            background: #eee;
-            width: 50px;
-          }
-          &:last-child {
-          }
-        }
-        tr:hover {
-          background: none;
-        }
-
-        pre.line_numbers {
-          color: #666;
-          padding: 10px 6px 10px 0;
-          text-align: right;
-          background: #EEE;
-
-          a {
-            color: #666;
-
-            i {
-              display: none;
-              font-size: 14px;
-              line-height: 14px;
-            }
-            &:hover i {
-              display: inherit;
-            }
-          }
-        }
-
-        .highlight {
-          border-left: 1px solid #DEE2E3;
-          overflow: auto;
-          overflow-y: hidden;
-
-          pre {
-            white-space: pre;
-            word-wrap: normal;
-
-            .line {
-              padding: 0 10px;
-            }
-          }
-        }
-      }
     }
   }
 }

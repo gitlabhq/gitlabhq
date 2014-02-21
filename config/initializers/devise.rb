@@ -77,11 +77,11 @@ Devise.setup do |config|
   # ==> Configuration for :confirmable
   # The time you want to give a user to confirm their account. During this time
   # they will be able to access your application without confirming. Default is 0.days
-  # When confirm_within is zero, the user won't be able to sign in without confirming.
+  # When allow_unconfirmed_access_for is zero, the user won't be able to sign in without confirming.
   # You can use this to let your user access some features of your application
   # without confirming the account, but blocking it after a certain period
   # (ie 2 days).
-  # config.confirm_within = 2.days
+  # config.allow_unconfirmed_access_for = 2.days
 
   # Defines which key will be used when confirming an account
   # config.confirmation_keys = [ :email ]
@@ -227,15 +227,21 @@ Devise.setup do |config|
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
+    provider_arguments = []
+
+    %w[app_id app_secret].each do |argument|
+      provider_arguments << provider[argument] if provider[argument]
+    end
+
     case provider['args']
     when Array
       # An Array from the configuration will be expanded.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], *provider['args']
+      provider_arguments.concat provider['args']
     when Hash
       # A Hash from the configuration will be passed as is.
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret'], provider['args']
-    else
-      config.omniauth provider['name'].to_sym, provider['app_id'], provider['app_secret']
+      provider_arguments << provider['args']
     end
+
+    config.omniauth provider['name'].to_sym, *provider_arguments
   end
 end

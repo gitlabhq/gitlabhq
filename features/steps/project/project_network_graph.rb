@@ -1,5 +1,6 @@
 class ProjectNetworkGraph < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedPaths
   include SharedProject
 
   Then 'page should have network graph' do

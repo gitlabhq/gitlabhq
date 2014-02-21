@@ -37,8 +37,8 @@
 
   &.event-inline {
     .avatar {
-      width: 16px;
-      height: 16px;
+      position: relative;
+      top: -2px;
     }
   }
 
@@ -113,6 +113,7 @@
       &.commit {
         background: transparent;
         padding: 3px;
+        padding-left: 0;
         border: none;
         color: #666;
         .commit-row-title {
@@ -122,6 +123,7 @@
       &.commits-stat {
         display: block;
         padding: 3px;
+        padding-left: 0;
 
         &:hover {
           background: none;

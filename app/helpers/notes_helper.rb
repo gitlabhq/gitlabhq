@@ -17,7 +17,7 @@ module NotesHelper
 
   def link_to_merge_request_diff_line_note(note)
     if note.for_merge_request_diff_line? and note.diff
-      link_to "#{note.diff_file_name}:L#{note.diff_new_line}", diffs_project_merge_request_path(note.project, note.noteable_id, anchor: note.line_code)
+      link_to "#{note.diff_file_name}:L#{note.diff_new_line}", diffs_project_merge_request_path(note.project, note.noteable, anchor: note.line_code)
     end
   end
 

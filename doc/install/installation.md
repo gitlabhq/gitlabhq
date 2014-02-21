@@ -10,9 +10,9 @@ If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installa
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements.
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. An unofficial guide for RHEL/CentOS can be found in the [GitLab recipes repository](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/install/centos).
 
-This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please consult [the installation section in the readme](https://github.com/gitlabhq/gitlabhq#installation).
+This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
 The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
@@ -55,26 +55,6 @@ If you are not familiar with vim please skip this and keep using the default edi
 Install the required packages:
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
-
-Make sure you have the right version of Python installed.
-
-    # Install Python
-    sudo apt-get install -y python
-
-    # Make sure that Python is 2.5+ (3.x is not supported at the moment)
-    python --version
-
-    # If it's Python 3 you might need to install Python 2 separately
-    sudo apt-get install -y python2.7
-
-    # Make sure you can access Python via python2
-    python2 --version
-
-    # If you get a "command not found" error create a link to the python binary
-    sudo ln -s /usr/bin/python /usr/bin/python2
-
-    # For reStructuredText markup language support install required package:
-    sudo apt-get install -y python-docutils
 
 Make sure you have the right version of Git installed
 
@@ -164,7 +144,25 @@ GitLab Shell is an ssh access and repository management software developed speci
 
 # 5. Database
 
-To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install/databases.md`](./databases.md).
+We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](doc/install/database_mysql.md).
+
+    # Install the database packages
+    sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
+
+    # Login to PostgreSQL
+    sudo -u postgres psql -d template1
+
+    # Create a user for GitLab.
+    template1=# CREATE USER git;
+
+    # Create the GitLab production database & grant all privileges on database
+    template1=# CREATE DATABASE gitlabhq_production OWNER git;
+
+    # Quit the database session
+    template1=# \q
+
+    # Try connecting to the new database with the new user
+    sudo -u git -H psql -d gitlabhq_production
 
 
 # 6. GitLab
@@ -236,8 +234,8 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
-    # Mysql
-    sudo -u git cp config/database.yml.mysql config/database.yml
+    # PostgreSQL
+    sudo -u git cp config/database.yml.postgresql config/database.yml
 
     # Make sure to update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
@@ -247,10 +245,8 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo -u git -H editor config/database.yml
 
     or
-
-    # PostgreSQL
-    sudo -u git cp config/database.yml.postgresql config/database.yml
-
+    # Mysql
+    sudo -u git cp config/database.yml.mysql config/database.yml
 
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
@@ -259,11 +255,11 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
     cd /home/git/gitlab
 
-    # For MySQL (note, the option says "without ... postgres")
-    sudo -u git -H bundle install --deployment --without development test postgres aws
-
-    # Or for PostgreSQL (note, the option says "without ... mysql")
+    # For PostgreSQL (note, the option says "without ... mysql")
     sudo -u git -H bundle install --deployment --without development test mysql aws
+
+    # Or if you use MySQL (note, the option says "without ... postgres")
+    sudo -u git -H bundle install --deployment --without development test postgres aws
 
 
 ## Initialize Database and Activate Advanced Features
@@ -369,6 +365,15 @@ nobody can access your GitLab by using this login information later on.
 
 
 # Advanced Setup Tips
+
+## Additional markup styles
+
+Apart from the always supported markdown style there are other rich text files that GitLab can display.
+But you might have to install a depency to do so.
+Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+For example, reStructuredText markup language support requires python-docutils:
+
+    sudo apt-get install -y python-docutils
 
 ## Custom Redis Connection
 

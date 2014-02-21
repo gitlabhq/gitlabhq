@@ -44,3 +44,18 @@
     %li Go to your project dashboard
     %li Click on the "Edit" tab
     %li Change "Visibility Level"
+
+  %h4 Visibility of users
+  The public page of users, located at
+  = succeed "," do
+    %code u/username
+  is visible if either:
+  %ul
+    %li
+      You are logged in.
+    %li
+      %p
+        You are logged out, and the target user is authorized to (is Guest, Reporter, etc.)
+        at least one public project.
+      %p Otherwise, you will be redirected to the sign in page.
+  When visiting the public page of an user, you will only see listed projects which you can view yourself.

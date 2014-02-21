@@ -6,27 +6,30 @@
           %li= msg
 
   .merge-request-branches
-    .row
-      .col-md-5
+    .form-group
+      = label_tag nil, class: 'control-label' do
+        From
+      .col-sm-10
         .clearfix
           .pull-left
             = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
-        .mr_source_commit.prepend-top-10
-      .col-md-2
-        .merge-request-angle
-          %i.icon-long-arrow-right
-      .col-md-5
+            = f.select(:source_branch, @merge_request.source_branches, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
+        .mr_source_commit
+    %br
+    .form-group
+      = label_tag nil, class: 'control-label' do
+        To
+      .col-sm-10
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
             = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
-        .mr_target_commit.prepend-top-10
+            = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
+        .mr_target_commit
 
   %hr
   .merge-request-form-info
@@ -47,7 +50,7 @@
           %i.icon-user
           Assign to
         .col-sm-10
-          = f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select a user" }, {class: 'select2'})
+          = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id)
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group

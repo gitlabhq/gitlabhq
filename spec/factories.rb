@@ -207,9 +207,28 @@ FactoryGirl.define do
       end
     end
 
+    factory :another_key do
+      key do
+        "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQDmTillFzNTrrGgwaCKaSj+QCz81E6jBc/s9av0+3b1Hwfxgkqjl4nAK/OD2NjgyrONDTDfR8cRN4eAAy6nY8GLkOyYBDyuc5nTMqs5z3yVuTwf3koGm/YQQCmo91psZ2BgDFTor8SVEE5Mm1D1k3JDMhDFxzzrOtRYFPci9lskTJaBjpqWZ4E9rDTD2q/QZntCqbC3wE9uSemRQB5f8kik7vD/AD8VQXuzKladrZKkzkONCPWsXDspUitjM8HkQdOf0PsYn1CMUC1xKYbCxkg5TkEosIwGv6CoEArUrdu/4+10LVslq494mAvEItywzrluCLCnwELfW+h/m8UHoVhZ"
+      end
+    end
+
     factory :invalid_key do
       key do
         "ssh-rsa this_is_invalid_key=="
+      end
+    end
+  end
+  
+  factory :email do
+    user
+    email do
+      Faker::Internet.email('alias')
+    end
+
+    factory :another_email do
+      email do
+        Faker::Internet.email('another.alias')
       end
     end
   end

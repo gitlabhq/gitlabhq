@@ -29,22 +29,19 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 4.0.0"
+gem "gitlab_git", '~> 5.4.0'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
-
-# Syntax highlighter
-gem "gitlab-pygments.rb", '~> 0.5.4', require: 'pygments.rb'
+gem 'gitlab_omniauth-ldap', '1.0.4', require: "omniauth-ldap"
 
 # Git Wiki
-gem "gitlab-gollum-lib", "~> 1.0.2", require: 'gollum-lib'
+gem "gitlab-gollum-lib", "~> 1.1.0", require: 'gollum-lib'
 
 # Language detection
-gem "gitlab-linguist", "~> 2.9.6", require: "linguist"
+gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"
@@ -139,6 +136,9 @@ gem "sanitize"
 # Protect against bruteforcing
 gem "rack-attack"
 
+# Ace editor
+gem 'ace-rails-ap'
+
 gem "sass-rails"
 gem "coffee-rails"
 gem "uglifier"
@@ -208,6 +208,10 @@ group :development, :test do
 
   gem 'spork', '~> 1.0rc'
   gem 'jasmine', '2.0.0.rc5'
+
+  gem "spring", '1.1.1'
+  gem "spring-commands-rspec", '1.0.1'
+  gem "spring-commands-spinach", '1.0.0'
 end
 
 group :test do

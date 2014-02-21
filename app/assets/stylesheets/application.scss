@@ -5,6 +5,7 @@
  *= require jquery.ui.gitlab
  *= require jquery.atwho
  *= require select2
+ *= require highlightjs.min
  *= require_self
 */
 
@@ -38,6 +39,7 @@
 @import "generic/lists.scss";
 @import "generic/forms.scss";
 @import "generic/selects.scss";
+@import "generic/highlight.scss";
 
 /**
  * Page specific styles (issues, projects etc):
@@ -63,6 +65,7 @@
 @import "sections/wall.scss";
 @import "sections/dashboard.scss";
 @import "sections/stat_graph.scss";
+@import "sections/groups.scss";
 
 /**
  * Code ighlight

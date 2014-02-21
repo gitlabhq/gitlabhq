@@ -6,15 +6,34 @@
   %strong= link_to "here", help_permissions_path, class: "vlink"
 
 %hr
-- can_manage_group =  current_user.can? :manage_group, @group
-.ui-box
+
+.clearfix
+  = form_tag members_group_path(@group), method: :get, class: 'form-inline member-search-form'  do
+    .form-group
+      = search_field_tag :search, params[:search], { placeholder: 'Find member by name', class: 'form-control search-text-input input-mn-300' }
+    = submit_tag 'Search', class: 'btn'
+
+  - if current_user.can? :manage_group, @group
+    .pull-right
+      = link_to '#', class: 'btn btn-new js-toggle-visibility-link' do
+        Add members
+        %i.icon-chevron-down
+
+    .js-toggle-visibility-container.hide.new-group-member-holder
+      = render "new_group_member"
+
+.ui-box.prepend-top-20
   .title
     %strong #{@group.name}
     group members
     %small
-      (#{@members.count})
+      (#{@members.total_count})
   %ul.well-list
     - @members.each do |member|
-      = render 'users_groups/users_group', member: member, show_controls: can_manage_group
-- if can_manage_group
-  = render "new_group_member"
+      = render 'users_groups/users_group', member: member, show_controls: true
+= paginate @members, theme: 'gitlab'
+
+:coffeescript
+  $('form.member-search-form').on 'submit', (event) ->
+    event.preventDefault()
+    Turbolinks.visit @.action + '?' + $(@).serialize()

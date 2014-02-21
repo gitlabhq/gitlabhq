@@ -14,8 +14,8 @@
 
     .issue-check {
       float: left;
-      padding: 8px 0;
       padding-right: 8px;
+      margin-bottom: 10px;
       min-width: 15px;
     }
 
@@ -38,13 +38,21 @@
   }
 }
 
-input.check_all_issues {
+.check-all-holder {
+  height: 32px;
   float: left;
-  padding: 0;
-  margin: 0;
-  margin-right: 10px;
-  position: relative;
-  top: 13px;
+  margin-right: 12px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  @include border-radius(4px);
+
+
+  input.check_all_issues {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: 3px;
+  }
 }
 
 .issues_content {
@@ -54,23 +62,6 @@ input.check_all_issues {
 
   form {
     margin: 0;
-  }
-}
-
-.btn.close_issue {
-  color: #B94A48;
-  font-weight: bold;
-  @include shade;
-  &:hover {
-    color: #B94A48;
-  }
-}
-.btn.reopen_issue {
-  color: #468847;
-  font-weight: bold;
-  @include shade;
-  &:hover {
-    color: #468847;
   }
 }
 
@@ -92,6 +83,13 @@ input.check_all_issues {
 
     .update_selected_issues {
       margin-left: 4px;
+    }
+
+    .select2-container .select2-choice {
+      height: 32px;
+      line-height: 28px;
+      color: #444 !important;
+      font-weight: 500;
     }
   }
 }

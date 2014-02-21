@@ -16,6 +16,19 @@ describe NotificationService do
     end
   end
 
+  describe 'Email' do
+    describe :new_email do
+      let(:email) { create(:email) }
+
+      it { notification.new_email(email).should be_true }
+
+      it 'should send email to email owner' do
+        Notify.should_receive(:new_email_email).with(email.id)
+        notification.new_email(email)
+      end
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let(:issue) { create(:issue, assignee: create(:user)) }

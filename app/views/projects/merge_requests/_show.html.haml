@@ -12,7 +12,7 @@
   = render "projects/merge_requests/show/commits"
 
   - if @commits.present?
-    %ul.nav.nav-tabs.append-bottom-10
+    %ul.nav.nav-tabs
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
           %i.icon-comment
@@ -21,6 +21,12 @@
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
           %i.icon-list-alt
           Diff
+
+  - content_for :note_actions do
+    - if can?(current_user, :modify_merge_request, @merge_request)
+      - unless @merge_request.closed?
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
+
 
   .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
     = render "projects/notes/notes_with_form"

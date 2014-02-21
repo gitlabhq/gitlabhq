@@ -3,10 +3,7 @@
     :plain
       $("##{dom_id(@issue)}").fadeOut();
 - elsif params[:issue_context]
-  $('.issue-box .context').html("#{escape_javascript(render partial: 'issue_context', locals: { issue: @issue })}");
   $('.issue-box .context').effect('highlight');
-  $('.select2').select2();
-  $('.edit-issue.inline-update input[type="submit"]').hide();
   - if @issue.milestone
     $('.milestone-nav-link').replaceWith("<span class='milestone-nav-link'>| <span class='light'>Milestone</span> #{escape_javascript(link_to @issue.milestone.title, project_milestone_path(@issue.project, @issue.milestone))}</span>")
   - else

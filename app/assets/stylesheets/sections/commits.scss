@@ -153,6 +153,7 @@
       img{
         border: 1px solid #FFF;
         background: url('trans_bg.gif');
+        max-width: 100%;
       }
       &.deleted {
         border: 1px solid $deleted;

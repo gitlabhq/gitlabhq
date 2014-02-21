@@ -16,6 +16,7 @@ describe GitlabMarkdownHelper do
   before do
     # Helper expects a @project instance variable
     @project = project
+    @repository = project.repository
   end
 
   describe "#gfm" do
@@ -347,8 +348,21 @@ describe GitlabMarkdownHelper do
     it "should handle references in headers" do
       actual = "\n# Working around ##{issue.iid}\n## Apply !#{merge_request.iid}"
 
-      markdown(actual).should match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
-      markdown(actual).should match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
+      markdown(actual, {no_header_anchors:true}).should match(%r{<h1[^<]*>Working around <a.+>##{issue.iid}</a></h1>})
+      markdown(actual, {no_header_anchors:true}).should match(%r{<h2[^<]*>Apply <a.+>!#{merge_request.iid}</a></h2>})
+    end
+
+    it "should add ids and links to headers" do
+      # Test every rule except nested tags.
+      text = '..Ab_c-d. e..'
+      id = 'ab_c-d-e'
+      markdown("# #{text}").should match(%r{<h1 id="#{id}">#{text}<a href="[^"]*##{id}"></a></h1>})
+      markdown("# #{text}", {no_header_anchors:true}).should == "<h1>#{text}</h1>"
+
+      id = 'link-text'
+      markdown("# [link text](url) ![img alt](url)").should match(
+        %r{<h1 id="#{id}"><a href="[^"]*url">link text</a> <img[^>]*><a href="[^"]*##{id}"></a></h1>}
+      )
     end
 
     it "should handle references in lists" do
@@ -378,10 +392,10 @@ describe GitlabMarkdownHelper do
     it "should leave code blocks untouched" do
       helper.stub(:user_color_scheme_class).and_return(:white)
 
-      target_html = "<div class=\"white\"><div class=\"highlight\"><pre><span class=\"n\">some</span> <span class=\"n\">code</span> <span class=\"n\">from</span> <span class=\"err\">$</span><span class=\"mi\">#{snippet.id}</span>"
+      target_html = "\n<div class=\"highlighted-data white\">\n  <div class=\"highlight\">\n    <pre><code class=\"\">some code from $#{snippet.id}\nhere too\n</code></pre>\n  </div>\n</div>\n\n"
 
-      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should include(target_html)
-      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should include(target_html)
+      helper.markdown("\n    some code from $#{snippet.id}\n    here too\n").should == target_html
+      helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n").should == target_html
     end
 
     it "should leave inline code untouched" do

@@ -108,6 +108,8 @@ $pagination-active-bg: $bg_style_color;
 
 // Nav tabs
 .nav.nav-tabs {
+  margin-bottom: 15px;
+
   li {
     > a {
       padding: 8px 20px;
