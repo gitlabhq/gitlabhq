@@ -16,40 +16,39 @@
 #  api_key     :string(255)
 #
 
-require "flowdock-git-hook"
+require "gemnasium/gitlab_service"
 
-class FlowdockService < Service
-  validates :token, presence: true, if: :activated?
+class GemnasiumService < Service
+  validates :token, :api_key, presence: true, if: :activated?
 
   def title
-    'Flowdock'
+    'Gemnasium'
   end
 
   def description
-    'Flowdock is a collaboration web app for technical teams.'
+    'Gemnasium monitors your project dependencies and alerts you about updates and security vulnerabilities.'
   end
 
   def to_param
-    'flowdock'
+    'gemnasium'
   end
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' }
+      { type: 'text', name: 'api_key', placeholder: 'Your personal API KEY on gemnasium.com ' },
+      { type: 'text', name: 'token', placeholder: 'The project\'s slug on gemnasium.com' }
     ]
   end
 
   def execute(push_data)
     repo_path = File.join(Gitlab.config.gitlab_shell.repos_path, "#{project.path_with_namespace}.git")
-    Flowdock::Git.post(
-      push_data[:ref],
-      push_data[:before],
-      push_data[:after],
+    Gemnasium::GitlabService.execute(
+      ref: push_data[:ref],
+      before: push_data[:before],
+      after: push_data[:after],
       token: token,
-      repo: repo_path,
-      repo_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}",
-      commit_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/%s",
-      diff_url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/compare/%s...%s",
+      api_key: api_key,
+      repo: repo_path
       )
   end
 end
