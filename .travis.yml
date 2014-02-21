@@ -1,12 +1,13 @@
 language: ruby
 env:
   global:
-    - DB=mysql
     - TRAVIS=true
   matrix:
-    - TASK=spinach
-    - TASK=spec
-    - TASK=jasmine:ci
+    - TASK=spinach DB=mysql
+    - TASK=spec DB=mysql
+    - TASK=jasmine:ci DB=mysql
+    - TASK=spinach DB=postgresql
+    - TASK=spec DB=postgresql
 before_install:
   - sudo apt-get install libicu-dev -y
 branches:
@@ -15,7 +16,6 @@ branches:
 rvm:
   - 2.0.0
 services:
-  - mysql
   - redis-server
 before_script:
   - "cp config/database.yml.$DB config/database.yml"
