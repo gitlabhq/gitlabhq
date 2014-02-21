@@ -67,18 +67,23 @@ If you can, please submit a merge request with the fix or improvements including
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feedback items](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
 
-Please keep the change in a single MR as small as possible. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
+Please keep the change in a single MR as small as possible. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it. For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
 
-We will accept a merge requests if it:
+## Contribution acceptance criteria
 
-* Includes proper tests and all tests pass (unless it contains a test exposing a bug in existing code)
-* Can be merged without problems (if not please use: `git rebase master`)
-* Do not break any existing functionality
-* Conforms to the [Ruby](https://github.com/bbatsov/ruby-style-guide) and [Rails](https://github.com/bbatsov/rails-style-guide) style guides and best practices
-* Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
-* Keeps the GitLab code base clean and well structured
-* Contains functionality we think other users will benefit from too
-* Doesn't add unnessecary configuration options since they complicate future changes
-* Contains a single commit (please use `git rebase -i` to squash commits)
+1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
+1. Can merge without problems (if not please use: `git rebase master`)
+1. Does not break any existing functionality
+1. Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
+1. Keeps the GitLab code base clean and well structured
+1. Contains functionality we think other users will benefit from too
+1. Doesn't add configuration options since they complicate future changes
+1. Contains a single commit (please use `git rebase -i` to squash commits)
+1. It conforms to the following style guides
 
-For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed).
+## Style guides
+
+1. [Ruby style guide](https://github.com/bbatsov/ruby-style-guide)
+1. [Rails style guide](https://github.com/bbatsov/rails-style-guide)
+1. [CoffeeScript style guide](https://github.com/polarmobile/coffeescript-style-guide)
+1. [Shell command guidelines](doc/development/shell_commands.md)
