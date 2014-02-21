@@ -18,7 +18,7 @@ function get_unicorn_pid
 
 function start
 {
-  bundle exec unicorn_rails -D -c $unicorn_config -E $RAILS_ENV
+  bundle exec "unicorn_rails -D -c $unicorn_config -E $RAILS_ENV"
 }
 
 function stop
