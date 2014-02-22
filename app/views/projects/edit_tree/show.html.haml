@@ -19,7 +19,8 @@
       = label_tag 'commit_message', class: "control-label" do
         Commit message
       .col-sm-10
-        = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control'
+        = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message', '',
+            placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control')}
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"
