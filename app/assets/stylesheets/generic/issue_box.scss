@@ -23,24 +23,27 @@
     line-height: 32px;
   }
 
+  $border: 1px solid #EEE;
+  $padding: 15px 25px;
+
   .title {
     font-size: 22px;
     font-weight: 500;
     line-height: 1.5;
     margin: 0;
     color: #333;
-    padding-bottom: 0;
-    padding: 15px 25px;
+    padding: $padding;
   }
 
   .context {
-    border: none;
-    border-top: 1px solid #eee;
-    padding: 15px 25px;
+    border-top: $border;
+    padding: $padding;
   }
 
   .description {
-    padding: 0 25px 15px 25px;
+    background: $body-bg;
+    border-top: $border;
+    padding: $padding;
   }
 
   .title, .context, .description {
