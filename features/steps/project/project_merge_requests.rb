@@ -192,4 +192,16 @@ class ProjectMergeRequests < Spinach::FeatureSteps
       page.should have_content message
     end
   end
+
+  def selected_target_branch_should_be(branch)
+    find('#s2id_merge_request_target_branch .select2-chosen').text.should == branch
+  end
+
+  step 'The selected target branch should be "master"' do
+    selected_target_branch_should_be('master')
+  end
+
+  step 'The selected target branch should be "master_bk"' do
+    selected_target_branch_should_be('master_bk')
+  end
 end

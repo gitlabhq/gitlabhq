@@ -10,6 +10,16 @@ Feature: Project Merge Requests
     Then I should see "Bug NS-04" in merge requests
     And I should not see "Feature NS-03" in merge requests
 
+  @javascript
+  Scenario: The selected target branch should be the default branch of target repository.
+    When I click link "New Merge Request"
+    Then The selected target branch should be "master"
+    When I change the default branch to "master_bk"
+    And I visit project "Shop" merge requests page
+    And I click link "New Merge Request"
+    # TODO: FAILS because branch did not change.
+    #Then The selected target branch should be "master_bk"
+
   Scenario: I should see closed merge requests
     Given I click link "Closed"
     Then I should see "Feature NS-03" in merge requests
