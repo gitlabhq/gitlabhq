@@ -1,10 +1,6 @@
-# Setup Database
+## Note
 
-GitLab supports the following databases:
-
-* MySQL (preferred)
-* PostgreSQL
-
+We do not recommend using MySQL due to various issues. For example, case [(in)sensitivity](https://dev.mysql.com/doc/refman/5.0/en/case-sensitivity.html) and [problems](http://bugs.mysql.com/bug.php?id=65830) that [suggested](http://bugs.mysql.com/bug.php?id=50909) [fixes](http://bugs.mysql.com/bug.php?id=65830) [have](http://bugs.mysql.com/bug.php?id=63164).
 
 ## MySQL
 
@@ -47,25 +43,3 @@ GitLab supports the following databases:
     mysql> \q
 
     # You are done installing the database and can go back to the rest of the installation.
-
-
-## PostgreSQL
-
-    # Install the database packages
-    sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
-
-    # Login to PostgreSQL
-    sudo -u postgres psql -d template1
-
-    # Create a user for GitLab.
-    template1=# CREATE USER git;
-
-    # Create the GitLab production database & grant all privileges on database
-    template1=# CREATE DATABASE gitlabhq_production OWNER git;
-
-    # Quit the database session
-    template1=# \q
-
-    # Try connecting to the new database with the new user
-    sudo -u git -H psql -d gitlabhq_production
-

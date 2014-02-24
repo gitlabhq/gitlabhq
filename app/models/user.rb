@@ -109,7 +109,7 @@ class User < ActiveRecord::Base
   validates :bio, length: { maximum: 255 }, allow_blank: true
   validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
-  validates :username, presence: true, uniqueness: true,
+  validates :username, presence: true, uniqueness: { case_sensitive: false },
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.username_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
