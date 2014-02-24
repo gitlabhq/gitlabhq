@@ -177,5 +177,15 @@
   }
 }
 
+.btn-group {
+  &.btn-grouped {
+    margin-right: 7px;
+    float: left;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
+}
+
 .btn-group-small > .btn { @extend .btn.btn-small; }
 .btn-group-tiny > .btn { @extend .btn.btn-tiny; }
