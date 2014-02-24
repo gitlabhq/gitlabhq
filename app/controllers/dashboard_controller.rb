@@ -77,5 +77,6 @@ class DashboardController < ApplicationController
   def default_filter
     params[:scope] = 'assigned-to-me' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
+    params[:authorized_only] = true
   end
 end

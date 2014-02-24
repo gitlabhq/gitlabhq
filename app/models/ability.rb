@@ -43,7 +43,19 @@ class Ability
           :download_code
         ]
       else
-        []
+        group = if subject.kind_of?(Group)
+                  subject
+                elsif subject.respond_to?(:group)
+                  subject.group
+                else
+                  nil
+                end
+        
+        if group && group.has_projects_accessible_to?(nil)
+          [:read_group]
+        else
+          []
+        end
       end
     end
 
@@ -172,7 +184,7 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if group.users.include?(user) || user.admin?
+      if user.admin? || group.users.include?(user) || group.has_projects_accessible_to?(user)
         rules << :read_group
       end
 
