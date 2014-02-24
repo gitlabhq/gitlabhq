@@ -10,11 +10,11 @@
   }
 }
 
-.file {
+.diff-file {
   border: 1px solid #CCC;
   margin-bottom: 1em;
 
-  .header {
+  .diff-header {
     @extend .clearfix;
     background: #DDD;
     border-bottom: 1px solid #CCC;
@@ -46,7 +46,7 @@
       font-family: $monospace_font;
     }
   }
-  .content {
+  .diff-content {
     overflow: auto;
     overflow-y: hidden;
     background: #FFF;
