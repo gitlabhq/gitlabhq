@@ -8,6 +8,7 @@ env:
     - TASK=jasmine:ci DB=mysql
     - TASK=spinach DB=postgresql
     - TASK=spec DB=postgresql
+    - TASK=jasmine:ci DB=postgresql
 before_install:
   - sudo apt-get install libicu-dev -y
 branches:
