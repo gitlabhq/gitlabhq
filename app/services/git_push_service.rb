@@ -59,7 +59,8 @@ class GitPushService
   def sample_data(project, user)
     @project, @user = project, user
     @push_commits = project.repository.commits(project.default_branch, nil, 3)
-    post_receive_data(@push_commits.last.id, @push_commits.first.id, "refs/heads/#{project.default_branch}")
+    empty_repo_message = 'XXXXX_NO_COMMITS_YET_XXXXX'
+    post_receive_data(@push_commits.last.try(:id) || empty_repo_message, @push_commits.first.try(:id) || empty_repo_message, "refs/heads/#{project.default_branch}")
   end
 
   protected
