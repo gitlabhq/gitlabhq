@@ -1,5 +1,8 @@
+= link_to project_hooks_path(@project), class: "btn btn-small" do
+  %i.icon-chevron-left
+  Back to Hooks
 %h3.page-title
-  Web hooks
+  Edit Web Hook
 
 %p.light
   #{link_to "Web hooks ", help_web_hooks_path, class: "vlink"} can be
@@ -7,7 +10,7 @@
 
 %hr.clearfix
 
-= form_for [@project, @hook], as: :hook, url: project_hooks_path(@project), html: { class: 'form-horizontal' } do |f|
+= form_for [@project, @hook], as: :hook, url: project_hook_path(@project, @hook), html: { class: 'form-horizontal', method: 'put' } do |f|
   -if @hook.errors.any?
     .alert.alert-danger
       - @hook.errors.full_messages.each do |msg|
@@ -16,6 +19,11 @@
     = f.label :url, "URL", class: 'control-label'
     .col-sm-10
       = f.text_field :url, class: "form-control", placeholder: 'http://example.com/trigger-ci.json'
+  .form-group
+    = f.label :payload_template, "Payload Template", class: 'control-label'
+    .col-sm-10
+      = f.text_area :payload_template, class: "form-control", placeholder: 'Leave blank to use default.'
+      = render 'syntax_modal'
   .form-group
     = f.label :url, "Trigger", class: 'control-label'
     .col-sm-10
@@ -41,22 +49,4 @@
           %p.light
             This url will be triggered when a merge request is created
   .form-actions
-    = f.submit "Add Web Hook", class: "btn btn-create"
-
--if @hooks.any?
-  .ui-box
-    .title
-      Web hooks (#{@hooks.count})
-    %ul.well-list
-      - @hooks.each do |hook|
-        %li
-          .pull-right
-            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small grouped"
-            = link_to 'Edit Hook', edit_project_hook_path(@project, hook), class: "btn btn-small grouped"
-            = link_to 'Remove', project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small grouped"
-          .clearfix
-            %span.monospace= hook.url
-          %p
-            - %w(push_events issues_events merge_requests_events).each do |trigger|
-              - if hook.send(trigger)
-                %span.label.label-gray= trigger.titleize
+    = f.submit "Update Web Hook", class: "btn btn-create"

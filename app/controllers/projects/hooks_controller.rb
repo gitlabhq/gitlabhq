@@ -28,6 +28,16 @@ class Projects::HooksController < Projects::ApplicationController
 
     redirect_to :back
   end
+  
+  def edit
+    hook
+  end
+  
+  def update
+    hook.update_attributes params[:hook]
+    
+    redirect_to project_hooks_path(@project), :success => "Hook updated."
+  end
 
   def destroy
     hook.destroy

@@ -1,0 +1,28 @@
+%a{:'data-toggle' => "modal", :'data-target' => "#syntax_modal"} Syntax Guide
+.modal.fade{ :id => "syntax_modal", :tabindex => "-1", :role => "dialog", :'aria-labelledby' => "syntax_modal_label", :'aria-hidden' => "true"}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %button{ :type => "button", :class => "close", :'data-dismiss' => "modal", :'aria-hidden' => "true" } &times;
+        %h4{ :class => "modal-title", :id => "syntax_modal_label" } Gitlab Web Hook Syntax
+      .modal-body
+        :markdown
+          We use [Shopify's Liquid template engine](https://github.com/Shopify/liquid) for our Webhook Payload Templates.
+          
+          ##### Push Events #####
+          
+          You will have the following objects available to your template:
+          
+          `before`, `after`, `ref`, `user_id`, `user_name`, `project_id`, `total_commits_count`
+          
+          `repository.{ name, url, description, homepage }`
+          
+          `commits` is an array of the 20 most recent commits. Each element in the array will be a `commit`, with the following attributes:
+          `commit.{ id, message, timestamp, url, author.{name, email} }`
+          
+          Here's a weak example payload template:
+          
+          `{{user_name}} just committed to {{repository.name}}.`
+          
+        %strong
+          Other event types are #{link_to "documented here", help_web_hooks_path, class: "vlink"}.
