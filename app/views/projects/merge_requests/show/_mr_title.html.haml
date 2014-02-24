@@ -4,8 +4,8 @@
   %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.opened?
-        .left.btn-group
-          %a.btn.grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+        .btn-group.pull-left
+          %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
             %i.icon-download-alt
             Download as
             %span.caret
