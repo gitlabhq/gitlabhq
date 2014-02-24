@@ -267,6 +267,7 @@ GEM
     letter_opener (1.1.2)
       launchy (~> 2.2)
     libv8 (3.16.14.3)
+    liquid (2.6.1)
     listen (2.3.1)
       celluloid (>= 0.15.2)
       rb-fsevent (>= 0.9.3)
@@ -607,6 +608,7 @@ DEPENDENCIES
   kaminari (~> 0.15.1)
   launchy
   letter_opener
+  liquid
   minitest (~> 4.7.0)
   modernizr (= 2.6.2)
   mysql2
