@@ -1,6 +1,7 @@
 v 6.7.0
   - Add support for Gemnasium as a Project Service
   - Add edit file button to MergeRequest diff
+  - Public groups (Jason Hollingsworth)
 
 v 6.6.1
   - Fix 500 error on files tab if submodules presents
