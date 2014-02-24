@@ -117,11 +117,11 @@ $ ->
 
 
   # Commit show suppressed diff
-  $(".content").on "click", ".supp_diff_link", ->
+  $(".diff-content").on "click", ".supp_diff_link", ->
     $(@).next('table').show()
     $(@).remove()
 
-  $(".content").on "click", ".js-details-expand", ->
+  $(".diff-content").on "click", ".js-details-expand", ->
     $(@).next('.js-details-contain').removeClass("hide")
     $(@).remove()
 
