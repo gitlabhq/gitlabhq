@@ -1,3 +1,6 @@
+v 6.6.1
+  - Fix 500 error on files tab if submodules presents
+
 v 6.6.0
   - Retrieving user ssh keys publically(github style): http://__HOST__/__USERNAME__.keys
   - Permissions: Developer now can manage issue tracker (modify any issue)
