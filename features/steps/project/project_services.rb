@@ -13,6 +13,7 @@ class ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Hipchat'
     page.should have_content 'GitLab CI'
     page.should have_content 'Assembla'
+    page.should have_content 'Gemnasium'
   end
 
   step 'I click gitlab-ci service link' do
@@ -100,4 +101,25 @@ class ProjectServices < Spinach::FeatureSteps
   step 'I should see email on push service settings saved' do
     find_field('Recipients').value.should == 'qa@company.name'
   end
+
+  step 'I click Gemnasium service link' do
+    click_link 'Gemnasium'
+  end
+
+  step 'I fill Gemnasium settings' do
+    check 'Active'
+    fill_in 'Api key', with: 'verySecretApiKey'
+    fill_in 'Token', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see Gemnasium service settings saved' do
+    find_field('Api key').value.should == 'verySecretApiKey'
+    find_field('Token').value.should == 'verySecret'
+  end
+
+  step 'I should see Gemnasium service help text' do
+    page.should have_content "To setup the service you'll need to register an account on gemnasium.com and add your project."
+  end
+
 end

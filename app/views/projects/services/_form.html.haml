@@ -43,3 +43,11 @@
     &nbsp;
     - if @service.valid? && @service.activated? && @service.can_test?
       = link_to 'Test settings', test_project_service_path(@project, @service.to_param), class: 'btn btn-small'
+
+
+- unless @service.doc.nil?
+  %h4
+    Help
+    %i.icon-question.clgray
+
+  %p= markdown(@service.doc)

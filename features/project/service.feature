@@ -42,3 +42,10 @@ Feature: Project Services
     And I click email on push service link
     And I fill email on push settings
     Then I should see email on push service settings saved
+
+  Scenario: Activate Gemnasium service
+    When I visit project "Shop" services page
+    And I click Gemnasium service link
+    Then I should see Gemnasium service help text
+    And I fill Gemnasium settings
+    Then I should see Gemnasium service settings saved

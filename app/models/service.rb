@@ -54,4 +54,13 @@ class Service < ActiveRecord::Base
   def can_test?
     !project.empty_repo?
   end
+
+  def doc
+    begin
+      Gitlab::ServiceDoc.get(to_param)
+    rescue
+      Rails.logger.error "Unable to get Service documentation"
+      nil
+    end
+  end
 end
