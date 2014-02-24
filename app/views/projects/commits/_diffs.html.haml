@@ -44,7 +44,7 @@
       - file = project.repository.blob_at(@commit.id, diff.new_path)
       - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
       - next unless file
-      .file{id: "diff-#{i}"}
+      .file.js-details-container.js-toggle-container.open{id: "diff-#{i}"}
         .header
           - if diff.deleted_file
             %span= diff.old_path
@@ -69,6 +69,14 @@
                 View file @
                 %span.commit-short-id= @commit.short_id(6)
 
+
+          .discussion-actions.pull-right
+            = link_to "javascript:;", class: "js-details-target js-toggle-button turn-on" do
+              %i.icon-eye-close
+              Hide inline discussion
+            = link_to "javascript:;", class: "js-details-target js-toggle-button turn-off" do
+              %i.icon-eye-open
+              Show inline discussion
 
         .content
           -# Skipp all non non-supported blobs

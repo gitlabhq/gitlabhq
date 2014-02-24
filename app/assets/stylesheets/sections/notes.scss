@@ -184,11 +184,38 @@ ul.notes {
     }
   }
 }
+
+.file {
+  .discussion-actions {
+    margin-right: 5px;
+    margin-top: 3px;
+
+    .turn-off {
+      display: inherit;
+    }
+    .turn-on {
+      display: none;
+    }
+  }
+
+  &.open .discussion-actions {
+    .turn-off {
+      display: none;
+    }
+    .turn-on {
+      display: inherit;
+    }
+  }
+
+  &[id^="diff"] .content {
+    display: block;
+  }
+}
+
 .file .note .note-actions {
   right: 0;
   top: 0;
 }
-
 
 
 /**
