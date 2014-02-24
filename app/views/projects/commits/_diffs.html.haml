@@ -8,18 +8,18 @@
       - if current_controller?(:commit) or current_controller?(:merge_requests)
         Please, download the diff as
         - if current_controller?(:commit)
-          = link_to "plain diff", project_commit_path(@project, @commit, format: :diff), class: "underlined_link"
+          = link_to "plain diff", project_commit_path(@project, @commit, format: :diff), class: "underlined-link"
           or
-          = link_to "email patch", project_commit_path(@project, @commit, format: :patch), class: "underlined_link"
+          = link_to "email patch", project_commit_path(@project, @commit, format: :patch), class: "underlined-link"
         - else
-          = link_to "plain diff", project_merge_request_path(@project, @merge_request, format: :diff), class: "underlined_link"
+          = link_to "plain diff", project_merge_request_path(@project, @merge_request, format: :diff), class: "underlined-link"
           or
-          = link_to "email patch", project_merge_request_path(@project, @merge_request, format: :patch), class: "underlined_link"
+          = link_to "email patch", project_merge_request_path(@project, @merge_request, format: :patch), class: "underlined-link"
         instead.
     - unless @force_suppress_diff
       %p
         If you still want to see the diff
-        = link_to "click this link", url_for(force_show_diff: true), class: "underlined_link"
+        = link_to "click this link", url_for(force_show_diff: true), class: "underlined-link"
 
 %p.commit-stat-summary
   Showing
@@ -82,4 +82,4 @@
             - old_file = project.repository.blob_at(@commit.parent_id, diff.old_path) if @commit.parent_id
             = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i
           - else
-            %p.nothing_here_message No preview for this file type
+            .nothing-here-block No preview for this file type

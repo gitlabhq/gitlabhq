@@ -158,6 +158,14 @@
       color: #468847;
     }
   }
+
+  &.btn-grouped {
+    margin-right: 7px;
+    float: left;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
 }
 
 .btn-block {
@@ -166,17 +174,6 @@
   margin-bottom: 15px;
   &.btn {
     padding: 6px 0;
-  }
-}
-
-.btn,
-.btn-group {
-  &.grouped {
-    margin-right: 7px;
-    float: left;
-    &:last-child {
-      margin-right: 0px;
-    }
   }
 }
 

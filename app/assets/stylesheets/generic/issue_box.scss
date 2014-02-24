@@ -48,4 +48,27 @@
       margin: 0;
     }
   }
+
+  .state-label {
+    font-size: 14px;
+    padding: 9px 25px;
+    text-align: center;
+    text-shadow: none;
+    margin-right: 20px;
+
+    &.state-label-blue {
+      background: #31708f;
+      color: #FFF;
+    }
+
+    &.state-label-green {
+      background: #4A4;
+      color: #FFF;
+    }
+
+    &.state-label-red {
+      background: #DA4E49;
+      color: #FFF;
+    }
+  }
 }

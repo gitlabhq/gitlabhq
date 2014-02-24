@@ -25,7 +25,7 @@
   - content_for :note_actions do
     - if can?(current_user, :modify_merge_request, @merge_request)
       - unless @merge_request.closed?
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close", title: "Close merge request"
 
 
   .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
