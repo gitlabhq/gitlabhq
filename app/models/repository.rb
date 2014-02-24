@@ -196,7 +196,7 @@ class Repository
   #   # => git@localhost:rack.git
   #
   def submodule_url_for(ref, path)
-    if submodules.any?
+    if submodules(ref).any?
       submodule = submodules(ref)[path]
 
       if submodule
