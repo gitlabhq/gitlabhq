@@ -44,8 +44,8 @@
       - file = project.repository.blob_at(@commit.id, diff.new_path)
       - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
       - next unless file
-      .file{id: "diff-#{i}"}
-        .header
+      .diff-file{id: "diff-#{i}"}
+        .diff-header
           - if diff.deleted_file
             %span= diff.old_path
 
@@ -70,7 +70,7 @@
                 %span.commit-short-id= @commit.short_id(6)
 
 
-        .content
+        .diff-content
           -# Skipp all non non-supported blobs
           - next unless file.respond_to?('text?')
           - if file.text?

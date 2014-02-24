@@ -47,13 +47,13 @@ ul.notes {
     .discussion-body {
       margin-left: 50px;
 
-      .file,
+      .diff-file,
       .discussion-hidden,
       .notes {
         @extend .borders;
         background-color: #F9F9F9;
       }
-      .file .notes {
+      .diff-file .notes {
         /* reset */
         background: inherit;
         border: none;
@@ -114,7 +114,7 @@ ul.notes {
   }
 }
 
-.file .notes_holder {
+.diff-file .notes_holder {
   font-size: 13px;
   line-height: 18px;
   font-family: "Helvetica Neue", Helvetica, Arial, sans-serif;
@@ -184,7 +184,7 @@ ul.notes {
     }
   }
 }
-.file .note .note-actions {
+.diff-file .note .note-actions {
   right: 0;
   top: 0;
 }
@@ -195,7 +195,7 @@ ul.notes {
  * Line note button on the side of diffs
  */
 
-.file tr.line_holder {
+.diff-file tr.line_holder {
   .add-diff-note {
     background: url("diff_note_add.png") no-repeat left 0;
     height: 22px;
@@ -235,22 +235,25 @@ ul.notes {
 .reply-btn {
   @extend .btn-primary;
 }
-.file .content tr.line_holder:hover {
-  &> td.line_content {
-    background: $hover !important;
-    border-color: darken($hover, 10%) !important;
+.diff-file .diff-content {
+  tr.line_holder:hover {
+    &> td.line_content {
+      background: $hover !important;
+      border-color: darken($hover, 10%) !important;
+    }
+    &> td.new_line,
+    &> td.old_line {
+      background: darken($hover, 4%) !important;
+      border-color: darken($hover, 10%) !important;
+    }
   }
-  &> td.new_line,
-  &> td.old_line {
-    background: darken($hover, 4%) !important;
-    border-color: darken($hover, 10%) !important;
+
+  tr.line_holder:hover > td .line_note_link {
+    opacity: 1.0;
+    filter: alpha(opacity=100);
   }
 }
-.file .content tr.line_holder:hover > td .line_note_link {
-  opacity: 1.0;
-  filter: alpha(opacity=100);
-}
-.file,
+.diff-file,
 .discussion {
   .new_note {
     margin: 0;
