@@ -16,11 +16,7 @@ Feature: Project Browse branches
     Given I click link "Protected"
     Then I should see "Shop" protected branches list
 
-  # @wip
-  # Scenario: I can download project by branch
-
-  # @wip
-  # Scenario: I can view protected branches
-
-  # @wip
-  # Scenario: I can manage protected branches
+  Scenario: I create a branch
+    Given I click new branch link
+    When I submit new branch form
+    Then I should see new branch created
