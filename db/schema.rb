@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140214102325) do
+ActiveRecord::Schema.define(version: 20140224032257) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -366,6 +366,7 @@ ActiveRecord::Schema.define(version: 20140214102325) do
     t.boolean  "push_events",           default: true,          null: false
     t.boolean  "issues_events",         default: false,         null: false
     t.boolean  "merge_requests_events", default: false,         null: false
+    t.text     "payload_template"
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree

@@ -160,6 +160,8 @@ gem "font-awesome-rails", '~> 3.2'
 gem "gemoji", "~> 1.3.0"
 gem "gon", '~> 5.0.0'
 
+gem "liquid"
+
 group :development do
   gem "annotate", "~> 2.6.0.beta2"
   gem "letter_opener"
