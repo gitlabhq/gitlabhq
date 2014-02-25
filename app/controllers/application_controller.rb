@@ -154,7 +154,6 @@ class ApplicationController < ActionController::Base
   end
 
   def dev_tools
-    Rack::MiniProfiler.authorize_request
   end
 
   def default_headers
