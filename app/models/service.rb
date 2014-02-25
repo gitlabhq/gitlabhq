@@ -57,7 +57,7 @@ class Service < ActiveRecord::Base
 
   def doc
     begin
-      Gitlab::ServiceDoc.get(to_param)
+      Gitlab::ProjectServiceDoc.get(to_param)
     rescue
       Rails.logger.error "Unable to get Service documentation"
       nil

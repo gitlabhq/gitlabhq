@@ -1,1 +1,0 @@
-Gitlab::ServiceDoc.load

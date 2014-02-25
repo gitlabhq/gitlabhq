@@ -73,7 +73,7 @@ describe Service do
 
     context "without documentation file" do
       before do
-        Gitlab::ServiceDoc.instance_variable_set(:@docs, {"another_service" => "Some service documentation"})
+        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {"another_service" => "Some service documentation"})
       end
 
       it { @service.doc.should be_nil }
@@ -81,7 +81,7 @@ describe Service do
 
     context "with documentation file provided" do
       before do
-        Gitlab::ServiceDoc.instance_variable_set(:@docs, {@service.to_param => "Some service documentation"})
+        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {@service.to_param => "Some service documentation"})
       end
 
       it { @service.doc.should == "Some service documentation" }
@@ -89,7 +89,7 @@ describe Service do
 
     context "when something bad happens" do
       before do
-        Gitlab::ServiceDoc.stub(:get).and_raise("something bad")
+        Gitlab::ProjectServiceDoc.stub(:get).and_raise("something bad")
       end
 
       it { expect { @service.doc }.to_not raise_error }

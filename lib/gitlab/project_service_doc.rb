@@ -1,6 +1,6 @@
 module Gitlab
-  class ServiceDoc
-    DOC_DIR = Rails.root.join("doc","services").freeze
+  class ProjectProjectServiceDoc
+    DOC_DIR = Rails.root.join("doc","project_services").freeze
     class << self
       def load
         @docs = {}
