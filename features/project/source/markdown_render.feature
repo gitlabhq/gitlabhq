@@ -4,9 +4,7 @@ Feature: Project markdown render
     And I own project "Delta"
     Given I visit project source page
 
-  # -------------------------------------------
-  # README
-  # -------------------------------------------
+  # Tree README
 
   Scenario: Tree view should have correct links in README
     Given I go directory which contains README file
@@ -41,9 +39,7 @@ Feature: Project markdown render
     Then I should see rendered README which contains correct links
     And Header "Application details" should have correct id and link
 
-  # -------------------------------------------
-  # File content
-  # -------------------------------------------
+  # Blob
 
   Scenario: I navigate to doc directory to view documentation in master
     And I navigate to the doc/api/README
@@ -61,9 +57,7 @@ Feature: Project markdown render
     And I navigate to the doc/api/README
     And Header "GitLab API" should have correct id and link
 
-  # -------------------------------------------
-  # Markdown branch README
-  # -------------------------------------------
+  # Markdown branch
 
   Scenario: I browse files from markdown branch
     When I visit markdown branch
@@ -93,9 +87,31 @@ Feature: Project markdown render
     And I click on raketasks in doc/api/README
     Then I should see correct directory rendered for markdown branch
 
-  # -------------------------------------------
+  Scenario: Tree markdown links view empty urls should have correct urls
+    When I visit markdown branch
+    Then The link with text "empty" should have url "tree/markdown"
+    When I visit markdown branch "README.md" blob
+    Then The link with text "empty" should have url "blob/markdown/README.md"
+    When I visit markdown branch "d" tree
+    Then The link with text "empty" should have url "tree/markdown/d"
+    When I visit markdown branch "d/README.md" blob
+    Then The link with text "empty" should have url "blob/markdown/d/README.md"
+
+  # "ID" means "#id" on the tests below, because we are unable to escape the hash sign.
+  # which Spinach interprets as the start of a comment.
+  Scenario: All markdown links with ids should have correct urls
+    When I visit markdown branch
+    Then The link with text "ID" should have url "tree/markdownID"
+    Then The link with text "/ID" should have url "tree/markdownID"
+    Then The link with text "README.mdID" should have url "blob/markdown/README.mdID"
+    Then The link with text "d/README.mdID" should have url "blob/markdown/d/README.mdID"
+    When I visit markdown branch "README.md" blob
+    Then The link with text "ID" should have url "blob/markdown/README.mdID"
+    Then The link with text "/ID" should have url "blob/markdown/README.mdID"
+    Then The link with text "README.mdID" should have url "blob/markdown/README.mdID"
+    Then The link with text "d/README.mdID" should have url "blob/markdown/d/README.mdID"
+
   # Wiki
-  # -------------------------------------------
 
   Scenario: I create a wiki page with different links
     Given I go to wiki page
