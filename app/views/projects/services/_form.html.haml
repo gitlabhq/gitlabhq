@@ -45,7 +45,7 @@
       = link_to 'Test settings', test_project_service_path(@project, @service.to_param), class: 'btn btn-small'
 
 
-- unless @service.doc.nil?
+- if @service.doc
   %h4
     Help
     %i.icon-question.clgray
