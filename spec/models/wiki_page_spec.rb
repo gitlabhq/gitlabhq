@@ -2,12 +2,6 @@ require "spec_helper"
 
 describe WikiPage do
 
-  def create_temp_repo(path)
-    FileUtils.mkdir_p path
-    command = "git init --quiet #{path};"
-    system(command)
-  end
-
   def remove_temp_repo(path)
     FileUtils.rm_rf path
   end
