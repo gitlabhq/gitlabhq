@@ -27,8 +27,9 @@ project_urls.each_with_index do |url, i|
       path: group_path
     )
     group.description = Faker::Lorem.sentence
-    group.owner = User.first
     group.save
+
+    group.add_owner(User.first)
   end
 
   project_path.gsub!(".git", "")
