@@ -12,6 +12,8 @@ module SubmoduleHelper
 
     if self_url?(url, project)
       return project_path(project), project_tree_path(project, submodule_item.id)
+    elsif relative_self_url?(url)
+      relative_self_links(url, submodule_item.id)
     elsif github_dot_com_url?(url)
       standard_links('github.com', project, submodule_item.id)
     elsif gitlab_dot_com_url?(url)
@@ -36,8 +38,23 @@ module SubmoduleHelper
     url == gitlab_shell.url_to_repo(project)
   end
 
+  def relative_self_url?(url)
+    # (./)? ( (../repo.git) | (../../project/repo.git) )
+    url =~ /(^((\.\/)?(((\.\.)\/)|((\.\.)\/(\.\.)\/.*\/)))[^\.\/]*\.git)\Z/
+  end
+
   def standard_links(host, project, commit)
     base = [ 'https://', host, '/', project ].join('')
+    return base, [ base, '/tree/', commit ].join('')
+  end
+
+  def relative_self_links(url, commit)
+    if url.scan(/(\.\.)/).size == 2
+      base = [ Gitlab.config.gitlab.url, '/', url[/.*\/(.*)\/.*\.git/, 1] ].join('')
+    else
+      base = [ Gitlab.config.gitlab.url, '/', @project.group.path ].join('')
+    end
+    base = [ base, '/', url[/.*\/(.*)\.git/, 1] ].join('')
     return base, [ base, '/tree/', commit ].join('')
   end
 end
