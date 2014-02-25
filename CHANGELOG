@@ -3,6 +3,9 @@ v 6.7.0
   - Add edit file button to MergeRequest diff
   - Public groups (Jason Hollingsworth)
 
+v 6.6.2
+  - Fix 500 error on branch/tag create or remove via UI
+
 v 6.6.1
   - Fix 500 error on files tab if submodules presents
 
