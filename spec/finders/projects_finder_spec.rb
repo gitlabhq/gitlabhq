@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CollectService do
+describe ProjectsFinder do
   let(:user) { create :user }
   let(:group) { create :group }
 
@@ -10,7 +10,7 @@ describe Projects::CollectService do
   let(:project4) { create(:empty_project, group: group, visibility_level: Project::PRIVATE) }
 
   context 'non authenticated' do
-    subject { Projects::CollectService.new.execute(nil, group: group) }
+    subject { ProjectsFinder.new.execute(nil, group: group) }
 
     it { should include(project1) }
     it { should_not include(project2) }
@@ -19,7 +19,7 @@ describe Projects::CollectService do
   end
 
   context 'authenticated' do
-    subject { Projects::CollectService.new.execute(user, group: group) }
+    subject { ProjectsFinder.new.execute(user, group: group) }
 
     it { should include(project1) }
     it { should include(project2) }
@@ -30,7 +30,7 @@ describe Projects::CollectService do
   context 'authenticated, project member' do
     before { project3.team << [user, :developer] }
 
-    subject { Projects::CollectService.new.execute(user, group: group) }
+    subject { ProjectsFinder.new.execute(user, group: group) }
 
     it { should include(project1) }
     it { should include(project2) }
@@ -41,7 +41,7 @@ describe Projects::CollectService do
   context 'authenticated, group member' do
     before { group.add_user(user, Gitlab::Access::DEVELOPER) }
 
-    subject { Projects::CollectService.new.execute(user, group: group) }
+    subject { ProjectsFinder.new.execute(user, group: group) }
 
     it { should include(project1) }
     it { should include(project2) }
