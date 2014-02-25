@@ -104,10 +104,12 @@ module TestEnv
 
   def reset_satellite_dir
     setup_stubs
-    FileUtils.cd(seed_satellite_path) do
-      `git reset --hard --quiet`
-      `git clean -fx`
-      `git checkout --quiet origin/master`
+    [
+      %W(git reset --hard --quiet),
+      %W(git clean -fx),
+      %W(git checkout --quiet origin/master)
+    ].each do |git_cmd|
+      system(*git_cmd, chdir: seed_satellite_path)
     end
   end
 
@@ -186,7 +188,6 @@ module TestEnv
 
   def create_temp_repo(path)
     FileUtils.mkdir_p path
-    command = "git init --quiet --bare #{path};"
-    system(command)
+    system(*%W(git init --quiet --bare -- #{path}))
   end
 end

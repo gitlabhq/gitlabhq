@@ -1,21 +1,21 @@
 namespace :sidekiq do
   desc "GITLAB | Stop sidekiq"
   task :stop do
-    system "script/background_jobs stop"
+    system *%W(script/background_jobs stop)
   end
 
   desc "GITLAB | Start sidekiq"
   task :start do
-    system "script/background_jobs start"
+    system *%W(script/background_jobs start)
   end
 
   desc 'GitLab | Restart sidekiq'
   task :restart do
-    system "script/background_jobs restart"
+    system *%W(script/background_jobs restart)
   end
 
   desc "GITLAB | Start sidekiq with launchd on Mac OS X"
   task :launchd do
-    system "script/background_jobs start_no_deamonize"
+    system *%W(script/background_jobs start_no_deamonize)
   end
 end
