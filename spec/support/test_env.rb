@@ -117,7 +117,7 @@ module TestEnv
     repo = repo(namespace, name)
 
     # Symlink tmp/repositories/gitlabhq to tmp/test-git-base-path/gitlabhq
-    system("ln -s -f #{seed_repo_path()} #{repo}")
+    FileUtils.ln_sf(seed_repo_path, repo)
     create_satellite(repo, namespace, name)
   end
 
@@ -181,7 +181,7 @@ module TestEnv
     # Symlink tmp/satellite/gitlabhq to tmp/test-git-base-path/satellite/gitlabhq, create the directory if it doesn't exist already
     satellite_dir = File.dirname(satellite_repo)
     FileUtils.mkdir_p(satellite_dir) unless File.exists?(satellite_dir)
-    system("ln -s -f #{seed_satellite_path} #{satellite_repo}")
+    FileUtils.ln_sf(seed_satellite_path, satellite_repo)
   end
 
   def create_temp_repo(path)
