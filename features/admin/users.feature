@@ -14,3 +14,9 @@ Feature: Admin Users
     And Click save
     Then See username error message
     And Not changed form action url
+
+  Scenario: Edit my user attributes
+    Given I visit admin users page
+    And click edit on my user
+    When I submit modified user
+    Then I see user attributes changed
