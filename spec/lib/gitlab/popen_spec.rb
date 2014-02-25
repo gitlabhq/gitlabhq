@@ -32,5 +32,14 @@ describe 'Gitlab::Popen', no_db: true do
     end
   end
 
+  context 'without a directory argument' do
+    before do
+      @output, @status = @klass.new.popen(%W(ls))
+    end
+
+    it { @status.should be_zero }
+    it { @output.should include('spec') }
+  end
+
 end
 
