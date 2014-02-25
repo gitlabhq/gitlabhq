@@ -22,11 +22,6 @@ describe "Group access" do
       group.add_user(reporter, Gitlab::Access::REPORTER)
       group.add_user(guest, Gitlab::Access::GUEST)
     end
-    
-    describe "Group should not have accessible projects" do
-      it { group.has_projects_accessible_to?(nil).should be_false }
-      it { group.has_projects_accessible_to?(nonmember).should be_false }
-    end
 
     describe "GET /groups/:path" do
       subject { group_path(group) }

@@ -19,11 +19,6 @@ describe "Group access" do
       create(:project, path: "internal_project", group: group, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
       create(:project, path: "public_project", group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
     end
-      
-    describe "Group should have accessible projects" do
-      it { group.has_projects_accessible_to?(nil).should be_true }
-      it { group.has_projects_accessible_to?(nonmember).should be_true }
-    end
 
     describe "GET /groups/:path" do
       subject { group_path(group) }

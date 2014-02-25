@@ -15,13 +15,8 @@ describe "Group with public project access" do
       group.add_user(master, Gitlab::Access::MASTER)
       group.add_user(reporter, Gitlab::Access::REPORTER)
       group.add_user(guest, Gitlab::Access::GUEST)
-      
-      create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-    end
 
-    describe "Group should have accessible projects" do
-      it { group.has_projects_accessible_to?(nil).should be_true }
-      it { group.has_projects_accessible_to?(nonmember).should be_true }
+      create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::PUBLIC)
     end
 
     describe "GET /groups/:path" do
