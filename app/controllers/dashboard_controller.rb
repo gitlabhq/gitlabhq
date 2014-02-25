@@ -55,7 +55,7 @@ class DashboardController < ApplicationController
   def merge_requests
     @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params)
     @merge_requests = @merge_requests.page(params[:page]).per(20)
-    @merge_requests = @merge_requests.preload(:author, :project)
+    @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
