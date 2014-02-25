@@ -116,21 +116,28 @@ class Project < ActiveRecord::Base
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
 
+  scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
+  scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
+
   scope :non_archived, -> { where(archived: false) }
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
   class << self
+    def public_and_internal_levels
+      [Project::PUBLIC, Project::INTERNAL]
+    end
+
     def abandoned
       where('projects.last_activity_at < ?', 6.months.ago)
     end
-    
+
     def publicish(user)
       visibility_levels = [Project::PUBLIC]
       visibility_levels += [Project::INTERNAL] if user
       where(visibility_level: visibility_levels)
     end
-    
+
     def accessible_to(user)
       accessible_ids = publicish(user).pluck(:id)
       accessible_ids += user.authorized_projects.pluck(:id) if user

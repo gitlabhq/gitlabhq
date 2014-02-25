@@ -50,7 +50,7 @@ class Ability
                 else
                   nil
                 end
-        
+
         if group && group.has_projects_accessible_to?(nil)
           [:read_group]
         else
@@ -184,7 +184,7 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if user.admin? || group.users.include?(user) || group.has_projects_accessible_to?(user)
+      if user.admin? || Projects::CollectService.new.execute(user, group: group).any?
         rules << :read_group
       end
 

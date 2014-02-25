@@ -99,7 +99,7 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= group.projects_accessible_to(current_user).sorted_by_activity
+    @projects ||= Projects::CollectService.new.execute(current_user, group: group)
   end
 
   def project_ids
