@@ -15,15 +15,32 @@ class Notify < ActionMailer::Base
   default_url_options[:port]     = Gitlab.config.gitlab.port unless Gitlab.config.gitlab_on_standard_port?
   default_url_options[:script_name] = Gitlab.config.gitlab.relative_url_root
 
-  default from: Gitlab.config.gitlab.email_from
+  default from: Proc.new { default_sender_address.format }
   default reply_to: "noreply@#{Gitlab.config.gitlab.host}"
 
-  # Just send email with 3 seconds delay
+  # Just send email with 2 seconds delay
   def self.delay
     delay_for(2.seconds)
   end
 
   private
+
+  # The default email address to send emails from
+  def default_sender_address
+    address = Mail::Address.new(Gitlab.config.gitlab.email_from)
+    address.display_name = "GitLab"
+    address
+  end
+
+  # Return an email address that displays the name of the sender.
+  # Only the displayed name changes; the actual email address is always the same.
+  def sender(sender_id)
+    if sender = User.find(sender_id)
+      address = default_sender_address
+      address.display_name = sender.name
+      address.format
+    end
+  end
 
   # Look up a User by their ID and return their email address
   #
@@ -43,21 +60,21 @@ class Notify < ActionMailer::Base
   # Examples
   #
   #   >> subject('Lorem ipsum')
-  #   => "GitLab | Lorem ipsum"
+  #   => "Lorem ipsum"
   #
   #   # Automatically inserts Project name when @project is set
   #   >> @project = Project.last
   #   => #<Project id: 1, name: "Ruby on Rails", path: "ruby_on_rails", ...>
   #   >> subject('Lorem ipsum')
-  #   => "GitLab | Ruby on Rails | Lorem ipsum "
+  #   => "Ruby on Rails | Lorem ipsum "
   #
   #   # Accepts multiple arguments
   #   >> subject('Lorem ipsum', 'Dolor sit amet')
-  #   => "GitLab | Lorem ipsum | Dolor sit amet"
+  #   => "Lorem ipsum | Dolor sit amet"
   def subject(*extra)
-    subject = "GitLab"
-    subject << (@project ? " | #{@project.name_with_namespace}" : "")
-    subject << " | " + extra.join(' | ') if extra.present?
+    subject = ""
+    subject << "#{@project.name} | " if @project
+    subject << extra.join(' | ') if extra.present?
     subject
   end
 end
