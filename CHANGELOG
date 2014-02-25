@@ -1,7 +1,8 @@
 v 6.7.0
-  - Add support for Gemnasium as a Project Service
+  - Add support for Gemnasium as a Project Service (Olivier Gonzalez)
   - Add edit file button to MergeRequest diff
   - Public groups (Jason Hollingsworth)
+  - Cleaner headers in Notification Emails (Pierre de La Morinerie)
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
