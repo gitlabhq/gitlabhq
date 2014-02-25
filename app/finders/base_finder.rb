@@ -1,4 +1,4 @@
-# FilteringService class
+# BaseFinder
 #
 # Used to filter Issues and MergeRequests collections by set of params
 #
@@ -16,11 +16,10 @@
 #     label_name: string
 #     sort: string
 #
-class FilteringService
-  attr_accessor :klass, :current_user, :params
+class BaseFinder
+  attr_accessor :current_user, :params
 
-  def execute(klass, current_user, params)
-    @klass = klass
+  def execute(current_user, params)
     @current_user = current_user
     @params = params
 

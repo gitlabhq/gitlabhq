@@ -5,7 +5,7 @@ class Projects::NotesController < Projects::ApplicationController
   before_filter :authorize_admin_note!, only: [:update, :destroy]
 
   def index
-    @notes = Notes::LoadService.new(project, current_user, params).execute
+    @notes = NotesFinder.new.execute(project, current_user, params)
 
     notes_json = { notes: [] }
 

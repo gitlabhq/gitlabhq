@@ -184,7 +184,7 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if user.admin? || group.users.include?(user) || Projects::CollectService.new.execute(user, group: group).any?
+      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
         rules << :read_group
       end
 
