@@ -3,6 +3,8 @@ require 'open3'
 
 module Gitlab
   module Popen
+    extend self
+
     def popen(cmd, path=nil)
       unless cmd.is_a?(Array)
         raise "System commands must be given as an array of strings"
