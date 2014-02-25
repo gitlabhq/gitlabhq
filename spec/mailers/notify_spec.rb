@@ -115,7 +115,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /^gitlab \| Email was added to your account$/i
+      should have_subject /^Email was added to your account$/i
     end
 
     it 'contains the new email address' do
