@@ -170,20 +170,13 @@ li.commit {
     }
 
     .text-expander {
-      background: #ddd;
+      background: #eee;
       color: #555;
       padding: 0 5px;
-      line-height: 6px;
-      height: 12px;
-      font-size: 12px;
-      font-weight: bold;
-      vertical-align: middle;
-      display: inline-block;
-      border-radius: 1px;
-      text-decoration: none;
       cursor: pointer;
+      margin-left: 4px;
       &:hover {
-        background-color: #ccc;
+        background-color: #ddd;
       }
     }
   }
@@ -216,12 +209,6 @@ li.commit {
     .committed_ago {
       float: right;
       @extend .cgray;
-    }
-  }
-
-  &.open {
-    .commit-row-description {
-      display: block;
     }
   }
 }
