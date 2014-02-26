@@ -99,14 +99,16 @@ class Commit
   #
   # cut off, ellipses (`&hellp;`) are prepended to the commit message.
   def description
-    description = safe_message
+    title_end = safe_message.index(/\n/)
+    @description ||= if (!title_end && safe_message.length > 100) || (title_end && title_end > 100)
+                    "&hellip;".html_safe << safe_message[80..-1]
+                  else
+                    safe_message.split(/\n/, 2)[1].try(:chomp)
+                  end
+  end
 
-    title_end = description.index(/\n/)
-    if (!title_end && description.length > 100) || (title_end && title_end > 100)
-      "&hellip;".html_safe << description[80..-1]
-    else
-      description.split(/\n/, 2)[1].try(:chomp)
-    end
+  def description?
+    description.present?
   end
 
   # Regular expression that identifies commit message clauses that trigger issue closing.

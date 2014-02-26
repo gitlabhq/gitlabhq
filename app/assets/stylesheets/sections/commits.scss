@@ -168,6 +168,32 @@ li.commit {
         text-decoration: underline;
       }
     }
+
+    .text-expander {
+      background: #ddd;
+      color: #555;
+      padding: 0 5px;
+      line-height: 6px;
+      height: 12px;
+      font-size: 12px;
+      font-weight: bold;
+      vertical-align: middle;
+      display: inline-block;
+      border-radius: 1px;
+      text-decoration: none;
+      cursor: pointer;
+      &:hover {
+        background-color: #ccc;
+      }
+    }
+  }
+
+  .commit-row-description {
+    font-size: 14px;
+    border-left: 1px solid #e5e5e5;
+    padding: 0 15px 0 7px;
+    margin: 5px 0 10px 5px;
+    display: none;
   }
 
   .commit-row-info {
@@ -190,6 +216,12 @@ li.commit {
     .committed_ago {
       float: right;
       @extend .cgray;
+    }
+  }
+
+  &.open {
+    .commit-row-description {
+      display: block;
     }
   }
 }
