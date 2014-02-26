@@ -14,7 +14,7 @@ Use the [support document](https://docs.google.com/document/d/1cAHvbdFE6zR5WY-zh
 ## Git
 - add, remove ssh key
 - git clone, git push over ssh
-- git clone, git push over http
+- git clone, git push over http (with both regular and ldap accounts)
 
 ## Project
 - create project
@@ -23,6 +23,8 @@ Use the [support document](https://docs.google.com/document/d/1cAHvbdFE6zR5WY-zh
 - rename repo path
 - add/remove project member
 - remove project
+- create git branch with UI
+- create git tag with UI
 
 ## Web editor
 - create, edit, remove file in web UI
