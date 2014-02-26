@@ -4,6 +4,8 @@ v 6.7.0
   - Public groups (Jason Hollingsworth)
   - Cleaner headers in Notification Emails (Pierre de La Morinerie)
   - Blob and tree gfm links to anchors work
+  - Piwik Integration (Sebastian Winkler)
+  - Show contribution guide link for new issue form (Jeroen van Baarsen)
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
