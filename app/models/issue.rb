@@ -15,7 +15,11 @@
 #  milestone_id :integer
 #  state        :string(255)
 #  iid          :integer
+#  attachment   :string(255)
 #
+
+require 'carrierwave/orm/activerecord'
+require 'file_size_validator'
 
 class Issue < ActiveRecord::Base
   include Issuable
@@ -25,13 +29,16 @@ class Issue < ActiveRecord::Base
 
   belongs_to :project
   validates :project, presence: true
+  validates :attachment, file_size: { maximum: 10.megabytes.to_i }
+
+  mount_uploader :attachment, AttachmentUploader
 
   scope :of_group, ->(group) { where(project_id: group.project_ids) }
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
 
   attr_accessible :title, :assignee_id, :position, :description,
                   :milestone_id, :label_list, :author_id_of_changes,
-                  :state_event
+                  :state_event, :attachment
 
   acts_as_taggable_on :labels
 

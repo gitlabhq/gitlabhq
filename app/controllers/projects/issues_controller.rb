@@ -96,6 +96,15 @@ class Projects::IssuesController < Projects::ApplicationController
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
+  def delete_attachment
+    issue.remove_attachment!
+    issue.update_attribute(:attachment, nil)
+
+    respond_to do |format|
+      format.js { render nothing: true }
+    end
+  end
+
   protected
 
   def issue

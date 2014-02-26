@@ -1,10 +1,10 @@
 class FilesController < ApplicationController
   def download
-    note = Note.find(params[:id])
-    uploader = note.attachment
+    model = params[:type].capitalize.constantize.find(params[:id])
+    uploader = model.attachment
 
     if uploader.file_storage?
-      if can?(current_user, :read_project, note.project)
+      if can?(current_user, :read_project, model.project)
         send_file uploader.file.path, disposition: 'attachment'
       else
         not_found!

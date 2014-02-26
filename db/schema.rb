@@ -84,6 +84,7 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.integer  "milestone_id"
     t.string   "state"
     t.integer  "iid"
+    t.string   "attachment"
   end
 
   add_index "issues", ["assignee_id"], name: "index_issues_on_assignee_id", using: :btree

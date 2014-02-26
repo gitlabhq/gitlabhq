@@ -1,0 +1,14 @@
+- if @issue.attachment.url
+  .issue-attachment
+    .attachment
+      = link_to @issue.attachment.secure_url, target: "_blank" do
+        %i.icon-paper-clip
+        = @issue.attachment_identifier
+        - if deletable
+          = link_to delete_attachment_project_issue_path(@project, @issue),
+            title: "Delete this attachment", method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: "danger js-issue-attachment-delete" do
+            %i.icon-trash.cred
+    - if @issue.attachment.image?
+      = link_to @issue.attachment.url, target: '_blank' do
+        = image_tag @issue.attachment.url, class: 'issue-image-attach'
+  .clearfix

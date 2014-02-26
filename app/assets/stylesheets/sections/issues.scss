@@ -143,3 +143,9 @@ form.edit-issue {
     border-color: #E5E5E5;
   }
 }
+
+.issue-image-attach {
+  @extend .col-md-4;
+  @extend .thumbnail;
+  margin-top: 5px;
+}

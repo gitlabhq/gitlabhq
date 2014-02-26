@@ -48,6 +48,9 @@
       .wiki
         = preserve do
           = markdown @issue.description
+
+  = render partial: 'issue_attachment', locals: { deletable: false }
+
   .context
     %cite.cgray
       = render partial: 'issue_context', locals: { issue: @issue }
