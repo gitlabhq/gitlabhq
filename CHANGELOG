@@ -3,6 +3,7 @@ v 6.7.0
   - Add edit file button to MergeRequest diff
   - Public groups (Jason Hollingsworth)
   - Cleaner headers in Notification Emails (Pierre de La Morinerie)
+  - Blob and tree gfm links to anchors work
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
@@ -33,7 +34,6 @@ v 6.6.0
   - Restyle Issue#show page and MR#show page
   - Ability to filter by multiple labels for Issues page
   - Rails version to 4.0.3
-  - Blob and tree gfm links to anchors work
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
