@@ -19,7 +19,7 @@ header {
         line-height: 32px;
         padding: 6px 10px;
 
-        &:hover {
+        &:hover, &:focus, &:active {
           background: none;
         }
       }
@@ -192,7 +192,8 @@ header {
           color: #AAA;
           text-shadow: 0 1px 0 #444;
 
-          &:hover {
+          &:hover, &:focus, &:active {
+            background: none;
             color: #FFF;
           }
         }
