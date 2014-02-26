@@ -1,3 +1,7 @@
+v 6.6.3
+  - Fix 500 error when edit yourself from admin area
+  - Hide private groups for public profiles
+
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
 
