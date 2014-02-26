@@ -53,7 +53,7 @@ class Key < ActiveRecord::Base
     Tempfile.open('gitlab_key_file') do |file|
       file.puts key
       file.rewind
-      cmd_output, cmd_status = popen("ssh-keygen -lf #{file.path}", '/tmp')
+      cmd_output, cmd_status = popen(%W(ssh-keygen -lf #{file.path}), '/tmp')
     end
 
     if cmd_status.zero?
