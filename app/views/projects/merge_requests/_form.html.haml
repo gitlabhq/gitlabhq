@@ -1,3 +1,7 @@
+- if @repository.contribution_guide && !@merge_request.persisted?
+  - contribution_guide_url = project_blob_path(@project, tree_join(@repository.root_ref, @repository.contribution_guide.name))
+  .alert.alert-info.col-sm-10.col-sm-offset-2
+    ="Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
 = form_for [@project, @merge_request], html: { class: "merge-request-form form-horizontal" } do |f|
   -if @merge_request.errors.any?
     .alert.alert-danger
