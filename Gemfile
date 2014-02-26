@@ -167,7 +167,7 @@ group :development do
   gem "annotate", "~> 2.6.0.beta2"
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
-  gem 'rack-mini-profiler'
+  gem 'rack-mini-profiler', require: false
 
   # Better errors handler
   gem 'better_errors'
