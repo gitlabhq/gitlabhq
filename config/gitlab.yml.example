@@ -227,6 +227,11 @@ development:
 
 test:
   <<: *base
+  gravatar:
+    enabled: true
+  gitlab:
+    host: localhost
+    port: 80
   issues_tracker:
     redmine:
       title: "Redmine"

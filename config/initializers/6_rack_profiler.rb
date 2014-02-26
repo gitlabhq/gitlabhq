@@ -1,4 +1,3 @@
-# If Mini Profiler is included via gem
 if Rails.env == 'development'
   require 'rack-mini-profiler'
 
