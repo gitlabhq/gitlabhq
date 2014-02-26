@@ -39,8 +39,8 @@ module SubmoduleHelper
   end
 
   def relative_self_url?(url)
-    # (./)? ( (../repo.git) | (../../project/repo.git) )
-    url =~ /(^((\.\/)?(((\.\.)\/)|((\.\.)\/(\.\.)\/.*\/)))[^\.\/]*\.git)\Z/
+    # (./)?(../repo.git) || (./)?(../../project/repo.git) )
+    url =~ /^((\.\/)?(\.\.\/))(?!(\.\.)|(.*\/)).*\.git\Z/ || url =~ /^((\.\/)?(\.\.\/){2})(?!(\.\.))([^\/]*)\/(?!(\.\.)|(.*\/)).*\.git\Z/
   end
 
   def standard_links(host, project, commit)
@@ -49,7 +49,7 @@ module SubmoduleHelper
   end
 
   def relative_self_links(url, commit)
-    if url.scan(/(\.\.)/).size == 2
+    if url.scan(/(\.\.\/)/).size == 2
       base = [ Gitlab.config.gitlab.url, '/', url[/.*\/(.*)\/.*\.git/, 1] ].join('')
     else
       base = [ Gitlab.config.gitlab.url, '/', @project.group.path ].join('')
