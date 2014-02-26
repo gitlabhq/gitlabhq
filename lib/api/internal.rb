@@ -42,8 +42,6 @@ module API
               unless Gitlab::LDAP::Access.new.allowed?(user)
                 return false
               end
-
-              return false if user.ldap_user? && Gitlab::LDAP::User.blocked?(user.extern_uid)
             end
           end
 
