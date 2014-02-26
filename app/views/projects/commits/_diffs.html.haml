@@ -45,7 +45,7 @@
       - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
       - next unless file
       .diff-file{id: "diff-#{i}"}
-        .diff-header
+        .diff-header{id: "file-path-#{hexdigest(diff.new_path || diff.old_path)}"}
           - if diff.deleted_file
             %span= diff.old_path
 
