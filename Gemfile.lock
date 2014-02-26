@@ -101,6 +101,8 @@ GEM
     daemons (1.1.9)
     database_cleaner (1.2.0)
     debug_inspector (0.0.2)
+    default_value_for (3.0.0)
+      activerecord (>= 3.2.0, < 5.0)
     descendants_tracker (0.0.3)
     devise (3.0.4)
       bcrypt-ruby (~> 3.0)
@@ -570,6 +572,7 @@ DEPENDENCIES
   coveralls
   d3_rails (~> 3.1.4)
   database_cleaner
+  default_value_for (~> 3.0.0)
   devise (= 3.0.4)
   devise-async (= 0.8.0)
   email_spec

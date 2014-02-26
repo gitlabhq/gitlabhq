@@ -15,6 +15,9 @@ gem 'rails-observers'
 gem 'actionpack-page_caching'
 gem 'actionpack-action_caching'
 
+# Default values for AR models
+gem "default_value_for", "~> 3.0.0"
+
 # Supported DBs
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
