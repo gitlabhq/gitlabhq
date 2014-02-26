@@ -25,7 +25,7 @@
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
+            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
             = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
