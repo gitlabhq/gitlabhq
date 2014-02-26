@@ -11,6 +11,7 @@ class UsersController < ApplicationController
     end
     @events = @user.recent_events.where(project_id: @projects.map(&:id)).limit(20)
     @title = @user.name
+    @groups = @projects.map(&:group).compact.uniq
   end
 
   def determine_layout
