@@ -27,7 +27,7 @@ v 6.6.0
   - Remove snippet expiration
   - Mobile UI improvements (Drew Blessing)
   - Fix block/remove UI for admin::users#show page
-  - Show users' group membership on users' activity page
+  - Show users' group membership on users' activity page (Robert Djurasaj)
   - User pages are visible without login if user is authorized to a public project
   - Markdown rendered headers have id derived from their name and link to their id
   - Improve application to work faster with large groups (100+ members)
