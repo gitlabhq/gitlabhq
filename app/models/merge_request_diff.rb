@@ -69,12 +69,6 @@ class MergeRequestDiff < ActiveRecord::Base
     end
   end
 
-  # When Git::Diff is not able to get diff
-  # because of git timeout it return this value
-  def broken_diffs
-    [Gitlab::Git::Diff::BROKEN_DIFF]
-  end
-
   # Collect array of Git::Commit objects
   # between target and source branches
   def unmerged_commits

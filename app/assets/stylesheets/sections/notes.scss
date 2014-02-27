@@ -87,7 +87,6 @@ ul.notes {
     }
     .attachment {
       font-size: 14px;
-      margin-top: -20px;
     }
     .note-body {
       @include md-typography;
@@ -305,6 +304,7 @@ ul.notes {
   @extend .col-md-4;
   @extend .thumbnail;
   margin-left: 45px;
+  float: none;
 }
 
 

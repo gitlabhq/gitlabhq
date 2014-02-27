@@ -36,6 +36,7 @@ v 6.6.0
   - Restyle Issue#show page and MR#show page
   - Ability to filter by multiple labels for Issues page
   - Rails version to 4.0.3
+  - Fixed attachment identifier displaying underneath note text (Jason Blanchard)
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork
