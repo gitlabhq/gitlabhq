@@ -24,7 +24,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
 <div class="highlighted-data #{h.user_color_scheme_class}">
   <div class="highlight">
-    <pre><code class="#{language}">#{h.html_escape(code)}</code></pre>
+    <pre><code class="#{language}">#{h.send(:html_escape, code)}</code></pre>
   </div>
 </div>
 
