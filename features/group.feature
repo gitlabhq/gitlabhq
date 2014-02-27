@@ -97,7 +97,6 @@ Feature: Groups
 
   # Remove others
 
-  @javascript
   Scenario: Owner should be able to remove other users from group
     Given "Mary Jane" is owner of group "Owned"
     When I visit group "Owned" members page
