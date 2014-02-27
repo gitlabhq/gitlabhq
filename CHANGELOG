@@ -6,6 +6,7 @@ v 6.7.0
   - Blob and tree gfm links to anchors work
   - Piwik Integration (Sebastian Winkler)
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
+  - Fix CI status for merge requests from fork 
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
