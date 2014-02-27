@@ -11,7 +11,7 @@ class Tree
       @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
     end
 
-    if contribution_tree = @entries.find(&:contribution?)
+    if contribution_tree = @entries.find(&:contributing?)
       contribution_path = path == '/' ? contribution_tree.name : File.join(path, contribution_tree.name)
       @contribution_guide = Gitlab::Git::Blob.find(git_repo, sha, contribution_path)
     end
