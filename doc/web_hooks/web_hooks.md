@@ -25,7 +25,7 @@ Triggered when you push to the repository except pushing tags.
     "name": "Diaspora",
     "url": "git@localhost:diaspora.git",
     "description": "",
-    "homepage": "http://localhost/diaspora",
+    "homepage": "http://localhost/diaspora"
   },
   "commits": [
     {
@@ -35,10 +35,9 @@ Triggered when you push to the repository except pushing tags.
       "url": "http://localhost/diaspora/commits/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
       "author": {
         "name": "Jordi Mallach",
-        "email": "jordi@softcatala.org",
+        "email": "jordi@softcatala.org"
       }
     },
-    // ...
     {
       "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "message": "fixed readme",
@@ -46,12 +45,12 @@ Triggered when you push to the repository except pushing tags.
       "url": "http://localhost/diaspora/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "author": {
         "name": "GitLab dev user",
-        "email": "gitlabdev@dv6700.(none)",
-      },
-    },
+        "email": "gitlabdev@dv6700.(none)"
+      }
+    }
   ],
-  "total_commits_count": 4,
-};
+  "total_commits_count": 4
+}
 ```
 
 #### Issues events
@@ -62,21 +61,21 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 
 ```json
 {
-  "object_kind":"issue",
-  "object_attributes":{
-    "id":301,
-    "title":"New API: create/update/delete file",
-    "assignee_id":51,
-    "author_id":51,
-    "project_id":14,
-    "created_at":"2013-12-03T17:15:43Z",
-    "updated_at":"2013-12-03T17:15:43Z",
-    "position":0,
-    "branch_name":null,
-    "description":"Create new API for manipulations with repository",
-    "milestone_id":null,
-    "state":"opened",
-    "iid":23
+  "object_kind": "issue",
+  "object_attributes": {
+    "id": 301,
+    "title": "New API: create/update/delete file",
+    "assignee_id": 51,
+    "author_id": 51,
+    "project_id": 14,
+    "created_at": "2013-12-03T17:15:43Z",
+    "updated_at": "2013-12-03T17:15:43Z",
+    "position": 0,
+    "branch_name": null,
+    "description": "Create new API for manipulations with repository",
+    "milestone_id": null,
+    "state": "opened",
+    "iid": 23
   }
 }
 ```
@@ -89,25 +88,25 @@ Triggered when a new merge request is created or an existing merge request was u
 
 ```json
 {
-  "object_kind":"merge_request",
-  "object_attributes":{
-    "id":99,
-    "target_branch":"master",
-    "source_branch":"ms-viewport",
-    "source_project_id":14,
-    "author_id":51,
-    "assignee_id":6,
-    "title":"MS-Viewport",
-    "created_at":"2013-12-03T17:23:34Z",
-    "updated_at":"2013-12-03T17:23:34Z",
-    "st_commits":null,
-    "st_diffs":null,
-    "milestone_id":null,
-    "state":"opened",
-    "merge_status":"unchecked",
-    "target_project_id":14,
-    "iid":1,
-    "description":""
+  "object_kind": "merge_request",
+  "object_attributes": {
+    "id": 99,
+    "target_branch": "master",
+    "source_branch": "ms-viewport",
+    "source_project_id": 14,
+    "author_id": 51,
+    "assignee_id": 6,
+    "title": "MS-Viewport",
+    "created_at": "2013-12-03T17:23:34Z",
+    "updated_at": "2013-12-03T17:23:34Z",
+    "st_commits": null,
+    "st_diffs": null,
+    "milestone_id": null,
+    "state": "opened",
+    "merge_status": "unchecked",
+    "target_project_id": 14,
+    "iid": 1,
+    "description": ""
   }
 }
 ```
