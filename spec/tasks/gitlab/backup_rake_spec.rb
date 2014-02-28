@@ -35,7 +35,7 @@ describe 'gitlab:app namespace rake task' do
       let(:gitlab_version) { Gitlab::VERSION }
 
       it 'should fail on mismatch' do
-        YAML.stub load_file: {gitlab_version: gitlab_version.reverse}
+        YAML.stub load_file: {gitlab_version: "not #{gitlab_version}" }
         expect { run_rake_task }.to raise_error SystemExit
       end
 
