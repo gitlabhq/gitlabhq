@@ -36,7 +36,7 @@ class GitlabCiService < Service
   end
 
   def commit_status sha
-    response = HTTParty.get(commit_status_path(sha))
+    response = HTTParty.get(commit_status_path(sha), verify: false)
 
     if response.code == 200 and response["status"]
       response["status"]
