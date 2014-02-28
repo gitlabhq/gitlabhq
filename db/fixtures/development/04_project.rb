@@ -10,6 +10,7 @@ project_urls = [
   'https://github.com/gitlabhq/gitlab-recipes.git',
   'https://github.com/gitlabhq/gitlab-shell.git',
   'https://github.com/gitlabhq/grack.git',
+  'https://github.com/gitlabhq/testme.git',
   'https://github.com/twitter/flight.git',
   'https://github.com/twitter/typeahead.js.git',
   'https://github.com/h5bp/html5-boilerplate.git',
