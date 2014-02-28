@@ -50,11 +50,10 @@ module SubmoduleHelper
 
   def relative_self_links(url, commit)
     if url.scan(/(\.\.\/)/).size == 2
-      base = [ Gitlab.config.gitlab.url, '/', url[/.*\/(.*)\/.*\.git/, 1] ].join('')
+      base = url[/([^\/]*\/[^\/]*)\.git/, 1]
     else
-      base = [ Gitlab.config.gitlab.url, '/', @project.group.path ].join('')
+      base = [ @project.group.path, '/', url[/([^\/]*)\.git/, 1] ].join('')
     end
-    base = [ base, '/', url[/.*\/(.*)\.git/, 1] ].join('')
-    return base, [ base, '/tree/', commit ].join('')
+    return project_path(base), project_tree_path(base, commit)
   end
 end
