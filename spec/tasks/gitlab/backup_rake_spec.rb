@@ -32,7 +32,7 @@ describe 'gitlab:app namespace rake task' do
         Rake::Task["gitlab:shell:setup"].stub invoke: true
       end
 
-      let(:gitlab_version) { %x{git rev-parse HEAD}.gsub(/\n/,"") }
+      let(:gitlab_version) { Gitlab::VERSION }
 
       it 'should fail on mismatch' do
         YAML.stub load_file: {gitlab_version: gitlab_version.reverse}
