@@ -1,14 +1,13 @@
-.issue-box
-  .state{ class: merge_request_alert_class(@merge_request) }
-    - if @merge_request.merged?
-      %span.state-label.state-label-blue
+.issue-box{ class: issue_box_class(@merge_request) }
+  .state
+    %span.state-label
+      - if @merge_request.merged?
         Merged
-    - elsif @merge_request.closed?
-      %span.state-label.state-label-red
+      - elsif @merge_request.closed?
         Closed
-    - else
-      %span.state-label.state-label-green
+      - else
         Open
+
     %span.creator
       Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
