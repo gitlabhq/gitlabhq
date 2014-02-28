@@ -91,6 +91,7 @@
 }
 
 // hide mr close link for inline diff comment form
-.diff-file .close-mr-link {
- display: none;
+.diff-file .close-mr-link,
+.diff-file .reopen-mr-link {
+  display: none;
 }
