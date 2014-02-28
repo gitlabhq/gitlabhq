@@ -28,6 +28,8 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   extend Enumerize
 
+  default_value_for :imported, false
+
   ActsAsTaggableOn.strict_case_match = true
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
