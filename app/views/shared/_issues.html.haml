@@ -11,5 +11,6 @@
           = render 'projects/issues/issue', issue: issue
   = paginate @issues, theme: "gitlab"
 - else
-  .nothing-here-block No issues to show
+  .nothing-here-block
+    = t("gitlab.issues.nothing_here")
 

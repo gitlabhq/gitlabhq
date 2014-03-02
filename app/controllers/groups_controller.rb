@@ -131,7 +131,7 @@ class GroupsController < ApplicationController
   end
 
   def set_title
-    @title = 'New Group'
+    @title = I18n.t("gitlab.groups.new_group")
   end
 
   def determine_layout

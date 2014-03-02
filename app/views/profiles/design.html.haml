@@ -1,38 +1,38 @@
 %h3.page-title
-  My appearance settings
+  = t("gitlab.profile.design.my_appearance_settings")
 %p.light
-  Appearance settings saved to your profile and available across all devices
+  = t("gitlab.profile.design.appearance_settings_description")
 %hr
 
 = form_for @user, url: profile_path, remote: true, method: :put do |f|
   %fieldset.application-theme
     %legend
-      Application theme
+      = t("gitlab.profile.design.application_theme")
     .themes_opts
       = label_tag do
         .prev.default
         = f.radio_button :theme_id, 1
-        Default
+        = t("gitlab.profile.design.themes.default")
 
       = label_tag do
         .prev.classic
         = f.radio_button :theme_id, 2
-        Classic
+        = t("gitlab.profile.design.themes.classic")
 
       = label_tag do
         .prev.modern
         = f.radio_button :theme_id, 3
-        Modern
+        = t("gitlab.profile.design.themes.modern")
 
       = label_tag do
         .prev.gray
         = f.radio_button :theme_id, 4
-        Gray
+        = t("gitlab.profile.design.themes.gray")
 
       = label_tag do
         .prev.violet
         = f.radio_button :theme_id, 5
-        Violet
+        = t("gitlab.profile.design.themes.violet")
     %br
     .clearfix
 
