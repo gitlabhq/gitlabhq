@@ -36,7 +36,7 @@
       %i.icon-ok
       Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
       #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}.
-- if !@closes_issues.empty? && @merge_request.opened?
+- if !@closes_issues.empty? && @merge_request.open?
   .alert.alert-info.alert-info
     %span
       %i.icon-ok

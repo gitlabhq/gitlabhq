@@ -28,8 +28,6 @@ class Issue < ActiveRecord::Base
 
   scope :of_group, ->(group) { where(project_id: group.project_ids) }
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
-  scope :opened, -> { with_state(:opened, :reopened) }
-  scope :closed, -> { with_state(:closed) }
 
   attr_accessible :title, :assignee_id, :position, :description,
                   :milestone_id, :label_list, :author_id_of_changes,
@@ -50,9 +48,7 @@ class Issue < ActiveRecord::Base
     end
 
     state :opened
-
     state :reopened
-
     state :closed
   end
 
