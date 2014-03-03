@@ -29,6 +29,13 @@ Feature: Project Merge Requests
     And I click link "Close"
     Then I should see closed merge request "Bug NS-04"
 
+  Scenario: I reopen merge request page
+    Given I click link "Bug NS-04"
+    And I click link "Close"
+    Then I should see closed merge request "Bug NS-04"
+    When I click link "Reopen"
+    Then I should see reopened merge request "Bug NS-04"
+
   Scenario: I submit new unassigned merge request
     Given I click link "New Merge Request"
     And I submit new merge request "Wiki Feature"
