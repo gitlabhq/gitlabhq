@@ -38,11 +38,11 @@ Replace LATEST_TAG with the latest GitLab Shell tag you want to upgrade to, for 
 ```bash
 cd /home/git/gitlab
 
-# MySQL
-sudo -u git -H bundle install --without development test postgres --deployment
-
 #PostgreSQL
 sudo -u git -H bundle install --without development test mysql --deployment
+
+# MySQL
+sudo -u git -H bundle install --without development test postgres --deployment
 
 sudo -u git -H bundle exec rake db:migrate RAILS_ENV=production
 sudo -u git -H bundle exec rake assets:clean RAILS_ENV=production
