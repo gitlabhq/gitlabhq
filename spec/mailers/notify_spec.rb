@@ -161,6 +161,10 @@ describe Notify do
           it 'contains a link to the new issue' do
             should have_body_text /#{project_issue_path project, issue}/
           end
+
+          it 'has the correct message-id set' do
+            should have_header 'Message-ID', "<issue_#{issue.id}@#{Gitlab.config.gitlab.host}>"
+          end
         end
 
         describe 'that are new with a description' do
@@ -197,6 +201,10 @@ describe Notify do
           it 'contains a link to the issue' do
             should have_body_text /#{project_issue_path project, issue}/
           end
+
+          it 'has the correct reference set' do
+            should have_header 'References', "<issue_#{issue.id}@#{Gitlab.config.gitlab.host}>"
+          end
         end
 
         describe 'status changed' do
@@ -223,6 +231,10 @@ describe Notify do
 
           it 'contains a link to the issue' do
             should have_body_text /#{project_issue_path project, issue}/
+          end
+
+          it 'has the correct reference set' do
+            should have_header 'References', "<issue_#{issue.id}@#{Gitlab.config.gitlab.host}>"
           end
         end
 
@@ -252,6 +264,10 @@ describe Notify do
 
           it 'contains the target branch for the merge request' do
             should have_body_text /#{merge_request.target_branch}/
+          end
+
+          it 'has the correct message-id set' do
+            should have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
         end
 
@@ -312,6 +328,10 @@ describe Notify do
 
           it 'contains a link to the merge request' do
             should have_body_text /#{project_merge_request_path project, merge_request}/
+          end
+
+          it 'has the correct reference set' do
+            should have_header 'References', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
         end
       end
