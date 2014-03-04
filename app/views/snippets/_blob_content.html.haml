@@ -1,0 +1,14 @@
+- unless @snippet.content.empty?
+  - if gitlab_markdown?(@snippet.file_name)
+    .file-content.wiki
+      = preserve do
+        = markdown(@snippet.data)
+  - elsif markup?(@snippet.file_name)
+    .file-content.wiki
+      = render_markup(@snippet.file_name, @snippet.data)
+  - else
+    .file-content.code
+      = render 'shared/file_hljs', blob: @snippet
+- else
+  .file-content.code
+    .nothing-here-block Empty file

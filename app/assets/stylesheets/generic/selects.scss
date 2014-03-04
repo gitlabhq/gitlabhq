@@ -1,6 +1,5 @@
 /** Select2 selectbox style override **/
-
-.select2-container {
+.select2-container, .select2-container.select2-drop-above {
   .select2-choice {
     background: #FFF;
     border-color: #BBB;
@@ -12,8 +11,24 @@
 }
 
 .select2-drop-active {
-  border: 1px solid #BBB;
+  border: 1px solid #BBB !important;
   margin-top: 4px;
+
+  &.select2-drop-above {
+    margin-bottom: 8px;
+  }
+
+  .select2-search input {
+    background: #fafafa;
+    border-color: #DDD;
+  }
+
+  .select2-results {
+    max-height: 350px;
+    .select2-highlighted {
+      background: $bg_style_color;
+    }
+  }
 }
 
 select {
@@ -65,4 +80,44 @@ select {
 /** Branch/tag selector **/
 .project-refs-form .select2-container {
   margin-right: 10px;
+}
+
+.ajax-users-dropdown, .ajax-project-users-dropdown {
+  .select2-search {
+    padding-top: 4px;
+  }
+}
+
+.ajax-users-select {
+  width: 400px;
+
+  &.input-large {
+    width: 210px;
+  }
+
+  &.input-clamp {
+    max-width: 100%;
+  }
+}
+
+.user-result {
+  .user-image {
+    float: left;
+  }
+  .user-name {
+  }
+  .user-username {
+    color: #999;
+  }
+}
+
+.namespace-result {
+  .namespace-kind {
+    color: #AAA;
+    font-weight: normal;
+  }
+  .namespace-path {
+    margin-left: 10px;
+    font-weight: bolder;
+  }
 }

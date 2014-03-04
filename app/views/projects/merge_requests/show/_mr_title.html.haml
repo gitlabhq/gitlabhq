@@ -1,26 +1,11 @@
 %h3.page-title
   = "Merge Request ##{@merge_request.iid}"
-  %small
-    created #{time_ago_with_tooltip(@merge_request.created_at)}
-
-  - if @merge_request.merged?
-    %span.state-label.state-label-green
-      %i.icon-ok
-      Merged
-  - elsif @merge_request.closed?
-    %span.state-label.state-label-red
-      Closed
-  - else
-    %span.state-label.state-label-green
-      Open
-
-
 
   %span.pull-right
     - if can?(current_user, :modify_merge_request, @merge_request)
-      - if @merge_request.opened?
-        .left.btn-group
-          %a.btn.grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+      - if @merge_request.open?
+        .btn-group.pull-left
+          %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
             %i.icon-download-alt
             Download as
             %span.caret
@@ -28,13 +13,15 @@
             %li= link_to "Email Patches", project_merge_request_path(@project, @merge_request, format: :patch)
             %li= link_to "Plain Diff",    project_merge_request_path(@project, @merge_request, format: :diff)
 
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: { state_event: :close }), method: :put, class: "btn grouped btn-close", title: "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: { state_event: :close }), method: :put, class: "btn btn-grouped btn-close", title: "Close merge request"
 
-        = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn grouped", id:"edit_merge_request" do
+        = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn btn-grouped", id:"edit_merge_request" do
           %i.icon-edit
           Edit
+      - if @merge_request.closed?
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
 
-.votes-holder
+.votes-holder.hidden-sm.hidden-xs
   #votes= render 'votes/votes_block', votable: @merge_request
 
 .back-link

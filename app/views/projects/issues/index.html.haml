@@ -1,6 +1,6 @@
 = render "head"
 .row
   .col-md-3
-    = render 'shared/project_filter', project_entities_path: project_issues_path(@project)
+    = render 'shared/project_filter', project_entities_path: project_issues_path(@project), labels: true
   .col-md-9.issues-holder
     = render "issues"

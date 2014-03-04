@@ -1,10 +1,14 @@
+# If you need to modify the existing seed repository for your tests,
+# it is recommended that you make the changes on the `markdown` branch of the seed project repository,
+# which should only be used by tests in this file. See `/spec/factories.rb#project` for more info.
 class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include SharedMarkdown
 
   And 'I own project "Delta"' do
-    @project = Project.find_by_name "Delta"
-    @project ||= create(:project_with_code, name: "Delta", namespace: @user.namespace)
+    @project = Project.find_by(name: "Delta")
+    @project ||= create(:project, name: "Delta", namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
@@ -21,6 +25,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     page.should have_link "GitLab API website"
     page.should have_link "Rake tasks"
     page.should have_link "backup and restore procedure"
+    page.should have_link "GitLab API doc directory"
+    page.should have_link "Maintenance"
   end
 
   And 'I click on Gitlab API in README' do
@@ -40,6 +46,37 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     current_path.should == project_tree_path(@project, "master/doc/raketasks")
     page.should have_content "backup_restore.md"
     page.should have_content "maintenance.md"
+  end
+
+  And 'I click on GitLab API doc directory in README' do
+    click_link "GitLab API doc directory"
+  end
+
+  Then 'I should see correct doc/api directory rendered' do
+    current_path.should == project_tree_path(@project, "master/doc/api")
+    page.should have_content "README.md"
+    page.should have_content "users.md"
+  end
+
+  And 'I click on Maintenance in README' do
+    click_link "Maintenance"
+  end
+
+  Then 'I should see correct maintenance file rendered' do
+    current_path.should == project_blob_path(@project, "master/doc/raketasks/maintenance.md")
+    page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
+  end
+
+  And 'I click on link "empty" in the README' do
+    within('.readme-holder') do
+      click_link "empty"
+    end
+  end
+
+  And 'I click on link "id" in the README' do
+    within('.readme-holder') do
+      click_link "#id"
+    end
   end
 
   And 'I navigate to the doc/api/README' do
@@ -68,8 +105,22 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     click_link "Rake tasks"
   end
 
+  # Markdown branch
+
   When 'I visit markdown branch' do
     visit project_tree_path(@project, "markdown")
+  end
+
+  When 'I visit markdown branch "README.md" blob' do
+    visit project_blob_path(@project, "markdown/README.md")
+  end
+
+  When 'I visit markdown branch "d" tree' do
+    visit project_tree_path(@project, "markdown/d")
+  end
+
+  When 'I visit markdown branch "d/README.md" blob' do
+    visit project_blob_path(@project, "markdown/d/README.md")
   end
 
   Then 'I should see files from repository in markdown branch' do
@@ -102,6 +153,50 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     page.should have_content "Get a list of users."
   end
 
+  # Expected link contents
+
+  Then 'The link with text "empty" should have url "tree/markdown"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown")
+  end
+
+  Then 'The link with text "empty" should have url "blob/markdown/README.md"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md")
+  end
+
+  Then 'The link with text "empty" should have url "tree/markdown/d"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_tree_path(@project, "markdown/d")
+  end
+
+  Then 'The link with text "empty" should have url "blob/markdown/d/README.md"' do
+    find('a', text: /^empty$/)['href'] == current_host + project_blob_path(@project, "markdown/d/README.md")
+  end
+
+  Then 'The link with text "ID" should have url "tree/markdownID"' do
+    find('a', text: /^#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+  end
+
+  Then 'The link with text "/ID" should have url "tree/markdownID"' do
+    find('a', text: /^\/#id$/)['href'] == current_host + project_tree_path(@project, "markdown") + '#id'
+  end
+
+  Then 'The link with text "README.mdID" should have url "blob/markdown/README.mdID"' do
+    find('a', text: /^README.md#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+  end
+
+  Then 'The link with text "d/README.mdID" should have url "blob/markdown/d/README.mdID"' do
+    find('a', text: /^d\/README.md#id$/)['href'] == current_host + project_blob_path(@project, "d/markdown/README.md") + '#id'
+  end
+
+  Then 'The link with text "ID" should have url "blob/markdown/README.mdID"' do
+    find('a', text: /^#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+  end
+
+  Then 'The link with text "/ID" should have url "blob/markdown/README.mdID"' do
+    find('a', text: /^\/#id$/)['href'] == current_host + project_blob_path(@project, "markdown/README.md") + '#id'
+  end
+
+  # Wiki
+
   Given 'I go to wiki page' do
     click_link "Wiki"
     current_path.should == project_wiki_path(@project, "home")
@@ -116,6 +211,16 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   Then 'Wiki page should have added links' do
     current_path.should == project_wiki_path(@project, "home")
     page.should have_content "test GitLab API doc Rake tasks"
+  end
+
+  step 'I add a header to the wiki page' do
+    fill_in "wiki[content]", with: "# Wiki header\n"
+    fill_in "wiki[message]", with: "Add header to wiki"
+    click_button "Create page"
+  end
+
+  step 'Wiki header should have correct id and link' do
+    header_should_have_correct_id_and_link(1, 'Wiki header', 'wiki-header')
   end
 
   And 'I click on test link' do
@@ -151,18 +256,6 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     page.should have_content "maintenance.md"
   end
 
-  Given 'I visit to the help page' do
-    visit help_path
-  end
-
-  And 'I select a page with markdown' do
-    click_link "Rake Tasks"
-  end
-
-  Then 'I should see a help page with markdown' do
-    page.should have_content "GitLab provides some specific rake tasks to enable special features or perform maintenance tasks"
-  end
-
   Given 'I go directory which contains README file' do
     visit project_tree_path(@project, "master/doc/api")
     current_path.should == project_tree_path(@project, "master/doc/api")
@@ -175,5 +268,13 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   Then 'I should see the correct markdown' do
     current_path.should == project_blob_path(@project, "master/doc/api/users.md")
     page.should have_content "List users"
+  end
+
+  step 'Header "Application details" should have correct id and link' do
+    header_should_have_correct_id_and_link(2, 'Application details', 'application-details')
+  end
+
+  step 'Header "GitLab API" should have correct id and link' do
+    header_should_have_correct_id_and_link(1, 'GitLab API', 'gitlab-api')
   end
 end

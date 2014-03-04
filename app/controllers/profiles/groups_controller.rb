@@ -7,18 +7,17 @@ class Profiles::GroupsController < ApplicationController
 
   def leave
     @users_group = group.users_groups.where(user_id: current_user.id).first
-
-    if group.last_owner?(current_user)
-      redirect_to(profile_groups_path, alert: "You can't leave group. You must add at least one more owner to it.")
-    else
+    if can?(current_user, :destroy, @users_group)
       @users_group.destroy
       redirect_to(profile_groups_path, info: "You left #{group.name} group.")
+    else
+      return render_403
     end
   end
 
   private
 
   def group
-    @group ||= Group.find_by_path(params[:id])
+    @group ||= Group.find_by(path: params[:id])
   end
 end

@@ -11,7 +11,7 @@ def common_mentionable_setup
 
   let(:mentioned_issue) { create :issue, project: mproject }
   let(:other_issue) { create :issue, project: mproject }
-  let(:mentioned_mr) { create :merge_request, target_project: mproject, source_branch: 'different' }
+  let(:mentioned_mr) { create :merge_request, source_project: mproject, source_branch: 'different' }
   let(:mentioned_commit) { double('commit', sha: '1234567890abcdef').as_null_object }
 
   # Override to add known commits to the repository stub.

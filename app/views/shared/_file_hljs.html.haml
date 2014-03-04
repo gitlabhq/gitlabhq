@@ -1,0 +1,12 @@
+%div.highlighted-data{class: user_color_scheme_class}
+  .line-numbers
+    - blob.data.lines.to_a.size.times do |index|
+      - offset = defined?(first_line_number) ? first_line_number : 1
+      - i = index + offset
+      = link_to "#L#{i}", id: "L#{i}", rel: "#L#{i}" do
+        %i.icon-link
+        = i
+  .highlight
+    %pre
+      %code
+        = blob.data

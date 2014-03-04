@@ -5,7 +5,7 @@
     = render "events/event_last_push", event: @last_push
     = render 'shared/event_filter'
     .content_list
-    .loading.hide
+    = spinner
   .col-md-3.project-side.hidden-sm
     .clearfix
       - if @project.archived?
@@ -51,7 +51,7 @@
       %p
         %span.light Owned by
         - if @project.group
-          #{link_to @project.group.name, @project.group} Group
+          #{link_to @project.group.name, @project.group} group
         - else
           #{link_to @project.owner_name, @project.owner}
 

@@ -6,16 +6,16 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I am a member of project "Shop"' do
-    @project = Project.find_by_name "Shop"
-    @project ||= create(:project_with_code, name: "Shop")
+    @project = Project.find_by(name: "Shop")
+    @project ||= create(:project, name: "Shop")
     @project.team << [@user, :reporter]
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
     @forking_user = @user
     forked_project_link = build(:forked_project_link)
-    @forked_project = Project.find_by_name "Forked Shop"
-    @forked_project ||= create(:source_project_with_code, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
+    @forked_project = Project.find_by(name: "Forked Shop")
+    @forked_project ||= create(:project, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
 
     forked_project_link.forked_from_project = @project
     forked_project_link.forked_to_project = @forked_project
@@ -114,7 +114,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'project "Forked Shop" has push event' do
-    @forked_project = Project.find_by_name("Forked Shop")
+    @forked_project = Project.find_by(name: "Forked Shop")
 
     data = {
       before: "0000000000000000000000000000000000000000",
@@ -159,8 +159,11 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
     #If this isn't filled in the rest of the validations won't be triggered
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
+
+    select "Select branch", from: "merge_request_target_branch"
+
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
-    find(:select, "merge_request_target_project_id", {}).value.should == @forked_project.id.to_s
+    find(:select, "merge_request_target_project_id", {}).value.should == project.id.to_s
     find(:select, "merge_request_source_branch", {}).value.should == ""
     find(:select, "merge_request_target_branch", {}).value.should == ""
   end
@@ -168,11 +171,14 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   step 'I should see validation errors' do
     page.should have_content "Source branch can't be blank"
     page.should have_content "Target branch can't be blank"
-    page.should have_content "Branch conflict You can not use same project/branch for source and target"
+  end
+
+  step 'the target repository should be the original repository' do
+    page.should have_select("merge_request_target_project_id", selected: project.path_with_namespace)
   end
 
   def project
-    @project ||= Project.find_by_name!("Shop")
+    @project ||= Project.find_by!(name: "Shop")
   end
 
   # Verify a link is generated against the correct project

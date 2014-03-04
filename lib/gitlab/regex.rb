@@ -17,7 +17,7 @@ module Gitlab
     def path_regex
       default_regex
     end
-    
+
     def archive_formats_regex
       #|zip|tar|    tar.gz    |         tar.bz2         |
       /(zip|tar|tar\.gz|tgz|gz|tar\.bz2|tbz|tbz2|tb2|bz2)/
@@ -49,7 +49,7 @@ module Gitlab
     protected
 
     def default_regex
-      /\A[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+      /\A[.?]?[a-zA-Z0-9][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
     end
   end
 end

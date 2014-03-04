@@ -41,7 +41,7 @@
 .dash-sidebar-tabs {
   margin-bottom: 2px;
   border: none;
-  margin: 0;
+  margin: 0 !important;
 
   li {
     &.active {

@@ -11,8 +11,6 @@
 .bgred { background: #F2DEDE!important }
 
 /** COMMON CLASSES **/
-.left { float:left }
-
 .prepend-top-10 { margin-top:10px }
 .prepend-top-20 { margin-top:20px }
 .prepend-left-10 { margin-left:10px }
@@ -24,32 +22,9 @@
 .append-bottom-20 { margin-bottom:20px }
 .inline { display: inline-block }
 
-.padded { padding:20px }
-.ipadded { padding:20px!important }
-.lborder { border-left:1px solid #eee }
-.underlined_link { text-decoration: underline; }
+.underlined-link { text-decoration: underline; }
 .hint { font-style: italic; color: #999; }
 .light { color: #888 }
-.tiny { font-weight: normal }
-.vtop { vertical-align: top !important; }
-
-
-/** ALERT MESSAGES **/
-.alert.alert-disabled {
-  background: #EEE;
-  color: #777;
-  border-color: #DDD;
-}
-
-/** HELPERS **/
-.nothing_here_message {
-  text-align: center;
-  padding: 20px;
-  color: #666;
-  font-weight: normal;
-  font-size: 16px;
-  line-height: 36px;
-}
 
 .slead {
   color: #666;
@@ -59,49 +34,23 @@
   line-height: 24px;
 }
 
-
 .tab-content {
   overflow: visible;
 }
 
-@media (max-width: 1200px) {
-  .only-wide {
-    display: none;
-  }
-}
-
-pre.well-pre {
-  border: 1px solid #EEE;
-  background: #f9f9f9;
-  border-radius: 0;
-  color: #555;
-}
-
-.input-append .btn.active, .input-prepend .btn.active {
-  background: #CCC;
-  border-color: #BBB;
-  text-shadow: 0 1px 1px #fff;
-  font-weight: bold;
-  @include box-shadow(inset 0 2px 4px rgba(0,0,0,.15));
-}
-
-/** Big Labels **/
-.state-label {
-  font-size: 14px;
-  padding: 6px 25px;
-  text-align: center;
-  @include border-radius(4px);
-  text-shadow: none;
-  margin-left: 10px;
-
-  &.state-label-green {
-    background: #4A4;
-    color: #FFF;
+pre {
+  &.clean {
+    background: none;
+    border: none;
+    margin: 0;
+    padding: 0;
   }
 
-  &.state-label-red {
-    background: #DA4E49;
-    color: #FFF;
+  &.well-pre {
+    border: 1px solid #EEE;
+    background: #f9f9f9;
+    border-radius: 0;
+    color: #555;
   }
 }
 
@@ -112,6 +61,7 @@ pre.well-pre {
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
   background: #29b;
+  color: #FFF
 }
 
 .breadcrumb > li + li:before {
@@ -130,31 +80,6 @@ pre.well-pre {
 }
 
 /** FLASH message **/
-.flash-container {
-  display: none;
-  cursor: pointer;
-  margin: 0;
-  text-align: center;
-  color: #fff;
-  font-size: 14px;
-  position: fixed;
-  bottom: 0;
-  width: 100%;
-  opacity: 0.8;
-  z-index: 100;
-
-  .flash-notice {
-    background: #49C;
-    padding: 10px;
-    text-shadow: 0 1px 1px #178;
-  }
-
-  .flash-alert {
-    background: #C67;
-    text-shadow: 0 1px 1px #945;
-    padding: 10px;
-  }
-}
 .author_link {
   color: $link_color;
 }
@@ -173,12 +98,10 @@ table a code {
 
 .loading {
   margin: 20px auto;
-  background: url(ajax_loader.gif) no-repeat center center;
-  width: 40px;
   height: 40px;
-  &.loading-gray {
-    background: url(ajax_loader_gray.gif) no-repeat center center;
-  }
+  color: #555;
+  font-size: 32px;
+  text-align: center;
 }
 
 span.update-author {
@@ -276,22 +199,6 @@ li.note {
   cursor: pointer;
 }
 
-.merge-request,
-.issue {
-  &.today{
-    background: #EFE;
-    border-color: #CEC;
-  }
-  &.closed {
-    background: #F5f5f5;
-    border-color: #E5E5E5;
-  }
-  &.merged {
-    background: #F5f5f5;
-    border-color: #E5E5E5;
-  }
-}
-
 .git_error_tips {
   @extend .col-md-6;
   text-align: left;
@@ -327,6 +234,12 @@ li.note {
     color: #fff;
     text-decoration: underline;
   }
+
+  .links-xs {
+    text-align: center;
+    font-size: 16px;
+    padding: 5px;
+  }
 }
 
 .warning_message {
@@ -346,15 +259,6 @@ li.note {
   a {
     color: #aaa;
     margin-right: 30px;
-  }
-}
-
-pre {
-  &.clean {
-    background: none;
-    border: none;
-    margin: 0;
-    padding: 0;
   }
 }
 
@@ -441,40 +345,6 @@ table {
   margin-bottom: 20px;
 }
 
-.ajax-users-select {
-  width: 400px;
-
-  &.input-large {
-    width: 210px;
-  }
-
-  &.input-clamp {
-    max-width: 100%;
-  }
-}
-
-.user-result {
-  .user-image {
-    float: left;
-  }
-  .user-name {
-  }
-  .user-username {
-    color: #999;
-  }
-}
-
-.namespace-result {
-  .namespace-kind {
-    color: #AAA;
-    font-weight: normal;
-  }
-  .namespace-path {
-    margin-left: 10px;
-    font-weight: bolder;
-  }
-}
-
 .btn-sign-in {
   margin-top: 7px;
   text-shadow: none;
@@ -484,4 +354,8 @@ table {
   fieldset {
     margin-bottom: 15px;
   }
+}
+
+@media (max-width: $screen-xs-max) {
+  .container .content { margin-top: 20px; }
 }

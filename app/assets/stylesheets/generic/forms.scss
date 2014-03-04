@@ -51,3 +51,27 @@ label {
 .input-mn-300 {
   min-width: 300px;
 }
+
+.custom-form-control {
+  width: 150px;
+}
+
+@media (min-width: $screen-sm-min) {
+  .custom-form-control {
+    width: 150px;
+  }
+}
+
+/* Medium devices (desktops, 992px and up) */
+@media (min-width: $screen-md-min) {
+  .custom-form-control {
+    width: 170px;
+  }
+}
+
+/* Large devices (large desktops, 1200px and up) */
+@media (min-width: $screen-lg-min) {
+  .custom-form-control {
+    width: 200px;
+  }
+}

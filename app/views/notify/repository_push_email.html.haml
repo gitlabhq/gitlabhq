@@ -21,3 +21,8 @@
     %pre
       = diff.diff
     %br
+
+- if @compare.timeout
+  %h5 Huge diff. To prevent performance issues it was hidden
+- elsif @compare.commits_over_limit?
+  %h5 Diff for big amount of commits is disabled

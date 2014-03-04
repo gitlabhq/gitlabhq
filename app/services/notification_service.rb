@@ -17,6 +17,13 @@ class NotificationService
     end
   end
 
+  # Always notify user about email added to profile
+  def new_email(email)
+    if email.user
+      mailer.new_email_email(email.id)
+    end
+  end
+
   # When create an issue we should send next emails:
   #
   #  * issue assignee if their notification level is not Disabled
@@ -157,6 +164,15 @@ class NotificationService
     mailer.group_access_granted_email(users_group.id)
   end
 
+  def project_was_moved(project)
+    recipients = project.team.members
+    recipients = reject_muted_users(recipients, project)
+
+    recipients.each do |recipient|
+      mailer.project_was_moved_email(project.id, recipient.id)
+    end
+  end
+
   protected
 
   # Get project users with WATCH notification level
@@ -186,10 +202,10 @@ class NotificationService
     users.reject do |user|
       next user.notification.disabled? unless project
 
-      tm = project.users_projects.find_by_user_id(user.id)
+      tm = project.users_projects.find_by(user_id: user.id)
 
       if !tm && project.group
-        tm = project.group.users_groups.find_by_user_id(user.id)
+        tm = project.group.users_groups.find_by(user_id: user.id)
       end
 
       # reject users who globally disabled notification and has no membership
@@ -241,7 +257,7 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, target.assignee_id_was)
+      mailer.send(method, recipient.id, target.id, target.assignee_id_was, current_user.id)
     end
   end
 

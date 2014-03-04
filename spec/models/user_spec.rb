@@ -41,6 +41,8 @@
 #  confirmed_at           :datetime
 #  confirmation_sent_at   :datetime
 #  unconfirmed_email      :string(255)
+#  hide_no_ssh_key        :boolean          default(FALSE)
+#  website_url            :string(255)      default(""), not null
 #
 
 require 'spec_helper'
@@ -74,6 +76,27 @@ describe User do
     it { should_not allow_value(-1).for(:projects_limit) }
 
     it { should ensure_length_of(:bio).is_within(0..255) }
+
+    describe 'email' do
+      it 'accepts info@example.com' do
+        user = build(:user, email: 'info@example.com')
+        expect(user).to be_valid
+      end
+      it 'accepts info+test@example.com' do
+        user = build(:user, email: 'info+test@example.com')
+        expect(user).to be_valid
+      end
+
+      it 'rejects test@test@example.com' do
+        user = build(:user, email: 'test@test@example.com')
+        expect(user).to be_invalid
+      end
+
+      it 'rejects mailto:test@example.com' do
+        user = build(:user, email: 'mailto:test@example.com')
+        expect(user).to be_invalid
+      end
+    end
   end
 
   describe "Respond to" do
@@ -280,6 +303,17 @@ describe User do
     end
   end
 
+  describe 'all_ssh_keys' do
+    it { should have_many(:keys).dependent(:destroy) }
+
+    it "should have all ssh keys" do
+      user = create :user
+      key = create :key, key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD33bWLBxu48Sev9Fert1yzEO4WGcWglWF7K/AwblIUFselOt/QdOL9DSjpQGxLagO1s9wl53STIO8qGS4Ms0EJZyIXOEFMjFJ5xmjSy+S37By4sG7SsltQEHMxtbtFOaW5LV2wCrX+rUsRNqLMamZjgjcPO0/EgGCXIGMAYW4O7cwGZdXWYIhQ1Vwy+CsVMDdPkPgBXqK7nR/ey8KMs8ho5fMNgB5hBw/AL9fNGhRw3QTD6Q12Nkhl4VZES2EsZqlpNnJttnPdp847DUsT6yuLRlfiQfz5Cn9ysHFdXObMN5VYIiPFwHeYCZp1X2S4fDZooRE8uOLTfxWHPXwrhqSH", user_id: user.id
+
+      user.all_ssh_keys.should include(key.key)
+    end
+  end
+    
   describe :avatar_type do
     let(:user) { create(:user) }
 
@@ -291,6 +325,50 @@ describe User do
     it "should be false if avatar is html page" do
       user.update_attribute(:avatar, 'uploads/avatar.html')
       user.avatar_type.should == ["only images allowed"]
+    end
+  end
+
+  describe '#full_website_url' do
+    let(:user) { create(:user) }
+
+    it 'begins with http if website url omits it' do
+      user.website_url = 'test.com'
+
+      expect(user.full_website_url).to eq 'http://test.com'
+    end
+
+    it 'begins with http if website url begins with http' do
+      user.website_url = 'http://test.com'
+
+      expect(user.full_website_url).to eq 'http://test.com'
+    end
+
+    it 'begins with https if website url begins with https' do
+      user.website_url = 'https://test.com'
+
+      expect(user.full_website_url).to eq 'https://test.com'
+    end
+  end
+
+  describe '#short_website_url' do
+    let(:user) { create(:user) }
+
+    it 'does not begin with http if website url omits it' do
+      user.website_url = 'test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
+    end
+
+    it 'does not begin with http if website url begins with http' do
+      user.website_url = 'http://test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
+    end
+
+    it 'does not begin with https if website url begins with https' do
+      user.website_url = 'https://test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
     end
   end
 end

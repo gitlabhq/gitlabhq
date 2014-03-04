@@ -49,8 +49,17 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
+  def group_icon(group_path)
+    group = Group.find_by(path: group_path)
+    if group && group.avatar.present?
+      group.avatar.url
+    else
+      '/assets/no_group_avatar.png'
+    end
+  end
+
   def avatar_icon(user_email = '', size = nil)
-    user = User.find_by_email(user_email)
+    user = User.find_by(email: user_email)
     if user && user.avatar.present?
       user.avatar.url
     else
@@ -153,15 +162,6 @@ module ApplicationHelper
 
   alias_method :url_to_image, :image_url
 
-  def users_select_tag(id, opts = {})
-    css_class = "ajax-users-select "
-    css_class << "multiselect " if opts[:multiple]
-    css_class << (opts[:class] || '')
-    value = opts[:selected] || ''
-
-    hidden_field_tag(id, value, class: css_class)
-  end
-
   def body_data_page
     path = controller.controller_path.split('/')
     namespace = path.first if path.second
@@ -203,8 +203,14 @@ module ApplicationHelper
   def highlight_js(&block)
     string = capture(&block)
 
-    content_tag :div, class: user_color_scheme_class do
-      Pygments::Lexer[:js].highlight(string).html_safe
+    content_tag :div, class: "highlighted-data #{user_color_scheme_class}" do
+      content_tag :div, class: 'highlight' do
+        content_tag :pre do
+          content_tag :code do
+            string.html_safe
+          end
+        end
+      end
     end
   end
 
@@ -220,5 +226,11 @@ module ApplicationHelper
 
   def render_markup(file_name, file_content)
     GitHub::Markup.render(file_name, file_content).html_safe
+  end
+
+  def spinner(text = nil)
+    content_tag :div, class: 'loading hide' do
+      content_tag(:i, nil, class: 'icon-spinner icon-spin') + text
+    end
   end
 end

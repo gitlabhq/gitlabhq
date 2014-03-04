@@ -51,7 +51,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         user_project.protected_branches.create(name: @branch.name) unless protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -69,7 +69,7 @@ module API
 
         @branch = user_project.repository.find_branch(params[:branch])
         not_found! unless @branch
-        protected_branch = user_project.protected_branches.find_by_name(@branch.name)
+        protected_branch = user_project.protected_branches.find_by(name: @branch.name)
         protected_branch.destroy if protected_branch
 
         present @branch, with: Entities::RepoObject, project: user_project
@@ -82,51 +82,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject
-      end
-
-      # Get a project repository commits
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
-      # Example Request:
-      #   GET /projects/:id/repository/commits
-      get ":id/repository/commits" do
-        page = (params[:page] || 0).to_i
-        per_page = (params[:per_page] || 20).to_i
-        ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
-
-        commits = user_project.repository.commits(ref, nil, per_page, page * per_page)
-        present commits, with: Entities::RepoCommit
-      end
-
-      # Get a specific commit of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit hash or name of a repository branch or tag
-      # Example Request:
-      #   GET /projects/:id/repository/commits/:sha
-      get ":id/repository/commits/:sha" do
-        sha = params[:sha]
-        commit = user_project.repository.commit(sha)
-        not_found! "Commit" unless commit
-        present commit, with: Entities::RepoCommitDetail
-      end
-
-      # Get the diff for a specific commit of a project
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      #   sha (required) - The commit or branch name
-      # Example Request:
-      #   GET /projects/:id/repository/commits/:sha/diff
-      get ":id/repository/commits/:sha/diff" do
-        sha = params[:sha]
-        result = CommitLoadContext.new(user_project, current_user, {id: sha}).execute
-        not_found! "Commit" unless result[:commit]
-        result[:commit].diffs
+        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject, project: user_project
       end
 
       # Get a project repository tree
@@ -141,15 +97,9 @@ module API
         path = params[:path] || nil
 
         commit = user_project.repository.commit(ref)
-        tree = Tree.new(user_project.repository, commit.id, path)
+        tree = user_project.repository.tree(commit.id, path)
 
-        trees = []
-
-        %w(trees blobs submodules).each do |type|
-          trees += tree.send(type).map { |t| {name: t.name, type: type.singularize, mode: t.mode, id: t.id} }
-        end
-
-        trees
+        present tree.sorted_entries, with: Entities::RepoTreeObject
       end
 
       # Get a raw file contents
@@ -173,9 +123,7 @@ module API
         blob = Gitlab::Git::Blob.find(repo, commit.id, params[:filepath])
         not_found! "File" unless blob
 
-        env['api.format'] = :txt
-
-        content_type blob.mime_type
+        content_type 'text/plain'
         present blob.data
       end
 
@@ -233,4 +181,3 @@ module API
     end
   end
 end
-

@@ -1,0 +1,64 @@
+.highlighted-data {
+  border: none;
+  box-shadow: none;
+  margin: 0px;
+  padding: 0px;
+  table-layout: fixed;
+
+  pre {
+    padding: 10px;
+    border: none;
+    border-radius: 0;
+    font-family: $monospace_font;
+    font-size: 12px !important;
+    line-height: 16px !important;
+    margin: 0;
+
+    code {
+      white-space: pre;
+      word-wrap: normal;
+      padding: 0;
+
+      .line {
+        display: inline;
+      }
+    }
+  }
+
+  .hljs {
+    padding: 0;
+  }
+
+  .line-numbers {
+    padding: 10px;
+    text-align: right;
+    float: left;
+
+    a {
+      font-family: $monospace_font;
+      display: block;
+      font-size: 12px !important;
+      line-height: 16px !important;
+      white-space: nowrap;
+
+      i {
+        visibility: hidden;
+        @extend .pull-left;
+      }
+
+      &:hover i {
+        visibility: visible;
+      }
+    }
+  }
+
+  .highlight {
+    overflow: auto;
+    overflow-y: hidden;
+
+    pre {
+      white-space: pre;
+      word-wrap: normal;
+    }
+  }
+}

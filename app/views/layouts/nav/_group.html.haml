@@ -5,11 +5,13 @@
   = nav_link(path: 'groups#issues') do
     = link_to issues_group_path(@group) do
       Issues
-      %span.count= current_user.assigned_issues.opened.of_group(@group).count
+      - if current_user
+        %span.count= current_user.assigned_issues.opened.of_group(@group).count
   = nav_link(path: 'groups#merge_requests') do
     = link_to merge_requests_group_path(@group) do
       Merge Requests
-      %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
+      - if current_user
+        %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
   = nav_link(path: 'groups#members') do
     = link_to "Members", members_group_path(@group)
 

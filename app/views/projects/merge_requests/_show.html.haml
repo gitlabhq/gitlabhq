@@ -2,7 +2,7 @@
   = render "projects/merge_requests/show/mr_title"
   = render "projects/merge_requests/show/how_to_merge"
   = render "projects/merge_requests/show/mr_box"
-  - if @merge_request.opened?
+  - if @merge_request.open?
     - if @merge_request.source_branch_exists? && @merge_request.target_branch_exists?
       = render "projects/merge_requests/show/mr_accept"
     - else
@@ -12,7 +12,7 @@
   = render "projects/merge_requests/show/commits"
 
   - if @commits.present?
-    %ul.nav.nav-tabs.append-bottom-10
+    %ul.nav.nav-tabs
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
           %i.icon-comment
@@ -21,6 +21,13 @@
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
           %i.icon-list-alt
           Diff
+
+  - content_for :note_actions do
+    - if can?(current_user, :modify_merge_request, @merge_request)
+      - unless @merge_request.closed? || @merge_request.merged?
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link", title: "Close merge request"
+      - if @merge_request.closed?
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
 
   .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
     = render "projects/notes/notes_with_form"

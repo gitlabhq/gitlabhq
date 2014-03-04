@@ -13,6 +13,7 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  api_key     :string(255)
 #
 
 require 'spec_helper'
@@ -44,12 +45,12 @@ describe Service do
       end
 
       describe :can_test do
-        it { @testable.should == false }
+        it { @testable.should == true }
       end
     end
 
     describe "With commits" do
-      let (:project) { create :project_with_code }
+      let (:project) { create :project }
 
       before do
         @service.stub(

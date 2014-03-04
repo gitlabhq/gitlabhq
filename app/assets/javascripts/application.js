@@ -24,7 +24,8 @@
 //= require g.raphael-min
 //= require g.bar-min
 //= require branch-graph
-//= require ace-src-noconflict/ace
+//= require highlightjs.min
+//= require ace/ace
 //= require_tree .
 //= require d3
 //= require underscore

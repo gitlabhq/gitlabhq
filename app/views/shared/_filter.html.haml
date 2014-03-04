@@ -1,28 +1,29 @@
 .side-filters.hidden-xs.hidden-sm
   = form_tag filter_path(entity), method: 'get' do
-    %fieldset.scope-filter
-      %ul.nav.nav-pills.nav-stacked
-        %li{class: ("active" if params[:scope].blank?)}
-          = link_to filter_path(entity, scope: nil) do
-            Assigned to me
-        %li{class: ("active" if params[:scope] == 'authored')}
-          = link_to filter_path(entity, scope: 'authored') do
-            Created by me
-        %li{class: ("active" if params[:scope] == 'all')}
-          = link_to filter_path(entity, scope: 'all') do
-            Everyone's
+    - if current_user
+      %fieldset.scope-filter
+        %ul.nav.nav-pills.nav-stacked
+          %li{class: ("active" if params[:scope] == 'assigned-to-me')}
+            = link_to filter_path(entity, scope: 'assigned-to-me') do
+              Assigned to me
+          %li{class: ("active" if params[:scope] == 'authored')}
+            = link_to filter_path(entity, scope: 'authored') do
+              Created by me
+          %li{class: ("active" if params[:scope] == 'all')}
+            = link_to filter_path(entity, scope: 'all') do
+              Everyone's
 
     %fieldset.status-filter
       %legend State
       %ul.nav.nav-pills
-        %li{class: ("active" if params[:status].blank?)}
-          = link_to filter_path(entity, status: nil) do
+        %li{class: ("active" if params[:state] == 'opened')}
+          = link_to filter_path(entity, state: 'opened') do
             Open
-        %li{class: ("active" if params[:status] == 'closed')}
-          = link_to filter_path(entity, status: 'closed') do
+        %li{class: ("active" if params[:state] == 'closed')}
+          = link_to filter_path(entity, state: 'closed') do
             Closed
-        %li{class: ("active" if params[:status] == 'all')}
-          = link_to filter_path(entity, status: 'all') do
+        %li{class: ("active" if params[:state] == 'all')}
+          = link_to filter_path(entity, state: 'all') do
             All
 
     %fieldset
@@ -36,8 +37,8 @@
                 %small.pull-right= entities_per_project(project, entity)
 
     %fieldset
-      - if params[:status].present? || params[:project_id].present?
-        = link_to filter_path(entity, status: nil, project_id: nil), class: 'pull-right cgray' do
+      - if params[:state].present? || params[:project_id].present?
+        = link_to filter_path(entity, state: nil, project_id: nil), class: 'pull-right cgray' do
           %i.icon-remove
           %strong Clear filter
 

@@ -16,7 +16,7 @@ class ProjectLabels < Spinach::FeatureSteps
   end
 
   And 'project "Shop" have issues tags: "bug", "feature"' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     ['bug', 'feature'].each do |label|
       create(:issue, project: project, label_list: label)
     end

@@ -17,10 +17,18 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
+
+    @sort = params[:sort].humanize
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
+    @assignees = User.where(id: @project.merge_requests.pluck(:assignee_id))
   end
 
   def show
@@ -52,8 +60,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def new
     @merge_request = MergeRequest.new(params[:merge_request])
     @merge_request.source_project = @project unless @merge_request.source_project
-    @merge_request.target_project = @project unless @merge_request.target_project
+    @merge_request.target_project ||= (@project.forked_from_project || @project)
     @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
+
+    @merge_request.target_branch ||= @merge_request.target_project.default_branch
+
     @source_project = @merge_request.source_project
     @merge_request
   end
@@ -69,7 +80,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.author = current_user
     @target_branches ||= []
     if @merge_request.save
-      @merge_request.reload_code
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
@@ -100,10 +110,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params[:merge_request].delete(:target_project_id)
 
     if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
-      @merge_request.reload_code
-      @merge_request.mark_as_unchecked
       @merge_request.reset_events_cache
-      redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
+
+      respond_to do |format|
+        format.js
+        format.html do
+          redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
+        end
+      end
     else
       render "edit"
     end
@@ -121,9 +135,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if @merge_request.opened? && @merge_request.can_be_merged?
+    if @merge_request.open? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user)
+      @merge_request.automerge!(current_user, params[:merge_commit_message])
       @status = true
     else
       @status = false
@@ -145,10 +159,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = selected_target_project
     @target_branches = @target_project.repository.branch_names
     @target_branches
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def ci_status
-    status = project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
+    status = @merge_request.source_project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
     response = {status: status}
 
     render json: response
@@ -157,11 +175,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   protected
 
   def selected_target_project
-    ((@project.id.to_s == params[:target_project_id]) || @project.forked_project_link.nil?) ? @project : @project.forked_project_link.forked_from_project
+    if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?
+      @project
+    else
+      @project.forked_project_link.forked_from_project
+    end
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
+    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
 
   def closes_issues
@@ -206,8 +228,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
+    @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
   end
 
   def allowed_to_merge?

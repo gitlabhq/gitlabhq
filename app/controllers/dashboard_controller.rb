@@ -3,6 +3,8 @@ class DashboardController < ApplicationController
 
   before_filter :load_projects, except: [:projects]
   before_filter :event_filter, only: :show
+  before_filter :default_filter, only: [:issues, :merge_requests]
+
 
   def show
     # Fetch only 30 projects.
@@ -39,7 +41,7 @@ class DashboardController < ApplicationController
                   current_user.authorized_projects
                 end
 
-    @projects = @projects.where(namespace_id: Group.find_by_name(params[:group])) if params[:group].present?
+    @projects = @projects.where(namespace_id: Group.find_by(name: params[:group])) if params[:group].present?
     @projects = @projects.where(visibility_level: params[:visibility_level]) if params[:visibility_level].present?
     @projects = @projects.includes(:namespace)
     @projects = @projects.tagged_with(params[:label]) if params[:label].present?
@@ -51,14 +53,15 @@ class DashboardController < ApplicationController
   end
 
   def merge_requests
-    @merge_requests = FilterContext.new(MergeRequest, current_user, params).execute
-    @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
-    @issues = FilterContext.new(Issue, current_user, params).execute
-    @issues = @issues.recent.page(params[:page]).per(20)
-    @issues = @issues.includes(:author, :project)
+    @issues = IssuesFinder.new.execute(current_user, params)
+    @issues = @issues.page(params[:page]).per(20)
+    @issues = @issues.preload(:author, :project)
 
     respond_to do |format|
       format.html
@@ -70,5 +73,11 @@ class DashboardController < ApplicationController
 
   def load_projects
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
+  end
+
+  def default_filter
+    params[:scope] = 'assigned-to-me' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+    params[:authorized_only] = true
   end
 end

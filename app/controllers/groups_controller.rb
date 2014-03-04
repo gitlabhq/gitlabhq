@@ -1,4 +1,5 @@
 class GroupsController < ApplicationController
+  skip_before_filter :authenticate_user!, only: [:show, :issues, :members, :merge_requests]
   respond_to :html
   before_filter :group, except: [:new, :create]
 
@@ -9,6 +10,8 @@ class GroupsController < ApplicationController
 
   # Load group projects
   before_filter :projects, except: [:new, :create]
+
+  before_filter :default_filter, only: [:issues, :merge_requests]
 
   layout :determine_layout
 
@@ -34,7 +37,7 @@ class GroupsController < ApplicationController
     @events = Event.in_projects(project_ids)
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(20).offset(params[:offset] || 0)
-    @last_push = current_user.recent_push
+    @last_push = current_user.recent_push if current_user
 
     respond_to do |format|
       format.html
@@ -43,19 +46,16 @@ class GroupsController < ApplicationController
     end
   end
 
-  # Get authored or assigned open merge requests
   def merge_requests
-    @merge_requests = FilterContext.new(MergeRequest, current_user, params).execute
-    @merge_requests = @merge_requests.of_group(@group)
-    @merge_requests = @merge_requests.recent.page(params[:page]).per(20)
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
-  # Get only assigned issues
   def issues
-    @issues = FilterContext.new(Issue, current_user, params).execute
-    @issues = @issues.of_group(@group)
-    @issues = @issues.recent.page(params[:page]).per(20)
-    @issues = @issues.includes(:author, :project)
+    @issues = IssuesFinder.new.execute(current_user, params)
+    @issues = @issues.page(params[:page]).per(20)
+    @issues = @issues.preload(:author, :project)
 
     respond_to do |format|
       format.html
@@ -65,7 +65,14 @@ class GroupsController < ApplicationController
 
   def members
     @project = group.projects.find(params[:project_id]) if params[:project_id]
-    @members = group.users_groups.order('group_access DESC')
+    @members = group.users_groups
+
+    if params[:search].present?
+      users = group.users.search(params[:search])
+      @members = @members.where(user_id: users)
+    end
+
+    @members = @members.order('group_access DESC').page(params[:page]).per(50)
     @users_group = UsersGroup.new
   end
 
@@ -89,21 +96,25 @@ class GroupsController < ApplicationController
   protected
 
   def group
-    @group ||= Group.find_by_path(params[:id])
+    @group ||= Group.find_by(path: params[:id])
   end
 
   def projects
-    @projects ||= current_user.authorized_projects.where(namespace_id: group.id).sorted_by_activity
+    @projects ||= ProjectsFinder.new.execute(current_user, group: group)
   end
 
   def project_ids
-    projects.map(&:id)
+    projects.pluck(:id)
   end
 
   # Dont allow unauthorized access to group
   def authorize_read_group!
     unless @group and (projects.present? or can?(current_user, :read_group, @group))
-      return render_404
+      if current_user.nil?
+        return authenticate_user!
+      else
+        return render_404
+      end
     end
   end
 
@@ -126,8 +137,22 @@ class GroupsController < ApplicationController
   def determine_layout
     if [:new, :create].include?(action_name.to_sym)
       'navless'
-    else
+    elsif current_user
       'group'
+    else
+      'public_group'
     end
+  end
+
+  def default_filter
+    if params[:scope].blank?
+      if current_user
+        params[:scope] = 'assigned-to-me'
+      else
+        params[:scope] = 'all'
+      end
+    end
+    params[:state] = 'opened' if params[:state].blank?
+    params[:group_id] = @group.id
   end
 end

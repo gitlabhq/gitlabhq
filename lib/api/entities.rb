@@ -1,11 +1,17 @@
 module API
   module Entities
     class User < Grape::Entity
-      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
+      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter, :website_url,
              :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
+
+      expose :avatar_url do |user, options|
+        if user.avatar.present?
+          user.avatar.url
+        end
+      end
     end
 
     class UserSafe < Grape::Entity
@@ -48,19 +54,19 @@ module API
 
     class ProjectMember < UserBasic
       expose :project_access, as: :access_level do |user, options|
-        options[:project].users_projects.find_by_user_id(user.id).project_access
+        options[:project].users_projects.find_by(user_id: user.id).project_access
       end
     end
 
     class TeamMember < UserBasic
       expose :permission, as: :access_level do |user, options|
-        options[:user_team].user_team_user_relationships.find_by_user_id(user.id).permission
+        options[:user_team].user_team_user_relationships.find_by(user_id: user.id).permission
       end
     end
 
     class TeamProject < Project
       expose :greatest_access, as: :greatest_access_level do |project, options|
-        options[:user_team].user_team_project_relationships.find_by_project_id(project.id).greatest_access
+        options[:user_team].user_team_project_relationships.find_by(project_id: project.id).greatest_access
       end
     end
 
@@ -74,16 +80,35 @@ module API
 
     class GroupMember < UserBasic
       expose :group_access, as: :access_level do |user, options|
-        options[:group].users_groups.find_by_user_id(user.id).group_access
+        options[:group].users_groups.find_by(user_id: user.id).group_access
       end
     end
 
     class RepoObject < Grape::Entity
-      expose :name, :commit
+      expose :name
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
+      end
+
       expose :protected do |repo, options|
         if options[:project]
           options[:project].protected_branch? repo.name
         end
+      end
+    end
+
+    class RepoTreeObject < Grape::Entity
+      expose :id, :name, :type
+
+      expose :mode do |obj, options|
+        filemode = obj.mode.to_s(8)
+        filemode = "0" + filemode if filemode.length < 6
+        filemode
       end
     end
 

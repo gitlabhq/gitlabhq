@@ -67,7 +67,7 @@
 
         - if @projects.blank?
           %li
-            %h3.nothing_here_message There are no projects here.
+            .nothing-here-block There are no projects here.
     .bottom
       = paginate @projects, theme: "gitlab"
 

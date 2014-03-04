@@ -2,7 +2,7 @@ Feature: Admin Groups
   Background:
     Given I sign in as an admin
     And I have group with projects
-    And Create gitlab user "John"
+    And User "John Doe" exists
     And I visit admin groups page
 
   Scenario: See group list
@@ -17,5 +17,5 @@ Feature: Admin Groups
   @javascript
   Scenario: Add user into projects in group
     When I visit admin group page
-    When I select user "John" from user list as "Reporter"
-    Then I should see "John" in team list in every project as "Reporter"
+    When I select user "John Doe" from user list as "Reporter"
+    Then I should see "John Doe" in team list in every project as "Reporter"

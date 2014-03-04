@@ -1,10 +1,12 @@
-- if @merge_request.valid_diffs?
+- if @merge_request_diff.collected?
   = render "projects/commits/diffs", diffs: @merge_request.diffs, project: @merge_request.source_project
-- elsif @merge_request.broken_diffs?
-  %h4.nothing_here_message
-    Can't load diff.
-    You can
-    = link_to "download it", project_merge_request_path(@merge_request.source_project, @merge_request), format: :diff, class: "vlink"
-    instead.
+- elsif @merge_request_diff.empty?
+  .nothing-here-block Nothing to merge from #{@merge_request.source_branch} into #{@merge_request.target_branch}
 - else
-  %h4.nothing_here_message Nothing to merge
+  .bs-callout.bs-callout-warning
+    %h4
+      Diff for this comparison is extremely large.
+    %p
+      You can
+      = link_to "download it", project_merge_request_path(@merge_request.source_project, @merge_request, format: :diff), class: "vlink"
+      instead.

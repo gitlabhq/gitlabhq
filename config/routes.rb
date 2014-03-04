@@ -6,10 +6,14 @@ Gitlab::Application.routes.draw do
   # Search
   #
   get 'search' => "search#show"
+  get 'search/autocomplete' => "search#autocomplete", as: :search_autocomplete
 
   # API
   API::API.logger Rails.logger
   mount API::API => '/api'
+
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
 
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
@@ -99,8 +103,6 @@ Gitlab::Application.routes.draw do
     root to: "dashboard#index"
   end
 
-  get "errors/githost"
-
   #
   # Profile Area
   #
@@ -122,6 +124,7 @@ Gitlab::Application.routes.draw do
         end
       end
       resources :keys
+      resources :emails, only: [:index, :create, :destroy]
       resources :groups, only: [:index] do
         member do
           delete :leave
@@ -157,6 +160,9 @@ Gitlab::Application.routes.draw do
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
+    scope module: :groups do
+      resource :avatar, only: [:destroy]
+    end
   end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]

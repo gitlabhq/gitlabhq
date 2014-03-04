@@ -8,6 +8,11 @@ describe "Dashboard Issues Feed" do
     let!(:issue1)   { create(:issue, author: user, assignee: user, project: project1) }
     let!(:issue2)   { create(:issue, author: user, assignee: user, project: project2) }
 
+    before do
+      project1.team << [user, :master]
+      project2.team << [user, :master]
+    end
+
     describe "atom feed" do
       it "should render atom feed via private token" do
         visit issues_dashboard_path(:atom, private_token: user.private_token)

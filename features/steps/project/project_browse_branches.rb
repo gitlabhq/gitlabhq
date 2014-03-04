@@ -3,33 +3,49 @@ class ProjectBrowseBranches < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  Then 'I should see "Shop" recent branches list' do
+  step 'I should see "Shop" recent branches list' do
     page.should have_content "Branches"
     page.should have_content "master"
   end
 
-  Given 'I click link "All"' do
+  step 'I click link "All"' do
     click_link "All"
   end
 
-  Then 'I should see "Shop" all branches list' do
+  step 'I should see "Shop" all branches list' do
     page.should have_content "Branches"
     page.should have_content "master"
   end
 
-  Given 'I click link "Protected"' do
+  step 'I click link "Protected"' do
     click_link "Protected"
   end
 
-  Then 'I should see "Shop" protected branches list' do
+  step 'I should see "Shop" protected branches list' do
     within ".protected-branches-list" do
       page.should have_content "stable"
       page.should_not have_content "master"
     end
   end
 
-  And 'project "Shop" has protected branches' do
-    project = Project.find_by_name("Shop")
+  step 'project "Shop" has protected branches' do
+    project = Project.find_by(name: "Shop")
     project.protected_branches.create(name: "stable")
+  end
+
+  step 'I click new branch link' do
+    click_link "New branch"
+  end
+
+  step 'I submit new branch form' do
+    fill_in 'branch_name', with: 'deploy_keys'
+    fill_in 'ref', with: 'master'
+    click_button 'Create branch'
+  end
+
+  step 'I should see new branch created' do
+    within '.all-branches' do
+      page.should have_content 'deploy_keys'
+    end
   end
 end

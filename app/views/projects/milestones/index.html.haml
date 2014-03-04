@@ -26,6 +26,6 @@
 
           - if @milestones.blank?
             %li
-              %h3.nothing_here_message No milestones to show
+              .nothing-here-block No milestones to show
 
       = paginate @milestones, theme: "gitlab"

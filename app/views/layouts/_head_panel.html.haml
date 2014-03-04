@@ -6,7 +6,7 @@
         = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
           %h1 GITLAB
         %span.separator
-      %h1.project_name= title
+      %h1.title= title
 
       %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
         %span.sr-only Toggle navigation
@@ -14,14 +14,13 @@
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
-          %li
+          %li.hidden-sm.hidden-xs
             %a
               %div.hide.turbolink-spinner
                 %i.icon-refresh.icon-spin
-                Loading...
-          %li.hidden-sm
+          %li.hidden-sm.hidden-xs
             = render "layouts/search"
-          %li.visible-sm
+          %li.visible-sm.visible-xs
             = link_to search_path, title: "Search", class: 'has_bottom_tooltip', 'data-original-title' => 'Search area' do
               %i.icon-search
           %li

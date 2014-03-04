@@ -1,3 +1,7 @@
+- if @repository.contribution_guide && !@merge_request.persisted?
+  - contribution_guide_url = project_blob_path(@project, tree_join(@repository.root_ref, @repository.contribution_guide.name))
+  .alert.alert-info.col-sm-10.col-sm-offset-2
+    ="Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
 = form_for [@project, @merge_request], html: { class: "merge-request-form form-horizontal" } do |f|
   -if @merge_request.errors.any?
     .alert.alert-danger
@@ -6,27 +10,30 @@
           %li= msg
 
   .merge-request-branches
-    .row
-      .col-md-5
+    .form-group
+      = label_tag nil, class: 'control-label' do
+        From
+      .col-sm-10
         .clearfix
           .pull-left
             = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            = f.select(:source_branch, @merge_request.source_project.repository.branch_names, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
-        .mr_source_commit.prepend-top-10
-      .col-md-2
-        .merge-request-angle
-          %i.icon-long-arrow-right
-      .col-md-5
+            = f.select(:source_branch, @merge_request.source_branches, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
+        .mr_source_commit
+    %br
+    .form-group
+      = label_tag nil, class: 'control-label' do
+        To
+      .col-sm-10
         .clearfix
           .pull-left
             - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
-            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace'), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
+            = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;
-            = f.select(:target_branch, @target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
-        .mr_target_commit.prepend-top-10
+            = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
+        .mr_target_commit
 
   %hr
   .merge-request-form-info
@@ -47,7 +54,7 @@
           %i.icon-user
           Assign to
         .col-sm-10
-          = f.select(:assignee_id, assignee_options(@merge_request), { include_blank: "Select a user" }, {class: 'select2'})
+          = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id)
           &nbsp;
           = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
     .form-group
@@ -90,6 +97,6 @@
     $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
   });
   $('.assign-to-me-link').on('click', function(e){
-    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("select2:updated");
+    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });

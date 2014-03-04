@@ -54,4 +54,19 @@ describe Group do
       group.users_groups.guests.map(&:user).should_not include(user)
     end
   end
+
+  describe :avatar_type do
+    let(:user) { create(:user) }
+    before { group.add_user(user, UsersGroup::MASTER) }
+
+    it "should be true if avatar is image" do
+      group.update_attribute(:avatar, 'uploads/avatar.png')
+      group.avatar_type.should be_true
+    end
+
+    it "should be false if avatar is html page" do
+      group.update_attribute(:avatar, 'uploads/avatar.html')
+      group.avatar_type.should == ["only images allowed"]
+    end
+  end
 end

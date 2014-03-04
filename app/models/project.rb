@@ -28,6 +28,9 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   extend Enumerize
 
+  default_value_for :imported, false
+  default_value_for :archived, false
+
   ActsAsTaggableOn.strict_case_match = true
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
@@ -53,6 +56,7 @@ class Project < ActiveRecord::Base
   has_one :hipchat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
   has_one :assembla_service, dependent: :destroy
+  has_one :gemnasium_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
 
@@ -114,16 +118,33 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-  scope :public_only, -> { where(visibility_level: PUBLIC) }
-  scope :public_or_internal_only, ->(user) { where("visibility_level IN (:levels)", levels: user ? [ INTERNAL, PUBLIC ] : [ PUBLIC ]) }
+
+  scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
+  scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
 
   scope :non_archived, -> { where(archived: false) }
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
   class << self
+    def public_and_internal_levels
+      [Project::PUBLIC, Project::INTERNAL]
+    end
+
     def abandoned
       where('projects.last_activity_at < ?', 6.months.ago)
+    end
+
+    def publicish(user)
+      visibility_levels = [Project::PUBLIC]
+      visibility_levels += [Project::INTERNAL] if user
+      where(visibility_level: visibility_levels)
+    end
+
+    def accessible_to(user)
+      accessible_ids = publicish(user).pluck(:id)
+      accessible_ids += user.authorized_projects.pluck(:id) if user
+      where(id: accessible_ids)
     end
 
     def with_push
@@ -138,13 +159,17 @@ class Project < ActiveRecord::Base
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
+    def search_by_title query
+      where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
+    end
+
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")
-        namespace = Namespace.find_by_path(id.first)
+        namespace = Namespace.find_by(path: id.first)
         return nil unless namespace
 
-        where(namespace_id: namespace.id).find_by_path(id.second)
+        where(namespace_id: namespace.id).find_by(path: id.second)
       else
         where(path: id, namespace_id: nil).last
       end
@@ -201,6 +226,10 @@ class Project < ActiveRecord::Base
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
   end
 
+  def web_url_without_protocol
+    web_url.split("://")[1]
+  end
+
   def build_commit_note(commit)
     notes.new(commit_id: commit.id, noteable_type: "Commit")
   end
@@ -248,7 +277,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium)
   end
 
   def gitlab_ci?
@@ -270,9 +299,7 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    team.members.each do |user|
-      Notify.delay.project_was_moved_email(self.id, user.id)
-    end
+    NotificationService.new.project_was_moved(self)
   end
 
   def owner
@@ -290,7 +317,7 @@ class Project < ActiveRecord::Base
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by_user_id(user_id)
+    users_projects.find_by(user_id: user_id)
   end
 
   def name_with_namespace
@@ -344,7 +371,7 @@ class Project < ActiveRecord::Base
     # Close merge requests
     mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
-    mrs.each { |merge_request| merge_request.merge!(user.id) }
+    mrs.each { |merge_request| MergeRequests::MergeService.new.execute(merge_request, user, nil) }
 
     true
   end

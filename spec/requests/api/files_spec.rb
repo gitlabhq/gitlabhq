@@ -6,8 +6,38 @@ describe API::API do
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:user) { create(:user) }
-  let!(:project) { create(:project_with_code, namespace: user.namespace ) }
+  let!(:project) { create(:project, namespace: user.namespace ) }
   before { project.team << [user, :developer] }
+
+  describe "GET /projects/:id/repository/files" do
+    it "should return file info" do
+      params = {
+        file_path: 'app/models/key.rb',
+        ref: 'master',
+      }
+
+      get api("/projects/#{project.id}/repository/files", user), params
+      response.status.should == 200
+      json_response['file_path'].should == 'app/models/key.rb'
+      json_response['file_name'].should == 'key.rb'
+      Base64.decode64(json_response['content']).lines.first.should == "class Key < ActiveRecord::Base\n"
+    end
+
+    it "should return a 400 bad request if no params given" do
+      get api("/projects/#{project.id}/repository/files", user)
+      response.status.should == 400
+    end
+
+    it "should return a 404 if such file does not exist" do
+      params = {
+        file_path: 'app/models/application.rb',
+        ref: 'master',
+      }
+
+      get api("/projects/#{project.id}/repository/files", user), params
+      response.status.should == 404
+    end
+  end
 
   describe "POST /projects/:id/repository/files" do
     let(:valid_params) {

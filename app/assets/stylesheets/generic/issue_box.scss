@@ -10,37 +10,103 @@
 .issue-box {
   color: #666;
   margin:20px 0;
-  background: #FAFAFA;
-  border: 1px solid #DDD;
+  background: #FFF;
+  border: 1px solid #EEE;
+
+  &.issue-box-closed {
+    border-color: #DA4E49;
+    .state {
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      color: #a94442;
+      .state-label {
+        background: #DA4E49;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-merged {
+    border-color: #31708f;
+    .state {
+      background-color: #d9edf7;
+      border-color: #bce8f1;
+      color: #31708f;
+      .state-label {
+        background: #31708f;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-open {
+    border-color: #4A4;
+    .state {
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+      color: #3c763d;
+      .state-label {
+        background: #4A4;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-expired {
+    border-color: #cea61b;
+    .state {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+      .state-label {
+        background: #cea61b;
+        color: #FFF;
+      }
+    }
+  }
 
   .control-group {
     margin-bottom: 0;
   }
 
+  .state {
+    height: 34px;
+    border-bottom: 1px solid #DDD;
+    line-height: 32px;
+  }
+
   .title {
-    font-size: 20px;
+    font-size: 22px;
     font-weight: 500;
-    line-height: 28px;
+    line-height: 1.5;
     margin: 0;
-    color: #444;
+    color: #333;
+    padding-bottom: 0;
+    padding: 15px 25px;
   }
 
   .context {
     border: none;
-    background-color: #f5f5f5;
-    border: none;
     border-top: 1px solid #eee;
+    padding: 15px 25px;
   }
 
   .description {
-    border-top: 1px solid #eee;
+    padding: 0 25px 15px 25px;
   }
 
   .title, .context, .description {
-    padding: 15px;
-
     .clearfix {
       margin: 0;
     }
+  }
+
+  .state-label {
+    font-size: 14px;
+    padding: 1px 25px;
+    text-align: center;
+    text-shadow: none;
+    margin-right: 20px;
+    display: inline-block;
   }
 }

@@ -16,6 +16,19 @@ describe NotificationService do
     end
   end
 
+  describe 'Email' do
+    describe :new_email do
+      let(:email) { create(:email) }
+
+      it { notification.new_email(email).should be_true }
+
+      it 'should send email to email owner' do
+        Notify.should_receive(:new_email_email).with(email.id)
+        notification.new_email(email)
+      end
+    end
+  end
+
   describe 'Notes' do
     context 'issue note' do
       let(:issue) { create(:issue, assignee: create(:user)) }
@@ -124,11 +137,11 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id)
+        Notify.should_receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id, @u_disabled.id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id)
+        Notify.should_not_receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id, @u_disabled.id)
       end
     end
 
@@ -188,11 +201,11 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id)
+        Notify.should_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id, merge_request.author_id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id)
+        Notify.should_not_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id, merge_request.author_id)
       end
     end
 
@@ -229,6 +242,31 @@ describe NotificationService do
 
       def should_not_email(user_id)
         Notify.should_not_receive(:merged_merge_request_email).with(user_id, merge_request.id)
+      end
+    end
+  end
+
+  describe 'Projects' do
+    let(:project) { create :project }
+
+    before do
+      build_team(project)
+    end
+
+    describe :project_was_moved do
+      it do
+        should_email(@u_watcher.id)
+        should_email(@u_participating.id)
+        should_not_email(@u_disabled.id)
+        notification.project_was_moved(project)
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:project_was_moved_email).with(project.id, user_id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:project_was_moved_email).with(project.id, user_id)
       end
     end
   end

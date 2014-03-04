@@ -10,6 +10,7 @@ project_urls = [
   'https://github.com/gitlabhq/gitlab-recipes.git',
   'https://github.com/gitlabhq/gitlab-shell.git',
   'https://github.com/gitlabhq/grack.git',
+  'https://github.com/gitlabhq/testme.git',
   'https://github.com/twitter/flight.git',
   'https://github.com/twitter/typeahead.js.git',
   'https://github.com/h5bp/html5-boilerplate.git',
@@ -19,7 +20,7 @@ project_urls = [
 project_urls.each_with_index do |url, i|
   group_path, project_path = url.split('/')[-2..-1]
 
-  group = Group.find_by_path(group_path)
+  group = Group.find_by(path: group_path)
 
   unless group
     group = Group.new(
@@ -27,8 +28,9 @@ project_urls.each_with_index do |url, i|
       path: group_path
     )
     group.description = Faker::Lorem.sentence
-    group.owner = User.first
     group.save
+
+    group.add_owner(User.first)
   end
 
   project_path.gsub!(".git", "")
@@ -40,7 +42,7 @@ project_urls.each_with_index do |url, i|
     description: Faker::Lorem.sentence
   }
 
-  project = Projects::CreateContext.new(User.first, params).execute
+  project = Projects::CreateService.new(User.first, params).execute
 
   if project.valid?
     print '.'

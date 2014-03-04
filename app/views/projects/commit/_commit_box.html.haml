@@ -5,14 +5,14 @@
         %i.icon-comment
         = @notes_count
     .pull-left.btn-group
-      %a.btn.grouped.dropdown-toggle{ data: {toggle: :dropdown} }
+      %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
         %i.icon-download-alt
         Download as
         %span.caret
       %ul.dropdown-menu
         %li= link_to "Email Patches", project_commit_path(@project, @commit, format: :patch)
         %li= link_to "Plain Diff",    project_commit_path(@project, @commit, format: :diff)
-    = link_to project_tree_path(@project, @commit), class: "btn btn-primary grouped" do
+    = link_to project_tree_path(@project, @commit), class: "btn btn-primary btn-grouped" do
       %span Browse Code »
   %div
 

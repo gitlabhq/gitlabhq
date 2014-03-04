@@ -9,14 +9,14 @@ describe API::API do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:project) { create(:project_with_code, creator_id: user.id, namespace: user.namespace) }
-  let!(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let!(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let!(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
-
-  before { project.team << [user, :reporter] }
+  let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
+  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
+  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
 
   describe "GET /projects" do
+    before { project }
+
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/projects")
@@ -36,6 +36,8 @@ describe API::API do
   end
 
   describe "GET /projects/all" do
+    before { project }
+
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/projects/all")
@@ -174,6 +176,7 @@ describe API::API do
   end
 
   describe "POST /projects/user/:id" do
+    before { project }
     before { admin }
 
     it "should create new project without path" do
@@ -255,6 +258,8 @@ describe API::API do
   end
 
   describe "GET /projects/:id" do
+    before { project }
+
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
       response.status.should == 200
@@ -282,6 +287,8 @@ describe API::API do
   end
 
   describe "GET /projects/:id/events" do
+    before { users_project }
+
     it "should return a project events" do
       get api("/projects/#{project.id}/events", user)
       response.status.should == 200
@@ -305,6 +312,9 @@ describe API::API do
   end
 
   describe "GET /projects/:id/members" do
+    before { users_project }
+    before { users_project2 }
+
     it "should return project team members" do
       get api("/projects/#{project.id}/members", user)
       response.status.should == 200
@@ -328,6 +338,8 @@ describe API::API do
   end
 
   describe "GET /projects/:id/members/:user_id" do
+    before { users_project }
+
     it "should return project team member" do
       get api("/projects/#{project.id}/members/#{user.id}", user)
       response.status.should == 200
@@ -383,6 +395,8 @@ describe API::API do
   end
 
   describe "PUT /projects/:id/members/:user_id" do
+    before { users_project2 }
+
     it "should update project team member" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: UsersProject::MASTER
       response.status.should == 200
@@ -407,6 +421,9 @@ describe API::API do
   end
 
   describe "DELETE /projects/:id/members/:user_id" do
+    before { users_project }
+    before { users_project2 }
+
     it "should remove user from project team" do
       expect {
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
@@ -425,9 +442,7 @@ describe API::API do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       response.status.should == 200
     end
-  end
 
-  describe "DELETE /projects/:id/members/:user_id" do
     it "should return 200 OK when the user was not member" do
       expect {
         delete api("/projects/#{project.id}/members/1000000", user)
@@ -439,6 +454,8 @@ describe API::API do
   end
 
   describe "GET /projects/:id/snippets" do
+    before { snippet }
+
     it "should return an array of project snippets" do
       get api("/projects/#{project.id}/snippets", user)
       response.status.should == 200
@@ -505,6 +522,8 @@ describe API::API do
   end
 
   describe "DELETE /projects/:id/snippets/:snippet_id" do
+    before { snippet }
+
     it "should delete existing project snippet" do
       expect {
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
@@ -657,15 +676,15 @@ describe API::API do
 
   describe "GET /projects/search/:query" do
     let!(:query) { 'query'}
-    let!(:search) { create(:project, name: query, creator_id: user.id, namespace: user.namespace) }
-    let!(:pre) { create(:project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
-    let!(:post) { create(:project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:pre_post) { create(:project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
-    let!(:unfound) { create(:project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
-    let!(:internal) { create(:project, name: "internal #{query}", visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let!(:unfound_internal) { create(:project, name: 'unfound internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let!(:public) { create(:project, name: "public #{query}", visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-    let!(:unfound_public) { create(:project, name: 'unfound public', visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }
+    let!(:pre)              { create(:empty_project, name: "pre_#{query}", creator_id: user.id, namespace: user.namespace) }
+    let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:pre_post)         { create(:empty_project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
+    let!(:unfound)          { create(:empty_project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
+    let!(:internal)         { create(:empty_project, name: "internal #{query}", visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+    let!(:unfound_internal) { create(:empty_project, name: 'unfound internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
+    let!(:public)           { create(:empty_project, name: "public #{query}", visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let!(:unfound_public)   { create(:empty_project, name: 'unfound public', visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
 
     context "when unauthenticated" do
       it "should return authentication error" do

@@ -1,0 +1,8 @@
+!!! 5
+%html{ lang: "en"}
+  = render "layouts/head", title: @title
+  %body{class: "#{app_theme} application", :'data-page' => body_data_page}
+    = render "layouts/broadcast"
+    = render "layouts/public_head_panel", title: @title
+    .container.navless-container
+      .content= yield

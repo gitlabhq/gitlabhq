@@ -31,10 +31,10 @@
 
 .mr_source_commit,
 .mr_target_commit {
+  margin-top: 10px;
   .commit {
     margin: 0;
-    padding: 0;
-    padding: 5px 0;
+    padding: 2px 0;
     list-style: none;
     &:hover {
       background: none;
@@ -90,15 +90,8 @@
   padding-top: 15px;
 }
 
-.merge-request-branches {
-  .commit-row-message {
-    font-weight: normal !important;
-  }
-
-  .select2-container .select2-single {
-    span {
-      font-weight: bold;
-      color: #555;
-    }
-  }
+// hide mr close link for inline diff comment form
+.diff-file .close-mr-link,
+.diff-file .reopen-mr-link {
+  display: none;
 }

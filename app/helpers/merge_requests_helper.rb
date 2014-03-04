@@ -1,8 +1,9 @@
 module MergeRequestsHelper
   def new_mr_path_from_push_event(event)
+    target_project = event.project.forked_from_project || event.project
     new_project_merge_request_path(
       event.project,
-      new_mr_from_push_event(event, event.project)
+      new_mr_from_push_event(event, target_project)
     )
   end
 

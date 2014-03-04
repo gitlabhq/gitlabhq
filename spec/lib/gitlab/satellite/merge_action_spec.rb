@@ -2,20 +2,21 @@ require 'spec_helper'
 
 describe 'Gitlab::Satellite::MergeAction' do
   before(:each) do
-#    TestEnv.init(mailer: false, init_repos: true, repos: true)
-    @master = ['master', 'b1e6a9dbf1c85e6616497a5e7bad9143a4bd0828']
+    @master = ['master', '69b34b7e9ad9f496f0ad10250be37d6265a03bba']
     @one_after_stable = ['stable', '6ea87c47f0f8a24ae031c3fff17bc913889ecd00'] #this commit sha is one after stable
     @wiki_branch = ['wiki', '635d3e09b72232b6e92a38de6cc184147e5bcb41'] #this is the commit sha where the wiki branch goes off from master
     @conflicting_metior = ['metior', '313d96e42b313a0af5ab50fa233bf43e27118b3f'] #this branch conflicts with the wiki branch
 
-    #these commits are quite close together, itended to make string diffs/format patches small
+    # these commits are quite close together, itended to make string diffs/format patches small
     @close_commit1 = ['2_3_notes_fix', '8470d70da67355c9c009e4401746b1d5410af2e3']
     @close_commit2 = ['scss_refactoring', 'f0f14c8eaba69ebddd766498a9d0b0e79becd633']
   end
 
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project, namespace: create(:group)) }
+  let(:fork_project) { create(:project, namespace: create(:group)) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let(:merge_request_fork) { create(:merge_request) }
+  let(:merge_request_fork) { create(:merge_request, source_project: fork_project, target_project: project) }
+
   describe '#commits_between' do
     def verify_commits(commits, first_commit_sha, last_commit_sha)
       commits.each { |commit| commit.class.should == Gitlab::Git::Commit }

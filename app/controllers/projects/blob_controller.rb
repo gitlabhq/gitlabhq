@@ -6,6 +6,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :authorize_push!, only: [:destroy]
 
   before_filter :blob
 
@@ -13,7 +14,7 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    result = Files::DeleteContext.new(@project, current_user, params, @ref, @path).execute
+    result = Files::DeleteService.new(@project, current_user, params, @ref, @path).execute
 
     if result[:status] == :success
       flash[:notice] = "Your changes have been successfully committed"

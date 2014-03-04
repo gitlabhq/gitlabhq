@@ -3,21 +3,15 @@
   Milestone ##{@milestone.iid}
   %small
     = @milestone.expires_at
-  - if @milestone.closed?
-    %span.state-label.state-label-red Closed
-  - elsif @milestone.expired?
-    %span.state-label.state-label-red Expired
-  - else
-    %span.state-label.state-label-green Open
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), class: "btn grouped" do
+      = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
         %i.icon-edit
         Edit
       - if @milestone.active?
-        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove grouped"
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove btn-grouped"
       - else
-        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn grouped"
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped"
 
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success
@@ -28,7 +22,16 @@
     &larr; To milestones list
 
 
-.issue-box
+.issue-box{ class: issue_box_class(@milestone) }
+  .state
+    %span.state-label
+      - if @milestone.closed?
+        Closed
+      - elsif @milestone.expired?
+        Expired
+      - else
+        Open
+
   %h4.title
     = gfm escape_once(@milestone.title)
 
@@ -42,14 +45,13 @@
     .progress.progress-info
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
-
   - if @milestone.description.present?
     .description
-      = preserve do
-        = markdown @milestone.description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
 
-
-%ul.nav.nav-tabs.append-bottom-10
+%ul.nav.nav-tabs
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab' do
       Issues
@@ -64,10 +66,10 @@
       %span.badge= @users.count
 
   .pull-right
-    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small grouped", title: "New Issue" do
+    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small btn-grouped", title: "New Issue" do
       %i.icon-plus
       New Issue
-    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn btn-small edit-milestone-link grouped"
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn btn-small edit-milestone-link btn-grouped"
 
 .tab-content
   .tab-pane.active#tab-issues

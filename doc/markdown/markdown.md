@@ -1,41 +1,37 @@
 ----------------------------------------------
 
-Table of Contents  
+Table of Contents
 =================
 
 ----------------------------------------------
 
-[GitLab Flavored Markdown](#toc_3)
--------------------------------
-[Newlines](#toc_4)
-[Multiple underscores in words](#toc_5)
-[URL autolinking](#toc_6)
-[Code and Syntax Highlighting](#toc_7)
-[Emoji](#toc_8)
-[Special GitLab references](#toc_9)
+**[GitLab Flavored Markdown](#gitlab-flavored-markdown-gfm)**
 
+[Newlines](#newlines)
+[Multiple underscores in words](#multiple-underscores-in-words)
+[URL autolinking](#url-autolinking)
+[Code and Syntax Highlighting](#code-and-syntax-highlighting)
+[Emoji](#emoji)
+[Special GitLab references](#special-gitlab-references)
 
+**[Standard Markdown](#standard-markdown)**
 
-[Standard Markdown](#toc_10)
-------------------------------
-[Headers](#toc_11)
-[Emphasis](#toc_20)
-[Lists](#toc_21)
-[Links](#toc_22)
-[Images](#toc_23)
-[Blockquotes](#toc_24)
-[Inline HTML](#toc_25)
-[Horizontal Rule](#toc_26)
-[Line Breaks](#toc_27)
-[Tables](#toc_28)
+[Headers](#headers)
+[Emphasis](#emphasis)
+[Lists](#lists)
+[Links](#links)
+[Images](#images)
+[Blockquotes](#blockquotes)
+[Inline HTML](#inline-html)
+[Horizontal Rule](#horizontal-rule)
+[Line Breaks](#line-breaks)
+[Tables](#tables)
 
-[References](#toc_29)
----------------------
+**[References](#references)**
 
 ----------------------------------------------
 
-<a name="gfm" />
-GitLab Flavored Markdown (GFM) 
+GitLab Flavored Markdown (GFM)
 ==============================
 For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality.
 
@@ -49,7 +45,10 @@ You can use GFM in
 * milestones
 * wiki pages
 
-<a name="newlines" />
+You can also use other rich text files in GitLab.
+You might have to install a depency to do so.
+Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+
 Newlines
 --------
 The biggest difference that GFM introduces is in the handling of linebreaks. With traditional Markdown you can hard wrap paragraphs of text and they will be combined into a single paragraph. We find this to be the cause of a huge number of unintentional formatting errors. GFM treats newlines in paragraph-like content as real line breaks, which is probably what you intended.
@@ -61,8 +60,7 @@ The next paragraph contains two phrases separated by a single newline character:
 
 Roses are red
 Violets are blue
-    
-<a name="underscores" />
+
 Multiple underscores in words
 -----------------------------
 It is not reasonable to italicize just _part_ of a word, especially when you're dealing with code and names that often appear with multiple underscores. Therefore, GFM ignores multiple underscores in words.
@@ -73,7 +71,6 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
 perform_complicated_task
 do_this_and_do_that_and_another_thing
 
-<a name="autolink" />
 URL autolinking
 ---------------
 GFM will autolink standard URLs you copy and paste into your text.
@@ -83,11 +80,9 @@ So if you want to link to a URL (instead of a textural link), you can simply put
 
 http://www.google.com
 
-<a name="code"/>
 ## Code and Syntax Highlighting
 
 Blocks of code are either fenced by lines with three back-ticks <code>```</code>, or are indented with four spaces. Only the fenced code blocks support syntax highlighting.
-
 
 ```no-highlight
 Inline `code` has `back-ticks around` it.
@@ -101,14 +96,14 @@ Example:
     var s = "JavaScript syntax highlighting";
     alert(s);
     ```
-         
+
     ```python
     def function():
         #indenting works just fine in the fenced code block
         s = "Python syntax highlighting"
         print s
     ```
-         
+
     ```ruby
     require 'redcarpet'
     markdown = Redcarpet.new("Hello World!")
@@ -116,7 +111,7 @@ Example:
     ```
 
     ```
-    No language indicated, so no syntax highlighting. 
+    No language indicated, so no syntax highlighting.
     s = "There is no highlighting for this."
     But let's throw in a <b>tag</b>.
     ```
@@ -147,7 +142,6 @@ s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
 
-<a name="emoji"/>
 Emoji
 -----
 
@@ -159,7 +153,7 @@ Emoji
 
 	If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup: 
+	Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup:
 
 Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
 
@@ -169,16 +163,14 @@ You can use it to point out a :bug: or warn about :monkey:patches. And if someon
 
 If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
 
-Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup: 
+Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup:
 
-<a name="special"/>
 Special GitLab References
 -----
 
 GFM recognized special references.
 You can easily reference e.g. a team member, an issue, or a commit within a project.
 GFM will turn that reference into a link so you can navigate between them easily.
-
 
 GFM will recognize the following:
 
@@ -189,13 +181,10 @@ GFM will recognize the following:
 * 1234567 : for commits
 * \[file\](path/to/file) : for file references
 
-<a name="standard"/>
-
 ----------------------------------
 # Standard Markdown
 
 ----------------------------------
-<a name="headers"/>
 ## Headers
 
 ```no-highlight
@@ -230,7 +219,54 @@ Alt-H1
 Alt-H2
 ------
 
-<a name="emphasis"/>
+### Header IDs and links
+
+All markdown rendered headers automatically get IDs, except for comments.
+
+On hover a link to those IDs becomes visible to make it easier to copy the link to the header to give it to someone else.
+
+The IDs are generated from the content of the header according to the following rules:
+
+1) remove the heading hashes `#` and process the rest of the line as it would be processed if it were not a header
+2) from the result, remove all HTML tags, but keep their inner content
+3) convert all characters to lowercase
+4) convert all characters except `[a-z0-9_-]` into hyphens `-`
+5) transform multiple adjacent hyphens into a single hyphen
+6) remove trailing and heading hyphens
+
+For example:
+
+```
+###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+```
+
+which renders as:
+
+###### ..Ab_c-d. e [anchor](url) ![alt text](url)..
+
+will first be converted by step 1) into a string like:
+
+```
+..Ab_c-d. e &lt;a href="url">anchor&lt;/a> &lt;img src="url" alt="alt text"/>..
+```
+
+After removing the tags in step 2) we get:
+
+```
+..Ab_c-d. e anchor ..
+```
+
+And applying all the other steps gives the id:
+
+```
+ab_c-d-e-anchor
+```
+
+Note in particular how:
+
+- for markdown anchors `[text](url)`, only the `text` is used
+- markdown images `![alt](url)` are completely ignored
+
 ## Emphasis
 
 ```no-highlight
@@ -251,18 +287,16 @@ Combined emphasis with **asterisks and _underscores_**.
 
 Strikethrough uses two tildes. ~~Scratch this.~~
 
-
-<a name="lists"/>
 ## Lists
 
 ```no-highlight
 1. First ordered list item
 2. Another item
-  * Unordered sub-list. 
+  * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
   1. Ordered sub-list
-4. And another item.  
-   
+4. And another item.
+
    Some text that should be aligned with the above item.
 
 * Unordered list can use asterisks
@@ -272,18 +306,17 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 1. First ordered list item
 2. Another item
-  * Unordered sub-list. 
+  * Unordered sub-list.
 1. Actual numbers don't matter, just that it's a number
   1. Ordered sub-list
-4. And another item.  
-   
+4. And another item.
+
    Some text that should be aligned with the above item.
 
 * Unordered list can use asterisks
 - Or minuses
 + Or pluses
 
-<a name="links"/>
 ## Links
 
 There are two ways to create links.
@@ -320,30 +353,28 @@ Some text to show that the reference links can follow later.
 [1]: http://slashdot.org
 [link text itself]: http://www.reddit.com
 
-<a name="images"/>
 ## Images
 
     Here's our logo (hover to see the title text):
 
-    Inline-style: 
-    ![alt text](/assets/logo-white.png "Logo Title Text 1")
+    Inline-style:
+    ![alt text](assets/logo-white.png)
 
-    Reference-style: 
-    ![alt text][logo]
+    Reference-style:
+    ![alt text1][logo]
 
-    [logo]: /assets/logo-white.png "Logo Title Text 2"
+    [logo]: assets/logo-white.png
 
 Here's our logo (hover to see the title text):
 
-Inline-style: 
+Inline-style:
 ![alt text](/assets/logo-white.png "Logo Title Text 1")
 
-Reference-style: 
+Reference-style:
 ![alt text][logo]
 
 [logo]: /assets/logo-white.png "Logo Title Text 2"
 
-<a name="blockquotes"/>
 ## Blockquotes
 
 ```no-highlight
@@ -352,7 +383,7 @@ Reference-style:
 
 Quote break.
 
-> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
+> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 ```
 
 > Blockquotes are very handy in email to emulate reply text.
@@ -360,12 +391,11 @@ Quote break.
 
 Quote break.
 
-> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote. 
+> This is a very long line that will still be quoted properly when it wraps. Oh boy let's keep writing to make sure this is long enough to actually wrap for everyone. Oh, you can *put* **Markdown** into a blockquote.
 
-<a name="html"/>
 ## Inline HTML
 
-You can also use raw HTML in your Markdown, and it'll mostly work pretty well. 
+You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
 
 ```no-highlight
 <dl>
@@ -385,7 +415,6 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
-<a name="hr"/>
 ## Horizontal Rule
 
 ```
@@ -418,10 +447,9 @@ ___
 
 Underscores
 
-<a name="lines"/>
 ## Line Breaks
 
-My basic recommendation for learning how line breaks work is to experiment and discover -- hit &lt;Enter&gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. "Markdown Toggle" is your friend. 
+My basic recommendation for learning how line breaks work is to experiment and discover -- hit &lt;Enter&gt; once (i.e., insert one newline), then hit it twice (i.e., insert two newlines), see what happens. You'll soon learn to get what you want. "Markdown Toggle" is your friend.
 
 Here are some things to try out:
 
@@ -438,11 +466,9 @@ Here's a line for us to start with.
 
 This line is separated from the one above by two newlines, so it will be a *separate paragraph*.
 
-This line is also begins a separate paragraph, but...  
+This line is also begins a separate paragraph, but...
 This line is only separated by a single newline, so it's a separate line in the *same paragraph*.
 
-
-<a name="tables"/>
 ## Tables
 
 Tables aren't part of the core Markdown spec, but they are part of GFM and Markdown Here supports them.
@@ -461,10 +487,8 @@ Code above produces next output:
 | cell 1   | cell 2   |
 | cell 3   | cell 4   |
 
-
 ------------
 
-<a name="references"/>
 ## References
 
 * This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).

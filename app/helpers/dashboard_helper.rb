@@ -1,7 +1,7 @@
 module DashboardHelper
   def filter_path(entity, options={})
     exist_opts = {
-      status: params[:status],
+      state: params[:state],
       scope: params[:scope],
       project_id: params[:project_id],
     }

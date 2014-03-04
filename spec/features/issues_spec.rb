@@ -43,6 +43,31 @@ describe "Issues" do
         page.should have_content project.name
       end
     end
+
+  end
+
+  describe "Editing issue assignee" do
+    let!(:issue) do
+      create(:issue,
+             author: @user,
+             assignee: @user,
+             project: project)
+    end
+
+    it 'allows user to select unasigned', :js => true do
+      visit edit_project_issue_path(project, issue)
+
+      page.should have_content "Assign to #{@user.name}"
+
+      page.first('#s2id_issue_assignee_id').click
+      sleep 2 # wait for ajax stuff to complete
+      page.first('.user-result').click
+
+      click_button "Save changes"
+
+      page.should have_content "Assignee: Select assignee"
+      issue.reload.assignee.should be_nil
+    end
   end
 
   describe "Filter issue" do
@@ -183,10 +208,10 @@ describe "Issues" do
       it 'with dropdown menu' do
         visit project_issue_path(project, issue)
 
-        find('.edit-issue.inline-update').select(project.team.members.first.name, from: 'issue_assignee_id')
+        find('.edit-issue.inline-update #issue_assignee_id').set project.team.members.first.id
         click_button 'Update Issue'
 
-        page.should have_content "currently assigned to"
+        page.should have_content "Assignee:"
         page.has_select?('issue_assignee_id', :selected => project.team.members.first.name)
       end
     end
@@ -206,11 +231,9 @@ describe "Issues" do
         login_with guest
 
         visit project_issue_path(project, issue)
-        page.should have_content "currently assigned to #{issue.assignee.name}"
-
+        page.should have_content issue.assignee.name
       end
     end
-
   end
 
   describe 'update milestone from issue#show' do
@@ -222,22 +245,19 @@ describe "Issues" do
       it 'with dropdown menu' do
         visit project_issue_path(project, issue)
 
-        p find('.edit-issue.inline-update').text
-
         find('.edit-issue.inline-update').select(milestone.title, from: 'issue_milestone_id')
         click_button 'Update Issue'
 
-        page.should have_content "Attached to milestone"
+        page.should have_content "Milestone"
         page.has_select?('issue_assignee_id', :selected => milestone.title)
       end
     end
 
     context 'by unauthorized user' do
-
       let(:guest) { create(:user) }
 
       before :each do
-        project.team << [[guest], :guest]
+        project.team << [guest, :guest]
         issue.milestone = milestone
         issue.save
       end
@@ -247,8 +267,29 @@ describe "Issues" do
         login_with guest
 
         visit project_issue_path(project, issue)
+        page.should have_content milestone.title
+      end
+    end
 
-        page.should have_content "Attached to milestone #{milestone.title}"
+    describe 'removing assignee' do
+      let(:user2) { create(:user) }
+
+      before :each do
+        issue.assignee = user2
+        issue.save
+      end
+
+      it 'allows user to remove assignee', :js => true do
+        visit project_issue_path(project, issue)
+        page.should have_content "Assignee: #{user2.name}"
+
+        page.first('#s2id_issue_assignee_id').click
+        sleep 2 # wait for ajax stuff to complete
+        page.first('.user-result').click
+
+        page.should have_content "Assignee: Unassigned"
+        sleep 2 # wait for ajax stuff to complete
+        issue.reload.assignee.should be_nil
       end
     end
   end

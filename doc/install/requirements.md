@@ -1,6 +1,6 @@
 # Operating Systems
 
-GitLab is developed for the Linux operating system.
+GitLab is developed for the Linux operating system. For the installations options and instructions please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
 ## GitLab officially supports
 
@@ -13,13 +13,13 @@ GitLab is developed for the Linux operating system.
 - CentOS
 - Oracle Linux
 
-## Not officially supported
+## Not officially supported are
 
 - Arch Linux
 - Fedora
 - Gentoo
 
-On the above distributions it is pretty easy to install GitLab yourself.
+But on the above distributions it is pretty easy to install GitLab yourself.
 
 ## Unsupported Unix Systems
 
@@ -37,9 +37,8 @@ Please consider using a virtual machine to run GitLab.
 # Ruby versions
 
 GitLab requires Ruby (MRI) 1.9.3 or 2.0+.
-While it is generally possible to use other Rubies
-(like [JRuby](http://jruby.org/) or [Rubinius](http://rubini.us/))
-it might require some work since GitLab uses several Gems that have native extensions.
+You will have to use the standard MRI implementation of Ruby.
+We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab needs several Gems that have native extensions.
 
 
 # Hardware requirements
@@ -48,14 +47,14 @@ it might require some work since GitLab uses several Gems that have native exten
 
 - 1 core works for under 100 users but the responsiveness might suffer
 - **2 cores** is the **recommended** number of cores and supports up to 100 users
-- 4 cores supports about 1,000 users
+- 4 cores supports up to 1,000 users
 - 8 cores supports up to 10,000 users
 
 ## Memory
 
 - 512MB is too little memory, GitLab will be very slow and you will need 250MB of swap
 - 768MB is the minimal memory size but we advise against this
-- 1GB supports up to 100 users if you do not have individual repo's over 250MB
+- 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates using swap space)
 - **2GB** is the **recommended** memory size and supports up to 1,000 users
 - 4GB supports up to 10,000 users
 
@@ -71,8 +70,11 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
-# Installation troubles and reporting success or failure
 
-If you have troubles installing GitLab following the [official installation guide](installation.md)
-or want to share your experience installing GitLab on a not officially supported
-platform, please follow the the [contribution guide](/CONTRIBUTING.md).
+# Supported webbrowsers
+
+- Chrome (Latest stable version)
+- Firefox (Latest released version) 
+- Safari 7+ (Know problem: required fields in html5 do not work)
+- Opera (Latest released version)
+- IE 10+

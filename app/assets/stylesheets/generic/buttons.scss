@@ -118,7 +118,6 @@
     @extend .btn-primary;
   }
 
-  &.btn-close,
   &.btn-remove {
     @extend .btn-danger;
   }
@@ -143,6 +142,30 @@
     line-height: 16px;
     margin: 2px;
   }
+
+  &.btn-close {
+    color: #B94A48;
+    font-weight: bold;
+    &:hover {
+      color: #B94A48;
+    }
+  }
+
+  &.btn-reopen {
+    color: #468847;
+    font-weight: bold;
+    &:hover {
+      color: #468847;
+    }
+  }
+
+  &.btn-grouped {
+    margin-right: 7px;
+    float: left;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
 }
 
 .btn-block {
@@ -154,9 +177,8 @@
   }
 }
 
-.btn,
 .btn-group {
-  &.grouped {
+  &.btn-grouped {
     margin-right: 7px;
     float: left;
     &:last-child {

@@ -66,7 +66,7 @@ class DashboardIssues < Spinach::FeatureSteps
 
   def project
     @project ||= begin
-                   project =create :project_with_code
+                   project =create :project
                    project.team << [current_user, :master]
                    project
                  end

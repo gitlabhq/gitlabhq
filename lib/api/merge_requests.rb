@@ -81,14 +81,13 @@ module API
             merge_request.target_project = user_project
           else
             if target_matches_fork(target_project_id,user_project)
-              merge_request.target_project = Project.find_by_id(attrs[:target_project_id])
+              merge_request.target_project = Project.find_by(id: attrs[:target_project_id])
             else
               render_api_error!('(Bad Request) Specified target project that is not the source project, or the source fork of the project.', 400)
             end
           end
 
           if merge_request.save
-            merge_request.reload_code
             present merge_request, with: Entities::MergeRequest
           else
             handle_merge_request_errors! merge_request.errors
@@ -117,8 +116,6 @@ module API
           authorize! :modify_merge_request, merge_request
 
           if merge_request.update_attributes attrs
-            merge_request.reload_code
-            merge_request.mark_as_unchecked
             present merge_request, with: Entities::MergeRequest
           else
             handle_merge_request_errors! merge_request.errors

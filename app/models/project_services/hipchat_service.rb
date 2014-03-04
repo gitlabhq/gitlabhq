@@ -13,6 +13,7 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  api_key     :string(255)
 #
 
 class HipchatService < Service
@@ -40,7 +41,7 @@ class HipchatService < Service
   end
 
   def execute(push_data)
-    gate[room].send('Gitlab', create_message(push_data))
+    gate[room].send('GitLab', create_message(push_data))
   end
 
   private
@@ -61,7 +62,7 @@ class HipchatService < Service
     elsif after =~ /000000/
       message << "removed branch #{ref} from <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> \n"
     else
-      message << "#pushed to branch <a href=\"#{project.web_url}/commits/#{ref}\">#{ref}</a> "
+      message << "pushed to branch <a href=\"#{project.web_url}/commits/#{ref}\">#{ref}</a> "
       message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
       for commit in push[:commits] do

@@ -3,6 +3,7 @@ class ProjectIssues < Spinach::FeatureSteps
   include SharedProject
   include SharedNote
   include SharedPaths
+  include SharedMarkdown
 
   Given 'I should see "Release 0.4" in issues' do
     page.should have_content "Release 0.4"
@@ -54,7 +55,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Then 'I should see issue "500 error on profile"' do
-    issue = Issue.find_by_title("500 error on profile")
+    issue = Issue.find_by(title: "500 error on profile")
     page.should have_content issue.title
     page.should have_content issue.author_name
     page.should have_content issue.project.name
@@ -81,14 +82,14 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Given 'project "Shop" has milestone "v2.2"' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     milestone = create(:milestone, title: "v2.2", project: project)
 
     3.times { create(:issue, project: project, milestone: milestone) }
   end
 
   And 'project "Shop" has milestone "v3.0"' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     milestone = create(:milestone, title: "v3.0", project: project)
 
     3.times { create(:issue, project: project, milestone: milestone) }
@@ -104,28 +105,30 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   When 'I select first assignee from "Shop" project' do
-    project = Project.find_by_name "Shop"
+    project = Project.find_by(name: "Shop")
     first_assignee = project.users.first
     select first_assignee.name, from: "assignee_id"
   end
 
   Then 'I should see first assignee from "Shop" as selected assignee' do
     issues_assignee_selector = "#issue_assignee_id_chzn > a"
-    project = Project.find_by_name "Shop"
+    project = Project.find_by(name: "Shop")
     assignee_name = project.users.first.name
     page.find(issues_assignee_selector).should have_content(assignee_name)
   end
 
   And 'project "Shop" have "Release 0.4" open issue' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     create(:issue,
            title: "Release 0.4",
            project: project,
-           author: project.users.first)
+           author: project.users.first,
+           description: "# Description header"
+          )
   end
 
   And 'project "Shop" have "Tweet control" open issue' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     create(:issue,
            title: "Tweet control",
            project: project,
@@ -133,7 +136,7 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'project "Shop" have "Release 0.3" closed issue' do
-    project = Project.find_by_name("Shop")
+    project = Project.find_by(name: "Shop")
     create(:closed_issue,
            title: "Release 0.3",
            project: project,

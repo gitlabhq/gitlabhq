@@ -6,18 +6,20 @@ class Profile < Spinach::FeatureSteps
     page.should have_content "Profile settings"
   end
 
-  step 'I change my contact info' do
+  step 'I change my profile info' do
     fill_in "user_skype", with: "testskype"
     fill_in "user_linkedin", with: "testlinkedin"
     fill_in "user_twitter", with: "testtwitter"
+    fill_in "user_website_url", with: "testurl"
     click_button "Save changes"
     @user.reload
   end
 
-  step 'I should see new contact info' do
+  step 'I should see new profile info' do
     @user.skype.should == 'testskype'
     @user.linkedin.should == 'testlinkedin'
     @user.twitter.should == 'testtwitter'
+    @user.website_url.should == 'testurl'
   end
 
   step 'I change my avatar' do
@@ -170,5 +172,18 @@ class Profile < Spinach::FeatureSteps
     within '.navbar-gitlab' do
       page.should have_content current_user.name
     end
+  end
+
+  step 'I have group with projects' do
+    @group   = create(:group)
+    @group.add_owner(current_user)
+    @project = create(:project, namespace: @group)
+    @event   = create(:closed_issue_event, project: @project)
+    
+    @project.team << [current_user, :master]
+  end
+
+  step 'I should see groups I belong to' do
+    page.should have_css('.profile-groups-avatars', visible: true)
   end
 end

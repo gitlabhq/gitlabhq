@@ -11,7 +11,7 @@
             %strong= @ref
         %span.options
           .btn-group.tree-btn-group
-            = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
+            = link_to "Cancel", @after_edit_path, class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
       .file-content.code
         %pre#editor= @blob.data
 
@@ -23,15 +23,16 @@
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"
+      = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
       .commit-button-annotation
         = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-primary'
         .message
           to branch
           %strong= @ref
-      = link_to "Cancel", project_blob_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
+      = link_to "Cancel", @after_edit_path, class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
-  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
+  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
   if (ace_mode) {

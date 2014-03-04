@@ -13,6 +13,7 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  api_key     :string(255)
 #
 
 require 'spec_helper'
@@ -25,7 +26,7 @@ describe FlowdockService do
 
   describe "Execute" do
     let(:user)    { create(:user) }
-    let(:project) { create(:project_with_code) }
+    let(:project) { create(:project) }
 
     before do
       @flowdock_service = FlowdockService.new

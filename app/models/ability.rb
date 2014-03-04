@@ -14,6 +14,7 @@ class Ability
       when "MergeRequest" then merge_request_abilities(user, subject)
       when "Group" then group_abilities(user, subject)
       when "Namespace" then namespace_abilities(user, subject)
+      when "UsersGroup" then users_group_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
@@ -42,7 +43,19 @@ class Ability
           :download_code
         ]
       else
-        []
+        group = if subject.kind_of?(Group)
+                  subject
+                elsif subject.respond_to?(:group)
+                  subject.group
+                else
+                  nil
+                end
+
+        if group && group.has_projects_accessible_to?(nil)
+          [:read_group]
+        else
+          []
+        end
       end
     end
 
@@ -125,6 +138,8 @@ class Ability
       project_report_rules + [
         :write_merge_request,
         :write_wiki,
+        :modify_issue,
+        :admin_issue,
         :push_code
       ]
     end
@@ -169,7 +184,7 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if group.users.include?(user) || user.admin?
+      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
         rules << :read_group
       end
 
@@ -216,6 +231,20 @@ class Ability
           subject.respond_to?(:project) ? project_abilities(user, subject.project) : []
         end
       end
+    end
+
+    def users_group_abilities(user, subject)
+      rules = []
+      target_user = subject.user
+      group = subject.group
+      can_manage = group_abilities(user, group).include?(:manage_group)
+      if can_manage && (user != target_user)
+        rules << :modify
+      end
+      if !group.last_owner?(user) && (can_manage || (user == target_user))
+        rules << :destroy
+      end
+      rules
     end
   end
 end
