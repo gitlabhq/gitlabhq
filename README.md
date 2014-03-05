@@ -47,7 +47,7 @@
 
 #### Official installation methods
 
-* [GitLab packages (beta)](https://www.gitlab.com/downloads/) These packages contain GitLab and all its depencies (PostgreSQL, Redis, Nginx, Unicorn, etc.). They are made with [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) that also contains the installation instructions. These packages currently support a reduced selection of GitLab's normal features. For instance, it is not yet possible to create/restore application backups or to use HTTPS.
+* [GitLab packages](https://www.gitlab.com/downloads/) These packages contain GitLab and all its depencies (Ruby, PostgreSQL, Redis, Nginx, Unicorn, etc.). They are made with [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) that also contains the installation instructions.
 
 * [GitLab virtual machine images](https://www.gitlab.com/downloads/) contain an operating system and a preinstalled GitLab. They are made with [GitLab Packer](https://gitlab.com/gitlab-org/gitlab-packer/blob/master/README.md) that also contains the installation instructions.
 
