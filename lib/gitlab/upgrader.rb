@@ -42,28 +42,33 @@ module Gitlab
     end
 
     def latest_version_raw
-      git_tags = `git ls-remote --tags origin | grep tags\/v#{current_version.major}`
-      git_tags = git_tags.lines.to_a.select { |version| version =~ /v\d\.\d\.\d\Z/ }
+      remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags origin))
+      git_tags = remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
+      git_tags = git_tags.select { |version| version =~ /v\d\.\d\.\d\Z/ }
       last_tag = git_tags.last.match(/v\d\.\d\.\d/).to_s
     end
 
     def update_commands
       {
-        "Stash changed files" => "git stash",
-        "Get latest code" => "git fetch",
-        "Switch to new version" => "git checkout v#{latest_version}",
-        "Install gems" => "bundle",
-        "Migrate DB" => "bundle exec rake db:migrate RAILS_ENV=production",
-        "Recompile assets" => "bundle exec rake assets:clean assets:precompile RAILS_ENV=production",
-        "Clear cache" => "bundle exec rake cache:clear RAILS_ENV=production"
+        "Stash changed files" => %W(git stash),
+        "Get latest code" => %W(git fetch),
+        "Switch to new version" => %W(git checkout v#{latest_version}),
+        "Install gems" => %W(bundle),
+        "Migrate DB" => %W(bundle exec rake db:migrate),
+        "Recompile assets" => %W(bundle exec rake assets:clean assets:precompile),
+        "Clear cache" => %W(bundle exec rake cache:clear)
       }
+    end
+
+    def env
+      {'RAILS_ENV' => 'production'}
     end
 
     def upgrade
       update_commands.each do |title, cmd|
         puts title
-        puts " -> #{cmd}"
-        if system(cmd)
+        puts " -> #{cmd.join(' ')}"
+        if system(env, *cmd)
           puts " -> OK"
         else
           puts " -> FAILED"

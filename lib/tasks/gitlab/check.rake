@@ -168,7 +168,7 @@ namespace :gitlab do
     def check_migrations_are_up
       print "All migrations up? ... "
 
-      migration_status =  `bundle exec rake db:migrate:status`
+      migration_status, _ = Gitlab::Popen.popen(%W(bundle exec rake db:migrate:status))
 
       unless migration_status =~ /down\s+\d{14}/
         puts "yes".green
@@ -295,7 +295,7 @@ namespace :gitlab do
         "user.email" => Gitlab.config.gitlab.email_from
       }
       correct_options = options.map do |name, value|
-        run("git config --global --get #{name}").try(:squish) == value
+        run(%W(git config --global --get #{name})).try(:squish) == value
       end
 
       if correct_options.all?
@@ -628,7 +628,8 @@ namespace :gitlab do
     end
 
     def sidekiq_process_count
-      `ps ux`.scan(/sidekiq \d+\.\d+\.\d+/).count
+      ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
+      ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
 
@@ -739,7 +740,7 @@ namespace :gitlab do
 
   def check_git_version
     required_version = Gitlab::VersionInfo.new(1, 7, 10)
-    current_version = Gitlab::VersionInfo.parse(run("#{Gitlab.config.git.bin_path} --version"))
+    current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "

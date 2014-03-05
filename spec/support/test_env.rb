@@ -104,10 +104,12 @@ module TestEnv
 
   def reset_satellite_dir
     setup_stubs
-    FileUtils.cd(seed_satellite_path) do
-      `git reset --hard --quiet`
-      `git clean -fx`
-      `git checkout --quiet origin/master`
+    [
+      %W(git reset --hard --quiet),
+      %W(git clean -fx),
+      %W(git checkout --quiet origin/master)
+    ].each do |git_cmd|
+      system(*git_cmd, chdir: seed_satellite_path)
     end
   end
 
@@ -117,7 +119,7 @@ module TestEnv
     repo = repo(namespace, name)
 
     # Symlink tmp/repositories/gitlabhq to tmp/test-git-base-path/gitlabhq
-    system("ln -s -f #{seed_repo_path()} #{repo}")
+    FileUtils.ln_sf(seed_repo_path, repo)
     create_satellite(repo, namespace, name)
   end
 
@@ -181,12 +183,11 @@ module TestEnv
     # Symlink tmp/satellite/gitlabhq to tmp/test-git-base-path/satellite/gitlabhq, create the directory if it doesn't exist already
     satellite_dir = File.dirname(satellite_repo)
     FileUtils.mkdir_p(satellite_dir) unless File.exists?(satellite_dir)
-    system("ln -s -f #{seed_satellite_path} #{satellite_repo}")
+    FileUtils.ln_sf(seed_satellite_path, satellite_repo)
   end
 
   def create_temp_repo(path)
     FileUtils.mkdir_p path
-    command = "git init --quiet --bare #{path};"
-    system(command)
+    system(*%W(git init --quiet --bare -- #{path}))
   end
 end

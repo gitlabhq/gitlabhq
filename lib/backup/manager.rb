@@ -8,7 +8,7 @@ module Backup
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
       s[:backup_created_at]  = Time.now
       s[:gitlab_version]     = Gitlab::VERSION
-      s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
+      s[:tar_version]        = tar_version
 
       Dir.chdir(Gitlab.config.backup.path)
 
@@ -97,6 +97,11 @@ module Backup
         puts "Hint: git checkout v#{settings[:gitlab_version]}"
         exit 1
       end
+    end
+
+    def tar_version
+      tar_version, _ = Gitlab::Popen.popen(%W(tar --version))
+      tar_version.split("\n").first
     end
   end
 end
