@@ -29,10 +29,20 @@ class PostReceive
       return false
     end
 
-    GitPushService.new.execute(project, user, oldrev, newrev, ref)
+    if tag?(ref)
+      GitTagPushService.new.execute(project, user, ref)
+    else
+      GitPushService.new.execute(project, user, oldrev, newrev, ref)
+    end
   end
 
   def log(message)
     Gitlab::GitLogger.error("POST-RECEIVE: #{message}")
+  end
+
+  private
+
+  def tag?(ref)
+    !!(/refs\/tags\/(.*)/.match(ref))
   end
 end
