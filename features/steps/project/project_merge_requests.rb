@@ -170,6 +170,18 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I click link "Reopen"' do
+    within '.page-title' do
+      click_link "Reopen"
+    end
+  end
+
+  step 'I should see reopened merge request "Bug NS-04"' do
+    within '.state-label' do
+      page.should have_content "Open"
+    end
+  end
+
   def project
     @project ||= Project.find_by!(name: "Shop")
   end

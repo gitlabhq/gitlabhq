@@ -22,6 +22,8 @@ class MergeRequestObserver < ActivityObserver
     create_event(merge_request, Event::REOPENED)
     create_note(merge_request)
     execute_hooks(merge_request)
+    merge_request.reload_code
+    merge_request.mark_as_unchecked
   end
 
   def after_update(merge_request)

@@ -43,6 +43,31 @@ describe "Issues" do
         page.should have_content project.name
       end
     end
+
+  end
+
+  describe "Editing issue assignee" do
+    let!(:issue) do
+      create(:issue,
+             author: @user,
+             assignee: @user,
+             project: project)
+    end
+
+    it 'allows user to select unasigned', :js => true do
+      visit edit_project_issue_path(project, issue)
+
+      page.should have_content "Assign to #{@user.name}"
+
+      page.first('#s2id_issue_assignee_id').click
+      sleep 2 # wait for ajax stuff to complete
+      page.first('.user-result').click
+
+      click_button "Save changes"
+
+      page.should have_content "Assignee: Select assignee"
+      issue.reload.assignee.should be_nil
+    end
   end
 
   describe "Filter issue" do
@@ -243,6 +268,28 @@ describe "Issues" do
 
         visit project_issue_path(project, issue)
         page.should have_content milestone.title
+      end
+    end
+
+    describe 'removing assignee' do
+      let(:user2) { create(:user) }
+
+      before :each do
+        issue.assignee = user2
+        issue.save
+      end
+
+      it 'allows user to remove assignee', :js => true do
+        visit project_issue_path(project, issue)
+        page.should have_content "Assignee: #{user2.name}"
+
+        page.first('#s2id_issue_assignee_id').click
+        sleep 2 # wait for ajax stuff to complete
+        page.first('.user-result').click
+
+        page.should have_content "Assignee: Unassigned"
+        sleep 2 # wait for ajax stuff to complete
+        issue.reload.assignee.should be_nil
       end
     end
   end
