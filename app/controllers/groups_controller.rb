@@ -100,7 +100,7 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= ProjectsFinder.new.execute(current_user, group: group)
+    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
   end
 
   def project_ids
