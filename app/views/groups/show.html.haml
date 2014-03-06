@@ -1,19 +1,19 @@
-.dasctivities.col-md-8.hidden-sm
-    - if current_user
-      = render "events/event_last_push", event: @last_push
-      = link_to dashboard_path, class: 'btn btn-tiny' do
-        &larr; #{ t("gitlab.groups.to_dashboard") }
-      &nbsp;
-    %span.cgray
-      = t("gitlab.groups.desc")
-    %hr
-    = render 'shared/event_filter'
-    - if @events.any?
-      .content_list
-    - else
-      .nothing-here-block
-        = t("gitlab.groups.no_activity") }
-    = spinner
+.activities.col-md-8.hidden-sm
+  - if current_user
+    = render "events/event_last_push", event: @last_push
+    = link_to dashboard_path, class: 'btn btn-tiny' do
+      &larr; #{ t("gitlab.groups.to_dashboard") }
+    &nbsp;
+  %span.cgray
+    = t("gitlab.groups.desc")
+  %hr
+  = render 'shared/event_filter'
+  - if @events.any?
+    .content_list
+  - else
+    .nothing-here-block
+      = t("gitlab.groups.no_activity")
+  = spinner
   .side.col-md-4
     .light-well.append-bottom-20
       = image_tag group_icon(@group.path), class: "avatar s90"

@@ -85,8 +85,8 @@ en:
       all_groups_dashboard: "To see all issues you should visit %{dashboard_link} page."
       new_group: "New Group"
       visibility: "Visibility"
-      only_issues_from_group: "Only issues from <strong>%{group}</strong> group are listed here. To see all issues you should visit %{dashboard_link} page."
-      only_merge_requests_from_group: "Only merge requests from <strong>%{group}</strong> group are listed here. To see all merge requests you should visit %{dashboard_link} page."
+      only_issues_from_group: "Only issues from <strong>%{group}</strong> group are listed here."
+      only_merge_requests_from_group: "Only merge requests from <strong>%{group}</strong> group are listed here."
     issues:
       issues: "Issues"
       list_of_all_issues: "List all issues from all projects you have access to."
