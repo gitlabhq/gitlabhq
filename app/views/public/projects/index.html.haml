@@ -63,7 +63,7 @@
             %i.icon-warning-sign
             Empty repository
     - unless @projects.present?
-      .nothing-here-block No public projects
+      .nothing-here-block
         = t("gitlab.projects.no_public_projects")
 
   = paginate @projects, theme: "gitlab"

@@ -175,7 +175,6 @@ en:
       ssh_keys:
         add_key: "Add key"
         add_ssh_key: "Add SSH Key"
-        add_ssh_key: "Add an SSH Key"
         cancel: "Cancel"
         desc1: "SSH keys allow you to establish a secure connection between your computer and GitLab"
         desc2: "Before you can add an SSH key you need to"

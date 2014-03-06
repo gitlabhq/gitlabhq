@@ -22,9 +22,6 @@
           = t("gitlab.profile.notifications.participating")
         %p #{t("gitlab.profile.notifications.participating_description")}
 
-          = t("gitlab.profile.notifications.participating")
-    &ndash; #{t("gitlab.profile.notifications.participating_description")}
-
     .radio
       = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
