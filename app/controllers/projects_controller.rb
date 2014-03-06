@@ -108,6 +108,7 @@ class ProjectsController < ApplicationController
     @suggestions = {
       emojis: Emoji.names,
       issues: @project.issues.select([:iid, :title, :description]),
+      mergerequests: @project.merge_requests.select([:iid, :title, :description]),
       members: @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
     }
 
