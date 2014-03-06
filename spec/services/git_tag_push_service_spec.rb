@@ -20,8 +20,8 @@ describe GitTagPushService do
     subject { @push_data }
 
     it { should include(ref: @ref) }
-    it { should include(oldrev: @oldrev) }
-    it { should include(newrev: @newrev) }
+    it { should include(before: @oldrev) }
+    it { should include(after: @newrev) }
     it { should include(user_id: user.id) }
     it { should include(user_name: user.name) }
     it { should include(project_id: project.id) }

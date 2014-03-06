@@ -11,8 +11,8 @@ class GitTagPushService
   def create_push_data(oldrev, newrev, ref)
     data = {
       ref: ref,
-      oldrev: oldrev,
-      newrev: newrev,
+      before: oldrev,
+      after: newrev,
       user_id: user.id,
       user_name: user.name,
       project_id: project.id,
