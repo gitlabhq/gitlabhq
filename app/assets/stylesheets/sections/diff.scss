@@ -144,7 +144,7 @@
       line-height: 0;
       img{
         border: 1px solid #FFF;
-        background: url('trans_bg.gif');
+        background: image-url('trans_bg.gif');
         max-width: 100%;
       }
       &.deleted {
@@ -209,7 +209,7 @@
           width: 15px;
           position: absolute;
           top: 0px;
-          background: url('swipemode_sprites.gif') 0 3px no-repeat;
+          background: image-url('swipemode_sprites.gif') 0 3px no-repeat;
         }
         .bottom-handle{
           display: block;
@@ -217,7 +217,7 @@
           width: 15px;
           position: absolute;
           bottom: 0px;
-          background: url('swipemode_sprites.gif') 0 -11px no-repeat;
+          background: image-url('swipemode_sprites.gif') 0 -11px no-repeat;
         }
       }
     } //.view.swipe
@@ -249,7 +249,7 @@
           left: 12px;
           height: 10px;
           width: 276px;
-          background: url('onion_skin_sprites.gif') -4px -20px repeat-x;
+          background: image-url('onion_skin_sprites.gif') -4px -20px repeat-x;
         }
 
         .dragger {
@@ -259,7 +259,7 @@
           top: 0px;
           height: 14px;
           width: 14px;
-          background: url('onion_skin_sprites.gif') 0px -34px repeat-x;
+          background: image-url('onion_skin_sprites.gif') 0px -34px repeat-x;
           cursor: pointer;
         }
 
@@ -270,7 +270,7 @@
           right: 0px;
           height: 10px;
           width: 10px;
-          background: url('onion_skin_sprites.gif') -2px 0px no-repeat;
+          background: image-url('onion_skin_sprites.gif') -2px 0px no-repeat;
         }
 
         .opaque {
@@ -280,7 +280,7 @@
           left: 0px;
           height: 10px;
           width: 10px;
-          background: url('onion_skin_sprites.gif') -2px -10px no-repeat;
+          background: image-url('onion_skin_sprites.gif') -2px -10px no-repeat;
         }
       }
     } //.view.onion-skin

@@ -54,7 +54,7 @@ module ApplicationHelper
     if group && group.avatar.present?
       group.avatar.url
     else
-      '/assets/no_group_avatar.png'
+      image_path('no_group_avatar.png')
     end
   end
 
