@@ -30,7 +30,7 @@ class PostReceive
     end
 
     if tag?(ref)
-      GitTagPushService.new.execute(project, user, ref)
+      GitTagPushService.new.execute(project, user, oldrev, newrev, ref)
     else
       GitPushService.new.execute(project, user, oldrev, newrev, ref)
     end
