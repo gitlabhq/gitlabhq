@@ -1,285 +1,305 @@
+---
 en:
-  gitlab:
-    name: "GitLab"
-    description: "GitLab is open source software to collaborate on code."
-    public_projects: "public projects"
-    feed: "Feed"
-    news_feed: "News Feed"
-    admin:
-      admin_area: "Admin area"
-      desc: "You can manage projects, users and other GitLab data from here."
-      components:
-        components: "Components"
-        gitlab: "GitLab"
-        gitlab_shell: "GitLab Shell"
-        gitlab_api: "GitLab API"
-        ruby: "Ruby"
-        rails: "Rails"
-      features:
-        features: "Features"
-        sign_up: "Sign up"
-        ldap: "LDAP"
-        gravatar: "Gravatar"
-        omniauth: "OmniAuth"
-      stats:
-        stats: "Stats"
-        forks: "Forks"
-        issues: "Issues"
-        merge_requests: "Merge Requests"
-        notes: "Notes"
-        snippets: "Snippets"
-        ssh_keys: "SSH Keys"
-        milestones: "Milestones"
-    dashboard:
-      dashboard: "Dashboard"
-      filter_by_name: "Filter by name"
-      last_activity: "Last activity:"
-      no_activity: "Projects activity will be displayed here"
-      menu:
-        help: "Help"
-        issues: "Issues"
-        merge_requests: "Merge Requests"
-        projects: "Projects"
-    events:
-      comments: "Comments"
-      merge_events: "Merge events"
-      push_events: "Push events"
-      team: "Team"
-    filter:
-      all: "All"
-      assigned_to_me: "Assigned to me"
-      clear_filter: "Clear filter"
-      closed: "Closed"
-      created_by_me: "Created by me"
-      everyones: "Everyone's"
-      open: "Open"
-      private: "Private"
-      projects: "Projects"
-      public: "Public"
-      state: "State"
-    groups:
-      create_group: "Create group"
-      desc: "You will only see events from projects in this group"
-      home: "Home"
-      as: "as"
-      latest_groups: "Latest groups"
-      leave: "Leave"
-      leave_confirm: "Are you sure you want to leave \"%{group}\" group?"
-      leave_title: "Remove user from group"
-      no_activity: "Project activity will be displayed here"
-      no_projects: "This groups has no projects yet"
-      projects_no: "Projects (%{count})"
-      settings: "Settings"
-      to_dashboard: "To dashboard"
-      issues_no: "%{count} issues"
-      desc_1: "A group is a collection of several projects"
-      desc_2: "Groups are private by default"
-      desc_3: "Members of a group may only view projects they have permission to access"
-      desc_4: "Group project URLs are prefixed with the group namespace"
-      desc_5: "Existing projects may be moved into a group"
-      details: "Details"
-      group_name: "Group name"
-      group_name_example: "Ex. OpenSource"
-      groups: "Groups"
-      members: "Members"
-      all_groups_dashboard: "To see all issues you should visit %{dashboard_link} page."
-      new_group: "New Group"
-      visibility: "Visibility"
-      only_issues_from_group: "Only issues from <strong>%{group}</strong> group are listed here."
-      only_merge_requests_from_group: "Only merge requests from <strong>%{group}</strong> group are listed here."
-    issues:
-      issues: "Issues"
-      list_of_all_issues: "List all issues from all projects you have access to."
-      nothing_here: "No issues to show"
-      total_count__issues: "issues"
-      issues_no: "%{count} issues"
-    login:
-      already_have_login_and_password: "Already have login and password?"
-      did_not_receive_confirmation_email: "Did not receive confirmation email?"
-      forgot_your_password: "Forgot your password?"
-      or_browse_for: "or browse for"
-      remember_me: "Remember me"
-      resend_confirmation_instructions: "Resend confirmation instructions"
-      send_again: "Send again"
-      sign_in: "Sign in"
-      username_or_email: "Username or Email"
-    merge_requests:
-      list_of_all_merge_requests: "List all merge requests from all projects you have access to."
-      merge_requests: "Merge Requests"
-      merge_requests_no: "%{count} merge requests"
-      nothing_here: "No merge requests to show"
-      total_count__merge_requests: "merge requests"
-    panel:
-      admin_area: "Admin area"
-      logout: "Logout"
-      my_snippets: "My snippets"
-      new_project: "New project"
-      profile_settings: "Profile settings"
-      public_area: "Public area"
-      user_activity: "User activity"
-    profile:
-      bio: "Bio"
-      bio_description: "Tell us about yourself in fewer than 250 characters."
-      email: "Email"
-      email_for_avatar_detection: "We also use email for avatar detection if no avatar is uploaded."
-      enter_your_name: "Enter your name, so people you know can recognize you."
-      name: "Name"
-      profile_settings: "Profile settings"
-      save_changes: "Save changes"
-      this_information_appears_on_your_profile: "This information appears on your profile."
-      website: "Website"
-      account:
-        account_settings: "Account settings"
-        are_you_sure: "Are you sure?"
-        keep_it_secret: "Keep it secret!"
-        path_change_msg: "Changing your username will change path to all personal projects!"
-        private_token: "Private token"
-        reset: "Reset"
-        save_username: "Save username"
-        token_desc_1: "Your private token is used to access application resources without authentication."
-        token_desc_2: "It can be used for atom feeds or the API."
-        username: "Username"
-        you_can_change_username_here: "You can change your username and private token here."
-      password:
-        change_your_password_description: "Change your password or recover your current one."
-        current_password: "Current password"
-        must_provide_current_password: "You must provide current password in order to change it."
-        new_password: "New password"
-        password_confirmation: "Password confirmation"
-        save_password: "Save password"
-        title: "Password"
-        you_will_be_redirected_to_login_page: "After a successful password update you will be redirected to login page where you should login with your new password"
-      menu:
-        account: "Account"
-        design: "Design"
-        groups: "Groups"
-        history: "History"
-        notifications: "Notifications"
-        password: "Password"
-        ssh_keys: "SSH Keys"
-      groups:
-        desc: "Group members have access to all a group's projects"
-        title: "Group membership"
-      notifications:
-        advanced_notifications_settings: "Advanced notifications settings:"
-        disabled: "Disabled"
-        disabled_description: "You will not get any notifications via email"
-        groups: "Groups:"
-        notifications_description: "GitLab uses the email specified in your profile for notifications"
-        notifications_settings: "Notifications settings"
-        participating: "Participating"
-        participating_description: "You will only receive notifications from related resources (e.g. from your commits or assigned issues)"
-        projects: "Projects:"
-        watch: "Watch"
-        watch_description: "You will receive all notifications from projects in which you participate"
-      ssh_keys:
-        add_key: "Add key"
-        add_ssh_key: "Add SSH Key"
-        cancel: "Cancel"
-        desc1: "SSH keys allow you to establish a secure connection between your computer and GitLab"
-        desc2: "Before you can add an SSH key you need to"
-        generate_it: "generate it"
-        key: "Key"
-        my_ssh_keys: "My SSH keys"
-        no_ssh_keys: "There are no SSH keys with access to your account."
-        paste_your_public_key_here: "Paste your public key here. Read more about how to generate a key on"
-        ssh_help_page: "the SSH help page"
-        ssh_keys: "SSH Keys"
-        title: "Title"
-      design:
-        appearance_settings_description: "Appearance settings saved to your profile and available across all devices"
-        application_theme: "Application theme"
-        code_review_theme: "Code preview theme"
-        my_appearance_settings: "My appearance settings"
-        themes:
-          classic: "Classic"
-          default: "Default"
-          gray: "Gray"
-          modern: "Modern"
-          violet: "Violet"
-    projects:
-      all_projects_you_have_access_to_are_listed_here: "All projects you have access to are listed here. Public projects are not included here unless you are a member"
-      create_a_group: "Create a group"
-      create_project: "Create project"
-      customize_directory_name: "Customize repository name?"
-      description: "Description"
-      description_example: "Awesome project"
-      example_project: "Example Project"
-      filter_by_name: "Filter by name"
-      latest_projects: "Latest projects"
-      import_existing_repository: "Import existing repository"
-      import_existing_repository_question: "Import existing repository?"
-      my_projects: "My Projects"
-      namespace: "Namespace"
-      need_a_group_for_dependent_projects: "Need a group for several dependent projects?"
-      new_project: "New Project"
-      no_public_projects: "No public projects"
-      optional: "(optional)"
-      project_name: "Project name"
-      projects: "Projects"
-      public_projects: "Public Projects"
-      public_projects_read_only: "You can browse public projects in read-only mode until signed in."
-      repository_name: "Repository name"
-      url_must_be_cloneable: "URL must be cloneable"
-      filter:
-        all: "All"
-        everyones: "Everyone's"
-        joined: "Joined"
-        owned: "Owned"
-        personal: "Personal"
-    search:
-      search: "Search"
-      search_in_this_group: "Search in this group"
-      search_in_this_project: "Search in this project"
-    snippets:
-      access: "Access"
-      add_new_snippet: "Add new snippet"
-      are_you_sure: "Are you sure?"
-      cancel: "Cancel"
-      create_snippet: "Create snippet"
-      delete: "Delete"
-      delete_snippet: "Delete Snippet"
-      description: "Share code pastes with others out of git repository"
-      discover_snippets: "Discover snippets"
-      edit: "Edit"
-      edit_snippet: "Edit Snippet"
-      edit_title: "Edit Snippet"
-      example_filename: "example.rb"
-      example_snippet: "Example Snippet"
-      file: "File"
-      my_snippets: "My Snippets"
-      new_snippet: "New Snippet"
-      private: "Private (only you can see this snippet)"
-      public: "Public (GitLab users can see this snippet)"
-      public_snippets: "Public snippets"
-      public_snippets_description: "Public snippets created by you and other users are listed here"
-      raw: "Raw"
-      remove: "Remove"
-      remove_snippet_warning: "Removed snippet cannot be restored! Are you sure?"
-      save: "Save"
-      snippets: "Snippets"
-      title: "Title"
-    sort:
-      last_updated: "Last updated"
-      name: "Name"
-      newest: "Newest"
-      oldest: "Oldest"
-      recently_updated: "Recently updated"
-    users:
-      edit_profile_settings: "Edit Profile settings"
-      member_since: "Member since"
-      profile: "Profile"
-      user_activity: "User Activity"
-      users: "Users"
-      latest_users: "Latest users"
-      new_user: "New User"
-    visibility:
-      internal: "Internal"
-      private: "Private"
-      public: "Public"
-  hello: "Hello world"
   errors:
     messages:
-      wrong_size: "is the wrong size (should be %{file_size})"
-      size_too_small: "is too small (should be at least %{file_size})"
-      size_too_big: "is too big (should be at most %{file_size})"
+      size_too_big: is too big (should be at most %{file_size})
+      size_too_small: is too small (should be at least %{file_size})
+      wrong_size: is the wrong size (should be %{file_size})
+  gitlab:
+    admin:
+      admin_area: Admin area
+      components:
+        components: Components
+        gitlab: GitLab
+        gitlab_api: GitLab API
+        gitlab_shell: GitLab Shell
+        rails: Rails
+        ruby: Ruby
+      desc: You can manage projects, users and other GitLab data from here.
+      features:
+        features: Features
+        gravatar: Gravatar
+        ldap: LDAP
+        omniauth: OmniAuth
+        sign_up: Sign up
+      stats:
+        forks: Forks
+        issues: Issues
+        merge_requests: Merge Requests
+        milestones: Milestones
+        notes: Notes
+        snippets: Snippets
+        ssh_keys: SSH Keys
+        stats: Stats
+    dashboard:
+      dashboard: Dashboard
+      filter_by_name: Filter by name
+      last_activity: 'Last activity:'
+      menu:
+        help: Help
+        issues: Issues
+        merge_requests: Merge Requests
+        projects: Projects
+      no_activity: Projects activity will be displayed here
+    description: GitLab is open source software to collaborate on code.
+    events:
+      comments: Comments
+      merge_events: Merge events
+      push_events: Push events
+      team: Team
+    feed: Feed
+    filter:
+      all: All
+      assigned_to_me: Assigned to me
+      clear_filter: Clear filter
+      closed: Closed
+      created_by_me: Created by me
+      everyones: Everyone's
+      open: Open
+      private: Private
+      projects: Projects
+      public: Public
+      state: State
+    groups:
+      all_groups_dashboard: To see all issues you should visit %{dashboard_link} page.
+      as: as
+      create_group: Create group
+      desc: You will only see events from projects in this group
+      desc_1: A group is a collection of several projects
+      desc_2: Groups are private by default
+      desc_3: Members of a group may only view projects they have permission to access
+      desc_4: Group project URLs are prefixed with the group namespace
+      desc_5: Existing projects may be moved into a group
+      details: Details
+      group_name: Group name
+      group_name_example: Ex. OpenSource
+      groups: Groups
+      home: Home
+      issues_no: '%{count} issues'
+      latest_groups: Latest groups
+      leave: Leave
+      leave_confirm: Are you sure you want to leave "%{group}" group?
+      leave_title: Remove user from group
+      members: Members
+      new_group: New Group
+      no_activity: Project activity will be displayed here
+      no_projects: This groups has no projects yet
+      only_issues_from_group: Only issues from <strong>%{group}</strong> group are
+        listed here.
+      only_merge_requests_from_group: Only merge requests from <strong>%{group}</strong>
+        group are listed here.
+      projects_no: Projects (%{count})
+      settings: Settings
+      to_dashboard: To dashboard
+      visibility: Visibility
+    issues:
+      issues: Issues
+      issues_no: '%{count} issues'
+      list_of_all_issues: List all issues from all projects you have access to.
+      nothing_here: No issues to show
+      total_count__issues: issues
+    login:
+      already_have_login_and_password: Already have login and password?
+      did_not_receive_confirmation_email: Did not receive confirmation email?
+      forgot_your_password: Forgot your password?
+      or_browse_for: or browse for
+      remember_me: Remember me
+      resend_confirmation_instructions: Resend confirmation instructions
+      send_again: Send again
+      sign_in: Sign in
+      username_or_email: Username or Email
+    merge_requests:
+      list_of_all_merge_requests: List all merge requests from all projects you have
+        access to.
+      merge_requests: Merge Requests
+      merge_requests_no: '%{count} merge requests'
+      nothing_here: No merge requests to show
+      total_count__merge_requests: merge requests
+    name: GitLab
+    news_feed: News Feed
+    panel:
+      admin_area: Admin area
+      logout: Logout
+      my_snippets: My snippets
+      new_project: New project
+      profile_settings: Profile settings
+      public_area: Public area
+      user_activity: User activity
+    profile:
+      account:
+        account_settings: Account settings
+        are_you_sure: Are you sure?
+        keep_it_secret: Keep it secret!
+        path_change_msg: Changing your username will change path to all personal projects!
+        private_token: Private token
+        reset: Reset
+        save_username: Save username
+        token_desc_1: Your private token is used to access application resources without
+          authentication.
+        token_desc_2: It can be used for atom feeds or the API.
+        username: Username
+        you_can_change_username_here: You can change your username and private token
+          here.
+      bio: Bio
+      bio_description: Tell us about yourself in fewer than 250 characters.
+      design:
+        appearance_settings_description: Appearance settings saved to your profile
+          and available across all devices
+        application_theme: Application theme
+        code_review_theme: Code preview theme
+        my_appearance_settings: My appearance settings
+        themes:
+          classic: Classic
+          default: Default
+          gray: Gray
+          modern: Modern
+          violet: Violet
+      email: Email
+      email_for_avatar_detection: We also use email for avatar detection if no avatar
+        is uploaded.
+      enter_your_name: Enter your name, so people you know can recognize you.
+      groups:
+        desc: Group members have access to all a group's projects
+        title: Group membership
+      menu:
+        account: Account
+        design: Design
+        groups: Groups
+        history: History
+        notifications: Notifications
+        password: Password
+        ssh_keys: SSH Keys
+      name: Name
+      notifications:
+        advanced_notifications_settings: 'Advanced notifications settings:'
+        disabled: Disabled
+        disabled_description: You will not get any notifications via email
+        groups: 'Groups:'
+        notifications_description: GitLab uses the email specified in your profile
+          for notifications
+        notifications_settings: Notifications settings
+        participating: Participating
+        participating_description: You will only receive notifications from related
+          resources (e.g. from your commits or assigned issues)
+        projects: 'Projects:'
+        watch: Watch
+        watch_description: You will receive all notifications from projects in which
+          you participate
+      password:
+        change_your_password_description: Change your password or recover your current
+          one.
+        current_password: Current password
+        must_provide_current_password: You must provide current password in order
+          to change it.
+        new_password: New password
+        password_confirmation: Password confirmation
+        save_password: Save password
+        title: Password
+        you_will_be_redirected_to_login_page: After a successful password update you
+          will be redirected to login page where you should login with your new password
+      profile_settings: Profile settings
+      save_changes: Save changes
+      ssh_keys:
+        add_key: Add key
+        add_ssh_key: Add SSH Key
+        cancel: Cancel
+        desc1: SSH keys allow you to establish a secure connection between your computer
+          and GitLab
+        desc2: Before you can add an SSH key you need to
+        generate_it: generate it
+        key: Key
+        my_ssh_keys: My SSH keys
+        no_ssh_keys: There are no SSH keys with access to your account.
+        paste_your_public_key_here: Paste your public key here. Read more about how
+          to generate a key on
+        ssh_help_page: the SSH help page
+        ssh_keys: SSH Keys
+        title: Title
+      this_information_appears_on_your_profile: This information appears on your profile.
+      website: Website
+    projects:
+      all_projects_you_have_access_to_are_listed_here: All projects you have access
+        to are listed here. Public projects are not included here unless you are a
+        member
+      create_a_group: Create a group
+      create_project: Create project
+      customize_directory_name: Customize repository name?
+      description: Description
+      description_example: Awesome project
+      example_project: Example Project
+      filter:
+        all: All
+        everyones: Everyone's
+        joined: Joined
+        owned: Owned
+        personal: Personal
+      filter_by_name: Filter by name
+      import_existing_repository: Import existing repository
+      import_existing_repository_question: Import existing repository?
+      latest_projects: Latest projects
+      my_projects: My Projects
+      namespace: Namespace
+      need_a_group_for_dependent_projects: Need a group for several dependent projects?
+      new_project: New Project
+      no_public_projects: No public projects
+      optional: (optional)
+      project_name: Project name
+      projects: Projects
+      public_projects: Public Projects
+      public_projects_read_only: You can browse public projects in read-only mode
+        until signed in.
+      repository_name: Repository name
+      url_must_be_cloneable: URL must be cloneable
+    public_projects: public projects
+    search:
+      search: Search
+      search_in_this_group: Search in this group
+      search_in_this_project: Search in this project
+    snippets:
+      access: Access
+      add_new_snippet: Add new snippet
+      are_you_sure: Are you sure?
+      cancel: Cancel
+      create_snippet: Create snippet
+      delete: Delete
+      delete_snippet: Delete Snippet
+      description: Share code pastes with others out of git repository
+      discover_snippets: Discover snippets
+      edit: Edit
+      edit_snippet: Edit Snippet
+      edit_title: Edit Snippet
+      example_filename: example.rb
+      example_snippet: Example Snippet
+      file: File
+      my_snippets: My Snippets
+      new_snippet: New Snippet
+      private: Private (only you can see this snippet)
+      public: Public (GitLab users can see this snippet)
+      public_snippets: Public snippets
+      public_snippets_description: Public snippets created by you and other users
+        are listed here
+      raw: Raw
+      remove: Remove
+      remove_snippet_warning: Removed snippet cannot be restored! Are you sure?
+      save: Save
+      snippets: Snippets
+      title: Title
+    sort:
+      last_updated: Last updated
+      name: Name
+      newest: Newest
+      oldest: Oldest
+      recently_updated: Recently updated
+    users:
+      edit_profile_settings: Edit Profile settings
+      latest_users: Latest users
+      member_since: Member since
+      new_user: New User
+      profile: Profile
+      user_activity: User Activity
+      users: Users
+    visibility:
+      internal: Internal
+      private: Private
+      public: Public
+  hello: Hello world
