@@ -1,14 +1,15 @@
-Project web hooks allow you to trihher an url if new code is pushed or a new issue is created.
+Project web hooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
 ---
 
 You can configure web hook to listen for specific events like pushes, issues, merge requests.
-GitLab will send POST request with data to web hook url.
+GitLab will send POST request with data to web hook URL.
 Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 
 ---
 
 #### Push events
+
 Triggered when you push to the repository except pushing tags.
 
 **Request body:**
