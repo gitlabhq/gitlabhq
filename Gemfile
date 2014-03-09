@@ -114,6 +114,7 @@ gem 'settingslogic'
 
 # Misc
 gem "foreman"
+gem 'version_sorter'
 
 # Cache
 gem "redis-rails"
