@@ -89,7 +89,7 @@ module ApplicationHelper
     "Never"
   end
 
-  def grouped_options_refs(destination = :tree)
+  def grouped_options_refs
     repository = @project.repository
 
     options = [
