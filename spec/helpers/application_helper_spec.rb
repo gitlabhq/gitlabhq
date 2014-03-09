@@ -116,7 +116,45 @@ describe ApplicationHelper do
       allow(self).to receive(:request).and_return(double(:ssl? => false))
       gravatar_icon(user_email).should == gravatar_icon(user_email.upcase + " ")
     end
+  end
 
+  describe "grouped_options_refs" do
+    # Override Rails' grouped_options_for_select helper since HTML is harder to work with
+    def grouped_options_for_select(options, *args)
+      options
+    end
+
+    let(:options) { grouped_options_refs }
+
+    before do
+      # Must be an instance variable
+      @project = create(:project)
+    end
+
+    it "includes a list of branch names" do
+      options[0][0].should == 'Branches'
+      options[0][1].should include('master', 'stable')
+    end
+
+    it "includes a list of tag names" do
+      options[1][0].should == 'Tags'
+      options[1][1].should include('v0.9.4','v1.2.0')
+    end
+
+    it "includes a specific commit ref if defined" do
+      # Must be an instance variable
+      @ref = '2ed06dc41dbb5936af845b87d79e05bbf24c73b8'
+
+      options[2][0].should == 'Commit'
+      options[2][1].should == [@ref]
+    end
+
+    it "sorts tags in a natural order" do
+      # Stub repository.tag_names to make sure we get some valid testing data
+      expect(@project.repository).to receive(:tag_names).and_return(["v1.0.9", "v1.0.10", "v2.0", "v3.1.4.2", "v1.0.9a"])
+
+      options[1][1].should == ["v3.1.4.2", "v2.0", "v1.0.10", "v1.0.9a", "v1.0.9"]
+    end
   end
 
   describe "user_color_scheme_class" do
