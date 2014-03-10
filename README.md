@@ -35,7 +35,7 @@
 
 ### Requirements
 
-* Ubuntu/Debian**
+* Ubuntu/Debian/CentOS/RHEL**
 * ruby 1.9.3+
 * git 1.7.10+
 * redis 2.0+
