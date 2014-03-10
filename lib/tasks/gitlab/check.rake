@@ -489,7 +489,7 @@ namespace :gitlab do
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
             for_more_information(
-              "#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh"
+              "#{gitlab_shell_path}/support/rewrite-hooks.sh"
             )
             fix_and_rerun
             next
@@ -513,7 +513,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_shell_self_test
-      gitlab_shell_repo_base = File.expand_path('gitlab-shell', gitlab_shell_user_home)
+      gitlab_shell_repo_base = gitlab_shell_path
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
       if system(check_cmd, chdir: gitlab_shell_repo_base)
@@ -559,8 +559,8 @@ namespace :gitlab do
     # Helper methods
     ########################
 
-    def gitlab_shell_user_home
-      File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
+    def gitlab_shell_path
+      Gitlab.config.gitlab_shell.path
     end
 
     def gitlab_shell_version
