@@ -513,7 +513,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_shell_self_test
-      gitlab_shell_repo_base = File.expand_path('gitlab-shell', gitlab_shell_user_home)
+      gitlab_shell_repo_base = File.expand_path(Gitlab.config.gitlab_shell.path)
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
       if system(check_cmd, chdir: gitlab_shell_repo_base)
