@@ -1,4 +1,5 @@
 v 6.7.0
+  - Increased the example Nginx client_max_body_size from 5MB to 20MB, consider updating it manually on existing installations
   - Add support for Gemnasium as a Project Service (Olivier Gonzalez)
   - Add edit file button to MergeRequest diff
   - Public groups (Jason Hollingsworth)
