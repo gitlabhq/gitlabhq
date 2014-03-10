@@ -9,7 +9,8 @@ describe Gitlab::LDAP do
     @info = double(
       uid: '12djsak321',
       name: 'John',
-      email: 'john@mail.com'
+      email: 'john@mail.com',
+      nickname: 'john'
     )
   end
 
