@@ -94,7 +94,7 @@ module ApplicationHelper
 
     options = [
       ["Branches", repository.branch_names],
-      ["Tags",     VersionSorter.rsort(repository.tag_names)]
+      ["Tags", VersionSorter.rsort(repository.tag_names)]
     ]
 
     # If reference is commit id - we should add it to branch/tag selectbox
