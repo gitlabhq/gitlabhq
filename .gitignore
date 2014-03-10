@@ -35,3 +35,4 @@ doc/code/*
 *.log
 public/uploads.*
 public/assets/
+.envrc
