@@ -240,6 +240,7 @@ class Ability
       can_manage = group_abilities(user, group).include?(:manage_group)
       if can_manage && (user != target_user)
         rules << :modify
+        rules << :destroy
       end
       if !group.last_owner?(user) && (can_manage || (user == target_user))
         rules << :destroy
