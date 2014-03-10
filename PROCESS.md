@@ -12,7 +12,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 - Closes invalid issues and merge requests with a comment (duplicates, [feature requests](#feature-requests), [fixed in newer version](#issue-fixed-in-newer-version), [issue report for old version](#issue-report-for-old-version), not a problem in GitLab, etc.)
 - Assigns appropriate [labels](#how-we-handle-issues)
 - Asks for feedback from issue reporter/merge request initiator ([invalid issue reports](#improperly-formatted-issue), [format code](#code-format), etc.)
-- Asks for feedback from the relevant developer(s) based on the [list of members and their specialities](http://gitlab.org/team/)
+- Asks for feedback from the relevant developer(s) based on the [list of members and their specialities](https://www.gitlab.com/core-team/)
 - Monitors all issues/merge requests for feedback (but especially ones commented on since automatically watching them):
 - Closes issues with no feedback from the reporter for two weeks
 - Closes stale merge requests
@@ -37,7 +37,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 
 ## Mentioning people
 
-The most important thing is making sure valid issues receive feedback from the development team. Therefore the priority is mentioning developers that can help on those issue. Please select someone with relevant experience from [GitLab core team](http://gitlab.org/team/). If there is nobody mentioned with that expertise look in the commit history for the affected files to find someone. Avoid mentioning the lead developer, this is the person that is least likely to give a timely response. If the involvement of the lead developer is needed the other core team members will mention this person.
+The most important thing is making sure valid issues receive feedback from the development team. Therefore the priority is mentioning developers that can help on those issue. Please select someone with relevant experience from [GitLab core team](https://www.gitlab.com/core-team/). If there is nobody mentioned with that expertise look in the commit history for the affected files to find someone. Avoid mentioning the lead developer, this is the person that is least likely to give a timely response. If the involvement of the lead developer is needed the other core team members will mention this person.
 
 ## Workflow labels
 
@@ -89,7 +89,7 @@ Please use ``` to format console output, logs, and code as it's very hard to rea
 
 ### Issue fixed in newer version
 
-Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please \[upgrade\]\(http://blog.gitlab.org/). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please \[upgrade\]\(https://github.com/gitlabhq/gitlabhq/tree/master/doc/update). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
 
 ### Improperly formatted merge request
 
