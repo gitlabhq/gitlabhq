@@ -3,6 +3,7 @@ module Emails
     def new_merge_request_email(recipient_id, merge_request_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
+      @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(@merge_request.author_id),
            to: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
@@ -12,6 +13,7 @@ module Emails
       @merge_request = MergeRequest.find(merge_request_id)
       @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
       @project = @merge_request.project
+      @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
@@ -21,6 +23,7 @@ module Emails
       @merge_request = MergeRequest.find(merge_request_id)
       @updated_by = User.find updated_by_user_id
       @project = @merge_request.project
+      @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
@@ -29,6 +32,7 @@ module Emails
     def merged_merge_request_email(recipient_id, merge_request_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
+      @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(@merge_request.author_id_of_changes),
            to: recipient(recipient_id),
            subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))

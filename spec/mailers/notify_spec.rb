@@ -146,7 +146,8 @@ describe Notify do
       end
 
       context 'for issues' do
-        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project ) }
+        let(:issue) { create(:issue, author: current_user, assignee: assignee, project: project) }
+        let(:issue_with_description) { create(:issue, author: current_user, assignee: assignee, project: project, description: Faker::Lorem.sentence) }
 
         describe 'that are new' do
           subject { Notify.new_issue_email(issue.assignee_id, issue.id) }
@@ -159,6 +160,14 @@ describe Notify do
 
           it 'contains a link to the new issue' do
             should have_body_text /#{project_issue_path project, issue}/
+          end
+        end
+
+        describe 'that are new with a description' do
+          subject { Notify.new_issue_email(issue_with_description.assignee_id, issue_with_description.id) }
+
+          it 'contains the description' do
+            should have_body_text /#{issue_with_description.description}/
           end
         end
 
@@ -221,6 +230,7 @@ describe Notify do
 
       context 'for merge requests' do
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
+        let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: Faker::Lorem.sentence) }
 
         describe 'that are new' do
           subject { Notify.new_merge_request_email(merge_request.assignee_id, merge_request.id) }
@@ -241,6 +251,14 @@ describe Notify do
 
           it 'contains the target branch for the merge request' do
             should have_body_text /#{merge_request.target_branch}/
+          end
+        end
+
+        describe 'that are new with a description' do
+          subject { Notify.new_merge_request_email(merge_request_with_description.assignee_id, merge_request_with_description.id) }
+
+          it 'contains the description' do
+            should have_body_text /#{merge_request_with_description.description}/
           end
         end
 
@@ -333,10 +351,6 @@ describe Notify do
 
         it 'is sent to the given recipient' do
           should deliver_to recipient.email
-        end
-
-        it 'contains the name of the note\'s author' do
-          should have_body_text /#{note_author.name}/
         end
 
         it 'contains the message from the note' do
@@ -468,6 +482,8 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, 'cd5c4bac', 'b1e6a9db') }
+    let(:commits) { Commit.decorate(compare.commits) }
+    let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
 
@@ -491,6 +507,10 @@ describe Notify do
 
     it 'includes diffs' do
       should have_body_text /Checkout wiki pages for installation information/
+    end
+
+    it 'contains a link to the diff' do
+      should have_body_text /#{diff_path}/
     end
   end
 end
