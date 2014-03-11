@@ -351,7 +351,7 @@ If all items are green, then congratulations on successfully installing GitLab!
 Visit YOUR_SERVER in your web browser for your first GitLab login.
 The setup has created an admin account for you. You can use it to log in:
 
-    admin@local.host
+    root
     5iveL!fe
 
 **Important Note:**
