@@ -1,13 +1,12 @@
 %h3.page-title
-  Merge Requests
-  %span.pull-right #{@merge_requests.total_count} merge requests
+  = t("gitlab.merge_requests.merge_requests")
+  %span.pull-right
+    = t("gitlab.merge_requests.merge_requests_no", :count => @merge_requests.total_count)
 
 %p.light
-  Only merge requests from
-  %strong #{@group.name}
-  group are listed here.
+  = t("gitlab.groups.only_merge_requests_from_group", :group => @group.name)
   - if current_user
-    To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
+    = t("gitlab.groups.all_groups_dashboard", :dashboard_link => link_to('dashboard', merge_requests_dashboard_path))
 %hr
 .row
   .col-md-3

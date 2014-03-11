@@ -40,7 +40,7 @@ module VisibilityLevelHelper
   end
 
   def visibility_level_label(level)
-    Project.visibility_levels.key(level)
+    t("gitlab.visibility." + Project.visibility_levels.key(level).downcase )
   end
 
   def restricted_visibility_levels

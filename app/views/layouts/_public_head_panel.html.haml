@@ -4,12 +4,13 @@
       %div.app_logo
         %span.separator
         = link_to public_root_path, class: "home" do
-          %h1 GITLAB
+          %h1
+            = t("gitlab.name")
         %span.separator
       %h1.title= title
 
       .pull-right
-        = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in btn-new'
+        = link_to t("gitlab.login.sign_in"), new_session_path(:user), class: 'btn btn-sign-in btn-new'
 
       %ul.nav.navbar-nav
         %li

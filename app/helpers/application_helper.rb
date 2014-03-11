@@ -180,11 +180,11 @@ module ApplicationHelper
 
   def search_placeholder
     if @project && @project.persisted?
-      "Search in this project"
+      t("gitlab.search.search_in_this_project")
     elsif @group && @group.persisted?
-      "Search in this group"
+      t("gitlab.search.search_in_this_group")
     else
-      "Search"
+      t("gitlab.search.search")
     end
   end
 

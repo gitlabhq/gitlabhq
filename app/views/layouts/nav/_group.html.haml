@@ -1,22 +1,22 @@
 %ul
   = nav_link(path: 'groups#show', html_options: {class: 'home'}) do
-    = link_to group_path(@group), title: "Home" do
+    = link_to group_path(@group), title: t("gitlab.groups.home") do
       %i.icon-home
   = nav_link(path: 'groups#issues') do
     = link_to issues_group_path(@group) do
-      Issues
+      = t("gitlab.issues.issues")
       - if current_user
         %span.count= current_user.assigned_issues.opened.of_group(@group).count
   = nav_link(path: 'groups#merge_requests') do
     = link_to merge_requests_group_path(@group) do
-      Merge Requests
+      = t("gitlab.merge_requests.merge_requests")
       - if current_user
         %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
   = nav_link(path: 'groups#members') do
-    = link_to "Members", members_group_path(@group)
+    = link_to t("gitlab.groups.members"), members_group_path(@group)
 
   - if can?(current_user, :manage_group, @group)
     = nav_link(path: 'groups#edit') do
       = link_to edit_group_path(@group), class: "tab " do
-        Settings
+        = t("gitlab.groups.settings")
 

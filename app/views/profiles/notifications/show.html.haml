@@ -1,8 +1,8 @@
 %h3.page-title
-  Notifications settings
+  = t("gitlab.profile.notifications.notifications_settings")
 %p.light
-  GitLab uses the email specified in your profile for notifications
-%hr
+  = t("gitlab.profile.notifications.notifications_description")
+%h
 = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications form-horizontal global-notifications-form' do
   = hidden_field_tag :notification_type, 'global'
 
@@ -12,22 +12,22 @@
       = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?, class: 'trigger-submit'
         .level-title
-          Disabled
-        %p You will not get any notifications via email
+          = t("gitlab.profile.notifications.disabled")
+        %p #{t("gitlab.profile.notifications.disabled_description")}
 
     .radio
       = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?, class: 'trigger-submit'
         .level-title
-          Participating
-        %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
+          = t("gitlab.profile.notifications.participating")
+        %p #{t("gitlab.profile.notifications.participating_description")}
 
     .radio
       = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
         .level-title
-          Watch
-        %p You will receive all notifications from projects in which you participate
+          = t("gitlab.profile.notifications.watch")
+        %p #{t("gitlab.profile.notifications.watch_description")}
 
 .clearfix
   %hr
@@ -37,14 +37,16 @@
     By default all projects and groups uses notification level set above
 .row.all-notifications
   .col-md-6
-    %h4 Groups:
+    %h4
+      = t("gitlab.profile.notifications.groups")
     %ul.bordered-list
       - @users_groups.each do |users_group|
         - notification = Notification.new(users_group)
         = render 'settings', type: 'group', membership: users_group, notification: notification
 
   .col-md-6
-    %h4 Projects:
+    %h4
+      = t("gitlab.profile.notifications.projects")
     %ul.bordered-list
       - @users_projects.each do |users_project|
         - notification = Notification.new(users_project)

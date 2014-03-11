@@ -1,5 +1,5 @@
 %h3.page-title
-  = @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
+  = @snippet.new_record? ? t("gitlab.snippets.new_snippet") : "#{t("gitlab.snippets.edit_snippet")} ##{@snippet.id}"
 %hr
 .snippet-form-holder
   = form_for @snippet, as: :personal_snippet, url: url, html: { class: "form-horizontal snippet-form" } do |f|
@@ -10,44 +10,44 @@
             %li= msg
 
     .form-group
-      = f.label :title, class: 'control-label'
-      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true
+      = f.label :title, t("gitlab.snippets.title"), class: 'control-label'
+      .col-sm-10= f.text_field :title, placeholder: t("gitlab.snippets.example_snippet"), class: 'form-control', required: true
     .form-group
-      = f.label "Access", class: 'control-label'
+      = f.label :access, t("gitlab.snippets.access"), class: 'control-label'
       .col-sm-10
         = f.label :private_true, class: 'radio-label' do
           = f.radio_button :private, true
           %span
-            %strong Private
-            (only you can see this snippet)
+            %strong
+              = t("gitlab.snippets.private")
         %br
         = f.label :private_false, class: 'radio-label' do
           = f.radio_button :private, false
           %span
-            %strong Public
-            (GitLab users can see this snippet)
+            %strong
+              = t("gitlab.snippets.public")
 
     .form-group
       .file-editor
-        = f.label :file_name, "File", class: 'control-label'
+        = f.label :file_name, t("gitlab.snippets.file"), class: 'control-label'
         .col-sm-10
           .file-holder.snippet
             .file-title
-              = f.text_field :file_name, placeholder: "example.rb", class: 'form-control snippet-file-name', required: true
+              = f.text_field :file_name, placeholder: t("gitlab.snippets.example_filename"), class: 'form-control snippet-file-name', required: true
             .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
 
     .form-actions
       - if @snippet.new_record?
-        = f.submit 'Create snippet', class: "btn-create btn"
+        = f.submit t("gitlab.snippets.create_snippet"), class: "btn-create btn"
       - else
-        = f.submit 'Save', class: "btn-save btn"
+        = f.submit t("gitlab.snippets.save"), class: "btn-save btn"
 
       - unless @snippet.new_record?
         .pull-right.prepend-left-20
-          = link_to 'Remove', snippet_path(@snippet), data: { confirm: 'Removed snippet cannot be restored! Are you sure?'}, method: :delete, class: "btn btn-remove delete-snippet", id: "destroy_snippet_#{@snippet.id}"
-      = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
+          = link_to t("gitlab.snippets.remove"), snippet_path(@snippet), data: { confirm: t("gitlab.snippets.remove_snippet_warning")}, method: :delete, class: "btn btn-remove delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+      = link_to t("gitlab.snippets.cancel"), snippets_path(@project), class: "btn btn-cancel"
 
 
 :javascript

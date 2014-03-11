@@ -1,38 +1,42 @@
 %h3.page-title
-  Admin area
+  = t("gitlab.admin.admin_area")
 %p.light
-  You can manage projects, users and other GitLab data from here.
+  = t("gitlab.admin.desc")
 %hr
 .admin-dashboard
   .row
     .col-sm-4
       .light-well
-        %h4 Projects
+        %h4
+          = t("gitlab.projects.projects")
         .data
           = link_to admin_projects_path do
             %h1= Project.count
           %hr
-          = link_to 'New Project', new_project_path, class: "btn btn-new"
+          = link_to t("gitlab.projects.new_project"), new_project_path, class: "btn btn-new"
     .col-sm-4
       .light-well
-        %h4 Users
+        %h4
+          = t("gitlab.users.users")
         .data
           = link_to admin_users_path do
             %h1= User.count
           %hr
-          = link_to 'New User', new_admin_user_path, class: "btn btn-new"
+          = link_to t("gitlab.users.new_user"), new_admin_user_path, class: "btn btn-new"
     .col-sm-4
       .light-well
-        %h4 Groups
+        %h4
+          = t("gitlab.groups.groups")
         .data
           = link_to admin_groups_path do
             %h1= Group.count
           %hr
-          = link_to 'New Group', new_admin_group_path, class: "btn btn-new"
+          = link_to t("gitlab.groups.new_group"), new_admin_group_path, class: "btn btn-new"
 
   .row.prepend-top-10
     .col-md-4
-      %h4 Latest projects
+      %h4
+        = t("gitlab.projects.latest_projects")
       %hr
       - @projects.each do |project|
         %p
@@ -41,7 +45,8 @@
             #{time_ago_with_tooltip(project.created_at)}
 
     .col-md-4
-      %h4 Latest users
+      %h4
+        = t("gitlab.users.latest_users")
       %hr
       - @users.each do |user|
         %p
@@ -51,7 +56,8 @@
             #{time_ago_with_tooltip(user.created_at)}
 
     .col-md-4
-      %h4 Latest groups
+      %h4
+        = t("gitlab.groups.latest_groups")
       %hr
       - @groups.each do |group|
         %p
@@ -63,77 +69,79 @@
   %br
   .row
     .col-md-4
-      %h4 Stats
+      %h4
+        = t("gitlab.admin.stats.stats")
       %hr
       %p
-        Forks
+        = t("gitlab.admin.stats.forks")
         %span.light.pull-right
           = ForkedProjectLink.count
       %p
-        Issues
+        = t("gitlab.admin.stats.issues")
         %span.light.pull-right
           = Issue.count
       %p
-        Merge Requests
+        = t("gitlab.admin.stats.merge_requests")
         %span.light.pull-right
           = MergeRequest.count
       %p
-        Notes
+        = t("gitlab.admin.stats.notes")
         %span.light.pull-right
           = Note.count
       %p
-        Snippets
+        = t("gitlab.admin.stats.snippets")
         %span.light.pull-right
           = Snippet.count
       %p
-        SSH Keys
+        = t("gitlab.admin.stats.ssh_keys")
         %span.light.pull-right
           = Key.count
       %p
-        Milestones
+        = t("gitlab.admin.stats.milestones")
         %span.light.pull-right
           = Milestone.count
     .col-md-4
       %h4
-        Features
+        = t("gitlab.admin.features.features")
       %hr
       %p
-        Sign up
+        = t("gitlab.admin.features.sign_up")
         %span.light.pull-right
           = boolean_to_icon gitlab_config.signup_enabled
       %p
-        LDAP
+        = t("gitlab.admin.features.ldap")
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.ldap.enabled
       %p
-        Gravatar
+        = t("gitlab.admin.features.gravatar")
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.gravatar.enabled
       %p
-        OmniAuth
+        = t("gitlab.admin.features.omniauth")
         %span.light.pull-right
           = boolean_to_icon Gitlab.config.omniauth.enabled
     .col-md-4
-      %h4 Components
+      %h4
+        = t("gitlab.admin.components.components")
       %hr
       %p
-        GitLab
+        = t("gitlab.admin.components.gitlab")
         %span.pull-right
           = Gitlab::VERSION
       %p
-        GitLab Shell
+        = t("gitlab.admin.components.gitlab_shell")
         %span.pull-right
           = Gitlab::Shell.new.version
       %p
-        GitLab API
+        = t("gitlab.admin.components.gitlab_api")
         %span.pull-right
           = API::API::version
       %p
-        Ruby
+        = t("gitlab.admin.components.ruby")
         %span.pull-right
           #{RUBY_VERSION}p#{RUBY_PATCHLEVEL}
 
       %p
-        Rails
+        = t("gitlab.admin.components.rails")
         %span.pull-right
           #{Rails::VERSION::STRING}
