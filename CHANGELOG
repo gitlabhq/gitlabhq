@@ -10,6 +10,11 @@ v 6.7.0
   - Fix CI status for merge requests from fork 
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
   - Converted all the help sections into markdown
+  - LDAP user filters
+  - Streamline the content of notification emails (Pierre de La Morinerie)
+  - Fixes a bug with group member administration (Matt DeTullio)
+  - Sort tag names using VersionSorter (Robert Speicher)
+  - Add GFM autocompletion for MergeRequests (Robert Speicher)
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
