@@ -74,7 +74,7 @@ Feature: Groups
     When I visit group "Owned" members page
     Then I should see user "John Doe" in team list
     Then I should see user "Mary Jane" in team list
-    Then I should not see the "Remove User From Group" button for "Mary Jane"
+    Then I should not see the "Remove User From Group" button for "John Doe"
 
   @javascript
   Scenario: Guest should be able to remove himself from group
