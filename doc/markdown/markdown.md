@@ -494,3 +494,4 @@ Code above produces next output:
 * This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
 * The [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
 * [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
+* The Linguist-Library with a list of the supported syntax-highlighters (https://github.com/github/linguist/blob/master/lib/linguist/languages.yml)

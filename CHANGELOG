@@ -10,6 +10,7 @@ v 6.7.0
   - Fix CI status for merge requests from fork 
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
   - Converted all the help sections into markdown
+  - Added reference to linguist-library for supported syntax-highlighting
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
