@@ -62,11 +62,6 @@ $ ->
   $('.remove-row').bind 'ajax:success', ->
     $(this).closest('li').fadeOut()
 
-  # Click a .appear-link, appear-data fadeout
-  $(".appear-link").on 'click', (e) ->
-    $('.appear-data').fadeIn()
-    e.preventDefault()
-
   # Initialize select2 selects
   $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)
 
@@ -119,10 +114,6 @@ $ ->
   # Commit show suppressed diff
   $(".diff-content").on "click", ".supp_diff_link", ->
     $(@).next('table').show()
-    $(@).remove()
-
-  $(".diff-content").on "click", ".js-details-expand", ->
-    $(@).next('.js-details-contain').removeClass("hide")
     $(@).remove()
 
 (($) ->

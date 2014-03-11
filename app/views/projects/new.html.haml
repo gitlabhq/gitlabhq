@@ -9,18 +9,6 @@
           %strong Project name
         .col-sm-10
           = f.text_field :name, placeholder: "Example Project", class: "form-control", tabindex: 1, autofocus: true
-          .help-inline
-            = link_to "#", class: 'js-toggle-visibility-link' do
-              %span Customize repository name?
-
-      .form-group.js-toggle-visibility-container.hide
-        = f.label :path, class: 'control-label' do
-          %span Repository name
-        .col-sm-10
-          .input-group
-            = f.text_field :path, class: 'form-control'
-            %span.input-group-addon .git
-
 
       - if current_user.can_select_namespace?
         .form-group
@@ -29,19 +17,39 @@
           .col-sm-10
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
 
-      .form-group
-        .col-sm-2
-        .col-sm-10
-          = link_to "#", class: 'appear-link' do
-            %i.icon-upload-alt
-            %span Import existing repository?
-      .form-group.appear-data.import-url-data
-        = f.label :import_url, class: 'control-label' do
-          %span Import existing repo
-        .col-sm-10
-          = f.text_field :import_url, class: 'form-control', placeholder: 'https://github.com/randx/six.git'
-          .light
-            URL must be cloneable
+      %hr
+      .js-toggle-container
+        .form-group
+          .col-sm-2
+          .col-sm-10
+            = link_to "#", class: 'js-toggle-button' do
+              %span Customize repository name?
+        .js-toggle-content.hide
+          .form-group
+            = f.label :path, class: 'control-label' do
+              %span Repository name
+            .col-sm-10
+              .input-group
+                = f.text_field :path, class: 'form-control'
+                %span.input-group-addon .git
+
+      .js-toggle-container
+        .form-group
+          .col-sm-2
+          .col-sm-10
+            = link_to "#", class: 'js-toggle-button' do
+              %i.icon-upload-alt
+              %span Import existing repository?
+        .js-toggle-content.hide
+          .form-group.import-url-data
+            = f.label :import_url, class: 'control-label' do
+              %span Import existing repo
+            .col-sm-10
+              = f.text_field :import_url, class: 'form-control', placeholder: 'https://github.com/randx/six.git'
+              .light
+                URL must be cloneable
+      %hr
+
       .form-group
         = f.label :description, class: 'control-label' do
           Description
