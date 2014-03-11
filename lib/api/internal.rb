@@ -35,8 +35,14 @@ module API
           user = key.user
 
           return false if user.blocked?
+
           if Gitlab.config.ldap.enabled
-            return false if user.ldap_user? && Gitlab::LDAP::User.blocked?(user.extern_uid)
+            if user.ldap_user?
+              # Check if LDAP user exists and match LDAP user_filter
+              unless Gitlab::LDAP::Access.new.allowed?(user)
+                return false
+              end
+            end
           end
 
           action = case git_cmd
