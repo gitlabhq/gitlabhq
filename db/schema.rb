@@ -16,6 +16,9 @@ ActiveRecord::Schema.define(version: 20140305193308) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
+
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
