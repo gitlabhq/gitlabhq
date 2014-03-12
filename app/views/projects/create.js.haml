@@ -1,6 +1,10 @@
 - if @project.saved?
-  :plain
-    location.href = "#{project_path(@project)}";
+  - if @project.import?
+    :plain
+      location.href = "#{import_project_path(@project)}";
+  - else
+    :plain
+      location.href = "#{project_path(@project)}";
 - else
   :plain
     $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
