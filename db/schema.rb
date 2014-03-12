@@ -11,15 +11,18 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140304005354) do
+ActiveRecord::Schema.define(version: 20140305193308) do
+
+  # These are extensions that must be enabled in order to support this database
+  enable_extension "plpgsql"
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
     t.datetime "ends_at"
     t.integer  "alert_type"
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "color"
     t.string   "font"
   end
@@ -27,8 +30,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
   create_table "deploy_keys_projects", force: true do |t|
     t.integer  "deploy_key_id", null: false
     t.integer  "project_id",    null: false
-    t.datetime "created_at",    null: false
-    t.datetime "updated_at",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "deploy_keys_projects", ["project_id"], name: "index_deploy_keys_projects_on_project_id", using: :btree
@@ -49,8 +52,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.string   "title"
     t.text     "data"
     t.integer  "project_id"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "action"
     t.integer  "author_id"
   end
@@ -65,8 +68,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
   create_table "forked_project_links", force: true do |t|
     t.integer  "forked_to_project_id",   null: false
     t.integer  "forked_from_project_id", null: false
-    t.datetime "created_at",             null: false
-    t.datetime "updated_at",             null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
@@ -106,10 +109,10 @@ ActiveRecord::Schema.define(version: 20140304005354) do
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
   create_table "merge_request_diffs", force: true do |t|
-    t.string   "state",                               default: "collected", null: false
-    t.text     "st_commits",       limit: 2147483647
-    t.text     "st_diffs",         limit: 2147483647
-    t.integer  "merge_request_id",                                          null: false
+    t.string   "state",            default: "collected", null: false
+    t.text     "st_commits"
+    t.text     "st_diffs"
+    t.integer  "merge_request_id",                       null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -138,7 +141,7 @@ ActiveRecord::Schema.define(version: 20140304005354) do
   add_index "merge_requests", ["created_at"], name: "index_merge_requests_on_created_at", using: :btree
   add_index "merge_requests", ["milestone_id"], name: "index_merge_requests_on_milestone_id", using: :btree
   add_index "merge_requests", ["source_branch"], name: "index_merge_requests_on_source_branch", using: :btree
-  add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_project_id", using: :btree
+  add_index "merge_requests", ["source_project_id"], name: "index_merge_requests_on_source_project_id", using: :btree
   add_index "merge_requests", ["target_branch"], name: "index_merge_requests_on_target_branch", using: :btree
   add_index "merge_requests", ["title"], name: "index_merge_requests_on_title", using: :btree
 
@@ -147,8 +150,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.integer  "project_id",  null: false
     t.text     "description"
     t.date     "due_date"
-    t.datetime "created_at",  null: false
-    t.datetime "updated_at",  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "state"
     t.integer  "iid"
   end
@@ -160,8 +163,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.string   "name",                     null: false
     t.string   "path",                     null: false
     t.integer  "owner_id"
-    t.datetime "created_at",               null: false
-    t.datetime "updated_at",               null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.string   "type"
     t.string   "description", default: "", null: false
     t.string   "avatar"
@@ -183,8 +186,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.text     "st_diff"
     t.boolean  "system",        default: false, null: false
+    t.text     "st_diff"
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -217,15 +220,15 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.boolean  "archived",               default: false,    null: false
   end
 
-  add_index "projects", ["creator_id"], name: "index_projects_on_owner_id", using: :btree
+  add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
 
   create_table "protected_branches", force: true do |t|
     t.integer  "project_id", null: false
     t.string   "name",       null: false
-    t.datetime "created_at", null: false
-    t.datetime "updated_at", null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree
@@ -235,8 +238,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.string   "title"
     t.string   "token"
     t.integer  "project_id",                  null: false
-    t.datetime "created_at",                  null: false
-    t.datetime "updated_at",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.boolean  "active",      default: false, null: false
     t.string   "project_url"
     t.string   "subdomain"
@@ -249,14 +252,14 @@ ActiveRecord::Schema.define(version: 20140304005354) do
 
   create_table "snippets", force: true do |t|
     t.string   "title"
-    t.text     "content",    limit: 2147483647
-    t.integer  "author_id",                                    null: false
+    t.text     "content"
+    t.integer  "author_id",                 null: false
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
-    t.boolean  "private",                       default: true, null: false
+    t.boolean  "private",    default: true, null: false
     t.string   "type"
   end
 
@@ -335,8 +338,8 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.integer  "group_access",                   null: false
     t.integer  "group_id",                       null: false
     t.integer  "user_id",                        null: false
-    t.datetime "created_at",                     null: false
-    t.datetime "updated_at",                     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
     t.integer  "notification_level", default: 3, null: false
   end
 
@@ -365,6 +368,7 @@ ActiveRecord::Schema.define(version: 20140304005354) do
     t.boolean  "push_events",           default: true,          null: false
     t.boolean  "issues_events",         default: false,         null: false
     t.boolean  "merge_requests_events", default: false,         null: false
+    t.boolean  "tag_push_events",       default: false
   end
 
   add_index "web_hooks", ["project_id"], name: "index_web_hooks_on_project_id", using: :btree
