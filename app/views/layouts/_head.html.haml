@@ -3,7 +3,7 @@
   %title
     = "#{title} | " if defined?(title)
     GitLab
-  = favicon_link_tag 'favicon.ico'
+  = favicon_link_tag 'favicon.ico', class: "js-favicon", data: { spinner_href: image_path('favicon-spinner.gif') }
   = stylesheet_link_tag    "application"
   = javascript_include_tag "application"
   = csrf_meta_tags

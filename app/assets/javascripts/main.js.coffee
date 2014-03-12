@@ -43,9 +43,15 @@ window.simpleFormat = (str) ->
 
 window.startSpinner = ->
   $('.turbolink-spinner').fadeIn()
+  $('<link class="js-favicon-spinner" rel="shortcut icon" type="image/gif">')
+    .attr('href', window.faviconTag.data('spinnerHref'))
+    .appendTo($('head'))
+  window.faviconTag.remove()
 
 window.stopSpinner = ->
   $('.turbolink-spinner').fadeOut()
+  $('.js-favicon-spinner').remove()
+  window.faviconTag.appendTo($('head'))
 
 window.unbindEvents = ->
   $(document).unbind('scroll')
@@ -110,11 +116,14 @@ $ ->
         new Shortcuts()
         e.preventDefault()
 
-
   # Commit show suppressed diff
   $(".diff-content").on "click", ".supp_diff_link", ->
     $(@).next('table').show()
     $(@).remove()
+
+  # Save reference to favicon link tag for spinner in favicon
+  window.faviconTag = $('.js-favicon')
+
 
 (($) ->
   # Disable an element and add the 'disabled' Bootstrap class
