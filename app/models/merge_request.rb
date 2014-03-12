@@ -133,7 +133,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_code
-    if merge_request_diff && opened?
+    if merge_request_diff && open?
       merge_request_diff.reload_content
     end
   end
