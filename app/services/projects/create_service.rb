@@ -62,7 +62,7 @@ module Projects
         @project.update_column(:last_activity_at, @project.created_at)
 
         if @project.import?
-          RepositoryImportWorker.perform_in(5.seconds, @project.id)
+          @project.import_start
         else
           GitlabShellWorker.perform_async(
             :add_repository,

@@ -126,12 +126,18 @@ class Project < ActiveRecord::Base
     end
 
     event :import_fail do
-      transition :started => :timeout
+      transition :started => :failed
+    end
+
+    event :import_retry do
+      transition :failed => :started
     end
 
     state :started
     state :finished
-    state :timeout
+    state :failed
+
+    after_transition any => :started, :do => :add_import_job
   end
 
   class << self
@@ -210,12 +216,28 @@ class Project < ActiveRecord::Base
     id && persisted?
   end
 
+  def add_import_job
+    RepositoryImportWorker.perform_in(2.seconds, id)
+  end
+
   def import?
     import_url.present?
   end
 
   def imported?
-    imported
+    import_finished?
+  end
+
+  def import_in_progress?
+    import? && import_status == 'started'
+  end
+
+  def import_failed?
+    import_status == 'failed'
+  end
+
+  def import_finished?
+    import_status == 'finished'
   end
 
   def check_limit
