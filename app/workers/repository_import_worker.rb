@@ -6,16 +6,18 @@ class RepositoryImportWorker
 
   def perform(project_id)
     project = Project.find(project_id)
+    project.import_start
+
     result = gitlab_shell.send(:import_repository,
                                project.path_with_namespace,
                                project.import_url)
 
     if result
-      project.imported = true
+      project.import_finish
       project.save
       project.satellite.create unless project.satellite.exists?
     else
-      project.imported = false
+      project.import_fail
     end
   end
 end

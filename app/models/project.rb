@@ -59,13 +59,10 @@ class Project < ActiveRecord::Base
   has_one :gemnasium_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
-
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
-
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
-
   has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
@@ -74,10 +71,8 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-
   has_many :users_projects, dependent: :destroy
   has_many :users, through: :users_projects
-
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
 
@@ -97,15 +92,12 @@ class Project < ActiveRecord::Base
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
-
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
-
   validate :check_limit, on: :create
 
   # Scopes
@@ -118,13 +110,29 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
-
   scope :non_archived, -> { where(archived: false) }
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
+
+  state_machine :import_status, initial: :none do
+    event :import_start do
+      transition :none => :started
+    end
+
+    event :import_finish do
+      transition :started => :finished
+    end
+
+    event :import_fail do
+      transition :started => :timeout
+    end
+
+    state :started
+    state :finished
+    state :timeout
+  end
 
   class << self
     def public_and_internal_levels
