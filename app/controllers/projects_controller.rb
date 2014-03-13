@@ -48,6 +48,11 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    if @project.import_in_progress?
+      redirect_to import_project_path(@project)
+      return
+    end
+
     return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
