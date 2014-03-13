@@ -15,6 +15,7 @@ v 6.7.0
   - Fixes a bug with group member administration (Matt DeTullio)
   - Sort tag names using VersionSorter (Robert Speicher)
   - Add GFM autocompletion for MergeRequests (Robert Speicher)
+  - Add retry feature for repository import
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
