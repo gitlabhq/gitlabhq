@@ -28,7 +28,6 @@ class Project < ActiveRecord::Base
   include Gitlab::VisibilityLevel
   extend Enumerize
 
-  default_value_for :imported, false
   default_value_for :archived, false
 
   ActsAsTaggableOn.strict_case_match = true
