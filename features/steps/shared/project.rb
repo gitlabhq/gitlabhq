@@ -1,5 +1,6 @@
 module SharedProject
   include Spinach::DSL
+  include Select2Helper
 
   # Create a project without caring about what it's called
   And "I own a project" do
@@ -121,5 +122,19 @@ module SharedProject
     project = Project.find_by(name: "Community")
     project ||= create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
     project.team << [user, :master]
+  end
+
+  def change_default_branch_to(branch)
+    @project.change_head(branch)
+
+    #click_link("Settings")
+    #select2(branch, from: "#project_default_branch")
+    #select2(branch, from: "Default Branch")
+    #select2(branch, from: "asdfqwer") # No error!
+    #click_button("Save changes")
+  end
+
+  step 'I change the default branch to "master_bk"' do
+    change_default_branch_to('master_bk')
   end
 end

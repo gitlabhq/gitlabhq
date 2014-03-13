@@ -66,6 +66,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.target_branch ||= @merge_request.target_project.default_branch
 
     @source_project = @merge_request.source_project
+    p "= MergeReqestsController#new ==="
+    p "@merge_request.target_project.default_branch = " + @merge_request.target_project.default_branch
     @merge_request
   end
 
