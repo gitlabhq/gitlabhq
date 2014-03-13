@@ -235,7 +235,7 @@ GEM
       httparty
       httparty
     http_parser.rb (0.5.3)
-    httparty (0.12.0)
+    httparty (0.13.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
