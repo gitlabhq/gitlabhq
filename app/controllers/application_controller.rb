@@ -182,13 +182,15 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
-      if gitlab_ldap_access.allowed?(current_user)
-        current_user.last_credential_check_at = Time.now
-        current_user.save
-      else
-        sign_out current_user
-        flash[:alert] = "Access denied for your LDAP account."
-        redirect_to new_user_session_path
+      gitlab_ldap_access do |access|
+        if access.allowed?(current_user)
+          current_user.last_credential_check_at = Time.now
+          current_user.save
+        else
+          sign_out current_user
+          flash[:alert] = "Access denied for your LDAP account."
+          redirect_to new_user_session_path
+        end
       end
     end
   end
@@ -198,8 +200,8 @@ class ApplicationController < ActionController::Base
     @event_filter ||= EventFilter.new(filters)
   end
 
-  def gitlab_ldap_access
-    Gitlab::LDAP::Access.new
+  def gitlab_ldap_access(&block)
+    Gitlab::LDAP::Access.open { |access| block.call(access) }
   end
 
   # JSON for infinite scroll via Pager object

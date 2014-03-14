@@ -1,12 +1,14 @@
 module Gitlab
   module LDAP
     class Person
-      def self.find_by_uid(uid)
-        Gitlab::LDAP::Adapter.new.user(config.uid, uid)
+      def self.find_by_uid(uid, adapter=nil)
+        adapter ||= Gitlab::LDAP::Adapter.new
+        adapter.user(config.uid, uid)
       end
 
-      def self.find_by_dn(dn)
-        Gitlab::LDAP::Adapter.new.user('dn', dn)
+      def self.find_by_dn(dn, adapter=nil)
+        adapter ||= Gitlab::LDAP::Adapter.new
+        adapter.user('dn', dn)
       end
 
       def initialize(entry)
