@@ -19,6 +19,8 @@ v 6.7.0
   - Add button for toggling inline comments in diff view
   - Add retry feature for repository import
   - Reuse the GitLab LDAP connection within each request
+  - Changed markdown new line behaviour to conform to markdown standards
+
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
