@@ -7,8 +7,9 @@
 module Gitlab
   module LDAP
     class Group
-      def self.find_by_cn(cn)
-        Gitlab::LDAP::Adapter.new.group(cn)
+      def self.find_by_cn(cn, adapter=nil)
+        adapter ||= Gitlab::LDAP::Adapter.new
+        adapter.group(cn)
       end
 
       def initialize(entry)
