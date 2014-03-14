@@ -17,6 +17,7 @@ namespace :gitlab do
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
+      check_orphaned_users_groups
       check_gitlab_config_exists
       check_gitlab_config_not_outdated
       check_log_writable
@@ -178,6 +179,15 @@ namespace :gitlab do
           sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
         )
         fix_and_rerun
+      end
+    end
+
+    def check_orphaned_users_groups
+      print "Database contains orphaned UsersGroups? ... "
+      if UsersGroup.where("user_id not in (select id from users)").count > 0
+        puts "yes".red
+      else
+        puts "no".green
       end
     end
 
