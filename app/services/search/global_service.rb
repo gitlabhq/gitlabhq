@@ -16,9 +16,7 @@ module Search
       projects = projects.where(namespace_id: group.id) if group
       project_ids = projects.pluck(:id)
 
-      projects = projects.search(query)
-
-      result[:projects] = projects.limit(20)
+      result[:projects] = projects.search(query).limit(20)
       result[:merge_requests] = MergeRequest.in_projects(project_ids).search(query).order('updated_at DESC').limit(20)
       result[:issues] = Issue.where(project_id: project_ids).search(query).order('updated_at DESC').limit(20)
       result[:total_results] = %w(projects issues merge_requests).sum { |items| result[items.to_sym].size }
