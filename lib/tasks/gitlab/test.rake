@@ -2,7 +2,6 @@ namespace :gitlab do
   desc "GITLAB | Run all tests"
   task :test do
     cmds = [
-      %W(rake gitlab:setup),
       %W(rake spinach),
       %W(rake spec),
       %W(rake jasmine:ci)
