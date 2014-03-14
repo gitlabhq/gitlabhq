@@ -203,6 +203,11 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
 
+    # Create directory for automatic project initialisation
+    # Put everything which should be included in every project
+    # If you don't want to copy such files, leave it empty, GitLab will create a README.md file for you
+    sudo -u git -H mkdir /home/git/gitlab-autoinit-template
+
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
     sudo -u git -H mkdir tmp/sockets/

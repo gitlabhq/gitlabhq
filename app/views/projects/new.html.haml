@@ -56,10 +56,20 @@
           %span.light (optional)
         .col-sm-10
           = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, tabindex: 3
+      .form-group
+        = f.label :auto_init, class: 'control-label' do
+          Initialize
+        .col-sm-10
+          %span.checkbox.auto_init
+            = f.check_box :auto_init, checked: (gitlab_config.default_projects_features.auto_init == true), tabindex: 4
+            - if @project.auto_init_from_template?
+              Initialize the repository with default template.
+            - else
+              Initialize the repository with a README file.
       = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
       .form-actions
-        = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 4
+        = f.submit 'Create project', class: "btn btn-create project-submit", tabindex: 5
 
         - if current_user.can_create_group?
           .pull-right

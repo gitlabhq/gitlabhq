@@ -13,6 +13,21 @@ module Gitlab
       system "#{gitlab_shell_path}/bin/gitlab-projects", "add-project", "#{name}.git"
     end
 
+    # Auto init new repository
+    #
+    # name - project path with namespace
+    # tmp_path - path for creation of init file
+    # init_from_template - init repository from template
+    # config_auto_init_template_dir - copy all files from this directory into the new repo
+    # project_owner_name - "Administrator"
+    # project_owner_email - "admin@local.host"
+    #
+    # Ex.
+    #    init_repository("root/example/", "true", "/home/git/gitlab/tmp/gitlab-autoinit-template/example", "Administrator", "admin@local.host")
+    def init_repository(name, tmp_path, init_from_template, config_auto_init_template_dir, project_owner_name, project_owner_email)
+      system "#{gitlab_shell_path}/bin/gitlab-projects", "init-project", name, tmp_path, init_from_template, config_auto_init_template_dir, project_owner_name, project_owner_email
+    end
+
     # Import repository
     #
     # name - project path with namespace

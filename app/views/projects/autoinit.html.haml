@@ -1,0 +1,9 @@
+= render "home_panel"
+
+.save-project-loader
+  %center
+    = image_tag "ajax_loader.gif"
+    %h3 Initializing repository.
+    %p Please wait while we intitializing the repository for you. This pages refreshes automatically.
+    :javascript
+        new ProjectImport();

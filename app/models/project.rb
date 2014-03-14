@@ -21,6 +21,7 @@
 #  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
+#  auto_init              :boolean          default(TRUE), not null
 #
 
 class Project < ActiveRecord::Base
@@ -35,7 +36,7 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :visibility_level, :auto_init, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 
@@ -524,5 +525,21 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
+  end
+
+  def auto_init?
+    auto_init
+  end
+
+  def auto_init_from_template?
+    auto_init_template_dir_exists(Gitlab.config.gitlab.auto_init_template_dir)
+  end
+
+  def auto_init_template_dir_exists(directory)
+    if File.directory?(directory)
+      Dir.entries("#{directory}").size > 2
+    else
+     false
+    end
   end
 end

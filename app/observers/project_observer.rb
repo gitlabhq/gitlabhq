@@ -13,6 +13,11 @@ class ProjectObserver < BaseObserver
       )
 
       log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
+    
+      if project.auto_init?
+        ::Projects::AutoInitService.new(project).execute
+      end
+
     end
 
     if project.wiki_enabled?
