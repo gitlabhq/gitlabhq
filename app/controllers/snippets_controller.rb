@@ -19,6 +19,9 @@ class SnippetsController < ApplicationController
 
   def user_index
     @user = User.find_by(username: params[:username])
+
+    render_404 and return unless @user
+
     @snippets = @user.snippets.fresh.non_expired
 
     if @user == current_user
