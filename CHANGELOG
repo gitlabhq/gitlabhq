@@ -21,7 +21,7 @@ v 6.7.0
   - Reuse the GitLab LDAP connection within each request
   - Changed markdown new line behaviour to conform to markdown standards
   - Fix global search
-  - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.4)
+  - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
