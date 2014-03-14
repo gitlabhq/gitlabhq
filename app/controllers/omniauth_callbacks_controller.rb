@@ -21,12 +21,14 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @user = Gitlab::LDAP::User.find_or_create(oauth)
     @user.remember_me = true if @user.persisted?
 
-    if gitlab_ldap_access.allowed?(@user)
-      gitlab_ldap_access.update_permissions(@user)
-      sign_in_and_redirect(@user)
-    else
-      flash[:alert] = "Access denied for your LDAP account."
-      redirect_to new_user_session_path
+    gitlab_ldap_access do |access|
+      if access.allowed?(@user)
+        access.update_permissions(@user)
+        sign_in_and_redirect(@user)
+      else
+        flash[:alert] = "Access denied for your LDAP account."
+        redirect_to new_user_session_path
+      end
     end
   end
 
