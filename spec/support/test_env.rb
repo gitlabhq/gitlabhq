@@ -106,7 +106,7 @@ module TestEnv
     setup_stubs
     [
       %W(git reset --hard --quiet),
-      %W(git clean -fx),
+      %W(git clean -fx --quiet),
       %W(git checkout --quiet origin/master)
     ].each do |git_cmd|
       system(*git_cmd, chdir: seed_satellite_path)
