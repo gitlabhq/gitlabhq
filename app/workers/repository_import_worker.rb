@@ -11,11 +11,11 @@ class RepositoryImportWorker
                                project.import_url)
 
     if result
-      project.imported = true
+      project.import_finish
       project.save
       project.satellite.create unless project.satellite.exists?
     else
-      project.imported = false
+      project.import_fail
     end
   end
 end

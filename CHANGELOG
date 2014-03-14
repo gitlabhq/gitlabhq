@@ -17,6 +17,7 @@ v 6.7.0
   - Add GFM autocompletion for MergeRequests (Robert Speicher)
   - Add webhook when a new tag is pushed (Jeroen van Baarsen)
   - Add button for toggling inline comments in diff view
+  - Add retry feature for repository import
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI

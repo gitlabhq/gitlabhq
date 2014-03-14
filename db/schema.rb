@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140305193308) do
+ActiveRecord::Schema.define(version: 20140313092127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -214,10 +214,10 @@ ActiveRecord::Schema.define(version: 20140305193308) do
     t.string   "issues_tracker_id"
     t.boolean  "snippets_enabled",       default: true,     null: false
     t.datetime "last_activity_at"
-    t.boolean  "imported",               default: false,    null: false
     t.string   "import_url"
     t.integer  "visibility_level",       default: 0,        null: false
     t.boolean  "archived",               default: false,    null: false
+    t.string   "import_status"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
