@@ -3,7 +3,17 @@ module Gitlab
     class Adapter
       attr_reader :ldap
 
-      def initialize
+      def self.open(&block)
+        Net::LDAP.open(adapter_options) do |ldap|
+          block.call(self.new(ldap))
+        end
+      end
+
+      def self.config
+        Gitlab.config.ldap
+      end
+
+      def self.adapter_options
         encryption = config['method'].to_s == 'ssl' ? :simple_tls : nil
 
         options = {
@@ -23,8 +33,12 @@ module Gitlab
         if config['password'] || config['bind_dn']
           options.merge!(auth_options)
         end
+        options
+      end
 
-        @ldap = Net::LDAP.new(options)
+
+      def initialize(ldap=nil)
+        @ldap = ldap || Net::LDAP.new(self.class.adapter_options)
       end
 
       def users(field, value)
@@ -65,7 +79,7 @@ module Gitlab
       private
 
       def config
-        @config ||= Gitlab.config.ldap
+        @config ||= self.class.config
       end
     end
   end
