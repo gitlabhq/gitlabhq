@@ -14,8 +14,9 @@ module Search
       group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
       projects = Project.accessible_to(current_user)
       projects = projects.where(namespace_id: group.id) if group
-      projects = projects.search(query)
       project_ids = projects.pluck(:id)
+
+      projects = projects.search(query)
 
       result[:projects] = projects.limit(20)
       result[:merge_requests] = MergeRequest.in_projects(project_ids).search(query).order('updated_at DESC').limit(20)
