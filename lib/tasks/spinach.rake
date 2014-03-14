@@ -1,4 +1,4 @@
-Rake::Task["spinach"].clear
+Rake::Task["spinach"].clear if Rake::Task.task_defined?('spinach')
 
 desc "GITLAB | Run spinach"
 task :spinach do

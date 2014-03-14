@@ -1,4 +1,4 @@
-Rake::Task["spec"].clear
+Rake::Task["spec"].clear if Rake::Task.task_defined?('spec')
 
 desc "GITLAB | Run specs"
 task :spec do
