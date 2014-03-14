@@ -177,15 +177,13 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      if id.include?("/")
-        id = id.split("/")
-        namespace = Namespace.find_by(path: id.first)
-        return nil unless namespace
+      return nil unless id.include?("/")
 
-        where(namespace_id: namespace.id).find_by(path: id.second)
-      else
-        where(path: id, namespace_id: nil).last
-      end
+      id = id.split("/")
+      namespace = Namespace.find_by(path: id.first)
+      return nil unless namespace
+
+      where(namespace_id: namespace.id).find_by(path: id.second)
     end
 
     def visibility_levels
