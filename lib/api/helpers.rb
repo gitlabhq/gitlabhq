@@ -47,7 +47,7 @@ module API
     end
 
     def find_project(id)
-      project = Project.find_by(id: id) || Project.find_with_namespace(id)
+      project = Project.find_with_namespace(id) || Project.find_by(id: id)
 
       if project && can?(current_user, :read_project, project)
         project
