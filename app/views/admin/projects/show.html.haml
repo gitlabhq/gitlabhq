@@ -81,13 +81,13 @@
       .body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
-            = f.label :namespace_id, "Namespace", class: 'control-label'
-            .col-sm-10
+            = f.label :namespace_id, "Namespace", class: 'col-sm-3'
+            .col-sm-9
               = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
 
           .form-group
-            .col-sm-2
-            .col-sm-10
+            .col-sm-3
+            .col-sm-9
               = f.submit 'Transfer', class: 'btn btn-primary'
 
   .col-md-6
