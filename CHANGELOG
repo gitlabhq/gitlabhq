@@ -22,6 +22,7 @@ v 6.7.0
   - Changed markdown new line behaviour to conform to markdown standards
   - Fix global search
   - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
+  - Create and Update MR calls now support the description parameter (Greg Messner)
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
