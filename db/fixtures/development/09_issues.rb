@@ -1,5 +1,3 @@
-ActiveRecord::Base.observers.disable :all
-
 Gitlab::Seeder.quiet do
   (1..300).each  do |i|
     # Random Project
@@ -12,9 +10,7 @@ Gitlab::Seeder.quiet do
 
     user_id = user.id
 
-    begin
-      Thread.current[:current_user] = user
-
+    Gitlab::Seeder.by_user(user) do
       Issue.seed(:id, [{
         id: i,
         project_id: project.id,
@@ -25,8 +21,6 @@ Gitlab::Seeder.quiet do
         title: Faker::Lorem.sentence(6),
         description: Faker::Lorem.sentence
       }])
-    ensure
-      Thread.current[:current_user] = nil
     end
     print('.')
   end

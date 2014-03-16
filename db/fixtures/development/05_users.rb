@@ -6,6 +6,7 @@ Gitlab::Seeder.quiet do
         username: Faker::Internet.user_name,
         name: Faker::Name.name,
         email: Faker::Internet.email,
+        confirmed_at: DateTime.now
       }])
       print '.'
     rescue ActiveRecord::RecordNotSaved
