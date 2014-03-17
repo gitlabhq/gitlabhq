@@ -44,7 +44,7 @@ module API
       expose :id, :description, :default_branch
       expose :public?, as: :public
       expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
-      expose :owner, using: Entities::UserBasic
+      expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
       expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
@@ -174,6 +174,28 @@ module API
 
     class Namespace < Grape::Entity
       expose :id, :path, :kind
+    end
+
+    class ProjectAccess < Grape::Entity
+      expose :project_access, as: :access_level
+      expose :notification_level
+    end
+
+    class GroupAccess < Grape::Entity
+      expose :group_access, as: :access_level
+      expose :notification_level
+    end
+
+    class ProjectWithAccess < Project
+      expose :permissions do
+        expose :project_access, using: Entities::ProjectAccess do |project, options|
+          project.users_projects.find_by(user_id: options[:user].id)
+        end
+
+        expose :group_access, using: Entities::GroupAccess do |project, options|
+          project.group.users_groups.find_by(user_id: options[:user].id)
+        end
+      end
     end
   end
 end
