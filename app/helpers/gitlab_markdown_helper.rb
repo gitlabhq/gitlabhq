@@ -63,8 +63,7 @@ module GitlabMarkdownHelper
   # project_path_with_namespace - namespace/projectname, eg. gitlabhq/gitlabhq
   # ref - name of the branch or reference, eg. stable
   # requested_path - path of request, eg. doc/api/README.md, used in special case when path is pointing to the .md file were the original request is coming from
-  # wiki - whether the markdown is from wiki or not
-  def create_relative_links(text, project, ref, requested_path, wiki = false)
+  def create_relative_links(text, project, ref, requested_path)
     @path_to_satellite = project.satellite.path
     project_path_with_namespace = project.path_with_namespace
     paths = extract_paths(text)
@@ -134,12 +133,12 @@ module GitlabMarkdownHelper
   end
 
   # Checks if the path exists in the repo
-  # eg. checks if doc/README.md exists, if it doesn't then it is a wiki link
+  # eg. checks if doc/README.md exists, if not then link to blob
   def path_with_ref(path, ref)
     if file_exists?(path)
       "#{local_path(path)}/#{correct_ref(ref)}"
     else
-      "wikis"
+      "blob/#{correct_ref(ref)}"
     end
   end
 

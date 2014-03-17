@@ -8,23 +8,38 @@ Table of Contents
 **[GitLab Flavored Markdown](#gitlab-flavored-markdown-gfm)**
 
 [Newlines](#newlines)
+
 [Multiple underscores in words](#multiple-underscores-in-words)
+
 [URL autolinking](#url-autolinking)
+
 [Code and Syntax Highlighting](#code-and-syntax-highlighting)
+
 [Emoji](#emoji)
+
 [Special GitLab references](#special-gitlab-references)
+
 
 **[Standard Markdown](#standard-markdown)**
 
 [Headers](#headers)
+
 [Emphasis](#emphasis)
+
 [Lists](#lists)
+
 [Links](#links)
+
 [Images](#images)
+
 [Blockquotes](#blockquotes)
+
 [Inline HTML](#inline-html)
+
 [Horizontal Rule](#horizontal-rule)
+
 [Line Breaks](#line-breaks)
+
 [Tables](#tables)
 
 **[References](#references)**
@@ -33,7 +48,8 @@ Table of Contents
 
 GitLab Flavored Markdown (GFM)
 ==============================
-For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality.
+For GitLab we developed something we call "GitLab Flavored Markdown" (GFM).
+It extends the standard Markdown in a few significant ways to add some useful functionality.
 
 You can use GFM in
 
@@ -51,15 +67,19 @@ Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#mar
 
 Newlines
 --------
-The biggest difference that GFM introduces is in the handling of linebreaks. With traditional Markdown you can hard wrap paragraphs of text and they will be combined into a single paragraph. We find this to be the cause of a huge number of unintentional formatting errors. GFM treats newlines in paragraph-like content as real line breaks, which is probably what you intended.
+GFM honors the markdown specification in how [paragraphs and line breaks are handled](http://daringfireball.net/projects/markdown/syntax#p).
 
-The next paragraph contains two phrases separated by a single newline character:
+A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.:
 
     Roses are red
     Violets are blue
 
+    Sugar is sweet
+
 Roses are red
 Violets are blue
+
+Sugar is sweet
 
 Multiple underscores in words
 -----------------------------
@@ -319,13 +339,13 @@ Strikethrough uses two tildes. ~~Scratch this.~~
 
 ## Links
 
-There are two ways to create links.
+There are two ways to create links, inline-style and reference-style.
 
     [I'm an inline-style link](https://www.google.com)
 
     [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
-    [I'm a relative reference to a repository file](../blob/master/LICENSE)
+    [I'm a relative reference to a repository file](LICENSE)
 
     [You can use numbers for reference-style link definitions][1]
 
@@ -341,7 +361,7 @@ There are two ways to create links.
 
 [I'm a reference-style link][Arbitrary case-insensitive reference text]
 
-[I'm a relative reference to a repository file](../blob/master/LICENSE)
+[I'm a relative reference to a repository file](LICENSE)
 
 [You can use numbers for reference-style link definitions][1]
 
@@ -352,6 +372,15 @@ Some text to show that the reference links can follow later.
 [arbitrary case-insensitive reference text]: https://www.mozilla.org
 [1]: http://slashdot.org
 [link text itself]: http://www.reddit.com
+
+**Note**
+
+Relative links do not allow referencing project files in a wiki page or wiki page in a project file.
+The reason for this is that, in GitLab, wiki is always a separate git repository. For example:
+
+`[I'm a reference-style link][style]`
+
+will point the link to `wikis/style` when the link is inside of a wiki markdown file.
 
 ## Images
 
@@ -365,15 +394,15 @@ Some text to show that the reference links can follow later.
 
     [logo]: assets/logo-white.png
 
-Here's our logo (hover to see the title text):
+Here's our logo:
 
 Inline-style:
-![alt text](/assets/logo-white.png "Logo Title Text 1")
+![alt text](/assets/logo-white.png)
 
 Reference-style:
 ![alt text][logo]
 
-[logo]: /assets/logo-white.png "Logo Title Text 2"
+[logo]: /assets/logo-white.png
 
 ## Blockquotes
 
