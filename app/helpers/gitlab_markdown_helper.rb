@@ -134,12 +134,12 @@ module GitlabMarkdownHelper
   end
 
   # Checks if the path exists in the repo
-  # eg. checks if doc/README.md exists, if it doesn't then it is a wiki link
+  # eg. checks if doc/README.md exists, if not then link to blob
   def path_with_ref(path, ref)
     if file_exists?(path)
       "#{local_path(path)}/#{correct_ref(ref)}"
     else
-      "wikis"
+      "blob/#{correct_ref(ref)}"
     end
   end
 
