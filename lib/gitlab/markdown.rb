@@ -193,7 +193,7 @@ module Gitlab
     end
 
     def reference_commit(identifier)
-      if @project.valid_repo? && commit = @project.repository.commit(identifier)
+      if @project.repo_exists? && commit = @project.repository.commit(identifier)
         link_to(identifier, project_commit_url(@project, commit), html_options.merge(title: commit.link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
     end

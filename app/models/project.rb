@@ -403,13 +403,6 @@ class Project < ActiveRecord::Base
     true
   end
 
-  def valid_repo?
-    repository.exists?
-  rescue
-    errors.add(:path, "Invalid repository path")
-    false
-  end
-
   def empty_repo?
     !repository.exists? || repository.empty?
   end
