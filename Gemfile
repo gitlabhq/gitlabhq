@@ -48,7 +48,8 @@ gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"
-gem "grape-entity", "~> 0.3.0"
+# Replace with rubygems when nesteted entities get released
+gem "grape-entity", "~> 0.4.1", ref: 'd904381c951e86250c3f44213b349a3dd8e83fb1', git: 'https://github.com/intridea/grape-entity.git' 
 gem 'rack-cors', require: 'rack/cors'
 
 # Email validation
