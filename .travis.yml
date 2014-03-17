@@ -19,6 +19,8 @@ rvm:
 services:
   - redis-server
 before_script:
+  - "bundle exec rake db:setup"
+  - "bundle exec rake db:seed_fu"
   - "cp config/database.yml.$DB config/database.yml"
   - "cp config/gitlab.yml.example config/gitlab.yml"
 script: "bundle exec rake $TASK --trace"
