@@ -58,18 +58,6 @@ module API
       end
     end
 
-    class TeamMember < UserBasic
-      expose :permission, as: :access_level do |user, options|
-        options[:user_team].user_team_user_relationships.find_by(user_id: user.id).permission
-      end
-    end
-
-    class TeamProject < Project
-      expose :greatest_access, as: :greatest_access_level do |project, options|
-        options[:user_team].user_team_project_relationships.find_by(project_id: project.id).greatest_access
-      end
-    end
-
     class Group < Grape::Entity
       expose :id, :name, :path, :owner_id
     end
