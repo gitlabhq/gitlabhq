@@ -132,7 +132,7 @@ module API
     end
 
     class MergeRequest < ProjectEntity
-      expose :target_branch, :source_branch, :title, :state, :upvotes, :downvotes
+      expose :target_branch, :source_branch, :title, :state, :upvotes, :downvotes, :description
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
     end
