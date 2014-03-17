@@ -181,7 +181,9 @@ module API
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
-          project.group.users_groups.find_by(user_id: options[:user].id)
+          if project.group
+            project.group.users_groups.find_by(user_id: options[:user].id)
+          end
         end
       end
     end
