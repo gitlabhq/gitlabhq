@@ -203,7 +203,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   And 'I add various links to the wiki page' do
-    fill_in "wiki[content]", with: "[test](test)\n[GitLab API doc](doc/api/README.md)\n[Rake tasks](doc/raketasks)\n"
+    fill_in "wiki[content]", with: "[test](test)\n[GitLab API doc](api)\n[Rake tasks](raketasks)\n"
     fill_in "wiki[message]", with: "Adding links to wiki"
     click_button "Create page"
   end
@@ -242,8 +242,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I see Gitlab API document' do
-    current_path.should == project_blob_path(@project, "master/doc/api/README.md")
-    page.should have_content "Status codes"
+    current_path.should == project_wiki_path(@project, "api")
+    page.should have_content "Editing"
   end
 
   And 'I click on Rake tasks link' do
@@ -251,9 +251,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I see Rake tasks directory' do
-    current_path.should == project_tree_path(@project, "master/doc/raketasks")
-    page.should have_content "backup_restore.md"
-    page.should have_content "maintenance.md"
+    current_path.should == project_wiki_path(@project, "raketasks")
+    page.should have_content "Editing"
   end
 
   Given 'I go directory which contains README file' do
