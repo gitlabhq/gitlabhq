@@ -148,6 +148,16 @@ Parameters:
     "path": "diaspora",
     "updated_at": "2013-09-30T13: 46: 02Z"
   }
+  "permissions": {
+    "project_access": {
+      "access_level": 10,
+      "notification_level": 3
+    },
+    "group_access": {
+      "access_level": 50,
+      "notification_level": 3
+    }
+  }
 }
 ```
 
