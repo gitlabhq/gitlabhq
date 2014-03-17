@@ -23,6 +23,7 @@ v 6.7.0
   - Fix global search
   - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
   - Create and Update MR calls now support the description parameter (Greg Messner)
+  - Markdown relative links in the wiki link to wiki pages, markdown relative links in repositories link to files in the repository
 
 v 6.6.5
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
