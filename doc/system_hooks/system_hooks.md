@@ -11,8 +11,8 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
           "created_at": "2012-07-21T07:30:54Z",
           "event_name": "project_create",
                 "name": "StoreCloud",
-         "owner_email": "johnsmith@gmail.com"
-          "owner_name": "John Smit",
+         "owner_email": "johnsmith@gmail.com",
+          "owner_name": "John Smith",
                 "path": "stormcloud",
  "path_with_namespace": "jsmith/stormcloud",
           "project_id": 74,
@@ -26,7 +26,7 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
           "created_at": "2012-07-21T07:30:58Z",
           "event_name": "project_destroy",
                 "name": "Underscore",
-         "owner_email": "johnsmith@gmail.com"
+         "owner_email": "johnsmith@gmail.com",
           "owner_name": "John Smith",
                 "path": "underscore",
  "path_with_namespace": "jsmith/underscore",
@@ -36,7 +36,7 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
 
 **New Team Member:**
 
-```ruby
+```json
 {
      "created_at": "2012-07-21T07:30:56Z",
      "event_name": "user_add_to_team",
