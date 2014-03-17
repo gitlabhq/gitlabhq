@@ -48,7 +48,7 @@ module API
       # Example Request:
       #   GET /projects/:id
       get ":id" do
-        present user_project, with: Entities::Project
+        present user_project, with: Entities::ProjectWithAccess, user: current_user
       end
 
       # Get a single project events

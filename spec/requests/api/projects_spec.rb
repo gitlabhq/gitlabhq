@@ -259,6 +259,7 @@ describe API::API do
 
   describe "GET /projects/:id" do
     before { project }
+    before { users_project }
 
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
@@ -283,6 +284,28 @@ describe API::API do
       other_user = create(:user)
       get api("/projects/#{project.id}", other_user)
       response.status.should == 404
+    end
+
+    describe 'permissions' do
+      context 'personal project' do
+        before { get api("/projects/#{project.id}", user) }
+
+        it { response.status.should == 200 }
+        it { json_response['permissions']["project_access"]["access_level"].should == Gitlab::Access::MASTER }
+        it { json_response['permissions']["group_access"].should be_nil }
+      end
+
+      context 'group project' do
+        before do
+          project2 = create(:project, group: create(:group))
+          project2.group.add_owner(user)
+          get api("/projects/#{project2.id}", user)
+        end
+
+        it { response.status.should == 200 }
+        it { json_response['permissions']["project_access"].should be_nil }
+        it { json_response['permissions']["group_access"]["access_level"].should == Gitlab::Access::OWNER }
+      end
     end
   end
 
