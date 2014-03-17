@@ -24,6 +24,18 @@ v 6.7.0
   - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
   - Create and Update MR calls now support the description parameter (Greg Messner)
 
+v 6.6.5
+  - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - Hide mr close button for comment form if merge request was closed or inline comment
+  - Adds ability to reopen closed merge request
+
+v 6.6.4
+  - Add missing html escape for highlighted code blocks in comments, issues
+
+v 6.6.3
+  - Fix 500 error when edit yourself from admin area
+  - Hide private groups for public profiles
+
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI
 
