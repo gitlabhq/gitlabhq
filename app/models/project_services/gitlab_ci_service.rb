@@ -13,6 +13,7 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  api_key     :string(255)
 #
 
 class GitlabCiService < Service
@@ -36,7 +37,7 @@ class GitlabCiService < Service
   end
 
   def commit_status sha
-    response = HTTParty.get(commit_status_path(sha))
+    response = HTTParty.get(commit_status_path(sha), verify: false)
 
     if response.code == 200 and response["status"]
       response["status"]

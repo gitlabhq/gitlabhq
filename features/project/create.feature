@@ -3,6 +3,7 @@ Feature: Create Project
   A user with ability to create a project
   Should be able to create a new one
 
+  @javascript
   Scenario: User create a project
     Given I sign in as a user
     When I visit new project page

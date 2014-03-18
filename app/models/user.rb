@@ -185,7 +185,7 @@ class User < ActiveRecord::Base
         where(conditions).first
       end
     end
-    
+
     def find_for_commit(email, name)
       # Prefer email match over name match
       User.where(email: email).first ||
@@ -279,8 +279,7 @@ class User < ActiveRecord::Base
                                project_ids += groups_projects.pluck(:id)
                                project_ids += projects.pluck(:id)
                                project_ids += groups.joins(:shared_projects).pluck(:project_id)
-
-                               Project.where(id: project_ids.uniq).joins(:namespace).order('namespaces.name ASC')
+                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
 
@@ -411,7 +410,11 @@ class User < ActiveRecord::Base
   end
 
   def requires_ldap_check?
-    !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+    if ldap_user?
+      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+    else
+      false
+    end
   end
 
   def solo_owned_groups

@@ -8,8 +8,8 @@ class CreateProject < Spinach::FeatureSteps
   end
 
   Then 'I should see project page' do
-    current_path.should == project_path(Project.last)
     page.should have_content "Empty"
+    current_path.should == project_path(Project.last)
   end
 
   And 'I should see empty project instuctions' do

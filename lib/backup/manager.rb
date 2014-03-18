@@ -7,8 +7,8 @@ module Backup
       s = {}
       s[:db_version]         = "#{ActiveRecord::Migrator.current_version}"
       s[:backup_created_at]  = Time.now
-      s[:gitlab_version]     = %x{git rev-parse HEAD}.gsub(/\n/,"")
-      s[:tar_version]        = %x{tar --version | head -1}.gsub(/\n/,"")
+      s[:gitlab_version]     = Gitlab::VERSION
+      s[:tar_version]        = tar_version
 
       Dir.chdir(Gitlab.config.backup.path)
 
@@ -87,22 +87,21 @@ module Backup
       settings = YAML.load_file("backup_information.yml")
       ENV["VERSION"] = "#{settings[:db_version]}" if settings[:db_version].to_i > 0
 
-      # backups directory is not always sub of Rails root and able to execute the git rev-parse below
-      begin
-        Dir.chdir(Rails.root)
-
-        # restoring mismatching backups can lead to unexpected problems
-        if settings[:gitlab_version] != %x{git rev-parse HEAD}.gsub(/\n/, "")
-          puts "GitLab version mismatch:".red
-          puts "  Your current HEAD differs from the HEAD in the backup!".red
-          puts "  Please switch to the following revision and try again:".red
-          puts "  revision: #{settings[:gitlab_version]}".red
-          exit 1
-        end
-      ensure
-        # chdir back to original intended dir
-        Dir.chdir(Gitlab.config.backup.path)
+      # restoring mismatching backups can lead to unexpected problems
+      if settings[:gitlab_version] != Gitlab::VERSION
+        puts "GitLab version mismatch:".red
+        puts "  Your current GitLab version (#{Gitlab::VERSION}) differs from the GitLab version in the backup!".red
+        puts "  Please switch to the following version and try again:".red
+        puts "  version: #{settings[:gitlab_version]}".red
+        puts
+        puts "Hint: git checkout v#{settings[:gitlab_version]}"
+        exit 1
       end
+    end
+
+    def tar_version
+      tar_version, _ = Gitlab::Popen.popen(%W(tar --version))
+      tar_version.split("\n").first
     end
   end
 end

@@ -1,30 +1,6 @@
 class ProjectObserver < BaseObserver
   def after_create(project)
-    project.update_column(:last_activity_at, project.created_at)
-
-    return true if project.forked?
-
-    if project.import?
-      RepositoryImportWorker.perform_in(5.seconds, project.id)
-    else
-      GitlabShellWorker.perform_async(
-        :add_repository,
-        project.path_with_namespace
-      )
-
-      log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
-    end
-
-    if project.wiki_enabled?
-      begin
-        # force the creation of a wiki,
-        GollumWiki.new(project, project.owner).wiki
-      rescue GollumWiki::CouldNotCreateWikiError => ex
-        # Prevent project observer crash
-        # if failed to create wiki
-        nil
-      end
-    end
+    log_info("#{project.owner.name} created a new project \"#{project.name_with_namespace}\"")
   end
 
   def after_update(project)

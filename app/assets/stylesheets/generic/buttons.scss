@@ -158,6 +158,14 @@
       color: #468847;
     }
   }
+
+  &.btn-grouped {
+    margin-right: 7px;
+    float: left;
+    &:last-child {
+      margin-right: 0px;
+    }
+  }
 }
 
 .btn-block {
@@ -169,9 +177,8 @@
   }
 }
 
-.btn,
 .btn-group {
-  &.grouped {
+  &.btn-grouped {
     margin-right: 7px;
     float: left;
     &:last-child {

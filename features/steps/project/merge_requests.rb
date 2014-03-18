@@ -170,6 +170,74 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I click link "Reopen"' do
+    within '.page-title' do
+      click_link "Reopen"
+    end
+  end
+
+  step 'I should see reopened merge request "Bug NS-04"' do
+    within '.state-label' do
+      page.should have_content "Open"
+    end
+  end
+
+  step 'I click link "Hide inline discussion" of the second file' do
+    within '.files [id^=diff]:nth-child(2)' do
+      click_link "Diff comments"
+    end
+  end
+
+  step 'I click link "Show inline discussion" of the second file' do
+    within '.files [id^=diff]:nth-child(2)' do
+      click_link "Diff comments"
+    end
+  end
+
+  step 'I should not see a comment like "Line is wrong" in the second file' do
+    within '.files [id^=diff]:nth-child(2)' do
+      page.should_not have_visible_content "Line is wrong"
+    end
+  end
+
+  step 'I should see a comment like "Line is wrong" in the second file' do
+    within '.files [id^=diff]:nth-child(2) .note-text' do
+      page.should have_visible_content "Line is wrong"
+    end
+  end
+
+  step 'I leave a comment like "Line is correct" on line 12 of the first file' do
+    init_diff_note_first_file
+
+    within(".js-discussion-note-form") do
+      fill_in "note_note", with: "Line is correct"
+      click_button "Add Comment"
+    end
+
+    within ".files [id^=diff]:nth-child(1) .note-text" do
+      page.should have_content "Line is correct"
+    end
+  end
+
+  step 'I leave a comment like "Line is wrong" on line 39 of the second file' do
+    init_diff_note_second_file
+
+    within(".js-discussion-note-form") do
+      fill_in "note_note", with: "Line is wrong"
+      click_button "Add Comment"
+    end
+
+    within ".files [id^=diff]:nth-child(2) .note-text" do
+      page.should have_content "Line is wrong"
+    end
+  end
+
+  step 'I should still see a comment like "Line is correct" in the first file' do
+    within '.files [id^=diff]:nth-child(1) .note-text' do
+      page.should have_visible_content "Line is correct"
+    end
+  end
+
   def project
     @project ||= Project.find_by!(name: "Shop")
   end
@@ -191,5 +259,17 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     within ".note-text" do
       page.should have_content message
     end
+  end
+
+  def init_diff_note_first_file
+    find('a[data-line-code="a5cc2925ca8258af241be7e5b0381edf30266302_12_12"]').click
+  end
+
+  def init_diff_note_second_file
+    find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_28_39"]').click
+  end
+
+  def have_visible_content (text)
+    have_css("*", text: text, visible: true)
   end
 end

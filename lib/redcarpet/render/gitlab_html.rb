@@ -24,7 +24,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
 
 <div class="highlighted-data #{h.user_color_scheme_class}">
   <div class="highlight">
-    <pre><code class="#{language}">#{code}</code></pre>
+    <pre><code class="#{language}">#{h.send(:html_escape, code)}</code></pre>
   </div>
 </div>
 
@@ -46,8 +46,10 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def preprocess(full_document)
-    if @project
-      h.create_relative_links(full_document, @project, @ref, @request_path, is_wiki?)
+    if is_wiki?
+      full_document
+    elsif @project
+      h.create_relative_links(full_document, @project, @ref, @request_path)
     else
       full_document
     end

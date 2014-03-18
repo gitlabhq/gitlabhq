@@ -31,4 +31,17 @@ class AdminUsers < Spinach::FeatureSteps
   And 'Not changed form action url' do
     page.should have_selector %(form[action="/admin/users/#{@user.username}"])
   end
+
+  step 'I submit modified user' do
+    check :user_can_create_group
+    click_button 'Save'
+  end
+
+  step 'I see user attributes changed' do
+    page.should have_content 'Can create groups: Yes'
+  end
+
+  step 'click edit on my user' do
+    find("#edit_user_#{current_user.id}").click
+  end
 end

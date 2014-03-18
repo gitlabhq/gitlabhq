@@ -23,7 +23,8 @@ module Issuable
     scope :assigned, -> { where("assignee_id IS NOT NULL") }
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
-
+    scope :opened, -> { with_state(:opened, :reopened) }
+    scope :closed, -> { with_state(:closed) }
 
     delegate :name,
              :email,

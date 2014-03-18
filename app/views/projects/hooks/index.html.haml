@@ -27,6 +27,13 @@
           %p.light
             This url will be triggered by a push to the repository
       %div
+        = f.check_box :tag_push_events, class: 'pull-left'
+        .prepend-left-20
+          = f.label :tag_push_events, class: 'list-label' do
+            %strong Tag push events
+          %p.light
+            This url will be triggered when a new tag is pushed to the repository
+      %div
         = f.check_box :issues_events, class: 'pull-left'
         .prepend-left-20
           = f.label :issues_events, class: 'list-label' do
@@ -51,11 +58,11 @@
       - @hooks.each do |hook|
         %li
           .pull-right
-            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small grouped"
-            = link_to 'Remove', project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small grouped"
+            = link_to 'Test Hook', test_project_hook_path(@project, hook), class: "btn btn-small btn-grouped"
+            = link_to 'Remove', project_hook_path(@project, hook), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove btn-small btn-grouped"
           .clearfix
             %span.monospace= hook.url
           %p
-            - %w(push_events issues_events merge_requests_events).each do |trigger|
+            - %w(push_events tag_push_events issues_events merge_requests_events).each do |trigger|
               - if hook.send(trigger)
                 %span.label.label-gray= trigger.titleize

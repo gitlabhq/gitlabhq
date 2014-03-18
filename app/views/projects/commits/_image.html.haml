@@ -15,7 +15,7 @@
           %span.meta-filesize= "#{number_to_human_size old_file.size}"
           |
           %b W:
-          %span.meta-width 
+          %span.meta-width
           |
           %b H:
           %span.meta-height
@@ -27,7 +27,7 @@
           %span.meta-filesize= "#{number_to_human_size file.size}"
           |
           %b W:
-          %span.meta-width 
+          %span.meta-width
           |
           %b H:
           %span.meta-height
@@ -49,7 +49,7 @@
           %img{src: "data:#{old_file.mime_type};base64,#{Base64.encode64(old_file.data)}"}
         .frame.added
           %img{src: "data:#{file.mime_type};base64,#{Base64.encode64(file.data)}"}
-        .col-sm-10
+        .controls
           .transparent
           .drag-track
             .dragger{:style => "left: 0px;"}

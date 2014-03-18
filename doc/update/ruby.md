@@ -41,7 +41,7 @@ Just to be sure we will reinstall the gems used by GitLab. Note that the `bundle
 ```bash
 cd /home/git/gitlab
 sudo -u git -H rm -rf vendor/bundle  # remove existing Gem bundle
-sudo -u git -H bundle install --deployment --without development test postgres aws # Assuming MySQL
+sudo -u git -H bundle install --deployment --without development test mysql aws # Assuming PostgreSQL
 ```
 
 ### 6. Start GitLab
