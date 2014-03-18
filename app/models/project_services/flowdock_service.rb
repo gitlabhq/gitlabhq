@@ -13,6 +13,7 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  api_key     :string(255)
 #
 
 require "flowdock-git-hook"

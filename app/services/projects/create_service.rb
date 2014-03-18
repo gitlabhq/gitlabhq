@@ -58,6 +58,29 @@ module Projects
             user: current_user
           )
         end
+
+        @project.update_column(:last_activity_at, @project.created_at)
+
+        if @project.import?
+          @project.import_start
+        else
+          GitlabShellWorker.perform_async(
+            :add_repository,
+            @project.path_with_namespace
+          )
+
+        end
+
+        if @project.wiki_enabled?
+          begin
+            # force the creation of a wiki,
+            GollumWiki.new(@project, @project.owner).wiki
+          rescue GollumWiki::CouldNotCreateWikiError => ex
+            # Prevent project observer crash
+            # if failed to create wiki
+            nil
+          end
+        end
       end
 
       @project

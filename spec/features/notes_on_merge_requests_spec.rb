@@ -166,7 +166,7 @@ describe "On a merge request diff", js: true, focus: true do
       end
 
       it "should be removed when canceled" do
-        within(".file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185']") do
+        within(".diff-file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185']") do
           find(".js-close-discussion-note-form").trigger("click")
         end
 

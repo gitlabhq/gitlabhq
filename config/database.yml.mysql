@@ -7,6 +7,7 @@ production:
   reconnect: false
   database: gitlabhq_production
   pool: 10
+  reaping_frequency: 10
   username: git
   password: "secure password"
   # host: localhost

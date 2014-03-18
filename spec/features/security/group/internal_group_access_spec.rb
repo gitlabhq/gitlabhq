@@ -1,12 +1,6 @@
 require 'spec_helper'
 
-describe "Group access" do
-  describe "GET /projects/new" do
-    it { new_group_path.should be_allowed_for :admin }
-    it { new_group_path.should be_allowed_for :user }
-    it { new_group_path.should be_denied_for :visitor }
-  end
-
+describe "Group with internal project access" do
   describe "Group" do
     let(:group) { create(:group) }
 
@@ -14,12 +8,15 @@ describe "Group access" do
     let(:master)   { create(:user) }
     let(:reporter) { create(:user) }
     let(:guest)    { create(:user) }
+    let(:nonmember)  { create(:user) }
 
     before do
       group.add_user(owner, Gitlab::Access::OWNER)
       group.add_user(master, Gitlab::Access::MASTER)
       group.add_user(reporter, Gitlab::Access::REPORTER)
       group.add_user(guest, Gitlab::Access::GUEST)
+
+      create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
     end
 
     describe "GET /groups/:path" do
@@ -30,7 +27,7 @@ describe "Group access" do
       it { should be_allowed_for reporter }
       it { should be_allowed_for :admin }
       it { should be_allowed_for guest }
-      it { should be_denied_for :user }
+      it { should be_allowed_for :user }
       it { should be_denied_for :visitor }
     end
 
@@ -42,7 +39,7 @@ describe "Group access" do
       it { should be_allowed_for reporter }
       it { should be_allowed_for :admin }
       it { should be_allowed_for guest }
-      it { should be_denied_for :user }
+      it { should be_allowed_for :user }
       it { should be_denied_for :visitor }
     end
 
@@ -54,7 +51,7 @@ describe "Group access" do
       it { should be_allowed_for reporter }
       it { should be_allowed_for :admin }
       it { should be_allowed_for guest }
-      it { should be_denied_for :user }
+      it { should be_allowed_for :user }
       it { should be_denied_for :visitor }
     end
 
@@ -66,7 +63,7 @@ describe "Group access" do
       it { should be_allowed_for reporter }
       it { should be_allowed_for :admin }
       it { should be_allowed_for guest }
-      it { should be_denied_for :user }
+      it { should be_allowed_for :user }
       it { should be_denied_for :visitor }
     end
 

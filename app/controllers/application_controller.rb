@@ -155,7 +155,6 @@ class ApplicationController < ActionController::Base
   end
 
   def dev_tools
-    Rack::MiniProfiler.authorize_request
   end
 
   def default_headers
@@ -182,7 +181,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ldap_security_check
-    if current_user && current_user.ldap_user? && current_user.requires_ldap_check?
+    if current_user && current_user.requires_ldap_check?
       gitlab_ldap_access do |access|
         if access.allowed?(current_user)
           access.update_permissions(current_user)
@@ -231,5 +230,9 @@ class ApplicationController < ActionController::Base
   def configure_permitted_parameters
     devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me) }
     devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :name, :password, :password_confirmation) }
+  end
+
+  def hexdigest(string)
+    Digest::SHA1.hexdigest string
   end
 end

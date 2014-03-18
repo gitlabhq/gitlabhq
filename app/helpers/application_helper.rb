@@ -54,7 +54,7 @@ module ApplicationHelper
     if group && group.avatar.present?
       group.avatar.url
     else
-      '/assets/no_group_avatar.png'
+      image_path('no_group_avatar.png')
     end
   end
 
@@ -89,16 +89,15 @@ module ApplicationHelper
     "Never"
   end
 
-  def grouped_options_refs(destination = :tree)
+  def grouped_options_refs
     repository = @project.repository
 
     options = [
       ["Branches", repository.branch_names],
-      ["Tags", repository.tag_names]
+      ["Tags", VersionSorter.rsort(repository.tag_names)]
     ]
 
-    # If reference is commit id -
-    # we should add it to branch/tag selectbox
+    # If reference is commit id - we should add it to branch/tag selectbox
     if(@ref && !options.flatten.include?(@ref) &&
        @ref =~ /^[0-9a-zA-Z]{6,52}$/)
       options << ["Commit", [@ref]]
@@ -147,8 +146,7 @@ module ApplicationHelper
 
   def authbutton(provider, size = 64)
     file_name = "#{provider.to_s.split('_').first}_#{size}.png"
-    image_tag("authbuttons/#{file_name}",
-              alt: "Sign in with #{provider.to_s.titleize}")
+    image_tag(image_path("authbuttons/#{file_name}"), alt: "Sign in with #{provider.to_s.titleize}")
   end
 
   def simple_sanitize(str)

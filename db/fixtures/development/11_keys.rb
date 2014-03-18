@@ -1,5 +1,3 @@
-ActiveRecord::Base.observers.enable :all
-
 Gitlab::Seeder.quiet do
   User.first(30).each_with_index do |user, i|
     Key.seed(:id, [

@@ -29,6 +29,8 @@ module Backup
         print "Restoring MySQL database #{config['database']} ... "
         system('mysql', *mysql_args, config['database'], in: db_file_name)
       when "postgresql" then
+        puts "Destructively rebuilding database schema for RAILS_ENV #{Rails.env}"
+        Rake::Task["db:schema:load"].invoke
         print "Restoring PostgreSQL database #{config['database']} ... "
         pg_env
         system('psql', config['database'], '-f', db_file_name)

@@ -1,5 +1,5 @@
 class Tree
-  attr_accessor :entries, :readme
+  attr_accessor :entries, :readme, :contribution_guide
 
   def initialize(repository, sha, path = '/')
     path = '/' if path.blank?
@@ -9,6 +9,11 @@ class Tree
     if readme_tree = @entries.find(&:readme?)
       readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
       @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
+    end
+
+    if contribution_tree = @entries.find(&:contributing?)
+      contribution_path = path == '/' ? contribution_tree.name : File.join(path, contribution_tree.name)
+      @contribution_guide = Gitlab::Git::Blob.find(git_repo, sha, contribution_path)
     end
   end
 

@@ -29,7 +29,7 @@
             = render "projects/commits/commit", commit: commit, project: @merge_request.source_project
 
 - else
-  %h4.nothing_here_message
+  .nothing-here-block
     Nothing to merge from
     %span.label-branch #{@merge_request.source_branch}
     to
