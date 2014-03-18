@@ -66,6 +66,7 @@ namespace :gitlab do
         puts "no".green
       else
         puts "yes".red
+        puts "Please fix this by removing the SQLite entry from the database.yml".blue
         for_more_information(
           "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
           see_database_guide
