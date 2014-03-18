@@ -7,8 +7,20 @@
 module Gitlab
   module LDAP
     class Access
+      attr_reader :adapter
+
+      def self.open(&block)
+        Gitlab::LDAP::Adapter.open do |adapter|
+          block.call(self.new(adapter))
+        end
+      end
+
+      def initialize(adapter=nil)
+        @adapter = adapter
+      end
+
       def allowed?(user)
-        !!Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+        !!Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
       rescue
         false
       end
@@ -19,13 +31,13 @@ module Gitlab
         return true unless Gitlab.config.ldap['group_base'].present?
 
         # Get LDAP user entry
-        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
 
         # Get all GitLab groups with activated LDAP
         groups = ::Group.where('ldap_cn IS NOT NULL')
 
         # Get LDAP groups based on cn from GitLab groups
-        ldap_groups = groups.pluck(:ldap_cn).map { |cn| Gitlab::LDAP::Group.find_by_cn(cn) }
+        ldap_groups = groups.pluck(:ldap_cn).map { |cn| Gitlab::LDAP::Group.find_by_cn(cn, adapter) }
         ldap_groups = ldap_groups.compact.uniq
 
         # Iterate over ldap groups and check user membership
