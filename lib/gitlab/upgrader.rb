@@ -50,6 +50,7 @@ module Gitlab
 
     def update_commands
       {
+        "Creating a backup" => %W(bundle exec rake gitlab:backup:create),
         "Stash changed files" => %W(git stash),
         "Get latest code" => %W(git fetch),
         "Switch to new version" => %W(git checkout v#{latest_version}),
