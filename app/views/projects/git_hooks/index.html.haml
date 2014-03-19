@@ -1,0 +1,39 @@
+%h3.page-title
+  Pre-receive hook
+%p.light
+  The first script to run when handling a push from a client is pre-receive hook.
+
+%hr.clearfix
+
+= form_for [@project, @pre_receive_hook], html: { class: 'form-horizontal' } do |f|
+  -if @pre_receive_hook.errors.any?
+    .alert.alert-danger
+      - @pre_receive_hook.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :deny_delete_tag, "Deny tag remove", class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :deny_delete_tag
+        %span.descr Dont allow users to remove git tags
+
+  .form-group
+    = f.label :force_push_regex, "Force push", class: 'control-label'
+    .col-sm-10
+      = f.text_field :force_push_regex, class: "form-control"
+      %p.hint Regular expression for branches to allow force push. Empty - allow force push to any branch
+
+  .form-group
+    = f.label :delete_branch_regex, "Branch removal", class: 'control-label'
+    .col-sm-10
+      = f.text_field :delete_branch_regex, class: "form-control"
+      %p.hint Regular expression for branches that can be removed. Empty - allow remove of any branch
+
+  .form-group
+    = f.label :commit_message_regex, "Commit message", class: 'control-label'
+    .col-sm-10
+      = f.text_field :commit_message_regex, class: "form-control"
+      %p.hint Commit message must match this regular expression to be pushed. Empty - allow remove of any commit message
+
+  .form-actions
+    = f.submit "Save git Hook", class: "btn btn-create"
