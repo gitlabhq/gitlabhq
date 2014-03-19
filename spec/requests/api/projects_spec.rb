@@ -133,7 +133,7 @@ describe API::API do
     end
 
     it "should set a project as public" do
-      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+      project = attributes_for(:project, :public)
       post api("/projects", user), project
       json_response['public'].should be_true
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
@@ -147,21 +147,21 @@ describe API::API do
     end
 
     it "should set a project as internal" do
-      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      project = attributes_for(:project, :internal)
       post api("/projects", user), project
       json_response['public'].should be_false
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
     end
 
     it "should set a project as internal overriding :public" do
-      project = attributes_for(:project, { public: true, visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      project = attributes_for(:project, :internal, { public: true })
       post api("/projects", user), project
       json_response['public'].should be_false
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
     end
 
     it "should set a project as private" do
-      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+      project = attributes_for(:project, :private)
       post api("/projects", user), project
       json_response['public'].should be_false
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
@@ -215,7 +215,7 @@ describe API::API do
     end
 
     it "should set a project as public" do
-      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PUBLIC })
+      project = attributes_for(:project, :public)
       post api("/projects/user/#{user.id}", admin), project
       json_response['public'].should be_true
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
@@ -229,21 +229,21 @@ describe API::API do
     end
 
     it "should set a project as internal" do
-      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      project = attributes_for(:project, :internal)
       post api("/projects/user/#{user.id}", admin), project
       json_response['public'].should be_false
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
     end
 
     it "should set a project as internal overriding :public" do
-      project = attributes_for(:project, { public: true, visibility_level: Gitlab::VisibilityLevel::INTERNAL })
+      project = attributes_for(:project, :internal, { public: true })
       post api("/projects/user/#{user.id}", admin), project
       json_response['public'].should be_false
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
     end
 
     it "should set a project as private" do
-      project = attributes_for(:project, { visibility_level: Gitlab::VisibilityLevel::PRIVATE })
+      project = attributes_for(:project, :private)
       post api("/projects/user/#{user.id}", admin), project
       json_response['public'].should be_false
       json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
@@ -490,10 +490,10 @@ describe API::API do
 
   describe :fork_admin do
     let(:project_fork_target) { create(:project) }
-    let(:project_fork_source) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let(:project_fork_source) { create(:project, :public) }
 
     describe "POST /projects/:id/fork/:forked_from_id" do
-      let(:new_project_fork_source) { create(:project, visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+      let(:new_project_fork_source) { create(:project, :public) }
 
       it "shouldn't available for non admin users" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
@@ -562,10 +562,10 @@ describe API::API do
     let!(:post)             { create(:empty_project, name: "#{query}_post", creator_id: user.id, namespace: user.namespace) }
     let!(:pre_post)         { create(:empty_project, name: "pre_#{query}_post", creator_id: user.id, namespace: user.namespace) }
     let!(:unfound)          { create(:empty_project, name: 'unfound', creator_id: user.id, namespace: user.namespace) }
-    let!(:internal)         { create(:empty_project, name: "internal #{query}", visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let!(:unfound_internal) { create(:empty_project, name: 'unfound internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL) }
-    let!(:public)           { create(:empty_project, name: "public #{query}", visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
-    let!(:unfound_public)   { create(:empty_project, name: 'unfound public', visibility_level: Gitlab::VisibilityLevel::PUBLIC) }
+    let!(:internal)         { create(:empty_project, :internal, name: "internal #{query}") }
+    let!(:unfound_internal) { create(:empty_project, :internal, name: 'unfound internal') }
+    let!(:public)           { create(:empty_project, :public, name: "public #{query}") }
+    let!(:unfound_public)   { create(:empty_project, :public, name: 'unfound public') }
 
     context "when unauthenticated" do
       it "should return authentication error" do

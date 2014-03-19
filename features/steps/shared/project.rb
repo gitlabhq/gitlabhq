@@ -79,7 +79,7 @@ module SharedProject
   end
 
   step 'internal project "Internal"' do
-    create :project, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
+    create :project, :internal, name: 'Internal'
   end
 
   step 'I should see project "Internal"' do
@@ -91,7 +91,7 @@ module SharedProject
   end
 
   step 'public project "Community"' do
-    create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    create :project, :public, name: 'Community'
   end
 
   step 'I should see project "Community"' do
@@ -112,14 +112,14 @@ module SharedProject
   step '"John Doe" is authorized to internal project "Internal"' do
     user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Internal")
-    project ||= create :project, name: 'Internal', visibility_level: Gitlab::VisibilityLevel::INTERNAL
+    project ||= create :project, :internal, name: 'Internal'
     project.team << [user, :master]
   end
 
   step '"John Doe" is authorized to public project "Community"' do
     user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Community")
-    project ||= create :project, name: 'Community', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    project ||= create :project, :public, name: 'Community'
     project.team << [user, :master]
   end
 end
