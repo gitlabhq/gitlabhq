@@ -297,6 +297,7 @@ GEM
       net-ssh (>= 1.99.1)
     net-ssh (2.7.0)
     nokogiri (1.5.10)
+    nprogress-rails (0.1.2.3)
     oauth (0.4.7)
     oauth2 (0.8.1)
       faraday (~> 0.8)
@@ -621,6 +622,7 @@ DEPENDENCIES
   minitest (~> 4.7.0)
   modernizr (= 2.6.2)
   mysql2
+  nprogress-rails
   omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
