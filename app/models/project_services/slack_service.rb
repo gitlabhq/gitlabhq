@@ -40,7 +40,7 @@ class SlackService < Service
     [
       { type: 'text', name: 'subdomain', placeholder: '' },
       { type: 'text', name: 'token',     placeholder: '' },
-      { type: 'text', name: 'room',      placeholder: '' },
+      { type: 'text', name: 'room',      placeholder: 'Ex. #general' },
     ]
   end
 
