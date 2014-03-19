@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140313092127) do
+ActiveRecord::Schema.define(version: 20140319135450) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,16 @@ ActiveRecord::Schema.define(version: 20140313092127) do
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
+
+  create_table "git_hooks", force: true do |t|
+    t.string   "force_push_regex"
+    t.string   "delete_branch_regex"
+    t.string   "commit_message_regex"
+    t.boolean  "deny_delete_tag"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "issues", force: true do |t|
     t.string   "title"
