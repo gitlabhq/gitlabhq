@@ -9,6 +9,7 @@ v 6.7.0
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
   - Fix CI status for merge requests from fork 
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - New page load indicator that includes a spinner that scrolls with the page
   - Converted all the help sections into markdown
 
 v 6.6.2
