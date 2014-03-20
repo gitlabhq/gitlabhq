@@ -63,7 +63,7 @@ module Gitlab
         options.merge!(size: size) if size
 
         ldap.search(options).map do |entry|
-          Gitlab::LDAP::Group.new(entry)
+          Gitlab::LDAP::Group.new(entry, self)
         end
       end
 

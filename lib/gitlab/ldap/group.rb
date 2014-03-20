@@ -12,9 +12,10 @@ module Gitlab
         adapter.group(cn)
       end
 
-      def initialize(entry)
+      def initialize(entry, adapter=nil)
         Rails.logger.debug { "Instantiating #{self.class.name} with LDIF:\n#{entry.to_ldif}" }
         @entry = entry
+        @adapter = adapter
       end
 
       def cn
