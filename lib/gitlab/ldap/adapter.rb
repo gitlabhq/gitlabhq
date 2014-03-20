@@ -106,6 +106,10 @@ module Gitlab
         users(*args).first
       end
 
+      def dn_matches_filter?(dn, filter)
+        ldap.search(base: dn, filter: filter, attributes: %w{dn}).any?
+      end
+
       private
 
       def config

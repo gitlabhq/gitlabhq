@@ -41,8 +41,10 @@ module Gitlab
       def has_member?(user)
         if memberuid?
           member_uids.include?(user.uid)
+        elsif member_dns.include?(user.dn)
+          true
         else
-          member_dns.include?(user.dn)
+          adapter.dn_matches_filter?(user.dn, active_directory_recursive_memberof_filter)
         end
       end
 
@@ -60,6 +62,10 @@ module Gitlab
       end
 
       private
+
+      def active_directory_recursive_memberof_filter
+        Net::LDAP::Filter.ex("memberOf:1.2.840.113556.1.4.1941", entry.dn)
+      end
 
       def entry
         @entry

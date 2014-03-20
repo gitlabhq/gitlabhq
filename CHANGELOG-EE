@@ -1,5 +1,6 @@
 v 6.7.0
   - Improve LDAP sign-in speed by reusing connections
+  - Add support for Active Directory nested LDAP groups
 
 v 6.5.0
   - Add reset permissions button to Group#members page
