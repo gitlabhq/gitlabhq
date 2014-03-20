@@ -27,6 +27,8 @@ v 6.7.0
   - Markdown relative links in the wiki link to wiki pages, markdown relative links in repositories link to files in the repository
   - Added Slack service integration (Federico Ravasio)
   - Better API responses for access_levels (sponsored by O'Reilly Media)
+  - Requires at least 2 unicorn workers
+  - Requires gitlab-shell v1.9+
 
 v 6.6.5
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
