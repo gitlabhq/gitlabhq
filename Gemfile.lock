@@ -128,6 +128,8 @@ GEM
       mail (~> 2.2)
     email_validator (1.4.0)
       activemodel
+    emoji (1.0.1)
+      json
     enumerize (0.7.0)
       activesupport (>= 3.2)
     equalizer (0.0.8)
@@ -165,7 +167,6 @@ GEM
     formatador (0.2.4)
     gemnasium-gitlab-service (0.2.1)
       rugged (~> 0.19)
-    gemoji (1.3.1)
     gherkin-ruby (0.3.1)
       racc
     github-markdown (0.5.5)
@@ -190,6 +191,8 @@ GEM
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.4)
       mime-types (~> 1.19)
+    gitlab_emoji (0.0.1)
+      emoji (~> 1.0.1)
     gitlab_git (5.7.1)
       activesupport (~> 4.0.0)
       charlock_holmes (~> 0.6.9)
@@ -593,12 +596,12 @@ DEPENDENCIES
   font-awesome-rails (~> 3.2)
   foreman
   gemnasium-gitlab-service (~> 0.2)
-  gemoji (~> 1.3.0)
   github-markup (~> 0.7.4)!
   gitlab-flowdock-git-hook (~> 0.4.2)
   gitlab-gollum-lib (~> 1.1.0)
   gitlab-grack (~> 2.0.0.pre)
   gitlab-linguist (~> 3.0.0)
+  gitlab_emoji (~> 0.0.1)
   gitlab_git (~> 5.7.1)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.4)
