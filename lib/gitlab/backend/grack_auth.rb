@@ -5,7 +5,7 @@ module Grack
   class Auth < Rack::Auth::Basic
     include Helpers
 
-    attr_accessor :user, :project, :ref, :env
+    attr_accessor :user, :project, :env
 
     def call(env)
       @env = env
@@ -80,24 +80,11 @@ module Grack
     def authorize_request(service)
       case service
       when 'git-upload-pack'
-        can?(user, :download_code, project)
-      when'git-receive-pack'
-        refs.each do |ref|
-          action = if project.protected_branch?(ref)
-                     :push_code_to_protected_branches
-                   else
-                     :push_code
-                   end
-
-          return false unless can?(user, action, project)
-        end
-
-        # Never let git-receive-pack trough unauthenticated; it's
-        # harmless but git < 1.8 doesn't like it
-        return false if user.nil?
-        true
+        # Serve only upload request.
+        # Authorization on push will be serverd by update hook in repository
+        Gitlab::GitAccess.new.download_allowed?(user, project)
       else
-        false
+        true
       end
     end
 
@@ -113,30 +100,6 @@ module Grack
 
     def project
       @project ||= project_by_path(@request.path_info)
-    end
-
-    def refs
-      @refs ||= parse_refs
-    end
-
-    def parse_refs
-      input = if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
-                Zlib::GzipReader.new(@request.body).read
-              else
-                @request.body.read
-              end
-
-      # Need to reset seek point
-      @request.body.rewind
-
-      # Parse refs
-      refs = input.force_encoding('ascii-8bit').scan(/refs\/heads\/([\/\w\.-]+)/n).flatten.compact
-
-      # Cleanup grabare from refs
-      # if push to multiple branches
-      refs.map do |ref|
-        ref.gsub(/00.*/, "")
-      end
     end
   end
 end
