@@ -1,9 +1,7 @@
 require_relative 'shell_env'
-require_relative 'grack_helpers'
 
 module Grack
   class Auth < Rack::Auth::Basic
-    include Helpers
 
     attr_accessor :user, :project, :env
 
@@ -79,12 +77,14 @@ module Grack
 
     def authorize_request(service)
       case service
-      when 'git-upload-pack'
+      when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
         # Serve only upload request.
         # Authorization on push will be serverd by update hook in repository
         Gitlab::GitAccess.new.download_allowed?(user, project)
-      else
+      when *Gitlab::GitAccess::PUSH_COMMANDS
         true
+      else
+        false
       end
     end
 
@@ -100,6 +100,19 @@ module Grack
 
     def project
       @project ||= project_by_path(@request.path_info)
+    end
+
+    def project_by_path(path)
+      if m = /^([\w\.\/-]+)\.git/.match(path).to_a
+        path_with_namespace = m.last
+        path_with_namespace.gsub!(/\.wiki$/, '')
+
+        Project.find_with_namespace(path_with_namespace)
+      end
+    end
+
+    def render_not_found
+      [404, {"Content-Type" => "text/plain"}, ["Not Found"]]
     end
   end
 end
