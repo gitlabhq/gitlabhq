@@ -97,7 +97,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
-    if: :import?
+    if: :importable?
   validate :check_limit, on: :create
 
   # Scopes
@@ -218,7 +218,7 @@ class Project < ActiveRecord::Base
     RepositoryImportWorker.perform_in(2.seconds, id)
   end
 
-  def import?
+  def importable?
     import_url.present?
   end
 
@@ -227,7 +227,7 @@ class Project < ActiveRecord::Base
   end
 
   def import_in_progress?
-    import? && import_status == 'started'
+    importable? && import_status == 'started'
   end
 
   def import_failed?

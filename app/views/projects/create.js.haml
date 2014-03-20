@@ -1,5 +1,5 @@
 - if @project.saved?
-  - if @project.import?
+  - if @project.importable?
     :plain
       location.href = "#{import_project_path(@project)}";
   - else
