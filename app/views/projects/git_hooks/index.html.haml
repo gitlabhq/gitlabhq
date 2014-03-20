@@ -17,13 +17,13 @@
         = f.check_box :deny_delete_tag
         %span.descr Dont allow users to remove git tags
 
-  .form-group
+  -#.form-group
     = f.label :force_push_regex, "Force push", class: 'control-label'
     .col-sm-10
       = f.text_field :force_push_regex, class: "form-control"
       %p.hint Regular expression for branches to allow force push. Empty - allow force push to any branch
 
-  .form-group
+  -#.form-group
     = f.label :delete_branch_regex, "Branch removal", class: 'control-label'
     .col-sm-10
       = f.text_field :delete_branch_regex, class: "form-control"
@@ -32,7 +32,7 @@
   .form-group
     = f.label :commit_message_regex, "Commit message", class: 'control-label'
     .col-sm-10
-      = f.text_field :commit_message_regex, class: "form-control"
+      = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Ex. Fix \d+\..*'
       %p.hint Commit message must match this regular expression to be pushed. Empty - allow remove of any commit message
 
   .form-actions
