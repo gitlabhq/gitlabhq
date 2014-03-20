@@ -4,160 +4,131 @@ describe Projects::CreateService do
   before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
-  describe :create_by_user do
-    before do
-      @user = create :user
-      @admin = create :user, admin: true
-      @opts = {
-        name: "GitLab",
-        namespace: @user.namespace
-      }
+  describe "#execute" do
+    let(:project) { create_project }
+    let(:opts) { {name: "GitLab", namespace: user.namespace} }
+
+    # NOTE: Must be loaded before we do any of the configuration stubbing in tests below
+    let!(:user) { create(:user) }
+
+    context "in a user namespace" do
+      it "creates a valid project" do
+        project.should be_valid
+      end
+
+      it "assigns current user as project owner" do
+        project.owner.should == user
+      end
+
+      it "assigns owner's namespace to the project" do
+        project.namespace.should == user.namespace
+      end
     end
 
-    context 'user namespace' do
+    context 'in a group namespace' do
+      let(:group) { create(:group, owner: user) }
+
       before do
-        @project = create_project(@user, @opts)
+        group.add_owner(user)
+        opts.merge!(namespace_id: group.id)
       end
 
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @user.namespace }
+      it "creates a valid project" do
+        project.should be_valid
+      end
+
+      it "assigns group as project owner" do
+        project.owner.should == group
+      end
+
+      it "assigns group's namespace to the project" do
+        project.namespace.should == group
+      end
     end
 
-    context 'group namespace' do
+    describe "wiki repository" do
+      let(:wiki) { GollumWiki.new(project, user) }
+
+      it "gets created when enabled" do
+        wiki.repo_exists?.should be_true
+      end
+
+      it "does not get created when disabled" do
+        opts.merge!(wiki_enabled: false)
+
+        wiki.repo_exists?.should be_false
+      end
+    end
+
+    describe "project visibility" do
+      let(:settings) { double('settings', {issues: true, merge_requests: true, wiki: true, wall: true, snippets: true}) }
+
       before do
-        @group = create :group
-        @group.add_owner(@user)
-
-        @opts.merge!(namespace_id: @group.id)
-        @project = create_project(@user, @opts)
-      end
-
-      it { @project.should be_valid }
-      it { @project.owner.should == @group }
-      it { @project.namespace.should == @group }
-    end
-
-    context 'wiki_enabled creates repository directory' do
-      context 'wiki_enabled true creates wiki repository directory' do
-        before do
-          @project = create_project(@user, @opts)
-          @path = GollumWiki.new(@project, @user).send(:path_to_repo)
-        end
-
-        it { File.exists?(@path).should be_true }
-      end
-
-      context 'wiki_enabled false does not create wiki repository directory' do
-        before do
-          @opts.merge!(wiki_enabled: false)
-          @project = create_project(@user, @opts)
-          @path = GollumWiki.new(@project, @user).send(:path_to_repo)
-        end
-
-        it { File.exists?(@path).should be_false }
-      end
-    end
-
-    context 'respect configured visibility setting' do
-      before(:each) do
-        @settings = double("settings")
-        @settings.stub(:issues) { true }
-        @settings.stub(:merge_requests) { true }
-        @settings.stub(:wiki) { true }
-        @settings.stub(:wall) { true }
-        @settings.stub(:snippets) { true }
         stub_const("Settings", Class.new)
-        @restrictions = double("restrictions")
-        @restrictions.stub(:restricted_visibility_levels) { [] }
-        Settings.stub_chain(:gitlab).and_return(@restrictions)
-        Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
       end
 
-      context 'should be public when setting is public' do
+      context "with no restricted visibility levels" do
         before do
-          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
-          @project = create_project(@user, @opts)
+          Settings.stub_chain(:gitlab).and_return(double("restrictions", {
+            restricted_visibility_levels: [],
+            default_projects_features: settings
+          }))
         end
 
-        it { @project.public?.should be_true }
+        it 'should be public when setting is public' do
+          settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+
+          project.should be_public
+        end
+
+        it 'should be private when setting is private' do
+          settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+
+          project.should be_private
+        end
+
+        it 'should be internal when setting is internal' do
+          settings.stub(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+          project.should be_internal
+        end
       end
 
-      context 'should be private when setting is private' do
+      context "with restricted visibility levels" do
         before do
-          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
-          @project = create_project(@user, @opts)
+          settings.stub(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+
+          Settings.stub_chain(:gitlab).and_return(double("restrictions", {
+            restricted_visibility_levels: [Gitlab::VisibilityLevel::PUBLIC],
+            default_projects_features: settings
+          }))
         end
 
-        it { @project.private?.should be_true }
-      end
-
-      context 'should be internal when setting is internal' do
-        before do
-          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
-          @project = create_project(@user, @opts)
+        it 'is reset to system default when provided level is restricted' do
+          opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          project.should be_private
         end
 
-        it { @project.internal?.should be_true }
+        it 'is public when provided level is restricted and user is an admin' do
+          opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          user.admin = true
+          project.should be_public
+        end
+
+        it 'is private when not restricted' do
+          opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          project.should be_private
+        end
+
+        it 'is internal when not restricted' do
+          opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          project.should be_internal
+        end
       end
     end
 
-    context 'respect configured visibility restrictions setting' do
-      before(:each) do
-        @settings = double("settings")
-        @settings.stub(:issues) { true }
-        @settings.stub(:merge_requests) { true }
-        @settings.stub(:wiki) { true }
-        @settings.stub(:wall) { true }
-        @settings.stub(:snippets) { true }
-        @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
-        stub_const("Settings", Class.new)
-        @restrictions = double("restrictions")
-        @restrictions.stub(:restricted_visibility_levels) { [ Gitlab::VisibilityLevel::PUBLIC ] }
-        Settings.stub_chain(:gitlab).and_return(@restrictions)
-        Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
-      end
-
-      context 'should be private when option is public' do
-        before do
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          @project = create_project(@user, @opts)
-        end
-
-        it { @project.private?.should be_true }
-      end
-
-      context 'should be public when option is public for admin' do
-        before do
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
-          @project = create_project(@admin, @opts)
-        end
-
-        it { @project.public?.should be_true }
-      end
-
-      context 'should be private when option is private' do
-        before do
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
-          @project = create_project(@user, @opts)
-        end
-
-        it { @project.private?.should be_true }
-      end
-
-      context 'should be internal when option is internal' do
-        before do
-          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
-          @project = create_project(@user, @opts)
-        end
-
-        it { @project.internal?.should be_true }
-      end
+    def create_project
+      # user and opts come from our memoized variables
+      Projects::CreateService.new(user, opts).execute
     end
-  end
-
-  def create_project(user, opts)
-    Projects::CreateService.new(user, opts).execute
   end
 end
-
