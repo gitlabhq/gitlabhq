@@ -5,3 +5,5 @@ GitLab has a great issue tracker but you can also use an external issue tracker 
 - textual references to PROJECT-1234 in comments, commit messages get turned into HTML links to the corresponding JIRA issue.
 
 ![jira screenshot](jira-intergration-points.png)
+
+You can configure the integration in the gitlab.yml configuration file.
