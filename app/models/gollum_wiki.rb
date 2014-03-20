@@ -90,6 +90,10 @@ class GollumWiki
     wiki.delete_page(page, commit_details(:deleted, message, page.title))
   end
 
+  def repo_exists?
+    File.exists?(path_to_repo)
+  end
+
   private
 
   def create_repo!

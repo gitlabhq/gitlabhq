@@ -545,4 +545,18 @@ class Project < ActiveRecord::Base
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
+
+  private
+
+  # Populate the value of path, if unset, from the parameterized value of name
+  #
+  # Example:
+  #
+  #   [path, name] # => [nil, "GitLab HQ"]
+  #   save
+  #   path # => "gitlab-hq"
+  def populate_path
+    self.path = name.parameterize if self.path.blank?
+  end
+  before_validation :populate_path, on: :create
 end
