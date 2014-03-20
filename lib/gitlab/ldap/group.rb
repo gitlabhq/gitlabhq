@@ -63,6 +63,8 @@ module Gitlab
 
       private
 
+      # We use the ActiveDirectory LDAP_MATCHING_RULE_IN_CHAIN matching rule; see
+      # http://msdn.microsoft.com/en-us/library/aa746475%28VS.85%29.aspx#code-snippet-5
       def active_directory_recursive_memberof_filter
         Net::LDAP::Filter.ex("memberOf:1.2.840.113556.1.4.1941", entry.dn)
       end
