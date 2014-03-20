@@ -76,5 +76,5 @@ case "$1" in
     load_ok
     ;;
   *)
-    echo "Usage: RAILS_ENV=your_env $0 {stop|start|start_no_deamonize|restart|killall}"
+    echo "Usage: RAILS_ENV=your_env $0 {stop|start|start_no_deamonize|restart|killall|load_ok}"
 esac
