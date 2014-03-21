@@ -30,6 +30,7 @@ v 6.7.0
   - Requires at least 2 unicorn workers
   - Requires gitlab-shell v1.9+
   - Replaced gemoji(due to closed licencing problem) with Phantom Open Emoji library(combined SIL Open Font License, MIT License and the CC 3.0 License)
+  - Fix `/:username.keys` response content type (Dmitry Medvinsky)
 
 v 6.6.5
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
