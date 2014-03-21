@@ -19,6 +19,10 @@
     = link_to project_hooks_path(@project) do
       %i.icon-link
       Web Hooks
+  = nav_link(controller: :git_hooks) do
+    = link_to project_git_hooks_path(@project) do
+      %i.icon-upload
+      Git Hooks
   = nav_link(controller: :services) do
     = link_to project_services_path(@project) do
       %i.icon-cogs

@@ -47,6 +47,7 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: Group) }, foreign_key: "namespace_id"
   belongs_to :namespace
 
+  has_one :git_hook, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
