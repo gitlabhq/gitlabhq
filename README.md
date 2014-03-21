@@ -73,7 +73,7 @@ Since 2011 GitLab is released on the 22nd of every month. Every new release incl
 
 It is recommended to follow a monthly upgrade schedule. Security releases come out when needed. For more information about the release process see the documentation for [monthly](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/monthly.md) and [security](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/security.md) releases.
 
-* Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
+* Features that will be in the next releases are listed on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
 ### Run in production mode
 
@@ -142,7 +142,7 @@ or start each component separately
 
 * [Mailing list](https://groups.google.com/forum/#!forum/gitlabhq) and [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) are the best places to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and has resolved it. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
 
-* [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
+* [Feature request forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
 * [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
