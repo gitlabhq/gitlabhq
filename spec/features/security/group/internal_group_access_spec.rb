@@ -16,7 +16,7 @@ describe "Group with internal project access" do
       group.add_user(reporter, Gitlab::Access::REPORTER)
       group.add_user(guest, Gitlab::Access::GUEST)
 
-      create(:project, group: group, visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+      create(:project, :internal, group: group)
     end
 
     describe "GET /groups/:path" do

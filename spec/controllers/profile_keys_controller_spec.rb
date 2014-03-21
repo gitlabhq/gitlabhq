@@ -24,6 +24,11 @@ describe Profiles::KeysController do
 
         expect(response.body).to eq("")
       end
+
+      it "should respond with text/plain content type" do
+        get :get_keys, username: user.username
+        expect(response.content_type).to eq("text/plain")
+      end
     end
 
     describe "user with keys" do
@@ -43,6 +48,11 @@ describe Profiles::KeysController do
 
         expect(response.body).not_to eq("")
         expect(response.body).to eq(user.all_ssh_keys.join("\n"))
+      end
+
+      it "should respond with text/plain content type" do
+        get :get_keys, username: user.username
+        expect(response.content_type).to eq("text/plain")
       end
     end
   end

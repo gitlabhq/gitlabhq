@@ -48,7 +48,6 @@ module Gitlab
                  else
                    :push_code
                  end
-
         user.can?(action, project) &&
           pass_git_hooks?(user, project, ref, oldrev, newrev)
       else
