@@ -100,4 +100,22 @@ class ProjectServices < Spinach::FeatureSteps
   step 'I should see email on push service settings saved' do
     find_field('Recipients').value.should == 'qa@company.name'
   end
+
+  step 'I click Slack service link' do
+    click_link 'Slack'
+  end
+
+  step 'I fill Slack settings' do
+    check 'Active'
+    fill_in 'Subdomain', with: 'gitlab'
+    fill_in 'Room', with: '#gitlab'
+    fill_in 'Token', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see Slack service settings saved' do
+    find_field('Subdomain').value.should == 'gitlab'
+    find_field('Room').value.should == '#gitlab'
+    find_field('Token').value.should == 'verySecret'
+  end
 end

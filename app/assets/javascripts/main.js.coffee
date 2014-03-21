@@ -41,19 +41,11 @@ window.linkify = (str) ->
 window.simpleFormat = (str) ->
   linkify(sanitize(str).replace(/\n/g, '<br />'))
 
-window.startSpinner = ->
-  $('.turbolink-spinner').fadeIn()
-
-window.stopSpinner = ->
-  $('.turbolink-spinner').fadeOut()
-
 window.unbindEvents = ->
   $(document).unbind('scroll')
   $(document).off('scroll')
 
-document.addEventListener("page:fetch", startSpinner)
 document.addEventListener("page:fetch", unbindEvents)
-document.addEventListener("page:change", stopSpinner)
 
 $ ->
   # Click a .one_click_select field, select the contents
