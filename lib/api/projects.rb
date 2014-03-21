@@ -215,6 +215,15 @@ module API
         @users = paginate @users
         present @users, with: Entities::User
       end
+
+      # Get a labels list
+      #
+      # Example Request:
+      #  GET /users
+      get ':id/labels' do
+        @labels = user_project.issues_labels
+        present @labels, with: Entities::Label
+      end
     end
   end
 end
