@@ -22,14 +22,16 @@ module Grack
 
       @env['SCRIPT_NAME'] = ""
 
-      auth!
+      if project
+        auth!
+      else
+        render_not_found
+      end
     end
 
     private
 
     def auth!
-      return render_not_found unless project
-
       if @auth.provided?
         return bad_request unless @auth.basic?
 
@@ -38,12 +40,8 @@ module Grack
 
         # Allow authentication for GitLab CI service
         # if valid token passed
-        if login == "gitlab-ci-token" && project.gitlab_ci?
-          token = project.gitlab_ci_service.token
-
-          if token.present? && token == password && service_name == 'git-upload-pack'
-            return @app.call(env)
-          end
+        if gitlab_ci_request?(login, password)
+          return @app.call(env)
         end
 
         @user = authenticate_user(login, password)
@@ -51,23 +49,26 @@ module Grack
         if @user
           Gitlab::ShellEnv.set_env(@user)
           @env['REMOTE_USER'] = @auth.username
-        else
-          return unauthorized
         end
-
-      else
-        return unauthorized unless project.public?
       end
 
-      if authorized_git_request?
+      if authorized_request?
         @app.call(env)
       else
         unauthorized
       end
     end
 
-    def authorized_git_request?
-      authorize_request(service_name)
+    def gitlab_ci_request?(login, password)
+      if login == "gitlab-ci-token" && project.gitlab_ci?
+        token = project.gitlab_ci_service.token
+
+        if token.present? && token == password && git_cmd == 'git-upload-pack'
+          true
+        end
+      end
+
+      false
     end
 
     def authenticate_user(login, password)
@@ -75,20 +76,31 @@ module Grack
       auth.find(login, password)
     end
 
-    def authorize_request(service)
-      case service
+    def authorized_request?
+      case git_cmd
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
-        # Serve only upload request.
-        # Authorization on push will be serverd by update hook in repository
-        Gitlab::GitAccess.new.download_allowed?(user, project)
+        if user
+          Gitlab::GitAccess.new.download_allowed?(user, project)
+        elsif project.public?
+          # Allow clone/fetch for public projects
+          true
+        else
+          false
+        end
       when *Gitlab::GitAccess::PUSH_COMMANDS
-        true
+        if user
+          # Skip user authorization on upload request.
+          # It will be serverd by update hook in repository
+          true
+        else
+          false
+        end
       else
         false
       end
     end
 
-    def service_name
+    def git_cmd
       if @request.get?
         @request.params['service']
       elsif @request.post?
