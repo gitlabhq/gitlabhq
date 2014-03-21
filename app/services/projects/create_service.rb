@@ -1,103 +1,100 @@
 module Projects
   class CreateService < BaseService
+    attr_accessor :namespace_id
+
     def initialize(user, params)
       @current_user, @params = user, params.dup
+      @namespace_id = @params.delete(:namespace_id)
+
+      validate_visibility_level
+
+      @project = Project.new(default_options.merge(@params))
     end
 
     def execute
-      # get namespace id
-      namespace_id = params.delete(:namespace_id)
+      assign_namespace(namespace_id)
+      project.creator = current_user
 
-      # check that user is allowed to set specified visibility_level
+      begin
+        if project.save
+          add_user_as_master unless project.group
+
+          project.update_column(:last_activity_at, project.created_at)
+
+          import_repository
+          create_wiki
+        end
+      rescue => ex
+        project.errors.add(:base, "Can't save project. Please try again later")
+      end
+
+      project
+    end
+
+    private
+
+    # Checks if the current user is allowed to assign the project's visibility level
+    #
+    # If not, delete the provided value from params
+    def validate_visibility_level
       unless Gitlab::VisibilityLevel.allowed_for?(current_user, params[:visibility_level])
         params.delete(:visibility_level)
       end
+    end
 
-      # Load default feature settings
-      default_features = Gitlab.config.gitlab.default_projects_features
+    def default_options
+      features = Gitlab.config.gitlab.default_projects_features
 
-      default_opts = {
-        issues_enabled: default_features.issues,
-        wiki_enabled: default_features.wiki,
-        wall_enabled: default_features.wall,
-        snippets_enabled: default_features.snippets,
-        merge_requests_enabled: default_features.merge_requests,
-        visibility_level: default_features.visibility_level
+      {
+        issues_enabled: features.issues,
+        wiki_enabled: features.wiki,
+        wall_enabled: features.wall,
+        snippets_enabled: features.snippets,
+        merge_requests_enabled: features.merge_requests,
+        visibility_level: features.visibility_level
       }.stringify_keys
+    end
 
-      @project = Project.new(default_opts.merge(params))
+    def add_user_as_master
+      project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
+    end
 
-      # Parametrize path for project
-      #
-      # Ex.
-      #  'GitLab HQ'.parameterize => "gitlab-hq"
-      #
-      @project.path = @project.name.dup.parameterize unless @project.path.present?
+    def import_repository
+      if project.importable?
+        project.import_start
+      else
+        GitlabShellWorker.perform_async(:add_repository, project.path_with_namespace)
+      end
+    end
 
+    def create_wiki
+      return unless project.wiki_enabled?
 
-      if namespace_id
-        # Find matching namespace and check if it allowed
-        # for current user if namespace_id passed.
-        if allowed_namespace?(current_user, namespace_id)
-          @project.namespace_id = namespace_id
+      GollumWiki.new(project, project.owner).wiki
+    rescue GollumWiki::CouldNotCreateWikiError
+      # Don't bubble up to ProjectObserver
+    end
+
+    # Assign a namespace to the project being created
+    #
+    # If a namespace is provided, we check to make sure the current user is
+    # allowed to manage it, adding an error on :namespace if not.
+    #
+    # If no namespace is provided, the user's own namespace is used.
+    def assign_namespace(id)
+      if id
+        # Lookup namespace and ensure current user is allowed to modify it
+        namespace = Namespace.find(id)
+
+        if current_user.can?(:manage_namespace, namespace)
+          project.namespace = namespace
         else
-          deny_namespace
-          return @project
+          project.errors.add(:namespace, "is not valid")
         end
       else
-        # Set current user namespace if namespace_id is nil
-        @project.namespace_id = current_user.namespace_id
+        # Default to the current user's namespace
+        project.namespace = current_user.namespace
       end
-
-      @project.creator = current_user
-
-      if @project.save
-        unless @project.group
-          @project.users_projects.create(
-            project_access: UsersProject::MASTER,
-            user: current_user
-          )
-        end
-
-        @project.update_column(:last_activity_at, @project.created_at)
-
-        if @project.import?
-          @project.import_start
-        else
-          GitlabShellWorker.perform_async(
-            :add_repository,
-            @project.path_with_namespace
-          )
-
-        end
-
-        if @project.wiki_enabled?
-          begin
-            # force the creation of a wiki,
-            GollumWiki.new(@project, @project.owner).wiki
-          rescue GollumWiki::CouldNotCreateWikiError => ex
-            # Prevent project observer crash
-            # if failed to create wiki
-            nil
-          end
-        end
-      end
-
-      @project
-    rescue => ex
-      @project.errors.add(:base, "Can't save project. Please try again later")
-      @project
-    end
-
-    protected
-
-    def deny_namespace
-      @project.errors.add(:namespace, "is not valid")
-    end
-
-    def allowed_namespace?(user, namespace_id)
-      namespace = Namespace.find_by(id: namespace_id)
-      current_user.can?(:manage_namespace, namespace)
     end
   end
 end

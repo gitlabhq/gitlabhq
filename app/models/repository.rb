@@ -15,7 +15,7 @@ class Repository
   end
 
   def exists?
-    raw_repository
+    raw_repository.present?
   end
 
   def empty?

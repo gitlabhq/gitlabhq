@@ -97,7 +97,7 @@ class Project < ActiveRecord::Base
   validates_uniqueness_of :path, scope: :namespace_id
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
-    if: :import?
+    if: :importable?
   validate :check_limit, on: :create
 
   # Scopes
@@ -218,7 +218,7 @@ class Project < ActiveRecord::Base
     RepositoryImportWorker.perform_in(2.seconds, id)
   end
 
-  def import?
+  def importable?
     import_url.present?
   end
 
@@ -227,7 +227,7 @@ class Project < ActiveRecord::Base
   end
 
   def import_in_progress?
-    import? && import_status == 'started'
+    importable? && import_status == 'started'
   end
 
   def import_failed?
@@ -403,13 +403,6 @@ class Project < ActiveRecord::Base
     true
   end
 
-  def valid_repo?
-    repository.exists?
-  rescue
-    errors.add(:path, "Invalid repository path")
-    false
-  end
-
   def empty_repo?
     !repository.exists? || repository.empty?
   end
@@ -552,4 +545,18 @@ class Project < ActiveRecord::Base
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
+
+  private
+
+  # Populate the value of path, if unset, from the parameterized value of name
+  #
+  # Example:
+  #
+  #   [path, name] # => [nil, "GitLab HQ"]
+  #   save
+  #   path # => "gitlab-hq"
+  def populate_path
+    self.path = name.parameterize if self.path.blank?
+  end
+  before_validation :populate_path, on: :create
 end
