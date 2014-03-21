@@ -1,7 +1,7 @@
 %h3.page-title
   Git hooks
 %p.light
-  Here you can set additional rules for push to repository
+  Rules that define what git pushes are accepted for this project
 
 %hr.clearfix
 
@@ -11,29 +11,29 @@
       - @pre_receive_hook.errors.full_messages.each do |msg|
         %p= msg
   .form-group
-    = f.label :deny_delete_tag, "Deny tag remove", class: 'control-label'
+    = f.label :deny_delete_tag, "Prevent tag removal", class: 'control-label'
     .col-sm-10
       .checkbox
         = f.check_box :deny_delete_tag
-        %span.descr Dont allow users to remove git tags
+        %span.descr Do not allow users to remove git tags.
 
   -#.form-group
     = f.label :force_push_regex, "Force push", class: 'control-label'
     .col-sm-10
       = f.text_field :force_push_regex, class: "form-control"
-      %p.hint Regular expression for branches to allow force push. Empty - allow force push to any branch
+      %p.hint Regular expression that finds branches that you can force push to. If this field is empty it allows force pushes to any branch.
 
   -#.form-group
     = f.label :delete_branch_regex, "Branch removal", class: 'control-label'
     .col-sm-10
       = f.text_field :delete_branch_regex, class: "form-control"
-      %p.hint Regular expression for branches that can be removed. Empty - allow remove of any branch
+      %p.hint Regular expression that finds branches that can be removed. If this field is empty it allows removal of all branches.
 
   .form-group
     = f.label :commit_message_regex, "Commit message", class: 'control-label'
     .col-sm-10
-      = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Ex. Fix \d+\..*'
-      %p.hint Commit message must match this regular expression to be pushed. Empty - allow remove of any commit message
+      = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Example: Fixes \d+\..*'
+      %p.hint Commit message must match this regular expression to be pushed. If this field is empty it allows any commit message. For example you can require that an issue number is always mentioned in the commit message.
 
   .form-actions
-    = f.submit "Save git Hook", class: "btn btn-create"
+    = f.submit "Save Git hooks", class: "btn btn-create"
