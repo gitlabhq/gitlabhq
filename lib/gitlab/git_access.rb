@@ -34,7 +34,7 @@ module Gitlab
     end
 
     def download_allowed?(user, project)
-      if user_allowed?(user)
+      if user && user_allowed?(user)
         user.can?(:download_code, project)
       else
         false
@@ -42,7 +42,7 @@ module Gitlab
     end
 
     def push_allowed?(user, project, ref, oldrev, newrev)
-      if user_allowed?(user)
+      if user && user_allowed?(user)
         action = if project.protected_branch?(ref)
                    :push_code_to_protected_branches
                  else
