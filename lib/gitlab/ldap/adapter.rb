@@ -63,7 +63,7 @@ module Gitlab
         options.merge!(size: size) if size
 
         ldap.search(options).map do |entry|
-          Gitlab::LDAP::Group.new(entry)
+          Gitlab::LDAP::Group.new(entry, self)
         end
       end
 
@@ -104,6 +104,10 @@ module Gitlab
 
       def user(*args)
         users(*args).first
+      end
+
+      def dn_matches_filter?(dn, filter)
+        ldap.search(base: dn, filter: filter, attributes: %w{dn}).any?
       end
 
       private
