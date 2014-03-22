@@ -29,13 +29,13 @@
     %span
       %i.icon-remove
       Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
-      #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}.
+      #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
 - if @merge_request.merged?
   .alert.alert-info
     %span
       %i.icon-ok
       Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
-      #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}.
+      #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
 - if !@closes_issues.empty? && @merge_request.open?
   .alert.alert-info.alert-info
     %span
