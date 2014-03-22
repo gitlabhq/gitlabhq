@@ -77,6 +77,14 @@ Please keep the change in a single MR **as small as possible**. If you want to c
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
 
+**Please format your merge request as follow:**
+
+1. What does this MR do?
+2. Are there points in the code the reviewer needs to double check?
+3. Why was this MR needed?
+4. What are the relevant issue numbers / [Feedback items](http://feedback.gitlab.com/)?
+5. Screenshots (If appropiate)
+
 ## Contribution acceptance criteria
 
 1. The change is as small as possible (see the above paragraph for details)
