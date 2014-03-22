@@ -29,7 +29,6 @@ module TestEnv
     disable_mailer if opts[:mailer] == false
     setup_stubs
 
-
     clear_test_repo_dir if opts[:init_repos] == true
     setup_test_repos(opts) if opts[:repos] == true
   end
@@ -165,8 +164,7 @@ module TestEnv
 
   def clear_test_repo_dir
     setup_stubs
-    # Use tmp dir for FS manipulations
-    repos_path = testing_path()
+
     # Remove tmp/test-git-base-path
     FileUtils.rm_rf Gitlab.config.gitlab_shell.repos_path
 

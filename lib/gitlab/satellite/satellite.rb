@@ -24,7 +24,6 @@ module Gitlab
       def clear_and_update!
         raise SatelliteNotExistError unless exists?
 
-        File.exists? path
         @repo = nil
         clear_working_dir!
         delete_heads!
