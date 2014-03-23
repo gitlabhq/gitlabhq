@@ -216,10 +216,12 @@ module API
         present @users, with: Entities::User
       end
 
-      # Get a labels list
+      # Get a project labels
       #
+      # Parameters:
+      #   id (required) - The ID of a project
       # Example Request:
-      #  GET /users
+      #   GET /projects/:id/labels
       get ':id/labels' do
         @labels = user_project.issues_labels
         present @labels, with: Entities::Label
