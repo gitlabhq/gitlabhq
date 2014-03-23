@@ -28,6 +28,8 @@ class Dispatcher
         new Activities()
       when 'projects:commit:show'
         new Commit()
+      when 'projects:compare:show', 'projects:compare:index'
+        new Compare()
       when 'groups:show', 'projects:show'
         new Activities()
       when 'projects:new', 'projects:edit'
