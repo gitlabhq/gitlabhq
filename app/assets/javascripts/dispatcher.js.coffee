@@ -25,10 +25,14 @@ class Dispatcher
         GitLab.GfmAutoComplete.setup()
       when 'dashboard:show'
         new Dashboard()
+        new DashboardTooltips()
         new Activities()
       when 'projects:commit:show'
         new Commit()
-      when 'groups:show', 'projects:show'
+      when 'groups:show'
+        new Activities()
+        new DashboardTooltips()
+      when 'projects:show'
         new Activities()
       when 'projects:new', 'projects:edit'
         new Project()
@@ -42,6 +46,8 @@ class Dispatcher
         new TreeView()
       when 'projects:blob:show'
         new BlobView()
+      when 'users:show'
+        new DashboardTooltips()
 
     switch path.first()
       when 'admin' then new Admin()

@@ -67,18 +67,17 @@
 
   a {
     display: block;
+    .arrow {
+      float: right;
+      padding: 0px 5px;
+      margin: 0;
+      font-size: 20px;
+      color: #666;
+    }
   }
 
   .project-name, .group-name {
     font-weight: 500;
-  }
-
-  .arrow {
-    float: right;
-    padding: 0px 5px;
-    margin: 0;
-    font-size: 20px;
-    color: #666;
   }
 
   .last-activity {

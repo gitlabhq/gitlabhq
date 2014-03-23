@@ -2,5 +2,5 @@
   .title Projects
   %ul.well-list
     - @projects.each do |project|
-      %li
+      %li.js-description-tooltip{"data-title" => project.description}
         = link_to_project project
