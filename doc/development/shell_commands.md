@@ -4,7 +4,7 @@
 
 - [Google Ruby Security Reviewer's Guide](https://code.google.com/p/ruby-security/wiki/Guide)
 - [OWASP Command Injection](https://www.owasp.org/index.php/Command_Injection)
-- [Ruby on Rails Security Guide](http://guides.rubyonrails.org/security.html) section 7.7
+- [Ruby on Rails Security Guide Command Line Injection](http://guides.rubyonrails.org/security.html#command-line-injection)
 
 ## Use File and FileUtils instead of shell commands
 
