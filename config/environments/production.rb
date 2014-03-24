@@ -34,6 +34,7 @@ Gitlab::Application.configure do
   # config.log_level = :debug
 
   # Suppress 'Rendered template ...' messages in the log
+  # source: http://stackoverflow.com/a/16369363
   %w{render_template render_partial render_collection}.each do |event|
     ActiveSupport::Notifications.unsubscribe "#{event}.action_view"
   end
