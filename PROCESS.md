@@ -73,7 +73,7 @@ Thanks for the issue report. Please reformat your issue to conform to the issue 
 
 ### Feature requests
 
-Thanks for your interest in GitLab. We don't use the issue tracker for feature requests. Please use http://feedback.gitlab.com/ for this purpose or create a merge request implementing this feature. Have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) for more information.
+Thanks for your interest in GitLab. We don't use the issue tracker for feature requests. Things that are wrong but are not a regression compared to older versions of GitLab are considered feature requests and not issues. Please use http://feedback.gitlab.com/ for this purpose or create a merge request implementing this feature. Have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) for more information.
 
 ### Issue report for old version
 
