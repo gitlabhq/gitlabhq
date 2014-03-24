@@ -33,6 +33,11 @@ Gitlab::Application.configure do
   # See everything in the log (default is :info)
   # config.log_level = :debug
 
+  # Suppress 'Rendered template ...' messages in the log
+  %w{render_template render_partial render_collection}.each do |event|
+    ActiveSupport::Notifications.unsubscribe "#{event}.action_view"
+  end
+
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
 
