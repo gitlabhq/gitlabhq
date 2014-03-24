@@ -42,3 +42,7 @@ Use the [support document](https://docs.google.com/document/d/1cAHvbdFE6zR5WY-zh
 - Click on a [file link](https://dev.gitlab.org/samples/relative-links/blob/master/documents/0.md) and see if it correctly takes to the blob view
 - Check if the links in the README when viewed as a [blob](https://dev.gitlab.org/samples/relative-links/blob/master/README.md) are correct
 - Select the "markdown" branch and check if all links point to the files within the markdown branch 
+
+## Upgrader
+- Upgrade from the previous release
+- Run the upgrader script in this release (it should not break)
