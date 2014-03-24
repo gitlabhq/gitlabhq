@@ -58,16 +58,14 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
 
-* 17th: feature freeze (stop merging new features in master)
-* 18th: UI freeze (stop merging changes to the user interface)
-* 19th: code freeze (stop merging non-essential code improvements)
-* 20th: release candidate 1 (VERSION x.x.0.rc1, tag, tweet and upgrade Cloud)
-* 21st: optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
-* 22nd: release (VERSION x.x.0, create x-x-stable branch, tag, blog and tweet)
-* 23nd: optional patch releases (x.x.1, x.x.2, etc., only if there are serious regressions)
-* 24-end of month: release Enterprise Edition and upgrade GitLab Cloud to latest patch
 * 1-7th: official merge window (see contributing guide)
-* 8-16th: bugfixes and sponsored features
+* 8-14th: work on bugfixes, sponsored features and GitLab EE
+* 15th: code freeze (stop merging into master except essential bugfixes)
+* 18th: release candidate 1 (VERSION x.x.0.rc1, tag and tweet about x.x.0.rc1, release on GitLab Cloud)
+* 20st: optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
+* 22nd: release (VERSION x.x.0, create x-x-stable branch, tag, blog and tweet)
+* 23nd: optional patch releases (x.x.1, x.x.2, etc., only if there are serious problems)
+* 24-end of month: release GitLab EE and GitLab CI
 
 # Write a blog post
 
