@@ -91,7 +91,7 @@ class NotificationService
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
 
     recipients.each do |recipient|
-      mailer.merged_merge_request_email(recipient.id, merge_request.id)
+      mailer.merged_merge_request_email(recipient.id, merge_request.id, merge_request.author_id_of_changes)
     end
   end
 
