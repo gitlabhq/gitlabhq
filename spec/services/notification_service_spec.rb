@@ -233,15 +233,15 @@ describe NotificationService do
         should_email(@u_watcher.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.merge_mr(merge_request)
+        notification.merge_mr(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
-        Notify.should_receive(:merged_merge_request_email).with(user_id, merge_request.id)
+        Notify.should_receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:merged_merge_request_email).with(user_id, merge_request.id)
+        Notify.should_not_receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
       end
     end
   end
