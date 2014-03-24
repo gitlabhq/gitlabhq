@@ -124,7 +124,7 @@ class ProjectsController < ApplicationController
 
   def autocomplete_sources
     @suggestions = {
-      emojis: Emoji.names,
+      emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
       issues: @project.issues.select([:iid, :title, :description]),
       mergerequests: @project.merge_requests.select([:iid, :title, :description]),
       members: @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
