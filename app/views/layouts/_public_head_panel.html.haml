@@ -8,11 +8,15 @@
         %span.separator
       %h1.title= title
 
-      .pull-right
+      %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
+        %span.sr-only Toggle navigation
+        %i.icon-reorder
+
+      .pull-right.hidden-xs
         = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in btn-new'
 
-      %ul.nav.navbar-nav
-        %li
-          %a
-            %div.hide.turbolink-spinner
-              %i.icon-refresh.icon-spin
+      .navbar-collapse.collapse
+        %ul.nav.navbar-nav
+          %li.visible-xs
+            = link_to "Sign in", new_session_path(:user)
+
