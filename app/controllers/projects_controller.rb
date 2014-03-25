@@ -126,10 +126,10 @@ class ProjectsController < ApplicationController
     note_type = params['type']
     note_id = params['type_id']
     participating = if note_type && note_id
-      participants_in(note_type, note_id)
-    else
-      []
-    end
+                      participants_in(note_type, note_id)
+                    else
+                      []
+                    end
     team_members = sorted(@project.team.members)
     participants = team_members + participating
     @suggestions = {
@@ -174,16 +174,18 @@ class ProjectsController < ApplicationController
 
   def participants_in(type, id)
     users = case type
-    when "Issue"
-      @project.issues.find_by_iid(id).participants
-    when "MergeRequest"
-      @project.merge_requests.find_by_iid(id).participants
-    when "Commit"
-      author_ids = Note.for_commit_id(id).pluck(:author_id).uniq
-      User.where(id: author_ids)
-    else
-      []
-    end
+            when "Issue"
+              issue = @project.issues.find_by_iid(id)
+              issue ? issue.participants : []
+            when "MergeRequest"
+              merge_request = @project.merge_requests.find_by_iid(id)
+              merge_request ? merge_request.participants : []
+            when "Commit"
+              author_ids = Note.for_commit_id(id).pluck(:author_id).uniq
+              User.where(id: author_ids)
+            else
+              []
+            end
     sorted(users)
   end
 
