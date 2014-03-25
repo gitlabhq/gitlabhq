@@ -9,7 +9,7 @@
 
   %ul.well-list.dash-list
     - projects.each do |project|
-      %li.project-row
+      %li.project-row.js-description-tooltip{"data-title" => project.description}
         = render "project", project: project
 
     - if projects.blank?
