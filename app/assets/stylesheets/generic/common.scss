@@ -355,3 +355,7 @@ table {
 @media (max-width: $screen-xs-max) {
   .container .content { margin-top: 20px; }
 }
+
+.wiki .highlight, .note-body .highlight {
+  margin-bottom: 9px;
+}
