@@ -13,12 +13,6 @@
     border-bottom: 1px solid #eee;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
-    &:after {
-      content: " ";
-      display: table;
-      clear: both;
-    }
-
     &.disabled {
       color: #888;
     }
