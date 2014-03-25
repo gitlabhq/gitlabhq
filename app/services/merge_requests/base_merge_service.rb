@@ -7,13 +7,13 @@ module MergeRequests
       NotificationService.new
     end
 
-    def create_merge_event(merge_request)
+    def create_merge_event(merge_request, current_user)
       Event.create(
         project: merge_request.target_project,
         target_id: merge_request.id,
         target_type: merge_request.class.name,
         action: Event::MERGED,
-        author_id: merge_request.author_id_of_changes
+        author_id: current_user.id
       )
     end
 
