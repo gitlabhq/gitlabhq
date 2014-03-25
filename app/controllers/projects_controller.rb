@@ -123,12 +123,21 @@ class ProjectsController < ApplicationController
   end
 
   def autocomplete_sources
-    participating_users = @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } } + User.participating(@project.notes).select([:username, :name]).sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+    note_type = params['type']
+    note_id = params['type_id']
+    participating = if note_type && note_id
+      participants_in(note_type, note_id)
+    else
+      []
+    end
+    team_members = @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+    participants = team_members + participating
+    #participating = @project.issues.map { |issue| issue.participants.sort_by(&:username).map { |user| { username: user.username, name: user.name } } }.flatten
     @suggestions = {
       emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
       issues: @project.issues.select([:iid, :title, :description]),
       mergerequests: @project.merge_requests.select([:iid, :title, :description]),
-      members: participating_users.uniq
+      members: participants.uniq
     }
 
     respond_to do |format|
@@ -162,5 +171,17 @@ class ProjectsController < ApplicationController
 
   def user_layout
     current_user ? "projects" : "public_projects"
+  end
+
+  def participants_in(type, id)
+    note = case type
+    when "Issue", "MergeRequest"
+      type.constantize.find_by_iid(id)
+    when "Commits"
+      type.constantize.find(id)
+    else
+      []
+    end
+    note.participants.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
   end
 end
