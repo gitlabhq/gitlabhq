@@ -1,3 +1,5 @@
+  - Added support for disabling standard login (only enabled authorization methods are displayed on the sign in page)
+
 v 6.7.0
   - Increased the example Nginx client_max_body_size from 5MB to 20MB, consider updating it manually on existing installations
   - Add support for Gemnasium as a Project Service (Olivier Gonzalez)
@@ -7,7 +9,7 @@ v 6.7.0
   - Blob and tree gfm links to anchors work
   - Piwik Integration (Sebastian Winkler)
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
-  - Fix CI status for merge requests from fork 
+  - Fix CI status for merge requests from fork
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
   - New page load indicator that includes a spinner that scrolls with the page
   - Converted all the help sections into markdown

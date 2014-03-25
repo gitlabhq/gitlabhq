@@ -1,20 +1,29 @@
 .login-box
   %h3.page-title Sign in
-  - if ldap_enabled?
-    %ul.nav.nav-tabs
-      %li.active
-        = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
-      %li
-        = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
-    .tab-content
-      %div#tab-ldap.tab-pane.active
-        = render partial: 'devise/sessions/new_ldap'
-      %div#tab-signin.tab-pane
-        = render partial: 'devise/sessions/new_base'
+  - if ldap_enabled? or gitlab_config.signin_enabled or Gitlab.config.omniauth.enabled
+    - if ldap_enabled? and gitlab_config.signin_enabled
+      %ul.nav.nav-tabs
+        %li.active
+          = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
+        %li
+          = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
+      .tab-content
+        %div#tab-ldap.tab-pane.active
+          = render partial: 'devise/sessions/new_ldap'
+        %div#tab-signin.tab-pane
+          = render partial: 'devise/sessions/new_base'
+
+    - elsif ldap_enabled?
+      = render partial: 'devise/sessions/new_ldap'
+
+    - elsif gitlab_config.signin_enabled
+      = render partial: 'devise/sessions/new_base'
+
+    = render 'devise/sessions/oauth_providers' if devise_mapping.omniauthable?
 
   - else
-    = render partial: 'devise/sessions/new_base'
-
+    %div
+      No authentication methods configured.
 
   = render 'devise/sessions/oauth_providers' if devise_mapping.omniauthable?
   %hr

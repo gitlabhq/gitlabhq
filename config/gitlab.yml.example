@@ -54,8 +54,12 @@ production: &base
 
 
     ## Users management
-    # default: false - Account passwords are not sent via the email if signup is enabled. 
+    # default: false - Account passwords are not sent via the email if signup is enabled.
     # signup_enabled: true
+
+    ## Builtin standard user login system
+    # default: true - Allow standard login even LDAP or other auth mechanisms are enabled
+    # signin_enabled: true
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
