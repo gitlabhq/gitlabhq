@@ -1,3 +1,9 @@
+v6.7.2
+  - Fix upgrader script
+
+v6.7.1
+  - Fix GitLab CI integration
+
 v 6.7.0
   - Increased the example Nginx client_max_body_size from 5MB to 20MB, consider updating it manually on existing installations
   - Add support for Gemnasium as a Project Service (Olivier Gonzalez)

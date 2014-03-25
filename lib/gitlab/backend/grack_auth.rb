@@ -64,7 +64,7 @@ module Grack
         token = project.gitlab_ci_service.token
 
         if token.present? && token == password && git_cmd == 'git-upload-pack'
-          true
+          return true
         end
       end
 
