@@ -24,8 +24,8 @@ Issues and merge requests should be in English and contain appropriate language 
 
 To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
 
-The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious bugs in the latest [stable or development release of GitLab](MAINTENANCE.md).
-If something is missing but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request.
+The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md).
+If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request.
 When submitting an issue please conform to the issue submission guidelines listed below.
 Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
