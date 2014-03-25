@@ -1,7 +1,10 @@
-v6.7.2
+v 6.8.0
+  - Ability to at mention users that are participating in issue and merge req. discussion
+
+v 6.7.2
   - Fix upgrader script
 
-v6.7.1
+v 6.7.1
   - Fix GitLab CI integration
 
 v 6.7.0
