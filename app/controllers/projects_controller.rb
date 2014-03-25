@@ -123,11 +123,12 @@ class ProjectsController < ApplicationController
   end
 
   def autocomplete_sources
+    participating_users = @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } } + User.participating(@project.notes).select([:username, :name]).sort_by(&:username).map { |user| { username: user.username, name: user.name } }
     @suggestions = {
       emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
       issues: @project.issues.select([:iid, :title, :description]),
       mergerequests: @project.merge_requests.select([:iid, :title, :description]),
-      members: @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+      members: participating_users.uniq
     }
 
     respond_to do |format|
