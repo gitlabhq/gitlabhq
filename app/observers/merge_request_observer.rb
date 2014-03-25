@@ -1,6 +1,4 @@
-class MergeRequestObserver < ActivityObserver
-  observe :merge_request
-
+class MergeRequestObserver < BaseObserver
   def after_create(merge_request)
     event_service.open_mr(merge_request, current_user)
     notification.new_merge_request(merge_request, current_user)
