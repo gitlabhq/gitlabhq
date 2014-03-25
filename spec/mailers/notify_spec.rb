@@ -229,6 +229,7 @@ describe Notify do
       end
 
       context 'for merge requests' do
+        let(:merge_author) { create(:user) }
         let(:merge_request) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project) }
         let(:merge_request_with_description) { create(:merge_request, author: current_user, assignee: assignee, source_project: project, target_project: project, description: Faker::Lorem.sentence) }
 
@@ -288,7 +289,30 @@ describe Notify do
           it 'contains a link to the merge request' do
             should have_body_text /#{project_merge_request_path project, merge_request}/
           end
+        end
 
+        describe 'that are merged' do
+          subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
+
+          it_behaves_like 'a multiple recipients email'
+
+          it 'is sent as the merge author' do
+            sender = subject.header[:from].addrs[0]
+            sender.display_name.should eq(merge_author.name)
+            sender.address.should eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            should have_subject /#{merge_request.title} \(!#{merge_request.iid}\)/
+          end
+
+          it 'contains the new status' do
+            should have_body_text /merged/i
+          end
+
+          it 'contains a link to the merge request' do
+            should have_body_text /#{project_merge_request_path project, merge_request}/
+          end
         end
       end
     end
