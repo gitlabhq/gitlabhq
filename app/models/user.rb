@@ -169,7 +169,6 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
   scope :ldap, -> { where(provider:  'ldap') }
-  scope :participating, ->(notes){ where(id: notes.inc_author.map(&:author_id))}
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 

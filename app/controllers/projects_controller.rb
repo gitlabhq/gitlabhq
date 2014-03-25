@@ -130,14 +130,13 @@ class ProjectsController < ApplicationController
     else
       []
     end
-    team_members = @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+    team_members = sorted(@project.team.members)
     participants = team_members + participating
-    #participating = @project.issues.map { |issue| issue.participants.sort_by(&:username).map { |user| { username: user.username, name: user.name } } }.flatten
     @suggestions = {
       emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
       issues: @project.issues.select([:iid, :title, :description]),
       mergerequests: @project.merge_requests.select([:iid, :title, :description]),
-      members: participants.uniq
+      members: participants
     }
 
     respond_to do |format|
@@ -174,14 +173,19 @@ class ProjectsController < ApplicationController
   end
 
   def participants_in(type, id)
-    note = case type
+    users = case type
     when "Issue", "MergeRequest"
-      type.constantize.find_by_iid(id)
-    when "Commits"
-      type.constantize.find(id)
+      type.constantize.find_by_iid(id).participants
+    when "Commit"
+      author_ids = Note.for_commit_id(id).pluck(:author_id).uniq
+      User.where(id: author_ids)
     else
       []
     end
-    note.participants.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+    sorted(users)
+  end
+
+  def sorted(users)
+    users.uniq.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
   end
 end
