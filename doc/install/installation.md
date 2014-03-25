@@ -4,7 +4,7 @@ this should be the highest numbered stable branch (example shown below).
 
 ![capture](http://i.imgur.com/d2AlIVj.png)
 
-If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installation guide links by version.
+If this is unclear check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
 
 # Important notes
 
@@ -128,7 +128,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.1
 
     cd gitlab-shell
 
@@ -144,7 +144,7 @@ GitLab Shell is an ssh access and repository management software developed speci
 
 # 5. Database
 
-We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](doc/install/database_mysql.md).
+We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
 
     # Install the database packages
     sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
@@ -173,7 +173,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](do
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-6-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-7-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
@@ -351,7 +351,7 @@ If all items are green, then congratulations on successfully installing GitLab!
 Visit YOUR_SERVER in your web browser for your first GitLab login.
 The setup has created an admin account for you. You can use it to log in:
 
-    admin@local.host
+    root
     5iveL!fe
 
 **Important Note:**

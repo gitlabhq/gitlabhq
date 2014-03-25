@@ -82,6 +82,8 @@ namespace :gitlab do
   def run(command)
     output, _ = Gitlab::Popen.popen(command)
     output
+  rescue Errno::ENOENT
+    '' # if the command does not exist, return an empty string
   end
 
   def uid_for(user_name)

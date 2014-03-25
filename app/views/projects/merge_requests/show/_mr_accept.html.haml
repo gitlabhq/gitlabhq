@@ -1,6 +1,10 @@
 - unless @allowed_to_merge
-  .bs-callout
-    %strong You don't have permission to merge this MR
+  - if @project.archived?
+    .bs-callout.bs-callout-warning
+      %strong Archived projects cannot be committed to!
+  - else
+    .bs-callout
+      %strong You don't have permission to merge this MR
 
 
 - if @show_merge_controls
@@ -15,18 +19,19 @@
             = link_to "click here", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
           for instructions.
 
-          %br
-          If you want to modify merge commit message -
-          %strong
-            = link_to "click here", "#", class: "modify-merge-commit-link js-toggle-visibility-link", title: "Modify merge commit message"
 
-        .js-toggle-visibility-container.hide
-          .form-group
-            = label_tag :merge_commit_message, "Commit message", class: 'control-label'
-            .col-sm-10
-              = text_area_tag :merge_commit_message, @merge_request.merge_commit_message, class: "form-control js-gfm-input", rows: 14, required: true
-              %p.hint
-                The recommended maximum line length is 52 characters for the first line and 72 characters for all following lines.
+        .js-toggle-container
+          %p
+            If you want to modify merge commit message -
+            %strong
+              = link_to "click here", "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message"
+          .js-toggle-content.hide
+            .form-group
+              = label_tag :merge_commit_message, "Commit message", class: 'control-label'
+              .col-sm-10
+                = text_area_tag :merge_commit_message, @merge_request.merge_commit_message, class: "form-control js-gfm-input", rows: 14, required: true
+                %p.hint
+                  The recommended maximum line length is 52 characters for the first line and 72 characters for all following lines.
 
         .accept-group
           .pull-left

@@ -38,6 +38,27 @@ describe Projects::CreateService do
       it { @project.namespace.should == @group }
     end
 
+    context 'wiki_enabled creates repository directory' do
+      context 'wiki_enabled true creates wiki repository directory' do
+        before do
+          @project = create_project(@user, @opts)
+          @path = GollumWiki.new(@project, @user).send(:path_to_repo)
+        end
+
+        it { File.exists?(@path).should be_true }
+      end
+
+      context 'wiki_enabled false does not create wiki repository directory' do
+        before do
+          @opts.merge!(wiki_enabled: false)
+          @project = create_project(@user, @opts)
+          @path = GollumWiki.new(@project, @user).send(:path_to_repo)
+        end
+
+        it { File.exists?(@path).should be_false }
+      end
+    end
+
     context 'respect configured visibility setting' do
       before(:each) do
         @settings = double("settings")

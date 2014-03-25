@@ -54,6 +54,14 @@ server {
     proxy_pass http://gitlab;
   }
 
+  # Enable gzip compression as per rails guide: http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
+  location ~ ^/(assets)/  {
+    root /home/git/gitlab/public;
+    gzip_static on; # to serve pre-gzipped version
+    expires max;
+    add_header Cache-Control public;
+  }
+
   error_page 502 /502.html;
 }
 

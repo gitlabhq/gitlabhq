@@ -14,27 +14,21 @@
       %table.table
         %thead
           %th USER
-          %th
           %th PID
-          %th
           %th CPU
-          %th
           %th MEM
-          %th
           %th STATE
-          %th
           %th START
-          %th
           %th COMMAND
-          %th
-          - @sidekiq_processes.split("\n").each do |process|
+        %tbody
+          - @sidekiq_processes.each do |process|
             - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
-            - data = process.gsub!(/\s+/m, '|').strip.split('|')
+            - data = process.strip.split(' ')
             %tr
-              - 6.times do
+              %td= Settings.gitlab.user
+              - 5.times do
                 %td= data.shift
-                %td
-              %td= data.join(" ")
+              %td= data.join(' ')
 
       .clearfix
         %p

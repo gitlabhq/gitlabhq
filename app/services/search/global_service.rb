@@ -14,10 +14,9 @@ module Search
       group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
       projects = Project.accessible_to(current_user)
       projects = projects.where(namespace_id: group.id) if group
-      projects = projects.search(query)
       project_ids = projects.pluck(:id)
 
-      result[:projects] = projects.limit(20)
+      result[:projects] = projects.search(query).limit(20)
       result[:merge_requests] = MergeRequest.in_projects(project_ids).search(query).order('updated_at DESC').limit(20)
       result[:issues] = Issue.where(project_id: project_ids).search(query).order('updated_at DESC').limit(20)
       result[:total_results] = %w(projects issues merge_requests).sum { |items| result[items.to_sym].size }

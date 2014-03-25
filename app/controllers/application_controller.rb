@@ -6,6 +6,7 @@ class ApplicationController < ActionController::Base
   before_filter :check_password_expiration
   around_filter :set_current_user_for_thread
   before_filter :add_abilities
+  before_filter :ldap_security_check
   before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
   before_filter :add_gon_variables
@@ -179,9 +180,28 @@ class ApplicationController < ActionController::Base
     end
   end
 
+  def ldap_security_check
+    if current_user && current_user.requires_ldap_check?
+      gitlab_ldap_access do |access|
+        if access.allowed?(current_user)
+          current_user.last_credential_check_at = Time.now
+          current_user.save
+        else
+          sign_out current_user
+          flash[:alert] = "Access denied for your LDAP account."
+          redirect_to new_user_session_path
+        end
+      end
+    end
+  end
+
   def event_filter
     filters = cookies['event_filter'].split(',') if cookies['event_filter'].present?
     @event_filter ||= EventFilter.new(filters)
+  end
+
+  def gitlab_ldap_access(&block)
+    Gitlab::LDAP::Access.open { |access| block.call(access) }
   end
 
   # JSON for infinite scroll via Pager object

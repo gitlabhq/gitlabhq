@@ -1,5 +1,3 @@
-ActiveRecord::Base.observers.disable :all
-
 Gitlab::Seeder.quiet do
   contents = [
     `curl https://gist.github.com/randx/4275756/raw/da2f262920c96d1a970d48bf2e99147954b1f4bd/glus1204.sh`,

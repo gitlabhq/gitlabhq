@@ -9,7 +9,40 @@ v 6.7.0
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
   - Fix CI status for merge requests from fork 
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - New page load indicator that includes a spinner that scrolls with the page
   - Converted all the help sections into markdown
+  - LDAP user filters
+  - Streamline the content of notification emails (Pierre de La Morinerie)
+  - Fixes a bug with group member administration (Matt DeTullio)
+  - Sort tag names using VersionSorter (Robert Speicher)
+  - Add GFM autocompletion for MergeRequests (Robert Speicher)
+  - Add webhook when a new tag is pushed (Jeroen van Baarsen)
+  - Add button for toggling inline comments in diff view
+  - Add retry feature for repository import
+  - Reuse the GitLab LDAP connection within each request
+  - Changed markdown new line behaviour to conform to markdown standards
+  - Fix global search
+  - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
+  - Create and Update MR calls now support the description parameter (Greg Messner)
+  - Markdown relative links in the wiki link to wiki pages, markdown relative links in repositories link to files in the repository
+  - Added Slack service integration (Federico Ravasio)
+  - Better API responses for access_levels (sponsored by O'Reilly Media)
+  - Requires at least 2 unicorn workers
+  - Requires gitlab-shell v1.9+
+  - Replaced gemoji(due to closed licencing problem) with Phantom Open Emoji library(combined SIL Open Font License, MIT License and the CC 3.0 License)
+  - Fix `/:username.keys` response content type (Dmitry Medvinsky)
+
+v 6.6.5
+  - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - Hide mr close button for comment form if merge request was closed or inline comment
+  - Adds ability to reopen closed merge request
+
+v 6.6.4
+  - Add missing html escape for highlighted code blocks in comments, issues
+
+v 6.6.3
+  - Fix 500 error when edit yourself from admin area
+  - Hide private groups for public profiles
 
 v 6.6.2
   - Fix 500 error on branch/tag create or remove via UI

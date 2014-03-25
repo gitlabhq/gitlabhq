@@ -23,13 +23,11 @@
 
 ### Resources
 
-* GitLab.org community site: [Homepage](http://gitlab.org) | [Screenshots](http://gitlab.org/screenshots/) | [Blog](http://blog.gitlab.org/) | [Demo](http://demo.gitlabhq.com/users/sign_in)
+* [GitLab.com](https://www.gitlab.com/) includes information about [subscriptions](https://www.gitlab.com/subscription/), [consultancy](https://www.gitlab.com/consultancy/), the [community](https://www.gitlab.com/community/) and the [hosted GitLab Cloud](https://www.gitlab.com/cloud/).
 
-* GitLab.com commercial services: [Homepage](http://www.gitlab.com/) | [Subscription](http://www.gitlab.com/subscription/) | [Consultancy](http://www.gitlab.com/consultancy/) | [GitLab Cloud](http://www.gitlab.com/cloud/) | [Blog](http://blog.gitlab.com/)
+* [GitLab Enterprise Edition](https://www.gitlab.com/gitlab-ce/) offers additional features that are useful for larger organizations (100+ users).
 
-* [GitLab Enterprise Edition](https://www.gitlab.com/features/) offers additional features that are useful for larger organizations (100+ users).
-
-* [GitLab CI](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/README.md) is a continuous integration (CI) server that is easy to integrate with GitLab.
+* [GitLab CI](https://www.gitlab.com/gitlab-ci/) is a continuous integration (CI) server that is easy to integrate with GitLab.
 
 * Unofficial third-party [iPhone app](http://gitlabcontrol.com/) and [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en) for GitLab
 
@@ -73,7 +71,7 @@ Since 2011 GitLab is released on the 22nd of every month. Every new release incl
 
 It is recommended to follow a monthly upgrade schedule. Security releases come out when needed. For more information about the release process see the documentation for [monthly](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/monthly.md) and [security](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/release/security.md) releases.
 
-* Features that will be in the next releases are listed on [the feedback and suggestions forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
+* Features that will be in the next releases are listed on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
 ### Run in production mode
 
@@ -98,14 +96,9 @@ or start each component separately
 
 ### Run the tests
 
-* Seed the database
-
-        bundle exec rake db:setup RAILS_ENV=test
-        bundle exec rake db:seed_fu RAILS_ENV=test
-
 * Run all tests
 
-        bundle exec rake gitlab:test RAILS_ENV=test
+        bundle exec rake test
 
 * [RSpec](http://rspec.info/) unit and functional tests
 
@@ -142,7 +135,7 @@ or start each component separately
 
 * [Mailing list](https://groups.google.com/forum/#!forum/gitlabhq) and [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) are the best places to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and has resolved it. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
 
-* [Feedback and suggestions forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
+* [Feature request forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
 
 * [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
 
@@ -155,12 +148,3 @@ or start each component separately
 * [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
 
 * [Gitter chat room](https://gitter.im/gitlabhq/gitlabhq#) here you can ask questions when you need help.
-
-
-### Getting in touch
-
-* [Core team](http://gitlab.org/team/)
-
-* [Contributors](http://contributors.gitlab.org/)
-
-* [Community](http://gitlab.org/community/)

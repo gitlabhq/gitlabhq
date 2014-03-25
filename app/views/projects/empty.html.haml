@@ -1,46 +1,34 @@
 = render "home_panel"
 
-- if @project.import? && !@project.imported
-  .save-project-loader
-    %center
-      %h2
-        %i.icon-spinner.icon-spin
-        Importing repository.
-      %p.monospace git clone --bare #{@project.import_url}
-      %p Please wait while we import the repository for you. Refresh at will.
-      :javascript
-        new ProjectImport();
+%div.git-empty
+  %fieldset
+    %legend Git global setup:
+    %pre.dark
+      :preserve
+        git config --global user.name "#{git_user_name}"
+        git config --global user.email "#{git_user_email}"
 
-- else
-  %div.git-empty
-    %fieldset
-      %legend Git global setup:
-      %pre.dark
-        :preserve
-          git config --global user.name "#{git_user_name}"
-          git config --global user.email "#{git_user_email}"
+  %fieldset
+    %legend Create Repository
+    %pre.dark
+      :preserve
+        mkdir #{@project.path}
+        cd #{@project.path}
+        git init
+        touch README
+        git add README
+        git commit -m 'first commit'
+        git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git push -u origin master
 
-    %fieldset
-      %legend Create Repository
-      %pre.dark
-        :preserve
-          mkdir #{@project.path}
-          cd #{@project.path}
-          git init
-          touch README
-          git add README
-          git commit -m 'first commit'
-          git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
-          git push -u origin master
+  %fieldset
+    %legend Existing Git Repo?
+    %pre.dark
+      :preserve
+        cd existing_git_repo
+        git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git push -u origin master
 
-    %fieldset
-      %legend Existing Git Repo?
-      %pre.dark
-        :preserve
-          cd existing_git_repo
-          git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
-          git push -u origin master
-
-  - if can? current_user, :remove_project, @project
-    .prepend-top-20
-      = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"
+- if can? current_user, :remove_project, @project
+  .prepend-top-20
+    = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project)}, method: :delete, class: "btn btn-remove pull-right"

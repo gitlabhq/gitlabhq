@@ -273,3 +273,9 @@ header {
     }
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  #nprogress .spinner {
+    right: 35px !important;
+  }
+}

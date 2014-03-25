@@ -98,7 +98,7 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
-        |\#(?<issue>([a-zA-Z]+-)?\d+)        # Issue ID
+        |\#(?<issue>([a-zA-Z\-]+-)?\d+)      # Issue ID
         |!(?<merge_request>\d+)              # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
         |(?<commit>[\h]{6,40})               # Commit ID
@@ -152,7 +152,7 @@ module Gitlab
     #
     # Returns boolean
     def valid_emoji?(emoji)
-      Emoji.names.include? emoji
+      Emoji.find_by_name emoji
     end
 
     # Private: Dispatches to a dedicated processing method based on reference

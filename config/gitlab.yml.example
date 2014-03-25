@@ -121,7 +121,6 @@ production: &base
   ldap:
     enabled: false
     host: '_your_ldap_server'
-    base: '_the_base_where_you_search_for_users'
     port: 636
     uid: 'sAMAccountName'
     method: 'ssl' # "tls" or "ssl" or "plain"
@@ -137,6 +136,20 @@ production: &base
     # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
     # disable this setting, because the userPrincipalName contains an '@'.
     allow_username_or_email_login: true
+
+    # Base where we can search for users
+    #
+    #   Ex. ou=People,dc=gitlab,dc=example
+    #
+    base: ''
+
+    # Filter LDAP users
+    #
+    #   Format: RFC 4515
+    #   Ex. (employeeType=developer)
+    #
+    user_filter: ''
+
 
   ## OmniAuth settings
   omniauth:

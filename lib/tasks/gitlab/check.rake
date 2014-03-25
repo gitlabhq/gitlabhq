@@ -17,6 +17,7 @@ namespace :gitlab do
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
+      check_orphaned_users_groups
       check_gitlab_config_exists
       check_gitlab_config_not_outdated
       check_log_writable
@@ -65,6 +66,7 @@ namespace :gitlab do
         puts "no".green
       else
         puts "yes".red
+        puts "Please fix this by removing the SQLite entry from the database.yml".blue
         for_more_information(
           "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
           see_database_guide
@@ -178,6 +180,19 @@ namespace :gitlab do
           sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
         )
         fix_and_rerun
+      end
+    end
+
+    def check_orphaned_users_groups
+      print "Database contains orphaned UsersGroups? ... "
+      if UsersGroup.where("user_id not in (select id from users)").count > 0
+        puts "yes".red
+        try_fixing_it(
+          "You can delete the orphaned records using something along the lines of:",
+          sudo_gitlab("bundle exec rails runner -e production 'UsersGroup.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
+        )
+      else
+        puts "no".green
       end
     end
 
@@ -727,7 +742,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 7, 9)
+    required_version = Gitlab::VersionInfo.new(1, 9, 1)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "

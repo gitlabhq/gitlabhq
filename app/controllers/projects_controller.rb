@@ -5,7 +5,7 @@ class ProjectsController < ApplicationController
 
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :retry_import]
   before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
   layout 'navless', only: [:new, :create, :fork]
@@ -21,16 +21,9 @@ class ProjectsController < ApplicationController
 
   def create
     @project = ::Projects::CreateService.new(current_user, params[:project]).execute
+    flash[:notice] = 'Project was successfully created.' if @project.saved?
 
     respond_to do |format|
-      flash[:notice] = 'Project was successfully created.' if @project.saved?
-      format.html do
-        if @project.saved?
-          redirect_to @project
-        else
-          render "new"
-        end
-      end
       format.js
     end
   end
@@ -55,6 +48,11 @@ class ProjectsController < ApplicationController
   end
 
   def show
+    if @project.import_in_progress?
+      redirect_to import_project_path(@project)
+      return
+    end
+
     return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
@@ -67,14 +65,34 @@ class ProjectsController < ApplicationController
         if @project.empty_repo?
           render "projects/empty", layout: user_layout
         else
-          if current_user
-            @last_push = current_user.recent_push(@project.id)
-          end
+          @last_push = current_user.recent_push(@project.id) if current_user
           render :show, layout: user_layout
         end
       end
       format.json { pager_json("events/_events", @events.count) }
     end
+  end
+
+  def import
+    if project.import_finished?
+      redirect_to @project
+      return
+    end
+  end
+
+  def retry_import
+    unless @project.import_failed?
+      redirect_to import_project_path(@project)
+    end
+
+    @project.import_url = params[:project][:import_url]
+
+    if @project.save
+      @project.reload
+      @project.import_retry
+    end
+
+    redirect_to import_project_path(@project)
   end
 
   def destroy
@@ -106,7 +124,7 @@ class ProjectsController < ApplicationController
 
   def autocomplete_sources
     @suggestions = {
-      emojis: Emoji.names,
+      emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
       issues: @project.issues.select([:iid, :title, :description]),
       mergerequests: @project.merge_requests.select([:iid, :title, :description]),
       members: @project.team.members.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
