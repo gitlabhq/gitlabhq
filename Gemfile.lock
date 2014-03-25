@@ -484,7 +484,6 @@ GEM
       capybara (>= 2.0.0)
       railties (>= 3)
       spinach (>= 0.4)
-    spork (1.0.0rc4)
     spring (1.1.1)
     spring-commands-rspec (1.0.1)
       spring (>= 0.9.1)
@@ -661,7 +660,6 @@ DEPENDENCIES
   slack-notifier (~> 0.2.0)
   slim
   spinach-rails
-  spork (~> 1.0rc)
   spring (= 1.1.1)
   spring-commands-rspec (= 1.0.1)
   spring-commands-spinach (= 1.0.0)
