@@ -1,6 +1,10 @@
 - unless @allowed_to_merge
-  .bs-callout
-    %strong You don't have permission to merge this MR
+  - if @project.archived?
+    .bs-callout.bs-callout-warning
+      %strong Archived projects cannot be committed to!
+  - else
+    .bs-callout
+      %strong You don't have permission to merge this MR
 
 
 - if @show_merge_controls
