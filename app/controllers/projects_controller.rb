@@ -136,7 +136,7 @@ class ProjectsController < ApplicationController
       emojis: Emoji.names.map { |e| { name: e, path: view_context.image_url("emoji/#{e}.png") } },
       issues: @project.issues.select([:iid, :title, :description]),
       mergerequests: @project.merge_requests.select([:iid, :title, :description]),
-      members: participants
+      members: participants.uniq
     }
 
     respond_to do |format|
@@ -174,8 +174,10 @@ class ProjectsController < ApplicationController
 
   def participants_in(type, id)
     users = case type
-    when "Issue", "MergeRequest"
-      type.constantize.find_by_iid(id).participants
+    when "Issue"
+      @project.issues.find_by_iid(id).participants
+    when "MergeRequest"
+      @project.merge_requests.find_by_iid(id).participants
     when "Commit"
       author_ids = Note.for_commit_id(id).pluck(:author_id).uniq
       User.where(id: author_ids)
