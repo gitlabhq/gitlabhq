@@ -96,14 +96,9 @@ or start each component separately
 
 ### Run the tests
 
-* Seed the database
-
-        bundle exec rake db:setup RAILS_ENV=test
-        bundle exec rake db:seed_fu RAILS_ENV=test
-
 * Run all tests
 
-        bundle exec rake gitlab:test RAILS_ENV=test
+        bundle exec rake test
 
 * [RSpec](http://rspec.info/) unit and functional tests
 
