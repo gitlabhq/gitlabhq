@@ -5,6 +5,7 @@ Project web hooks allow you to trigger an URL if new code is pushed or a new iss
 You can configure web hook to listen for specific events like pushes, issues, merge requests.
 GitLab will send POST request with data to web hook URL.
 Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+If you send a web hook to an SSL endpoint [the certificate will not be verified](https://gitlab.com/gitlab-org/gitlab-ce/blob/ccd617e58ea71c42b6b073e692447d0fe3c00be6/app/models/web_hook.rb#L35) since many people use self-signed certificates.
 
 ---
 
