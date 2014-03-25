@@ -120,7 +120,7 @@ describe MergeRequestObserver do
     end
 
     before do
-      @merge_request = create(:merge_request, source_project: project, source_project: project)
+      @merge_request = create(:merge_request, source_project: project, target_project: project)
       @event = Event.last
     end
 
