@@ -95,6 +95,14 @@
     padding: 0 25px 15px 25px;
   }
 
+  .issue-attachment {
+    @extend .context;
+  }
+
+  .js-choose-issue-attachment-button {
+    margin-left: 15px;
+  }
+
   .title, .context, .description {
     .clearfix {
       margin: 0;

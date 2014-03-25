@@ -299,6 +299,10 @@ Gitlab::Application.routes.draw do
       end
 
       resources :issues, constraints: {id: /\d+/}, except: [:destroy] do
+        member do
+          delete :delete_attachment
+        end
+
         collection do
           post  :bulk_update
         end
