@@ -4,10 +4,10 @@ describe ProjectsFinder do
   let(:user) { create :user }
   let(:group) { create :group }
 
-  let(:project1) { create(:empty_project, group: group, visibility_level: Project::PUBLIC) }
-  let(:project2) { create(:empty_project, group: group, visibility_level: Project::INTERNAL) }
-  let(:project3) { create(:empty_project, group: group, visibility_level: Project::PRIVATE) }
-  let(:project4) { create(:empty_project, group: group, visibility_level: Project::PRIVATE) }
+  let(:project1) { create(:empty_project, :public,   group: group) }
+  let(:project2) { create(:empty_project, :internal, group: group) }
+  let(:project3) { create(:empty_project, :private,  group: group) }
+  let(:project4) { create(:empty_project, :private,  group: group) }
 
   context 'non authenticated' do
     subject { ProjectsFinder.new.execute(nil, group: group) }

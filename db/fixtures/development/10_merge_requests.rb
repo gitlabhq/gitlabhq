@@ -1,5 +1,3 @@
-ActiveRecord::Base.observers.disable :all
-
 Gitlab::Seeder.quiet do
   (1..100).each  do |i|
     # Random Project
@@ -17,9 +15,8 @@ Gitlab::Seeder.quiet do
     next if branches.uniq.size < 2
 
     user_id = user.id
-    begin
-      Thread.current[:current_user] = user
 
+    Gitlab::Seeder.by_user(user) do
       MergeRequest.seed(:id, [{
         id: i,
         source_branch: branches.first,
@@ -31,8 +28,6 @@ Gitlab::Seeder.quiet do
         milestone: project.milestones.sample,
         title: Faker::Lorem.sentence(6)
       }])
-    ensure
-      Thread.current[:current_user] = nil
     end
     print('.')
   end

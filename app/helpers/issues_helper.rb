@@ -85,11 +85,15 @@ module IssuesHelper
     options_from_collection_for_select(@project.milestones.active, 'id', 'title', object.milestone_id)
   end
 
-  def issue_alert_class(issue)
-    if issue.closed?
-      'alert-danger'
+  def issue_box_class(item)
+    if item.respond_to?(:expired?) && item.expired?
+      'issue-box-expired'
+    elsif item.respond_to?(:merged?) && item.merged?
+      'issue-box-merged'
+    elsif item.closed?
+      'issue-box-closed'
     else
-      'alert-success'
+      'issue-box-open'
     end
   end
 end

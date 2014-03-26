@@ -2,6 +2,12 @@ module Gitlab
   class Shell
     class AccessDenied < StandardError; end
 
+    class KeyAdder < Struct.new(:io)
+      def add_key(id, key)
+        io.puts("#{id}\t#{key.strip}")
+      end
+    end
+
     # Init new repository
     #
     # name - project path with namespace
@@ -128,6 +134,16 @@ module Gitlab
     #
     def add_key(key_id, key_content)
       system "#{gitlab_shell_path}/bin/gitlab-keys", "add-key", key_id, key_content
+    end
+
+    # Batch-add keys to authorized_keys
+    #
+    # Ex.
+    #   batch_add_keys { |adder| adder.add_key("key-42", "sha-rsa ...") }
+    def batch_add_keys(&block)
+      IO.popen(%W(#{gitlab_shell_path}/bin/gitlab-keys batch-add-keys), 'w') do |io|
+        block.call(KeyAdder.new(io))
+      end
     end
 
     # Remove ssh key from gitlab shell

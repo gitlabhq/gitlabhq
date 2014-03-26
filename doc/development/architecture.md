@@ -3,7 +3,7 @@
 
 # Software delivery
 
-There are two editions of GitLab: [Enterprise Edition](https://www.gitlab.com/features/) (EE) and [Community Edition](http://gitlab.org/gitlab-ce/) (CE).
+There are two editions of GitLab: [Enterprise Edition](https://www.gitlab.com/gitlab-ee/) (EE) and [Community Edition](https://www.gitlab.com/gitlab-ce/) (CE).
 GitLab CE is delivered via git from the [gitlabhq repository](https://gitlab.com/gitlab-org/gitlab-ce/tree/master).
 New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
@@ -18,7 +18,7 @@ New releases are generally around the same time as GitLab CE releases with excep
 
 # System Layout
 
-When referring to ~git in the picures it means the home directory of the git user which is typically /home/git.
+When referring to ~git in the pictures it means the home directory of the git user which is typically /home/git.
 
 GitLab is primarily installed within the `/home/git` user home directory as `git` user.
 Within the home directory is where the gitlabhq server software resides as well as the repositories (though the repository location is configurable).

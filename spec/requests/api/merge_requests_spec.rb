@@ -7,6 +7,7 @@ describe API::API do
   let(:user) { create(:user) }
   let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
+  let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   before {
     project.team << [user, :reporters]
   }
@@ -92,9 +93,10 @@ describe API::API do
 
       it "should return merge_request" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
-        title: 'Test merge_request', source_branch: "stable", target_branch: "master", author: user2, target_project_id: project.id
+        title: 'Test merge_request', source_branch: "stable", target_branch: "master", author: user2, target_project_id: project.id, description: 'Test description for Test merge_request'
         response.status.should == 201
         json_response['title'].should == 'Test merge_request'
+        json_response['description'].should == 'Test description for Test merge_request'
       end
 
       it "should not return 422 when source_branch equals target_branch" do
@@ -168,6 +170,12 @@ describe API::API do
       json_response['title'].should == 'New title'
     end
 
+    it "should return merge_request" do
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), description: "New description"
+      response.status.should == 200
+      json_response['description'].should == 'New description'
+    end
+
     it "should return 422 when source_branch and target_branch are renamed the same" do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user),
       source_branch: "master", target_branch: "master"
@@ -195,6 +203,22 @@ describe API::API do
 
     it "should return 404 if note is attached to non existent merge request" do
       post api("/projects/#{project.id}/merge_request/111/comments", user), note: "My comment"
+      response.status.should == 404
+    end
+  end
+
+  describe "GET :id/merge_request/:merge_request_id/comments" do
+    it "should return merge_request comments" do
+      get api("/projects/#{project.id}/merge_request/#{merge_request.id}/comments", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 1
+      json_response.first['note'].should == "a comment on a MR"
+      json_response.first['author']['id'].should == user.id
+    end
+
+    it "should return a 404 error if merge_request_id not found" do
+      get api("/projects/#{project.id}/merge_request/999/comments", user)
       response.status.should == 404
     end
   end

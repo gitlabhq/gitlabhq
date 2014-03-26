@@ -1,8 +1,7 @@
-%p
-  - if @note.for_diff_line?
-    = link_to "New comment on diff", diffs_project_merge_request_url(@merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")
-  - else
-    = link_to "New comment", project_merge_request_url(@merge_request.target_project, @merge_request, anchor: "note_#{@note.id}")
-  for Merge Request ##{@merge_request.iid}
-  %cite "#{truncate(@merge_request.title, length: 20)}"
+- if @note.diff_file_name
+  %p.details
+    New comment on diff for
+    = link_to @note.diff_file_name, @target_url
+    \:
+
 = render 'note_message'

@@ -5,6 +5,15 @@ GIT
   specs:
     github-markup (0.7.6)
 
+GIT
+  remote: https://github.com/intridea/grape-entity.git
+  revision: d904381c951e86250c3f44213b349a3dd8e83fb1
+  ref: d904381c951e86250c3f44213b349a3dd8e83fb1
+  specs:
+    grape-entity (0.4.1)
+      activesupport
+      multi_json (>= 1.3.2)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -101,6 +110,8 @@ GEM
     daemons (1.1.9)
     database_cleaner (1.2.0)
     debug_inspector (0.0.2)
+    default_value_for (3.0.0)
+      activerecord (>= 3.2.0, < 5.0)
     descendants_tracker (0.0.3)
     devise (3.0.4)
       bcrypt-ruby (~> 3.0)
@@ -117,6 +128,8 @@ GEM
       mail (~> 2.2)
     email_validator (1.4.0)
       activemodel
+    emoji (1.0.1)
+      json
     enumerize (0.7.0)
       activesupport (>= 3.2)
     equalizer (0.0.8)
@@ -154,7 +167,6 @@ GEM
     formatador (0.2.4)
     gemnasium-gitlab-service (0.2.1)
       rugged (~> 0.19)
-    gemoji (1.3.1)
     gherkin-ruby (0.3.1)
       racc
     github-markdown (0.5.5)
@@ -179,7 +191,9 @@ GEM
       charlock_holmes (~> 0.6.6)
       escape_utils (~> 0.2.4)
       mime-types (~> 1.19)
-    gitlab_git (5.4.0)
+    gitlab_emoji (0.0.1.1)
+      emoji (~> 1.0.1)
+    gitlab_git (5.7.1)
       activesupport (~> 4.0.0)
       charlock_holmes (~> 0.6.9)
       gitlab-grit (~> 2.6.1)
@@ -204,9 +218,6 @@ GEM
       rack-accept
       rack-mount
       virtus (>= 1.0.0)
-    grape-entity (0.3.0)
-      activesupport
-      multi_json (>= 1.3.2)
     growl (1.0.3)
     guard (2.2.4)
       formatador (>= 0.2.4)
@@ -233,7 +244,7 @@ GEM
       httparty
       httparty
     http_parser.rb (0.5.3)
-    httparty (0.12.0)
+    httparty (0.13.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
@@ -289,6 +300,7 @@ GEM
       net-ssh (>= 1.99.1)
     net-ssh (2.7.0)
     nokogiri (1.5.10)
+    nprogress-rails (0.1.2.3)
     oauth (0.4.7)
     oauth2 (0.8.1)
       faraday (~> 0.8)
@@ -460,6 +472,7 @@ GEM
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
     six (0.2.0)
+    slack-notifier (0.2.0)
     slim (2.0.2)
       temple (~> 0.6.6)
       tilt (>= 1.3.3, < 2.1)
@@ -471,7 +484,6 @@ GEM
       capybara (>= 2.0.0)
       railties (>= 3)
       spinach (>= 0.4)
-    spork (1.0.0rc4)
     spring (1.1.1)
     spring-commands-rspec (1.0.1)
       spring (>= 0.9.1)
@@ -535,6 +547,7 @@ GEM
       raindrops (~> 0.7)
     unicorn-worker-killer (0.4.2)
       unicorn (~> 4)
+    version_sorter (1.1.0)
     virtus (1.0.1)
       axiom-types (~> 0.0.5)
       coercible (~> 1.0)
@@ -570,6 +583,7 @@ DEPENDENCIES
   coveralls
   d3_rails (~> 3.1.4)
   database_cleaner
+  default_value_for (~> 3.0.0)
   devise (= 3.0.4)
   devise-async (= 0.8.0)
   email_spec
@@ -581,18 +595,18 @@ DEPENDENCIES
   font-awesome-rails (~> 3.2)
   foreman
   gemnasium-gitlab-service (~> 0.2)
-  gemoji (~> 1.3.0)
   github-markup (~> 0.7.4)!
   gitlab-flowdock-git-hook (~> 0.4.2)
   gitlab-gollum-lib (~> 1.1.0)
   gitlab-grack (~> 2.0.0.pre)
   gitlab-linguist (~> 3.0.0)
-  gitlab_git (~> 5.4.0)
+  gitlab_emoji (~> 0.0.1.1)
+  gitlab_git (~> 5.7.1)
   gitlab_meta (= 6.0)
   gitlab_omniauth-ldap (= 1.0.4)
   gon (~> 5.0.0)
   grape (~> 0.6.1)
-  grape-entity (~> 0.3.0)
+  grape-entity (~> 0.4.1)!
   growl
   guard-rspec
   guard-spinach
@@ -610,6 +624,7 @@ DEPENDENCIES
   minitest (~> 4.7.0)
   modernizr (= 2.6.2)
   mysql2
+  nprogress-rails
   omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
@@ -642,9 +657,9 @@ DEPENDENCIES
   simplecov
   sinatra
   six
+  slack-notifier (~> 0.2.0)
   slim
   spinach-rails
-  spork (~> 1.0rc)
   spring (= 1.1.1)
   spring-commands-rspec (= 1.0.1)
   spring-commands-spinach (= 1.0.0)
@@ -659,4 +674,5 @@ DEPENDENCIES
   underscore-rails (~> 1.4.4)
   unicorn (~> 4.6.3)
   unicorn-worker-killer
+  version_sorter
   webmock

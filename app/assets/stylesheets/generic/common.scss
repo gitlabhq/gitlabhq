@@ -298,10 +298,6 @@ img.emoji {
   width: 20px;
 }
 
-.appear-data {
-  display: none;
-}
-
 .chart {
   overflow: hidden;
   height: 220px;
@@ -358,4 +354,8 @@ table {
 
 @media (max-width: $screen-xs-max) {
   .container .content { margin-top: 20px; }
+}
+
+.wiki .highlight, .note-body .highlight {
+  margin-bottom: 9px;
 }

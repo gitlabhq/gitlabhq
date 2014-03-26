@@ -4,7 +4,8 @@
     = "#{title} | " if defined?(title)
     GitLab
   = favicon_link_tag 'favicon.ico'
-  = stylesheet_link_tag    "application"
+  = stylesheet_link_tag    "application", :media => "all"
+  = stylesheet_link_tag    "print", :media => "print"
   = javascript_include_tag "application"
   = csrf_meta_tags
   = include_gon
@@ -12,6 +13,7 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
+  = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')
 
   -# Atom feed
   - if current_user

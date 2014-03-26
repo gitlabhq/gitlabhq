@@ -38,7 +38,7 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event, :description
+  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :state_event, :description
 
   attr_accessor :should_remove_source_branch
 
@@ -100,8 +100,6 @@ class MergeRequest < ActiveRecord::Base
 
   scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.project_ids) }
   scope :of_user_team, ->(team) { where("(source_project_id in (:team_project_ids) OR target_project_id in (:team_project_ids) AND assignee_id in (:team_member_ids))", team_project_ids: team.project_ids, team_member_ids: team.member_ids) }
-  scope :opened, -> { with_state(:opened) }
-  scope :closed, -> { with_state(:closed) }
   scope :merged, -> { with_state(:merged) }
   scope :by_branch, ->(branch_name) { where("(source_branch LIKE :branch) OR (target_branch LIKE :branch)", branch: branch_name) }
   scope :cared, ->(user) { where('assignee_id = :user OR author_id = :user', user: user.id) }
@@ -135,7 +133,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def reload_code
-    if merge_request_diff && opened?
+    if merge_request_diff && open?
       merge_request_diff.reload_content
     end
   end
@@ -158,6 +156,10 @@ class MergeRequest < ActiveRecord::Base
 
   def automerge!(current_user, commit_message = nil)
     MergeRequests::AutoMergeService.new.execute(self, current_user, commit_message)
+  end
+
+  def open?
+    opened? || reopened?
   end
 
   def mr_and_commit_notes

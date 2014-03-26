@@ -17,6 +17,7 @@ namespace :gitlab do
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
+      check_orphaned_users_groups
       check_gitlab_config_exists
       check_gitlab_config_not_outdated
       check_log_writable
@@ -65,6 +66,7 @@ namespace :gitlab do
         puts "no".green
       else
         puts "yes".red
+        puts "Please fix this by removing the SQLite entry from the database.yml".blue
         for_more_information(
           "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
           see_database_guide
@@ -168,7 +170,7 @@ namespace :gitlab do
     def check_migrations_are_up
       print "All migrations up? ... "
 
-      migration_status =  `bundle exec rake db:migrate:status`
+      migration_status, _ = Gitlab::Popen.popen(%W(bundle exec rake db:migrate:status))
 
       unless migration_status =~ /down\s+\d{14}/
         puts "yes".green
@@ -178,6 +180,19 @@ namespace :gitlab do
           sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
         )
         fix_and_rerun
+      end
+    end
+
+    def check_orphaned_users_groups
+      print "Database contains orphaned UsersGroups? ... "
+      if UsersGroup.where("user_id not in (select id from users)").count > 0
+        puts "yes".red
+        try_fixing_it(
+          "You can delete the orphaned records using something along the lines of:",
+          sudo_gitlab("bundle exec rails runner -e production 'UsersGroup.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
+        )
+      else
+        puts "no".green
       end
     end
 
@@ -255,7 +270,7 @@ namespace :gitlab do
     def check_redis_version
       print "Redis version >= 2.0.0? ... "
 
-      if run_and_match("redis-cli --version", /redis-cli 2.\d.\d/)
+      if run_and_match(%W(redis-cli --version), /redis-cli 2.\d.\d/)
         puts "yes".green
       else
         puts "no".red
@@ -295,7 +310,7 @@ namespace :gitlab do
         "user.email" => Gitlab.config.gitlab.email_from
       }
       correct_options = options.map do |name, value|
-        run("git config --global --get #{name}").try(:squish) == value
+        run(%W(git config --global --get #{name})).try(:squish) == value
       end
 
       if correct_options.all?
@@ -489,7 +504,7 @@ namespace :gitlab do
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
             for_more_information(
-              "#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh"
+              "#{gitlab_shell_path}/support/rewrite-hooks.sh"
             )
             fix_and_rerun
             next
@@ -513,7 +528,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_shell_self_test
-      gitlab_shell_repo_base = File.expand_path('gitlab-shell', gitlab_shell_user_home)
+      gitlab_shell_repo_base = gitlab_shell_path
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
       if system(check_cmd, chdir: gitlab_shell_repo_base)
@@ -559,8 +574,8 @@ namespace :gitlab do
     # Helper methods
     ########################
 
-    def gitlab_shell_user_home
-      File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
+    def gitlab_shell_path
+      Gitlab.config.gitlab_shell.path
     end
 
     def gitlab_shell_version
@@ -628,7 +643,8 @@ namespace :gitlab do
     end
 
     def sidekiq_process_count
-      `ps ux`.scan(/sidekiq \d+\.\d+\.\d+/).count
+      ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
+      ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
 
@@ -726,7 +742,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 7, 9)
+    required_version = Gitlab::VersionInfo.new(1, 9, 1)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
@@ -739,7 +755,7 @@ namespace :gitlab do
 
   def check_git_version
     required_version = Gitlab::VersionInfo.new(1, 7, 10)
-    current_version = Gitlab::VersionInfo.parse(run("#{Gitlab.config.git.bin_path} --version"))
+    current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "

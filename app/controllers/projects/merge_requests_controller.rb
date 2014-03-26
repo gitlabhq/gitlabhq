@@ -60,7 +60,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def new
     @merge_request = MergeRequest.new(params[:merge_request])
     @merge_request.source_project = @project unless @merge_request.source_project
-    @merge_request.target_project = @project unless @merge_request.target_project
+    @merge_request.target_project ||= (@project.forked_from_project || @project)
+    @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
+
+    @merge_request.target_branch ||= @merge_request.target_project.default_branch
+
     @source_project = @merge_request.source_project
     @merge_request
   end
@@ -105,7 +109,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params[:merge_request].delete(:source_project_id)
     params[:merge_request].delete(:target_project_id)
 
-    if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
+    if @merge_request.update_attributes(params[:merge_request])
       @merge_request.reset_events_cache
 
       respond_to do |format|
@@ -131,7 +135,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if @merge_request.opened? && @merge_request.can_be_merged?
+    if @merge_request.open? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
       @merge_request.automerge!(current_user, params[:merge_commit_message])
       @status = true
@@ -162,7 +166,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_status
-    status = project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
+    status = @merge_request.source_project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
     response = {status: status}
 
     render json: response
@@ -226,7 +230,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
+    @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
   end
 
   def allowed_to_merge?

@@ -19,6 +19,8 @@
 # To add new service you should build a class inherited from Service
 # and implement a set of methods
 class Service < ActiveRecord::Base
+  default_value_for :active, false
+
   attr_accessible :title, :token, :type, :active, :api_key
 
   belongs_to :project

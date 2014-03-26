@@ -10,8 +10,60 @@
 .issue-box {
   color: #666;
   margin:20px 0;
-  background: #FAFAFA;
+  background: #FFF;
   border: 1px solid #EEE;
+
+  &.issue-box-closed {
+    border-color: #DA4E49;
+    .state {
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      color: #a94442;
+      .state-label {
+        background: #DA4E49;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-merged {
+    border-color: #31708f;
+    .state {
+      background-color: #d9edf7;
+      border-color: #bce8f1;
+      color: #31708f;
+      .state-label {
+        background: #31708f;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-open {
+    border-color: #4A4;
+    .state {
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+      color: #3c763d;
+      .state-label {
+        background: #4A4;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-expired {
+    border-color: #cea61b;
+    .state {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+      .state-label {
+        background: #cea61b;
+        color: #FFF;
+      }
+    }
+  }
 
   .control-group {
     margin-bottom: 0;
@@ -51,24 +103,10 @@
 
   .state-label {
     font-size: 14px;
-    padding: 9px 25px;
+    padding: 1px 25px;
     text-align: center;
     text-shadow: none;
     margin-right: 20px;
-
-    &.state-label-blue {
-      background: #31708f;
-      color: #FFF;
-    }
-
-    &.state-label-green {
-      background: #4A4;
-      color: #FFF;
-    }
-
-    &.state-label-red {
-      background: #DA4E49;
-      color: #FFF;
-    }
+    display: inline-block;
   }
 }

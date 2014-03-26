@@ -32,6 +32,18 @@ FactoryGirl.define do
     path { name.downcase.gsub(/\s/, '_') }
     namespace
     creator
+
+    trait :public do
+      visibility_level Gitlab::VisibilityLevel::PUBLIC
+    end
+
+    trait :internal do
+      visibility_level Gitlab::VisibilityLevel::INTERNAL
+    end
+
+    trait :private do
+      visibility_level Gitlab::VisibilityLevel::PRIVATE
+    end
   end
 
   # Generates a test repository from the repository stored under `spec/seed_project.tar.gz`.
@@ -146,6 +158,11 @@ FactoryGirl.define do
       state :reopened
     end
 
+    trait :simple do
+      source_branch "simple_merge_request"
+      target_branch "master"
+    end
+
     factory :closed_merge_request, traits: [:closed]
     factory :reopened_merge_request, traits: [:reopened]
     factory :merge_request_with_diffs, traits: [:with_diffs]
@@ -161,7 +178,6 @@ FactoryGirl.define do
     factory :note_on_issue, traits: [:on_issue], aliases: [:votable_note]
     factory :note_on_merge_request, traits: [:on_merge_request]
     factory :note_on_merge_request_diff, traits: [:on_merge_request, :on_diff]
-    factory :note_on_merge_request_with_attachment, traits: [:on_merge_request, :with_attachment]
 
     trait :on_commit do
       project factory: :project

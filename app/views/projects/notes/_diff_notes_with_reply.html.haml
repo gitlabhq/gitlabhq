@@ -1,7 +1,7 @@
 - note = notes.first # example note
 -# Check if line want not changed since comment was left
 - if !defined?(line) || line == note.diff_line
-  %tr.notes_holder
+  %tr.notes_holder.js-toggle-content
     %td.notes_line{ colspan: 2 }
       %span.btn.disabled
         %i.icon-comment

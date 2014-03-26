@@ -15,7 +15,7 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 1. Acknowledge the issue to the researcher that disclosed it
 1. Fix the issue on a feature branch, do this on the private GitLab development server and update the VERSION and CHANGELOG in this branch
 1. Consider creating and testing workarounds
-1. Create feature branches for the blog posts on GitLab.org and GitLab.com and link them from the code branch
+1. Create feature branches for the blog post on GitLab.com and link them from the code branch
 1. Merge the code feature branch into master
 1. Cherry-pick the code into the latest stable branch
 1. Create a git tag vX.X.X for CE and another patch release for EE

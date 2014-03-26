@@ -4,7 +4,7 @@ class Spinach::Features::PublicProjectsFeature < Spinach::FeatureSteps
   include SharedProject
 
   step 'public empty project "Empty Public Project"' do
-    create :empty_project, name: 'Empty Public Project', visibility_level: Gitlab::VisibilityLevel::PUBLIC
+    create :empty_project, :public, name: 'Empty Public Project'
   end
 
   step 'I should see project "Empty Public Project"' do

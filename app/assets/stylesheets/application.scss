@@ -7,6 +7,8 @@
  *= require select2
  *= require highlightjs.min
  *= require_self
+ *= require nprogress
+ *= require nprogress-bootstrap
 */
 
 @import "main/variables.scss";
@@ -70,7 +72,7 @@
 @import "sections/groups.scss";
 
 /**
- * Code ighlight
+ * Code highlight
  */
 @import "highlight/white.scss";
 @import "highlight/dark.scss";

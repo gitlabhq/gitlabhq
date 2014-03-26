@@ -27,11 +27,15 @@ ul.notes {
 
     .discussion-last-update,
     .note-last-update {
-      font-style: italic;
+      &:before {
+        content: "\00b7";
+      }
+      font-size: 13px;
     }
     .author {
-      color: $style_color;
+      color: #555;
       font-weight: bold;
+      font-size: 14px;
       &:hover {
         color: $primary_color;
       }
@@ -87,7 +91,6 @@ ul.notes {
     }
     .attachment {
       font-size: 14px;
-      margin-top: -20px;
     }
     .note-body {
       @include md-typography;
@@ -190,14 +193,13 @@ ul.notes {
 }
 
 
-
 /**
  * Line note button on the side of diffs
  */
 
 .diff-file tr.line_holder {
   .add-diff-note {
-    background: url("diff_note_add.png") no-repeat left 0;
+    background: image-url("diff_note_add.png") no-repeat left 0;
     height: 22px;
     margin-left: -65px;
     position: absolute;
@@ -305,6 +307,7 @@ ul.notes {
   @extend .col-md-4;
   @extend .thumbnail;
   margin-left: 45px;
+  float: none;
 }
 
 

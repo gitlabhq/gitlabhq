@@ -44,8 +44,8 @@
       - file = project.repository.blob_at(@commit.id, diff.new_path)
       - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
       - next unless file
-      .diff-file{id: "diff-#{i}"}
-        .diff-header
+      .diff-file.js-toggle-container{id: "diff-#{i}"}
+        .diff-header{id: "file-path-#{hexdigest(diff.new_path || diff.old_path)}"}
           - if diff.deleted_file
             %span= diff.old_path
 
@@ -60,6 +60,11 @@
               %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
             .diff-btn-group
+              = link_to "#", class: "js-toggle-button btn btn-small" do
+                %i.icon-chevron-down
+                Diff comments
+              &nbsp;
+
               - if @merge_request && @merge_request.source_project
                 = link_to project_edit_tree_path(@merge_request.source_project, tree_join(@merge_request.source_branch, diff.new_path), from_merge_request_id: @merge_request.id), { class: 'btn btn-small' } do
                   Edit

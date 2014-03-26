@@ -1,5 +1,9 @@
 module Gitlab
-  class SatelliteNotExistError < StandardError;  end
+  class SatelliteNotExistError < StandardError
+    def initialize(msg = "Satellite doesn't exist")
+      super
+    end
+  end
 
   module Satellite
     class Satellite
@@ -17,14 +21,9 @@ module Gitlab
         Gitlab::Satellite::Logger.error(message)
       end
 
-      def raise_no_satellite
-        raise SatelliteNotExistError.new("Satellite doesn't exist")
-      end
-
       def clear_and_update!
-        raise_no_satellite unless exists?
+        raise SatelliteNotExistError unless exists?
 
-        File.exists? path
         @repo = nil
         clear_working_dir!
         delete_heads!
@@ -33,7 +32,7 @@ module Gitlab
       end
 
       def create
-        output, status = popen("git clone #{project.repository.path_to_repo} #{path}",
+        output, status = popen(%W(git clone -- #{project.repository.path_to_repo} #{path}),
                                Gitlab.config.satellites.path)
 
         log("PID: #{project.id}: git clone #{project.repository.path_to_repo} #{path}")
@@ -55,7 +54,7 @@ module Gitlab
       # * Changes the current directory to the satellite's working dir
       # * Yields
       def lock
-        raise_no_satellite unless exists?
+        raise SatelliteNotExistError unless exists?
 
         File.open(lock_file, "w+") do |f|
           begin
@@ -77,7 +76,7 @@ module Gitlab
       end
 
       def repo
-        raise_no_satellite unless exists?
+        raise SatelliteNotExistError unless exists?
 
         @repo ||= Grit::Repo.new(path)
       end

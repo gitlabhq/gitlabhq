@@ -73,7 +73,7 @@
 
 
 .commits-compare-switch{
-  background: url("switch_icon.png") no-repeat center center;
+  background: image-url("switch_icon.png") no-repeat center center;
   width: 32px;
   height: 32px;
   text-indent: -9999px;
@@ -168,6 +168,25 @@ li.commit {
         text-decoration: underline;
       }
     }
+
+    .text-expander {
+      background: #eee;
+      color: #555;
+      padding: 0 5px;
+      cursor: pointer;
+      margin-left: 4px;
+      &:hover {
+        background-color: #ddd;
+      }
+    }
+  }
+
+  .commit-row-description {
+    font-size: 14px;
+    border-left: 1px solid #e5e5e5;
+    padding: 0 15px 0 7px;
+    margin: 5px 0 10px 5px;
+    display: none;
   }
 
   .commit-row-info {

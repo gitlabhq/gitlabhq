@@ -76,7 +76,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update
-    @issue.update_attributes(params[:issue].merge(author_id_of_changes: current_user.id))
+    @issue.update_attributes(params[:issue])
     @issue.reset_events_cache
 
     respond_to do |format|

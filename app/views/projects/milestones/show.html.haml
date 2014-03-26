@@ -22,14 +22,15 @@
     &larr; To milestones list
 
 
-.issue-box
+.issue-box{ class: issue_box_class(@milestone) }
   .state
-    - if @milestone.closed?
-      %span.state-label.state-label-red Closed
-    - elsif @milestone.expired?
-      %span.state-label.state-label-red Expired
-    - else
-      %span.state-label.state-label-green Open
+    %span.state-label
+      - if @milestone.closed?
+        Closed
+      - elsif @milestone.expired?
+        Expired
+      - else
+        Open
 
   %h4.title
     = gfm escape_once(@milestone.title)

@@ -27,7 +27,7 @@ server {
   
   # Increase this if you want to upload large attachments
   # Or if you want to accept large git objects over http
-  client_max_body_size 5m;
+  client_max_body_size 20m;
 
   # individual nginx logs for this gitlab vhost
   access_log  /var/log/nginx/gitlab_access.log;
@@ -52,6 +52,14 @@ server {
     proxy_set_header   X-Forwarded-For   $proxy_add_x_forwarded_for;
 
     proxy_pass http://gitlab;
+  }
+
+  # Enable gzip compression as per rails guide: http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
+  location ~ ^/(assets)/  {
+    root /home/git/gitlab/public;
+    gzip_static on; # to serve pre-gzipped version
+    expires max;
+    add_header Cache-Control public;
   }
 
   error_page 502 /502.html;

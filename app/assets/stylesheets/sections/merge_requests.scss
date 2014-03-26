@@ -89,3 +89,9 @@
 .merge-request-form-info {
   padding-top: 15px;
 }
+
+// hide mr close link for inline diff comment form
+.diff-file .close-mr-link,
+.diff-file .reopen-mr-link {
+  display: none;
+}

@@ -1,14 +1,13 @@
-.issue-box
-  .state{ class: merge_request_alert_class(@merge_request) }
-    - if @merge_request.merged?
-      %span.state-label.state-label-blue
+.issue-box{ class: issue_box_class(@merge_request) }
+  .state
+    %span.state-label
+      - if @merge_request.merged?
         Merged
-    - elsif @merge_request.closed?
-      %span.state-label.state-label-red
+      - elsif @merge_request.closed?
         Closed
-    - else
-      %span.state-label.state-label-green
+      - else
         Open
+
     %span.creator
       Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
@@ -30,14 +29,14 @@
     %span
       %i.icon-remove
       Closed by #{link_to_member(@project, @merge_request.closed_event.author)}
-      #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}.
+      #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
 - if @merge_request.merged?
   .alert.alert-info
     %span
       %i.icon-ok
       Merged by #{link_to_member(@project, @merge_request.merge_event.author)}
-      #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}.
-- if !@closes_issues.empty? && @merge_request.opened?
+      #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
+- if !@closes_issues.empty? && @merge_request.open?
   .alert.alert-info.alert-info
     %span
       %i.icon-ok

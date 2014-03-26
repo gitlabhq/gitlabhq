@@ -1,11 +1,9 @@
 require_relative 'shell_env'
-require_relative 'grack_helpers'
 
 module Grack
   class Auth < Rack::Auth::Basic
-    include Helpers
 
-    attr_accessor :user, :project, :ref, :env
+    attr_accessor :user, :project, :env
 
     def call(env)
       @env = env
@@ -24,14 +22,16 @@ module Grack
 
       @env['SCRIPT_NAME'] = ""
 
-      auth!
+      if project
+        auth!
+      else
+        render_not_found
+      end
     end
 
     private
 
     def auth!
-      return render_not_found unless project
-
       if @auth.provided?
         return bad_request unless @auth.basic?
 
@@ -40,12 +40,8 @@ module Grack
 
         # Allow authentication for GitLab CI service
         # if valid token passed
-        if login == "gitlab-ci-token" && project.gitlab_ci?
-          token = project.gitlab_ci_service.token
-
-          if token.present? && token == password && service_name == 'git-upload-pack'
-            return @app.call(env)
-          end
+        if gitlab_ci_request?(login, password)
+          return @app.call(env)
         end
 
         @user = authenticate_user(login, password)
@@ -53,23 +49,26 @@ module Grack
         if @user
           Gitlab::ShellEnv.set_env(@user)
           @env['REMOTE_USER'] = @auth.username
-        else
-          return unauthorized
         end
-
-      else
-        return unauthorized unless project.public?
       end
 
-      if authorized_git_request?
+      if authorized_request?
         @app.call(env)
       else
         unauthorized
       end
     end
 
-    def authorized_git_request?
-      authorize_request(service_name)
+    def gitlab_ci_request?(login, password)
+      if login == "gitlab-ci-token" && project.gitlab_ci?
+        token = project.gitlab_ci_service.token
+
+        if token.present? && token == password && git_cmd == 'git-upload-pack'
+          return true
+        end
+      end
+
+      false
     end
 
     def authenticate_user(login, password)
@@ -77,31 +76,31 @@ module Grack
       auth.find(login, password)
     end
 
-    def authorize_request(service)
-      case service
-      when 'git-upload-pack'
-        can?(user, :download_code, project)
-      when'git-receive-pack'
-        refs.each do |ref|
-          action = if project.protected_branch?(ref)
-                     :push_code_to_protected_branches
-                   else
-                     :push_code
-                   end
-
-          return false unless can?(user, action, project)
+    def authorized_request?
+      case git_cmd
+      when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
+        if user
+          Gitlab::GitAccess.new.download_allowed?(user, project)
+        elsif project.public?
+          # Allow clone/fetch for public projects
+          true
+        else
+          false
         end
-
-        # Never let git-receive-pack trough unauthenticated; it's
-        # harmless but git < 1.8 doesn't like it
-        return false if user.nil?
-        true
+      when *Gitlab::GitAccess::PUSH_COMMANDS
+        if user
+          # Skip user authorization on upload request.
+          # It will be serverd by update hook in repository
+          true
+        else
+          false
+        end
       else
         false
       end
     end
 
-    def service_name
+    def git_cmd
       if @request.get?
         @request.params['service']
       elsif @request.post?
@@ -115,28 +114,17 @@ module Grack
       @project ||= project_by_path(@request.path_info)
     end
 
-    def refs
-      @refs ||= parse_refs
+    def project_by_path(path)
+      if m = /^([\w\.\/-]+)\.git/.match(path).to_a
+        path_with_namespace = m.last
+        path_with_namespace.gsub!(/\.wiki$/, '')
+
+        Project.find_with_namespace(path_with_namespace)
+      end
     end
 
-    def parse_refs
-      input = if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
-                Zlib::GzipReader.new(@request.body).read
-              else
-                @request.body.read
-              end
-
-      # Need to reset seek point
-      @request.body.rewind
-
-      # Parse refs
-      refs = input.force_encoding('ascii-8bit').scan(/refs\/heads\/([\/\w\.-]+)/n).flatten.compact
-
-      # Cleanup grabare from refs
-      # if push to multiple branches
-      refs.map do |ref|
-        ref.gsub(/00.*/, "")
-      end
+    def render_not_found
+      [404, {"Content-Type" => "text/plain"}, ["Not Found"]]
     end
   end
 end

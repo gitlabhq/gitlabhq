@@ -64,6 +64,7 @@ module API
       #   target_project           - The target project of the merge request defaults to the :id of the project
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
+      #   description              - Description of MR
       #
       # Example:
       #   POST /projects/:id/merge_requests
@@ -72,7 +73,7 @@ module API
         set_current_user_for_thread do
           authorize! :write_merge_request, user_project
           required_attributes! [:source_branch, :target_branch, :title]
-          attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id]
+          attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
           merge_request = user_project.merge_requests.new(attrs)
           merge_request.author = current_user
           merge_request.source_project = user_project
@@ -105,12 +106,13 @@ module API
       #   assignee_id                 - Assignee user ID
       #   title                       - Title of MR
       #   state_event                 - Status of MR. (close|reopen|merge)
+      #   description                 - Description of MR
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
         set_current_user_for_thread do
-          attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event]
+          attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event, :description]
           merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
           authorize! :modify_merge_request, merge_request
@@ -121,6 +123,22 @@ module API
             handle_merge_request_errors! merge_request.errors
           end
         end
+      end
+
+      # Get a merge request's comments
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   merge_request_id (required) - ID of MR
+      # Examples:
+      #   GET /projects/:id/merge_request/:merge_request_id/comments
+      #
+      get ":id/merge_request/:merge_request_id/comments" do
+        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+        authorize! :read_merge_request, merge_request
+
+        present paginate(merge_request.notes), with: Entities::MRNote
       end
 
       # Post comment to merge request
