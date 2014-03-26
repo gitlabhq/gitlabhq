@@ -58,6 +58,8 @@ module Gitlab
     def pass_git_hooks?(user, project, ref, oldrev, newrev)
       return true unless project.git_hook
 
+      return true unless newrev && oldrev
+
       git_hook = project.git_hook
 
       # Prevent tag removal
