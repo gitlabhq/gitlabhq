@@ -3,6 +3,7 @@ v 6.7.0
   - Add support for Active Directory nested LDAP groups
   - Git hooks: Commit message regex
   - Git hooks: Deny git tag removal
+  - Fix group edit in admin area
 
 v 6.5.0
   - Add reset permissions button to Group#members page
