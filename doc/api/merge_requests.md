@@ -150,6 +150,7 @@ Parameters:
 + `target_branch`               - The target branch
 + `assignee_id`                 - Assignee user ID
 + `title`                       - Title of MR
++ `state_event`                 - New state (close|reopen|merge)
 
 ```json
 
@@ -209,4 +210,45 @@ Parameters:
     },
     "note":"text1"
 }
+```
+
+
+## Get the comments on a MR
+
+Gets all the comments associated with a merge request.
+
+```
+GET /projects/:id/merge_request/:merge_request_id/comments
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge_request_id` (required) - ID of merge request
+
+```json
+[
+    {
+       "note":"this is the 1st comment on the 2merge merge request",
+       "author":{
+           "id":11,
+           "username":"admin",
+           "email":"admin@local.host",
+           "name":"Administrator",
+           "state":"active",
+           "created_at":"2014-03-06T08:17:35.000Z"
+       }
+    },
+    {
+       "note":"_Status changed to closed_",
+       "author":{
+           "id":11,
+           "username":"admin",
+           "email":"admin@local.host",
+           "name":"Administrator",
+           "state":"active",
+           "created_at":"2014-03-06T08:17:35.000Z"
+       }
+    }
+]
 ```
