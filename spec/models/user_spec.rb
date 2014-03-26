@@ -301,6 +301,8 @@ describe User do
       User.search(user1.username.downcase).to_a.should == [user1]
       User.search(user2.username.upcase).to_a.should == [user2]
       User.search(user2.username.downcase).to_a.should == [user2]
+      User.search(user1.username.downcase).to_a.count.should == 2
+      User.search(user2.username.downcase).to_a.count.should == 1
     end
   end
 
