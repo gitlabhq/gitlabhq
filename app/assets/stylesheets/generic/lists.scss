@@ -52,6 +52,12 @@
 
     .author { color: #999; }
 
+    .list-item-name {
+      float: left;
+      position: relative;
+      top: 3px;
+    }
+
     p {
       padding-top: 1px;
       margin: 0;

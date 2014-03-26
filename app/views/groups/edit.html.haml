@@ -73,8 +73,9 @@
           %ul.well-list
             - @group.projects.each do |project|
               %li
-                = visibility_level_icon(project.visibility_level)
-                = link_to project.name_with_namespace, project
+                .list-item-name
+                  = visibility_level_icon(project.visibility_level)
+                  = link_to project.name_with_namespace, project
                 .pull-right
                   = link_to 'Members', project_team_index_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
                   = link_to 'Edit', edit_project_path(project), id: "edit_#{dom_id(project)}", class: "btn btn-small"
