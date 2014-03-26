@@ -27,11 +27,15 @@ ul.notes {
 
     .discussion-last-update,
     .note-last-update {
-      font-style: italic;
+      &:before {
+        content: "\00b7";
+      }
+      font-size: 13px;
     }
     .author {
-      color: $style_color;
+      color: #555;
       font-weight: bold;
+      font-size: 14px;
       &:hover {
         color: $primary_color;
       }
