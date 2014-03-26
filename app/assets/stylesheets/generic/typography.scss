@@ -88,9 +88,6 @@ a:focus {
 .wiki {
   @include md-typography;
 
-  font-size: 14px;
-  line-height: 1.6;
-
   /* Link to current header. */
   h1, h2, h3, h4, h5, h6 {
     position: relative;
