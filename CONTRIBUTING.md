@@ -67,6 +67,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. The MR title should describes the change you want to make
 1. The MR description should give a motive for your change and the method you used to achieve it
 1. If the MR changes the UI it should include before and after screenshots
+1. If the MR changes CSS classes please include the list of affected pages `grep css-class ./app -R`
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feature requests](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
