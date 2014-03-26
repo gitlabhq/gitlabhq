@@ -2,8 +2,6 @@ class ActivityObserver < BaseObserver
   observe :issue, :note, :milestone
 
   def after_create(record)
-    event_author_id = record.author_id
-
     if record.kind_of?(Note)
       # Skip system notes, like status changes and cross-references.
       return true if record.system?
@@ -12,9 +10,7 @@ class ActivityObserver < BaseObserver
       return true if record.noteable_type.blank?
     end
 
-    if event_author_id
-      create_event(record, Event.determine_action(record))
-    end
+    create_event(record, Event.determine_action(record)) if current_user
   end
 
   def after_close(record, transition)

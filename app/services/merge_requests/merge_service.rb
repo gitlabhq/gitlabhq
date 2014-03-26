@@ -7,11 +7,10 @@ module MergeRequests
   # to target branch
   class MergeService < BaseMergeService
     def execute(merge_request, current_user, commit_message)
-      merge_request.author_id_of_changes = current_user.id
       merge_request.merge
 
       notification.merge_mr(merge_request, current_user)
-      create_merge_event(merge_request)
+      create_merge_event(merge_request, current_user)
       execute_project_hooks(merge_request)
 
       true
