@@ -292,6 +292,18 @@ describe User do
     end
   end
 
+  describe 'search' do
+    let(:user1) { create(:user, username: 'James', email: 'james@testing.com') }
+    let(:user2) { create(:user, username: 'jameson', email: 'jameson@example.com') }
+
+    it "should be case insensitive" do
+      User.search(user1.username.upcase).to_a.should == [user1]
+      User.search(user1.username.downcase).to_a.should == [user1]
+      User.search(user2.username.upcase).to_a.should == [user2]
+      User.search(user2.username.downcase).to_a.should == [user2]
+    end
+  end
+
   describe 'by_username_or_id' do
     let(:user1) { create(:user, username: 'foo') }
 
