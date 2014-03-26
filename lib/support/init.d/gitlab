@@ -167,7 +167,7 @@ start_gitlab() {
     # Remove old socket if it exists
     rm -f "$socket_path"/gitlab.socket 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV script/web start &
+    RAILS_ENV=$RAILS_ENV script/web start
   fi
 
   # If sidekiq is already running, don't start it again.
