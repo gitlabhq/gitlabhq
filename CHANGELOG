@@ -1,5 +1,6 @@
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
+  - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
 
 v 6.7.2
   - Fix upgrader script
