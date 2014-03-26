@@ -120,3 +120,11 @@ a:focus {
 .md {
   @include md-typography;
 }
+
+/**
+ * Textareas intended for GFM
+ *
+ */
+textarea.js-gfm-input {
+  font-family: $monospace_font;
+}
