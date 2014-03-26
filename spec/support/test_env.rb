@@ -90,7 +90,7 @@ module TestEnv
       size: 12.45
     )
 
-    ActivityObserver.any_instance.stub(
+    BaseObserver.any_instance.stub(
       current_user: double("current_user", id: 1)
     )
   end
