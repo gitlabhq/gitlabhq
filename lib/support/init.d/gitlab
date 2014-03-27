@@ -131,7 +131,7 @@ check_stale_pids(){
     fi
   fi
   if [ "$spid" != "0" -a "$sidekiq_status" != "0" ]; then
-    echo "Removing stale Sidekiq web server pid. This is most likely caused by the Sidekiq crashing the last time it ran."
+    echo "Removing stale Sidekiq job dispatcher pid. This is most likely caused by Sidekiq crashing the last time it ran."
     if ! rm "$sidekiq_pid_path"; then
       echo "Unable to remove stale pid, exiting"
       exit 1
@@ -155,9 +155,9 @@ start_gitlab() {
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
     echo -n "Starting both the GitLab Unicorn and Sidekiq"
   elif [ "$web_status" != "0" ]; then
-    echo -n "Starting GitLab Sidekiq"
-  elif [ "$sidekiq_status" != "0" ]; then
     echo -n "Starting GitLab Unicorn"
+  elif [ "$sidekiq_status" != "0" ]; then
+    echo -n "Starting GitLab Sidekiq"
   fi
 
   # Then check if the service is running. If it is: don't start again.
@@ -190,9 +190,9 @@ stop_gitlab() {
   if [ "$web_status" = "0" -a "$sidekiq_status" = "0" ]; then
     echo -n "Shutting down both Unicorn and Sidekiq"
   elif [ "$web_status" = "0" ]; then
-    echo -n "Shutting down Sidekiq"
-  elif [ "$sidekiq_status" = "0" ]; then
     echo -n "Shutting down Unicorn"
+  elif [ "$sidekiq_status" = "0" ]; then
+    echo -n "Shutting down Sidekiq"
   fi
 
   # If the Unicorn web server is running, tell it to stop;
