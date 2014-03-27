@@ -62,6 +62,29 @@
         font-size: 12px;
       }
     }
+
+    .text-file-parallel div {
+      display: inline-block;
+      padding-bottom: 16px;
+    }
+    .diff-side {
+      overflow-x: scroll;
+      width: 508px;
+      height: 700px;
+    }
+    .diff-side.diff-side-left{
+      overflow-y:hidden;
+    }
+    .diff-side table, td.diff-middle table {
+      height: 700px;
+    }
+    .diff-middle {
+      width: 114px;
+      vertical-align: top;
+      height: 700px;
+      overflow: hidden
+    }
+
     .old_line, .new_line, .diff_line {
       margin: 0px;
       padding: 0px;
@@ -125,8 +148,6 @@
       }
       &.parallel {
         display: table-cell;
-        overflow: hidden;
-        width: 50%;
       }
     }
   }
