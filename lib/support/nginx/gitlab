@@ -20,11 +20,11 @@ upstream gitlab {
 }
 
 server {
-  listen *:80 default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
-  server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
-  server_tokens off;     # don't show the version number, a security best practice
+  listen *:80 default_server;    # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
+  server_name YOUR_SERVER_FQDN;  # e.g., server_name source.example.com;
+  server_tokens off;             # don't show the version number, a security best practice
   root /home/git/gitlab/public;
-  
+
   # Increase this if you want to upload large attachments
   # Or if you want to accept large git objects over http
   client_max_body_size 20m;
@@ -42,7 +42,7 @@ server {
   # if a file, which is not found in the root folder is requested,
   # then the proxy pass the request to the upsteam (gitlab unicorn)
   location @gitlab {
-    proxy_read_timeout 300; # Some requests take more than 30 seconds.
+    proxy_read_timeout 300;    # Some requests take more than 30 seconds.
     proxy_connect_timeout 300; # Some requests take more than 30 seconds.
     proxy_redirect     off;
 
@@ -62,6 +62,9 @@ server {
     add_header Cache-Control public;
   }
 
+  error_page 404 /404.html;
+  error_page 422 /422.html;
+  error_page 500 /500.html;
   error_page 502 /502.html;
 }
 
