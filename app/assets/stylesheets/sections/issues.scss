@@ -143,3 +143,36 @@ form.edit-issue {
     border-color: #E5E5E5;
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  .issue-btn-group {
+    width: 100%;
+    margin-top: 5px;
+
+    .btn-group {
+      width: 100%;
+
+      ul {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: -1px;
+
+      &:first-child:not(:last-child) {
+        border-radius: 4px 4px 0 0;
+      }
+
+      &:not(:first-child):not(:last-child) {
+        border-radius: 0;
+      }
+
+      &:last-child:not(:first-child) {
+        border-radius: 0 0 4px 4px;
+      }
+    }
+  }
+}

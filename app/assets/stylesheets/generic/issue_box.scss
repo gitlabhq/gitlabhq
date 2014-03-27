@@ -70,7 +70,6 @@
   }
 
   .state {
-    height: 34px;
     border-bottom: 1px solid #DDD;
     line-height: 32px;
   }
@@ -89,6 +88,18 @@
     border: none;
     border-top: 1px solid #eee;
     padding: 15px 25px;
+
+    // Reset text align for children
+    .text-right > * { text-align: left; }
+
+    @media (max-width: $screen-xs-max) {
+      // Don't right align on mobile
+      .text-right { text-align: left; }
+
+      .row .col-md-6 {
+        padding-top: 5px;
+      }
+    }
   }
 
   .description {
@@ -106,7 +117,11 @@
     padding: 1px 25px;
     text-align: center;
     text-shadow: none;
-    margin-right: 20px;
     display: inline-block;
+    line-height: 34px;
+  }
+
+  .creator {
+    padding: 2px 15px;
   }
 }
