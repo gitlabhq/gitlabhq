@@ -38,7 +38,7 @@ If a user is a GitLab administrator they receive all permissions.
 |------|-----|--------|---------|------|-----|
 |Browse group|✓|✓|✓|✓|✓|
 |Edit group|||||✓|
-|create project in group|||||✓|
+|Create project in group|||||✓|
 |Manage group members|||||✓|
 |Remove group|||||✓|
 
