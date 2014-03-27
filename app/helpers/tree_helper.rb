@@ -51,6 +51,52 @@ module TreeHelper
     filename =~ /^README(.txt)?$/i
   end
 
+  def ipython_notebook?(filename)
+    filename.downcase.end_with?('.ipynb')
+  end
+
+  def render_notebook(data)
+    # It is a bit of a hassle to get the HTML output from nbconvert. We write
+    # the notebook to a temporary file, convert it to HTML in a temporary
+    # directory, find the HTML file in that directory and read its contents.
+    # Then we remove the temporary file and directory (which now possibly
+    # contains support files for the converted notebook that we ignore).
+    error_doc = <<END
+<!DOCTYPE html>
+<html>
+<head><meta charset=\"UTF-8\"></head>
+<style>
+p {
+  padding: 20px;
+  font-family: "Helvetica Neue",Helvetica,Arial,sans-serif;
+  font-size: 14px;
+  line-height: 18px;
+}
+</style>
+<body>
+<p>Sorry, could not render this notebook.</p>
+</body>
+</html>
+END
+
+    notebook = Tempfile.new('notebook')
+    build_dir = Dir.mktmpdir
+
+    begin
+      notebook.write(data)
+      notebook.flush
+      command = Gitlab.config.ipython_notebook.nbconvert % \
+                { :build_dir => build_dir, :notebook => notebook.path }
+      %x{ #{command} }
+      output_file = Dir.glob(build_dir + '/*.html').first
+      output_file.nil? ? error_doc : File.read(output_file)
+    ensure
+      notebook.close
+      notebook.unlink
+      FileUtils.remove_entry build_dir
+    end
+  end
+
   # Simple shortcut to File.join
   def tree_join(*args)
     File.join(*args)
