@@ -152,7 +152,7 @@ module Gitlab
     #
     # Returns boolean
     def valid_emoji?(emoji)
-      Emoji.names.include? emoji
+      Emoji.find_by_name emoji
     end
 
     # Private: Dispatches to a dedicated processing method based on reference
@@ -166,8 +166,8 @@ module Gitlab
     end
 
     def reference_user(identifier)
-      if member = @project.team_members.find { |user| user.username == identifier }
-        link_to("@#{identifier}", user_url(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+      if user = User.find_by_username(identifier)
+        link_to("@#{identifier}", user_url(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}"))
       end
     end
 

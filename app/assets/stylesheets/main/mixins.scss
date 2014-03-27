@@ -84,6 +84,9 @@
 }
 
 @mixin md-typography {
+  font-size: 14px;
+  line-height: 1.6;
+
   img {
     max-width: 100%;
   }

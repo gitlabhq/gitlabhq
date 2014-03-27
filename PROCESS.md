@@ -24,8 +24,6 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 - Monitors for new merge requests (at least once a week)
 - Manages their work queue by looking at issues and merge requests assigned to them
 - Close fixed issues (via commit messages or manually)
-- Codes [new features](http://feedback.gitlab.com/forums/176466-general/filters/top)!
-- Response guidelines
 - Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to merge requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
 
 ## Priorities of the issue team
@@ -73,7 +71,7 @@ Thanks for the issue report. Please reformat your issue to conform to the issue 
 
 ### Feature requests
 
-Thanks for your interest in GitLab. We don't use the issue tracker for feature requests. Please use http://feedback.gitlab.com/ for this purpose or create a merge request implementing this feature. Have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) for more information.
+Thank you for your interest in improving GitLab. We don't use the issue tracker for feature requests. Things that are wrong but are not a regression compared to older versions of GitLab are considered feature requests and not issues. Please the [feature request forum](http://feedback.gitlab.com/) for this purpose or create a merge request implementing this feature. Have a look at the \[contribution guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) for more information.
 
 ### Issue report for old version
 

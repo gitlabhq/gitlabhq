@@ -1,25 +1,20 @@
-class MergeRequestObserver < ActivityObserver
-  observe :merge_request
-
+class MergeRequestObserver < BaseObserver
   def after_create(merge_request)
-    if merge_request.author_id
-      create_event(merge_request, Event.determine_action(merge_request))
-    end
-
+    event_service.open_mr(merge_request, current_user)
     notification.new_merge_request(merge_request, current_user)
     merge_request.create_cross_references!(merge_request.project, current_user)
     execute_hooks(merge_request)
   end
 
   def after_close(merge_request, transition)
-    create_event(merge_request, Event::CLOSED)
+    event_service.close_mr(merge_request, current_user)
     notification.close_mr(merge_request, current_user)
     create_note(merge_request)
     execute_hooks(merge_request)
   end
 
   def after_reopen(merge_request, transition)
-    create_event(merge_request, Event::REOPENED)
+    event_service.reopen_mr(merge_request, current_user)
     create_note(merge_request)
     execute_hooks(merge_request)
     merge_request.reload_code
@@ -31,16 +26,6 @@ class MergeRequestObserver < ActivityObserver
 
     merge_request.notice_added_references(merge_request.project, current_user)
     execute_hooks(merge_request)
-  end
-
-  def create_event(record, status)
-    Event.create(
-      project: record.target_project,
-      target_id: record.id,
-      target_type: record.class.name,
-      action: status,
-      author_id: current_user.id
-    )
   end
 
   private

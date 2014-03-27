@@ -204,7 +204,7 @@ class User < ActiveRecord::Base
     end
 
     def search query
-      where("name LIKE :query OR email LIKE :query OR username LIKE :query", query: "%#{query}%")
+      where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
 
     def by_username_or_id(name_or_id)
@@ -249,7 +249,7 @@ class User < ActiveRecord::Base
   def namespace_uniq
     namespace_name = self.username
     if Namespace.find_by(path: namespace_name)
-      self.errors.add :username, "already exist"
+      self.errors.add :username, "already exists"
     end
   end
 

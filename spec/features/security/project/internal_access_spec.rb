@@ -1,23 +1,18 @@
 require 'spec_helper'
 
 describe "Internal Project Access" do
-  let(:project) { create(:project) }
+  let(:project) { create(:project, :internal) }
 
   let(:master) { create(:user) }
   let(:guest) { create(:user) }
   let(:reporter) { create(:user) }
 
   before do
-    # internal project
-    project.visibility_level = Gitlab::VisibilityLevel::INTERNAL
-    project.save!
-
     # full access
     project.team << [master, :master]
 
     # readonly
     project.team << [reporter, :reporter]
-
   end
 
   describe "Project should be internal" do

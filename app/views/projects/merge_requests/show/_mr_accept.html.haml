@@ -1,6 +1,13 @@
 - unless @allowed_to_merge
-  .bs-callout
-    %strong You don't have permission to merge this MR
+  - if @project.archived?
+    .bs-callout.bs-callout-warning
+      %strong Archived projects cannot be committed to!
+  - else
+    .bs-callout
+      .automerge_widget.cannot_be_merged.hide
+        %strong This can't be merged automatically, even if it could be merged you don't have the permission to do so.
+      .automerge_widget.can_be_merged.hide
+        %strong This can be merged automatically but you don't have the permission to do so.
 
 
 - if @show_merge_controls

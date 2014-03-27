@@ -677,7 +677,20 @@ namespace :gitlab do
     end
 
     def filter
-      Net::LDAP::Filter.present?(ldap_config.uid)
+      uid_filter = Net::LDAP::Filter.present?(ldap_config.uid)
+      if user_filter
+        Net::LDAP::Filter.join(uid_filter, user_filter)
+      else
+        uid_filter
+      end
+    end
+
+    def user_filter
+      if ldap_config['user_filter'] && ldap_config.user_filter.present?
+        Net::LDAP::Filter.construct(ldap_config.user_filter)
+      else
+        nil
+      end
     end
 
     def ldap
@@ -742,7 +755,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 8, 5)
+    required_version = Gitlab::VersionInfo.new(1, 9, 1)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "

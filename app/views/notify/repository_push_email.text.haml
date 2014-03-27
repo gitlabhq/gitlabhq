@@ -6,7 +6,7 @@ Commits:
   #{commit.short_id} - #{truncate(commit.title, length: 40)}
 \
 \
-Diff:
+Changes:
 - @diffs.each do |diff|
   \
   \=====================================
@@ -22,4 +22,4 @@ Diff:
 - if @compare.timeout
   Huge diff. To prevent performance issues it was hidden
 - elsif @compare.commits_over_limit?
-  Diff for big amount of commits is disabled
+  Changes are not shown due to large amount of commits

@@ -1,14 +1,12 @@
 require 'spec_helper'
 
 describe "On a merge request", js: true do
-  let!(:project) { create(:project) }
-  let!(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
-  let!(:note) { create(:note_on_merge_request_with_attachment,  project: project) }
+  let!(:merge_request) { create(:merge_request, :simple) }
+  let!(:project) { merge_request.source_project }
+  let!(:note) { create(:note_on_merge_request, :with_attachment, project: project) }
 
   before do
-    login_as :user
-    project.team << [@user, :master]
-
+    login_as :admin
     visit project_merge_request_path(project, merge_request)
   end
 
@@ -134,22 +132,20 @@ describe "On a merge request", js: true do
   end
 end
 
-describe "On a merge request diff", js: true, focus: true do
-  let!(:project) { create(:project) }
-  let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
+describe "On a merge request diff", js: true do
+  let(:merge_request) { create(:merge_request, :with_diffs, :simple) }
+  let(:project) { merge_request.source_project }
 
   before do
-    login_as :user
-    project.team << [@user, :master]
+    login_as :admin
     visit diffs_project_merge_request_path(project, merge_request)
   end
-
 
   subject { page }
 
   describe "when adding a note" do
     before do
-      find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
+      find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7"]').click
     end
 
     describe "the notes holder" do
@@ -160,13 +156,13 @@ describe "On a merge request diff", js: true, focus: true do
 
     describe "the note form" do
       it "shouldn't add a second form for same row" do
-        find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
+        find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7"]').click
 
-        should have_css("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185'] + .js-temp-notes-holder form", count: 1)
+        should have_css("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7'] + .js-temp-notes-holder form", count: 1)
       end
 
       it "should be removed when canceled" do
-        within(".diff-file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185']") do
+        within(".diff-file form[rel$='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7']") do
           find(".js-close-discussion-note-form").trigger("click")
         end
 
@@ -176,12 +172,9 @@ describe "On a merge request diff", js: true, focus: true do
   end
 
   describe "with muliple note forms" do
-    let!(:project) { create(:project) }
-    let!(:merge_request) { create(:merge_request_with_diffs, source_project: project, target_project: project) }
-
     before do
-      find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
-      find('a[data-line-code="342e16cbbd482ac2047dc679b2749d248cc1428f_18_17"]').click
+      find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7"]').click
+      find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_10_10"]').click
     end
 
     it { should have_css(".js-temp-notes-holder", count: 2) }
@@ -189,12 +182,12 @@ describe "On a merge request diff", js: true, focus: true do
     describe "previewing them separately" do
       before do
         # add two separate texts and trigger previews on both
-        within("tr[id='4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185'] + .js-temp-notes-holder") do
-          fill_in "note[note]", with: "One comment on line 185"
+        within("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7'] + .js-temp-notes-holder") do
+          fill_in "note[note]", with: "One comment on line 7"
           find(".js-note-preview-button").trigger("click")
         end
-        within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .js-temp-notes-holder") do
-          fill_in "note[note]", with: "Another comment on line 17"
+        within("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_10_10'] + .js-temp-notes-holder") do
+          fill_in "note[note]", with: "Another comment on line 10"
           find(".js-note-preview-button").trigger("click")
         end
       end
@@ -202,14 +195,14 @@ describe "On a merge request diff", js: true, focus: true do
 
     describe "posting a note" do
       before do
-        within("tr[id='342e16cbbd482ac2047dc679b2749d248cc1428f_18_17'] + .js-temp-notes-holder") do
-          fill_in "note[note]", with: "Another comment on line 17"
+        within("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_10_10'] + .js-temp-notes-holder") do
+          fill_in "note[note]", with: "Another comment on line 10"
           click_button("Add Comment")
         end
       end
 
       it 'should be added as discussion' do
-        should have_content("Another comment on line 17")
+        should have_content("Another comment on line 10")
         should have_css(".notes_holder")
         should have_css(".notes_holder .note", count: 1)
         should have_link("Reply")

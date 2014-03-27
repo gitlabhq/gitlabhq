@@ -2,6 +2,12 @@ class NoteObserver < BaseObserver
   def after_create(note)
     notification.new_note(note)
 
+    # Skip system notes, like status changes and cross-references.
+    # Skip wall notes to prevent spamming of dashboard
+    if note.noteable_type.present? && !note.system
+      event_service.leave_note(note, current_user)
+    end
+
     unless note.system?
       # Create a cross-reference note if this Note contains GFM that names an
       # issue, merge request, or commit.

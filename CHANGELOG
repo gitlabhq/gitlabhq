@@ -1,3 +1,14 @@
+v 6.8.0
+  - Ability to at mention users that are participating in issue and merge req. discussion
+  - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
+  - Make user search case-insensitive (Christopher Arnold)
+
+v 6.7.2
+  - Fix upgrader script
+
+v 6.7.1
+  - Fix GitLab CI integration
+
 v 6.7.0
   - Increased the example Nginx client_max_body_size from 5MB to 20MB, consider updating it manually on existing installations
   - Add support for Gemnasium as a Project Service (Olivier Gonzalez)
@@ -9,6 +20,7 @@ v 6.7.0
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
   - Fix CI status for merge requests from fork 
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - New page load indicator that includes a spinner that scrolls with the page
   - Converted all the help sections into markdown
   - LDAP user filters
   - Streamline the content of notification emails (Pierre de La Morinerie)
@@ -24,6 +36,12 @@ v 6.7.0
   - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
   - Create and Update MR calls now support the description parameter (Greg Messner)
   - Markdown relative links in the wiki link to wiki pages, markdown relative links in repositories link to files in the repository
+  - Added Slack service integration (Federico Ravasio)
+  - Better API responses for access_levels (sponsored by O'Reilly Media)
+  - Requires at least 2 unicorn workers
+  - Requires gitlab-shell v1.9+
+  - Replaced gemoji(due to closed licencing problem) with Phantom Open Emoji library(combined SIL Open Font License, MIT License and the CC 3.0 License)
+  - Fix `/:username.keys` response content type (Dmitry Medvinsky)
 
 v 6.6.5
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)

@@ -125,6 +125,22 @@ module API
         end
       end
 
+      # Get a merge request's comments
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   merge_request_id (required) - ID of MR
+      # Examples:
+      #   GET /projects/:id/merge_request/:merge_request_id/comments
+      #
+      get ":id/merge_request/:merge_request_id/comments" do
+        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+        authorize! :read_merge_request, merge_request
+
+        present paginate(merge_request.notes), with: Entities::MRNote
+      end
+
       # Post comment to merge request
       #
       # Parameters:

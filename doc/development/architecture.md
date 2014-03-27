@@ -18,7 +18,7 @@ New releases are generally around the same time as GitLab CE releases with excep
 
 # System Layout
 
-When referring to ~git in the picures it means the home directory of the git user which is typically /home/git.
+When referring to ~git in the pictures it means the home directory of the git user which is typically /home/git.
 
 GitLab is primarily installed within the `/home/git` user home directory as `git` user.
 Within the home directory is where the gitlabhq server software resides as well as the repositories (though the repository location is configurable).
@@ -28,7 +28,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ## Components
 
-![GitLab Diagram Overview](resources/gitlab_diagram_overview.png "GitLab Diagram Overview")
+![GitLab Diagram Overview](resources/gitlab_diagram_overview.png)
 
 A typical install of GitLab will be on Ubuntu Linux or RHEL/CentOS.
 It uses Nginx or Apache as a web front end to proxypass the Unicorn web server.

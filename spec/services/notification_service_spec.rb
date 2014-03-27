@@ -32,6 +32,7 @@ describe NotificationService do
   describe 'Notes' do
     context 'issue note' do
       let(:issue) { create(:issue, assignee: create(:user)) }
+      let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
       let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@mention referenced') }
 
       before do
@@ -48,6 +49,13 @@ describe NotificationService do
           should_not_email(@u_participating.id)
           should_not_email(@u_disabled.id)
           notification.new_note(note)
+        end
+
+        it 'filters out "mentioned in" notes' do
+          mentioned_note = Note.create_cross_reference_note(mentioned_issue, issue, issue.author, issue.project)
+
+          Notify.should_not_receive(:note_issue_email)
+          notification.new_note(mentioned_note)
         end
 
         def should_email(user_id)
@@ -233,15 +241,15 @@ describe NotificationService do
         should_email(@u_watcher.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
-        notification.merge_mr(merge_request)
+        notification.merge_mr(merge_request, @u_disabled)
       end
 
       def should_email(user_id)
-        Notify.should_receive(:merged_merge_request_email).with(user_id, merge_request.id)
+        Notify.should_receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
       end
 
       def should_not_email(user_id)
-        Notify.should_not_receive(:merged_merge_request_email).with(user_id, merge_request.id)
+        Notify.should_not_receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
       end
     end
   end

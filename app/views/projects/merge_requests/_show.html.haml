@@ -20,7 +20,7 @@
       %li.diffs-tab{data: {action: 'diffs'}}
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
           %i.icon-list-alt
-          Diff
+          Changes
 
   - content_for :note_actions do
     - if can?(current_user, :modify_merge_request, @merge_request)
