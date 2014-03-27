@@ -1,5 +1,31 @@
 # GitLab API
 
+## End-points
+
++ [Users](users.md)
++ [Session](session.md)
++ [Projects](projects.md)
++ [Project Snippets](project_snippets.md)
++ [Repositories](repositories.md)
++ [Repository Files](repository_files.md)
++ [Commits](commits.md)
++ [Merge Requests](merge_requests.md)
++ [Issues](issues.md)
++ [Milestones](milestones.md)
++ [Notes](notes.md)
++ [Deploy Keys](deploy_keys.md)
++ [System Hooks](system_hooks.md)
++ [Groups](groups.md)
+
+## Clients
+
++ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
++ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
++ [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
++ [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
+
+## Introduction
+
 All API requests require authentication. You need to pass a `private_token` parameter by url or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
 
 If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
@@ -117,30 +143,3 @@ Issue
 
 So if you want to get issue with api you use `http://host/api/v3/.../issues/:id.json`
 But when you want to create a link to web page - use  `http:://host/project/issues/:iid.json`
-
-
-
-## Contents
-
-+ [Users](users.md)
-+ [Session](session.md)
-+ [Projects](projects.md)
-+ [Project Snippets](project_snippets.md)
-+ [Repositories](repositories.md)
-+ [Repository Files](repository_files.md)
-+ [Commits](commits.md)
-+ [Merge Requests](merge_requests.md)
-+ [Issues](issues.md)
-+ [Milestones](milestones.md)
-+ [Notes](notes.md)
-+ [Deploy Keys](deploy_keys.md)
-+ [System Hooks](system_hooks.md)
-+ [Groups](groups.md)
-
-
-## Clients
-
-+ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
-+ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
-+ [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
-+ [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
