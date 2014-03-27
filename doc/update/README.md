@@ -1,0 +1,5 @@
++ [The indivual upgrade guides](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update)
++ [Uprader](upgrader.md)
++ [Ruby](ruby.md)
++ [Patch versions](patch_versions.md)
++ [MySQL to Postgress](mysql_to_postgress.md)
