@@ -28,7 +28,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ## Components
 
-![GitLab Diagram Overview](resources/gitlab_diagram_overview.png "GitLab Diagram Overview")
+![GitLab Diagram Overview](resources/gitlab_diagram_overview.png)
 
 A typical install of GitLab will be on Ubuntu Linux or RHEL/CentOS.
 It uses Nginx or Apache as a web front end to proxypass the Unicorn web server.
