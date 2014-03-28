@@ -161,7 +161,7 @@ module API
         repo = user_project.repository
         ref = params[:sha]
         format = params[:format]
-        storage_path = Rails.root.join("tmp", "repositories")
+        storage_path = Gitlab.config.gitlab.repository_downloads_path
 
         file_path = repo.archive_repo(ref, storage_path, format)
         if file_path && File.exists?(file_path)

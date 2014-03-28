@@ -76,6 +76,10 @@ production: &base
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
 
+    ## Repository downloads directory
+    # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
+    # repository_downloads_path: tmp/repositories
+
   ## External issues trackers
   issues_tracker:
     # redmine:
