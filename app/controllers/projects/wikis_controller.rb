@@ -12,12 +12,10 @@ class Projects::WikisController < Projects::ApplicationController
 
   def show
     @page = @project_wiki.find_page(params[:id], params[:version_id])
-    gollum_wiki = @project_wiki.wiki
-    file = gollum_wiki.file(params[:id], gollum_wiki.ref, true)
 
     if @page
       render 'show'
-    elsif file
+    elsif file = @project_wiki.find_file(params[:id], params[:version_id])
        if file.on_disk?
          send_file file.on_disk_path, disposition: 'inline'
        else

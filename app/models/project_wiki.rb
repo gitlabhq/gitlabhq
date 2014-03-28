@@ -72,6 +72,15 @@ class ProjectWiki
     end
   end
 
+  def find_file(name, version = nil, try_on_disk = true)
+    version = wiki.ref if version.nil? # Gollum::Wiki#file ?
+    if wiki_file = wiki.file(name, version, try_on_disk)
+      wiki_file
+    else
+      nil
+    end
+  end
+
   def create_page(title, content, format = :markdown, message = nil)
     commit = commit_details(:created, message, title)
 
