@@ -125,4 +125,4 @@ class ImageFile
       img.on 'load', =>
         callback.call(this, domImg.naturalWidth, domImg.naturalHeight)
 
-this.ImageFile = ImageFile
+@ImageFile = ImageFile
