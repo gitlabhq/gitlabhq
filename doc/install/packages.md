@@ -1,7 +1,7 @@
 # GitLab EE Omnibus packages
 
 We have started to create [gitlab-omnibus packages](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) for GitLab Enterprise Edition.
-The availability and functionality of these packages may be limited; please contact support@gitlab.com for more information.
+The availability and functionality of these packages may be limited; please contact subscribers@gitlab.com for more information.
 
 ## GitLab 6.6 Enterprise Edition
 
