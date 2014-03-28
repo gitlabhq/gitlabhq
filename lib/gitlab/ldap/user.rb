@@ -86,11 +86,7 @@ module Gitlab
         end
 
         def username
-          (auth.info.nickname || samaccountname).to_s.force_encoding("utf-8")
-        end
-
-        def samaccountname
-          (auth.extra[:raw_info][:samaccountname] || []).first
+          auth.info.nickname.to_s.force_encoding("utf-8")
         end
 
         def provider
