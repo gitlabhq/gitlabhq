@@ -3,6 +3,7 @@ v 6.8.0
   - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
   - Make user search case-insensitive (Christopher Arnold)
   - Remove omniauth-ldap nickname bug workaround
+  - Drop all tables before restoring a Postgres backup
 
 v 6.7.2
   - Fix upgrader script
