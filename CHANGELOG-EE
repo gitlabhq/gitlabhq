@@ -1,3 +1,6 @@
+v 6.7.1
+  - Handle LDAP errors in Adapter#dn_matches_filter?
+
 v 6.7.0
   - Improve LDAP sign-in speed by reusing connections
   - Add support for Active Directory nested LDAP groups
