@@ -63,7 +63,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
-1. Submit a merge request (MR)
+1. Submit a merge request (MR) to the master branch
 1. The MR title should describes the change you want to make
 1. The MR description should give a motive for your change and the method you used to achieve it
 1. If the MR changes the UI it should include before and after screenshots
