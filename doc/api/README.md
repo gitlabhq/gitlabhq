@@ -129,6 +129,10 @@ When listing resources you can pass the following parameters:
 + `page` (default: `1`) - page number
 + `per_page` (default: `20`, max: `100`) - number of items to list per page
 
+[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response.
+These have `rel` prev/next/first/last and contain the relevant url.
+Please use these instead of generating your own urls.
+
 ## id vs iid
 
 When you work with API you may notice two similar fields in api entites: id and iid. 
