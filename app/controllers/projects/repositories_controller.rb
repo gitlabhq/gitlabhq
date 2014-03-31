@@ -14,7 +14,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
       render_404 and return
     end
 
-    storage_path = Rails.root.join("tmp", "repositories")
+    storage_path = Gitlab.config.gitlab.repository_downloads_path
 
     file_path = @repository.archive_repo(params[:ref], storage_path, params[:format].downcase)
 
