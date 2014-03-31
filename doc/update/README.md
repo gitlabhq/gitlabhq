@@ -2,4 +2,4 @@
 + [Uprader](upgrader.md)
 + [Ruby](ruby.md)
 + [Patch versions](patch_versions.md)
-+ [MySQL to Postgress](mysql_to_postgress.md)
++ [MySQL to PostgreSQL](mysql_to_postgresql.md)
