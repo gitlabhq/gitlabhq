@@ -9,6 +9,7 @@
 + [Repositories](repositories.md)
 + [Repository Files](repository_files.md)
 + [Commits](commits.md)
++ [Branches](branches.md)
 + [Merge Requests](merge_requests.md)
 + [Issues](issues.md)
 + [Milestones](milestones.md)
