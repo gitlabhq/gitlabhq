@@ -11,6 +11,7 @@
 + [Raketasks](raketasks/README.md)
 + [Release](release/README.md)
 + [Security](security/README.md)
++ [SSH](ssh/README.md)
 + [System hooks](system_hooks/system_hooks.md)
 + [Update](update/README.md)
 + [Web hooks](web_hooks/web_hooks.md)
