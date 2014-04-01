@@ -2,7 +2,8 @@
 
 We have started to create [gitlab-omnibus packages](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) for GitLab Enterprise Edition.
 Update instructions can be found at https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md .
-The availability and functionality of these packages may be limited; please contact subscribers@gitlab.com for more information.
+Some GitLab features are currently missing from these packages (MySQL, HTTPS, SMTP support) and we currently only have packages for Ubuntu 12.04 64-bit and Enterprise Linux 6 64-bit.
+Please contact subscribers@gitlab.com for more information.
 
 ## GitLab 6.7 Enterprise Edition
 
