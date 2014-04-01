@@ -16,7 +16,7 @@ namespace :gitlab do
 
     Rake::Task["db:setup"].invoke
 
-    config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
+    config = YAML.load(ERB.new(File.read(File.join(Rails.root, "config","database.yml"))).result)
     success = case config["adapter"]
               when /^mysql/ then
                 Rake::Task["add_limits_mysql"].invoke
