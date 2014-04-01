@@ -178,23 +178,21 @@ class NotificationService
 
   # Get project users with WATCH notification level
   def project_watchers(project)
-    project_members = project_notification_list(project)
+    project_members = users_project_notification(project)
 
-    project_global= project_notification_list(project, Notification::N_GLOBAL)
-    group_global = group_notification_list(project, Notification::N_GLOBAL)
-    global_watch = User.where(
-                                      id: [project_global, group_global].flatten.uniq,
-                                      notification_level: Notification::N_WATCH
-                                    ).pluck(:id)
+    users_with_project_level_global = users_project_notification(project, Notification::N_GLOBAL)
+    users_with_group_level_global = users_group_notification(project, Notification::N_GLOBAL)
+    users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
-    project_watch = watch_project(project, project_global, global_watch)
-    group_watch = watch_group(project, project_members, group_global, global_watch)
+    users_with_project_setting = select_users_project_setting(project, users_with_project_level_global, users)
+    users_with_group_setting = select_users_group_setting(project, project_members, users_with_group_level_global, users)
 
-    User.where(id: project_watch.concat(group_watch).uniq).to_a
+    User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
 
-  def project_notification_list(project, notification_level=nil)
+  def users_project_notification(project, notification_level=nil)
     project_members = project.users_projects
+
     if notification_level
       project_members.where(notification_level: notification_level).pluck(:user_id)
     else
@@ -202,7 +200,7 @@ class NotificationService
     end
   end
 
-  def group_notification_list(project, notification_level)
+  def users_group_notification(project, notification_level)
     if project.group
       project.group.users_groups.where(notification_level: notification_level).pluck(:user_id)
     else
@@ -210,34 +208,47 @@ class NotificationService
     end
   end
 
-  def watch_project(project, global_setting, watch_global)
-    uids = project_notification_list(project, Notification::N_WATCH)
-
-    global_setting.each do |i|
-      if watch_global.include?(i)
-        uids << i
-      end
-    end
-    uids.uniq
+  def users_with_global_level_watch(ids)
+    User.where(
+      id: ids,
+      notification_level: Notification::N_WATCH
+    ).pluck(:id)
   end
 
-  def watch_group(project, project_members, global_setting, watch_global)
-    uids = group_notification_list(project, Notification::N_WATCH)
-    # Group setting is watch, add to watchers list user is not project member
-    watch = []
-    uids.each do |i|
-      if project_members.exclude?(i)
-        watch << i
+  # Build a list of users based on project notifcation settings
+  def select_users_project_setting(project, global_setting, users_global_level_watch)
+    users = users_project_notification(project, Notification::N_WATCH)
+
+    # If project setting is global, add to watch list if global setting is watch
+    global_setting.each do |user_id|
+      if users_global_level_watch.include?(user_id)
+        users << user_id
       end
     end
 
-    global_setting.each do |i|
-      if project_members.exclude?(i) && watch_global.include?(i)
-        watch << i
+    users
+  end
+
+  # Build a list of users based on group notifcation settings
+  def select_users_group_setting(project, project_members, global_setting, users_global_level_watch)
+    uids = users_group_notification(project, Notification::N_WATCH)
+
+    # Group setting is watch, add to users list if user is not project member
+    users = []
+    uids.each do |user_id|
+      if project_members.exclude?(user_id)
+        users << user_id
       end
     end
 
-    watch.uniq
+    # Group setting is global, add to users list if global setting is watch
+    global_setting.each do |user_id|
+      if project_members.exclude?(user_id) && users_global_level_watch.include?(user_id)
+        users << user_id
+      end
+    end
+
+    users
   end
 
   # Remove users with disabled notifications from array
