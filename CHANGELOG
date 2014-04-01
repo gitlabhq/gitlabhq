@@ -5,6 +5,7 @@ v 6.8.0
   - Remove omniauth-ldap nickname bug workaround
   - Drop all tables before restoring a Postgres backup
   - Make the repository downloads path configurable
+  - Create branches via API (sponsored by O'Reilly Media)
 
 v 6.7.2
   - Fix upgrader script
