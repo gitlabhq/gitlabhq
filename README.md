@@ -113,19 +113,9 @@ or start each component separately
         Single Spinach test: bundle exec spinach features/project/issues/milestones.feature
 
 
-### GitLab interfaces
+### Documentation
 
-* [GitLab API doc](doc/api/README.md) or see the [GitLab API website](http://api.gitlab.org/)
-
-* [Rake tasks](doc/raketasks) including a [backup and restore procedure](doc/raketasks/backup_restore.md)
-
-* [Directory structure](doc/install/structure.md)
-
-* [Database installation](doc/install/databases.md)
-
-* [Markdown specification](doc/markdown/markdown.md)
-
-* [Security guide](doc/security/rack_attack.md) to throttle abusive requests
+All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/).
 
 ### Getting help
 
