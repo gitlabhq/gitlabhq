@@ -653,7 +653,7 @@ DEPENDENCIES
   select2-rails
   settingslogic
   shoulda-matchers (~> 2.1.0)
-  sidekiq
+  sidekiq (= 2.17.0)
   simplecov
   sinatra
   six
