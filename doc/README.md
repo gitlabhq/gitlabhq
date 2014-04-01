@@ -3,7 +3,7 @@
 + [API](api/README.md)
 + [Development](development/README.md)
 + [Install](install/README.md)
-+ [Integration](external-issue-tracker/README.md)
++ [Integration](integration/external-issue-tracker.md)
 + [Legal](legal/README.md)
 + [Markdown](markdown/markdown.md)
 + [Permissions](permissions/permissions.md)
