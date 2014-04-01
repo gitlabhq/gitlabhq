@@ -13,6 +13,12 @@
     border-bottom: 1px solid #eee;
     border-bottom: 1px solid rgba(0, 0, 0, 0.05);
 
+    &:after {
+      content: " ";
+      display: table;
+      clear: both;
+    }
+
     &.disabled {
       color: #888;
     }
@@ -45,6 +51,12 @@
     }
 
     .author { color: #999; }
+
+    .list-item-name {
+      float: left;
+      position: relative;
+      top: 3px;
+    }
 
     p {
       padding-top: 1px;

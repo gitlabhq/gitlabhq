@@ -6,6 +6,9 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
 
     # Install the database packages
     sudo apt-get install -y mysql-server mysql-client libmysqlclient-dev
+    
+    # Ensure you have MySQL version 5.5.14 or later
+    mysql --version
 
     # Pick a database root password (can be anything), type it and press enter
     # Retype the database root password and press enter
@@ -23,6 +26,10 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
     # change $password in the command below to a real password you pick
     mysql> CREATE USER 'git'@'localhost' IDENTIFIED BY '$password';
 
+    # Ensure you can use the InnoDB engine which is necessary to support long indexes.
+    # If this fails, check your MySQL config files (e.g. `/etc/mysql/*.cnf`, `/etc/mysql/conf.d/*`) for the setting "innodb = off"
+    mysql> SET storage_engine=INNODB;
+    
     # Create the GitLab production database
     mysql> CREATE DATABASE IF NOT EXISTS `gitlabhq_production` DEFAULT CHARACTER SET `utf8` COLLATE `utf8_unicode_ci`;
 

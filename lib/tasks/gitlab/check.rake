@@ -677,7 +677,20 @@ namespace :gitlab do
     end
 
     def filter
-      Net::LDAP::Filter.present?(ldap_config.uid)
+      uid_filter = Net::LDAP::Filter.present?(ldap_config.uid)
+      if user_filter
+        Net::LDAP::Filter.join(uid_filter, user_filter)
+      else
+        uid_filter
+      end
+    end
+
+    def user_filter
+      if ldap_config['user_filter'] && ldap_config.user_filter.present?
+        Net::LDAP::Filter.construct(ldap_config.user_filter)
+      else
+        nil
+      end
     end
 
     def ldap

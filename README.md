@@ -113,38 +113,10 @@ or start each component separately
         Single Spinach test: bundle exec spinach features/project/issues/milestones.feature
 
 
-### GitLab interfaces
+### Documentation
 
-* [GitLab API doc](doc/api/README.md) or see the [GitLab API website](http://api.gitlab.org/)
-
-* [Rake tasks](doc/raketasks) including a [backup and restore procedure](doc/raketasks/backup_restore.md)
-
-* [Directory structure](doc/install/structure.md)
-
-* [Database installation](doc/install/databases.md)
-
-* [Markdown specification](doc/markdown/markdown.md)
-
-* [Security guide](doc/security/rack_attack.md) to throttle abusive requests
+All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/).
 
 ### Getting help
 
-* [Maintenance policy](MAINTENANCE.md) specifies what versions are supported.
-
-* [Troubleshooting guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide) contains solutions to common problems.
-
-* [Mailing list](https://groups.google.com/forum/#!forum/gitlabhq) and [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) are the best places to ask questions. For example you can use it if you have questions about: permission denied errors, invisible repos, can't clone/pull/push or with web hooks that don't fire. Please search for similar issues before posting your own, there's a good chance somebody else had the same issue you have now and has resolved it. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there to a fix.
-
-* [Feature request forum](http://feedback.gitlab.com) is the place to propose and discuss new features for GitLab.
-
-* [Contributing guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md) describes how to submit merge requests and issues. Pull requests and issues not in line with the guidelines in this document will be closed.
-
-* [Support subscription](http://www.gitlab.com/subscription/) connects you to the knowledge of GitLab experts that will resolve your issues and answer your questions.
-
-* [Consultancy](http://www.gitlab.com/consultancy/) from the GitLab experts for installations, upgrades and customizations.
-
-* [#gitlab IRC channel](http://www.freenode.net/) on Freenode to get in touch with other GitLab users and get help, it's managed by James Newton (newton), Drew Blessing (dblessing), and Sam Gleske (sag47).
-
-* [Book](http://www.packtpub.com/gitlab-repository-management/book) written by GitLab enthusiast Jonathan M. Hethey is unofficial but it offers a good overview.
-
-* [Gitter chat room](https://gitter.im/gitlabhq/gitlabhq#) here you can ask questions when you need help.
+Please see [Getting help for GitLab](https://www.gitlab.com/getting-help/) on our website for the many options to get help.

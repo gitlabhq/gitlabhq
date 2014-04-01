@@ -25,6 +25,12 @@ describe API::API do
         json_response.should be_an Array
         json_response.first['title'].should == issue.title
       end
+
+      it "should add pagination headers" do
+        get api("/issues?per_page=3", user)
+        response.headers['Link'].should ==
+          '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+      end
     end
   end
 

@@ -1,7 +1,11 @@
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
   - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
-  - Add support for relative submodules
+  - Make user search case-insensitive (Christopher Arnold)
+  - Remove omniauth-ldap nickname bug workaround
+  - Drop all tables before restoring a Postgres backup
+  - Make the repository downloads path configurable
+  - Create branches via API (sponsored by O'Reilly Media)
 
 v 6.7.2
   - Fix upgrader script

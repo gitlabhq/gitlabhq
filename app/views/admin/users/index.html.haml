@@ -36,15 +36,16 @@
       %ul.well-list
         - @users.each do |user|
           %li
-            - if user.blocked?
-              %i.icon-lock.cred
-            - else
-              %i.icon-user.cgreen
-            = link_to user.name, [:admin, user]
-            - if user.admin?
-              %strong.cred (Admin)
-            - if user == current_user
-              %span.cred It's you!
+            .list-item-name
+              - if user.blocked?
+                %i.icon-lock.cred
+              - else
+                %i.icon-user.cgreen
+              = link_to user.name, [:admin, user]
+              - if user.admin?
+                %strong.cred (Admin)
+              - if user == current_user
+                %span.cred It's you!
             .pull-right
               %span.light
                 %i.icon-envelope

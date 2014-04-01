@@ -56,8 +56,12 @@ module API
       end
     end
 
-    def paginate(object)
-      object.page(params[:page]).per(params[:per_page].to_i)
+    def paginate(relation)
+      per_page  = params[:per_page].to_i
+      paginated = relation.page(params[:page]).per(per_page)
+      add_pagination_headers(paginated, per_page)
+
+      paginated
     end
 
     def authenticate!
@@ -72,6 +76,10 @@ module API
       unless abilities.allowed?(current_user, action, subject)
         forbidden!
       end
+    end
+
+    def authorize_push_project
+      authorize! :push_code, user_project
     end
 
     def authorize_admin_project
@@ -133,6 +141,18 @@ module API
     end
 
     private
+
+    def add_pagination_headers(paginated, per_page)
+      request_url = request.url.split('?').first
+
+      links = []
+      links << %(<#{request_url}?page=#{paginated.current_page - 1}&per_page=#{per_page}>; rel="prev") unless paginated.first_page?
+      links << %(<#{request_url}?page=#{paginated.current_page + 1}&per_page=#{per_page}>; rel="next") unless paginated.last_page?
+      links << %(<#{request_url}?page=1&per_page=#{per_page}>; rel="first")
+      links << %(<#{request_url}?page=#{paginated.total_pages}&per_page=#{per_page}>; rel="last")
+
+      header 'Link', links.join(', ')
+    end
 
     def abilities
       @abilities ||= begin

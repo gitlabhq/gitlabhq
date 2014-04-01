@@ -149,7 +149,7 @@ exit_if_not_running(){
 }
 
 ## Starts Unicorn and Sidekiq if they're not running.
-start() {
+start_gitlab() {
   check_stale_pids
 
   if [ "$web_status" != "0" -a "$sidekiq_status" != "0" ]; then
@@ -167,7 +167,7 @@ start() {
     # Remove old socket if it exists
     rm -f "$socket_path"/gitlab.socket 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV script/web start &
+    RAILS_ENV=$RAILS_ENV script/web start
   fi
 
   # If sidekiq is already running, don't start it again.
@@ -184,7 +184,7 @@ start() {
 }
 
 ## Asks the Unicorn and the Sidekiq if they would be so kind as to stop, if not kills them.
-stop() {
+stop_gitlab() {
   exit_if_not_running
 
   if [ "$web_status" = "0" -a "$sidekiq_status" = "0" ]; then
@@ -246,7 +246,7 @@ print_status() {
 }
 
 ## Tells unicorn to reload it's config and Sidekiq to restart
-reload(){
+reload_gitlab(){
   exit_if_not_running
   if [ "$wpid" = "0" ];then
     echo "The GitLab Unicorn Web server is not running thus its configuration can't be reloaded."
@@ -263,12 +263,12 @@ reload(){
 }
 
 ## Restarts Sidekiq and Unicorn.
-restart(){
+restart_gitlab(){
   check_status
   if [ "$web_status" = "0" -o "$sidekiq_status" = "0" ]; then
-    stop
+    stop_gitlab
   fi
-  start
+  start_gitlab
 }
 
 
@@ -276,16 +276,16 @@ restart(){
 
 case "$1" in
   start)
-        start
+        start_gitlab
         ;;
   stop)
-        stop
+        stop_gitlab
         ;;
   restart)
-        restart
+        restart_gitlab
         ;;
   reload|force-reload)
-	reload
+	reload_gitlab
         ;;
   status)
         print_status

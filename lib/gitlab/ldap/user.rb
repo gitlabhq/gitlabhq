@@ -81,16 +81,17 @@ module Gitlab
 
         private
 
+        def find_by_uid_and_provider
+          find_by_uid(uid)
+        end
+
         def find_by_uid(uid)
-          model.where(provider: provider, extern_uid: uid).last
+          # LDAP distinguished name is case-insensitive
+          model.where("provider = ? and lower(extern_uid) = ?", provider, uid.downcase).last
         end
 
         def username
-          (auth.info.nickname || samaccountname).to_s.force_encoding("utf-8")
-        end
-
-        def samaccountname
-          (auth.extra[:raw_info][:samaccountname] || []).first
+          auth.info.nickname.to_s.force_encoding("utf-8")
         end
 
         def provider
