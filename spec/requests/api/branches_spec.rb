@@ -92,4 +92,24 @@ describe API::API do
   end
 
 
+  describe "POST /projects/:id/repository/branches" do
+    it "should create a new branch" do
+      post api("/projects/#{project.id}/repository/branches", user),
+        branch_name: 'new_design',
+        ref: '621491c677087aa243f165eab467bfdfbee00be1'
+
+      response.status.should == 201
+
+      json_response['name'].should == 'new_design'
+      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+    end
+
+    it "should deny for user without push access" do
+      post api("/projects/#{project.id}/repository/branches", user2),
+        branch_name: 'new_design',
+        ref: '621491c677087aa243f165eab467bfdfbee00be1'
+
+      response.status.should == 403
+    end
+  end
 end

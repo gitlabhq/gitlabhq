@@ -65,6 +65,21 @@ module API
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
+
+      # Create branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch_name (required) - The name of the branch
+      #   ref (required) - Create branch from commit sha or existing branch
+      # Example Request:
+      #   POST /projects/:id/repository/branches
+      post ":id/repository/branches" do
+        authorize_push_project
+        @branch = CreateBranchService.new.execute(user_project, params[:branch_name], params[:ref], current_user)
+
+        present @branch, with: Entities::RepoObject, project: user_project
+      end
     end
   end
 end
