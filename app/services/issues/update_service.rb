@@ -1,7 +1,16 @@
 module Issues
   class UpdateService < BaseService
     def execute(issue)
-      if issue.update_attributes(params)
+      state = params.delete('state_event')
+
+      case state
+      when 'reopen'
+        Issues::ReopenService.new(project, current_user, {}).execute(issue)
+      when 'close'
+        Issues::CloseService.new(project, current_user, {}).execute(issue)
+      end
+
+      if params.present? && issue.update_attributes(params)
         issue.reset_events_cache
 
         if issue.is_being_reassigned?

@@ -3,7 +3,7 @@ module Issues
     def execute(issue)
       if issue.reopen
         event_service.reopen_issue(issue, current_user)
-        create_note(issue, commit)
+        create_note(issue)
         execute_hooks(issue)
       end
 
