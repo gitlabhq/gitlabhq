@@ -1,5 +1,3 @@
-## The GitLab Documentation covers the following subjects
-
 **User documentation**
 
 + [API](api/README.md) Explore how you can access GitLab via a simple and powerful API.
