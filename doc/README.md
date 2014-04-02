@@ -1,6 +1,6 @@
 ## The GitLab Documentation covers the following subjects
 
-User documentation
+**User documentation**
 
 + [API](api/README.md) Explore how you can access GitLab via a simple and powerful API.
 + [Markdown](markdown/markdown.md) Learn what you can do with GitLab's advanced formatting system.
@@ -10,7 +10,7 @@ User documentation
 + [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
 + [Workflow](workflow/workflow.md) Learn how to use Git and GitLab together.
 
-Administrator documentation
+**Administrator documentation**
 
 + [Install](install/README.md) Requirements, directory structures and manual installation.
 + [Integration](integration/external-issue-tracker.md) How to integrate JIRA and Redmine.
@@ -19,7 +19,7 @@ Administrator documentation
 + [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 + [Update](update/README.md) Update guides to upgrade your installation.
 
-Contributor documentation
+**Contributor documentation**
 
 + [Development](development/README.md) Explains the architecture and the guidelines for shell commands.
 + [Legal](legal/README.md) Contributor license agreements.
