@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20131217102743) do
+ActiveRecord::Schema.define(version: 20140116231608) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -20,6 +20,8 @@ ActiveRecord::Schema.define(version: 20131217102743) do
     t.integer  "alert_type"
     t.datetime "created_at", null: false
     t.datetime "updated_at", null: false
+    t.string   "color"
+    t.string   "font"
   end
 
   create_table "deploy_keys_projects", force: true do |t|
@@ -299,6 +301,7 @@ ActiveRecord::Schema.define(version: 20131217102743) do
     t.datetime "confirmation_sent_at"
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",        default: false
+    t.string   "website_url",            default: "",    null: false
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

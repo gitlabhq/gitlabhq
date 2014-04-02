@@ -4,9 +4,9 @@
     = devise_error_messages!
   = f.hidden_field :reset_password_token
   %div
-    = f.password_field :password, class: "text top", placeholder: "New password", required: true
+    = f.password_field :password, class: "form-control top", placeholder: "New password", required: true
   %div
-    = f.password_field :password_confirmation, class: "text bottom", placeholder: "Confirm new password", required: true
+    = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
   %div
   .clearfix.append-bottom-10
     = f.submit "Change my password", class: "btn btn-primary"

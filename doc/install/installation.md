@@ -2,11 +2,13 @@
 Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
 this should be the highest numbered stable branch (example shown below).
 
-![capture](https://f.cloud.github.com/assets/1192780/564911/2f9f3e1e-c5b7-11e2-9f89-98e527d1adec.png)
+![capture](http://i.imgur.com/d2AlIVj.png)
 
 If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installation guide links by version.
 
 # Important notes
+
+This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
 This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [`doc/install/requirements.md`](./requirements.md) for hardware and operating system requirements.
 
@@ -14,7 +16,7 @@ This is the official installation guide to set up a production server. To set up
 
 The following steps have been known to work. Please **use caution when you deviate** from this guide. Make sure you don't violate any assumptions GitLab makes about its environment. For example many people run into permission problems because they changed the location of directories or run services as the wrong user.
 
-If you find a bug/error in this guide please **submit a pull request** following the [contributing guide](../../CONTRIBUTING.md).
+If you find a bug/error in this guide please **submit a merge request** following the [contributing guide](../../CONTRIBUTING.md).
 
 - - -
 
@@ -144,7 +146,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git -b v1.8.0
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0
 
     cd gitlab-shell
 
@@ -171,13 +173,13 @@ To setup the MySQL/PostgreSQL database and dependencies please see [`doc/install
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://github.com/gitlabhq/gitlabhq.git -b 6-4-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-5-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -313,7 +315,7 @@ Check if GitLab and its environment are configured correctly:
 
 **Note:**
 Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
-[GitLab recipes](https://github.com/gitlabhq/gitlab-recipes).
+[GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ## Installation
     sudo apt-get install -y nginx
@@ -408,9 +410,9 @@ These steps are fairly general and you will need to figure out the exact details
 * Stop GitLab
 		`sudo service gitlab stop`
 
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://github.com/gitlabhq/gitlabhq/blob/master/config/gitlab.yml.example) as a reference)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterconfig/gitlab.yml.example) as a reference)
 
-* Add the gem to your [Gemfile](https://github.com/gitlabhq/gitlabhq/blob/master/Gemfile)
+* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterGemfile)
                 `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
 		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`

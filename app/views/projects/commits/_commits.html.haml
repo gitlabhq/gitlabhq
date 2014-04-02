@@ -1,11 +1,11 @@
 - @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
-    .span2
+    .col-md-2
       %h4
         %i.icon-calendar
         %span= day.stamp("28 Aug, 2010")
       %p= pluralize(commits.count, 'commit')
-    .span10
+    .col-md-10
       %ul.well-list
         = render commits, project: @project
   %hr.lists-separator

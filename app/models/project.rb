@@ -138,6 +138,10 @@ class Project < ActiveRecord::Base
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
+    def search_by_title query
+      where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
+    end
+
     def find_with_namespace(id)
       if id.include?("/")
         id = id.split("/")
@@ -152,6 +156,16 @@ class Project < ActiveRecord::Base
 
     def visibility_levels
       Gitlab::VisibilityLevel.options
+    end
+
+    def sort(method)
+      case method.to_s
+      when 'newest' then reorder('projects.created_at DESC')
+      when 'oldest' then reorder('projects.created_at ASC')
+      when 'recently_updated' then reorder('projects.updated_at DESC')
+      when 'last_updated' then reorder('projects.updated_at ASC')
+      else reorder("namespaces.path, projects.name ASC")
+      end
     end
   end
 
@@ -189,6 +203,10 @@ class Project < ActiveRecord::Base
 
   def web_url
     [Gitlab.config.gitlab.url, path_with_namespace].join("/")
+  end
+
+  def web_url_without_protocol
+    web_url.split("://")[1]
   end
 
   def build_commit_note(commit)
@@ -260,9 +278,7 @@ class Project < ActiveRecord::Base
   end
 
   def send_move_instructions
-    team.members.each do |user|
-      Notify.delay.project_was_moved_email(self.id, user.id)
-    end
+    NotificationService.new.project_was_moved(self)
   end
 
   def owner

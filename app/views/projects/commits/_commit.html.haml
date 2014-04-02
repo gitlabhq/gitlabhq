@@ -2,7 +2,8 @@
   .commit-row-title
     = link_to commit.short_id(8), project_commit_path(project, commit), class: "commit_short_id"
     &nbsp;
-    = link_to_gfm truncate(commit.title, length: 70), project_commit_path(project, commit.id), class: "commit-row-message"
+    %span.str-truncated
+      = link_to_gfm commit.title, project_commit_path(project, commit.id), class: "commit-row-message"
     = link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
     .notes_count
       - notes = project.notes.for_commit_id(commit.id)
@@ -14,4 +15,4 @@
   .commit-row-info
     = commit_author_link(commit, avatar: true, size: 16)
     .committed_ago
-      #{time_ago_with_tooltip(commit.committed_date)} ago &nbsp;
+      #{time_ago_with_tooltip(commit.committed_date)} &nbsp;

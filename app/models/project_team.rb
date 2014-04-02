@@ -64,6 +64,10 @@ class ProjectTeam
     UsersProject.truncate_team(project)
   end
 
+  def users
+    members
+  end
+
   def members
     @members ||= fetch_members
   end
@@ -78,6 +82,10 @@ class ProjectTeam
 
   def developers
     @developers ||= fetch_members(:developers)
+  end
+
+  def developers_with_merge
+    @developers_with_merge ||= fetch_members(:developers_with_merge)
   end
 
   def masters

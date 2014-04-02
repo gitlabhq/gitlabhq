@@ -127,7 +127,7 @@ class MergeRequest < ActiveRecord::Base
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
 
-  VALID_STATES_FOR_MERGE = ["opened", "reopened", "accepted", "rejected", "fixed"]
+  VALID_STATES_FOR_MERGE = ["opened", "reopened", "accepted", "rejected", "fixed", "closed", "merged"]
   VALID_STATES_FOR_ACCEPT = ["opened", "reopened", "rejected", "fixed"]
   VALID_STATES_FOR_REJECT = ["opened", "reopened", "accepted", "fixed"]
   VALID_STATES_FOR_MARK_FIXED = ["rejected"]
@@ -247,8 +247,8 @@ class MergeRequest < ActiveRecord::Base
     self.merge
   end
 
-  def automerge!(current_user)
-    if Gitlab::Satellite::MergeAction.new(current_user, self).merge! && self.unmerged_commits.empty?
+  def automerge!(current_user, commit_message = nil)
+    if Gitlab::Satellite::MergeAction.new(current_user, self).merge!(commit_message) && self.unmerged_commits.empty?
       self.merge!(current_user.id)
       true
     end
@@ -352,11 +352,19 @@ class MergeRequest < ActiveRecord::Base
         update_all(updated_at: Time.now)
   end
 
+  def merge_commit_message
+    message = "Merge branch '#{source_branch}' into '#{target_branch}'"
+    message << "\n\n"
+    message << title.to_s
+    message << "\n\n"
+    message << description.to_s
+    message
+  end
+
   def project
     target_project
   end
 
-  
   private
 
   def dump_commits(commits)

@@ -1,7 +1,7 @@
 module API
   module Entities
     class User < Grape::Entity
-      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter,
+      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter, :website_url,
              :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
       expose :is_admin?, as: :is_admin
       expose :can_create_group?, as: :can_create_group
@@ -89,6 +89,10 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+    end
+
+    class RepoCommitDetail < RepoCommit
+      expose :parent_ids, :committed_date, :authored_date
     end
 
     class ProjectSnippet < Grape::Entity

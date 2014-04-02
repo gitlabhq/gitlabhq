@@ -1,7 +1,11 @@
-%fieldset
-  %legend
-    Search results
-    %span.cgray (#{@total_results})
+%h4
+  #{@search_results[:total_results]} results found
+  - if @project
+    for #{link_to @project.name_with_namespace, @project}
+  - elsif @group
+    for #{link_to @group.name, @group}
+
+%hr
 
 - if @project
   = render "project_results"

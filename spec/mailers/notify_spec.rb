@@ -192,9 +192,10 @@ describe Notify do
         end
 
         describe 'that are reassigned' do
+          let(:current_user) { create(:user, email: "current@email.com") }
           before(:each) { merge_request.stub(:assignee_id_was).and_return(previous_assignee.id) }
 
-          subject { Notify.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id) }
+          subject { Notify.reassigned_merge_request_email(recipient.id, merge_request.id, previous_assignee.id, current_user) }
 
           it_behaves_like 'a multiple recipients email'
 

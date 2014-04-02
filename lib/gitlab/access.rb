@@ -5,11 +5,12 @@
 #
 module Gitlab
   module Access
-    GUEST     = 10
-    REPORTER  = 20
-    DEVELOPER = 30
-    MASTER    = 40
-    OWNER     = 50
+    GUEST                = 10
+    REPORTER             = 20
+    DEVELOPER            = 30
+    DEVELOPER_WITH_MERGE = 31
+    MASTER               = 40
+    OWNER                = 50
 
     class << self
       def values
@@ -21,6 +22,7 @@ module Gitlab
           "Guest"     => GUEST,
           "Reporter"  => REPORTER,
           "Developer" => DEVELOPER,
+          "Developer with merge" => DEVELOPER_WITH_MERGE,
           "Master"    => MASTER,
         }
       end
@@ -36,6 +38,7 @@ module Gitlab
           guest:     GUEST,
           reporter:  REPORTER,
           developer: DEVELOPER,
+          developer_with_merge: DEVELOPER_WITH_MERGE,
           master:    MASTER,
         }
       end

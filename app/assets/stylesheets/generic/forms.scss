@@ -1,0 +1,53 @@
+input[type='search'].search-text-input {
+  background-image: url("icon-search.png");
+  background-repeat: no-repeat;
+  background-position: 10px;
+  padding-left: 25px;
+}
+
+input[type='text'].danger {
+  background: #F2DEDE!important;
+  border-color: #D66;
+  text-shadow: 0 1px 1px #fff
+}
+
+fieldset legend {
+  font-size: 16px;
+}
+
+.datetime-controls {
+  select {
+    width: 100px;
+  }
+}
+
+.form-actions {
+  padding: 17px 20px 18px;
+  margin-top: 18px;
+  margin-bottom: 18px;
+  background-color: whitesmoke;
+  border-top: 1px solid #e5e5e5;
+  padding-left: 17%;
+}
+
+label {
+  &.control-label {
+    @extend .col-sm-2;
+  }
+
+  &.inline-label {
+    margin: 0;
+  }
+}
+
+.inline-input-group {
+  width: 250px;
+}
+
+.input-mx-250 {
+  max-width: 250px;
+}
+
+.input-mn-300 {
+  min-width: 300px;
+}

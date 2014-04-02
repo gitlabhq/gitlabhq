@@ -1,30 +1,32 @@
-#modal-shortcuts.modal.hide
-  .modal-header
-    %a.close{href: "#", "data-dismiss" => "modal"} ×
-    %h3 Keyboard Shortcuts
-  .modal-body
-    %h5 Global Shortcuts
-    %p
-      %span.label.label-inverse s
-      &ndash;
-      Focus Search
-    %p
-      %span.label.label-inverse ?
-      &ndash;
-      Show this dialog
+#modal-shortcuts.modal.hide{tabindex: -1}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h3 Keyboard Shortcuts
+      .modal-body
+        %h5 Global Shortcuts
+        %p
+          %span.label.label-inverse s
+          &ndash;
+          Focus Search
+        %p
+          %span.label.label-inverse ?
+          &ndash;
+          Show this dialog
 
-    %h5 Project Files browsing
-    %p
-      %span.label.label-inverse
-        %i.icon-arrow-up
-      &ndash;
-      Move selection up
-    %p
-      %span.label.label-inverse
-        %i.icon-arrow-down
-      &ndash;
-      Move selection down
-    %p
-      %span.label.label-inverse Enter
-      &ndash;
-      Open selection
+        %h5 Project Files browsing
+        %p
+          %span.label.label-inverse
+            %i.icon-arrow-up
+          &ndash;
+          Move selection up
+        %p
+          %span.label.label-inverse
+            %i.icon-arrow-down
+          &ndash;
+          Move selection down
+        %p
+          %span.label.label-inverse Enter
+          &ndash;
+          Open selection

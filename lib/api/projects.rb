@@ -99,9 +99,10 @@ module API
                                      :snippets_enabled,
                                      :namespace_id,
                                      :public,
-                                     :visibility_level]
+                                     :visibility_level,
+                                     :import_url]
         attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateContext.new(current_user, attrs).execute
+        @project = ::Projects::CreateService.new(current_user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
         else
@@ -142,7 +143,7 @@ module API
                                      :public,
                                      :visibility_level]
         attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateContext.new(user, attrs).execute
+        @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
           present @project, with: Entities::Project
         else

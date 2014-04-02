@@ -6,6 +6,7 @@ Gitlab::Application.routes.draw do
   # Search
   #
   get 'search' => "search#show"
+  get 'search/autocomplete' => "search#autocomplete", as: :search_autocomplete
 
   # API
   API::API.logger Rails.logger
@@ -217,7 +218,7 @@ Gitlab::Application.routes.draw do
       resource :repository, only: [:show] do
         member do
           get "stats"
-          get "archive"
+          get "archive", constraints: { format: Gitlab::Regex.archive_formats_regex }
         end
       end
 

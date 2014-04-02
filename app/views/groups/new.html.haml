@@ -1,20 +1,21 @@
-= form_for @group do |f|
+= form_for @group, html: { class: 'group-form form-horizontal' } do |f|
   - if @group.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %span= @group.errors.full_messages.first
-  .control-group
-    = f.label :name do
+  .form-group
+    = f.label :name, class: 'control-label' do
       Group name
-    .controls
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "input-xxlarge left"
+    .col-sm-10
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control"
 
-  .control-group.group-description-holder
-    = f.label :description, "Details"
-    .controls
-      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
+  .form-group.group-description-holder
+    = f.label :description, "Details", class: 'control-label'
+    .col-sm-10
+      = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
 
-  .control-group
-    .controls
+  .form-group
+    .col-sm-2
+    .col-sm-10
       %ul
         %li A group is a collection of several projects
         %li Groups are private by default

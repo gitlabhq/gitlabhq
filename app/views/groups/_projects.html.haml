@@ -12,10 +12,10 @@
     - projects.each do |project|
       %li.project-row
         = link_to project_path(project), class: dom_class(project) do
-          %span.project-name
-            = truncate(project.name, length: 25)
+          .dash-project-access-icon
+            = visibility_level_icon(project.visibility_level)
+          %span.str-truncated
+            %span.project-name
+              = truncate(project.name, length: 25)
           %span.arrow
             %i.icon-angle-right
-          %span.last-activity
-            %span Last activity:
-            %span.date= project_last_activity(project)

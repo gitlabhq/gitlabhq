@@ -24,15 +24,20 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def test
-    TestHookContext.new(project, current_user, params).execute
+    TestHookService.new.execute(hook, current_user)
 
     redirect_to :back
   end
 
   def destroy
-    @hook = @project.hooks.find(params[:id])
-    @hook.destroy
+    hook.destroy
 
     redirect_to project_hooks_path(@project)
+  end
+
+  private
+
+  def hook
+    @hook ||= @project.hooks.find(params[:id])
   end
 end

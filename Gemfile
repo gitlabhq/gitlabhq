@@ -30,7 +30,7 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 4.0.0.pre"
+gem "gitlab_git", "~> 4.0.0"
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -52,6 +52,9 @@ gem "grape", "~> 0.6.1"
 gem "grape-entity", "~> 0.3.0"
 gem 'rack-cors', require: 'rack/cors'
 
+# Email validation
+gem "email_validator", "~> 1.4.0", :require => 'email_validator/strict'
+
 # Format dates and times
 # based on human-friendly examples
 gem "stamp"
@@ -60,7 +63,7 @@ gem "stamp"
 gem 'enumerize'
 
 # Pagination
-gem "kaminari", "~> 0.14.1"
+gem "kaminari", "~> 0.15.1"
 
 # HAML
 gem "haml-rails"
@@ -79,7 +82,7 @@ gem "seed-fu"
 
 # Markdown to HTML
 gem "redcarpet",     "~> 2.2.2"
-gem "github-markup", "~> 0.7.4", require: 'github/markup'
+gem "github-markup", "~> 0.7.4", require: 'github/markup', git: 'https://github.com/gitlabhq/markup.git', ref: '61ade389c1e1c159359338f570d18464a44ddbc4' 
 
 # Asciidoc to HTML
 gem  "asciidoctor"
@@ -120,7 +123,7 @@ gem "redis-rails"
 gem 'tinder', '~> 1.9.2'
 
 # HipChat integration
-gem "hipchat", "~> 0.9.0"
+gem "hipchat", "~> 0.14.0"
 
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"
@@ -144,17 +147,16 @@ gem "therubyracer"
 gem 'turbolinks'
 gem 'jquery-turbolinks'
 
-gem 'chosen-rails',     "1.0.1"
 gem 'select2-rails'
 gem 'jquery-atwho-rails', "~> 0.3.3"
 gem "jquery-rails",     "2.1.3"
 gem "jquery-ui-rails",  "2.0.2"
 gem "modernizr",        "2.6.2"
 gem "raphael-rails", "~> 2.1.2"
-gem 'bootstrap-sass', '~> 2.3'
+gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'
 gem "gemoji", "~> 1.3.0"
-gem "gon", "~> 5.0.0"
+gem "gon", '~> 5.0.0'
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"

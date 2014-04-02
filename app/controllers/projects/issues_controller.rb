@@ -49,8 +49,8 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @issue)
-    @target_type = :issue
-    @target_id = @issue.id
+    @notes = @issue.notes.inc_author.fresh
+    @noteable = @issue
 
     respond_with(@issue)
   end
@@ -89,7 +89,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def bulk_update
-    result = Issues::BulkUpdateContext.new(project, current_user, params).execute
+    result = Issues::BulkUpdateService.new(project, current_user, params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
@@ -116,7 +116,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issues_filtered
-    @issues = Issues::ListContext.new(project, current_user, params).execute
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+    @issues = FilteringService.new.execute(Issue, current_user, params.merge(project_id: @project.id))
   end
 
   # Since iids are implemented only in 6.1

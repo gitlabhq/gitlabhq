@@ -66,7 +66,11 @@ module ProjectsHelper
 
   def project_filter_path(options={})
     exist_opts = {
+      assignee_id: params[:assignee_id],
+      assigned_group_id: params[:assigned_group_id],
+      created_group_id: params[:created_group_id],
       state: params[:state],
+      mr_state: params[:mr_state],
       scope: params[:scope],
       label_name: params[:label_name],
       milestone_id: params[:milestone_id],
@@ -153,7 +157,7 @@ module ProjectsHelper
               "#{@project.path}\/#{@path} at #{@ref} - " + title
             elsif current_controller?(:issues)
               if current_action?(:show)
-                "Issue ##{@issue.iid} - " + title
+                "Issue ##{@issue.iid} - #{@issue.title} - " + title
               else
                 "Issues - " + title
               end
@@ -179,12 +183,21 @@ module ProjectsHelper
 
     title
   end
-  
-  def default_url_to_repo
-    current_user ? @project.url_to_repo : @project.http_url_to_repo
+
+  def default_url_to_repo(project = nil)
+    project = project || @project
+    current_user ? project.url_to_repo : project.http_url_to_repo
   end
-  
+
   def default_clone_protocol
     current_user ? "ssh" : "http"
+  end
+
+  def project_last_activity(project)
+    if project.last_activity_at
+      time_ago_with_tooltip(project.last_activity_at, 'bottom', 'last_activity_time_ago')
+    else
+      "Never"
+    end
   end
 end

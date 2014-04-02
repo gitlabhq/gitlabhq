@@ -40,7 +40,7 @@ class Groups < Spinach::FeatureSteps
 
   And 'I select user "John" from list with role "Reporter"' do
     user = User.find_by_name("John")
-    within ".new_users_group" do
+    within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
       select "Reporter", from: "group_access"
     end

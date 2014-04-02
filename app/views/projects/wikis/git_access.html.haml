@@ -1,13 +1,12 @@
 = render 'nav'
-%h3.page-title
-  Git access for
-  %strong= @gollum_wiki.path_with_namespace
+.row
+  .col-sm-6
+    %h3.page-title
+      Git access for
+      %strong= @gollum_wiki.path_with_namespace
 
-  .form-horizontal.pull-right
-    .git-clone-holder
-      %button{class: "btn active", :"data-clone" => @gollum_wiki.ssh_url_to_repo} SSH
-      %button{class: "btn", :"data-clone" => @gollum_wiki.http_url_to_repo}= gitlab_config.protocol.upcase
-      = text_field_tag :project_clone, @gollum_wiki.url_to_repo, class: "one_click_select input-xxlarge", readonly: true
+  .col-sm-6
+    = render "shared/clone_panel", project: @gollum_wiki
 
 .git-empty
   %fieldset
@@ -19,7 +18,7 @@
     %legend Clone Your Wiki:
     %pre.dark
       :preserve
-        git clone #{@gollum_wiki.ssh_url_to_repo}
+        git clone #{ content_tag(:span, default_url_to_repo(@gollum_wiki), class: 'clone')}
         cd #{@gollum_wiki.path}
 
     %legend Start Gollum And Edit Locally:

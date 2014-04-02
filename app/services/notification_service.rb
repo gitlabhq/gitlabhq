@@ -89,12 +89,12 @@ class NotificationService
   #  * merge_request assignee if their notification level is not Disabled
   #  * project team members with notification level higher then Participating
   #
-  def merge_mr(merge_request)
+  def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
 
     recipients.each do |recipient|
-      mailer.merged_merge_request_email(recipient.id, merge_request.id)
+      mailer.merged_merge_request_email(recipient.id, merge_request.id, current_user)
     end
   end
 
@@ -165,6 +165,15 @@ class NotificationService
 
   def update_group_member(users_group)
     mailer.group_access_granted_email(users_group.id)
+  end
+
+  def project_was_moved(project)
+    recipients = project.team.members
+    recipients = reject_muted_users(recipients, project)
+
+    recipients.each do |recipient|
+      mailer.project_was_moved_email(project.id, recipient.id)
+    end
   end
 
   protected
@@ -261,7 +270,7 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, target.assignee_id_was)
+      mailer.send(method, recipient.id, target.id, target.assignee_id_was, current_user)
     end
   end
 

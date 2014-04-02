@@ -1,15 +1,15 @@
 %h3.page-title
   %i.icon-code-fork
   New tag
-= form_tag project_tags_path, method: :post do
-  .control-group
+= form_tag project_tags_path, method: :post, class: "form-horizontal" do
+  .form-group
     = label_tag :tag_name, 'Name for new tag', class: 'control-label'
-    .controls
-      = text_field_tag :tag_name, nil, placeholder: 'v3.0.1', required: true, tabindex: 1
-  .control-group
+    .col-sm-10
+      = text_field_tag :tag_name, nil, placeholder: 'v3.0.1', required: true, tabindex: 1, class: 'form-control'
+  .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
-    .controls
-      = text_field_tag :ref, nil, placeholder: 'master', required: true, tabindex: 2
+    .col-sm-10
+      = text_field_tag :ref, nil, placeholder: 'master', required: true, tabindex: 2, class: 'form-control'
       .light Branch name or commit SHA
   .form-actions
     = submit_tag 'Create tag', class: 'btn btn-create', tabindex: 3
