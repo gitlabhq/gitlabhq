@@ -1,0 +1,20 @@
+.ui-widget {
+  font-family: $regular_font;
+  font-size: $font-size-base;
+
+  &.ui-datepicker-inline {
+    border: 1px solid #DDD;
+    padding: 10px;
+    width: 270px;
+
+    .ui-datepicker-header {
+      background: #EEE;
+      border-color: #DDD;
+    }
+
+    .ui-datepicker-calendar td a {
+      padding: 5px;
+      text-align: center;
+    }
+  }
+}
