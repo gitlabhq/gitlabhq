@@ -27,10 +27,6 @@ GEM
       erubis (~> 2.7.0)
       rack (~> 1.5.2)
       rack-test (~> 0.6.2)
-    actionpack-action_caching (1.1.0)
-      actionpack (>= 4.0.0, < 5.0)
-    actionpack-page_caching (1.0.2)
-      actionpack (>= 4.0.0, < 5)
     activemodel (4.0.3)
       activesupport (= 4.0.3)
       builder (~> 3.1.0)
@@ -567,8 +563,6 @@ PLATFORMS
 
 DEPENDENCIES
   ace-rails-ap
-  actionpack-action_caching
-  actionpack-page_caching
   acts-as-taggable-on
   annotate (~> 2.6.0.beta2)
   asciidoctor
