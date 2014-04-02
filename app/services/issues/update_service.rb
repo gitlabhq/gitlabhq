@@ -13,7 +13,7 @@ module Issues
       if params.present? && issue.update_attributes(params)
         issue.reset_events_cache
 
-        if issue.is_being_reassigned?
+        if issue.previous_changes.include?('assignee_id')
           notification_service.reassigned_issue(issue, current_user)
           create_assignee_note(issue)
         end
