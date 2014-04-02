@@ -48,17 +48,15 @@ module API
       # Example Request:
       #   POST /projects/:id/issues
       post ":id/issues" do
-        set_current_user_for_thread do
-          required_attributes! [:title]
-          attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
-          attrs[:label_list] = params[:labels] if params[:labels].present?
-          @issue = user_project.issues.new attrs
-          @issue.author = current_user
-          if @issue.save
-            present @issue, with: Entities::Issue
-          else
-            not_found!
-          end
+        required_attributes! [:title]
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
+        issue = ::Issues::CreateService.new(user_project, current_user, attrs).execute
+
+        if issue.valid?
+          present issue, with: Entities::Issue
+        else
+          not_found!
         end
       end
 

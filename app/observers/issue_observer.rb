@@ -1,11 +1,4 @@
 class IssueObserver < BaseObserver
-  def after_create(issue)
-    notification.new_issue(issue, current_user)
-    event_service.open_issue(issue, current_user)
-    issue.create_cross_references!(issue.project, current_user)
-    execute_hooks(issue)
-  end
-
   def after_close(issue, transition)
     notification.close_issue(issue, current_user)
     event_service.close_issue(issue, current_user)
