@@ -5,7 +5,7 @@ module Issues
         issue.reset_events_cache
 
         if issue.is_being_reassigned?
-          notification.reassigned_issue(issue, current_user)
+          notification_service.reassigned_issue(issue, current_user)
           create_assignee_note(issue)
         end
 
