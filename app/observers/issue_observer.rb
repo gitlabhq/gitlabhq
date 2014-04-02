@@ -12,16 +12,6 @@ class IssueObserver < BaseObserver
     execute_hooks(issue)
   end
 
-  def after_update(issue)
-    if issue.is_being_reassigned?
-      notification.reassigned_issue(issue, current_user)
-      create_assignee_note(issue)
-    end
-
-    issue.notice_added_references(issue.project, current_user)
-    execute_hooks(issue)
-  end
-
   protected
 
   # Create issue note with service comment like 'Status changed to closed'

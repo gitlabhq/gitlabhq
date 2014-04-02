@@ -74,8 +74,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update
-    @issue.update_attributes(params[:issue])
-    @issue.reset_events_cache
+    @issue = Issues::UpdateService.new(project, current_user, params[:issue]).execute(issue)
 
     respond_to do |format|
       format.js

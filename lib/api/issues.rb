@@ -74,18 +74,18 @@ module API
       # Example Request:
       #   PUT /projects/:id/issues/:issue_id
       put ":id/issues/:issue_id" do
-        set_current_user_for_thread do
-          @issue = user_project.issues.find(params[:issue_id])
-          authorize! :modify_issue, @issue
+        issue = user_project.issues.find(params[:issue_id])
+        authorize! :modify_issue, issue
 
-          attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
-          attrs[:label_list] = params[:labels] if params[:labels].present?
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
 
-          if @issue.update_attributes attrs
-            present @issue, with: Entities::Issue
-          else
-            not_found!
-          end
+        issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
+
+        if issue.valid?
+          present issue, with: Entities::Issue
+        else
+          not_found!
         end
       end
 

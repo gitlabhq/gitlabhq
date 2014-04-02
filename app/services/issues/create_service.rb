@@ -13,11 +13,5 @@ module Issues
 
       issue
     end
-
-    private
-
-    def execute_hooks(issue)
-      issue.project.execute_hooks(issue.to_hook_data, :issue_hooks)
-    end
   end
 end
