@@ -552,4 +552,8 @@ class Project < ActiveRecord::Base
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
   end
+
+  def forked_from?(project)
+    forked? && project == forked_from_project
+  end
 end

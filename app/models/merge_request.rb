@@ -97,6 +97,7 @@ class MergeRequest < ActiveRecord::Base
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validate :validate_branches
+  validate :validate_fork
 
   scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.project_ids) }
   scope :of_user_team, ->(team) { where("(source_project_id in (:team_project_ids) OR target_project_id in (:team_project_ids) AND assignee_id in (:team_member_ids))", team_project_ids: team.project_ids, team_member_ids: team.member_ids) }
@@ -121,6 +122,20 @@ class MergeRequest < ActiveRecord::Base
 
       if similar_mrs.any?
         errors.add :base, "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
+      end
+    end
+  end
+
+  def validate_fork
+    if target_projet == source_project
+      true
+    else
+      # If source and target projects are different
+      # we should check if source project is actually a fork of target project
+      if source_project.forked_from?(target_project)
+        true
+      else
+        errors.add :base, "Source project is not a fork of target project"
       end
     end
   end
