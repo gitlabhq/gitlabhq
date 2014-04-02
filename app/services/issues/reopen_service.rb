@@ -1,5 +1,5 @@
 module Issues
-  class ReopenService < BaseService
+  class ReopenService < Issues::BaseService
     def execute(issue)
       if issue.reopen
         event_service.reopen_issue(issue, current_user)

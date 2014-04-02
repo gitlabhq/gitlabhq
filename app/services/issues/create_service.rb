@@ -1,5 +1,5 @@
 module Issues
-  class CreateService < BaseService
+  class CreateService < Issues::BaseService
     def execute
       issue = project.issues.new(params)
       issue.author = current_user

@@ -1,5 +1,5 @@
 module Issues
-  class UpdateService < BaseService
+  class UpdateService < Issues::BaseService
     def execute(issue)
       state = params.delete('state_event')
 

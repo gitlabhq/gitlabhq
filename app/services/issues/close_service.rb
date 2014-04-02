@@ -1,5 +1,5 @@
 module Issues
-  class CloseService < BaseService
+  class CloseService < Issues::BaseService
     def execute(issue, commit = nil)
       if issue.close
         notification_service.close_issue(issue, current_user)
