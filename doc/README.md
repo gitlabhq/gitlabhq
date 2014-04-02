@@ -15,4 +15,4 @@
 + [System hooks](system_hooks/system_hooks.md)
 + [Update](update/README.md)
 + [Web hooks](web_hooks/web_hooks.md)
-+ [Workflow](workflow/workflow.md)
++ [Workflow](workflow/README.md)
