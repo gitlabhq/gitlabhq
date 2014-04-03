@@ -285,8 +285,6 @@ GEM
     method_source (0.8.2)
     mime-types (1.25.1)
     minitest (4.7.5)
-    modernizr (2.6.2)
-      sprockets (~> 2.0)
     multi_json (1.8.4)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
@@ -616,7 +614,6 @@ DEPENDENCIES
   launchy
   letter_opener
   minitest (~> 4.7.0)
-  modernizr (= 2.6.2)
   mysql2
   nprogress-rails
   omniauth (~> 1.1.3)
