@@ -18,7 +18,6 @@
 #= require turbolinks
 #= require jquery.turbolinks
 #= require bootstrap
-#= require modernizr
 #= require select2
 #= require raphael
 #= require g.raphael-min
