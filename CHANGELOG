@@ -7,6 +7,7 @@ v 6.8.0
   - Make the repository downloads path configurable
   - Create branches via API (sponsored by O'Reilly Media)
   - Changed permission of gitlab-satellites directory not to be world accessible
+  - Protected branch does not allow force push
 
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)

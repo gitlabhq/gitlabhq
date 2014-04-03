@@ -9,6 +9,7 @@
       %ul
         %li keep stable branches secured
         %li forced code review before merge to protected branches
+        %li prevents branch from force push
       %p Read more about project permissions #{link_to "here", help_permissions_path, class: "underlined-link"}
 
     - if can? current_user, :admin_project, @project
