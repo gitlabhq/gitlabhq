@@ -42,6 +42,9 @@ server {
   # if a file, which is not found in the root folder is requested,
   # then the proxy pass the request to the upsteam (gitlab unicorn)
   location @gitlab {
+    # We need this to prevent BREACH attack
+    gzip off;
+
     proxy_read_timeout 300; # Some requests take more than 30 seconds.
     proxy_connect_timeout 300; # Some requests take more than 30 seconds.
     proxy_redirect     off;
