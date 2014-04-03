@@ -12,7 +12,7 @@ module MergeRequests
         merge_request.author_id_of_changes = current_user.id
         merge_request.merge
 
-        notification.merge_mr(merge_request)
+        notification.merge_mr(merge_request, current_user)
         create_merge_event(merge_request)
         execute_project_hooks(merge_request)
 
