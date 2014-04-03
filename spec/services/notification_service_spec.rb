@@ -5,7 +5,7 @@ describe NotificationService do
 
   describe 'Keys' do
     describe :new_key do
-      let(:key) { create(:personal_key) }
+      let!(:key) { create(:personal_key) }
 
       it { notification.new_key(key).should be_true }
 
@@ -18,7 +18,7 @@ describe NotificationService do
 
   describe 'Email' do
     describe :new_email do
-      let(:email) { create(:email) }
+      let!(:email) { create(:email) }
 
       it { notification.new_email(email).should be_true }
 

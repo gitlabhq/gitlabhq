@@ -3,6 +3,7 @@ module MergeRequests
     def execute
       merge_request = MergeRequest.new(params)
       merge_request.source_project = project
+      merge_request.target_project ||= project
       merge_request.author = current_user
 
       if merge_request.save
