@@ -159,7 +159,6 @@ gem 'select2-rails'
 gem 'jquery-atwho-rails', "~> 0.3.3"
 gem "jquery-rails",     "2.1.3"
 gem "jquery-ui-rails",  "2.0.2"
-gem "modernizr",        "2.6.2"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'
