@@ -43,9 +43,8 @@ module Gitlab
 
     def push_allowed?(user, project, ref, oldrev, newrev, forced_push)
       if user && user_allowed?(user)
-
         action = if project.protected_branch?(ref)
-                    if forced_push
+                    if forced_push.to_s == 'true'
                       :force_push_code_to_protected_branches
                     else
                       :push_code_to_protected_branches
