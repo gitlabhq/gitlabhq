@@ -33,7 +33,7 @@
       .col-sm-10
         .clearfix
           .pull-left
-            - projects =  @project.forked_from_project.nil? ? [@project] : [ @project,@project.forked_from_project]
+            - projects =  @project.forked_from_project.nil? ? [@project] : [@project, @project.forked_from_project]
             = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
           .pull-left
             &nbsp;

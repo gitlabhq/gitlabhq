@@ -76,10 +76,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def create
-    @merge_request = MergeRequest.new(params[:merge_request])
-    @merge_request.author = current_user
     @target_branches ||= []
-    if @merge_request.save
+    @merge_request = MergeRequests::CreateService.new(project, current_user, params[:merge_request]).execute
+
+    if @merge_request.valid?
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
@@ -89,29 +89,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    # If we close MergeRequest we want to ignore validation
-    # so we can close broken one (Ex. fork project removed)
-    if params[:merge_request] == {"state_event"=>"close"}
-      @merge_request.allow_broken = true
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, params[:merge_request]).execute(@merge_request)
 
-      if @merge_request.close
-        opts = { notice: 'Merge request was successfully closed.' }
-      else
-        opts = { alert: 'Failed to close merge request.' }
-      end
-
-      redirect_to [@merge_request.target_project, @merge_request], opts
-      return
-    end
-
-    # We dont allow change of source/target projects
-    # after merge request was created
-    params[:merge_request].delete(:source_project_id)
-    params[:merge_request].delete(:target_project_id)
-
-    if @merge_request.update_attributes(params[:merge_request])
-      @merge_request.reset_events_cache
-
+    if @merge_request.valid?
       respond_to do |format|
         format.js
         format.html do

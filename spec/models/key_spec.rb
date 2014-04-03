@@ -68,4 +68,18 @@ describe Key do
       build(:invalid_key).should_not be_valid
     end
   end
+
+  context 'callbacks' do
+    it 'should add new key to authorized_file' do
+      @key = build(:personal_key, id: 7)
+      GitlabShellWorker.should_receive(:perform_async).with(:add_key, @key.shell_id, @key.key)
+      @key.save
+    end
+
+    it 'should remove key from authorized_file' do
+      @key = create(:personal_key)
+      GitlabShellWorker.should_receive(:perform_async).with(:remove_key, @key.shell_id, @key.key)
+      @key.destroy
+    end
+  end
 end
