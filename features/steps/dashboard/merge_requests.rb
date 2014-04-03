@@ -53,15 +53,15 @@ class DashboardMergeRequests < Spinach::FeatureSteps
   end
 
   def assigned_merge_request
-    @assigned_merge_request ||= create :merge_request, assignee: current_user, target_project: project
+    @assigned_merge_request ||= create :merge_request, assignee: current_user, target_project: project, source_project: project
   end
 
   def authored_merge_request
-    @authored_merge_request ||= create :merge_request, author: current_user, target_project: project
+    @authored_merge_request ||= create :merge_request, source_branch: 'simple_merge_request', author: current_user, target_project: project, source_project: project
   end
 
   def other_merge_request
-    @other_merge_request ||= create :merge_request, target_project: project
+    @other_merge_request ||= create :merge_request, source_branch: '2_3_notes_fix', target_project: project, source_project: project
   end
 
   def project

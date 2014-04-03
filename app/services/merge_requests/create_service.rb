@@ -1,4 +1,4 @@
-module MergeReques
+module MergeRequests
   class CreateService < MergeRequests::BaseService
     def execute
       merge_request = MergeRequest.new(params)

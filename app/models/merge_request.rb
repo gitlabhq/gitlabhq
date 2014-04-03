@@ -127,7 +127,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def validate_fork
-    if target_projet == source_project
+    return true unless target_project && source_project
+
+    if target_project == source_project
       true
     else
       # If source and target projects are different
