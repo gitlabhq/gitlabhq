@@ -202,7 +202,7 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
 
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
-    sudo chmod o-rwx /home/git/gitlab-satellites
+    sudo chmod u+rwx,g+rx,o-rwx /home/git/gitlab-satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/
