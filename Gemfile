@@ -12,8 +12,6 @@ gem "rails", "~> 4.0.0"
 
 gem "protected_attributes"
 gem 'rails-observers'
-gem 'actionpack-page_caching'
-gem 'actionpack-action_caching'
 
 # Default values for AR models
 gem "default_value_for", "~> 3.0.0"
@@ -102,7 +100,7 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq'
+gem 'sidekiq', '2.17.0'
 
 # HTTP requests
 gem "httparty"
@@ -161,7 +159,6 @@ gem 'select2-rails'
 gem 'jquery-atwho-rails', "~> 0.3.3"
 gem "jquery-rails",     "2.1.3"
 gem "jquery-ui-rails",  "2.0.2"
-gem "modernizr",        "2.6.2"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'

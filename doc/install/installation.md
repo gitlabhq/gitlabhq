@@ -93,7 +93,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
 
-The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
+The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
 
 Remove the old Ruby 1.8 if present
 
@@ -202,6 +202,7 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
 
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
+    sudo chmod u+rwx,g+rx,o-rwx /home/git/gitlab-satellites
 
     # Create directories for sockets/pids and make sure GitLab can write to them
     sudo -u git -H mkdir tmp/pids/

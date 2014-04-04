@@ -13,7 +13,7 @@ describe 'Gitlab::Satellite::MergeAction' do
   end
 
   let(:project) { create(:project, namespace: create(:group)) }
-  let(:fork_project) { create(:project, namespace: create(:group)) }
+  let(:fork_project) { create(:project, namespace: create(:group), forked_from_project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:merge_request_fork) { create(:merge_request, source_project: fork_project, target_project: project) }
 

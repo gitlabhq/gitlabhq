@@ -5,7 +5,7 @@ module Gitlab
 
     attr_reader :params, :project, :git_cmd, :user
 
-    def allowed?(actor, cmd, project, ref = nil, oldrev = nil, newrev = nil)
+    def allowed?(actor, cmd, project, ref = nil, oldrev = nil, newrev = nil, forced_push = false)
       case cmd
       when *DOWNLOAD_COMMANDS
         if actor.is_a? User
@@ -19,12 +19,12 @@ module Gitlab
         end
       when *PUSH_COMMANDS
         if actor.is_a? User
-          push_allowed?(actor, project, ref, oldrev, newrev)
+          push_allowed?(actor, project, ref, oldrev, newrev, forced_push)
         elsif actor.is_a? DeployKey
           # Deploy key not allowed to push
           return false
         elsif actor.is_a? Key
-          push_allowed?(actor.user, project, ref, oldrev, newrev)
+          push_allowed?(actor.user, project, ref, oldrev, newrev, forced_push)
         else
           raise 'Wrong actor'
         end
@@ -41,13 +41,17 @@ module Gitlab
       end
     end
 
-    def push_allowed?(user, project, ref, oldrev, newrev)
+    def push_allowed?(user, project, ref, oldrev, newrev, forced_push)
       if user && user_allowed?(user)
         action = if project.protected_branch?(ref)
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
-                 end
+                    if forced_push.to_s == 'true'
+                      :force_push_code_to_protected_branches
+                    else
+                      :push_code_to_protected_branches
+                    end
+                  else
+                    :push_code
+                  end
         user.can?(action, project)
       else
         false

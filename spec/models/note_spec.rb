@@ -209,7 +209,7 @@ describe Note do
     let(:project)    { create(:project) }
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
-    let(:mergereq)   { create(:merge_request, target_project: project) }
+    let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:commit)     { project.repository.commit }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing

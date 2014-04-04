@@ -6,7 +6,7 @@ describe API::API do
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
   let(:user) { create(:user) }
   let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
-  let!(:merge_request) { create(:merge_request, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
+  let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   before {
     project.team << [user, :reporters]
@@ -79,16 +79,12 @@ describe API::API do
     end
 
     context 'forked projects' do
-      let!(:user2) {create(:user)}
-      let!(:forked_project_link) { build(:forked_project_link) }
-      let!(:fork_project) {  create(:project, forked_project_link: forked_project_link,  namespace: user2.namespace, creator_id: user2.id)  }
-      let!(:unrelated_project) {  create(:project,  namespace: create(:user).namespace, creator_id: user2.id)  }
+      let!(:user2) { create(:user) }
+      let!(:fork_project) { create(:project, forked_from_project: project,  namespace: user2.namespace, creator_id: user2.id) }
+      let!(:unrelated_project) { create(:project,  namespace: create(:user).namespace, creator_id: user2.id) }
 
       before :each do |each|
         fork_project.team << [user2, :reporters]
-        forked_project_link.forked_from_project = project
-        forked_project_link.forked_to_project = fork_project
-        forked_project_link.save!
       end
 
       it "should return merge_request" do
@@ -127,16 +123,16 @@ describe API::API do
         response.status.should == 400
       end
 
-      it "should return 400 when target_branch is specified and not a forked project" do
+      it "should return 404 when target_branch is specified and not a forked project" do
         post api("/projects/#{project.id}/merge_requests", user),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'stable', author: user, target_project_id: fork_project.id
-        response.status.should == 400
+        response.status.should == 404
       end
 
-      it "should return 400 when target_branch is specified and for a different fork" do
+      it "should return 404 when target_branch is specified and for a different fork" do
         post api("/projects/#{fork_project.id}/merge_requests", user2),
         title: 'Test merge_request', target_branch: 'master', source_branch: 'stable', author: user2, target_project_id: unrelated_project.id
-        response.status.should == 400
+        response.status.should == 404
       end
 
       it "should return 201 when target_branch is specified and for the same project" do

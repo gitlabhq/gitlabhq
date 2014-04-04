@@ -5,7 +5,7 @@ describe NotificationService do
 
   describe 'Keys' do
     describe :new_key do
-      let(:key) { create(:personal_key) }
+      let!(:key) { create(:personal_key) }
 
       it { notification.new_key(key).should be_true }
 
@@ -18,7 +18,7 @@ describe NotificationService do
 
   describe 'Email' do
     describe :new_email do
-      let(:email) { create(:email) }
+      let!(:email) { create(:email) }
 
       it { notification.new_email(email).should be_true }
 
@@ -57,14 +57,41 @@ describe NotificationService do
           Notify.should_not_receive(:note_issue_email)
           notification.new_note(mentioned_note)
         end
+      end
 
-        def should_email(user_id)
-          Notify.should_receive(:note_issue_email).with(user_id, note.id)
+      describe 'new note on issue in project that belongs to a group' do
+        let(:group) { create(:group) }
+
+        before do
+          note.project.namespace_id = group.id
+          note.project.group.add_user(@u_watcher, UsersGroup::MASTER)
+          note.project.save
+          user_project = note.project.users_projects.find_by_user_id(@u_watcher.id)
+          user_project.notification_level = Notification::N_PARTICIPATING
+          user_project.save
+          user_group = note.project.group.users_groups.find_by_user_id(@u_watcher.id)
+          user_group.notification_level = Notification::N_GLOBAL
+          user_group.save
         end
 
-        def should_not_email(user_id)
-          Notify.should_not_receive(:note_issue_email).with(user_id, note.id)
+        it do
+          should_email(note.noteable.author_id)
+          should_email(note.noteable.assignee_id)
+          should_email(@u_mentioned.id)
+          should_not_email(@u_watcher.id)
+          should_not_email(note.author_id)
+          should_not_email(@u_participating.id)
+          should_not_email(@u_disabled.id)
+          notification.new_note(note)
         end
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:note_issue_email).with(user_id, note.id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:note_issue_email).with(user_id, note.id)
       end
     end
 
