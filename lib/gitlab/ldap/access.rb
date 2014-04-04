@@ -52,6 +52,25 @@ module Gitlab
         end
       end
 
+      # Update user email if it changed in LDAP
+      def update_email(user)
+        uid = user.extern_uid
+        ldap_user = Gitlab::LDAP::Person.find_by_dn(uid, adapter)
+        gitlab_user = ::User.where(provider: 'ldap', extern_uid: uid).last
+
+        if gitlab_user && ldap_user && ldap_user.email
+          ldap_email = ldap_user.email.last
+
+          if (gitlab_user.email != ldap_email)
+            gitlab_user.update(email: ldap_email)
+          else
+            false
+          end
+        else
+          false
+        end
+      end
+
       # Add user to GitLab group
       # In case user already exists: update his access level
       # only if existing permissions are lower than ldap one.

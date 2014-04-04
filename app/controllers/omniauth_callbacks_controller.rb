@@ -24,6 +24,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     gitlab_ldap_access do |access|
       if access.allowed?(@user)
         access.update_permissions(@user)
+        access.update_email(@user)
         sign_in_and_redirect(@user)
       else
         flash[:alert] = "Access denied for your LDAP account."
