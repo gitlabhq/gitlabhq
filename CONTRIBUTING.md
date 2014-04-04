@@ -29,7 +29,9 @@ If something is wrong but it is not a regression compared to older versions of G
 When submitting an issue please conform to the issue submission guidelines listed below.
 Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
-Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose.
+Do not use the issue tracker for feature requests.
+We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose.
+Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
 
 Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
