@@ -251,6 +251,13 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Install Gems
 
+**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN`
+(where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable
+difference in completion time (~60% faster). Check the number of your cores with `nproc`.
+For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler).
+First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411)
+that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
+
     cd /home/git/gitlab
 
     # For PostgreSQL (note, the option says "without ... mysql")
