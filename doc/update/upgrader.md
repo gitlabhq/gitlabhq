@@ -24,12 +24,16 @@ __GitLab Upgrader is available only for GitLab version 6.4.2 or higher__
     # to perform a non-interactive install (no user input required) you can add -y
     # sudo -u git -H ruby script/upgrade.rb -y
 
-### 3. Start application
+### 3. Update init.d script
+
+    sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
+
+### 4. Start application
 
     sudo service gitlab start
     sudo service nginx restart
 
-### 4. Check application status
+### 5. Check application status
 
 Check if GitLab and its environment are configured correctly:
 
