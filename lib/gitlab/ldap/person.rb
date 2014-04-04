@@ -34,6 +34,10 @@ module Gitlab
         uid
       end
 
+      def email
+        entry.try(:mail)
+      end
+
       def dn
         entry.dn
       end
