@@ -122,12 +122,12 @@ production: &base
 
   ## LDAP settings
   # You can inspect a sample of the LDAP users with login access by running:
-  #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
+  #   sudo -u git -H bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
     host: '_your_ldap_server'
     port: 636
-    uid: 'sAMAccountName'
+    uid: 'sAMAccountName' # or 'uid' in some non-ActiveDirectory settings
     method: 'ssl' # "tls" or "ssl" or "plain"
     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
     password: '_the_password_of_the_bind_user'
