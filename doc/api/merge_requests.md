@@ -13,33 +13,33 @@ Parameters:
 
 ```json
 [
-    {
-        "id":1,
-        "iid":1,
-        "target_branch":"master",
-        "source_branch":"test1",
-        "project_id":3,
-        "title":"test1",
-        "state":"opened",
-        "upvotes":0,
-        "downvotes":0,
-        "author":{
-            "id":1,
-            "username": "admin",
-            "email":"admin@local.host",
-            "name":"Administrator",
-            "state":"active",
-            "created_at":"2012-04-29T08:46:00Z"
-        },
-        "assignee":{
-            "id":1,
-            "username": "admin",
-            "email":"admin@local.host",
-            "name":"Administrator",
-            "state":"active",
-            "created_at":"2012-04-29T08:46:00Z"
-        }
+  {
+    "id": 1,
+    "iid": 1,
+    "target_branch": "master",
+    "source_branch": "test1",
+    "project_id": 3,
+    "title": "test1",
+    "state": "opened",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
+    },
+    "assignee": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
     }
+  }
 ]
 ```
 
@@ -59,31 +59,31 @@ Parameters:
 
 ```json
 {
-    "id":1,
-    "iid":1,
-    "target_branch":"master",
-    "source_branch":"test1",
-    "project_id":3,
-    "title":"test1",
-    "state":"merged",
-    "upvotes":0,
-    "downvotes":0,
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "state":"active",
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "assignee":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "state":"active",
-        "created_at":"2012-04-29T08:46:00Z"
-    }
+  "id": 1,
+  "iid": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "merged",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
 }
 ```
 
@@ -106,30 +106,30 @@ Parameters:
 
 ```json
 {
-    "id":1,
-    "target_branch":"master",
-    "source_branch":"test1",
-    "project_id":3,
-    "title":"test1",
-    "state":"opened",
-    "upvotes":0,
-    "downvotes":0,
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "state":"active",
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "assignee":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "state":"active",
-        "created_at":"2012-04-29T08:46:00Z"
-    }
+  "id": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "opened",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
 }
 ```
 
@@ -153,32 +153,31 @@ Parameters:
 + `state_event`                 - New state (close|reopen|merge)
 
 ```json
-
 {
-    "id":1,
-    "target_branch":"master",
-    "source_branch":"test1",
-    "project_id":3,
-    "title":"test1",
-    "state":"opened",
-    "upvotes":0,
-    "downvotes":0,
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "state":"active",
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "assignee":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "state":"active",
-        "created_at":"2012-04-29T08:46:00Z"
-    }
+  "id": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "opened",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
 }
 ```
 
@@ -200,15 +199,15 @@ Parameters:
 
 ```json
 {
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "note":"text1"
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "blocked": false,
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "note": "text1"
 }
 ```
 
@@ -228,27 +227,27 @@ Parameters:
 
 ```json
 [
-    {
-       "note":"this is the 1st comment on the 2merge merge request",
-       "author":{
-           "id":11,
-           "username":"admin",
-           "email":"admin@local.host",
-           "name":"Administrator",
-           "state":"active",
-           "created_at":"2014-03-06T08:17:35.000Z"
-       }
-    },
-    {
-       "note":"_Status changed to closed_",
-       "author":{
-           "id":11,
-           "username":"admin",
-           "email":"admin@local.host",
-           "name":"Administrator",
-           "state":"active",
-           "created_at":"2014-03-06T08:17:35.000Z"
-       }
+  {
+    "note": "this is the 1st comment on the 2merge merge request",
+    "author": {
+      "id": 11,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2014-03-06T08:17:35.000Z"
     }
+  },
+  {
+    "note": "_Status changed to closed_",
+    "author": {
+      "id": 11,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2014-03-06T08:17:35.000Z"
+    }
+  }
 ]
 ```
