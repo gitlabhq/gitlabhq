@@ -282,6 +282,17 @@ describe Note do
     end
   end
 
+  describe '#counts_for_commits' do
+    let(:project) { create(:project) }
+    let!(:note) { create(:note_on_commit, note: "+1 from me") }
+    let!(:commit) { note.noteable }
+
+    it 'should return commit and its count' do
+      counts = Note.counts_for_commits([commit])
+      counts[commit.id] == 1
+    end
+  end
+
   describe '#system?' do
     let(:project) { create(:project) }
     let(:issue)   { create(:issue, project: project) }

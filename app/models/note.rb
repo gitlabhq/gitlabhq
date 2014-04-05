@@ -120,6 +120,19 @@ class Note < ActiveRecord::Base
 
       discussions
     end
+
+    def counts_for_commits(commits)
+      commit_ids = commits.map(&:id)
+      sql = Note.select('count(*), commit_id')
+        .where(noteable_type: "Commit", commit_id: commit_ids)
+        .group(:commit_id)
+        .to_sql
+
+      ActiveRecord::Base.connection.execute(sql).to_a.reduce({}) do |note_counts, row|
+        note_counts[row['commit_id']] = row['count'].to_i
+        note_counts
+      end
+    end
   end
 
   # Determine whether or not a cross-reference note already exists.

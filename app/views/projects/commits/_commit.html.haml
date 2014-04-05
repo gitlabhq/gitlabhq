@@ -9,11 +9,10 @@
 
     = link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
     .notes_count
-      - notes = project.notes.for_commit_id(commit.id)
-      - if notes.any?
+      - if @note_counts.has_key?(commit.id)
         %span.label.label-gray
           %i.icon-comment
-          = notes.count
+          = @note_counts[commit.id]
 
   - if commit.description?
     .commit-row-description.js-toggle-content
