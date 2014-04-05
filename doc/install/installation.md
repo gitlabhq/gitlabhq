@@ -197,21 +197,18 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
-    sudo chmod -R u+rwX  log/
-    sudo chmod -R u+rwX  tmp/
+    sudo chmod -R u+rwX log/
+    sudo chmod -R u+rwX tmp/
 
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
     sudo chmod u+rwx,g+rx,o-rwx /home/git/gitlab-satellites
 
-    # Create directories for sockets/pids and make sure GitLab can write to them
-    sudo -u git -H mkdir tmp/pids/
-    sudo -u git -H mkdir tmp/sockets/
-    sudo chmod -R u+rwX  tmp/pids/
-    sudo chmod -R u+rwX  tmp/sockets/
+    # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
+    sudo chmod -R u+rwX tmp/pids/
+    sudo chmod -R u+rwX tmp/sockets/
 
-    # Create public/uploads directory otherwise backup will fail
-    sudo -u git -H mkdir public/uploads
+    # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
 
     # Copy the example Unicorn config
@@ -253,6 +250,13 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo -u git -H chmod o-rwx config/database.yml
 
 ## Install Gems
+
+**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN`
+(where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable
+difference in completion time (~60% faster). Check the number of your cores with `nproc`.
+For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler).
+First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411)
+that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     cd /home/git/gitlab
 
