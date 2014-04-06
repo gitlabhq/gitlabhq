@@ -2,14 +2,7 @@
   = render "projects/merge_requests/show/mr_title"
   = render "projects/merge_requests/show/how_to_merge"
   = render "projects/merge_requests/show/mr_box"
-  - if @merge_request.open?
-    - if @merge_request.source_branch_exists? && @merge_request.target_branch_exists?
-      = render "projects/merge_requests/show/mr_accept"
-    - else
-      = render "projects/merge_requests/show/no_accept"
-  = render "projects/merge_requests/show/remove_source_branch"
-  - if @merge_request.source_project.gitlab_ci?
-    = render "projects/merge_requests/show/mr_ci"
+  = render "projects/merge_requests/show/state_widget"
   = render "projects/merge_requests/show/commits"
 
   - if @commits.present?

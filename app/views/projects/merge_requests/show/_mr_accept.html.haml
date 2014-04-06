@@ -1,22 +1,21 @@
 - unless @allowed_to_merge
   - if @project.archived?
-    .bs-callout.bs-callout-warning
+    %p
       %strong Archived projects cannot be committed to!
   - else
-    .bs-callout
-      .automerge_widget.cannot_be_merged.hide
-        %strong This can't be merged automatically, even if it could be merged you don't have the permission to do so.
-      .automerge_widget.can_be_merged.hide
-        %strong This can be merged automatically but you don't have the permission to do so.
+    .automerge_widget.cannot_be_merged.hide
+      %strong This can't be merged automatically, even if it could be merged you don't have the permission to do so.
+    .automerge_widget.can_be_merged.hide
+      %strong This can be merged automatically but you don't have the permission to do so.
 
 
 - if @show_merge_controls
   .automerge_widget.can_be_merged.hide
-    .bs-callout.bs-callout-success.clearfix
+    .clearfix
       = form_for [:automerge, @project, @merge_request], remote: true, method: :get do |f|
         %h4
           You can accept this request automatically.
-        %p
+        %div
           If you still want to do it manually -
           %strong
             = link_to "click here", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
@@ -47,31 +46,30 @@
 
 
   .automerge_widget.no_satellite.hide
-    .bs-callout.bs-callout-danger
+    %p
       %span
         %strong This repository does not have satellite. Ask an administrator to fix this issue
 
   .automerge_widget.cannot_be_merged.hide
-    .bs-callout.bs-callout-disabled
-      %h4
-        This request can't be merged with GitLab.
-      %span
-        You should do it manually with
-        %strong
-          = link_to "command line", "#modal_merge_info", class: "how_to_merge_link", title: "How To Merge", "data-toggle" => "modal"
+    %h4
+      This request can't be merged with GitLab.
+    %p
+      You should do it manually with
+      %strong
+        = link_to "command line", "#modal_merge_info", class: "how_to_merge_link", title: "How To Merge", "data-toggle" => "modal"
 
   .automerge_widget.unchecked
-    .bs-callout.bs-callout-warning
+    %p
       %strong
         %i.icon-spinner.icon-spin
         Checking for ability to automatically merge…
 
   .automerge_widget.already_cannot_be_merged.hide
-    .bs-callout.bs-callout-info
+    %p
       %strong This merge request can not be merged. Try to reload the page.
 
   .merge-in-progress.hide
-    .bs-callout.bs-callout-success
+    %p
       %i.icon-spinner.icon-spin
       &nbsp;
       Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;

@@ -28,10 +28,3 @@
           - @commits.each do |commit|
             = render "projects/commits/commit", commit: commit, project: @merge_request.source_project
 
-- else
-  .nothing-here-block
-    Nothing to merge from
-    %span.label-branch #{@merge_request.source_branch}
-    to
-    %span.label-branch #{@merge_request.target_branch}
-  %br

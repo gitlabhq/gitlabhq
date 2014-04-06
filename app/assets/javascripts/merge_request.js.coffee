@@ -88,7 +88,21 @@ class MergeRequest
 
   showCiState: (state) ->
     $('.ci_widget').hide()
-    $('.ci_widget.ci-' + state).show()
+    allowed_states = ["failed", "running", "pending", "success"]
+    if state in allowed_states
+      $('.ci_widget.ci-' + state).show()
+    else
+      $('.ci_widget.ci-error').show()
+
+    switch state
+      when "success"
+        $('.mr-state-widget').addClass("panel-success")
+      when "failed"
+        $('.mr-state-widget').addClass("panel-danger")
+      when "running", "pending"
+        $('.mr-state-widget').addClass("panel-warning")
+
+
 
   loadDiff: (event) ->
     $.ajax
