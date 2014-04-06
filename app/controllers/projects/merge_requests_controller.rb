@@ -211,9 +211,25 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
+    @allowed_to_remove_source_branch = allowed_to_remove_source_branch?
+    @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
   end
 
   def allowed_to_merge?
+    allowed_to_push_code?(project)
+  end
+
+  def invalid_mr
+    # Render special view for MR with removed source or target branch
+    render 'invalid'
+  end
+
+  def allowed_to_remove_source_branch?
+    allowed_to_push_code?(@merge_request.source_project) &&
+      !@merge_request.disallow_source_branch_removal?
+  end
+
+  def allowed_to_push_code?(project)
     action = if project.protected_branch?(@merge_request.target_branch)
                :push_code_to_protected_branches
              else
@@ -221,10 +237,5 @@ class Projects::MergeRequestsController < Projects::ApplicationController
              end
 
     can?(current_user, action, @project)
-  end
-
-  def invalid_mr
-    # Render special view for MR with removed source or target branch
-    render 'invalid'
   end
 end

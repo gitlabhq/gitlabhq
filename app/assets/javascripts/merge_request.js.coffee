@@ -58,6 +58,18 @@ class MergeRequest
       $('.automerge_widget.can_be_merged').hide()
       $('.merge-in-progress').show()
 
+    this.$('.remove_source_branch').on 'click', ->
+      $('.remove_source_branch_widget').hide()
+      $('.remove_source_branch_in_progress').show()
+
+    this.$(".remove_source_branch").on "ajax:success", (e, data, status, xhr) ->
+      location.reload()
+
+    this.$(".remove_source_branch").on "ajax:error", (e, data, status, xhr) =>
+      this.$('.remove_source_branch_widget').hide()
+      this.$('.remove_source_branch_in_progress').hide()
+      this.$('.remove_source_branch_widget.failed').show()
+
   activateTab: (action) ->
     this.$('.nav-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
