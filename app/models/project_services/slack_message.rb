@@ -11,8 +11,14 @@ class SlackMessage
     @username = params.fetch(:user_name)
   end
 
-  def compose
+  def pretext
     format(message)
+  end
+
+  def attachments
+    return [] if new_branch? || removed_branch?
+
+    commit_message_attachments
   end
 
   private
@@ -31,7 +37,7 @@ class SlackMessage
     elsif removed_branch?
       removed_branch_message
     else
-      push_message << commit_messages
+      push_message
     end
   end
 
@@ -54,15 +60,20 @@ class SlackMessage
   def commit_messages
     commits.each_with_object('') do |commit, str|
       str << compose_commit_message(commit)
-    end
+    end.chomp
+  end
+
+  def commit_message_attachments
+    [{ text: format(commit_messages), color: attachment_color }]
   end
 
   def compose_commit_message(commit)
-    id = commit.fetch(:id)[0..5]
+    author = commit.fetch(:author).fetch(:name)
+    id = commit.fetch(:id)[0..8]
     message = commit.fetch(:message)
     url = commit.fetch(:url)
 
-    "\n - #{message} ([#{id}](#{url}))"
+    "[#{id}](#{url}): #{message} - #{author}\n"
   end
 
   def new_branch?
@@ -91,5 +102,9 @@ class SlackMessage
 
   def compare_link
     "[Compare changes](#{compare_url})"
+  end
+
+  def attachment_color
+    '#345'
   end
 end
