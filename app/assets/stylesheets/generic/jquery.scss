@@ -17,4 +17,22 @@
       text-align: center;
     }
   }
+
+  &.ui-autocomplete {
+    @include border-radius(0px);
+    border-color: #DDD;
+    padding: 0;
+
+    .ui-menu-item a {
+      color: #777;
+
+      &:hover {
+        background: $hover;
+        border-color: $primary_color;
+        @include border-radius(0px);
+        color: #333;
+      }
+    }
+  }
 }
+
