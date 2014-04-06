@@ -30,8 +30,8 @@ __You can login with both GitLab and LDAP credentials now__
   "dark_scheme": false,
   "theme_id": 1,
   "is_admin": false,
-  "can_create_group" : true,
-  "can_create_team" : true,
-  "can_create_project" : true
+  "can_create_group": true,
+  "can_create_team": true,
+  "can_create_project": true
 }
 ```
