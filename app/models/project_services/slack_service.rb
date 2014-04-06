@@ -53,7 +53,7 @@ class SlackService < Service
     notifier = Slack::Notifier.new(subdomain, token)
     notifier.channel = room
     notifier.username = 'GitLab'
-    notifier.ping(message.compose)
+    notifier.ping(message.pretext, attachments: message.attachments)
   end
 
   private
