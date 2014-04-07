@@ -33,8 +33,9 @@
             = f.text_field :email, class: "form-control", required: true
             - if @user.unconfirmed_email.present?
               %span.help-block
-                We sent confirmation email to
+                Please click the link in the confirmation email before continuing, it was send to
                 %strong #{@user.unconfirmed_email}
+
             - else
               %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .form-group
