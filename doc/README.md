@@ -11,7 +11,7 @@
 **Administrator documentation**
 
 + [Install](install/README.md) Requirements, directory structures and manual installation.
-+ [Integration](integration/external-issue-tracker.md) How to integrate JIRA and Redmine.
++ [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
 + [Raketasks](raketasks/README.md) Explore what GitLab has in store for you to make administration easier.
 + [System hooks](system_hooks/system_hooks.md) Let GitLab notify you when certain management tasks need to be carried out.
 + [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
