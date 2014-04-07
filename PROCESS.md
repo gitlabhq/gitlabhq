@@ -7,24 +7,19 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 ## Common actions
 
 ### Issue team
-- Looks for issues without workflow labels and triages issue
-- Monitors merge requests
-- Closes invalid issues and merge requests with a comment (duplicates, [feature requests](#feature-requests), [fixed in newer version](#issue-fixed-in-newer-version), [issue report for old version](#issue-report-for-old-version), not a problem in GitLab, etc.)
-- Assigns appropriate [labels](#how-we-handle-issues)
-- Asks for feedback from issue reporter/merge request initiator ([invalid issue reports](#improperly-formatted-issue), [format code](#code-format), etc.)
-- Asks for feedback from the relevant developer(s) based on the [list of members and their specialities](https://www.gitlab.com/core-team/)
-- Monitors all issues/merge requests for feedback (but especially ones commented on since automatically watching them):
+- Looks for issues without [workflow labels](#how-we-handle-issues) and triages issue
+- Closes invalid issues with a comment (duplicates, [feature requests](#feature-requests), [fixed in newer version](#issue-fixed-in-newer-version), [issue report for old version](#issue-report-for-old-version), not a problem in GitLab, etc.)
+- Asks for feedback from issue reporter ([invalid issue reports](#improperly-formatted-issue), [format code](#code-format), etc.)
+- Monitors all issues for feedback (but especially ones commented on since automatically watching them)
 - Closes issues with no feedback from the reporter for two weeks
-- Closes stale merge requests
 
-### Development team
+### Merge request officers
 
-- Responds to issues and merge requests the issue team mentions them in
-- Monitors for new issues in _Awaiting developer action/feedback_ with no developer activity (once a week)
-- Monitors for new merge requests (at least once a week)
-- Manages their work queue by looking at issues and merge requests assigned to them
-- Close fixed issues (via commit messages or manually)
-- Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to merge requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+- Responds to merge requests the issue team mentions them in and monitors for new merge requests
+- Provides feedback to the merge request submitter to improve the merge request (style, tests, etc.)
+- Marks merge requests 'ready-for-merge' when they meet the contribution guidelines
+- Mention developer(s) based on the [list of members and their specialities](https://www.gitlab.com/core-team/)
+- Closes merge requests with no feedback from the reporter for two weeks
 
 ## Priorities of the issue team
 
@@ -62,6 +57,10 @@ If an issue is complex and needs the attention of a specific person, assignment 
 - Green labels `#009800`: issues that can generally be ignored. For example, issues given the following labels normally can be closed immediately:
   - Feature request (see copy & paste response: [Feature requests](#feature-requests))
   - Support (see copy & paste response: [Support requests and configuration questions](#support-requests-and-configuration-questions)
+
+## Be kind
+
+Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to merge requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
 
 ## Copy & paste responses
 
