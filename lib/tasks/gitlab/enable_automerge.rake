@@ -27,11 +27,8 @@ namespace :gitlab do
       if project.satellite.exists?
         puts "exists already".green
       else
-        puts ""
-        project.satellite.create
-
-        print "... "
-        if $?.success?
+        print "\n... "
+        if project.satellite.create
           puts "created".green
         else
           puts "error".red
