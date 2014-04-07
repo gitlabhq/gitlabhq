@@ -1,4 +1,4 @@
-You can use Twitter to log into GitLab.
+You can use other services to log into GitLab via oAuth.
 
 Please configure this in gitlab.yml
 
