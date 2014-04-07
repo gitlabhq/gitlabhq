@@ -11,7 +11,7 @@ class ApplicationController < ActionController::Base
   before_filter :default_headers
   before_filter :add_gon_variables
   before_filter :configure_permitted_parameters, if: :devise_controller?
-  before_filter :require_email
+  before_filter :require_email, unless: :devise_controller?
 
   protect_from_forgery
 
