@@ -9,5 +9,3 @@
           = link_to authbutton(provider, 32), omniauth_authorize_path(resource_name, provider)
         - else
           = link_to provider.to_s.titleize, omniauth_authorize_path(resource_name, provider), class: "btn"
-    %br
-    %small * Make sure your email address is public

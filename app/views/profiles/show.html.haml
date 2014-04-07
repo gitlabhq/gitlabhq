@@ -30,7 +30,10 @@
             %span.help-block.light
               Email is read-only for LDAP user
           - else
-            = f.text_field :email, class: "form-control", required: true
+            - if @user.temp_oauth_email?
+              = f.text_field :email, class: "form-control", required: true, value: nil
+            - else
+              = f.text_field :email, class: "form-control", required: true
             - if @user.unconfirmed_email.present?
               %span.help-block
                 Please click the link in the confirmation email before continuing, it was send to

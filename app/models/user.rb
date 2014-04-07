@@ -462,4 +462,12 @@ class User < ActiveRecord::Base
   def all_ssh_keys
     keys.map(&:key)
   end
+
+  def temp_oauth_email?
+    email =~ /\Atemp-email-for-oauth/
+  end
+
+  def generate_tmp_oauth_email
+    self.email = "temp-email-for-oauth-#{username}@gitlab.localhost"
+  end
 end
