@@ -34,14 +34,13 @@ module Gitlab
           # In this case we generate temporary email and force user to fill it later
           if user.email.blank?
             user.generate_tmp_oauth_email
-            user.save!(validate: false)
           else
             # Google oauth returns email but dont return nickname
             # So we use part of email as username for new user
             user.username = email.match(/^[^@]*/)[0]
-            user.save
           end
 
+          user.save!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
           if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?

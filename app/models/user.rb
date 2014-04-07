@@ -468,6 +468,6 @@ class User < ActiveRecord::Base
   end
 
   def generate_tmp_oauth_email
-    self.email = "temp-email-for-oauth-#{username}"
+    self.email = "temp-email-for-oauth-#{username}@gitlab.localhost"
   end
 end
