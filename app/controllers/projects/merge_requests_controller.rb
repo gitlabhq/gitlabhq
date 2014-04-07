@@ -216,7 +216,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def allowed_to_merge?
-    allowed_to_push_code?(project)
+    allowed_to_push_code?(project, @merge_request.target_branch)
   end
 
   def invalid_mr
@@ -225,17 +225,17 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def allowed_to_remove_source_branch?
-    allowed_to_push_code?(@merge_request.source_project) &&
+    allowed_to_push_code?(@merge_request.source_project, @merge_request.source_branch) &&
       !@merge_request.disallow_source_branch_removal?
   end
 
-  def allowed_to_push_code?(project)
-    action = if project.protected_branch?(@merge_request.target_branch)
+  def allowed_to_push_code?(project, branch)
+    action = if project.protected_branch?(branch)
                :push_code_to_protected_branches
              else
                :push_code
              end
 
-    can?(current_user, action, @project)
+    can?(current_user, action, project)
   end
 end
