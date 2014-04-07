@@ -29,7 +29,13 @@ module Gitlab
 
           user = model.build_user(opts, as: :admin)
           user.skip_confirmation!
-          user.save!
+
+          if user.email.blank?
+            user.generate_tmp_oauth_email
+          end
+
+          user.save!(validate: false)
+
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
           if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
@@ -58,7 +64,7 @@ module Gitlab
         end
 
         def username
-          email.match(/^[^@]*/)[0]
+          auth.info.nickname.to_s.force_encoding("utf-8")
         end
 
         def provider
