@@ -17,7 +17,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 
 - Responds to merge requests the issue team mentions them in and monitors for new merge requests
 - Provides feedback to the merge request submitter to improve the merge request (style, tests, etc.)
-- Marks merge requests 'ready-for-merge' when they meet the contribution guidelines
+- Mark merge requests 'ready-for-merge' when they meet the contribution guidelines
 - Mention developer(s) based on the [list of members and their specialities](https://www.gitlab.com/core-team/)
 - Closes merge requests with no feedback from the reporter for two weeks
 
