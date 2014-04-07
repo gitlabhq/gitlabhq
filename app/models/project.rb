@@ -240,7 +240,7 @@ class Project < ActiveRecord::Base
 
   def check_limit
     unless creator.can_create_project?
-      errors[:limit_reached] << ("Your own projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
+      errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
     end
   rescue
     errors[:base] << ("Can't check your ability to create project")
