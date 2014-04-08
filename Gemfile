@@ -39,7 +39,7 @@ gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 gem 'gitlab_omniauth-ldap', '1.0.4', require: "omniauth-ldap"
 
 # Git Wiki
-gem "gitlab-gollum-lib", "~> 1.1.0", require: 'gollum-lib'
+gem 'gollum-lib', '~> 3.0.0'
 
 # Language detection
 gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
@@ -70,7 +70,7 @@ gem "haml-rails"
 gem "carrierwave"
 
 # for aws storage
-gem "fog", "~> 1.3.1", group: :aws
+gem "fog", "~> 1.14", group: :aws
 
 # Authorization
 gem "six"
@@ -80,7 +80,7 @@ gem "seed-fu"
 
 # Markdown to HTML
 gem "redcarpet",     "~> 2.2.2"
-gem "github-markup", "~> 0.7.4", require: 'github/markup', git: 'https://github.com/gitlabhq/markup.git', ref: '61ade389c1e1c159359338f570d18464a44ddbc4' 
+gem "github-markup"
 
 # Asciidoc to HTML
 gem  "asciidoctor"
@@ -140,7 +140,7 @@ gem "d3_rails", "~> 3.1.4"
 gem "underscore-rails", "~> 1.4.4"
 
 # Sanitize user input
-gem "sanitize"
+gem "sanitize", '~> 2.0'
 
 # Protect against bruteforcing
 gem "rack-attack"
