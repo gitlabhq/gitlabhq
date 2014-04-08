@@ -12,6 +12,7 @@ v 6.8.0
   - Disable connection reaping for MySQL
   - Allow oauth signup without email for twitter and github
   - Fix faulty namespace names that caused 500 on user creation
+  - Option to disable standard login
 
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)
