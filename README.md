@@ -85,6 +85,10 @@ or by directly calling the script
 
 ### Run in development mode
 
+Copy the example development unicorn configuration file
+
+    cp config/unicorn.rb.example.development config/unicorn.rb
+
 Start it with [Foreman](https://github.com/ddollar/foreman)
 
     bundle exec foreman start -p 3000
