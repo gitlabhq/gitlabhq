@@ -74,7 +74,7 @@ describe Project do
       project2 = build(:project)
       project2.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
       project2.should_not be_valid
-      project2.errors[:limit_reached].first.should match(/Your own projects limit is 0/)
+      project2.errors[:limit_reached].first.should match(/Your project limit is 0/)
     end
   end
 
