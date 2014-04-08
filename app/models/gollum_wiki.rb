@@ -41,7 +41,7 @@ class GollumWiki
   def wiki
     @wiki ||= begin
       Gollum::Wiki.new(path_to_repo)
-    rescue Grit::NoSuchPathError
+    rescue Gollum::NoSuchPathError
       create_repo!
     end
   end
