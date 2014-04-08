@@ -52,7 +52,7 @@ If you are not familiar with vim please skip this and keep using the default edi
     sudo apt-get install -y vim
     sudo update-alternatives --set editor /usr/bin/vim.basic
 
-Install the required packages:
+Install the required packages (some are needed to compile native extensions for the gems):
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
