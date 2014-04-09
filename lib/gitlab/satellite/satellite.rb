@@ -22,7 +22,7 @@ module Gitlab
       end
 
       def clear_and_update!
-        raise SatelliteNotExistError unless exists?
+        project.ensure_satellite_exists
 
         @repo = nil
         clear_working_dir!
@@ -54,7 +54,7 @@ module Gitlab
       # * Changes the current directory to the satellite's working dir
       # * Yields
       def lock
-        raise SatelliteNotExistError unless exists?
+        project.ensure_satellite_exists
 
         File.open(lock_file, "w+") do |f|
           begin
@@ -76,7 +76,7 @@ module Gitlab
       end
 
       def repo
-        raise SatelliteNotExistError unless exists?
+        project.ensure_satellite_exists
 
         @repo ||= Grit::Repo.new(path)
       end
