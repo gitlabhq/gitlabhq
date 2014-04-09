@@ -1,20 +1,20 @@
 = render 'nav'
 %h3.page-title
-  = @wiki.title.titleize
+  = @page.title.titleize
   = render 'main_links'
-- if @wiki.historical?
+- if @page.historical?
   .warning_message
     This is an old version of this page.
-    You can view the #{link_to "most recent version", project_wiki_path(@project, @wiki)} or browse the #{link_to "history", history_project_wiki_path(@project, @wiki)}.
+    You can view the #{link_to "most recent version", project_wiki_path(@project, @page)} or browse the #{link_to "history", history_project_wiki_path(@project, @page)}.
 
 %hr
 
 .wiki-holder
   .wiki
     = preserve do
-      = render_wiki_content(@wiki)
+      = render_wiki_content(@page)
 
 %hr
 
 .wiki-last-edit-by
-  Last edited by #{commit_author_link(@wiki.commit, avatar: true, size: 16)} #{time_ago_with_tooltip(@wiki.commit.created_at)}
+  Last edited by #{commit_author_link(@page.commit, avatar: true, size: 16)} #{time_ago_with_tooltip(@page.commit.created_at)}

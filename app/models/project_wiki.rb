@@ -1,4 +1,4 @@
-class GollumWiki
+class ProjectWiki
   include Gitlab::ShellAdapter
 
   MARKUPS = {

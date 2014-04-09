@@ -1,4 +1,4 @@
-class ProjectWiki < Spinach::FeatureSteps
+class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedNote
@@ -16,7 +16,7 @@ class ProjectWiki < Spinach::FeatureSteps
   end
 
   Given 'I create the Wiki Home page' do
-    fill_in "Content", with: '[link test](test)'
+    fill_in "wiki_content", with: '[link test](test)'
     click_on "Create page"
   end
 
@@ -87,6 +87,6 @@ class ProjectWiki < Spinach::FeatureSteps
   end
 
   def wiki
-    @gollum_wiki = GollumWiki.new(project, current_user)
+    @project_wiki = ProjectWiki.new(project, current_user)
   end
 end

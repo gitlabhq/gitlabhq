@@ -42,7 +42,7 @@ describe Projects::CreateService do
       context 'wiki_enabled true creates wiki repository directory' do
         before do
           @project = create_project(@user, @opts)
-          @path = GollumWiki.new(@project, @user).send(:path_to_repo)
+          @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
         it { File.exists?(@path).should be_true }
@@ -52,7 +52,7 @@ describe Projects::CreateService do
         before do
           @opts.merge!(wiki_enabled: false)
           @project = create_project(@user, @opts)
-          @path = GollumWiki.new(@project, @user).send(:path_to_repo)
+          @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
         it { File.exists?(@path).should be_false }

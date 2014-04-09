@@ -22,7 +22,7 @@ describe WikiPage do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
-  let(:wiki) { GollumWiki.new(project, user) }
+  let(:wiki) { ProjectWiki.new(project, user) }
 
   subject { WikiPage.new(wiki) }
 
