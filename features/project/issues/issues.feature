@@ -67,3 +67,12 @@ Feature: Project Issues
     Given I visit issue page "Release 0.4"
     And I leave a comment with a header containing "Comment with a header"
     Then The comment with the header should not have an ID
+
+  Scenario: Issues on empty project
+    Given empty project "Empty Project"
+    When I visit empty project page
+    And I see empty project details with ssh clone info
+    When I visit empty project's issues page
+    Given I click link "New Issue"
+    And I submit new issue "500 error on profile"
+    Then I should see issue "500 error on profile"
