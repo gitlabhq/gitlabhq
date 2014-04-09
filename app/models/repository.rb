@@ -215,4 +215,9 @@ class Repository
   def last_commit_for_path(sha, path)
     commits(sha, path, 1).last
   end
+
+  # Remove archives older than 2 hours
+  def clean_old_archives
+    Gitlab::Popen.popen(%W(find #{Gitlab.config.gitlab.repository_downloads_path} -mmin +120 -delete))
+  end
 end
