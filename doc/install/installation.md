@@ -302,17 +302,15 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+## Compile assets
+
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+
 ## Start Your GitLab Instance
 
     sudo service gitlab start
     # or
     sudo /etc/init.d/gitlab restart
-
-
-## Compile assets
-
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-
 
 # 7. Nginx
 
