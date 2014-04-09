@@ -15,6 +15,7 @@ v 6.9.0
   - Fix wiki backup skip bug
   - Two Step MR creation process
   - Remove unwanted files from satellite working directory with git clean -fdx
+  - Do not accept merge request if contains `WIP` label
   - Accept merge request via API (sponsored by O'Reilly Media)
   - Add more access checks during API calls
   - Block SSH access for 'disabled' Active Directory users

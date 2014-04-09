@@ -6,7 +6,7 @@ module Gitlab
       end
 
       def warning_labels
-        %w(documentation support)
+        %w(documentation support wip)
       end
 
       def neutral_labels
