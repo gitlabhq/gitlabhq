@@ -49,6 +49,11 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  default_value_for :admin, false
+  default_value_for :can_create_group, true
+  default_value_for :can_create_team, false
+  default_value_for :hide_no_ssh_key, false
+
   devise :database_authenticatable, :token_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 

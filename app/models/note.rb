@@ -23,6 +23,8 @@ require 'file_size_validator'
 class Note < ActiveRecord::Base
   include Mentionable
 
+  default_value_for :system, false
+
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code, :commit_id
   attr_mentionable :note
