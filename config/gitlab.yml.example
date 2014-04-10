@@ -178,6 +178,7 @@ production: &base
     # see https://github.com/gitlabhq/gitlab-public-wiki/wiki/Working-custom-omniauth-provider-configurations
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
     # arguments, followed by optional 'args' which can be either a hash or an array.
+    # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
       # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET',
