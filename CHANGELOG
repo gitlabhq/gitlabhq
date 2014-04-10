@@ -15,6 +15,7 @@ v 6.8.0
   - Option to disable standard login
   - Clean old created archives from repository downloads directory
   - Fix download link for huge MR diffs
+  - Fix emails on push service when only one commit is pushed
 
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)
