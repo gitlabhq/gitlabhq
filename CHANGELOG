@@ -1,3 +1,6 @@
+v 6.7.4
+  - Don't send an email for "mentioned in" notes (Pierre de La Morinerie)
+
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)
   - Drop all tables before restoring a Postgres backup
