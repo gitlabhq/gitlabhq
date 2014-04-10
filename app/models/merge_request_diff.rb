@@ -1,3 +1,16 @@
+# == Schema Information
+#
+# Table name: merge_request_diffs
+#
+#  id               :integer          not null, primary key
+#  state            :string(255)      default("collected"), not null
+#  st_commits       :text
+#  st_diffs         :text
+#  merge_request_id :integer          not null
+#  created_at       :datetime
+#  updated_at       :datetime
+#
+
 require Rails.root.join("app/models/commit")
 
 class MergeRequestDiff < ActiveRecord::Base
