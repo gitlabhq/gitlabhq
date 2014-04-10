@@ -88,12 +88,11 @@ describe Service do
       it { @service.doc.should == "Some service documentation" }
     end
 
-    context "when something bad happens" do
+    context "when no documentation found att all" do
       before do
-        Gitlab::ProjectServiceDoc.stub(:get).and_raise("something bad")
+        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {})
       end
 
-      it { expect { @service.doc }.to_not raise_error }
       it { @service.doc.should be_nil }
     end
 
