@@ -1,3 +1,6 @@
+v 6.7.5
+  - Fix emails on push service when only one commit is pushed (Jonathan Sternberg)
+
 v 6.7.4
   - Don't send an email for "mentioned in" notes (Pierre de La Morinerie)
 
