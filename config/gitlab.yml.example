@@ -54,8 +54,12 @@ production: &base
 
 
     ## Users management
-    # default: false - Account passwords are not sent via the email if signup is enabled. 
+    # default: false - Account passwords are not sent via the email if signup is enabled.
     # signup_enabled: true
+    #
+    # default: true - If set to false, standard login form won't be shown on the sign-in page
+    # signin_enabled: false
+
 
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
@@ -75,6 +79,11 @@ production: &base
       wall: false
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
+
+    ## Repository downloads directory
+    # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
+    # The default is 'tmp/repositories' relative to the root of the Rails app.
+    # repository_downloads_path: tmp/repositories
 
   ## External issues trackers
   issues_tracker:

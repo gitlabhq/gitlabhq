@@ -38,7 +38,6 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def create
     @milestone = @project.milestones.new(params[:milestone])
-    @milestone.author_id_of_changes = current_user.id
 
     if @milestone.save
       redirect_to project_milestone_path(@project, @milestone)
@@ -48,7 +47,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def update
-    @milestone.update_attributes(params[:milestone].merge(author_id_of_changes: current_user.id))
+    @milestone.update_attributes(params[:milestone])
 
     respond_to do |format|
       format.js

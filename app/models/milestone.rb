@@ -7,8 +7,8 @@
 #  project_id  :integer          not null
 #  description :text
 #  due_date    :date
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  state       :string(255)
 #  iid         :integer
 #
@@ -16,8 +16,7 @@
 class Milestone < ActiveRecord::Base
   include InternalId
 
-  attr_accessible :title, :description, :due_date, :state_event, :author_id_of_changes
-  attr_accessor :author_id_of_changes
+  attr_accessible :title, :description, :due_date, :state_event
 
   belongs_to :project
   has_many :issues
@@ -89,6 +88,6 @@ class Milestone < ActiveRecord::Base
   end
 
   def author_id
-    author_id_of_changes
+    nil
   end
 end

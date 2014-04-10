@@ -1,7 +1,29 @@
-v6.7.2
+v 6.8.0
+  - Ability to at mention users that are participating in issue and merge req. discussion
+  - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
+  - Make user search case-insensitive (Christopher Arnold)
+  - Remove omniauth-ldap nickname bug workaround
+  - Drop all tables before restoring a Postgres backup
+  - Make the repository downloads path configurable
+  - Create branches via API (sponsored by O'Reilly Media)
+  - Changed permission of gitlab-satellites directory not to be world accessible
+  - Protected branch does not allow force push
+  - Fix popen bug in `rake gitlab:satellites:create`
+  - Disable connection reaping for MySQL
+  - Allow oauth signup without email for twitter and github
+  - Fix faulty namespace names that caused 500 on user creation
+  - Option to disable standard login
+  - Clean old created archives from repository downloads directory
+
+v 6.7.3
+  - Fix the merge notification email not being sent (Pierre de La Morinerie)
+  - Drop all tables before restoring a Postgres backup
+  - Remove yanked modernizr gem
+
+v 6.7.2
   - Fix upgrader script
 
-v6.7.1
+v 6.7.1
   - Fix GitLab CI integration
 
 v 6.7.0

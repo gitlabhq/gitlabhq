@@ -10,6 +10,7 @@ module API
       #   project - project path with namespace
       #   action - git action (git-upload-pack or git-receive-pack)
       #   ref - branch name
+      #   forced_push - forced_push
       #
       get "/allowed" do
         # Check for *.wiki repositories.
@@ -35,7 +36,8 @@ module API
           project,
           params[:ref],
           params[:oldrev],
-          params[:newrev]
+          params[:newrev],
+          params[:forced_push]
         )
       end
 

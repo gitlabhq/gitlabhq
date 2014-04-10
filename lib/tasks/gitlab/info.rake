@@ -24,6 +24,7 @@ namespace :gitlab do
       puts "Gem Version:\t#{gem_version || "unknown".red}"
       puts "Bundler Version:#{bunder_version || "unknown".red}"
       puts "Rake Version:\t#{rake_version || "unknown".red}"
+      puts "Sidekiq Version:#{Sidekiq::VERSION}"
 
 
       # check database adapter

@@ -19,7 +19,7 @@ class WikiPage
   validates :title, presence: true
   validates :content, presence: true
 
-  # The Gitlab GollumWiki instance.
+  # The Gitlab ProjectWiki instance.
   attr_reader :wiki
 
   # The raw Gollum::Page instance.
@@ -118,7 +118,7 @@ class WikiPage
   #       :content - The raw markup content.
   #       :format  - Optional symbol representing the
   #                  content format. Can be any type
-  #                  listed in the GollumWiki::MARKUPS
+  #                  listed in the ProjectWiki::MARKUPS
   #                  Hash.
   #       :message - Optional commit message to set on
   #                  the new page.
@@ -135,7 +135,7 @@ class WikiPage
   #
   # new_content - The raw markup content to replace the existing.
   # format      - Optional symbol representing the content format.
-  #               See GollumWiki::MARKUPS Hash for available formats.
+  #               See ProjectWiki::MARKUPS Hash for available formats.
   # message     - Optional commit message to set on the new version.
   #
   # Returns the String SHA1 of the newly created page
@@ -181,5 +181,4 @@ class WikiPage
     end
     @persisted
   end
-
 end

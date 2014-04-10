@@ -6,15 +6,15 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
 #  commit_id     :string(255)
 #  noteable_id   :integer
-#  st_diff       :text
 #  system        :boolean          default(FALSE), not null
+#  st_diff       :text
 #
 
 require 'spec_helper'
@@ -209,7 +209,7 @@ describe Note do
     let(:project)    { create(:project) }
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
-    let(:mergereq)   { create(:merge_request, target_project: project) }
+    let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:commit)     { project.repository.commit }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing

@@ -18,7 +18,7 @@ class Projects::HooksController < Projects::ApplicationController
     if @hook.valid?
       redirect_to project_hooks_path(@project)
     else
-      @hooks = @project.hooks
+      @hooks = @project.hooks.select(&:persisted?)
       render :index
     end
   end

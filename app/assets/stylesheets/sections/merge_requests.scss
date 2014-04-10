@@ -44,10 +44,9 @@
 
 .label-branch {
   @include border-radius(4px);
-  padding: 3px 4px;
+  padding: 2px 4px;
   border: none;
-  font-size: 14px;
-  background: #474D57;
+  background: #555;
   color: #fff;
   font-family: $monospace_font;
   font-weight: normal;
@@ -94,4 +93,22 @@
 .diff-file .close-mr-link,
 .diff-file .reopen-mr-link {
   display: none;
+}
+
+.mr-state-widget {
+  @include border-radius(0px);
+
+  .panel-heading {
+    @include border-radius(0px);
+  }
+
+  .panel-body {
+    h4 {
+      margin-top: 0px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
 }

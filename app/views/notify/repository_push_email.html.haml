@@ -7,7 +7,7 @@
     %li
       #{commit.short_id} - #{commit.title}
 
-%h4 Diff:
+%h4 Changes:
 - @diffs.each do |diff|
   %li
     %strong
@@ -23,6 +23,6 @@
     %br
 
 - if @compare.timeout
-  %h5 Huge diff. To prevent performance issues it was hidden
+  %h5 To prevent performance issues changes are hidden
 - elsif @compare.commits_over_limit?
-  %h5 Diff for big amount of commits is disabled
+  %h5 Changes are not shown due to large amount of commits

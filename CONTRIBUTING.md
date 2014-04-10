@@ -24,12 +24,14 @@ Issues and merge requests should be in English and contain appropriate language 
 
 To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
 
-The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious bugs in the latest [stable or development release of GitLab](MAINTENANCE.md).
-If something is missing but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request.
+The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md).
+If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request.
 When submitting an issue please conform to the issue submission guidelines listed below.
 Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
-Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose.
+Do not use the issue tracker for feature requests.
+We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose.
+Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
 
 Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
@@ -63,10 +65,11 @@ If you can, please submit a merge request with the fix or improvements including
 1. Add your changes to the [CHANGELOG](CHANGELOG)
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
-1. Submit a merge request (MR)
+1. Submit a merge request (MR) to the master branch
 1. The MR title should describes the change you want to make
 1. The MR description should give a motive for your change and the method you used to achieve it
 1. If the MR changes the UI it should include before and after screenshots
+1. If the MR changes CSS classes please include the list of affected pages `grep css-class ./app -R`
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feature requests](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
@@ -76,6 +79,14 @@ The **official merge window** is in the beginning of the month from the 1st to t
 Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
+
+**Please format your merge request description as follows:**
+
+1. What does this MR do?
+2. Are there points in the code the reviewer needs to double check?
+3. Why was this MR needed?
+4. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
+5. Screenshots (If appropiate)
 
 ## Contribution acceptance criteria
 

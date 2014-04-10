@@ -21,7 +21,7 @@ describe UsersProjectObserver do
 
     it "should send email to user" do
       subject.should_receive(:notification)
-      @users_project.update_attribute(:project_access, UsersProject::MASTER)
+      @users_project.update_attribute(:project_access, UsersProject::OWNER)
     end
 
     it "should not called after UsersProject destroyed" do

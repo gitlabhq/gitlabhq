@@ -16,11 +16,7 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
-    @repository.add_branch(params[:branch_name], params[:ref])
-
-    if new_branch = @repository.find_branch(params[:branch_name])
-      Event.create_ref_event(@project, current_user, new_branch, 'add')
-    end
+    CreateBranchService.new.execute(project, params[:branch_name], params[:ref], current_user)
 
     redirect_to project_branches_path(@project)
   end
