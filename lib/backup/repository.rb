@@ -24,7 +24,7 @@ module Backup
           puts "[FAILED]".red
         end
 
-        wiki = GollumWiki.new(project)
+        wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_repo(wiki))
           print " * #{wiki.path_with_namespace} ... "
@@ -59,7 +59,7 @@ module Backup
           puts "[FAILED]".red
         end
 
-        wiki = GollumWiki.new(project)
+        wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_bundle(wiki))
           print " * #{wiki.path_with_namespace} ... "
@@ -72,8 +72,7 @@ module Backup
       end
 
       print 'Put GitLab hooks in repositories dirs'.yellow
-      gitlab_shell_user_home = File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
-      if system("#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh", Gitlab.config.gitlab_shell.repos_path)
+      if system("#{Gitlab.config.gitlab_shell.path}/support/rewrite-hooks.sh", Gitlab.config.gitlab_shell.repos_path)
         puts " [DONE]".green
       else
         puts " [FAILED]".red

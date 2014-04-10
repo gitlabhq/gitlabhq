@@ -2,10 +2,13 @@
 #
 # Table name: emails
 #
-#  id          :integer          not null, primary key
-#  user_id     :integer          not null
-#  email       :string           not null
-#  created_at  :datetime         not null
+#  id         :integer          not null, primary key
+#  user_id    :integer          not null
+#  email      :string(255)      not null
+#  created_at :datetime
+#  updated_at :datetime
+#
+
 class Email < ActiveRecord::Base
   attr_accessible :email, :user_id
 
@@ -13,14 +16,15 @@ class Email < ActiveRecord::Base
   # Relations
   #
   belongs_to :user
-  
+
   #
   # Validations
   #
   validates :user_id, presence: true
   validates :email, presence: true, email: { strict_mode: true }, uniqueness: true
   validate :unique_email, if: ->(email) { email.email_changed? }
-  
+
+  after_create :notify
   before_validation :cleanup_email
 
   def cleanup_email
@@ -29,5 +33,9 @@ class Email < ActiveRecord::Base
 
   def unique_email
     self.errors.add(:email, 'has already been taken') if User.exists?(email: self.email)
+  end
+
+  def notify
+    NotificationService.new.new_email(self)
   end
 end

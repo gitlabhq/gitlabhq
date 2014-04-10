@@ -2,53 +2,59 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0)
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  name                   :string(255)
-#  admin                  :boolean          default(FALSE), not null
-#  projects_limit         :integer          default(10)
-#  skype                  :string(255)      default(""), not null
-#  linkedin               :string(255)      default(""), not null
-#  twitter                :string(255)      default(""), not null
-#  authentication_token   :string(255)
-#  theme_id               :integer          default(1), not null
-#  bio                    :string(255)
-#  failed_attempts        :integer          default(0)
-#  locked_at              :datetime
-#  extern_uid             :string(255)
-#  provider               :string(255)
-#  username               :string(255)
-#  can_create_group       :boolean          default(TRUE), not null
-#  can_create_team        :boolean          default(TRUE), not null
-#  state                  :string(255)
-#  color_scheme_id        :integer          default(1), not null
-#  notification_level     :integer          default(1), not null
-#  password_expires_at    :datetime
-#  created_by_id          :integer
-#  avatar                 :string(255)
-#  confirmation_token     :string(255)
-#  confirmed_at           :datetime
-#  confirmation_sent_at   :datetime
-#  unconfirmed_email      :string(255)
-#  hide_no_ssh_key        :boolean          default(FALSE)
-#  website_url            :string(255)      default(""), not null
+#  id                       :integer          not null, primary key
+#  email                    :string(255)      default(""), not null
+#  encrypted_password       :string(255)      default(""), not null
+#  reset_password_token     :string(255)
+#  reset_password_sent_at   :datetime
+#  remember_created_at      :datetime
+#  sign_in_count            :integer          default(0)
+#  current_sign_in_at       :datetime
+#  last_sign_in_at          :datetime
+#  current_sign_in_ip       :string(255)
+#  last_sign_in_ip          :string(255)
+#  created_at               :datetime
+#  updated_at               :datetime
+#  name                     :string(255)
+#  admin                    :boolean          default(FALSE), not null
+#  projects_limit           :integer          default(10)
+#  skype                    :string(255)      default(""), not null
+#  linkedin                 :string(255)      default(""), not null
+#  twitter                  :string(255)      default(""), not null
+#  authentication_token     :string(255)
+#  theme_id                 :integer          default(1), not null
+#  bio                      :string(255)
+#  failed_attempts          :integer          default(0)
+#  locked_at                :datetime
+#  extern_uid               :string(255)
+#  provider                 :string(255)
+#  username                 :string(255)
+#  can_create_group         :boolean          default(TRUE), not null
+#  can_create_team          :boolean          default(TRUE), not null
+#  state                    :string(255)
+#  color_scheme_id          :integer          default(1), not null
+#  notification_level       :integer          default(1), not null
+#  password_expires_at      :datetime
+#  created_by_id            :integer
+#  last_credential_check_at :datetime
+#  avatar                   :string(255)
+#  confirmation_token       :string(255)
+#  confirmed_at             :datetime
+#  confirmation_sent_at     :datetime
+#  unconfirmed_email        :string(255)
+#  hide_no_ssh_key          :boolean          default(FALSE)
+#  website_url              :string(255)      default(""), not null
 #
 
 require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  default_value_for :admin, false
+  default_value_for :can_create_group, true
+  default_value_for :can_create_team, false
+  default_value_for :hide_no_ssh_key, false
+
   devise :database_authenticatable, :token_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
@@ -185,7 +191,7 @@ class User < ActiveRecord::Base
         where(conditions).first
       end
     end
-    
+
     def find_for_commit(email, name)
       # Prefer email match over name match
       User.where(email: email).first ||
@@ -204,7 +210,7 @@ class User < ActiveRecord::Base
     end
 
     def search query
-      where("name LIKE :query OR email LIKE :query OR username LIKE :query", query: "%#{query}%")
+      where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
 
     def by_username_or_id(name_or_id)
@@ -249,7 +255,7 @@ class User < ActiveRecord::Base
   def namespace_uniq
     namespace_name = self.username
     if Namespace.find_by(path: namespace_name)
-      self.errors.add :username, "already exist"
+      self.errors.add :username, "already exists"
     end
   end
 
@@ -275,7 +281,9 @@ class User < ActiveRecord::Base
   # Projects user has access to
   def authorized_projects
     @authorized_projects ||= begin
-                               project_ids = (personal_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id)).uniq
+                               project_ids = personal_projects.pluck(:id)
+                               project_ids += groups_projects.pluck(:id)
+                               project_ids += projects.pluck(:id).uniq
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
@@ -406,6 +414,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def requires_ldap_check?
+    if ldap_user?
+      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+    else
+      false
+    end
+  end
+
   def solo_owned_groups
     @solo_owned_groups ||= owned_groups.select do |group|
       group.owners == [self]
@@ -451,5 +467,13 @@ class User < ActiveRecord::Base
 
   def all_ssh_keys
     keys.map(&:key)
+  end
+
+  def temp_oauth_email?
+    email =~ /\Atemp-email-for-oauth/
+  end
+
+  def generate_tmp_oauth_email
+    self.email = "temp-email-for-oauth-#{username}@gitlab.localhost"
   end
 end

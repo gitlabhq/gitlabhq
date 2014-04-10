@@ -34,12 +34,16 @@ namespace :gitlab do
 
     Gitlab::Shell.new.remove_all_keys
 
-    Key.find_each(batch_size: 1000) do |key|
-      if Gitlab::Shell.new.add_key(key.shell_id, key.key)
+    Gitlab::Shell.new.batch_add_keys do |adder|
+      Key.find_each(batch_size: 1000) do |key|
+        adder.add_key(key.shell_id, key.key)
         print '.'
-      else
-        print 'F'
       end
+    end
+
+    unless $?.success?
+      puts "Failed to add keys...".red
+      exit 1
     end
 
   rescue Gitlab::TaskAbortedByUserError

@@ -28,8 +28,10 @@
     %ul.well-list
       - @hooks.each do |hook|
         %li
+          .list-item-name
+            = link_to admin_hook_path(hook) do
+              %strong= hook.url
+
           .pull-right
             = link_to 'Test Hook', admin_hook_test_path(hook), class: "btn btn-small"
             = link_to 'Remove', admin_hook_path(hook), data: { confirm: 'Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
-          = link_to admin_hook_path(hook) do
-            %strong= hook.url

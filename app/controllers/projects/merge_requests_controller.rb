@@ -21,7 +21,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
-    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params.merge(project_id: @project.id))
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
     @merge_requests = @merge_requests.page(params[:page]).per(20)
 
     @sort = params[:sort].humanize
@@ -60,7 +60,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def new
     @merge_request = MergeRequest.new(params[:merge_request])
     @merge_request.source_project = @project unless @merge_request.source_project
-    @merge_request.target_project = @project unless @merge_request.target_project
+    @merge_request.target_project ||= (@project.forked_from_project || @project)
+    @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
+
+    @merge_request.target_branch ||= @merge_request.target_project.default_branch
+
     @source_project = @merge_request.source_project
     @merge_request
   end
@@ -72,10 +76,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def create
-    @merge_request = MergeRequest.new(params[:merge_request])
-    @merge_request.author = current_user
     @target_branches ||= []
-    if @merge_request.save
+    @merge_request = MergeRequests::CreateService.new(project, current_user, params[:merge_request]).execute
+
+    if @merge_request.valid?
       redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
@@ -85,29 +89,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    # If we close MergeRequest we want to ignore validation
-    # so we can close broken one (Ex. fork project removed)
-    if params[:merge_request] == {"state_event"=>"close"}
-      @merge_request.allow_broken = true
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, params[:merge_request]).execute(@merge_request)
 
-      if @merge_request.close
-        opts = { notice: 'Merge request was successfully closed.' }
-      else
-        opts = { alert: 'Failed to close merge request.' }
-      end
-
-      redirect_to [@merge_request.target_project, @merge_request], opts
-      return
-    end
-
-    # We dont allow change of source/target projects
-    # after merge request was created
-    params[:merge_request].delete(:source_project_id)
-    params[:merge_request].delete(:target_project_id)
-
-    if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
-      @merge_request.reset_events_cache
-
+    if @merge_request.valid?
       respond_to do |format|
         format.js
         format.html do
@@ -131,7 +115,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if @merge_request.opened? && @merge_request.can_be_merged?
+    if @merge_request.open? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
       @merge_request.automerge!(current_user, params[:merge_commit_message])
       @status = true
@@ -162,7 +146,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def ci_status
-    status = project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
+    status = @merge_request.source_project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
     response = {status: status}
 
     render json: response
@@ -226,21 +210,32 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
+    @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
+    @allowed_to_remove_source_branch = allowed_to_remove_source_branch?
+    @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
   end
 
   def allowed_to_merge?
-    action = if project.protected_branch?(@merge_request.target_branch)
-               :push_code_to_protected_branches
-             else
-               :push_code
-             end
-
-    can?(current_user, action, @project)
+    allowed_to_push_code?(project, @merge_request.target_branch)
   end
 
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
+  end
+
+  def allowed_to_remove_source_branch?
+    allowed_to_push_code?(@merge_request.source_project, @merge_request.source_branch) &&
+      !@merge_request.disallow_source_branch_removal?
+  end
+
+  def allowed_to_push_code?(project, branch)
+    action = if project.protected_branch?(branch)
+               :push_code_to_protected_branches
+             else
+               :push_code
+             end
+
+    can?(current_user, action, project)
   end
 end

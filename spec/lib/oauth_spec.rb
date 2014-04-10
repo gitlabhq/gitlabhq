@@ -8,6 +8,7 @@ describe Gitlab::OAuth::User do
 
     @info = double(
       uid: '12djsak321',
+      nickname: 'john',
       name: 'John',
       email: 'john@mail.com'
     )

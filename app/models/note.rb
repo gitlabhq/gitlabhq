@@ -6,15 +6,15 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
 #  commit_id     :string(255)
 #  noteable_id   :integer
-#  st_diff       :text
 #  system        :boolean          default(FALSE), not null
+#  st_diff       :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -22,6 +22,8 @@ require 'file_size_validator'
 
 class Note < ActiveRecord::Base
   include Mentionable
+
+  default_value_for :system, false
 
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code, :commit_id
@@ -199,7 +201,8 @@ class Note < ActiveRecord::Base
   def downvote?
     votable? && (note.start_with?('-1') ||
                  note.start_with?(':-1:') ||
-                 note.start_with?(':thumbsdown:')
+                 note.start_with?(':thumbsdown:') ||
+                 note.start_with?(':thumbs_down_sign:')
                 )
   end
 
@@ -249,7 +252,8 @@ class Note < ActiveRecord::Base
   def upvote?
     votable? && (note.start_with?('+1') ||
                  note.start_with?(':+1:') ||
-                 note.start_with?(':thumbsup:')
+                 note.start_with?(':thumbsup:') ||
+                 note.start_with?(':thumbs_up_sign:')
                 )
   end
 

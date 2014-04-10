@@ -12,18 +12,15 @@ module Gitlab
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/lib #{config.root}/app/models/concerns #{config.root}/app/models/project_services)
+    config.autoload_paths += %W(#{config.root}/lib #{config.root}/app/finders #{config.root}/app/models/concerns #{config.root}/app/models/project_services)
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running.
-    config.active_record.observers = :activity_observer,
+    config.active_record.observers = :milestone_observer,
                                      :project_activity_cache_observer,
-                                     :issue_observer,
-                                     :key_observer,
-                                     :merge_request_observer,
                                      :note_observer,
                                      :project_observer,
                                      :system_hook_observer,
@@ -64,7 +61,8 @@ module Gitlab
     config.assets.enabled = true
     config.assets.paths << Emoji.images_path
     config.assets.precompile << "emoji/*.png"
-    
+    config.assets.precompile << "print.css"
+
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'
 

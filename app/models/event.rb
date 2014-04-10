@@ -8,8 +8,8 @@
 #  title       :string(255)
 #  data        :text
 #  project_id  :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  action      :integer
 #  author_id   :integer
 #
@@ -47,14 +47,6 @@ class Event < ActiveRecord::Base
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
-    def determine_action(record)
-      if [Issue, MergeRequest].include? record.class
-        Event::CREATED
-      elsif record.kind_of? Note
-        Event::COMMENTED
-      end
-    end
-
     def create_ref_event(project, user, ref, action = 'add', prefix = 'refs/heads')
       commit = project.repository.commit(ref.target)
 

@@ -13,7 +13,7 @@ class Projects::LabelsController < Projects::ApplicationController
   def generate
     Gitlab::IssuesLabels.generate(@project)
 
-    redirect_to project_labels_path(@project)
+    redirect_to project_issues_path(@project)
   end
 
   protected

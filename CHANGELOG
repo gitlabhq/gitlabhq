@@ -1,7 +1,80 @@
+v 6.8.0
+  - Ability to at mention users that are participating in issue and merge req. discussion
+  - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
+  - Make user search case-insensitive (Christopher Arnold)
+  - Remove omniauth-ldap nickname bug workaround
+  - Drop all tables before restoring a Postgres backup
+  - Make the repository downloads path configurable
+  - Create branches via API (sponsored by O'Reilly Media)
+  - Changed permission of gitlab-satellites directory not to be world accessible
+  - Protected branch does not allow force push
+  - Fix popen bug in `rake gitlab:satellites:create`
+  - Disable connection reaping for MySQL
+  - Allow oauth signup without email for twitter and github
+  - Fix faulty namespace names that caused 500 on user creation
+  - Option to disable standard login
+  - Clean old created archives from repository downloads directory
+  - Fix download link for huge MR diffs
+
+v 6.7.3
+  - Fix the merge notification email not being sent (Pierre de La Morinerie)
+  - Drop all tables before restoring a Postgres backup
+  - Remove yanked modernizr gem
+
+v 6.7.2
+  - Fix upgrader script
+
+v 6.7.1
+  - Fix GitLab CI integration
+
 v 6.7.0
-  - Add support for Gemnasium as a Project Service
+  - Increased the example Nginx client_max_body_size from 5MB to 20MB, consider updating it manually on existing installations
+  - Add support for Gemnasium as a Project Service (Olivier Gonzalez)
   - Add edit file button to MergeRequest diff
   - Public groups (Jason Hollingsworth)
+  - Cleaner headers in Notification Emails (Pierre de La Morinerie)
+  - Blob and tree gfm links to anchors work
+  - Piwik Integration (Sebastian Winkler)
+  - Show contribution guide link for new issue form (Jeroen van Baarsen)
+  - Fix CI status for merge requests from fork 
+  - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - New page load indicator that includes a spinner that scrolls with the page
+  - Converted all the help sections into markdown
+  - LDAP user filters
+  - Streamline the content of notification emails (Pierre de La Morinerie)
+  - Fixes a bug with group member administration (Matt DeTullio)
+  - Sort tag names using VersionSorter (Robert Speicher)
+  - Add GFM autocompletion for MergeRequests (Robert Speicher)
+  - Add webhook when a new tag is pushed (Jeroen van Baarsen)
+  - Add button for toggling inline comments in diff view
+  - Add retry feature for repository import
+  - Reuse the GitLab LDAP connection within each request
+  - Changed markdown new line behaviour to conform to markdown standards
+  - Fix global search
+  - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
+  - Create and Update MR calls now support the description parameter (Greg Messner)
+  - Markdown relative links in the wiki link to wiki pages, markdown relative links in repositories link to files in the repository
+  - Added Slack service integration (Federico Ravasio)
+  - Better API responses for access_levels (sponsored by O'Reilly Media)
+  - Requires at least 2 unicorn workers
+  - Requires gitlab-shell v1.9+
+  - Replaced gemoji(due to closed licencing problem) with Phantom Open Emoji library(combined SIL Open Font License, MIT License and the CC 3.0 License)
+  - Fix `/:username.keys` response content type (Dmitry Medvinsky)
+
+v 6.6.5
+  - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - Hide mr close button for comment form if merge request was closed or inline comment
+  - Adds ability to reopen closed merge request
+
+v 6.6.4
+  - Add missing html escape for highlighted code blocks in comments, issues
+
+v 6.6.3
+  - Fix 500 error when edit yourself from admin area
+  - Hide private groups for public profiles
+
+v 6.6.2
+  - Fix 500 error on branch/tag create or remove via UI
 
 v 6.6.1
   - Fix 500 error on files tab if submodules presents
@@ -20,7 +93,7 @@ v 6.6.0
   - Remove snippet expiration
   - Mobile UI improvements (Drew Blessing)
   - Fix block/remove UI for admin::users#show page
-  - Show users' group membership on users' activity page
+  - Show users' group membership on users' activity page (Robert Djurasaj)
   - User pages are visible without login if user is authorized to a public project
   - Markdown rendered headers have id derived from their name and link to their id
   - Improve application to work faster with large groups (100+ members)
@@ -29,6 +102,7 @@ v 6.6.0
   - Restyle Issue#show page and MR#show page
   - Ability to filter by multiple labels for Issues page
   - Rails version to 4.0.3
+  - Fixed attachment identifier displaying underneath note text (Jason Blanchard)
 
 v 6.5.1
   - Fix branch selectbox when create merge request from fork

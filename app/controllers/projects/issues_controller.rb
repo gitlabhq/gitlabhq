@@ -59,9 +59,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    @issue = @project.issues.new(params[:issue])
-    @issue.author = current_user
-    @issue.save
+    @issue = Issues::CreateService.new(project, current_user, params[:issue]).execute
 
     respond_to do |format|
       format.html do
@@ -76,8 +74,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update
-    @issue.update_attributes(params[:issue].merge(author_id_of_changes: current_user.id))
-    @issue.reset_events_cache
+    @issue = Issues::UpdateService.new(project, current_user, params[:issue]).execute(issue)
 
     respond_to do |format|
       format.js
@@ -121,7 +118,7 @@ class Projects::IssuesController < Projects::ApplicationController
   def issues_filtered
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
-    @issues = FilteringService.new.execute(Issue, current_user, params.merge(project_id: @project.id))
+    @issues = IssuesFinder.new.execute(current_user, params.merge(project_id: @project.id))
   end
 
   # Since iids are implemented only in 6.1

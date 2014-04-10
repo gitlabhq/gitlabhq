@@ -1,5 +1,2 @@
-%p
-  = "New comment for Commit #{@commit.short_id}"
-  = link_to_gfm truncate(@commit.title, length: 16), project_commit_url(@note.project, id: @commit.id, anchor: "note_#{@note.id}")
 = render 'note_message'
 

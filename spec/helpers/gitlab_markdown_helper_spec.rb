@@ -440,12 +440,6 @@ describe GitlabMarkdownHelper do
       markdown(actual).should match(expected)
     end
 
-    it "should handle wiki urls" do
-      actual = "[Link](test/link)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/wikis/test/link\">Link</a></p>\n"
-      markdown(actual).should match(expected)
-    end
-
     it "should handle relative urls in reference links for a file in master" do
       actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
       expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
@@ -454,7 +448,7 @@ describe GitlabMarkdownHelper do
 
     it "should handle relative urls in reference links for a directory in master" do
       actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api/\">GitLab API doc directory</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api\">GitLab API doc directory</a></p>\n"
       markdown(actual).should match(expected)
     end
 

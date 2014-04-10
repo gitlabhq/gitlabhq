@@ -22,6 +22,8 @@ class DashboardController < ApplicationController
 
     @last_push = current_user.recent_push
 
+    @publicish_project_count = Project.publicish(current_user).count
+
     respond_to do |format|
       format.html
       format.json { pager_json("events/_events", @events.count) }
@@ -53,14 +55,15 @@ class DashboardController < ApplicationController
   end
 
   def merge_requests
-    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params)
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
     @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
-    @issues = FilteringService.new.execute(Issue, current_user, params)
+    @issues = IssuesFinder.new.execute(current_user, params)
     @issues = @issues.page(params[:page]).per(20)
-    @issues = @issues.includes(:author, :project)
+    @issues = @issues.preload(:author, :project)
 
     respond_to do |format|
       format.html

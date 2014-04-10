@@ -1,21 +1,12 @@
 require 'mime/types'
 
 module API
-  # Projects API
+  # Projects commits API
   class Commits < Grape::API
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
     resource :projects do
-      helpers do
-        def handle_project_member_errors(errors)
-          if errors[:project_access].any?
-            error!(errors[:project_access], 422)
-          end
-          not_found!
-        end
-      end
-
       # Get a project repository commits
       #
       # Parameters:

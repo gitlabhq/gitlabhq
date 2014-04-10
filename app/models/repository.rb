@@ -134,6 +134,7 @@ class Repository
     Rails.cache.delete(cache_key(:commit_count))
     Rails.cache.delete(cache_key(:graph_log))
     Rails.cache.delete(cache_key(:readme))
+    Rails.cache.delete(cache_key(:contribution_guide))
   end
 
   def graph_log
@@ -164,6 +165,12 @@ class Repository
   def readme
     Rails.cache.fetch(cache_key(:readme)) do
       tree(:head).readme
+    end
+  end
+
+  def contribution_guide
+    Rails.cache.fetch(cache_key(:contribution_guide)) do
+      tree(:head).contribution_guide
     end
   end
 
@@ -207,5 +214,10 @@ class Repository
 
   def last_commit_for_path(sha, path)
     commits(sha, path, 1).last
+  end
+
+  # Remove archives older than 2 hours
+  def clean_old_archives
+    Gitlab::Popen.popen(%W(find #{Gitlab.config.gitlab.repository_downloads_path} -mmin +120 -delete))
   end
 end

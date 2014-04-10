@@ -2,12 +2,6 @@ require "spec_helper"
 
 describe WikiPage do
 
-  def create_temp_repo(path)
-    FileUtils.mkdir_p path
-    command = "git init --quiet #{path};"
-    system(command)
-  end
-
   def remove_temp_repo(path)
     FileUtils.rm_rf path
   end
@@ -28,7 +22,7 @@ describe WikiPage do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
-  let(:wiki) { GollumWiki.new(project, user) }
+  let(:wiki) { ProjectWiki.new(project, user) }
 
   subject { WikiPage.new(wiki) }
 

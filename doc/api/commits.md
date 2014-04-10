@@ -57,9 +57,9 @@ Parameters:
   "created_at": "2012-09-20T09:06:12+03:00",
   "committed_date": "2012-09-20T09:06:12+03:00",
   "authored_date": "2012-09-20T09:06:12+03:00",
-  "parent_ids" : [
-      "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
-   ]
+  "parent_ids": [
+    "ae1d9fb46aa2b07ee9836d49862ec4e2c46fbbba"
+  ]
 }
 ```
 

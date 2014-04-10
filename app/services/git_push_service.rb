@@ -86,10 +86,9 @@ class GitPushService
       author = commit_user(commit)
 
       if !issues_to_close.empty? && is_default_branch
-        Thread.current[:current_user] = author
-        Thread.current[:current_commit] = commit
-
-        issues_to_close.each { |i| i.close && i.save }
+        issues_to_close.each do |issue|
+          Issues::CloseService.new(project, author, {}).execute(issue, commit)
+        end
       end
 
       # Create cross-reference notes for any other references. Omit any issues that were referenced in an

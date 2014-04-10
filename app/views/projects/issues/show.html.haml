@@ -29,12 +29,13 @@
       = link_to project_milestone_path(@project, @issue.milestone) do
         = @issue.milestone.title
 
-.issue-box
-  .state{ class: issue_alert_class(@issue) }
-    - if @issue.closed?
-      %span.state-label.state-label-red Closed
-    - else
-      %span.state-label.state-label-green Open
+.issue-box{ class: issue_box_class(@issue) }
+  .state
+    %span.state-label
+      - if @issue.closed?
+        Closed
+      - else
+        Open
 
     %span.creator
       Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}

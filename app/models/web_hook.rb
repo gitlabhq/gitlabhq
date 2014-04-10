@@ -5,17 +5,22 @@
 #  id                    :integer          not null, primary key
 #  url                   :string(255)
 #  project_id            :integer
-#  created_at            :datetime         not null
-#  updated_at            :datetime         not null
+#  created_at            :datetime
+#  updated_at            :datetime
 #  type                  :string(255)      default("ProjectHook")
 #  service_id            :integer
 #  push_events           :boolean          default(TRUE), not null
 #  issues_events         :boolean          default(FALSE), not null
 #  merge_requests_events :boolean          default(FALSE), not null
+#  tag_push_events       :boolean          default(FALSE)
 #
 
 class WebHook < ActiveRecord::Base
   include HTTParty
+
+  default_value_for :push_events, true
+  default_value_for :issues_events, false
+  default_value_for :merge_requests_events, false
 
   attr_accessible :url
 

@@ -50,7 +50,7 @@ class Ability
                 else
                   nil
                 end
-        
+
         if group && group.has_projects_accessible_to?(nil)
           [:read_group]
         else
@@ -184,7 +184,7 @@ class Ability
     def group_abilities user, group
       rules = []
 
-      if user.admin? || group.users.include?(user) || group.has_projects_accessible_to?(user)
+      if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
         rules << :read_group
       end
 
@@ -240,6 +240,7 @@ class Ability
       can_manage = group_abilities(user, group).include?(:manage_group)
       if can_manage && (user != target_user)
         rules << :modify
+        rules << :destroy
       end
       if !group.last_owner?(user) && (can_manage || (user == target_user))
         rules << :destroy

@@ -19,7 +19,7 @@ header {
         line-height: 32px;
         padding: 6px 10px;
 
-        &:hover {
+        &:hover, &:focus, &:active {
           background: none;
         }
       }
@@ -161,7 +161,7 @@ header {
     }
 
     .search-input {
-      background-image: url("icon-search.png");
+      background-image: image-url("icon-search.png");
       background-repeat: no-repeat;
       background-position: 10px;
       height: inherit;
@@ -192,7 +192,8 @@ header {
           color: #AAA;
           text-shadow: 0 1px 0 #444;
 
-          &:hover {
+          &:hover, &:focus, &:active {
+            background: none;
             color: #FFF;
           }
         }
@@ -270,5 +271,11 @@ header {
     &:focus {
       width: 300px;
     }
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  #nprogress .spinner {
+    right: 35px !important;
   }
 }

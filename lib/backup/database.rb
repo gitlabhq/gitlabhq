@@ -30,6 +30,9 @@ module Backup
         system('mysql', *mysql_args, config['database'], in: db_file_name)
       when "postgresql" then
         print "Restoring PostgreSQL database #{config['database']} ... "
+        # Drop all tables because PostgreSQL DB dumps do not contain DROP TABLE
+        # statements like MySQL.
+        Rake::Task["gitlab:db:drop_all_tables"].invoke
         pg_env
         system('psql', config['database'], '-f', db_file_name)
       end

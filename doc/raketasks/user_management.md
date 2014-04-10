@@ -15,7 +15,7 @@ Notes:
 bundle exec rake gitlab:import:all_users_to_all_projects
 ```
 
-### Add user as a developer to all projects
+### Add user as a developer to all groups
 
 ```
 bundle exec rake gitlab:import:user_to_groups[username@domain.tld]

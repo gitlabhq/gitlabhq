@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #  creator_id             :integer
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
@@ -18,15 +18,23 @@
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
-#  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
+#  archived               :boolean          default(FALSE), not null
+#  import_status          :string(255)
 #
 
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
   extend Enumerize
+
+  default_value_for :archived, false
+  default_value_for :issues_enabled, true
+  default_value_for :wall_enabled, true
+  default_value_for :merge_requests_enabled, true
+  default_value_for :wiki_enabled, true
+  default_value_for :snippets_enabled, true
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -54,15 +62,13 @@ class Project < ActiveRecord::Base
   has_one :flowdock_service, dependent: :destroy
   has_one :assembla_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
+  has_one :slack_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
-
   # Merge Requests for target project should be removed with it
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
-
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
-
   has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
@@ -71,10 +77,8 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-
   has_many :users_projects, dependent: :destroy
   has_many :users, through: :users_projects
-
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
 
@@ -94,15 +98,12 @@ class Project < ActiveRecord::Base
   validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
-
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
   validates_uniqueness_of :path, scope: :namespace_id
-
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
-
   validate :check_limit, on: :create
 
   # Scopes
@@ -115,22 +116,51 @@ class Project < ActiveRecord::Base
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
-
+  scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
+  scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
 
   enumerize :issues_tracker, in: (Gitlab.config.issues_tracker.keys).append(:gitlab), default: :gitlab
 
+  state_machine :import_status, initial: :none do
+    event :import_start do
+      transition :none => :started
+    end
+
+    event :import_finish do
+      transition :started => :finished
+    end
+
+    event :import_fail do
+      transition :started => :failed
+    end
+
+    event :import_retry do
+      transition :failed => :started
+    end
+
+    state :started
+    state :finished
+    state :failed
+
+    after_transition any => :started, :do => :add_import_job
+  end
+
   class << self
+    def public_and_internal_levels
+      [Project::PUBLIC, Project::INTERNAL]
+    end
+
     def abandoned
       where('projects.last_activity_at < ?', 6.months.ago)
     end
-    
+
     def publicish(user)
       visibility_levels = [Project::PUBLIC]
       visibility_levels += [Project::INTERNAL] if user
       where(visibility_level: visibility_levels)
     end
-    
+
     def accessible_to(user)
       accessible_ids = publicish(user).pluck(:id)
       accessible_ids += user.authorized_projects.pluck(:id) if user
@@ -154,15 +184,13 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
-      if id.include?("/")
-        id = id.split("/")
-        namespace = Namespace.find_by(path: id.first)
-        return nil unless namespace
+      return nil unless id.include?("/")
 
-        where(namespace_id: namespace.id).find_by(path: id.second)
-      else
-        where(path: id, namespace_id: nil).last
-      end
+      id = id.split("/")
+      namespace = Namespace.find_by(path: id.first)
+      return nil unless namespace
+
+      where(namespace_id: namespace.id).find_by(path: id.second)
     end
 
     def visibility_levels
@@ -192,17 +220,33 @@ class Project < ActiveRecord::Base
     id && persisted?
   end
 
+  def add_import_job
+    RepositoryImportWorker.perform_in(2.seconds, id)
+  end
+
   def import?
     import_url.present?
   end
 
   def imported?
-    imported
+    import_finished?
+  end
+
+  def import_in_progress?
+    import? && import_status == 'started'
+  end
+
+  def import_failed?
+    import_status == 'failed'
+  end
+
+  def import_finished?
+    import_status == 'finished'
   end
 
   def check_limit
     unless creator.can_create_project?
-      errors[:limit_reached] << ("Your own projects limit is #{creator.projects_limit}! Please contact administrator to increase it")
+      errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
     end
   rescue
     errors[:base] << ("Can't check your ability to create project")
@@ -267,7 +311,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack)
   end
 
   def gitlab_ci?
@@ -351,17 +395,16 @@ class Project < ActiveRecord::Base
     branch_name = ref.gsub("refs/heads/", "")
     c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
 
-    # Update code for merge requests into project between project branches
-    mrs = self.merge_requests.opened.by_branch(branch_name).to_a
-    # Update code for merge requests between project and project fork
-    mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
-
-    mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
-
     # Close merge requests
     mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
     mrs.each { |merge_request| MergeRequests::MergeService.new.execute(merge_request, user, nil) }
+
+    # Update code for merge requests into project between project branches
+    mrs = self.merge_requests.opened.by_branch(branch_name).to_a
+    # Update code for merge requests between project and project fork
+    mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
+    mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
 
     true
   end
@@ -514,5 +557,9 @@ class Project < ActiveRecord::Base
   def change_head(branch)
     gitlab_shell.update_repository_head(self.path_with_namespace, branch)
     reload_default_branch
+  end
+
+  def forked_from?(project)
+    forked? && project == forked_from_project
   end
 end

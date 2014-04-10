@@ -1,5 +1,3 @@
-ActiveRecord::Base.observers.disable :all
-
 Gitlab::Seeder.quiet do
   Group.all.each do |group|
     User.all.sample(4).each do |user|

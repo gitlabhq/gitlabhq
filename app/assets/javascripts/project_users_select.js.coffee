@@ -10,6 +10,16 @@
         query: (query) ->
           Api.projectUsers project_id, query.term, (users) ->
             data = { results: users }
+
+            nullUser = {
+              name: 'Unassigned',
+              avatar: null,
+              username: 'none',
+              id: ''
+            }
+
+            data.results.unshift(nullUser)
+
             query.callback(data)
 
         initSelection: (element, callback) ->
@@ -35,8 +45,13 @@
     else
       avatar = gon.relative_url_root + "/assets/no_avatar.png"
 
+    if user.id == ''
+      avatarMarkup = ''
+    else
+      avatarMarkup = "<div class='user-image'><img class='avatar s24' src='#{avatar}'></div>"
+
     "<div class='user-result'>
-       <div class='user-image'><img class='avatar s24' src='#{avatar}'></div>
+       #{avatarMarkup}
        <div class='user-name'>#{user.name}</div>
        <div class='user-username'>#{user.username}</div>
      </div>"

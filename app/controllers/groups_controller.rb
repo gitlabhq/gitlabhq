@@ -47,14 +47,15 @@ class GroupsController < ApplicationController
   end
 
   def merge_requests
-    @merge_requests = FilteringService.new.execute(MergeRequest, current_user, params)
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
     @merge_requests = @merge_requests.page(params[:page]).per(20)
+    @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
-    @issues = FilteringService.new.execute(Issue, current_user, params)
+    @issues = IssuesFinder.new.execute(current_user, params)
     @issues = @issues.page(params[:page]).per(20)
-    @issues = @issues.includes(:author, :project)
+    @issues = @issues.preload(:author, :project)
 
     respond_to do |format|
       format.html
@@ -99,7 +100,7 @@ class GroupsController < ApplicationController
   end
 
   def projects
-    @projects ||= group.projects_accessible_to(current_user).sorted_by_activity
+    @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
   end
 
   def project_ids

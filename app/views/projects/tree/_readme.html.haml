@@ -1,7 +1,7 @@
 .readme-holder#README
   %h4.readme-file-title
     %i.icon-file
-      = readme.name
+    = readme.name
   .wiki
     - if gitlab_markdown?(readme.name)
       = preserve do

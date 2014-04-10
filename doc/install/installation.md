@@ -4,13 +4,13 @@ this should be the highest numbered stable branch (example shown below).
 
 ![capture](http://i.imgur.com/d2AlIVj.png)
 
-If this is unclear check the [GitLab Blog](http://blog.gitlab.org/) for installation guide links by version.
+If this is unclear check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
 
 # Important notes
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. An unofficial guide for RHEL/CentOS can be found in the [GitLab recipes repository](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/install/centos).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://www.gitlab.com/downloads/).
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
@@ -52,7 +52,7 @@ If you are not familiar with vim please skip this and keep using the default edi
     sudo apt-get install -y vim
     sudo update-alternatives --set editor /usr/bin/vim.basic
 
-Install the required packages:
+Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
@@ -93,7 +93,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 # 2. Ruby
 
-The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
+The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
 
 Remove the old Ruby 1.8 if present
 
@@ -128,7 +128,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.8.0
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.1
 
     cd gitlab-shell
 
@@ -144,7 +144,7 @@ GitLab Shell is an ssh access and repository management software developed speci
 
 # 5. Database
 
-We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](doc/install/database_mysql.md).
+We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
 
     # Install the database packages
     sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
@@ -173,7 +173,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](do
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-6-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-7-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
@@ -197,20 +197,18 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
-    sudo chmod -R u+rwX  log/
-    sudo chmod -R u+rwX  tmp/
+    sudo chmod -R u+rwX log/
+    sudo chmod -R u+rwX tmp/
 
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
+    sudo chmod u+rwx,g+rx,o-rwx /home/git/gitlab-satellites
 
-    # Create directories for sockets/pids and make sure GitLab can write to them
-    sudo -u git -H mkdir tmp/pids/
-    sudo -u git -H mkdir tmp/sockets/
-    sudo chmod -R u+rwX  tmp/pids/
-    sudo chmod -R u+rwX  tmp/sockets/
+    # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
+    sudo chmod -R u+rwX tmp/pids/
+    sudo chmod -R u+rwX tmp/sockets/
 
-    # Create public/uploads directory otherwise backup will fail
-    sudo -u git -H mkdir public/uploads
+    # Make sure GitLab can write to the public/uploads/ directory
     sudo chmod -R u+rwX  public/uploads
 
     # Copy the example Unicorn config
@@ -252,6 +250,13 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
     sudo -u git -H chmod o-rwx config/database.yml
 
 ## Install Gems
+
+**Note:** As of bundler 1.5.2, you can invoke `bundle install -jN`
+(where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable
+difference in completion time (~60% faster). Check the number of your cores with `nproc`.
+For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler).
+First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411)
+that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     cd /home/git/gitlab
 
@@ -297,17 +302,15 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+## Compile assets
+
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+
 ## Start Your GitLab Instance
 
     sudo service gitlab start
     # or
     sudo /etc/init.d/gitlab restart
-
-
-## Compile assets
-
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-
 
 # 7. Nginx
 
@@ -351,7 +354,7 @@ If all items are green, then congratulations on successfully installing GitLab!
 Visit YOUR_SERVER in your web browser for your first GitLab login.
 The setup has created an admin account for you. You can use it to log in:
 
-    admin@local.host
+    root
     5iveL!fe
 
 **Important Note:**

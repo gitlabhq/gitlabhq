@@ -3,6 +3,7 @@ class ProfilesController < ApplicationController
 
   before_filter :user
   before_filter :authorize_change_username!, only: :update_username
+  skip_before_filter :require_email, only: [:show, :update]
 
   layout 'profile'
 

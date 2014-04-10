@@ -2,21 +2,19 @@
 # based on: http://stackoverflow.com/a/4883967
 
 /home/git/gitlab/log/*.log {
-    weekly
+    daily
     missingok
-    rotate 52
+    rotate 90
     compress
-    delaycompress
     notifempty
     copytruncate
 }
 
 /home/git/gitlab-shell/gitlab-shell.log {
-    weekly
+    daily
     missingok
-    rotate 52
+    rotate 90
     compress
-    delaycompress
     notifempty
     copytruncate
 }
