@@ -14,6 +14,7 @@ v 6.8.0
   - Fix faulty namespace names that caused 500 on user creation
   - Option to disable standard login
   - Clean old created archives from repository downloads directory
+  - Fix download link for huge MR diffs
 
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)
