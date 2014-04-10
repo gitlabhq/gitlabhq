@@ -14,6 +14,7 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. Fix the issue on a feature branch, do this on the private GitLab development server
 1. After the branch is merged into master, cherry pick the commit(s) into the current stable branch
 1. In a separate commit in the stable branch, update the VERSION and CHANGELOG
+1. For EE, update the CHANGELOG-EE if it is EE specific fix. Otherwise, merge the stable CE branch and add to CHANGELOG-EE "Merge community edition changes for version X.X.X"
 1. Create an annotated tag vX.X.X for CE and another patch release for EE
 1. Make sure that the build has passed and no tests are failing
 1. Push the code and the tags to all the CE and EE repositories
