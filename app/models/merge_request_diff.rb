@@ -26,7 +26,7 @@ class MergeRequestDiff < ActiveRecord::Base
 
   delegate :target_branch, :source_branch, to: :merge_request, prefix: nil
 
-  state_machine :state, initial: :empty do
+  state_machine :state, initial: :collected do
     state :collected
     state :timeout
     state :overflow_commits_safe_size
