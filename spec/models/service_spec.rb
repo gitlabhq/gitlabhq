@@ -69,12 +69,12 @@ describe Service do
   describe :doc do
     before do
       @service = Service.new
-      @service.stub(:to_param).and_return("example")
+      @service.stub(:to_param).and_return('example')
     end
 
     context "without documentation file" do
       before do
-        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {"another_service" => "Some service documentation"})
+        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {'another_service' => 'Some service documentation'})
       end
 
       it { @service.doc.should be_nil }
@@ -82,10 +82,10 @@ describe Service do
 
     context "with documentation file provided" do
       before do
-        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {@service.to_param => "Some service documentation"})
+        Gitlab::ProjectServiceDoc.instance_variable_set(:@docs, {@service.to_param => 'Some service documentation'})
       end
 
-      it { @service.doc.should == "Some service documentation" }
+      it { @service.doc.should == 'Some service documentation' }
     end
 
     context "when no documentation found att all" do

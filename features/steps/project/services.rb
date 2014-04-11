@@ -137,7 +137,7 @@ class ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I should see Gemnasium service help text' do
-    page.should have_content "To setup the service you'll need to register an account on gemnasium.com and add your project."
+    page.should have_content 'To setup the service you'll need to register an account on gemnasium.com and add your project.'
   end
 
 end
