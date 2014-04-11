@@ -108,8 +108,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.check_if_can_be_merged
     end
     render json: {merge_status: @merge_request.merge_status_name}
-  rescue Gitlab::SatelliteNotExistError
-    render json: {merge_status: :no_satellite}
   end
 
   def automerge
