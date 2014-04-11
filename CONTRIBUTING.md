@@ -29,6 +29,8 @@ If something is wrong but it is not a regression compared to older versions of G
 When submitting an issue please conform to the issue submission guidelines listed below.
 Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
+Issues can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues) or [github.com](https://github.com/gitlabhq/gitlabhq/issues).
+
 Do not use the issue tracker for feature requests.
 We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose.
 Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
@@ -54,6 +56,8 @@ Please send a merge request with a tested solution or a merge request with a fai
 ## Merge requests
 
 We welcome merge requests with fixes and improvements to GitLab code, tests, and/or documentation. The features we would really like a merge request for are listed with the [status 'accepting merge requests' on our feature request forum](http://feedback.gitlab.com/forums/176466-general/status/796455) but other improvements are also welcome. If you want to add a new feature that is not marked it is best to first create a feedback issue (if there isn't one already) and leave a comment asking for it to be marked accepting merge requests. Please include screenshots or wireframes if the feature will also change the UI.
+
+Merge requests can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests) or [github.com](https://github.com/gitlabhq/gitlabhq/pulls).
 
 ### Merge request guidelines
 
