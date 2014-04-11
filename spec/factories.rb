@@ -245,7 +245,7 @@ FactoryGirl.define do
       end
     end
   end
-  
+
   factory :email do
     user
     email do
@@ -320,5 +320,10 @@ FactoryGirl.define do
   factory :deploy_keys_project do
     deploy_key
     project
+  end
+
+  factory :project_template do
+    name { Faker::Name.name }
+    description { Faker::Lorem.sentence }
   end
 end
