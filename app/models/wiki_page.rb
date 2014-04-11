@@ -57,12 +57,16 @@ class WikiPage
 
   # The raw content of this page.
   def content
-    @attributes[:content]
+    @attributes[:content] ||= if @page
+                                @page.raw_data
+                              end
   end
 
   # The processed/formatted content of this page.
   def formatted_content
-    @attributes[:formatted_content]
+    @attributes[:formatted_content] ||= if @page
+                                          @page.formatted_data
+                                        end
   end
 
   # The markup format for the page.
@@ -163,8 +167,6 @@ class WikiPage
   def set_attributes
     attributes[:slug] = @page.escaped_url_path
     attributes[:title] = @page.title
-    attributes[:content] = @page.raw_data
-    attributes[:formatted_content] = @page.formatted_data
     attributes[:format] = @page.format
   end
 
