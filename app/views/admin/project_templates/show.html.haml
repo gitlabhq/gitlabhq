@@ -1,0 +1,64 @@
+%h3.page-title
+  Project Template: #{@project_template.name}
+%hr
+
+.row
+  .col-md-12
+    .ui-box
+      .title
+        Project Template Info:
+      %ul.well-list.project-template-info
+        %li
+          %span.light Name:
+          %strong= @project_template.name
+        %li
+          %span.light Path:
+          %strong= @project_template.template_path
+        %li
+          %span.light Processed:
+          %strong
+            - if @project_template.state == 0
+              %i.icon-circle.yellow
+              In Progress
+            - elsif @project_template.state == 1
+              %i.icon-circle.green
+              Ready to use
+            - elsif @project_template.state ==2
+              %i.icon-circle.red
+              Build failed - please delete it and try again.
+            - elsif @project_template.state == 3
+              %i.icon-circle.orange
+              Will be deleted
+        %li
+          %span.light Description:
+          - if @project_template.description.length == 0
+            %strong -
+          - else
+            %div
+              #{@project_template.description}
+
+.row
+  .col-md-12
+    - if @project_template.deletable?
+      .danger-settings.js-toggle-container
+        .centered-light-block
+          %h3
+            %i.icon-warning-sign
+            Dangerous settings
+          %p Actions below result in data loss!
+          = link_to '#', class: 'btn js-toggle-button' do
+            Show it to me
+            %i.icon-chevron-down
+
+        .js-toggle-content.hide
+          .ui-box.ui-box-danger
+            .title Delete Project Template
+            .body
+              %p
+                Removing the project template will delete its directory and all related resources.
+              = link_to 'Delete', [:admin, @project_template], data: {confirm: "REMOVE \"#{@project_template.name}\"? Are you sure?"}, method: :delete, class: "btn btn-small btn-remove"
+    - elsif @project_template.state == 0
+      .alert.alert-warning
+        %p
+          %strong Notice:
+          You can only delete this template if the initialisation is done.

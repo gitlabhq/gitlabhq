@@ -17,6 +17,13 @@
           .col-sm-10
             = f.select :namespace_id, namespaces_options(params[:namespace_id] || :current_user), {}, {class: 'select2', tabindex: 2}
 
+      - if @project_templates.count > 0
+        .form-group
+          %label.control-label
+            %span Template
+          .col-sm-10
+            = f.select :init_from_project_template_id, @project_templates.map{ |c| [c.name, c.id] }, {include_blank: true}, {class: 'select2', tabindex: 3}
+
       %hr
       .js-toggle-container
         .form-group

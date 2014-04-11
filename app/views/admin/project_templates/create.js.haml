@@ -1,0 +1,9 @@
+- if @project_template.saved?
+  :plain
+    location.href = "#{admin_project_template_path(@project_template)}";
+- else
+  :plain
+    $(".new-project-template-errors").html("#{escape_javascript(render('errors'))}");
+    $('.new-project-template-submit').enable();
+    $('.save-project-template-loader').addClass('hidden');
+    $('.new-project-template-container').removeClass('hidden');

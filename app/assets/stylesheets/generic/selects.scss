@@ -31,6 +31,13 @@
   }
 }
 
+.select2-container {
+  .select2-choice {
+    abbr {
+      top: 6px;
+    }
+  }
+}
 select {
   &.select2 {
     width: 100px;

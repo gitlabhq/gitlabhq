@@ -42,6 +42,8 @@ class Dispatcher
         new TreeView()
       when 'projects:blob:show'
         new BlobView()
+      when 'admin:project_templates:new', 'admin:project_templates:create'
+        new ProjectTemplate()
 
     switch path.first()
       when 'admin' then new Admin()

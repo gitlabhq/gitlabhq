@@ -69,6 +69,11 @@ gem "haml-rails"
 # Files attachments
 gem "carrierwave"
 
+# Unzipping project template
+gem "rubyzip", "~> 1.0.0"
+# will load compatibility for old rubyzip API.
+gem "zip-zip"
+
 # for aws storage
 gem "fog", "~> 1.14", group: :aws
 

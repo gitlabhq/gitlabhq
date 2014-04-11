@@ -20,7 +20,7 @@ production: &base
     https: false
 
     # Uncomment and customize the last line to run in a non-root path
-    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this. 
+    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
     # Note that four settings need to be changed for this to work.
     # 1) In your application.rb file: config.relative_url_root = "/gitlab"
     # 2) In your gitlab.yml file: relative_url_root: /gitlab
@@ -85,6 +85,10 @@ production: &base
     # The default is 'tmp/repositories' relative to the root of the Rails app.
     # repository_downloads_path: tmp/repositories
 
+    ## GitLab Templates
+    # templates_path: /home/git/gitlab-templates
+    # templates_max_filesize: 5242880
+
   ## External issues trackers
   issues_tracker:
     # redmine:
@@ -107,7 +111,7 @@ production: &base
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
-    # 
+    #
     # jira:
     #   title: "Atlassian Jira"
     #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"

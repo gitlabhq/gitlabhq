@@ -88,7 +88,7 @@ $ ->
     $(this).closest('li').fadeOut()
 
   # Initialize select2 selects
-  $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)
+  $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true, allowClear: true)
 
   # Initialize tooltips
   $('.has_tooltip').tooltip()

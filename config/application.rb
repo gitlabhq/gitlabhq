@@ -23,6 +23,7 @@ module Gitlab
                                      :project_activity_cache_observer,
                                      :note_observer,
                                      :project_observer,
+                                     :project_template_observer,
                                      :system_hook_observer,
                                      :user_observer,
                                      :users_group_observer,

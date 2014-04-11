@@ -40,7 +40,7 @@ class Project < ActiveRecord::Base
 
   acts_as_taggable_on :labels, :issues_default_labels
 
-  attr_accessor :new_default_branch
+  attr_accessor :new_default_branch, :init_from_project_template_id
 
   # Relations
   belongs_to :creator,      foreign_key: "creator_id", class_name: "User"

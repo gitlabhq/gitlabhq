@@ -1,0 +1,41 @@
+.new-project-template-errors
+  = render 'admin/project_templates/errors'
+
+.row
+  .col-sm-12.new-project-template-container
+    = form_for [:admin, @project_template], remote: true, html: {multipart: true, class: 'form-horizontal'}, authenticity_token: true do |f|
+      .form-group
+        = f.label :name, class: 'control-label' do
+          %strong Template name
+        .col-sm-10
+          = f.text_field :name, placeholder: 'Example Project Template', class: 'form-control', tabindex: 1, autofocus: true, maxlength: @project_template.template_name_length
+
+      .form-group
+        = f.label :description, class: 'control-label' do
+          %strong Description
+        .col-sm-10
+          = f.text_area :description, placeholder: 'This is an example project template description ... ',class: 'form-control', tabindex: 2, rows: 5, maxlength: @project_template.template_description_length
+
+      .form-group
+        %label.control-label
+          %string Upload
+        .col-sm-10
+          %a.choose-btn.btn.btn-small.js-choose-project-template-button
+            %i.icon-paper-clip
+            %span Choose File ...
+          = f.file_field :upload, class: "js-project-template-upload-input hidden"
+          %span.light
+            Select a *.zip file to upload (max. #{@project_template.max_upload_size})
+          %p.js-project-template-upload-filename
+
+
+      .form-actions
+        = link_to 'Cancel', admin_project_templates_path, class: 'btn btn-remove'
+        = f.submit 'Create', class: 'btn btn-new pull-right new-project-template-submit'
+
+.save-project-template-loader.hidden
+  %center
+    %h2
+      %i.icon-spinner.icon-spin
+      Uploading files &amp; creating template.
+    %p Please wait a moment, this page will automatically refresh when ready.

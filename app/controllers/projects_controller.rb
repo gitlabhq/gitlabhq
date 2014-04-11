@@ -13,6 +13,9 @@ class ProjectsController < ApplicationController
 
   def new
     @project = Project.new
+    @project_templates = ProjectTemplate.all
+    @project_templates = @project_templates.where("state = 1")
+    @project_templates = @project_templates.order("project_templates.name ASC")
   end
 
   def edit

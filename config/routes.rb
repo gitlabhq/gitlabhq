@@ -100,6 +100,8 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :project_templates, constraints: { id: /[^\/]+/ }, only:[:index, :new, :show, :create, :destroy]
+
     root to: "dashboard#index"
   end
 

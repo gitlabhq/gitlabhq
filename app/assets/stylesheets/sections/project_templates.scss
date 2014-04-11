@@ -1,0 +1,50 @@
+.save-project-template-loader {
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: #555;
+}
+
+.new-project-template-table {
+  margin-bottom: 0;
+
+  &>tbody {
+    &>tr {
+      &>td {
+        vertical-align: middle;
+        p {
+          margin: 0;
+        }
+      }
+    }
+  }
+
+
+  .project-template-status {
+    width: 100px;
+    padding-left: 0;
+    padding-right: 0;
+    text-align: center;
+  }
+
+  .project-template-actions {
+    width: 25%;
+  }
+}
+
+.new-project-template-table,
+.project-template-info {
+  i {
+    &.red {
+      color: #d9534f;
+    }
+    &.green {
+      color: #47a447;
+    }
+    &.yellow {
+      color: #FFD000;
+    }
+    &.orange {
+      color: #FF8000;
+    }
+  }
+}

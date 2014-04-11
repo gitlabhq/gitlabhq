@@ -204,6 +204,10 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
     sudo -u git -H mkdir /home/git/gitlab-satellites
     sudo chmod u+rwx,g+rx,o-rwx /home/git/gitlab-satellites
 
+    # Create directory for templates and make sure GitLab can write to it
+    sudo -u git -H mkdir /home/git/gitlab-templates
+    sudo chmod -R u+rwX /home/git/gitlab-templates
+
     # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
     sudo chmod -R u+rwX tmp/pids/
     sudo chmod -R u+rwX tmp/sockets/

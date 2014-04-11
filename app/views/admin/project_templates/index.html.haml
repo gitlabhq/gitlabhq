@@ -1,0 +1,39 @@
+%h3.page-title
+  Project Templates Overview
+%hr
+
+.row
+  .col-md-12
+    .ui-box
+      .title
+        Project Templates (#{@project_templates.total_count})
+        .pull-right
+          = link_to 'New Project Template', new_admin_project_template_path, class: 'btn btn-new'
+
+      -if @project_templates.total_count > 0
+        %table.table.new-project-template-table
+          %thead
+            %tr
+              %th.text-center State
+              %th Name
+              %th{colspan: 2}  Path
+          - @project_templates.each do |project_template|
+            %tr
+              %td.project-template-status
+                - if project_template.state == 0
+                  %i.icon-circle.yellow{title: "In Progress"}
+                - if project_template.state == 1
+                  %i.icon-circle.green{title: "Ready to use"}
+                - elsif project_template.state == 2
+                  %i.icon-circle.red{title: "Build failed"}
+                - elsif project_template.state == 3
+                  %i.icon-circle.orange{title: "Will be deleted"}
+              %td.project-template-title
+                = link_to project_template.name, admin_project_template_path(project_template), id: "show_#{dom_id(project_template)}"
+              %td.project-template-path
+                %p.light #{project_template.template_path}
+              %td.project-template-actions
+                - if project_template.deletable?
+                  = link_to 'Delete', [:admin, project_template], data: {confirm: "REMOVE \"#{project_template.name}\"? Are you sure?"}, method: :delete, class: "pull-right btn btn-small btn-remove"
+
+    = paginate @project_templates, theme: "gitlab"

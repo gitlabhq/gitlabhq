@@ -11,10 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140407135544) do
-
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
+ActiveRecord::Schema.define(version: 20140410174851) do
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -109,10 +106,10 @@ ActiveRecord::Schema.define(version: 20140407135544) do
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
   create_table "merge_request_diffs", force: true do |t|
-    t.string   "state",            default: "collected", null: false
-    t.text     "st_commits"
-    t.text     "st_diffs"
-    t.integer  "merge_request_id",                       null: false
+    t.string   "state",                               default: "collected", null: false
+    t.text     "st_commits",       limit: 2147483647
+    t.text     "st_diffs",         limit: 2147483647
+    t.integer  "merge_request_id",                                          null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -186,8 +183,8 @@ ActiveRecord::Schema.define(version: 20140407135544) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
-    t.text     "st_diff"
+    t.boolean  "system",                           default: false, null: false
+    t.text     "st_diff",       limit: 2147483647
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -197,6 +194,18 @@ ActiveRecord::Schema.define(version: 20140407135544) do
   add_index "notes", ["noteable_type"], name: "index_notes_on_noteable_type", using: :btree
   add_index "notes", ["project_id", "noteable_type"], name: "index_notes_on_project_id_and_noteable_type", using: :btree
   add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
+
+  create_table "project_templates", force: true do |t|
+    t.string   "name",        limit: 100
+    t.string   "save_name",   limit: 200,             null: false
+    t.text     "description"
+    t.string   "upload",      limit: 400
+    t.integer  "state",       limit: 1,   default: 0
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "project_templates", ["name"], name: "index_project_templates_on_name", unique: true, using: :btree
 
   create_table "projects", force: true do |t|
     t.string   "name"
@@ -252,14 +261,14 @@ ActiveRecord::Schema.define(version: 20140407135544) do
 
   create_table "snippets", force: true do |t|
     t.string   "title"
-    t.text     "content"
-    t.integer  "author_id",                 null: false
+    t.text     "content",    limit: 2147483647
+    t.integer  "author_id",                                    null: false
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
-    t.boolean  "private",    default: true, null: false
+    t.boolean  "private",                       default: true, null: false
     t.string   "type"
   end
 
