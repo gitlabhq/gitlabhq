@@ -5,8 +5,8 @@
 #  id            :integer          not null, primary key
 #  deploy_key_id :integer          not null
 #  project_id    :integer          not null
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #
 
 require 'spec_helper'

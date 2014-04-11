@@ -7,8 +7,8 @@
 #  assignee_id  :integer
 #  author_id    :integer
 #  project_id   :integer
-#  created_at   :datetime         not null
-#  updated_at   :datetime         not null
+#  created_at   :datetime
+#  updated_at   :datetime
 #  position     :integer          default(0)
 #  branch_name  :string(255)
 #  description  :text
@@ -30,8 +30,7 @@ class Issue < ActiveRecord::Base
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
 
   attr_accessible :title, :assignee_id, :position, :description,
-                  :milestone_id, :label_list, :author_id_of_changes,
-                  :state_event
+                  :milestone_id, :label_list, :state_event
 
   acts_as_taggable_on :labels
 

@@ -19,11 +19,8 @@ module Gitlab
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running.
-    config.active_record.observers = :activity_observer,
+    config.active_record.observers = :milestone_observer,
                                      :project_activity_cache_observer,
-                                     :issue_observer,
-                                     :key_observer,
-                                     :merge_request_observer,
                                      :note_observer,
                                      :project_observer,
                                      :system_hook_observer,
@@ -64,6 +61,7 @@ module Gitlab
     config.assets.enabled = true
     config.assets.paths << Emoji.images_path
     config.assets.precompile << "emoji/*.png"
+    config.assets.precompile << "print.css"
 
     # Version of your assets, change this if you want to expire all your assets
     config.assets.version = '1.0'

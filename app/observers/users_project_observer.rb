@@ -10,7 +10,7 @@ class UsersProjectObserver < BaseObserver
   end
 
   def after_update(users_project)
-    notification.update_team_member(users_project)
+    notification.update_team_member(users_project) if users_project.project_access_changed?
   end
 
   def after_destroy(users_project)

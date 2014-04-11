@@ -6,7 +6,6 @@ GitLab.GfmAutoComplete =
   dataSource: ''
   # Emoji
   Emoji:
-    assetBase: ''
     template: '<li data-value="${insert}">${name} <img alt="${name}" height="20" src="${image}" width="20" /></li>'
 
   # Team Members
@@ -27,7 +26,7 @@ GitLab.GfmAutoComplete =
       tpl: @Emoji.template
       callbacks:
         before_save: (emojis) =>
-          $.map emojis, (em) => name: em, insert: em+ ':', image: "#{@Emoji.assetBase}/#{em}.png"
+          $.map emojis, (em) => name: em.name, insert: em.name+ ':', image: em.path
 
     # Team Members
     input.atwho

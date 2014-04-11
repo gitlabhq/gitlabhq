@@ -15,7 +15,7 @@ GET /issues
     "project_id": 8,
     "title": "4xx/5xx pages",
     "description": "",
-    "labels": [ ],
+    "labels": [],
     "milestone": null,
     "assignee": null,
     "author": {

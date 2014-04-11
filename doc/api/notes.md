@@ -17,7 +17,7 @@ Parameters:
   {
     "id": 522,
     "body": "The solution is rather tricky",
-    "attachment":null,
+    "attachment": null,
     "author": {
       "id": 1,
       "username": "john_smith",
@@ -77,32 +77,32 @@ Parameters:
 ```json
 [
   {
-    "id":302,
-    "body":"_Status changed to closed_",
-    "attachment":null,
-    "author":{
-      "id":1,
-      "username":"pipin",
-      "email":"admin@example.com",
-      "name":"Pip",
-      "state":"active",
-      "created_at":"2013-09-30T13:46:01Z"
+    "id": 302,
+    "body": "_Status changed to closed_",
+    "attachment": null,
+    "author": {
+      "id": 1,
+      "username": "pipin",
+      "email": "admin@example.com",
+      "name": "Pip",
+      "state": "active",
+      "created_at": "2013-09-30T13:46:01Z"
     },
-    "created_at":"2013-10-02T09:22:45Z"
+    "created_at": "2013-10-02T09:22:45Z"
   },
   {
-    "id":305,
-    "body":"Text of the comment\r\n",
-    "attachment":null,
-    "author":{
-      "id":1,
-      "username":"pipin",
-      "email":"admin@example.com",
-      "name":"Pip",
-      "state":"active",
-      "created_at":"2013-09-30T13:46:01Z"
+    "id": 305,
+    "body": "Text of the comment\r\n",
+    "attachment": null,
+    "author": {
+      "id": 1,
+      "username": "pipin",
+      "email": "admin@example.com",
+      "name": "Pip",
+      "state": "active",
+      "created_at": "2013-09-30T13:46:01Z"
     },
-    "created_at":"2013-10-02T09:56:03Z"
+    "created_at": "2013-10-02T09:56:03Z"
   }
 ]
 ```
@@ -169,20 +169,20 @@ Parameters:
 
 ```json
 {
-  "id":52,
-  "title":"Snippet",
-  "file_name":"snippet.rb",
-  "author":{
-    "id":1,
-    "username":"pipin",
-    "email":"admin@example.com",
-    "name":"Pip",
-    "state":"active",
-    "created_at":"2013-09-30T13:46:01Z"
+  "id": 52,
+  "title": "Snippet",
+  "file_name": "snippet.rb",
+  "author": {
+    "id": 1,
+    "username": "pipin",
+    "email": "admin@example.com",
+    "name": "Pip",
+    "state": "active",
+    "created_at": "2013-09-30T13:46:01Z"
   },
-  "expires_at":null,
-  "updated_at":"2013-10-02T07:34:20Z",
-  "created_at":"2013-10-02T07:34:20Z"
+  "expires_at": null,
+  "updated_at": "2013-10-02T07:34:20Z",
+  "created_at": "2013-10-02T07:34:20Z"
 }
 ```
 
@@ -233,18 +233,18 @@ Parameters:
 
 ```json
 {
-  "id":301,
-  "body":"Comment for MR",
-  "attachment":null,
-  "author":{
-    "id":1,
-    "username":"pipin",
-    "email":"admin@example.com",
-    "name":"Pip",
-    "state":"active",
-    "created_at":"2013-09-30T13:46:01Z"
+  "id": 301,
+  "body": "Comment for MR",
+  "attachment": null,
+  "author": {
+    "id": 1,
+    "username": "pipin",
+    "email": "admin@example.com",
+    "name": "Pip",
+    "state": "active",
+    "created_at": "2013-09-30T13:46:01Z"
   },
-  "created_at":"2013-10-02T08:57:14Z"
+  "created_at": "2013-10-02T08:57:14Z"
 }
 ```
 

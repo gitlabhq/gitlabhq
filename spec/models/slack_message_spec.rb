@@ -14,20 +14,27 @@ describe SlackMessage do
     }
   }
 
+  let(:color) { '#345' }
+
   context 'push' do
     before do
       args[:commits] = [
-        { message: 'message1', url: 'url1', id: 'abcdefghi' },
-        { message: 'message2', url: 'url2', id: '123456789' },
+        { message: 'message1', url: 'url1', id: 'abcdefghijkl', author: { name: 'author1' } },
+        { message: 'message2', url: 'url2', id: '123456789012', author: { name: 'author2' } },
       ]
     end
 
     it 'returns a message regarding pushes' do
-      subject.compose.should ==
+      subject.pretext.should ==
         'user_name pushed to branch <url/commits/master|master> of ' <<
-        '<url|project_name> (<url/compare/before...after|Compare changes>)' <<
-        "\n - message1 (<url1|abcdef>)" <<
-        "\n - message2 (<url2|123456>)"
+        '<url|project_name> (<url/compare/before...after|Compare changes>)'
+      subject.attachments.should == [
+        {
+          text: "<url1|abcdefghi>: message1 - author1\n" <<
+                "<url2|123456789>: message2 - author2",
+          color: color,
+        }
+      ]
     end
   end
 
@@ -37,9 +44,10 @@ describe SlackMessage do
     end
 
     it 'returns a message regarding a new branch' do
-      subject.compose.should ==
+      subject.pretext.should ==
         'user_name pushed new branch <url/commits/master|master> to ' <<
         '<url|project_name>'
+      subject.attachments.should be_empty
     end
   end
 
@@ -49,8 +57,9 @@ describe SlackMessage do
     end
 
     it 'returns a message regarding a removed branch' do
-      subject.compose.should ==
+      subject.pretext.should ==
         'user_name removed branch master from <url|project_name>'
+      subject.attachments.should be_empty
     end
   end
 end

@@ -25,6 +25,12 @@ describe API::API do
         json_response.should be_an Array
         json_response.first['title'].should == issue.title
       end
+
+      it "should add pagination headers" do
+        get api("/issues?per_page=3", user)
+        response.headers['Link'].should ==
+          '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+      end
     end
   end
 
@@ -98,18 +104,6 @@ describe API::API do
     it "should delete a project issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", user)
       response.status.should == 405
-    end
-  end
-
-  describe "PUT /projects/:id/issues/:issue_id to test observer on close" do
-    before { enable_observers }
-    after { disable_observers }
-
-    it "should create an activity event when an issue is closed" do
-      Event.should_receive(:create)
-
-      put api("/projects/#{project.id}/issues/#{issue.id}", user),
-        state_event: "close"
     end
   end
 end

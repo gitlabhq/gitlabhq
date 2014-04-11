@@ -124,7 +124,8 @@
           - @user.users_groups.each do |user_group|
             - group = user_group.group
             %li.users_group
-              %strong= link_to group.name, admin_group_path(group)
+              %span{class: ("list-item-name" unless user_group.owner?)}
+                %strong= link_to group.name, admin_group_path(group)
               .pull-right
                 %span.light= user_group.human_access
                 - unless user_group.owner?

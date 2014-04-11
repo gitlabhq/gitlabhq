@@ -9,10 +9,8 @@
 #  author_id         :integer
 #  assignee_id       :integer
 #  title             :string(255)
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  st_commits        :text(2147483647)
-#  st_diffs          :text(2147483647)
+#  created_at        :datetime
+#  updated_at        :datetime
 #  milestone_id      :integer
 #  state             :string(255)
 #  merge_status      :string(255)
@@ -38,7 +36,7 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :author_id_of_changes, :state_event, :description
+  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :state_event, :description
 
   attr_accessor :should_remove_source_branch
 
@@ -97,6 +95,7 @@ class MergeRequest < ActiveRecord::Base
   validates :target_project, presence: true
   validates :target_branch, presence: true
   validate :validate_branches
+  validate :validate_fork
 
   scope :of_group, ->(group) { where("source_project_id in (:group_project_ids) OR target_project_id in (:group_project_ids)", group_project_ids: group.project_ids) }
   scope :of_user_team, ->(team) { where("(source_project_id in (:team_project_ids) OR target_project_id in (:team_project_ids) AND assignee_id in (:team_member_ids))", team_project_ids: team.project_ids, team_member_ids: team.member_ids) }
@@ -121,6 +120,22 @@ class MergeRequest < ActiveRecord::Base
 
       if similar_mrs.any?
         errors.add :base, "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
+      end
+    end
+  end
+
+  def validate_fork
+    return true unless target_project && source_project
+
+    if target_project == source_project
+      true
+    else
+      # If source and target projects are different
+      # we should check if source project is actually a fork of target project
+      if source_project.forked_from?(target_project)
+        true
+      else
+        errors.add :base, "Source project is not a fork of target project"
       end
     end
   end
@@ -193,7 +208,7 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def disallow_source_branch_removal?
-    (source_project.root_ref? source_branch) || for_fork?
+    source_project.root_ref?(source_branch) || source_project.protected_branches.include?(source_branch)
   end
 
   def project

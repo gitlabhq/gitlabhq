@@ -8,7 +8,7 @@ class Profiles::EmailsController < ApplicationController
 
   def create
     @email = current_user.emails.new(params[:email])
-    
+
     flash[:alert] = @email.errors.full_messages.first unless @email.save
 
     redirect_to profile_emails_url

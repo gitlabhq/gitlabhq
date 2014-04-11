@@ -4,8 +4,8 @@
 #
 #  id          :integer          not null, primary key
 #  user_id     :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  key         :text
 #  title       :string(255)
 #  type        :string(255)
@@ -29,6 +29,10 @@ class Key < ActiveRecord::Base
 
   delegate :name, :email, to: :user, prefix: true
 
+  after_create :add_to_shell
+  after_create :notify_user
+  after_destroy :remove_from_shell
+
   def strip_white_space
     self.key = key.strip unless key.blank?
   end
@@ -40,6 +44,26 @@ class Key < ActiveRecord::Base
 
   def shell_id
     "key-#{id}"
+  end
+
+  def add_to_shell
+    GitlabShellWorker.perform_async(
+      :add_key,
+      shell_id,
+      key
+    )
+  end
+
+  def notify_user
+    NotificationService.new.new_key(self)
+  end
+
+  def remove_from_shell
+    GitlabShellWorker.perform_async(
+      :remove_key,
+      shell_id,
+      key,
+    )
   end
 
   private

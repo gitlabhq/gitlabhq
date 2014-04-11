@@ -8,13 +8,12 @@ GET /groups
 
 ```json
 [
-    {
-        "id": 1,
-        "name": "Foobar Group",
-        "path": "foo-bar",
-        "ldap_cn": "ldap-group-name",
-        "ldap_access": 30,
-    }
+  {
+    "id": 1,
+    "name": "Foobar Group",
+    "path": "foo-bar",
+    "owner_id": 18
+  }
 ]
 ```
 
@@ -44,8 +43,6 @@ Parameters:
 
 + `name` (required) - The name of the group
 + `path` (required) - The path of the group
-+ `ldap_cn` (optional) - LDAP group name to sync with
-+ `ldap_access` (optional) - Access level for LDAP group members
 
 ## Transfer project to group
 

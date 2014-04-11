@@ -195,5 +195,9 @@ module API
         end
       end
     end
+
+    class Label < Grape::Entity
+      expose :name
+    end
   end
 end

@@ -24,7 +24,7 @@ module Backup
           puts "[FAILED]".red
         end
 
-        wiki = GollumWiki.new(project)
+        wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_repo(wiki))
           print " * #{wiki.path_with_namespace} ... "
@@ -59,7 +59,7 @@ module Backup
           puts "[FAILED]".red
         end
 
-        wiki = GollumWiki.new(project)
+        wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_bundle(wiki))
           print " * #{wiki.path_with_namespace} ... "

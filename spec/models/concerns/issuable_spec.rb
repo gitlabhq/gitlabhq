@@ -25,11 +25,6 @@ describe Issue, "Issuable" do
     it { described_class.should respond_to(:assigned) }
   end
 
-  it "has an :author_id_of_changes accessor" do
-    issue.should respond_to(:author_id_of_changes)
-    issue.should respond_to(:author_id_of_changes=)
-  end
-
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
