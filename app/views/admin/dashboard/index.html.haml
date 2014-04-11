@@ -93,6 +93,10 @@
         Milestones
         %span.light.pull-right
           = Milestone.count
+      %p
+        Monthly active users
+        %span.light.pull-right
+          = User.where("current_sign_in_at > ?", 30.days.ago).count
     .col-md-4
       %h4
         Features

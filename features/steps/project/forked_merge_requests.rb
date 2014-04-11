@@ -53,6 +53,7 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
 
     find(:select, "merge_request_source_branch", {}).value.should == 'master'
     find(:select, "merge_request_target_branch", {}).value.should == 'stable'
+    click_button "Compare branches"
 
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
   end
@@ -148,29 +149,19 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     current_path.should == edit_project_merge_request_path(@project, @merge_request)
     page.should have_content "Edit merge request ##{@merge_request.id}"
     find("#merge_request_title").value.should == "Merge Request On Forked Project"
-    find("#merge_request_source_project_id").value.should == @forked_project.id.to_s
-    find("#merge_request_target_project_id").value.should == @project.id.to_s
-    find("#merge_request_source_branch").value.should have_content "master"
-    verify_commit_link(".mr_source_commit",@forked_project)
-    find("#merge_request_target_branch").value.should have_content "stable"
-    verify_commit_link(".mr_target_commit",@project)
   end
 
   step 'I fill out an invalid "Merge Request On Forked Project" merge request' do
-    #If this isn't filled in the rest of the validations won't be triggered
-    fill_in "merge_request_title", with: "Merge Request On Forked Project"
-
     select "Select branch", from: "merge_request_target_branch"
-
     find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
     find(:select, "merge_request_target_project_id", {}).value.should == project.id.to_s
     find(:select, "merge_request_source_branch", {}).value.should == ""
     find(:select, "merge_request_target_branch", {}).value.should == ""
+    click_button "Compare branches"
   end
 
   step 'I should see validation errors' do
-    page.should have_content "Source branch can't be blank"
-    page.should have_content "Target branch can't be blank"
+    page.should have_content "You must select source and target branch"
   end
 
   step 'the target repository should be the original repository' do

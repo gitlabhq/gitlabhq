@@ -60,6 +60,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def is_wiki?
-    @template.instance_variable_get("@wiki")
+    if @template.instance_variable_get("@project_wiki")
+      @template.instance_variable_get("@page")
+    end
   end
 end

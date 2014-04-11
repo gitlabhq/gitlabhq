@@ -1,8 +1,11 @@
 %h3.page-title Edit mode
 .file-editor
   = form_tag(project_edit_tree_path(@project, @id), method: :put, class: "form-horizontal") do
-    .file-holder
+    .file-holder.file
       .file-title
+        .btn-group.js-edit-mode.left-options
+          = link_to 'Edit', '#editor', class: 'active hover btn btn-tiny'
+          = link_to editing_preview_title(@blob.name), '#preview', class: 'btn btn-tiny', 'data-preview-url' => preview_project_edit_tree_path(@project, @id)
         %i.icon-file
         %span.file_name
           = @path
@@ -13,13 +16,15 @@
           .btn-group.tree-btn-group
             = link_to "Cancel", @after_edit_path, class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
       .file-content.code
-        %pre#editor= @blob.data
+        %pre.js-edit-mode-pane#editor= @blob.data
+        .js-edit-mode-pane#preview.hide
 
     .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
         Commit message
       .col-sm-10
-        = text_area_tag 'commit_message', '', placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control'
+        = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message', '',
+            placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control')}
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"
@@ -45,3 +50,28 @@
     $("#file-content").val(editor.getValue());
     $(".file-editor form").submit();
   });
+
+  var editModePanes = $('.js-edit-mode-pane'),
+      editModeLinks = $('.js-edit-mode a');
+
+  editModeLinks.click(function(event) {
+    event.preventDefault();
+
+    var currentLink = $(this),
+        paneId = currentLink.attr('href'),
+        currentPane = editModePanes.filter(paneId);
+
+    editModeLinks.removeClass('active hover');
+    currentLink.addClass('active hover');
+    editModePanes.hide();
+
+    if (paneId == '#preview') {
+      $.post(currentLink.data('preview-url'), { content: editor.getValue() }, function(response) {
+        currentPane.empty().append(response);
+        currentPane.fadeIn(200);
+      })
+    } else {
+      currentPane.fadeIn(200);
+      editor.focus()
+    }
+  })

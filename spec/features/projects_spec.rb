@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Projects" do
+describe "Projects", feature: true  do
   before(:each) { enable_observers }
   after(:each) {disable_observers}
   before { login_as :user }

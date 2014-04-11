@@ -7,13 +7,13 @@
       New tag
 
 %p
-  Tags give ability to mark specific points in history as being important
+  Tags give the ability to mark specific points in history as being important
 %hr
 
 - unless @tags.empty?
   %ul.bordered-list
     - @tags.each do |tag|
-      = render 'tag', tag: tag
+      = render 'tag', tag: @repository.find_tag(tag)
 
   = paginate @tags, theme: 'gitlab'
 

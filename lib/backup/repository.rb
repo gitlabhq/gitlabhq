@@ -10,21 +10,18 @@ module Backup
       Project.find_each(batch_size: 1000) do |project|
         print " * #{project.path_with_namespace} ... "
 
-        if project.empty_repo?
-          puts "[SKIPPED]".cyan
-          next
-        end
-
         # Create namespace dir if missing
         FileUtils.mkdir_p(File.join(backup_repos_path, project.namespace.path)) if project.namespace
 
-        if system(*%W(git --git-dir=#{path_to_repo(project)} bundle create #{path_to_bundle(project)} --all), silent)
+        if project.empty_repo?
+          puts "[SKIPPED]".cyan
+        elsif system(*%W(git --git-dir=#{path_to_repo(project)} bundle create #{path_to_bundle(project)} --all), silent)
           puts "[DONE]".green
         else
           puts "[FAILED]".red
         end
 
-        wiki = GollumWiki.new(project)
+        wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_repo(wiki))
           print " * #{wiki.path_with_namespace} ... "
@@ -59,7 +56,7 @@ module Backup
           puts "[FAILED]".red
         end
 
-        wiki = GollumWiki.new(project)
+        wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_bundle(wiki))
           print " * #{wiki.path_with_namespace} ... "

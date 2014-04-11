@@ -9,10 +9,8 @@
 #  author_id         :integer
 #  assignee_id       :integer
 #  title             :string(255)
-#  created_at        :datetime         not null
-#  updated_at        :datetime         not null
-#  st_commits        :text(2147483647)
-#  st_diffs          :text(2147483647)
+#  created_at        :datetime
+#  updated_at        :datetime
 #  milestone_id      :integer
 #  state             :string(255)
 #  merge_status      :string(255)
@@ -38,13 +36,18 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :state_event, :description
+  attr_accessible :title, :assignee_id, :source_project_id, :source_branch,
+                  :target_project_id, :target_branch, :milestone_id,
+                  :state_event, :description, :label_list
 
   attr_accessor :should_remove_source_branch
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
+
+  ActsAsTaggableOn.strict_case_match = true
+  acts_as_taggable_on :labels
 
   state_machine :state, initial: :opened do
     event :close do
@@ -250,6 +253,14 @@ class MergeRequest < ActiveRecord::Base
   def source_project_namespace
     if source_project && source_project.namespace
       source_project.namespace.path
+    else
+      "(removed)"
+    end
+  end
+
+  def target_project_namespace
+    if target_project && target_project.namespace
+      target_project.namespace.path
     else
       "(removed)"
     end

@@ -181,6 +181,52 @@ describe GitlabMarkdownHelper do
       include_examples 'referenced object'
     end
 
+    describe "referencing a Jira issue" do
+      let(:actual)   { "Reference to JIRA-#{issue.iid}" }
+      let(:expected) { "http://jira.example/browse/JIRA-#{issue.iid}" }
+      let(:reference) { "JIRA-#{issue.iid}" }
+
+      before do
+        issue_tracker_config = { "jira" => { "title" => "JIRA tracker", "issues_url" => "http://jira.example/browse/:id" } }
+        Gitlab.config.stub(:issues_tracker).and_return(issue_tracker_config)
+        @project.stub(:issues_tracker).and_return("jira")
+        @project.stub(:issues_tracker_id).and_return("JIRA")
+      end
+
+      it "should link using a valid id" do
+        gfm(actual).should match(expected)
+      end
+
+      it "should link with adjacent text" do
+        # Wrap the reference in parenthesis
+        gfm(actual.gsub(reference, "(#{reference})")).should match(expected)
+
+        # Append some text to the end of the reference
+        gfm(actual.gsub(reference, "#{reference}, right?")).should match(expected)
+      end
+
+      it "should keep whitespace intact" do
+        actual   = "Referenced #{reference} already."
+        expected = /Referenced <a.+>[^\s]+<\/a> already/
+        gfm(actual).should match(expected)
+      end
+
+      it "should not link with an invalid id" do
+        # Modify the reference string so it's still parsed, but is invalid
+        invalid_reference = actual.gsub(/(\d+)$/, "r45")
+        gfm(invalid_reference).should == invalid_reference
+      end
+
+      it "should include a title attribute" do
+        title = "Issue in JIRA tracker"
+        gfm(actual).should match(/title="#{title}"/)
+      end
+
+      it "should include standard gfm classes" do
+        gfm(actual).should match(/class="\s?gfm gfm-issue\s?"/)
+      end
+    end
+
     describe "referencing a merge request" do
       let(:object)    { merge_request }
       let(:reference) { "!#{merge_request.iid}" }

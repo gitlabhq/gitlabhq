@@ -8,10 +8,10 @@ describe SystemHooksService do
   context 'event data' do
     it { event_data(user, :create).should include(:event_name, :name, :created_at, :email, :user_id) }
     it { event_data(user, :destroy).should include(:event_name, :name, :created_at, :email, :user_id) }
-    it { event_data(project, :create).should include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email) }
-    it { event_data(project, :destroy).should include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email) }
-    it { event_data(users_project, :create).should include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access) }
-    it { event_data(users_project, :destroy).should include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access) }
+    it { event_data(project, :create).should include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
+    it { event_data(project, :destroy).should include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
+    it { event_data(users_project, :create).should include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access, :project_visibility) }
+    it { event_data(users_project, :destroy).should include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access, :project_visibility) }
   end
 
   context 'event names' do

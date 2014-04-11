@@ -20,6 +20,10 @@
             = link_to search_path, title: "Search", class: 'has_bottom_tooltip', 'data-original-title' => 'Search area' do
               %i.icon-search
           %li
+            = link_to help_path, title: 'Help', class: 'has_bottom_tooltip',
+               'data-original-title' => 'Help'  do
+              %i.icon-question-sign
+          %li
             = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
               %i.icon-globe
           %li
@@ -39,6 +43,6 @@
           %li
             = link_to destroy_user_session_path, class: "logout", method: :delete, title: "Logout", class: 'has_bottom_tooltip', 'data-original-title' => 'Logout'  do
               %i.icon-signout
-          %li
+          %li.hidden-xs
             = link_to current_user, class: "profile-pic", id: 'profile-pic' do
               = image_tag avatar_icon(current_user.email, 26), alt: 'User activity'

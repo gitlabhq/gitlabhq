@@ -21,14 +21,6 @@
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
       = render "projects/merge_requests/show/remove_source_branch"
 
-    - if !@closes_issues.empty? && @merge_request.open?
-      .alert.alert-info.alert-info
-        %span
-          %i.icon-ok
-          Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
-          = succeed '.' do
-            != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)
-
     - unless @commits.any?
       %h4 Nothing to merge
       %p
@@ -38,3 +30,12 @@
         %span.label-branch #{@merge_request.target_branch}
         %br
         Try to use different branches or push new code.
+
+  - if !@closes_issues.empty? && @merge_request.open?
+    .panel-footer
+      %span
+        %i.icon-ok
+        Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
+        = succeed '.' do
+          != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)
+

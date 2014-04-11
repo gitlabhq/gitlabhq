@@ -16,28 +16,28 @@
     @extend .header-dark;
     &.navbar-gitlab {
       .navbar-inner {
-        background: #547;
-        border-bottom: 1px solid #435;
+        background: #548;
+        border-bottom: 1px solid #436;
         .app_logo, .navbar-toggle {
           &:hover {
-            background-color: #435;
+            background-color: #436;
           }
         }
         .separator {
-          background: #435;
-          border-left: 1px solid #658;
+          background: #436;
+          border-left: 1px solid #659;
         }
         .nav > li > a {
-          color: #98B;
+          color: #98C;
         }
         .search-input {
-          border-color: #98B;
+          border-color: #98C;
         }
       }
     }
   }
 
   .nav-pills > li.active > a, .nav-pills > li.active > a:hover, .nav-pills > li.active > a:focus {
-    background: #769;
+    background: #659;
   }
 }

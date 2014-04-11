@@ -2,16 +2,16 @@ Project web hooks allow you to trigger an URL if new code is pushed or a new iss
 
 ---
 
-You can configure web hook to listen for specific events like pushes, issues, merge requests.
-GitLab will send POST request with data to web hook URL.
-Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+You can configure web hooks to listen for specific events like pushes, issues or merge requests.
+GitLab will send a POST request with data to the web hook URL.
+Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
 If you send a web hook to an SSL endpoint [the certificate will not be verified](https://gitlab.com/gitlab-org/gitlab-ce/blob/ccd617e58ea71c42b6b073e692447d0fe3c00be6/app/models/web_hook.rb#L35) since many people use self-signed certificates.
 
 ---
 
 #### Push events
 
-Triggered when you push to the repository except pushing tags.
+Triggered when you push to the repository except when pushing tags.
 
 **Request body:**
 
@@ -25,16 +25,16 @@ Triggered when you push to the repository except pushing tags.
   "project_id": 15,
   "repository": {
     "name": "Diaspora",
-    "url": "git@localhost:diaspora.git",
+    "url": "git@example.com:diaspora.git",
     "description": "",
-    "homepage": "http://localhost/diaspora"
+    "homepage": "http://example.com/diaspora"
   },
   "commits": [
     {
       "id": "b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
       "message": "Update Catalan translation to e38cb41.",
       "timestamp": "2011-12-12T14:27:31+02:00",
-      "url": "http://localhost/diaspora/commits/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
+      "url": "http://example.com/diaspora/commits/b6568db1bc1dcd7f8b4d5a946b0b91f9dacd7327",
       "author": {
         "name": "Jordi Mallach",
         "email": "jordi@softcatala.org"
@@ -44,7 +44,7 @@ Triggered when you push to the repository except pushing tags.
       "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "message": "fixed readme",
       "timestamp": "2012-01-03T23:36:29+02:00",
-      "url": "http://localhost/diaspora/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+      "url": "http://example.com/diaspora/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
       "author": {
         "name": "GitLab dev user",
         "email": "gitlabdev@dv6700.(none)"
@@ -84,7 +84,7 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 
 #### Merge request events
 
-Triggered when a new merge request is created or an existing merge request was updated/merges/closed.
+Triggered when a new merge request is created or an existing merge request was updated/merged/closed.
 
 **Request body:**
 
@@ -111,4 +111,35 @@ Triggered when a new merge request is created or an existing merge request was u
     "description": ""
   }
 }
+```
+
+#### Example webhook receiver
+
+If you want to see GitLab's webhooks in action for testing purposes you can use
+a simple echo script running in a console session.
+
+Save the following file as `print_http_body.rb`.
+
+```ruby
+require 'webrick'
+
+server = WEBrick::HTTPServer.new(Port: ARGV.first)
+server.mount_proc '/' do |req, res|
+  puts req.body
+end
+
+trap 'INT' do server.shutdown end
+server.start
+```
+
+Pick an unused port (e.g. 8000) and start the script: `ruby print_http_body.rb
+8000`.  Then add your server as a webhook receiver in GitLab as
+`http://my.host:8000/`.
+
+When you press 'Test Hook' in GitLab, you should see something like this in the console.
+
+```
+{"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}
+example.com - - [14/May/2014:07:45:26 EDT] "POST / HTTP/1.1" 200 0
+- -> /
 ```

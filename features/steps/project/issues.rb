@@ -142,4 +142,25 @@ class ProjectIssues < Spinach::FeatureSteps
            project: project,
            author: project.users.first)
   end
+
+  Given 'empty project "Empty Project"' do
+    create :empty_project, name: 'Empty Project', namespace: @user.namespace
+  end
+
+  When 'I visit empty project page' do
+    project = Project.find_by(name: 'Empty Project')
+    visit project_path(project)
+  end
+
+  And 'I see empty project details with ssh clone info' do
+    project = Project.find_by(name: 'Empty Project')
+    page.all(:css, '.git-empty .clone').each do |element|
+      element.text.should include(project.url_to_repo)
+    end
+  end
+
+  When "I visit empty project's issues page" do
+    project = Project.find_by(name: 'Empty Project')
+    visit project_issues_path(project)
+  end
 end

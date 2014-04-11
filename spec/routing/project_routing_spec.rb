@@ -213,7 +213,7 @@ describe Projects::RefsController, "routing" do
 end
 
 #           diffs_project_merge_request GET    /:project_id/merge_requests/:id/diffs(.:format)           projects/merge_requests#diffs
-#       automerge_project_merge_request GET    /:project_id/merge_requests/:id/automerge(.:format)       projects/merge_requests#automerge
+#       automerge_project_merge_request POST   /:project_id/merge_requests/:id/automerge(.:format)       projects/merge_requests#automerge
 # automerge_check_project_merge_request GET    /:project_id/merge_requests/:id/automerge_check(.:format) projects/merge_requests#automerge_check
 #    branch_from_project_merge_requests GET    /:project_id/merge_requests/branch_from(.:format)         projects/merge_requests#branch_from
 #      branch_to_project_merge_requests GET    /:project_id/merge_requests/branch_to(.:format)           projects/merge_requests#branch_to
@@ -230,7 +230,10 @@ describe Projects::MergeRequestsController, "routing" do
   end
 
   it "to #automerge" do
-    get("/gitlab/gitlabhq/merge_requests/1/automerge").should route_to('projects/merge_requests#automerge', project_id: 'gitlab/gitlabhq', id: '1')
+    post('/gitlab/gitlabhq/merge_requests/1/automerge').should route_to(
+      'projects/merge_requests#automerge',
+      project_id: 'gitlab/gitlabhq', id: '1'
+    )
   end
 
   it "to #automerge_check" do

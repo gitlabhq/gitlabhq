@@ -44,7 +44,8 @@ module Gitlab
       def users(field, value)
         if field.to_sym == :dn
           options = {
-            base: value
+            base: value,
+            scope: Net::LDAP::SearchScope_BaseObject
           }
         else
           options = {
@@ -63,7 +64,7 @@ module Gitlab
                              end
         end
 
-        entries = ldap.search(options).select do |entry|
+        entries = ldap_search(options).select do |entry|
           entry.respond_to? config.uid
         end
 
@@ -74,6 +75,26 @@ module Gitlab
 
       def user(*args)
         users(*args).first
+      end
+
+      def dn_matches_filter?(dn, filter)
+        ldap_search(base: dn, filter: filter, scope: Net::LDAP::SearchScope_BaseObject, attributes: %w{dn}).any?
+      end
+
+      def ldap_search(*args)
+        results = ldap.search(*args)
+
+        if results.nil?
+          response = ldap.get_operation_result
+
+          unless response.code.zero?
+            Rails.logger.warn("LDAP search error: #{response.message}")
+          end
+
+          []
+        else
+          results
+        end
       end
 
       private

@@ -1,10 +1,4 @@
 module Gitlab
-  class SatelliteNotExistError < StandardError
-    def initialize(msg = "Satellite doesn't exist")
-      super
-    end
-  end
-
   module Satellite
     class Satellite
       include Gitlab::Popen
@@ -22,7 +16,7 @@ module Gitlab
       end
 
       def clear_and_update!
-        raise SatelliteNotExistError unless exists?
+        project.ensure_satellite_exists
 
         @repo = nil
         clear_working_dir!
@@ -54,7 +48,7 @@ module Gitlab
       # * Changes the current directory to the satellite's working dir
       # * Yields
       def lock
-        raise SatelliteNotExistError unless exists?
+        project.ensure_satellite_exists
 
         File.open(lock_file, "w+") do |f|
           begin
@@ -76,7 +70,7 @@ module Gitlab
       end
 
       def repo
-        raise SatelliteNotExistError unless exists?
+        project.ensure_satellite_exists
 
         @repo ||= Grit::Repo.new(path)
       end
@@ -90,6 +84,7 @@ module Gitlab
       # Clear the working directory
       def clear_working_dir!
         repo.git.reset(hard: true)
+        repo.git.clean(f: true, d: true, x: true)
       end
 
       # Deletes all branches except the parking branch

@@ -36,3 +36,4 @@ doc/code/*
 public/uploads.*
 public/assets/
 .envrc
+dump.rdb

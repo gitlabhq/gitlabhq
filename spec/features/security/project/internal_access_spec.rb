@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Internal Project Access" do
+describe "Internal Project Access", feature: true  do
   let(:project) { create(:project, :internal) }
 
   let(:master) { create(:user) }

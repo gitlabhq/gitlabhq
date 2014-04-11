@@ -1,6 +1,6 @@
 require "spec_helper"
 
-describe GollumWiki do
+describe ProjectWiki do
 
   def remove_temp_repo(path)
     FileUtils.rm_rf path
@@ -23,7 +23,7 @@ describe GollumWiki do
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
 
-  subject { GollumWiki.new(project, user) }
+  subject { ProjectWiki.new(project, user) }
 
   before do
     create_temp_repo(subject.send(:path_to_repo))
@@ -68,15 +68,15 @@ describe GollumWiki do
     end
 
     it "creates a new wiki repo if one does not yet exist" do
-      wiki = GollumWiki.new(project, user)
+      wiki = ProjectWiki.new(project, user)
       wiki.create_page("index", "test content").should_not == false
 
       FileUtils.rm_rf wiki.send(:path_to_repo)
     end
 
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
-      GollumWiki.any_instance.stub(:init_repo).and_return(false)
-      expect { GollumWiki.new(project, user).wiki }.to raise_exception(GollumWiki::CouldNotCreateWikiError)
+      ProjectWiki.any_instance.stub(:init_repo).and_return(false)
+      expect { ProjectWiki.new(project, user).wiki }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
     end
   end
 

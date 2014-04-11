@@ -161,6 +161,10 @@ describe Notify do
           it 'contains a link to the new issue' do
             should have_body_text /#{project_issue_path project, issue}/
           end
+
+          it 'has the correct message-id set' do
+            should have_header 'Message-ID', "<issue_#{issue.id}@#{Gitlab.config.gitlab.host}>"
+          end
         end
 
         describe 'that are new with a description' do
@@ -197,6 +201,10 @@ describe Notify do
           it 'contains a link to the issue' do
             should have_body_text /#{project_issue_path project, issue}/
           end
+
+          it 'has the correct reference set' do
+            should have_header 'References', "<issue_#{issue.id}@#{Gitlab.config.gitlab.host}>"
+          end
         end
 
         describe 'status changed' do
@@ -224,6 +232,10 @@ describe Notify do
           it 'contains a link to the issue' do
             should have_body_text /#{project_issue_path project, issue}/
           end
+
+          it 'has the correct reference set' do
+            should have_header 'References', "<issue_#{issue.id}@#{Gitlab.config.gitlab.host}>"
+          end
         end
 
       end
@@ -239,7 +251,7 @@ describe Notify do
           it_behaves_like 'an assignee email'
 
           it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(!#{merge_request.iid}\)/
+            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
           it 'contains a link to the new merge request' do
@@ -252,6 +264,10 @@ describe Notify do
 
           it 'contains the target branch for the merge request' do
             should have_body_text /#{merge_request.target_branch}/
+          end
+
+          it 'has the correct message-id set' do
+            should have_header 'Message-ID', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
         end
 
@@ -275,7 +291,7 @@ describe Notify do
           end
 
           it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(!#{merge_request.iid}\)/
+            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
           it 'contains the name of the previous assignee' do
@@ -303,7 +319,7 @@ describe Notify do
           end
 
           it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(!#{merge_request.iid}\)/
+            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
           it 'contains the new status' do
@@ -312,6 +328,10 @@ describe Notify do
 
           it 'contains a link to the merge request' do
             should have_body_text /#{project_merge_request_path project, merge_request}/
+          end
+
+          it 'has the correct reference set' do
+            should have_header 'References', "<merge_request_#{merge_request.id}@#{Gitlab.config.gitlab.host}>"
           end
         end
       end
@@ -426,7 +446,7 @@ describe Notify do
         it_behaves_like 'a note email'
 
         it 'has the correct subject' do
-          should have_subject /#{merge_request.title} \(!#{merge_request.iid}\)/
+          should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
         end
 
         it 'contains a link to the merge request note' do
@@ -502,12 +522,48 @@ describe Notify do
     end
   end
 
-  describe 'email on push' do
+  describe 'email on push with multiple commits' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, 'cd5c4bac', 'b1e6a9db') }
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
+
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+
+    it 'is sent as the author' do
+      sender = subject.header[:from].addrs[0]
+      sender.display_name.should eq(user.name)
+      sender.address.should eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      should deliver_to 'devs@company.name'
+    end
+
+    it 'has the correct subject' do
+      should have_subject /New push to repository/
+    end
+
+    it 'includes commits list' do
+      should have_body_text /tree css fixes/
+    end
+
+    it 'includes diffs' do
+      should have_body_text /Checkout wiki pages for installation information/
+    end
+
+    it 'contains a link to the diff' do
+      should have_body_text /#{diff_path}/
+    end
+  end
+
+  describe 'email on push with a single commit' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user) }
+    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, '8716fc78', 'b1e6a9db') }
+    let(:commits) { Commit.decorate(compare.commits) }
+    let(:diff_path) { project_commit_path(project, commits.first) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
 

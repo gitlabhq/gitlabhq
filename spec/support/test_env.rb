@@ -52,7 +52,7 @@ module TestEnv
   def setup_stubs()
     # Use tmp dir for FS manipulations
     repos_path = testing_path()
-    GollumWiki.any_instance.stub(:init_repo) do |path|
+    ProjectWiki.any_instance.stub(:init_repo) do |path|
       create_temp_repo(File.join(repos_path, "#{path}.git"))
     end
 

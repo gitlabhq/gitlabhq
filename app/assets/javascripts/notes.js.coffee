@@ -1,10 +1,11 @@
 class Notes
   @interval: null
 
-  constructor: (notes_url, note_ids) ->
+  constructor: (notes_url, note_ids, last_fetched_at) ->
     @notes_url = notes_url
     @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
     @note_ids = note_ids
+    @last_fetched_at = last_fetched_at
     @initRefresh()
     @setupMainTargetNoteForm()
     @cleanBinding()
@@ -49,6 +50,15 @@ class Notes
     # hide diff note form
     $(document).on "click", ".js-close-discussion-note-form", @cancelDiscussionForm
 
+    # fetch notes when tab becomes visible
+    $(document).on "visibilitychange", @visibilityChange
+
+    @notes_forms = '.js-main-target-form textarea, .js-discussion-note-form textarea'
+    $(document).on('keypress', @notes_forms, (e)->
+      if e.keyCode == 10 || (e.ctrlKey && e.keyCode == 13)
+        $(@).parents('form').submit()
+    )
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -62,6 +72,8 @@ class Notes
     $(document).off "click", ".js-choose-note-attachment-button"
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
+    $(document).off "visibilitychange"
+    $(document).off "keypress", @notes_forms
 
 
   initRefresh: ->
@@ -71,14 +83,16 @@ class Notes
     , 15000
 
   refresh: ->
-    @getContent()
+    @getContent() unless document.hidden
 
   getContent: ->
     $.ajax
       url: @notes_url
+      data: "last_fetched_at=" + @last_fetched_at
       dataType: "json"
       success: (data) =>
         notes = data.notes
+        @last_fetched_at = data.last_fetched_at
         $.each notes, (i, note) =>
           @renderNote(note)
 
@@ -449,5 +463,11 @@ class Notes
     # get only the basename
     filename = $(this).val().replace(/^.*[\\\/]/, "")
     form.find(".js-attachment-filename").text filename
+
+  ###
+  Called when the tab visibility changes
+  ###
+  visibilityChange: =>
+    @refresh()
 
 @Notes = Notes

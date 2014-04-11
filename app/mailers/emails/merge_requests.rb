@@ -4,9 +4,10 @@ module Emails
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
       @target_url = project_merge_request_url(@project, @merge_request)
+      set_message_id("merge_request_#{merge_request_id}")
       mail(from: sender(@merge_request.author_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id)
@@ -14,9 +15,10 @@ module Emails
       @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
       @project = @merge_request.project
       @target_url = project_merge_request_url(@project, @merge_request)
+      set_reference("merge_request_#{merge_request_id}")
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -24,18 +26,20 @@ module Emails
       @updated_by = User.find updated_by_user_id
       @project = @merge_request.project
       @target_url = project_merge_request_url(@project, @merge_request)
+      set_reference("merge_request_#{merge_request_id}")
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
       @merge_request = MergeRequest.find(merge_request_id)
       @project = @merge_request.project
       @target_url = project_merge_request_url(@project, @merge_request)
+      set_reference("merge_request_#{merge_request_id}")
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
   end
 

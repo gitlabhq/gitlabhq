@@ -76,6 +76,7 @@ gem "zip-zip"
 
 # for aws storage
 gem "fog", "~> 1.14", group: :aws
+gem "unf", group: :aws
 
 # Authorization
 gem "six"
@@ -86,6 +87,9 @@ gem "seed-fu"
 # Markdown to HTML
 gem "redcarpet",     "~> 2.2.2"
 gem "github-markup"
+
+# Diffs
+gem 'diffy', '~> 3.0.3'
 
 # Asciidoc to HTML
 gem  "asciidoctor"
@@ -136,7 +140,7 @@ gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
-gem "slack-notifier", "~> 0.2.0"
+gem "slack-notifier", "~> 0.3.2"
 
 # d3
 gem "d3_rails", "~> 3.1.4"
@@ -153,7 +157,7 @@ gem "rack-attack"
 # Ace editor
 gem 'ace-rails-ap'
 
-gem "sass-rails"
+gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
 gem "therubyracer"
@@ -162,8 +166,8 @@ gem 'jquery-turbolinks'
 
 gem 'select2-rails'
 gem 'jquery-atwho-rails', "~> 0.3.3"
-gem "jquery-rails",     "2.1.3"
-gem "jquery-ui-rails",  "2.0.2"
+gem "jquery-rails"
+gem "jquery-ui-rails"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'

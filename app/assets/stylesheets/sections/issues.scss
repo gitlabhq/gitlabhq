@@ -45,14 +45,6 @@
   padding: 6px 10px;
   border: 1px solid #ccc;
   @include border-radius(4px);
-
-
-  input.check_all_issues {
-    padding: 0;
-    margin: 0;
-    position: relative;
-    top: 3px;
-  }
 }
 
 .issues_content {
@@ -141,5 +133,38 @@ form.edit-issue {
   &.merged {
     background: #F5f5f5;
     border-color: #E5E5E5;
+  }
+}
+
+@media (max-width: $screen-xs-max) {
+  .issue-btn-group {
+    width: 100%;
+    margin-top: 5px;
+
+    .btn-group {
+      width: 100%;
+
+      ul {
+        width: 100%;
+        text-align: center;
+      }
+    }
+
+    .btn {
+      width: 100%;
+      margin-top: -1px;
+
+      &:first-child:not(:last-child) {
+        border-radius: 4px 4px 0 0;
+      }
+
+      &:not(:first-child):not(:last-child) {
+        border-radius: 0;
+      }
+
+      &:last-child:not(:first-child) {
+        border-radius: 0 0 4px 4px;
+      }
+    }
   }
 }

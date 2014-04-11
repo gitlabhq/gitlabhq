@@ -25,7 +25,6 @@ class Dashboard < Spinach::FeatureSteps
     find("#merge_request_target_project_id").value.should == @project.id.to_s
     find("#merge_request_source_branch").value.should == "new_design"
     find("#merge_request_target_branch").value.should == "master"
-    find("#merge_request_title").value.should == "New design"
   end
 
   Given 'user with name "John Doe" joined project "Shop"' do

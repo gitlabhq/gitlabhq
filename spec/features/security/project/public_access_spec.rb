@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Public Project Access" do
+describe "Public Project Access", feature: true  do
   let(:project) { create(:project) }
 
   let(:master) { create(:user) }

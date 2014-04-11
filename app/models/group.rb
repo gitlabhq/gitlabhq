@@ -6,10 +6,11 @@
 #  name        :string(255)      not null
 #  path        :string(255)      not null
 #  owner_id    :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  type        :string(255)
 #  description :string(255)      default(""), not null
+#  avatar      :string(255)
 #
 
 require 'carrierwave/orm/activerecord'

@@ -11,14 +11,11 @@
   }
 
   .file-title {
-    background: #DDD;
+    background: #EEE;
     border-bottom: 1px solid #CCC;
     text-shadow: 0 1px 1px #fff;
     margin: 0;
-    font-weight: normal;
-    font-weight: bold;
     text-align: left;
-    color: $style_color;
     padding: 9px 10px;
 
     .options {
@@ -26,13 +23,20 @@
       margin-top: -5px;
     }
 
+    .left-options {
+      margin-top: -3px;
+    }
+
     .file_name {
-      color: $style_color;
+      font-weight: bold;
+      padding-left: 3px;
       font-size: 14px;
-      text-shadow: 0 1px 1px #fff;
+
       small {
-        color: #999;
+        color: #888;
         font-size: 13px;
+        font-weight: normal;
+        padding-left: 10px;
       }
     }
   }

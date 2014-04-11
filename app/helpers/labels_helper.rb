@@ -12,7 +12,7 @@ module LabelsHelper
   def label_css_class(name)
     klass = Gitlab::IssuesLabels
 
-    case name
+    case name.downcase
     when *klass.warning_labels
       'label-warning'
     when *klass.neutral_labels

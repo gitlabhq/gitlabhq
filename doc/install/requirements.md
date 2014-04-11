@@ -43,18 +43,24 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ## CPU
 
-- 1 core works for under 100 users but the responsiveness might suffer
-- **2 cores** is the **recommended** number of cores and supports up to 100 users
-- 4 cores supports up to 1,000 users
-- 8 cores supports up to 10,000 users
+- 1 core works supports up to 100 users but the application will not be responsive
+- **2 cores** is the **recommended** number of cores and supports up to 500 users
+- 4 cores supports up to 2,000 users
+- 8 cores supports up to 5,000 users
+- 16 cores supports up to 10,0000 users
+- 32 cores supports up to 20,0000 users
+- 64 cores supports up to 40,0000 users
 
 ## Memory
 
-- 512MB is too little memory, GitLab will be very slow and you will need 250MB of swap
-- 768MB is the minimal memory size but we advise against this
+- 512MB is the absolute minimum, you need 256MB of swap, you can configure only one slow unicorn worker, only ssh access will work, we do not recommend this
 - 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates using swap space)
-- **2GB** is the **recommended** memory size and supports up to 1,000 users
-- 4GB supports up to 10,000 users
+- **2GB** is the **recommended** memory size and supports up to 500 users
+- 4GB supports up to 2,000 users
+- 8GB supports up to 5,000 users
+- 16GB supports up to 10,000 users
+- 32GB supports up to 20,000 users
+- 64GB supports up to 40,000 users
 
 ## Storage
 
@@ -68,11 +74,14 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
+## Database
+
+If you want to run the database separately, the **recommended** database size is **1 MB per user**
 
 # Supported webbrowsers
 
 - Chrome (Latest stable version)
 - Firefox (Latest released version) 
-- Safari 7+ (Know problem: required fields in html5 do not work)
+- Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+

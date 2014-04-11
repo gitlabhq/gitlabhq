@@ -26,9 +26,6 @@
       float: left;
     }
 
-    .commit-btn {
-      @extend .save-btn;
-    }
     .message {
       display: inline-block;
       margin: 5px 8px 0 8px;

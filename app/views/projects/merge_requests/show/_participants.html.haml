@@ -1,0 +1,11 @@
+.participants
+  %cite.cgray #{@merge_request.participants.count} participants
+  - @merge_request.participants.each do |participant|
+    = link_to_member(@project, participant, name: false, size: 24)
+
+  .merge-request-show-labels.pull-right
+    - @merge_request.labels.each do |label|
+      %span{class: "label #{label_css_class(label.name)}"}
+        %i.icon-tag
+        = label.name
+      &nbsp;

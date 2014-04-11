@@ -1,0 +1,82 @@
+%h3.page-title
+  New merge request
+%p.slead
+  From
+  %strong.monospace
+    #{@merge_request.source_project_namespace}:#{@merge_request.source_branch}
+  into
+  %strong.monospace
+    #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
+
+  %span.pull-right
+    = link_to 'Change branches', new_project_merge_request_path(@project)
+
+= form_for [@project, @merge_request], html: { class: "merge-request-form" } do |f|
+  .panel.panel-default
+
+    .panel-body
+      .form-group
+        .light
+          = f.label :title do
+            = "Title *"
+        = f.text_field :title, class: "form-control input-lg js-gfm-input", maxlength: 255, rows: 5, required: true
+      .form-group
+        .light
+          = f.label :description, "Description"
+        = f.text_area :description, class: "form-control js-gfm-input", rows: 10
+        %p.hint Description is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+      .form-group
+        .issue-assignee
+          = f.label :assignee_id do
+            %i.icon-user
+            Assign to
+          %div
+            = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
+            &nbsp;
+            = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+      .form-group
+        .issue-milestone
+          = f.label :milestone_id do
+            %i.icon-time
+            Milestone
+          %div= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2'})
+    .panel-footer
+      - if @target_repo.contribution_guide
+        - contribution_guide_url = project_blob_path(@target_project, tree_join(@target_repo.root_ref, @target_repo.contribution_guide.name))
+        %p
+          Please review the
+          %strong #{link_to "guidelines for contribution", contribution_guide_url}
+          to this repository.
+      = f.hidden_field :source_project_id
+      = f.hidden_field :target_project_id
+      = f.hidden_field :target_branch
+      = f.hidden_field :source_branch
+      = f.submit 'Submit merge request', class: "btn btn-create"
+
+.mr-compare
+  %div.ui-box
+    .title
+      Commits (#{@commits.count})
+    - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+      %ul.well-list
+        - Commit.decorate(@commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE)).each do |commit|
+          = render "projects/commits/inline_commit", commit: commit, project: @project
+        %li.warning-row.unstyled
+          other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden to prevent performance issues.
+    - else
+      %ul.well-list= render Commit.decorate(@commits), project: @project
+
+  %h4 Changes
+  - if @diffs.present?
+    = render "projects/commits/diffs", diffs: @diffs, project: @project
+  - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+    .bs-callout.bs-callout-danger
+      %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
+      %p To preserve performance the line changes are not shown.
+
+
+:javascript
+  $('.assign-to-me-link').on('click', function(e){
+    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
+    e.preventDefault();
+  });

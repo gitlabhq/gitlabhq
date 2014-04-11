@@ -54,7 +54,6 @@ ul.notes {
       .diff-file,
       .discussion-hidden,
       .notes {
-        @extend .borders;
         background-color: #F9F9F9;
       }
       .diff-file .notes {
@@ -94,10 +93,10 @@ ul.notes {
     }
     .note-body {
       @include md-typography;
-      margin-left: 45px;
+      margin-left: 43px;
     }
     .note-header {
-      padding-bottom: 5px;
+      padding-bottom: 3px;
     }
   }
 
@@ -140,6 +139,7 @@ ul.notes {
       background-color: #fff;
       border-width: 1px 0;
       padding-top: 0;
+      vertical-align: top;
 
       li {
         padding: 5px;

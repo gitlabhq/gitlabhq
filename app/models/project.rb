@@ -6,8 +6,8 @@
 #  name                   :string(255)
 #  path                   :string(255)
 #  description            :text
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #  creator_id             :integer
 #  issues_enabled         :boolean          default(TRUE), not null
 #  wall_enabled           :boolean          default(TRUE), not null
@@ -18,9 +18,10 @@
 #  issues_tracker_id      :string(255)
 #  snippets_enabled       :boolean          default(TRUE), not null
 #  last_activity_at       :datetime
-#  imported               :boolean          default(FALSE), not null
 #  import_url             :string(255)
 #  visibility_level       :integer          default(0), not null
+#  archived               :boolean          default(FALSE), not null
+#  import_status          :string(255)
 #
 
 class Project < ActiveRecord::Base
@@ -29,6 +30,11 @@ class Project < ActiveRecord::Base
   extend Enumerize
 
   default_value_for :archived, false
+  default_value_for :issues_enabled, true
+  default_value_for :wall_enabled, true
+  default_value_for :merge_requests_enabled, true
+  default_value_for :wiki_enabled, true
+  default_value_for :snippets_enabled, true
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -197,6 +203,7 @@ class Project < ActiveRecord::Base
       when 'oldest' then reorder('projects.created_at ASC')
       when 'recently_updated' then reorder('projects.updated_at DESC')
       when 'last_updated' then reorder('projects.updated_at ASC')
+      when 'largest_repository' then reorder('projects.repository_size DESC')
       else reorder("namespaces.path, projects.name ASC")
       end
     end
@@ -274,8 +281,11 @@ class Project < ActiveRecord::Base
     self.id
   end
 
+  # Tags are shared by issues and merge requests
   def issues_labels
-    @issues_labels ||= (issues_default_labels + issues.tags_on(:labels)).uniq.sort_by(&:name)
+    @issues_labels ||= (issues_default_labels +
+                        merge_requests.tags_on(:labels) +
+                        issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)
@@ -555,5 +565,9 @@ class Project < ActiveRecord::Base
 
   def forked_from?(project)
     forked? && project == forked_from_project
+  end
+
+  def update_repository_size
+    update_attribute(:repository_size, repository.size)
   end
 end

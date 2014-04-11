@@ -16,6 +16,8 @@ class Projects::RepositoriesController < Projects::ApplicationController
 
     storage_path = Gitlab.config.gitlab.repository_downloads_path
 
+    @repository.clean_old_archives
+
     file_path = @repository.archive_repo(params[:ref], storage_path, params[:format].downcase)
 
     if file_path

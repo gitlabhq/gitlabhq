@@ -24,9 +24,9 @@ Version:	5.1.0.beta2
 Revision:	4da8b37
 Directory:	/home/git/gitlab
 DB Adapter:	mysql2
-URL:		http://localhost
-HTTP Clone URL:	http://localhost/some-project.git
-SSH Clone URL:	git@localhost:some-project.git
+URL:		http://example.com
+HTTP Clone URL:	http://example.com/some-project.git
+SSH Clone URL:	git@example.com:some-project.git
 Using LDAP:	no
 Using Omniauth:	no
 
@@ -109,33 +109,4 @@ If necessary, remove the `tmp/repo_satellites` directory and rerun the command b
 
 ```
 bundle exec rake gitlab:satellites:create RAILS_ENV=production
-```
-
-### Import bare repositories into GitLab project instance
-
-Notes:
-
-* project owner will be a first admin
-* groups will be created as needed
-* group owner will be the first admin
-* existing projects will be skipped
-
-How to use:
-
-1. copy your bare repos under git repos_path (see `config/gitlab.yml` gitlab_shell -> repos_path)
-2. run the command below
-
-```
-bundle exec rake gitlab:import:repos RAILS_ENV=production
-```
-
-Example output:
-
-```
-Processing abcd.git
- * Created abcd (abcd.git)
-Processing group/xyz.git
- * Created Group group (2)
- * Created xyz (group/xyz.git)
-[...]
 ```

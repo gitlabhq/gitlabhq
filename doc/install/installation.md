@@ -1,16 +1,16 @@
 # Select Version to Install
-Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases
 this should be the highest numbered stable branch (example shown below).
 
 ![capture](http://i.imgur.com/d2AlIVj.png)
 
-If this is unclear check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
+If the highest number stable branch is unclear please check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
 
 # Important notes
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. An unofficial guide for RHEL/CentOS can be found in the [GitLab recipes repository](https://gitlab.com/gitlab-org/gitlab-recipes/tree/master/install/centos).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://www.gitlab.com/downloads/).
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
@@ -27,10 +27,9 @@ The GitLab installation consists of setting up the following components:
 1. Packages / Dependencies
 2. Ruby
 3. System Users
-4. GitLab shell
-5. Database
-6. GitLab
-7. Nginx
+4. Database
+5. GitLab
+6. Nginx
 
 
 # 1. Packages / Dependencies
@@ -52,7 +51,7 @@ If you are not familiar with vim please skip this and keep using the default edi
     sudo apt-get install -y vim
     sudo update-alternatives --set editor /usr/bin/vim.basic
 
-Install the required packages:
+Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
     sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate
 
@@ -87,7 +86,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install -y postfix
+    sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
@@ -102,8 +101,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz | tar xz
-    cd ruby-2.0.0-p353
+    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p481.tar.gz | tar xz
+    cd ruby-2.0.0-p481
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -119,32 +118,10 @@ Create a `git` user for Gitlab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-
-# 4. GitLab shell
-
-GitLab Shell is an ssh access and repository management software developed specially for GitLab.
-
-    # Go to home directory
-    cd /home/git
-
-    # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.1
-
-    cd gitlab-shell
-
-    sudo -u git -H cp config.yml.example config.yml
-
-    # Edit config and replace gitlab_url
-    # with something like 'http://domain.com/'
-    sudo -u git -H editor config.yml
-
-    # Do setup
-    sudo -u git -H ./bin/install
-
-
-# 5. Database
+# 4. Database
 
 We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
+NOTE: because we need to make use of extensions you need at least pgsql 9.1.
 
     # Install the database packages
     sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
@@ -153,7 +130,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u postgres psql -d template1
 
     # Create a user for GitLab.
-    template1=# CREATE USER git;
+    template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
     template1=# CREATE DATABASE gitlabhq_production OWNER git;
@@ -165,7 +142,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u git -H psql -d gitlabhq_production
 
 
-# 6. GitLab
+# 5. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -173,13 +150,13 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-7-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-9-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-6-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-9-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -228,7 +205,7 @@ You can change `6-6-stable` to `master` if you want the *bleeding edge* version,
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
-    sudo -u git -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H git config --global user.email "example@example.com"
     sudo -u git -H git config --global core.autocrlf input
 
 **Important Note:**
@@ -236,20 +213,21 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
-    # PostgreSQL
+    # PostgreSQL only:
     sudo -u git cp config/database.yml.postgresql config/database.yml
 
-    # Make sure to update username/password in config/database.yml.
+    # MySQL only:
+    sudo -u git cp config/database.yml.mysql config/database.yml
+
+    # MySQL and remote PostgreSQL only:
+    # Update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
     # If you followed the database guide then please do as follows:
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
     sudo -u git -H editor config/database.yml
 
-    or
-    # Mysql
-    sudo -u git cp config/database.yml.mysql config/database.yml
-
+    # PostgreSQL and MySQL:
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
 
@@ -279,6 +257,18 @@ that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     # When done you see 'Administrator account created:'
 
+## Install GitLab shell
+
+GitLab Shell is an ssh access and repository management software developed specially for GitLab.
+
+    # Go to the Gitlab installation folder:
+    cd /home/git/gitlab
+
+    # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
+    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.4] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+
+    # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
+    sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 ## Install Init Script
 
@@ -306,6 +296,10 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
+## Compile assets
+
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+
 ## Start Your GitLab Instance
 
     sudo service gitlab start
@@ -313,12 +307,7 @@ Check if GitLab and its environment are configured correctly:
     sudo /etc/init.d/gitlab restart
 
 
-## Compile assets
-
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-
-
-# 7. Nginx
+# 6. Nginx
 
 **Note:**
 Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
@@ -378,7 +367,7 @@ nobody can access your GitLab by using this login information later on.
 ## Additional markup styles
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display.
-But you might have to install a depency to do so.
+But you might have to install a dependency to do so.
 Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 For example, reStructuredText markup language support requires python-docutils:
 
@@ -424,22 +413,22 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
 * Stop GitLab
-		`sudo service gitlab stop`
+    `sudo service gitlab stop`
 
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterconfig/gitlab.yml.example) as a reference)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) as a reference)
 
-* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterGemfile)
+* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile)
                 `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
-		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
+    `sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
 
 * If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
-		`sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
+    `sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
 
 > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
 * Start GitLab
-		`sudo service gitlab start`
+    `sudo service gitlab start`
 
 
 ### Examples
