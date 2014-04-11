@@ -1,23 +1,26 @@
-%h3.page-title Edit mode
 .file-editor
+  %ul.nav.nav-tabs.js-edit-mode
+    %li.active
+      = link_to 'Edit', '#editor'
+    %li
+      = link_to editing_preview_title(@blob.name), '#preview', 'data-preview-url' => preview_project_edit_tree_path(@project, @id)
+
   = form_tag(project_edit_tree_path(@project, @id), method: :put, class: "form-horizontal") do
     .file-holder.file
       .file-title
-        .btn-group.js-edit-mode.left-options
-          = link_to 'Edit', '#editor', class: 'active hover btn btn-tiny'
-          = link_to editing_preview_title(@blob.name), '#preview', class: 'btn btn-tiny', 'data-preview-url' => preview_project_edit_tree_path(@project, @id)
         %i.icon-file
         %span.file_name
+          %span.monospace.light #{@ref}:
           = @path
-          %small
-            on
-            %strong= @ref
         %span.options
           .btn-group.tree-btn-group
             = link_to "Cancel", @after_edit_path, class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
       .file-content.code
         %pre.js-edit-mode-pane#editor= @blob.data
         .js-edit-mode-pane#preview.hide
+          %center
+            %h2
+              %i.icon-spinner.icon-spin
 
     .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do
@@ -61,14 +64,14 @@
         paneId = currentLink.attr('href'),
         currentPane = editModePanes.filter(paneId);
 
-    editModeLinks.removeClass('active hover');
-    currentLink.addClass('active hover');
+    editModeLinks.parent().removeClass('active hover');
+    currentLink.parent().addClass('active hover');
     editModePanes.hide();
 
     if (paneId == '#preview') {
+      currentPane.fadeIn(200);
       $.post(currentLink.data('preview-url'), { content: editor.getValue() }, function(response) {
         currentPane.empty().append(response);
-        currentPane.fadeIn(200);
       })
     } else {
       currentPane.fadeIn(200);

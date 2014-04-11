@@ -240,6 +240,10 @@ module SharedPaths
     visit project_branches_path(@project)
   end
 
+  step 'I visit project protected branches page' do
+    visit project_protected_branches_path(@project)
+  end
+
   step 'I visit compare refs page' do
     visit project_compare_index_path(@project)
   end

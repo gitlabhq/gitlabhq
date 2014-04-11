@@ -4,11 +4,3 @@
 .js-details-container .content.hide { display: block; }
 .js-details-container.open .content { display: block; }
 .js-details-container.open .content.hide { display: none; }
-
-
-// Toggler
-//--------
-.js-toggler-container .turn-on  { display: inherit; }
-.js-toggler-container .turn-off { display: none; }
-.js-toggler-container.on .turn-on  { display: none; }
-.js-toggler-container.on .turn-off { display: inherit; }

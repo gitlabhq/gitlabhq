@@ -1,3 +1,5 @@
+# Issues
+
 ## List issues
 
 Get all issues created by authenticated user. This function takes pagination parameters

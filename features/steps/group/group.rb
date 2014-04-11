@@ -89,7 +89,7 @@ class Groups < Spinach::FeatureSteps
   Then 'I should see newly created group "Samurai"' do
     page.should have_content "Samurai"
     page.should have_content "Tokugawa Shogunate"
-    page.should have_content "You will only see events from projects in this group"
+    page.should have_content "Currently you are only seeing events from the"
   end
 
   And 'I change group "Owned" name to "new-name"' do

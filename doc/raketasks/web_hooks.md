@@ -1,3 +1,5 @@
+# Web hooks
+
 ### Add a web hook for **ALL** projects:
 
     RAILS_ENV=production bundle exec rake gitlab:web_hook:add URL="http://example.com/hook"

@@ -5,7 +5,7 @@
     %strong= event.ref_name
   - else
     = link_to project_commits_path(event.project, event.ref_name) do
-      %strong= truncate(event.ref_name, length: 30)
+      %strong= event.ref_name
   at
   = link_to_project event.project
 

@@ -68,6 +68,12 @@ Feature: Project Issues
     And I leave a comment with a header containing "Comment with a header"
     Then The comment with the header should not have an ID
 
+  @javascript
+  Scenario: Blocks inside comments should not build relative links
+    Given I visit issue page "Release 0.4"
+    And I leave a comment with code block
+    Then The code block should be unchanged
+
   Scenario: Issues on empty project
     Given empty project "Empty Project"
     When I visit empty project page

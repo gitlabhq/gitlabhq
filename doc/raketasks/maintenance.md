@@ -1,3 +1,5 @@
+# Maintenance
+
 ### Gather information about GitLab and the system it runs on
 
 This command gathers information about your GitLab installation and the System

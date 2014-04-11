@@ -1,3 +1,5 @@
+# Authorization for Merge requests
+
 There are two main ways to have a merge request flow with GitLab: working with protected branches in a single repository, or working with forks of an authoritative project.
 
 ## Protected branch flow

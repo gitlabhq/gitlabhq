@@ -43,7 +43,7 @@ class MergeRequest
       , 'json'
 
   bindEvents: ->
-    this.$('.nav-tabs').on 'click', 'a', (event) =>
+    this.$('.merge-request-tabs').on 'click', 'a', (event) =>
       a = $(event.currentTarget)
 
       href = a.attr('href')
@@ -51,7 +51,7 @@ class MergeRequest
 
       event.preventDefault()
 
-    this.$('.nav-tabs').on 'click', 'li', (event) =>
+    this.$('.merge-request-tabs').on 'click', 'li', (event) =>
       this.activateTab($(event.currentTarget).data('action'))
 
     this.$('.accept_merge_request').on 'click', ->
@@ -71,15 +71,15 @@ class MergeRequest
       this.$('.remove_source_branch_widget.failed').show()
 
   activateTab: (action) ->
-    this.$('.nav-tabs li').removeClass 'active'
+    this.$('.merge-request-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
     switch action
       when 'diffs'
-        this.$('.nav-tabs .diffs-tab').addClass 'active'
+        this.$('.merge-request-tabs .diffs-tab').addClass 'active'
         this.loadDiff() unless @diffs_loaded
         this.$('.diffs').show()
       else
-        this.$('.nav-tabs .notes-tab').addClass 'active'
+        this.$('.merge-request-tabs .notes-tab').addClass 'active'
         this.$('.notes').show()
 
   showState: (state) ->
@@ -107,7 +107,7 @@ class MergeRequest
   loadDiff: (event) ->
     $.ajax
       type: 'GET'
-      url: this.$('.nav-tabs .diffs-tab a').attr('href')
+      url: this.$('.merge-request-tabs .diffs-tab a').attr('href')
       beforeSend: =>
         this.$('.status').addClass 'loading'
       complete: =>

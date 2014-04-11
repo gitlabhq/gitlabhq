@@ -26,7 +26,7 @@ class BlobView
       unless isNaN first_line
         $("#tree-content-holder .highlight .line").removeClass("hll")
         $("#LC#{line}").addClass("hll") for line in [first_line..last_line]
-        $("#L#{first_line}").ScrollTo() unless e?
+        $.scrollTo("#L#{first_line}") unless e?
 
     # parse selected lines from hash
     # always return first and last line (initialized to NaN)

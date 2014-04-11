@@ -123,3 +123,12 @@
   margin-top: 0px;
   margin-bottom: 15px;
 }
+
+@mixin str-truncated($max_width: "82%") {
+  display: inline-block;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  vertical-align: top;
+  white-space: nowrap;
+  max-width: $max_width;
+}

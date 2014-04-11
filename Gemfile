@@ -73,6 +73,8 @@ gem "carrierwave"
 gem "rubyzip", "~> 1.0.0"
 # will load compatibility for old rubyzip API.
 gem "zip-zip"
+# Drag and Drop UI
+gem 'dropzonejs-rails'
 
 # for aws storage
 gem "fog", "~> 1.14", group: :aws
@@ -168,6 +170,7 @@ gem 'select2-rails'
 gem 'jquery-atwho-rails', "~> 0.3.3"
 gem "jquery-rails"
 gem "jquery-ui-rails"
+gem "jquery-scrollto-rails"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
 gem "font-awesome-rails", '~> 3.2'

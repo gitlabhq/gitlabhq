@@ -1,3 +1,5 @@
+# Backup restore
+
 ### Create a backup of the GitLab system
 
 Creates a backup archive of the database and all repositories. This archive will be saved in backup_path (see `config/gitlab.yml`).

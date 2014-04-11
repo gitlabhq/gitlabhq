@@ -16,6 +16,6 @@ class Spinach::Features::Help < Spinach::FeatureSteps
   end
 
   step 'Header "Rebuild project satellites" should have correct ids and links' do
-    header_should_have_correct_id_and_link(3, 'Rebuild project satellites', 'rebuild-project-satellites')
+    header_should_have_correct_id_and_link(3, '(Re-)Create satellite repos', 're-create-satellite-repos')
   end
 end

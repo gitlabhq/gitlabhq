@@ -1,3 +1,5 @@
+# Web hooks
+
 Project web hooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
 ---

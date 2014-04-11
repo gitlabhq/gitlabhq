@@ -5,7 +5,10 @@
       = link_to dashboard_path, class: 'btn btn-tiny' do
         &larr; To dashboard
       &nbsp;
-    %span.cgray You will only see events from projects in this group
+    %span.cgray 
+      Currently you are only seeing events from the
+      = @group.name
+      group
     %hr
     = render 'shared/event_filter'
     - if @events.any?

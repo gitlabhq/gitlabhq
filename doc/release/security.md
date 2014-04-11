@@ -1,4 +1,5 @@
 # Things to do when doing an out-of-bound security release
+
 NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
 
 ## When to do a security release

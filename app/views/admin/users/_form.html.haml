@@ -2,9 +2,9 @@
   = form_for [:admin, @user], html: { class: 'form-horizontal' } do |f|
     -if @user.errors.any?
       #error_explanation
-        %ul.unstyled.alert.alert-danger
+        .alert.alert-danger
           - @user.errors.full_messages.each do |msg|
-            %li= msg
+            %p= msg
 
     %fieldset
       %legend Account

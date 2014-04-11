@@ -71,12 +71,7 @@ pre {
 }
 
 .str-truncated {
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: top;
-  white-space: nowrap;
-  max-width: 82%;
+  @include str-truncated;
 }
 
 /** FLASH message **/

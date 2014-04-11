@@ -1,3 +1,5 @@
+# Project features
+
 When in a Project -> Settings, you will find Features on the bottom of the page that you can toggle.
 Below you will find a more elaborate explanation of each of these.
 
@@ -7,7 +9,7 @@ Below you will find a more elaborate explanation of each of these.
 Issues is a really powerful, but lightweight issue tracking system.
 You can make tickets, assign them to people, file them under milestones, order them with labels and have discussion in them.
 They integrate deeply into GitLab and are easily referenced from anywhere by using # and the issuenumber.
-At GitLab.com, we use this for all our project management needs.
+
 
 ## Merge Requests
 

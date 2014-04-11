@@ -199,3 +199,17 @@ Parameters:
   "protected": false
 }
 ```
+
+## Delete repository branch
+
+
+```
+DELETE /projects/:id/repository/branches/:branch
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `branch` (required) - The name of the branch
+
+It return 200 if succeed or 405 if failed with error message explaining reason.

@@ -1,8 +1,0 @@
-= render "projects/commits/head"
-.row
-  .col-md-3
-    = render "filter"
-  .col-md-9
-    %ul.bordered-list.top-list
-      - @branches.each do |branch|
-        = render "projects/branches/branch", branch: branch

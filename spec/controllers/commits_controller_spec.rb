@@ -6,7 +6,6 @@ describe Projects::CommitsController do
 
   before do
     sign_in(user)
-
     project.team << [user, :master]
   end
 

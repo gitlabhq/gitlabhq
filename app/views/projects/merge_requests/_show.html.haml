@@ -7,15 +7,17 @@
   = render "projects/merge_requests/show/participants"
 
   - if @commits.present?
-    %ul.nav.nav-tabs
+    %ul.nav.nav-tabs.merge-request-tabs
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
           %i.icon-comment
           Discussion
+          %span.badge= @merge_request.mr_and_commit_notes.count
       %li.diffs-tab{data: {action: 'diffs'}}
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
           %i.icon-list-alt
           Changes
+          %span.badge= @merge_request.diffs.size
 
   - content_for :note_actions do
     - if can?(current_user, :modify_merge_request, @merge_request)

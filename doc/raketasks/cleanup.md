@@ -1,3 +1,5 @@
+# Cleanup
+
 ### Remove garbage from filesystem. Important! Data loss!
 
 Remove namespaces(dirs) from `/home/git/repositories` if they don't exist in GitLab database.

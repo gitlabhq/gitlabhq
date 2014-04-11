@@ -1,3 +1,5 @@
+# Repositories
+
 ## List project repository tags
 
 Get a list of repository tags from a project, sorted by name in reverse alphabetical order.
@@ -131,3 +133,56 @@ GET /projects/:id/repository/archive
 Parameters:
 + `id` (required) - The ID of a project
 + `sha` (optional) - The commit sha to download defaults to the tip of the default branch
+
+
+## Compare branches, tags or commits
+
+```
+GET /projects/:id/repository/compare
+```
+
+Parameters:
++ `id` (required) - The ID of a project
++ `from` (required) - the commit sha or branch name
++ `to` (required) - the commit sha or branch name
+
+
+```
+GET /projects/:id/repository/compare?from=master&to=feature
+```
+
+Response: 
+
+```json
+
+{
+  "commit": {
+    "id": "12d65c8dd2b2676fa3ac47d955accc085a37a9c1",
+    "short_id": "12d65c8dd2b",
+    "title": "JS fix",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2014-02-27T10:27:00+02:00"
+  },
+  "commits": [{
+    "id": "12d65c8dd2b2676fa3ac47d955accc085a37a9c1",
+    "short_id": "12d65c8dd2b",
+    "title": "JS fix",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2014-02-27T10:27:00+02:00"
+  }],
+  "diffs": [{
+    "old_path": "files/js/application.js",
+    "new_path": "files/js/application.js",
+    "a_mode": null,
+    "b_mode": "100644",
+    "diff": "--- a/files/js/application.js\n+++ b/files/js/application.js\n@@ -24,8 +24,10 @@\n //= require g.raphael-min\n //= require g.bar-min\n //= require branch-graph\n-//= require highlightjs.min\n-//= require ace/ace\n //= require_tree .\n //= require d3\n //= require underscore\n+\n+function fix() { \n+  alert(\"Fixed\")\n+}",
+    "new_file": false,
+    "renamed_file": false,
+    "deleted_file": false
+  }],
+  "compare_timeout": false,
+  "compare_same_ref": false
+}
+```
