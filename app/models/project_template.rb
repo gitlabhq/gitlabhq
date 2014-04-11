@@ -67,8 +67,6 @@ class ProjectTemplate < ActiveRecord::Base
   end
 
   def file_size
-    Gitlab::AppLogger.info("check file size")
-
     if self.upload.file != nil
       unless self.upload.file.size < Gitlab.config.gitlab.templates_max_filesize
         self.errors.add :upload, "- Your file is too big: max. #{self.max_upload_size}"

@@ -13,9 +13,6 @@
 
 ActiveRecord::Schema.define(version: 20140502125220) do
 
-  # These are extensions that must be enabled in order to support this database
-  enable_extension "plpgsql"
-
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
@@ -111,9 +108,9 @@ ActiveRecord::Schema.define(version: 20140502125220) do
 
   create_table "merge_request_diffs", force: true do |t|
     t.string   "state"
-    t.text     "st_commits"
-    t.text     "st_diffs"
-    t.integer  "merge_request_id", null: false
+    t.text     "st_commits",       limit: 2147483647
+    t.text     "st_diffs",         limit: 2147483647
+    t.integer  "merge_request_id",                    null: false
     t.datetime "created_at"
     t.datetime "updated_at"
   end
@@ -189,8 +186,8 @@ ActiveRecord::Schema.define(version: 20140502125220) do
     t.string   "line_code"
     t.string   "commit_id"
     t.integer  "noteable_id"
-    t.boolean  "system",        default: false, null: false
-    t.text     "st_diff"
+    t.boolean  "system",                           default: false, null: false
+    t.text     "st_diff",       limit: 2147483647
   end
 
   add_index "notes", ["author_id"], name: "index_notes_on_author_id", using: :btree
@@ -269,14 +266,14 @@ ActiveRecord::Schema.define(version: 20140502125220) do
 
   create_table "snippets", force: true do |t|
     t.string   "title"
-    t.text     "content"
-    t.integer  "author_id",                 null: false
+    t.text     "content",    limit: 2147483647
+    t.integer  "author_id",                                    null: false
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
-    t.boolean  "private",    default: true, null: false
+    t.boolean  "private",                       default: true, null: false
     t.string   "type"
   end
 
@@ -336,6 +333,7 @@ ActiveRecord::Schema.define(version: 20140502125220) do
     t.integer  "notification_level",       default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -343,7 +341,6 @@ ActiveRecord::Schema.define(version: 20140502125220) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
-    t.datetime "last_credential_check_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

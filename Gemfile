@@ -73,6 +73,7 @@ gem "carrierwave"
 gem "rubyzip", "~> 1.0.0"
 # will load compatibility for old rubyzip API.
 gem "zip-zip"
+
 # Drag and Drop UI
 gem 'dropzonejs-rails'
 

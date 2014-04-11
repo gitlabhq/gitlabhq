@@ -35,12 +35,14 @@ class Project < ActiveRecord::Base
   default_value_for :merge_requests_enabled, true
   default_value_for :wiki_enabled, true
   default_value_for :snippets_enabled, true
+  default_value_for :init_from_project_template_id, nil
 
   ActsAsTaggableOn.strict_case_match = true
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :init_from_project_template_id,
+    as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 

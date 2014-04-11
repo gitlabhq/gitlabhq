@@ -64,10 +64,23 @@ module Projects
         if @project.import?
           @project.import_start
         else
-          GitlabShellWorker.perform_async(
-            :add_repository,
-            @project.path_with_namespace
-          )
+          if !@project.init_from_project_template_id.blank?
+            @project_template = ProjectTemplate.find_by_id(@project.init_from_project_template_id)
+            GitlabShellWorker.perform_async(
+              :add_init_repository,
+              @project.path_with_namespace,
+              @project_template.template_path,
+              @project_template.name,
+              current_user.name,
+              current_user.email
+            )
+          else
+            GitlabShellWorker.perform_async(
+              :add_repository,
+              @project.path_with_namespace
+            )
+          end
+
 
         end
 
