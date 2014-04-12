@@ -5,10 +5,12 @@ env:
   matrix:
     - TASK=spinach DB=mysql
     - TASK=spec:api DB=mysql
+    - TASK=spec:feature DB=mysql
     - TASK=spec:other DB=mysql
     - TASK=jasmine:ci DB=mysql
     - TASK=spinach DB=postgresql
     - TASK=spec:api DB=postgresql
+    - TASK=spec:feature DB=postgresql
     - TASK=spec:other DB=postgresql
     - TASK=jasmine:ci DB=postgresql
 before_install:

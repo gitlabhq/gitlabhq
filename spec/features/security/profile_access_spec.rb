@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Users Security" do
+describe "Users Security", feature: true  do
   describe "Project" do
     before do
       @u1 = create(:user)

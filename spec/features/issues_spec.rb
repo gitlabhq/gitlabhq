@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Issues" do
+describe "Issues", feature: true do
   let(:project) { create(:project) }
 
   before do

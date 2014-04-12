@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "On a merge request", js: true do
+describe "On a merge request", js: true, feature: true do
   let!(:merge_request) { create(:merge_request, :simple) }
   let!(:project) { merge_request.source_project }
   let!(:note) { create(:note_on_merge_request, :with_attachment, project: project) }
