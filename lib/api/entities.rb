@@ -117,22 +117,22 @@ module API
     class ProjectEntity < Grape::Entity
       expose :id, :iid
       expose (:project_id) { |entity| entity.project.id }
+      expose :title, :description
+      expose :state, :created_at, :updated_at
     end
 
     class Milestone < ProjectEntity
-      expose :title, :description, :due_date, :state, :updated_at, :created_at
+      expose :due_date
     end
 
     class Issue < ProjectEntity
-      expose :title, :description
       expose :label_list, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
-      expose :state, :updated_at, :created_at
     end
 
     class MergeRequest < ProjectEntity
-      expose :target_branch, :source_branch, :title, :state, :upvotes, :downvotes, :description
+      expose :target_branch, :source_branch, :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
     end
@@ -158,6 +158,7 @@ module API
       expose :title, :project_id, :action_name
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
+      expose :created_at
     end
 
     class Namespace < Grape::Entity
