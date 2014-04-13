@@ -83,7 +83,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
 
   Then 'I should see the existing page in the pages list' do
     page.should have_content current_user.name
-    page.should have_content @page.title.titleize
+    page.should have_content @page.title
   end
 
   def wiki

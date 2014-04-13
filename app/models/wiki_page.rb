@@ -47,7 +47,11 @@ class WikiPage
 
   # The formatted title of this page.
   def title
-    @attributes[:title] || ""
+    if @attributes[:title]
+      @attributes[:title].gsub(/-+/, ' ')
+    else
+      ""
+    end
   end
 
   # Sets the title of this page.
