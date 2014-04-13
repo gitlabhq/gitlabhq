@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "GitLab Flavored Markdown", features: true do
+describe "GitLab Flavored Markdown", feature: true do
   let(:project) { create(:project) }
   let(:issue) { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard access" do
+describe "Dashboard access", feature: true  do
   describe "GET /dashboard" do
     subject { dashboard_path }
 

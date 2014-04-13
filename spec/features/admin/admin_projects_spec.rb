@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::Projects" do
+describe "Admin::Projects", feature: true  do
   before do
     @project = create(:project)
     login_as :admin
