@@ -327,5 +327,7 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  get ':id' => "groups#show", constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
+
   root to: "dashboard#show"
 end
