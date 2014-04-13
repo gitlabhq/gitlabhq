@@ -81,7 +81,11 @@ or by directly calling the script
 
      sudo /etc/init.d/gitlab start
 
+Please login with root / 5iveL!fe
+
 ### Run in development mode
+
+Consider setting up the development environment with [the cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md#installation).
 
 Copy the example development unicorn configuration file
 
@@ -95,6 +99,8 @@ or start each component separately
 
     bundle exec rails s
     script/background_jobs start
+
+And surf to [localhost:3000](http://localhost:3000/) and login with root / 5iveL!fe
 
 ### Run the tests
 
