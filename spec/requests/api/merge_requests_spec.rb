@@ -7,6 +7,8 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let!(:project) {create(:project, creator_id: user.id, namespace: user.namespace) }
   let!(:merge_request) { create(:merge_request, :simple, author: user, assignee: user, source_project: project, target_project: project, title: "Test") }
+  let!(:merge_request_closed) { create(:merge_request, state: "closed", author: user, assignee: user, source_project: project, target_project: project, title: "Closed test") }
+  let!(:merge_request_merged) { create(:merge_request, state: "merged", author: user, assignee: user, source_project: project, target_project: project, title: "Merged test") }
   let!(:note) { create(:note_on_merge_request, author: user, project: project, noteable: merge_request, note: "a comment on a MR") }
   before {
     project.team << [user, :reporters]
@@ -21,11 +23,41 @@ describe API::API, api: true  do
     end
 
     context "when authenticated" do
-      it "should return an array of merge_requests" do
+      it "should return an array of all merge_requests" do
         get api("/projects/#{project.id}/merge_requests", user)
         response.status.should == 200
         json_response.should be_an Array
+        json_response.length.should == 3
         json_response.first['title'].should == merge_request.title
+      end
+      it "should return an array of all merge_requests" do
+        get api("/projects/#{project.id}/merge_requests?state", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 3
+        json_response.first['title'].should == merge_request.title
+      end
+      it "should return an array of open merge_requests" do
+        get api("/projects/#{project.id}/merge_requests?state=opened", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['title'].should == merge_request.title
+      end
+      it "should return an array of closed merge_requests" do
+        get api("/projects/#{project.id}/merge_requests?state=closed", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 2
+        json_response.first['title'].should == merge_request_closed.title
+        json_response.second['title'].should == merge_request_merged.title
+      end
+      it "should return an array of merged merge_requests" do
+        get api("/projects/#{project.id}/merge_requests?state=merged", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['title'].should == merge_request_merged.title
       end
     end
   end

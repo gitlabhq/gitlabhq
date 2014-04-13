@@ -19,14 +19,24 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
+      #   state (optional) - Return requests "merged", "opened" or "closed"
       #
       # Example:
       #   GET /projects/:id/merge_requests
+      #   GET /projects/:id/merge_requests?state=opened
+      #   GET /projects/:id/merge_requests?state=closed
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
 
-        present paginate(user_project.merge_requests), with: Entities::MergeRequest
+        mrs = case params["state"]
+              when "opened" then user_project.merge_requests.opened
+              when "closed" then user_project.merge_requests.closed
+              when "merged" then user_project.merge_requests.merged
+              else user_project.merge_requests
+        end
+
+        present paginate(mrs), with: Entities::MergeRequest
       end
 
       # Show MR
