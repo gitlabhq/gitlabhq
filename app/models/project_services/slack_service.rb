@@ -51,13 +51,17 @@ class SlackService < Service
       project_name: project_name
     ))
 
-    notifier = Slack::Notifier.new(subdomain, token)
+    notifier = Slack::Notifier.new(subdomain, token, hook_name)
     notifier.channel = room
     notifier.username = 'GitLab'
     notifier.ping(message.pretext, attachments: message.attachments)
   end
 
   private
+
+  def hook_name
+    'gitlab'
+  end
 
   def project_name
     project.name_with_namespace.gsub(/\s/, '')

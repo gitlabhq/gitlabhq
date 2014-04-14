@@ -45,7 +45,7 @@ describe SlackService do
     let(:subdomain) { 'gitlab' }
     let(:token) { 'verySecret' }
     let(:api_url) {
-      "https://#{subdomain}.slack.com/services/hooks/incoming-webhook?token=#{token}"
+      "https://#{subdomain}.slack.com/services/hooks/gitlab?token=#{token}"
     }
 
     before do
