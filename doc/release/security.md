@@ -13,14 +13,8 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 
 1. Verify that the issue can be repoduced
 1. Acknowledge the issue to the researcher that disclosed it
-1. Fix the issue on a feature branch, do this on the private GitLab development server and update the VERSION and CHANGELOG in this branch
-1. Consider creating and testing workarounds
+1. Do the steps from [patch release document](doc/release/patch.md), starting with "Create an issue on private GitLab development server"
 1. Create feature branches for the blog post on GitLab.com and link them from the code branch
-1. Merge the code feature branch into master
-1. Cherry-pick the code into the latest stable branch
-1. Create an annotated tag vX.X.X for CE and another patch release for EE
-1. Push the code and the tags to all the CE and EE repositories
-1. Apply the patch to GitLab Cloud and the private GitLab development server
 1. Merge and publish the blog posts
 1. Send tweets about the release from @gitlabhq
 1. Send out an email to the subscribers mailing list on MailChimp
