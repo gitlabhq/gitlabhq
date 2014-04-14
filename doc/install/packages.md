@@ -10,15 +10,18 @@ Some GitLab features are currently missing from these packages (MySQL, HTTPS, SM
 Please contact subscribers@gitlab.com for more information.
 
 ## GitLab 6.7 Enterprise Edition
-- Ubuntu 12.04 64-bit [gitlab_6.7.3-ee.omnibus.1-1.ubuntu.12.04_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/43c6dec1146d6335c6ca90fa8679d4e63962732e/gitlab_6.7.3-ee.omnibus.1-1.ubuntu.12.04_amd64.deb)
-    - MD5: 527561c7b817f3375598778368530e9a
+- Ubuntu 12.04 64-bit [gitlab_6.7.4-ee.omnibus-1.ubuntu.12.04_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/e27eb70aac3619b17ba7ade0e6bfc48e896b057f/gitlab_6.7.4-ee.omnibus-1.ubuntu.12.04_amd64.deb)
+    - MD5: 16d0c4ab627638cc6d612042af4498da
 
-- Enterprise Linux 6 64-bit [gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/4a83046ae506fe84158c1bc433d8fa85a886abba/gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm)
-    - MD5: 6335719321acc8edc2f718570960c832
+- Enterprise Linux 6 64-bit [gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e9394ffe2dd9cba518ab6d43510fb0fb6acc4ff6/gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm)
+    - MD5: 5004af120eb457fe7eefbaa5f47429dc
 
 ## Previous versions
 
 ### Ubuntu 12.04 64-bit
+
+- 6.7.3-ee - Ubuntu 12.04 64-bit [gitlab_6.7.3-ee.omnibus.1-1.ubuntu.12.04_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/43c6dec1146d6335c6ca90fa8679d4e63962732e/gitlab_6.7.3-ee.omnibus.1-1.ubuntu.12.04_amd64.deb)
+    - MD5: 527561c7b817f3375598778368530e9a
 
 - 6.7.2-ee - Ubuntu 12.04 64-bit [gitlab_6.7.2-ee.omnibus.2-1.ubuntu.12.04_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/91692a0c3730d22621af07670b832e3ec1df7ee9/gitlab_6.7.2-ee.omnibus.2-1.ubuntu.12.04_amd64.deb)
     - MD5: 1deb3ac65cb2f25b00b489e52bf800e6
@@ -38,6 +41,9 @@ Please contact subscribers@gitlab.com for more information.
 
 
 ### Enterprise Linux 6 64-bit
+
+- 6.7.3-ee - Enterprise Linux 6 64-bit [gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/4a83046ae506fe84158c1bc433d8fa85a886abba/gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm)
+    - MD5: 6335719321acc8edc2f718570960c832
 
 - 6.7.2-ee Enterprise Linux 6 64-bit [gitlab-6.7.2_ee.omnibus.2-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e13ccafca35955ad754ea501798875d99e0cce4c/gitlab-6.7.2_ee.omnibus.2-1.el6.x86_64.rpm)
     - MD5: 36347c81013c4215226a3cb30f6ac1b4
