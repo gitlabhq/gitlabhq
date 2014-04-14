@@ -9,3 +9,4 @@
         %small (#{wiki_page.format})
         .pull-right
           %small Last edited #{time_ago_with_tooltip(wiki_page.commit.created_at)}
+= paginate @wiki_pages, theme: 'gitlab'
