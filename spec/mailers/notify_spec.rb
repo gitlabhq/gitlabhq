@@ -502,12 +502,48 @@ describe Notify do
     end
   end
 
-  describe 'email on push' do
+  describe 'email on push with multiple commits' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
     let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, 'cd5c4bac', 'b1e6a9db') }
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
+
+    subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
+
+    it 'is sent as the author' do
+      sender = subject.header[:from].addrs[0]
+      sender.display_name.should eq(user.name)
+      sender.address.should eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      should deliver_to 'devs@company.name'
+    end
+
+    it 'has the correct subject' do
+      should have_subject /New push to repository/
+    end
+
+    it 'includes commits list' do
+      should have_body_text /tree css fixes/
+    end
+
+    it 'includes diffs' do
+      should have_body_text /Checkout wiki pages for installation information/
+    end
+
+    it 'contains a link to the diff' do
+      should have_body_text /#{diff_path}/
+    end
+  end
+
+  describe 'email on push with a single commit' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user) }
+    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, '8716fc78', 'b1e6a9db') }
+    let(:commits) { Commit.decorate(compare.commits) }
+    let(:diff_path) { project_commit_path(project, commits.first) }
 
     subject { Notify.repository_push_email(project.id, 'devs@company.name', user.id, 'master', compare) }
 
