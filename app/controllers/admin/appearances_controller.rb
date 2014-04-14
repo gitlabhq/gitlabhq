@@ -4,6 +4,9 @@ class Admin::AppearancesController < Admin::ApplicationController
   def show
   end
 
+  def preview
+  end
+
   def create
     @appearance = Appearance.new(appearance_params)
 
