@@ -21,7 +21,11 @@
         = image_tag @appearance.logo, class: 'appearance-logo-preview'
       = f.file_field :logo, class: ""
       .hint
-        Logo size is limited with 1MB
+        Maximum logo size is 1MB, page optimized for logo size 640x360px
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
     = link_to 'Preview', preview_admin_appearances_path, class: 'btn', target: '_blank'
+
+    - if @appearance.updated_at
+      %span.pull-right
+        Last edit #{time_ago_with_tooltip(@appearance.updated_at)}
