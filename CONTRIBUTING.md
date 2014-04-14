@@ -106,8 +106,10 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. It conforms to the following style guides
 
 ## Style guides
-
-1. [Ruby style guide](https://github.com/bbatsov/ruby-style-guide)
-1. [Rails style guide](https://github.com/bbatsov/rails-style-guide)
-1. [CoffeeScript style guide](https://github.com/polarmobile/coffeescript-style-guide)
-1. [Shell command guidelines](doc/development/shell_commands.md)
+1. [Ruby](https://github.com/bbatsov/ruby-style-guide)
+2. [Rails](https://github.com/bbatsov/rails-style-guide)
+3. [Formatting](https://github.com/thoughtbot/guides/tree/master/style#formatting)
+4. [Naming](https://github.com/thoughtbot/guides/tree/master/style#naming) 
+8. [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
+7. [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
+9. [Shell commands](doc/development/shell_commands.md)
