@@ -26,7 +26,7 @@ module Emails
       if @commits.length > 1
         @target_url = project_compare_url(@project, from: @commits.first, to: @commits.last)
       else
-        @target_url = project_commit_url(@project, @compare.commit)
+        @target_url = project_commit_url(@project, @commits.first)
       end
 
       mail(from: sender(author_id),

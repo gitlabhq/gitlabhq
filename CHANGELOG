@@ -16,6 +16,7 @@ v 6.8.0
   - Clean old created archives from repository downloads directory
   - Fix download link for huge MR diffs
   - Expose event and mergerequest timestamps in API
+  - Fix emails on push service when only one commit is pushed
 
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)
