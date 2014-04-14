@@ -179,7 +179,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-6-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-7-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -421,9 +421,9 @@ These steps are fairly general and you will need to figure out the exact details
 * Stop GitLab
 		`sudo service gitlab stop`
 
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterconfig/gitlab.yml.example) as a reference)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) as a reference)
 
-* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterGemfile)
+* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile)
                 `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
 		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
