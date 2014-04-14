@@ -1,10 +1,4 @@
 module Gitlab
-  class SatelliteNotExistError < StandardError
-    def initialize(msg = "Satellite doesn't exist")
-      super
-    end
-  end
-
   module Satellite
     class Satellite
       include Gitlab::Popen
