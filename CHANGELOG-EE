@@ -1,3 +1,6 @@
+v 6.8.0
+  - Customise sign-in page with custom text and logo
+
 v 6.7.1
   - Handle LDAP errors in Adapter#dn_matches_filter?
 
