@@ -23,7 +23,7 @@ describe Gitlab::LDAP::Adapter do
     end
 
     context "when the search encounters an error" do
-      before { ldap.stub(search: nil) }
+      before { ldap.stub(search: nil, get_operation_result: double(code: 1, message: 'some error')) }
 
       it { should be_false }
     end

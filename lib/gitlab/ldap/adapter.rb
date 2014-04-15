@@ -107,12 +107,7 @@ module Gitlab
       end
 
       def dn_matches_filter?(dn, filter)
-        results = ldap_search(base: dn, filter: filter, attributes: %w{dn})
-        if results.blank?
-          false # Net::LDAP encountered an LDAP error
-        else
-          results.any?
-        end
+        ldap_search(base: dn, filter: filter, attributes: %w{dn}).any?
       end
 
       def ldap_search(*args)
