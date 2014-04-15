@@ -33,53 +33,9 @@
           Use
           = link_to "shortcuts", '#', onclick: "new Shortcuts()"
 
-  .col-md-4
-    .ui-box
-      .title
-        User documentation
-      %ul.well-list
-        %li
-          %strong= link_to "Workflow", help_workflow_path
-          %p Learn how to use Git and GitLab together.
+  .col-md-8
+    .ui-box.documentation
+      .title Documentation
 
-        %li
-          %strong= link_to "SSH keys", help_ssh_path
-          %p Setup secure access to your projects.
-
-        %li
-          %strong= link_to "GitLab Markdown", help_markdown_path
-          %p Learn what you can do with GitLab's advanced formatting system.
-
-        %li
-          %strong= link_to "Permissions", help_permissions_path
-          %p Get familiar with GitLab's permission levels.
-
-        %li
-          %strong= link_to "API", help_api_file_path(category: 'README')
-          %p Explore how you can access GitLab via a simple and powerful API.
-
-        %li
-          %strong= link_to "Web Hooks", help_web_hooks_path
-          %p Let GitLab notify you when new code has been pushed to your project.
-
-  .col-md-4
-    .ui-box
-      .title
-        Admin documentation
-      %ul.well-list
-
-        %li
-          %strong= link_to "Rake Tasks", help_raketasks_path
-          %p Explore what GitLab has in store for you to make administration easier.
-
-        %li
-          %strong= link_to "System Hooks", help_system_hooks_path
-          %p Let GitLab notify you when certain management tasks need to be carried out.
-
-        %li
-          %strong= link_to "Public Access", help_public_access_path
-          %p Learn how you can allow public access to a project.
-
-        %li
-          %strong= link_to "Security", help_security_path
-          %p Learn what you can do to secure your GitLab instance.
+      = preserve do
+        = markdown File.read(Rails.root.join("doc", "README.md"))
