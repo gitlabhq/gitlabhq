@@ -44,7 +44,7 @@
             .light-well
               Add first label to your issues
               %br
-              or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels
+              or #{link_to 'generate', generate_project_labels_path(@project, redirect: redirect), method: :post} default set of labels
 
     %fieldset
       - if %w(state scope milestone_id assignee_id label_name).select { |k| params[k].present? }.any?

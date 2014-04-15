@@ -36,13 +36,18 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch, :target_project_id, :target_branch, :milestone_id, :state_event, :description
+  attr_accessible :title, :assignee_id, :source_project_id, :source_branch,
+                  :target_project_id, :target_branch, :milestone_id,
+                  :state_event, :description, :label_list
 
   attr_accessor :should_remove_source_branch
 
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
+
+  ActsAsTaggableOn.strict_case_match = true
+  acts_as_taggable_on :labels
 
   state_machine :state, initial: :opened do
     event :close do

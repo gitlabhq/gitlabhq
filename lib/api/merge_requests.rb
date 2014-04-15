@@ -67,6 +67,7 @@ module API
       #   assignee_id              - Assignee user ID
       #   title (required)         - Title of MR
       #   description              - Description of MR
+      #   labels (optional)        - Labels for MR as a comma-separated list
       #
       # Example:
       #   POST /projects/:id/merge_requests
@@ -75,6 +76,7 @@ module API
         authorize! :write_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, attrs).execute
 
         if merge_request.valid?
@@ -95,11 +97,13 @@ module API
       #   title                       - Title of MR
       #   state_event                 - Status of MR. (close|reopen|merge)
       #   description                 - Description of MR
+      #   labels (optional)           - Labels for a MR as a comma-separated list
       # Example:
       #   PUT /projects/:id/merge_request/:merge_request_id
       #
       put ":id/merge_request/:merge_request_id" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event, :description]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         authorize! :modify_merge_request, merge_request
         merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)

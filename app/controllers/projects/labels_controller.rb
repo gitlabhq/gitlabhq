@@ -1,8 +1,7 @@
 class Projects::LabelsController < Projects::ApplicationController
   before_filter :module_enabled
 
-  # Allow read any issue
-  before_filter :authorize_read_issue!
+  before_filter :authorize_labels!
 
   respond_to :js, :html
 
@@ -13,12 +12,18 @@ class Projects::LabelsController < Projects::ApplicationController
   def generate
     Gitlab::IssuesLabels.generate(@project)
 
-    redirect_to project_issues_path(@project)
+    if params[:redirect] == 'issues'
+      redirect_to project_issues_path(@project)
+    elsif params[:redirect] == 'merge_requests'
+      redirect_to project_merge_requests_path(@project)
+    end
   end
 
   protected
 
   def module_enabled
-    return render_404 unless @project.issues_enabled
+    unless @project.issues_enabled || @project.merge_requests_enabled
+      return render_404
+    end
   end
 end

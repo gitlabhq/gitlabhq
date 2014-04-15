@@ -8,7 +8,8 @@
 %hr
 .row
   .col-md-3
-    = render 'shared/project_filter', project_entities_path: project_merge_requests_path(@project)
+    = render 'shared/project_filter', project_entities_path: project_merge_requests_path(@project),
+             labels: true, redirect: 'merge_requests'
   .col-md-9
     .mr-filters.append-bottom-10
       .dropdown.inline

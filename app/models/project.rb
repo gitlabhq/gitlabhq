@@ -281,8 +281,11 @@ class Project < ActiveRecord::Base
     self.id
   end
 
+  # Tags are shared by issues and merge requests
   def issues_labels
-    @issues_labels ||= (issues_default_labels + issues.tags_on(:labels)).uniq.sort_by(&:name)
+    @issues_labels ||= (issues_default_labels +
+                        merge_requests.tags_on(:labels) +
+                        issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)
