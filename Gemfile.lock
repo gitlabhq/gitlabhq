@@ -462,7 +462,7 @@ GEM
       rack-protection (~> 1.4)
       tilt (~> 1.3, >= 1.3.4)
     six (0.2.0)
-    slack-notifier (0.2.0)
+    slack-notifier (0.3.2)
     slim (2.0.2)
       temple (~> 0.6.6)
       tilt (>= 1.3.3, < 2.1)
