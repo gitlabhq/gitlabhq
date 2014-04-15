@@ -9,7 +9,7 @@ module Gitlab
     class Person
       def self.find_by_uid(uid, adapter=nil)
         adapter ||= Gitlab::LDAP::Adapter.new
-        adapter.user(config.uid, uid)
+        adapter.user(Gitlab.config.ldap.uid, uid)
       end
 
       def self.find_by_dn(dn, adapter=nil)
