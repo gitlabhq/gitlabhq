@@ -102,11 +102,13 @@ For examples of feedback on merge requests please look at already [closed merge 
 
 ## Style guides
 
-1. [Ruby](https://github.com/bbatsov/ruby-style-guide)
-1. [Rails](https://github.com/bbatsov/rails-style-guide)
-1. [Formatting](https://github.com/thoughtbot/guides/tree/master/style#formatting)
-1. [Naming](https://github.com/thoughtbot/guides/tree/master/style#naming) 
-1. [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
-1. [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
-1. [Shell commands](doc/development/shell_commands.md)
-1. [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+1.  [Ruby](https://github.com/bbatsov/ruby-style-guide). Important sections include [Source Code Layout](https://github.com/bbatsov/ruby-style-guide#source-code-layout) and [Naming](https://github.com/bbatsov/ruby-style-guide#naming). Use:
+    - multi-line method chaining style **Option A**: leading `.`
+    - string literal quoting style **Option A**: single quoted by default
+1.  [Rails](https://github.com/bbatsov/rails-style-guide)
+1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
+1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
+1.  [Shell commands](doc/development/shell_commands.md)
+1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+
+The above styles are used by Hound CI.
