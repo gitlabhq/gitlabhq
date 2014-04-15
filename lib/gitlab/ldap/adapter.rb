@@ -62,7 +62,7 @@ module Gitlab
 
         options.merge!(size: size) if size
 
-        ldap.search(options).map do |entry|
+        ldap_search(options).map do |entry|
           Gitlab::LDAP::Group.new(entry, self)
         end
       end
@@ -93,7 +93,7 @@ module Gitlab
                              end
         end
 
-        entries = ldap.search(options).select do |entry|
+        entries = ldap_search(options).select do |entry|
           entry.respond_to? config.uid
         end
 
@@ -107,11 +107,22 @@ module Gitlab
       end
 
       def dn_matches_filter?(dn, filter)
-        results = ldap.search(base: dn, filter: filter, attributes: %w{dn})
+        ldap_search(base: dn, filter: filter, attributes: %w{dn}).any?
+      end
+
+      def ldap_search(*args)
+        results = ldap.search(*args)
+
         if results.nil?
-          false # Net::LDAP encountered an LDAP error
+          response = ldap.get_operation_result
+
+          unless response.code.zero?
+            Rails.logger.warn("LDAP search error: #{response.message}")
+          end
+
+          []
         else
-          results.any?
+          results
         end
       end
 
