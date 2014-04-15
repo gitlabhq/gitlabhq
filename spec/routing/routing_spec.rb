@@ -244,8 +244,7 @@ describe "Groups", "routing" do
     get("/groups/1").should route_to('groups#show', id: '1')
   end
 
-  it "redirect" do
-    # get("/groups/1").should redirect_to("/groups/1")
+  it "also display group#show on the short path" do
     get("/1").should route_to('groups#show', id: '1')
   end
 end
