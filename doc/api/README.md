@@ -1,6 +1,6 @@
 # GitLab API
 
-## End-points
+## Resources
 
 + [Users](users.md)
 + [Session](session.md)
