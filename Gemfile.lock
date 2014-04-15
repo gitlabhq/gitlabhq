@@ -644,7 +644,7 @@ DEPENDENCIES
   simplecov
   sinatra
   six
-  slack-notifier (~> 0.2.0)
+  slack-notifier (~> 0.3.2)
   slim
   spinach-rails
   spring (= 1.1.1)
