@@ -187,7 +187,9 @@ Gitlab::Application.routes.draw do
       resources :blob,      only: [:show, :destroy], constraints: {id: /.+/}
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
-      resources :edit_tree, only: [:show, :update], constraints: {id: /.+/}, path: 'edit'
+      resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
+        post :preview, on: :member
+      end
       resources :new_tree,  only: [:show, :update], constraints: {id: /.+/}, path: 'new'
       resources :commit,    only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
       resources :commits,   only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}

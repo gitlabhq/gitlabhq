@@ -82,6 +82,9 @@ gem "seed-fu"
 gem "redcarpet",     "~> 2.2.2"
 gem "github-markup"
 
+# Diffs
+gem 'diffy', '~> 3.0.3'
+
 # Asciidoc to HTML
 gem  "asciidoctor"
 

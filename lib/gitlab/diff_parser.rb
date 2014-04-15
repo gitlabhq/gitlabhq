@@ -4,9 +4,9 @@ module Gitlab
 
     attr_reader :lines, :new_path
 
-    def initialize(diff)
-      @lines = diff.diff.lines.to_a
-      @new_path = diff.new_path
+    def initialize(lines, new_path = '')
+      @lines = lines
+      @new_path = new_path
     end
 
     def each
@@ -18,10 +18,7 @@ module Gitlab
       lines_arr.each do |line|
         raw_line = line.dup
 
-        next if line.match(/^\-\-\- \/dev\/null/)
-        next if line.match(/^\+\+\+ \/dev\/null/)
-        next if line.match(/^\-\-\- a/)
-        next if line.match(/^\+\+\+ b/)
+        next if filename?(line)
 
         full_line = html_escape(line.gsub(/\n/, ''))
         full_line = ::Gitlab::InlineDiff.replace_markers full_line
@@ -53,7 +50,16 @@ module Gitlab
       end
     end
 
+    def empty?
+      @lines.empty?
+    end
+
     private
+
+    def filename?(line)
+      line.start_with?('--- /dev/null', '+++ /dev/null', '--- a', '+++ b',
+                       '--- /tmp/diffy', '+++ /tmp/diffy')
+    end
 
     def identification_type(line)
       if line[0] == "+"
