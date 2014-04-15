@@ -17,6 +17,7 @@ v 6.8.0
   - Fix download link for huge MR diffs
   - Expose event and mergerequest timestamps in API
   - Fix emails on push service when only one commit is pushed
+  - Store Rails cache data in the Redis `cache:gitlab` namespace
 
 v 6.7.3
   - Fix the merge notification email not being sent (Pierre de La Morinerie)
