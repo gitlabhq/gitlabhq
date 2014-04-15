@@ -54,7 +54,7 @@ ul.notes {
       .diff-file,
       .discussion-hidden,
       .notes {
-        @extend .borders;
+        @extend .borders !optional;
         background-color: #F9F9F9;
       }
       .diff-file .notes {

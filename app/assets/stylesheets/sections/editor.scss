@@ -27,7 +27,7 @@
     }
 
     .commit-btn {
-      @extend .save-btn;
+      @extend .save-btn !optional;
     }
     .message {
       display: inline-block;
