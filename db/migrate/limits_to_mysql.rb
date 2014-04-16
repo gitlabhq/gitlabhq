@@ -1,6 +1,6 @@
 class LimitsToMysql < ActiveRecord::Migration
   def up
-    return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] == 'mysql2'
+    return unless ActiveRecord::Base.configurations[Rails.env]['adapter'] =~ /^mysql/
 
     change_column :merge_request_diffs, :st_commits, :text, limit: 2147483647
     change_column :merge_request_diffs, :st_diffs, :text, limit: 2147483647
