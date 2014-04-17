@@ -13,6 +13,10 @@
 * Completely free and open source (MIT Expat license)
 * Powered by Ruby on Rails
 
+### Canonical source
+
+* The source of GitLab Communinity Edition is [hosted on GitLab Cloud](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
+
 ### Code status
 
 * [![build status](https://ci.gitlab.org/projects/1/status.png?ref=master)](https://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
