@@ -29,9 +29,14 @@ module Emails
         @target_url = project_commit_url(@project, @commits.first)
       end
 
+      subject = if @commits.size > 1
+                  "#{@commits.size} new commits"
+                else
+                  @commits.first.title
+                end
       mail(from: sender(author_id),
            to: recipient,
-           subject: subject("New push to repository"))
+           subject: subject(subject))
     end
   end
 end
