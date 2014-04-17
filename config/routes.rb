@@ -273,7 +273,7 @@ Gitlab::Application.routes.draw do
       resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
         member do
           get :diffs
-          get :automerge
+          post :automerge
           get :automerge_check
           get :ci_status
         end
