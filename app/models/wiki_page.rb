@@ -19,7 +19,7 @@ class WikiPage
   validates :title, presence: true
   validates :content, presence: true
 
-  # The Gitlab GollumWiki instance.
+  # The Gitlab ProjectWiki instance.
   attr_reader :wiki
 
   # The raw Gollum::Page instance.
@@ -47,7 +47,11 @@ class WikiPage
 
   # The formatted title of this page.
   def title
-    @attributes[:title] || ""
+    if @attributes[:title]
+      @attributes[:title].gsub(/-+/, ' ')
+    else
+      ""
+    end
   end
 
   # Sets the title of this page.
@@ -57,12 +61,16 @@ class WikiPage
 
   # The raw content of this page.
   def content
-    @attributes[:content]
+    @attributes[:content] ||= if @page
+                                @page.raw_data
+                              end
   end
 
   # The processed/formatted content of this page.
   def formatted_content
-    @attributes[:formatted_content]
+    @attributes[:formatted_content] ||= if @page
+                                          @page.formatted_data
+                                        end
   end
 
   # The markup format for the page.
@@ -87,6 +95,10 @@ class WikiPage
     return [] unless persisted?
 
     @page.versions.map { |v| Commit.new(Gitlab::Git::Commit.new(v)) }
+  end
+
+  def commit
+    versions.first
   end
 
   # Returns the Date that this latest version was
@@ -114,7 +126,7 @@ class WikiPage
   #       :content - The raw markup content.
   #       :format  - Optional symbol representing the
   #                  content format. Can be any type
-  #                  listed in the GollumWiki::MARKUPS
+  #                  listed in the ProjectWiki::MARKUPS
   #                  Hash.
   #       :message - Optional commit message to set on
   #                  the new page.
@@ -131,7 +143,7 @@ class WikiPage
   #
   # new_content - The raw markup content to replace the existing.
   # format      - Optional symbol representing the content format.
-  #               See GollumWiki::MARKUPS Hash for available formats.
+  #               See ProjectWiki::MARKUPS Hash for available formats.
   # message     - Optional commit message to set on the new version.
   #
   # Returns the String SHA1 of the newly created page
@@ -143,7 +155,7 @@ class WikiPage
     save :update_page, @page, content, format, message
   end
 
-  # Destroys the WIki Page.
+  # Destroys the Wiki Page.
   #
   # Returns boolean True or False.
   def delete
@@ -159,8 +171,6 @@ class WikiPage
   def set_attributes
     attributes[:slug] = @page.escaped_url_path
     attributes[:title] = @page.title
-    attributes[:content] = @page.raw_data
-    attributes[:formatted_content] = @page.formatted_data
     attributes[:format] = @page.format
   end
 
@@ -177,5 +187,4 @@ class WikiPage
     end
     @persisted
   end
-
 end

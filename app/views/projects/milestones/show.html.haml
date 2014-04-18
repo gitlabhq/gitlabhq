@@ -1,0 +1,107 @@
+= render "projects/issues/head"
+%h3.page-title
+  Milestone ##{@milestone.iid}
+  %small
+    = @milestone.expires_at
+  .pull-right
+    - if can?(current_user, :admin_milestone, @project)
+      = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
+        %i.icon-edit
+        Edit
+      - if @milestone.active?
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove btn-grouped"
+      - else
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped"
+
+- if @milestone.issues.any? && @milestone.can_be_closed?
+  .alert.alert-success
+    %span All issues for this milestone are closed. You may close milestone now.
+
+.back-link
+  = link_to project_milestones_path(@project) do
+    &larr; To milestones list
+
+
+.issue-box{ class: issue_box_class(@milestone) }
+  .state
+    %span.state-label
+      - if @milestone.closed?
+        Closed
+      - elsif @milestone.expired?
+        Expired
+      - else
+        Open
+
+  %h4.title
+    = gfm escape_once(@milestone.title)
+
+  .context
+    %p
+      Progress:
+      #{@milestone.closed_items_count} closed
+      &ndash;
+      #{@milestone.open_items_count} open
+      %span.pull-right= @milestone.expires_at
+    .progress.progress-info
+      .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
+
+  - if @milestone.description.present?
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
+
+%ul.nav.nav-tabs
+  %li.active
+    = link_to '#tab-issues', 'data-toggle' => 'tab' do
+      Issues
+      %span.badge= @issues.count
+  %li
+    = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
+      Merge Requests
+      %span.badge= @merge_requests.count
+  %li
+    = link_to '#tab-participants', 'data-toggle' => 'tab' do
+      Participants
+      %span.badge= @users.count
+
+  .pull-right
+    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small btn-grouped", title: "New Issue" do
+      %i.icon-plus
+      New Issue
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn btn-small edit-milestone-link btn-grouped"
+
+.tab-content
+  .tab-pane.active#tab-issues
+    .row
+      .col-md-4
+        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
+      .col-md-4
+        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
+      .col-md-4
+        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
+
+  .tab-pane#tab-merge-requests
+    .row
+      .col-md-6
+        .ui-box
+          .title Open
+          %ul.well-list
+            - @merge_requests.opened.each do |merge_request|
+              = render 'merge_request', merge_request: merge_request
+      .col-md-6
+        .ui-box
+          .title Closed
+          %ul.well-list
+            - @merge_requests.closed.each do |merge_request|
+              = render 'merge_request', merge_request: merge_request
+
+  .tab-pane#tab-participants
+    %ul.bordered-list
+      - @users.each do |user|
+        %li
+          = link_to user, title: user.name, class: "dark" do
+            = image_tag avatar_icon(user.email, 32), class: "avatar s32"
+            %strong= truncate(user.name, lenght: 40)
+            %br
+            %small.cgray= user.username

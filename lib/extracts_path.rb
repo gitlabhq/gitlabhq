@@ -86,7 +86,6 @@ module ExtractsPath
   # - @ref    - A string representing the ref (e.g., the branch, tag, or commit SHA)
   # - @path   - A string representing the filesystem path
   # - @commit - A Commit representing the commit from the given ref
-  # - @tree   - A Tree representing the tree at the given ref/path
   #
   # If the :id parameter appears to be requesting a specific response format,
   # that will be handled as well.
@@ -94,18 +93,38 @@ module ExtractsPath
   # Automatically renders `not_found!` if a valid tree path could not be
   # resolved (e.g., when a user inserts an invalid path or ref).
   def assign_ref_vars
-    @id = params[:id]
+    # assign allowed options
+    allowed_options = ["filter_ref", "extended_sha1"]
+    @options = params.select {|key, value| allowed_options.include?(key) && !value.blank? }
+    @options = HashWithIndifferentAccess.new(@options)
 
+    @id = get_id
     @ref, @path = extract_ref(@id)
+    @repo = @project.repository
+    if @options[:extended_sha1].blank?
+      @commit = @repo.commit(@ref)
+    else
+      @commit = @repo.commit(@options[:extended_sha1])
+    end
 
-    # It is used "@project.repository.commits(@ref, @path, 1, 0)",
-    # because "@project.repository.commit(@ref)" returns wrong commit when @ref is tag name.
-    @commit = @project.repository.commits(@ref, @path, 1, 0).first
+    raise InvalidPathError unless @commit
 
-    @tree = Tree.new(@commit.tree, @ref, @path)
+    @hex_path = Digest::SHA1.hexdigest(@path)
+    @logs_path = logs_file_project_ref_path(@project, @ref, @path)
 
-    raise InvalidPathError if @tree.invalid?
   rescue RuntimeError, NoMethodError, InvalidPathError
     not_found!
+  end
+
+  def tree
+    @tree ||= @repo.tree(@commit.id, @path)
+  end
+
+  private
+
+  def get_id
+    id = params[:id] || params[:ref]
+    id += "/" + params[:path] unless params[:path].blank?
+    id
   end
 end

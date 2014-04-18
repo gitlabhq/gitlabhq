@@ -5,8 +5,8 @@
 #  id         :integer          not null, primary key
 #  project_id :integer          not null
 #  name       :string(255)      not null
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
+#  created_at :datetime
+#  updated_at :datetime
 #
 
 class ProtectedBranch < ActiveRecord::Base

@@ -1,9 +1,10 @@
 require 'spec_helper'
 
-describe "Search" do
+describe "Search", feature: true  do
   before do
+    ActiveRecord::Base.observers.enable(:user_observer)
     login_as :user
-    @project = create(:project)
+    @project = create(:project, namespace: @user.namespace)
     @project.team << [@user, :reporter]
     visit search_path
 

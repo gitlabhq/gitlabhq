@@ -8,8 +8,8 @@
 #  title       :string(255)
 #  data        :text
 #  project_id  :integer
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  action      :integer
 #  author_id   :integer
 #
@@ -18,7 +18,7 @@ class Event < ActiveRecord::Base
   attr_accessible :project, :action, :data, :author_id, :project_id,
                   :target_id, :target_type
 
-  default_scope where("author_id IS NOT NULL")
+  default_scope { where.not(author_id: nil) }
 
   CREATED   = 1
   UPDATED   = 2
@@ -47,12 +47,27 @@ class Event < ActiveRecord::Base
   scope :in_projects, ->(project_ids) { where(project_id: project_ids).recent }
 
   class << self
-    def determine_action(record)
-      if [Issue, MergeRequest].include? record.class
-        Event::CREATED
-      elsif record.kind_of? Note
-        Event::COMMENTED
+    def create_ref_event(project, user, ref, action = 'add', prefix = 'refs/heads')
+      commit = project.repository.commit(ref.target)
+
+      if action.to_s == 'add'
+        before = '00000000'
+        after = commit.id
+      else
+        before = commit.id
+        after = '00000000'
       end
+
+      Event.create(
+        project: project,
+        action: Event::PUSHED,
+        data: {
+          ref: "#{prefix}/#{ref.name}",
+          before: before,
+          after: after
+        },
+        author_id: user.id
+      )
     end
   end
 
@@ -68,14 +83,16 @@ class Event < ActiveRecord::Base
 
   def project_name
     if project
-      project.name
+      project.name_with_namespace
     else
       "(deleted project)"
     end
   end
 
   def target_title
-    target.try :title
+    if target && target.respond_to?(:title)
+      target.title
+    end
   end
 
   def push?
@@ -134,7 +151,7 @@ class Event < ActiveRecord::Base
     if closed?
       "closed"
     elsif merged?
-      "merged"
+      "accepted"
     elsif joined?
       'joined'
     elsif left?
@@ -145,7 +162,7 @@ class Event < ActiveRecord::Base
   end
 
   def valid_push?
-    data[:ref]
+    data[:ref] && ref_name.present?
   rescue => ex
     false
   end
@@ -200,7 +217,7 @@ class Event < ActiveRecord::Base
 
   # Max 20 commits from push DESC
   def commits
-    @commits ||= data[:commits].map { |commit| repository.commit(commit[:id]) }.reverse
+    @commits ||= (data[:commits] || []).reverse
   end
 
   def commits_count
@@ -221,26 +238,8 @@ class Event < ActiveRecord::Base
     end
   end
 
-  def repository
-    project.repository
-  end
-
-  def parent_commit
-    repository.commit(commit_from)
-  rescue => ex
-    nil
-  end
-
-  def last_commit
-    repository.commit(commit_to)
-  rescue => ex
-    nil
-  end
-
   def push_with_commits?
-    md_ref? && commits.any? && parent_commit && last_commit
-  rescue Grit::NoSuchPathError
-    false
+    md_ref? && commits.any? && commit_from && commit_to
   end
 
   def last_push_to_non_root?
@@ -251,12 +250,20 @@ class Event < ActiveRecord::Base
     target.commit_id
   end
 
+  def target_iid
+    target.respond_to?(:iid) ? target.iid : target_id
+  end
+
   def note_short_commit_id
     note_commit_id[0..8]
   end
 
   def note_commit?
     target.noteable_type == "Commit"
+  end
+
+  def note_project_snippet?
+    target.noteable_type == "Snippet"
   end
 
   def note_target
@@ -271,6 +278,14 @@ class Event < ActiveRecord::Base
     end
   end
 
+  def note_target_iid
+    if note_target.respond_to?(:iid)
+      note_target.iid
+    else
+      note_target_id
+    end.to_s
+  end
+
   def wall_note?
     target.noteable_type.blank?
   end
@@ -281,5 +296,15 @@ class Event < ActiveRecord::Base
     else
       "Wall"
     end.downcase
+  end
+
+  def body?
+    if push?
+      push_with_commits?
+    elsif note?
+      true
+    else
+      target.respond_to? :title
+    end
   end
 end

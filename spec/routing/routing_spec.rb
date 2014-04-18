@@ -7,21 +7,60 @@ describe SearchController, "routing" do
   end
 end
 
-# gitlab_api /api         Gitlab::API
-#     resque /info/resque Resque::Server
+# gitlab_api /api         API::API
 #            /:path       Grack
 describe "Mounted Apps", "routing" do
   it "to API" do
-    get("/api").should be_routable
-  end
-
-  it "to Resque" do
-    pending
-    get("/info/resque").should be_routable
+    get("/api/issues").should be_routable
   end
 
   it "to Grack" do
-    get("/gitlabhq.git").should be_routable
+    get("/gitlab/gitlabhq.git").should be_routable
+  end
+end
+
+#     snippets GET    /snippets(.:format)          snippets#index
+#          POST   /snippets(.:format)          snippets#create
+#  new_snippet GET    /snippets/new(.:format)      snippets#new
+# edit_snippet GET    /snippets/:id/edit(.:format) snippets#edit
+#      snippet GET    /snippets/:id(.:format)      snippets#show
+#          PUT    /snippets/:id(.:format)      snippets#update
+#          DELETE /snippets/:id(.:format)      snippets#destroy
+describe SnippetsController, "routing" do
+  it "to #user_index" do
+    get("/s/User").should route_to('snippets#user_index', username: 'User')
+  end
+
+  it "to #raw" do
+    get("/snippets/1/raw").should route_to('snippets#raw', id: '1')
+  end
+
+  it "to #index" do
+    get("/snippets").should route_to('snippets#index')
+  end
+
+  it "to #create" do
+    post("/snippets").should route_to('snippets#create')
+  end
+
+  it "to #new" do
+    get("/snippets/new").should route_to('snippets#new')
+  end
+
+  it "to #edit" do
+    get("/snippets/1/edit").should route_to('snippets#edit', id: '1')
+  end
+
+  it "to #show" do
+    get("/snippets/1").should route_to('snippets#show', id: '1')
+  end
+
+  it "to #update" do
+    put("/snippets/1").should route_to('snippets#update', id: '1')
+  end
+
+  it "to #destroy" do
+    delete("/snippets/1").should route_to('snippets#destroy', id: '1')
   end
 end
 
@@ -72,13 +111,6 @@ describe HelpController, "routing" do
   end
 end
 
-# errors_githost GET    /errors/githost(.:format) errors#githost
-describe ErrorsController, "routing" do
-  it "to #githost" do
-    get("/errors/githost").should route_to('errors#githost')
-  end
-end
-
 #             profile_account GET    /profile/account(.:format)             profile#account
 #             profile_history GET    /profile/history(.:format)             profile#history
 #            profile_password PUT    /profile/password(.:format)            profile#password_update
@@ -89,7 +121,7 @@ end
 #              profile_update PUT    /profile/update(.:format)              profile#update
 describe ProfilesController, "routing" do
   it "to #account" do
-    get("/profile/account").should route_to('profiles#account')
+    get("/profile/account").should route_to('profiles/accounts#show')
   end
 
   it "to #history" do
@@ -116,33 +148,62 @@ end
 #      key GET    /keys/:id(.:format)      keys#show
 #          PUT    /keys/:id(.:format)      keys#update
 #          DELETE /keys/:id(.:format)      keys#destroy
-describe KeysController, "routing" do
+describe Profiles::KeysController, "routing" do
   it "to #index" do
-    get("/keys").should route_to('keys#index')
+    get("/profile/keys").should route_to('profiles/keys#index')
   end
 
   it "to #create" do
-    post("/keys").should route_to('keys#create')
+    post("/profile/keys").should route_to('profiles/keys#create')
   end
 
   it "to #new" do
-    get("/keys/new").should route_to('keys#new')
+    get("/profile/keys/new").should route_to('profiles/keys#new')
   end
 
   it "to #edit" do
-    get("/keys/1/edit").should route_to('keys#edit', id: '1')
+    get("/profile/keys/1/edit").should route_to('profiles/keys#edit', id: '1')
   end
 
   it "to #show" do
-    get("/keys/1").should route_to('keys#show', id: '1')
+    get("/profile/keys/1").should route_to('profiles/keys#show', id: '1')
   end
 
   it "to #update" do
-    put("/keys/1").should route_to('keys#update', id: '1')
+    put("/profile/keys/1").should route_to('profiles/keys#update', id: '1')
   end
 
   it "to #destroy" do
-    delete("/keys/1").should route_to('keys#destroy', id: '1')
+    delete("/profile/keys/1").should route_to('profiles/keys#destroy', id: '1')
+  end
+
+  # get all the ssh-keys of a user
+  it "to #get_keys" do
+    get("/foo.keys").should route_to('profiles/keys#get_keys', username: 'foo')
+  end
+end
+
+#   emails GET    /emails(.:format)        emails#index
+#          POST   /keys(.:format)          emails#create
+#          DELETE /keys/:id(.:format)      keys#destroy
+describe Profiles::EmailsController, "routing" do
+  it "to #index" do
+    get("/profile/emails").should route_to('profiles/emails#index')
+  end
+
+  it "to #create" do
+    post("/profile/emails").should route_to('profiles/emails#create')
+  end
+
+  it "to #destroy" do
+    delete("/profile/emails/1").should route_to('profiles/emails#destroy', id: '1')
+  end
+end
+
+# profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
+describe Profiles::AvatarsController, "routing" do
+  it "to #destroy" do
+    delete("/profile/avatar").should route_to('profiles/avatars#destroy')
   end
 end
 
@@ -177,3 +238,14 @@ end
 describe "Authentication", "routing" do
   # pending
 end
+
+describe "Groups", "routing" do
+  it "to #show" do
+    get("/groups/1").should route_to('groups#show', id: '1')
+  end
+
+  it "also display group#show on the short path" do
+    get("/1").should route_to('groups#show', id: '1')
+  end
+end
+

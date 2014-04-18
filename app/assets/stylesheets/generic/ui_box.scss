@@ -1,0 +1,173 @@
+/**
+ * UI box:
+ * Block element for separating information on page.
+ * Used for storing issues lists, grouped data.
+ * You can have multiple ui boxes on one page
+ *
+ * Classes:
+ *   .ui-box   - for any block & widgets
+ *   .ui-box.ui-box-small - same but with smaller title
+ *   .ui-box.ui-box-danger - with red title
+ *
+ * Ex. 1: List
+ *   .ui-box
+ *     .title
+ *       # title here
+ *     %ul
+ *       # content here
+ *
+ * Ex. 2: Block data
+ *   .ui-box
+ *     .title
+ *       # title here
+ *     .body
+ *       # content here
+ *
+ */
+
+.ui-box {
+  background: #FFF;
+  margin-bottom: 20px;
+  border: 1px solid #DDD;
+  word-wrap: break-word;
+
+  img {
+    max-width: 100%;
+  }
+
+  pre {
+    code {
+      background: none !important;
+    }
+  }
+
+  ul {
+    margin: 0;
+    padding: 0;
+  }
+
+  .title {
+    background-color: #EEE;
+    border-bottom: 1px solid #DDD;
+    color: #666;
+    font-size: 16px;
+    text-shadow: 0 1px 1px #fff;
+    padding: 0 10px;
+    font-size: 14px;
+    line-height: 40px;
+    font-weight: normal;
+    margin: 0;
+
+    > a {
+      text-shadow: 0 1px 1px #fff;
+    }
+
+    form {
+      margin-bottom: 0;
+      margin-top: 0;
+    }
+
+    .btn {
+      vertical-align: middle;
+      padding: 4px 12px;
+      @include box-shadow(0 0px 1px 1px #f2f2f2);
+    }
+
+    .nav-pills {
+      > li {
+        > a {
+          padding: 13px;
+          margin: 0;
+          font-size: 13px;
+        }
+        &.active {
+          > a {
+            background: #D5D5D5;
+            color: $style_color;
+            @include border-radius(0);
+            border-radius: 0;
+            border-left: 1px solid #CCC;
+            border-right: 1px solid #CCC;
+          }
+        }
+      }
+    }
+  }
+
+  .body {
+    padding: 10px;
+  }
+
+  &.padded {
+    h5, .title {
+      margin: -20px;
+      margin-bottom: 0;
+      padding: 5px 20px;
+    }
+  }
+
+  .row_title {
+    font-weight: 500;
+    color: #444;
+    &:hover {
+      color: #444;
+      text-decoration: underline;
+    }
+  }
+
+  .form-holder {
+    padding-top: 20px;
+    form {
+      margin-bottom: 0;
+      legend {
+        text-indent: 10px;
+      }
+      .form-actions {
+        margin-bottom: 0;
+      }
+    }
+  }
+}
+
+/*
+ * Small box
+ */
+.ui-box.ui-box-small {
+  margin-bottom: 10px;
+
+  .title {
+    font-size: 13px;
+    line-height: 30px;
+
+    a {
+      color: #666;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+}
+
+/*
+ * Danger box
+ */
+.ui-box.ui-box-danger {
+  background: #f7f7f7;
+  border: none;
+
+  .title {
+    background: #D65;
+    color: #fff;
+    text-shadow: none;
+    font-weight: 500;
+  }
+}
+
+/*
+ * Block under tw-bootstrap tabs
+ */
+.tab-pane {
+  .ui-box {
+    margin: 3px 3px 25px 3px;
+  }
+}

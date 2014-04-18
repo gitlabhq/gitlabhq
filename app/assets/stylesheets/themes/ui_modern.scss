@@ -16,15 +16,22 @@
     @extend .header-dark;
     &.navbar-gitlab {
       .navbar-inner {
-        background: #567;
-        .app_logo {
+        background: #345;
+        border-bottom: 1px solid #234;
+        .app_logo, .navbar-toggle {
           &:hover {
-            background-color: #516171;
+            background-color: #234;
           }
         }
         .separator {
-          background: #456;
-          border-left: 1px solid #678;
+          background: #234;
+          border-left: 1px solid #456;
+        }
+        .nav > li > a {
+          color: #89A;
+        }
+        .search-input {
+          border-color: #89A;
         }
       }
     }

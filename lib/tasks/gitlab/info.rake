@@ -4,26 +4,27 @@ namespace :gitlab do
     task info: :environment  do
 
       # check if there is an RVM environment
-      rvm_version = run_and_match("rvm --version", /[\d\.]+/).try(:to_s)
+      rvm_version = run_and_match(%W(rvm --version), /[\d\.]+/).try(:to_s)
       # check Ruby version
-      ruby_version = run_and_match("ruby --version", /[\d\.p]+/).try(:to_s)
+      ruby_version = run_and_match(%W(ruby --version), /[\d\.p]+/).try(:to_s)
       # check Gem version
-      gem_version = run("gem --version")
+      gem_version = run(%W(gem --version))
       # check Bundler version
-      bunder_version = run_and_match("bundle --version", /[\d\.]+/).try(:to_s)
+      bunder_version = run_and_match(%W(bundle --version), /[\d\.]+/).try(:to_s)
       # check Bundler version
-      rake_version = run_and_match("rake --version", /[\d\.]+/).try(:to_s)
+      rake_version = run_and_match(%W(rake --version), /[\d\.]+/).try(:to_s)
 
       puts ""
       puts "System information".yellow
       puts "System:\t\t#{os_name || "unknown".red}"
-      puts "Current User:\t#{`whoami`}"
+      puts "Current User:\t#{run(%W(whoami))}"
       puts "Using RVM:\t#{rvm_version.present? ? "yes".green : "no"}"
       puts "RVM Version:\t#{rvm_version}" if rvm_version.present?
       puts "Ruby Version:\t#{ruby_version || "unknown".red}"
       puts "Gem Version:\t#{gem_version || "unknown".red}"
       puts "Bundler Version:#{bunder_version || "unknown".red}"
       puts "Rake Version:\t#{rake_version || "unknown".red}"
+      puts "Sidekiq Version:#{Sidekiq::VERSION}"
 
 
       # check database adapter
@@ -54,7 +55,7 @@ namespace :gitlab do
 
 
       # check Gitolite version
-      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.repos_path}/../gitlab-shell/VERSION"
+      gitlab_shell_version_file = "#{Gitlab.config.gitlab_shell.hooks_path}/../VERSION"
       if File.readable?(gitlab_shell_version_file)
         gitlab_shell_version = File.read(gitlab_shell_version_file)
       end

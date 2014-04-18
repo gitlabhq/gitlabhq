@@ -1,0 +1,22 @@
+.dropdown.inline.prepend-left-10
+  %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+    %span.light sort:
+    - if @sort.present?
+      = @sort
+    - else
+      Newest
+    %b.caret
+  %ul.dropdown-menu
+    %li
+      = link_to project_filter_path(sort: 'newest') do
+        Newest
+      = link_to project_filter_path(sort: 'oldest') do
+        Oldest
+      = link_to project_filter_path(sort: 'recently_updated') do
+        Recently updated
+      = link_to project_filter_path(sort: 'last_updated') do
+        Last updated
+      = link_to project_filter_path(sort: 'milestone_due_soon') do
+        Milestone due soon
+      = link_to project_filter_path(sort: 'milestone_due_later') do
+        Milestone due later

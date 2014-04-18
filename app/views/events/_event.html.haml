@@ -1,14 +1,13 @@
 - if event.proper?
-  %div.event-item
+  .event-item{class: "#{event.body? ? "event-block" : "event-inline" }"}
     %span.cgray.pull-right
-      #{time_ago_in_words(event.created_at)} ago.
+      #{time_ago_with_tooltip(event.created_at)}
 
     = cache event do
-      = image_tag gravatar_icon(event.author_email), class: "avatar s24"
+      = image_tag avatar_icon(event.author_email, 24), class: "avatar s24", alt:''
 
       - if event.push?
         = render "events/event/push", event: event
-        .clearfix
       - elsif event.note?
         = render "events/event/note", event: event
       - else

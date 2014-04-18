@@ -18,6 +18,10 @@ class ProjectTransferService
         raise TransferError.new("Project with same path in target namespace already exists")
       end
 
+      # Remove old satellite
+      project.satellite.destroy
+
+      # Apply new namespace id
       project.namespace = new_namespace
       project.save!
 
@@ -28,6 +32,12 @@ class ProjectTransferService
 
       # Move wiki repo also if present
       gitlab_shell.mv_repository("#{old_path}.wiki", "#{new_path}.wiki")
+
+      # Create a new satellite (reload project from DB)
+      Project.find(project.id).ensure_satellite_exists
+
+      # clear project cached events
+      project.reset_events_cache
 
       true
     end

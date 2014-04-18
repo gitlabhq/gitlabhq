@@ -10,12 +10,11 @@ class UserObserver < BaseObserver
   end
 
   def after_save user
+    # Ensure user has namespace
+    user.create_namespace!(path: user.username, name: user.username) unless user.namespace
+
     if user.username_changed?
-      if user.namespace
-        user.namespace.update_attributes(path: user.username)
-      else
-        user.create_namespace!(path: user.username, name: user.username)
-      end
+      user.namespace.update_attributes(path: user.username, name: user.username)
     end
   end
 end

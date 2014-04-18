@@ -1,4 +1,0 @@
-.ui-box
-  %ul.well-list
-    - assigned_teams.sort_by(&:team_name).each do |team_relation|
-      = render "team_members/assigned_team", team_relation: team_relation, team: team_relation.user_team

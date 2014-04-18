@@ -13,4 +13,10 @@ Feature: Admin Users
     And Input non ascii char in username
     And Click save
     Then See username error message
-    And Not chenged form action url
+    And Not changed form action url
+
+  Scenario: Edit my user attributes
+    Given I visit admin users page
+    And click edit on my user
+    When I submit modified user
+    Then I see user attributes changed

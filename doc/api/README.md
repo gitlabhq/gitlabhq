@@ -1,5 +1,32 @@
 # GitLab API
 
+## Resources
+
++ [Users](users.md)
++ [Session](session.md)
++ [Projects](projects.md)
++ [Project Snippets](project_snippets.md)
++ [Repositories](repositories.md)
++ [Repository Files](repository_files.md)
++ [Commits](commits.md)
++ [Branches](branches.md)
++ [Merge Requests](merge_requests.md)
++ [Issues](issues.md)
++ [Milestones](milestones.md)
++ [Notes](notes.md)
++ [Deploy Keys](deploy_keys.md)
++ [System Hooks](system_hooks.md)
++ [Groups](groups.md)
+
+## Clients
+
++ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
++ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
++ [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
++ [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
+
+## Introduction
+
 All API requests require authentication. You need to pass a `private_token` parameter by url or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
 
 If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
@@ -58,24 +85,66 @@ Return values:
 * `409 Conflict` - A conflicting resource already exists, e.g. creating a project with a name that already exists
 * `500 Server Error` - While handling the request something went wrong on the server side
 
+## Sudo
+All API requests support performing an api call as if you were another user, if your private token is for an administration account. You need to pass  `sudo` parameter by url or header with an id or username of the user you want to perform the operation as. If passed as header, the header name must be "SUDO" (capitals).
+
+If a non administrative `private_token` is provided then an error message will be returned with status code 403:
+
+```json
+{
+  "message": "403 Forbidden: Must be admin to use sudo"
+}
+```
+
+If the sudo user id or username cannot be found then an error message will be returned with status code 404:
+
+```json
+{
+  "message": "404 Not Found: No user id or username for: <id/username>"
+}
+```
+
+Example of a valid API with sudo request:
+
+```
+GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=username
+```
+```
+GET http://example.com/api/v3/projects?private_token=QVy1PB7sTxfy4pqfZM1U&sudo=23
+```
 
 
-#### Pagination
+Example for a valid API request with sudo using curl and authentication via header:
+
+```
+curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: username" "http://example.com/api/v3/projects"
+```
+```
+curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" --header "SUDO: 23" "http://example.com/api/v3/projects"
+```
+
+## Pagination
 
 When listing resources you can pass the following parameters:
 
 + `page` (default: `1`) - page number
 + `per_page` (default: `20`, max: `100`) - number of items to list per page
 
-## Contents
+[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response.
+These have `rel` prev/next/first/last and contain the relevant url.
+Please use these instead of generating your own urls.
 
-+ [Users](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/users.md)
-+ [Session](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/session.md)
-+ [Projects](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/projects.md)
-+ [Groups](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/groups.md)
-+ [Snippets](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/snippets.md)
-+ [Repositories](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/repositories.md)
-+ [Issues](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/issues.md)
-+ [Milestones](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/milestones.md)
-+ [Notes](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/notes.md)
-+ [System Hooks](https://github.com/gitlabhq/gitlabhq/blob/master/doc/api/system_hooks.md)
+## id vs iid
+
+When you work with API you may notice two similar fields in api entites: id and iid. 
+The main difference between them is scope. Example: 
+
+Issue 
+  id: 46
+  iid: 5
+
+* id - is uniq across all Issues table. It used for any api calls. 
+* iid - is uniq only in scope of single project. When you browse issues or merge requests with Web UI - you see iid. 
+
+So if you want to get issue with api you use `http://host/api/v3/.../issues/:id.json`
+But when you want to create a link to web page - use  `http:://host/project/issues/:iid.json`

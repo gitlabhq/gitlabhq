@@ -1,8 +1,8 @@
 .flash-container
   - if alert
-    .alert
-      %span= alert
+    .flash-alert
+      = alert
 
   - elsif notice
-    .alert.alert-info
-      %span= notice
+    .flash-notice
+      = notice

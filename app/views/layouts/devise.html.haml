@@ -5,4 +5,13 @@
     = render "layouts/flash"
     .container
       .content
+        %center
+          %h1 GitLab
+          %p.light
+            GitLab is open source software to collaborate on code.
+            %br
+            #{link_to "Sign in", new_user_session_path} or browse for #{link_to "public projects", public_projects_path}.
+    %hr
+    .container
+      .content
         = yield

@@ -7,18 +7,21 @@
 #  project_id  :integer          not null
 #  description :text
 #  due_date    :date
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  state       :string(255)
+#  iid         :integer
 #
 
 class Milestone < ActiveRecord::Base
-  attr_accessible :title, :description, :due_date, :state_event, :author_id_of_changes
-  attr_accessor :author_id_of_changes
+  include InternalId
+
+  attr_accessible :title, :description, :due_date, :state_event
 
   belongs_to :project
   has_many :issues
   has_many :merge_requests
+  has_many :participants, through: :issues, source: :assignee
 
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
@@ -48,10 +51,6 @@ class Milestone < ActiveRecord::Base
     end
   end
 
-  def participants
-    User.where(id: issues.pluck(:assignee_id))
-  end
-
   def open_items_count
     self.issues.opened.count + self.merge_requests.opened.count
   end
@@ -75,9 +74,9 @@ class Milestone < ActiveRecord::Base
       if due_date.past?
         "expired at #{due_date.stamp("Aug 21, 2011")}"
       else
-        "expires at #{due_date.stamp("Aug 21, 2011")}"  
+        "expires at #{due_date.stamp("Aug 21, 2011")}"
       end
-    end  
+    end
   end
 
   def can_be_closed?
@@ -89,6 +88,6 @@ class Milestone < ActiveRecord::Base
   end
 
   def author_id
-    author_id_of_changes
+    nil
   end
 end

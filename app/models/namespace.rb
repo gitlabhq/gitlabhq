@@ -5,11 +5,12 @@
 #  id          :integer          not null, primary key
 #  name        :string(255)      not null
 #  path        :string(255)      not null
-#  owner_id    :integer          not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  owner_id    :integer
+#  created_at  :datetime
+#  updated_at  :datetime
 #  type        :string(255)
 #  description :string(255)      default(""), not null
+#  avatar      :string(255)
 #
 
 class Namespace < ActiveRecord::Base
@@ -20,13 +21,14 @@ class Namespace < ActiveRecord::Base
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
 
-  validates :owner, presence: true
+  validates :owner, presence: true, unless: ->(n) { n.type == "Group" }
   validates :name, presence: true, uniqueness: true,
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.name_regex,
                       message: "only letters, digits, spaces & '_' '-' '.' allowed." }
   validates :description, length: { within: 0..255 }
-  validates :path, uniqueness: true, presence: true, length: { within: 1..255 },
+  validates :path, uniqueness: { case_sensitive: false }, presence: true, length: { within: 1..255 },
+            exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
 
@@ -44,6 +46,14 @@ class Namespace < ActiveRecord::Base
 
   def self.global_id
     'GLN'
+  end
+  
+  def projects_accessible_to(user)
+    projects.accessible_to(user)
+  end
+  
+  def has_projects_accessible_to?(user)
+    projects_accessible_to(user).present?
   end
 
   def to_param
@@ -72,7 +82,7 @@ class Namespace < ActiveRecord::Base
         gitlab_shell.rm_satellites(path_was)
         send_update_instructions
       rescue
-        # Returning false does not rolback after_* transaction but gives
+        # Returning false does not rollback after_* transaction but gives
         # us information about failing some of tasks
         false
       end
@@ -85,5 +95,9 @@ class Namespace < ActiveRecord::Base
 
   def send_update_instructions
     projects.each(&:send_move_instructions)
+  end
+
+  def kind
+    type == 'Group' ? 'group' : 'user'
   end
 end

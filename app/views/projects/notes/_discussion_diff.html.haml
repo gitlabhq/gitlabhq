@@ -1,0 +1,26 @@
+- diff = note.diff
+- if diff
+  .diff-file
+    .diff-header
+      - if diff.deleted_file
+        %span= diff.old_path
+      - else
+        %span= diff.new_path
+        - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+          %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+      %br/
+    .diff-content
+      %table
+        - each_diff_line_near(diff, note.diff_file_index, note.line_code) do |line, type, line_code, line_new, line_old|
+          %tr.line_holder{ id: line_code }
+            - if type == "match"
+              %td.old_line= "..."
+              %td.new_line= "..."
+              %td.line_content.matched= line
+            - else
+              %td.old_line= raw(type == "new" ? "&nbsp;" : line_old)
+              %td.new_line= raw(type == "old" ? "&nbsp;" : line_new)
+              %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
+
+              - if line_code == note.line_code
+                = render "projects/notes/diff_notes_with_reply", notes: discussion_notes

@@ -1,43 +1,51 @@
 ## List merge requests
 
-Get all merge requests for this project. This function takes pagination parameters
-`page` and `per_page` to restrict the list of merge requests.
+Get all merge requests for this project.
+The `state` parameter can be used to get only merge requests with a
+given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to restrict the
+list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
+GET /projects/:id/merge_requests?state=opened
+GET /projects/:id/merge_requests?state=all
 ```
 
 Parameters:
 
 + `id` (required) - The ID of a project
++ `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
 
 ```json
 [
-    {
-        "id":1,
-        "target_branch":"master",
-        "source_branch":"test1",
-        "project_id":3,
-        "title":"test1",
-        "closed":true,
-        "merged":false,
-        "author":{
-            "id":1,
-            "username": "admin",
-            "email":"admin@local.host",
-            "name":"Administrator",
-            "blocked":false,
-            "created_at":"2012-04-29T08:46:00Z"
-        },
-        "assignee":{
-            "id":1,
-            "username": "admin",
-            "email":"admin@local.host",
-            "name":"Administrator",
-            "blocked":false,
-            "created_at":"2012-04-29T08:46:00Z"
-        }
+  {
+    "id": 1,
+    "iid": 1,
+    "target_branch": "master",
+    "source_branch": "test1",
+    "project_id": 3,
+    "title": "test1",
+    "state": "opened",
+    "upvotes": 0,
+    "downvotes": 0,
+    "author": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
+    },
+    "assignee": {
+      "id": 1,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2012-04-29T08:46:00Z"
     }
+  }
 ]
 ```
 
@@ -57,29 +65,31 @@ Parameters:
 
 ```json
 {
-    "id":1,
-    "target_branch":"master",
-    "source_branch":"test1",
-    "project_id":3,
-    "title":"test1",
-    "closed":true,
-    "merged":false,
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "assignee":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    }
+  "id": 1,
+  "iid": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "merged",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
 }
 ```
 
@@ -97,34 +107,35 @@ Parameters:
 + `id` (required) - The ID of a project
 + `source_branch` (required) - The source branch
 + `target_branch` (required) - The target branch
-+ `assignee_id`              - Assignee user ID
++ `assignee_id` (optional)   - Assignee user ID
 + `title` (required)         - Title of MR
 
 ```json
 {
-    "id":1,
-    "target_branch":"master",
-    "source_branch":"test1",
-    "project_id":3,
-    "title":"test1",
-    "closed":true,
-    "merged":false,
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "assignee":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    }
+  "id": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "opened",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
 }
 ```
 
@@ -145,34 +156,34 @@ Parameters:
 + `target_branch`               - The target branch
 + `assignee_id`                 - Assignee user ID
 + `title`                       - Title of MR
-+ `closed`                      - Status of MR. true - closed
-
++ `state_event`                 - New state (close|reopen|merge)
 
 ```json
 {
-    "id":1,
-    "target_branch":"master",
-    "source_branch":"test1",
-    "project_id":3,
-    "title":"test1",
-    "closed":true,
-    "merged":false,
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "assignee":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    }
+  "id": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "opened",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
 }
 ```
 
@@ -194,14 +205,55 @@ Parameters:
 
 ```json
 {
-    "author":{
-        "id":1,
-        "username": "admin",
-        "email":"admin@local.host",
-        "name":"Administrator",
-        "blocked":false,
-        "created_at":"2012-04-29T08:46:00Z"
-    },
-    "note":"text1"
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "blocked": false,
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "note": "text1"
 }
+```
+
+
+## Get the comments on a MR
+
+Gets all the comments associated with a merge request.
+
+```
+GET /projects/:id/merge_request/:merge_request_id/comments
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge_request_id` (required) - ID of merge request
+
+```json
+[
+  {
+    "note": "this is the 1st comment on the 2merge merge request",
+    "author": {
+      "id": 11,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2014-03-06T08:17:35.000Z"
+    }
+  },
+  {
+    "note": "_Status changed to closed_",
+    "author": {
+      "id": 11,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2014-03-06T08:17:35.000Z"
+    }
+  }
+]
 ```

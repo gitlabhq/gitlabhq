@@ -5,6 +5,7 @@ Feature: Project Feature
     And project "Shop" has push event
     And I visit project "Shop" page
 
+  @javascript
   Scenario: I should see project activity
     When I visit project "Shop" page
     Then I should see project "Shop" activity feed
@@ -18,3 +19,8 @@ Feature: Project Feature
     And change project settings
     And I save project
     Then I should see project with new settings
+
+  Scenario: I change project path
+    When I visit edit project "Shop" page
+    And change project path settings
+    Then I should see project with new path settings

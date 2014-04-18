@@ -7,9 +7,10 @@
 #  project_id  :integer          not null
 #  description :text
 #  due_date    :date
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  created_at  :datetime
+#  updated_at  :datetime
 #  state       :string(255)
+#  iid         :integer
 #
 
 require 'spec_helper'
@@ -25,6 +26,7 @@ describe Milestone do
   end
 
   describe "Validation" do
+    before { subject.stub(set_iid: false) }
     it { should validate_presence_of(:title) }
     it { should validate_presence_of(:project) }
   end
@@ -39,7 +41,6 @@ describe Milestone do
     end
 
     it "should count closed issues" do
-      IssueObserver.current_user = issue.author
       issue.close
       milestone.issues << issue
       milestone.percent_complete.should == 100
@@ -128,13 +129,13 @@ describe Milestone do
       issue = create :issue
     end
 
-    it 'should be true if milestone active and all nestied issues closed' do
+    it 'should be true if milestone active and all nested issues closed' do
       milestone.can_be_closed?.should be_true
     end
 
-    it 'should be false if milestone active and not all nestied issues closed' do
+    it 'should be false if milestone active and not all nested issues closed' do
       issue.milestone = milestone
-      issue.save 
+      issue.save
 
       milestone.can_be_closed?.should be_false
     end

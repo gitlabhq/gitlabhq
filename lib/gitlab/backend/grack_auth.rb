@@ -2,7 +2,8 @@ require_relative 'shell_env'
 
 module Grack
   class Auth < Rack::Auth::Basic
-    attr_accessor :user, :project
+
+    attr_accessor :user, :project, :env
 
     def call(env)
       @env = env
@@ -10,102 +11,120 @@ module Grack
       @auth = Request.new(env)
 
       # Need this patch due to the rails mount
-      @env['PATH_INFO'] = @request.path
+
+      # Need this if under RELATIVE_URL_ROOT
+      unless Gitlab.config.gitlab.relative_url_root.empty?
+        # If website is mounted using relative_url_root need to remove it first
+        @env['PATH_INFO'] = @request.path.sub(Gitlab.config.gitlab.relative_url_root,'')
+      else
+        @env['PATH_INFO'] = @request.path
+      end
+
       @env['SCRIPT_NAME'] = ""
 
-      return render_not_found unless project
-      return unauthorized unless project.public || @auth.provided?
-      return bad_request if @auth.provided? && !@auth.basic?
+      if project
+        auth!
+      else
+        render_not_found
+      end
+    end
 
-      if valid?
-        if @auth.provided?
+    private
+
+    def auth!
+      if @auth.provided?
+        return bad_request unless @auth.basic?
+
+        # Authentication with username and password
+        login, password = @auth.credentials
+
+        # Allow authentication for GitLab CI service
+        # if valid token passed
+        if gitlab_ci_request?(login, password)
+          return @app.call(env)
+        end
+
+        @user = authenticate_user(login, password)
+
+        if @user
+          Gitlab::ShellEnv.set_env(@user)
           @env['REMOTE_USER'] = @auth.username
         end
-        return @app.call(env)
+      end
+
+      if authorized_request?
+        @app.call(env)
       else
         unauthorized
       end
     end
 
-    def valid?
-      if @auth.provided?
-        # Authentication with username and password
-        login, password = @auth.credentials
-        self.user = User.find_by_email(login) || User.find_by_username(login)
-        return false unless user.try(:valid_password?, password)
+    def gitlab_ci_request?(login, password)
+      if login == "gitlab-ci-token" && project.gitlab_ci?
+        token = project.gitlab_ci_service.token
 
-        Gitlab::ShellEnv.set_env(user)
+        if token.present? && token == password && git_cmd == 'git-upload-pack'
+          return true
+        end
       end
 
-      # Git upload and receive
+      false
+    end
+
+    def authenticate_user(login, password)
+      auth = Gitlab::Auth.new
+      auth.find(login, password)
+    end
+
+    def authorized_request?
+      case git_cmd
+      when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
+        if user
+          Gitlab::GitAccess.new.download_allowed?(user, project)
+        elsif project.public?
+          # Allow clone/fetch for public projects
+          true
+        else
+          false
+        end
+      when *Gitlab::GitAccess::PUSH_COMMANDS
+        if user
+          # Skip user authorization on upload request.
+          # It will be serverd by update hook in repository
+          true
+        else
+          false
+        end
+      else
+        false
+      end
+    end
+
+    def git_cmd
       if @request.get?
-        validate_get_request
+        @request.params['service']
       elsif @request.post?
-        validate_post_request
+        File.basename(@request.path)
       else
-        false
+        nil
       end
-    end
-
-    def validate_get_request
-      project.public || can?(user, :download_code, project)
-    end
-
-    def validate_post_request
-      if @request.path_info.end_with?('git-upload-pack')
-        project.public || can?(user, :download_code, project)
-      elsif @request.path_info.end_with?('git-receive-pack')
-        action = if project.protected_branch?(current_ref)
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
-                 end
-
-        can?(user, action, project)
-      else
-        false
-      end
-    end
-
-    def can?(object, action, subject)
-      abilities.allowed?(object, action, subject)
-    end
-
-    def current_ref
-      if @env["HTTP_CONTENT_ENCODING"] =~ /gzip/
-        input = Zlib::GzipReader.new(@request.body).read
-      else
-        input = @request.body.read
-      end
-      # Need to reset seek point
-      @request.body.rewind
-      /refs\/heads\/([\w\.-]+)/.match(input).to_a.last
     end
 
     def project
-      unless instance_variable_defined? :@project
-        # Find project by PATH_INFO from env
-        if m = /^\/([\w\.\/-]+)\.git/.match(@request.path_info).to_a
-          @project = Project.find_with_namespace(m.last)
-        end
-      end
-      return @project
+      @project ||= project_by_path(@request.path_info)
     end
 
-    PLAIN_TYPE = {"Content-Type" => "text/plain"}
+    def project_by_path(path)
+      if m = /^([\w\.\/-]+)\.git/.match(path).to_a
+        path_with_namespace = m.last
+        path_with_namespace.gsub!(/\.wiki$/, '')
+
+        Project.find_with_namespace(path_with_namespace)
+      end
+    end
 
     def render_not_found
-      [404, PLAIN_TYPE, ["Not Found"]]
+      [404, {"Content-Type" => "text/plain"}, ["Not Found"]]
     end
-
-    protected
-
-    def abilities
-      @abilities ||= begin
-                       abilities = Six.new
-                       abilities << Ability
-                       abilities
-                     end
-    end
-  end# Auth
-end# Grack
+  end
+end

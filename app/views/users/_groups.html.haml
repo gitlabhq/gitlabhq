@@ -1,0 +1,3 @@
+- groups.each do |group|
+  = link_to group, class: 'profile-groups-avatars', :title => group.name do
+    = image_tag group_icon(group.path)

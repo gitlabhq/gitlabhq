@@ -1,24 +1,13 @@
-%h3.page_title
+%h3.page-title
   Issues
-  %small (assigned to you)
-  %small.pull-right #{@issues.total_count} issues
+  %span.pull-right #{@issues.total_count} issues
 
+%p.light
+  List all issues from all projects you have access to.
 %hr
 
 .row
-  .span3
-    = render 'filter', entity: 'issue'
-  .span9
-    - if @issues.any?
-      - @issues.group_by(&:project).each do |group|
-        %div.ui-box
-          - project = group[0]
-          %h5.title
-            = link_to_project project
-          %ul.well-list.issues_table
-            - group[1].each do |issue|
-              = render issue
-      %hr
-      = paginate @issues, theme: "gitlab"
-    - else
-      %p.nothing_here_message Nothing to show here
+  .col-md-3
+    = render 'shared/filter', entity: 'issue'
+  .col-md-9
+    = render 'shared/issues'

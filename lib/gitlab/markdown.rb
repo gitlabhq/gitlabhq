@@ -7,6 +7,7 @@ module Gitlab
   # Supported reference formats are:
   #   * @foo for team members
   #   * #123 for issues
+  #   * #JIRA-123 for Jira issues
   #   * !123 for merge requests
   #   * $123 for snippets
   #   * 123456 for commits
@@ -62,7 +63,7 @@ module Gitlab
         insert_piece($1)
       end
 
-      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class)
+      sanitize text.html_safe, attributes: ActionView::Base.sanitized_allowed_attributes + %w(id class), tags: ActionView::Base.sanitized_allowed_tags + %w(table tr td th)
     end
 
     private
@@ -97,10 +98,11 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
-        |\#(?<issue>\d+)                     # Issue ID
+        |\#(?<issue>([a-zA-Z\-]+-)?\d+)      # Issue ID
         |!(?<merge_request>\d+)              # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
         |(?<commit>[\h]{6,40})               # Commit ID
+        |(?<skip>gfm-extraction-[\h]{6,40})  # Skip gfm extractions. Otherwise will be parsed as commit
       )
       (?<suffix>\W)?                         # Suffix
     }x.freeze
@@ -113,13 +115,18 @@ module Gitlab
         prefix     = $~[:prefix]
         suffix     = $~[:suffix]
         type       = TYPES.select{|t| !$~[t].nil?}.first
-        identifier = $~[type]
 
-        # Avoid HTML entities
-        if prefix && suffix && prefix[0] == '&' && suffix[-1] == ';'
-          match
-        elsif ref_link = reference_link(type, identifier)
-          "#{prefix}#{ref_link}#{suffix}"
+        if type
+          identifier = $~[type]
+
+          # Avoid HTML entities
+          if prefix && suffix && prefix[0] == '&' && suffix[-1] == ';'
+            match
+          elsif ref_link = reference_link(type, identifier)
+            "#{prefix}#{ref_link}#{suffix}"
+          else
+            match
+          end
         else
           match
         end
@@ -145,7 +152,7 @@ module Gitlab
     #
     # Returns boolean
     def valid_emoji?(emoji)
-      Emoji.names.include? emoji
+      Emoji.find_by_name emoji
     end
 
     # Private: Dispatches to a dedicated processing method based on reference
@@ -159,8 +166,8 @@ module Gitlab
     end
 
     def reference_user(identifier)
-      if member = @project.users_projects.joins(:user).where(users: { username: identifier }).first
-        link_to("@#{identifier}", user_path(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}")) if member
+      if user = User.find_by_username(identifier)
+        link_to("@#{identifier}", user_url(identifier), html_options.merge(class: "gfm gfm-team_member #{html_options[:class]}"))
       end
     end
 
@@ -174,7 +181,7 @@ module Gitlab
     end
 
     def reference_merge_request(identifier)
-      if merge_request = @project.merge_requests.where(id: identifier).first
+      if merge_request = @project.merge_requests.where(iid: identifier).first
         link_to("!#{identifier}", project_merge_request_url(@project, merge_request), html_options.merge(title: "Merge Request: #{merge_request.title}", class: "gfm gfm-merge_request #{html_options[:class]}"))
       end
     end

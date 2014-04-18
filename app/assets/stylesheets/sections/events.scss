@@ -31,33 +31,59 @@
  *
  */
 .event-item {
+  &:first-child {
+    padding-top: 0;
+  }
+
+  &.event-inline {
+    .avatar {
+      position: relative;
+      top: -2px;
+    }
+  }
+
+  padding: 12px 0px;
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
-    font-weight: bold;
+    font-weight: normal;
+    font-size: 14px;
     .author_name {
       color: #333;
     }
   }
   .event-body {
-    .commit p {
-      color: #555;
-      padding-top: 5px;
-    }
+    margin-left: 35px;
+    margin-right: 100px;
+
     .event-info {
       color: #666;
     }
     .event-note {
-      color: #555;
+      color: #666;
       margin-top: 5px;
-      margin-left: 40px;
 
-      .note-file-attach {
-        .note-image-attach {
-          margin-top: 4px;
-          margin-left: 0px;
-          max-width: 200px;
-        }
+      .md {
+        font-size: 13px;
+      }
+
+      pre {
+        border: none;
+        background: #f9f9f9;
+        border-radius: 0;
+        color: #666;
+        margin: 0 20px;
+      }
+
+      .note-image-attach {
+        margin-top: 4px;
+        margin-left: 0px;
+        max-width: 200px;
+        float: none;
+      }
+
+      p:last-child {
+        margin-bottom: 0;
       }
     }
     .event-note-icon {
@@ -67,10 +93,6 @@
       line-height: 16px;
       margin-right: 5px;
     }
-  }
-  .avatar {
-    position: relative;
-    top: -3px;
   }
   .event_icon {
     position: relative;
@@ -85,16 +107,7 @@
       width: 20px;
     }
   }
-  ul {
-    margin-left: 50px;
-    margin-bottom: 5px;
-    .avatar {
-      width: 18px;
-      margin-top: 3px;
-    }
-  }
 
-  padding: 16px 5px;
   &:last-child { border:none }
 
   .event_commits {
@@ -104,38 +117,23 @@
       &.commit {
         background: transparent;
         padding: 3px;
+        padding-left: 0;
         border: none;
-        font-size: 12px;
+        color: #666;
+        .commit-row-title {
+          font-size: 12px;
+        }
       }
       &.commits-stat {
         display: block;
-        margin-top: 5px;
+        padding: 3px;
+        padding-left: 0;
+
+        &:hover {
+          background: none;
+        }
       }
     }
-  }
-}
-
-/**
- * Push event widget
- *
- */
-.event_lp {
-  color: #777;
-  padding: 10px;
-  min-height: 22px;
-  border-left: 5px solid #5AB9C3;
-  margin-bottom: 20px;
-  background: #f9f9f9;
-
-  .avatar {
-    width: 24px;
-  }
-
-  .btn-new-mr {
-    @extend .btn-info;
-    @extend .small;
-    @extend .pull-right;
-    margin: -3px;
   }
 }
 
@@ -151,19 +149,19 @@
   .filter_icon {
     a {
       text-align:center;
-      border-left: 3px solid #29B;
-      background: #f9f9f9;
+      background: #EEE;
       margin-bottom: 10px;
       float: left;
-      padding: 9px 7px;
+      padding: 9px 6px;
       font-size: 18px;
-      width: 26px;
+      width: 40px;
+      @include border-radius(3px);
     }
 
     &.inactive {
       a {
         color: #DDD;
-        border-left: 3px solid #EEE;
+        background: #f9f9f9;
       }
     }
   }

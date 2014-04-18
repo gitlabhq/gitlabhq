@@ -11,7 +11,9 @@ describe Issue, "Issuable" do
   end
 
   describe "Validation" do
+    before { subject.stub(set_iid: false) }
     it { should validate_presence_of(:project) }
+    it { should validate_presence_of(:iid) }
     it { should validate_presence_of(:author) }
     it { should validate_presence_of(:title) }
     it { should ensure_length_of(:title).is_at_least(0).is_at_most(255) }
@@ -23,16 +25,11 @@ describe Issue, "Issuable" do
     it { described_class.should respond_to(:assigned) }
   end
 
-  it "has an :author_id_of_changes accessor" do
-    issue.should respond_to(:author_id_of_changes)
-    issue.should respond_to(:author_id_of_changes=)
-  end
-
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it "matches by title" do
-      described_class.search('able').all.should == [searchable_issue]
+      described_class.search('able').should == [searchable_issue]
     end
   end
 

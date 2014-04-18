@@ -1,7 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API, api: true  do
   include ApiHelpers
+  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
+  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:user) { create(:user) }
   let(:key) { create(:key, user: user) }
@@ -12,7 +14,7 @@ describe Gitlab::API do
       get api("/internal/check")
 
       response.status.should == 200
-      json_response['api_version'].should == Gitlab::API.version
+      json_response['api_version'].should == API::API.version
     end
   end
 
@@ -100,6 +102,59 @@ describe Gitlab::API do
         end
       end
     end
+
+    context "archived project" do
+      let(:personal_project) { create(:project, namespace: user.namespace) }
+
+      before do
+        project.team << [user, :developer]
+        project.archive!
+      end
+
+      context "git pull" do
+        it do
+          pull(key, project)
+
+          response.status.should == 200
+          response.body.should == 'true'
+        end
+      end
+
+      context "git push" do
+        it do
+          push(key, project)
+
+          response.status.should == 200
+          response.body.should == 'false'
+        end
+      end
+    end
+
+    context "deploy key" do
+      let(:key) { create(:deploy_key) }
+
+      context "added to project" do
+        before do
+          key.projects << project
+        end
+
+        it do
+          archive(key, project)
+
+          response.status.should == 200
+          response.body.should == 'true'
+        end
+      end
+
+      context "not added to project" do
+        it do
+          archive(key, project)
+
+          response.status.should == 200
+          response.body.should == 'false'
+        end
+      end
+    end
   end
 
   def pull(key, project)
@@ -119,6 +174,16 @@ describe Gitlab::API do
       key_id: key.id,
       project: project.path_with_namespace,
       action: 'git-receive-pack'
+    )
+  end
+
+  def archive(key, project)
+    get(
+      api("/internal/allowed"),
+      ref: 'master',
+      key_id: key.id,
+      project: project.path_with_namespace,
+      action: 'git-upload-archive'
     )
   end
 end

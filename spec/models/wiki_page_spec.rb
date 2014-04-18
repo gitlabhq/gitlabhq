@@ -2,12 +2,6 @@ require "spec_helper"
 
 describe WikiPage do
 
-  def create_temp_repo(path)
-    FileUtils.mkdir_p path
-    command = "git init --quiet #{path};"
-    system(command)
-  end
-
   def remove_temp_repo(path)
     FileUtils.rm_rf path
   end
@@ -28,7 +22,7 @@ describe WikiPage do
   let(:project) { create(:project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
-  let(:wiki) { GollumWiki.new(project, user) }
+  let(:wiki) { ProjectWiki.new(project, user) }
 
   subject { WikiPage.new(wiki) }
 
@@ -158,6 +152,22 @@ describe WikiPage do
     it "returns an array of all commits for the page" do
       3.times { |i| @page.update("content #{i}") }
       @page.versions.count.should == 4
+    end
+  end
+
+  describe "#title" do
+    before do
+      create_page("Title", "content")
+      @page = wiki.find_page("Title")
+    end
+
+    after do
+      destroy_page("Title")
+    end
+
+    it "should be replace a hyphen to a space" do
+      @page.title = "Import-existing-repositories-into-GitLab"
+      @page.title.should == "Import existing repositories into GitLab"
     end
   end
 

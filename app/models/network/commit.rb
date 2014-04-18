@@ -1,18 +1,14 @@
-require "grit"
-
 module Network
   class Commit
     include ActionView::Helpers::TagHelper
 
-    attr_reader :refs
     attr_accessor :time, :spaces, :parent_spaces
 
-    def initialize(raw_commit, refs)
-      @commit = Gitlab::Git::Commit.new(raw_commit)
+    def initialize(raw_commit)
+      @commit = raw_commit
       @time = -1
       @spaces = []
       @parent_spaces = []
-      @refs = refs || []
     end
 
     def method_missing(m, *args, &block)

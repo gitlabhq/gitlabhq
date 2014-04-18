@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Hooks API
   class SystemHooks < Grape::API
     before {
@@ -52,7 +52,7 @@ module Gitlab
       end
 
       # Delete a hook. This is an idempotent function.
-      # 
+      #
       # Parameters:
       #   id (required) - ID of the hook
       # Example Request:

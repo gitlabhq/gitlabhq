@@ -1,28 +1,23 @@
 require 'spec_helper'
 
-describe "On a merge request", js: true do
-  let!(:project) { create(:project_with_code) }
-  let!(:merge_request) { create(:merge_request, project: project) }
+describe "On a merge request", js: true, feature: true do
+  let!(:merge_request) { create(:merge_request, :simple) }
+  let!(:project) { merge_request.source_project }
+  let!(:note) { create(:note_on_merge_request, :with_attachment, project: project) }
 
   before do
-    login_as :user
-    project.team << [@user, :master]
-
+    login_as :admin
     visit project_merge_request_path(project, merge_request)
   end
 
   subject { page }
 
   describe "the note form" do
-    # main target form creation
-    it { should have_css(".js-main-target-form", visible: true, count: 1) }
-
-    # button initalization
-    it { find(".js-main-target-form input[type=submit]").value.should == "Add Comment" }
-    it { within(".js-main-target-form") { should_not have_link("Cancel") } }
-
-    describe "without text" do
-      it { within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) } }
+    it 'should be valid' do
+      should have_css(".js-main-target-form", visible: true, count: 1)
+      find(".js-main-target-form input[type=submit]").value.should == "Add Comment"
+      within(".js-main-target-form") { should_not have_link("Cancel") }
+      within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
     end
 
     describe "with text" do
@@ -32,9 +27,10 @@ describe "On a merge request", js: true do
         end
       end
 
-      it { within(".js-main-target-form") { should_not have_css(".js-comment-button[disabled]") } }
-
-      it { within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: true) } }
+      it 'should have enable submit button and preview button' do
+        within(".js-main-target-form") { should_not have_css(".js-comment-button[disabled]") }
+        within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: true) }
+      end
     end
 
     describe "with preview" do
@@ -45,10 +41,11 @@ describe "On a merge request", js: true do
         end
       end
 
-      it { within(".js-main-target-form") { should have_css(".js-note-preview", text: "This is awesome", visible: true) } }
-
-      it { within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) } }
-      it { within(".js-main-target-form") { should have_css(".js-note-edit-button", visible: true) } }
+      it 'should have text and visible edit button' do
+        within(".js-main-target-form") { should have_css(".js-note-preview", text: "This is awesome", visible: true) }
+        within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
+        within(".js-main-target-form") { should have_css(".js-note-edit-button", visible: true) }
+      end
     end
   end
 
@@ -61,74 +58,111 @@ describe "On a merge request", js: true do
       end
     end
 
-    # note added
-    it { should have_content("This is awsome!") }
+    it 'should be added and form reset' do
+      should have_content("This is awsome!")
+      within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!") }
+      within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) }
+      within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
+    end
+  end
 
-    # reset form
-    it { within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!")  } }
+  describe "when editing a note", js: true do
+    it "should contain the hidden edit form" do
+      within("#note_#{note.id}") { should have_css(".note-edit-form", visible: false) }
+    end
 
-    # return from preview
-    it { within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) } }
-    it { within(".js-main-target-form") { should have_css(".js-note-text", visible: true) } }
+    describe "editing the note" do
+      before do
+        find('.note').hover
+        find(".js-note-edit").click
+      end
 
+      it "should show the note edit form and hide the note body" do
+        within("#note_#{note.id}") do
+          find(".note-edit-form", visible: true).should be_visible
+          find(".note-text", visible: false).should_not be_visible
+        end
+      end
 
-    it "should be removable" do
-      find(".js-note-delete").trigger("click")
+      it "should reset the edit note form textarea with the original content of the note if cancelled" do
+        find('.note').hover
+        find(".js-note-edit").click
 
-      should_not have_css(".note")
+        within(".note-edit-form") do
+          fill_in "note[note]", with: "Some new content"
+          find(".btn-cancel").click
+          find(".js-note-text", visible: false).text.should == note.note
+        end
+      end
+
+      it "appends the edited at time to the note" do
+        find('.note').hover
+        find(".js-note-edit").click
+
+        within(".note-edit-form") do
+          fill_in "note[note]", with: "Some new content"
+          find(".btn-save").click
+        end
+
+        within("#note_#{note.id}") do
+          should have_css(".note-last-update small")
+          find(".note-last-update small").text.should match(/Edited less than a minute ago/)
+        end
+      end
+    end
+
+    describe "deleting an attachment" do
+      before do
+        find('.note').hover
+        find(".js-note-edit").click
+      end
+
+      it "shows the delete link" do
+        within(".note-attachment") do
+          should have_css(".js-note-attachment-delete")
+        end
+      end
+
+      it "removes the attachment div and resets the edit form" do
+        find(".js-note-attachment-delete").click
+        should_not have_css(".note-attachment")
+        find(".note-edit-form", visible: false).should_not be_visible
+      end
     end
   end
 end
 
-
-
-describe "On a merge request diff", js: true, focus: true do
-  let!(:project) { create(:project_with_code) }
-  let!(:merge_request) { create(:merge_request_with_diffs, project: project) }
+describe "On a merge request diff", js: true do
+  let(:merge_request) { create(:merge_request, :with_diffs, :simple) }
+  let(:project) { merge_request.source_project }
 
   before do
-    login_as :user
-    project.team << [@user, :master]
-
+    login_as :admin
     visit diffs_project_merge_request_path(project, merge_request)
-
-    within '.diffs-tab' do
-      click_link("Diff")
-    end
   end
 
   subject { page }
 
   describe "when adding a note" do
     before do
-      find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder .js-add-diff-note-button").trigger("click")
+      find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7"]').click
     end
 
     describe "the notes holder" do
-      it { should have_css("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder + .js-temp-notes-holder") }
+      it { should have_css(".js-temp-notes-holder") }
 
       it { within(".js-temp-notes-holder") { should have_css(".new_note") } }
     end
 
     describe "the note form" do
-      # set up hidden fields correctly
-      it { within(".js-temp-notes-holder") { find("#note_noteable_type").value.should == "MergeRequest" } }
-      it { within(".js-temp-notes-holder") { find("#note_noteable_id").value.should == merge_request.id.to_s } }
-      it { within(".js-temp-notes-holder") { find("#note_commit_id").value.should == "" } }
-      it { within(".js-temp-notes-holder") { find("#note_line_code").value.should == "4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185" } }
-
-      # buttons
-      it { should have_button("Add Comment") }
-      it { should have_css(".js-close-discussion-note-form", text: "Cancel") }
-
       it "shouldn't add a second form for same row" do
-        find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder .js-add-diff-note-button").trigger("click")
+        find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7"]').click
 
-        should have_css("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder + .js-temp-notes-holder form", count: 1)
+        should have_css("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7'] + .js-temp-notes-holder form", count: 1)
       end
 
       it "should be removed when canceled" do
-        within(".file form[rel$='4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185']") do
+        within(".diff-file form[rel$='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7']") do
           find(".js-close-discussion-note-form").trigger("click")
         end
 
@@ -139,87 +173,43 @@ describe "On a merge request diff", js: true, focus: true do
 
   describe "with muliple note forms" do
     before do
-      find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder .js-add-diff-note-button").trigger("click")
-      find("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder .js-add-diff-note-button").trigger("click")
+      find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7"]').click
+      find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_10_10"]').click
     end
 
-    # has two line forms
     it { should have_css(".js-temp-notes-holder", count: 2) }
 
     describe "previewing them separately" do
       before do
         # add two separate texts and trigger previews on both
-        within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder + .js-temp-notes-holder") do
-          fill_in "note[note]", with: "One comment on line 185"
+        within("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_7_7'] + .js-temp-notes-holder") do
+          fill_in "note[note]", with: "One comment on line 7"
           find(".js-note-preview-button").trigger("click")
         end
-        within("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .js-temp-notes-holder") do
-          fill_in "note[note]", with: "Another comment on line 17"
+        within("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_10_10'] + .js-temp-notes-holder") do
+          fill_in "note[note]", with: "Another comment on line 10"
           find(".js-note-preview-button").trigger("click")
         end
       end
-
-      # check if previews were rendered separately
-      it { within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185.line_holder + .js-temp-notes-holder") { should have_css(".js-note-preview", text: "One comment on line 185") } }
-      it { within("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .js-temp-notes-holder") { should have_css(".js-note-preview", text: "Another comment on line 17") } }
     end
 
     describe "posting a note" do
       before do
-        within("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .js-temp-notes-holder") do
-          fill_in "note[note]", with: "Another comment on line 17"
+        within("tr[id='8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_10_10'] + .js-temp-notes-holder") do
+          fill_in "note[note]", with: "Another comment on line 10"
           click_button("Add Comment")
         end
       end
 
-      # removed form after submit
-      it { should have_no_css("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .js-temp-notes-holder") }
-
-      # added discussion
-      it { should have_content("Another comment on line 17") }
-      it { should have_css("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .notes_holder") }
-      it { should have_css("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .notes_holder .note", count: 1) }
-      it { should have_link("Reply") }
-
-      it "should remove last note of a discussion" do
-        within("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + .notes_holder") do
-          find(".js-note-delete").trigger("click")
-        end
-
-        # removed whole discussion
-        should_not have_css(".note_holder")
-        should have_css("#342e16cbbd482ac2047dc679b2749d248cc1428f_18_17.line_holder + #342e16cbbd482ac2047dc679b2749d248cc1428f_18_18.line_holder")
+      it 'should be added as discussion' do
+        should have_content("Another comment on line 10")
+        should have_css(".notes_holder")
+        should have_css(".notes_holder .note", count: 1)
+        should have_link("Reply")
       end
     end
-  end
-
-  describe "when replying to a note" do
-    before do
-      # create first note
-      find("#4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184.line_holder .js-add-diff-note-button").trigger("click")
-      within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184.line_holder + .js-temp-notes-holder") do
-        fill_in "note[note]", with: "One comment on line 184"
-        click_button("Add Comment")
-      end
-      # create second note
-      within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184.line_holder + .notes_holder") do
-        find(".js-discussion-reply-button").trigger("click")
-        fill_in "note[note]", with: "An additional comment in reply"
-        click_button("Add Comment")
-      end
-    end
-
-    # inserted note
-    it { should have_content("An additional comment in reply") }
-    it { within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184.line_holder + .notes_holder") { should have_css(".note", count: 2) } }
-
-    # removed form after reply
-    it { within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184.line_holder + .notes_holder") { should have_no_css("form") } }
-    it { within("#4735dfc552ad7bf15ca468adc3cad9d05b624490_184_184.line_holder + .notes_holder") { should have_link("Reply") } }
   end
 end
-
-
 
 describe "On merge request discussion", js: true do
   describe "with merge request diff note"

@@ -1,0 +1,39 @@
+%h3.page-title Blame view
+
+#tree-holder.tree-holder
+  .file-holder
+    .file-title
+      %i.icon-file
+      %span.file_name
+        = @path
+        %small= number_to_human_size @blob.size
+      %span.options= render "projects/blob/actions"
+    .file-content.blame
+      %table
+        - current_line = 1
+        - @blame.each do |commit, lines|
+          - commit = Commit.new(commit)
+          %tr
+            %td.blame-commit
+              %span.commit
+                = link_to commit.short_id(8), project_commit_path(@project, commit), class: "commit_short_id"
+                &nbsp;
+                = commit_author_link(commit, avatar: true, size: 16)
+                &nbsp;
+                = link_to_gfm truncate(commit.title, length: 20), project_commit_path(@project, commit.id), class: "row_title"
+            %td.lines.blame-numbers
+              %pre
+                - if lines.empty?
+                  = current_line
+                  - current_line += 1
+                - else
+                  - lines.each do |line|
+                    = current_line
+                    \
+                    - current_line += 1
+            %td.lines
+              %pre
+                :erb
+                  <% lines.each do |line| %>
+                    <%= line %>
+                  <% end %>

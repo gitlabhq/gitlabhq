@@ -1,5 +1,2 @@
 %p
   = "Issue was #{@issue_status} by #{@updated_by.name}"
-%p
-  = "Issue ##{@issue.id}"
-  = link_to_gfm truncate(@issue.title, length: 45), project_issue_url(@issue.project, @issue), title: @issue.title

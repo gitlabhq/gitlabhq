@@ -1,39 +1,42 @@
-%h3.page_title
-  GITLAB
-  .pull-right
+.jumbotron
+  %h2
+    GitLab
     %span= Gitlab::VERSION
     %small= Gitlab::REVISION
-%hr
-%p.lead
-  Self Hosted Git Management
-  %br
-  Fast, secure and stable solution based on Ruby on Rails.
-
-%br
+  %p.slead
+    GitLab is open source software to collaborate on code.
+    %br
+    Manage git repositories with fine grained access controls that keep your code secure.
+    %br
+    Perform code reviews and enhance collaboration with merge requests.
+    %br
+    Each project can also have an issue tracker and a wiki.
+    %br
+    Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
+    %br
+    Read more about GitLab at #{link_to "www.gitlab.com", "https://www.gitlab.com/", target: "_blank"}.
 
 .row
-  .span4
+  .col-md-4
     .ui-box
       .title
-        %h5 Quick help
+        Quick help
       %ul.well-list
         %li
-          Email your
-          = mail_to Gitlab.config.gitlab.support_email, "support contact"
+          See our website for
+          = link_to "getting help", "https://www.gitlab.com/getting-help/"
         %li
           Use the
           = link_to "search bar", '#', onclick: "$('#search').focus();"
           on the top of this page
         %li
-          Ask in our
-          = link_to "support forum", "https://groups.google.com/forum/#!forum/gitlabhq"
-        %li
-          Browse our
-          = link_to "issue tracker", "https://github.com/gitlabhq/gitlabhq/issues"
-  .span4
+          Use
+          = link_to "shortcuts", '#', onclick: "new Shortcuts()"
+
+  .col-md-4
     .ui-box
       .title
-        %h5 User documentation
+        User documentation
       %ul.well-list
         %li
           %strong= link_to "Workflow", help_workflow_path
@@ -52,17 +55,17 @@
           %p Get familiar with GitLab's permission levels.
 
         %li
-          %strong= link_to "API", help_api_path
+          %strong= link_to "API", help_api_file_path(category: 'README')
           %p Explore how you can access GitLab via a simple and powerful API.
 
         %li
           %strong= link_to "Web Hooks", help_web_hooks_path
           %p Let GitLab notify you when new code has been pushed to your project.
 
-  .span4
+  .col-md-4
     .ui-box
       .title
-        %h5 Admin documentation
+        Admin documentation
       %ul.well-list
 
         %li
@@ -76,3 +79,7 @@
         %li
           %strong= link_to "Public Access", help_public_access_path
           %p Learn how you can allow public access to a project.
+
+        %li
+          %strong= link_to "Security", help_security_path
+          %p Learn what you can do to secure your GitLab instance.

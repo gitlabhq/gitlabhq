@@ -1,66 +1,77 @@
-.issues_table {
+.issues-list {
   .issue {
     padding: 10px;
+    position: relative;
 
-    .issue_check {
+    .issue-title {
+      margin-bottom: 5px;
+      font-size: 14px;
+    }
+
+    .issue-info {
+      color: #999;
+    }
+
+    .issue-check {
       float: left;
-      padding: 8px 0;
       padding-right: 8px;
+      margin-bottom: 10px;
       min-width: 15px;
     }
 
-    p {
-      padding-top: 0;
-      padding-bottom: 2px;
+    .issue-labels {
+      display: inline-block;
     }
 
-    img.avatar {
-      width: 32px;
-      margin-top: 1px;
+    .issue-actions {
+      display: none;
+      position: absolute;
+      top: 10px;
+      right: 2px;
+    }
+
+    &:hover {
+      .issue-actions {
+        display: block;
+      }
     }
   }
 }
 
-input.check_all_issues {
+.check-all-holder {
+  height: 32px;
   float: left;
-  padding: 0;
-  margin: 0;
-  margin-right: 10px;
-  position: relative;
-  top: 8px;
-  height: 22px;
+  margin-right: 12px;
+  padding: 6px 10px;
+  border: 1px solid #ccc;
+  @include border-radius(4px);
+
+
+  input.check_all_issues {
+    padding: 0;
+    margin: 0;
+    position: relative;
+    top: 3px;
+  }
 }
 
 .issues_content {
   .title {
     height: 40px;
   }
-}
 
-.btn.close_issue {
-  color: #B94A48;
-  font-weight: bold;
-  @include shade;
-  &:hover {
-    color: #B94A48;
-  }
-}
-.btn.reopen_issue {
-  color: #468847;
-  font-weight: bold;
-  @include shade;
-  &:hover {
-    color: #468847;
+  form {
+    margin: 0;
   }
 }
 
 @media (min-width: 800px)  { .issues_filters select { width: 160px; }  }
 @media (min-width: 1200px) { .issues_filters select { width: 220px; }  }
 
-@media (min-width: 800px)  { .issues_bulk_update select { width: 120px; }  }
-@media (min-width: 1200px) { .issues_bulk_update select { width: 160px; }  }
+@media (min-width: 800px)  { .issues_bulk_update .select2-container { min-width: 120px; }  }
+@media (min-width: 1200px) { .issues_bulk_update .select2-container { min-width: 160px; }  }
 
-#issues-table-holder {
+.issues-holder {
   .issues_filters {
   }
 
@@ -71,21 +82,64 @@ input.check_all_issues {
     }
 
     .update_selected_issues {
-      position: relative;
-      top:5px;
       margin-left: 4px;
-      float: left;
     }
 
-    .update_issues_text {
-      padding: 3px;
+    .select2-container .select2-choice {
+      height: 32px;
       line-height: 28px;
-      float: left;
-      color: #479;
+      color: #444 !important;
+      font-weight: 500;
     }
   }
 }
 
 #update_status {
   width: 100px;
+}
+
+.participants {
+  margin-bottom: 10px;
+}
+
+.issues_bulk_update {
+  .select2-container {
+    text-shadow: none;
+  }
+}
+
+.issue-search-form {
+  margin: 0;
+  height: 24px;
+
+  .issue_search {
+    border: 1px solid #DDD !important;
+    background-color: #f4f4f4;
+  }
+}
+
+.issue-show-labels .label {
+  padding: 6px 10px;
+}
+
+form.edit-issue {
+  margin: 0;
+}
+
+.merge-request,
+.issue {
+  &.today {
+    background: #EFE;
+    border-color: #CEC;
+  }
+
+  &.closed {
+    background: #F5f5f5;
+    border-color: #E5E5E5;
+  }
+
+  &.merged {
+    background: #F5f5f5;
+    border-color: #E5E5E5;
+  }
 }

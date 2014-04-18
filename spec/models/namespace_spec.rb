@@ -5,11 +5,12 @@
 #  id          :integer          not null, primary key
 #  name        :string(255)      not null
 #  path        :string(255)      not null
-#  owner_id    :integer          not null
-#  created_at  :datetime         not null
-#  updated_at  :datetime         not null
+#  owner_id    :integer
+#  created_at  :datetime
+#  updated_at  :datetime
 #  type        :string(255)
 #  description :string(255)      default(""), not null
+#  avatar      :string(255)
 #
 
 require 'spec_helper'
@@ -59,7 +60,7 @@ describe Namespace do
       @namespace.stub(path_changed?: true)
     end
 
-    it "should raise error when dirtory exists" do
+    it "should raise error when directory exists" do
       expect { @namespace.move_dir }.to raise_error("namespace directory cannot be moved")
     end
 

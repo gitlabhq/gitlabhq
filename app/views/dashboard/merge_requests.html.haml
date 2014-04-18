@@ -1,11 +1,13 @@
-%h3.page_title
+%h3.page-title
   Merge Requests
-  %small (authored by or assigned to you)
-  %small.pull-right #{@merge_requests.total_count} merge requests
+  %span.pull-right #{@merge_requests.total_count} merge requests
 
+
+%p.light
+  List all merge requests from all projects you have access to.
 %hr
 .row
-  .span3
-    = render 'filter', entity: 'merge_request'
-  .span9
+  .col-md-3
+    = render 'shared/filter', entity: 'merge_request'
+  .col-md-9
     = render 'shared/merge_requests'

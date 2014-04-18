@@ -1,0 +1,117 @@
+.dashboard {
+  .side {
+    .ui-box {
+      margin: 0px;
+      box-shadow: none;
+
+      .nav-projects-tabs li { padding: 0; }
+    }
+  }
+}
+
+.dashboard-search-filter {
+  padding:5px;
+
+  .search-text-input {
+    float:left;
+    @extend .col-md-2;
+  }
+  .btn {
+    margin-left: 5px;
+    float:left;
+  }
+}
+
+.dashboard {
+  .dash-filter {
+    margin: 7px 0;
+    padding: 4px 6px;
+    width: 220px;
+    float: left;
+    height: inherit;
+  }
+}
+
+@media (max-width: 1200px) {
+  .dashboard .dash-filter {
+    width: 150px;
+  }
+}
+
+.dash-sidebar-tabs {
+  margin-bottom: 2px;
+  border: none;
+  margin: 0 !important;
+
+  li {
+    &.active {
+      a {
+        background-color: #EEE;
+        border-bottom: 1px solid #EEE !important;
+        &:hover {
+          background: #eee;
+        }
+      }
+    }
+
+    a {
+      border-color: #DDD !important;
+    }
+  }
+}
+
+.project-row, .group-row {
+  padding: 8px 12px !important;
+  font-size: 14px;
+  line-height: 24px;
+
+  a {
+    display: block;
+  }
+
+  .project-name, .group-name {
+    font-weight: 500;
+  }
+
+  .arrow {
+    float: right;
+    padding: 0px 5px;
+    margin: 0;
+    font-size: 20px;
+    color: #666;
+  }
+
+  .last-activity {
+    float: right;
+    font-size: 12px;
+    color: #AAA;
+    display: block;
+    .date {
+      color: #777;
+    }
+  }
+}
+
+.project-access-icon {
+  margin-left: 10px;
+  float: left;
+  margin-right: 15px;
+  font-size: 20px;
+  margin-bottom: 15px;
+  border: 1px solid #EEE;
+  padding: 8px 12px;
+  border-radius: 50px;
+  background: #f5f5f5;
+  text-align: center;
+
+  i {
+    color: #BBB;
+  }
+}
+
+.dash-project-access-icon {
+  float: left;
+  margin-right: 3px;
+  color: #999;
+  width: 16px;
+}

@@ -2,17 +2,25 @@
 #
 # Table name: web_hooks
 #
-#  id         :integer          not null, primary key
-#  url        :string(255)
-#  project_id :integer
-#  created_at :datetime         not null
-#  updated_at :datetime         not null
-#  type       :string(255)      default("ProjectHook")
-#  service_id :integer
+#  id                    :integer          not null, primary key
+#  url                   :string(255)
+#  project_id            :integer
+#  created_at            :datetime
+#  updated_at            :datetime
+#  type                  :string(255)      default("ProjectHook")
+#  service_id            :integer
+#  push_events           :boolean          default(TRUE), not null
+#  issues_events         :boolean          default(FALSE), not null
+#  merge_requests_events :boolean          default(FALSE), not null
+#  tag_push_events       :boolean          default(FALSE)
 #
 
 class WebHook < ActiveRecord::Base
   include HTTParty
+
+  default_value_for :push_events, true
+  default_value_for :issues_events, false
+  default_value_for :merge_requests_events, false
 
   attr_accessible :url
 
@@ -25,7 +33,7 @@ class WebHook < ActiveRecord::Base
   def execute(data)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
-      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" })
+      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" }, verify: false)
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       auth = {
@@ -35,6 +43,7 @@ class WebHook < ActiveRecord::Base
       WebHook.post(post_url,
                    body: data.to_json,
                    headers: {"Content-Type" => "application/json"},
+                   verify: false,
                    basic_auth: auth)
     end
   end

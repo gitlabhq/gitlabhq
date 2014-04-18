@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Notes API
   class Notes < Grape::API
     before { authenticate! }
@@ -41,17 +41,19 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/notes
       post ":id/notes" do
-        required_attributes! [:body]
+        set_current_user_for_thread do
+          required_attributes! [:body]
 
-        @note = user_project.notes.new(note: params[:body])
-        @note.author = current_user
+          @note = user_project.notes.new(note: params[:body])
+          @note.author = current_user
 
-        if @note.save
-          present @note, with: Entities::Note
-        else
-          # :note is exposed as :body, but :note is set on error
-          bad_request!(:note) if @note.errors[:note].any?
-          not_found!
+          if @note.save
+            present @note, with: Entities::Note
+          else
+            # :note is exposed as :body, but :note is set on error
+            bad_request!(:note) if @note.errors[:note].any?
+            not_found!
+          end
         end
       end
 
@@ -97,17 +99,19 @@ module Gitlab
         #   POST /projects/:id/issues/:noteable_id/notes
         #   POST /projects/:id/snippets/:noteable_id/notes
         post ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
-          required_attributes! [:body]
+          set_current_user_for_thread do
+            required_attributes! [:body]
 
-          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
-          @note = @noteable.notes.new(note: params[:body])
-          @note.author = current_user
-          @note.project = user_project
+            @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+            @note = @noteable.notes.new(note: params[:body])
+            @note.author = current_user
+            @note.project = user_project
 
-          if @note.save
-            present @note, with: Entities::Note
-          else
-            not_found!
+            if @note.save
+              present @note, with: Entities::Note
+            else
+              not_found!
+            end
           end
         end
       end

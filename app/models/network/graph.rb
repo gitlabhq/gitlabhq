@@ -1,42 +1,47 @@
-require "grit"
-
 module Network
   class Graph
-    attr_reader :days, :commits, :map
+    attr_reader :days, :commits, :map, :notes, :repo
 
     def self.max_count
       @max_count ||= 650
     end
 
-    def initialize project, ref, commit
+    def initialize project, ref, commit, filter_ref
       @project = project
       @ref = ref
       @commit = commit
-      @repo = project.repo
+      @filter_ref = filter_ref
+      @repo = project.repository
 
       @commits = collect_commits
       @days = index_commits
+      @notes = collect_notes
     end
 
     protected
 
+    def collect_notes
+      h = Hash.new(0)
+      @project.notes.where('noteable_type = ?' ,"Commit").group('notes.commit_id').select('notes.commit_id, count(notes.id) as note_count').each do |item|
+        h[item.commit_id] = item.note_count.to_i
+      end
+      h
+    end
+
     # Get commits from repository
     #
     def collect_commits
-      refs_cache = build_refs_cache
-
-      find_commits(count_to_display_commit_in_center)
-      .map do |commit|
-          # Decorate with app/model/network/commit.rb
-          Network::Commit.new(commit, refs_cache[commit.id])
+      find_commits(count_to_display_commit_in_center).map do |commit|
+        # Decorate with app/model/network/commit.rb
+        Network::Commit.new(commit)
       end
     end
 
     # Method is adding time and space on the
     # list of commits. As well as returns date list
-    # corelated with time set on commits.
+    # correlated with time set on commits.
     #
-    # @return [Array<TimeDate>] list of commit dates corelated with time on commits
+    # @return [Array<TimeDate>] list of commit dates correlated with time on commits
     def index_commits
       days = []
       @map = {}
@@ -93,15 +98,14 @@ module Network
     end
 
     def find_commits(skip = 0)
-      Grit::Commit.find_all(
-        @repo,
-        nil,
-        {
-          date_order: true,
-          max_count: self.class.max_count,
-          skip: skip
-        }
-      )
+      opts = {
+        max_count: self.class.max_count,
+        skip: skip
+      }
+
+      opts[:ref] = @commit.id if @filter_ref
+
+      @repo.find_commits(opts)
     end
 
     def commits_sort_by_ref
@@ -117,15 +121,7 @@ module Network
     end
 
     def include_ref?(commit)
-      heads = commit.refs.select do |ref|
-        ref.is_a?(Grit::Head) or ref.is_a?(Grit::Remote) or ref.is_a?(Grit::Tag)
-      end
-
-      heads.map! do |head|
-        head.name
-      end
-
-      heads.include?(@ref)
+      commit.ref_names(@repo).include?(@ref)
     end
 
     def find_free_parent_spaces(commit)
@@ -184,7 +180,7 @@ module Network
         l.spaces << space
         # Also add space to parent
         l.parents(@map).each do |parent|
-          if parent.space > 0
+          if 0 < parent.space && parent.space < space
             parent.spaces << space
           end
         end
@@ -272,15 +268,6 @@ module Network
 
         leaves.push(commit)
       end
-    end
-
-    def build_refs_cache
-      refs_cache = {}
-      @repo.refs.each do |ref|
-        refs_cache[ref.commit.id] = [] unless refs_cache.include?(ref.commit.id)
-        refs_cache[ref.commit.id] << ref
-      end
-      refs_cache
     end
   end
 end

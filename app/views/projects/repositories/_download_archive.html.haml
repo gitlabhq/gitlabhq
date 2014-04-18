@@ -1,0 +1,37 @@
+- ref = ref || nil
+- btn_class = btn_class || ''
+- split_button = split_button || false 
+- if split_button == true
+  %span.btn-group{class: btn_class}
+    = link_to archive_project_repository_path(@project, ref: ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
+      %i.icon-download-alt
+      %span Download zip
+    %a.btn.dropdown-toggle{ 'data-toggle' => 'dropdown' }
+      %span.caret
+      %span.sr-only
+        Select Archive Format
+    %ul.dropdown-menu{ role: 'menu' }
+      %li
+        = link_to archive_project_repository_path(@project, ref: ref, format: 'zip'), rel: 'nofollow' do
+          %i.icon-download-alt
+          %span Download zip
+      %li
+        = link_to archive_project_repository_path(@project, ref: ref, format: 'tar.gz'), rel: 'nofollow' do
+          %i.icon-download-alt
+          %span Download tar.gz
+      %li
+        = link_to archive_project_repository_path(@project, ref: ref, format: 'tar.bz2'), rel: 'nofollow' do
+          %i.icon-download-alt
+          %span Download tar.bz2
+      %li
+        = link_to archive_project_repository_path(@project, ref: ref, format: 'tar'), rel: 'nofollow' do
+          %i.icon-download-alt
+          %span Download tar
+- else
+  %span.btn-group{class: btn_class}
+    = link_to archive_project_repository_path(@project, ref: ref, format: 'zip'), class: 'btn', rel: 'nofollow' do
+      %i.icon-download-alt
+      %span zip
+    = link_to archive_project_repository_path(@project, ref: ref, format: 'tar.gz'), class: 'btn', rel: 'nofollow' do
+      %i.icon-download-alt
+      %span tar.gz

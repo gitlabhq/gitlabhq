@@ -1,12 +1,9 @@
 - if @has_authorized_projects
-  .projects
-    .activities.span8
+  .dashboard.row
+    .activities.col-md-8
       = render 'activities'
-    .side.span4
+    .side.col-md-4.hidden-sm.hidden-xs
       = render 'sidebar'
 
 - else
   = render "zero_authorized_projects"
-
-:javascript
-  dashboardPage();

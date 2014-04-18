@@ -1,6 +1,7 @@
 ## List users
 
 Get a list of users.
+This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
 ```
 GET /users
@@ -13,36 +14,47 @@ GET /users
     "username": "john_smith",
     "email": "john@example.com",
     "name": "John Smith",
-    "blocked": false,
+    "state": "active",
     "created_at": "2012-05-23T08:00:58Z",
     "bio": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
-    "dark_scheme": false,
+    "website_url": "",
     "extern_uid": "john.smith",
     "provider": "provider_name",
-    "theme_id": 1
+    "theme_id": 1,
+    "color_scheme_id": 2,
+    "is_admin": false,
+    "can_create_group": true
   },
   {
     "id": 2,
     "username": "jack_smith",
     "email": "jack@example.com",
     "name": "Jack Smith",
-    "blocked": false,
+    "state": "blocked",
     "created_at": "2012-05-23T08:01:01Z",
     "bio": null,
     "skype": "",
     "linkedin": "",
     "twitter": "",
-    "dark_scheme": true,
+    "website_url": "",
     "extern_uid": "jack.smith",
     "provider": "provider_name",
-    "theme_id": 1
+    "theme_id": 1,
+    "color_scheme_id": 3,
+    "is_admin": false,
+    "can_create_group": true,
+    "can_create_project": true
   }
 ]
 ```
 
+You can search for a users by email or username with:
+`/users?search=John`
+
+Also see `def search query` in `app/models/user.rb`.
 
 ## Single user
 
@@ -62,16 +74,20 @@ Parameters:
   "username": "john_smith",
   "email": "john@example.com",
   "name": "John Smith",
-  "blocked": false,
+  "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
-  "dark_scheme": false,
+  "website_url": "",
   "extern_uid": "john.smith",
   "provider": "provider_name",
-  "theme_id": 1
+  "theme_id": 1,
+  "color_scheme_id": 2,
+  "is_admin": false,
+  "can_create_group": true,
+  "can_create_project": true
 }
 ```
 
@@ -86,17 +102,20 @@ POST /users
 
 Parameters:
 
-+ `email` (required)          - Email
-+ `password` (required)       - Password
-+ `username` (required)       - Username
-+ `name` (required)           - Name
-+ `skype` (optional)          - Skype ID
-+ `linkedin` (optional)       - Linkedin
-+ `twitter` (optional)        - Twitter account
-+ `projects_limit` (optional) - Number of projects user can create
-+ `extern_uid` (optional)     - External UID
-+ `provider` (optional)       - External provider name
-+ `bio` (optional)            - User's bio
++ `email` (required)            - Email
++ `password` (required)         - Password
++ `username` (required)         - Username
++ `name` (required)             - Name
++ `skype` (optional)            - Skype ID
++ `linkedin` (optional)         - Linkedin
++ `twitter` (optional)          - Twitter account
++ `website_url` (optional)      - Website url
++ `projects_limit` (optional)   - Number of projects user can create
++ `extern_uid` (optional)       - External UID
++ `provider` (optional)         - External provider name
++ `bio` (optional)              - User's bio
++ `admin` (optional)            - User is admin - true or false (default)
++ `can_create_group` (optional) - User can create groups - true or false
 
 
 ## User modification
@@ -116,13 +135,16 @@ Parameters:
 + `skype`                             - Skype ID
 + `linkedin`                          - Linkedin
 + `twitter`                           - Twitter account
++ `website_url`                       - Website url
 + `projects_limit`                    - Limit projects each user can create
 + `extern_uid`                        - External UID
 + `provider`                          - External provider name
 + `bio`                               - User's bio
++ `admin` (optional)                  - User is admin - true or false (default)
++ `can_create_group` (optional)       - User can create groups - true or false
 
 Note, at the moment this method does only return a 404 error, even in cases where a 409 (Conflict) would
-be more appropriate, e.g. when renaming the email address to some exsisting one.
+be more appropriate, e.g. when renaming the email address to some existing one.
 
 
 ## User deletion
@@ -155,18 +177,18 @@ GET /user
   "email": "john@example.com",
   "name": "John Smith",
   "private_token": "dd34asd13as",
-  "blocked": false,
+  "state": "active",
   "created_at": "2012-05-23T08:00:58Z",
   "bio": null,
   "skype": "",
   "linkedin": "",
   "twitter": "",
-  "dark_scheme": false,
-  "theme_id": 1
+  "website_url": "",
+  "theme_id": 1,
+  "color_scheme_id": 2,
   "is_admin": false,
-  "can_create_group" : true,
-  "can_create_team" : true,
-  "can_create_project" : true
+  "can_create_group": true,
+  "can_create_project": true
 }
 ```
 
@@ -183,17 +205,13 @@ GET /user/keys
 [
   {
     "id": 1,
-    "title" : "Public key"
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
-      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
-      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0=",
+    "title": "Public key",
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
   },
   {
     "id": 3,
-    "title" : "Another Public key"
-    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
-      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
-      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+    "title": "Another Public key",
+    "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
   }
 ]
 ```
@@ -218,10 +236,8 @@ Parameters:
 ```json
 {
   "id": 1,
-  "title" : "Public key"
-  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4
-      596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4
-      soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
+  "title": "Public key",
+  "key": "ssh-rsa AAAAB3NzaC1yc2EAAAABJQAAAIEAiPWx6WM4lhHNedGfBpPJNPpZ7yKu+dnn1SJejgt4596k6YjzGGphH2TUxwKzxcKDKKezwkpfnxPkSMkuEspGRt/aZZ9wa++Oi7Qkr8prgHc4soW6NUlfDzpvZK2H5E7eQaSeP3SAwGmQKUFHCddNaP0L+hM7zhFNzjFvpaMgJw0="
 }
 ```
 

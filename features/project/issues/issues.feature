@@ -3,6 +3,7 @@ Feature: Project Issues
     Given I sign in as a user
     And I own project "Shop"
     And project "Shop" have "Release 0.4" open issue
+    And project "Shop" have "Tweet control" open issue
     And project "Shop" have "Release 0.3" closed issue
     And I visit project "Shop" issues page
 
@@ -37,37 +38,41 @@ Feature: Project Issues
 
   @javascript
   Scenario: I search issue
-    Given I fill in issue search with "Release"
+    Given I fill in issue search with "Re"
     Then I should see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
 
   @javascript
   Scenario: I search issue that not exist
-    Given I fill in issue search with "Bug"
+    Given I fill in issue search with "Bu"
     Then I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
-
 
   @javascript
   Scenario: I search all issues
     Given I click link "All"
-    And I fill in issue search with "0.3"
+    And I fill in issue search with ".3"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
 
-  # Disable this two cause of random failing
-  # TODO: fix after v4.0 released
-  #@javascript
-  #Scenario: I create Issue with pre-selected milestone
-    #Given project "Shop" has milestone "v2.2"
-    #And project "Shop" has milestone "v3.0"
-    #And I visit project "Shop" issues page
-    #When I select milestone "v3.0"
-    #And I click link "New Issue"
-    #Then I should see selected milestone with title "v3.0"
+  # Markdown
 
-  #@javascript
-  #Scenario: I create Issue with pre-selected assignee
-    #When I select first assignee from "Shop" project
-    #And I click link "New Issue"
-    #Then I should see first assignee from "Shop" as selected assignee
+  Scenario: Headers inside the description should have ids generated for them.
+    Given I visit issue page "Release 0.4"
+    Then Header "Description header" should have correct id and link
+
+  @javascript
+  Scenario: Headers inside comments should not have ids generated for them.
+    Given I visit issue page "Release 0.4"
+    And I leave a comment with a header containing "Comment with a header"
+    Then The comment with the header should not have an ID
+
+  Scenario: Issues on empty project
+    Given empty project "Empty Project"
+    When I visit empty project page
+    And I see empty project details with ssh clone info
+    When I visit empty project's issues page
+    Given I click link "New Issue"
+    And I submit new issue "500 error on profile"
+    Then I should see issue "500 error on profile"

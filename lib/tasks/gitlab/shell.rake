@@ -25,20 +25,25 @@ namespace :gitlab do
   def setup
     warn_user_is_not_gitlab
 
-    gitlab_shell_authorized_keys = File.join(File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}"),'.ssh/authorized_keys')
-    puts "This will rebuild an authorized_keys file."
-    puts "You will lose any data stored in #{gitlab_shell_authorized_keys}."
-    ask_to_continue
-    puts ""
+    unless ENV['force'] == 'yes'
+      puts "This will rebuild an authorized_keys file."
+      puts "You will lose any data stored in authorized_keys file."
+      ask_to_continue
+      puts ""
+    end
 
-    system("echo '# Managed by gitlab-shell' > #{gitlab_shell_authorized_keys}")
+    Gitlab::Shell.new.remove_all_keys
 
-    Key.find_each(batch_size: 1000) do |key|
-      if Gitlab::Shell.new.add_key(key.shell_id, key.key)
+    Gitlab::Shell.new.batch_add_keys do |adder|
+      Key.find_each(batch_size: 1000) do |key|
+        adder.add_key(key.shell_id, key.key)
         print '.'
-      else
-        print 'F'
       end
+    end
+
+    unless $?.success?
+      puts "Failed to add keys...".red
+      exit 1
     end
 
   rescue Gitlab::TaskAbortedByUserError

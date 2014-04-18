@@ -6,8 +6,8 @@ production:
   encoding: utf8
   reconnect: false
   database: gitlabhq_production
-  pool: 5
-  username: root
+  pool: 10
+  username: git
   password: "secure password"
   # host: localhost
   # socket: /tmp/mysql.sock

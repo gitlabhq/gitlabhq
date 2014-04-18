@@ -4,5 +4,6 @@
 -#    num_pages:     total number of pages
 -#    per_page:      number of items to fetch per page
 -#    remote:        data-remote
-%span.page.gap
-  = raw(t 'views.pagination.truncate')
+%li{class: "page"}
+  %span.page.gap
+    = raw(t 'views.pagination.truncate')

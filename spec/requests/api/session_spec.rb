@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API, api: true  do
   include ApiHelpers
 
   let(:user) { create(:user) }
@@ -8,13 +8,12 @@ describe Gitlab::API do
   describe "POST /session" do
     context "when valid password" do
       it "should return private token" do
-        post api("/session"), email: user.email, password: '123456'
+        post api("/session"), email: user.email, password: '12345678'
         response.status.should == 201
 
         json_response['email'].should == user.email
         json_response['private_token'].should == user.private_token
         json_response['is_admin'].should == user.is_admin?
-        json_response['can_create_team'].should == user.can_create_team?
         json_response['can_create_project'].should == user.can_create_project?
         json_response['can_create_group'].should == user.can_create_group?
       end

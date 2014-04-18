@@ -1,0 +1,22 @@
+= form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
+  %strong.append-right-10
+    Assignee:
+
+  - if can?(current_user, :modify_issue, @issue)
+    = project_users_select_tag('issue[assignee_id]', placeholder: 'Select assignee', class: 'custom-form-control', selected: @issue.assignee_id)
+  - elsif issue.assignee
+    = link_to_member(@project, @issue.assignee)
+  - else
+    None
+
+  .pull-right
+    %strong.append-right-10
+      Milestone:
+    - if can?(current_user, :modify_issue, @issue)
+      = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone (none):" }, {class: 'select2 select2-compact'})
+      = hidden_field_tag :issue_context
+      = f.submit class: 'btn'
+    - elsif issue.milestone
+      = link_to issue.milestone.title, project_milestone_path
+    - else
+      None

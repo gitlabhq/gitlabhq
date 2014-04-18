@@ -1,4 +1,4 @@
-module Gitlab
+module API
   # Milestones API
   class Milestones < Grape::API
     before { authenticate! }
@@ -40,15 +40,17 @@ module Gitlab
       # Example Request:
       #   POST /projects/:id/milestones
       post ":id/milestones" do
-        authorize! :admin_milestone, user_project
-        required_attributes! [:title]
+        set_current_user_for_thread do
+          authorize! :admin_milestone, user_project
+          required_attributes! [:title]
 
-        attrs = attributes_for_keys [:title, :description, :due_date]
-        @milestone = user_project.milestones.new attrs
-        if @milestone.save
-          present @milestone, with: Entities::Milestone
-        else
-          not_found!
+          attrs = attributes_for_keys [:title, :description, :due_date]
+          @milestone = user_project.milestones.new attrs
+          if @milestone.save
+            present @milestone, with: Entities::Milestone
+          else
+            not_found!
+          end
         end
       end
 
@@ -60,18 +62,20 @@ module Gitlab
       #   title (optional) - The title of a milestone
       #   description (optional) - The description of a milestone
       #   due_date (optional) - The due date of a milestone
-      #   state (optional) - The status of the milestone (close|activate)
+      #   state_event (optional) - The state event of the milestone (close|activate)
       # Example Request:
       #   PUT /projects/:id/milestones/:milestone_id
       put ":id/milestones/:milestone_id" do
-        authorize! :admin_milestone, user_project
+        set_current_user_for_thread do
+          authorize! :admin_milestone, user_project
 
-        @milestone = user_project.milestones.find(params[:milestone_id])
-        attrs = attributes_for_keys [:title, :description, :due_date, :state_event]
-        if @milestone.update_attributes attrs
-          present @milestone, with: Entities::Milestone
-        else
-          not_found!
+          @milestone = user_project.milestones.find(params[:milestone_id])
+          attrs = attributes_for_keys [:title, :description, :due_date, :state_event]
+          if @milestone.update_attributes attrs
+            present @milestone, with: Entities::Milestone
+          else
+            not_found!
+          end
         end
       end
     end

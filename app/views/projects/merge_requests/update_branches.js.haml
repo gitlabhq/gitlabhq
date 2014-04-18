@@ -1,0 +1,9 @@
+:plain
+  $(".target_branch").html("#{escape_javascript(options_for_select(@target_branches))}");
+
+  $('select.target_branch').select2({
+    width: 'resolve',
+    dropdownAutoWidth: true
+  });
+
+  $(".mr_target_commit").html("");

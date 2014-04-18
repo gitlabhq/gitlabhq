@@ -1,0 +1,27 @@
+= render "projects/commits/head"
+
+- if can? current_user, :push_code, @project
+  .pull-right
+    = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
+      %i.icon-add-sign
+      New tag
+
+%p
+  Tags give the ability to mark specific points in history as being important
+%hr
+
+- unless @tags.empty?
+  %ul.bordered-list
+    - @tags.each do |tag|
+      = render 'tag', tag: @repository.find_tag(tag)
+
+  = paginate @tags, theme: 'gitlab'
+
+- else
+  .nothing-here-block
+    Repository has no tags yet.
+    %br
+    %small
+      Use git tag command to add a new one:
+      %br
+      %span.monospace git tag -a v1.4 -m 'version 1.4'

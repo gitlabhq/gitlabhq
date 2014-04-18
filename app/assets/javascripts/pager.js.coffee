@@ -19,8 +19,9 @@
       data: "limit=" + @limit + "&offset=" + @offset
       complete: ->
         $(".loading").hide()
-
-      dataType: "script"
+      success: (data) ->
+        Pager.append(data.count, data.html)
+      dataType: "json"
 
   append: (count, html) ->
     $(".content_list").append html
@@ -30,6 +31,7 @@
       @disable = true
 
   initLoadMore: ->
+    $(document).unbind('scroll')
     $(document).endlessScroll
       bottomPixels: 400
       fireDelay: 1000

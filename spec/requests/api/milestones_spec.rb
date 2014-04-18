@@ -1,7 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API, api: true  do
   include ApiHelpers
+  before(:each) { enable_observers }
+  after(:each) {disable_observers}
 
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
@@ -28,6 +30,7 @@ describe Gitlab::API do
       get api("/projects/#{project.id}/milestones/#{milestone.id}", user)
       response.status.should == 200
       json_response['title'].should == milestone.title
+      json_response['iid'].should == milestone.iid
     end
 
     it "should return 401 error if user not authenticated" do
@@ -85,6 +88,18 @@ describe Gitlab::API do
       response.status.should == 200
 
       json_response['state'].should == 'closed'
+    end
+  end
+
+  describe "PUT /projects/:id/milestones/:milestone_id to test observer on close" do
+    before { enable_observers }
+    after { disable_observers }
+
+    it "should create an activity event when an milestone is closed" do
+      Event.should_receive(:create)
+
+      put api("/projects/#{project.id}/milestones/#{milestone.id}", user),
+          state_event: 'close'
     end
   end
 end

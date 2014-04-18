@@ -73,7 +73,7 @@ module TabHelper
   end
 
   def project_tab_class
-    return "active" if current_page?(controller: "projects", action: :edit, id: @project)
+    return "active" if current_page?(controller: "/projects", action: :edit, id: @project)
 
     if ['services', 'hooks', 'deploy_keys', 'team_members'].include? controller.controller_name
      "active"
@@ -81,8 +81,8 @@ module TabHelper
   end
 
   def branches_tab_class
-    if current_page?(branches_project_repository_path(@project)) ||
-      current_controller?(:protected_branches) ||
+    if current_controller?(:protected_branches) ||
+      current_controller?(:branches) ||
       current_page?(project_repository_path(@project))
       'active'
     end
@@ -92,7 +92,12 @@ module TabHelper
   def nav_tab key, value, &block
     o = {}
     o[:class] = ""
-    o[:class] << " active" if params[key] == value
+
+    if value.nil?
+      o[:class] << " active" if params[key].blank?
+    else
+      o[:class] << " active" if params[key] == value
+    end
 
     if block_given?
       content_tag(:li, capture(&block), o)

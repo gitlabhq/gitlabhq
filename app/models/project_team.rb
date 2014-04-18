@@ -21,8 +21,26 @@ class ProjectTeam
     end
   end
 
-  def get_tm user_id
-    project.users_projects.find_by_user_id(user_id)
+  def find(user_id)
+    user = project.users.find_by(id: user_id)
+
+    if group
+      user ||= group.users.find_by(id: user_id)
+    end
+
+    user
+  end
+
+  def find_tm(user_id)
+    tm = project.users_projects.find_by(user_id: user_id)
+
+    # If user is not in project members
+    # we should check for group membership
+    if group && !tm
+      tm = group.users_groups.find_by(user_id: user_id)
+    end
+
+    tm
   end
 
   def add_user(user, access)
@@ -46,32 +64,35 @@ class ProjectTeam
     UsersProject.truncate_team(project)
   end
 
+  def users
+    members
+  end
+
   def members
-    project.users_projects
+    @members ||= fetch_members
   end
 
   def guests
-    members.guests.map(&:user)
+    @guests ||= fetch_members(:guests)
   end
 
   def reporters
-    members.reporters.map(&:user)
+    @reporters ||= fetch_members(:reporters)
   end
 
   def developers
-    members.developers.map(&:user)
+    @developers ||= fetch_members(:developers)
   end
 
   def masters
-    members.masters.map(&:user)
+    @masters ||= fetch_members(:masters)
   end
 
   def import(source_project)
     target_project = project
 
-    source_team = source_project.users_projects.all
-    target_team = target_project.users_projects.all
-    target_user_ids = target_team.map(&:user_id)
+    source_team = source_project.users_projects.to_a
+    target_user_ids = target_project.users_projects.pluck(:user_id)
 
     source_team.reject! do |tm|
       # Skip if user already present in team
@@ -82,7 +103,6 @@ class ProjectTeam
       new_tm = tm.dup
       new_tm.id = nil
       new_tm.project_id = target_project.id
-      new_tm.skip_git = true
       new_tm
     end
 
@@ -95,5 +115,23 @@ class ProjectTeam
     true
   rescue
     false
+  end
+
+  private
+
+  def fetch_members(level = nil)
+    project_members = project.users_projects
+    group_members = group ? group.users_groups : []
+
+    if level
+      project_members = project_members.send(level)
+      group_members = group_members.send(level) if group
+    end
+
+    (project_members + group_members).map(&:user).uniq
+  end
+
+  def group
+    project.group
   end
 end

@@ -1,7 +1,9 @@
 require 'spec_helper'
 
-describe Gitlab::API do
+describe API::API, api: true  do
   include ApiHelpers
+  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
+  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
 
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
@@ -23,6 +25,12 @@ describe Gitlab::API do
         json_response.should be_an Array
         json_response.first['title'].should == issue.title
       end
+
+      it "should add pagination headers" do
+        get api("/issues?per_page=3", user)
+        response.headers['Link'].should ==
+          '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+      end
     end
   end
 
@@ -40,6 +48,7 @@ describe Gitlab::API do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
       response.status.should == 200
       json_response['title'].should == issue.title
+      json_response['iid'].should == issue.iid
     end
 
     it "should return 404 if issue id not found" do

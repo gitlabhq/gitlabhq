@@ -1,4 +1,1 @@
-%p
-  = "New comment for Issue ##{@issue.id}"
-  = link_to_gfm truncate(@issue.title, length: 35), project_issue_url(@issue.project, @issue, anchor: "note_#{@note.id}")
 = render 'note_message'

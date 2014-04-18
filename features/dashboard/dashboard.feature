@@ -16,6 +16,7 @@ Feature: Dashboard
     And I visit dashboard page
     Then I should see groups list
 
+  @javascript
   Scenario: I should see last push widget
     Then I should see last push widget
     And I click "Create Merge Request" link

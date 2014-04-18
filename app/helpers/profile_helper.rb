@@ -4,4 +4,16 @@ module ProfileHelper
       'active'
     end
   end
+
+  def show_profile_username_tab?
+    current_user.can_change_username?
+  end
+
+  def show_profile_social_tab?
+    enabled_social_providers.any? && !current_user.ldap_user?
+  end
+
+  def show_profile_remove_tab?
+    gitlab_config.signup_enabled && !current_user.ldap_user?
+  end
 end

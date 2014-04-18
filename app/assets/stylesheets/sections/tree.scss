@@ -13,8 +13,22 @@
   }
 
   .tree-table {
+    @extend .table;
     @include border-radius(0);
-    .tree-item {
+
+    tr {
+      td, th {
+        padding: 8px 10px;
+        line-height: 20px;
+      }
+      th {
+        font-weight: normal;
+        font-size: 15px;
+        border-bottom: 1px solid #CCC !important;
+      }
+      td {
+        border-color: #F1F1F1 !important;
+      }
       &:hover {
         td {
           background: $hover;
@@ -23,11 +37,19 @@
         }
         cursor: pointer;
       }
+      &.selected {
+        td {
+          background: #f5f5f5;
+          border-top: 1px solid #EEE;
+          border-bottom: 1px solid #EEE;
+        }
+      }
     }
   }
 
   .tree-item {
     .tree-item-file-name {
+      max-width: 320px;
       vertical-align: middle;
       a {
         &:hover {
@@ -40,26 +62,18 @@
         top:-1px;
       }
     }
-  }
 
-  .tree-table {
-    th .btn {
-      margin: -2px -1px;
-      padding: 2px 10px;
+    .tree_commit {
+      max-width: 320px;
     }
-    td {
-      line-height: 20px;
-      background: #fafafa;
+
+    .tree_time_ago {
+      min-width: 135px;
     }
   }
 
   .tree_author {
     padding-right: 8px;
-
-    img.avatar {
-      margin-top: 0;
-      width: 16px;
-    }
   }
 
   .tree_commit {
@@ -96,13 +110,44 @@
 }
 
 .tree-btn-group {
+  top: 2px;
+
   .btn {
-    margin-right:-3px;
+    margin-right: 0px;
     padding: 2px 10px;
   }
 }
 
 .tree-ref-holder {
   float: left;
-  margin-top: 5px;
+  margin-top: 8px;
+}
+
+.readme-holder {
+  border-top: 1px dashed #CCC;
+  padding-top: 10px;
+
+  .readme-file-title {
+    font-size: 14px;
+    margin-bottom: 20px;
+    color: #777;
+  }
+}
+
+.blob-commit-info {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  margin-bottom: 10px;
+
+  .commit {
+    .commit-row-title {
+      font-size: 13px;
+
+      .commit-row-message {
+        font-weight: normal;
+        color: #555;
+      }
+    }
+  }
 }

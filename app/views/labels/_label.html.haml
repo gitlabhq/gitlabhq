@@ -1,9 +1,0 @@
-%li
-  %strong
-    %i.icon-tag
-    = label.name
-  .pull-right
-    = link_to project_issues_path(label_name: label.name) do
-      %strong
-        = pluralize(label.count, 'issue')
-        = "»"

@@ -1,0 +1,7 @@
+%ul.bordered-list
+  = render partial: 'snippet', collection: @snippets
+  - if @snippets.empty?
+    %li
+      .nothing-here-block Nothing here.
+
+= paginate @snippets, theme: 'gitlab'

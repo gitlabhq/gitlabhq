@@ -5,10 +5,11 @@ class BranchGraph
     @mspace = 0
     @parents = {}
     @colors = ["#000"]
-    @offsetX = 120
+    @offsetX = 150
     @offsetY = 20
     @unitTime = 30
     @unitSpace = 10
+    @prev_start = -1
     @load()
 
   load: ->
@@ -24,10 +25,18 @@ class BranchGraph
 
   prepareData: (@days, @commits) ->
     @collectParents()
+    @graphHeight = $(@element).height()
+    @graphWidth = $(@element).width()
+    ch = Math.max(@graphHeight, @offsetY + @unitTime * @mtime + 150)
+    cw = Math.max(@graphWidth, @offsetX + @unitSpace * @mspace + 300)
+    @r = Raphael(@element.get(0), cw, ch)
+    @top = @r.set()
+    @barHeight = Math.max(@graphHeight, @unitTime * @days.length + 320)
 
     for c in @commits
       c.isParent = true  if c.id of @parents
       @preparedCommits[c.id] = c
+      @markCommit(c)
 
     @collectColors()
 
@@ -49,74 +58,76 @@ class BranchGraph
       k++
 
   buildGraph: ->
-    graphHeight = $(@element).height()
-    graphWidth = $(@element).width()
-    ch = Math.max(graphHeight, @offsetY + @unitTime * @mtime + 150)
-    cw = Math.max(graphWidth, @offsetX + @unitSpace * @mspace + 300)
-    @r = r = Raphael(@element.get(0), cw, ch)
-    top = r.set()
+    r = @r
     cuday = 0
     cumonth = ""
-    barHeight = Math.max(graphHeight, @unitTime * @days.length + 320)
 
-    r.rect(0, 0, 26, barHeight).attr fill: "#222"
-    r.rect(26, 0, 20, barHeight).attr fill: "#444"
+    r.rect(0, 0, 40, @barHeight).attr fill: "#222"
+    r.rect(40, 0, 30, @barHeight).attr fill: "#444"
 
     for day, mm in @days
       if cuday isnt day[0]
         # Dates
-        r.text(36, @offsetY + @unitTime * mm, day[0])
+        r.text(55, @offsetY + @unitTime * mm, day[0])
           .attr(
             font: "12px Monaco, monospace"
-            fill: "#DDD"
+            fill: "#BBB"
           )
         cuday = day[0]
 
       if cumonth isnt day[1]
         # Months
-        r.text(13, @offsetY + @unitTime * mm, day[1])
+        r.text(20, @offsetY + @unitTime * mm, day[1])
           .attr(
             font: "12px Monaco, monospace"
             fill: "#EEE"
           )
         cumonth = day[1]
 
-    for commit in @commits
-      x = @offsetX + @unitSpace * (@mspace - commit.space)
-      y = @offsetY + @unitTime * commit.time
+    @renderPartialGraph()
 
-      @drawDot(x, y, commit)
-
-      @drawLines(x, y, commit)
-
-      @appendLabel(x, y, commit.refs)  if commit.refs
-
-      @appendAnchor(top, commit, x, y)
-
-      @markCommit(x, y, commit, graphHeight)
-
-    top.toFront()
     @bindEvents()
+
+  renderPartialGraph: ->
+    start = Math.floor((@element.scrollTop() - @offsetY) / @unitTime) - 10
+    start = 0 if start < 0
+    end = start + 40
+    end = @commits.length if @commits.length < end
+
+    if @prev_start == -1 or Math.abs(@prev_start - start) > 10
+      i = start
+
+      @prev_start = start
+
+      while i < end
+        commit = @commits[i]
+        i += 1
+
+        if commit.hasDrawn isnt true
+          x = @offsetX + @unitSpace * (@mspace - commit.space)
+          y = @offsetY + @unitTime * commit.time
+
+          @drawDot(x, y, commit)
+
+          @drawLines(x, y, commit)
+
+          @appendLabel(x, y, commit)
+
+          @appendAnchor(x, y, commit)
+
+          commit.hasDrawn = true
+
+      @top.toFront()
 
   bindEvents: ->
     drag = {}
     element = @element
-    dragger = (event) ->
-      element.scrollLeft drag.sl - (event.clientX - drag.x)
-      element.scrollTop drag.st - (event.clientY - drag.y)
 
-    element.on mousedown: (event) ->
-      drag =
-        x: event.clientX
-        y: event.clientY
-        st: element.scrollTop()
-        sl: element.scrollLeft()
-      $(window).on "mousemove", dragger
+    $(element).scroll (event) =>
+      @renderPartialGraph()
 
     $(window).on
-      mouseup: ->
-        $(window).off "mousemove", dragger
-      keydown: (event) ->
+      keydown: (event) =>
         # left
         element.scrollLeft element.scrollLeft() - 50  if event.keyCode is 37
         # top
@@ -125,17 +136,20 @@ class BranchGraph
         element.scrollLeft element.scrollLeft() + 50  if event.keyCode is 39
         # bottom
         element.scrollTop element.scrollTop() + 50  if event.keyCode is 40
+        @renderPartialGraph()
 
-  appendLabel: (x, y, refs) ->
+  appendLabel: (x, y, commit) ->
+    return unless commit.refs
+
     r = @r
-    shortrefs = refs
+    shortrefs = commit.refs
     # Truncate if longer than 15 chars
     shortrefs = shortrefs.substr(0, 15) + "…"  if shortrefs.length > 17
     text = r.text(x + 4, y, shortrefs).attr(
       "text-anchor": "start"
       font: "10px Monaco, monospace"
       fill: "#FFF"
-      title: refs
+      title: commit.refs
     )
     textbox = text.getBBox()
     # Create rectangle based on the size of the textbox
@@ -156,8 +170,9 @@ class BranchGraph
     # Set text to front
     text.toFront()
 
-  appendAnchor: (top, commit, x, y) ->
+  appendAnchor: (x, y, commit) ->
     r = @r
+    top = @top
     options = @options
     anchor = r.circle(x, y, 10).attr(
       fill: "#000"
@@ -179,11 +194,14 @@ class BranchGraph
       fill: @colors[commit.space]
       stroke: "none"
     )
-    r.rect(@offsetX + @unitSpace * @mspace + 10, y - 10, 20, 20).attr(
-      fill: "url(#{commit.author.icon})"
+
+    avatar_box_x = @offsetX + @unitSpace * @mspace + 10
+    avatar_box_y = y - 10
+    r.rect(avatar_box_x, avatar_box_y, 20, 20).attr(
       stroke: @colors[commit.space]
       "stroke-width": 2
     )
+    r.image(gon.relative_url_root + commit.author.icon, avatar_box_x, avatar_box_y, 20, 20)
     r.text(@offsetX + @unitSpace * @mspace + 35, y, commit.message.split("\n")[0]).attr(
       "text-anchor": "start"
       font: "14px Monaco, monospace"
@@ -240,21 +258,23 @@ class BranchGraph
           stroke: color
           "stroke-width": 2)
 
-  markCommit: (x, y, commit, graphHeight) ->
+  markCommit: (commit) ->
     if commit.id is @options.commit_id
       r = @r
+      x = @offsetX + @unitSpace * (@mspace - commit.space)
+      y = @offsetY + @unitTime * commit.time
       r.path(["M", x + 5, y, "L", x + 15, y + 4, "L", x + 15, y - 4, "Z"]).attr(
         fill: "#000"
         "fill-opacity": .5
         stroke: "none"
       )
       # Displayed in the center
-      @element.scrollTop(y - graphHeight / 2)
+      @element.scrollTop(y - @graphHeight / 2)
 
 Raphael::commitTooltip = (x, y, commit) ->
   boxWidth = 300
   boxHeight = 200
-  icon = @image(commit.author.icon, x, y, 20, 20)
+  icon = @image(gon.relative_url_root + commit.author.icon, x, y, 20, 20)
   nameText = @text(x + 25, y + 10, commit.author.name)
   idText = @text(x, y + 35, commit.id)
   messageText = @text(x, y + 50, commit.message)

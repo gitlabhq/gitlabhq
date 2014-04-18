@@ -1,10 +1,13 @@
 - if @project.saved?
-  :plain
-    location.href = "#{project_path(@project)}";
+  - if @project.import?
+    :plain
+      location.href = "#{import_project_path(@project)}";
+  - else
+    :plain
+      location.href = "#{project_path(@project)}";
 - else
   :plain
-    $('.project_new_holder').show();
-    $("#new_project").replaceWith("#{escape_javascript(render('new_form'))}");
+    $(".project-edit-errors").html("#{escape_javascript(render('errors'))}");
+    $('.project-submit').enable();
     $('.save-project-loader').hide();
-    new Projects();
-    $('select.chosen').chosen()
+    $('.project-edit-container').show();

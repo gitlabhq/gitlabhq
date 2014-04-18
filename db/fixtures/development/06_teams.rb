@@ -1,22 +1,21 @@
 Gitlab::Seeder.quiet do
+  Group.all.each do |group|
+    User.all.sample(4).each do |user|
+      if group.add_users([user.id], UsersGroup.group_access_roles.values.sample)
+        print '.'
+      else
+        print 'F'
+      end
+    end
+  end
 
-  (1..300).each  do |i|
-    # Random Project
-    project = Project.scoped.sample
-
-    # Random user
-    user = User.not_in_project(project).sample
-
-    next unless user
-
-    UsersProject.seed(:id, [{
-      id: i,
-      project_id: project.id,
-      user_id: user.id,
-      project_access: UsersProject.access_roles.values.sample
-    }])
-
-    print('.')
+  Project.all.each do |project|
+    User.all.sample(4).each do |user|
+      if project.team << [user, UsersProject.access_roles.values.sample]
+        print '.'
+      else
+        print 'F'
+      end
+    end
   end
 end
-puts "OK".green

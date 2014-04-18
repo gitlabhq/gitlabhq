@@ -1,37 +1,35 @@
 class Tree
-  include Linguist::BlobHelper
+  attr_accessor :entries, :readme, :contribution_guide
 
-  attr_accessor :path, :tree, :ref
+  def initialize(repository, sha, path = '/')
+    path = '/' if path.blank?
+    git_repo = repository.raw_repository
+    @entries = Gitlab::Git::Tree.where(git_repo, sha, path)
 
-  delegate  :contents, :basename, :name, :data, :mime_type,
-            :mode, :size, :text?, :colorize, to: :tree
+    if readme_tree = @entries.find(&:readme?)
+      readme_path = path == '/' ? readme_tree.name : File.join(path, readme_tree.name)
+      @readme = Gitlab::Git::Blob.find(git_repo, sha, readme_path)
+    end
 
-  def initialize(raw_tree, ref = nil, path = nil)
-    @ref, @path = ref, path
-    @tree = if path.present?
-              raw_tree / path
-            else
-              raw_tree
-            end
+    if contribution_tree = @entries.find(&:contributing?)
+      contribution_path = path == '/' ? contribution_tree.name : File.join(path, contribution_tree.name)
+      @contribution_guide = Gitlab::Git::Blob.find(git_repo, sha, contribution_path)
+    end
   end
 
-  def is_blob?
-    tree.is_a?(Grit::Blob)
+  def trees
+    @entries.select(&:dir?)
   end
 
-  def invalid?
-    tree.nil?
+  def blobs
+    @entries.select(&:file?)
   end
 
-  def empty?
-    data.blank?
+  def submodules
+    @entries.select(&:submodule?)
   end
 
-  def up_dir?
-    path.present?
-  end
-
-  def readme
-    @readme ||= contents.find { |c| c.is_a?(Grit::Blob) and c.name =~ /^readme/i }
+  def sorted_entries
+    trees + blobs + submodules
   end
 end

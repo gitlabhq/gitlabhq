@@ -1,39 +1,33 @@
-window.dashboardPage = ->
-  Pager.init 20, true
-  initSidebarTab()
-  $(".event_filter_link").bind "click", (event) ->
-    event.preventDefault()
-    toggleFilter $(this)
-    reloadActivities()
+class Dashboard
+  constructor: ->
+    @initSidebarTab()
 
-reloadActivities = ->
-  $(".content_list").html ''
-  Pager.init 20, true
+    $(".dash-filter").keyup ->
+      terms = $(this).val()
+      uiBox = $(this).parents('.ui-box').first()
+      if terms == "" || terms == undefined
+        uiBox.find(".dash-list li").show()
+      else
+        uiBox.find(".dash-list li").each (index) ->
+          name = $(this).find(".filter-title").text()
 
-toggleFilter = (sender) ->
-  sender.parent().toggleClass "inactive"
-  event_filters = $.cookie("event_filter")
-  filter = sender.attr("id").split("_")[0]
-  if event_filters
-    event_filters = event_filters.split(",")
-  else
-    event_filters = new Array()
+          if name.toLowerCase().search(terms.toLowerCase()) == -1
+            $(this).hide()
+          else
+            $(this).show()
 
-  index = event_filters.indexOf(filter)
-  if index is -1
-    event_filters.push filter
-  else
-    event_filters.splice index, 1
 
-  $.cookie "event_filter", event_filters.join(",")
 
-initSidebarTab = ->
-  key = "dashboard_sidebar_filter"
+  initSidebarTab: ->
+    key = "dashboard_sidebar_filter"
 
-  # store selection in cookie
-  $('.dash-sidebar-tabs a').on 'click', (e) ->
-    $.cookie(key, $(e.target).attr('id'))
+    # store selection in cookie
+    $('.dash-sidebar-tabs a').on 'click', (e) ->
+      $.cookie(key, $(e.target).attr('id'))
 
-  # show tab from cookie
-  sidebar_filter = $.cookie(key)
-  $("#" + sidebar_filter).tab('show') if sidebar_filter
+    # show tab from cookie
+    sidebar_filter = $.cookie(key)
+    $("#" + sidebar_filter).tab('show') if sidebar_filter
+
+
+@Dashboard = Dashboard

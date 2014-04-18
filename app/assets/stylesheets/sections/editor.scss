@@ -26,23 +26,9 @@
       float: left;
     }
 
-    .commit-btn {
-      @extend .save-btn;
-    }
     .message {
       display: inline-block;
       margin: 5px 8px 0 8px;
-    }
-  }
-  .commit_message-group {
-    margin-top: 20px;
-
-    label {
-      font-size: 16px;
-      line-height: 20px;
-    }
-    textarea {
-      @extend .span8;
     }
   }
 }
