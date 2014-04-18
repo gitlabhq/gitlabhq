@@ -373,7 +373,7 @@ nobody can access your GitLab by using this login information later on.
 ## Additional markup styles
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display.
-But you might have to install a depency to do so.
+But you might have to install a dependency to do so.
 Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 For example, reStructuredText markup language support requires python-docutils:
 
