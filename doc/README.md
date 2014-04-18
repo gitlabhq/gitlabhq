@@ -6,7 +6,7 @@
 + [Public access](public_access/public_access.md) Learn how you can allow public and internal access to a project.
 + [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 + [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
-+ [Workflow](workflow/workflow.md) Learn how to use Git and GitLab together.
++ [Workflow](workflow/README.md) Learn how to use Git and GitLab together.
 
 **Administrator documentation**
 
