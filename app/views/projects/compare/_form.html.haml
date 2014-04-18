@@ -17,13 +17,10 @@
       = link_to compare_mr_path, class: 'prepend-left-10 btn' do
         %strong Make a merge request
 
-
-:javascript
-  var availableTags = #{@project.repository.ref_names.to_json};
-
-  $("#from, #to").autocomplete({
-    source: availableTags,
-    minLength: 1
-  });
-
-  disableButtonIfEmptyField('#to', '.commits-compare-btn');
+  .clearfix.append-bottom-20.path-compare
+    %ul.bordered-list#comparePathContainer
+      - if params[:compare].present?
+        = render partial: 'path_fields', collection: params[:compare][:paths], as: :path
+    .input-group.inline-input-group
+      %span.input-group-addon path
+      = text_field_tag :paths, params[:paths], class: "form-control"
