@@ -31,7 +31,7 @@ namespace :gitlab do
         project.satellite.create
 
         print "... "
-        if $?.success?
+        if $?.to_i.zero?
           puts "created".green
         else
           puts "error".red
