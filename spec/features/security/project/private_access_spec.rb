@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Private Project Access" do
+describe "Private Project Access", feature: true  do
   let(:project) { create(:project) }
 
   let(:master)   { create(:user) }

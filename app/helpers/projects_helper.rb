@@ -5,7 +5,7 @@ module ProjectsHelper
 
   def link_to_project project
     link_to project do
-      title = content_tag(:span, project.name, class: 'projet-name')
+      title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
         namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'namespace-name')

@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::Users" do
+describe "Admin::Users", feature: true  do
   before { login_as :admin }
 
   describe "GET /admin/users" do

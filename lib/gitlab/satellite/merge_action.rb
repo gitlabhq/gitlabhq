@@ -118,7 +118,7 @@ module Gitlab
 
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
-        repo.git.merge(default_options({no_ff: true}), "-m #{message}", "source/#{merge_request.source_branch}")
+        repo.git.merge(default_options({no_ff: true}), "-m#{message}", "source/#{merge_request.source_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end

@@ -17,6 +17,10 @@ NOTE: This is a guide for GitLab developers. If you are trying to install GitLab
 
 #### 3. Do users need to update dependencies like `git`?
 
+- Check the [GitLab Shell version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L782)
+
+- Check the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794)
+
 #### 4. Get latest code
 
 #### 5. Does GitLab shell need to be updated?
@@ -72,3 +76,14 @@ After making the release branch new commits are cherry-picked from master. When 
 * Mention what GitLab is on the second line: GitLab is open source software to collaborate on code.
 * Select and thank the the Most Valuable Person (MVP) of this release.
 * Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+
+# Tweet
+
+Send out a tweet to share the good news with the world. For a major/minor release, list the features in short and link to the blog post.
+
+For a RC, make sure to explain what a RC is.
+
+A patch release tweet should specify the fixes it brings and link to the corresponding blog post.
+
+
+

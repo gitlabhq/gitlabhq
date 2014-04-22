@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Dashboard Issues Feed" do
+describe "Dashboard Issues Feed", feature: true  do
   describe "GET /issues" do
     let!(:user)     { create(:user) }
     let!(:project1) { create(:project) }

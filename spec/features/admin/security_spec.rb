@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Admin::Projects" do
+describe "Admin::Projects", feature: true  do
   describe "GET /admin/projects" do
     subject { admin_projects_path }
 

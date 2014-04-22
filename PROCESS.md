@@ -100,3 +100,10 @@ It's been at least 2 weeks (and a new release) since we heard from you. I'm clos
 
 This merge request has been closed because a request for more information has not been reacted to for more than 2 weeks. If you respond and conform to the merge request guidelines in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#pull-requests) we will reopen this merge request.
 
+### Accepting merge requests
+
+Is there a request on [the feature request forum](http://feedback.gitlab.com/forums/176466-general) that is similar to this?
+If so, can you make a comment with a link to it?
+Please be aware that new functionality that is not marked [accepting merge/pull requests](http://feedback.gitlab.com/forums/176466-general/status/796455) on the forum might not make it into GitLab.
+You might be asked to make changes and even after implementing them your feature might still be declined.
+If you want to reduce the chance of this happening please have a discussion in the forum first.

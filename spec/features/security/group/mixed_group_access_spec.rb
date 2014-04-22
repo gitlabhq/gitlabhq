@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Group access" do
+describe "Group access", feature: true  do
   describe "Group" do
     let(:group) { create(:group) }
 

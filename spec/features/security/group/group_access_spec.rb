@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Group access" do
+describe "Group access", feature: true  do
   describe "GET /projects/new" do
     it { new_group_path.should be_allowed_for :admin }
     it { new_group_path.should be_allowed_for :user }

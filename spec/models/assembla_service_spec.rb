@@ -19,7 +19,7 @@
 
 require 'spec_helper'
 
-describe AssemblaService do
+describe AssemblaService, models: true do
   describe "Associations" do
     it { should belong_to :project }
     it { should have_one :service_hook }

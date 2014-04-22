@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe "Search" do
+describe "Search", feature: true  do
   before do
     ActiveRecord::Base.observers.enable(:user_observer)
     login_as :user

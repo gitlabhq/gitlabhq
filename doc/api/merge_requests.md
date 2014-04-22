@@ -1,15 +1,21 @@
 ## List merge requests
 
-Get all merge requests for this project. This function takes pagination parameters
-`page` and `per_page` to restrict the list of merge requests.
+Get all merge requests for this project.
+The `state` parameter can be used to get only merge requests with a
+given state (`opened`, `closed`, or `merged`) or all of them (`all`).
+The pagination parameters `page` and `per_page` can be used to restrict the
+list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
+GET /projects/:id/merge_requests?state=opened
+GET /projects/:id/merge_requests?state=all
 ```
 
 Parameters:
 
 + `id` (required) - The ID of a project
++ `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
 
 ```json
 [

@@ -238,3 +238,14 @@ end
 describe "Authentication", "routing" do
   # pending
 end
+
+describe "Groups", "routing" do
+  it "to #show" do
+    get("/groups/1").should route_to('groups#show', id: '1')
+  end
+
+  it "also display group#show on the short path" do
+    get("/1").should route_to('groups#show', id: '1')
+  end
+end
+
