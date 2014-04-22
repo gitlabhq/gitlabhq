@@ -128,7 +128,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git
 
     # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.1
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.3
 
     cd gitlab-shell
 
