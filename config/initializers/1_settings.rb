@@ -1,5 +1,5 @@
 class Settings < Settingslogic
-  source "#{Rails.root}/config/gitlab.yml"
+  source ENV.fetch('GITLAB_CONFIG') { "#{Rails.root}/config/gitlab.yml" }
   namespace Rails.env
 
   class << self
