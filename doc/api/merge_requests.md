@@ -105,10 +105,11 @@ POST /projects/:id/merge_requests
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `source_branch` (required) - The source branch
-+ `target_branch` (required) - The target branch
-+ `assignee_id` (optional)   - Assignee user ID
-+ `title` (required)         - Title of MR
++ `source_branch` (required)     - The source branch
++ `target_branch` (required)     - The target branch
++ `assignee_id` (optional)       - Assignee user ID
++ `title` (required)             - Title of MR
++ `target_project_id` (optional) - The target project (numeric id)
 
 ```json
 {
