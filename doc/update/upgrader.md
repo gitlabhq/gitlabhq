@@ -46,4 +46,8 @@ If all items are green, then congratulations upgrade is complete!
 
 You've read through the entire guide, and probably did all the steps manually. Here is a one liner for convenience, the next time you upgrade:
 
-    cd /home/git/gitlab; sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; sudo service gitlab stop; sudo -u git -H ruby script/upgrade.rb -y; sudo service gitlab start; sudo service nginx restart; sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+```bash
+cd /home/git/gitlab; sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
+  sudo service gitlab stop; sudo -u git -H ruby script/upgrade.rb -y; sudo service gitlab start; \
+  sudo service nginx restart; sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
+```
