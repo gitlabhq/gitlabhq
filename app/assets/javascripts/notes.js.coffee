@@ -1,21 +1,13 @@
 class Notes
-  @interval: null
+  constructor: (@channel, @note_ids) ->
+    @subscribe(@channel)
 
-  constructor: (notes_url, note_ids) ->
-    @notes_url = notes_url
-    @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
-    @note_ids = note_ids
-    @initRefresh()
     @setupMainTargetNoteForm()
     @cleanBinding()
     @addBinding()
 
   addBinding: ->
-    # add note to UI after creation
-    $(document).on "ajax:success", ".js-main-target-form", @addNote
-    $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
-
-        # change note in UI after update
+    # change note in UI after update
     $(document).on "ajax:success", "form.edit_note", @updateNote
 
     # Edit note link
@@ -63,25 +55,13 @@ class Notes
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
 
-
-  initRefresh: ->
-    clearInterval(Notes.interval)
-    Notes.interval = setInterval =>
-      @refresh()
-    , 15000
-
-  refresh: ->
-    @getContent()
-
-  getContent: ->
-    $.ajax
-      url: @notes_url
-      dataType: "json"
-      success: (data) =>
-        notes = data.notes
-        $.each notes, (i, note) =>
-          @renderNote(note)
-
+  subscribe: (channel) ->
+    PrivatePub.subscribe(channel, (note, channel) =>
+      if note.line_code
+        @renderDiscussionNote(note)
+      else
+        @addNote(note)
+    )
 
   ###
   Render note in main comments area.
@@ -230,23 +210,14 @@ class Notes
     GitLab.GfmAutoComplete.setup()
     form.show()
 
-
   ###
   Called in response to the new note form being submitted
 
   Adds new note to list.
   ###
-  addNote: (xhr, note, status) =>
+  addNote: (note) =>
     @renderNote(note)
     @updateVotes()
-
-  ###
-  Called in response to the new note form being submitted
-
-  Adds new note to list.
-  ###
-  addDiscussionNote: (xhr, note, status) =>
-    @renderDiscussionNote(note)
 
   ###
   Called in response to the edit note form being submitted

@@ -6,5 +6,7 @@
 - if can? current_user, :write_note, @project
   = render "projects/notes/form"
 
+- channel = Gitlab::NoteHelper.channel(@noteable)
+= subscribe_to channel
 :javascript
-  new Notes("#{project_notes_path(target_id: @noteable.id, target_type: @noteable.class.name.underscore)}", #{@notes.map(&:id).to_json})
+  new Notes("#{channel}", #{@notes.map(&:id).to_json})

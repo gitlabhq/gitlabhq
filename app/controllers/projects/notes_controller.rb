@@ -22,6 +22,9 @@ class Projects::NotesController < Projects::ApplicationController
   def create
     @note = Notes::CreateService.new(project, current_user, params).execute
 
+    channel = Gitlab::NoteHelper.channel(@note.noteable)
+    PrivatePub.publish_to(channel, note_json(@note))
+
     respond_to do |format|
       format.json { render_note_json(@note) }
       format.html { redirect_to :back }
@@ -85,9 +88,14 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def render_note_json(note)
-    render json: {
+    render json: note_json(note)
+  end
+
+  def note_json(note)
+    {
       id: note.id,
       discussion_id: note.discussion_id,
+      line_code: note.line_code,
       html: note_to_html(note),
       discussion_html: note_to_discussion_html(note)
     }

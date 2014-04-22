@@ -29,6 +29,7 @@
 #= require underscore
 #= require nprogress
 #= require nprogress-turbolinks
+#= require private_pub
 #= require_tree .
 
 window.slugify = (text) ->
