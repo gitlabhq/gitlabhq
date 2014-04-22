@@ -66,16 +66,16 @@ After making the release branch new commits are cherry-picked from master. When 
 * 8-14th: Work on bugfixes, sponsored features and GitLab EE.
 * 15th: Code freeze
     - Stop merging into master, except essential bugfixes
-    - Announce a Release Manager
-* 18th: Release Candidate 1 (VERSION x.x.0.rc1, annotated tag and tweet about x.x.0.rc1, release on GitLab Cloud)
+    - Select a Release Manager
+* 18th: Release Candidate 1
     - Set VERSION to x.x.0.rc1
     - Create annotated tag x.x.0.rc1
     - Push the changes to GitLab.com, dev.gitlab.com, GitHub
     - Tweet about the release
     - Create a new branch on cloud for rc1
     - Deploy the new branch on Cloud after tests pass
-* 20st: optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
-* 22nd: release (VERSION x.x.0, create x-x-stable branch, annotated tag tag, blog and tweet)
+* 20st: Optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
+* 22nd: Release
     - Create x-x-stable branch and push to the repositories
     - QA
     - Fix anything coming out of the QA
