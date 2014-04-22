@@ -58,16 +58,32 @@ Check if changed since last release (~22nd of last month depending on when last 
 
 * [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 
-## Make a release branch
+## Release Schedule
 
 After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
 
-* 1-7th: official merge window (see contributing guide)
-* 8-14th: work on bugfixes, sponsored features and GitLab EE
-* 15th: code freeze (stop merging into master except essential bugfixes)
-* 18th: release candidate 1 (VERSION x.x.0.rc1, annotated tag and tweet about x.x.0.rc1, release on GitLab Cloud)
+* 1-7th: Official merge window (see contributing guide).
+* 8-14th: Work on bugfixes, sponsored features and GitLab EE.
+* 15th: Code freeze
+    - Stop merging into master, except essential bugfixes
+    - Announce a Release Manager
+* 18th: Release Candidate 1 (VERSION x.x.0.rc1, annotated tag and tweet about x.x.0.rc1, release on GitLab Cloud)
+    - Set VERSION to x.x.0.rc1
+    - Create annotated tag x.x.0.rc1
+    - Push the changes to GitLab.com, dev.gitlab.com, GitHub
+    - Tweet about the release
+    - Create a new branch on cloud for rc1
+    - Deploy the new branch on Cloud after tests pass
 * 20st: optional release candidate 2 (x.x.0.rc2, only if rc1 had problems)
 * 22nd: release (VERSION x.x.0, create x-x-stable branch, annotated tag tag, blog and tweet)
+    - Create x-x-stable branch and push to the repositories
+    - QA
+    - Fix anything coming out of the QA
+    - Set VERSION to x.x.0
+    - Create annotated tag x.x.0
+    - Push VERSION + Tag to master, merge into x-x-stable
+    - Publish blog for new release
+    - Tweet to blog (see below)
 * 23nd: optional patch releases (x.x.1, x.x.2, etc., only if there are serious problems)
 * 24-end of month: release GitLab EE and GitLab CI
 
