@@ -70,18 +70,15 @@
     .diff-side {
       overflow-x: scroll;
       width: 508px;
-      height: 700px;
     }
     .diff-side.diff-side-left{
       overflow-y:hidden;
     }
     .diff-side table, td.diff-middle table {
-      height: 700px;
     }
     .diff-middle {
       width: 114px;
       vertical-align: top;
-      height: 700px;
       overflow: hidden
     }
 
