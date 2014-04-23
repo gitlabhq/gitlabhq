@@ -1,6 +1,7 @@
 v 6.9.0
   - Store Rails cache data in the Redis `cache:gitlab` namespace
   - Adjust MySQL limits for existing installations
+  - Add db index on project_id+iid column. This prevents duplicate on iid.
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
