@@ -220,6 +220,18 @@ Parameters:
 
 + **none**
 
+## List SSH keys for user
+
+Get a list of a specified user's SSH keys. Available only for admin
+
+```
+GET /users/:uid/keys
+```
+
+Parameters:
+
++ `uid` (required) - id of specified user
+
 
 ## Single SSH key
 
@@ -285,4 +297,19 @@ DELETE /user/keys/:id
 Parameters:
 
 + `id` (required) - SSH key ID
+
+## Delete SSH key
+
+Deletes key owned by a specified user. Available only for admin.
+
+```
+DELETE /users/:uid/keys/:id
+```
+
+Parameters:
+
++ `uid` (required) - id of specified user
++ `id` (required) - SSH key ID
+
+Will return `200 Ok` on success, or `404 Not found` if either user or key cannot be found.
 
