@@ -19,6 +19,11 @@ production: &base
     port: 80
     https: false
 
+    # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+    # (you'd obviously need to replace ssh.host_example.com with your own host).
+    # Otherwise, ssh host will be set to the `host:` value above
+    # ssh_host: ssh.host_example.com
+
     # Uncomment and customize the last line to run in a non-root path
     # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
     # Note that four settings need to be changed for this to work.
