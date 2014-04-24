@@ -71,6 +71,7 @@ gem "carrierwave"
 
 # for aws storage
 gem "fog", "~> 1.14", group: :aws
+gem "unf", group: :aws
 
 # Authorization
 gem "six"
