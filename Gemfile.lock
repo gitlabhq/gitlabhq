@@ -531,6 +531,9 @@ GEM
       execjs (>= 0.3.0)
       json (>= 1.8.0)
     underscore-rails (1.4.4)
+    unf (0.1.4)
+      unf_ext
+    unf_ext (0.0.6)
     unicorn (4.6.3)
       kgio (~> 2.6)
       rack
@@ -659,6 +662,7 @@ DEPENDENCIES
   turbolinks
   uglifier
   underscore-rails (~> 1.4.4)
+  unf
   unicorn (~> 4.6.3)
   unicorn-worker-killer
   version_sorter
