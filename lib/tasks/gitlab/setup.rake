@@ -15,14 +15,7 @@ namespace :gitlab do
     end
 
     Rake::Task["db:setup"].invoke
-
-    config = YAML.load_file(File.join(Rails.root,'config','database.yml'))[Rails.env]
-    success = case config["adapter"]
-              when /^mysql/ then
-                Rake::Task["add_limits_mysql"].invoke
-              when "postgresql" then
-              end
-
+    Rake::Task["add_limits_mysql"].invoke
     Rake::Task["db:seed_fu"].invoke
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".red
