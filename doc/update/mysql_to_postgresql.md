@@ -1,11 +1,6 @@
 # Migrating GitLab from MySQL to Postgres
 
-If you are replacing MySQL with Postgres while keeping GitLab on the same
-server all you need to do is to export from MySQL, import into Postgres and
-rebuild the indexes as described below. If you are also moving GitLab to
-another server, or if you are switching to omnibus-gitlab, you may want to use
-a GitLab backup file. The second part of this documents explains the procedure
-to do this.
+If you are replacing MySQL with Postgres while keeping GitLab on the same server all you need to do is to export from MySQL, import into Postgres and rebuild the indexes as described below. If you are also moving GitLab to another server, or if you are switching to omnibus-gitlab, you may want to use a GitLab backup file. The second part of this documents explains the procedure to do this.
 
 ## Export from MySQL and import into Postgres
 
@@ -27,18 +22,13 @@ psql -f databasename.psql -d gitlabhq_production
 sudo service gitlab start
 ```
 
-
 ## Rebuild indexes
 
-The lanyrd database converter script does not preserve all indexes, so we have
-to recreate them ourselves after migrating from MySQL. It is not necessary to
-shut down GitLab for this process.
-
+The lanyrd database converter script does not preserve all indexes, so we have to recreate them ourselves after migrating from MySQL. It is not necessary to shut down GitLab for this process.
 
 ### For non-omnibus installations
 
-On non-omnibus installations (distributed using Git) we retrieve the index
-declarations from version control using `git stash`.
+On non-omnibus installations (distributed using Git) we retrieve the index declarations from version control using `git stash`.
 
 ```
 # Clone the database converter on your Postgres-backed GitLab server
@@ -59,8 +49,7 @@ sudo -u git -H bundle exec rails runner -e production 'eval $stdin.read' < /tmp/
 
 ### For omnibus-gitlab installations
 
-On omnibus-gitlab we need to get the index declarations from a file called
-`schema.rb.bundled`. For versions older than 6.9, we need to download the file.
+On omnibus-gitlab we need to get the index declarations from a file called `schema.rb.bundled`. For versions older than 6.9, we need to download the file.
 
 ```
 # Clone the database converter on your Postgres-backed GitLab server
@@ -80,10 +69,7 @@ test -e /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled || sudo /
 
 ## Converting a GitLab backup file from MySQL to Postgres
 
-GitLab backup files (<timestamp>_gitlab_backup.tar) contain a SQL dump.  Using
-the lanyrd database converter we can replace a MySQL database dump inside the
-tar file with a Postgres database dump. This can be useful if you are moving to
-another server.
+GitLab backup files (<timestamp>_gitlab_backup.tar) contain a SQL dump. Using the lanyrd database converter we can replace a MySQL database dump inside the tar file with a Postgres database dump. This can be useful if you are moving to another server.
 
 ```
 # Stop GitLab

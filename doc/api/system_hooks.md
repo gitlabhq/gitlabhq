@@ -2,7 +2,7 @@
 
 All methods require admin authorization.
 
-The url endpoint of the system hooks can be configured in [the admin area under hooks](/admin/hooks).
+The URL endpoint of the system hooks can be configured in [the admin area under hooks](/admin/hooks).
 
 ## List system hooks
 
@@ -14,7 +14,7 @@ GET /hooks
 
 Parameters:
 
-+ **none**
+- **none**
 
 ```json
 [
@@ -34,8 +34,7 @@ POST /hooks
 
 Parameters:
 
-+ `url` (required) - The hook URL
-
+- `url` (required) - The hook URL
 
 ## Test system hook
 
@@ -45,7 +44,7 @@ GET /hooks/:id
 
 Parameters:
 
-+ `id` (required) - The ID of hook
+- `id` (required) - The ID of hook
 
 ```json
 {
@@ -60,8 +59,7 @@ Parameters:
 
 ## Delete system hook
 
-Deletes a system hook. This is an idempotent API function and returns `200 Ok` even if the hook
-is not available. If the hook is deleted it is also returned as JSON.
+Deletes a system hook. This is an idempotent API function and returns `200 Ok` even if the hook is not available. If the hook is deleted it is also returned as JSON.
 
 ```
 DELETE /hooks/:id
@@ -69,4 +67,4 @@ DELETE /hooks/:id
 
 Parameters:
 
-+ `id` (required) - The ID of hook
+- `id` (required) - The ID of hook

@@ -1,9 +1,8 @@
 # Maintenance
 
-### Gather information about GitLab and the system it runs on
+## Gather information about GitLab and the system it runs on
 
-This command gathers information about your GitLab installation and the System
-it runs on. These may be useful when asking for help or reporting issues.
+This command gathers information about your GitLab installation and the System it runs on. These may be useful when asking for help or reporting issues.
 
 ```
 bundle exec rake gitlab:env:info RAILS_ENV=production
@@ -39,15 +38,14 @@ Hooks:		/home/git/gitlab-shell/hooks/
 Git:		/usr/bin/git
 ```
 
-
-### Check GitLab configuration
+## Check GitLab configuration
 
 Runs the following rake tasks:
 
-* gitlab:env:check
-* gitlab:gitlab_shell:check
-* gitlab:sidekiq:check
-* gitlab:app:check
+- `gitlab:env:check`
+- `gitlab:gitlab_shell:check`
+- `gitlab:sidekiq:check`
+- `gitlab:app:check`
 
 It will check that each component was setup according to the installation guide and suggest fixes for issues found.
 
@@ -103,10 +101,10 @@ Redis version >= 2.0.0? ... yes
 Checking GitLab ... Finished
 ```
 
-
-### (Re-)Create satellite repos
+## (Re-)Create satellite repos
 
 This will create satellite repos for all your projects.
+
 If necessary, remove the `tmp/repo_satellites` directory and rerun the command below.
 
 ```

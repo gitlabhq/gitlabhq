@@ -8,9 +8,7 @@
 
 ## Use File and FileUtils instead of shell commands
 
-Sometimes we invoke basic Unix commands via the shell when there is also a Ruby API for doing it.
-Use the Ruby API if it exists.
-http://www.ruby-doc.org/stdlib-2.0.0/libdoc/fileutils/rdoc/FileUtils.html#module-FileUtils-label-Module+Functions
+Sometimes we invoke basic Unix commands via the shell when there is also a Ruby API for doing it. Use the Ruby API if it exists. <http://www.ruby-doc.org/stdlib-2.0.0/libdoc/fileutils/rdoc/FileUtils.html#module-FileUtils-label-Module+Functions>
 
 ```ruby
 # Wrong
@@ -30,12 +28,7 @@ This coding style could have prevented CVE-2013-4490.
 
 ## Bypass the shell by splitting commands into separate tokens
 
-When we pass shell commands as a single string to Ruby, Ruby will let `/bin/sh` evaluate the entire string.
-Essentially, we are asking the shell to evaluate a one-line script.
-This creates a risk for shell injection attacks.
-It is better to split the shell command into tokens ourselves.
-Sometimes we use the scripting capabilities of the shell to change the working directory or set environment variables.
-All of this can also be achieved securely straight from Ruby
+When we pass shell commands as a single string to Ruby, Ruby will let `/bin/sh` evaluate the entire string. Essentially, we are asking the shell to evaluate a one-line script. This creates a risk for shell injection attacks. It is better to split the shell command into tokens ourselves. Sometimes we use the scripting capabilities of the shell to change the working directory or set environment variables. All of this can also be achieved securely straight from Ruby
 
 ```ruby
 # Wrong
@@ -55,8 +48,7 @@ This coding style could have prevented CVE-2013-4546.
 
 ## Separate options from arguments with --
 
-Make the difference between options and arguments clear to the argument parsers of system commands with `--`.
-This is supported by many but not all Unix commands.
+Make the difference between options and arguments clear to the argument parsers of system commands with `--`. This is supported by many but not all Unix commands.
 
 To understand what `--` does, consider the problem below.
 
@@ -68,9 +60,7 @@ cat: illegal option -- l
 usage: cat [-benstuv] [file ...]
 ```
 
-In the example above, the argument parser of `cat` assumes that `-l` is an option.
-The solution in the example above is to make it clear to `cat` that `-l` is really an argument, not an option.
-Many Unix command line tools follow the convention of separating options from arguments with `--`.
+In the example above, the argument parser of `cat` assumes that `-l` is an option. The solution in the example above is to make it clear to `cat` that `-l` is really an argument, not an option. Many Unix command line tools follow the convention of separating options from arguments with `--`.
 
 ```
 # Example (continued)
@@ -91,9 +81,7 @@ This coding style could have prevented CVE-2013-4582.
 
 ## Do not use the backticks
 
-Capturing the output of shell commands with backticks reads nicely, but you are forced to pass the command as one string to the shell.
-We explained above that this is unsafe.
-In the main GitLab codebase, the solution is to use `Gitlab::Popen.popen` instead.
+Capturing the output of shell commands with backticks reads nicely, but you are forced to pass the command as one string to the shell. We explained above that this is unsafe. In the main GitLab codebase, the solution is to use `Gitlab::Popen.popen` instead.
 
 ```ruby
 # Wrong

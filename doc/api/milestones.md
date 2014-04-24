@@ -26,8 +26,7 @@ GET /projects/:id/milestones
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-
+- `id` (required) - The ID of a project
 
 ## Get single milestone
 
@@ -39,9 +38,8 @@ GET /projects/:id/milestones/:milestone_id
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `milestone_id` (required) - The ID of a project milestone
-
+- `id` (required) - The ID of a project
+- `milestone_id` (required) - The ID of a project milestone
 
 ## Create new milestone
 
@@ -53,11 +51,10 @@ POST /projects/:id/milestones
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `title` (required) - The title of an milestone
-+ `description` (optional) - The description of the milestone
-+ `due_date` (optional) - The due date of the milestone
-
+- `id` (required) - The ID of a project
+- `title` (required) - The title of an milestone
+- `description` (optional) - The description of the milestone
+- `due_date` (optional) - The due date of the milestone
 
 ## Edit milestone
 
@@ -69,10 +66,9 @@ PUT /projects/:id/milestones/:milestone_id
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `milestone_id` (required) - The ID of a project milestone
-+ `title` (optional) - The title of a milestone
-+ `description` (optional) - The description of a milestone
-+ `due_date` (optional) - The due date of the milestone
-+ `state_event` (optional) - The state event of the milestone (close|activate)
-
+- `id` (required) - The ID of a project
+- `milestone_id` (required) - The ID of a project milestone
+- `title` (optional) - The title of a milestone
+- `description` (optional) - The description of a milestone
+- `due_date` (optional) - The due date of the milestone
+- `state_event` (optional) - The state event of the milestone (close|activate)
