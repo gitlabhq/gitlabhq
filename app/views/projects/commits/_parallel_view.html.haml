@@ -2,54 +2,37 @@
 - old_lines, new_lines = parallel_diff_lines(project, @commit, diff, file)
 - num_lines = old_lines.length
 
-%div.text-file-parallel
-  %div.diff-side.diff-side-left
-    %table
-      - old_lines.each do |line|
+%div.text-file
+  %table
+    - num_lines.times do |index|
+      - new_line = new_lines[index]
+      - old_line = old_lines[index]
+      %tr.line_holder.parallel
+        -# For old line
+        - if old_line.type == :file_created
+          %td.old_line= old_line.num
+          %td.line_content.parallel= "File was created"
+        - elsif old_line.type == :deleted
+          %td.old_line.old= old_line.num
+          %td.line_content{class: "parallel noteable_line old #{old_line.code}", "line_code" => old_line.code}= old_line.content
+        - else old_line.type == :no_change
+          %td.old_line= old_line.num
+          %td.line_content.parallel= old_line.content
 
-        %tr.line_holder.parallel
-          - if line.type == :file_created
-            %td.line_content.parallel= "File was created"
-          - elsif line.type == :deleted
-            %td.line_content{class: "parallel noteable_line old #{line.code}", "line_code" => line.code }= line.content
-          - else line.type == :no_change
-            %td.line_content.parallel= line.content
+        -# For new line
+        - if new_line.type == :file_deleted
+          %td.new_line= new_line.num
+          %td.line_content.parallel= "File was deleted"
+        - elsif new_line.type == :added
+          %td.new_line.new= new_line.num
+          %td.line_content{class: "parallel noteable_line new #{new_line.code}", "line_code" => new_line.code}= new_line.content
+        - else new_line.type == :no_change
+          %td.new_line= new_line.num
+          %td.line_content.parallel= new_line.content
 
-  %div.diff-middle
-    %table
-      - num_lines.times do |index|
-        %tr
-          - if old_lines[index].type == :deleted
-            %td.old_line.old= old_lines[index].num
-          - else
-            %td.old_line= old_lines[index].num
+      - if @reply_allowed
+        - comments1 = @line_notes.select { |n| n.line_code == old_line.code }.sort_by(&:created_at)
+        - comments2 = @line_notes.select { |n| n.line_code == new_line.code }.sort_by(&:created_at)
+        - unless comments1.empty? and comments2.empty?
+          = render "projects/notes/diff_notes_with_reply_parallel", notes1: comments1, notes2: comments2
 
-          %td.diff_line=""
-
-          - if new_lines[index].type == :added
-            %td.new_line.new= new_lines[index].num
-          - else
-            %td.new_line= new_lines[index].num
-
-  %div.diff-side.diff-side-right
-    %table
-      - new_lines.each do |line|
-
-        %tr.line_holder.parallel
-          - if line.type == :file_deleted
-            %td.line_content.parallel= "File was deleted"
-          - elsif line.type == :added
-            %td.line_content{class: "parallel noteable_line new #{line.code}", "line_code" => line.code }= line.content
-          - else line.type == :no_change
-            %td.line_content.parallel= line.content
-
-:javascript
-  $('.diff-side-right').on('scroll', function(){
-    $('.diff-side-left, .diff-middle').scrollTop($(this).scrollTop());
-    $('.diff-side-left').scrollLeft($(this).scrollLeft());
-  });
-
-  $('.diff-side-left').on('scroll', function(){
-    $('.diff-side-right, .diff-middle').scrollTop($(this).scrollTop()); // might never be relevant
-    $('.diff-side-right').scrollLeft($(this).scrollLeft());
-  });
