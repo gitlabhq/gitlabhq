@@ -1,4 +1,5 @@
 # Things to do when doing an out-of-bound security release
+
 NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
 
 ## When to do a security release
@@ -26,23 +27,25 @@ Please report suspected security vulnerabilities in private to support@gitlab.co
 1. Update the blogpost and the CHANGELOG when we receive the CVE number
 
 The timing of the code merge into master should be coordinated in advance.
+
 After the merge we strive to publish the announcements within 60 minutes.
 
 ## Blog post template
 
 XXX Security Advisory for GitLab
 
-A recently discovered critical vulnerability in GitLab allows [unauthenticated API access|remote code execution|unauthorized access to repositories|XXX|PICKSOMETHING]. All users should update GitLab and gitlab-shell immediately.
-We [have|haven't|XXX|PICKSOMETHING|] heard of this vulnerability being actively exploited.
+A recently discovered critical vulnerability in GitLab allows [unauthenticated API access|remote code execution|unauthorized access to repositories|XXX|PICKSOMETHING]. All users should update GitLab and gitlab-shell immediately. We [have|haven't|XXX|PICKSOMETHING|] heard of this vulnerability being actively exploited.
 
 ### Version affected
 
 GitLab Community Edition XXX and lower
+
 GitLab Enterprise Edition XXX and lower
 
 ### Fixed versions
 
 GitLab Community Edition XXX and up
+
 GitLab Enterprise Edition XXX and up
 
 ### Impact
