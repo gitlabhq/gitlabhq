@@ -44,7 +44,8 @@ module Gitlab
       def users(field, value)
         if field.to_sym == :dn
           options = {
-            base: value
+            base: value,
+            scope: Net::LDAP::SearchScope_BaseObject
           }
         else
           options = {
