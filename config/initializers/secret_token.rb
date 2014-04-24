@@ -9,7 +9,9 @@ require 'securerandom'
 
 def find_secure_token
   token_file = Rails.root.join('.secret')
-  if File.exist? token_file
+  if ENV.key?('SECRET_KEY_BASE')
+    ENV['SECRET_KEY_BASE']
+  elsif File.exist? token_file
     # Use the existing token.
     File.read(token_file).chomp
   else
