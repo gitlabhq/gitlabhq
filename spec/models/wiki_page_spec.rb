@@ -155,4 +155,20 @@ describe WikiPage do
     end
   end
 
+  describe "#title" do
+    before do
+      create_page("Title", "content")
+      @page = wiki.find_page("Title")
+    end
+
+    after do
+      destroy_page("Title")
+    end
+
+    it "should be replace a hyphen to a space" do
+      @page.title = "Import-existing-repositories-into-GitLab"
+      @page.title.should == "Import existing repositories into GitLab"
+    end
+  end
+
 end

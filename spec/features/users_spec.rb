@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe 'Users' do
+describe 'Users', feature: true do
   describe "GET /users/sign_up" do
     before do
       Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)

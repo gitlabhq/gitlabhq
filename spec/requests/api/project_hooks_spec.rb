@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API, 'ProjectHooks' do
+describe API::API, 'ProjectHooks', api: true  do
   include ApiHelpers
   before(:each) { enable_observers }
   after(:each) { disable_observers }

@@ -13,11 +13,11 @@
           %br
     .form-group
       = f.label :title, class: 'control-label' do
-        %strong= "Subject *"
+        %strong= 'Title *'
       .col-sm-10
         = f.text_field :title, maxlength: 255, class: "form-control js-gfm-input", autofocus: true, required: true
     .form-group
-      = f.label :description, "Details", class: 'control-label'
+      = f.label :description, 'Description', class: 'control-label'
       .col-sm-10
         = f.text_area :description, class: "form-control js-gfm-input", rows: 14
         %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.

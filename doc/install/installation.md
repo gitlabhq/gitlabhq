@@ -173,13 +173,13 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-7-stable-ee gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-8-stable-ee gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-7-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-8-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -232,20 +232,21 @@ Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
 ## Configure GitLab DB settings
 
-    # PostgreSQL
+    # PostgreSQL only:
     sudo -u git cp config/database.yml.postgresql config/database.yml
 
-    # Make sure to update username/password in config/database.yml.
+    # MySQL only:
+    sudo -u git cp config/database.yml.mysql config/database.yml
+
+    # MySQL and remote PostgreSQL only:
+    # Update username/password in config/database.yml.
     # You only need to adapt the production settings (first part).
     # If you followed the database guide then please do as follows:
     # Change 'secure password' with the value you have given to $password
     # You can keep the double quotes around the password
     sudo -u git -H editor config/database.yml
 
-    or
-    # Mysql
-    sudo -u git cp config/database.yml.mysql config/database.yml
-
+    # PostgreSQL and MySQL:
     # Make config/database.yml readable to git only
     sudo -u git -H chmod o-rwx config/database.yml
 
@@ -372,7 +373,7 @@ nobody can access your GitLab by using this login information later on.
 ## Additional markup styles
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display.
-But you might have to install a depency to do so.
+But you might have to install a dependency to do so.
 Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 For example, reStructuredText markup language support requires python-docutils:
 
@@ -420,9 +421,9 @@ These steps are fairly general and you will need to figure out the exact details
 * Stop GitLab
 		`sudo service gitlab stop`
 
-* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterconfig/gitlab.yml.example) as a reference)
+* Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) as a reference)
 
-* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/masterGemfile)
+* Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile)
                 `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
 		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`

@@ -9,9 +9,13 @@
 * Manage git repositories with fine grained access controls that keep your code secure
 * Perform code reviews and enhance collaboration with merge requests
 * Each project can also have an issue tracker and a wiki
-* Used by more than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises
+* Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises
 * Completely free and open source (MIT Expat license)
 * Powered by Ruby on Rails
+
+### Canonical source
+
+* The source of GitLab Communinity Edition is [hosted on GitLab Cloud](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
 
 ### Code status
 
@@ -81,7 +85,11 @@ or by directly calling the script
 
      sudo /etc/init.d/gitlab start
 
+Please login with root / 5iveL!fe
+
 ### Run in development mode
+
+Consider setting up the development environment with [the cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md#installation).
 
 Copy the example development unicorn configuration file
 
@@ -95,6 +103,8 @@ or start each component separately
 
     bundle exec rails s
     script/background_jobs start
+
+And surf to [localhost:3000](http://localhost:3000/) and login with root / 5iveL!fe
 
 ### Run the tests
 
