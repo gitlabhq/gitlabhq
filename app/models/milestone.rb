@@ -25,6 +25,7 @@ class Milestone < ActiveRecord::Base
 
   scope :active, -> { with_state(:active) }
   scope :closed, -> { with_state(:closed) }
+  scope :of_projects, ->(ids) { where(project_id: ids) }
 
   validates :title, presence: true
   validates :project, presence: true
