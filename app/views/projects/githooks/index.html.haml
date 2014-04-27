@@ -14,7 +14,7 @@
           %span.label.label-gray
             = hook['hook']
           - if hook['status']
-            = link_to 'Disable', disable_project_githook_path(@project, hook['id']), method: :put, class: "btn btn-small btn-remove", data: { confirm: 'Messaggio di conferma' }
+            = link_to 'Disable', disable_project_githook_path(@project, hook['id']), method: :put, class: "btn btn-small btn-remove", data: { confirm: "Are you sure to disable #{hook['name']} git hook?" }
           - else
-            = link_to 'Enable', enable_project_githook_path(@project, hook['id']), method: :put, class: "btn btn-small btn-success", data: { confirm: 'Messaggio di conferma' }
+            = link_to 'Enable', enable_project_githook_path(@project, hook['id']), method: :put, class: "btn btn-small btn-success", data: { confirm: "Are you sure to enable #{hook['name']} git hook?" }
       %p= hook['description']
