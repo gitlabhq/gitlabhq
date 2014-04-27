@@ -65,7 +65,7 @@ class Projects::GithooksController < Projects::ApplicationController
     File.symlink(File.join(githooks_path, 'hook-wrapper'), hook)
 
     # Add the hook script
-    hook = File.join(, 'hooks', "#{type}-#{name}")
+    hook = File.join(project_path, 'hooks', "#{type}-#{name}")
     File.delete(hook) if File.exists?(hook)
     File.symlink(File.join(githooks_path, name), hook)
   end
