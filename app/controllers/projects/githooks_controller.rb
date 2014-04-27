@@ -13,7 +13,7 @@ class Projects::GithooksController < Projects::ApplicationController
   def enable
     hook = load(params[:id])
     create_hooks(hook['hook'], hook['id'])
-    flash[:notice] = "You have successfully enbled " + hook['name']
+    flash[:notice] = 'You have successfully enbled ' + hook['name']
 
     redirect_to project_githooks_path(@project)
   end
@@ -21,7 +21,7 @@ class Projects::GithooksController < Projects::ApplicationController
   def disable
     hook = load(params[:id])
     delete_hooks(hook['hook'], hook['id'])
-    flash[:notice] = "You have successfully disabled " + hook['name']
+    flash[:notice] = 'You have successfully disabled ' + hook['name']
 
     redirect_to project_githooks_path(@project)
   end
@@ -32,11 +32,11 @@ class Projects::GithooksController < Projects::ApplicationController
     githooks = []
     Dir.glob(File.join(githooks_path, '*.json')) do |githook_info|
       hook = JSON.parse(IO.read(githook_info))
-      hook['id'] = File.basename(githook_info, ".json")
+      hook['id'] = File.basename(githook_info, '.json')
       hook['status'] = githook_status?(hook['id'])
       githooks << hook
     end
-    return githooks
+    githooks
   end
 
   def load(id)
@@ -44,7 +44,7 @@ class Projects::GithooksController < Projects::ApplicationController
     hook = JSON.parse(IO.read(path))
     hook['id'] = id
     hook['status'] = githook_status?(hook['id'])
-    return hook
+    hook
   end
 
   def githooks_path
@@ -56,27 +56,30 @@ class Projects::GithooksController < Projects::ApplicationController
     !Dir.glob(path).empty?
   end
 
-
   def create_hooks(type, name)
+    project_path = @project.repository.path_to_repo
+
     # Add hook wrapper script
-    hook = File.join(@project.repository.path_to_repo, 'hooks', "#{type}")
+    hook = File.join(project_path, 'hooks', "#{type}")
     File.delete(hook) if File.exists?(hook)
     File.symlink(File.join(githooks_path, 'hook-wrapper'), hook)
 
     # Add the hook script
-    hook = File.join(@project.repository.path_to_repo, 'hooks', "#{type}-#{name}")
+    hook = File.join(, 'hooks', "#{type}-#{name}")
     File.delete(hook) if File.exists?(hook)
     File.symlink(File.join(githooks_path, name), hook)
   end
 
   def delete_hooks(type, name)
+    project_path = @project.repository.path_to_repo
+
     # Delete hook
-    hook = File.join(@project.repository.path_to_repo, 'hooks', "#{type}-#{name}")
+    hook = File.join(project_path, 'hooks', "#{type}-#{name}")
     File.delete(hook) if File.exists?(hook)
 
     # Delete wrapper (if no more hooks are available)
-    hook = File.join(@project.repository.path_to_repo, 'hooks', "#{type}")
-    path = File.join(@project.repository.path_to_repo, 'hooks', "#{type}-*")
-    File.delete(hook) if (File.exists?(hook) && Dir.glob(path).empty?)
+    hook = File.join(project_path, 'hooks', "#{type}")
+    path = File.join(project_path, 'hooks', "#{type}-*")
+    File.delete(hook) if File.exists?(hook) && Dir.glob(path).empty?
   end
 end
