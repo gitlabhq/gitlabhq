@@ -1,0 +1,13 @@
+To setup the service you'll need to register an account on [gemnasium.com](https://gemnasium.com/) and add your project.
+Then proceed with the following steps:
+
+----
+
+1.  Grab your personnal API key from your [account's settings page](https://gemnasium.com/settings)
+2.  Grab the project's slug from the project's settings page and paste it in **token** field
+3.  Check "Active"
+4.  Click "Save"
+5.  Click "Update Settings" to manually trigger the first sync
+
+Now you can check your project's status on [gemnasium.com](https://gemnasium.com/).
+It will be updated automatically each time you push commits on this repository.

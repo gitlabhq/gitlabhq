@@ -57,4 +57,8 @@ class Service < ActiveRecord::Base
   def can_test?
     !project.empty_repo?
   end
+
+  def doc
+    Gitlab::ProjectServiceDoc.get(to_param)
+  end
 end
