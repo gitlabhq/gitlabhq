@@ -458,7 +458,7 @@ namespace :gitlab do
       else
         puts "no".red
         try_fixing_it(
-          "sudo chmod u+rwx,g+rx,o-rwx #{satellites_path}",
+          "sudo chmod u+rwx,g=rx,o-rwx #{satellites_path}",
         )
         for_more_information(
           see_installation_guide_section "GitLab"
