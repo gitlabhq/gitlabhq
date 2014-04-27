@@ -4,7 +4,7 @@ class Projects::GithooksController < Projects::ApplicationController
 
   respond_to :html
 
-  layout "project_settings"
+  layout 'project_settings'
 
   def index
     @hooks = list
