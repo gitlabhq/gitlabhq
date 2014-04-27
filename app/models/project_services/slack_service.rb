@@ -54,7 +54,7 @@ class SlackService < Service
     notifier = Slack::Notifier.new(subdomain, token)
     notifier.channel = room
     notifier.username = 'GitLab'
-    notifier.ping(message.pretext, attachments: message.attachments)
+    notifier.ping(message.pretext, attachments: message.attachments, icon_url: 'https://www.gitlab.com/ico/apple-touch-icon-72-precomposed.png')
   end
 
   private
