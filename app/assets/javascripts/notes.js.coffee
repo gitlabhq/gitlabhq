@@ -1,10 +1,11 @@
 class Notes
   @interval: null
 
-  constructor: (notes_url, note_ids) ->
+  constructor: (notes_url, note_ids, last_fetched_at) ->
     @notes_url = notes_url
     @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
     @note_ids = note_ids
+    @last_fetched_at = last_fetched_at
     @initRefresh()
     @setupMainTargetNoteForm()
     @cleanBinding()
@@ -76,9 +77,11 @@ class Notes
   getContent: ->
     $.ajax
       url: @notes_url
+      data: "last_fetched_at=" + @last_fetched_at
       dataType: "json"
       success: (data) =>
         notes = data.notes
+        @last_fetched_at = data.last_fetched_at
         $.each notes, (i, note) =>
           @renderNote(note)
 
