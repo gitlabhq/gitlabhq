@@ -27,7 +27,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request, anchor: "note_#{@note.id}")
       mail(from: sender(@note.author_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def note_wall_email(recipient_id, note_id)
