@@ -175,8 +175,17 @@ class WikiPage
   end
 
   def save(method, *args)
+
     if valid? && wiki.send(method, *args)
-      @page = wiki.wiki.paged(title)
+
+      page_details = if method == :update_page
+                       @page.path
+                     else
+                       title
+                     end
+
+      page_title, page_dir = wiki.page_title_and_dir(page_details)
+      @page = wiki.wiki.paged(page_title, page_dir)
 
       set_attributes
 

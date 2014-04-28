@@ -64,7 +64,8 @@ class ProjectWiki
   #
   # Returns an initialized WikiPage instance or nil
   def find_page(title, version = nil)
-    if page = wiki.page(title, version)
+    page_title, page_dir = page_title_and_dir(title)
+    if page = wiki.page(page_title, version, page_dir)
       WikiPage.new(self, page, true)
     else
       nil
@@ -88,6 +89,12 @@ class ProjectWiki
 
   def delete_page(page, message = nil)
     wiki.delete_page(page, commit_details(:deleted, message, page.title))
+  end
+
+  def page_title_and_dir(title)
+    title_array =  title.split("/")
+    title = title_array.pop
+    [title.gsub(/\.[^.]*$/, ""), title_array.join("/")]
   end
 
   private
