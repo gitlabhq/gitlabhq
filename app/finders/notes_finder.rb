@@ -12,6 +12,8 @@ class NotesFinder
       project.merge_requests.find(target_id).mr_and_commit_notes.inc_author.fresh
     when "snippet"
       project.snippets.find(target_id).notes.fresh
+    else
+      raise 'invalid target_type'
     end
   end
 end

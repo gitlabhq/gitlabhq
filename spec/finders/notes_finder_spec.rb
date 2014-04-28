@@ -22,5 +22,10 @@ describe NotesFinder do
       notes = NotesFinder.new.execute(project, user, params)
       notes.size.should eq(2)
     end
+
+    it 'should raise an exception for an invalid target_type' do
+      params = { target_id: commit.id, target_type: 'invalid' }
+      expect { NotesFinder.new.execute(project, user, params) }.to raise_error('invalid target_type')
+    end
   end
 end
