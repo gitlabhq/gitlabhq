@@ -5,7 +5,7 @@ describe NotesFinder do
   let(:project) { create :project }
   let(:note1) { create :note_on_commit, project: project }
   let(:note2) { create :note_on_commit, project: project }
-  let(:commit) { note1.commit }
+  let(:commit) { note1.noteable }
 
   before do
     project.team << [user, :master]
