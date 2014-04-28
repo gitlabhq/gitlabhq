@@ -12,7 +12,7 @@ describe NotesFinder do
   end
 
   describe :execute do
-    let(:params)  { { target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago } }
+    let(:params)  { { target_id: commit.id, target_type: 'commit', last_fetched_at: 1.hour.ago.to_i } }
 
     before do
       note1

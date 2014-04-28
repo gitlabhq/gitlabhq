@@ -4,7 +4,7 @@ class NotesFinder
   def execute(project, current_user, params)
     target_type = params[:target_type]
     target_id   = params[:target_id]
-    last_fetched_at = params.fetch(:last_fetched_at)
+    last_fetched_at = Time.at(params.fetch(:last_fetched_at).to_i)
 
     notes = case target_type
     when "commit"
