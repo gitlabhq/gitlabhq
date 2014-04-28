@@ -1,9 +1,12 @@
 class NotesFinder
+  FETCH_OVERLAP = 5.seconds
+
   def execute(project, current_user, params)
     target_type = params[:target_type]
     target_id   = params[:target_id]
+    last_fetched_at = params.fetch(:last_fetched_at)
 
-    case target_type
+    notes = case target_type
     when "commit"
       project.notes.for_commit_id(target_id).not_inline.fresh
     when "issue"
@@ -15,5 +18,8 @@ class NotesFinder
     else
       raise 'invalid target_type'
     end
+
+    # Use overlapping intervals to avoid worrying about race conditions
+    notes.where('updated_at > ?', last_fetched_at - FETCH_OVERLAP)
   end
 end
