@@ -7,6 +7,7 @@ v 6.9.0
   - Add ability to set different ssh host, if different from http/https
   - Fix syntax highlighting for code comments blocks
   - Improve comments loading logic
+  - Stop refreshing comments when the tab is hidden
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
