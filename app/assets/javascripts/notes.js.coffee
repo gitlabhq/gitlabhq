@@ -72,7 +72,7 @@ class Notes
     , 15000
 
   refresh: ->
-    @getContent()
+    @getContent() unless document.hidden
 
   getContent: ->
     $.ajax
