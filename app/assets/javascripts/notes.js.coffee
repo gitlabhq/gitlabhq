@@ -50,6 +50,9 @@ class Notes
     # hide diff note form
     $(document).on "click", ".js-close-discussion-note-form", @cancelDiscussionForm
 
+    # fetch notes when tab becomes visible
+    $(document).on "visibilitychange", @visibilityChange
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -63,6 +66,7 @@ class Notes
     $(document).off "click", ".js-choose-note-attachment-button"
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
+    $(document).off "visibilitychange"
 
 
   initRefresh: ->
@@ -452,5 +456,11 @@ class Notes
     # get only the basename
     filename = $(this).val().replace(/^.*[\\\/]/, "")
     form.find(".js-attachment-filename").text filename
+
+  ###
+  Called when the tab visibility changes
+  ###
+  visibilityChange: =>
+    @refresh()
 
 @Notes = Notes
