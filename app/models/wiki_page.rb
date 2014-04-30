@@ -175,7 +175,6 @@ class WikiPage
   end
 
   def save(method, *args)
-
     if valid? && wiki.send(method, *args)
 
       page_details = if method == :update_page
