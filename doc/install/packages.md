@@ -4,7 +4,7 @@ We have started to create [gitlab-omnibus packages](https://gitlab.com/gitlab-or
 
 Update instructions can be found at https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md .
 
-Some GitLab features are currently missing from these packages (MySQL, HTTPS, SMTP support) and we currently only have packages for Ubuntu 12.04 64-bit and Enterprise Linux 6 64-bit.
+Some GitLab features are currently missing from these packages (OAuth, SMTP support) and we currently only have packages for Ubuntu 12.04 64-bit and Enterprise Linux 6 64-bit (Debian 7 on request).
 
 
 Please contact subscribers@gitlab.com for more information.
