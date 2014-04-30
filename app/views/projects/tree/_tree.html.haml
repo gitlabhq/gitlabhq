@@ -11,9 +11,11 @@
         = link_to title, '#'
   - if current_user && @repository.branch_names.include?(@ref) && current_user.can?(:push_code, @project)
     %li
-      = link_to project_new_tree_path(@project, @id), title: 'New file', id: 'new-file-link' do
+      = link_to project_new_tree_path(@project, @id), class: 'btn btn-new',
+          title: 'New file', id: 'new-file-link', style: 'padding:1px 5px;' do
         %small
-          %i.icon-plus.light
+          %i.icon-plus
+          New file
 
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
