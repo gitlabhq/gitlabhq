@@ -1,9 +1,10 @@
 class ProjectMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
-  include SharedProject
+  include SharedIssue
+  include SharedMarkdown
   include SharedNote
   include SharedPaths
-  include SharedMarkdown
+  include SharedProject
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"

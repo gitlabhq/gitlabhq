@@ -1,0 +1,22 @@
+.gfm-input-preview-and-button.js-gfm-input-preview-and-button.js-toggler-container
+  - unless defined? header_anchors
+    - header_anchors = true
+  .gfm-input-and-preview
+    - text_area_args.last[:class] ||= ""
+    - text_area_args.last[:class] += " form-control gfm-input js-gfm-input turn-on"
+    - if defined? f
+      = f.text_area(*text_area_args)
+    - else
+      = text_area_tag(*text_area_args)
+    .preview-container.turn-off
+      .wiki.js-gfm-preview
+  .hint
+    .gfm-preview-button
+      %a.btn.js-gfm-preview-button.js-toggler-target.turn-on{ href: "javascript:;",
+          data: {url: markup_preview_project_path(@project), header_anchors: header_anchors.to_s} }
+        %i.icon-eye-open
+        Preview
+      %a.btn.btn-primary.js-gfm-edit-button.js-toggler-target.turn-off{ href: "javascript:;" }
+        %i.icon-edit
+        Write
+    .pull-right Rendered with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.

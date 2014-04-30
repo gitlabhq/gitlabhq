@@ -241,4 +241,15 @@ class ApplicationController < ActionController::Base
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
   end
+
+  def to_bool(string, default = nil)
+    case string
+    when 'true'
+      true
+    when 'false'
+      false
+    else
+      default
+    end
+  end
 end

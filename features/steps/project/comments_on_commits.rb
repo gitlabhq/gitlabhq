@@ -3,4 +3,5 @@ class CommentsOnCommits < Spinach::FeatureSteps
   include SharedNote
   include SharedPaths
   include SharedProject
+  include SharedMarkdown
 end

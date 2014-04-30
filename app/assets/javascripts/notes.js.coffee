@@ -16,7 +16,7 @@ class Notes
     $(document).on "ajax:success", ".js-main-target-form", @addNote
     $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
 
-        # change note in UI after update
+    # change note in UI after update
     $(document).on "ajax:success", "form.edit_note", @updateNote
 
     # Edit note link
@@ -28,9 +28,6 @@ class Notes
 
     # delete note attachment
     $(document).on "click", ".js-note-attachment-delete", @removeAttachment
-
-    # Preview button
-    $(document).on "click", ".js-note-preview-button", @previewNote
 
     # reset main target form after submit
     $(document).on "ajax:complete", ".js-main-target-form", @resetMainTargetForm
@@ -58,7 +55,6 @@ class Notes
     $(document).off "click", ".note-edit-cancel"
     $(document).off "click", ".js-note-delete"
     $(document).off "click", ".js-note-attachment-delete"
-    $(document).off "click", ".js-note-preview-button"
     $(document).off "ajax:complete", ".js-main-target-form"
     $(document).off "click", ".js-choose-note-attachment-button"
     $(document).off "click", ".js-discussion-reply-button"
@@ -134,27 +130,6 @@ class Notes
     @removeDiscussionNoteForm(form)
 
   ###
-  Shows the note preview.
-
-  Lets the server render GFM into Html and displays it.
-
-  Note: uses the Toggler behavior to toggle preview/edit views/buttons
-  ###
-  previewNote: (e) ->
-    e.preventDefault()
-    form = $(this).closest("form")
-    preview = form.find(".js-note-preview")
-    noteText = form.find(".js-note-text").val()
-    if noteText.trim().length is 0
-      preview.text "Nothing to preview."
-    else
-      preview.text "Loading..."
-      $.post($(this).data("url"),
-        note: noteText
-      ).success (previewData) ->
-        preview.html previewData
-
-  ###
   Called in response the main target form has been successfully submitted.
 
   Removes any errors.
@@ -168,9 +143,9 @@ class Notes
     form.find(".js-errors").remove()
 
     # reset text and preview
-    previewContainer = form.find(".js-toggler-container.note_text_and_preview")
+    previewContainer = form.find(".js-toggler-container.js-gfm-input-preview-and-button")
     previewContainer.removeClass "on"  if previewContainer.is(".on")
-    form.find(".js-note-text").val("").trigger "input"
+    form.find(".js-gfm-input").val("").trigger "input"
 
   ###
   Called when clicking the "Choose File" button.
@@ -187,7 +162,6 @@ class Notes
   Sets some hidden fields in the form.
   ###
   setupMainTargetNoteForm: ->
-
     # find the form
     form = $(".js-new-note-form")
 
@@ -205,34 +179,6 @@ class Notes
     # remove unnecessary fields and buttons
     form.find("#note_line_code").remove()
     form.find(".js-close-discussion-note-form").remove()
-
-  ###
-  General note form setup.
-
-  deactivates the submit button when text is empty
-  hides the preview button when text is empty
-  setup GFM auto complete
-  show the form
-  ###
-  setupNoteForm: (form) ->
-    disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
-    form.removeClass "js-new-note-form"
-
-    # setup preview buttons
-    form.find(".js-note-edit-button, .js-note-preview-button").tooltip placement: "left"
-    previewButton = form.find(".js-note-preview-button")
-    form.find(".js-note-text").on "input", ->
-      if $(this).val().trim() isnt ""
-        previewButton.removeClass("turn-off").addClass "turn-on"
-      else
-        previewButton.removeClass("turn-on").addClass "turn-off"
-
-
-    # remove notify commit author checkbox for non-commit notes
-    form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
-    GitLab.GfmAutoComplete.setup()
-    form.show()
-
 
   ###
   Called in response to the new note form being submitted
@@ -277,7 +223,7 @@ class Notes
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
-    GitLab.GfmAutoComplete.setup()
+    new MarkupPreview(note)
     form = note.find(".note-edit-form")
     form.show()
     form.find("textarea").focus()
@@ -360,32 +306,21 @@ class Notes
     form.find("#note_noteable_type").val dataHolder.data("noteableType")
     form.find("#note_noteable_id").val dataHolder.data("noteableId")
     @setupNoteForm form
-    form.find(".js-note-text").focus()
+    form.find(".js-gfm-input").focus()
     form.addClass "js-discussion-note-form"
 
   ###
   General note form setup.
 
   deactivates the submit button when text is empty
-  hides the preview button when text is empty
   setup GFM auto complete
   show the form
   ###
   setupNoteForm: (form) =>
-    disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
+    disableButtonIfEmptyField form.find(".js-gfm-input"), form.find(".js-comment-button")
     form.removeClass "js-new-note-form"
-    form.removeClass "js-new-note-form"
-    GitLab.GfmAutoComplete.setup()
-
-    # setup preview buttons
-    previewButton = form.find(".js-note-preview-button")
-    form.find(".js-note-text").on "input", ->
-      if $(this).val().trim() isnt ""
-        previewButton.removeClass("turn-off").addClass "turn-on"
-      else
-        previewButton.removeClass("turn-on").addClass "turn-off"
-
     form.show()
+    new MarkupPreview(form)
 
   ###
   Called when clicking on the "add a comment" button on the side of a diff line.

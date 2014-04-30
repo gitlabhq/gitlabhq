@@ -15,12 +15,11 @@
       = f.label :title, class: 'control-label' do
         %strong= 'Title *'
       .col-sm-10
-        = f.text_field :title, maxlength: 255, class: "form-control js-gfm-input", autofocus: true, required: true
+        = f.text_field :title, maxlength: 255, class: "form-control", autofocus: true, required: true
     .form-group
       = f.label :description, 'Description', class: 'control-label'
-      .col-sm-10
-        = f.text_area :description, class: "form-control js-gfm-input", rows: 14
-        %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+      .col-sm-10.description
+        = render 'shared/markup_input_and_preview', {f: f, text_area_args: [:description, {rows: 14}]}
     %hr
     .form-group
       .issue-assignee
@@ -46,8 +45,6 @@
         = f.text_field :label_list, maxlength: 2000, class: "form-control"
         %p.hint Separate labels with commas.
 
-
-
     .form-actions
       - if @issue.new_record?
         = f.submit 'Submit new issue', class: "btn btn-create"
@@ -56,9 +53,6 @@
 
       - cancel_path = @issue.new_record? ? project_issues_path(@project) : project_issue_path(@project, @issue)
       = link_to "Cancel", cancel_path, class: 'btn btn-cancel'
-
-
-
 
 :javascript
   $("#issue_label_list")
@@ -94,3 +88,5 @@
     $('#issue_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
+
+  new MarkupPreview()

@@ -1,5 +1,6 @@
 class ProjectMilestones < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedIssue
   include SharedProject
   include SharedPaths
   include SharedMarkdown

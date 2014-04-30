@@ -42,4 +42,8 @@ module NotesHelper
       project_id: noteable.project.id,
     }.to_json
   end
+
+  def notes_header_anchors?
+    false
+  end
 end

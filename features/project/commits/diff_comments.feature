@@ -9,6 +9,11 @@ Feature: Comments on commit diffs
     Then I should see add a diff comment button
 
   @javascript
+  Scenario: Preview headers have no id
+    Given I preview a diff comment text with a header
+    Then The diff comment preview header should have no id
+
+  @javascript
   Scenario: I can comment on a commit diff
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a diff comment saying "Typo, please fix"
@@ -44,33 +49,35 @@ Feature: Comments on commit diffs
     And I should see an empty diff comment form
 
   @javascript
-  Scenario: I can preview multiple forms separately
-    Given I preview a diff comment text like "Should fix it :smile:"
-    And I preview another diff comment text like "DRY this up"
-    Then I should see two separate previews
-
-  @javascript
   Scenario: I have a reply button in discussions
     Given I leave a diff comment like "Typo, please fix"
     Then I should see a discussion reply button
+
+  # Preview
 
   @javascript
   Scenario: I can't preview without text
     Given I open a diff comment form
     And I haven't written any diff comment text
-    Then I should not see the diff comment preview button
+    Then The diff comment preview button should be disabled
 
   @javascript
   Scenario: I can preview with text
     Given I open a diff comment form
     And I write a diff comment like ":-1: I don't like this"
-    Then I should see the diff comment preview button
+    Then The diff comment preview button should be enabled
 
   @javascript
   Scenario: I preview a diff comment
     Given I preview a diff comment text like "Should fix it :smile:"
     Then I should see the diff comment preview
     And I should not see the diff comment text field
+
+  @javascript
+  Scenario: I can preview multiple forms separately
+    Given I preview a diff comment text like "Should fix it :smile:"
+    And I preview another diff comment text like "DRY this up"
+    Then I should see two separate previews
 
   @javascript
   Scenario: I can edit after preview

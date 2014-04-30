@@ -1,0 +1,29 @@
+.gfm-input-preview-and-button {
+  .hint {
+    margin-top: 5px;
+  }
+}
+
+.gfm-input-and-preview {
+  background-color: white;
+  border: 1px solid rgb(204, 204, 204);
+  border-radius: 4px;
+  color: rgb(51, 51, 51);
+  height: 285px;
+  .gfm-input {
+    border: none;
+    height: 100%;
+    resize: none;
+  }
+  .preview-container {
+    height: 100%;
+    overflow: auto;
+  }
+  .wiki {
+    height: 100%;
+  }
+}
+
+.gfm-preview-button {
+  display: inline-block;
+}

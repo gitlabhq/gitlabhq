@@ -96,6 +96,7 @@
   }
 
   .title, .context, .description {
+    padding: 15px $md-header-anchor-container-left-padding;
     .clearfix {
       margin: 0;
     }
