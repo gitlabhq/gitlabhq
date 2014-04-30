@@ -258,3 +258,7 @@ Parameters:
   }
 ]
 ```
+
+## Comments on issues
+
+Comments are done via the notes resource.

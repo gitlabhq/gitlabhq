@@ -13,7 +13,7 @@
 + [Merge Requests](merge_requests.md)
 + [Issues](issues.md)
 + [Milestones](milestones.md)
-+ [Notes](notes.md)
++ [Notes](notes.md) (comments)
 + [Deploy Keys](deploy_keys.md)
 + [System Hooks](system_hooks.md)
 + [Groups](groups.md)
