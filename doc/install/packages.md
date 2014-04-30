@@ -11,10 +11,10 @@ Please contact subscribers@gitlab.com for more information.
 
 ## GitLab 6.8 Enterprise Edition
 
-- Ubuntu 12.04 64-bit [gitlab_6.7.4-ee.omnibus-1.ubuntu.12.04_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/788d9b718e820d3196295f2801b0bbec307e68a7/ubuntu-12.04/gitlab_6.8.0-ee.omnibus.4-1_amd64.deb)
+- Ubuntu 12.04 64-bit [gitlab_6.8.0-ee.omnibus.4-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/788d9b718e820d3196295f2801b0bbec307e68a7/ubuntu-12.04/gitlab_6.8.0-ee.omnibus.4-1_amd64.deb)
     - MD5: 9a8a99ef147f30aa92ef5dddf85dfa97
 
-- Enterprise Linux 6 64-bit [gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0a6d0e42b82d64a4c4ec6bbe448ffc0a5cfb70ab/centos-6.5/gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm)
+- Enterprise Linux 6 64-bit [gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0a6d0e42b82d64a4c4ec6bbe448ffc0a5cfb70ab/centos-6.5/gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm)
     - MD5: 6648d41b02712c1d701d8361490126e7
 
 ## Previous versions
