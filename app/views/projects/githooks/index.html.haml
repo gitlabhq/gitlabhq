@@ -1,0 +1,20 @@
+%h3.page-title Project git hooks
+%p.light Project git hooks allow you to integrate Git hooks in your repo.
+%hr
+
+%ul.bordered-list
+  - @hooks.each do |hook|
+    %li
+      %h4
+        = boolean_to_icon hook['status']
+        = hook['name']
+        .pull-right
+          %span.label.label-gray
+            = hook['version']
+          %span.label.label-gray
+            = hook['hook']
+          - if hook['status']
+            = link_to 'Disable', disable_project_githook_path(@project, hook['id']), method: :put, class: "btn btn-small btn-remove", data: { confirm: "Are you sure to disable #{hook['name']} git hook?" }
+          - else
+            = link_to 'Enable', enable_project_githook_path(@project, hook['id']), method: :put, class: "btn btn-small btn-success", data: { confirm: "Are you sure to enable #{hook['name']} git hook?" }
+      %p= hook['description']

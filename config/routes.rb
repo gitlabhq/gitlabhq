@@ -237,6 +237,13 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :githooks, constraints: { id: /[^\/]+/ } do
+        member do
+          put :enable
+          put :disable
+        end
+      end
+
       resources :deploy_keys, constraints: {id: /\d+/} do
         member do
           put :enable
