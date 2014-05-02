@@ -562,4 +562,8 @@ class Project < ActiveRecord::Base
   def forked_from?(project)
     forked? && project == forked_from_project
   end
+
+  def update_repository_size
+    update_attribute(:repository_size, repository.size)
+  end
 end
