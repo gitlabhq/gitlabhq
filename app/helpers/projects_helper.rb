@@ -163,7 +163,7 @@ module ProjectsHelper
   end
 
   def repository_size(project = nil)
-    "#{(project || @project).repository.size} MB"
+    "#{(project || @project).repository_size} MB"
   rescue
     # In order to prevent 500 error
     # when application cannot allocate memory
