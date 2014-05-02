@@ -11,7 +11,8 @@ namespace :gitlab do
       gitlab_url = Settings.gitlab.url
       # gitlab-shell requires a / at the end of the url
       gitlab_url += "/" unless gitlab_url.match(/\/$/)
-      target_dir = File.join(home_dir, "gitlab-shell")
+      repos_path = Gitlab.config.gitlab_shell.repos_path
+      target_dir = Gitlab.config.gitlab_shell.path
 
       # Clone if needed
       unless File.directory?(target_dir)
@@ -28,7 +29,7 @@ namespace :gitlab do
           user: user,
           gitlab_url: gitlab_url,
           http_settings: {self_signed_cert: false},
-          repos_path: File.join(home_dir, "repositories"),
+          repos_path: repos_path,
           auth_file: File.join(home_dir, ".ssh", "authorized_keys"),
           redis: {
             bin: %x{which redis-cli}.chomp,
@@ -38,7 +39,7 @@ namespace :gitlab do
           },
           log_level: "INFO",
           audit_usernames: false
-        }
+        }.stringify_keys
 
         # Generate config.yml based on existing gitlab settings
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
