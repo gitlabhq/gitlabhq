@@ -4,7 +4,7 @@ namespace :gitlab do
     task :install, [:tag, :repo] => :environment do |t, args|
       warn_user_is_not_gitlab
 
-      args.with_defaults(tag: "v1.9.1", repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      args.with_defaults(tag: "v1.9.3", repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
 
       user = Settings.gitlab.user
       home_dir = Settings.gitlab.user_home
@@ -28,7 +28,7 @@ namespace :gitlab do
         config = {
           user: user,
           gitlab_url: gitlab_url,
-          http_settings: {self_signed_cert: false},
+          http_settings: {self_signed_cert: false}.stringify_keys,
           repos_path: repos_path,
           auth_file: File.join(home_dir, ".ssh", "authorized_keys"),
           redis: {
@@ -36,7 +36,7 @@ namespace :gitlab do
             host: redis_url.host,
             port: redis_url.port,
             namespace: "resque:gitlab"
-          },
+          }.stringify_keys,
           log_level: "INFO",
           audit_usernames: false
         }.stringify_keys
