@@ -119,30 +119,7 @@ Create a `git` user for Gitlab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-
-# 4. GitLab shell
-
-GitLab Shell is an ssh access and repository management software developed specially for GitLab.
-
-    # Go to home directory
-    cd /home/git
-
-    # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.3
-
-    cd gitlab-shell
-
-    sudo -u git -H cp config.yml.example config.yml
-
-    # Edit config and replace gitlab_url
-    # with something like 'http://domain.com/'
-    sudo -u git -H editor config.yml
-
-    # Do setup
-    sudo -u git -H ./bin/install
-
-
-# 5. Database
+# 4. Database
 
 We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
 
@@ -165,7 +142,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u git -H psql -d gitlabhq_production
 
 
-# 6. GitLab
+# 5. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -276,6 +253,18 @@ that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     # When done you see 'Administrator account created:'
 
+## Install GitLab shell
+
+GitLab Shell is an ssh access and repository management software developed specially for GitLab.
+
+    # Go to the Gitlab installation folder:
+    cd /home/git/gitlab
+
+    # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
+    sudo -u git -H bundle exec rake gitlab:shell:setup[v1.9.3] REDIS_URL=redis://localhost:6379
+
+    # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
+    sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 ## Install Init Script
 
@@ -313,7 +302,13 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-# 7. Nginx
+
+## Compile assets
+
+    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+
+
+# 6. Nginx
 
 **Note:**
 Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the
