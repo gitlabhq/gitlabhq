@@ -307,4 +307,74 @@ class MergeRequest < ActiveRecord::Base
       source_project.repository.branch_names
     end
   end
+
+  class CommitHelper
+    attr_reader :description
+    attr_reader :title
+
+    # Initialize the receiver.
+    #
+    # @param merge_request_attributes [Hash] attributes for a merge request
+    # @param author [User] the author of the merge request
+    # @param target_project [Project] the target project of the merge request
+    def initialize (merge_request_attributes, author, target_project)
+      @merge_request = MergeRequest.new(params[:merge_request])
+      merge_request.author = current_user
+      @target_project = target_project
+
+      build_merge_request_diff
+      extract_title_and_description
+    end
+
+    # Returns the source commit of the merge request or <tt>nil</tt> if none
+    # could be found.
+    #
+    # @return [String, nil]
+    def source_commit
+      @source_commit ||= if merge_request.source_branch.present?
+        @repository.commit(merge_request.source_branch)
+      else
+        nil
+      end
+    end
+
+    # Returns the target commit of the merge request or <tt>nil</tt> if none
+    # could be found.
+    #
+    # @return [String, nil]
+    def target_commit
+      @target_commit ||= if merge_request.target_branch.present?
+        target_project.repository.commit(merge_request.target_branch)
+      else
+        nil
+      end
+    end
+
+    private
+
+    attr_reader :merge_request
+    attr_reader :target_project
+
+    def build_merge_request_diff
+      unless merge_request.merge_request_diff
+        merge_request.build_merge_request_diff
+        merge_request.merge_request_diff.merge_request = merge_request
+      end
+    end
+
+    # Extracts the title and description from the source commit.
+    def extract_title_and_description
+      if source_commit && target_commit
+        merge_request.reload_code(false)
+
+        if merge_request.commits.length == 1
+          @title = source_commit.title
+          @description = source_commit.description.try(:strip)
+        end
+      else
+        @title = source_branch.try(:title)
+        @description = ''
+      end
+    end
+  end
 end
