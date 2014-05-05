@@ -18,5 +18,7 @@ curl https://gitlab.com/api/v3/groups/1234?private_token=abcdef # where the id o
 
 With those IDs, add the same deploy key to all:
 ```
-curl -X POST curl https://gitlab.com/api/v3/projects/321/deploy_key_here?private_token=abcdef
+for project_id in 321 456 987; do
+    curl -X POST --data '{"title": "my key", "key": "ssh-rsa AAAA..."}' --header 'PRIVATE-TOKEN: abcdef' https://gitlab.com/api/v3/projects/${project_id}/keys
+done
 ```
