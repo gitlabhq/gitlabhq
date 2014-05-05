@@ -12,19 +12,21 @@ class Projects::WikisController < Projects::ApplicationController
 
   def show
     @page = @project_wiki.find_page(params[:id], params[:version_id])
+    gollum_wiki = @project_wiki.wiki
+    file = gollum_wiki.file(params[:id], gollum_wiki.ref, true)
 
     if @page
       render 'show'
-    elsif file = @project_wiki.wiki.file(params[:id], @project_wiki.wiki.ref, true)
+    elsif file
        if file.on_disk?
-         send_file file.on_disk_path, :disposition => 'inline'
+         send_file file.on_disk_path, disposition: 'inline'
        else
-          send_data(
-            file.raw_data,
-            type: file.mime_type,
-            disposition: 'inline',
-            filename: file.name
-          )
+         send_data(
+           file.raw_data,
+           type: file.mime_type,
+           disposition: 'inline',
+           filename: file.name
+         )
        end
     else
       return render('empty') unless can?(current_user, :write_wiki, @project)
