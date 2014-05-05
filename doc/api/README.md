@@ -13,7 +13,7 @@
 + [Merge Requests](merge_requests.md)
 + [Issues](issues.md)
 + [Milestones](milestones.md)
-+ [Notes](notes.md)
++ [Notes](notes.md) (comments)
 + [Deploy Keys](deploy_keys.md)
 + [System Hooks](system_hooks.md)
 + [Groups](groups.md)
@@ -24,6 +24,7 @@
 + [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
 + [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
 + [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
++ [node-gitlab](https://github.com/moul/node-gitlab) - Node.js
 
 ## Introduction
 

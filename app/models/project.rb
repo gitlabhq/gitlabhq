@@ -203,6 +203,7 @@ class Project < ActiveRecord::Base
       when 'oldest' then reorder('projects.created_at ASC')
       when 'recently_updated' then reorder('projects.updated_at DESC')
       when 'last_updated' then reorder('projects.updated_at ASC')
+      when 'largest_repository' then reorder('projects.repository_size DESC')
       else reorder("namespaces.path, projects.name ASC")
       end
     end
@@ -561,5 +562,9 @@ class Project < ActiveRecord::Base
 
   def forked_from?(project)
     forked? && project == forked_from_project
+  end
+
+  def update_repository_size
+    update_attribute(:repository_size, repository.size)
   end
 end

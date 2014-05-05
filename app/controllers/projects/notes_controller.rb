@@ -5,9 +5,10 @@ class Projects::NotesController < Projects::ApplicationController
   before_filter :authorize_admin_note!, only: [:update, :destroy]
 
   def index
+    current_fetched_at = Time.now.to_i
     @notes = NotesFinder.new.execute(project, current_user, params)
 
-    notes_json = { notes: [] }
+    notes_json = { notes: [], last_fetched_at: current_fetched_at }
 
     @notes.each do |note|
       notes_json[:notes] << {

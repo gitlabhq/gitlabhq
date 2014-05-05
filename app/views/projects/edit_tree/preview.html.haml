@@ -1,0 +1,26 @@
+.diff-file
+  .diff-content
+    - if gitlab_markdown?(@blob.name)
+      .file-content.wiki
+        = preserve do
+          = markdown(@content)
+    - elsif markup?(@blob.name)
+      .file-content.wiki
+        = raw GitHub::Markup.render(@blob.name, @content)
+    - else
+      .file-content.code
+        - unless @diff.empty?
+          %table.text-file
+            - @diff.each do |line, type, line_code, line_new, line_old, raw_line|
+              %tr.line_holder{ id: line_code, class: "#{type}" }
+                - if type == "match"
+                  %td.old_line= "..."
+                  %td.new_line= "..."
+                  %td.line_content.matched= line
+                - else
+                  %td.old_line
+                    = link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", id: line_code
+                  %td.new_line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", id: line_code
+                  %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line)
+        - else
+          %p.nothing_here_message No changes.

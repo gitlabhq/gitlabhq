@@ -122,7 +122,6 @@ It is important to do this as soon as possible, so we can catch any errors befor
 
 After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
 
-
 ### **1. Create x-x-stable branch and push to the repositories**
 
 ```
