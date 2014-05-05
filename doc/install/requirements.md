@@ -74,6 +74,9 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
+## Database
+
+If you want to run the database separately, the **recommended** database size is **1 MB per user**
 
 # Supported webbrowsers
 
