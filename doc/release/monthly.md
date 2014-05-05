@@ -1,19 +1,6 @@
 # Monthly Release
 NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
 
-# Release Schedule
-
-After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
-
-* 1-7th: Official merge window (see contributing guide).
-* 8-14th: Work on bugfixes, sponsored features and GitLab EE.
-* 15th: Code freeze
-* 18th: Release Candidate 1
-* 20st: Optional release candidate 2
-* 22nd: Release
-* 23nd: Optional patch releases
-* 24-end of month: Release GitLab EE and GitLab CI
-
 # **15th - Code Freeze & Release Manager**
 
 ### **1. Stop merging in code, except for important bugfixes**
@@ -23,8 +10,6 @@ After making the release branch new commits are cherry-picked from master. When 
 A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
 
 # **18th - Releasing RC1**
-
-> Yo dawg, I heard you like releases..
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
@@ -118,9 +103,13 @@ Merge the RC1 code into Cloud. Once the build is green, deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
 
-# **22nd - Release CE**
+# **22nd - Release**
 
-After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
+For GitLab EE, append -ee to the branches and tags.
+
+`x-x-stable-ee`
+
+`v.x.x.0-ee`
 
 ### **1. Create x-x-stable branch and push to the repositories**
 
@@ -135,7 +124,8 @@ git push <remote> x-x-stable
 [Follow this guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 
 ### **3. QA**
-Use the omnibus packages to test the following:
+Use the omnibus packages to test using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md)
+
 
 ### **4. Fix anything coming out of the QA**
 
@@ -153,21 +143,22 @@ git push origin master
 
 Next, merge the VERSION into the x-x-stable branch.
 
-### **8. Publish blog for new release**
+### **8. Push to remotes**
+
+For GitLab CE, push to dev, GitLab.com and GitHub.
+
+For GitLab EE, push to the subscribers repo.
+
+NOTE: You might not have the rights to push to master on dev. Ask Dmitriy.
+
+### **9. Publish blog for new release**
 * Mention what GitLab is on the second line: GitLab is open source software to collaborate on code.
 * Select and thank the the Most Valuable Person (MVP) of this release.
 * Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 
-### **9. Tweet to blog**
+### **10. Tweet to blog**
 
-Send out a tweet to share the good news with the world. For a major/minor release, list the features in short and link to the blog post.
-
-For a RC, make sure to explain what a RC is.
-
-A patch release tweet should specify the fixes it brings and link to the corresponding blog post.
-
-
-# **22nd - Release EE**
+Send out a tweet to share the good news with the world. List the features in short and link to the blog post.
 
 # **23rd - Optional Patch Release**
 
