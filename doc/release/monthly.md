@@ -118,7 +118,7 @@ Merge the RC1 code into Cloud. Once the build is green, deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
 
-# **22nd - Release**
+# **22nd - Release CE**
 
 After making the release branch new commits are cherry-picked from master. When the release gets closer we get more selective what is cherry-picked. The days of the month are approximately as follows:
 
@@ -168,4 +168,8 @@ For a RC, make sure to explain what a RC is.
 A patch release tweet should specify the fixes it brings and link to the corresponding blog post.
 
 
+# **22nd - Release EE**
 
+# **23rd - Optional Patch Release**
+
+# **25th - Release GitLab CI**
