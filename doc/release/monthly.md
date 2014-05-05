@@ -1,5 +1,5 @@
 # Monthly Release
-NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
+NOTE: This is a guide for GitLab developers.
 
 # **15th - Code Freeze & Release Manager**
 
@@ -94,7 +94,9 @@ git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 
 ### **7. Tweet**
 
-Tweet about the RC release. Make sure to explain what a RC is.
+Tweet about the RC release:
+
+> GitLab x.x.x.rc1 is out. This is a release candidate intended for testing only. Please let us know if you find regressions.
 
 ### **8. Update Cloud**
 
@@ -103,7 +105,7 @@ Merge the RC1 code into Cloud. Once the build is green, deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
 
-# **22nd - Release**
+# **22nd - Release CE and EE**
 
 For GitLab EE, append -ee to the branches and tags.
 
