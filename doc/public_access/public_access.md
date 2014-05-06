@@ -4,7 +4,7 @@ Internal projects will only be available to authenticated users.
 
 #### Public projects
 Public projects can be cloned **without any** authentication.
-It will also be listen on the [public access directory](/public).
+It will also be listed on the [public access directory](/public).
 **Any logged in user** will have [Guest](/help/permissions) permissions on the repository.
 
 #### Internal projects
