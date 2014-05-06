@@ -40,4 +40,10 @@
 .votes-holder {
   float: right;
   width: 250px;
+
+  @media (max-width: $screen-xs-max) {
+    width: 100%;
+    margin-top: 5px;
+    margin-bottom: 10px;
+  }
 }

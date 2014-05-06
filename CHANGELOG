@@ -8,6 +8,7 @@ v 6.9.0
   - Fix syntax highlighting for code comments blocks
   - Improve comments loading logic
   - Stop refreshing comments when the tab is hidden
+  - Improve issue and merge request mobile UI (Drew Blessing)
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
