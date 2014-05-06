@@ -9,6 +9,6 @@
           %span Page slug
         = text_field_tag :new_wiki_path, nil, placeholder: 'how-to-setup', class: 'form-control', required: true, :'data-wikis-path' => project_wikis_path(@project)
         %p.hint
-          Please don't use spaces and slashes
+          Please don't use spaces.
       .modal-footer
         = link_to 'Build', '#', class: 'build-new-wiki btn btn-create'
