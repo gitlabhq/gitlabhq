@@ -96,8 +96,9 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   And 'I click on existing image link' do
-    Gollum::Wiki.any_instance.should_receive(:file).with("image.jpg", "master", true).and_return(Gollum::File.new(wiki.wiki))
-    Gollum::File.any_instance.should_receive(:mime_type).and_return("image/jpeg")
+    file = Gollum::File.new(wiki.wiki)
+    Gollum::Wiki.any_instance.stub(:file).with("image.jpg", "master", true).and_return(file)
+    Gollum::File.any_instance.stub(:mime_type).and_return("image/jpeg")
     page.should have_link('image', href: "image.jpg")
     click_on "image"
   end
