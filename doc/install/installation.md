@@ -121,6 +121,7 @@ Create a `git` user for Gitlab:
 # 4. Database
 
 We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
+NOTE: because we need to make use of extensions you need at least pgsql 9.1.
 
     # Install the database packages
     sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
@@ -129,7 +130,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u postgres psql -d template1
 
     # Create a user for GitLab.
-    template1=# CREATE USER git;
+    template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
     template1=# CREATE DATABASE gitlabhq_production OWNER git;
