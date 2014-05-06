@@ -98,6 +98,7 @@ module Gitlab
       (?<prefix>\W)?                         # Prefix
       (                                      # Reference
          @(?<user>[a-zA-Z][a-zA-Z0-9_\-\.]*) # User name
+        |(?<issue>([A-Z\-]+-)\d+)            # JIRA Issue ID
         |\#(?<issue>([a-zA-Z\-]+-)?\d+)      # Issue ID
         |!(?<merge_request>\d+)              # MR ID
         |\$(?<snippet>\d+)                   # Snippet ID
@@ -172,11 +173,15 @@ module Gitlab
     end
 
     def reference_issue(identifier)
-      if @project.issue_exists? identifier
-        url = url_for_issue(identifier)
-        title = title_for_issue(identifier)
+      if @project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+        if @project.issue_exists? identifier
+          url = url_for_issue(identifier)
+          title = title_for_issue(identifier)
 
-        link_to("##{identifier}", url, html_options.merge(title: "Issue: #{title}", class: "gfm gfm-issue #{html_options[:class]}"))
+          link_to("##{identifier}", url, html_options.merge(title: "Issue: #{title}", class: "gfm gfm-issue #{html_options[:class]}"))
+        end
+      else
+        reference_jira_issue(identifier) if @project.issues_tracker == "jira"
       end
     end
 
@@ -196,6 +201,13 @@ module Gitlab
       if @project.valid_repo? && commit = @project.repository.commit(identifier)
         link_to(identifier, project_commit_url(@project, commit), html_options.merge(title: commit.link_title, class: "gfm gfm-commit #{html_options[:class]}"))
       end
+    end
+
+    def reference_jira_issue(identifier)
+      url = url_for_issue(identifier)
+      title = Gitlab.config.issues_tracker[@project.issues_tracker]["title"]
+
+      link_to("#{identifier}", url, html_options.merge(title: "Issue in #{title}", class: "gfm gfm-issue #{html_options[:class]}"))
     end
   end
 end
