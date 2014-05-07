@@ -107,6 +107,8 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
     url = URI.parse(current_url)
     url.path.should match("wikis/image.jpg")
     page.should_not have_xpath('/html') # Page should render the image which means there is no html involved
+    Gollum::Wiki.any_instance.unstub(:file)
+    Gollum::File.any_instance.unstub(:mime_type)
   end
 
   Then 'Image should be shown on the page' do
