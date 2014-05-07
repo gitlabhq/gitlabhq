@@ -1,0 +1,22 @@
+:plain
+  var target_branch_selected = $("#merge_request_target_branch").val().length > 0;
+
+- if title.present?
+  :plain
+    if (target_branch_selected) {
+      var mrTitle = $('#merge_request_title');
+
+      if (mrTitle.val().length == 0) {
+        mrTitle.val(#{title.to_json});
+      }
+    }
+
+- if description.present?
+  :plain
+    if (target_branch_selected) {
+      var mrDescription = $('#merge_request_description');
+
+      if (mrDescription.val().length == 0) {
+        mrDescription.val(#{description.to_json});
+      }
+    }

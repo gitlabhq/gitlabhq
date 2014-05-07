@@ -125,12 +125,21 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def branch_from
     #This is always source
     @source_project = @merge_request.nil? ? @project : @merge_request.source_project
-    @commit = @repository.commit(params[:ref]) if params[:ref].present?
+    @commit_helper = build_commit_helper
+    @source_commit = @commit_helper.source_commit
+
+    if params[:ref].present?
+      @source_commit ||= @repository.commit(params[:ref])
+    end
   end
 
   def branch_to
-    @target_project = selected_target_project
-    @commit = @target_project.repository.commit(params[:ref]) if params[:ref].present?
+    @commit_helper = build_commit_helper
+    @target_commit = @commit_helper.target_commit
+
+    if params[:ref].present?
+      @target_commit ||= @target_project.repository.commit(params[:ref])
+    end
   end
 
   def update_branches
@@ -211,6 +220,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
     @allowed_to_remove_source_branch = allowed_to_remove_source_branch?
     @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
+  end
+
+  def build_commit_helper
+    MergeRequest::CommitHelper.new(params[:merge_request], current_user,
+      selected_target_project)
   end
 
   def allowed_to_merge?
