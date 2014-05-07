@@ -65,10 +65,10 @@ module Gitlab
         end
 
         def name
-          unless auth.info.name.nil?
-            auth.info.name.to_s.force_encoding("utf-8")
+          if !auth.info.name.nil?
+            auth.info.name.to_s.force_encoding('utf-8')
           else
-            "#{auth.info.first_name} #{auth.info.last_name}".force_encoding("utf-8")
+            "#{auth.info.first_name} #{auth.info.last_name}".force_encoding('utf-8')
           end
         end
 
