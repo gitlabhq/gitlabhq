@@ -187,8 +187,8 @@ describe GitlabMarkdownHelper do
       let(:reference) { "JIRA-#{issue.iid}" }
 
       before do
-        hash = { "jira" => { "title" => "JIRA tracker", "issues_url" => "http://jira.example/browse/:id" } }
-        Gitlab.config.stub(:issues_tracker).and_return(hash)
+        issue_tracker_config = { "jira" => { "title" => "JIRA tracker", "issues_url" => "http://jira.example/browse/:id" } }
+        Gitlab.config.stub(:issues_tracker).and_return(issue_tracker_config)
         @project.stub(:issues_tracker).and_return("jira")
         @project.stub(:issues_tracker_id).and_return("JIRA")
       end
