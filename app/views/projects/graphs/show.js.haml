@@ -3,6 +3,7 @@
     controller = new ContributorsStatGraph
     controller.init(#{@log})
 
+ 
     $("select").change( function () {
       var field = $(this).val()
       controller.set_current_field(field)
@@ -17,3 +18,5 @@
 - else
   :plain
     $('.stat-graph').replaceWith('<div class="alert alert-danger">Failed to load graph</div>')
+
+binding.pry

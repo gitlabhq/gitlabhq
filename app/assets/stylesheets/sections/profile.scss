@@ -1,3 +1,9 @@
+.ui-box { 
+  #cal-heatmap {
+    overflow: auto; //for scrolling the contributions graph
+  }
+}
+
 .update-notifications {
   .radio-inline {
     margin-right: 9%;

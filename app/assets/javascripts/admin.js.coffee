@@ -1,4 +1,4 @@
-class Admin
+cal-heatmap.jsclass Admin
   constructor: ->
     $('input#user_force_random_password').on 'change', (elem) ->
       elems = $('#user_password, #user_password_confirmation')

@@ -111,6 +111,7 @@ class Repository
 
   def commit_count
     Rails.cache.fetch(cache_key(:commit_count)) do
+      binding.pry
       begin
         raw_repository.raw.commit_count
       rescue
@@ -143,6 +144,7 @@ class Repository
       stats.parsed_log
     end
   end
+
 
   def cache_key(type)
     "#{type}:#{path_with_namespace}"
