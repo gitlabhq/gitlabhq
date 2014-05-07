@@ -1,2 +1,5 @@
-+ [Monthly](monthly.md)
-+ [Security](security.md)
+# Release
+
+- [Monthly](monthly.md)
+- [Patch](patch.md)
+- [Security](security.md)

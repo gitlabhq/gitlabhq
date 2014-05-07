@@ -1,4 +1,6 @@
-# Use the shell commands below to convert a MySQL GitLab database to a PostgreSQL one.
+# MySQL to PostgreSQL
+
+Use the shell commands below to convert a MySQL GitLab database to a PostgreSQL one:
 
 ```
 git clone https://github.com/lanyrd/mysql-postgresql-converter.git

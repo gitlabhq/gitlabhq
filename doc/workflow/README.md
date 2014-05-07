@@ -1,2 +1,5 @@
-+ [Workflow](workflow/workflow.md)
-+ [Project Features](workflow/project_features.md)
+# Workflow
+
+- [Workflow](workflow.md)
+- [Authorization for merge requests](authorization_for_merge_requests.md)
+- [Project Features](project_features.md)

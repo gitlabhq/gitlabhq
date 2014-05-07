@@ -1,9 +1,11 @@
 # Things to do when doing a patch release
+
 NOTE: This is a guide for GitLab developers. If you are trying to install GitLab see the latest stable [installation guide](install/installation.md) and if you are trying to upgrade, see the [upgrade guides](update).
 
 ## When to do a patch release
 
 Do a patch release when there is a critical regression that needs to be adresses before the next monthly release.
+
 Otherwise include it in the monthly release and note there was a regression fix in the release announcement.
 
 ## Release Procedure
@@ -22,4 +24,3 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. Apply the patch to GitLab Cloud and the private GitLab development server
 1. Send tweets about the release from @gitlabhq, tweet should include the most important feature that the release is addressing as well as the link to the changelog
 1. Build new packages with the latest version
-
