@@ -24,7 +24,7 @@ module API
       #   branch (required) - The name of the branch
       # Example Request:
       #   GET /projects/:id/repository/branches/:branch
-      get ":id/repository/branches/:branch" do
+      get ':id/repository/branches/:branch', requirements: { branch: /.*/ } do
         @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
         not_found!("Branch does not exist") if @branch.nil?
         present @branch, with: Entities::RepoObject, project: user_project
@@ -37,7 +37,9 @@ module API
       #   branch (required) - The name of the branch
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/protect
-      put ":id/repository/branches/:branch/protect" do
+      put ':id/repository/branches/:branch/protect',
+          requirements: { branch: /.*/ } do
+
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
@@ -55,7 +57,9 @@ module API
       #   branch (required) - The name of the branch
       # Example Request:
       #   PUT /projects/:id/repository/branches/:branch/unprotect
-      put ":id/repository/branches/:branch/unprotect" do
+      put ':id/repository/branches/:branch/unprotect',
+          requirements: { branch: /.*/ } do
+
         authorize_admin_project
 
         @branch = user_project.repository.find_branch(params[:branch])
