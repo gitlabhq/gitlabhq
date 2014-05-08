@@ -1,3 +1,4 @@
-%h3.page-title New Merge Request
-%hr
-= render 'form'
+- if @commits.present?
+  = render 'new_submit'
+- else
+  = render 'new_compare'
