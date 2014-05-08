@@ -12,6 +12,7 @@
   margin:20px 0;
   background: #FFF;
   border: 1px solid #EEE;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
 
   &.issue-box-closed {
     border-color: #DA4E49;
