@@ -11,11 +11,17 @@ second part of this documents explains the procedure to do this.
 Use this if you are keeping GitLab on the same server.
 
 ```
+sudo service gitlab stop
+
+# Update /home/git/gitlab/config/database.yml
+
 git clone https://github.com/lanyrd/mysql-postgresql-converter.git
 cd mysql-postgresql-converter
 mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production
 python db_converter.py databasename.mysql databasename.psql
 psql -f databasename.psql -d gitlabhq_production
+
+sudo service gitlab start
 ```
 
 ## Converting a GitLab backup file from MySQL to Postgres
