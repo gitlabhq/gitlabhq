@@ -24,6 +24,14 @@ class Project
       else
         $('#project_issues_tracker_id').removeAttr('disabled')
 
+    $('#project_merge_requests_enabled').change ->
+      if ($(this).is(':checked') == true)
+        $('#project_merge_requests_template').removeAttr('disabled')
+      else
+        $('#project_merge_requests_template').attr('disabled', 'disabled')
+
+      $('#project_merge_requests_template').change()
+
 
 @Project = Project
 
