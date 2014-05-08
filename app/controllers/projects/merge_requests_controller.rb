@@ -62,11 +62,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request.source_project = @project unless @merge_request.source_project
     @merge_request.target_project ||= (@project.forked_from_project || @project)
     @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
-
     @merge_request.target_branch ||= @merge_request.target_project.default_branch
-
     @source_project = @merge_request.source_project
-    @merge_request
+
+    if @merge_request.target_branch && @merge_request.source_branch
+      compare_action = Gitlab::Satellite::CompareAction.new(
+        current_user,
+        @merge_request.target_project,
+        @merge_request.target_branch,
+        @merge_request.source_project,
+        @merge_request.source_branch
+      )
+
+      @commits = compare_action.commits
+      @commits.map! { |commit| Commit.new(commit) }
+      @commit = @commits.first
+
+      @diffs = compare_action.diffs
+      @merge_request.title = @merge_request.source_branch.titleize.humanize
+      @target_project = @merge_request.target_project
+      @target_repo = @target_project.repository
+    end
   end
 
   def edit
@@ -80,7 +96,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request = MergeRequests::CreateService.new(project, current_user, params[:merge_request]).execute
 
     if @merge_request.valid?
-      redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
+      redirect_to project_merge_request_path(@merge_request.target_project, @merge_request), notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
       @target_project = @merge_request.target_project
