@@ -63,23 +63,14 @@
       }
     }
 
-    .text-file-parallel div {
-      display: inline-block;
-      padding-bottom: 16px;
-    }
-    .diff-side {
-      overflow-x: scroll;
-      width: 508px;
-    }
-    .diff-side.diff-side-left{
-      overflow-y:hidden;
-    }
-    .diff-side table, td.diff-middle table {
-    }
-    .diff-middle {
-      width: 114px;
-      vertical-align: top;
-      overflow: hidden
+    tr.line_holder.parallel{
+      .old_line, .new_line, .diff_line {
+        min-width: 50px;
+      }
+
+      td.line_content.parallel{
+        width: 50%;
+      }
     }
 
     .old_line, .new_line, .diff_line {
