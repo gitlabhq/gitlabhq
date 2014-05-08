@@ -1,4 +1,4 @@
-%h3.page-title Compare changes for new merge request
+%h3.page-title Compare branches for new Merge Request
 %hr
 
 = form_for [@project, @merge_request], url: new_project_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline" } do |f|
@@ -45,8 +45,8 @@
             %span.label-branch #{@merge_request.target_branch}
             are the same.
 
-  .form-actions
-    = f.submit 'Compare branches', class: "btn btn-primary"
+  %hr
+  = f.submit 'Compare branches', class: "btn btn-primary"
 
 :javascript
   var source_branch = $("#merge_request_source_branch")
