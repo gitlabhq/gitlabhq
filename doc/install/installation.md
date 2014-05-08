@@ -257,14 +257,34 @@ that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
 GitLab Shell is an ssh access and repository management software developed specially for GitLab.
 
+    # Go to git user Home:
+    cd /home/git/
+    
+    # Clone gitlab-shell from repository:
+    sudo -u git -H git clone https://github.com/gitlabhq/gitlab-shell.git
+    
+    # Copy the config example file to initiate configurations
+    sudo -u git -H cp config.yml.example config.yml
+    
+    # Then edit, the file to meet your needs. Like the address of the server. See the first five lines of the file. Must be like this:
+    # GitLab user. git by default
+    #	user: git
+    # Url to gitlab instance. Used for api calls. Should end with a slash.
+    #	gitlab_url: "http://localhost/"
+    # ...
+    sudo -u git -H editor /home/git/gitlab-shell/config.yml
+
     # Go to the Gitlab installation folder:
     cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.3] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:setup REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+    
+    # The script will create if necessary the keys for SSH authentication and create or replace the /home/git/.ssh/authorized_keys file. If the script encounters that file, it will ask for your permission to rebuild the file:
+    # This will rebuild an authorized_keys file.
+    # You will lose any data stored in authorized_keys file.
+    # Do you want to continue (yes/no)? yes
 
-    # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
-    sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 ## Install Init Script
 
@@ -345,7 +365,7 @@ If all items are green, then congratulations on successfully installing GitLab!
 Visit YOUR_SERVER in your web browser for your first GitLab login.
 The setup has created an admin account for you. You can use it to log in:
 
-    root
+    root OR admin@local.host
     5iveL!fe
 
 **Important Note:**
