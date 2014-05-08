@@ -111,7 +111,6 @@ class Repository
 
   def commit_count
     Rails.cache.fetch(cache_key(:commit_count)) do
-      binding.pry
       begin
         raw_repository.raw.commit_count
       rescue

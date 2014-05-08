@@ -1,7 +1,7 @@
-.ui-box { 
-  #cal-heatmap {
-    overflow: auto; //for scrolling the contributions graph
-  }
+.cal {
+  display:flex;
+  flow-flex: row wrap;
+  overflow: inherit;
 }
 
 .update-notifications {

@@ -1,16 +1,17 @@
-.ui-box
-  .title
-    Calendar
-  .well-list
-    #cal-heatmap
+.cal
+  #cal-heatmap
     :javascript
       var cal = new CalHeatMap();
-      cal.init({
-        data: "datas-years.json",
-        start: new Date(2000, 0),
-        id : "cal-heatmap",
-        domain : "month",
-        subDomain : "day",
-        range : 12 , //
-        legendColors: ["#efefef", "steelblue"]
-      });
+        cal.init({
+          domainLabelFormat: "%b",
+          data: "datas-years.json",
+          id : "cal-heatmap",
+          domain : "month",
+          subDomain : "day",
+          range : 12 , 
+          legendColors: ["#efefef", "steelblue"],
+          tooltip: true,
+          colLimit: 4,
+          label: { position: "top" },
+          domainMargin: 2
+        });

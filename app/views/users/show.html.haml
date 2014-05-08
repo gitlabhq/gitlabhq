@@ -9,12 +9,15 @@
             %i.icon-edit
             Edit Profile settings
       %br
-      %span.user-show-username #{@user.username}
+      %span.user-show-username #{@user.username}, #{@user.email}
       %br
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     
     .clearfix
-    = render 'calendar'
+    %h4 Calendar:
+    %center
+      = render 'calendar'
+    %hr
     %h4 Groups:
     = render 'groups', groups: @groups
     %hr
