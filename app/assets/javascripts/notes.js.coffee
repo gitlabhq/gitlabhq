@@ -53,6 +53,12 @@ class Notes
     # fetch notes when tab becomes visible
     $(document).on "visibilitychange", @visibilityChange
 
+    @notes_forms = '.js-main-target-form textarea, .js-discussion-note-form textarea'
+    $(document).on('keypress', @notes_forms, (e)->
+      if event.keyCode == 10 || (event.ctrlKey && event.keyCode == 13)
+        $(@).parents('form').submit()
+    )
+
   cleanBinding: ->
     $(document).off "ajax:success", ".js-main-target-form"
     $(document).off "ajax:success", ".js-discussion-note-form"
@@ -67,6 +73,7 @@ class Notes
     $(document).off "click", ".js-discussion-reply-button"
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
+    $(document).off "keypress", @notes_forms
 
 
   initRefresh: ->
