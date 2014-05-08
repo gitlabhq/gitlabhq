@@ -1,17 +1,16 @@
-.cal
-  #cal-heatmap
-    :javascript
-      var cal = new CalHeatMap();
-        cal.init({
-          domainLabelFormat: "%b",
-          data: "datas-years.json",
-          id : "cal-heatmap",
-          domain : "month",
-          subDomain : "day",
-          range : 12 , 
-          legendColors: ["#efefef", "steelblue"],
-          tooltip: true,
-          colLimit: 4,
-          label: { position: "top" },
-          domainMargin: 2
-        });
+#cal-heatmap
+  :javascript
+    var cal = new CalHeatMap();
+      cal.init({
+        domainLabelFormat: "%b",
+        data: "datas-years.json",
+        id : "cal-heatmap",
+        domain : "month",
+        subDomain : "day",
+        range : 12 , 
+        legendColors: ["#efefef", "steelblue"],
+        tooltip: true,
+        colLimit: 4,
+        label: { position: "top" },
+        domainMargin: 2
+      });
