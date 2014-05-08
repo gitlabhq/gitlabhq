@@ -18,11 +18,18 @@ Gitlab::Seeder.quiet do
     'https://github.com/h5bp/mobile-boilerplate.git',
   ]
 
+  def check_project(project)
+    if project.valid?
+      print '.'
+    else
+      puts project.errors.full_messages
+      print 'F'
+    end
+  end
+
   project_urls.each_with_index do |url, i|
     group_path, project_path = url.split('/')[-2..-1]
-
     group = Group.find_by(path: group_path)
-
     unless group
       group = Group.new(
         name: group_path.titleize,
@@ -30,12 +37,9 @@ Gitlab::Seeder.quiet do
       )
       group.description = Faker::Lorem.sentence
       group.save
-
       group.add_owner(User.first)
     end
-
     project_path.gsub!(".git", "")
-
     params = {
       import_url: url,
       namespace_id: group.id,
@@ -43,14 +47,25 @@ Gitlab::Seeder.quiet do
       description: Faker::Lorem.sentence,
       visibility_level: Gitlab::VisibilityLevel.values.sample
     }
-
     project = Projects::CreateService.new(User.first, params).execute
+    check_project(project)
+  end
 
-    if project.valid?
-      print '.'
-    else
-      puts project.errors.full_messages
-      print 'F'
+  if Settings.gitlab.include_predictable_data
+    visibility_level_name_values = Gitlab::VisibilityLevel.options
+    User.where('username LIKE ?', 'user%').
+         order('CHAR_LENGTH(username), username').limit(5).each do |user|
+      i = 1
+      visibility_level_name_values.each do |name, value|
+        params = {
+          description: "Description #{name} #{i}",
+          name: "Project Name #{name} #{i}",
+          visibility_level: value,
+        }
+        project = Projects::CreateService.new(user, params).execute
+        check_project(project)
+      end
+      i += 1
     end
   end
 end

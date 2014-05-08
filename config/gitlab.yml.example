@@ -13,7 +13,7 @@ production: &base
   # ==========================
 
   ## GitLab settings
-  gitlab:
+  gitlab: &gitlab_defaults
     ## Web server settings (note: host is the FQDN, do not include http://)
     host: localhost
     port: 80
@@ -257,6 +257,16 @@ production: &base
 
 development:
   <<: *base
+  gitlab:
+    <<: *gitlab_defaults
+    # If true, development fixture data will contain non realistic but easy to remember
+    # data such as users named user0, user1, etc. with password aaaaaaaa.
+    #
+    # This makes it simpler to test certain things in development, but is not
+    # adequate to make snapshots or demos to end users.
+    #
+    # Defaults to false.
+    #include_predictable_data: true
 
 test:
   <<: *base
