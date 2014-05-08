@@ -1,4 +1,10 @@
-# Use the shell commands below to convert a MySQL GitLab database to a PostgreSQL one.
+# Migrating GitLab from MySQL to Postgres
+
+If you are replacing MySQL with Postgres while keeping GitLab on the same
+server all you need to do is to export from MySQL and import into Postgres as
+described below. If you are also moving GitLab to another server, or if you are
+switching to omnibus-gitlab, you may want to use a GitLab backup file. The
+second part of this documents explains the procedure to do this.
 
 ## Export from MySQL and import into Postgres
 
