@@ -6,7 +6,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(@merge_request.author_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def reassigned_merge_request_email(recipient_id, merge_request_id, previous_assignee_id, updated_by_user_id)
@@ -16,7 +16,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def closed_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -26,7 +26,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
 
     def merged_merge_request_email(recipient_id, merge_request_id, updated_by_user_id)
@@ -35,7 +35,7 @@ module Emails
       @target_url = project_merge_request_url(@project, @merge_request)
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
-           subject: subject("#{@merge_request.title} (!#{@merge_request.iid})"))
+           subject: subject("#{@merge_request.title} (##{@merge_request.iid})"))
     end
   end
 
