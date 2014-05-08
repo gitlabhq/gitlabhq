@@ -56,3 +56,7 @@
 
 :javascript
   disableButtonIfEmptyField("#merge_request_title", ".btn-save");
+  $('.assign-to-me-link').on('click', function(e){
+    $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
+    e.preventDefault();
+  });

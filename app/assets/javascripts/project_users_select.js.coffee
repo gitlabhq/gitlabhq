@@ -1,7 +1,7 @@
 @projectUsersSelect =
   init: ->
     $('.ajax-project-users-select').each (i, select) ->
-      project_id = $('body').data('project-id')
+      project_id = $(select).data('project-id') || $('body').data('project-id')
 
       $(select).select2
         placeholder: $(select).data('placeholder') || "Search for a user"
