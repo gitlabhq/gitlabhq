@@ -9,6 +9,7 @@ v 6.9.0
   - Improve comments loading logic
   - Stop refreshing comments when the tab is hidden
   - Improve issue and merge request mobile UI (Drew Blessing)
+  - Document how to convert a backup to PostgreSQL
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
