@@ -24,3 +24,10 @@ Feature: Project Feature
     When I visit edit project "Shop" page
     And change project path settings
     Then I should see project with new path settings
+
+  Scenario: I visit edit project and fill in merge request template
+    When I visit edit project "Shop" page
+    Then I should see project settings
+    And I fill in merge request template
+    And I save project
+    Then I should see project with merge request template saved
