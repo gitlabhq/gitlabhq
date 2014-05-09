@@ -79,11 +79,11 @@ describe ApplicationHelper do
 
     it "should return a generic avatar path when Gravatar is disabled" do
       Gitlab.config.gravatar.stub(:enabled).and_return(false)
-      gravatar_icon(user_email).should == '/assets/no_avatar.png'
+      gravatar_icon(user_email).should match('no_avatar.png')
     end
 
     it "should return a generic avatar path when email is blank" do
-      gravatar_icon('').should == '/assets/no_avatar.png'
+      gravatar_icon('').should match('no_avatar.png')
     end
 
     it "should return default gravatar url" do
