@@ -34,6 +34,8 @@ class UsersController < ApplicationController
                     @timestamps.merge!(hash)
                   }
         @timestamps = @timestamps.to_json
+        # binding.pry
+        JSON.parse(@timestamps)
       end
     }
   end
