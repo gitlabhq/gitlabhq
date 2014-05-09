@@ -15,6 +15,9 @@
         %small
           %i.icon-plus.light
 
+%div.tree-content-holder
+  = render_stats(@repo_stats)
+
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
     %thead

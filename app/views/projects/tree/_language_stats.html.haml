@@ -1,0 +1,10 @@
+%div.language-stats
+  %ol.breakdown
+    - stats.each do |language, value|
+      %li.language
+        %a{:href => "#"}
+          %span.legend{:style => "background-color:#{language_bg_color(language)}"}
+          %span.name
+            = language
+          %span.percent 
+            #{value}%

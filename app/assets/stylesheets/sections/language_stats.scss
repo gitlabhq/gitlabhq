@@ -1,0 +1,57 @@
+.language-stats {
+  border-top: 1px solid #ddd;
+  border-left: 1px solid #ddd;
+  border-right: 1px solid #ddd;
+  border-bottom: 0px;
+  border-radius: 3px 3px 0 0;
+  margin: 0 auto;
+
+  .breakdown {
+    padding: 0;
+    margin: 0;
+
+    .language {
+      display: table-cell;
+      padding-top: 10px;
+      padding-bottom: 10px;
+      padding-left: 5px;
+      padding-right: 5px;
+      width: 1%;
+      text-align: center;
+
+      .legend {
+        display: inline-block;
+        width: 10px;
+        height: 10px;
+        border-radius: 50%;
+      }
+
+      .name {
+        color: #333;
+        font-weight: bold;
+      }
+
+      .percent {
+        color: #999;
+        font-weight: bold;
+      }
+    }
+  }
+}
+
+.language-graph {
+  border-radius: 0 0 3px 3px;
+  background-color: #000;
+  height: auto;
+  line-height: 12px;
+  overflow: hidden;
+  display: block;
+
+  .percentage {
+    float: left;
+    height: auto;
+    line-height: 12px;
+    color: transparent;
+    text-indent: -9999px;    
+  }
+}
