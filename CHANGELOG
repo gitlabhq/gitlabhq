@@ -11,6 +11,7 @@ v 6.9.0
   - Improve issue and merge request mobile UI (Drew Blessing)
   - Document how to convert a backup to PostgreSQL
   - Fix locale bug in backup manager
+  - Fix wiki backup skip bug
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
