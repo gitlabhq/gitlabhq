@@ -33,6 +33,7 @@ class UsersController < ApplicationController
                     hash = {"#{k}" => v.count}
                     @timestamps.merge!(hash)
                   }
+        @timeCopy = Time.at(@timestamps.first.first.to_i).to_date
         @timestamps = @timestamps.to_json
         # binding.pry
         JSON.parse(@timestamps)
