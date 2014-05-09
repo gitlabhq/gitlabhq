@@ -25,13 +25,15 @@ class UsersController < ApplicationController
           #   puts e[:date]
           # end
         end.map do |graph_log|
-          graph_log[:date]
+          Date.parse(graph_log[:date]).to_time.to_i
         end
+        @timestamps = {}
         @lol = @lol.group_by { |d|
           d }.map { |k, v|
-                    [k, v.count]
+                    hash = {"#{k}" => v.count}
+                    @timestamps.merge!(hash)
                   }
-        @lol = @lol.to_json
+        @timestamps = @timestamps.to_json
       end
     }
   end

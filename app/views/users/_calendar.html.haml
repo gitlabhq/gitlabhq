@@ -1,9 +1,9 @@
 #cal-heatmap
-  :javascript
+  :javascript 
     var cal = new CalHeatMap();
       cal.init({
+        //data: @timestamps,
         domainLabelFormat: "%b",
-        data: "datas-years.json",
         id : "cal-heatmap",
         domain : "month",
         subDomain : "day",
@@ -12,5 +12,8 @@
         tooltip: true,
         colLimit: 4,
         label: { position: "top" },
-        domainMargin: 1
+        domainMargin: 1,
+        scale: [2, 5, 8, 10]
       });
+  
+
