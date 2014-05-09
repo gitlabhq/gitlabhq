@@ -46,3 +46,7 @@ Use the [support document](https://docs.google.com/document/d/1cAHvbdFE6zR5WY-zh
 ## Upgrader
 - Upgrade from the previous release
 - Run the upgrader script in this release (it should not break)
+
+## Rake tasks
+- Check if rake gitlab:check is updated and works
+- Check if rake gitlab:env:info is updated and works
