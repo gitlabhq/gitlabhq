@@ -12,6 +12,7 @@ v 6.9.0
   - Document how to convert a backup to PostgreSQL
   - Fix locale bug in backup manager
   - Fix wiki backup skip bug
+  - Two Step MR creation process
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
