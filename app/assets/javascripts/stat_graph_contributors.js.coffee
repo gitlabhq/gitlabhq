@@ -4,6 +4,7 @@ class window.ContributorsStatGraph
     @set_current_field("commits")
     total_commits = ContributorsStatGraphUtil.get_total_data(@parsed_log, @field)
     author_commits = ContributorsStatGraphUtil.get_author_data(@parsed_log, @field)
+    
     @add_master_graph(total_commits)
     @add_authors_graph(author_commits)
     @change_date_header()

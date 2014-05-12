@@ -1,0 +1,21 @@
+#cal-heatmap
+  :javascript 
+    window.timestamps = #{@timestamps};
+    var cal = new CalHeatMap();
+      cal.init({
+        data: window.timestamps,
+        start: new Date(#{@timeCopy.year-1}, #{@timeCopy.month}),
+        domainLabelFormat: "%b",
+        id : "cal-heatmap",
+        domain : "month",
+        subDomain : "day",
+        range : 12, 
+        tooltip: true,
+        domainDynamicDimension: false,
+        colLimit: 4,
+        label: { position: "top" },
+        domainMargin: 1,
+        legend: [0, 3, 5, 10]
+      });
+
+

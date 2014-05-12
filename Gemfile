@@ -140,6 +140,9 @@ gem "slack-notifier", "~> 0.3.2"
 # d3
 gem "d3_rails", "~> 3.1.4"
 
+#cal-heatmap
+gem "cal-heatmap-rails", "~> 0.0.1"
+
 # underscore-rails
 gem "underscore-rails", "~> 1.4.4"
 

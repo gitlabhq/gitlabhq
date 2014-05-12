@@ -12,7 +12,13 @@
       %span.user-show-username #{@user.username}
       %br
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
+    
     .clearfix
+    %h4 Calendar:
+    
+    %center
+      = render 'calendar'
+    %hr
     %h4 Groups:
     = render 'groups', groups: @groups
     %hr

@@ -144,6 +144,7 @@ class Repository
     end
   end
 
+
   def cache_key(type)
     "#{type}:#{path_with_namespace}"
   end

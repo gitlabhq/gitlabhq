@@ -30,6 +30,7 @@
 #= require nprogress
 #= require nprogress-turbolinks
 #= require_tree .
+#= require cal-heatmap
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
