@@ -137,6 +137,7 @@ module API
           if merge_request.open?
             if merge_request.can_be_merged?
               merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
+              present merge_request, with: Entities::MergeRequest
             else
               render_api_error!('Branch cannot be merged', 405)
             end
