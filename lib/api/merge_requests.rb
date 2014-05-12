@@ -111,6 +111,45 @@ module API
         end
       end
 
+      # Merge MR
+      #
+      # Parameters:
+      #   id (required)               - The ID of a project
+      #   merge_request_id (required) - ID of MR
+      #   merge_commit_message (optional) - Custom merge commit message
+      # Example:
+      #   PUT /projects/:id/merge_request/:merge_request_id/merge
+      #
+      put ":id/merge_request/:merge_request_id/merge" do
+        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+
+        action = if user_project.protected_branch?(merge_request.target_branch)
+                   :push_code_to_protected_branches
+                 else
+                   :push_code
+                 end
+
+        if can?(current_user, action, project)
+          # Check if MR can be merged by GitLab
+          if merge_request.unchecked?
+            merge_request.check_if_can_be_merged
+          end
+
+          if merge_request.open? && merge_request.can_be_merged?
+            merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
+
+            # return success
+          else
+
+            # Checkif can be merged
+          end
+
+        else
+          # not allowed
+        end
+      end
+
+
       # Get a merge request's comments
       #
       # Parameters:
