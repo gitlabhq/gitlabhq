@@ -13,6 +13,7 @@ v 6.9.0
   - Fix locale bug in backup manager
   - Fix wiki backup skip bug
   - Two Step MR creation process
+  - Remove unwanted files from satellite working directory with git clean -fdx
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
