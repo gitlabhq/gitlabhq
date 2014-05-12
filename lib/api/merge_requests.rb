@@ -130,22 +130,25 @@ module API
                  end
 
         if can?(current_user, action, project)
-          # Check if MR can be merged by GitLab
           if merge_request.unchecked?
             merge_request.check_if_can_be_merged
           end
 
-          if merge_request.open? && merge_request.can_be_merged?
-            merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
-
-            # return success
+          if merge_request.open?
+            if merge_request.can_be_merged?
+              merge_request.automerge!(current_user, params[:merge_commit_message] || merge_request.merge_commit_message)
+            else
+              render_api_error!('Branch cannot be merged', 405)
+            end
           else
-
-            # Checkif can be merged
+            # Merge request can not be merged
+            # because it is already closed/merged
+            not_allowed!
           end
-
         else
-          # not allowed
+          # Merge request can not be merged
+          # because user dont have permissions to push into target branch
+          unauthorized!
         end
       end
 
