@@ -82,6 +82,6 @@ If you want to run the database separately, the **recommended** database size is
 
 - Chrome (Latest stable version)
 - Firefox (Latest released version) 
-- Safari 7+ (Know problem: required fields in html5 do not work)
+- Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+
