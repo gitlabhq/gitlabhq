@@ -15,21 +15,17 @@ class UsersController < ApplicationController
     @events = @user.recent_events.where(project_id: @projects.pluck(:id)).limit(20)
     @title = @user.name
 
-    @repositories.collect { |x|
-      if x.exists?
-        lol = x.graph_log
-        #print lol
-        @lol = lol.select do |e|
-          e[:author_email] == @user.email
-          # if e[:author_email] == @user.email
-          #   puts e[:date]
-          # end
+    @repositories.collect { |raw|
+      if raw.exists?
+        commits_log = raw.graph_log
+        @commits_log = commits_log.select do |u_email|
+          u_email[:author_email] == @user.email
         end.map do |graph_log|
           Date.parse(graph_log[:date]).to_time.to_i
         end
         @timestamps = {}
-        @lol = @lol.group_by { |d|
-          d }.map { |k, v|
+        @commits_log = @commits_log.group_by { |commit_date|
+          commit_date }.map { |k, v|
                     hash = {"#{k}" => v.count}
                     @timestamps.merge!(hash)
                   }
@@ -40,7 +36,7 @@ class UsersController < ApplicationController
           @timeCopy = Time.at(@timestamps.first.first.to_i).to_date
           @timestamps = @timestamps.to_json
         end   
-        
+
       end
     }
   end
