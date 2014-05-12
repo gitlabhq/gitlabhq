@@ -1,6 +1,5 @@
 .row
   .col-md-8
-    //= @timestamps
     %h3.page-title
       = image_tag avatar_icon(@user.email, 90), class: "avatar s90", alt: ''
       = @user.name
@@ -28,4 +27,3 @@
   .col-md-4
     = render 'profile', user: @user
     = render 'projects'
-//this is show under PROFILE
