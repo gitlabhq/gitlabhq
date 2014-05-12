@@ -1,3 +1,6 @@
+v 6.8.2
+  - Bump rails to 4.0.5 in light of CVE-2014-0130
+
 v 6.8.1
   - Bump required gitlab-shell version to 1.9.3
 
