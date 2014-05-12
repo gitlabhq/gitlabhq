@@ -1,14 +1,10 @@
 #cal-heatmap
   :javascript 
     window.timestamps = #{@timestamps};
-    var currentDate = new Date();
-    var mm = currentDate.getMonth()+1;
-    var dd = currentDate.getDate();
     var cal = new CalHeatMap();
       cal.init({
-        // data: {"1399607243":1},
         data: window.timestamps,
-        start: new Date(#{@timeCopy.year-1}, mm, dd),
+        start: new Date(#{@timeCopy.year-1}, #{@timeCopy.month}),
         domainLabelFormat: "%b",
         id : "cal-heatmap",
         domain : "month",
@@ -22,6 +18,5 @@
         domainMargin: 1,
         legend: [0, 3, 5, 10]
       });
-  //-binding.pry    
-  
+
 

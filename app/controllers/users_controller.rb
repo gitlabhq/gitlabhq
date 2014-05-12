@@ -6,8 +6,8 @@ class UsersController < ApplicationController
     @user = User.find_by_username!(params[:username])
     @projects = @user.authorized_projects.accessible_to(current_user)
     @user_projects = @user.authorized_projects.accessible_to(@user)
-
     @repositories = @user_projects.map(&:repository)
+
     if !current_user && @projects.empty?
       return authenticate_user!
     end
@@ -33,10 +33,14 @@ class UsersController < ApplicationController
                     hash = {"#{k}" => v.count}
                     @timestamps.merge!(hash)
                   }
-        @timeCopy = Time.at(@timestamps.first.first.to_i).to_date
-        @timestamps = @timestamps.to_json
-        # binding.pry
-        JSON.parse(@timestamps)
+                 
+        if @timestamps.empty?
+          @timeCopy = DateTime.now.to_date()
+        else
+          @timeCopy = Time.at(@timestamps.first.first.to_i).to_date
+          @timestamps = @timestamps.to_json
+        end   
+        
       end
     }
   end
