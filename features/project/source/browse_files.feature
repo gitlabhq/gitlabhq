@@ -29,3 +29,13 @@ Feature: Project Browse files
     Given I click on "Gemfile.lock" file in repo
     And I click button "edit"
     Then I can edit code
+
+  @javascript
+  Scenario: I can see editing preview
+    Given I click on "Gemfile.lock" file in repo
+    And I click button "edit"
+    And I edit code
+    And I click link "Diff"
+    Then I see diff
+
+

@@ -21,6 +21,7 @@ Before configuring individual OmniAuth providers there are a few global settings
     ```
 
 2. Find the section dealing with OmniAuth. The section will look similar to the following.<br />
+
     ```
       ## OmniAuth settings
       omniauth:
@@ -50,6 +51,7 @@ Before configuring individual OmniAuth providers there are a few global settings
         #     app_secret: 'YOUR APP SECRET',
         #     args: { scope: 'user:email' } }
     ```
+
 3. Change `enabled` to `true`.
 4. Consider the next two configuration options: `allow_single_sign_on` and `block_auto_created_users`.
     * `allow_single_sign_on` defaults to `false`. If `false` users must be created manually or they will not be able to

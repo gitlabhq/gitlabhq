@@ -61,9 +61,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I submit new merge request "Wiki Feature"' do
-    fill_in "merge_request_title", with: "Wiki Feature"
     select "master", from: "merge_request_source_branch"
     select "notes_refactoring", from: "merge_request_target_branch"
+    click_button "Compare branches"
+    fill_in "merge_request_title", with: "Wiki Feature"
     click_button "Submit merge request"
   end
 

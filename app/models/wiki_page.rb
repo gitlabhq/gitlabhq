@@ -175,14 +175,24 @@ class WikiPage
   end
 
   def save(method, *args)
-    if valid? && wiki.send(method, *args)
-      @page = wiki.wiki.paged(title)
+    project_wiki = wiki
+    if valid? && project_wiki.send(method, *args)
+
+      page_details = if method == :update_page
+                       @page.path
+                     else
+                       title
+                     end
+
+      page_title, page_dir = project_wiki.page_title_and_dir(page_details)
+      gollum_wiki = project_wiki.wiki
+      @page = gollum_wiki.paged(page_title, page_dir)
 
       set_attributes
 
       @persisted = true
     else
-      errors.add(:base, wiki.error_message) if wiki.error_message
+      errors.add(:base, project_wiki.error_message) if project_wiki.error_message
       @persisted = false
     end
     @persisted

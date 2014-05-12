@@ -113,6 +113,45 @@ module API
         end
       end
 
+      # Get ssh keys of a specified user. Only available to admin users.
+      #
+      # Parameters:
+      # uid (required) - The ID of a user
+      # Example Request:
+      # GET /users/:uid/keys
+      get ':uid/keys' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:uid])
+        if user
+          present user.keys, with: Entities::SSHKey
+        else
+          not_found!
+        end
+      end
+
+      # Delete existing ssh key of a specified user. Only available to admin
+      # users.
+      #
+      # Parameters:
+      #   uid (required) - The ID of a user
+      #   id (required) - SSH Key ID
+      # Example Request:
+      #   DELETE /users/:uid/keys/:id
+      delete ':uid/keys/:id' do
+        authenticated_as_admin!
+        user = User.find_by(id: params[:uid])
+        if user
+          begin
+            key = user.keys.find params[:id]
+            key.destroy
+          rescue ActiveRecord::RecordNotFound
+            not_found!
+          end
+        else
+          not_found!
+        end
+      end
+
       # Delete user. Available only for admin
       #
       # Example Request:

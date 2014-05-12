@@ -82,7 +82,7 @@ module IssuesHelper
   end
 
   def milestone_options object
-    options_from_collection_for_select(@project.milestones.active, 'id', 'title', object.milestone_id)
+    options_from_collection_for_select(object.project.milestones.active, 'id', 'title', object.milestone_id)
   end
 
   def issue_box_class(item)

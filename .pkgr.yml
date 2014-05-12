@@ -1,0 +1,19 @@
+user: git
+group: git
+before_precompile: ./bin/pkgr_before_precompile.sh
+targets:
+  debian-7: &wheezy
+    build_dependencies:
+      - libicu-dev
+    dependencies:
+      - libicu48
+      - libpcre3
+      - git
+  ubuntu-12.04: *wheezy
+  ubuntu-14.04:
+    build_dependencies:
+      - libicu-dev
+    dependencies:
+      - libicu52
+      - libpcre3
+      - git

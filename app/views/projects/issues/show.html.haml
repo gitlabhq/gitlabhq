@@ -1,7 +1,7 @@
 %h3.page-title
   Issue ##{@issue.iid}
 
-  %span.pull-right
+  %span.pull-right.issue-btn-group
     - if can?(current_user, :write_issue, @project)
       = link_to new_project_issue_path(@project), class: "btn btn-grouped", title: "New Issue", id: "new_issue_link" do
         %i.icon-plus
@@ -16,28 +16,29 @@
         %i.icon-edit
         Edit
 
-.votes-holder
-  #votes= render 'votes/votes_block', votable: @issue
+.clearfix
+  .votes-holder
+    #votes= render 'votes/votes_block', votable: @issue
 
-.back-link
-  = link_to project_issues_path(@project) do
-    &larr; To issues list
-  %span.milestone-nav-link
-    - if @issue.milestone
-      |
-      %span.light Milestone
-      = link_to project_milestone_path(@project, @issue.milestone) do
-        = @issue.milestone.title
+  .back-link
+    = link_to project_issues_path(@project) do
+      &larr; To issues list
+    %span.milestone-nav-link
+      - if @issue.milestone
+        |
+        %span.light Milestone
+        = link_to project_milestone_path(@project, @issue.milestone) do
+          = @issue.milestone.title
 
 .issue-box{ class: issue_box_class(@issue) }
-  .state
-    %span.state-label
+  .state.clearfix
+    .state-label.col-sm-2.col-xs-12
       - if @issue.closed?
         Closed
       - else
         Open
 
-    %span.creator
+    %span.creator.col-sm-9.col-xs-12
       Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}
 
   %h4.title

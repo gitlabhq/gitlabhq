@@ -45,3 +45,20 @@ Feature: Project Wiki
     And I browse to that Wiki page
     And I click on the "Pages" button
     Then I should see the existing page in the pages list
+
+  Scenario: File exists in wiki repo
+    Given I have an existing Wiki page with images linked on page
+    And I browse to wiki page with images
+    And I click on existing image link
+    Then I should see the image from wiki repo
+
+  Scenario: Image in wiki repo shown on the page
+    Given I have an existing Wiki page with images linked on page
+    And I browse to wiki page with images
+    Then Image should be shown on the page
+
+  Scenario: File does not exist in wiki repo
+    Given I have an existing Wiki page with images linked on page
+    And I browse to wiki page with images
+    And I click on image link
+    Then I should see the new wiki page form

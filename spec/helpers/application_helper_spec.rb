@@ -46,7 +46,7 @@ describe ApplicationHelper do
       group = create(:group)
       group.avatar = File.open(avatar_file_path)
       group.save!
-      group_icon(group.path).to_s.should == "/uploads/group/avatar/#{ group.id }/gitlab_logo.png"
+      group_icon(group.path).to_s.should match("/uploads/group/avatar/#{ group.id }/gitlab_logo.png")
     end
 
     it "should give default avatar_icon when no avatar is present" do
@@ -63,7 +63,7 @@ describe ApplicationHelper do
       user = create(:user)
       user.avatar = File.open(avatar_file_path)
       user.save!
-      avatar_icon(user.email).to_s.should == "/uploads/user/avatar/#{ user.id }/gitlab_logo.png"
+      avatar_icon(user.email).to_s.should match("/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
     end
 
     it "should call gravatar_icon when no avatar is present" do
