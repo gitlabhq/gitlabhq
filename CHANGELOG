@@ -1,3 +1,18 @@
+v 6.9.0
+  - Store Rails cache data in the Redis `cache:gitlab` namespace
+  - Adjust MySQL limits for existing installations
+  - Add db index on project_id+iid column. This prevents duplicate on iid (During migration duplicates will be removed)
+  - Markdown preview or diff during editing via web editor (Evgeniy Sokovikov)
+  - Give the Rails cache its own Redis namespace
+  - Add ability to set different ssh host, if different from http/https
+  - Fix syntax highlighting for code comments blocks
+  - Improve comments loading logic
+  - Stop refreshing comments when the tab is hidden
+  - Improve issue and merge request mobile UI (Drew Blessing)
+  - Document how to convert a backup to PostgreSQL
+  - Fix locale bug in backup manager
+  - Fix wiki backup skip bug
+
 v 6.8.1
   - Bump required gitlab-shell version to 1.9.3
 

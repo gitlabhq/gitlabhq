@@ -27,7 +27,7 @@ If a user is a GitLab administrator they receive all permissions.
 |Remove protected branches| |||✓|✓|
 |Edit project| |||✓|✓|
 |Add Deploy Keys to project| |||✓|✓|
-|Confiure Project Hooks| |||✓|✓|
+|Configure Project Hooks| |||✓|✓|
 |Switch visibility level| ||||✓|
 |Transfer project to another namespace| ||||✓|
 |Remove project| ||||✓|

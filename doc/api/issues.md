@@ -193,3 +193,7 @@ Parameters:
 
 + `id` (required) - The project ID
 + `issue_id` (required) - The ID of the issue
+
+## Comments on issues
+
+Comments are done via the notes resource.

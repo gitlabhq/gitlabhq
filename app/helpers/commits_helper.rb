@@ -16,9 +16,10 @@ module CommitsHelper
   end
 
   def each_diff_line(diff, index)
-    Gitlab::DiffParser.new(diff).each do |full_line, type, line_code, line_new, line_old|
-      yield(full_line, type, line_code, line_new, line_old)
-    end
+    Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
+      .each do |full_line, type, line_code, line_new, line_old|
+        yield(full_line, type, line_code, line_new, line_old)
+      end
   end
 
   def each_diff_line_near(diff, index, expected_line_code)
@@ -116,7 +117,7 @@ module CommitsHelper
         added_lines[line_new]   = { line_code: line_code, type: type, line: line }
       end
     end
-    max_length = old_file ? old_file.sloc + added_lines.length : file.sloc
+    max_length = old_file ? [old_file.loc, file.loc].max : file.loc
 
     offset1 = 0
     offset2 = 0

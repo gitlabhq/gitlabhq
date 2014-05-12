@@ -91,4 +91,12 @@ module TreeHelper
   def leave_edit_message
     "Leave edit mode?\nAll unsaved changes will be lost."
   end
+
+  def editing_preview_title(filename)
+    if gitlab_markdown?(filename) || markup?(filename)
+      'Preview'
+    else
+      'Diff'
+    end
+  end
 end

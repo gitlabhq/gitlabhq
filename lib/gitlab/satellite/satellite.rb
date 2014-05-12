@@ -84,6 +84,7 @@ module Gitlab
       # Clear the working directory
       def clear_working_dir!
         repo.git.reset(hard: true)
+        repo.git.clean(f: true, d: true, x: true)
       end
 
       # Deletes all branches except the parking branch

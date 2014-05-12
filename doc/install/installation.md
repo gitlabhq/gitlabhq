@@ -1,10 +1,10 @@
 # Select Version to Install
-Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases
 this should be the highest numbered stable branch (example shown below).
 
 ![capture](http://i.imgur.com/d2AlIVj.png)
 
-If this is unclear check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
+If the highest number stable branch is unclear please check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
 
 # Important notes
 
@@ -27,10 +27,9 @@ The GitLab installation consists of setting up the following components:
 1. Packages / Dependencies
 2. Ruby
 3. System Users
-4. GitLab shell
-5. Database
-6. GitLab
-7. Nginx
+4. Database
+5. GitLab
+6. Nginx
 
 
 # 1. Packages / Dependencies
@@ -119,32 +118,10 @@ Create a `git` user for Gitlab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
-
-# 4. GitLab shell
-
-GitLab Shell is an ssh access and repository management software developed specially for GitLab.
-
-    # Go to home directory
-    cd /home/git
-
-    # Clone gitlab shell
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-shell.git -b v1.9.3
-
-    cd gitlab-shell
-
-    sudo -u git -H cp config.yml.example config.yml
-
-    # Edit config and replace gitlab_url
-    # with something like 'http://domain.com/'
-    sudo -u git -H editor config.yml
-
-    # Do setup
-    sudo -u git -H ./bin/install
-
-
-# 5. Database
+# 4. Database
 
 We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
+NOTE: because we need to make use of extensions you need at least pgsql 9.1.
 
     # Install the database packages
     sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
@@ -153,7 +130,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u postgres psql -d template1
 
     # Create a user for GitLab.
-    template1=# CREATE USER git;
+    template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
     template1=# CREATE DATABASE gitlabhq_production OWNER git;
@@ -165,7 +142,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u git -H psql -d gitlabhq_production
 
 
-# 6. GitLab
+# 5. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -276,6 +253,18 @@ that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
     # When done you see 'Administrator account created:'
 
+## Install GitLab shell
+
+GitLab Shell is an ssh access and repository management software developed specially for GitLab.
+
+    # Go to the Gitlab installation folder:
+    cd /home/git/gitlab
+
+    # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
+    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.3] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+
+    # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
+    sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 ## Install Init Script
 
@@ -313,7 +302,8 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-# 7. Nginx
+
+# 6. Nginx
 
 **Note:**
 Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the

@@ -1,7 +1,7 @@
 %h3.page-title
   = "Merge Request ##{@merge_request.iid}"
 
-  %span.pull-right
+  %span.pull-right.issue-btn-group
     - if can?(current_user, :modify_merge_request, @merge_request)
       - if @merge_request.open?
         .btn-group.pull-left
@@ -39,4 +39,4 @@
     - else
       %span= @merge_request.source_branch
       &rarr;
-      %spanh= @merge_request.target_branch
+      %span= @merge_request.target_branch

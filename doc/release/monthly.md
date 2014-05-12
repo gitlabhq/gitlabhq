@@ -84,8 +84,9 @@ After making the release branch new commits are cherry-picked from master. When 
     - Push VERSION + Tag to master, merge into x-x-stable
     - Publish blog for new release
     - Tweet to blog (see below)
+* 22th: release GitLab EE
 * 23nd: optional patch releases (x.x.1, x.x.2, etc., only if there are serious problems)
-* 24-end of month: release GitLab EE and GitLab CI
+* 25th: release GitLab CI
 
 # Write a blog post
 

@@ -242,6 +242,67 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'GET /user/:uid/keys' do
+    before { admin }
+
+    context 'when unauthenticated' do
+      it 'should return authentication error' do
+        get api("/users/#{user.id}/keys")
+        response.status.should == 401
+      end
+    end
+
+    context 'when authenticated' do
+      it 'should return 404 for non-existing user' do
+        get api('/users/999999/keys', admin)
+        response.status.should == 404
+      end
+
+      it 'should return array of ssh keys' do
+        user.keys << key
+        user.save
+        get api("/users/#{user.id}/keys", admin)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first['title'].should == key.title
+      end
+    end
+  end
+
+  describe 'DELETE /user/:uid/keys/:id' do
+    before { admin }
+
+    context 'when unauthenticated' do
+      it 'should return authentication error' do
+        delete api("/users/#{user.id}/keys/42")
+        response.status.should == 401
+      end
+    end
+
+    context 'when authenticated' do
+      it 'should delete existing key' do
+        user.keys << key
+        user.save
+        expect {
+          delete api("/users/#{user.id}/keys/#{key.id}", admin)
+        }.to change { user.keys.count }.by(-1)
+        response.status.should == 200
+      end
+
+      it 'should return 404 error if user not found' do
+        user.keys << key
+        user.save
+        delete api("/users/999999/keys/#{key.id}", admin)
+        response.status.should == 404
+      end
+
+      it 'should return 404 error if key not foud' do
+        delete api("/users/#{user.id}/keys/42", admin)
+        response.status.should == 404
+      end
+    end
+  end
+
   describe "DELETE /users/:id" do
     before { admin }
 

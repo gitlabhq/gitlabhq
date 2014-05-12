@@ -8,7 +8,7 @@
     width: 270px;
 
     .ui-datepicker-header {
-      background: #EEE;
+      background: #FFF;
       border-color: #DDD;
     }
 
@@ -19,20 +19,37 @@
   }
 
   &.ui-autocomplete {
-    @include border-radius(0px);
     border-color: #DDD;
     padding: 0;
+    margin-top: 2px;
+    z-index: 1001;
 
     .ui-menu-item a {
-      color: #777;
-
-      &:hover {
-        background: $hover;
-        border-color: $primary_color;
-        @include border-radius(0px);
-        color: #333;
-      }
+      padding: 4px 10px;
     }
   }
-}
 
+  .ui-state-default {
+    border: 1px solid #FFF;
+    background: #FFF;
+    color: #777;
+  }
+
+  .ui-state-highlight {
+    border: 1px solid #EEE;
+    background: #EEE;
+  }
+
+  .ui-state-active {
+    border: 1px solid $bg_style_color;
+    background: $bg_style_color;
+    color: #FFF;
+  }
+
+  .ui-state-hover,
+  .ui-state-focus {
+    border: 1px solid $hover;
+    background: $hover;
+    color: #333;
+  }
+}

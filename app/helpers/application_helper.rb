@@ -75,7 +75,7 @@ module ApplicationHelper
     else
       gravatar_url = request.ssl? || gitlab_config.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
       user_email.strip!
-      sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size
+      sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size, email: user_email
     end
   end
 

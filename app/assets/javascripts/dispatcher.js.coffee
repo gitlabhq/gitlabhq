@@ -59,7 +59,7 @@ class Dispatcher
 
   initHighlight: ->
     $('.highlight pre code').each (i, e) ->
-      hljs.highlightBlock(e)
       $(e).html($.map($(e).html().split("\n"), (line, i) ->
-        "<div class='line' id='LC" + (i + 1) + "'>" + line + "</div>"
+        "<span class='line' id='LC" + (i + 1) + "'>" + line + "</span>"
       ).join("\n"))
+      hljs.highlightBlock(e)
