@@ -34,7 +34,7 @@ module API
               when "closed" then user_project.merge_requests.closed
               when "merged" then user_project.merge_requests.merged
               else user_project.merge_requests
-        end
+              end
 
         present paginate(mrs), with: Entities::MergeRequest
       end
@@ -129,7 +129,7 @@ module API
                    :push_code
                  end
 
-        if can?(current_user, action, project)
+        if can?(current_user, action, user_project)
           if merge_request.unchecked?
             merge_request.check_if_can_be_merged
           end
