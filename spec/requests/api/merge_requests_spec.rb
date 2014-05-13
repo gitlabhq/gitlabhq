@@ -196,6 +196,21 @@ describe API::API, api: true  do
       response.status.should == 405
       json_response['message'].should == 'Branch cannot be merged'
     end
+
+    it "should return 405 if merge_request is not open" do
+      merge_request.close
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+      response.status.should == 405
+      json_response['message'].should == 'Method Not Allowed'
+    end
+
+    it "should return 401 if user has no permissions to merge" do
+      user2 = create(:user)
+      project.team << [user2, :reporter]
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user2)
+      response.status.should == 401
+      json_response['message'].should == '401 Unauthorized'
+    end
   end
 
   describe "PUT /projects/:id/merge_request/:merge_request_id" do
