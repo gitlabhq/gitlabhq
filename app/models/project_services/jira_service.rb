@@ -17,6 +17,7 @@
 #  api_key     :string(255)
 #  username    :string(255)
 #  password    :string(255)
+#  api_version    :string(255)
 
 class JiraService < Service
 

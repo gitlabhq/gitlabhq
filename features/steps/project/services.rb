@@ -118,4 +118,23 @@ class ProjectServices < Spinach::FeatureSteps
     find_field('Room').value.should == '#gitlab'
     find_field('Token').value.should == 'verySecret'
   end
+
+  step 'I click jira service link' do
+    click_link 'JIRA'
+  end
+
+  step 'I fill jira settings' do
+    fill_in 'Project url', with: 'http://jira.example'
+    fill_in 'Username', with: 'gitlab'
+    fill_in 'Password', with: 'gitlab'
+    fill_in 'Api version', with: '2'
+    click_button 'Save'
+  end
+
+  step 'I should see jira service settings saved' do
+    find_field('Project url').value.should == 'http://jira.example'
+    find_field('Username').value.should == 'gitlab'
+    find_field('Password').value.should_not == 'gitlab'
+    find_field('Api version').value.should == '2'
+  end
 end
