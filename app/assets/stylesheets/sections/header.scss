@@ -14,7 +14,6 @@ header {
 
       .nav > li > a {
         color: $style_color;
-        text-shadow: 0 1px 0 #fff;
         font-size: 14px;
         line-height: 32px;
         padding: 6px 10px;
@@ -190,7 +189,6 @@ header {
 
         .nav > li > a {
           color: #AAA;
-          text-shadow: 0 1px 0 #444;
 
           &:hover, &:focus, &:active {
             background: none;
@@ -224,7 +222,6 @@ header {
           background: image-url('logo-white.png') no-repeat center center;
           background-size: 32px;
           color: #fff;
-          text-shadow: 0 1px 1px #444;
         }
       }
     }
@@ -236,7 +233,6 @@ header {
         }
       }
       color: #fff;
-      text-shadow: 0 1px 1px #444;
     }
   }
 
