@@ -4,7 +4,7 @@
 
   .diff-header {
     @extend .clearfix;
-    background: #DDD;
+    background: #EEE;
     border-bottom: 1px solid #CCC;
     padding: 5px 5px 5px 10px;
     color: #555;
@@ -77,7 +77,7 @@
       margin: 0px;
       padding: 0px;
       border: none;
-      background: #EEE;
+      background: #F5F5F5;
       color: #666;
       padding: 0px 5px;
       border-right: 1px solid #ccc;
@@ -295,15 +295,9 @@
     } //.view.onion-skin
   }
   .view-modes{
-
     padding: 10px;
     text-align: center;
-
-    background-image: -webkit-gradient(linear, 0 0, 0 30, color-stop(0.066, #eee), to(#dfdfdf));
-    background-image: -webkit-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -moz-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -ms-linear-gradient(#eee 6.6%, #dfdfdf);
-    background-image: -o-linear-gradient(#eee 6.6%, #dfdfdf);
+    background: #EEE;
 
     ul, li{
       list-style: none;
