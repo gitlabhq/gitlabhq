@@ -2,7 +2,7 @@ GitLab has a great issue tracker but you can also use an external issue tracker 
 
 - the 'Issues' link on the GitLab project pages takes you to the appropriate JIRA issue index;
 - clicking 'New issue' on the project dashboard creates a new JIRA issue;
-- To reference JIRA issue PROJECT-1234 in comments, use syntax #PROJECT-1234. Commit messages get turned into HTML links to the corresponding JIRA issue.
+- To reference JIRA issue PROJECT-1234 in comments, use syntax PROJECT-1234. Commit messages get turned into HTML links to the corresponding JIRA issue.
 
 ![jira screenshot](jira-integration-points.png)
 
