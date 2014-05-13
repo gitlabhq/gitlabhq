@@ -181,7 +181,7 @@ module Gitlab
           link_to("##{identifier}", url, html_options.merge(title: "Issue: #{title}", class: "gfm gfm-issue #{html_options[:class]}"))
         end
       else
-        reference_jira_issue(identifier) if @project.issues_tracker == "jira"
+        reference_jira_issue(identifier) if @project.jira_tracker?
       end
     end
 

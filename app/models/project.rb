@@ -64,6 +64,7 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
+  has_one :jira_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
@@ -316,11 +317,15 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack jira)
   end
 
   def gitlab_ci?
     gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def jira_tracker?
+    self.issues_tracker == "jira"
   end
 
   # For compatibility with old code
