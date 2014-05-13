@@ -53,6 +53,22 @@ class Notify < ActionMailer::Base
     end
   end
 
+  # Set the Message-ID header field
+  #
+  # local_part - The local part of the message ID
+  #
+  def set_message_id(local_part)
+    headers["Message-ID"] = "<#{local_part}@#{Gitlab.config.gitlab.host}>"
+  end
+
+  # Set the References header field
+  #
+  # local_part - The local part of the referenced message ID
+  #
+  def set_reference(local_part)
+    headers["References"] = "<#{local_part}@#{Gitlab.config.gitlab.host}>"
+  end
+
   # Formats arguments into a String suitable for use as an email subject
   #
   # extra - Extra Strings to be inserted into the subject
