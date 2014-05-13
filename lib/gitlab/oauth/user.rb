@@ -34,9 +34,11 @@ module Gitlab
           # In this case we generate temporary email and force user to fill it later
           if user.email.blank?
             user.generate_tmp_oauth_email
-          else
+          elsif provider != "ldap"
             # Google oauth returns email but dont return nickname
             # So we use part of email as username for new user
+            # For LDAP, username is already set to the user's
+            # uid/userid/sAMAccountName.
             user.username = email.match(/^[^@]*/)[0]
           end
 
