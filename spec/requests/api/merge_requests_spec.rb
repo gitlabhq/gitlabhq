@@ -183,11 +183,33 @@ describe API::API, api: true  do
     end
   end
 
-  describe "PUT /projects/:id/merge_request/:merge_request_id to merge MR" do
-    it "should return merge_request" do
-      put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), state_event: "merge"
+  describe "PUT /projects/:id/merge_request/:merge_request_id/merge" do
+    it "should return merge_request in case of success" do
+      MergeRequest.any_instance.stub(can_be_merged?: true, automerge!: true)
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
       response.status.should == 200
-      json_response['state'].should == 'merged'
+    end
+
+    it "should return 405 if branch can't be merged" do
+      MergeRequest.any_instance.stub(can_be_merged?: false)
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+      response.status.should == 405
+      json_response['message'].should == 'Branch cannot be merged'
+    end
+
+    it "should return 405 if merge_request is not open" do
+      merge_request.close
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user)
+      response.status.should == 405
+      json_response['message'].should == 'Method Not Allowed'
+    end
+
+    it "should return 401 if user has no permissions to merge" do
+      user2 = create(:user)
+      project.team << [user2, :reporter]
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}/merge", user2)
+      response.status.should == 401
+      json_response['message'].should == '401 Unauthorized'
     end
   end
 

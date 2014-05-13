@@ -15,6 +15,7 @@ v 6.9.0
   - Fix wiki backup skip bug
   - Two Step MR creation process
   - Remove unwanted files from satellite working directory with git clean -fdx
+  - Accept merge request via API (sponsored by O'Reilly Media)
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
