@@ -43,7 +43,8 @@ GET /projects
       "owner_id": 1,
       "path": "diaspora",
       "updated_at": "2013-09-30T13: 46: 02Z"
-    }
+    },
+    "archived": false
   },
   {
     "id": 6,
@@ -78,7 +79,8 @@ GET /projects
       "owner_id": 1,
       "path": "brightbox",
       "updated_at": "2013-09-30T13:46:02Z"
-    }
+    },
+    "archived": false
   }
 ]
 ```
@@ -157,7 +159,8 @@ Parameters:
       "access_level": 50,
       "notification_level": 3
     }
-  }
+  },
+  "archived": false
 }
 ```
 
