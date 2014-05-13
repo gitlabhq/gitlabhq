@@ -42,6 +42,15 @@
         .col-sm-10= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2'})
 
 
+    - if @merge_request.persisted? # Only allow labels on edit to avoid fork vs upstream repo labels issue
+      .form-group
+        = f.label :label_list, class: 'control-label' do
+          %i.icon-tag
+          Labels
+        .col-sm-10
+          = f.text_field :label_list, maxlength: 2000, class: "form-control"
+          %p.hint Separate labels with commas.
+
   .form-actions
     - if @merge_request.new_record?
       = f.submit 'Submit merge request', class: "btn btn-create"
@@ -60,3 +69,32 @@
     $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
+
+  $("#merge_request_label_list")
+    .bind( "keydown", function( event ) {
+      if ( event.keyCode === $.ui.keyCode.TAB &&
+        $( this ).data( "autocomplete" ).menu.active ) {
+        event.preventDefault();
+      }
+    })
+    .bind("click", function(event) {
+      $(this).autocomplete("search", "");
+    })
+    .autocomplete({
+      minLength: 0,
+      source: function( request, response ) {
+        response( $.ui.autocomplete.filter(
+          #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
+      },
+      focus: function() {
+        return false;
+      },
+      select: function(event, ui) {
+        var terms = split( this.value );
+        terms.pop();
+        terms.push( ui.item.value );
+        terms.push( "" );
+        this.value = terms.join( ", " );
+        return false;
+      }
+    });
