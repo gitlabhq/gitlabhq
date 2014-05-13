@@ -1,5 +1,6 @@
 v 6.9.0
   - Support Jira ticket mentions in format JIRA-123
+  - Add support for closing Jira tickets with commits and MR
 
 v 6.8.0
   - Customise sign-in page with custom text and logo
