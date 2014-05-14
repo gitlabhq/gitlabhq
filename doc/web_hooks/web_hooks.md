@@ -112,3 +112,34 @@ Triggered when a new merge request is created or an existing merge request was u
   }
 }
 ```
+
+#### Example webhook receiver
+
+If you want to see GitLab's webhooks in action for testing purposes you can use
+a simple echo script running in a console session.
+
+Save the following file as `print_http_body.rb`.
+
+```ruby
+require 'webrick'
+
+server = WEBrick::HTTPServer.new(Port: ARGV.first)
+server.mount_proc '/' do |req, res|
+  puts req.body
+end
+
+trap 'INT' do server.shutdown end
+server.start
+```
+
+Pick an unused port (e.g. 8000) and start the script: `ruby print_http_body.rb
+8000`.  Then add your server as a webhook receiver in GitLab as
+`http://my.host:8000/`.
+
+When you press 'Test Hook' in GitLab, you should see something like this in the console.
+
+```
+{"before":"077a85dd266e6f3573ef7e9ef8ce3343ad659c4e","after":"95cd4a99e93bc4bbabacfa2cd10e6725b1403c60",<SNIP>}
+localhost - - [14/May/2014:07:45:26 EDT] "POST / HTTP/1.1" 200 0
+- -> /
+```
