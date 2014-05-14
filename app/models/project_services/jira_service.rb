@@ -56,7 +56,7 @@ class JiraService < Service
     close_issue(push, issue) if issue
   end
 
-private
+  private
 
   def close_issue(push_data, issue_name)
     url = close_issue_url(issue_name)
