@@ -77,6 +77,10 @@ module Gitlab
         users(*args).first
       end
 
+      def dn_matches_filter?(dn, filter)
+        ldap_search(base: dn, filter: filter, scope: Net::LDAP::SearchScope_BaseObject, attributes: %w{dn}).any?
+      end
+
       def ldap_search(*args)
         results = ldap.search(*args)
 
