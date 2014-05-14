@@ -67,7 +67,6 @@ Gitlab::Application.routes.draw do
   # Attachments serving
   #
   get 'files/:type/:id/:filename' => 'files#download', constraints: { id: /\d+/, type: /[a-z]+/, filename:  /.+/ }
-
   #
   # Admin Area
   #
@@ -135,8 +134,6 @@ Gitlab::Application.routes.draw do
   end
 
   match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
-
-
 
   #
   # Dashboard Area
@@ -303,6 +300,7 @@ Gitlab::Application.routes.draw do
       resources :issues, constraints: {id: /\d+/}, except: [:destroy] do
         collection do
           post  :bulk_update
+          post :upload_image
         end
       end
 
