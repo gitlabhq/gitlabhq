@@ -17,13 +17,13 @@ describe Gitlab::LDAP::Access do
       before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
 
       context 'and the Active Directory disabled flag is set' do
-        before { Gitlab::LDAP::Person.stub(ad_disabled?: true) }
+        before { Gitlab::LDAP::Person.stub(active_directory_disabled?: true) }
 
         it { should be_false }
       end
 
       context 'and the Active Directory disabled flag is not set' do
-        before { Gitlab::LDAP::Person.stub(ad_disabled?: false) }
+        before { Gitlab::LDAP::Person.stub(active_directory_disabled?: false) }
 
         it { should be_true }
       end
