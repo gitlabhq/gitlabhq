@@ -1,6 +1,9 @@
 module Gitlab
   module LDAP
     class Person
+      # Active Directory-specific LDAP filter that checks if bit 2 of the
+      # userAccountControl attribute is set.
+      # Source: http://ctogonewild.com/2009/09/03/bitmask-searches-in-ldap/
       AD_USER_DISABLED = Net::LDAP::Filter.ex("userAccountControl:1.2.840.113556.1.4.803", "2")
 
       def self.find_by_uid(uid, adapter=nil)
