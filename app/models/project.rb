@@ -40,7 +40,8 @@ class Project < ActiveRecord::Base
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
     :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
+    :wiki_enabled, :visibility_level, :import_url, :last_activity_at,
+    :merge_requests_template, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
 

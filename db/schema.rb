@@ -252,6 +252,7 @@ ActiveRecord::Schema.define(version: 20140513095908) do
     t.boolean  "archived",               default: false,    null: false
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
+    t.text     "merge_requests_template"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree

@@ -239,6 +239,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should see description field pre-filled' do
+    find_field('merge_request_description').value.should == 'This merge request should contain the following.'
+  end
+
   def project
     @project ||= Project.find_by!(name: "Shop")
   end
