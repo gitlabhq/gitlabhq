@@ -15,7 +15,11 @@
 #  milestone_id :integer
 #  state        :string(255)
 #  iid          :integer
+#  attachment   :string(255)
 #
+
+require 'carrierwave/orm/activerecord'
+require 'file_size_validator'
 
 class Issue < ActiveRecord::Base
   include Issuable
@@ -30,7 +34,8 @@ class Issue < ActiveRecord::Base
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
 
   attr_accessible :title, :assignee_id, :position, :description,
-                  :milestone_id, :label_list, :state_event
+                  :milestone_id, :label_list, :author_id_of_changes,
+                  :state_event
 
   acts_as_taggable_on :labels
 

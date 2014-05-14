@@ -60,7 +60,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def create
     @issue = Issues::CreateService.new(project, current_user, params[:issue]).execute
-
     respond_to do |format|
       format.html do
         if @issue.valid?
@@ -69,7 +68,11 @@ class Projects::IssuesController < Projects::ApplicationController
           render :new
         end
       end
-      format.js
+      format.js do |format|
+        # issue = Issues.create()
+
+        @link = @issue.attachment.url.to_js
+      end
     end
   end
 
@@ -77,7 +80,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @issue = Issues::UpdateService.new(project, current_user, params[:issue]).execute(issue)
 
     respond_to do |format|
-      format.js
+      format.js   
       format.html do
         if @issue.valid?
           redirect_to [@project, @issue]
@@ -91,6 +94,20 @@ class Projects::IssuesController < Projects::ApplicationController
   def bulk_update
     result = Issues::BulkUpdateService.new(project, current_user, params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
+  end
+
+  def upload_image
+    @upload_path = File.join(project.namespace.path, @project.path)
+    @accepted_types = %w(png jpg jpeg gif)
+    uploader = FileUploader.new('uploads/' + @upload_path, @accepted_types)
+    links = []
+    params['issue-imgs'].each do |img|
+      uploader.store!(img)
+      links << File.join(root_url, uploader.url)
+    end
+    respond_to do |format|
+      format.json { render json: { links: links } }
+    end
   end
 
   protected
@@ -128,7 +145,6 @@ class Projects::IssuesController < Projects::ApplicationController
   #
   def redirect_old
     issue = @project.issues.find_by(id: params[:id])
-
     if issue
       redirect_to project_issue_path(@project, issue)
       return
