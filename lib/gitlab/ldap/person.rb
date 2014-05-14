@@ -1,7 +1,7 @@
 module Gitlab
   module LDAP
     class Person
-      AD_USER_DISABLED = Net::LDAP::Filter.ex("userAccountControl:1.2.840.113556.1.4.803", 2)
+      AD_USER_DISABLED = Net::LDAP::Filter.ex("userAccountControl:1.2.840.113556.1.4.803", "2")
 
       def self.find_by_uid(uid, adapter=nil)
         adapter ||= Gitlab::LDAP::Adapter.new
