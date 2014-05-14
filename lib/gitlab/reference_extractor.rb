@@ -23,9 +23,13 @@ module Gitlab
     end
 
     def issues_for project
-      issues.map do |identifier|
-        project.issues.where(iid: identifier).first
-      end.reject(&:nil?)
+      if project.jira_tracker?
+        issues.uniq
+      else
+        issues.map do |identifier|
+          project.issues.where(iid: identifier).first
+        end.reject(&:nil?)
+      end
     end
 
     def merge_requests_for project
