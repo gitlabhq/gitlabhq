@@ -2,7 +2,7 @@
  * Admin area
  *
  */
-.admin_dash {
+.admin-dashboard {
   .data {
     a {
       h1 {
@@ -14,10 +14,29 @@
       }
     }
   }
+
+  .str-truncated {
+    max-width: 60%;
+  }
 }
 
 .admin-filter form {
   label { width: 110px; }
   .controls { margin-left: 130px; }
   .form-actions { padding-left: 130px; background: #fff }
+  .visibility-levels {
+    .controls {
+        margin-bottom: 9px;
+    }
+
+    i {
+      color: inherit;
+    }
+  }
+}
+
+.broadcast-messages {
+  .message {
+    line-height: 2;
+  }
 }

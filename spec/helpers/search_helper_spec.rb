@@ -8,55 +8,46 @@ describe SearchHelper do
 
   describe 'search_autocomplete_source' do
     context "with no current user" do
-      before { stub!(:current_user).and_return(nil) }
+      before do
+        allow(self).to receive(:current_user).and_return(nil)
+      end
 
       it "it returns nil" do
-        search_autocomplete_source.should be_nil
+        search_autocomplete_opts("q").should be_nil
       end
     end
 
     context "with a user" do
       let(:user)   { create(:user) }
-      let(:result) { JSON.parse(search_autocomplete_source) }
 
       before do
-        stub!(:current_user).and_return(user)
+        allow(self).to receive(:current_user).and_return(user)
       end
 
       it "includes Help sections" do
-        result.select { |h| h['label'] =~ /^help:/ }.length.should == 9
+        search_autocomplete_opts("hel").size.should == 9
       end
 
       it "includes default sections" do
-        result.count { |h| h['label'] =~ /^(My|Admin)\s/ }.should == 4
+        search_autocomplete_opts("adm").size.should == 1
       end
 
       it "includes the user's groups" do
         create(:group).add_owner(user)
-        result.count { |h| h['label'] =~ /^group:/ }.should == 1
+        search_autocomplete_opts("gro").size.should == 1
       end
 
       it "includes the user's projects" do
-        create(:project, namespace: create(:namespace, owner: user))
-        result.count { |h| h['label'] =~ /^project:/ }.should == 1
+        project = create(:project, namespace: create(:namespace, owner: user))
+        search_autocomplete_opts(project.name).size.should == 1
       end
 
       context "with a current project" do
-        before { @project = create(:project_with_code) }
+        before { @project = create(:project) }
 
         it "includes project-specific sections" do
-          result.count { |h| h['label'] =~ /^#{@project.name_with_namespace} - / }.should == 11
-        end
-
-        it "uses @ref in urls if defined" do
-          @ref = "foo_bar"
-          result.count { |h| h['url'] == project_tree_path(@project, @ref) }.should == 1
-        end
-      end
-
-      context "with no current project" do
-        it "does not include project-specific sections" do
-          result.count { |h| h['label'] =~ /Files$/ }.should == 0
+          search_autocomplete_opts("Files").size.should == 1
+          search_autocomplete_opts("Commits").size.should == 1
         end
       end
     end

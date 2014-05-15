@@ -1,19 +1,16 @@
 module API
   # Internal access API
   class Internal < Grape::API
-
-    DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
-    PUSH_COMMANDS = %w{ git-receive-pack }
-
     namespace 'internal' do
-      #
-      # Check if ssh key has access to project code
+      # Check if git command is allowed to project
       #
       # Params:
-      #   key_id - SSH Key id
+      #   key_id - ssh key id for Git over SSH
+      #   user_id - user id for Git over HTTP
       #   project - project path with namespace
       #   action - git action (git-upload-pack or git-receive-pack)
       #   ref - branch name
+      #   forced_push - forced_push
       #
       get "/allowed" do
         # Check for *.wiki repositories.
@@ -22,35 +19,26 @@ module API
         # the wiki repository as well.
         project_path = params[:project]
         project_path.gsub!(/\.wiki/,'') if project_path =~ /\.wiki/
-
-        key = Key.find(params[:key_id])
         project = Project.find_with_namespace(project_path)
-        git_cmd = params[:action]
         return false unless project
 
+        actor = if params[:key_id]
+                  Key.find(params[:key_id])
+                elsif params[:user_id]
+                  User.find(params[:user_id])
+                end
 
-        if key.is_a? DeployKey
-          key.projects.include?(project) && DOWNLOAD_COMMANDS.include?(git_cmd)
-        else
-          user = key.user
+        return false unless actor
 
-          return false if user.blocked?
-          return false if user.ldap_user? && Gitlab::LDAP::User.blocked?(user.extern_uid)
-
-          action = case git_cmd
-                   when *DOWNLOAD_COMMANDS
-                     then :download_code
-                   when *PUSH_COMMANDS
-                     then
-                     if project.protected_branch?(params[:ref])
-                       :push_code_to_protected_branches
-                     else
-                       :push_code
-                     end
-                   end
-
-          user.can?(action, project)
-        end
+        Gitlab::GitAccess.new.allowed?(
+          actor,
+          params[:action],
+          project,
+          params[:ref],
+          params[:oldrev],
+          params[:newrev],
+          params[:forced_push]
+        )
       end
 
       #

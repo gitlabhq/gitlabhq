@@ -1,11 +1,11 @@
-.alert.alert-error.alert-block
+.alert.alert-danger.alert-block
   %h4
     %i.icon-code-fork
     Fork Error!
   %p
-    You are trying to fork
+    You tried to fork
     = link_to_project @project
-    but it fails due to next reason:
+    but it failed for the following reason:
 
 
   - if @forked_project && @forked_project.errors.any?

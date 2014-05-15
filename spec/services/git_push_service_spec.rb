@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe GitPushService do
   let (:user)          { create :user }
-  let (:project)       { create :project_with_code }
+  let (:project)       { create :project }
   let (:service) { GitPushService.new }
 
   before do
@@ -74,38 +74,19 @@ describe GitPushService do
   end
 
   describe "Web Hooks" do
-    context "with web hooks" do
-      before do
-        @project_hook = create(:project_hook)
-        @project_hook_2 = create(:project_hook)
-        project.hooks << [@project_hook, @project_hook_2]
-
-        stub_request(:post, @project_hook.url)
-        stub_request(:post, @project_hook_2.url)
-      end
-
-      it "executes multiple web hook" do
-        @project_hook.should_receive(:async_execute).once
-        @project_hook_2.should_receive(:async_execute).once
-
-        service.execute(project, user, @oldrev, @newrev, @ref)
-      end
-    end
-
     context "execute web hooks" do
-      before do
-        @project_hook = create(:project_hook)
-        project.hooks << [@project_hook]
-        stub_request(:post, @project_hook.url)
-      end
-
       it "when pushing a branch for the first time" do
-        @project_hook.should_receive(:async_execute)
+        project.should_receive(:execute_hooks)
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
+      it "when pushing new commits to existing branch" do
+        project.should_receive(:execute_hooks)
+        service.execute(project, user, 'oldrev', 'newrev', 'refs/heads/master')
+      end
+
       it "when pushing tags" do
-        @project_hook.should_not_receive(:async_execute)
+        project.should_not_receive(:execute_hooks)
         service.execute(project, user, 'newrev', 'newrev', 'refs/tags/v1.0.0')
       end
     end
@@ -189,16 +170,10 @@ describe GitPushService do
       Issue.find(issue.id).should be_closed
     end
 
-    it "passes the closing commit as a thread-local" do
-      service.execute(project, user, @oldrev, @newrev, @ref)
-
-      Thread.current[:current_commit].should == closing_commit
-    end
-
     it "doesn't create cross-reference notes for a closing reference" do
       expect {
         service.execute(project, user, @oldrev, @newrev, @ref)
-      }.not_to change { Note.where(project_id: project.id, system: true).count }
+      }.not_to change { Note.where(project_id: project.id, system: true, commit_id: closing_commit.id).count }
     end
 
     it "doesn't close issues when pushed to non-default branches" do

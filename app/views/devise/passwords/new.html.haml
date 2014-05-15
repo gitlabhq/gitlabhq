@@ -1,10 +1,14 @@
 = form_for(resource, as: resource_name, url: password_path(resource_name), html: { class: "login-box", method: :post }) do |f|
   %h3.page-title Reset password
-  = devise_error_messages!
-  = f.email_field :email, placeholder: "Email",  class: "text"
-  %br/
-  %br/
-  = f.submit "Reset password", class: "btn-primary btn"
-  .pull-right
-    = link_to "Sign in", new_session_path(resource_name), class: "btn"
-    %br/
+  .devise-errors
+    = devise_error_messages!
+  .clearfix.append-bottom-20
+    = f.email_field :email, placeholder: "Email",  class: "form-control", required: true
+  .clearfix.append-bottom-10
+    = f.submit "Reset password", class: "btn-primary btn"
+  %hr
+  %p
+    %span.light
+      Already have login and password?
+    %strong
+      = link_to "Sign in", new_session_path(resource_name)

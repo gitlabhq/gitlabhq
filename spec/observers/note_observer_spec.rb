@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe NoteObserver do
   subject { NoteObserver.instance }
-  before { subject.stub(notification: mock('NotificationService').as_null_object) }
+  before { subject.stub(notification: double('NotificationService').as_null_object) }
 
   let(:team_without_author) { (1..2).map { |n| double :user, id: n } }
   let(:note) { double(:note).as_null_object }

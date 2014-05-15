@@ -10,7 +10,7 @@
           %i.icon-edit
           Edit
         &nbsp;
-        = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, confirm: 'Are you sure you want to remove this comment?', remote: true, class: "danger js-note-delete" do
+        = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: "danger js-note-delete" do
           %i.icon-trash.cred
           Remove
     = image_tag avatar_icon(note.author_email), class: "avatar s32"
@@ -23,7 +23,7 @@
         %i.icon-thumbs-up
         \+1
     - if note.downvote?
-      %span.vote.downvote.label.label-error
+      %span.vote.downvote.label.label-danger
         %i.icon-thumbs-down
         \-1
 
@@ -31,13 +31,13 @@
   .note-body
     .note-text
       = preserve do
-        = markdown(note.note)
+        = markdown(note.note, {no_header_anchors: true})
 
     .note-edit-form
-      = form_for note, url: project_note_path(@project, note), method: :put, remote: true do |f|
+      = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
         = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
 
-        .form-actions
+        .form-actions.clearfix
           = f.submit 'Save changes', class: "btn btn-primary btn-save"
 
           .note-form-option
@@ -46,7 +46,7 @@
               %span Choose File ...
             &nbsp;
             %span.file_name.js-attachment-filename File name...
-            = f.file_field :attachment, class: "js-note-attachment-input hide"
+            = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
           = link_to  'Cancel', "#", class: "btn btn-cancel note-edit-cancel"
 
@@ -54,13 +54,13 @@
   - if note.attachment.url
     .note-attachment
       - if note.attachment.image?
-        = link_to note.attachment.url, target: '_blank' do
-          = image_tag note.attachment.url, class: 'note-image-attach'
+        = link_to note.attachment.secure_url, target: '_blank' do
+          = image_tag note.attachment.secure_url, class: 'note-image-attach'
       .attachment.pull-right
         = link_to note.attachment.secure_url, target: "_blank" do
           %i.icon-paper-clip
           = note.attachment_identifier
           = link_to delete_attachment_project_note_path(@project, note),
-            title: "Delete this attachment", method: :delete, remote: true, confirm: 'Are you sure you want to remove the attachment?', class: "danger js-note-attachment-delete" do
+            title: "Delete this attachment", method: :delete, remote: true, data: { confirm: 'Are you sure you want to remove the attachment?' }, class: "danger js-note-attachment-delete" do
             %i.icon-trash.cred
   .clear

@@ -1,13 +1,15 @@
 %h3.page-title
   Groups (#{@groups.total_count})
-  %small
-    allows you to keep projects organized.
-    Use groups for uniting related projects.
-
   = link_to 'New Group', new_admin_group_path, class: "btn btn-new pull-right"
-%br
+
+%p.light
+  Group allows you to keep projects organized.
+  Use groups for uniting related projects.
+
+%hr
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
-  = text_field_tag :name, params[:name], class: "span6"
+  .form-group
+    = text_field_tag :name, params[:name], class: "form-control input-mn-300"
   = submit_tag "Search", class: "btn submit btn-primary"
 
 %hr
@@ -18,28 +20,22 @@
       .clearfix
         .pull-right.prepend-top-10
           = link_to 'Edit', edit_admin_group_path(group), id: "edit_#{dom_id(group)}", class: "btn btn-small"
-          = link_to 'Destroy', [:admin, group], confirm: "REMOVE #{group.name}? Are you sure?", method: :delete, class: "btn btn-small btn-remove"
+          = link_to 'Destroy', [:admin, group], data: {confirm: "REMOVE #{group.name}? Are you sure?"}, method: :delete, class: "btn btn-small btn-remove"
 
         %h4
           = link_to [:admin, group] do
+            %i.icon-folder-close
             = group.name
 
           &rarr;
           %span.monospace
-            %i.icon-folder-close
             %strong #{group.path}/
-
-      .clearfix.light.append-bottom-10
-        %span
-          %b Members:
-          %span.badge= group.members.size
-        \|
-        %span
-          %b Projects:
-          %span.badge= group.projects.count
-
       .clearfix
         %p
           = truncate group.description, length: 150
+      .clearfix
+        %p.light
+          #{pluralize(group.members.size, 'member')}, #{pluralize(group.projects.count, 'project')}
+
 
 = paginate @groups, theme: "gitlab"

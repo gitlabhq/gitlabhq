@@ -10,7 +10,7 @@
           %i.icon-off
           Disable
       - else
-        = link_to 'Remove', project_deploy_key_path(@project, deploy_key), confirm: 'You are going to remove deploy key. Are you sure?', method: :delete, class: "btn btn-remove delete-key btn-small pull-right"
+        = link_to 'Remove', project_deploy_key_path(@project, deploy_key), data: { confirm: 'You are going to remove deploy key. Are you sure?'}, method: :delete, class: "btn btn-remove delete-key btn-small pull-right"
 
 
   = link_to project_deploy_key_path(deploy_key.projects.include?(@project) ? @project : deploy_key.projects.first, deploy_key) do
@@ -19,7 +19,6 @@
 
   %p.light.prepend-top-10
     - deploy_key.projects.map(&:name_with_namespace).each do |project_name|
-      %span.label= project_name
+      %span.label.label-gray.deploy-project-label= project_name
     %small.pull-right
-      Created #{time_ago_in_words(deploy_key.created_at)} ago
-
+      Created #{time_ago_with_tooltip(deploy_key.created_at)}

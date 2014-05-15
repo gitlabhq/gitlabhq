@@ -30,5 +30,10 @@ Feature: Project Forked Merge Requests
     Given I visit project "Forked Shop" merge requests page
     And I click link "New Merge Request"
     And I fill out an invalid "Merge Request On Forked Project" merge request
-    And I submit the merge request
     Then I should see validation errors
+
+  @javascript
+  Scenario: Merge request should target fork repository by default
+    Given I visit project "Forked Shop" merge requests page
+    And I click link "New Merge Request"
+    Then the target repository should be the original repository

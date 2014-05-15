@@ -10,6 +10,8 @@
     = link_to "Users", admin_users_path
   = nav_link(controller: :logs) do
     = link_to "Logs", admin_logs_path
+  = nav_link(controller: :broadcast_messages) do
+    = link_to "Messages", admin_broadcast_messages_path
   = nav_link(controller: :hooks) do
     = link_to "Hooks", admin_hooks_path
   = nav_link(controller: :background_jobs) do

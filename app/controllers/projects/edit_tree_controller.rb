@@ -1,53 +1,61 @@
-# Controller for edit a repository's file
-class Projects::EditTreeController < Projects::ApplicationController
-  include ExtractsPath
-
-  # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
-  before_filter :require_non_empty_project
-
-  before_filter :edit_requirements, only: [:show, :update]
+class Projects::EditTreeController < Projects::BaseTreeController
+  before_filter :require_branch_head
+  before_filter :blob
+  before_filter :authorize_push!
+  before_filter :from_merge_request
+  before_filter :after_edit_path
 
   def show
     @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
   end
 
   def update
-    edit_file_action = Gitlab::Satellite::EditFileAction.new(current_user, @project, @ref, @path)
-    updated_successfully = edit_file_action.commit!(
-      params[:content],
-      params[:commit_message],
-      params[:last_commit]
-    )
+    result = Files::UpdateService.new(@project, current_user, params, @ref, @path).execute
 
-    if updated_successfully
-      redirect_to project_blob_path(@project, @id), notice: "Your changes have been successfully commited"
+    if result[:status] == :success
+      flash[:notice] = "Your changes have been successfully committed"
+
+      if from_merge_request
+        from_merge_request.reload_code
+      end
+
+      redirect_to after_edit_path
     else
-      flash[:notice] = "Your changes could not be commited, because the file has been changed"
+      flash[:alert] = result[:error]
       render :show
     end
   end
 
+  def preview
+    @content = params[:content]
+    #FIXME workaround https://github.com/gitlabhq/gitlabhq/issues/5936
+    @content += "\n" if @blob.data.end_with?("\n")
+
+    diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3',
+                            include_diff_info: true)
+    @diff = Gitlab::DiffParser.new(diffy.diff.scan(/.*\n/))
+
+    render layout: false
+  end
+
   private
 
-  def edit_requirements
-    @blob = @repository.blob_at(@commit.id, @path)
+  def blob
+    @blob ||= @repository.blob_at(@commit.id, @path)
+  end
 
-    unless @blob
-      redirect_to project_blob_path(@project, @id), notice: "You can only edit text files"
-    end
+  def after_edit_path
+    @after_edit_path ||=
+      if from_merge_request
+        diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
+          "#file-path-#{hexdigest(@path)}"
+      else
+        project_blob_path(@project, @id)
+      end
+  end
 
-    allowed = if project.protected_branch? @ref
-                can?(current_user, :push_code_to_protected_branches, project)
-              else
-                can?(current_user, :push_code, project)
-              end
-
-    return access_denied! unless allowed
-
-    unless @repository.branch_names.include?(@ref)
-      redirect_to project_blob_path(@project, @id), notice: "You can only edit this file if you are on top of a branch"
-    end
+  def from_merge_request
+    # If blob edit was initiated from merge request page
+    @from_merge_request ||= MergeRequest.find_by(id: params[:from_merge_request_id])
   end
 end

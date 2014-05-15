@@ -15,5 +15,19 @@ if File.exists?(aws_file)
     config.fog_directory  = AWS_CONFIG['bucket']                    # required
     config.fog_public     = false                                   # optional, defaults to true
     config.fog_attributes = {'Cache-Control'=>'max-age=315576000'}  # optional, defaults to {}
+    config.fog_authenticated_url_expiration = 1 << 29               # optional time (in seconds) that authenticated urls will be valid.
+                                                                    # when fog_public is false and provider is AWS or Google, defaults to 600
+  end
+
+  # Mocking Fog requests, based on: https://github.com/carrierwaveuploader/carrierwave/wiki/How-to%3A-Test-Fog-based-uploaders
+  if Rails.env.test?
+    Fog.mock!
+    connection = ::Fog::Storage.new(
+        :aws_access_key_id      => AWS_CONFIG['access_key_id'],
+        :aws_secret_access_key  => AWS_CONFIG['secret_access_key'],
+        :provider               => 'AWS',
+        :region                 => AWS_CONFIG['region']
+      )
+    connection.directories.create(:key => AWS_CONFIG['bucket'])
   end
 end

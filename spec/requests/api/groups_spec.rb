@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe API::API, api: true  do
   include ApiHelpers
 
   let(:user1) { create(:user) }
@@ -147,7 +147,7 @@ describe API::API do
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
-      project.stub!(:transfer).and_return(true)
+      project.stub(:transfer).and_return(true)
       Project.stub(:find).and_return(project)
     end
 

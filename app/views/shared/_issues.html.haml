@@ -1,6 +1,6 @@
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|
-    .ui-box.small-box
+    .ui-box.ui-box-small
       - project = group[0]
       .title
         = link_to_project project
@@ -11,5 +11,5 @@
           = render 'projects/issues/issue', issue: issue
   = paginate @issues, theme: "gitlab"
 - else
-  %p.nothing_here_message No issues to show
+  .nothing-here-block No issues to show
 

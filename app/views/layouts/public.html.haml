@@ -1,11 +1,11 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Public Projects"
-  %body{class: "ui_mars application", :'data-page' => body_data_page}
+  %body{class: "#{app_theme} application", :'data-page' => body_data_page}
+    = render "layouts/broadcast"
     - if current_user
       = render "layouts/head_panel", title: "Public Projects"
     - else
-      = render "layouts/public_head_panel"
-
+      = render "layouts/public_head_panel", title: "Public Projects"
     .container.navless-container
       .content= yield

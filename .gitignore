@@ -34,3 +34,6 @@ doc/code/*
 .secret
 *.log
 public/uploads.*
+public/assets/
+.envrc
+dump.rdb

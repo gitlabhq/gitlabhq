@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe API::API do
+describe API::API, api: true  do
   include ApiHelpers
   before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
   after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
@@ -96,6 +96,33 @@ describe API::API do
       context "git push" do
         it do
           push(key, personal_project)
+
+          response.status.should == 200
+          response.body.should == 'false'
+        end
+      end
+    end
+
+    context "archived project" do
+      let(:personal_project) { create(:project, namespace: user.namespace) }
+
+      before do
+        project.team << [user, :developer]
+        project.archive!
+      end
+
+      context "git pull" do
+        it do
+          pull(key, project)
+
+          response.status.should == 200
+          response.body.should == 'true'
+        end
+      end
+
+      context "git push" do
+        it do
+          push(key, project)
 
           response.status.should == 200
           response.body.should == 'false'

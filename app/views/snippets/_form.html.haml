@@ -2,27 +2,38 @@
   = @snippet.new_record? ? "New Snippet" : "Edit Snippet ##{@snippet.id}"
 %hr
 .snippet-form-holder
-  = form_for @snippet, as: :personal_snippet, url: url do |f|
+  = form_for @snippet, as: :personal_snippet, url: url, html: { class: "form-horizontal snippet-form" } do |f|
     -if @snippet.errors.any?
-      .alert.alert-error
+      .alert.alert-danger
         %ul
           - @snippet.errors.full_messages.each do |msg|
             %li= msg
 
-    .control-group
-      = f.label :title
-      .controls= f.text_field :title, placeholder: "Example Snippet", class: 'input-xlarge', required: true
-    .control-group
-      = f.label "Private?"
-      .controls
-        = f.check_box :private, {class: ''}
-    .control-group
+    .form-group
+      = f.label :title, class: 'control-label'
+      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true
+    .form-group
+      = f.label "Access", class: 'control-label'
+      .col-sm-10
+        = f.label :private_true, class: 'radio-label' do
+          = f.radio_button :private, true
+          %span
+            %strong Private
+            (only you can see this snippet)
+        %br
+        = f.label :private_false, class: 'radio-label' do
+          = f.radio_button :private, false
+          %span
+            %strong Public
+            (GitLab users can see this snippet)
+
+    .form-group
       .file-editor
-        = f.label :file_name, "File"
-        .controls
+        = f.label :file_name, "File", class: 'control-label'
+        .col-sm-10
           .file-holder.snippet
             .file-title
-              = f.text_field :file_name, placeholder: "example.rb", class: 'snippet-file-name', required: true
+              = f.text_field :file_name, placeholder: "example.rb", class: 'form-control snippet-file-name', required: true
             .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'
@@ -33,9 +44,10 @@
       - else
         = f.submit 'Save', class: "btn-save btn"
 
-      = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
       - unless @snippet.new_record?
-        .pull-right= link_to 'Destroy', snippet_path(@snippet), confirm: 'Removed snippet cannot be restored! Are you sure?', method: :delete, class: "btn pull-right danger delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+        .pull-right.prepend-left-20
+          = link_to 'Remove', snippet_path(@snippet), data: { confirm: 'Removed snippet cannot be restored! Are you sure?'}, method: :delete, class: "btn btn-remove delete-snippet", id: "destroy_snippet_#{@snippet.id}"
+      = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
 
 
 :javascript

@@ -29,8 +29,23 @@
       %p.slead
         You can create a group for several dependent projects.
         %br
-        Group is the best way to manage projects and members
+        Groups are the best way to manage projects and members
       .link_holder
         = link_to new_group_path, class: "btn btn-new" do
           New group »
 
+-if @publicish_project_count > 0
+  %hr
+  %div
+    .dashboard-intro-icon
+      %i.icon-globe
+    %div
+      %p.slead
+        There are
+        %strong= @publicish_project_count
+        public projects on this server.
+        %br
+        Public projects are an easy way to allow everyone to have read-only access.
+      .link_holder
+        = link_to public_projects_path, class: "btn btn-new" do
+          Browse public projects »

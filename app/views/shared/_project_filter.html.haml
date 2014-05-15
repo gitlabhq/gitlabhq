@@ -1,32 +1,55 @@
-= form_tag project_entities_path, method: 'get' do
-  %fieldset
+.side-filters.hidden-xs.hidden-sm
+  = form_tag project_entities_path, method: 'get' do
     - if current_user
-      %ul.nav.nav-pills.nav-stacked
-        %li{class: ("active" if params[:scope].blank?)}
-          = link_to project_filter_path(scope: nil) do
-            Everyone's
-        %li{class: ("active" if params[:scope] == 'assigned-to-me')}
-          = link_to project_filter_path(scope: 'assigned-to-me') do
-            Assigned to me
-        %li{class: ("active" if params[:scope] == 'created-by-me')}
-          = link_to project_filter_path(scope: 'created-by-me') do
-            Created by me
+      %fieldset
+        %ul.nav.nav-pills.nav-stacked
+          %li{class: ("active" if params[:scope] == 'all')}
+            = link_to project_filter_path(scope: 'all') do
+              Everyone's
+          %li{class: ("active" if params[:scope] == 'assigned-to-me')}
+            = link_to project_filter_path(scope: 'assigned-to-me') do
+              Assigned to me
+          %li{class: ("active" if params[:scope] == 'created-by-me')}
+            = link_to project_filter_path(scope: 'created-by-me') do
+              Created by me
 
-    %ul.nav.nav-pills.nav-stacked
-      %li{class: ("active" if params[:state].blank?)}
-        = link_to project_filter_path(state: nil) do
-          Open
-      %li{class: ("active" if params[:state] == 'closed')}
-        = link_to project_filter_path(state: 'closed') do
-          Closed
-      %li{class: ("active" if params[:state] == 'all')}
-        = link_to project_filter_path(state: 'all') do
-          All
+    %fieldset
+      %legend State
+      %ul.nav.nav-pills
+        %li{class: ("active" if params[:state] == 'opened')}
+          = link_to project_filter_path(state: 'opened') do
+            Open
+        %li{class: ("active" if params[:state] == 'closed')}
+          = link_to project_filter_path(state: 'closed') do
+            Closed
+        %li{class: ("active" if params[:state] == 'all')}
+          = link_to project_filter_path(state: 'all') do
+            All
 
-  %fieldset
-    - if %w(state scope milestone_id assignee_id label_name).select { |k| params[k].present? }.any?
-      = link_to project_entities_path, class: 'cgray pull-right' do
-        %i.icon-remove
-        %strong Clear filter
+    - if defined?(labels)
+      %fieldset
+        %legend Labels
+        %ul.nav.nav-pills.nav-stacked.nav-small.labels-filter
+          - issue_label_names.each do |label_name|
+            %li{class: label_filter_class(label_name)}
+              = link_to labels_filter_path(label_name) do
+                %span{class: "label #{label_css_class(label_name)}"}
+                  %i.icon-tag
+                = label_name
+                - if selected_label?(label_name)
+                  .pull-right
+                    %i.icon-remove
+
+          - if issue_label_names.empty?
+            .light-well
+              Add first label to your issues
+              %br
+              or #{link_to 'generate', generate_project_labels_path(@project, redirect: redirect), method: :post} default set of labels
+
+    %fieldset
+      - if %w(state scope milestone_id assignee_id label_name).select { |k| params[k].present? }.any?
+        = link_to project_entities_path, class: 'cgray pull-right' do
+          %i.icon-remove
+          %strong Clear filter
 
 

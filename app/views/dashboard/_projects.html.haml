@@ -1,6 +1,6 @@
 .ui-box
   .title.clearfix
-    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter'
+    = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_project?
       %span.pull-right
         = link_to new_project_path, class: "btn btn-new" do
@@ -14,7 +14,7 @@
 
     - if projects.blank?
       %li
-        %h3.nothing_here_message There are no projects here.
+        .nothing-here-block There are no projects here.
     - if @projects_count > @projects_limit
       %li.bottom
         %span.light

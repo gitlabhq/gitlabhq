@@ -16,12 +16,18 @@
 
 .project-home-panel {
   border-bottom: 1px solid #DDD;
-  padding-bottom: 30px;
+  padding-bottom: 15px;
   margin-bottom: 30px;
+
+  &.empty-project {
+      border-bottom: 0px;
+      padding-bottom: 15px;
+      margin-bottom: 0px;
+  }
 
   .project-home-title {
     font-size: 18px;
-    color: #777;
+    color: #444;
     margin: 0;
     line-height: 32px;
   }
@@ -34,40 +40,52 @@
 
     .project-home-desc {
       float: left;
-      color: #999;
+      color: #777;
+      margin-bottom: 10px;
     }
 
     .project-home-links {
       float: right;
       a {
         margin-left: 10px;
+        font-weight: 500;
       }
     }
   }
 
-  .public-label {
-    font-size: 14px;
+  .visibility-level-label {
+    font-size: 17px;
     background: #f1f1f1;
-    padding: 8px 10px;
     border-radius: 4px;
-    margin-left: 10px;
     color: #888;
+    position: absolute;
+    margin-left: -55px;
     text-shadow: 0 1px 1px #FFF;
+    width: 40px;
+    text-align: center;
+    padding: 6px;
+
+    i {
+      color: inherit;
+    }
   }
 }
 
 .git-clone-holder {
-  float: right;
-  border: 1px solid #E1E1E1;
-  @include border-radius(4px);
+  .project-home-dropdown + & {
+    margin-right: 45px;
+  }
+
+  .btn,
+  .form-control {
+    border: 1px solid #E1E1E1;
+    box-shadow: none;
+    padding: 6px 9px;
+  }
 
   .btn {
-    margin-left: 3px;
-    border: none;
     background: none;
-    box-shadow: none;
     color: #29b;
-    padding: 6px;
 
     &.active {
       color: #333;
@@ -75,33 +93,39 @@
     }
   }
 
-  input[type="text"] {
-    margin-left: 2px;
-    border: none;
-    border-radius: 0;
-    border-left: 1px solid #E1E1E1;
+  .form-control {
+    cursor: auto;
     @extend .monospace;
-    box-shadow: none;
     background: #FAFAFA;
-    padding: 6px 10px;
+    width: 100%;
   }
 }
 
-.project-public-holder {
-  .help-inline {
-    padding-top: 7px;
+.project-visibility-level-holder {
+  .radio {
+    margin-bottom: 10px;
+
+    i {
+      margin: 0 3px;
+      font-size: 20px;
+    }
+
+    .option-title {
+      font-weight: bold;
+      display: inline-block;
+    }
+
+    .option-descr {
+      margin-left: 24px;
+      color: #666;
+    }
   }
 }
 
 .save-project-loader {
-  img {
-    margin-top: 50px;
-    margin-bottom: 50px;
-  }
-  h3 {
-    @extend .page-title;
-  }
-
+  margin-top: 50px;
+  margin-bottom: 50px;
+  color: #555;
 }
 
 ul.nav.nav-projects-tabs {
@@ -130,7 +154,8 @@ ul.nav.nav-projects-tabs {
   margin: 0px;
 }
 
-.my-projects {
+.my-projects,
+.public-projects {
   li {
     .project-info {
       margin-bottom: 10px;
@@ -165,4 +190,45 @@ ul.nav.nav-projects-tabs {
   a {
     color: #777;
   }
+}
+
+.project-side {
+  .btn-block {
+    background-image: none;
+    .btn,
+    &.btn,
+    &.btn-group ul.dropdown-menu {
+      background-color: #F1f1f1;
+      border-color: #EEE;
+      &:hover {
+        background-color: #eee;
+        border-color: #DDD;
+      }
+    }
+    &.btn-group-justified {
+        .btn {
+            width: 100%;
+        }
+        .dropdown-toggle {
+            width: 26px;
+        }
+    }
+    ul {
+        width: 100%;
+    }
+  }
+  .project-fork-icon {
+    float: left;
+    font-size: 26px;
+    margin-right: 10px;
+    line-height: 1.5;
+  }
+}
+
+.transfer-project .select2-container {
+  min-width: 200px;
+}
+
+.deploy-project-label {
+  margin: 1px;
 }

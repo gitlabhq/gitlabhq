@@ -1,7 +1,7 @@
 require 'spec_helper'
 
 describe 'Gitlab::Satellite::Action' do
-  let(:project) { create(:project_with_code) }
+  let(:project) { create(:project) }
   let(:user) { create(:user) }
 
   describe '#prepare_satellite!' do

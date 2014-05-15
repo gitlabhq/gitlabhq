@@ -22,19 +22,17 @@
           backgroundColor: '#DDD'
           opacity: .4
       )
-  
+
   reload: ->
     Issues.initSelects()
     Issues.initChecks()
     $('#filter_issue_search').val($('#issue_search').val())
 
   initSelects: ->
-    $("#update_status").chosen()
-    $("#update_assignee_id").chosen()
-    $("#update_milestone_id").chosen()
-    $("#label_name").chosen()
-    $("#assignee_id").chosen()
-    $("#milestone_id").chosen()
+    $("select#update_status").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#update_assignee_id").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#update_milestone_id").select2(width: 'resolve', dropdownAutoWidth: true)
+    $("select#label_name").select2(width: 'resolve', dropdownAutoWidth: true)
     $("#milestone_id, #assignee_id, #label_name").on "change", ->
       $(this).closest("form").submit()
 
@@ -54,7 +52,16 @@
       unless terms is last_terms
         last_terms = terms
         if terms.length >= 2 or terms.length is 0
-          form.submit()
+          $.ajax
+            type: "GET"
+            url: location.href
+            data: "issue_search=" + terms
+            complete: ->
+              $(".loading").hide()
+            success: (data) ->
+              $('.issues-holder').html(data.html)
+              Issues.reload()
+            dataType: "json"
 
   checkChanged: ->
     checked_issues = $(".selected_issue:checked")

@@ -1,48 +1,57 @@
 /* Login Page */
-body.login-page{
-  .container > .content {
-    padding-top: 20px;
+.login-page {
+  h1 {
+    font-size: 3em;
+    font-weight: 200;
   }
-}
 
-.login-box{
-  width: 304px;
-  position: relative;
-  @include border-radius(5px);
-  margin: auto;
-  padding: 20px;
-  background: white;
-}
+  .login-box{
+    max-width: 304px;
+    position: relative;
+    @include border-radius(5px);
+    margin: auto;
+    background: white;
+  }
 
-.login-box .login-logo{
-  margin: 10px 0 30px 0;
-  display: block;
-}
+  .login-logo{
+    margin: 10px 0 30px 0;
+    display: block;
+  }
 
-.login-box input.text{background-color: #f1f1f1; font-size: 16px; @include border-radius(0); padding: 14px 10px; width: 280px}
+  .form-control {
+    background-color: #f1f1f1;
+    font-size: 16px;
+    padding: 14px 10px;
+    width: 100%;
+    height: auto;
 
-.login-box input.text.top{
-  @include border-radius(5px 5px 0 0);
-  margin-bottom: 0px;
-}
+    &.top {
+      @include border-radius(5px 5px 0 0);
+      margin-bottom: 0px;
+    }
 
-.login-box input.text.bottom{
-  @include border-radius(0 0 5px 5px);
-  border-top: 0;
-  margin-bottom: 20px;
-}
+    &.bottom {
+      @include border-radius(0 0 5px 5px);
+      border-top: 0;
+      margin-bottom: 20px;
+    }
 
-.login-box input.text.middle{
-  border-top: 0;
-  margin-bottom:0px;
-}
+    &.middle {
+      border-top: 0;
+      margin-bottom:0px;
+      @include border-radius(0);
+    }
+  }
 
-.login-box a.forgot{float: right; padding-top: 6px}
+  .login-box a.forgot {
+    float: right;
+    padding-top: 6px
+  }
 
-.remember_me {
-  text-align: left;
-
-  input {
-    margin: 2px;
+  .devise-errors {
+    h2 {
+      font-size: 14px;
+      color: #a00;
+    }
   }
 }

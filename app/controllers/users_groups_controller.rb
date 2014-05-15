@@ -19,18 +19,21 @@ class UsersGroupsController < ApplicationController
 
   def destroy
     @users_group = @group.users_groups.find(params[:id])
-    @users_group.destroy
-
-    respond_to do |format|
-      format.html { redirect_to members_group_path(@group), notice: 'User was  successfully removed from group.' }
-      format.js { render nothing: true }
+    if can?(current_user, :destroy, @users_group)  # May fail if last owner.
+      @users_group.destroy
+      respond_to do |format|
+        format.html { redirect_to members_group_path(@group), notice: 'User was  successfully removed from group.' }
+        format.js { render nothing: true }
+      end
+    else
+      return render_403
     end
   end
 
   protected
 
   def group
-    @group ||= Group.find_by_path(params[:group_id])
+    @group ||= Group.find_by(path: params[:group_id])
   end
 
   def authorize_admin_group!

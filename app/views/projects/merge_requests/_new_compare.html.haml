@@ -1,0 +1,84 @@
+%h3.page-title Compare branches for new Merge Request
+%hr
+
+= form_for [@project, @merge_request], url: new_project_merge_request_path(@project), method: :get, html: { class: "merge-request-form form-inline" } do |f|
+  .hide.alert.alert-danger.mr-compare-errors
+  .merge-request-branches.row
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          %strong Source branch
+        .panel-body
+          = f.select(:source_project_id, [[@merge_request.source_project_path,@merge_request.source_project.id]] , {}, { class: 'source_project select2 span3', disabled: @merge_request.persisted? })
+          &nbsp;
+          = f.select(:source_branch, @merge_request.source_branches, { include_blank: "Select branch" }, {class: 'source_branch select2 span2'})
+        .panel-footer
+          .mr_source_commit
+
+    .col-md-6
+      .panel.panel-default
+        .panel-heading
+          %strong Target branch
+        .panel-body
+          - projects =  @project.forked_from_project.nil? ? [@project] : [@project, @project.forked_from_project]
+          = f.select(:target_project_id, options_from_collection_for_select(projects, 'id', 'path_with_namespace', f.object.target_project_id), {}, { class: 'target_project select2 span3', disabled: @merge_request.persisted? })
+          &nbsp;
+          = f.select(:target_branch, @merge_request.target_branches, { include_blank: "Select branch" }, {class: 'target_branch select2 span2'})
+        .panel-footer
+          .mr_target_commit
+
+  -if @merge_request.errors.any?
+    .alert.alert-danger
+      - @merge_request.errors.full_messages.each do |msg|
+        %div= msg
+
+  - if @merge_request.source_branch.present? && @merge_request.target_branch.present?
+    .light-well
+      %center
+        %h4
+          There isn't anything to merge.
+        %p.slead
+          - if @merge_request.source_branch == @merge_request.target_branch
+            You'll need to use different branch names to get a valid comparison.
+          - else
+            %span.label-branch #{@merge_request.source_branch}
+            and
+            %span.label-branch #{@merge_request.target_branch}
+            are the same.
+
+
+  %hr
+  = f.submit 'Compare branches', class: "btn btn-primary mr-compare-btn"
+
+:javascript
+  var source_branch = $("#merge_request_source_branch")
+    , target_branch = $("#merge_request_target_branch")
+    , target_project = $("#merge_request_target_project_id");
+
+  $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: source_branch.val() });
+  $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: target_branch.val() });
+
+  target_project.on("change", function() {
+    $.get("#{update_branches_project_merge_requests_path(@source_project)}", {target_project_id:  $(this).val() });
+  });
+  source_branch.on("change", function() {
+    $.get("#{branch_from_project_merge_requests_path(@source_project)}", {ref: $(this).val() });
+    $(".mr-compare-errors").fadeOut();
+    $(".mr-compare-btn").enable();
+  });
+  target_branch.on("change", function() {
+    $.get("#{branch_to_project_merge_requests_path(@source_project)}", {target_project_id: target_project.val(),ref: $(this).val() });
+    $(".mr-compare-errors").fadeOut();
+    $(".mr-compare-btn").enable();
+  });
+
+
+:coffeescript
+
+  $(".merge-request-form").on 'submit', ->
+    if $("#merge_request_source_branch").val() is "" or $('#merge_request_target_branch').val() is ""
+      $(".mr-compare-errors").html("You must select source and target branch to proceed")
+      $(".mr-compare-errors").fadeIn()
+      event.preventDefault()
+      return
+

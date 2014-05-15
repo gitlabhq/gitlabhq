@@ -1,39 +1,39 @@
-= form_for [@project, @wiki] do |f|
-  -if @wiki.errors.any?
+= form_for [@project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal' } do |f|
+  -if @page.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@wiki.errors.count, "error")} prohibited this wiki from being saved:"
+      %h2= "#{pluralize(@page.errors.count, "error")} prohibited this wiki from being saved:"
       %ul
-        - @wiki.errors.full_messages.each do |msg|
+        - @page.errors.full_messages.each do |msg|
           %li= msg
 
-  .ui-box.ui-box-show
-    .ui-box-head
-      %h3.page-title
-        .edit-wiki-header
-          = @wiki.title.titleize
-          = f.hidden_field :title, value: @wiki.title
-          = f.select :format, options_for_select(GollumWiki::MARKUPS, {selected: @wiki.format}), {}, class: "pull-right input-medium"
-          = f.label :format, class: "pull-right", style: "padding-right: 20px;"
-    .ui-box-body
-      .controls
-        %span.cgray
-          Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
-          To link to a (new) page you can just type
-          %code [Link Title](page-slug)
-          \.
+  = f.hidden_field :title, value: @page.title
+  .form-group
+    = f.label :format, class: 'control-label'
+    .col-sm-10
+      = f.select :format, options_for_select(ProjectWiki::MARKUPS, {selected: @page.format}), {}, class: "form-control"
 
-    .ui-box-bottom
-      .control-group
-        = f.label :content
-        .controls= f.text_area :content, class: 'span8 js-gfm-input'
-    .ui-box-bottom
-      .control-group
-        = f.label :commit_message
-        .controls= f.text_field :message, class: 'span8'
+  .row
+    .col-sm-2
+    .col-sm-10
+      %p.cgray
+        Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        To link to a (new) page you can just type
+        %code [Link Title](page-slug)
+        \.
+
+  .form-group
+    = f.label :content, class: 'control-label'
+    .col-sm-10
+      = f.text_area :content, class: 'form-control js-gfm-input', rows: 18
+
+  .form-group
+    = f.label :commit_message, class: 'control-label'
+    .col-sm-10= f.text_field :message, class: 'form-control', rows: 18
+
   .form-actions
-    - if @wiki && @wiki.persisted?
+    - if @page && @page.persisted?
       = f.submit 'Save changes', class: "btn-save btn"
-      = link_to "Cancel", project_wiki_path(@project, @wiki), class: "btn btn-cancel"
+      = link_to "Cancel", project_wiki_path(@project, @page), class: "btn btn-cancel"
     - else
       = f.submit 'Create page', class: "btn-create btn"
       = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"

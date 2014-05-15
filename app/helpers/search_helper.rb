@@ -1,14 +1,21 @@
 module SearchHelper
-  def search_autocomplete_source
+  def search_autocomplete_opts(term)
     return unless current_user
 
+    resources_results = [
+      groups_autocomplete(term),
+      projects_autocomplete(term)
+    ].flatten
+
+    generic_results = project_autocomplete + default_autocomplete + help_autocomplete
+    generic_results.select! { |result| result[:label] =~ Regexp.new(term, "i") }
+
     [
-      groups_autocomplete,
-      projects_autocomplete,
-      default_autocomplete,
-      project_autocomplete,
-      help_autocomplete
-    ].flatten.to_json
+      resources_results,
+      generic_results
+    ].flatten.uniq do |item|
+      item[:label]
+    end
   end
 
   private
@@ -41,7 +48,7 @@ module SearchHelper
   # Autocomplete results for the current project, if it's defined
   def project_autocomplete
     if @project && @project.repository.exists? && @project.repository.root_ref
-      prefix = simple_sanitize(@project.name_with_namespace)
+      prefix = search_result_sanitize(@project.name_with_namespace)
       ref    = @ref || @project.repository.root_ref
 
       [
@@ -63,16 +70,26 @@ module SearchHelper
   end
 
   # Autocomplete results for the current user's groups
-  def groups_autocomplete
-    current_user.authorized_groups.map do |group|
-      { label: "group: #{simple_sanitize(group.name)}", url: group_path(group) }
+  def groups_autocomplete(term, limit = 5)
+    current_user.authorized_groups.search(term).limit(limit).map do |group|
+      {
+        label: "group: #{search_result_sanitize(group.name)}",
+        url: group_path(group)
+      }
     end
   end
 
   # Autocomplete results for the current user's projects
-  def projects_autocomplete
-    current_user.authorized_projects.map do |p|
-      { label: "project: #{simple_sanitize(p.name_with_namespace)}", url: project_path(p) }
+  def projects_autocomplete(term, limit = 5)
+    Project.accessible_to(current_user).search_by_title(term).non_archived.limit(limit).map do |p|
+      {
+        label: "project: #{search_result_sanitize(p.name_with_namespace)}",
+        url: project_path(p)
+      }
     end
+  end
+
+  def search_result_sanitize(str)
+    Sanitize.clean(str)
   end
 end

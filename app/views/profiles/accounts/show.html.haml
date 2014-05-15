@@ -23,8 +23,9 @@
 
           %p.cgray
             - if current_user.private_token
-              = text_field_tag "token", current_user.private_token, class: "input-xlarge input-xpadding pull-left"
-              = f.submit 'Reset', confirm: "Are you sure?", class: "btn btn-primary btn-build-token prepend-left-10"
+              = text_field_tag "token", current_user.private_token, class: "form-control"
+              %div
+                = f.submit 'Reset', data: { confirm: "Are you sure?" }, class: "btn btn-primary btn-build-token"
             - else
               %span You don`t have one yet. Click generate to fix it.
               = f.submit 'Generate', class: "btn success btn-build-token"
@@ -47,9 +48,12 @@
         %p
           Changing your username will change path to all personal projects!
         %div
-          = f.text_field :username, required: true, class: 'input-xlarge input-xpadding'
+          = f.text_field :username, required: true, class: 'form-control'
           &nbsp;
-          %span.loading-gif.hide= image_tag "ajax_loader.gif"
+        .loading-gif.hide
+          %p
+            %i.icon-spinner.icon-spin
+            Saving new username
         %p.light
           = user_url(@user)
         %div
@@ -70,4 +74,4 @@
             %li
               The following groups will be abandoned. You should transfer or remove them:
               %strong #{current_user.solo_owned_groups.map(&:name).join(', ')}
-        = link_to 'Delete account', user_registration_path, confirm: "REMOVE #{current_user.name}? Are you sure?", method: :delete, class: "btn btn-remove"
+        = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"

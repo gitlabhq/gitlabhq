@@ -1,7 +1,7 @@
 module NotesHelper
    # Helps to distinguish e.g. commit notes in mr notes list
   def note_for_main_target?(note)
-    (@target_type.camelize == note.noteable_type && !note.for_diff_line?)
+    (@noteable.class.name == note.noteable_type && !note.for_diff_line?)
   end
 
   def note_target_fields
@@ -17,22 +17,29 @@ module NotesHelper
 
   def link_to_merge_request_diff_line_note(note)
     if note.for_merge_request_diff_line? and note.diff
-      link_to "#{note.diff_file_name}:L#{note.diff_new_line}", diffs_project_merge_request_path(note.project, note.noteable_id, anchor: note.line_code)
+      link_to "#{note.diff_file_name}:L#{note.diff_new_line}", diffs_project_merge_request_path(note.project, note.noteable, anchor: note.line_code)
     end
-  end
-
-  def loading_more_notes?
-    params[:loading_more].present?
-  end
-
-  def loading_new_notes?
-    params[:loading_new].present?
   end
 
   def note_timestamp(note)
     # Shows the created at time and the updated at time if different
-    ts = "#{time_ago_in_words(note.created_at)} ago"
-    ts << content_tag(:small, " (Edited #{time_ago_in_words(note.updated_at)} ago)") if note.updated_at != note.created_at
+    ts = "#{time_ago_with_tooltip(note.created_at, 'bottom', 'note_created_ago')}"
+    if note.updated_at != note.created_at
+      ts << capture_haml do
+        haml_tag :small do
+          haml_concat " (Edited #{time_ago_with_tooltip(note.updated_at, 'bottom', 'note_edited_ago')})"
+        end
+      end
+    end
     ts.html_safe
+  end
+
+  def noteable_json(noteable)
+    {
+      id: noteable.id,
+      class: noteable.class.name,
+      resources: noteable.class.table_name,
+      project_id: noteable.project.id,
+    }.to_json
   end
 end

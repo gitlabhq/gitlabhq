@@ -1,7 +1,6 @@
 .update-notifications {
-  margin-bottom: 0;
-  label {
-    margin-bottom: 0;
+  .radio-inline {
+    margin-right: 9%;
   }
 }
 
@@ -17,7 +16,7 @@
 
     legend {
       border: none;
-      margin: 0;
+      margin-bottom: 10px;
     }
   }
 }
@@ -42,3 +41,87 @@
   margin-right: 12px;
 }
 
+.profile-avatar-form-option {
+  hr {
+    margin: 10px 0;
+  }
+}
+
+.user-show-username {
+  font-weight: 200;
+  color: #666;
+}
+
+/*
+ * Appearance settings
+ *
+ */
+.themes_opts {
+  label {
+    margin-right: 20px;
+    text-align: center;
+
+    .prev {
+      @extend .thumbnail;
+      height: 30px;
+      width: 175px;
+      margin-bottom: 10px;
+
+      &.classic {
+        background: #31363e;
+      }
+
+      &.default {
+        background: #f1f1f1;
+      }
+
+      &.modern {
+        background: #009871;
+      }
+
+      &.gray {
+        background: #373737;
+      }
+
+      &.violet {
+        background: #548;
+      }
+    }
+  }
+}
+
+.code_highlight_opts {
+  margin-top: 10px;
+
+  label {
+    margin-right: 20px;
+    text-align: center;
+
+    .prev {
+      @extend .thumbnail;
+      height: 151px;
+      width: 220px;
+      margin-bottom: 10px;
+    }
+  }
+}
+
+.profile-groups-avatars {
+  margin: 0 5px 10px 0;
+
+  img {
+    width: 50px;
+    height: 50px;
+  }
+}
+
+.global-notifications-form .level-title {
+  font-size: 15px;
+  color: #333;
+  font-weight: bold;
+}
+
+.notification-icon-holder {
+  width: 20px;
+  float: left;
+}

@@ -55,3 +55,24 @@ Feature: Project Issues
     And I fill in issue search with ".3"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
+
+  # Markdown
+
+  Scenario: Headers inside the description should have ids generated for them.
+    Given I visit issue page "Release 0.4"
+    Then Header "Description header" should have correct id and link
+
+  @javascript
+  Scenario: Headers inside comments should not have ids generated for them.
+    Given I visit issue page "Release 0.4"
+    And I leave a comment with a header containing "Comment with a header"
+    Then The comment with the header should not have an ID
+
+  Scenario: Issues on empty project
+    Given empty project "Empty Project"
+    When I visit empty project page
+    And I see empty project details with ssh clone info
+    When I visit empty project's issues page
+    Given I click link "New Issue"
+    And I submit new issue "500 error on profile"
+    Then I should see issue "500 error on profile"

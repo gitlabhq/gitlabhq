@@ -3,6 +3,7 @@ namespace :gitlab do
   task check: %w{gitlab:env:check
                  gitlab:gitlab_shell:check
                  gitlab:sidekiq:check
+                 gitlab:ldap:check
                  gitlab:app:check}
 
 
@@ -16,6 +17,7 @@ namespace :gitlab do
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
+      check_orphaned_users_groups
       check_gitlab_config_exists
       check_gitlab_config_not_outdated
       check_log_writable
@@ -64,6 +66,7 @@ namespace :gitlab do
         puts "no".green
       else
         puts "yes".red
+        puts "Please fix this by removing the SQLite entry from the database.yml".blue
         for_more_information(
           "https://github.com/gitlabhq/gitlabhq/wiki/Migrate-from-SQLite-to-MySQL",
           see_database_guide
@@ -167,7 +170,7 @@ namespace :gitlab do
     def check_migrations_are_up
       print "All migrations up? ... "
 
-      migration_status =  `bundle exec rake db:migrate:status`
+      migration_status, _ = Gitlab::Popen.popen(%W(bundle exec rake db:migrate:status))
 
       unless migration_status =~ /down\s+\d{14}/
         puts "yes".green
@@ -177,6 +180,19 @@ namespace :gitlab do
           sudo_gitlab("bundle exec rake db:migrate RAILS_ENV=production")
         )
         fix_and_rerun
+      end
+    end
+
+    def check_orphaned_users_groups
+      print "Database contains orphaned UsersGroups? ... "
+      if UsersGroup.where("user_id not in (select id from users)").count > 0
+        puts "yes".red
+        try_fixing_it(
+          "You can delete the orphaned records using something along the lines of:",
+          sudo_gitlab("bundle exec rails runner -e production 'UsersGroup.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
+        )
+      else
+        puts "no".green
       end
     end
 
@@ -254,7 +270,7 @@ namespace :gitlab do
     def check_redis_version
       print "Redis version >= 2.0.0? ... "
 
-      if run_and_match("redis-cli --version", /redis-cli 2.\d.\d/)
+      if run_and_match(%W(redis-cli --version), /redis-cli 2.\d.\d/)
         puts "yes".green
       else
         puts "no".red
@@ -278,8 +294,6 @@ namespace :gitlab do
       start_checking "Environment"
 
       check_gitlab_git_config
-      check_python2_exists
-      check_python2_version
 
       finished_checking "Environment"
     end
@@ -296,7 +310,7 @@ namespace :gitlab do
         "user.email" => Gitlab.config.gitlab.email_from
       }
       correct_options = options.map do |name, value|
-        run("git config --global --get #{name}").try(:squish) == value
+        run(%W(git config --global --get #{name})).try(:squish) == value
       end
 
       if correct_options.all?
@@ -309,52 +323,6 @@ namespace :gitlab do
         )
         for_more_information(
           see_installation_guide_section "GitLab"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_python2_exists
-      print "Has python2? ... "
-
-      # Python prints its version to STDERR
-      # so we can't just use run("python2 --version")
-      if run_and_match("which python2", /python2$/)
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Make sure you have Python 2.5+ installed",
-          "Link it to python2"
-        )
-        for_more_information(
-          see_installation_guide_section "Packages / Dependencies"
-        )
-        fix_and_rerun
-      end
-    end
-
-    def check_python2_version
-      print "python2 is supported version? ... "
-
-      # Python prints its version to STDERR
-      # so we can't just use run("python2 --version")
-
-      unless run_and_match("which python2", /python2$/)
-        puts "can't check because of previous errors".magenta
-        return
-      end
-
-      if `python2 --version 2>&1` =~ /2\.[567]\.\d/
-        puts "yes".green
-      else
-        puts "no".red
-        try_fixing_it(
-          "Make sure you have Python 2.5+ installed",
-          "Link it to python2"
-        )
-        for_more_information(
-          see_installation_guide_section "Packages / Dependencies"
         )
         fix_and_rerun
       end
@@ -374,6 +342,7 @@ namespace :gitlab do
       check_repo_base_is_not_symlink
       check_repo_base_user_and_group
       check_repo_base_permissions
+      check_satellites_permissions
       check_update_hook_is_up_to_date
       check_repos_update_hooks_is_link
       check_gitlab_shell_self_test
@@ -475,6 +444,29 @@ namespace :gitlab do
       end
     end
 
+    def check_satellites_permissions
+      print "Satellites access is drwxr-x---? ... "
+
+      satellites_path = Gitlab.config.satellites.path
+      unless File.exists?(satellites_path)
+        puts "can't check because of previous errors".magenta
+        return
+      end
+
+      if File.stat(satellites_path).mode.to_s(8).ends_with?("0750")
+        puts "yes".green
+      else
+        puts "no".red
+        try_fixing_it(
+          "sudo chmod u+rwx,g+rx,o-rwx #{satellites_path}",
+        )
+        for_more_information(
+          see_installation_guide_section "GitLab"
+        )
+        fix_and_rerun
+      end
+    end
+
     def check_repo_base_user_and_group
       gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
       gitlab_shell_owner_group = Gitlab.config.gitlab_shell.owner_group
@@ -536,7 +528,7 @@ namespace :gitlab do
               "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
             )
             for_more_information(
-              "#{gitlab_shell_user_home}/gitlab-shell/support/rewrite-hooks.sh"
+              "#{gitlab_shell_path}/support/rewrite-hooks.sh"
             )
             fix_and_rerun
             next
@@ -560,7 +552,7 @@ namespace :gitlab do
     end
 
     def check_gitlab_shell_self_test
-      gitlab_shell_repo_base = File.expand_path('gitlab-shell', gitlab_shell_user_home)
+      gitlab_shell_repo_base = gitlab_shell_path
       check_cmd = File.expand_path('bin/check', gitlab_shell_repo_base)
       puts "Running #{check_cmd}"
       if system(check_cmd, chdir: gitlab_shell_repo_base)
@@ -606,15 +598,12 @@ namespace :gitlab do
     # Helper methods
     ########################
 
-    def gitlab_shell_user_home
-      File.expand_path("~#{Gitlab.config.gitlab_shell.ssh_user}")
+    def gitlab_shell_path
+      Gitlab.config.gitlab_shell.path
     end
 
     def gitlab_shell_version
-      gitlab_shell_version_file = "#{gitlab_shell_user_home}/gitlab-shell/VERSION"
-      if File.readable?(gitlab_shell_version_file)
-        File.read(gitlab_shell_version_file)
-      end
+      Gitlab::Shell.new.version
     end
 
     def has_gitlab_shell3?
@@ -678,10 +667,64 @@ namespace :gitlab do
     end
 
     def sidekiq_process_count
-      `ps ux`.scan(/sidekiq \d+\.\d+\.\d+/).count
+      ps_ux, _ = Gitlab::Popen.popen(%W(ps ux))
+      ps_ux.scan(/sidekiq \d+\.\d+\.\d+/).count
     end
   end
 
+  namespace :ldap do
+    task :check, [:limit] => :environment do |t, args|
+      # Only show up to 100 results because LDAP directories can be very big.
+      # This setting only affects the `rake gitlab:check` script.
+      args.with_defaults(limit: 100)
+      warn_user_is_not_gitlab
+      start_checking "LDAP"
+
+      if ldap_config.enabled
+        print_users(args.limit)
+      else
+        puts 'LDAP is disabled in config/gitlab.yml'
+      end
+
+      finished_checking "LDAP"
+    end
+
+    def print_users(limit)
+      puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
+      ldap.search(attributes: attributes, filter: filter, size: limit, return_result: false) do |entry|
+        puts "DN: #{entry.dn}\t#{ldap_config.uid}: #{entry[ldap_config.uid]}"
+      end
+    end
+
+    def attributes
+      [ldap_config.uid]
+    end
+
+    def filter
+      uid_filter = Net::LDAP::Filter.present?(ldap_config.uid)
+      if user_filter
+        Net::LDAP::Filter.join(uid_filter, user_filter)
+      else
+        uid_filter
+      end
+    end
+
+    def user_filter
+      if ldap_config['user_filter'] && ldap_config.user_filter.present?
+        Net::LDAP::Filter.construct(ldap_config.user_filter)
+      else
+        nil
+      end
+    end
+
+    def ldap
+      @ldap ||= OmniAuth::LDAP::Adaptor.new(ldap_config).connection
+    end
+
+    def ldap_config
+      @ldap_config ||= Gitlab.config.ldap
+    end
+  end
 
   # Helper methods
   ##########################
@@ -736,7 +779,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 7, 4)
+    required_version = Gitlab::VersionInfo.new(1, 9, 3)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
@@ -749,7 +792,7 @@ namespace :gitlab do
 
   def check_git_version
     required_version = Gitlab::VersionInfo.new(1, 7, 10)
-    current_version = Gitlab::VersionInfo.parse(run("#{Gitlab.config.git.bin_path} --version"))
+    current_version = Gitlab::VersionInfo.parse(run(%W(#{Gitlab.config.git.bin_path} --version)))
 
     puts "Your git bin path is \"#{Gitlab.config.git.bin_path}\""
     print "Git version >= #{required_version} ? ... "

@@ -28,8 +28,21 @@ module Gitlab
           }
 
           user = model.build_user(opts, as: :admin)
+          user.skip_confirmation!
+
+          # Services like twitter and github does not return email via oauth
+          # In this case we generate temporary email and force user to fill it later
+          if user.email.blank?
+            user.generate_tmp_oauth_email
+          elsif provider != "ldap"
+            # Google oauth returns email but dont return nickname
+            # So we use part of email as username for new user
+            # For LDAP, username is already set to the user's
+            # uid/userid/sAMAccountName.
+            user.username = email.match(/^[^@]*/)[0]
+          end
+
           user.save!
-          user.confirm!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
           if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
@@ -54,11 +67,15 @@ module Gitlab
         end
 
         def name
-          auth.info.name.to_s.force_encoding("utf-8")
+          if auth.info.name.nil?
+            "#{auth.info.first_name} #{auth.info.last_name}".force_encoding('utf-8')
+          else
+            auth.info.name.to_s.force_encoding('utf-8')
+          end
         end
 
         def username
-          email.match(/^[^@]*/)[0]
+          auth.info.nickname.to_s.force_encoding("utf-8")
         end
 
         def provider

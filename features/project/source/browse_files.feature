@@ -20,8 +20,22 @@ Feature: Project Browse files
     And I click link "raw"
     Then I should see raw file content
 
+  Scenario: I can create file
+    Given I click on "new file" link in repo
+    Then I can see new file page
+
   @javascript
   Scenario: I can edit file
     Given I click on "Gemfile.lock" file in repo
     And I click button "edit"
     Then I can edit code
+
+  @javascript
+  Scenario: I can see editing preview
+    Given I click on "Gemfile.lock" file in repo
+    And I click button "edit"
+    And I edit code
+    And I click link "Diff"
+    Then I see diff
+
+

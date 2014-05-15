@@ -5,8 +5,8 @@
 #  id                     :integer          not null, primary key
 #  forked_to_project_id   :integer          not null
 #  forked_from_project_id :integer          not null
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
+#  created_at             :datetime
+#  updated_at             :datetime
 #
 
 require 'spec_helper'
@@ -58,8 +58,8 @@ describe :forked_from_project do
 end
 
 def fork_project(from_project, user)
-  context = Projects::ForkContext.new(from_project, user)
-  shell = mock("gitlab_shell")
+  context = Projects::ForkService.new(from_project, user)
+  shell = double("gitlab_shell")
   shell.stub(fork_repository: true)
   context.stub(gitlab_shell: shell)
   context.execute

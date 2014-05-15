@@ -4,10 +4,10 @@
 
 
 %p.light
-  Only merge requests created by you or assigned to you are listed here.
+  List all merge requests from all projects you have access to.
 %hr
 .row
-  .span3
+  .col-md-3
     = render 'shared/filter', entity: 'merge_request'
-  .span9
+  .col-md-9
     = render 'shared/merge_requests'

@@ -37,12 +37,12 @@
 
   &.event-inline {
     .avatar {
-      width: 16px;
-      height: 16px;
+      position: relative;
+      top: -2px;
     }
   }
 
-  padding: 14px 0px;
+  padding: 12px 0px;
   border-bottom: 1px solid #eee;
   .event-title {
     color: #333;
@@ -63,6 +63,10 @@
       color: #666;
       margin-top: 5px;
 
+      .md {
+        font-size: 13px;
+      }
+
       pre {
         border: none;
         background: #f9f9f9;
@@ -75,6 +79,7 @@
         margin-top: 4px;
         margin-left: 0px;
         max-width: 200px;
+        float: none;
       }
 
       p:last-child {
@@ -112,6 +117,7 @@
       &.commit {
         background: transparent;
         padding: 3px;
+        padding-left: 0;
         border: none;
         color: #666;
         .commit-row-title {
@@ -121,6 +127,7 @@
       &.commits-stat {
         display: block;
         padding: 3px;
+        padding-left: 0;
 
         &:hover {
           background: none;
@@ -147,7 +154,7 @@
       float: left;
       padding: 9px 6px;
       font-size: 18px;
-      width: 26px;
+      width: 40px;
       @include border-radius(3px);
     }
 

@@ -8,15 +8,21 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "3.2.15"
+gem "rails", "~> 4.0.0"
+
+gem "protected_attributes"
+gem 'rails-observers'
+
+# Default values for AR models
+gem "default_value_for", "~> 3.0.0"
 
 # Supported DBs
 gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise", '~> 2.2'
-gem "devise-async"
+gem "devise", '3.0.4'
+gem "devise-async", '0.8.0'
 gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
@@ -24,26 +30,28 @@ gem 'omniauth-github'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", "~> 3.0.0.rc2"
+gem "gitlab_git", '~> 5.8'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
-gem 'gitlab-grack', '~> 1.0.1', require: 'grack'
+gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.0.3', require: "omniauth-ldap"
-
-# Syntax highlighter
-gem "gitlab-pygments.rb", '~> 0.3.2', require: 'pygments.rb'
+gem 'gitlab_omniauth-ldap', '1.0.4', require: "omniauth-ldap"
 
 # Git Wiki
-gem "gitlab-gollum-lib", "~> 1.0.1", require: 'gollum-lib'
+gem 'gollum-lib', '~> 3.0.0'
 
 # Language detection
-gem "github-linguist", require: "linguist"
+gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
 
 # API
-gem "grape", "~> 0.4.1"
-gem "grape-entity", "~> 0.3.0"
+gem "grape", "~> 0.6.1"
+# Replace with rubygems when nesteted entities get released
+gem "grape-entity", "~> 0.4.2"
+gem 'rack-cors', require: 'rack/cors'
+
+# Email validation
+gem "email_validator", "~> 1.4.0", :require => 'email_validator/strict'
 
 # Format dates and times
 # based on human-friendly examples
@@ -53,7 +61,7 @@ gem "stamp"
 gem 'enumerize'
 
 # Pagination
-gem "kaminari", "~> 0.14.1"
+gem "kaminari", "~> 0.15.1"
 
 # HAML
 gem "haml-rails"
@@ -62,7 +70,8 @@ gem "haml-rails"
 gem "carrierwave"
 
 # for aws storage
-gem "fog", "~> 1.3.1", group: :aws
+gem "fog", "~> 1.14", group: :aws
+gem "unf", group: :aws
 
 # Authorization
 gem "six"
@@ -72,13 +81,19 @@ gem "seed-fu"
 
 # Markdown to HTML
 gem "redcarpet",     "~> 2.2.2"
-gem "github-markup", "~> 0.7.4", require: 'github/markup'
+gem "github-markup"
+
+# Diffs
+gem 'diffy', '~> 3.0.3'
 
 # Asciidoc to HTML
 gem  "asciidoctor"
 
 # Application server
-gem "unicorn", '~> 4.6.3', group: :unicorn
+group :unicorn do
+  gem "unicorn", '~> 4.6.3'
+  gem 'unicorn-worker-killer'
+end
 
 # State machine
 gem "state_machine"
@@ -89,7 +104,7 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq'
+gem 'sidekiq', '2.17.0'
 
 # HTTP requests
 gem "httparty"
@@ -102,6 +117,7 @@ gem 'settingslogic'
 
 # Misc
 gem "foreman"
+gem 'version_sorter'
 
 # Cache
 gem "redis-rails"
@@ -110,10 +126,16 @@ gem "redis-rails"
 gem 'tinder', '~> 1.9.2'
 
 # HipChat integration
-gem "hipchat", "~> 0.9.0"
+gem "hipchat", "~> 0.14.0"
 
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"
+
+# Gemnasium integration
+gem "gemnasium-gitlab-service", "~> 0.2"
+
+# Slack integration
+gem "slack-notifier", "~> 0.3.2"
 
 # d3
 gem "d3_rails", "~> 3.1.4"
@@ -122,37 +144,37 @@ gem "d3_rails", "~> 3.1.4"
 gem "underscore-rails", "~> 1.4.4"
 
 # Sanitize user input
-gem "sanitize"
+gem "sanitize", '~> 2.0'
 
 # Protect against bruteforcing
 gem "rack-attack"
 
-group :assets do
-  gem "sass-rails"
-  gem "coffee-rails"
-  gem "uglifier"
-  gem "therubyracer"
-  gem 'turbolinks'
-  gem 'jquery-turbolinks'
+# Ace editor
+gem 'ace-rails-ap'
 
-  gem 'chosen-rails',     "1.0.0"
-  gem 'select2-rails'
-  gem 'jquery-atwho-rails', "0.3.0"
-  gem "jquery-rails",     "2.1.3"
-  gem "jquery-ui-rails",  "2.0.2"
-  gem "modernizr",        "2.6.2"
-  gem "raphael-rails", "~> 2.1.2"
-  gem 'bootstrap-sass'
-  gem "font-awesome-rails"
-  gem "gemoji", "~> 1.2.1", require: 'emoji/railtie'
-  gem "gon"
-end
+gem "sass-rails", '~> 4.0.2'
+gem "coffee-rails"
+gem "uglifier"
+gem "therubyracer"
+gem 'turbolinks'
+gem 'jquery-turbolinks'
+
+gem 'select2-rails'
+gem 'jquery-atwho-rails', "~> 0.3.3"
+gem "jquery-rails"
+gem "jquery-ui-rails"
+gem "raphael-rails", "~> 2.1.2"
+gem 'bootstrap-sass', '~> 3.0'
+gem "font-awesome-rails", '~> 3.2'
+gem "gitlab_emoji", "~> 0.0.1.1"
+gem "gon", '~> 5.0.0'
+gem 'nprogress-rails'
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"
   gem "letter_opener"
   gem 'quiet_assets', '~> 1.0.1'
-  gem 'rack-mini-profiler'
+  gem 'rack-mini-profiler', require: false
 
   # Better errors handler
   gem 'better_errors'
@@ -169,7 +191,7 @@ end
 
 group :development, :test do
   gem 'coveralls', require: false
-  gem 'rails-dev-tweaks'
+  # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"
   gem "capybara"
@@ -197,8 +219,11 @@ group :development, :test do
   # PhantomJS driver for Capybara
   gem 'poltergeist', '~> 1.4.1'
 
-  gem 'spork', '~> 1.0rc'
-  gem 'jasmine'
+  gem 'jasmine', '2.0.0.rc5'
+
+  gem "spring", '1.1.1'
+  gem "spring-commands-rspec", '1.0.1'
+  gem "spring-commands-spinach", '1.0.0'
 end
 
 group :test do

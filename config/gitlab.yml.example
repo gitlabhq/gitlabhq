@@ -14,18 +14,18 @@ production: &base
 
   ## GitLab settings
   gitlab:
-    ## Web server settings
+    ## Web server settings (note: host is the FQDN, do not include http://)
     host: localhost
     port: 80
     https: false
 
-    # Uncomment and customize the last line to run in a non-root path
-    # WARNING: This feature is known to work, but unsupported
-    # Note that three settings need to be changed for this to work.
-    # 1) In your application.rb file: config.relative_url_root = "/gitlab"
-    # 2) In your gitlab.yml file: relative_url_root: /gitlab
-    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-    #
+    # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
+    # (you'd obviously need to replace ssh.host_example.com with your own host).
+    # Otherwise, ssh host will be set to the `host:` value above
+    # ssh_host: ssh.host_example.com
+
+    # WARNING: See config/application.rb under "Relative url support" for the list of
+    # other files that need to be changed for relative url support
     # relative_url_root: /gitlab
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
@@ -52,14 +52,22 @@ production: &base
 
 
     ## Users management
-    # default: false - Account passwords are not sent via the email if signup is enabled. 
+    # default: false - Account passwords are not sent via the email if signup is enabled.
     # signup_enabled: true
+    #
+    # default: true - If set to false, standard login form won't be shown on the sign-in page
+    # signin_enabled: false
+
+
+    # Restrict setting visibility levels for non-admin users.
+    # The default is to allow all levels.
+    #restricted_visibility_levels: [ "public" ]
 
     ## Automatic issue closing
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
-    # This  happends when the commit is pushed or merged into the default branch of a project.
+    # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
-    # issue_closing_pattern: ([Cc]loses|[Ff]ixes) +#\d+
+    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)'
 
     ## Default project features settings
     default_projects_features:
@@ -68,7 +76,12 @@ production: &base
       wiki: true
       wall: false
       snippets: false
-      public: false
+      visibility_level: "private"  # can be "private" | "internal" | "public"
+
+    ## Repository downloads directory
+    # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
+    # The default is 'tmp/repositories' relative to the root of the Rails app.
+    # repository_downloads_path: tmp/repositories
 
   ## External issues trackers
   issues_tracker:
@@ -87,12 +100,12 @@ production: &base
     #   ##  :id                - Issue id (from commit messages)
     #   issues_url: "http://redmine.sample/issues/:id"
     #
-    #   ## If not nil, linkis to creating new issues will be replaced with this
+    #   ## If not nil, links to creating new issues will be replaced with this
     #   ## Use placeholders:
     #   ##  :project_id        - GitLab project identifier
     #   ##  :issues_tracker_id - Project Name or Id in external issue tracker
     #   new_issue_url: "http://redmine.sample/projects/:issues_tracker_id/issues/new"
-    # 
+    #
     # jira:
     #   title: "Atlassian Jira"
     #   project_url: "http://jira.sample/issues/?jql=project=:issues_tracker_id"
@@ -102,6 +115,7 @@ production: &base
   ## Gravatar
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
+    # gravatar urls: possible placeholders: %{hash} %{size} %{email}
     # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
     # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
 
@@ -110,16 +124,40 @@ production: &base
   # ==========================
 
   ## LDAP settings
+  # You can inspect a sample of the LDAP users with login access by running:
+  #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
     host: '_your_ldap_server'
-    base: '_the_base_where_you_search_for_users'
     port: 636
     uid: 'sAMAccountName'
-    method: 'ssl' # "ssl" or "plain"
+    method: 'ssl' # "tls" or "ssl" or "plain"
     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
     password: '_the_password_of_the_bind_user'
+    # If allow_username_or_email_login is enabled, GitLab will ignore everything
+    # after the first '@' in the LDAP username submitted by the user on login.
+    #
+    # Example:
+    # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
+    # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
+    #
+    # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+    # disable this setting, because the userPrincipalName contains an '@'.
     allow_username_or_email_login: true
+
+    # Base where we can search for users
+    #
+    #   Ex. ou=People,dc=gitlab,dc=example
+    #
+    base: ''
+
+    # Filter LDAP users
+    #
+    #   Format: RFC 4515
+    #   Ex. (employeeType=developer)
+    #
+    user_filter: ''
+
 
   ## OmniAuth settings
   omniauth:
@@ -136,9 +174,10 @@ production: &base
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
-    # see https://github.com/gitlabhq/gitlabhq/wiki/Using-Custom-Omniauth-Providers
+    # see https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations
     # The 'app_id' and 'app_secret' parameters are always passed as the first two
     # arguments, followed by optional 'args' which can be either a hash or an array.
+    # Documentation for this is available at http://doc.gitlab.com/ce/integration/omniauth.html
     providers:
       # - { name: 'google_oauth2', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET',
@@ -146,7 +185,8 @@ production: &base
       # - { name: 'twitter', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET'}
       # - { name: 'github', app_id: 'YOUR APP ID',
-      #     app_secret: 'YOUR APP SECRET' }
+      #     app_secret: 'YOUR APP SECRET',
+      #     args: { scope: 'user:email' } }
 
 
 
@@ -166,6 +206,8 @@ production: &base
 
   ## GitLab Shell settings
   gitlab_shell:
+    path: /home/git/gitlab-shell/
+
     # REPOS_PATH MUST NOT BE A SYMLINK!!!
     repos_path: /home/git/repositories/
     hooks_path: /home/git/gitlab-shell/hooks/
@@ -182,7 +224,8 @@ production: &base
   # Use the default values unless you really know what you are doing
   git:
     bin_path: /usr/bin/git
-    # Max size of a git object (e.g. a commit), in bytes
+    # The next value is the maximum memory size grit can use
+    # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
     max_size: 5242880 # 5.megabytes
     # Git timeout to read a commit, in seconds
@@ -196,6 +239,10 @@ production: &base
     ## Google analytics. Uncomment if you want it
     # google_analytics_id: '_your_tracking_id'
 
+    ## Piwik analytics.
+    # piwik_url: '_your_piwik_url'
+    # piwik_site_id: '_your_piwik_site_id'
+
     ## Text under sign-in page (Markdown enabled)
     # sign_in_text: |
     #   ![Company Logo](http://www.companydomain.com/logo.png)
@@ -206,6 +253,11 @@ development:
 
 test:
   <<: *base
+  gravatar:
+    enabled: true
+  gitlab:
+    host: localhost
+    port: 80
   issues_tracker:
     redmine:
       title: "Redmine"

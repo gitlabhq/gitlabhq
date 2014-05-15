@@ -5,13 +5,13 @@
     = @milestone.expires_at
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
-      = link_to edit_project_milestone_path(@project, @milestone), class: "btn grouped" do
+      = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
         %i.icon-edit
         Edit
       - if @milestone.active?
-        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove"
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove btn-grouped"
       - else
-        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn"
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped"
 
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success
@@ -22,17 +22,20 @@
     &larr; To milestones list
 
 
-.ui-box.ui-box-show
-  .ui-box-head
-    %h4.box-title
+.issue-box{ class: issue_box_class(@milestone) }
+  .state
+    %span.state-label
       - if @milestone.closed?
-        .state-label.state-label-red Closed
+        Closed
       - elsif @milestone.expired?
-        .state-label.state-label-red Expired
+        Expired
+      - else
+        Open
 
-      = gfm escape_once(@milestone.title)
+  %h4.title
+    = gfm escape_once(@milestone.title)
 
-  .ui-box-body
+  .context
     %p
       Progress:
       #{@milestone.closed_items_count} closed
@@ -40,14 +43,13 @@
       #{@milestone.open_items_count} open
       %span.pull-right= @milestone.expires_at
     .progress.progress-info
-      .bar{style: "width: #{@milestone.percent_complete}%;"}
-
+      .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
   - if @milestone.description.present?
-    .ui-box-bottom
-      = preserve do
-        = markdown @milestone.description
-
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
 
 %ul.nav.nav-tabs
   %li.active
@@ -64,30 +66,30 @@
       %span.badge= @users.count
 
   .pull-right
-    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small grouped", title: "New Issue" do
+    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn btn-small btn-grouped", title: "New Issue" do
       %i.icon-plus
       New Issue
-    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn btn-small edit-milestone-link grouped"
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn btn-small edit-milestone-link btn-grouped"
 
 .tab-content
   .tab-pane.active#tab-issues
     .row
-      .span4
+      .col-md-4
         = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
-      .span4
+      .col-md-4
         = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
-      .span4
+      .col-md-4
         = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
 
   .tab-pane#tab-merge-requests
     .row
-      .span6
+      .col-md-6
         .ui-box
           .title Open
           %ul.well-list
             - @merge_requests.opened.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
-      .span6
+      .col-md-6
         .ui-box
           .title Closed
           %ul.well-list
@@ -98,7 +100,7 @@
     %ul.bordered-list
       - @users.each do |user|
         %li
-          = link_to user, title: user.name, class: "dark" do
+          = link_to user, title: user.name, class: "darken" do
             = image_tag avatar_icon(user.email, 32), class: "avatar s32"
             %strong= truncate(user.name, lenght: 40)
             %br

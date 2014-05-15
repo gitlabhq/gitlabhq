@@ -3,56 +3,49 @@
 %p.light
   GitLab uses the email specified in your profile for notifications
 %hr
-.alert.alert-info
-  %p
-    %i.icon-circle.cred
-    %strong Disabled
-    &ndash; You will not get any notifications via email
-  %p
-    %i.icon-circle.cblue
-    %strong Participating
-    &ndash; You will only receive notifications from related resources (e.g. from your commits or assigned issues)
-  %p
-    %i.icon-circle.cgreen
-    %strong Watch
-    &ndash; You will receive all notifications from projects in which you participate
+= form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications form-horizontal global-notifications-form' do
+  = hidden_field_tag :notification_type, 'global'
 
-.row
-  .span4
-    %h4
-      = notification_icon(@notification)
-      Global setting
-  .span7
-    = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
-      = hidden_field_tag :notification_type, 'global'
-
-      = label_tag do
+  = label_tag :notification_level, 'Notification level', class: 'control-label'
+  .col-sm-10
+    .radio
+      = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_DISABLED, @notification.disabled?, class: 'trigger-submit'
-        %span Disabled
+        .level-title
+          Disabled
+        %p You will not get any notifications via email
 
-      = label_tag do
+    .radio
+      = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_PARTICIPATING, @notification.participating?, class: 'trigger-submit'
-        %span Participating
+        .level-title
+          Participating
+        %p You will only receive notifications from related resources (e.g. from your commits or assigned issues)
 
-      = label_tag do
+    .radio
+      = label_tag nil, class: '' do
         = radio_button_tag :notification_level, Notification::N_WATCH, @notification.watch?, class: 'trigger-submit'
-        %span Watch
+        .level-title
+          Watch
+        %p You will receive all notifications from projects in which you participate
 
-%br
-= link_to '#', class: 'js-toggle-visibility-link' do
-  %span.btn.btn-tiny
-    %i.icon-chevron-down
-    %span Advanced notifications settings
-.js-toggle-visibility-container.hide
+.clearfix
   %hr
-  %h4 Groups:
-  %ul.bordered-list
-    - @users_groups.each do |users_group|
-      - notification = Notification.new(users_group)
-      = render 'settings', type: 'group', membership: users_group, notification: notification
+  %p
+    You can also specify notification level per group or per project
+    %br
+    By default all projects and groups uses notification level set above
+.row.all-notifications
+  .col-md-6
+    %h4 Groups:
+    %ul.bordered-list
+      - @users_groups.each do |users_group|
+        - notification = Notification.new(users_group)
+        = render 'settings', type: 'group', membership: users_group, notification: notification
 
-  %h4 Projects:
-  %ul.bordered-list
-    - @users_projects.each do |users_project|
-      - notification = Notification.new(users_project)
-      = render 'settings', type: 'project', membership: users_project, notification: notification
+  .col-md-6
+    %h4 Projects:
+    %ul.bordered-list
+      - @users_projects.each do |users_project|
+        - notification = Notification.new(users_project)
+        = render 'settings', type: 'project', membership: users_project, notification: notification

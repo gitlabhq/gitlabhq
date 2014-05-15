@@ -33,6 +33,12 @@ Gitlab::Application.configure do
   # See everything in the log (default is :info)
   # config.log_level = :debug
 
+  # Suppress 'Rendered template ...' messages in the log
+  # source: http://stackoverflow.com/a/16369363
+  %w{render_template render_partial render_collection}.each do |event|
+    ActiveSupport::Notifications.unsubscribe "#{event}.action_view"
+  end
+
   # Prepend all log lines with the following tags
   # config.log_tags = [ :subdomain, :uuid ]
 
@@ -47,7 +53,7 @@ Gitlab::Application.configure do
                else
                  "redis://localhost:6379"
                end
-  config.cache_store = :redis_store, resque_url
+  config.cache_store = :redis_store, resque_url, {namespace: 'cache:gitlab'}
 
   # Enable serving of images, stylesheets, and JavaScripts from an asset server
   # config.action_controller.asset_host = "http://assets.example.com"
@@ -80,4 +86,9 @@ Gitlab::Application.configure do
   # # }
   config.action_mailer.perform_deliveries = true
   config.action_mailer.raise_delivery_errors = true
+
+  config.eager_load = true
+  config.assets.js_compressor = :uglifier
+
+  config.allow_concurrency = false
 end

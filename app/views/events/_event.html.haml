@@ -1,10 +1,10 @@
 - if event.proper?
   .event-item{class: "#{event.body? ? "event-block" : "event-inline" }"}
     %span.cgray.pull-right
-      #{time_ago_in_words(event.created_at)} ago.
+      #{time_ago_with_tooltip(event.created_at)}
 
     = cache event do
-      = image_tag avatar_icon(event.author_email), class: "avatar s24", alt:''
+      = image_tag avatar_icon(event.author_email, 24), class: "avatar s24", alt:''
 
       - if event.push?
         = render "events/event/push", event: event

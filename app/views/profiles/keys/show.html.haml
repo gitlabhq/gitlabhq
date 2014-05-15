@@ -1,5 +1,5 @@
 .row
-  .span4
+  .col-md-4
     .ui-box
       .title
         SSH Key
@@ -11,7 +11,7 @@
           %span.light Created on:
           %strong= @key.created_at.stamp("Aug 21, 2011")
 
-  .span8
+  .col-md-8
     %p
       %span.light Fingerprint:
       %strong= @key.fingerprint
@@ -19,4 +19,4 @@
       = @key.key
 
 .pull-right
-  = link_to 'Remove', profile_key_path(@key), confirm: 'Are you sure?', method: :delete, class: "btn btn-remove delete-key"
+  = link_to 'Remove', profile_key_path(@key), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"

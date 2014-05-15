@@ -6,10 +6,14 @@ Gitlab::Application.routes.draw do
   # Search
   #
   get 'search' => "search#show"
+  get 'search/autocomplete' => "search#autocomplete", as: :search_autocomplete
 
   # API
   API::API.logger Rails.logger
   mount API::API => '/api'
+
+  # Get all keys of user
+  get ':username.keys' => 'profiles/keys#get_keys' , constraints: { username: /.*/ }
 
   constraint = lambda { |request| request.env["warden"].authenticate? and request.env['warden'].user.admin? }
   constraints constraint do
@@ -22,7 +26,7 @@ Gitlab::Application.routes.draw do
     project_root: Gitlab.config.gitlab_shell.repos_path,
     upload_pack:  Gitlab.config.gitlab_shell.upload_pack,
     receive_pack: Gitlab.config.gitlab_shell.receive_pack
-  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }
+  }), at: '/', constraints: lambda { |request| /[-\/\w\.]+\.git\//.match(request.path_info) }, via: [:get, :post]
 
   #
   # Help
@@ -86,13 +90,18 @@ Gitlab::Application.routes.draw do
       get :test
     end
 
+    resources :broadcast_messages, only: [:index, :create, :destroy]
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
-    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show]
+
+    resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
+      member do
+        put :transfer
+      end
+    end
+
     root to: "dashboard#index"
   end
-
-  get "errors/githost"
 
   #
   # Profile Area
@@ -115,15 +124,17 @@ Gitlab::Application.routes.draw do
         end
       end
       resources :keys
+      resources :emails, only: [:index, :create, :destroy]
       resources :groups, only: [:index] do
         member do
           delete :leave
         end
       end
+      resource :avatar, only: [:destroy]
     end
   end
 
-  match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }
+  match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
 
 
 
@@ -149,11 +160,14 @@ Gitlab::Application.routes.draw do
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
+    scope module: :groups do
+      resource :avatar, only: [:destroy]
+    end
   end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords}
 
   #
   # Project Area
@@ -162,20 +176,28 @@ Gitlab::Application.routes.draw do
     member do
       put :transfer
       post :fork
+      post :archive
+      post :unarchive
       get :autocomplete_sources
+      get :import
+      put :retry_import
     end
 
     scope module: :projects do
-      resources :blob,    only: [:show], constraints: {id: /.+/}
-      resources :raw,    only: [:show], constraints: {id: /.+/}
-      resources :tree,    only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
-      resources :edit_tree,    only: [:show, :update], constraints: {id: /.+/}, path: 'edit'
-      resources :commit,  only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
-      resources :commits, only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
-      resources :compare, only: [:index, :create]
-      resources :blame,   only: [:show], constraints: {id: /.+/}
+      resources :blob,      only: [:show, :destroy], constraints: {id: /.+/}
+      resources :raw,       only: [:show], constraints: {id: /.+/}
+      resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
+      resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
+        post :preview, on: :member
+      end
+      resources :new_tree,  only: [:show, :update], constraints: {id: /.+/}, path: 'new'
+      resources :commit,    only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
+      resources :commits,   only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
+      resources :compare,   only: [:index, :create]
+      resources :blame,     only: [:show], constraints: {id: /.+/}
       resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
-      resources :graphs, only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+      resources :graphs,    only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+
       match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
         resources :snippets, constraints: {id: /\d+/} do
@@ -184,7 +206,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-]+/} do
+      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-\/]+/} do
         collection do
           get :pages
           put ':id' => 'wikis#update'
@@ -205,7 +227,7 @@ Gitlab::Application.routes.draw do
       resource :repository, only: [:show] do
         member do
           get "stats"
-          get "archive"
+          get "archive", constraints: { format: Gitlab::Regex.archive_formats_regex }
         end
       end
 
@@ -251,7 +273,7 @@ Gitlab::Application.routes.draw do
       resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
         member do
           get :diffs
-          get :automerge
+          post :automerge
           get :automerge_check
           get :ci_status
         end
@@ -286,6 +308,7 @@ Gitlab::Application.routes.draw do
 
       resources :team_members, except: [:index, :edit], constraints: { id: /[a-zA-Z.\/0-9_\-#%+]+/ } do
         collection do
+          delete :leave
 
           # Used for import team
           # from another project
@@ -305,6 +328,8 @@ Gitlab::Application.routes.draw do
       end
     end
   end
+
+  get ':id' => "groups#show", constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
 
   root to: "dashboard#show"
 end

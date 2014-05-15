@@ -2,3 +2,9 @@
   - if @issue.valid?
     :plain
       $("##{dom_id(@issue)}").fadeOut();
+- elsif params[:issue_context]
+  $('.issue-box .context').effect('highlight');
+  - if @issue.milestone
+    $('.milestone-nav-link').replaceWith("<span class='milestone-nav-link'>| <span class='light'>Milestone</span> #{escape_javascript(link_to @issue.milestone.title, project_milestone_path(@issue.project, @issue.milestone))}</span>")
+  - else
+    $('.milestone-nav-link').html('')

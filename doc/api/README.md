@@ -1,5 +1,34 @@
 # GitLab API
 
+## Resources
+
++ [Users](users.md)
++ [Session](session.md)
++ [Projects](projects.md)
++ [Project Snippets](project_snippets.md)
++ [Repositories](repositories.md)
++ [Repository Files](repository_files.md)
++ [Commits](commits.md)
++ [Branches](branches.md)
++ [Merge Requests](merge_requests.md)
++ [Issues](issues.md)
++ [Milestones](milestones.md)
++ [Notes](notes.md) (comments)
++ [Deploy Keys](deploy_keys.md)
++ [System Hooks](system_hooks.md)
++ [Groups](groups.md)
+
+## Clients
+
++ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
++ [Laravel API Wrapper for GitLab CE](https://github.com/adamgoose/gitlab) - PHP / [Laravel](http://laravel.com)
++ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
++ [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
++ [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
++ [node-gitlab](https://github.com/moul/node-gitlab) - Node.js
+
+## Introduction
+
 All API requests require authentication. You need to pass a `private_token` parameter by url or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
 
 If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
@@ -103,6 +132,10 @@ When listing resources you can pass the following parameters:
 + `page` (default: `1`) - page number
 + `per_page` (default: `20`, max: `100`) - number of items to list per page
 
+[Link headers](http://www.w3.org/wiki/LinkHeader) are send back with each response.
+These have `rel` prev/next/first/last and contain the relevant url.
+Please use these instead of generating your own urls.
+
 ## id vs iid
 
 When you work with API you may notice two similar fields in api entites: id and iid. 
@@ -117,28 +150,3 @@ Issue
 
 So if you want to get issue with api you use `http://host/api/v3/.../issues/:id.json`
 But when you want to create a link to web page - use  `http:://host/project/issues/:iid.json`
-
-
-
-## Contents
-
-+ [Users](users.md)
-+ [Session](session.md)
-+ [Projects](projects.md)
-+ [Project Snippets](project_snippets.md)
-+ [Repositories](repositories.md)
-+ [Merge Requests](merge_requests.md)
-+ [Issues](issues.md)
-+ [Milestones](milestones.md)
-+ [Notes](notes.md)
-+ [Deploy Keys](deploy_keys.md)
-+ [System Hooks](system_hooks.md)
-+ [Groups](groups.md)
-
-
-## Clients
-
-+ [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
-+ [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
-+ [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
-+ [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java

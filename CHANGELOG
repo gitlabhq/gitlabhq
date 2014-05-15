@@ -1,3 +1,194 @@
+v 6.9.0
+  - Store Rails cache data in the Redis `cache:gitlab` namespace
+  - Adjust MySQL limits for existing installations
+  - Add db index on project_id+iid column. This prevents duplicate on iid (During migration duplicates will be removed)
+  - Markdown preview or diff during editing via web editor (Evgeniy Sokovikov)
+  - Give the Rails cache its own Redis namespace
+  - Add ability to set different ssh host, if different from http/https
+  - Fix syntax highlighting for code comments blocks
+  - Improve comments loading logic
+  - Stop refreshing comments when the tab is hidden
+  - Improve issue and merge request mobile UI (Drew Blessing)
+  - Document how to convert a backup to PostgreSQL
+  - Fix locale bug in backup manager
+  - Fix can not automerge when MR description is too long
+  - Fix wiki backup skip bug
+  - Two Step MR creation process
+  - Remove unwanted files from satellite working directory with git clean -fdx
+  - Accept merge request via API (sponsored by O'Reilly Media)
+  - Add more access checks during API calls
+  - Block SSH access for 'disabled' Active Directory users
+
+v 6.8.0
+  - Ability to at mention users that are participating in issue and merge req. discussion
+  - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)
+  - Make user search case-insensitive (Christopher Arnold)
+  - Remove omniauth-ldap nickname bug workaround
+  - Drop all tables before restoring a Postgres backup
+  - Make the repository downloads path configurable
+  - Create branches via API (sponsored by O'Reilly Media)
+  - Changed permission of gitlab-satellites directory not to be world accessible
+  - Protected branch does not allow force push
+  - Fix popen bug in `rake gitlab:satellites:create`
+  - Disable connection reaping for MySQL
+  - Allow oauth signup without email for twitter and github
+  - Fix faulty namespace names that caused 500 on user creation
+  - Option to disable standard login
+  - Clean old created archives from repository downloads directory
+  - Fix download link for huge MR diffs
+  - Expose event and mergerequest timestamps in API
+  - Fix emails on push service when only one commit is pushed
+
+v 6.7.3
+  - Fix the merge notification email not being sent (Pierre de La Morinerie)
+  - Drop all tables before restoring a Postgres backup
+  - Remove yanked modernizr gem
+
+v 6.7.2
+  - Fix upgrader script
+
+v 6.7.1
+  - Fix GitLab CI integration
+
+v 6.7.0
+  - Increased the example Nginx client_max_body_size from 5MB to 20MB, consider updating it manually on existing installations
+  - Add support for Gemnasium as a Project Service (Olivier Gonzalez)
+  - Add edit file button to MergeRequest diff
+  - Public groups (Jason Hollingsworth)
+  - Cleaner headers in Notification Emails (Pierre de La Morinerie)
+  - Blob and tree gfm links to anchors work
+  - Piwik Integration (Sebastian Winkler)
+  - Show contribution guide link for new issue form (Jeroen van Baarsen)
+  - Fix CI status for merge requests from fork 
+  - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - New page load indicator that includes a spinner that scrolls with the page
+  - Converted all the help sections into markdown
+  - LDAP user filters
+  - Streamline the content of notification emails (Pierre de La Morinerie)
+  - Fixes a bug with group member administration (Matt DeTullio)
+  - Sort tag names using VersionSorter (Robert Speicher)
+  - Add GFM autocompletion for MergeRequests (Robert Speicher)
+  - Add webhook when a new tag is pushed (Jeroen van Baarsen)
+  - Add button for toggling inline comments in diff view
+  - Add retry feature for repository import
+  - Reuse the GitLab LDAP connection within each request
+  - Changed markdown new line behaviour to conform to markdown standards
+  - Fix global search
+  - Faster authorized_keys rebuilding in `rake gitlab:shell:setup` (requires gitlab-shell 1.8.5)
+  - Create and Update MR calls now support the description parameter (Greg Messner)
+  - Markdown relative links in the wiki link to wiki pages, markdown relative links in repositories link to files in the repository
+  - Added Slack service integration (Federico Ravasio)
+  - Better API responses for access_levels (sponsored by O'Reilly Media)
+  - Requires at least 2 unicorn workers
+  - Requires gitlab-shell v1.9+
+  - Replaced gemoji(due to closed licencing problem) with Phantom Open Emoji library(combined SIL Open Font License, MIT License and the CC 3.0 License)
+  - Fix `/:username.keys` response content type (Dmitry Medvinsky)
+
+v 6.6.5
+  - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
+  - Hide mr close button for comment form if merge request was closed or inline comment
+  - Adds ability to reopen closed merge request
+
+v 6.6.4
+  - Add missing html escape for highlighted code blocks in comments, issues
+
+v 6.6.3
+  - Fix 500 error when edit yourself from admin area
+  - Hide private groups for public profiles
+
+v 6.6.2
+  - Fix 500 error on branch/tag create or remove via UI
+
+v 6.6.1
+  - Fix 500 error on files tab if submodules presents
+
+v 6.6.0
+  - Retrieving user ssh keys publically(github style): http://__HOST__/__USERNAME__.keys
+  - Permissions: Developer now can manage issue tracker (modify any issue)
+  - Improve Code Compare page performance
+  - Group avatar
+  - Pygments.rb replaced with highlight.js
+  - Improve Merge request diff store logic
+  - Improve render performnace for MR show page
+  - Fixed Assembla hardcoded project name
+  - Jira integration documentation
+  - Refactored app/services
+  - Remove snippet expiration
+  - Mobile UI improvements (Drew Blessing)
+  - Fix block/remove UI for admin::users#show page
+  - Show users' group membership on users' activity page (Robert Djurasaj)
+  - User pages are visible without login if user is authorized to a public project
+  - Markdown rendered headers have id derived from their name and link to their id
+  - Improve application to work faster with large groups (100+ members)
+  - Multiple emails per user
+  - Show last commit for file when view file source
+  - Restyle Issue#show page and MR#show page
+  - Ability to filter by multiple labels for Issues page
+  - Rails version to 4.0.3
+  - Fixed attachment identifier displaying underneath note text (Jason Blanchard)
+
+v 6.5.1
+  - Fix branch selectbox when create merge request from fork
+
+v 6.5.0
+  - Dropdown menus on issue#show page for assignee and milestone (Jason Blanchard)
+  - Add color custimization and previewing to broadcast messages
+  - Fixed notes anchors
+  - Load new comments in issues dynamically
+  - Added sort options to Public page
+  - New filters (assigned/authored/all) for Dashboard#issues/merge_requests (sponsored by Say Media)
+  - Add project visibility icons to dashboard
+  - Enable secure cookies if https used
+  - Protect users/confirmation with rack_attack
+  - Default HTTP headers to protect against MIME-sniffing, force https if enabled
+  - Bootstrap 3 with responsive UI
+  - New repository download formats: tar.bz2, zip, tar (Jason Hollingsworth)
+  - Restyled accept widgets for MR
+  - SCSS refactored
+  - Use jquery timeago plugin
+  - Fix 500 error for rdoc files
+  - Ability to customize merge commit message (sponsored by Say Media)
+  - Search autocomplete via ajax
+  - Add website url to user profile
+  - Files API supports base64 encoded content (sponsored by O'Reilly Media)
+  - Added support for Go's repository retrieval (Bruno Albuquerque)
+
+v6.4.3
+  - Don't use unicorn worker killer if PhusionPassenger is defined
+
+v6.4.2
+  - Fixed wrong behaviour of script/upgrade.rb
+
+v6.4.1
+  - Fixed bug with repository rename
+  - Fixed bug with project transfer
+
+v 6.4.0
+  - Added sorting to project issues page (Jason Blanchard)
+  - Assembla integration (Carlos Paramio)
+  - Fixed another 500 error with submodules
+  - UI: More compact issues page
+  - Minimal password length increased to 8 symbols
+  - Side-by-side diff view (Steven Thonus)
+  - Internal projects (Jason Hollingsworth)
+  - Allow removal of avatar (Drew Blessing)
+  - Project web hooks now support issues and merge request events
+  - Visiting project page while not logged in will redirect to sign-in instead of 404 (Jason Hollingsworth)
+  - Expire event cache on avatar creation/removal (Drew Blessing)
+  - Archiving old projects (Steven Thonus)
+  - Rails 4
+  - Add time ago tooltips to show actual date/time
+  - UI: Fixed UI for admin system hooks
+  - Ruby script for easier GitLab upgrade
+  - Do not remove Merge requests if fork project was removed
+  - Improve sign-in/signup UX
+  - Add resend confirmation link to sign-in page
+  - Set noreply@HOSTNAME for reply_to field in all emails
+  - Show GitLab API version on Admin#dashboard
+  - API Cross-origin resource sharing
+  - Show READMe link at project home page
+  - Show repo size for projects in Admin area
+
 v 6.3.0
   - API for adding gitlab-ci service
   - Init script now waits for pids to appear after (re)starting before reporting status (Rovanion Luckey)
@@ -7,6 +198,36 @@ v 6.3.0
   - Security improvements
   - Added support for GitLab CI 4.0
   - Fixed issue with 500 error when group did not exist
+  - Ability to leave project
+  - You can create file in repo using UI
+  - You can remove file from repo using UI
+  - API: dropped default_branch attribute from project during creation
+  - Project default_branch is not stored in db any more. It takes from repo now.
+  - Admin broadcast messages
+  - UI improvements
+  - Dont show last push widget if user removed this branch
+  - Fix 500 error for repos with newline in file name
+  - Extended html titles
+  - API: create/update/delete repo files
+  - Admin can transfer project to any namespace
+  - API: projects/all for admin users
+  - Fix recent branches order
+
+v 6.2.4
+  - Security: Cast API private_token to string (CVE-2013-4580)
+  - Security: Require gitlab-shell 1.7.8 (CVE-2013-4581, CVE-2013-4582, CVE-2013-4583)
+  - Fix for Git SSH access for LDAP users
+
+v 6.2.3
+  - Security: More protection against CVE-2013-4489
+  - Security: Require gitlab-shell 1.7.4 (CVE-2013-4490, CVE-2013-4546)
+  - Fix sidekiq rake tasks
+
+v 6.2.2
+  - Security: Update gitlab_git (CVE-2013-4489)
+
+v 6.2.1
+  - Security: Fix issue with generated passwords for new users
 
 v 6.2.0
   - Public project pages are now visible to everyone (files, issues, wik, etc.)
@@ -28,7 +249,7 @@ v 6.2.0
   - Avatar upload on profile page with a maximum of 100KB (Steven Thonus)
   - Store the sessions in Redis instead of the cookie store
   - Fixed relative links in markdown
-  - User must confirm his email if signup enabled
+  - User must confirm their email if signup enabled
   - User must confirm changed email 
 
 v 6.1.0
@@ -50,7 +271,7 @@ v 6.1.0
   - Add links to create branch/tag from project home page
   - Add public-project? checkbox to new-project view
   - Improved compare page. Added link to proceed into Merge Request
-  - Send email to user when he was added to group
+  - Send an email to a user when they are added to group
   - New landing page when you have 0 projects
 
 v 6.0.0
@@ -92,6 +313,14 @@ v 6.0.0
   - Fixed bug with loosing MR comments
   - Improved MR comments logic
   - Render readme file for projects in public area
+
+v 5.4.2
+  - Security: Cast API private_token to string (CVE-2013-4580)
+  - Security: Require gitlab-shell 1.7.8 (CVE-2013-4581, CVE-2013-4582, CVE-2013-4583)
+
+v 5.4.1
+  - Security: Fixes for CVE-2013-4489
+  - Security: Require gitlab-shell 1.7.4 (CVE-2013-4490, CVE-2013-4546)
 
 v 5.4.0
   - Ability to edit own comments

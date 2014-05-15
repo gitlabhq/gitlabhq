@@ -15,5 +15,4 @@
       = gfm escape_once(truncate(commit.title, length: 40))
   %td
     %span.pull-right.cgray
-      = time_ago_in_words(commit.committed_date)
-      ago
+      = time_ago_with_tooltip(commit.committed_date)

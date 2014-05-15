@@ -4,10 +4,6 @@
  *
  */
 .automerge_widget {
-  &.can_be_merged {
-    background: #DFF0D8;
-  }
-
   form {
     margin-bottom: 0;
     .clearfix {
@@ -15,31 +11,11 @@
     }
   }
 
-  .accept_group {
-    float: left;
-    border: 1px solid #ADA;
-    padding: 2px;
-    @include border-radius(5px);
-    background: #CEB;
-
-    .accept_merge_request {
-      font-size: 13px;
-      float: left;
-    }
-    .remove_branch_holder {
-      margin-left: 20px;
-      margin-right: 10px;
-      float: left;
-    }
+  .accept-group {
     label {
-      color: #444;
-      text-align: left
+      margin: 5px;
+      margin-left: 20px;
     }
-  }
-
-
-  .how_to_merge_link {
-    @extend .primary;
   }
 }
 
@@ -53,17 +29,11 @@
   }
 }
 
-.merge-in-progress {
-  @extend .padded;
-  @extend .append-bottom-10;
-}
-
 .mr_source_commit,
 .mr_target_commit {
   .commit {
     margin: 0;
-    padding: 0;
-    padding: 5px 0;
+    padding: 2px 0;
     list-style: none;
     &:hover {
       background: none;
@@ -73,10 +43,9 @@
 
 .label-branch {
   @include border-radius(4px);
-  padding: 3px 4px;
+  padding: 2px 4px;
   border: none;
-  font-size: 14px;
-  background: #474D57;
+  background: #555;
   color: #fff;
   font-family: $monospace_font;
   font-weight: normal;
@@ -104,15 +73,49 @@
 
     .merge-request-info {
       color: #999;
+
+      .merge-request-labels {
+        display: inline-block;
+      }
     }
   }
 }
 
 .merge-request-angle {
   text-align: center;
-  margin: 0;
+  margin: 0 auto;
+  font-size: 2em;
+  line-height: 1.1;
 }
 
 .merge-request-form-info {
-  padding: 15px 0;
+  padding-top: 15px;
+}
+
+// hide mr close link for inline diff comment form
+.diff-file .close-mr-link,
+.diff-file .reopen-mr-link {
+  display: none;
+}
+
+.mr-state-widget {
+  @include border-radius(0px);
+
+  .panel-heading {
+    @include border-radius(0px);
+  }
+
+  .panel-body {
+    h4 {
+      margin-top: 0px;
+    }
+
+    p:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.merge-request-show-labels .label {
+  padding: 6px 10px;
 }

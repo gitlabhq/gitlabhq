@@ -6,17 +6,17 @@
         = link_to public_root_path, class: "home" do
           %h1 GITLAB
         %span.separator
-      %h1.project_name
-        - if @project
-          = project_title(@project)
-        - else
-          Public Projects
+      %h1.title= title
 
-      %ul.nav
-        %li
-          %a
-            %div.hide.turbolink-spinner
-              %i.icon-refresh.icon-spin
-              Loading...
-        %li
-          = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in'
+      %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
+        %span.sr-only Toggle navigation
+        %i.icon-reorder
+
+      .pull-right.hidden-xs
+        = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in btn-new'
+
+      .navbar-collapse.collapse
+        %ul.nav.navbar-nav
+          %li.visible-xs
+            = link_to "Sign in", new_session_path(:user)
+

@@ -111,13 +111,6 @@ describe HelpController, "routing" do
   end
 end
 
-# errors_githost GET    /errors/githost(.:format) errors#githost
-describe ErrorsController, "routing" do
-  it "to #githost" do
-    get("/errors/githost").should route_to('errors#githost')
-  end
-end
-
 #             profile_account GET    /profile/account(.:format)             profile#account
 #             profile_history GET    /profile/history(.:format)             profile#history
 #            profile_password PUT    /profile/password(.:format)            profile#password_update
@@ -183,6 +176,35 @@ describe Profiles::KeysController, "routing" do
   it "to #destroy" do
     delete("/profile/keys/1").should route_to('profiles/keys#destroy', id: '1')
   end
+
+  # get all the ssh-keys of a user
+  it "to #get_keys" do
+    get("/foo.keys").should route_to('profiles/keys#get_keys', username: 'foo')
+  end
+end
+
+#   emails GET    /emails(.:format)        emails#index
+#          POST   /keys(.:format)          emails#create
+#          DELETE /keys/:id(.:format)      keys#destroy
+describe Profiles::EmailsController, "routing" do
+  it "to #index" do
+    get("/profile/emails").should route_to('profiles/emails#index')
+  end
+
+  it "to #create" do
+    post("/profile/emails").should route_to('profiles/emails#create')
+  end
+
+  it "to #destroy" do
+    delete("/profile/emails/1").should route_to('profiles/emails#destroy', id: '1')
+  end
+end
+
+# profile_avatar DELETE /profile/avatar(.:format) profiles/avatars#destroy
+describe Profiles::AvatarsController, "routing" do
+  it "to #destroy" do
+    delete("/profile/avatar").should route_to('profiles/avatars#destroy')
+  end
 end
 
 #                dashboard GET    /dashboard(.:format)                dashboard#show
@@ -216,3 +238,14 @@ end
 describe "Authentication", "routing" do
   # pending
 end
+
+describe "Groups", "routing" do
+  it "to #show" do
+    get("/groups/1").should route_to('groups#show', id: '1')
+  end
+
+  it "also display group#show on the short path" do
+    get("/1").should route_to('groups#show', id: '1')
+  end
+end
+

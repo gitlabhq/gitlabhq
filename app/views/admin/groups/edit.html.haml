@@ -1,25 +1,25 @@
 %h3.page-title Edit Group
 %hr
-= form_for [:admin, @group] do |f|
+= form_for [:admin, @group], html: { class: "form-horizontal" } do |f|
   - if @group.errors.any?
-    .alert.alert-error
+    .alert.alert-danger
       %span= @group.errors.full_messages.first
-  .control-group.group_name_holder
-    = f.label :name do
+  .form-group.group_name_holder
+    = f.label :name, class: 'control-label' do
       Group name
-    .controls
-      = f.text_field :name, placeholder: "Example Group", class: "input-xxlarge"
+    .col-sm-10
+      = f.text_field :name, placeholder: "Example Group", class: "form-control"
 
-  .control-group.group-description-holder
-    = f.label :description, "Details"
-    .controls
-      = f.text_area :description, maxlength: 250, class: "input-xxlarge js-gfm-input", rows: 4
+  .form-group.group-description-holder
+    = f.label :description, "Details", class: 'control-label'
+    .col-sm-10
+      = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
 
-  .control-group.group_name_holder
-    = f.label :path do
+  .form-group.group_name_holder
+    = f.label :path, class: 'control-label' do
       %span.cred Group path
-    .controls
-      = f.text_field :path, placeholder: "example-group", class: "input-xxlarge danger"
+    .col-sm-10
+      = f.text_field :path, placeholder: "example-group", class: "form-control danger"
       %ul.cred
         %li Changing group path can have unintended side effects.
         %li Renaming group path will rename directory for all related projects

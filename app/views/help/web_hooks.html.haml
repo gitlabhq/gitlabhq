@@ -1,12 +1,6 @@
 = render layout: 'help/layout' do
-  %h3.page-title Web hooks
+  %h3.page-title Project web hooks 
 
-  %p.slead
-    Every GitLab project can trigger a web server whenever the repo is pushed to.
-    %br
-    Web Hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
-    %br
-    GitLab will send POST request with commits information on every push.
-  %h5 Hooks request example:
-  = render "projects/hooks/data_ex"
-
+  .help_body
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "web_hooks", "web_hooks.md"))

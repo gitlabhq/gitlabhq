@@ -68,4 +68,32 @@ module IssuesHelper
       false
     end
   end
+
+  def bulk_update_milestone_options
+    options_for_select(["None (backlog)"]) + options_from_collection_for_select(project_active_milestones, "id", "title", params[:milestone_id])
+  end
+
+  def bulk_update_assignee_options
+    options_for_select(["None (unassigned)"]) + options_from_collection_for_select(@project.team.members, "id", "name", params[:assignee_id])
+  end
+
+  def assignee_options object
+    options_from_collection_for_select(@project.team.members.sort_by(&:name), 'id', 'name', object.assignee_id)
+  end
+
+  def milestone_options object
+    options_from_collection_for_select(object.project.milestones.active, 'id', 'title', object.milestone_id)
+  end
+
+  def issue_box_class(item)
+    if item.respond_to?(:expired?) && item.expired?
+      'issue-box-expired'
+    elsif item.respond_to?(:merged?) && item.merged?
+      'issue-box-merged'
+    elsif item.closed?
+      'issue-box-closed'
+    else
+      'issue-box-open'
+    end
+  end
 end

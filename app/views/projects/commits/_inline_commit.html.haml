@@ -2,8 +2,7 @@
   .commit-row-title
     = link_to commit.short_id(8), project_commit_path(project, commit), class: "commit_short_id"
     &nbsp;
-    = link_to_gfm truncate(commit.title, length: 40), project_commit_path(project, commit.id), class: "commit-row-message"
-    %time.committed_ago{ datetime: commit.committed_date, title: commit.committed_date.stamp("Aug 21, 2011 9:23pm") }
-      = time_ago_in_words(commit.committed_date)
-      ago
-      &nbsp;
+    %span.str-truncated
+      = link_to_gfm commit.title, project_commit_path(project, commit.id), class: "commit-row-message"
+    .pull-right
+      #{time_ago_with_tooltip(commit.committed_date)}

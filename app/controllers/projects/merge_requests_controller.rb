@@ -2,8 +2,8 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :commits, :diffs, :automerge, :automerge_check, :ci_status]
-  before_filter :closes_issues, only: [:edit, :update, :show, :commits, :diffs]
+  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status]
+  before_filter :closes_issues, only: [:edit, :update, :show, :diffs]
   before_filter :validates_merge_request, only: [:show, :diffs]
   before_filter :define_show_vars, only: [:show, :diffs]
 
@@ -17,17 +17,23 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    @merge_requests = MergeRequestsLoadContext.new(project, current_user, params).execute
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
+    @merge_requests = @merge_requests.page(params[:page]).per(20)
+
+    @sort = params[:sort].humanize
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
+    @assignees = User.where(id: @project.merge_requests.pluck(:assignee_id))
   end
 
   def show
     respond_to do |format|
       format.html
-      format.js
-
       format.diff { render text: @merge_request.to_diff(current_user) }
       format.patch { render text: @merge_request.to_patch(current_user) }
     end
@@ -44,15 +50,39 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     diff_line_count = Commit::diff_line_count(@merge_request.diffs)
     @suppress_diff = Commit::diff_suppress?(@merge_request.diffs, diff_line_count) && !params[:force_show_diff]
     @force_suppress_diff = Commit::diff_force_suppress?(@merge_request.diffs, diff_line_count)
+
+    respond_to do |format|
+      format.html
+      format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
+    end
   end
 
   def new
     @merge_request = MergeRequest.new(params[:merge_request])
     @merge_request.source_project = @project unless @merge_request.source_project
-    @merge_request.target_project = @project unless @merge_request.target_project
+    @merge_request.target_project ||= (@project.forked_from_project || @project)
     @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
+    @merge_request.target_branch ||= @merge_request.target_project.default_branch
     @source_project = @merge_request.source_project
-    @merge_request
+
+    if @merge_request.target_branch && @merge_request.source_branch
+      compare_action = Gitlab::Satellite::CompareAction.new(
+        current_user,
+        @merge_request.target_project,
+        @merge_request.target_branch,
+        @merge_request.source_project,
+        @merge_request.source_branch
+      )
+
+      @commits = compare_action.commits
+      @commits.map! { |commit| Commit.new(commit) }
+      @commit = @commits.first
+
+      @diffs = compare_action.diffs
+      @merge_request.title = @merge_request.source_branch.titleize.humanize
+      @target_project = @merge_request.target_project
+      @target_repo = @target_project.repository
+    end
   end
 
   def edit
@@ -62,12 +92,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def create
-    @merge_request = MergeRequest.new(params[:merge_request])
-    @merge_request.author = current_user
     @target_branches ||= []
-    if @merge_request.save
-      @merge_request.reload_code
-      redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully created.'
+    @merge_request = MergeRequests::CreateService.new(project, current_user, params[:merge_request]).execute
+
+    if @merge_request.valid?
+      redirect_to project_merge_request_path(@merge_request.target_project, @merge_request), notice: 'Merge request was successfully created.'
     else
       @source_project = @merge_request.source_project
       @target_project = @merge_request.target_project
@@ -76,10 +105,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    if @merge_request.update_attributes(params[:merge_request].merge(author_id_of_changes: current_user.id))
-      @merge_request.reload_code
-      @merge_request.mark_as_unchecked
-      redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, params[:merge_request]).execute(@merge_request)
+
+    if @merge_request.valid?
+      respond_to do |format|
+        format.js
+        format.html do
+          redirect_to [@merge_request.target_project, @merge_request], notice: 'Merge request was successfully updated.'
+        end
+      end
     else
       render "edit"
     end
@@ -90,16 +124,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.check_if_can_be_merged
     end
     render json: {merge_status: @merge_request.merge_status_name}
-  rescue Gitlab::SatelliteNotExistError
-    render json: {merge_status: :no_satellite}
   end
 
   def automerge
     return access_denied! unless allowed_to_merge?
 
-    if @merge_request.opened? && @merge_request.can_be_merged?
+    if @merge_request.open? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user)
+      @merge_request.automerge!(current_user, params[:merge_commit_message])
       @status = true
     else
       @status = false
@@ -121,10 +153,14 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = selected_target_project
     @target_branches = @target_project.repository.branch_names
     @target_branches
+
+    respond_to do |format|
+      format.js
+    end
   end
 
   def ci_status
-    status = project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
+    status = @merge_request.source_project.gitlab_ci_service.commit_status(merge_request.last_commit.sha)
     response = {status: status}
 
     render json: response
@@ -133,11 +169,15 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   protected
 
   def selected_target_project
-    ((@project.id.to_s == params[:target_project_id]) || @project.forked_project_link.nil?) ? @project : @project.forked_project_link.forked_from_project
+    if @project.id.to_s == params[:target_project_id] || @project.forked_project_link.nil?
+      @project
+    else
+      @project.forked_project_link.forked_from_project
+    end
   end
 
   def merge_request
-    @merge_request ||= @project.merge_requests.find_by_iid!(params[:id])
+    @merge_request ||= @project.merge_requests.find_by!(iid: params[:id])
   end
 
   def closes_issues
@@ -157,44 +197,59 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def validates_merge_request
+    # If source project was removed (Ex. mr from fork to origin)
+    return invalid_mr unless @merge_request.source_project
+
     # Show git not found page
     # if there is no saved commits between source & target branch
     if @merge_request.commits.blank?
-       # and if source target doesn't exist
-       return invalid_mr unless @merge_request.target_project.repository.branch_names.include?(@merge_request.target_branch)
+      # and if target branch doesn't exist
+      return invalid_mr unless @merge_request.target_branch_exists?
 
-       # or if source branch doesn't exist
-       return invalid_mr unless @merge_request.source_project.repository.branch_names.include?(@merge_request.source_branch)
+      # or if source branch doesn't exist
+      return invalid_mr unless @merge_request.source_branch_exists?
     end
   end
 
   def define_show_vars
     # Build a note object for comment form
     @note = @project.notes.new(noteable: @merge_request)
+    @notes = @merge_request.mr_and_commit_notes.inc_author.fresh
+    @discussions = Note.discussions_from_notes(@notes)
+    @noteable = @merge_request
 
     # Get commits from repository
     # or from cache if already merged
     @commits = @merge_request.commits
 
+    @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
-    @show_merge_controls = @merge_request.opened? && @commits.any? && @allowed_to_merge
-
-    @target_type = :merge_request
-    @target_id = @merge_request.id
+    @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
+    @allowed_to_remove_source_branch = allowed_to_remove_source_branch?
+    @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
   end
 
   def allowed_to_merge?
-    action = if project.protected_branch?(@merge_request.target_branch)
-               :push_code_to_protected_branches
-             else
-               :push_code
-             end
-
-    can?(current_user, action, @project)
+    allowed_to_push_code?(project, @merge_request.target_branch)
   end
 
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
+  end
+
+  def allowed_to_remove_source_branch?
+    allowed_to_push_code?(@merge_request.source_project, @merge_request.source_branch) &&
+      !@merge_request.disallow_source_branch_removal?
+  end
+
+  def allowed_to_push_code?(project, branch)
+    action = if project.protected_branch?(branch)
+               :push_code_to_protected_branches
+             else
+               :push_code
+             end
+
+    can?(current_user, action, project)
   end
 end

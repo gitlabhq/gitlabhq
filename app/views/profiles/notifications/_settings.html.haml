@@ -1,31 +1,17 @@
 %li
-  .row
-    .span4
-      %span
-        = notification_icon(notification)
+  %span.notification-icon-holder
+    - if notification.global?
+      = notification_icon(@notification)
+    - else
+      = notification_icon(notification)
 
-        - if membership.kind_of? UsersGroup
-          = link_to membership.group.name, membership.group
-        - else
-          = link_to_project(membership.project)
-    .span7
-      = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
-        = hidden_field_tag :notification_type, type, id: dom_id(membership, 'notification_type')
-        = hidden_field_tag :notification_id, membership.id, id: dom_id(membership, 'notification_id')
-
-        = label_tag do
-          = radio_button_tag :notification_level, Notification::N_GLOBAL, notification.global?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
-          %span Use global setting
-
-        = label_tag do
-          = radio_button_tag :notification_level, Notification::N_DISABLED, notification.disabled?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
-          %span Disabled
-
-        = label_tag do
-          = radio_button_tag :notification_level, Notification::N_PARTICIPATING, notification.participating?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
-          %span Participating
-
-        = label_tag do
-          = radio_button_tag :notification_level, Notification::N_WATCH, notification.watch?, id: dom_id(membership, 'notification_level'), class: 'trigger-submit'
-          %span Watch
-
+  %span.str-truncated
+    - if membership.kind_of? UsersGroup
+      = link_to membership.group.name, membership.group
+    - else
+      = link_to_project(membership.project)
+  .pull-right
+    = form_tag profile_notifications_path, method: :put, remote: true, class: 'update-notifications' do
+      = hidden_field_tag :notification_type, type, id: dom_id(membership, 'notification_type')
+      = hidden_field_tag :notification_id, membership.id, id: dom_id(membership, 'notification_id')
+      = select_tag :notification_level, options_for_select(Notification.options_with_labels, notification.level), class: 'trigger-submit'

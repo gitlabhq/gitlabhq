@@ -15,7 +15,7 @@ module Gitlab
         COLOR  => "ui_color"
       }
 
-      id ||= 1
+      id ||= Gitlab.config.gitlab.default_theme
 
       return themes[id]
     end

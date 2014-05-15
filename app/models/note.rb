@@ -6,15 +6,15 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
 #  commit_id     :string(255)
 #  noteable_id   :integer
-#  st_diff       :text
 #  system        :boolean          default(FALSE), not null
+#  st_diff       :text
 #
 
 require 'carrierwave/orm/activerecord'
@@ -22,6 +22,8 @@ require 'file_size_validator'
 
 class Note < ActiveRecord::Base
   include Mentionable
+
+  default_value_for :system, false
 
   attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
                   :attachment, :line_code, :commit_id
@@ -56,29 +58,70 @@ class Note < ActiveRecord::Base
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
 
-  def self.create_status_change_note(noteable, project, author, status, source)
-    body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
+  class << self
+    def create_status_change_note(noteable, project, author, status, source)
+      body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
 
-    create({
-      noteable: noteable,
-      project: project,
-      author: author,
-      note: body,
-      system: true
-    }, without_protection: true)
-  end
+      create({
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      }, without_protection: true)
+    end
 
-  # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
-  # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
-  def self.create_cross_reference_note(noteable, mentioner, author, project)
-    create({
-      noteable: noteable,
-      commit_id: (noteable.sha if noteable.respond_to? :sha),
-      project: project,
-      author: author,
-      note: "_mentioned in #{mentioner.gfm_reference}_",
-      system: true
-    }, without_protection: true)
+    # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
+    # Create a system Note associated with +noteable+ with a GFM back-reference to +mentioner+.
+    def create_cross_reference_note(noteable, mentioner, author, project)
+      note_options = {
+        project: project,
+        author: author,
+        note: "_mentioned in #{mentioner.gfm_reference}_",
+        system: true
+      }
+
+      if noteable.kind_of?(Commit)
+        note_options.merge!(noteable_type: 'Commit', commit_id: noteable.id)
+      else
+        note_options.merge!(noteable: noteable)
+      end
+
+      create(note_options, without_protection: true)
+    end
+
+    def create_assignee_change_note(noteable, project, author, assignee)
+      body = assignee.nil? ? '_Assignee removed_' : "_Reassigned to @#{assignee.username}_"
+
+      create({
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      }, without_protection: true)
+    end
+
+    def discussions_from_notes(notes)
+      discussion_ids = []
+      discussions = []
+
+      notes.each do |note|
+        next if discussion_ids.include?(note.discussion_id)
+
+        # don't group notes for the main target
+        if !note.for_diff_line? && note.noteable_type == "MergeRequest"
+          discussions << [note]
+        else
+          discussions << notes.select do |other_note|
+            note.discussion_id == other_note.discussion_id
+          end
+          discussion_ids << note.discussion_id
+        end
+      end
+
+      discussions
+    end
   end
 
   # Determine whether or not a cross-reference note already exists.
@@ -88,8 +131,8 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-      project.users.find_by_email(noteable.author_email) ||
-        project.users.find_by_name(noteable.author_name)
+      project.users.find_by(email: noteable.author_email) ||
+      project.users.find_by(name: noteable.author_name)
   rescue
     nil
   end
@@ -141,9 +184,10 @@ class Note < ActiveRecord::Base
     return @diff_line if @diff_line
 
     if diff
-      Gitlab::DiffParser.new(diff).each do |full_line, type, line_code, line_new, line_old|
-        @diff_line = full_line if line_code == self.line_code
-      end
+      Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
+        .each do |full_line, type, line_code, line_new, line_old|
+          @diff_line = full_line if line_code == self.line_code
+        end
     end
 
     @diff_line
@@ -157,7 +201,9 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def downvote?
     votable? && (note.start_with?('-1') ||
-                 note.start_with?(':-1:')
+                 note.start_with?(':-1:') ||
+                 note.start_with?(':thumbsdown:') ||
+                 note.start_with?(':thumbs_down_sign:')
                 )
   end
 
@@ -206,7 +252,9 @@ class Note < ActiveRecord::Base
   # otherwise false is returned
   def upvote?
     votable? && (note.start_with?('+1') ||
-                 note.start_with?(':+1:')
+                 note.start_with?(':+1:') ||
+                 note.start_with?(':thumbsup:') ||
+                 note.start_with?(':thumbs_up_sign:')
                 )
   end
 
@@ -236,5 +284,20 @@ class Note < ActiveRecord::Base
   #        For more information wisit http://api.rubyonrails.org/classes/ActiveRecord/Associations/ClassMethods.html#label-Polymorphic+Associations
   def noteable_type=(sType)
     super(sType.to_s.classify.constantize.base_class.to_s)
+  end
+
+  # Reset notes events cache
+  #
+  # Since we do cache @event we need to reset cache in special cases:
+  # * when a note is updated
+  # * when a note is removed
+  # Events cache stored like  events/23-20130109142513.
+  # The cache key includes updated_at timestamp.
+  # Thus it will automatically generate a new fragment
+  # when the event is updated because the key changes.
+  def reset_events_cache
+    Event.where(target_id: self.id, target_type: 'Note').
+      order('id DESC').limit(100).
+      update_all(updated_at: Time.now)
   end
 end

@@ -5,17 +5,11 @@
     %span.cgray.monospace.tiny.pull-right
       = snippet.file_name
 
-  %small.pull-right.cgray
-    Expires:
-    - if snippet.expires_at
-      = snippet.expires_at.to_date.to_s(:short)
-    - else
-      Never
-
   .snippet-info
     = "##{snippet.id}"
     %span
       by
       = image_tag avatar_icon(snippet.author_email), class: "avatar avatar-inline s16"
       = snippet.author_name
-      %span.light #{time_ago_in_words(snippet.created_at)} ago
+      %span.light
+        #{time_ago_with_tooltip(snippet.created_at)}

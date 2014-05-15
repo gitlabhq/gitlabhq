@@ -7,13 +7,13 @@
     %span.cred (Admin)
 
   .pull-right
-    = link_to edit_admin_user_path(@user), class: "btn grouped" do
+    = link_to edit_admin_user_path(@user), class: "btn btn-grouped" do
       %i.icon-edit
       Edit
 %hr
 
 .row
-  .span6
+  .col-md-6
     .ui-box
       .title
         Account:
@@ -43,6 +43,16 @@
           %span.light Member since:
           %strong
             = @user.created_at.stamp("Nov 12, 2031")
+        - if @user.confirmed_at
+          %li
+            %span.light Confirmed at:
+            %strong
+              = @user.confirmed_at.stamp("Nov 12, 2031")
+        - else
+          %li
+            %span.light Confirmed:
+            %strong.cred
+              No
 
         %li
           %span.light Last sign-in at:
@@ -68,7 +78,6 @@
       - if @user.blocked?
         .alert.alert-info
           %h4 This user is blocked
-          %br
           %p Blocking user has the following effects:
           %ul
             %li User will not be able to login
@@ -76,11 +85,11 @@
             %li User will be removed from joined projects and groups
             %li Personal projects will be left
             %li Owned groups will be left
-          = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-new", confirm: 'Are you sure?'
+          %br
+          = link_to 'Unblock user', unblock_admin_user_path(@user), method: :put, class: "btn btn-new", data: { confirm: 'Are you sure?' }
       - else
-        .alert
+        .alert.alert-warning
           %h4 Block this user
-          %br
           %p Blocking user has the following effects:
           %ul
             %li User will not be able to login
@@ -88,12 +97,12 @@
             %li User will be removed from joined projects and groups
             %li Personal projects will be left
             %li Owned groups will be left
-          = link_to 'Block user', block_admin_user_path(@user), confirm: 'USER WILL BE BLOCKED! Are you sure?', method: :put, class: "btn btn-remove"
+          %br
+          = link_to 'Block user', block_admin_user_path(@user), data: { confirm: 'USER WILL BE BLOCKED! Are you sure?' }, method: :put, class: "btn btn-remove"
 
-      .alert.alert-error
+      .alert.alert-danger
         %h4
           Remove user
-        %br
         %p Deleting a user has the following effects:
         %ul
           %li All user content like authored issues, snippets, comments will be removed
@@ -104,9 +113,10 @@
             %li
               Next groups with all content will be removed:
               %strong #{@user.solo_owned_groups.map(&:name).join(', ')}
-        = link_to 'Remove user', [:admin, @user], confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?", method: :delete, class: "btn btn-remove"
+        %br
+        = link_to 'Remove user', [:admin, @user], data: { confirm: "USER #{@user.name} WILL BE REMOVED! Are you sure?" }, method: :delete, class: "btn btn-remove"
 
-  .span6
+  .col-md-6
     - if @user.users_groups.present?
       .ui-box
         .title Groups:
@@ -114,11 +124,12 @@
           - @user.users_groups.each do |user_group|
             - group = user_group.group
             %li.users_group
-              %strong= link_to group.name, admin_group_path(group)
+              %span{class: ("list-item-name" unless user_group.owner?)}
+                %strong= link_to group.name, admin_group_path(group)
               .pull-right
                 %span.light= user_group.human_access
                 - unless user_group.owner?
-                  = link_to group_users_group_path(group, user_group), confirm: remove_user_from_group_message(group, @user), method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+                  = link_to group_users_group_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                     %i.icon-remove.icon-white
 
     .ui-box
@@ -138,7 +149,5 @@
                   %span.light= tm.human_access
 
                   - if tm.respond_to? :project
-                    = link_to project_team_member_path(project, @user), confirm: remove_from_project_team_message(project, @user), remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
+                    = link_to project_team_member_path(project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
                       %i.icon-remove
-
-

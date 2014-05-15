@@ -1,10 +1,13 @@
 = render 'nav'
-%h3.page-title
-  Editing page
+.pull-right
   = render 'main_links'
+%h3.page-title
+  Editing -
+  %span.light #{@page.title}
+%hr
 = render 'form'
 
 .pull-right
-  - if @wiki.persisted? && can?(current_user, :admin_wiki, @project)
-    = link_to project_wiki_path(@project, @wiki), confirm: "Are you sure you want to delete this page?", method: :delete, class: "btn btn-small btn-remove" do
+  - if @page.persisted? && can?(current_user, :admin_wiki, @project)
+    = link_to project_wiki_path(@project, @page), data: { confirm: "Are you sure you want to delete this page?"}, method: :delete, class: "btn btn-small btn-remove" do
       Delete this page

@@ -2,40 +2,48 @@
 #
 # Table name: users
 #
-#  id                     :integer          not null, primary key
-#  email                  :string(255)      default(""), not null
-#  encrypted_password     :string(255)      default(""), not null
-#  reset_password_token   :string(255)
-#  reset_password_sent_at :datetime
-#  remember_created_at    :datetime
-#  sign_in_count          :integer          default(0)
-#  current_sign_in_at     :datetime
-#  last_sign_in_at        :datetime
-#  current_sign_in_ip     :string(255)
-#  last_sign_in_ip        :string(255)
-#  created_at             :datetime         not null
-#  updated_at             :datetime         not null
-#  name                   :string(255)
-#  admin                  :boolean          default(FALSE), not null
-#  projects_limit         :integer          default(10)
-#  skype                  :string(255)      default(""), not null
-#  linkedin               :string(255)      default(""), not null
-#  twitter                :string(255)      default(""), not null
-#  authentication_token   :string(255)
-#  theme_id               :integer          default(1), not null
-#  bio                    :string(255)
-#  failed_attempts        :integer          default(0)
-#  locked_at              :datetime
-#  extern_uid             :string(255)
-#  provider               :string(255)
-#  username               :string(255)
-#  can_create_group       :boolean          default(TRUE), not null
-#  can_create_team        :boolean          default(TRUE), not null
-#  state                  :string(255)
-#  color_scheme_id        :integer          default(1), not null
-#  notification_level     :integer          default(1), not null
-#  password_expires_at    :datetime
-#  created_by_id          :integer
+#  id                       :integer          not null, primary key
+#  email                    :string(255)      default(""), not null
+#  encrypted_password       :string(255)      default(""), not null
+#  reset_password_token     :string(255)
+#  reset_password_sent_at   :datetime
+#  remember_created_at      :datetime
+#  sign_in_count            :integer          default(0)
+#  current_sign_in_at       :datetime
+#  last_sign_in_at          :datetime
+#  current_sign_in_ip       :string(255)
+#  last_sign_in_ip          :string(255)
+#  created_at               :datetime
+#  updated_at               :datetime
+#  name                     :string(255)
+#  admin                    :boolean          default(FALSE), not null
+#  projects_limit           :integer          default(10)
+#  skype                    :string(255)      default(""), not null
+#  linkedin                 :string(255)      default(""), not null
+#  twitter                  :string(255)      default(""), not null
+#  authentication_token     :string(255)
+#  theme_id                 :integer          default(1), not null
+#  bio                      :string(255)
+#  failed_attempts          :integer          default(0)
+#  locked_at                :datetime
+#  extern_uid               :string(255)
+#  provider                 :string(255)
+#  username                 :string(255)
+#  can_create_group         :boolean          default(TRUE), not null
+#  can_create_team          :boolean          default(TRUE), not null
+#  state                    :string(255)
+#  color_scheme_id          :integer          default(1), not null
+#  notification_level       :integer          default(1), not null
+#  password_expires_at      :datetime
+#  created_by_id            :integer
+#  last_credential_check_at :datetime
+#  avatar                   :string(255)
+#  confirmation_token       :string(255)
+#  confirmed_at             :datetime
+#  confirmation_sent_at     :datetime
+#  unconfirmed_email        :string(255)
+#  hide_no_ssh_key          :boolean          default(FALSE)
+#  website_url              :string(255)      default(""), not null
 #
 
 require 'spec_helper'
@@ -69,6 +77,27 @@ describe User do
     it { should_not allow_value(-1).for(:projects_limit) }
 
     it { should ensure_length_of(:bio).is_within(0..255) }
+
+    describe 'email' do
+      it 'accepts info@example.com' do
+        user = build(:user, email: 'info@example.com')
+        expect(user).to be_valid
+      end
+      it 'accepts info+test@example.com' do
+        user = build(:user, email: 'info+test@example.com')
+        expect(user).to be_valid
+      end
+
+      it 'rejects test@test@example.com' do
+        user = build(:user, email: 'test@test@example.com')
+        expect(user).to be_invalid
+      end
+
+      it 'rejects mailto:test@example.com' do
+        user = build(:user, email: 'mailto:test@example.com')
+        expect(user).to be_invalid
+      end
+    end
   end
 
   describe "Respond to" do
@@ -85,8 +114,8 @@ describe User do
     end
 
     it "should not generate password by default" do
-      user = create(:user, password: 'abcdefg')
-      user.password.should == 'abcdefg'
+      user = create(:user, password: 'abcdefghe')
+      user.password.should == 'abcdefghe'
     end
 
     it "should generate password when forcing random password" do
@@ -135,7 +164,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_true }
-    it { @user.namespaces.should include(@user.namespace) }
     it { @user.authorized_groups.should == [@group] }
     it { @user.owned_groups.should == [@group] }
   end
@@ -162,7 +190,6 @@ describe User do
     end
 
     it { @user.several_namespaces?.should be_false }
-    it { @user.namespaces.should == [@user.namespace] }
   end
 
   describe 'blocking user' do
@@ -266,6 +293,20 @@ describe User do
     end
   end
 
+  describe 'search' do
+    let(:user1) { create(:user, username: 'James', email: 'james@testing.com') }
+    let(:user2) { create(:user, username: 'jameson', email: 'jameson@example.com') }
+
+    it "should be case insensitive" do
+      User.search(user1.username.upcase).to_a.should == [user1]
+      User.search(user1.username.downcase).to_a.should == [user1]
+      User.search(user2.username.upcase).to_a.should == [user2]
+      User.search(user2.username.downcase).to_a.should == [user2]
+      User.search(user1.username.downcase).to_a.count.should == 2
+      User.search(user2.username.downcase).to_a.count.should == 1
+    end
+  end
+
   describe 'by_username_or_id' do
     let(:user1) { create(:user, username: 'foo') }
 
@@ -274,6 +315,75 @@ describe User do
       User.by_username_or_id('foo').should == user1
       User.by_username_or_id(-1).should be_nil
       User.by_username_or_id('bar').should be_nil
+    end
+  end
+
+  describe 'all_ssh_keys' do
+    it { should have_many(:keys).dependent(:destroy) }
+
+    it "should have all ssh keys" do
+      user = create :user
+      key = create :key, key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD33bWLBxu48Sev9Fert1yzEO4WGcWglWF7K/AwblIUFselOt/QdOL9DSjpQGxLagO1s9wl53STIO8qGS4Ms0EJZyIXOEFMjFJ5xmjSy+S37By4sG7SsltQEHMxtbtFOaW5LV2wCrX+rUsRNqLMamZjgjcPO0/EgGCXIGMAYW4O7cwGZdXWYIhQ1Vwy+CsVMDdPkPgBXqK7nR/ey8KMs8ho5fMNgB5hBw/AL9fNGhRw3QTD6Q12Nkhl4VZES2EsZqlpNnJttnPdp847DUsT6yuLRlfiQfz5Cn9ysHFdXObMN5VYIiPFwHeYCZp1X2S4fDZooRE8uOLTfxWHPXwrhqSH", user_id: user.id
+
+      user.all_ssh_keys.should include(key.key)
+    end
+  end
+    
+  describe :avatar_type do
+    let(:user) { create(:user) }
+
+    it "should be true if avatar is image" do
+      user.update_attribute(:avatar, 'uploads/avatar.png')
+      user.avatar_type.should be_true
+    end
+
+    it "should be false if avatar is html page" do
+      user.update_attribute(:avatar, 'uploads/avatar.html')
+      user.avatar_type.should == ["only images allowed"]
+    end
+  end
+
+  describe '#full_website_url' do
+    let(:user) { create(:user) }
+
+    it 'begins with http if website url omits it' do
+      user.website_url = 'test.com'
+
+      expect(user.full_website_url).to eq 'http://test.com'
+    end
+
+    it 'begins with http if website url begins with http' do
+      user.website_url = 'http://test.com'
+
+      expect(user.full_website_url).to eq 'http://test.com'
+    end
+
+    it 'begins with https if website url begins with https' do
+      user.website_url = 'https://test.com'
+
+      expect(user.full_website_url).to eq 'https://test.com'
+    end
+  end
+
+  describe '#short_website_url' do
+    let(:user) { create(:user) }
+
+    it 'does not begin with http if website url omits it' do
+      user.website_url = 'test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
+    end
+
+    it 'does not begin with http if website url begins with http' do
+      user.website_url = 'http://test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
+    end
+
+    it 'does not begin with https if website url begins with https' do
+      user.website_url = 'https://test.com'
+
+      expect(user.short_website_url).to eq 'test.com'
     end
   end
 end

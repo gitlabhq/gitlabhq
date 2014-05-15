@@ -11,7 +11,10 @@ class Projects::IssuesController < Projects::ApplicationController
   # Allow modify issue
   before_filter :authorize_modify_issue!, only: [:edit, :update]
 
-  respond_to :js, :html
+  # Allow issues bulk update
+  before_filter :authorize_admin_issues!, only: [:bulk_update]
+
+  respond_to :html
 
   def index
     terms = params['issue_search']
@@ -23,11 +26,18 @@ class Projects::IssuesController < Projects::ApplicationController
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
     @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
+    sort_param = params[:sort] || 'newest'
+    @sort = sort_param.humanize unless sort_param.empty?
+    @assignees = User.where(id: @project.issues.pluck(:assignee_id))
 
     respond_to do |format|
-      format.html # index.html.erb
-      format.js
+      format.html
       format.atom { render layout: false }
+      format.json do
+        render json: {
+          html: view_to_html_string("projects/issues/_issues")
+        }
+      end
     end
   end
 
@@ -42,19 +52,14 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def show
     @note = @project.notes.new(noteable: @issue)
-    @target_type = :issue
-    @target_id = @issue.id
+    @notes = @issue.notes.inc_author.fresh
+    @noteable = @issue
 
-    respond_to do |format|
-      format.html
-      format.js
-    end
+    respond_with(@issue)
   end
 
   def create
-    @issue = @project.issues.new(params[:issue])
-    @issue.author = current_user
-    @issue.save
+    @issue = Issues::CreateService.new(project, current_user, params[:issue]).execute
 
     respond_to do |format|
       format.html do
@@ -69,7 +74,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update
-    @issue.update_attributes(params[:issue].merge(author_id_of_changes: current_user.id))
+    @issue = Issues::UpdateService.new(project, current_user, params[:issue]).execute(issue)
 
     respond_to do |format|
       format.js
@@ -84,7 +89,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def bulk_update
-    result = Issues::BulkUpdateContext.new(project, current_user, params).execute
+    result = Issues::BulkUpdateService.new(project, current_user, params).execute
     redirect_to :back, notice: "#{result[:count]} issues updated"
   end
 
@@ -92,7 +97,7 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def issue
     @issue ||= begin
-                 @project.issues.find_by_iid!(params[:id])
+                 @project.issues.find_by!(iid: params[:id])
                rescue ActiveRecord::RecordNotFound
                  redirect_old
                end
@@ -102,8 +107,8 @@ class Projects::IssuesController < Projects::ApplicationController
     return render_404 unless can?(current_user, :modify_issue, @issue)
   end
 
-  def authorize_admin_issue!
-    return render_404 unless can?(current_user, :admin_issue, @issue)
+  def authorize_admin_issues!
+    return render_404 unless can?(current_user, :admin_issue, @project)
   end
 
   def module_enabled
@@ -111,7 +116,9 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def issues_filtered
-    @issues = Issues::ListContext.new(project, current_user, params).execute
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+    @issues = IssuesFinder.new.execute(current_user, params.merge(project_id: @project.id))
   end
 
   # Since iids are implemented only in 6.1
@@ -120,7 +127,7 @@ class Projects::IssuesController < Projects::ApplicationController
   # To prevent 404 errors we provide a redirect to correct iids until 7.0 release
   #
   def redirect_old
-    issue = @project.issues.find_by_id(params[:id])
+    issue = @project.issues.find_by(id: params[:id])
 
     if issue
       redirect_to project_issue_path(@project, issue)

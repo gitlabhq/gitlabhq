@@ -24,8 +24,8 @@ class GitPushService
     create_push_event
 
     project.ensure_satellite_exists
-    project.discover_default_branch
     project.repository.expire_cache
+    project.update_repository_size
 
     if push_to_existing_branch?(ref, oldrev)
       project.update_merge_requests(oldrev, newrev, ref, @user)
@@ -33,7 +33,7 @@ class GitPushService
     end
 
     if push_to_branch?(ref)
-      project.execute_hooks(@push_data.dup)
+      project.execute_hooks(@push_data.dup, :push_hooks)
       project.execute_services(@push_data.dup)
     end
 
@@ -87,10 +87,9 @@ class GitPushService
       author = commit_user(commit)
 
       if !issues_to_close.empty? && is_default_branch
-        Thread.current[:current_user] = author
-        Thread.current[:current_commit] = commit
-
-        issues_to_close.each { |i| i.close && i.save }
+        issues_to_close.each do |issue|
+          Issues::CloseService.new(project, author, {}).execute(issue, commit)
+        end
       end
 
       # Create cross-reference notes for any other references. Omit any issues that were referenced in an
@@ -189,8 +188,6 @@ class GitPushService
   end
 
   def commit_user commit
-    User.where(email: commit.author_email).first ||
-      User.where(name: commit.author_name).first ||
-      user
+    User.find_for_commit(commit.author_email, commit.author_name) || user
   end
 end

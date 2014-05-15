@@ -1,0 +1,14 @@
+%h4
+  Can't be merged
+%p
+  This merge request can not be accepted because branch
+  - unless @merge_request.source_branch_exists?
+    %span.label.label-inverse= @merge_request.source_branch
+    does not exist in
+    %span.label.label-info= @merge_request.source_project_path
+  - else
+    %span.label.label-inverse= @merge_request.target_branch
+    does not exist in
+    %span.label.label-info= @merge_request.target_project_path
+  %br
+  %strong Please close this merge request or change branches with existing one

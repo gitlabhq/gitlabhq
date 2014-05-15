@@ -40,7 +40,7 @@ module TreeHelper
   # Returns boolean
   def markup?(filename)
     filename.downcase.end_with?(*%w(.textile .rdoc .org .creole
-                                    .mediawiki .rst .asciidoc .pod))
+                                    .mediawiki .rst .adoc .asciidoc .pod))
   end
 
   def gitlab_markdown?(filename)
@@ -90,5 +90,13 @@ module TreeHelper
 
   def leave_edit_message
     "Leave edit mode?\nAll unsaved changes will be lost."
+  end
+
+  def editing_preview_title(filename)
+    if gitlab_markdown?(filename) || markup?(filename)
+      'Preview'
+    else
+      'Diff'
+    end
   end
 end

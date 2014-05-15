@@ -15,6 +15,7 @@ namespace :gitlab do
     end
 
     Rake::Task["db:setup"].invoke
+    Rake::Task["add_limits_mysql"].invoke
     Rake::Task["db:seed_fu"].invoke
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".red

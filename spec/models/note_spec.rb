@@ -6,15 +6,15 @@
 #  note          :text
 #  noteable_type :string(255)
 #  author_id     :integer
-#  created_at    :datetime         not null
-#  updated_at    :datetime         not null
+#  created_at    :datetime
+#  updated_at    :datetime
 #  project_id    :integer
 #  attachment    :string(255)
 #  line_code     :string(255)
 #  commit_id     :string(255)
 #  noteable_id   :integer
-#  st_diff       :text
 #  system        :boolean          default(FALSE), not null
+#  st_diff       :text
 #
 
 require 'spec_helper'
@@ -61,6 +61,11 @@ describe Note do
       note.should be_upvote
     end
 
+    it "recognizes a thumbsup emoji as a vote" do
+      note = build(:votable_note, note: ":thumbsup: for this")
+      note.should be_upvote
+    end
+
     it "recognizes a -1 note" do
       note = create(:votable_note, note: "-1 for this")
       note.should be_downvote
@@ -68,6 +73,11 @@ describe Note do
 
     it "recognizes a -1 emoji as a vote" do
       note = build(:votable_note, note: ":-1: for this")
+      note.should be_downvote
+    end
+
+    it "recognizes a thumbsdown emoji as a vote" do
+      note = build(:votable_note, note: ":thumbsdown: for this")
       note.should be_downvote
     end
   end
@@ -170,11 +180,36 @@ describe Note do
     end
   end
 
+  describe '#create_assignee_change_note' do
+    let(:project) { create(:project) }
+    let(:thing) { create(:issue, project: project) }
+    let(:author) { create(:user) }
+    let(:assignee) { create(:user) }
+
+    subject { Note.create_assignee_change_note(thing, project, author, assignee) }
+
+    context 'creates and saves a Note' do
+      it { should be_a Note }
+      its(:id) { should_not be_nil }
+    end
+
+    its(:noteable) { should == thing }
+    its(:project) { should == thing.project }
+    its(:author) { should == author }
+    its(:note) { should =~ /Reassigned to @#{assignee.username}/ }
+
+    context 'assignee is removed' do
+      let(:assignee) { nil }
+
+      its(:note) { should =~ /Assignee removed/ }
+    end
+  end
+
   describe '#create_cross_reference_note' do
-    let(:project)    { create(:project_with_code) }
+    let(:project)    { create(:project) }
     let(:author)     { create(:user) }
     let(:issue)      { create(:issue, project: project) }
-    let(:mergereq)   { create(:merge_request, target_project: project) }
+    let(:mergereq)   { create(:merge_request, :simple, target_project: project, source_project: project) }
     let(:commit)     { project.repository.commit }
 
     # Test all of {issue, merge request, commit} in both the referenced and referencing
@@ -215,6 +250,16 @@ describe Note do
       its(:project) { should == project }
       its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
     end
+
+    context 'commit from issue' do
+      subject { Note.create_cross_reference_note(commit, issue, author, project) }
+
+      it { should be_valid }
+      its(:noteable_type) { should == "Commit" }
+      its(:noteable_id) { should be_nil }
+      its(:commit_id) { should == commit.id }
+      its(:note) { should == "_mentioned in issue ##{issue.iid}_" }
+    end
   end
 
   describe '#cross_reference_exists?' do
@@ -242,6 +287,7 @@ describe Note do
     let(:issue)   { create(:issue, project: project) }
     let(:other)   { create(:issue, project: project) }
     let(:author)  { create(:user) }
+    let(:assignee) { create(:user) }
 
     it 'should recognize user-supplied notes as non-system' do
       @note = create(:note_on_issue)
@@ -255,6 +301,11 @@ describe Note do
 
     it 'should identify cross-reference notes as system notes' do
       @note = Note.create_cross_reference_note(issue, other, author, project)
+      @note.should be_system
+    end
+
+    it 'should identify assignee-change notes as system notes' do
+      @note = Note.create_assignee_change_note(issue, project, author, assignee)
       @note.should be_system
     end
   end

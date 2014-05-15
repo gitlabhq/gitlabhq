@@ -11,8 +11,8 @@ def common_mentionable_setup
 
   let(:mentioned_issue) { create :issue, project: mproject }
   let(:other_issue) { create :issue, project: mproject }
-  let(:mentioned_mr) { create :merge_request, target_project: mproject, source_branch: 'different' }
-  let(:mentioned_commit) { mock('commit', sha: '1234567890abcdef').as_null_object }
+  let(:mentioned_mr) { create :merge_request, source_project: mproject, source_branch: 'different' }
+  let(:mentioned_commit) { double('commit', sha: '1234567890abcdef').as_null_object }
 
   # Override to add known commits to the repository stub.
   let(:extra_commits) { [] }
@@ -30,7 +30,7 @@ def common_mentionable_setup
     commitmap = { '123456' => mentioned_commit }
     extra_commits.each { |c| commitmap[c.sha[0..5]] = c }
 
-    repo = mock('repository')
+    repo = double('repository')
     repo.stub(:commit) { |sha| commitmap[sha] }
     mproject.stub(repository: repo)
 

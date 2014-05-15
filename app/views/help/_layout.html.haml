@@ -1,37 +1,12 @@
 .row
-  .span3{:"data-spy" => 'affix'}
-    .ui-box
-      .title
-        Help
-      %ul.well-list
-        %li
-          %strong= link_to "Workflow", help_workflow_path
-        %li
-          %strong= link_to "SSH keys", help_ssh_path
+  .col-md-3
+    %h3.page-title Help
+    %ul.nav.nav-pills.nav-stacked
+      - links = {:"Workflow" => help_workflow_path, :"SSH Keys" => help_ssh_path, :"GitLab Markdown" => help_markdown_path, :"Permissions" => help_permissions_path, :"API" => help_api_path, :"Web Hooks" => help_web_hooks_path, :"Rake Tasks" => help_raketasks_path, :"System Hooks" => help_system_hooks_path, :"Public Access" => help_public_access_path, :"Security" => help_security_path}
+      - links.each do |title,path|
+        %li{class: current_page?(path) ? 'active' : nil}
+          = link_to title, path
 
-        %li
-          %strong= link_to "GitLab Markdown", help_markdown_path
-
-        %li
-          %strong= link_to "Permissions", help_permissions_path
-
-        %li
-          %strong= link_to "API", help_api_path
-
-        %li
-          %strong= link_to "Web Hooks", help_web_hooks_path
-
-        %li
-          %strong= link_to "Rake Tasks", help_raketasks_path
-
-        %li
-          %strong= link_to "System Hooks", help_system_hooks_path
-
-        %li
-          %strong= link_to "Public Access", help_public_access_path
-
-        %li
-          %strong= link_to "Security", help_security_path
-
-  .span9.pull-right
-    = yield
+  .col-md-9
+    .wiki
+      = yield

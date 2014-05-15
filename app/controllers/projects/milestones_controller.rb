@@ -34,16 +34,10 @@ class Projects::MilestonesController < Projects::ApplicationController
     @issues = @milestone.issues
     @users = @milestone.participants.uniq
     @merge_requests = @milestone.merge_requests
-
-    respond_to do |format|
-      format.html
-      format.js
-    end
   end
 
   def create
     @milestone = @project.milestones.new(params[:milestone])
-    @milestone.author_id_of_changes = current_user.id
 
     if @milestone.save
       redirect_to project_milestone_path(@project, @milestone)
@@ -53,7 +47,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def update
-    @milestone.update_attributes(params[:milestone].merge(author_id_of_changes: current_user.id))
+    @milestone.update_attributes(params[:milestone])
 
     respond_to do |format|
       format.js
@@ -81,7 +75,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   protected
 
   def milestone
-    @milestone ||= @project.milestones.find_by_iid!(params[:id])
+    @milestone ||= @project.milestones.find_by!(iid: params[:id])
   end
 
   def authorize_admin_milestone!

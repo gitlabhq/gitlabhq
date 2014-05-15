@@ -1,22 +1,22 @@
-= form_for @user, url: profile_password_path, method: :post do |f|
-  .light-well.padded
-    %p.slead
-      Please set new password before proceed.
-      %br
-      After successful password update you will be redirected to login screen
-    -if @user.errors.any?
-      .alert.alert-error
-        %ul
-          - @user.errors.full_messages.each do |msg|
-            %li= msg
+%h3.page-title Setup new password
+%hr
+= form_for @user, url: profile_password_path, method: :post, html: { class: 'form-horizontal '} do |f|
+  %p.slead
+    Please set a new password before proceeding.
+    %br
+    After a successful password update you will be redirected to login screen.
+  -if @user.errors.any?
+    .alert.alert-danger
+      %ul
+        - @user.errors.full_messages.each do |msg|
+          %li= msg
 
-    .control-group
-      = f.label :password
-      .controls= f.password_field :password, required: true
-    .control-group
-      = f.label :password_confirmation
-      .controls
-        = f.password_field :password_confirmation, required: true
-    .control-group
-      .controls
-        = f.submit 'Set new password', class: "btn btn-create"
+  .form-group
+    = f.label :password, class: 'control-label'
+    .col-sm-10= f.password_field :password, required: true, class: 'form-control'
+  .form-group
+    = f.label :password_confirmation, class: 'control-label'
+    .col-sm-10
+      = f.password_field :password_confirmation, required: true, class: 'form-control'
+  .form-actions
+    = f.submit 'Set new password', class: "btn btn-create"

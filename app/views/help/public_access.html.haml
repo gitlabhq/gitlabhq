@@ -1,15 +1,6 @@
 = render layout: 'help/layout' do
-  %h3.page-title Public Access
+  %h3.page-title Public Access 
 
-  %p
-    GitLab allows you to open selected projects to be accessed publicly.
-    These projects will be cloneable
-    %em without any
-    authentication.
-    Also they will be listed on the #{link_to "public access directory", public_root_path}.
-
-  %ol
-    %li Go to your project dashboard
-    %li Click on the "Edit" tab
-    %li Select "Public clone access"
-
+  .help_body
+    = preserve do
+      = markdown File.read(Rails.root.join("doc", "public_access", "public_access.md"))

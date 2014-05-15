@@ -25,7 +25,6 @@ class Dashboard < Spinach::FeatureSteps
     find("#merge_request_target_project_id").value.should == @project.id.to_s
     find("#merge_request_source_branch").value.should == "new_design"
     find("#merge_request_target_branch").value.should == "master"
-    find("#merge_request_title").value.should == "New Design"
   end
 
   Given 'user with name "John Doe" joined project "Shop"' do
@@ -43,7 +42,7 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   And 'user with name "John Doe" left project "Shop"' do
-    user = User.find_by_name "John Doe"
+    user = User.find_by(name: "John Doe")
     Event.create(
       project: project,
       author_id: user.id,
@@ -85,6 +84,6 @@ class Dashboard < Spinach::FeatureSteps
   end
 
   def project
-    @project ||= Project.find_by_name "Shop"
+    @project ||= Project.find_by(name: "Shop")
   end
 end

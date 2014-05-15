@@ -6,6 +6,7 @@
   border-bottom: 1px solid #E1E1E1;
 
   ul {
+    padding: 0;
     margin: auto;
     height: 40px;
     overflow: hidden;
@@ -34,9 +35,8 @@
       width: 1%;
       &.active {
         a {
-          color: $style_color;
-          font-weight: bolder;
-
+          color: #333;
+          font-weight: bold;
           &:after {
             content: '';
             display: block;
@@ -45,7 +45,7 @@
             left: 50%;
             width: 0;
             height: 0;
-            border-color: transparent transparent #777 transparent;
+            border-color: transparent transparent #333 transparent;
             border-style: solid;
             border-width: 6px;
             margin-left: -6px;
@@ -55,7 +55,20 @@
 
       &:hover {
         a {
-         color: $style_color;
+          color: $link_color;
+          &:after {
+            content: '';
+            display: block;
+            position: relative;
+            bottom: 8px;
+            left: 50%;
+            width: 0;
+            height: 0;
+            border-color: transparent transparent #29b transparent;
+            border-style: solid;
+            border-width: 6px;
+            margin-left: -6px;
+          }
         }
       }
 
@@ -72,7 +85,7 @@
     a {
       display: block;
       text-align: center;
-      font-weight: normal;
+      font-weight: 500;
       height: 38px;
       line-height: 34px;
       color: #777;
@@ -80,6 +93,40 @@
       padding: 0 10px;
       text-decoration: none;
       padding-top: 2px;
+    }
+  }
+
+  @media (max-width: $screen-xs-max) {
+    font-size: 18px;
+    margin: 0;
+
+    max-height: none;
+
+    &, .container {
+      padding: 0;
+      border-top: 0;
+    }
+
+    ul {
+      height: auto;
+
+      li {
+        display: list-item;
+        width: auto;
+        padding: 5px 0;
+
+        &.active {
+          background-color: $primary_color;
+
+          a {
+            color: #fff;
+            font-weight: normal;
+            text-shadow: none;
+
+            &:after { display: none; }
+          }
+        }
+      }
     }
   }
 }

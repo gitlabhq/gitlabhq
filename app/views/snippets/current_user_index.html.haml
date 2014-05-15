@@ -1,9 +1,9 @@
 %h3.page-title
   My Snippets
   .pull-right
-    = link_to new_snippet_path, class: "btn btn-new grouped", title: "New Snippet" do
+    = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
       Add new snippet
-    = link_to snippets_path, class: "btn grouped"  do
+    = link_to snippets_path, class: "btn btn-grouped"  do
       Discover snippets
 
 %p.light
@@ -11,7 +11,7 @@
 %hr
 
 .row
-  .span3
+  .col-md-3
     %ul.nav.nav-pills.nav-stacked
       = nav_tab :scope, nil do
         = link_to user_snippets_path(@user) do
@@ -29,6 +29,6 @@
           %span.pull-right
             = @user.snippets.public.count
 
-  .span9.my-snippets
+  .col-md-9.my-snippets
     = render 'snippets'
 

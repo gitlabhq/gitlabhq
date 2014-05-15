@@ -1,0 +1,128 @@
+/**
+ * Issue box:
+ * Huge block (one per page) for storing title, descripion and other information.
+ * Used for Issue#show page, MergeRequest#show page etc
+ *
+ * CLasses:
+ *   .issue-box - Regular box
+ */
+
+.issue-box {
+  color: #666;
+  margin:20px 0;
+  background: #FFF;
+  border: 1px solid #EEE;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+
+  &.issue-box-closed {
+    border-color: #DA4E49;
+    .state {
+      background-color: #f2dede;
+      border-color: #ebccd1;
+      color: #a94442;
+      .state-label {
+        background: #DA4E49;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-merged {
+    border-color: #31708f;
+    .state {
+      background-color: #d9edf7;
+      border-color: #bce8f1;
+      color: #31708f;
+      .state-label {
+        background: #31708f;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-open {
+    border-color: #4A4;
+    .state {
+      background-color: #dff0d8;
+      border-color: #d6e9c6;
+      color: #3c763d;
+      .state-label {
+        background: #4A4;
+        color: #FFF;
+      }
+    }
+  }
+
+  &.issue-box-expired {
+    border-color: #cea61b;
+    .state {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+      .state-label {
+        background: #cea61b;
+        color: #FFF;
+      }
+    }
+  }
+
+  .control-group {
+    margin-bottom: 0;
+  }
+
+  .state {
+    border-bottom: 1px solid #DDD;
+    line-height: 32px;
+  }
+
+  .title {
+    font-size: 22px;
+    font-weight: 500;
+    line-height: 1.5;
+    margin: 0;
+    color: #333;
+    padding-bottom: 0;
+    padding: 15px 25px;
+  }
+
+  .context {
+    border: none;
+    border-top: 1px solid #eee;
+    padding: 15px 25px;
+
+    // Reset text align for children
+    .text-right > * { text-align: left; }
+
+    @media (max-width: $screen-xs-max) {
+      // Don't right align on mobile
+      .text-right { text-align: left; }
+
+      .row .col-md-6 {
+        padding-top: 5px;
+      }
+    }
+  }
+
+  .description {
+    padding: 0 25px 15px 25px;
+  }
+
+  .title, .context, .description {
+    .clearfix {
+      margin: 0;
+    }
+  }
+
+  .state-label {
+    font-size: 14px;
+    padding: 1px 25px;
+    text-align: center;
+    text-shadow: none;
+    display: inline-block;
+    line-height: 34px;
+  }
+
+  .creator {
+    padding: 2px 15px;
+  }
+}

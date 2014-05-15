@@ -5,9 +5,8 @@
       %strong= truncate(event.ref_name, length: 28)
     at
     %strong= link_to_project event.project
-    %span
-      = time_ago_in_words(event.created_at)
-      ago.
+    #{time_ago_with_tooltip(event.created_at)}
+
     .pull-right
       = link_to new_mr_path_from_push_event(event), title: "New Merge Request", class: "btn btn-create btn-small" do
         Create Merge Request

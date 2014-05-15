@@ -5,15 +5,6 @@ module API
     before { authorize_admin_project }
 
     resource :projects do
-      helpers do
-        def handle_project_member_errors(errors)
-          if errors[:project_access].any?
-            error!(errors[:project_access], 422)
-          end
-          not_found!
-        end
-      end
-
       # Get project hooks
       #
       # Parameters:
@@ -22,7 +13,7 @@ module API
       #   GET /projects/:id/hooks
       get ":id/hooks" do
         @hooks = paginate user_project.hooks
-        present @hooks, with: Entities::Hook
+        present @hooks, with: Entities::ProjectHook
       end
 
       # Get a project hook
@@ -34,7 +25,7 @@ module API
       #   GET /projects/:id/hooks/:hook_id
       get ":id/hooks/:hook_id" do
         @hook = user_project.hooks.find(params[:hook_id])
-        present @hook, with: Entities::Hook
+        present @hook, with: Entities::ProjectHook
       end
 
 
@@ -47,10 +38,11 @@ module API
       #   POST /projects/:id/hooks
       post ":id/hooks" do
         required_attributes! [:url]
+        attrs = attributes_for_keys [:url, :push_events, :issues_events, :merge_requests_events]
+        @hook = user_project.hooks.new(attrs)
 
-        @hook = user_project.hooks.new({"url" => params[:url]})
         if @hook.save
-          present @hook, with: Entities::Hook
+          present @hook, with: Entities::ProjectHook
         else
           if @hook.errors[:url].present?
             error!("Invalid url given", 422)
@@ -70,10 +62,10 @@ module API
       put ":id/hooks/:hook_id" do
         @hook = user_project.hooks.find(params[:hook_id])
         required_attributes! [:url]
+        attrs = attributes_for_keys [:url, :push_events, :issues_events, :merge_requests_events]
 
-        attrs = attributes_for_keys [:url]
         if @hook.update_attributes attrs
-          present @hook, with: Entities::Hook
+          present @hook, with: Entities::ProjectHook
         else
           if @hook.errors[:url].present?
             error!("Invalid url given", 422)

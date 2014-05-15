@@ -12,15 +12,15 @@ module LabelsHelper
   def label_css_class(name)
     klass = Gitlab::IssuesLabels
 
-    case name
+    case name.downcase
     when *klass.warning_labels
       'label-warning'
     when *klass.neutral_labels
-      'label-inverse'
+      'label-primary'
     when *klass.positive_labels
       'label-success'
     when *klass.important_labels
-      'label-important'
+      'label-danger'
     else
       'label-info'
     end

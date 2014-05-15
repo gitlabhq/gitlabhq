@@ -6,19 +6,28 @@ module API
     SUDO_PARAM = :sudo
 
     def current_user
-      @current_user ||= User.find_by_authentication_token(params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER])
+      private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
+      @current_user ||= User.find_by(authentication_token: private_token)
+
+      unless @current_user && Gitlab::UserAccess.allowed?(@current_user)
+        return nil
+      end
+
       identifier = sudo_identifier()
+
       # If the sudo is the current user do nothing
       if (identifier && !(@current_user.id == identifier || @current_user.username == identifier))
         render_api_error!('403 Forbidden: Must be admin to use sudo', 403) unless @current_user.is_admin?
         @current_user = User.by_username_or_id(identifier)
         not_found!("No user id or username for: #{identifier}") if @current_user.nil?
       end
+
       @current_user
     end
 
     def sudo_identifier()
       identifier ||= params[SUDO_PARAM] ||= env[SUDO_HEADER]
+
       # Regex for integers
       if (!!(identifier =~ /^[0-9]+$/))
         identifier.to_i
@@ -29,6 +38,7 @@ module API
 
     def set_current_user_for_thread
       Thread.current[:current_user] = current_user
+
       begin
         yield
       ensure
@@ -42,7 +52,7 @@ module API
     end
 
     def find_project(id)
-      project = Project.find_by_id(id) || Project.find_with_namespace(id)
+      project = Project.find_with_namespace(id) || Project.find_by(id: id)
 
       if project && can?(current_user, :read_project, project)
         project
@@ -51,8 +61,12 @@ module API
       end
     end
 
-    def paginate(object)
-      object.page(params[:page]).per(params[:per_page].to_i)
+    def paginate(relation)
+      per_page  = params[:per_page].to_i
+      paginated = relation.page(params[:page]).per(per_page)
+      add_pagination_headers(paginated, per_page)
+
+      paginated
     end
 
     def authenticate!
@@ -67,6 +81,10 @@ module API
       unless abilities.allowed?(current_user, action, subject)
         forbidden!
       end
+    end
+
+    def authorize_push_project
+      authorize! :push_code, user_project
     end
 
     def authorize_admin_project
@@ -128,6 +146,18 @@ module API
     end
 
     private
+
+    def add_pagination_headers(paginated, per_page)
+      request_url = request.url.split('?').first
+
+      links = []
+      links << %(<#{request_url}?page=#{paginated.current_page - 1}&per_page=#{per_page}>; rel="prev") unless paginated.first_page?
+      links << %(<#{request_url}?page=#{paginated.current_page + 1}&per_page=#{per_page}>; rel="next") unless paginated.last_page?
+      links << %(<#{request_url}?page=1&per_page=#{per_page}>; rel="first")
+      links << %(<#{request_url}?page=#{paginated.total_pages}&per_page=#{per_page}>; rel="last")
+
+      header 'Link', links.join(', ')
+    end
 
     def abilities
       @abilities ||= begin
