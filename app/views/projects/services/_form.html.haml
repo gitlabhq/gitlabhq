@@ -18,6 +18,10 @@
           %li= msg
 
 
+  - if @service.help.present?
+    .bs-callout
+      = @service.help
+
   .form-group
     = f.label :active, "Active", class: "control-label"
     .col-sm-10

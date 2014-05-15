@@ -41,6 +41,10 @@ class JenkinsService < CiService
     'An extendable open source continuous integration server'
   end
 
+  def help
+    'You must have installed GitLab Hook plugin into Jenkins.'
+  end
+
   def to_param
     'jenkins'
   end
