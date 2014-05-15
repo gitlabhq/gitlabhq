@@ -189,9 +189,9 @@ ActiveRecord::Schema.define(version: 20140513095908) do
     t.datetime "updated_at"
     t.string   "type"
     t.string   "description", default: "", null: false
-    t.string   "avatar"
     t.string   "ldap_cn"
     t.integer  "ldap_access"
+    t.string   "avatar"
   end
 
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
@@ -238,20 +238,20 @@ ActiveRecord::Schema.define(version: 20140513095908) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",         default: true,     null: false
-    t.boolean  "wall_enabled",           default: true,     null: false
-    t.boolean  "merge_requests_enabled", default: true,     null: false
-    t.boolean  "wiki_enabled",           default: true,     null: false
+    t.boolean  "issues_enabled",          default: true,     null: false
+    t.boolean  "wall_enabled",            default: true,     null: false
+    t.boolean  "merge_requests_enabled",  default: true,     null: false
+    t.boolean  "wiki_enabled",            default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",         default: "gitlab", null: false
+    t.string   "issues_tracker",          default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",       default: true,     null: false
+    t.boolean  "snippets_enabled",        default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",       default: 0,        null: false
-    t.boolean  "archived",               default: false,    null: false
+    t.integer  "visibility_level",        default: 0,        null: false
+    t.boolean  "archived",                default: false,    null: false
     t.string   "import_status"
-    t.float    "repository_size",        default: 0.0
+    t.float    "repository_size",         default: 0.0
     t.text     "merge_requests_template"
   end
 
@@ -357,6 +357,7 @@ ActiveRecord::Schema.define(version: 20140513095908) do
     t.integer  "notification_level",       default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -364,7 +365,6 @@ ActiveRecord::Schema.define(version: 20140513095908) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
-    t.datetime "last_credential_check_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
