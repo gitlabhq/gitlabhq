@@ -39,6 +39,11 @@ describe API, api: true do
   end
 
   describe ".current_user" do
+    it "should return nil for an invalid token" do
+      env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
+      current_user.should be_nil
+    end
+
     it "should leave user as is when sudo not specified" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = user.private_token
       current_user.should == user
