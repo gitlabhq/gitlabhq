@@ -28,7 +28,8 @@ class JenkinsService < CiService
 
   def compose_service_hook
     hook = service_hook || build_service_hook
-    hook.url = [project_url, "/gitlab/build_now"].join("")
+    jenkins_url = project_url.sub(/job\/.*/, '')
+    hook.url = jenkins_url + "/gitlab/build_now"
     hook.save
   end
 
@@ -46,12 +47,12 @@ class JenkinsService < CiService
 
   def fields
     [
-      { type: 'text', name: 'project_url', placeholder: 'Jenkins server URL like http://jenkins.example.com/' }
+      { type: 'text', name: 'project_url', placeholder: 'Jenkins project URL like http://jenkins.example.com/job/my-project/' }
     ]
   end
 
   def build_page sha
-    project_url + "/job/test1/scm/bySHA1/#{sha}"
+    project_url + "/scm/bySHA1/#{sha}"
   end
 
   def commit_status sha

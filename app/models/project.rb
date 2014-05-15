@@ -335,7 +335,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    services.select(&:activated?).first
+    @ci_service ||= services.select(&:activated?).first
   end
 
   def jira_tracker?
