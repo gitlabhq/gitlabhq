@@ -322,15 +322,27 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-<<<<<<< HEAD
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack jira)
-=======
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack jenkins)
->>>>>>> Add Jenkins CI service
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack jira jenkins)
   end
 
   def gitlab_ci?
     gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def jenkins_enabled?
+    jenkins_service && jenkins_service.active
+  end
+
+  def enabled_ci?
+    gitlab_ci? || jenkins_enabled?
+  end
+
+  def ci_service
+    if gitlab_ci?
+      gitlab_ci_service
+    elsif jenkins_enabled?
+      jenkins_service
+    end
   end
 
   def jira_tracker?

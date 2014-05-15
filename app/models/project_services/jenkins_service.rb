@@ -49,4 +49,30 @@ class JenkinsService < Service
       { type: 'text', name: 'project_url', placeholder: 'Jenkins server URL like http://jenkins.example.com/' }
     ]
   end
+
+  def build_page sha
+    project_url + "/job/test1/scm/bySHA1/#{sha}"
+  end
+
+  def commit_status sha
+    response = HTTParty.get(commit_status_path(sha), verify: false)
+
+    if response.code == 200
+      if response.include?('alt="Success"')
+        'success'
+      elsif response.include?('alt="Failed"')
+        'failed'
+      elsif response.include?('alt="In progress"')
+        'running'
+      else
+        'pending'
+      end
+    else
+      :error
+    end
+  end
+
+  def commit_status_path sha
+    project_url + "/job/test1/scm/bySHA1/#{sha}"
+  end
 end
