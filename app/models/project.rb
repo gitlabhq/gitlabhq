@@ -58,6 +58,7 @@ class Project < ActiveRecord::Base
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services
+  has_many :services
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
@@ -329,20 +330,12 @@ class Project < ActiveRecord::Base
     gitlab_ci_service && gitlab_ci_service.active
   end
 
-  def jenkins_enabled?
-    jenkins_service && jenkins_service.active
-  end
-
-  def enabled_ci?
-    gitlab_ci? || jenkins_enabled?
+  def ci_services
+    services.select { |service| service.category == :ci }
   end
 
   def ci_service
-    if gitlab_ci?
-      gitlab_ci_service
-    elsif jenkins_enabled?
-      jenkins_service
-    end
+    services.select(&:activated?).first
   end
 
   def jira_tracker?
