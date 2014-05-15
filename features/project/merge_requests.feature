@@ -142,4 +142,5 @@ Feature: Project Merge Requests
 
   Scenario: I submit new unassigned merge request with template description
       Given I click link "New Merge Request"
+      And I select "notes_refactoring" as source
       Then I should see description field pre-filled
