@@ -16,8 +16,10 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def store!(file)
+    original_filename = file.original_filename
     generate_filename(file)
     super
+    original_filename
   end
 
   def generate_filename(file)

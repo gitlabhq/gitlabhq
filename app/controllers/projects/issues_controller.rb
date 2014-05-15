@@ -102,9 +102,10 @@ class Projects::IssuesController < Projects::ApplicationController
     uploader = FileUploader.new('uploads/' + @upload_path, @accepted_types)
     links = []
     params['issue-imgs'].each do |img|
-      uploader.store!(img)
-      links << File.join(root_url, uploader.url)
+      alt = uploader.store!(img)
+      links << {'alt' => File.basename(alt,'.*'), 'url' => File.join(root_url, uploader.url)}
     end
+
     respond_to do |format|
       format.json { render json: { links: links } }
     end

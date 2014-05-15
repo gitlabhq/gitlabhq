@@ -104,7 +104,7 @@
   function formatLinks(links) {
     var md_links = [];
     links.forEach(function (str) {
-      md_links.push('![Alt text]('+ str + ')');
+      md_links.push('![' + str.alt + '](' + str.url + ')');
     })
     return md_links;
   }
@@ -138,7 +138,6 @@
     });
 
   $('#div-dropzone').on('dragenter',function(){
-    console.log($(this).children('textarea').attr('id'));
     $(this).children('textarea').focus();
     $('#div-dropzone-hover').css('opacity',0.7);
   });
