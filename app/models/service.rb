@@ -33,6 +33,10 @@ class Service < ActiveRecord::Base
     active
   end
 
+  def category
+    :common
+  end
+
   def title
     # implement inside child
   end

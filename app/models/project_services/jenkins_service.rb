@@ -17,7 +17,7 @@
 #  api_key     :string(255)
 #
 
-class JenkinsService < Service
+class JenkinsService < CiService
   attr_accessible :project_url
 
   validates :project_url, presence: true, if: :activated?
@@ -55,7 +55,7 @@ class JenkinsService < Service
   end
 
   def commit_status sha
-    response = HTTParty.get(commit_status_path(sha), verify: false)
+    response = HTTParty.get(build_page(sha), verify: false)
 
     if response.code == 200
       if response.include?('alt="Success"')
@@ -70,9 +70,5 @@ class JenkinsService < Service
     else
       :error
     end
-  end
-
-  def commit_status_path sha
-    project_url + "/job/test1/scm/bySHA1/#{sha}"
   end
 end
