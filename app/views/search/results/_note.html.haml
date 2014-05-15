@@ -1,0 +1,9 @@
+%li
+  note on issue:
+  = link_to [note.project, note.noteable] do
+    %span ##{note.noteable.iid}
+    %strong.term
+      = truncate note.noteable.title, length: 50
+  %span.light (#{note.project.name_with_namespace})
+  - if note.noteable.closed?
+    %span.label Closed
