@@ -66,8 +66,8 @@ module Gitlab
       if Gitlab.config.ldap.enabled
         if user.ldap_user?
           # Check if LDAP user exists and match LDAP user_filter
-          unless Gitlab::LDAP::Access.new.allowed?(user)
-            return false
+          Gitlab::LDAP::Access.open do |adapter|
+            return false unless adapter.allowed?(user)
           end
         end
       end
