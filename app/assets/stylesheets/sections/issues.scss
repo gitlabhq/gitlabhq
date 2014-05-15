@@ -169,10 +169,10 @@ form.edit-issue {
   }
 }
 
-#div-dropzone {
+.div-dropzone {
   position: relative;
 
-  #div-dropzone-hover {
+  .div-dropzone-hover {
     position: absolute;
     top: 50%;
     left: 50%;
@@ -183,7 +183,7 @@ form.edit-issue {
     transition: opacity 200ms ease-in-out;
   }
 
-  #div-dropzone-error {
+  .div-dropzone-error {
     position: absolute;
     top: 50%;
     width: 100%;
@@ -195,7 +195,7 @@ form.edit-issue {
     transition: opacity 200ms ease-in-out;
   }
 
-  #div-dropzone-spinner {
+  .div-dropzone-spinner {
     position: absolute;
     top: 100%;
     left: 100%;
@@ -207,7 +207,7 @@ form.edit-issue {
   }
 }
 
-#div-dropzone {
+.div-dropzone {
   padding: 0;
   border: 0;
 }

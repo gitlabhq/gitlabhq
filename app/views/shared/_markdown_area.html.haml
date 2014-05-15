@@ -1,0 +1,65 @@
+:javascript
+  function formatLinks(links) {
+    var md_links = [];
+    links.forEach(function (str) {
+      md_links.push('![' + str.alt + '](' + str.url + ')');
+    })
+    return md_links;
+  }
+  $(document).ready(function() { 
+    $('textarea.markdown-area').wrap('<div class="div-dropzone"></div>');
+
+    $('.div-dropzone').append('<div class="div-dropzone-hover"><i class="icon-picture div-dropzone-icon"></i></div>');
+
+    $('.div-dropzone').append('<div class="div-dropzone-error"><i class="icon-remove div-dropzone-icon-error"></i><div style="display:inline">Unsupported File Type</div></div>');
+
+    $('.div-dropzone').append('<div class="div-dropzone-spinner"><i class="icon-spinner icon-spin div-dropzone-icon"></i></div>');
+
+    dz = $('.div-dropzone').dropzone({
+      url: "#{upload_image_project_issues_path}",
+      dictDefaultMessage: "",
+      clickable: false,
+      paramName: "issue-imgs",
+      maxFilesize: 2,
+      uploadMultiple: true,
+      acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png",
+      headers: { "X-CSRF-Token": $('meta[name="csrf-token"]').attr('content')},
+      
+      success: function(header,response){
+        var child = $(dz[0]).children('textarea');
+        $(child).val($(child).val() + formatLinks(response.links).join("\n") + "\n");
+      },
+
+      error: function(temp, errorMessage) {
+        $('.div-dropzone-error').css('opacity', 0.7);
+        $('.div-dropzone-error').delay(500).fadeTo("slow", 0);
+      },
+
+      sending: function() {
+        $('.div-dropzone-spinner').css('opacity', 0.7);    
+      },
+      
+      complete: function() {
+        $('.div-dropzone-spinner').css('opacity',0);
+      }
+    });
+
+    $('.div-dropzone').on('dragenter',function(){
+      $(this).children('textarea').focus();
+      $('.div-dropzone-hover').css('opacity',0.7);
+    });
+
+    $('body').on('dragover',function(){
+      $('.div-dropzone').children('textarea').blur();
+      $('.div-dropzone-hover').css('opacity',0);
+    });
+
+    $('.div-dropzone').on('drop',function(){
+      $('.dz-preview').remove();
+      $('.div-dropzone-hover').css('opacity',0);
+    });
+
+  });
+
+
+  

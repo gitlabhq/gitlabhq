@@ -19,16 +19,7 @@
     .form-group
       = f.label :description, 'Description', class: 'control-label'
       .col-sm-10
-        .demo#div-dropzone
-          = f.text_area :description, class: 'form-control js-gfm-input', rows: 14
-          #div-dropzone-hover 
-            %i.icon-picture.div-dropzone-icon
-          #div-dropzone-error 
-            %i.icon-remove.div-dropzone-icon-error
-            %div{style:'display:inline'}
-              Unsupported File Type
-          #div-dropzone-spinner 
-            %i.icon-spinner.icon-spin.div-dropzone-icon
+        = f.text_area :description, class: 'form-control js-gfm-input markdown-area', rows: 14
         %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
     %hr
     .form-group
@@ -66,6 +57,8 @@
       - cancel_path = @issue.new_record? ? project_issues_path(@project) : project_issue_path(@project, @issue)
       = link_to "Cancel", cancel_path, class: 'btn btn-cancel'
 
+= render 'shared/markdown_area' 
+
 :javascript
   $("#issue_label_list")
     .bind( "keydown", function( event ) {
@@ -99,55 +92,4 @@
   $('.assign-to-me-link').on('click', function(e){
     $('#issue_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
-  });
-
-  function formatLinks(links) {
-    var md_links = [];
-    links.forEach(function (str) {
-      md_links.push('![' + str.alt + '](' + str.url + ')');
-    })
-    return md_links;
-  }
-
-  $('#div-dropzone').dropzone({
-    url: "#{upload_image_project_issues_path}",
-    dictDefaultMessage: "",
-    clickable: false,
-    paramName: "issue-imgs",
-    maxFilesize: 2,
-    uploadMultiple: true,
-    acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png",
-    headers: { "X-CSRF-Token": $('meta[name="csrf-token"]').attr('content')},
-    
-    success: function(header,response){
-      $("#issue_description").val($("#issue_description").val() + formatLinks(response.links).join("\n") + "\n");
-    },
-
-    error: function(temp, errorMessage) {
-      $('#div-dropzone-error').css('opacity', 0.7);
-      $('#div-dropzone-error').delay(500).fadeTo("slow", 0);
-    },
-
-    sending: function() {
-      $('#div-dropzone-spinner').css('opacity', 0.7);    
-    },
-    
-    complete: function() {
-      $('#div-dropzone-spinner').css('opacity',0);
-    }
-    });
-
-  $('#div-dropzone').on('dragenter',function(){
-    $(this).children('textarea').focus();
-    $('#div-dropzone-hover').css('opacity',0.7);
-  });
-
-  $('body').on('dragover',function(){
-    $('#div-dropzone').children('textarea').blur();
-    $('#div-dropzone-hover').css('opacity',0);
-  });
-
-  $('#div-dropzone').on('drop',function(){
-    $('.dz-preview').remove();
-    $('#div-dropzone-hover').css('opacity',0);
   });

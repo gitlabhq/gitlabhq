@@ -24,7 +24,7 @@
   .form-group
     = f.label :content, class: 'control-label'
     .col-sm-10
-      = f.text_area :content, class: 'form-control js-gfm-input', rows: 18
+      = f.text_area :content, class: 'form-control js-gfm-input markdown-area', rows: 18
 
   .form-group
     = f.label :commit_message, class: 'control-label'
@@ -37,3 +37,5 @@
     - else
       = f.submit 'Create page', class: "btn-create btn"
       = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"
+
+= render('shared/markdown_area')
