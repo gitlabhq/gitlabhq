@@ -16,6 +16,7 @@ v 6.9.0
   - Two Step MR creation process
   - Remove unwanted files from satellite working directory with git clean -fdx
   - Accept merge request via API (sponsored by O'Reilly Media)
+  - Add more access checks during API calls
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
