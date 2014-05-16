@@ -201,7 +201,7 @@ You can change `6-8-stable` to `master` if you want the *bleeding edge* version,
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
-    sudo -u git -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H git config --global user.email "example@example.com"
     sudo -u git -H git config --global core.autocrlf input
 
 **Important Note:**

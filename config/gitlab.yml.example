@@ -33,10 +33,10 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: gitlab@localhost
+    email_from: example@example.com
 
     # Email address of your support contact (default: same as email_from)
-    support_email: support@localhost
+    support_email: support@example.com
 
     ## User settings
     default_projects_limit: 10
