@@ -19,17 +19,19 @@
     .form-group
       = f.label :description, 'Description', class: 'control-label'
       .col-sm-10
-        .demo#div-dropzone
+        #div-dropzone
           = f.text_area :description, class: 'form-control js-gfm-input', rows: 14
-          #div-dropzone-hover 
+          #div-dropzone-hover
             %i.icon-picture.div-dropzone-icon
           #div-dropzone-error 
             %i.icon-remove.div-dropzone-icon-error
-            %div{style:'display:inline'}
-              Unsupported File Type
+            %div#dropzone-error-message{style:'display:inline'}
+              Can't Attach File
           #div-dropzone-spinner 
             %i.icon-spinner.icon-spin.div-dropzone-icon
-        %p.hint Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        %p.hint{style: "display: inline"} Issues are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        %p.hint.pull-right{style: "display: inline"} Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+
     %hr
     .form-group
       .issue-assignee
@@ -54,8 +56,6 @@
       .col-sm-10
         = f.text_field :label_list, maxlength: 2000, class: "form-control"
         %p.hint Separate labels with commas.
-
-
 
     .form-actions
       - if @issue.new_record?
@@ -101,6 +101,20 @@
     e.preventDefault();
   });
 
+  function handlePaste(e) {
+    clipboardData = e.originalEvent.clipboardData;
+    for (var i = 0 ; i < clipboardData.items.length ; i++) {
+      var item = clipboardData.items[i];
+      console.log(item);
+      if (item.type.indexOf("image") != -1) {
+        uploadFile(item.getAsFile());
+      }
+      else {
+        console.log("Discarding non-image paste data");
+      }
+    }
+  }
+
   function formatLinks(links) {
     var md_links = [];
     links.forEach(function (str) {
@@ -112,9 +126,8 @@
   $('#div-dropzone').dropzone({
     url: "#{upload_image_project_issues_path}",
     dictDefaultMessage: "",
-    clickable: false,
     paramName: "issue-imgs",
-    maxFilesize: 2,
+    maxFilesize: 10,
     uploadMultiple: true,
     acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png",
     headers: { "X-CSRF-Token": $('meta[name="csrf-token"]').attr('content')},
@@ -124,6 +137,7 @@
     },
 
     error: function(temp, errorMessage) {
+      $('#dropzone-error-message').text(errorMessage);
       $('#div-dropzone-error').css('opacity', 0.7);
       $('#div-dropzone-error').delay(500).fadeTo("slow", 0);
     },
@@ -135,7 +149,7 @@
     complete: function() {
       $('#div-dropzone-spinner').css('opacity',0);
     }
-    });
+  });
 
   $('#div-dropzone').on('dragenter',function(){
     $(this).children('textarea').focus();
@@ -151,3 +165,8 @@
     $('.dz-preview').remove();
     $('#div-dropzone-hover').css('opacity',0);
   });
+
+  $('.markdown-selector').click(function() {
+    $('#div-dropzone').click();
+  });
+

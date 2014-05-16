@@ -97,14 +97,17 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def upload_image
-    @upload_path = File.join(project.namespace.path, @project.path)
-    @accepted_types = %w(png jpg jpeg gif)
-    uploader = FileUploader.new('uploads/' + @upload_path, @accepted_types)
+    @main_dir = FileUploader.generate_dir
+    upload_path = File.join(project.namespace.path, @project.path, 'issues', @main_dir)
+    accepted_types = %w(png jpg jpeg gif)
+    uploader = FileUploader.new('uploads', upload_path, accepted_types)
     links = []
     params['issue-imgs'].each do |img|
       alt = uploader.store!(img)
-      links << {'alt' => File.basename(alt,'.*'), 'url' => File.join(root_url, uploader.url)}
+      links << { 'alt' => File.basename(alt, '.*'), 
+                 'url' => File.join(root_url, uploader.url) }
     end
+
 
     respond_to do |format|
       format.json { render json: { links: links } }

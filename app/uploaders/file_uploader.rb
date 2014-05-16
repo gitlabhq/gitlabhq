@@ -2,13 +2,22 @@
 class FileUploader < CarrierWave::Uploader::Base
   storage :file
 
-  def initialize(path, allowed_extensions = nil)
+  def initialize(base_dir, path, allowed_extensions = nil)
+    @base_dir = base_dir
     @path = path
     @allowed_extensions = allowed_extensions
   end
 
+  def base_dir
+    @base_dir
+  end
+
   def store_dir
-    @path
+    File.join(base_dir, @path)
+  end
+
+  def cache_dir
+    File.join(base_dir, 'tmp', @path)
   end
 
   def extension_white_list
@@ -17,13 +26,16 @@ class FileUploader < CarrierWave::Uploader::Base
 
   def store!(file)
     original_filename = file.original_filename
-    generate_filename(file)
+    file.original_filename = self.class.generate_filename(file) + File.extname(original_filename)
     super
     original_filename
   end
 
-  def generate_filename(file)
-    new_filename = Digest::MD5.hexdigest(file.original_filename)
-    file.original_filename = new_filename + File.extname(file.original_filename)
+  def self.generate_filename(file)
+    Digest::MD5.hexdigest(File.basename(file.original_filename, '.*'))
+  end
+
+  def self.generate_dir
+    SecureRandom.hex(5)
   end
 end
