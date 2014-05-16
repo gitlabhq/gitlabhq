@@ -8,6 +8,31 @@ $bg_style_color: #2299BB;
 $list-group-active-bg: $bg_style_color;
 $hover: #D9EDF7;
 
+/*
+ * Success colors (green)
+ */
+$border_success: #4cae4c;
+$bg_success: #5cb85c;
+$bg_light_success: #dff0d8;
+$color_success: #3c763d;
+
+/*
+ * Danger colors (red)
+ */
+$border_danger: #d43f3a;
+$bg_danger: #d9534f;
+$bg_light_danger: #f2dede;
+$color_danger: #a94442;
+
+/*
+ * Primary colors (blue)
+ */
+$border_primary: #358ebd;
+$bg_primary: #429bca;
+$bg_light_primary: #d9edf7;
+$color_primary: #31708f;
+
+
 /**
  * Commit Diff Colors
  */
