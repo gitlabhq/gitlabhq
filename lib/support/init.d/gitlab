@@ -12,6 +12,7 @@
 # Default-Stop:      0 1 6
 # Short-Description: GitLab git repository management
 # Description:       GitLab git repository management
+# chkconfig: - 85 14
 ### END INIT INFO
 
 
