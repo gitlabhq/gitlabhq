@@ -7,3 +7,5 @@ See the documentation below for details on how to configure these services.
 + [LDAP](ldap.md) Set up sign in via LDAP
 + [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, and Google via OAuth.
 + [Slack](slack.md) Integrate with the Slack chat service
+
+Jenkins support is [available in GitLab EE](http://doc.gitlab.com/ee/integration/jenkins.html).

@@ -7,3 +7,5 @@ GitLab has a great issue tracker but you can also use an external issue tracker 
 ![jira screenshot](jira-integration-points.png)
 
 You can configure the integration in the gitlab.yml configuration file.
+
+Support to add your commits to the Jira ticket automatically is [available in GitLab EE](http://doc.gitlab.com/ee/integration/jira.html).
