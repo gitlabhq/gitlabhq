@@ -24,9 +24,9 @@ Version:	5.1.0.beta2
 Revision:	4da8b37
 Directory:	/home/git/gitlab
 DB Adapter:	mysql2
-URL:		http://localhost
-HTTP Clone URL:	http://localhost/some-project.git
-SSH Clone URL:	git@localhost:some-project.git
+URL:		http://example.com
+HTTP Clone URL:	http://example.com/some-project.git
+SSH Clone URL:	git@example.com:some-project.git
 Using LDAP:	no
 Using Omniauth:	no
 
