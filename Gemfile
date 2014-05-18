@@ -69,6 +69,9 @@ gem "haml-rails"
 # Files attachments
 gem "carrierwave"
 
+# Drag and Drop UI
+gem 'dropzonejs-rails'
+
 # for aws storage
 gem "fog", "~> 1.14", group: :aws
 gem "unf", group: :aws

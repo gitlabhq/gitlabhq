@@ -13,7 +13,7 @@
       %i.icon-edit
       Write
 
-    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
+    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on markdown-area'
     .note_preview.js-note-preview.turn-off
 
   .hint
@@ -36,3 +36,5 @@
       = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
     .clearfix
+
+= render 'shared/markdown_area'
