@@ -5,15 +5,16 @@ If you want to easily add the same deploy key to multiple projects in the same g
 First, find the ID of the projects you're interested in, by either listing all projects:
 
 ```
-curl https://gitlab.com/api/v3/projects?private_token=abcdef
+curl --header 'PRIVATE-TOKEN: abcdef' https://gitlab.com/api/v3/projects
 ```
 
 Or finding the id of a group and then listing all projects in that group:
 
 ```
-curl https://gitlab.com/api/v3/groups?private_token=abcdef
+curl --header 'PRIVATE-TOKEN: abcdef' https://gitlab.com/api/v3/groups
 
-curl https://gitlab.com/api/v3/groups/1234?private_token=abcdef # where the id of the group is 1234
+# For group 1234:
+curl --header 'PRIVATE-TOKEN: abcdef' https://gitlab.com/api/v3/groups/1234
 ```
 
 With those IDs, add the same deploy key to all:
