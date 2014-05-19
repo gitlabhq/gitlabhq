@@ -15,6 +15,8 @@ The RC1 release comes with the task to update the installation and upgrade docs.
 
 ### **1. Create an issue for RC1 release**
 
+Consider naming the issue "Release x.x.x.rc1" to make it easier for later searches.
+
 ### **2. Update the installation guide**
 
 1. Check if it references the correct branch `x-x-stable` (doesn't exist yet, but that is okay)
