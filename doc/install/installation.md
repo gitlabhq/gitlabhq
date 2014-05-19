@@ -86,7 +86,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install -y postfix
+    sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
@@ -150,13 +150,13 @@ NOTE: because we need to make use of extensions you need at least pgsql 9.1.
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-8-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-9-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-8-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-9-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -261,7 +261,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.3] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.4] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
@@ -409,22 +409,22 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
 * Stop GitLab
-		`sudo service gitlab stop`
+    `sudo service gitlab stop`
 
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) as a reference)
 
 * Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile)
                 `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
-		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
+    `sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
 
 * If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
-		`sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
+    `sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
 
 > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
 * Start GitLab
-		`sudo service gitlab start`
+    `sudo service gitlab start`
 
 
 ### Examples
