@@ -63,7 +63,7 @@
 
 * [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
 
-* [Cloud 66 deployment and management](http://blog.cloud66.com/installing-gitlab-ubuntu/) Use Cloud 66 to deploy GitLab to your own server or any cloud (eg. DigitalOcean, AWS, Rackspace, GCE) and then manage it with database backups, scaling and more!
+* [Cloud 66 deployment and management](http://blog.cloud66.com/installing-gitlab-ubuntu/) Use Cloud 66 to deploy GitLab to your own server or any cloud (eg. DigitalOcean, AWS, Rackspace, GCE) and then manage it with database backups, scaling and more.
 
 #### Unofficial installation methods
 
