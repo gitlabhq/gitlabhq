@@ -84,7 +84,7 @@ Make sure the code quality indicators are green / good.
 
 ### **5. Set VERSION**
 
-Set VERSION tot x.x.0.rc1
+Change version in VERSION to x.x.0.rc1
 
 
 ### **6. Tag**
