@@ -1,8 +1,6 @@
 = render "projects/issues/head"
 %h3.page-title
   Milestone ##{@milestone.iid}
-  %small
-    = @milestone.expires_at
   .pull-right
     - if can?(current_user, :admin_milestone, @project)
       = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
@@ -23,14 +21,16 @@
 
 
 .issue-box{ class: issue_box_class(@milestone) }
-  .state
-    %span.state-label
+  .state.clearfix
+    .state-label.col-sm-2.col-xs-12
       - if @milestone.closed?
         Closed
       - elsif @milestone.expired?
         Expired
       - else
         Open
+    %span.creator.col-sm-9.col-xs-12
+      = @milestone.expires_at
 
   %h4.title
     = gfm escape_once(@milestone.title)
