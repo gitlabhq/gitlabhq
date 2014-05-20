@@ -45,23 +45,8 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     end
   end
 
-  def preprocess(full_document)
-    if is_wiki?
-      full_document
-    elsif @project
-      h.create_relative_links(full_document, @project, @ref, @request_path)
-    else
-      full_document
-    end
-  end
-
   def postprocess(full_document)
+    full_document = h.create_relative_links(full_document)
     h.gfm(full_document)
-  end
-
-  def is_wiki?
-    if @template.instance_variable_get("@project_wiki")
-      @template.instance_variable_get("@page")
-    end
   end
 end
