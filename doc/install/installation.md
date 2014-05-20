@@ -244,15 +244,6 @@ that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
     # Or if you use MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
 
-
-## Initialize Database and Activate Advanced Features
-
-    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
-
-    # Type 'yes' to create the database tables.
-
-    # When done you see 'Administrator account created:'
-
 ## Install GitLab shell
 
 GitLab Shell is an ssh access and repository management software developed specially for GitLab.
@@ -265,6 +256,15 @@ GitLab Shell is an ssh access and repository management software developed speci
 
     # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
+
+
+## Initialize Database and Activate Advanced Features
+
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
+
+    # Type 'yes' to create the database tables.
+
+    # When done you see 'Administrator account created:'
 
 ## Install Init Script
 
