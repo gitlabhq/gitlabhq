@@ -102,12 +102,20 @@ module GitlabMarkdownHelper
     path.gsub!(/(#.*)/, "")
     id = $1 || ""
     file_path = relative_file_path(path)
+    file_path = sanitize_slashes(file_path)
+
     [
       Gitlab.config.gitlab.relative_url_root,
       @project.path_with_namespace,
       path_with_ref(file_path),
       file_path
     ].compact.join("/").gsub(/^\/*|\/*$/, '') + id
+  end
+
+  def sanitize_slashes(path)
+    path[0] = "" if path.start_with?("/")
+    path.chop if path.end_with?("/")
+    path
   end
 
   def relative_file_path(path)
