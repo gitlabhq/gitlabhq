@@ -1,10 +1,9 @@
 = form_for [@project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal' } do |f|
   -if @page.errors.any?
     #error_explanation
-      %h2= "#{pluralize(@page.errors.count, "error")} prohibited this wiki from being saved:"
-      %ul
+      .alert.alert-danger
         - @page.errors.full_messages.each do |msg|
-          %li= msg
+          %p= msg
 
   = f.hidden_field :title, value: @page.title
   .form-group
