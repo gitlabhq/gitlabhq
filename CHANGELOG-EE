@@ -2,6 +2,7 @@ v 6.9.0
   - Add support for closing Jira tickets with commits and MR
   - Template for Merge Request description can be added in project settings
   - Jenkins CI service
+  - Fix LDAP email upper case bug
 
 v 6.8.0
   - Customise sign-in page with custom text and logo
