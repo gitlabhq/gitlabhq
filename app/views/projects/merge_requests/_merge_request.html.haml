@@ -31,3 +31,9 @@
 
     .pull-right
       %small updated #{time_ago_with_tooltip(merge_request.updated_at, 'bottom', 'merge_request_updated_ago')}
+
+    .merge-request-labels
+      - merge_request.labels.each do |label|
+        %span{class: "label #{label_css_class(label.name)}"}
+          %i.icon-tag
+          = label.name

@@ -55,7 +55,7 @@ class Notes
 
     @notes_forms = '.js-main-target-form textarea, .js-discussion-note-form textarea'
     $(document).on('keypress', @notes_forms, (e)->
-      if event.keyCode == 10 || (event.ctrlKey && event.keyCode == 13)
+      if e.keyCode == 10 || (e.ctrlKey && e.keyCode == 13)
         $(@).parents('form').submit()
     )
 

@@ -4,6 +4,7 @@ module Emails
       @issue = Issue.find(issue_id)
       @project = @issue.project
       @target_url = project_issue_url(@project, @issue)
+      set_message_id("issue_#{issue_id}")
       mail(from: sender(@issue.author_id),
            to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
@@ -14,6 +15,7 @@ module Emails
       @previous_assignee = User.find_by(id: previous_assignee_id) if previous_assignee_id
       @project = @issue.project
       @target_url = project_issue_url(@project, @issue)
+      set_reference("issue_#{issue_id}")
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
@@ -24,6 +26,7 @@ module Emails
       @project = @issue.project
       @updated_by = User.find updated_by_user_id
       @target_url = project_issue_url(@project, @issue)
+      set_reference("issue_#{issue_id}")
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))
@@ -35,6 +38,7 @@ module Emails
       @project = @issue.project
       @updated_by = User.find updated_by_user_id
       @target_url = project_issue_url(@project, @issue)
+      set_reference("issue_#{issue_id}")
       mail(from: sender(updated_by_user_id),
            to: recipient(recipient_id),
            subject: subject("#{@issue.title} (##{@issue.iid})"))

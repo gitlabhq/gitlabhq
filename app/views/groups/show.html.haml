@@ -1,5 +1,5 @@
 .dashboard
-  .activities.col-md-8.hidden-sm
+  .activities.col-md-8.hidden-sm.hidden-xs
     - if current_user
       = render "events/event_last_push", event: @last_push
       = link_to dashboard_path, class: 'btn btn-tiny' do

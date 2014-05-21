@@ -24,15 +24,8 @@ production: &base
     # Otherwise, ssh host will be set to the `host:` value above
     # ssh_host: ssh.host_example.com
 
-    # Uncomment and customize the last line to run in a non-root path
-    # WARNING: We recommend creating a FQDN to host GitLab in a root path instead of this.
-    # Note that four settings need to be changed for this to work.
-    # 1) In your application.rb file: config.relative_url_root = "/gitlab"
-    # 2) In your gitlab.yml file: relative_url_root: /gitlab
-    # 3) In your unicorn.rb: ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
-    # 4) In ../gitlab-shell/config.yml: gitlab_url: "http://127.0.0.1/gitlab"
-    # To update the path, run: sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
-    #
+    # WARNING: See config/application.rb under "Relative url support" for the list of
+    # other files that need to be changed for relative url support
     # relative_url_root: /gitlab
 
     # Uncomment and customize if you can't use the default user to run GitLab (default: 'git')
@@ -40,10 +33,10 @@ production: &base
 
     ## Email settings
     # Email address used in the "From" field in mails sent by GitLab
-    email_from: gitlab@localhost
+    email_from: example@example.com
 
     # Email address of your support contact (default: same as email_from)
-    support_email: support@localhost
+    support_email: support@example.com
 
     ## User settings
     default_projects_limit: 10
