@@ -59,7 +59,7 @@ module Gitlab
         gitlab_user = ::User.where(provider: 'ldap', extern_uid: uid).last
 
         if gitlab_user && ldap_user && ldap_user.email
-          ldap_email = ldap_user.email.last
+          ldap_email = ldap_user.email.last.to_s.downcase
 
           if (gitlab_user.email != ldap_email)
             gitlab_user.update(email: ldap_email)
