@@ -5,7 +5,11 @@
   = link_to project_url(@project) do
     = @project.name_with_namespace
 %p
-  To update the remote url in your local repository run:
+  To update the remote url in your local repository run (for ssh):
 %p{ style: "background:#f5f5f5; padding:10px; border:1px solid #ddd" }
   git remote set-url origin #{@project.ssh_url_to_repo}
+%p
+  or for http(s):
+%p{ style: "background:#f5f5f5; padding:10px; border:1px solid #ddd" }
+  git remote set-url origin #{@project.http_url_to_repo}
 %br

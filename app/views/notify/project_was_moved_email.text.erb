@@ -4,5 +4,7 @@ The project is now located under
 <%= project_url(@project) %>
 
 
-To update the remote url in your local repository run:
+To update the remote url in your local repository run (for ssh):
   git remote set-url origin <%= @project.ssh_url_to_repo %>
+or for http(s):
+  git remote set-url origin <%= @project.http_url_to_repo %>
