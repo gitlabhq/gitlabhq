@@ -50,6 +50,14 @@ describe Gitlab::LDAP::Access do
       updated.should == false
     end
 
+    it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = [user_ldap.email.upcase]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
+    end
+
     it "should update the email if the user email is different" do
       entry = Net::LDAP::Entry.new
       entry['mail'] = ["new_email@example.com"]
