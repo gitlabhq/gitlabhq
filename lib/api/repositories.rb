@@ -25,6 +25,22 @@ module API
         present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject, project: user_project
       end
 
+      # Create tag
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   tag_name (required) - The name of the tag
+      #   ref (required) - Create tag from commit sha or branch
+      # Example Request:
+      #   POST /projects/:id/repository/tags
+      post ':id/repository/tags' do
+        authorize_push_project
+        @tag = CreateTagService.new.execute(user_project, params[:tag_name],
+                                            params[:ref], current_user)
+
+        present @tag, with: Entities::RepoObject, project: user_project
+      end
+
       # Get a project repository tree
       #
       # Parameters:
