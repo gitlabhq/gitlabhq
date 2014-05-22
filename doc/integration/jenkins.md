@@ -36,6 +36,21 @@ Now navigate to GitLab services page and activate Jenkins
 
 ![screen](jenkins_gitlab_service.png)
 
+Done! Now when you push to GitLab - it will create a build for Jenkins.
+And also you will be able to see merge request build status with a link to the Jenkins build.
 
-Done! Now when you push to GitLab - it will create build for Jenkins. 
-And also you will be able to see merge request build statuswith link to Jenkins build.
+## Development
+
+An explanation of how this works in case anyone want to improve it or develop this service for another CI tool.
+In GitLab there is no database table that lists the commits, these are always read from the repository.
+Therefore it is not possible to mark the build status of a commit in GitLab.
+Actually we believe this information should be stored in a single place, the CI tool itself.
+To show this information in a merge request you make a project service in GitLab.
+This project service does a (JSON) query to a url of the CI tool with the SHA1 of the commit.
+The project service builds this url and payload based on project service settings and knowlegde of the CI tool.
+The response is parsed to give a response in GitLab (success/failed/pending).
+All this happens with AJAX requests on the merge request page.
+The Jenkins project service code is only available in GitLab EE.
+The GitLab CI project service code is available in the GitLab CE codebase.
+In GitLab 6.9 there is a small difference between GitLab CE and EE regarding project services, but this should be gone in 7.0.
+
