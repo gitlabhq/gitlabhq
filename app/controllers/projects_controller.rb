@@ -190,6 +190,6 @@ class ProjectsController < ApplicationController
   end
 
   def sorted(users)
-    users.uniq.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
+    users.uniq.compact.sort_by(&:username).map { |user| { username: user.username, name: user.name } }
   end
 end
