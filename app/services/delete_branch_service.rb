@@ -8,6 +8,10 @@ class DeleteBranchService
       return error('No such branch')
     end
 
+    if branch_name == repository.root_ref
+      return error('Cannot remove HEAD branch')
+    end
+
     # Dont allow remove of protected branch
     if project.protected_branch?(branch_name)
       return error('Protected branch cant be removed')
