@@ -100,12 +100,34 @@ Tweet about the RC release:
 
 > GitLab x.x.x.rc1 is out. This is a release candidate intended for testing only. Please let us know if you find regressions.
 
-### **8. Update Cloud**
+### **8. Update gitlab.com**
 
-Merge the RC1 code into Cloud. Once the build is green, deploy in the morning.
+Merge the RC1 code into gitlab.com. Once the build is green, deploy in the morning.
 
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
+# **21st - Preparation **
+
+### **1. Prepare the blog post**
+
+* Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
+* Create a WIP MR for the blog post and cc the team so everyone can give feedback.
+* Ask Dmitriy to add screenshots to the WIP MR.
+* Decide with team who will be the MVP user.
+* Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+
+### **2. Q&A**
+
+Create issue on dev.gitlab.org gitlab repository, named "GitLab X.X release" in order to keep track of the progress.
+
+Use the omnibus packages or cookbook to test using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
+
+**NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
+
+
+### **3. Fix anything coming out of the QA**
+
+Create an issue with description of a problem, if it is quick fix fix yourself otherwise contact the team for advice.
 
 # **22nd - Release CE and EE**
 
@@ -127,27 +149,31 @@ git push <remote> x-x-stable
 ### **2. Build the Omnibus packages**
 [Follow this guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 
-### **3. QA**
-Use the omnibus packages to test using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md)
+### **3. Set VERSION to x.x.x and push**
 
+Change the VERSION file in `master` branch of the CE repository and commit.
+Cherry-pick into the `x-x-stable` branch of CE.
 
-### **4. Fix anything coming out of the QA**
+Change the VERSION file in `master branch of the EE repository and commit.
+Cherry-pick into the `x-x-stable-ee` branch of EE.
 
-### **5. Set VERSION to x.x.0**
+### **4. Create annotated tag vx.x.x**
 
-### **6. Create annotated tag vx.x.0**
+In `x-x-stable` branch check for the sha1 of the commit with VERSION file changed. Tag that commit,
+
 ```
-git tag -a vx.x.0 -m 'Version x.x.0'
-```
-
-### **7. Push VERSION + Tag to master, merge into x-x-stable**
-```
-git push origin master
+git tag -a vx.x.0 -m 'Version x.x.0' xxxxx
 ```
 
-Next, merge the VERSION into the x-x-stable branch.
+where `xxxxx` is sha1.
 
-### **8. Push to remotes**
+### **5. Push the tag**
+
+```
+git push origin vx.x.0
+```
+
+### **6. Push to remotes**
 
 For GitLab CE, push to dev, GitLab.com and GitHub.
 
@@ -155,15 +181,22 @@ For GitLab EE, push to the subscribers repo.
 
 NOTE: You might not have the rights to push to master on dev. Ask Dmitriy.
 
-### **9. Publish blog for new release**
-* Mention what GitLab is on the second line: GitLab is open source software to collaborate on code.
-* Select and thank the the Most Valuable Person (MVP) of this release.
-* Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+### **7. Publish blog for new release**
 
-### **10. Tweet to blog**
+Merge the [blog merge request](#1-prepare-the-blog-post) in `www-gitlab-com` repository.
+
+### **8. Tweet to blog**
 
 Send out a tweet to share the good news with the world. List the features in short and link to the blog post.
 
+Proposed tweet for CE "GitLab X.X.X CE is released! It brings *** <link-to-blogpost>"
+
+Proposed tweet for EE "GitLab X.X.X EE is released! It brings *** <link-to-blogpost>"
+
 # **23rd - Optional Patch Release**
+
+# **24th - Update GitLab.com**
+
+Merge the stable release into gitlab.com. Once the build is green deploy the next morning.
 
 # **25th - Release GitLab CI**
