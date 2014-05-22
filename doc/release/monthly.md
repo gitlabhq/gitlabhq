@@ -199,6 +199,8 @@ In mailchimp replicate the former release newsletters to customers / newsletter 
 
 Include a link to the blog post and keep it short.
 
+Proposed email for CE: "We have released a new version of GitLab Community Edition and its packages. See our blog post(<link>) for more information."
+
 # **23rd - Optional Patch Release**
 
 # **24th - Update GitLab.com**
