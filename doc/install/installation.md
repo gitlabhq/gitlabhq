@@ -1,10 +1,10 @@
 # Select Version to Install
-Make sure you view this installation guide from the branch (version) of GitLab you would like to install. In most cases
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases
 this should be the highest numbered stable branch (example shown below).
 
 ![capture](http://i.imgur.com/d2AlIVj.png)
 
-If this is unclear check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
+If the highest number stable branch is unclear please check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
 
 # Important notes
 
@@ -86,7 +86,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 mail server. By default, Debian is shipped with exim4 whereas Ubuntu
 does not ship with one. The recommended mail server is postfix and you can install it with:
 
-	sudo apt-get install -y postfix
+    sudo apt-get install -y postfix
 
 Then select 'Internet Site' and press enter to confirm the hostname.
 
@@ -101,8 +101,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p353.tar.gz | tar xz
-    cd ruby-2.0.0-p353
+    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p481.tar.gz | tar xz
+    cd ruby-2.0.0-p481
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -121,6 +121,7 @@ Create a `git` user for Gitlab:
 # 4. Database
 
 We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](database_mysql.md).
+NOTE: because we need to make use of extensions you need at least pgsql 9.1.
 
     # Install the database packages
     sudo apt-get install -y postgresql-9.1 postgresql-client libpq-dev
@@ -129,7 +130,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u postgres psql -d template1
 
     # Create a user for GitLab.
-    template1=# CREATE USER git;
+    template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
     template1=# CREATE DATABASE gitlabhq_production OWNER git;
@@ -149,13 +150,13 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ## Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-8-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-9-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
 **Note:**
-You can change `6-8-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+You can change `6-9-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ## Configure it
 
@@ -200,7 +201,7 @@ You can change `6-8-stable` to `master` if you want the *bleeding edge* version,
     # Configure Git global settings for git user, useful when editing via web
     # Edit user.email according to what is set in gitlab.yml
     sudo -u git -H git config --global user.name "GitLab"
-    sudo -u git -H git config --global user.email "gitlab@localhost"
+    sudo -u git -H git config --global user.email "example@example.com"
     sudo -u git -H git config --global core.autocrlf input
 
 **Important Note:**
@@ -243,15 +244,6 @@ that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
     # Or if you use MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
 
-
-## Initialize Database and Activate Advanced Features
-
-    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
-
-    # Type 'yes' to create the database tables.
-
-    # When done you see 'Administrator account created:'
-
 ## Install GitLab shell
 
 GitLab Shell is an ssh access and repository management software developed specially for GitLab.
@@ -260,10 +252,19 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.3] REDIS_URL=redis://localhost:6379
+    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.4] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
+
+
+## Initialize Database and Activate Advanced Features
+
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production
+
+    # Type 'yes' to create the database tables.
+
+    # When done you see 'Administrator account created:'
 
 ## Install Init Script
 
@@ -300,11 +301,6 @@ Check if GitLab and its environment are configured correctly:
     sudo service gitlab start
     # or
     sudo /etc/init.d/gitlab restart
-
-
-## Compile assets
-
-    sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 
 
 # 6. Nginx
@@ -413,22 +409,22 @@ GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already 
 These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
 
 * Stop GitLab
-		`sudo service gitlab stop`
+    `sudo service gitlab stop`
 
 * Add provider specific configuration options to your `config/gitlab.yml` (you can use the [auth providers section of the example config](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/gitlab.yml.example) as a reference)
 
 * Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile)
                 `gem "omniauth-your-auth-provider"`
 * If you're using MySQL, install the new Omniauth provider gem by running the following command:
-		`sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
+    `sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment`
 
 * If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
-		`sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
+    `sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment`
 
 > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
 
 * Start GitLab
-		`sudo service gitlab start`
+    `sudo service gitlab start`
 
 
 ### Examples

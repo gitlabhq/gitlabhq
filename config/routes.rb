@@ -206,7 +206,7 @@ Gitlab::Application.routes.draw do
           end
         end
 
-      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-]+/} do
+      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-\/]+/} do
         collection do
           get :pages
           put ':id' => 'wikis#update'
@@ -273,7 +273,7 @@ Gitlab::Application.routes.draw do
       resources :merge_requests, constraints: {id: /\d+/}, except: [:destroy] do
         member do
           get :diffs
-          get :automerge
+          post :automerge
           get :automerge_check
           get :ci_status
         end

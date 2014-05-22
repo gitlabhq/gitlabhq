@@ -12,41 +12,42 @@
   margin:20px 0;
   background: #FFF;
   border: 1px solid #EEE;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
 
   &.issue-box-closed {
-    border-color: #DA4E49;
+    border-color: $border_danger;
     .state {
-      background-color: #f2dede;
-      border-color: #ebccd1;
-      color: #a94442;
+      background-color: $bg_light_danger;
+      border-color: $border_danger;
+      color: $color_danger;
       .state-label {
-        background: #DA4E49;
+        background-color: $bg_danger;
         color: #FFF;
       }
     }
   }
 
   &.issue-box-merged {
-    border-color: #31708f;
+    border-color: $border_primary;
     .state {
-      background-color: #d9edf7;
-      border-color: #bce8f1;
-      color: #31708f;
+      background-color: $bg_light_primary;
+      border-color: $border_primary;
+      color: $color_primary;
       .state-label {
-        background: #31708f;
+        background-color: $bg_primary;
         color: #FFF;
       }
     }
   }
 
   &.issue-box-open {
-    border-color: #4A4;
+    border-color: $border_success;
     .state {
-      background-color: #dff0d8;
-      border-color: #d6e9c6;
-      color: #3c763d;
+      background-color: $bg_light_success;
+      border-color: $border_success;
+      color: $color_success;
       .state-label {
-        background: #4A4;
+        background-color: $bg_success;
         color: #FFF;
       }
     }
@@ -70,7 +71,6 @@
   }
 
   .state {
-    height: 34px;
     border-bottom: 1px solid #DDD;
     line-height: 32px;
   }
@@ -89,6 +89,18 @@
     border: none;
     border-top: 1px solid #eee;
     padding: 15px 25px;
+
+    // Reset text align for children
+    .text-right > * { text-align: left; }
+
+    @media (max-width: $screen-xs-max) {
+      // Don't right align on mobile
+      .text-right { text-align: left; }
+
+      .row .col-md-6 {
+        padding-top: 5px;
+      }
+    }
   }
 
   .description {
@@ -106,7 +118,11 @@
     padding: 1px 25px;
     text-align: center;
     text-shadow: none;
-    margin-right: 20px;
     display: inline-block;
+    line-height: 34px;
+  }
+
+  .creator {
+    padding: 2px 15px;
   }
 }

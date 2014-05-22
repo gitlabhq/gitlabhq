@@ -189,6 +189,54 @@ Parameters:
 ```
 
 
+## Accept MR
+
+Merge changes submitted with MR usign this API.
+If merge success you get 200 OK.
+If it has some conflicts and can not be merged - you get 405 and error message 'Branch cannot be merged'
+If merge request is already merged or closed - you get 405 and error message 'Method Not Allowed' 
+If you dont have permissions to accept this merge request - you get 401
+
+```
+PUT /projects/:id/merge_request/:merge_request_id/merge
+```
+
+Parameters:
+
++ `id` (required)               - The ID of a project
++ `merge_request_id` (required) - ID of MR
++ `merge_commit_message` (optional) - Custom merge commit message
+
+```json
+{
+  "id": 1,
+  "target_branch": "master",
+  "source_branch": "test1",
+  "project_id": 3,
+  "title": "test1",
+  "state": "merged",
+  "upvotes": 0,
+  "downvotes": 0,
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "assignee": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "state": "active",
+    "created_at": "2012-04-29T08:46:00Z"
+  }
+}
+```
+
+
 ## Post comment to MR
 
 Adds a comment to a merge request.

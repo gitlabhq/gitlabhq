@@ -15,18 +15,18 @@
       - else
         = link_to title, '#'
 
-%ul.blob-commit-info.bs-callout.bs-callout-info
+%ul.blob-commit-info.bs-callout.bs-callout-info.hidden-xs
   - blob_commit = @repository.last_commit_for_path(@commit.id, @blob.path)
   = render blob_commit, project: @project
 
 %div#tree-content-holder.tree-content-holder
   .file-holder
-    .file-title
+    .file-title.clearfix
       %i.icon-file
       %span.file_name
         = blob.name
         %small= number_to_human_size blob.size
-      %span.options= render "actions"
+      %span.options.hidden-xs= render "actions"
     - if blob.text?
       = render "text", blob: blob
     - elsif blob.image?

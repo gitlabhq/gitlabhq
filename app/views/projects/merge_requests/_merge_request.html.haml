@@ -11,13 +11,9 @@
         - if merge_request.for_fork?
           %span.light
             #{merge_request.source_project_namespace}:
-          = merge_request.source_branch
-          %i.icon-angle-right.light
-          = merge_request.target_branch
-        - else
-          = merge_request.source_branch
-          %i.icon-angle-right.light
-          = merge_request.target_branch
+        = truncate merge_request.source_branch, length: 25
+        %i.icon-angle-right.light
+        = merge_request.target_branch
   .merge-request-info
     - if merge_request.author
       authored by #{link_to_member(merge_request.source_project, merge_request.author)}
@@ -35,3 +31,9 @@
 
     .pull-right
       %small updated #{time_ago_with_tooltip(merge_request.updated_at, 'bottom', 'merge_request_updated_ago')}
+
+    .merge-request-labels
+      - merge_request.labels.each do |label|
+        %span{class: "label #{label_css_class(label.name)}"}
+          %i.icon-tag
+          = label.name

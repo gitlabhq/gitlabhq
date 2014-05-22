@@ -43,6 +43,7 @@ module API
     class Project < Grape::Entity
       expose :id, :description, :default_branch
       expose :public?, as: :public
+      expose :archived?, as: :archived
       expose :visibility_level, :ssh_url_to_repo, :http_url_to_repo, :web_url
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
@@ -135,6 +136,7 @@ module API
       expose :target_branch, :source_branch, :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
+      expose :label_list, as: :labels
     end
 
     class SSHKey < Grape::Entity

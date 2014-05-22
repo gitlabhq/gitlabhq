@@ -117,7 +117,7 @@ module CommitsHelper
         added_lines[line_new]   = { line_code: line_code, type: type, line: line }
       end
     end
-    max_length = old_file ? old_file.sloc + added_lines.length : file.sloc
+    max_length = old_file ? [old_file.loc, file.loc].max : file.loc
 
     offset1 = 0
     offset2 = 0

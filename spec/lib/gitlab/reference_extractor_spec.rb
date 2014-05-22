@@ -11,6 +11,12 @@ describe Gitlab::ReferenceExtractor do
     subject.issues.should == ["1234"]
   end
 
+  it 'extracts JIRA issue references' do
+    Gitlab.config.gitlab.stub(:issues_tracker).and_return("jira")
+    subject.analyze "this one talks about issue JIRA-1234"
+    subject.issues.should == ["JIRA-1234"]
+  end
+
   it 'extracts merge request references' do
     subject.analyze "and here's !43, a merge request"
     subject.merge_requests.should == ["43"]

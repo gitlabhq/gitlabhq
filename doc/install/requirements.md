@@ -53,7 +53,7 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ## Memory
 
-- 512MB is the abolute minimum, you need 256MB of swap, you can configure only one slow unicorn worker, only ssh access will work, we do not recommend this
+- 512MB is the absolute minimum, you need 256MB of swap, you can configure only one slow unicorn worker, only ssh access will work, we do not recommend this
 - 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates using swap space)
 - **2GB** is the **recommended** memory size and supports up to 500 users
 - 4GB supports up to 2,000 users
@@ -74,11 +74,14 @@ Apart from a local hard drive you can also mount a volume that supports the netw
 
 If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
 
+## Database
+
+If you want to run the database separately, the **recommended** database size is **1 MB per user**
 
 # Supported webbrowsers
 
 - Chrome (Latest stable version)
 - Firefox (Latest released version) 
-- Safari 7+ (Know problem: required fields in html5 do not work)
+- Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+

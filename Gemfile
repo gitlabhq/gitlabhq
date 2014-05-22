@@ -152,7 +152,7 @@ gem "rack-attack"
 # Ace editor
 gem 'ace-rails-ap'
 
-gem "sass-rails"
+gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
 gem "therubyracer"

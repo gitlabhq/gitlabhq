@@ -31,7 +31,8 @@ class SystemHooksService
         path_with_namespace: model.path_with_namespace,
         project_id: model.id,
         owner_name: owner.name,
-        owner_email: owner.respond_to?(:email) ?  owner.email : nil
+        owner_email: owner.respond_to?(:email) ?  owner.email : nil,
+        project_visibility: Project.visibility_levels.key(model.visibility_level_field).downcase
       })
     when User
       data.merge!({
@@ -46,7 +47,8 @@ class SystemHooksService
         project_id: model.project_id,
         user_name: model.user.name,
         user_email: model.user.email,
-        project_access: model.human_access
+        project_access: model.human_access,
+        project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
       })
     end
   end
