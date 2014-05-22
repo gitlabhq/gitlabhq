@@ -17,7 +17,7 @@ Requirements:
 1. Install GitLab Hook plugin
 2. Setup jenkins project
 
-![screen](jenkins_project.jpg)
+![screen](jenkins_project.png)
 
 
 ## GitLab
