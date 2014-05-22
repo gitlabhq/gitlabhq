@@ -132,7 +132,7 @@ describe "On a merge request", js: true, feature: true do
   end
 end
 
-describe "On a merge request diff", js: true do
+describe "On a merge request diff", js: true, feature: true do
   let(:merge_request) { create(:merge_request, :with_diffs, :simple) }
   let(:project) { merge_request.source_project }
 
@@ -209,10 +209,4 @@ describe "On a merge request diff", js: true do
       end
     end
   end
-end
-
-describe "On merge request discussion", js: true do
-  describe "with merge request diff note"
-  describe "with commit note"
-  describe "with commit diff note"
 end
