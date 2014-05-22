@@ -17,8 +17,8 @@ Please contact subscribers@gitlab.com for more information.
 - 6.9.0-ee - Enterprise Linux 6 64-bit [gitlab-6.9.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/f86f29bac6fa3e7cd96315550c362816fc04cdb4/centos-6.5/gitlab-6.9.0_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 18bd1bea069b968935eea489e4a24b50
 
-- 6.9.0-ee - Debian 7 64-bit [gitlab_6.9.0-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/7314a4271d247beacfa23b265d450e3b9b701f10/debian-7.4/gitlab_6.9.0-ee.omnibus-1_amd64.deb)
-    - MD5: b65d970f18b14fc7d4453c1ca37e85f1
+- 6.9.0-ee - Debian 7 64-bit [gitlab_6.9.0-ee.omnibus.1-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/9a604b7d3f4b57d7ebf34c26e034fb99dbe90ebf/debian-7.4/gitlab_6.9.0-ee.omnibus.1-1_amd64.deb)
+    - MD5: 4831a0b7dff2abf7982aaefae88a66f4
 
 
 ## Previous versions
