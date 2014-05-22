@@ -84,6 +84,18 @@ module API
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
+
+      # Delete branch
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   branch (required) - The name of the branch
+      # Example Request:
+      #   DELETE /projects/:id/repository/branches/:branch
+      delete ":id/repository/branches/:branch" do
+        authorize_push_project
+        DeleteBranchService.new.execute(user_project, params[:branch], current_user)
+      end
     end
   end
 end
