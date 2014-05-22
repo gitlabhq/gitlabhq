@@ -8,7 +8,7 @@
           New project
   %ul.well-list
     - if projects.blank?
-      .nothing-here-block This groups has no projects yet
+      .nothing-here-block This group has no projects yet
     - projects.each do |project|
       %li.project-row
         = link_to project_path(project), class: dom_class(project) do
