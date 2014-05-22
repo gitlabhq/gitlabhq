@@ -17,7 +17,7 @@ Requirements:
 1. Install GitLab Hook plugin
 2. Setup jenkins project
 
-![screen](jenkins/jenkins_project.jpg)
+![screen](jenkins_project.jpg)
 
 
 ## GitLab
@@ -27,14 +27,14 @@ Requirements:
 
 Jenkins need read access to GitLab repository. We already specified private key to use in Jenkins. Now we need to add public key to GitLab project
 
-![screen](jenkins/gitlab_deploy.png)
+![screen](jenkins_gitlab_deploy.png)
 
 
 ### Jenkins service
 
 Now navigate to GitLab services page and activate Jenkins
 
-![screen](jenkins/gitlab_service.png)
+![screen](jenkins_gitlab_service.png)
 
 
 Done! Now when you push to GitLab - it will create build for Jenkins. 
