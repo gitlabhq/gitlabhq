@@ -13,7 +13,7 @@
 #= require jquery.history
 #= require jquery.waitforimages
 #= require jquery.atwho
-#= require jquery.scrollto
+#= require jquery.scrollTo
 #= require jquery.blockUI
 #= require turbolinks
 #= require jquery.turbolinks
