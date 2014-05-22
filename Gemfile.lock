@@ -250,6 +250,8 @@ GEM
     jquery-rails (3.1.0)
       railties (>= 3.0, < 5.0)
       thor (>= 0.14, < 2.0)
+    jquery-scrollto-rails (1.4.3)
+      railties (> 3.1, < 5.0)
     jquery-turbolinks (2.0.1)
       railties (>= 3.1.0)
       turbolinks
@@ -607,6 +609,7 @@ DEPENDENCIES
   jasmine (= 2.0.0.rc5)
   jquery-atwho-rails (~> 0.3.3)
   jquery-rails
+  jquery-scrollto-rails
   jquery-turbolinks
   jquery-ui-rails
   kaminari (~> 0.15.1)
