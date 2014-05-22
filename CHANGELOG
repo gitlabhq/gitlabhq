@@ -18,6 +18,7 @@ v 6.9.0
   - Accept merge request via API (sponsored by O'Reilly Media)
   - Add more access checks during API calls
   - Block SSH access for 'disabled' Active Directory users
+  - Labels for merge requests (Drew Blessing)
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
