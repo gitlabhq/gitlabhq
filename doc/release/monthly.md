@@ -100,9 +100,9 @@ Tweet about the RC release:
 
 > GitLab x.x.x.rc1 is out. This is a release candidate intended for testing only. Please let us know if you find regressions.
 
-### **8. Update gitlab.com**
+### **8. Update GitLab.com**
 
-Merge the RC1 code into gitlab.com. Once the build is green, deploy in the morning.
+Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morning.
 
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
@@ -197,6 +197,6 @@ Proposed tweet for EE "GitLab X.X.X EE is released! It brings *** <link-to-blogp
 
 # **24th - Update GitLab.com**
 
-Merge the stable release into gitlab.com. Once the build is green deploy the next morning.
+Merge the stable release into GitLab.com. Once the build is green deploy the next morning.
 
 # **25th - Release GitLab CI**
