@@ -9,7 +9,7 @@ Some GitLab features are currently missing from these packages (OAuth, SMTP supp
 
 Please contact subscribers@gitlab.com for more information.
 
-## GitLab 6.8 Enterprise Edition
+## GitLab 6.9 Enterprise Edition
 
 - 6.9.0-ee - Ubuntu 12.04 64-bit [gitlab_6.9.0-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/f4bfa95fe308a10298178316aa140f5623536432/ubuntu-12.04/gitlab_6.9.0-ee.omnibus-1_amd64.deb)
     - MD5: 022feef5454b35ad49b9485149122c2e
