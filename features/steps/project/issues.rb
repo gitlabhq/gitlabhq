@@ -163,4 +163,16 @@ class ProjectIssues < Spinach::FeatureSteps
     project = Project.find_by(name: 'Empty Project')
     visit project_issues_path(project)
   end
+
+  step 'I leave a comment with code block' do
+    within(".js-main-target-form") do
+      fill_in "note[note]", with: "```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```"
+      click_button "Add Comment"
+      sleep 0.05
+    end
+  end
+
+  step 'The code block should be unchanged' do
+    page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
+  end
 end
