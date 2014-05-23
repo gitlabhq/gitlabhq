@@ -2,6 +2,8 @@ v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar
   - Improve edit file UI
   - Add ability to upload group avatar when create
+  - Protected branch cannot be removed
+  - Developers can remove normal branches with UI
 
 v 6.9.0
   - Store Rails cache data in the Redis `cache:gitlab` namespace
