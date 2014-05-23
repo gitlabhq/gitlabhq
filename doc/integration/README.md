@@ -8,3 +8,4 @@ See the documentation below for details on how to configure these services.
 + [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, and Google via OAuth.
 + [Slack](slack.md) Integrate with the Slack chat service
 + [Jenkins](jenkins.md) Integrate with the Jenkins CI
++ [Jira](jira.md) Integrate with the JIRA issue tracker
