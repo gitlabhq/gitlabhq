@@ -12,7 +12,7 @@ class CommitsList
     $('.loading').hide()
 
   @init: (ref, limit) ->
-    $(".day-commits-table li.commit").live 'click', (event) ->
+    $("body").on "click", ".day-commits-table li.commit", (event) ->
       if event.target.nodeName != "A"
         location.href = $(this).attr("url")
         e.stopPropagation()
