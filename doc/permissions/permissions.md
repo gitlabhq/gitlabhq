@@ -24,7 +24,7 @@ If a user is a GitLab administrator they receive all permissions.
 |Manage issue tracker| ||✓|✓|✓|
 |Add new team members| |||✓|✓|
 |Push to protected branches| |||✓|✓|
-|Remove protected branches| |||✓|✓|
+|Enable/Disable branch protection| |||✓|✓|
 |Edit project| |||✓|✓|
 |Add Deploy Keys to project| |||✓|✓|
 |Configure Project Hooks| |||✓|✓|
