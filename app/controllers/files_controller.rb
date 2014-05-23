@@ -14,4 +14,3 @@ class FilesController < ApplicationController
     end
   end
 end
-

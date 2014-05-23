@@ -103,6 +103,8 @@ GEM
     diffy (3.0.3)
     docile (1.1.1)
     dotenv (0.9.0)
+    dropzonejs-rails (0.4.14)
+      rails (> 3.1)
     email_spec (1.5.0)
       launchy (~> 2.1)
       mail (~> 2.2)
@@ -579,6 +581,7 @@ DEPENDENCIES
   devise (= 3.0.4)
   devise-async (= 0.8.0)
   diffy (~> 3.0.3)
+  dropzonejs-rails
   email_spec
   email_validator (~> 1.4.0)
   enumerize

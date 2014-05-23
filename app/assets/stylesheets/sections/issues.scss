@@ -168,3 +168,58 @@ form.edit-issue {
     }
   }
 }
+
+#div-dropzone {
+  position: relative;
+
+  #div-dropzone-hover {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    margin-top: -0.5em;
+    margin-left: -0.6em;
+    opacity: 0;
+    font-size: 50px;
+    transition: opacity 200ms ease-in-out;
+  }
+
+  #div-dropzone-error {
+    position: absolute;
+    top: 50%;
+    width: 100%;
+    background-color: #e74c3c;
+    margin-top: -1em;
+    opacity: 0;
+    font-size: 20px;
+    text-align: center;
+    transition: opacity 200ms ease-in-out;
+  }
+
+  #div-dropzone-spinner {
+    position: absolute;
+    top: 100%;
+    left: 100%;
+    margin-top: -1.1em;
+    margin-left: -1.1em;
+    opacity: 0;
+    font-size: 30px;
+    transition: opacity 200ms ease-in-out;
+  }
+}
+
+#div-dropzone {
+  padding: 0;
+  border: 0;
+}
+
+.div-dropzone-icon {
+  display: block;
+  text-align: center;
+  font-size: inherit;
+}
+
+.div-dropzone-icon-error {
+  display: inline;
+  text-align: center;
+  font-size: inherit;
+}
