@@ -26,6 +26,7 @@ v 6.9.0
   - Add more access checks during API calls
   - Block SSH access for 'disabled' Active Directory users
   - Labels for merge requests (Drew Blessing)
+  - Threaded emails by setting a Message-ID (Philip Blatter)
 
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
