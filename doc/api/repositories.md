@@ -35,6 +35,40 @@ Parameters:
 ]
 ```
 
+## Create a new tag
+
+Creates new tag in the repository that points to the supplied ref.
+
+```
+POST /projects/:id/repository/tags
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `tag_name` (required) - The name of a tag
++ `ref` (required) - Create tag using commit sha, another tag name, or branch name.
+
+```json
+[
+  {
+    "name": "v1.0.0",
+    "commit": {
+      "id": "2695effb5807a22ff3d138d593fd856244e155e7",
+      "parents": [],
+      "message": "Initial commit",
+      "authored_date": "2012-05-28T04:42:42-07:00",
+      "author_name": "John Smith",
+      "author email": "john@example.com"
+      "committer_name": "Jack Smith",
+      "committed_date": "2012-05-28T04:42:42-07:00"
+      "committer_email": "jack@example.com"
+    },
+    "protected": false
+  }
+]
+```
+
 ## List repository tree
 
 Get a list of repository files and directories in a project.
