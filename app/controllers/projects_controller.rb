@@ -162,7 +162,27 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def upload_image
+    uploader = FileUploader.new('uploads', upload_path, accepted_images)
+    alt = params['markdown_img'].original_filename
+    uploader.store!(params['markdown_img'])
+    link = { 'alt' => File.basename(alt, '.*'),
+             'url' => File.join(root_url, uploader.url) }
+    respond_to do |format|
+      format.json { render json: { link: link } }
+    end
+  end
+
   private
+
+  def upload_path
+    base_dir = FileUploader.generate_dir
+    File.join(repository.path_with_namespace, base_dir)
+  end
+
+  def accepted_images
+    %w(png jpg jpeg gif)
+  end
 
   def set_title
     @title = 'New Project'

@@ -136,8 +136,6 @@ Gitlab::Application.routes.draw do
 
   match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
 
-
-
   #
   # Dashboard Area
   #
@@ -178,6 +176,7 @@ Gitlab::Application.routes.draw do
       post :fork
       post :archive
       post :unarchive
+      post :upload_image
       get :autocomplete_sources
       get :import
       put :retry_import

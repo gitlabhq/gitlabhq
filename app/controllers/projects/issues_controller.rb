@@ -69,7 +69,9 @@ class Projects::IssuesController < Projects::ApplicationController
           render :new
         end
       end
-      format.js
+      format.js do |format|
+        @link = @issue.attachment.url.to_js
+      end
     end
   end
 
