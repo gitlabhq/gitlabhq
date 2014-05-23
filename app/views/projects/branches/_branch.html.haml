@@ -1,7 +1,7 @@
 - commit = @repository.commit(branch.target)
 %li
   %h4
-    = link_to project_commits_path(@project, branch.name) do
+    = link_to project_tree_path(@project, branch.name) do
       %strong= truncate(branch.name, length: 60)
       - if branch.name == @repository.root_ref
         %span.label.label-info default

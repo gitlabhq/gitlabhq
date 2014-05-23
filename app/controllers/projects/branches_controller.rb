@@ -17,9 +17,9 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
-    CreateBranchService.new.execute(project, params[:branch_name], params[:ref], current_user)
+    @branch = CreateBranchService.new.execute(project, params[:branch_name], params[:ref], current_user)
 
-    redirect_to project_branches_path(@project)
+    redirect_to project_tree_path(@project, @branch.name)
   end
 
   def destroy
