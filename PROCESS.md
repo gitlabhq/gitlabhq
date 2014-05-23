@@ -13,7 +13,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 - Monitors all issues for feedback (but especially ones commented on since automatically watching them)
 - Closes issues with no feedback from the reporter for two weeks
 
-### Merge request officers
+### Merge marshal
 
 - Responds to merge requests the issue team mentions them in and monitors for new merge requests
 - Provides feedback to the merge request submitter to improve the merge request (style, tests, etc.)
