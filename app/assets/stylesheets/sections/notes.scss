@@ -272,21 +272,16 @@ ul.notes {
     margin-bottom: 0;
   }
   .note_text_and_preview {
-    // makes the "absolute" position for links relative to this
-    position: relative;
-
-    // preview/edit buttons
-    > a {
-      position: absolute;
-      right: 5px;
-      bottom: -60px;
-    }
     .note_preview {
       background: #f5f5f5;
       border: 1px solid #ddd;
       @include border-radius(4px);
       min-height: 80px;
       padding: 4px 6px;
+
+      > p {
+        overflow-x: auto;
+      }
     }
     .note_text {
       border: 1px solid #DDD;
@@ -310,14 +305,12 @@ ul.notes {
   float: none;
 }
 
-
 .common-note-form {
   margin: 0;
   background: #F9F9F9;
   padding: 3px;
   border: 1px solid #DDD;
 }
-
 
 .note-form-actions {
   background: #F9F9F9;
@@ -332,6 +325,18 @@ ul.notes {
 
   .js-notify-commit-author {
     float: left;
+  }
+
+  .write-preview-btn {
+    // makes the "absolute" position for links relative to this
+    position: relative;
+
+    // preview/edit buttons
+    > a {
+      position: absolute;
+      right: 5px;
+      top: 8px;
+    }
   }
 }
 
@@ -366,4 +371,9 @@ ul.notes {
 
 .parallel-comment {
   padding: 6px;
+}
+
+.error-alert > .alert {
+  margin-top: 5px;
+  margin-bottom: 5px;
 }

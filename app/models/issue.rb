@@ -15,7 +15,11 @@
 #  milestone_id :integer
 #  state        :string(255)
 #  iid          :integer
+#  attachment   :string(255)
 #
+
+require 'carrierwave/orm/activerecord'
+require 'file_size_validator'
 
 class Issue < ActiveRecord::Base
   include Issuable

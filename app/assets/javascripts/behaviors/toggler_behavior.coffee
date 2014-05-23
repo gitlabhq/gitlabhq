@@ -1,6 +1,6 @@
 $ ->
   $("body").on "click", ".js-toggler-target", ->
-    container = $(@).closest(".js-toggler-container")
+    container = $(".notes-container")
     container.toggleClass("on")
 
   # Toggle button. Show/hide content inside parent container.

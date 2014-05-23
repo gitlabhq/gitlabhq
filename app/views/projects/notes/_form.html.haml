@@ -5,20 +5,15 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
 
-  .note_text_and_preview.js-toggler-container
-    %a.btn.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", data: {url: preview_project_notes_path(@project)} }
-      %i.icon-eye-open
-      Preview
-    %a.btn.btn-primary.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;" }
-      %i.icon-edit
-      Write
-
-    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
+  .note_text_and_preview.js-toggler-container.notes-container
+    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on markdown-area'
     .note_preview.js-note-preview.turn-off
 
   .hint
-    .pull-right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+    .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+    .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
   .clearfix
+  .error-alert
 
   .note-form-actions
     .buttons
@@ -35,4 +30,14 @@
       %span.file_name.js-attachment-filename File name...
       = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
+    .write-preview-btn
+      %a.btn.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", data: {url: preview_project_notes_path(@project)} }
+        %i.icon-eye-open
+        Preview
+      %a.btn.btn-primary.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;" }
+        %i.icon-edit
+        Write
     .clearfix
+
+:javascript
+  window.project_image_path_upload = "#{upload_image_project_path @project}";
