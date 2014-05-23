@@ -94,7 +94,13 @@ module API
       #   DELETE /projects/:id/repository/branches/:branch
       delete ":id/repository/branches/:branch" do
         authorize_push_project
-        DeleteBranchService.new.execute(user_project, params[:branch], current_user)
+        result = DeleteBranchService.new.execute(user_project, params[:branch], current_user)
+
+        if result[:state] == :success
+          true
+        else
+          render_api_error!(result[:message], 405)
+        end
       end
     end
   end
