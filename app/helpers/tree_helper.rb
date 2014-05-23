@@ -6,7 +6,6 @@ module TreeHelper
   def render_tree(tree)
     # Render Folders before Files/Submodules
     folders, files, submodules = tree.trees, tree.blobs, tree.submodules
-
     tree = ""
 
     # Render folders if we have any

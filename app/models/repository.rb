@@ -14,6 +14,10 @@ class Repository
     @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
   end
 
+  def abs_path_to_repo_files
+    @base_path ||= File.join(Gitlab.config.satellites.path, path_with_namespace)
+  end
+
   def exists?
     raw_repository
   end
@@ -219,5 +223,25 @@ class Repository
   # Remove archives older than 2 hours
   def clean_old_archives
     Gitlab::Popen.popen(%W(find #{Gitlab.config.gitlab.repository_downloads_path} -mmin +120 -delete))
+  end
+
+  def repo_files
+    files = File.join("#{abs_path_to_repo_files}/**", '*.*')
+    Dir.glob(files).reject { |blob| blob =~ /\.git\// }.map { |blob| Linguist::FileBlob.new(blob) }
+  end
+
+  def repo_languages
+    @repo_languages ||= begin
+      lang_repository = Linguist::Repository.new(repo_files)
+      lang_repository.compute_stats
+      blacklisted_languages = Linguist::Language.all.select { |lang| lang if !lang.color }
+      lang_repository.languages.reject { |k, v| blacklisted_languages.include? k }
+    end
+  end
+
+  def language_stats
+    total = repo_languages.values.sum
+    lang_stats = repo_languages.inject({}) { |hash, (k, v)| hash.merge(k.name => (v.to_f / total) * 100) }
+    Hash[lang_stats.sort_by { |k, v| v }.reverse]
   end
 end

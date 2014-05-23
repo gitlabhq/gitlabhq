@@ -1,0 +1,4 @@
+%div.language-graph{:style => "background-color: #{determine_bg_color(stats)};"}
+  - stats.each do |language,value|
+    %span.percentage{:style => "width:#{value}%; background-color: #{language_bg_color(language)};"}
+      = language
