@@ -4,12 +4,12 @@
     = render "projects/branches/filter"
   .col-md-9
     .bs-callout.bs-callout-info
-      %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
-      %p This ability allows:
+      %p Protected branches designed to
       %ul
-        %li keep stable branches secured
-        %li forced code review before merge to protected branches
-        %li prevents branch from force push
+        %li prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
+        %li prevent branch from force push
+        %li prevent branch from removal
+      %p This ability allows to keep stable branches secured and force code review before merge to protected branches
       %p Read more about project permissions #{link_to "here", help_permissions_path, class: "underlined-link"}
 
     - if can? current_user, :admin_project, @project

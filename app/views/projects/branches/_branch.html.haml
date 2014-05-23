@@ -16,8 +16,8 @@
           %i.icon-copy
           Compare
 
-      - if can?(current_user, :admin_project, @project) && branch.name != @repository.root_ref
-        = link_to project_branch_path(@project, branch.name), class: 'btn btn-grouped btn-small remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
+      - if can_remove_branch?(@project, branch.name)
+        = link_to project_branch_path(@project, branch.name), class: 'btn btn-grouped btn-small btn-remove remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
           %i.icon-trash
 
   - if commit
