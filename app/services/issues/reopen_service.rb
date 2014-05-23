@@ -4,7 +4,7 @@ module Issues
       if issue.reopen
         event_service.reopen_issue(issue, current_user)
         create_note(issue)
-        execute_hooks(issue)
+        execute_hooks(issue, 'reopen')
       end
 
       issue

@@ -23,7 +23,7 @@ module Issues
         end
 
         issue.notice_added_references(issue.project, current_user)
-        execute_hooks(issue)
+        execute_hooks(issue, 'update')
       end
 
       issue
