@@ -7,7 +7,9 @@ class Projects::BranchesController < Projects::ApplicationController
   before_filter :authorize_push!, only: [:create, :destroy]
 
   def index
-    @branches = Kaminari.paginate_array(@repository.branches).page(params[:page]).per(30)
+    @sort = params[:sort] || 'name'
+    @branches = @repository.branches_sorted_by(@sort)
+    @branches = Kaminari.paginate_array(@branches).page(params[:page]).per(30)
   end
 
   def recent
