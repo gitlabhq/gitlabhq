@@ -19,3 +19,7 @@
     = link_to project_services_path(@project) do
       %i.icon-cogs
       Services
+  = nav_link(controller: :protected_branches) do
+    = link_to project_protected_branches_path(@project) do
+      %i.icon-lock
+      Protected branches

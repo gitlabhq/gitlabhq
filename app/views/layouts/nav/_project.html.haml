@@ -8,7 +8,7 @@
       = link_to 'Files', project_tree_path(@project, @ref || @repository.root_ref)
 
   - if project_nav_tab? :commits
-    = nav_link(controller: %w(commit commits compare repositories protected_branches tags branches)) do
+    = nav_link(controller: %w(commit commits compare repositories tags branches)) do
       = link_to "Commits", project_commits_path(@project, @ref || @repository.root_ref)
 
   - if project_nav_tab? :network
