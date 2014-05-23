@@ -23,8 +23,8 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def destroy
-    @branch = @repository.find_branch(params[:id])
     DeleteBranchService.new.execute(project, params[:id], current_user)
+    @branch_name = params[:id]
 
     respond_to do |format|
       format.html { redirect_to project_branches_path(@project) }

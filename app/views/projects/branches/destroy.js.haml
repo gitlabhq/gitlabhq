@@ -1,5 +1,3 @@
 :plain
-  $(".js-branch-#{@branch.name}").remove();
-  $('.js-recentbranch-count').html("#{@repository.recent_branches.count}")
-  $('.js-protectedbranch-count').html("#{@project.protected_branches.count}")
-  $('.js-totalbranch-count').html("#{@repository.branch_names.count}")
+  $(".js-branch-#{@branch_name}").remove();
+  $('.js-totalbranch-count').html("#{@repository.branches.size}")
