@@ -135,10 +135,6 @@ ul.notes {
       border-width: 1px 0;
       padding-top: 0;
       vertical-align: top;
-
-      li {
-        padding: 5px;
-      }
     }
   }
 
@@ -266,24 +262,33 @@ ul.notes {
   .clearfix {
     margin-bottom: 0;
   }
-  .note_text_and_preview {
-    .note_preview {
-      background: #f5f5f5;
-      border: 1px solid #ddd;
-      @include border-radius(4px);
-      min-height: 80px;
-      padding: 4px 6px;
 
-      > p {
-        overflow-x: auto;
-      }
+  .note-preview-holder,
+  .note_text {
+    background: #FFF;
+    border: 1px solid #ddd;
+    min-height: 100px;
+    padding: 5px;
+    font-size: 14px;
+    box-shadow: none;
+  }
+
+  .note-preview-holder {
+    > p {
+      overflow-x: auto;
     }
-    .note_text {
+  }
+
+  .note_text {
+    width: 100%;
+  }
+  .nav-tabs {
+    margin-bottom: 0;
+    border: none;
+
+    li a,
+    li.active a {
       border: 1px solid #DDD;
-      box-shadow: none;
-      font-size: 14px;
-      height: 80px;
-      width: 100%;
     }
   }
 }
