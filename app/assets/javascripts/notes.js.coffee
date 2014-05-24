@@ -203,8 +203,7 @@ class Notes
     form.find(".js-errors").remove()
 
     # reset text and preview
-    previewContainer = form.find(".note-edit-and-preview")
-    previewContainer.removeClass "on"  if previewContainer.is(".on")
+    form.find(".js-note-write-button").click()
     form.find(".js-note-text").val("").trigger "input"
 
   ###
@@ -254,7 +253,7 @@ class Notes
     form.removeClass "js-new-note-form"
 
     # setup preview buttons
-    form.find(".js-note-edit-button, .js-note-preview-button").tooltip placement: "left"
+    form.find(".js-note-write-button, .js-note-preview-button").tooltip placement: "left"
     previewButton = form.find(".js-note-preview-button")
     form.find(".js-note-text").on "input", ->
       if $(this).val().trim() isnt ""

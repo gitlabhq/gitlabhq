@@ -44,7 +44,7 @@ describe "On a merge request", js: true, feature: true do
       it 'should have text and visible edit button' do
         within(".js-main-target-form") { should have_css(".js-note-preview", text: "This is awesome", visible: true) }
         within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
-        within(".js-main-target-form") { should have_css(".js-note-edit-button", visible: true) }
+        within(".js-main-target-form") { should have_css(".js-note-write-button", visible: true) }
       end
     end
   end
