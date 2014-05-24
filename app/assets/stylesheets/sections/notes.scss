@@ -83,6 +83,7 @@ ul.notes {
     overflow: hidden;
     display: block;
     position:relative;
+    border-bottom: 1px solid #eee;
     p { color: $style_color; }
 
     .avatar {
@@ -98,21 +99,15 @@ ul.notes {
     .note-header {
       padding-bottom: 3px;
     }
+
+    &:last-child {
+      border-bottom: none;
+    }
   }
 
   .note:target {
     -webkit-animation:target-note 2s linear;
     background: #fffff0;
-  }
-
-  // paint top or bottom borders depending on notes direction
-  &:not(.reversed) .note,
-  &:not(.reversed) .discussion {
-    border-bottom: 1px solid #eee;
-  }
-  &.reversed .note,
-  &.reversed .discussion {
-    border-top: 1px solid #eee;
   }
 }
 
@@ -308,14 +303,13 @@ ul.notes {
 .common-note-form {
   margin: 0;
   background: #F9F9F9;
-  padding: 3px;
+  padding: 5px;
   border: 1px solid #DDD;
 }
 
 .note-form-actions {
   background: #F9F9F9;
   height: 45px;
-  padding: 0 5px;
 
   .note-form-option {
     margin-top: 8px;
