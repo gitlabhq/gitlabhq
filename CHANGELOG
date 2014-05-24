@@ -7,6 +7,7 @@ v 7.0.0
   - Remove branch via API (sponsored by O'Reilly Media)
   - Move protected branches page to Project settings area
   - Redirect to Files view when create new branch via UI
+  - Drag and drop upload of image in every markdown-area (Earle Randolph Bunao and Neil Francis Calabroso)
 
 v 6.9.0
   - Store Rails cache data in the Redis `cache:gitlab` namespace
