@@ -1,8 +1,4 @@
 $ ->
-  $("body").on "click", ".js-toggler-target", ->
-    container = $(".notes-container")
-    container.toggleClass("on")
-
   # Toggle button. Show/hide content inside parent container.
   # Button does not change visibility. If button has icon - it changes chevron style.
   #
