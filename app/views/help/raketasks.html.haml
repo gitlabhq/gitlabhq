@@ -6,8 +6,6 @@
 
   %ul.nav.nav-tabs.log-tabs
     %li.active
-      = link_to "Features", "#features", 'data-toggle' => 'tab'
-    %li
       = link_to "Maintenance", "#maintenance", 'data-toggle' => 'tab'
     %li
       = link_to "User Management", "#user_management", 'data-toggle' => 'tab'
@@ -17,16 +15,7 @@
       = link_to "Cleanup", "#cleanup", 'data-toggle' => 'tab'
 
   .tab-content
-    .tab-pane.active#features
-      .file-holder
-        .file-title
-          %i.icon-file
-          Features
-        .file-content.wiki
-          = preserve do
-            = markdown File.read(Rails.root.join("doc", "raketasks", "features.md"))
-
-    .tab-pane#maintenance
+    .tab-pane.active#maintenance
       .file-holder
         .file-title
           %i.icon-file
@@ -57,7 +46,7 @@
       .file-holder
         .file-title
           %i.icon-file
-          Backup & Restore
+          Backup &amp; Restore
         .file-content.wiki
           = preserve do
             = markdown File.read(Rails.root.join("doc", "raketasks", "backup_restore.md"))
