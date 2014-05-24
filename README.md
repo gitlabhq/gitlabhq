@@ -65,6 +65,8 @@
 
 * [Cloud 66 deployment and management](http://blog.cloud66.com/installing-gitlab-ubuntu/) Use Cloud 66 to deploy GitLab to your own server or any cloud (eg. DigitalOcean, AWS, Rackspace, GCE) and then manage it with database backups, scaling and more.
 
+* [Pkgr.io one-click installer](https://pkgr.io/apps/gitlabhq/gitlabhq) Currently supporting Ubuntu 14.04, Ubuntu 12.04 and Debian 7.4. For more information check the [README](https://gitlab.com/gitlab-org/gitlab-recipes/blob/master/install/pkgr/README.md) at gitlab-recipes repo.
+
 #### Unofficial installation methods
 
 * [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/) repository with unofficial guides for using GitLab with different software (operating systems, webservers, etc.) than the official version.
