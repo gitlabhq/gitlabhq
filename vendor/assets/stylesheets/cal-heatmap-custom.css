@@ -1,0 +1,97 @@
+.onClicksecond {
+  font-size: 14px;
+  display: block; }
+
+#commitActivity
+{
+  padding: 5px 0 5px 0;
+}
+
+#onClickplaceholder
+{
+  padding: inherit;
+}
+
+#onClick-placeholder
+{
+  padding: 2px 0 2px 0;
+}
+
+.qi {
+  background-color: #999;
+  fill: #fff;
+}
+
+/*
+Remove comment to apply this style to date with value equal to 0
+.q0
+{
+  background-color: #fff;
+  fill: #fff;
+  stroke: #ededed
+}
+*/
+
+.q1
+{
+  background-color: #dae289;
+  fill: #ededed
+}
+
+.q2
+{
+  background-color: #cedb9c;
+  fill: #ACD5F2
+}
+
+.q3
+{
+  background-color: #b5cf6b;
+  fill: #7FA8D1
+}
+
+.q4
+{
+  background-color: #637939;
+  fill: #49729B
+}
+
+.q5
+{
+  background-color: #3b6427;
+  fill: #254E77
+}
+
+.domain-background {
+  fill: none;
+  shape-rendering: crispedges
+}
+
+.ch-tooltip {
+  position: absolute;
+  display: none;
+  margin-top: 22px;
+  margin-left: 1px;
+  font-size: 13px;
+  padding: 3px;
+  font-weight: 550;
+  background-color: #222;
+}
+.ch-tooltip span {
+  position: absolute;
+  width:200px;
+  text-align: center;
+  visibility: hidden;
+  border-radius: 10px;
+}
+.ch-tooltip span:after {
+  content: '';
+  position: absolute;
+  top: 100%;
+  left: 50%;
+  margin-left: -8px;
+  width: 0; height: 0;
+  border-top: 8px solid #000000;
+  border-right: 8px solid transparent;
+  border-left: 8px solid transparent;
+}
