@@ -19,7 +19,7 @@ module GitlabMarkdownHelper
                      escape_once(body)
                    end
 
-    gfm_body = gfm(escaped_body, html_options)
+    gfm_body = gfm(escaped_body, @project, html_options)
 
     gfm_body.gsub!(%r{<a.*?>.*?</a>}m) do |match|
       "</a>#{match}#{link_to("", url, html_options)[0..-5]}" # "</a>".length +1
