@@ -134,7 +134,10 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  match "u/:username/activities" => "users#activities", as: :user_activities, via: :get
   match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
+  #routesfor commits used by the cal-heatmap
+  
 
   #
   # Dashboard Area

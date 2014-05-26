@@ -1,0 +1,10 @@
+#onClick-placeholder
+  %span{:style => "font-size: 17px; font-weight: 500"} COMMIT ACTIVITY
+  %span.onClicksecond{:style => "display:block"}
+  - if @timestamps==="{}"
+    %strong #{@user.username}
+    has no activity
+  - else
+    %strong #{@user.username}'s
+    last commit was on
+    %font{color: "#999"} #{@time_copy.to_formatted_s(:long).to_s}
