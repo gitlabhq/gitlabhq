@@ -203,9 +203,9 @@ Proposed email for CE: "We have released a new version of GitLab Community Editi
 
 ### **10. Create a regressions issue**
 
-On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create and issue titled "GitLab X.X.X regressions", assign it to the release manager, /cc all the core-team members active on the issue tracker add the following text:
+On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create and issue titled "GitLab X.X regressions", assign it to the release manager, /cc all the core-team members active on the issue tracker add the following text:
 
-This is a meta issue to discuss possible regressions in this release and any patch versions.
+This is a meta issue to discuss possible regressions in this monthly release and any patch versions.
 Please do not raise issues directly in this issue but link to issues that might warrant a patch release.
 The decision to create a patch release or not is with the release manager who is assigned to this issue.
 The release manager will comment here about the plans for patch releases.
