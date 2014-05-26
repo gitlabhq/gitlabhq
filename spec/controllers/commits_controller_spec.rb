@@ -6,7 +6,7 @@ describe Projects::CommitsController do
 
   before do
     sign_in(user)
-    project.creator = user
+    project.team << [user, :master]
   end
 
   describe "GET show" do

@@ -25,7 +25,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def store!(file)
-    file.original_filename = self.class.generate_filename(file)
+    @filename = self.class.generate_filename(file)
     super
   end
 
