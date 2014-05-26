@@ -120,7 +120,7 @@ It is important to do this as soon as possible, so we can catch any errors befor
 
 Create issue on dev.gitlab.org gitlab repository, named "GitLab X.X release" in order to keep track of the progress.
 
-Use the omnibus packages or cookbook to test using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
+Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
 
