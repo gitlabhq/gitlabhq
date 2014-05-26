@@ -26,17 +26,18 @@ describe API::API, api: true  do
   describe 'POST /projects/:id/repository/tags' do
     it 'should create a new tag' do
       post api("/projects/#{project.id}/repository/tags", user),
-        tag_name: 'v1.0.0',
-        ref: '621491c677087aa243f165eab467bfdfbee00be1'
+           tag_name: 'v1.0.0',
+           ref: '621491c677087aa243f165eab467bfdfbee00be1'
 
       response.status.should == 201
       json_response.first['name'].should == 'v1.0.0'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['commit']['id'].should ==
+        '621491c677087aa243f165eab467bfdfbee00be1'
     end
     it 'should deny for user without push access' do
       post api("/projects/#{project.id}/repository/tags", user2),
-        tag_name: 'v1.0.0',
-        ref: '621491c677087aa243f165eab467bfdfbee00be1'
+           tag_name: 'v1.0.0',
+           ref: '621491c677087aa243f165eab467bfdfbee00be1'
 
       response.status.should == 403
     end

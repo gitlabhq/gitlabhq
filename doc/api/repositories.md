@@ -59,9 +59,9 @@ Parameters:
       "message": "Initial commit",
       "authored_date": "2012-05-28T04:42:42-07:00",
       "author_name": "John Smith",
-      "author email": "john@example.com"
+      "author email": "john@example.com",
       "committer_name": "Jack Smith",
-      "committed_date": "2012-05-28T04:42:42-07:00"
+      "committed_date": "2012-05-28T04:42:42-07:00",
       "committer_email": "jack@example.com"
     },
     "protected": false
