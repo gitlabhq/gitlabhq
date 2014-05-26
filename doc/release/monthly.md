@@ -203,7 +203,7 @@ Proposed email for CE: "We have released a new version of GitLab Community Editi
 
 ### **10. Create a regressions issue**
 
-On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create and issue titled "GitLab X.X regressions" add the following text:
+On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
 
 This is a meta issue to discuss possible regressions in this monthly release and any patch versions.
 Please do not raise issues directly in this issue but link to issues that might warrant a patch release.
