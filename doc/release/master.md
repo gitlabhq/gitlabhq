@@ -1,6 +1,8 @@
 # How to push GitLab CE master branch to all remotes.
 
-Distribution to other repo's is done by Dmitriy if there is no rush. If a GitLab B.V. person wants to do it here are the instructions.
+Distribution to other repo's is done by the lead developer if there is no rush.
+This happens a few times per workday on average.
+If a GitLab B.V. person wants to do it here are the instructions.
 
 ## Add this to `.bashrc`
 
@@ -11,7 +13,7 @@ gpa ()
 }
 ```
 
-##  Then add remotes to your local repo
+## Then add remotes to your local repo
 
 ```bash
 cd myrepo
@@ -21,7 +23,7 @@ git remote add gh  git@github.com:gitlabhq/gitlabhq.git
 git remote add public git@gitlab.com:gitlab-org/gitlab-ce.git
 ```
 
-## Pushto all remotes
+## Push to all remotes
 
 ```bash
 gpa master
