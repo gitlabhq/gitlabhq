@@ -164,12 +164,21 @@ class ProjectsController < ApplicationController
 
   def upload_image
     uploader = FileUploader.new('uploads', upload_path, accepted_images)
-    alt = params['markdown_img'].original_filename
-    uploader.store!(params['markdown_img'])
-    link = { 'alt' => File.basename(alt, '.*'),
-             'url' => File.join(root_url, uploader.url) }
+    image = params['markdown_img']
+
+    if image && accepted_images.map{ |format| image.content_type.include? format }.any?
+      alt = image.original_filename
+      uploader.store!(image)
+      link = { 'alt' => File.basename(alt, '.*'),
+               'url' => File.join(root_url, uploader.url) }
+    end
+
     respond_to do |format|
-      format.json { render json: { link: link } }
+      if link
+        format.json { render json: { link: link } }
+      else
+        format.json { render json: "Invalid file.", status: :unprocessable_entity }
+      end
     end
   end
 
