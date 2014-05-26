@@ -194,5 +194,22 @@ module API
     class Label < Grape::Entity
       expose :name
     end
+
+    class RepoDiff < Grape::Entity
+      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :new_file, :renamed_file, :deleted_file
+    end
+
+    class Compare < Grape::Entity
+      expose :commit, using: Entities::RepoCommit do |compare, options|
+        Commit.new compare.commit
+      end
+      expose :commits, using: Entities::RepoCommit do |compare, options|
+        Commit.decorate compare.commits
+      end
+      expose :diffs, using: Entities::RepoDiff do |compare, options|
+        compare.diffs
+      end
+    end
   end
 end

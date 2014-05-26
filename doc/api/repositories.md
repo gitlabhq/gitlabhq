@@ -131,3 +131,69 @@ GET /projects/:id/repository/archive
 Parameters:
 + `id` (required) - The ID of a project
 + `sha` (optional) - The commit sha to download defaults to the tip of the default branch
+
+
+## Compare branches, tags or commits
+
+```
+GET /projects/:id/repository/compare
+```
+
+Parameters:
++ `id` (required) - The ID of a project
++ `from` (required) - the commit sha or branch name
++ `to` (required) - the commit sha or branch name
+
+
+```
+GET /projects/:id/repository/compare?from=master&to=feature
+```
+
+Response: 
+
+```json
+{
+  "commit": {
+    "id": "72e10ef47e770a95439255b2c49de722e8782106",
+    "short_id": "72e10ef47e7",
+    "title": "Add NEWFILE",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2014-05-26T16:03:54+03:00"
+  },
+  "commits": [{
+    "id": "0b4bc9a49b562e85de7cc9e834518ea6828729b9",
+    "short_id": "0b4bc9a49b5",
+    "title": "Feature added",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2014-02-27T10:26:01+02:00"
+  }, {
+    "id": "72e10ef47e770a95439255b2c49de722e8782106",
+    "short_id": "72e10ef47e7",
+    "title": "Add NEWFILE",
+    "author_name": "Dmitriy Zaporozhets",
+    "author_email": "dmitriy.zaporozhets@gmail.com",
+    "created_at": "2014-05-26T16:03:54+03:00"
+  }],
+  "diffs": [{
+    "old_path": "NEWFILE",
+    "new_path": "NEWFILE",
+    "a_mode": null,
+    "b_mode": null,
+    "diff": "--- /dev/null\n+++ b/NEWFILE\n@@ -0,0 +1 @@\n+This is NEWFILE content\n\\ No newline at end of file",
+    "new_file": true,
+    "renamed_file": false,
+    "deleted_file": false
+  }, {
+    "old_path": "files/ruby/feature.rb",
+    "new_path": "files/ruby/feature.rb",
+    "a_mode": null,
+    "b_mode": null,
+    "diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,5 @@\n+class Feature\n+  def foo\n+    puts 'bar'\n+  end\n+end",
+    "new_file": true,
+    "renamed_file": false,
+    "deleted_file": false
+  }]
+}
+```
