@@ -43,13 +43,12 @@ If all items are green, then congratulations upgrade is complete!
 
 ### (optional) 5. Application status check fails
 
-If `gitlab:check` task reports old version of gitlab-shell and recommends upgrading, upgrade gitlab-shell by running:
+If the `gitlab:check` task reports an old version of gitlab-shell and recommends upgrading, upgrade gitlab-shell by running:
 
 ```
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
 sudo -u git -H git checkout v1.9.4
-
 ```
 
 ### One line upgrade command
