@@ -9,6 +9,10 @@ NOTE: This is a guide for GitLab developers.
 
 A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
 
+### **3. Update Changelog**
+
+Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
+
 # **18th - Releasing RC1**
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
