@@ -108,7 +108,7 @@ Start it with [Foreman](https://github.com/ddollar/foreman)
 or start each component separately
 
     bundle exec rails s
-    script/background_jobs start
+    bin/background_jobs start
 
 And surf to [localhost:3000](http://localhost:3000/) and login with root / 5iveL!fe
 

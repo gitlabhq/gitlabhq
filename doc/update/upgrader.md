@@ -19,10 +19,10 @@ __GitLab Upgrader is available only for GitLab version 6.4.2 or higher__
 ### 2. Run gitlab upgrade tool
 
     cd /home/git/gitlab
-    sudo -u git -H ruby script/upgrade.rb
+    sudo -u git -H ruby bin/upgrade.rb
 
     # to perform a non-interactive install (no user input required) you can add -y
-    # sudo -u git -H ruby script/upgrade.rb -y
+    # sudo -u git -H ruby bin/upgrade.rb -y
 
 ### 3. Start application
 
@@ -48,6 +48,6 @@ You've read through the entire guide, and probably did all the steps manually. H
 
 ```bash
 cd /home/git/gitlab; sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
-  sudo service gitlab stop; sudo -u git -H ruby script/upgrade.rb -y; sudo service gitlab start; \
+  sudo service gitlab stop; sudo -u git -H ruby bin/upgrade.rb -y; sudo service gitlab start; \
   sudo service nginx restart; sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
