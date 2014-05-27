@@ -212,10 +212,6 @@ class MergeRequest < ActiveRecord::Base
     target_project != source_project
   end
 
-  def disallow_source_branch_removal?
-    source_project.root_ref?(source_branch) || source_project.protected_branches.include?(source_branch)
-  end
-
   def project
     target_project
   end

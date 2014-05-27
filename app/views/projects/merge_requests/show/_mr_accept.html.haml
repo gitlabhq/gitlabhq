@@ -38,7 +38,7 @@
         .accept-group
           .pull-left
             = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
-          - unless @merge_request.disallow_source_branch_removal?
+          - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch)
             .remove_branch_holder.pull-left
               = label_tag :should_remove_source_branch, class: "checkbox" do
                 = check_box_tag :should_remove_source_branch
