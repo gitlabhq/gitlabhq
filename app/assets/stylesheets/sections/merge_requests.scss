@@ -19,12 +19,19 @@
   }
 }
 
-.merge-request .nav-tabs{
+.merge-request .merge-request-tabs{
+  border-color: #AAA;
   li {
     a {
-      font-weight: bold;
-      padding: 8px 20px;
-      text-align: center;
+      border-color: #AAA;
+      padding: 14px 40px;
+      font-size: 14px;
+      background-color: #F9F9F9;
+    }
+    &.active a {
+      border-color: #AAA;
+      border-bottom-color: #FFF;
+      background-color: #FFF;
     }
   }
 }
