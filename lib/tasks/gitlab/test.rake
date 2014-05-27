@@ -8,9 +8,7 @@ namespace :gitlab do
     ]
 
     cmds.each do |cmd|
-      result = system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd)
-
-      raise "#{cmd} failed!" unless result
+      system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd) or raise("#{cmd} failed!")
     end
   end
 end
