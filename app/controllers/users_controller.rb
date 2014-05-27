@@ -16,14 +16,10 @@ class UsersController < ApplicationController
     @title = @user.name
 
     user_projects = @user.authorized_projects.accessible_to(@user)
-    @user_project = user_projects.map(&:repository)
+    @user_projects = user_projects.map(&:repository)
 
-    timecommit = create_timestamp(@user_project)
-
-    @timestamps = create_timestamp(@user_project)
-    @time_copy = create_time_copy(@timestamps)
-    @timestamps = @timestamps.to_json
-
+    @timestamps = create_timestamp(@user_projects).to_json
+    @time_copy = create_time_copy(@user_projects)
   end
 
   def activities

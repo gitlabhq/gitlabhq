@@ -1,3 +1,21 @@
+.onClicksecond {
+  font-size: 14px;
+  display: block; }
+
+#commitActivity
+{
+  padding: 5px 0 5px 0;
+}
+
+#onClickplaceholder
+{
+  padding: inherit;
+}
+
+#onClick-placeholder
+{
+  padding: 2px 0 2px 0;
+}
 
 .qi {
   background-color: #999;

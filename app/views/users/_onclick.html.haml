@@ -1,10 +1,24 @@
-#onClick-placeholder
-  %span{:style => "font-size: 17px; font-weight: 500"} COMMIT ACTIVITY
-  %span.onClicksecond{:style => "display:block"}
-  - if @timestamps==="{}"
-    %strong #{@user.username}
-    has no activity
-  - else
-    %strong #{@user.username}'s
-    last commit was on
-    %font{color: "#999"} #{@time_copy.to_formatted_s(:long).to_s}
+#commitActivity
+  #onClickplaceholder
+    %span{:style => "font-size: 17px; font-weight: 500"} Commit Activity:
+
+  #loading-commits
+    %section.text-center
+      %h3
+        %i.icon-spinner.icon-spin
+
+  #onClick-placeholder
+    %span.onClicksecond
+    - if @timestamps==="{}"
+      %strong #{@user.username}
+      has no activity
+    - else
+      %strong #{@user.username}'s
+      last commit was on
+      %font{color: "#999"} #{@time_copy.to_formatted_s(:long).to_s}
+    
+    %hr{style: "padding:0px; margin:10px 0 5px 0"}/
+
+:javascript
+  $("#loading-commits").hide();
+  

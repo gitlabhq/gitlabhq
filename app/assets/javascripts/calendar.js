@@ -1,15 +1,16 @@
 var options = {month: "short", day: "numeric"};
 function myFunction(data, date, nb)
   {
-    $("#onClick-placeholder").html("<span style='font-size: 17px; font-weight: 500'> COMMIT ACTIVITY</span><br /><span class ='onClickphold'>Pushed <b>" + (nb === null ? "no" : nb) + " commit" + ((nb!=1)?'s':'') + "</b> <font color='#999'>" + date.toLocaleDateString("en-US",options) + "</font><br /></span>");
+    $("#onClick-placeholder").hide();
+
+    $("#onClick-placeholder").html("<span class='onClicksecond'><b>" + (nb === null ? "no" : nb) + "<font color='#999'></b> commit" + ((nb!=1)?'s':'') + " " + date.toLocaleDateString("en-US",options) + "</font><hr style='padding:0px;margin:5px 0 5px 0' /></span>");
 
     $.each(data, function (key, data) {
       console.log(key)
       $.each(data, function (index, data) {
-        $("#onClick-placeholder").append("Pushed <b>" + (data === null ? "no" : data) + " commit" + ((data!=1)?'s':'') +"</b> to <b><a href='/" + index + "'>" + index + "</a><br />")
+        $("#onClick-placeholder").append("Pushed <b>" + (data === null ? "no" : data) + " commit" + ((data!=1)?'s':'') +"</b> to <a href='/" + index + "'>" + index + "</a><hr style='padding:0px; margin:5px 0 5px 0' />")
       })
     })
-
   };
 
 var cal = new CalHeatMap();
@@ -35,9 +36,12 @@ var cal = new CalHeatMap();
         data: {date: date},
         dataType: 'json',
         success: function(data) {
+          $("#loading-commits").fadeIn();
           console.log('success')
           console.log(data)
           myFunction(data, date, count)
+          setTimeout(function() {$("#onClick-placeholder").fadeIn(500);}, 400);
+          setTimeout(function() {$("#loading-commits").hide();}, 400);
         },
         error: function(data) {
           console.log('error')
