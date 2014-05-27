@@ -1,3 +1,5 @@
+# Users
+
 ## List users
 
 Get a list of users.

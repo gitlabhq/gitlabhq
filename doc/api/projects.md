@@ -1,4 +1,4 @@
-## Projects
+# Projects
 
 ### List projects
 

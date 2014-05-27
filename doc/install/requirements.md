@@ -1,4 +1,6 @@
-# Operating Systems
+# Requirements
+
+## Operating Systems
 
 GitLab is developed for the Linux operating system. For the installations options and instructions please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 

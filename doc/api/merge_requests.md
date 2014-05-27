@@ -1,3 +1,5 @@
+# Merge requests
+
 ## List merge requests
 
 Get all merge requests for this project.

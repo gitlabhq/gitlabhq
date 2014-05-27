@@ -1,3 +1,5 @@
+# Rack attack
+
 To prevent abusive clients doing damage GitLab uses rack-attack gem.
 If you installed or upgraded GitLab by following the official guides this should be enabled by default.
 If you are missing `config/initializers/rack_attack.rb` the following steps need to be taken in order to enable protection for your GitLab instance:

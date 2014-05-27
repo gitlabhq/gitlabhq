@@ -1,3 +1,5 @@
+# Notes
+
 Notes can be wall notes or comments on snippets, issues or merge requests.
 
 ## Wall
