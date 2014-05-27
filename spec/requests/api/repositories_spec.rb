@@ -114,25 +114,41 @@ describe API::API, api: true  do
   end
 
   describe 'GET /GET /projects/:id/repository/compare' do
-    it "should compare 2 branches" do
+    it "should compare branches" do
       get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'simple_merge_request'
       response.status.should == 200
-      json_response['commits'].size.should == 3
-      json_response['diffs'].size.should == 1
+      json_response['commits'].should be_present
+      json_response['diffs'].should be_present
     end
 
-    it "should compare 2 commits" do
+    it "should compare tags" do
+      get api("/projects/#{project.id}/repository/compare", user), from: 'v1.0.1', to: 'v1.0.2'
+      response.status.should == 200
+      json_response['commits'].should be_present
+      json_response['diffs'].should be_present
+    end
+
+    it "should compare commits" do
       get api("/projects/#{project.id}/repository/compare", user), from: 'b1e6a9dbf1c85', to: '1e689bfba395'
       response.status.should == 200
-      json_response['commits'].size.should == 0
-      json_response['diffs'].size.should == 0
+      json_response['commits'].should be_empty
+      json_response['diffs'].should be_empty
+      json_response['compare_same_ref'].should be_false
     end
 
-    it "should compare 2 commits" do
+    it "should compare commits in reverse order" do
       get api("/projects/#{project.id}/repository/compare", user), from: '1e689bfba395', to: 'b1e6a9dbf1c85'
       response.status.should == 200
-      json_response['commits'].size.should == 4
-      json_response['diffs'].size.should == 9
+      json_response['commits'].should be_present
+      json_response['diffs'].should be_present
+    end
+
+    it "should compare same refs" do
+      get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'master'
+      response.status.should == 200
+      json_response['commits'].should be_empty
+      json_response['diffs'].should be_empty
+      json_response['compare_same_ref'].should be_true
     end
   end
 end

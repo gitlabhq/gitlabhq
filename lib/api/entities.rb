@@ -202,7 +202,9 @@ module API
 
     class Compare < Grape::Entity
       expose :commit, using: Entities::RepoCommit do |compare, options|
-        Commit.new compare.commit
+        if compare.commit
+          Commit.new compare.commit
+        end
       end
       expose :commits, using: Entities::RepoCommit do |compare, options|
         Commit.decorate compare.commits
