@@ -1,3 +1,7 @@
+v 6.9.1
+  - Fix scroll to highlighted line
+  - Fix the pagination on load for commits page
+
 v 6.9.0
   - Store Rails cache data in the Redis `cache:gitlab` namespace
   - Adjust MySQL limits for existing installations
