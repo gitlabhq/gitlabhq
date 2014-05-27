@@ -60,7 +60,7 @@ Make sure you have the right version of Git installed
     # Install Git
     sudo apt-get install -y git-core
 
-    # Make sure Git is version 1.9.3 or higher, for example 1.9.3
+    # Make sure Git is version 1.7.10 or higher, for example 1.7.12 or 1.9.3
     git --version
 
 Is the system packaged Git too old? Remove it and compile from source.
