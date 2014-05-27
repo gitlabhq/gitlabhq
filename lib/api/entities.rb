@@ -210,6 +210,12 @@ module API
       expose :diffs, using: Entities::RepoDiff do |compare, options|
         compare.diffs
       end
+
+      expose :compare_timeout do |compare, options|
+        compare.timeout
+      end
+
+      expose :same, as: :compare_same_ref
     end
   end
 end

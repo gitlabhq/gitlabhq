@@ -152,48 +152,35 @@ GET /projects/:id/repository/compare?from=master&to=feature
 Response: 
 
 ```json
+
 {
   "commit": {
-    "id": "72e10ef47e770a95439255b2c49de722e8782106",
-    "short_id": "72e10ef47e7",
-    "title": "Add NEWFILE",
+    "id": "12d65c8dd2b2676fa3ac47d955accc085a37a9c1",
+    "short_id": "12d65c8dd2b",
+    "title": "JS fix",
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dmitriy.zaporozhets@gmail.com",
-    "created_at": "2014-05-26T16:03:54+03:00"
+    "created_at": "2014-02-27T10:27:00+02:00"
   },
   "commits": [{
-    "id": "0b4bc9a49b562e85de7cc9e834518ea6828729b9",
-    "short_id": "0b4bc9a49b5",
-    "title": "Feature added",
+    "id": "12d65c8dd2b2676fa3ac47d955accc085a37a9c1",
+    "short_id": "12d65c8dd2b",
+    "title": "JS fix",
     "author_name": "Dmitriy Zaporozhets",
     "author_email": "dmitriy.zaporozhets@gmail.com",
-    "created_at": "2014-02-27T10:26:01+02:00"
-  }, {
-    "id": "72e10ef47e770a95439255b2c49de722e8782106",
-    "short_id": "72e10ef47e7",
-    "title": "Add NEWFILE",
-    "author_name": "Dmitriy Zaporozhets",
-    "author_email": "dmitriy.zaporozhets@gmail.com",
-    "created_at": "2014-05-26T16:03:54+03:00"
+    "created_at": "2014-02-27T10:27:00+02:00"
   }],
   "diffs": [{
-    "old_path": "NEWFILE",
-    "new_path": "NEWFILE",
+    "old_path": "files/js/application.js",
+    "new_path": "files/js/application.js",
     "a_mode": null,
-    "b_mode": null,
-    "diff": "--- /dev/null\n+++ b/NEWFILE\n@@ -0,0 +1 @@\n+This is NEWFILE content\n\\ No newline at end of file",
-    "new_file": true,
+    "b_mode": "100644",
+    "diff": "--- a/files/js/application.js\n+++ b/files/js/application.js\n@@ -24,8 +24,10 @@\n //= require g.raphael-min\n //= require g.bar-min\n //= require branch-graph\n-//= require highlightjs.min\n-//= require ace/ace\n //= require_tree .\n //= require d3\n //= require underscore\n+\n+function fix() { \n+  alert(\"Fixed\")\n+}",
+    "new_file": false,
     "renamed_file": false,
     "deleted_file": false
-  }, {
-    "old_path": "files/ruby/feature.rb",
-    "new_path": "files/ruby/feature.rb",
-    "a_mode": null,
-    "b_mode": null,
-    "diff": "--- /dev/null\n+++ b/files/ruby/feature.rb\n@@ -0,0 +1,5 @@\n+class Feature\n+  def foo\n+    puts 'bar'\n+  end\n+end",
-    "new_file": true,
-    "renamed_file": false,
-    "deleted_file": false
-  }]
+  }],
+  "compare_timeout": false,
+  "compare_same_ref": false
 }
 ```

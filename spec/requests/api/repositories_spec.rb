@@ -118,18 +118,21 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'simple_merge_request'
       response.status.should == 200
       json_response['commits'].size.should == 3
+      json_response['diffs'].size.should == 1
     end
 
     it "should compare 2 commits" do
       get api("/projects/#{project.id}/repository/compare", user), from: 'b1e6a9dbf1c85', to: '1e689bfba395'
       response.status.should == 200
       json_response['commits'].size.should == 0
+      json_response['diffs'].size.should == 0
     end
 
     it "should compare 2 commits" do
       get api("/projects/#{project.id}/repository/compare", user), from: '1e689bfba395', to: 'b1e6a9dbf1c85'
       response.status.should == 200
       json_response['commits'].size.should == 4
+      json_response['diffs'].size.should == 9
     end
   end
 end
