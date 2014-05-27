@@ -41,7 +41,7 @@
 
 * Ubuntu/Debian/CentOS/RHEL**
 * ruby 1.9.3+
-* git 1.7.10+
+* git 1.9.3+
 * redis 2.0+
 * MySQL or PostgreSQL
 
