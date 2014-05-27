@@ -8,7 +8,6 @@ task :spinach do
   ]
 
   cmds.each do |cmd|
-    system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd) ||
-      raise "#{cmd} failed!"
+    system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd) or raise("#{cmd} failed!")
   end
 end
