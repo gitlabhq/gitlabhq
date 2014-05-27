@@ -223,7 +223,6 @@ Devise.setup do |config|
       method:   Gitlab.config.ldap['method'],
       bind_dn:  Gitlab.config.ldap['bind_dn'],
       password: Gitlab.config.ldap['password'],
-      filter:   Gitlab.config.ldap['user_filter'],
       name_proc: email_stripping_proc
   end
 
