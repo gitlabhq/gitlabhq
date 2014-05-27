@@ -59,90 +59,67 @@ module GitlabMarkdownHelper
     end
   end
 
-  # text - whole text from a markdown file
-  # project_path_with_namespace - namespace/projectname, eg. gitlabhq/gitlabhq
-  # ref - name of the branch or reference, eg. stable
-  # requested_path - path of request, eg. doc/api/README.md, used in special case when path is pointing to the .md file were the original request is coming from
-  def create_relative_links(text, project, ref, requested_path)
-    @path_to_satellite = project.satellite.path
-    project_path_with_namespace = project.path_with_namespace
+  def create_relative_links(text)
     paths = extract_paths(text)
-    paths.each do |file_path|
-      original_file_path = extract(file_path)
-      new_path = rebuild_path(project_path_with_namespace, original_file_path, requested_path, ref)
-      if reference_path?(file_path)
-        # Replacing old string with a new one that contains updated path
-        # eg. [some document]: document.md will be replaced with [some document] /namespace/project/master/blob/document.md
-        text.gsub!(file_path, file_path.gsub(original_file_path, "/#{new_path}"))
-      else
-        # Replacing old string with a new one with brackets ]() to prevent replacing occurence of a word
-        # e.g. If we have a markdown like [test](test) this will replace ](test) and not the word test
-        text.gsub!("](#{file_path})", "](/#{new_path})")
-      end
+
+    paths.uniq.each do |file_path|
+      new_path = rebuild_path(file_path)
+      # Finds quoted path so we don't replace other mentions of the string
+      # eg. "doc/api" will be replaced and "/home/doc/api/text" won't
+      text.gsub!("\"#{file_path}\"", "\"/#{new_path}\"")
     end
+
     text
   end
 
-  def extract_paths(markdown_text)
-    all_markdown_paths = pick_out_paths(markdown_text)
-    paths = remove_empty(all_markdown_paths)
-    select_relative(paths)
+  def extract_paths(text)
+    links = substitute_links(text)
+    image_links = substitute_image_links(text)
+    links + image_links
   end
 
-  # Split the markdown text to each line and find all paths, this will match anything with - ]("some_text") and [some text]: file.md
-  def pick_out_paths(markdown_text)
-    inline_paths = markdown_text.split("\n").map { |text| text.scan(/\]\(([^(]+)\)/) }
-    reference_paths = markdown_text.split("\n").map { |text| text.scan(/\[.*\]:.*/) }
-    inline_paths + reference_paths
+  def substitute_links(text)
+    links = text.scan(/<a href=\"([^"]*)\">/)
+    relative_links = links.flatten.reject{ |link| link_to_ignore? link }
+    relative_links
   end
 
-  # Removes any empty result produced by not matching the regexp
-  def remove_empty(paths)
-    paths.reject{|l| l.empty? }.flatten
+  def substitute_image_links(text)
+    links = text.scan(/<img src=\"([^"]*)\"/)
+    relative_links = links.flatten.reject{ |link| link_to_ignore? link }
+    relative_links
   end
 
-  # If a path is a reference style link we need to omit ]:
-  def extract(path)
-    path.split("]: ").last
-  end
-
-  # Reject any path that contains ignored protocol
-  # eg. reject "https://gitlab.org} but accept "doc/api/README.md"
-  def select_relative(paths)
-    paths.reject{|path| ignored_protocols.map{|protocol| path.include?(protocol)}.any?}
-  end
-
-  # Check whether a path is a reference-style link
-  def reference_path?(path)
-    path.include?("]: ")
+  def link_to_ignore?(link)
+    ignored_protocols.map{ |protocol| link.include?(protocol) }.any?
   end
 
   def ignored_protocols
     ["http://","https://", "ftp://", "mailto:"]
   end
 
-  def rebuild_path(path_with_namespace, path, requested_path, ref)
+  def rebuild_path(path)
     path.gsub!(/(#.*)/, "")
     id = $1 || ""
-    file_path = relative_file_path(path, requested_path)
+    file_path = relative_file_path(path)
+    file_path = sanitize_slashes(file_path)
+
     [
-      path_with_namespace,
-      path_with_ref(file_path, ref),
+      Gitlab.config.gitlab.relative_url_root,
+      @project.path_with_namespace,
+      path_with_ref(file_path),
       file_path
-    ].compact.join("/").gsub(/\/*$/, '') + id
+    ].compact.join("/").gsub(/^\/*|\/*$/, '') + id
   end
 
-  # Checks if the path exists in the repo
-  # eg. checks if doc/README.md exists, if not then link to blob
-  def path_with_ref(path, ref)
-    if file_exists?(path)
-      "#{local_path(path)}/#{correct_ref(ref)}"
-    else
-      "blob/#{correct_ref(ref)}"
-    end
+  def sanitize_slashes(path)
+    path[0] = "" if path.start_with?("/")
+    path.chop if path.end_with?("/")
+    path
   end
 
-  def relative_file_path(path, requested_path)
+  def relative_file_path(path)
+    requested_path = @path
     nested_path = build_nested_path(path, requested_path)
     return nested_path if file_exists?(nested_path)
     path
@@ -166,6 +143,16 @@ module GitlabMarkdownHelper
     end
   end
 
+  # Checks if the path exists in the repo
+  # eg. checks if doc/README.md exists, if not then link to blob
+  def path_with_ref(path)
+    if file_exists?(path)
+      "#{local_path(path)}/#{correct_ref}"
+    else
+      "blob/#{correct_ref}"
+    end
+  end
+
   def file_exists?(path)
     return false if path.nil?
     return @repository.blob_at(current_sha, path).present? || @repository.tree(current_sha, path).entries.any?
@@ -179,10 +166,6 @@ module GitlabMarkdownHelper
     return "blob"
   end
 
-  def current_ref
-    @commit.nil? ? "master" : @commit.id
-  end
-
   def current_sha
     if @commit
       @commit.id
@@ -192,7 +175,7 @@ module GitlabMarkdownHelper
   end
 
   # We will assume that if no ref exists we can point to master
-  def correct_ref(ref)
-    ref ? ref : "master"
+  def correct_ref
+    @ref ? @ref : "master"
   end
 end
