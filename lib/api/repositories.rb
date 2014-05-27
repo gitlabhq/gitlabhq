@@ -15,6 +15,7 @@ module API
           not_found!
         end
       end
+
       # Get a project repository tags
       #
       # Parameters:
@@ -117,6 +118,21 @@ module API
         else
           not_found!
         end
+      end
+
+      # Compare two branches, tags or commits
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   from (required) - the commit sha or branch name
+      #   to (required) - the commit sha or branch name
+      # Example Request:
+      #   GET /projects/:id/repository/compare?from=master&to=feature
+      get ':id/repository/compare' do
+        authorize! :download_code, user_project
+        required_attributes! [:from, :to]
+        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to], MergeRequestDiff::COMMITS_SAFE_SIZE)
+        present compare, with: Entities::Compare
       end
     end
   end
