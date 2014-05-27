@@ -1,3 +1,5 @@
+# System hooks
+
 Your GitLab instance can perform HTTP POST requests on the following events: `create_project`, `delete_project`, `create_user`, `delete_user` and `change_team_member`.
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.

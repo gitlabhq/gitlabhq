@@ -1,3 +1,5 @@
+# Milestones
+
 ## List project milestones
 
 Returns a list of project milestones.

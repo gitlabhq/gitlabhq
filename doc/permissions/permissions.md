@@ -1,3 +1,5 @@
+# Permissions
+
 Users have different abilities depending on the access level they have in a particular group or project.
 If a user is both in a project group and in the project itself, the highest permission level is used.
 If a user is a GitLab administrator they receive all permissions.

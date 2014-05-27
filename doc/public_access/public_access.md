@@ -1,3 +1,5 @@
+# Public access
+
 Gitlab allows you to open selected projects to be accessed **publicly** or **internally**.
 Projects with either of these visibility levels will be listen in the [public access directory](/public).
 Internal projects will only be available to authenticated users.

@@ -1,3 +1,5 @@
+# Project snippets
+
 ## List snippets
 
 Get a list of project snippets.

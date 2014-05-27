@@ -1,4 +1,5 @@
 # Monthly Release
+
 NOTE: This is a guide for GitLab developers.
 
 # **15th - Code Freeze & Release Manager**

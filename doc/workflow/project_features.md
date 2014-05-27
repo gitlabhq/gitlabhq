@@ -1,3 +1,5 @@
+# Project features
+
 When in a Project -> Settings, you will find Features on the bottom of the page that you can toggle.
 Below you will find a more elaborate explanation of each of these.
 
