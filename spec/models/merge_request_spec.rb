@@ -82,25 +82,6 @@ describe MergeRequest do
     end
   end
 
-  describe '#allow_source_branch_removal?' do
-    it 'should not allow removal when mr is a fork' do
-
-      subject.disallow_source_branch_removal?.should be_true
-    end
-    it 'should not allow removal when the mr is not a fork, but the source branch is the root reference' do
-      subject.target_project = subject.source_project
-      subject.source_branch = subject.source_project.repository.root_ref
-      subject.disallow_source_branch_removal?.should be_true
-    end
-
-    it 'should not disallow removal when the mr is not a fork, and but source branch is not the root reference' do
-      subject.target_project = subject.source_project
-      subject.source_branch = "Something Different #{subject.source_project.repository.root_ref}"
-      subject.for_fork?.should be_false
-      subject.disallow_source_branch_removal?.should be_false
-    end
-  end
-
   describe 'detection of issues to be closed' do
     let(:issue0) { create :issue, project: subject.project }
     let(:issue1) { create :issue, project: subject.project }
