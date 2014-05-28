@@ -1,7 +1,7 @@
 .ui-box
   .title
     Projects (#{projects.count})
-    - if can? current_user, :manage_group, @group
+    - if can? current_user, :create_projects, @group
       %span.pull-right
         = link_to new_project_path(namespace_id: @group.id), class: "btn btn-new" do
           %i.icon-plus
