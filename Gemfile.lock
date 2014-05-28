@@ -47,6 +47,7 @@ GEM
     bootstrap-sass (3.0.3.0)
       sass (~> 3.2)
     builder (3.1.4)
+    cal-heatmap-rails (0.0.1)
     capybara (2.1.0)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -573,6 +574,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (~> 3.0)
+  cal-heatmap-rails (~> 0.0.1)
   capybara
   carrierwave
   coffee-rails
