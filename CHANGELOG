@@ -9,6 +9,8 @@ v 7.0.0
   - Redirect to Files view when create new branch via UI
   - Drag and drop upload of image in every markdown-area (Earle Randolph Bunao and Neil Francis Calabroso)
   - Refactor the markdown relative links processing
+  - Make it easier to implement other CI services for GitLab
+  - Group masters can create projects in group
 
 v 6.9.1
   - Fix scroll to highlighted line
