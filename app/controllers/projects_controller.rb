@@ -46,7 +46,7 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(project, current_user, params).execute
+    ::Projects::TransferService.new(project, current_user, params[:project]).execute
   end
 
   def show

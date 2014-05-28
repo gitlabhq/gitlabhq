@@ -147,7 +147,7 @@ describe API::API, api: true  do
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
-      project.stub(:transfer).and_return(true)
+      Projects::TransferService.any_instance.stub(execute: true)
       Project.stub(:find).and_return(project)
     end
 
@@ -160,8 +160,8 @@ describe API::API, api: true  do
 
     context "when authenticated as admin" do
       it "should transfer project to group" do
-        project.should_receive(:transfer)
         post api("/groups/#{group1.id}/projects/#{project.id}", admin)
+        response.status.should == 201
       end
     end
   end
