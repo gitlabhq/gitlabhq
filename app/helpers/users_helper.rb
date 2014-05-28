@@ -60,6 +60,18 @@ module UsersHelper
     time_copy
   end
 
+  def timestart_year
+    create_time_copy(@user_projects).year - 1
+  end
+
+  def timestart_month
+    create_time_copy(@user_projects).month
+  end
+
+  def last_commit_date
+    create_time_copy(@user_projects).to_formatted_s(:long).to_s
+  end
+
   def commits_log_by_commit_date(graph_log)
     graph_log.select { |u_email| u_email[:author_email] == @user.email }.
       map { |graph_log| Date.parse(graph_log[:date]).to_time.to_i }.
