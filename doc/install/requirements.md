@@ -49,9 +49,9 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 - **2 cores** is the **recommended** number of cores and supports up to 500 users
 - 4 cores supports up to 2,000 users
 - 8 cores supports up to 5,000 users
-- 16 cores supports up to 10,0000 users
-- 32 cores supports up to 20,0000 users
-- 64 cores supports up to 40,0000 users
+- 16 cores supports up to 10,000 users
+- 32 cores supports up to 20,000 users
+- 64 cores supports up to 40,000 users
 
 ## Memory
 
