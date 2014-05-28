@@ -1,5 +1,5 @@
 .panel.mr-state-widget.panel-default
-  - if @merge_request.source_project.gitlab_ci? && @commits.any?
+  - if @merge_request.source_project.ci_service && @commits.any?
     .panel-heading
       = render "projects/merge_requests/show/mr_ci"
   .panel-body

@@ -33,11 +33,19 @@ class Service < ActiveRecord::Base
     active
   end
 
+  def category
+    :common
+  end
+
   def title
     # implement inside child
   end
 
   def description
+    # implement inside child
+  end
+
+  def help
     # implement inside child
   end
 

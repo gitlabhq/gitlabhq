@@ -54,6 +54,9 @@ class Project < ActiveRecord::Base
   belongs_to :namespace
 
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
+
+  # Project services
+  has_many :services
   has_one :gitlab_ci_service, dependent: :destroy
   has_one :campfire_service, dependent: :destroy
   has_one :emails_on_push_service, dependent: :destroy
@@ -320,6 +323,14 @@ class Project < ActiveRecord::Base
 
   def gitlab_ci?
     gitlab_ci_service && gitlab_ci_service.active
+  end
+
+  def ci_services
+    services.select { |service| service.category == :ci }
+  end
+
+  def ci_service
+    @ci_service ||= services.select(&:activated?).first
   end
 
   # For compatibility with old code

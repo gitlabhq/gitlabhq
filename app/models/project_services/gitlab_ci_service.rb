@@ -17,7 +17,7 @@
 #  api_key     :string(255)
 #
 
-class GitlabCiService < Service
+class GitlabCiService < CiService
   attr_accessible :project_url
 
   validates :project_url, presence: true, if: :activated?

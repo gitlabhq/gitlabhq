@@ -40,7 +40,7 @@
     url_to_automerge_check: "#{automerge_check_project_merge_request_path(@project, @merge_request)}",
     check_enable: #{@merge_request.unchecked? ? "true" : "false"},
     url_to_ci_check: "#{ci_status_project_merge_request_path(@project, @merge_request)}",
-    ci_enable: #{@project.gitlab_ci? ? "true" : "false"},
+    ci_enable: #{@project.ci_service ? "true" : "false"},
     current_status: "#{@merge_request.merge_status_name}",
     action: "#{controller.action_name}"
   });
