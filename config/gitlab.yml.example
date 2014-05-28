@@ -189,6 +189,9 @@ production: &base
       # - { name: 'github', app_id: 'YOUR APP ID',
       #     app_secret: 'YOUR APP SECRET',
       #     args: { scope: 'user:email' } }
+      # - { name: 'cloudfoundry', app_id: 'app', app_secret: 'appclientsecret',
+      #     args: { auth_server_url: 'http://localhost:8080/uaa/', token_server_url: 'http://localhost:8080/uaa' } }
+
 
 
 
