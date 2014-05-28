@@ -34,21 +34,47 @@ The lanyrd database converter script does not preserve all indexes, so we have
 to recreate them ourselves after migrating from MySQL. It is not necessary to
 shut down GitLab for this process.
 
+
+### For source installations
+
+On source installations (distributed using Git) we retrieve the index
+declarations from version control using `git stash`.
+
 ```
 # Clone the database converter on your Postgres-backed GitLab server
 cd /tmp
 git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 
-# Stash changes to db/schema.rb to make sure we can find the right index statements
 cd /home/git/gitlab
+
+# Stash changes to db/schema.rb to make sure we can find the right index statements
 sudo -u git -H git stash
 
-# Generate the `CREATE INDEX CONCURRENTLY` statements based on schema.rb
-cd /tmp/mysql-to-postgresql-converter
-ruby index_create_statements.rb /home/git/gitlab/db/schema.rb > index_create_statements.psql
+# Generate add_index.rb
+ruby /tmp/mysql-postgresql-converter/add_index_statements.rb db/schema.rb > /tmp/mysql-postgresql-converter/add_index.rb
 
-# Execute the SQL statements against the GitLab database
-sudo -u git psql -f index_create_statements.psql -d gitlabhq_production
+# Create the indexes
+sudo -u git -H bundle exec rails runner -e production 'eval $stdin.read' < /tmp/mysql-postgresql-converter/add_index.rb
+```
+
+### For omnibus-gitlab installations
+
+On omnibus-gitlab we need to get the index declarations from a file called
+`schema.rb.bundled`. For older versions, we need to download the file.
+
+```
+# Clone the database converter on your Postgres-backed GitLab server
+cd /tmp
+/opt/gitlab/embedded/bin/git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
+cd /tmp/mysql-postgresql-converter
+
+# Generate add_index.rb
+/opt/gitlab/embedded/bin/ruby add_index_statements.rb /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled > add_index.rb
+
+# If schema.rb.bundled does not exist, download it as follows, then try generating add_index.rb again
+sudo /opt/gitlab/embedded/bin/curl -o /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled https://gitlab.com/gitlab-org/gitlab-ce/raw/v6.9.1/db/schema.rb
+
+/opt/gitlab/bin/gitlab-rails runner 'eval $stdin.read' < add_index.rb
 ```
 
 ## Converting a GitLab backup file from MySQL to Postgres
