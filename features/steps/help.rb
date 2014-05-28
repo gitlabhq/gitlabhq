@@ -8,7 +8,7 @@ class Spinach::Features::Help < Spinach::FeatureSteps
   end
 
   step 'I visit the "Rake Tasks" help page' do
-    visit help_raketasks_path
+    visit help_page_path("raketasks", "README")
   end
 
   step 'I should see "Rake Tasks" page markdown rendered' do
