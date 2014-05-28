@@ -52,5 +52,3 @@ The response is parsed to give a response in GitLab (success/failed/pending).
 All this happens with AJAX requests on the merge request page.
 The Jenkins project service code is only available in GitLab EE.
 The GitLab CI project service code is available in the GitLab CE codebase.
-In GitLab 6.9 there is a small difference between GitLab CE and EE regarding project services, but this should be gone in 7.0.
-
