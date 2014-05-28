@@ -49,29 +49,7 @@
 
 ### Installation
 
-#### Official installation methods
-
-* [GitLab packages](https://www.gitlab.com/downloads/) **recommended** These packages contain GitLab and all its depencies (Ruby, PostgreSQL, Redis, Nginx, Unicorn, etc.). They are made with [omnibus-gitlab](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) that also contains the installation instructions.
-
-* [GitLab Chef Cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) This cookbook can be used both for development installations and production installations. If you want to [contribute](CONTRIBUTE.md) to GitLab we suggest you follow the [development installation](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) instructions to install all testing dependencies.
-
-* [Manual installation guide](doc/install/installation.md) This guide to set up a production server on Ubuntu offers detailed and complete step-by-step instructions.
-
-#### Third party one-click installers
-
-* [Digital Ocean 1-Click Application Install](https://www.digitalocean.com/blog_posts/host-your-git-repositories-in-55-seconds-with-gitlab) Have a new server up in 55 seconds. Digital Ocean uses SSD disks which is great for an IO intensive app such as GitLab. We recommend selecting a droplet with [1GB of memory](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/requirements.md).
-
-* [BitNami one-click installers](http://bitnami.com/stack/gitlab) This package contains both GitLab and GitLab CI. It is available as installer, virtual machine or for cloud hosting providers (Amazon Web Services/Azure/etc.).
-
-* [Cloud 66 deployment and management](http://blog.cloud66.com/installing-gitlab-ubuntu/) Use Cloud 66 to deploy GitLab to your own server or any cloud (eg. DigitalOcean, AWS, Rackspace, GCE) and then manage it with database backups, scaling and more.
-
-* [Pkgr.io one-click installer](https://pkgr.io/apps/gitlabhq/gitlabhq) Currently supporting Ubuntu 14.04, Ubuntu 12.04 and Debian 7.4. For more information check the [README](https://gitlab.com/gitlab-org/gitlab-recipes/blob/master/install/pkgr/README.md) at gitlab-recipes repo.
-
-#### Unofficial installation methods
-
-* [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/) repository with unofficial guides for using GitLab with different software (operating systems, webservers, etc.) than the official version.
-
-* [Installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) public wiki with unofficial guides to install GitLab on different operating systems.
+Please see [the installation page on the GitLab website](https://www.gitlab.com/installation/).
 
 ### New versions and upgrading
 
