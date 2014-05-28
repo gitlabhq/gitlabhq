@@ -11,6 +11,8 @@ class ProjectsController < ApplicationController
   layout 'navless', only: [:new, :create, :fork]
   before_filter :set_title, only: [:new, :create]
 
+  rescue_from CarrierWave::IntegrityError, with: :invalid_file
+
   def new
     @project = Project.new
   end
@@ -183,6 +185,10 @@ class ProjectsController < ApplicationController
 
   def accepted_images
     %w(png jpg jpeg gif)
+  end
+
+  def invalid_file(error)
+    render json: { message: error.message }, status: :internal_server_error
   end
 
   def set_title

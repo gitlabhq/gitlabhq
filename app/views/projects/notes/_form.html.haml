@@ -16,10 +16,10 @@
     .note-write-holder
       = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input markdown-area'
 
-      .light.clearfix
+      .light.clearfix.hint
         .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
-        .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
-
+        .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping, #{link_to "selecting them", '#', class: 'markdown-selector' } or pasting from the clipboard.      
+      .error-alert
     .note-preview-holder.hide
       .js-note-preview
 
