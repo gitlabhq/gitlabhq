@@ -85,6 +85,7 @@ gem "seed-fu"
 # Markdown to HTML
 gem "redcarpet",     "~> 2.2.2"
 gem "github-markup"
+gem "org-ruby" # For rendering .org files
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
