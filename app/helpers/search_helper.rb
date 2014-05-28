@@ -33,15 +33,15 @@ module SearchHelper
   # Autocomplete results for internal help pages
   def help_autocomplete
     [
-      { label: "help: API Help",           url: help_api_path },
-      { label: "help: Markdown Help",      url: help_markdown_path },
-      { label: "help: Permissions Help",   url: help_permissions_path },
-      { label: "help: Public Access Help", url: help_public_access_path },
-      { label: "help: Rake Tasks Help",    url: help_raketasks_path },
-      { label: "help: SSH Keys Help",      url: help_ssh_path },
-      { label: "help: System Hooks Help",  url: help_system_hooks_path },
-      { label: "help: Web Hooks Help",     url: help_web_hooks_path },
-      { label: "help: Workflow Help",      url: help_workflow_path },
+      { label: "help: API Help",           url: help_page_path("api", "README") },
+      { label: "help: Markdown Help",      url: help_page_path("markdown", "markdown") },
+      { label: "help: Permissions Help",   url: help_page_path("permissions", "permissions") },
+      { label: "help: Public Access Help", url: help_page_path("public_access", "public_access") },
+      { label: "help: Rake Tasks Help",    url: help_page_path("raketasks", "README") },
+      { label: "help: SSH Keys Help",      url: help_page_path("ssh", "README") },
+      { label: "help: System Hooks Help",  url: help_page_path("system_hooks", "system_hooks") },
+      { label: "help: Web Hooks Help",     url: help_page_path("web_hooks", "web_hooks") },
+      { label: "help: Workflow Help",      url: help_page_path("workflow", "README") },
     ]
   end
 

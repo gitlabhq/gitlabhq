@@ -1,7 +1,7 @@
 .form-group.project-visibility-level-holder
   = f.label :visibility_level, class: 'control-label' do
     Visibility Level
-    = link_to "(?)", help_public_access_path
+    = link_to "(?)", help_page_path("public_access", "public_access")
   .col-sm-10
     - if can_change_visibility_level
       - Gitlab::VisibilityLevel.values.each do |level|
