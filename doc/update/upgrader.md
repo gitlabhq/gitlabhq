@@ -31,19 +31,16 @@ __GitLab Upgrader is available only for GitLab version 6.4.2 or higher__
 
 ### 4. Check application status
 
-Check if GitLab and its environment are configured correctly:
-
-    sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
-
-To make sure you didn't miss anything run a more thorough check with:
+Check if GitLab and its dependencies are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 
 If all items are green, then congratulations upgrade is complete!
 
-### (optional) 5. Application status check fails
+### 5. Upgrade GitLab Shell (if needed)
 
-If the `gitlab:check` task reports an old version of gitlab-shell and recommends upgrading, upgrade gitlab-shell by running:
+If the `gitlab:check` task reports an outdated version of gitlab-shell you should upgrade it.
+Upgrade it by running the commands below after replacing 1.9.4 with the correct version number:
 
 ```
 cd /home/git/gitlab-shell
@@ -53,7 +50,8 @@ sudo -u git -H git checkout v1.9.4
 
 ### One line upgrade command
 
-You've read through the entire guide, and probably did all the steps manually. Here is a one liner for convenience, the next time you upgrade:
+You've read through the entire guide and probably already did all the steps one by one.
+Here is a one line command with step 1 to 4 for the next time you upgrade:
 
 ```bash
 cd /home/git/gitlab; sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
