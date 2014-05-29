@@ -31,19 +31,10 @@ Gitlab::Application.routes.draw do
   #
   # Help
   #
-  get 'help'                => 'help#index'
-  get 'help/api'            => 'help#api'
-  get 'help/api/:category'  => 'help#api', as: 'help_api_file'
-  get 'help/markdown'       => 'help#markdown'
-  get 'help/permissions'    => 'help#permissions'
-  get 'help/public_access'  => 'help#public_access'
-  get 'help/raketasks'      => 'help#raketasks'
-  get 'help/ssh'            => 'help#ssh'
-  get 'help/system_hooks'   => 'help#system_hooks'
-  get 'help/web_hooks'      => 'help#web_hooks'
-  get 'help/workflow'       => 'help#workflow'
+
+  get 'help'                  => 'help#index'
+  get 'help/:category/:file'  => 'help#show', as: :help_page
   get 'help/shortcuts'
-  get 'help/security'
 
   #
   # Global snippets

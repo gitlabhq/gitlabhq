@@ -1,2 +1,2 @@
-+ [Workflow](workflow/workflow.md)
-+ [Project Features](workflow/project_features.md)
++ [Workflow](workflow.md)
++ [Project Features](project_features.md)

@@ -51,7 +51,7 @@
       .body.form-holder
         %p.light
           Read more about project permissions
-          %strong= link_to "here", help_permissions_path, class: "vlink"
+          %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
         = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
           %div
