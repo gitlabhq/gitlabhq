@@ -13,8 +13,8 @@ class Commit
   DIFF_SAFE_FILES  = 100
   DIFF_SAFE_LINES  = 5000
   # Commits above this size will not be rendered in HTML
-  DIFF_HARD_LIMIT_FILES = 500
-  DIFF_HARD_LIMIT_LINES = 10000
+  DIFF_HARD_LIMIT_FILES = 1000
+  DIFF_HARD_LIMIT_LINES = 50000
 
   class << self
     def decorate(commits)
