@@ -231,4 +231,18 @@ module ApplicationHelper
       content_tag(:i, nil, class: 'icon-spinner icon-spin') + text
     end
   end
+
+  def link_to(name = nil, options = nil, html_options = nil, &block)
+    if html_options
+      if html_options[:rel]
+        html_options[:rel] << " noreferrer"
+      else
+        html_options.merge(rel: "noreferrer")
+      end
+    else
+      html_options = Hash.new
+      html_options[:rel] = "noreferrer"
+    end
+    super
+  end
 end
