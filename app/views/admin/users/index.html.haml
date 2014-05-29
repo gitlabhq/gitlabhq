@@ -31,7 +31,7 @@
     .panel.panel-default
       .panel-heading
         Users (#{@users.total_count})
-        .pull-right
+        .panel-head-actions
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|
