@@ -16,8 +16,8 @@ System information
 System:		Debian 6.0.7
 Current User:	git
 Using RVM:	no
-Ruby Version:	1.9.3p392
-Gem Version:	1.8.23
+Ruby Version: 2.0.0-p481
+Gem Version:  1.8.23
 Bundler Version:1.3.5
 Rake Version:	10.0.4
 
