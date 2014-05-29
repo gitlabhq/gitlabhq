@@ -1,11 +1,17 @@
 .documentation {
   padding-bottom: 10px;
   p {
-    padding: 10px;
+    padding: 10px 14px;
     margin: 0;
   }
+
   li {
-    list-style-type: none;
-    padding-left: 10px;
+    line-height: 24px;
+    color: #888;
+
+    a {
+      font-size: 14px;
+      margin-right: 3px;
+    }
   }
 }
