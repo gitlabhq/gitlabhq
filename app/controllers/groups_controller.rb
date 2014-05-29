@@ -5,7 +5,7 @@ class GroupsController < ApplicationController
 
   # Authorize
   before_filter :authorize_read_group!, except: [:new, :create]
-  before_filter :authorize_admin_group!, only: [:edit, :update, :destroy]
+  before_filter :authorize_admin_group!, only: [:edit, :update, :destroy, :projects]
   before_filter :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
@@ -108,12 +108,12 @@ class GroupsController < ApplicationController
   end
 
   def project_ids
-    projects.pluck(:id)
+    @projects.pluck(:id)
   end
 
   # Dont allow unauthorized access to group
   def authorize_read_group!
-    unless @group and (projects.present? or can?(current_user, :read_group, @group))
+    unless @group and (@projects.present? or can?(current_user, :read_group, @group))
       if current_user.nil?
         return authenticate_user!
       else
