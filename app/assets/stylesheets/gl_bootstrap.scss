@@ -227,5 +227,14 @@ ul.breadcrumb {
  *
  */
 .panel {
+  .panel-heading {
+    font-size: 14px;
+    line-height: 18px;
 
+    .panel-head-actions {
+      position: relative;
+      top: -7px;
+      float: right;
+    }
+  }
 }
