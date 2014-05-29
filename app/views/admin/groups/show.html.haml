@@ -8,7 +8,7 @@
 .row
   .col-md-6
     .panel.panel-default
-      .title
+      .panel-heading
         Group info:
       %ul.well-list
         %li
@@ -30,7 +30,7 @@
             = @group.created_at.stamp("March 1, 1999")
 
     .panel.panel-default
-      .title
+      .panel-heading
         Projects
         %small
           (#{@group.projects.count})
@@ -46,7 +46,7 @@
 
   .col-md-6
     .panel.panel-default
-      .title
+      .panel-heading
         Add user(s) to the group:
       .body.form-holder
         %p.light
@@ -61,7 +61,7 @@
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
     .panel.panel-default
-      .title
+      .panel-heading
         %strong #{@group.name}
         Group Members
         %small

@@ -18,7 +18,7 @@
     .tab-content
       .tab-pane.active#tab-edit
         .panel.panel-default
-          .title
+          .panel-heading
             %strong= @group.name
             group settings:
           %div.form-holder
@@ -62,7 +62,7 @@
 
       .tab-pane#tab-projects
         .panel.panel-default
-          .title
+          .panel-heading
             %strong= @group.name
             projects:
             - if can? current_user, :manage_group, @group
@@ -85,7 +85,7 @@
 
       .tab-pane#tab-remove
         .panel.panel-default.panel.panel-default-danger
-          .title Remove group
+          .panel-heading Remove group
           .body
             %p
               Removing group will cause all child projects and resources to be removed.

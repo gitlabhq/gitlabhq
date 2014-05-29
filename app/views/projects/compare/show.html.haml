@@ -7,7 +7,7 @@
 
 - if @commits.present?
   %div.panel.panel-default
-    .title
+    .panel-heading
       Commits (#{@commits.count})
     - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
       %ul.well-list

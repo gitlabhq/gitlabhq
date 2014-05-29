@@ -7,7 +7,7 @@
 .row
   .col-md-6
     .panel.panel-default
-      .title
+      .panel-heading
         Project info:
       %ul.well-list
         %li
@@ -76,7 +76,7 @@
               = visibility_level_label(@project.visibility_level)
 
     .panel.panel-default
-      .title
+      .panel-heading
         Transfer project
       .body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
@@ -93,7 +93,7 @@
   .col-md-6
     - if @group
       .panel.panel-default
-        .title
+        .panel-heading
           %strong #{@group.name}
           group members (#{@group.users_groups.count})
           .pull-right
@@ -104,7 +104,7 @@
             = render 'users_groups/users_group', member: member, show_controls: false
 
     .panel.panel-default
-      .title
+      .panel-heading
         Project members
         %small
           (#{@project.users.count})

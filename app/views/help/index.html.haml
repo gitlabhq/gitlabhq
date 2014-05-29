@@ -19,7 +19,7 @@
 .row
   .col-md-4
     .panel.panel-default
-      .title
+      .panel-heading
         Quick help
       %ul.well-list
         %li
@@ -35,7 +35,7 @@
 
   .col-md-8
     .panel.panel-default.documentation
-      .title Documentation
+      .panel-heading Documentation
 
       = preserve do
         - readme_text = File.read(Rails.root.join("doc", "README.md"))

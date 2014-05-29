@@ -15,7 +15,7 @@
 .row
   .col-md-6
     .panel.panel-default
-      .title
+      .panel-heading
         Account:
         .pull-right
           = image_tag avatar_icon(@user.email, 32), class: "avatar s32"
@@ -119,7 +119,7 @@
   .col-md-6
     - if @user.users_groups.present?
       .panel.panel-default
-        .title Groups:
+        .panel-heading Groups:
         %ul.well-list
           - @user.users_groups.each do |user_group|
             - group = user_group.group
@@ -133,7 +133,7 @@
                     %i.icon-remove.icon-white
 
     .panel.panel-default
-      .title Projects (#{@projects.count})
+      .panel-heading Projects (#{@projects.count})
       %ul.well-list
         - @projects.sort_by(&:name_with_namespace).each do |project|
           - tm = project.team.find_tm(@user.id)

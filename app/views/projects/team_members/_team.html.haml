@@ -1,7 +1,7 @@
 .team-table
   - can_admin_project = (can? current_user, :admin_project, @project)
   .panel.panel-default
-    .title
+    .panel-heading
       %strong #{@project.name}
       project members (#{members.count})
     %ul.well-list

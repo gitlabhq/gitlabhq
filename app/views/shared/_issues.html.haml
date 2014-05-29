@@ -2,7 +2,7 @@
   - @issues.group_by(&:project).each do |group|
     .panel.panel-default.panel.panel-default-small
       - project = group[0]
-      .title
+      .panel-heading
         = link_to_project project
         = link_to 'show all', project_issues_path(project), class: 'pull-right'
 

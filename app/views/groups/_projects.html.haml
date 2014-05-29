@@ -1,5 +1,5 @@
 .panel.panel-default
-  .title
+  .panel-heading
     Projects (#{projects.count})
     - if can? current_user, :create_projects, @group
       %span.pull-right
