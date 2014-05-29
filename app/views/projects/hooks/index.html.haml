@@ -51,8 +51,8 @@
     = f.submit "Add Web Hook", class: "btn btn-create"
 
 -if @hooks.any?
-  .ui-box
-    .title
+  .panel.panel-default
+    .panel-heading
       Web hooks (#{@hooks.count})
     %ul.well-list
       - @hooks.each do |hook|

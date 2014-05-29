@@ -17,8 +17,8 @@
   .col-md-10
     .tab-content
       .tab-pane.active#tab-edit
-        .ui-box
-          .title
+        .panel.panel-default
+          .panel-heading
             %strong= @group.name
             group settings:
           %div.form-holder
@@ -61,8 +61,8 @@
                 = f.submit 'Save group', class: "btn btn-save"
 
       .tab-pane#tab-projects
-        .ui-box
-          .title
+        .panel.panel-default
+          .panel-heading
             %strong= @group.name
             projects:
             - if can? current_user, :manage_group, @group
@@ -84,9 +84,9 @@
               .nothing-here-block This group has no projects yet
 
       .tab-pane#tab-remove
-        .ui-box.ui-box-danger
-          .title Remove group
-          .body
+        .panel.panel-default.panel.panel-danger
+          .panel-heading Remove group
+          .panel-body
             %p
               Removing group will cause all child projects and resources to be removed.
             %p

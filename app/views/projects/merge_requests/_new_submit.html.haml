@@ -58,8 +58,8 @@
       = f.submit 'Submit merge request', class: "btn btn-create"
 
 .mr-compare
-  %div.ui-box
-    .title
+  %div.panel.panel-default
+    .panel-heading
       Commits (#{@commits.count})
     - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
       %ul.well-list

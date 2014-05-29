@@ -14,8 +14,8 @@
 
 .row
   .col-md-6
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Account:
         .pull-right
           = image_tag avatar_icon(@user.email, 32), class: "avatar s32"
@@ -118,8 +118,8 @@
 
   .col-md-6
     - if @user.users_groups.present?
-      .ui-box
-        .title Groups:
+      .panel.panel-default
+        .panel-heading Groups:
         %ul.well-list
           - @user.users_groups.each do |user_group|
             - group = user_group.group
@@ -132,8 +132,8 @@
                   = link_to group_users_group_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                     %i.icon-remove.icon-white
 
-    .ui-box
-      .title Projects (#{@projects.count})
+    .panel.panel-default
+      .panel-heading Projects (#{@projects.count})
       %ul.well-list
         - @projects.sort_by(&:name_with_namespace).each do |project|
           - tm = project.team.find_tm(@user.id)

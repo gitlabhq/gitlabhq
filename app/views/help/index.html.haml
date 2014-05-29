@@ -18,8 +18,8 @@
 
 .row
   .col-md-4
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Quick help
       %ul.well-list
         %li
@@ -34,8 +34,8 @@
           = link_to "shortcuts", '#', onclick: "new Shortcuts()"
 
   .col-md-8
-    .ui-box.documentation
-      .title Documentation
+    .panel.panel-default.documentation
+      .panel-heading Documentation
 
       = preserve do
         - readme_text = File.read(Rails.root.join("doc", "README.md"))

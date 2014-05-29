@@ -28,10 +28,10 @@
       = link_to 'Reset', admin_users_path, class: "btn btn-cancel"
 
   .col-md-9
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Users (#{@users.total_count})
-        .pull-right
+        .panel-head-actions
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|

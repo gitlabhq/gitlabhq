@@ -6,7 +6,7 @@
         Project settings:
       %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
       %hr
-      .form-holder
+      .panel-body
         = form_for @project, remote: true, html: { class: "edit_project form-horizontal" } do |f|
           %fieldset
             .form-group.project_name_holder
@@ -106,13 +106,13 @@
 
       .js-toggle-content.hide
         - if can? current_user, :archive_project, @project
-          .ui-box.ui-box-danger
-            .title
+          .panel.panel-default.panel.panel-danger
+            .panel-heading
               - if @project.archived?
                 Unarchive project
               - else
                 Archive project
-            .body
+            .panel-body
               - if @project.archived?
                 %p
                   Unarchiving the project will mark its repository as active.
@@ -137,10 +137,10 @@
           .nothing-here-block Only the project owner can archive a project
 
         - if can?(current_user, :change_namespace, @project)
-          .ui-box.ui-box-danger
-            .title Transfer project
+          .panel.panel-default.panel.panel-danger
+            .panel-heading Transfer project
             .errors-holder
-            .form-holder
+            .panel-body
               = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
                 .form-group
                   = f.label :namespace_id, class: 'control-label' do
@@ -157,10 +157,10 @@
         - else
           .nothing-here-block Only the project owner can transfer a project
 
-        .ui-box.ui-box-danger
-          .title Rename repository
+        .panel.panel-default.panel.panel-danger
+          .panel-heading Rename repository
           .errors-holder
-          .form-holder
+          .panel-body
             = form_for(@project, html: { class: 'form-horizontal' }) do |f|
               .form-group
                 = f.label :path, class: 'control-label' do
@@ -177,9 +177,9 @@
                 = f.submit 'Rename', class: "btn btn-remove"
 
         - if can?(current_user, :remove_project, @project)
-          .ui-box.ui-box-danger
-            .title Remove project
-            .body
+          .panel.panel-default.panel.panel-danger
+            .panel-heading Remove project
+            .panel-body
               %p
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br

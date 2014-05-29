@@ -3,9 +3,9 @@
 
 %hr
 
-.ui-box
-  .title Sidekiq running processes
-  .body
+.panel.panel-default
+  .panel-heading Sidekiq running processes
+  .panel-body
     - if @sidekiq_processes.empty?
       %h4.cred
         %i.icon-warning-sign
@@ -40,5 +40,5 @@
 
 
 
-.ui-box
+.panel.panel-default
   %iframe{src: sidekiq_path, width: '100%', height: 900, style: "border: none"}

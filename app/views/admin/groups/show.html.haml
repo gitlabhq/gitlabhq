@@ -7,8 +7,8 @@
 %hr
 .row
   .col-md-6
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Group info:
       %ul.well-list
         %li
@@ -29,8 +29,8 @@
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Projects
         %small
           (#{@group.projects.count})
@@ -45,10 +45,10 @@
               %span.monospace= project.path_with_namespace + ".git"
 
   .col-md-6
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Add user(s) to the group:
-      .body.form-holder
+      .panel-body.form-holder
         %p.light
           Read more about project permissions
           %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
@@ -60,8 +60,8 @@
             = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select select2"
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         %strong #{@group.name}
         Group Members
         %small

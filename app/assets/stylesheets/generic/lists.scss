@@ -72,6 +72,15 @@
       font-size: 14px;
       line-height: 18px;
     }
+
+    .row_title {
+      font-weight: 500;
+      color: #444;
+      &:hover {
+        color: #444;
+        text-decoration: underline;
+      }
+    }
   }
 }
 
