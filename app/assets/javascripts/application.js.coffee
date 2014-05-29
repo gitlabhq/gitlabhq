@@ -30,6 +30,7 @@
 #= require nprogress
 #= require nprogress-turbolinks
 #= require dropzone
+#= require cal-heatmap
 #= require_tree .
 
 window.slugify = (text) ->

@@ -1,0 +1,8 @@
+#cal-heatmap
+  :javascript 
+    window.timestamps = #{create_timestamp(@user_projects).to_json};
+    window.timestart_year = #{timestart_year};
+    window.timestart_month = #{timestart_month};
+    window.path = '#{user_activities_path}';
+  = javascript_include_tag "calendar"
+= render "onclick"
