@@ -38,22 +38,22 @@ class Groups < Spinach::FeatureSteps
   end
 
   Then 'I should see user "John Doe" in team list' do
-    projects_with_access = find(".ui-box .well-list")
+    projects_with_access = find(".panel .well-list")
     projects_with_access.should have_content("John Doe")
   end
 
   Then 'I should not see user "John Doe" in team list' do
-    projects_with_access = find(".ui-box .well-list")
+    projects_with_access = find(".panel .well-list")
     projects_with_access.should_not have_content("John Doe")
   end
 
   Then 'I should see user "Mary Jane" in team list' do
-    projects_with_access = find(".ui-box .well-list")
+    projects_with_access = find(".panel .well-list")
     projects_with_access.should have_content("Mary Jane")
   end
 
   Then 'I should not see user "Mary Jane" in team list' do
-    projects_with_access = find(".ui-box .well-list")
+    projects_with_access = find(".panel .well-list")
     projects_with_access.should_not have_content("Mary Jane")
   end
 
