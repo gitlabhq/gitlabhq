@@ -6,7 +6,7 @@
 %hr
 .row
   .col-md-6
-    .ui-box
+    .panel.panel-default
       .title
         Project info:
       %ul.well-list
@@ -75,7 +75,7 @@
               = visibility_level_icon(@project.visibility_level)
               = visibility_level_label(@project.visibility_level)
 
-    .ui-box
+    .panel.panel-default
       .title
         Transfer project
       .body
@@ -92,7 +92,7 @@
 
   .col-md-6
     - if @group
-      .ui-box
+      .panel.panel-default
         .title
           %strong #{@group.name}
           group members (#{@group.users_groups.count})
@@ -103,7 +103,7 @@
           - @group.users_groups.order('group_access DESC').each do |member|
             = render 'users_groups/users_group', member: member, show_controls: false
 
-    .ui-box
+    .panel.panel-default
       .title
         Project members
         %small

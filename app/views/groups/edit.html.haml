@@ -17,7 +17,7 @@
   .col-md-10
     .tab-content
       .tab-pane.active#tab-edit
-        .ui-box
+        .panel.panel-default
           .title
             %strong= @group.name
             group settings:
@@ -61,7 +61,7 @@
                 = f.submit 'Save group', class: "btn btn-save"
 
       .tab-pane#tab-projects
-        .ui-box
+        .panel.panel-default
           .title
             %strong= @group.name
             projects:
@@ -84,7 +84,7 @@
               .nothing-here-block This group has no projects yet
 
       .tab-pane#tab-remove
-        .ui-box.ui-box-danger
+        .panel.panel-default.panel.panel-default-danger
           .title Remove group
           .body
             %p

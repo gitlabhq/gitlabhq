@@ -3,7 +3,7 @@
 
 %hr
 
-.ui-box
+.panel.panel-default
   .title Sidekiq running processes
   .body
     - if @sidekiq_processes.empty?
@@ -40,5 +40,5 @@
 
 
 
-.ui-box
+.panel.panel-default
   %iframe{src: sidekiq_path, width: '100%', height: 900, style: "border: none"}

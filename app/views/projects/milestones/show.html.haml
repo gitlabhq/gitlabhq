@@ -84,13 +84,13 @@
   .tab-pane#tab-merge-requests
     .row
       .col-md-6
-        .ui-box
+        .panel.panel-default
           .title Open
           %ul.well-list
             - @merge_requests.opened.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
       .col-md-6
-        .ui-box
+        .panel.panel-default
           .title Closed
           %ul.well-list
             - @merge_requests.closed.each do |merge_request|

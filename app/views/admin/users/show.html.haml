@@ -14,7 +14,7 @@
 
 .row
   .col-md-6
-    .ui-box
+    .panel.panel-default
       .title
         Account:
         .pull-right
@@ -118,7 +118,7 @@
 
   .col-md-6
     - if @user.users_groups.present?
-      .ui-box
+      .panel.panel-default
         .title Groups:
         %ul.well-list
           - @user.users_groups.each do |user_group|
@@ -132,7 +132,7 @@
                   = link_to group_users_group_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                     %i.icon-remove.icon-white
 
-    .ui-box
+    .panel.panel-default
       .title Projects (#{@projects.count})
       %ul.well-list
         - @projects.sort_by(&:name_with_namespace).each do |project|

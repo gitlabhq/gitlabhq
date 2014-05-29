@@ -1,4 +1,4 @@
-.ui-box
+.panel.panel-default
   .title.clearfix
     = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_group?

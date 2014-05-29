@@ -106,7 +106,7 @@
 
       .js-toggle-content.hide
         - if can? current_user, :archive_project, @project
-          .ui-box.ui-box-danger
+          .panel.panel-default.panel.panel-default-danger
             .title
               - if @project.archived?
                 Unarchive project
@@ -137,7 +137,7 @@
           .nothing-here-block Only the project owner can archive a project
 
         - if can?(current_user, :change_namespace, @project)
-          .ui-box.ui-box-danger
+          .panel.panel-default.panel.panel-default-danger
             .title Transfer project
             .errors-holder
             .form-holder
@@ -157,7 +157,7 @@
         - else
           .nothing-here-block Only the project owner can transfer a project
 
-        .ui-box.ui-box-danger
+        .panel.panel-default.panel.panel-default-danger
           .title Rename repository
           .errors-holder
           .form-holder
@@ -177,7 +177,7 @@
                 = f.submit 'Rename', class: "btn btn-remove"
 
         - if can?(current_user, :remove_project, @project)
-          .ui-box.ui-box-danger
+          .panel.panel-default.panel.panel-default-danger
             .title Remove project
             .body
               %p

@@ -7,7 +7,7 @@
 %hr
 .row
   .col-md-6
-    .ui-box
+    .panel.panel-default
       .title
         Group info:
       %ul.well-list
@@ -29,7 +29,7 @@
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
-    .ui-box
+    .panel.panel-default
       .title
         Projects
         %small
@@ -45,7 +45,7 @@
               %span.monospace= project.path_with_namespace + ".git"
 
   .col-md-6
-    .ui-box
+    .panel.panel-default
       .title
         Add user(s) to the group:
       .body.form-holder
@@ -60,7 +60,7 @@
             = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select select2"
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
-    .ui-box
+    .panel.panel-default
       .title
         %strong #{@group.name}
         Group Members

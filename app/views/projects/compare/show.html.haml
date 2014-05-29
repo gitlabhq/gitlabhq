@@ -6,7 +6,7 @@
 = render "form"
 
 - if @commits.present?
-  %div.ui-box
+  %div.panel.panel-default
     .title
       Commits (#{@commits.count})
     - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
