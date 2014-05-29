@@ -1,5 +1,5 @@
 - commit = @repository.commit(branch.target)
-%li
+%li(class="js-branch-#{branch.name}")
   %h4
     = link_to project_tree_path(@project, branch.name) do
       %strong= truncate(branch.name, length: 60)
