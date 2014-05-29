@@ -78,7 +78,7 @@
     .panel.panel-default
       .panel-heading
         Transfer project
-      .body
+      .panel-body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
             = f.label :namespace_id, "Namespace", class: 'control-label'
