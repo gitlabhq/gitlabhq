@@ -35,9 +35,9 @@ to recreate them ourselves after migrating from MySQL. It is not necessary to
 shut down GitLab for this process.
 
 
-### For source installations
+### For non-omnibus installations
 
-On source installations (distributed using Git) we retrieve the index
+On non-omnibus installations (distributed using Git) we retrieve the index
 declarations from version control using `git stash`.
 
 ```
@@ -60,7 +60,7 @@ sudo -u git -H bundle exec rails runner -e production 'eval $stdin.read' < /tmp/
 ### For omnibus-gitlab installations
 
 On omnibus-gitlab we need to get the index declarations from a file called
-`schema.rb.bundled`. For older versions, we need to download the file.
+`schema.rb.bundled`. For versions older than 6.9, we need to download the file.
 
 ```
 # Clone the database converter on your Postgres-backed GitLab server
@@ -68,12 +68,13 @@ cd /tmp
 /opt/gitlab/embedded/bin/git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 cd /tmp/mysql-postgresql-converter
 
+# Download schema.rb.bundled if necessary
+test -e /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled || sudo /opt/gitlab/embedded/bin/curl -o /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled https://gitlab.com/gitlab-org/gitlab-ce/raw/v6.9.1/db/schema.rb
+
 # Generate add_index.rb
 /opt/gitlab/embedded/bin/ruby add_index_statements.rb /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled > add_index.rb
 
-# If schema.rb.bundled does not exist, download it as follows, then try generating add_index.rb again
-sudo /opt/gitlab/embedded/bin/curl -o /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled https://gitlab.com/gitlab-org/gitlab-ce/raw/v6.9.1/db/schema.rb
-
+# Create the indexes
 /opt/gitlab/bin/gitlab-rails runner 'eval $stdin.read' < add_index.rb
 ```
 
