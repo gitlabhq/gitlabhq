@@ -29,7 +29,7 @@
 
 ### Resources
 
-* [GitLab.com](https://www.gitlab.com/) includes information about [subscriptions](https://www.gitlab.com/subscription/), [consultancy](https://www.gitlab.com/consultancy/), the [community](https://www.gitlab.com/community/) and the [hosted GitLab Cloud](https://www.gitlab.com/cloud/).
+* [www.gitlab.com](https://www.gitlab.com/) includes information about [subscriptions](https://www.gitlab.com/subscription/), [consultancy](https://www.gitlab.com/consultancy/), the [community](https://www.gitlab.com/community/) and the [hosted GitLab.com](https://www.gitlab.com/gitlab-com/).
 
 * [GitLab Enterprise Edition](https://www.gitlab.com/gitlab-ee/) offers additional features aimed at larger organizations.
 
@@ -71,13 +71,14 @@ or by directly calling the script
 
 Please login with root / 5iveL!fe
 
-### Run in development mode
+### Install a development environment
 
-Consider setting up the development environment with [the cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md#installation).
-
-Copy the example development unicorn configuration file
+We recommend setting up your development environment with [the cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md#installation).
+If you do not use the cookbook you might need to copy the example development unicorn configuration file
 
     cp config/unicorn.rb.example.development config/unicorn.rb
+
+### Run in development mode
 
 Start it with [Foreman](https://github.com/ddollar/foreman)
 
