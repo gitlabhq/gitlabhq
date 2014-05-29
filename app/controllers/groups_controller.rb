@@ -9,7 +9,7 @@ class GroupsController < ApplicationController
   before_filter :authorize_create_group!, only: [:new, :create]
 
   # Load group projects
-  before_filter :projects, except: [:new, :create]
+  before_filter :load_projects, except: [:new, :create, :projects, :edit, :update]
 
   before_filter :default_filter, only: [:issues, :merge_requests]
 
@@ -79,9 +79,13 @@ class GroupsController < ApplicationController
   def edit
   end
 
+  def projects
+    @projects = @group.projects.page(params[:page])
+  end
+
   def update
     if @group.update_attributes(params[:group])
-      redirect_to @group, notice: 'Group was successfully updated.'
+      redirect_to edit_group_path(@group), notice: 'Group was successfully updated.'
     else
       render action: "edit"
     end
@@ -99,7 +103,7 @@ class GroupsController < ApplicationController
     @group ||= Group.find_by(path: params[:id])
   end
 
-  def projects
+  def load_projects
     @projects ||= ProjectsFinder.new.execute(current_user, group: group).sorted_by_activity.non_archived
   end
 

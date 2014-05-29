@@ -146,6 +146,7 @@ Gitlab::Application.routes.draw do
       get :issues
       get :merge_requests
       get :members
+      get :projects
     end
 
     resources :users_groups, only: [:create, :update, :destroy]

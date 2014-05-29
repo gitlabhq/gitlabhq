@@ -237,4 +237,15 @@ ul.breadcrumb {
       float: right;
     }
   }
+
+  .panel-body {
+    form {
+      margin: 0;
+    }
+
+    .form-actions {
+      margin-bottom: 0;
+      background: #FFF;
+    }
+  }
 }
