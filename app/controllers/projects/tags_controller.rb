@@ -13,11 +13,8 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    @repository.add_tag(params[:tag_name], params[:ref])
-
-    if new_tag = @repository.find_tag(params[:tag_name])
-      Event.create_ref_event(@project, current_user, new_tag, 'add', 'refs/tags')
-    end
+    @tag = CreateTagService.new.execute(@project, params[:tag_name],
+                                        params[:ref], current_user)
 
     redirect_to project_tags_path(@project)
   end
