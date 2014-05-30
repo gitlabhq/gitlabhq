@@ -195,4 +195,27 @@ describe ApplicationHelper do
       simple_sanitize(input).should == a_tag
     end
   end
+
+  describe "link_to" do
+
+    it "should not include rel=nofollow for internal links" do
+      expect(link_to("Home", root_path)).to eq("<a href=\"/\">Home</a>")
+    end
+
+    it "should include rel=nofollow for external links" do
+      expect(link_to("Example", "http://www.example.com")).to eq("<a href=\"http://www.example.com\" rel=\"nofollow\">Example</a>")
+    end
+
+    it "should include re=nofollow for external links and honor existing html_options" do
+      expect(
+        link_to("Example", "http://www.example.com", class: "toggle", data: {toggle: "dropdown"})
+      ).to eq("<a class=\"toggle\" data-toggle=\"dropdown\" href=\"http://www.example.com\" rel=\"nofollow\">Example</a>")
+    end
+
+    it "should include rel=nofollow for external links and preserver other rel values" do
+      expect(
+        link_to("Example", "http://www.example.com", rel: "noreferrer")
+      ).to eq("<a href=\"http://www.example.com\" rel=\"noreferrer nofollow\">Example</a>")
+    end
+  end
 end
