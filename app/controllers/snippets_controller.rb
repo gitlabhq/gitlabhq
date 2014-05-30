@@ -14,7 +14,7 @@ class SnippetsController < ApplicationController
   layout 'navless'
 
   def index
-    @snippets = Snippet.public.fresh.non_expired.page(params[:page]).per(20)
+    @snippets = Snippet.is_public.fresh.non_expired.page(params[:page]).per(20)
   end
 
   def user_index
