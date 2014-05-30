@@ -76,12 +76,6 @@ GEM
     colored (1.2)
     colorize (0.5.8)
     connection_pool (1.2.0)
-    coveralls (0.7.0)
-      multi_json (~> 1.3)
-      rest-client
-      simplecov (>= 0.7)
-      term-ansicolor
-      thor
     crack (0.4.1)
       safe_yaml (~> 0.9.0)
     d3_rails (3.1.10)
@@ -409,8 +403,6 @@ GEM
       redis (>= 2.2)
     ref (1.0.5)
     require_all (1.3.2)
-    rest-client (1.6.7)
-      mime-types (>= 1.16)
     rouge (1.3.3)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
@@ -499,8 +491,6 @@ GEM
     state_machine (1.2.0)
     stringex (2.5.1)
     temple (0.6.7)
-    term-ansicolor (1.2.2)
-      tins (~> 0.8)
     test_after_commit (0.2.2)
     therubyracer (0.12.0)
       libv8 (~> 3.16.14.0)
@@ -522,7 +512,6 @@ GEM
       mime-types (~> 1.19)
       multi_json (~> 1.7)
       twitter-stream (~> 0.1)
-    tins (0.13.1)
     treetop (1.4.15)
       polyglot
       polyglot (>= 0.3.1)
@@ -577,7 +566,6 @@ DEPENDENCIES
   carrierwave
   coffee-rails
   colored
-  coveralls
   d3_rails (~> 3.1.4)
   database_cleaner
   default_value_for (~> 3.0.0)
