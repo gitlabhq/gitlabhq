@@ -53,6 +53,9 @@ module Gitlab
                    else
                      :push_code_to_protected_branches
                    end
+                 elsif project.repository && project.repository.tag_names.include?(ref)
+                   # Prevent any changes to existing git tag unless user has permissions
+                   :admin_project
                  else
                    :push_code
                  end
