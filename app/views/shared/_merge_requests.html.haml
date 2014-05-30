@@ -1,6 +1,6 @@
 - if @merge_requests.any?
   - @merge_requests.group_by(&:target_project).each do |group|
-    .panel.panel-default.panel.panel-default-small
+    .panel.panel-default.panel-small
       - project = group[0]
       .panel-heading
         = link_to_project project

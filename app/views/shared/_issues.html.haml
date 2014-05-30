@@ -1,6 +1,6 @@
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|
-    .panel.panel-default.panel.panel-default-small
+    .panel.panel-default.panel-small
       - project = group[0]
       .panel-heading
         = link_to_project project

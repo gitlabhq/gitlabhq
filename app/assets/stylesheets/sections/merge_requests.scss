@@ -106,12 +106,6 @@
 }
 
 .mr-state-widget {
-  @include border-radius(0px);
-
-  .panel-heading {
-    @include border-radius(0px);
-  }
-
   .panel-body {
     h4 {
       margin-top: 0px;

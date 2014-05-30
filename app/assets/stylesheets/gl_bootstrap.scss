@@ -227,7 +227,10 @@ ul.breadcrumb {
  *
  */
 .panel {
+  @include border-radius(0px);
+
   .panel-heading {
+    @include border-radius(0px);
     font-size: 14px;
     line-height: 18px;
 
@@ -246,6 +249,18 @@ ul.breadcrumb {
     .form-actions {
       margin-bottom: 0;
       background: #FFF;
+    }
+  }
+
+  &.panel-small {
+    .panel-heading {
+      padding: 6px 15px;
+    }
+  }
+
+  &.panel-default {
+    .panel-heading {
+      background-color: #EEE;
     }
   }
 }
