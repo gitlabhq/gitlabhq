@@ -1,3 +1,9 @@
+v 6.9.2
+  - Merge community edition changes for version 6.9.2
+
+v 6.9.1
+  - Merge community edition changes for version 6.9.1
+
 v 6.9.0
   - Add support for closing Jira tickets with commits and MR
   - Template for Merge Request description can be added in project settings
