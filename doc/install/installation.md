@@ -181,7 +181,7 @@ You can change `6-9-stable` to `master` if you want the *bleeding edge* version,
 
     # Create directory for satellites
     sudo -u git -H mkdir /home/git/gitlab-satellites
-    sudo chmod u+rwx,g+rx,o-rwx /home/git/gitlab-satellites
+    sudo chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
 
     # Make sure GitLab can write to the tmp/pids/ and tmp/sockets/ directories
     sudo chmod -R u+rwX tmp/pids/
