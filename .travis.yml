@@ -15,6 +15,9 @@ env:
     - TASK=jasmine:ci DB=postgresql
 before_install:
   - sudo apt-get install libicu-dev -y
+branches:
+  only:
+    - 'master'
 rvm:
   - 2.0.0
 services:
