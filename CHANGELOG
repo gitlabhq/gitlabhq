@@ -13,6 +13,9 @@ v 7.0.0
   - Group masters can create projects in group
   - Deprecate ruby 1.9.3 support
 
+v 6.9.2
+  - Revert the commit that broke the LDAP user filter
+
 v 6.9.1
   - Fix scroll to highlighted line
   - Fix the pagination on load for commits page
