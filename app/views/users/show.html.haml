@@ -20,4 +20,5 @@
     = render @events
   .col-md-4
     = render 'profile', user: @user
-    = render 'projects'
+    - if @projects.present?
+      = render 'projects'
