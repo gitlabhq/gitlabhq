@@ -7,8 +7,8 @@
  */
 
 $font-size-base: 13px !default;
-$nav-pills-active-link-hover-bg: $bg_style_color;
-$pagination-active-bg: $bg_style_color;
+$nav-pills-active-link-hover-bg: $bg_primary;
+$pagination-active-bg: $bg_primary;
 
 // Core variables and mixins
 @import "bootstrap/variables";
