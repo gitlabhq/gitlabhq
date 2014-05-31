@@ -106,7 +106,7 @@
 
       .js-toggle-content.hide
         - if can? current_user, :archive_project, @project
-          .panel.panel-default.panel.panel-danger
+          .panel.panel-default.panel.panel-warning
             .panel-heading
               - if @project.archived?
                 Unarchive project
@@ -132,9 +132,28 @@
                   %strong Archived projects cannot be committed to!
                 = link_to 'Archive', archive_project_path(@project),
                     data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
-                    method: :post, class: "btn btn-remove"
+                    method: :post, class: "btn btn-warning"
         - else
           .nothing-here-block Only the project owner can archive a project
+
+        .panel.panel-default.panel.panel-warning
+          .panel-heading Rename repository
+          .errors-holder
+          .panel-body
+            = form_for(@project, html: { class: 'form-horizontal' }) do |f|
+              .form-group
+                = f.label :path, class: 'control-label' do
+                  %span Path
+                .col-sm-9
+                  .form-group
+                    .input-group
+                      = f.text_field :path, class: 'form-control'
+                      %span.input-group-addon .git
+                  %ul
+                    %li Be careful. Renaming a project's repository can have unintended side effects.
+                    %li You will need to update your local repositories to point to the new location.
+              .form-actions
+                = f.submit 'Rename', class: "btn btn-warning"
 
         - if can?(current_user, :change_namespace, @project)
           .panel.panel-default.panel.panel-danger
@@ -156,25 +175,6 @@
                   = f.submit 'Transfer', class: "btn btn-remove"
         - else
           .nothing-here-block Only the project owner can transfer a project
-
-        .panel.panel-default.panel.panel-danger
-          .panel-heading Rename repository
-          .errors-holder
-          .panel-body
-            = form_for(@project, html: { class: 'form-horizontal' }) do |f|
-              .form-group
-                = f.label :path, class: 'control-label' do
-                  %span Path
-                .col-sm-9
-                  .form-group
-                    .input-group
-                      = f.text_field :path, class: 'form-control'
-                      %span.input-group-addon .git
-                  %ul
-                    %li Be careful. Renaming a project's repository can have unintended side effects.
-                    %li You will need to update your local repositories to point to the new location.
-              .form-actions
-                = f.submit 'Rename', class: "btn btn-remove"
 
         - if can?(current_user, :remove_project, @project)
           .panel.panel-default.panel.panel-danger

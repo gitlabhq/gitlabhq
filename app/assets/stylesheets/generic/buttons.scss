@@ -104,6 +104,22 @@
     }
   }
 
+  &.btn-warning {
+    color: #ffffff;
+    background-color: $bg_warning;
+    border-color: $border_warning;
+
+
+    &.hover,
+    &:hover,
+    &.disabled,
+    &[disabled] {
+      color: #ffffff;
+      background-color: #e38c02;
+      border-color: #e38c02;
+    }
+  }
+
   &.btn-new {
     @extend .btn-success;
   }
