@@ -59,8 +59,8 @@
 
   &.btn-primary {
     color: #ffffff;
-    background-color: #429bca;
-    border-color: #358ebd;
+    background-color: $bg_primary;
+    border-color: $border_primary;
 
     &.hover,
     &:hover,
@@ -74,8 +74,8 @@
 
   &.btn-success {
     color: #ffffff;
-    background-color: #5cb85c;
-    border-color: #4cae4c;
+    background-color: $bg_success;
+    border-color: $border_success;
 
 
     &.hover,
@@ -90,8 +90,8 @@
 
   &.btn-danger {
     color: #ffffff;
-    background-color: #d9534f;
-    border-color: #d43f3a;
+    background-color: $bg_danger;
+    border-color: $border_danger;
 
 
     &.hover,
