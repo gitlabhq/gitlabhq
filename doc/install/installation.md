@@ -254,7 +254,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.4] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.5] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
