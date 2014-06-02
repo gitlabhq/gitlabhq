@@ -40,7 +40,7 @@ a {
   color: $link_color;
   &:hover {
     text-decoration: none;
-    color: $primary_color;
+    color: $link_hover_color;
   }
 
   &:focus {
