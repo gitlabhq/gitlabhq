@@ -6,7 +6,7 @@ class UsersController < ApplicationController
     @user = User.find_by_username!(params[:username])
     @projects = Project.personal(@user).accessible_to(current_user)
 
-    if !current_user && @projects.empty?
+    unless current_user || @user.public_profile?
       return authenticate_user!
     end
 

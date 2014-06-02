@@ -102,24 +102,24 @@ module SharedProject
     page.should_not have_content "Community"
   end
 
-  step '"John Doe" is authorized to private project "Enterprise"' do
+  step '"John Doe" owns private project "Enterprise"' do
     user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Enterprise")
-    project ||= create(:project, name: "Enterprise", namespace: user.namespace)
+    project ||= create(:empty_project, name: "Enterprise", namespace: user.namespace)
     project.team << [user, :master]
   end
 
-  step '"John Doe" is authorized to internal project "Internal"' do
+  step '"John Doe" owns internal project "Internal"' do
     user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Internal")
-    project ||= create :project, :internal, name: 'Internal'
+    project ||= create :empty_project, :internal, name: 'Internal', namespace: user.namespace
     project.team << [user, :master]
   end
 
-  step '"John Doe" is authorized to public project "Community"' do
+  step '"John Doe" owns public project "Community"' do
     user = user_exists("John Doe", username: "john_doe")
     project = Project.find_by(name: "Community")
-    project ||= create :project, :public, name: 'Community'
+    project ||= create :empty_project, :public, name: 'Community', namespace: user.namespace
     project.team << [user, :master]
   end
 end
