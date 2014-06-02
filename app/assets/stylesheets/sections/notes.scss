@@ -37,7 +37,7 @@ ul.notes {
       font-weight: bold;
       font-size: 14px;
       &:hover {
-        color: $link_hover_colory;
+        color: $link_hover_color;
       }
     }
   }
@@ -172,7 +172,7 @@ ul.notes {
       @extend .cgray;
 
       &:hover {
-        color: $link_hover_colory;
+        color: $link_hover_color;
         &.danger { @extend .cred; }
       }
     }
