@@ -244,12 +244,12 @@ GEM
     httpauth (0.2.0)
     i18n (0.6.9)
     ice_nine (0.10.0)
-    jasmine (2.0.0.rc5)
-      jasmine-core (~> 2.0.0.rc5)
+    jasmine (2.0.2)
+      jasmine-core (~> 2.0.0)
       phantomjs
       rack (>= 1.2.1)
       rake
-    jasmine-core (2.0.0.rc5)
+    jasmine-core (2.0.0)
     jquery-atwho-rails (0.3.3)
     jquery-rails (3.1.0)
       railties (>= 3.0, < 5.0)
@@ -617,7 +617,7 @@ DEPENDENCIES
   haml-rails
   hipchat (~> 0.14.0)
   httparty
-  jasmine (= 2.0.0.rc5)
+  jasmine (= 2.0.2)
   jquery-atwho-rails (~> 0.3.3)
   jquery-rails
   jquery-scrollto-rails
