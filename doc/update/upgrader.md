@@ -56,6 +56,8 @@ Here is a one line command with step 1 to 4 for the next time you upgrade:
 
 ```bash
 cd /home/git/gitlab; sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production; \
-  sudo service gitlab stop; sudo -u git -H ruby bin/upgrade.rb -y; sudo service gitlab start; \
+  sudo service gitlab stop; \
+  if [ -f bin/upgrade.rb ]; then sudo -u git -H ruby bin/upgrade.rb -y; else sudo -u git -H ruby script/upgrade.rb -y; fi; \
+  sudo service gitlab start; \
   sudo service nginx restart; sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production
 ```
