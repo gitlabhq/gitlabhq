@@ -4,10 +4,12 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find_by_username!(params[:username])
-    @projects = @user.authorized_projects.accessible_to(current_user)
-    if !current_user && @projects.empty?
+    @projects = Project.personal(@user).accessible_to(current_user)
+
+    unless current_user || @user.public_profile?
       return authenticate_user!
     end
+
     @groups = @user.groups.accessible_to(current_user)
     @events = @user.recent_events.where(project_id: @projects.pluck(:id)).limit(20)
     @title = @user.name

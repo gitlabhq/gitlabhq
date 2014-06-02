@@ -478,4 +478,8 @@ class User < ActiveRecord::Base
   def generate_tmp_oauth_email
     self.email = "temp-email-for-oauth-#{username}@gitlab.localhost"
   end
+
+  def public_profile?
+    authorized_projects.public_only.any?
+  end
 end
