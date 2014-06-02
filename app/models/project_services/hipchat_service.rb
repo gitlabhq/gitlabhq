@@ -13,12 +13,17 @@
 #  project_url :string(255)
 #  subdomain   :string(255)
 #  room        :string(255)
+#  server      :string(255)
 #  recipients  :text
 #  api_key     :string(255)
 #
 
 class HipchatService < Service
+  attr_accessible :room
+  attr_accessible :server
+
   validates :token, presence: true, if: :activated?
+  validates :room, presence: true, if: :activated?
 
   def title
     'Hipchat'
@@ -34,8 +39,9 @@ class HipchatService < Service
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' },
-      { type: 'text', name: 'room',      placeholder: '' }
+      { type: 'text', name: 'token',  placeholder: '' },
+      { type: 'text', name: 'room',   placeholder: '' },
+      { type: 'text', name: 'server', placeholder: 'Leave blank to use https://hipchat.com' }
     ]
   end
 
@@ -46,7 +52,9 @@ class HipchatService < Service
   private
 
   def gate
-    @gate ||= HipChat::Client.new(token)
+    options = { api_version: 'v2' }
+    options[:server_url] = server unless server.nil?
+    @gate ||= HipChat::Client.new(token, options)
   end
 
   def create_message(push)
