@@ -96,4 +96,18 @@ describe API::API, api: true  do
           state_event: 'close'
     end
   end
+
+  describe "GET /projects/:id/milestones/:milestone_id/issues" do
+    it "should return project issues for a particular milestone" do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/issues", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.first['milestone']['title'].should == milestone.title
+    end
+
+    it "should return a 401 error if user not authenticated" do
+      get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
+      response.status.should == 401
+    end
+  end
 end
