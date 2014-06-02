@@ -231,4 +231,31 @@ module ApplicationHelper
       content_tag(:i, nil, class: 'icon-spinner icon-spin') + text
     end
   end
+
+  def link_to(name = nil, options = nil, html_options = nil, &block)
+    begin
+      uri = URI(options)
+      host = uri.host
+      absolute_uri = uri.absolute?
+    rescue URI::InvalidURIError, ArgumentError
+      host = nil
+      absolute_uri = nil
+    end
+
+    # Add "nofollow" only to external links
+    if host && host != Gitlab.config.gitlab.host && absolute_uri
+      if html_options
+        if html_options[:rel]
+          html_options[:rel] << " nofollow"
+        else
+          html_options.merge!(rel: "nofollow")
+        end
+      else
+        html_options = Hash.new
+        html_options[:rel] = "nofollow"
+      end
+    end
+
+    super
+  end
 end
