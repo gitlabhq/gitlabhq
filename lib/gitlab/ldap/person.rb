@@ -1,9 +1,3 @@
-#-------------------------------------------------------------------
-#
-# Copyright (C) 2013 GitLab.com - Distributed under the MIT Expat License
-#
-#-------------------------------------------------------------------
-
 module Gitlab
   module LDAP
     class Person
