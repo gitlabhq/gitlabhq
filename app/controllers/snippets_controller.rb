@@ -26,15 +26,15 @@ class SnippetsController < ApplicationController
 
     if @user == current_user
       @snippets = case params[:scope]
-                  when 'public' then
-                    @snippets.public
-                  when 'private' then
-                    @snippets.private
+                  when 'is_public' then
+                    @snippets.is_public
+                  when 'is_private' then
+                    @snippets.is_private
                   else
                     @snippets
                   end
     else
-      @snippets = @snippets.public
+      @snippets = @snippets.is_public
     end
 
     @snippets = @snippets.page(params[:page]).per(20)
