@@ -1,9 +1,3 @@
-#-------------------------------------------------------------------
-#
-# Copyright (C) 2013 GitLab.com - Distributed under the MIT Expat License
-#
-#-------------------------------------------------------------------
-
 class ProjectGroupLink < ActiveRecord::Base
   GUEST     = 10
   REPORTER  = 20

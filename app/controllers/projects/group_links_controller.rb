@@ -1,9 +1,3 @@
-#-------------------------------------------------------------------
-#
-# Copyright (C) 2013 GitLab.com - Distributed under the MIT Expat License
-#
-#-------------------------------------------------------------------
-
 class Projects::GroupLinksController < Projects::ApplicationController
   layout 'project_settings'
   before_filter :authorize_admin_project!
