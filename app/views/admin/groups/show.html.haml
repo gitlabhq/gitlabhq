@@ -31,11 +31,12 @@
 
     .panel.panel-default
       .panel-heading
-        Projects
-        %small
-          (#{@group.projects.count})
+        %h3.panel-title
+          Projects
+          %span.badge
+            #{@group.projects.count}
       %ul.well-list
-        - @group.projects.sort_by(&:name).each do |project|
+        - @projects.each do |project|
           %li
             %strong
               = link_to project.name_with_namespace, [:admin, project]
@@ -43,6 +44,8 @@
                 = repository_size(project)
             %span.pull-right.light
               %span.monospace= project.path_with_namespace + ".git"
+      .panel-footer
+        = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
   .col-md-6
     .panel.panel-default
@@ -62,12 +65,12 @@
           = submit_tag 'Add users into group', class: "btn btn-create"
     .panel.panel-default
       .panel-heading
-        %strong #{@group.name}
-        Group Members
-        %small
-          (#{@group.users_groups.count})
+        %h3.panel-title
+          Members
+          %span.badge
+            #{@group.users_groups.count}
       %ul.well-list.group-users-list
-        - @group.users_groups.order('group_access DESC').each do |member|
+        - @members.each do |member|
           - user = member.user
           %li{class: dom_class(user)}
             .list-item-name
@@ -77,3 +80,5 @@
               = member.human_access
               = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                 %i.icon-minus.icon-white
+      .panel-footer
+        = paginate @members, param_name: 'members_page', theme: 'gitlab'
