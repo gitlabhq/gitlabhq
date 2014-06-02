@@ -18,11 +18,12 @@ __GitLab Upgrader is available only for GitLab version 6.4.2 or higher__
 
 ### 2. Run gitlab upgrade tool
 
+    # Starting with GitLab version 7.0 upgrader script has been moved to bin directory
     cd /home/git/gitlab
-    sudo -u git -H ruby bin/upgrade.rb
+    if [ -f bin/upgrade.rb ]; then sudo -u git -H ruby bin/upgrade.rb; else sudo -u git -H ruby script/upgrade.rb; fi
 
     # to perform a non-interactive install (no user input required) you can add -y
-    # sudo -u git -H ruby bin/upgrade.rb -y
+    # if [ -f bin/upgrade.rb ]; then sudo -u git -H ruby bin/upgrade.rb -y; else sudo -u git -H ruby script/upgrade.rb -y; fi
 
 ### 3. Start application
 
