@@ -17,6 +17,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def show
+    @group_members = @group.members.order("group_access DESC").page(params[:group_members_page]).per(30)
+    @project_members = @project.users_projects.page(params[:project_members_page]).per(30)
   end
 
   def transfer
