@@ -253,6 +253,12 @@ ul.breadcrumb {
     }
   }
 
+  .panel-footer {
+    .pagination {
+      margin: 0;
+    }
+  }
+
   &.panel-small {
     .panel-heading {
       padding: 6px 15px;

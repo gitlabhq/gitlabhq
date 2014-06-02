@@ -8,6 +8,8 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def show
+    @members = @group.members.order("group_access DESC").page(params[:members_page]).per(30)
+    @projects = @group.projects.page(params[:projects_page]).per(30)
   end
 
   def new
