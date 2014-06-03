@@ -164,7 +164,7 @@ class ApplicationController < ActionController::Base
   end
 
   def default_headers
-    headers['X-Frame-Options'] = 'SAMEORIGIN' # Allow for the Sidekiq iframe in /admin/background_jobs
+    headers['X-Frame-Options'] = 'DENY'
     headers['X-XSS-Protection'] = '1; mode=block'
     headers['X-UA-Compatible'] = 'IE=edge'
     headers['X-Content-Type-Options'] = 'nosniff'
