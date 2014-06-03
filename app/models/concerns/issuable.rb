@@ -42,7 +42,7 @@ module Issuable
 
   module ClassMethods
     def search(query)
-      where("title like :query", query: "%#{query}%")
+      where("LOWER(title) like :query", query: "%#{query.downcase}%")
     end
 
     def sort(method)
