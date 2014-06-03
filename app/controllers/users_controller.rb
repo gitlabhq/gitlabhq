@@ -11,7 +11,8 @@ class UsersController < ApplicationController
     end
 
     @groups = @user.groups.accessible_to(current_user)
-    @events = @user.recent_events.where(project_id: @projects.pluck(:id)).limit(20)
+    accessible_projects = @user.authorized_projects.accessible_to(current_user)
+    @events = @user.recent_events.where(project_id: accessible_projects.pluck(:id)).limit(20)
     @title = @user.name
   end
 
