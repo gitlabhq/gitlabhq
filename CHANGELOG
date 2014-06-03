@@ -14,6 +14,8 @@ v 7.0.0
   - Deprecate ruby 1.9.3 support
   - Only masters can rewrite/remove git tags
   - Add X-Frame-Options SAMEORIGIN to Nginx config so Sidekiq admin is visible
+  - UI improvements
+  - Case-insensetive search for issues
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
