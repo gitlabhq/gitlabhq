@@ -1,7 +1,7 @@
 %h3.page-title
   Group: #{@group.name}
 
-  = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
+  = link_to edit_admin_group_path(@group), class: "btn pull-right" do
     %i.icon-edit
     Edit
 %hr
@@ -11,6 +11,8 @@
       .panel-heading
         Group info:
       %ul.well-list
+        %li
+          = image_tag group_icon(@group.path), class: "avatar s60"
         %li
           %span.light Name:
           %strong= @group.name
