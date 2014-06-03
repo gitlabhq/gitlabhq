@@ -232,3 +232,15 @@ ul.nav.nav-projects-tabs {
 .deploy-project-label {
   margin: 1px;
 }
+
+.vs-public {
+  color: $bg_primary;
+}
+
+.vs-internal {
+  color: $bg_warning;
+}
+
+.vs-private {
+  color: $bg_success;
+}
