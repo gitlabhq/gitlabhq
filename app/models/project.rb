@@ -330,7 +330,7 @@ class Project < ActiveRecord::Base
   end
 
   def ci_service
-    @ci_service ||= services.select(&:activated?).first
+    @ci_service ||= ci_services.select(&:activated?).first
   end
 
   # For compatibility with old code
