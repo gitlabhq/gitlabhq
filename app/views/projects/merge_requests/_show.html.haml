@@ -7,7 +7,7 @@
   = render "projects/merge_requests/show/participants"
 
   - if @commits.present?
-    %ul.nav.nav-tabs.merge-request-tabs
+    %ul.nav.nav-pills.merge-request-tabs
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
           %i.icon-comment
