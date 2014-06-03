@@ -1,6 +1,6 @@
 .issues-list {
   .issue {
-    padding: 10px;
+    padding: 10px 15px;
     position: relative;
 
     .issue-title {
@@ -42,7 +42,7 @@
   height: 32px;
   float: left;
   margin-right: 12px;
-  padding: 6px 10px;
+  padding: 6px 15px;
   border: 1px solid #ccc;
   @include border-radius(4px);
 }
