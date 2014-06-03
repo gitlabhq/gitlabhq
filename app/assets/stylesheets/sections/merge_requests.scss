@@ -20,18 +20,14 @@
 }
 
 .merge-request .merge-request-tabs{
-  border-color: #AAA;
+  border-bottom: 2px solid $border_primary;
+  padding-bottom: 10px;
+  margin-bottom: 20px;
+
   li {
     a {
-      border-color: #AAA;
-      padding: 14px 40px;
+      padding: 20px 40px;
       font-size: 14px;
-      background-color: #F9F9F9;
-    }
-    &.active a {
-      border-color: #AAA;
-      border-bottom-color: #FFF;
-      background-color: #FFF;
     }
   }
 }
@@ -70,7 +66,7 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px;
+    padding: 10px 15px;
     position: relative;
 
     .merge-request-title {
