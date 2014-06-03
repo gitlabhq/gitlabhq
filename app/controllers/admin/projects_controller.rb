@@ -4,10 +4,8 @@ class Admin::ProjectsController < Admin::ApplicationController
   before_filter :repository, only: [:show, :transfer]
 
   def index
-    owner_id = params[:owner_id]
-    user = User.find_by(id: owner_id)
-
-    @projects = user ? user.owned_projects : Project.all
+    @projects = Project.all
+    @projects = @projects.where(namespace_id: params[:namespace_id]) if params[:namespace_id].present?
     @projects = @projects.where("visibility_level IN (?)", params[:visibility_levels]) if params[:visibility_levels].present?
     @projects = @projects.with_push if params[:with_push].present?
     @projects = @projects.abandoned if params[:abandoned].present?
