@@ -36,8 +36,7 @@
     - if @path.present?
       %tr.tree-item
         %td.tree-item-file-name
-          = image_tag "file_empty.png", size: '16x16'
-          = link_to "..", project_tree_path(@project, up_dir_path(tree))
+          = link_to "..", project_tree_path(@project, up_dir_path(tree)), class: 'prepend-left-10'
         %td
         %td
         %td
