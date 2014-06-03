@@ -1,6 +1,7 @@
 %h3.page-title
-  #{@user.name} &rarr;
-  %i.icon-edit
-  Edit user
+  Edit user: #{@user.name}
+.back-link
+  = link_to admin_user_path(@user) do
+    &larr; Back to user page
 %hr
 = render 'form'
