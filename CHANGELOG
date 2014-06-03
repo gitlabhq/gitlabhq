@@ -13,6 +13,7 @@ v 7.0.0
   - Group masters can create projects in group
   - Deprecate ruby 1.9.3 support
   - Only masters can rewrite/remove git tags
+  - Header X-Frame-Options allows SAMEORIGIN to display the Sidekiq interface
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
