@@ -35,7 +35,7 @@
 
 * [GitLab CI](https://www.gitlab.com/gitlab-ci/) is a continuous integration (CI) server that is easy to integrate with GitLab.
 
-* Unofficial third-party [iPhone app](http://gitlabcontrol.com/), [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en) and [command line client](https://github.com/drewblessing/gitlab-cli), [Ruby API wrapper](https://github.com/NARKOZ/gitlab) and [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi) for GitLab.
+* Unofficial third-party [iPhone app](http://gitlabcontrol.com/), [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en), [command line client](https://github.com/drewblessing/gitlab-cli), [Ruby API wrapper](https://github.com/NARKOZ/gitlab) and [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi) for GitLab.
 
 ### Requirements
 
