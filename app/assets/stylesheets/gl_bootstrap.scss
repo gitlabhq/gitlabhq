@@ -262,6 +262,10 @@ ul.breadcrumb {
   &.panel-small {
     .panel-heading {
       padding: 6px 15px;
+      font-size: 13px;
+      a {
+        color: #777;
+      }
     }
   }
 }
