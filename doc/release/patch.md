@@ -4,12 +4,13 @@ NOTE: This is a guide for GitLab developers. If you are trying to install GitLab
 
 ## When to do a patch release
 
-Do a patch release when there is a critical regression that needs to be adresses before the next monthly release.
+Do a patch release when there is a critical regression that needs to be addresses before the next monthly release.
+
 Otherwise include it in the monthly release and note there was a regression fix in the release announcement.
 
 ## Release Procedure
 
-1. Verify that the issue can be repoduced
+1. Verify that the issue can be reproduced
 1. Note in the 'GitLab X.X regressions' that you will create a patch
 1. Create an issue on private GitLab development server
 1. Name the issue "Release X.X.X CE and X.X.X EE", this will make searching easier
@@ -25,5 +26,5 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. Apply the patch to GitLab Cloud and the private GitLab development server
 1. Build new packages with the latest version
 1. Cherry-pick the changelog update back into master
-1. Send tweets about the release from @gitlabhq, tweet should include the most important feature that the release is addressing as well as the link to the changelog
+1. Send tweets about the release from `@gitlabhq`, tweet should include the most important feature that the release is addressing as well as the link to the changelog
 1. Note in the 'GitLab X.X regressions' issue that the patch was published

@@ -1,11 +1,6 @@
 # Markdown
 
-----------------------------------------------
-
-Table of Contents
-=================
-
-----------------------------------------------
+## Table of Contents
 
 **[GitLab Flavored Markdown](#gitlab-flavored-markdown-gfm)**
 
@@ -20,7 +15,6 @@ Table of Contents
 [Emoji](#emoji)
 
 [Special GitLab references](#special-gitlab-references)
-
 
 **[Standard Markdown](#standard-markdown)**
 
@@ -46,29 +40,24 @@ Table of Contents
 
 **[References](#references)**
 
-----------------------------------------------
+## GitLab Flavored Markdown (GFM)
 
-GitLab Flavored Markdown (GFM)
-==============================
-For GitLab we developed something we call "GitLab Flavored Markdown" (GFM).
-It extends the standard Markdown in a few significant ways to add some useful functionality.
+For GitLab we developed something we call "GitLab Flavored Markdown" (GFM). It extends the standard Markdown in a few significant ways to add some useful functionality.
 
 You can use GFM in
 
-* commit messages
-* comments
-* wall posts
-* issues
-* merge requests
-* milestones
-* wiki pages
+- commit messages
+- comments
+- wall posts
+- issues
+- merge requests
+- milestones
+- wiki pages
 
-You can also use other rich text files in GitLab.
-You might have to install a depency to do so.
-Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
+You can also use other rich text files in GitLab. You might have to install a depency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
-Newlines
---------
+## Newlines
+
 GFM honors the markdown specification in how [paragraphs and line breaks are handled](http://daringfireball.net/projects/markdown/syntax#p).
 
 A paragraph is simply one or more consecutive lines of text, separated by one or more blank lines.:
@@ -83,8 +72,8 @@ Violets are blue
 
 Sugar is sweet
 
-Multiple underscores in words
------------------------------
+## Multiple underscores in words
+
 It is not reasonable to italicize just _part_ of a word, especially when you're dealing with code and names that often appear with multiple underscores. Therefore, GFM ignores multiple underscores in words.
 
     perform_complicated_task
@@ -93,10 +82,9 @@ It is not reasonable to italicize just _part_ of a word, especially when you're 
 perform_complicated_task
 do_this_and_do_that_and_another_thing
 
-URL autolinking
----------------
-GFM will autolink standard URLs you copy and paste into your text.
-So if you want to link to a URL (instead of a textural link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
+## URL autolinking
+
+GFM will autolink standard URLs you copy and paste into your text. So if you want to link to a URL (instead of a textural link), you can simply put the URL in verbatim and it will be turned into a link to that URL.
 
     http://www.google.com
 
@@ -164,8 +152,7 @@ s = "There is no highlighting for this."
 But let's throw in a <b>tag</b>.
 ```
 
-Emoji
------
+## Emoji
 
 	Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
 
@@ -187,26 +174,25 @@ If you are :new: to this, don't be :fearful:. You can easily join the emoji :cir
 
 Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup:
 
-Special GitLab References
------
+## Special GitLab References
 
 GFM recognized special references.
+
 You can easily reference e.g. a team member, an issue, or a commit within a project.
+
 GFM will turn that reference into a link so you can navigate between them easily.
 
 GFM will recognize the following:
 
-* @foo : for team members
-* #123 : for issues
-* !123 : for merge requests
-* $123 : for snippets
-* 1234567 : for commits
-* \[file\](path/to/file) : for file references
+- @foo : for team members
+- #123 : for issues
+- !123 : for merge requests
+- $123 : for snippets
+- 1234567 : for commits
+- \[file\](path/to/file) : for file references
 
-----------------------------------
 # Standard Markdown
 
-----------------------------------
 ## Headers
 
 ```no-highlight
@@ -249,12 +235,12 @@ On hover a link to those IDs becomes visible to make it easier to copy the link 
 
 The IDs are generated from the content of the header according to the following rules:
 
-1) remove the heading hashes `#` and process the rest of the line as it would be processed if it were not a header
-2) from the result, remove all HTML tags, but keep their inner content
-3) convert all characters to lowercase
-4) convert all characters except `[a-z0-9_-]` into hyphens `-`
-5) transform multiple adjacent hyphens into a single hyphen
-6) remove trailing and heading hyphens
+1. remove the heading hashes `#` and process the rest of the line as it would be processed if it were not a header
+2. from the result, remove all HTML tags, but keep their inner content
+3. convert all characters to lowercase
+4. convert all characters except `[a-z0-9_-]` into hyphens `-`
+5. transform multiple adjacent hyphens into a single hyphen
+6. remove trailing and heading hyphens
 
 For example:
 
@@ -377,8 +363,7 @@ Some text to show that the reference links can follow later.
 
 **Note**
 
-Relative links do not allow referencing project files in a wiki page or wiki page in a project file.
-The reason for this is that, in GitLab, wiki is always a separate git repository. For example:
+Relative links do not allow referencing project files in a wiki page or wiki page in a project file. The reason for this is that, in GitLab, wiki is always a separate git repository. For example:
 
 `[I'm a reference-style link][style]`
 
@@ -399,9 +384,11 @@ will point the link to `wikis/style` when the link is inside of a wiki markdown 
 Here's our logo:
 
 Inline-style:
+
 ![alt text](/assets/logo-white.png)
 
 Reference-style:
+
 ![alt text][logo]
 
 [logo]: /assets/logo-white.png
@@ -518,10 +505,8 @@ Code above produces next output:
 | cell 1   | cell 2   |
 | cell 3   | cell 4   |
 
-------------
-
 ## References
 
-* This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
-* The [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
-* [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.
+- This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).
+- The [Markdown Syntax Guide](http://daringfireball.net/projects/markdown/syntax) at Daring Fireball is an excellent resource for a detailed explanation of standard markdown.
+- [Dillinger.io](http://dillinger.io) is a handy tool for testing standard markdown.

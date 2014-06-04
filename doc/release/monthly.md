@@ -25,16 +25,18 @@ Consider naming the issue "Release x.x.x.rc1" to make it easier for later search
 ### **2. Update the installation guide**
 
 1. Check if it references the correct branch `x-x-stable` (doesn't exist yet, but that is okay)
-2. Check the [GitLab Shell version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L782)
-3. Check the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794)
-4. There might be other changes. Ask around.
+1. Check the [GitLab Shell version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L782)
+1. Check the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794)
+1. There might be other changes. Ask around.
 
 ### **3. Create an update guide**
 
 It's best to copy paste the previous guide and make changes where necessary. The typical steps are listed below with any points you should specifically look at.
 
 #### 0. Any major changes?
-List any major changes here, so the user is aware of them before starting to upgrade. For instance: 
+
+List any major changes here, so the user is aware of them before starting to upgrade. For instance:
+
 - Database updates
 - Web server changes
 - File structure changes
@@ -59,42 +61,43 @@ List any major changes here, so the user is aware of them before starting to upg
 
 Check if any of these changed since last release:
 
-* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/nginx/gitlab
-* https://gitlab.com/gitlab-org/gitlab-shell/commits/master/config.yml.example
-* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/gitlab.yml.example
-* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example
-* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql
-* https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/nginx/gitlab>
+- <https://gitlab.com/gitlab-org/gitlab-shell/commits/master/config.yml.example>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/gitlab.yml.example>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql>
 
 #### 8. Need to update init script?
 
-Check if the init.d/gitlab script changed since last release: https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/init.d/gitlab
+Check if the `init.d/gitlab` script changed since last release: <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/init.d/gitlab>
 
 #### 9. Start application
 
 #### 10. Check application status
 
-### **4. Code quality indicatiors**
+### **4. Code quality indicators**
+
 Make sure the code quality indicators are green / good.
 
-* [![build status](http://ci.gitlab.org/projects/1/status.png?ref=master)](http://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
+- [![build status](http://ci.gitlab.org/projects/1/status.png?ref=master)](http://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
 
-* [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq) on travis-ci.org (master branch)
+- [![build status](https://secure.travis-ci.org/gitlabhq/gitlabhq.png)](https://travis-ci.org/gitlabhq/gitlabhq) on travis-ci.org (master branch)
 
-* [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
+- [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.png)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 
-* [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq) this button can be yellow (small updates are available) but must not be red (a security fix or an important update is available)
+- [![Dependency Status](https://gemnasium.com/gitlabhq/gitlabhq.png)](https://gemnasium.com/gitlabhq/gitlabhq) this button can be yellow (small updates are available) but must not be red (a security fix or an important update is available)
 
-* [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
+- [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 
 ### **5. Set VERSION**
 
-Change version in VERSION to x.x.0.rc1
-
+Change version in VERSION to `x.x.0.rc1`.
 
 ### **6. Tag**
 
-Create an annotated tag that points to the version change commit.
+Create an annotated tag that points to the version change commit:
+
 ```
 git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 ```
@@ -105,6 +108,7 @@ Tweet about the RC release:
 
 > GitLab x.x.x.rc1 is out. This is a release candidate intended for testing only. Please let us know if you find regressions.
 
+n
 ### **8. Update GitLab.com**
 
 Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morning.
@@ -115,20 +119,19 @@ It is important to do this as soon as possible, so we can catch any errors befor
 
 ### **1. Prepare the blog post**
 
-* Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
-* Create a WIP MR for the blog post and cc the team so everyone can give feedback.
-* Ask Dmitriy to add screenshots to the WIP MR.
-* Decide with team who will be the MVP user.
-* Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+- Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
+- Create a WIP MR for the blog post and cc the team so everyone can give feedback.
+- Ask Dmitriy to add screenshots to the WIP MR.
+- Decide with team who will be the MVP user.
+- Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 
 ### **2. Q&A**
 
-Create issue on dev.gitlab.org gitlab repository, named "GitLab X.X release" in order to keep track of the progress.
+Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X release" in order to keep track of the progress.
 
 Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
-
 
 ### **3. Fix anything coming out of the QA**
 
@@ -136,7 +139,7 @@ Create an issue with description of a problem, if it is quick fix fix yourself o
 
 # **22nd - Release CE and EE**
 
-For GitLab EE, append -ee to the branches and tags.
+For GitLab EE, append `-ee` to the branches and tags.
 
 `x-x-stable-ee`
 
@@ -152,25 +155,24 @@ git push <remote> x-x-stable
 ```
 
 ### **2. Build the Omnibus packages**
+
 [Follow this guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 
 ### **3. Set VERSION to x.x.x and push**
 
-Change the VERSION file in `master` branch of the CE repository and commit.
-Cherry-pick into the `x-x-stable` branch of CE.
+Change the VERSION file in `master` branch of the CE repository and commit. Cherry-pick into the `x-x-stable` branch of CE.
 
-Change the VERSION file in `master branch of the EE repository and commit.
-Cherry-pick into the `x-x-stable-ee` branch of EE.
+Change the VERSION file in `master` branch of the EE repository and commit. Cherry-pick into the `x-x-stable-ee` branch of EE.
 
 ### **4. Create annotated tag vx.x.x**
 
-In `x-x-stable` branch check for the sha1 of the commit with VERSION file changed. Tag that commit,
+In `x-x-stable` branch check for the SHA-1 of the commit with VERSION file changed. Tag that commit,
 
 ```
 git tag -a vx.x.0 -m 'Version x.x.0' xxxxx
 ```
 
-where `xxxxx` is sha1.
+where `xxxxx` is SHA-1.
 
 ### **5. Push the tag**
 
@@ -200,7 +202,7 @@ Proposed tweet for EE "GitLab X.X.X EE is released! It brings *** <link-to-blogp
 
 ### **9. Send out newsletter**
 
-In mailchimp replicate the former release newsletters to customers / newsletter subscribers (these are two separate things) and modify them accordingly.
+In MailChimp replicate the former release newsletters to customers / newsletter subscribers (these are two separate things) and modify them accordingly.
 
 Include a link to the blog post and keep it short.
 
