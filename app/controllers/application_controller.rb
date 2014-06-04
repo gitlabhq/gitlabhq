@@ -174,10 +174,14 @@ class ApplicationController < ActionController::Base
   def add_gon_variables
     gon.default_issues_tracker = Project.issues_tracker.default_value
     gon.api_version = API::API.version
-    gon.api_token = current_user.private_token if current_user
     gon.gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
     gon.gravatar_enabled = Gitlab.config.gravatar.enabled
+
+    if current_user
+      gon.current_user_id = current_user.id
+      gon.api_token = current_user.private_token
+    end
   end
 
   def check_password_expiration
