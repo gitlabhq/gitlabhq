@@ -18,16 +18,16 @@
           All
           %span.pull-right
             = @user.snippets.count
-      = nav_tab :scope, 'private' do
-        = link_to user_snippets_path(@user, scope: 'private') do
+      = nav_tab :scope, 'are_private' do
+        = link_to user_snippets_path(@user, scope: 'are_private') do
           Private
           %span.pull-right
-            = @user.snippets.private.count
-      = nav_tab :scope, 'public' do
-        = link_to user_snippets_path(@user, scope: 'public') do
+            = @user.snippets.are_private.count
+      = nav_tab :scope, 'are_public' do
+        = link_to user_snippets_path(@user, scope: 'are_public') do
           Public
           %span.pull-right
-            = @user.snippets.public.count
+            = @user.snippets.are_public.count
 
   .col-md-9.my-snippets
     = render 'snippets'

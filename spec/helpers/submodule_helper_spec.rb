@@ -16,7 +16,8 @@ describe SubmoduleHelper do
       end
 
       it 'should detect ssh on standard port' do
-        Gitlab.config.gitlab.stub(ssh_port: 22) # set this just to be sure
+        Gitlab.config.gitlab_shell.stub(ssh_port: 22) # set this just to be sure
+        Gitlab.config.gitlab_shell.stub(ssh_path_prefix: Settings.send(:build_gitlab_shell_ssh_path_prefix))
         stub_url([ config.user, '@', config.host, ':gitlab-org/gitlab-ce.git' ].join(''))
         submodule_links(submodule_item).should == [ project_path('gitlab-org/gitlab-ce'), project_tree_path('gitlab-org/gitlab-ce', 'hash') ]
       end

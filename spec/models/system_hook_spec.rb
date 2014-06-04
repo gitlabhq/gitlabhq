@@ -59,7 +59,7 @@ describe SystemHook do
       user = create(:user)
       project = create(:project)
       project.team << [user, :master]
-      project.users_projects.clear
+      project.users_projects.destroy_all
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_remove_from_team/).once
     end
   end

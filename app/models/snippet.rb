@@ -34,8 +34,8 @@ class Snippet < ActiveRecord::Base
   validates :content, presence: true
 
   # Scopes
-  scope :public,  -> { where(private: false) }
-  scope :private, -> { where(private: true) }
+  scope :are_public,  -> { where(private: false) }
+  scope :are_private, -> { where(private: true) }
   scope :fresh,   -> { order("created_at DESC") }
   scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }

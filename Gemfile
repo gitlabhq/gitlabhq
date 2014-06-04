@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "~> 4.0.0"
+gem "rails", "~> 4.1.0"
 
 gem "protected_attributes"
 gem 'rails-observers'
@@ -207,7 +207,7 @@ group :development, :test do
   gem 'factory_girl_rails'
 
   # Prevent occasions where minitest is not bundled in packaged versions of ruby (see #3826)
-  gem 'minitest', '~> 4.7.0'
+  gem 'minitest', '~> 5.3.0'
 
   # Generate Fake data
   gem "ffaker"
@@ -224,7 +224,7 @@ group :development, :test do
   # PhantomJS driver for Capybara
   gem 'poltergeist', '~> 1.5.1'
 
-  gem 'jasmine', '2.0.0.rc5'
+  gem 'jasmine', '2.0.2'
 
   gem "spring", '1.1.1'
   gem "spring-commands-rspec", '1.0.1'
