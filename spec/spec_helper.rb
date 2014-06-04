@@ -41,4 +41,8 @@ RSpec.configure do |config|
   config.before(:suite) do
     TestEnv.init
   end
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
