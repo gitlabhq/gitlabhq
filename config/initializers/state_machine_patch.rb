@@ -2,8 +2,8 @@
 # where gem 'state_machine' was not working for Rails 4.1
 module StateMachine
   module Integrations
-     module ActiveModel
-        public :around_validation
-     end
+    module ActiveModel
+      public :around_validation
+    end
   end
 end
