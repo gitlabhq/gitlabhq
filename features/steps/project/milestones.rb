@@ -54,6 +54,6 @@ class ProjectMilestones < Spinach::FeatureSteps
   end
 
   Then "I should see 3 issues" do
-    page.should have_selector('#tab-issues li', count: 4)
+    page.should have_selector('#tab-issues li.issue-row', count: 4)
   end
 end
