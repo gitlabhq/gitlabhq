@@ -144,7 +144,10 @@ class ProjectTeam
       group_members = group_members.send(level) if group
     end
 
-    (project_members + group_members).map(&:user).uniq
+    user_ids = project_members.pluck(:user_id)
+    user_ids += group_members.pluck(:user_id) if group
+
+    User.where(id: user_ids)
   end
 
   def group
