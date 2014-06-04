@@ -1,3 +1,4 @@
+@profile
 Feature: Profile SSH Keys
   Background:
     Given I sign in as a user

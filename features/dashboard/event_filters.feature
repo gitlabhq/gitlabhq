@@ -1,3 +1,4 @@
+@dashboard
 Feature: Event filters
   Background:
     Given I sign in as a user

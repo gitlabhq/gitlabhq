@@ -1,3 +1,4 @@
+@admin
 Feature: Admin Users
   Background:
     Given I sign in as an admin
