@@ -48,4 +48,8 @@ RSpec.configure do |config|
   config.before(:each) do
     TestEnv.setup_stubs
   end
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
 end
