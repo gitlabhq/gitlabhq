@@ -75,7 +75,7 @@ If you can, please submit a merge request with the fix or improvements including
 
 The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab B.V. team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version. This means there is less time to fix the issues created by merging large new features.
 
-Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
+Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? Can you do part of the refactor? The increased reviewability of small MR's that leads to higher code quality is more important to us than having a mimimal commit log. The smaller a MR is the more likely it is it will be merged (quickly), after that you can send more MR's to enhance it.
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
 
@@ -97,7 +97,8 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. Keeps the GitLab code base clean and well structured
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options since they complicate future changes
-1. Contains a single commit (please use `git rebase -i` to squash commits)
+1. Initially contains a single commit (please use `git rebase -i` to squash commits)
+1. Changes after submitting the merge request should be in separate commits (no squashing)
 1. It conforms to the following style guides
 
 ## Style guides
