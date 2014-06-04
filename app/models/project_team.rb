@@ -118,19 +118,19 @@ class ProjectTeam
   end
 
   def guest?(user)
-    find_tm(user.id).access_field == Gitlab::Access::GUEST
+    find_tm(user.id).try(:access_field) == Gitlab::Access::GUEST
   end
 
   def reporter?(user)
-    find_tm(user.id).access_field == Gitlab::Access::REPORTER
+    find_tm(user.id).try(:access_field) == Gitlab::Access::REPORTER
   end
 
   def developer?(user)
-    find_tm(user.id).access_field == Gitlab::Access::DEVELOPER
+    find_tm(user.id).try(:access_field) == Gitlab::Access::DEVELOPER
   end
 
   def master?(user)
-    find_tm(user.id).access_field == Gitlab::Access::MASTER
+    find_tm(user.id).try(:access_field) == Gitlab::Access::MASTER
   end
 
   private
