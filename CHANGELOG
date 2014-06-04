@@ -16,6 +16,7 @@ v 7.0.0
   - Add X-Frame-Options SAMEORIGIN to Nginx config so Sidekiq admin is visible
   - UI improvements
   - Case-insensetive search for issues
+  - Update to rails 4.1
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
