@@ -1,15 +1,36 @@
 require "spec_helper"
 
 describe ProjectTeam do
-  let(:team) { create(:project).team }
+  let(:group) { create(:group) }
+  let(:project) { create(:empty_project, group: group) }
 
-  describe "Respond to" do
-    subject { team }
+  let(:master) { create(:user) }
+  let(:reporter) { create(:user) }
+  let(:guest) { create(:user) }
+  let(:nonmember) { create(:user) }
 
-    it { should respond_to(:developers) }
-    it { should respond_to(:masters) }
-    it { should respond_to(:reporters) }
-    it { should respond_to(:guests) }
+  before do
+    group.add_user(master, Gitlab::Access::MASTER)
+    group.add_user(reporter, Gitlab::Access::REPORTER)
+    group.add_user(guest, Gitlab::Access::GUEST)
+
+    # Add group guest as master to this project
+    # to test project access priority over group members
+    project.team << [guest, :master]
+  end
+
+  describe 'members collection' do
+    it { team.masters.should include(master) }
+    it { team.masters.should include(guest) }
+    it { team.masters.should_not include(reporter) }
+    it { team.masters.should_not include(nonmember) }
+  end
+
+  describe 'access methods' do
+    it { team.master?(master).should be_true }
+    it { team.master?(guest).should be_true }
+    it { team.master?(reporter).should be_false }
+    it { team.master?(nonmember).should be_false }
   end
 end
 
