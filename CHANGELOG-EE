@@ -1,3 +1,6 @@
+v 6.9.3
+  - Fix check CI status only when CI service is enabled(Daniel Aquino)
+
 v 6.9.2
   - Merge community edition changes for version 6.9.2
 
