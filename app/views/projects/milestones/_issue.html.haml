@@ -1,0 +1,9 @@
+%li{ 'data-iid' => issue.iid, 'data-url' => project_issue_path(@project, issue) }
+  %span.str-truncated
+    = link_to [@project, issue] do
+      %span.cgray ##{issue.iid}
+    = link_to_gfm issue.title, [@project, issue]
+  - if issue.assignee
+    .pull-right
+      = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
+
