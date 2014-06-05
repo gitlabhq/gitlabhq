@@ -1,11 +1,6 @@
 .panel.panel-default
   .panel-heading= title
-  %ul.well-list
+  %ul{ class: "well-list issues-sortable-list", id: "issues-list-#{id}", "data-state" => id }
     - issues.each do |issue|
-      %li
-        = link_to [@project, issue] do
-          %span.label{class: issue.closed? ? 'label-danger' : 'label-info'} ##{issue.iid}
-        = link_to_gfm truncate(issue.title, length: 40), [@project, issue]
-        - if issue.assignee
-          .pull-right
-            = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
+      = render 'issue', issue: issue
+    %li.light Drag and drop available

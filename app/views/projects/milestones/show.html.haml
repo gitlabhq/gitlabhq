@@ -35,6 +35,12 @@
   %h4.title
     = gfm escape_once(@milestone.title)
 
+  - if @milestone.description.present?
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
+
   .context
     %p
       Progress:
@@ -45,11 +51,6 @@
     .progress.progress-info
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
-  - if @milestone.description.present?
-    .description
-      .wiki
-        = preserve do
-          = markdown @milestone.description
 
 %ul.nav.nav-tabs
   %li.active
@@ -75,11 +76,11 @@
   .tab-pane.active#tab-issues
     .row
       .col-md-4
-        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
+        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned, id: 'unassigned')
       .col-md-4
-        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
+        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned, id: 'ongoing')
       .col-md-4
-        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
+        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed, id: 'closed')
 
   .tab-pane#tab-merge-requests
     .row

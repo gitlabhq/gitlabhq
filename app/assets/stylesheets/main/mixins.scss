@@ -124,7 +124,7 @@
   margin-bottom: 10px;
 }
 
-@mixin str-truncated($max_width: "82%") {
+@mixin str-truncated($max_width: 82%) {
   display: inline-block;
   overflow: hidden;
   text-overflow: ellipsis;
