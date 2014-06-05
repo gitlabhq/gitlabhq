@@ -15,7 +15,7 @@ class Milestone
     @bindSorting()
 
   bindSorting: ->
-    $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed, #issues-list-reopened").sortable(
+    $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed").sortable(
       connectWith: ".issues-sortable-list",
       dropOnEmpty: true,
       receive: (event, ui) ->
@@ -30,8 +30,9 @@ class Milestone
             "issue[assignee_id]="
           when 'closed'
             "issue[state_event]=close"
-          when 'reopened'
-            "issue[state_event]=reopen"
+
+        if $(ui.sender).data('state') == "closed"
+          data += "&issue[state_event]=reopen"
 
         Milestone.updateIssue(ui.item, issue_url, data)
 
