@@ -39,7 +39,7 @@ Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
-GitLab requires Ruby (MRI) 2.0+.
+GitLab requires Ruby (MRI) 2.0 or 2.1
 
 >>>>>>> Update docs to markdown style guide.
 You will have to use the standard MRI implementation of Ruby.
@@ -60,8 +60,8 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ### Memory
 
-- 512MB is the absolute minimum, you need 256MB of swap, you can configure only one slow unicorn worker, only ssh access will work, we do not recommend this
-- 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates using swap space)
+- 512MB is the absolute minimum but we do not recommend this amount of memory, you'll need to configure a minimum swap of 256MB, you're memory will only allow you to run one slow unicorn worker, things will case only git ssh access to work because the git http access requires two running workers (one to receive the user request and one for the authorization check),
+- 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates configuring swap space)
 - **2GB** is the **recommended** memory size and supports up to 500 users
 - 4GB supports up to 2,000 users
 - 8GB supports up to 5,000 users

@@ -18,6 +18,7 @@ v 7.0.0
   - Case-insensetive search for issues
   - Update to rails 4.1
   - Improve performance of application for projects and groups with a lot of members
+  - Formally support Ruby 2.1
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
