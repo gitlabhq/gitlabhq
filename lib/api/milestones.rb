@@ -3,7 +3,7 @@ module API
   class Milestones < Grape::API
     before { authenticate! }
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       # Get a list of project milestones
       #
       # Parameters:

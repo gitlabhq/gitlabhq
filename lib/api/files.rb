@@ -4,7 +4,7 @@ module API
     before { authenticate! }
     before { authorize! :push_code, user_project }
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       # Get file from repository
       # File content is Base64 encoded
       #

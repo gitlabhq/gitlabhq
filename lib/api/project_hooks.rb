@@ -4,7 +4,7 @@ module API
     before { authenticate! }
     before { authorize_admin_project }
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       # Get project hooks
       #
       # Parameters:
