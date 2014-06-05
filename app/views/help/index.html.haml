@@ -36,9 +36,9 @@
   .col-md-8
     .panel.panel-default.documentation
       .panel-heading Documentation
-
-      = preserve do
-        - readme_text = File.read(Rails.root.join("doc", "README.md"))
-        - text = readme_text.dup
-        - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
-        = markdown text
+      .panel-body
+        = preserve do
+          - readme_text = File.read(Rails.root.join("doc", "README.md"))
+          - text = readme_text.dup
+          - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
+          = markdown text
