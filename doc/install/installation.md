@@ -294,7 +294,7 @@ Check if GitLab and its environment are configured correctly:
 
 ### Site Configuration
 
-Download an example site config:
+Copy the example site config:
 
     sudo cp lib/support/nginx/gitlab /etc/nginx/sites-available/gitlab
     sudo ln -s /etc/nginx/sites-available/gitlab /etc/nginx/sites-enabled/gitlab
@@ -304,6 +304,8 @@ Make sure to edit the config file to match your setup:
     # Change YOUR_SERVER_FQDN to the fully-qualified
     # domain name of your host serving GitLab.
     sudo editor /etc/nginx/sites-available/gitlab
+
+**Note:** If you want to use https, replace the `gitlab` nginx config with `gitlab-ssl`.
 
 ### Restart
 
