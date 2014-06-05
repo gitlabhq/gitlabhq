@@ -17,7 +17,7 @@
   .form-group
     = f.label :logo, class: 'control-label'
     .col-sm-10
-      - if @appearance.logo
+      - if @appearance.logo?
         = image_tag @appearance.logo, class: 'appearance-logo-preview'
       = f.file_field :logo, class: ""
       .hint
