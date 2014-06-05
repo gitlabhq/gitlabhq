@@ -199,7 +199,7 @@ group :development, :test do
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
   gem "rspec-rails"
-  gem "capybara", '~> 2.2.1'
+  gem "capybara"
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"
@@ -222,7 +222,7 @@ group :development, :test do
   gem 'rb-inotify', require: linux_only('rb-inotify')
 
   # PhantomJS driver for Capybara
-  gem 'poltergeist', '~> 1.5.1'
+  gem 'poltergeist', '~> 1.4.1'
 
   gem 'jasmine', '2.0.2'
 
