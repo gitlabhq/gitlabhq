@@ -4,11 +4,6 @@ require File.expand_path("../../config/environment", __FILE__)
 
 require 'simplecov' unless ENV['CI']
 
-if ENV['TRAVIS']
-  require 'coveralls'
-  Coveralls.wear!
-end
-
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
