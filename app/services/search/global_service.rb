@@ -12,7 +12,7 @@ module Search
       return result unless query.present?
 
       group = Group.find_by(id: params[:group_id]) if params[:group_id].present?
-      projects = Project.accessible_to(current_user)
+      projects = ProjectsFinder.new.execute(current_user)
       projects = projects.where(namespace_id: group.id) if group
       project_ids = projects.pluck(:id)
 

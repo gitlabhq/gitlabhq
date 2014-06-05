@@ -164,12 +164,6 @@ class Project < ActiveRecord::Base
       where(visibility_level: visibility_levels)
     end
 
-    def accessible_to(user)
-      accessible_ids = publicish(user).pluck(:id)
-      accessible_ids += user.authorized_projects.pluck(:id) if user
-      where(id: accessible_ids)
-    end
-
     def with_push
       includes(:events).where('events.action = ?', Event::PUSHED)
     end

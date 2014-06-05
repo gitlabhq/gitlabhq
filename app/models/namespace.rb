@@ -47,14 +47,6 @@ class Namespace < ActiveRecord::Base
   def self.global_id
     'GLN'
   end
-  
-  def projects_accessible_to(user)
-    projects.accessible_to(user)
-  end
-  
-  def has_projects_accessible_to?(user)
-    projects_accessible_to(user).present?
-  end
 
   def to_param
     path

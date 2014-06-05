@@ -27,12 +27,6 @@ class Group < Namespace
 
   mount_uploader :avatar, AttachmentUploader
 
-  def self.accessible_to(user)
-    accessible_ids = Project.accessible_to(user).pluck(:namespace_id)
-    accessible_ids += user.groups.pluck(:id) if user
-    where(id: accessible_ids)
-  end
-
   def human_name
     name
   end
@@ -76,5 +70,9 @@ class Group < Namespace
     unless self.avatar.image?
       self.errors.add :avatar, "only images allowed"
     end
+  end
+
+  def public_profile?
+    projects.public_only.any?
   end
 end
