@@ -84,18 +84,12 @@
 
   .tab-pane#tab-merge-requests
     .row
-      .col-md-6
-        .panel.panel-default
-          .panel-heading Open
-          %ul.well-list
-            - @merge_requests.opened.each do |merge_request|
-              = render 'merge_request', merge_request: merge_request
-      .col-md-6
-        .panel.panel-default
-          .panel-heading Closed
-          %ul.well-list
-            - @merge_requests.closed.each do |merge_request|
-              = render 'merge_request', merge_request: merge_request
+      .col-md-4
+        = render('merge_requests', title: 'Work in progress (open and unassigned)', merge_requests: @merge_requests.opened.unassigned, id: 'unassigned')
+      .col-md-4
+        = render('merge_requests', title: 'Assigned (open and assigned)', merge_requests: @merge_requests.opened.assigned, id: 'ongoing')
+      .col-md-4
+        = render('merge_requests', title: 'Declined (closed)', merge_requests: @merge_requests.closed, id: 'closed')
 
   .tab-pane#tab-participants
     %ul.bordered-list
