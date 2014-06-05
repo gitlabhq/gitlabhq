@@ -1,3 +1,4 @@
+@snippets
 Feature: User Snippets
   Background:
     Given I sign in as a user

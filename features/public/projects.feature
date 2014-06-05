@@ -1,3 +1,4 @@
+@public
 Feature: Public Projects Feature
   Background:
     Given public project "Community"

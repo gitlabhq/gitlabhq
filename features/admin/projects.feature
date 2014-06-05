@@ -1,3 +1,4 @@
+@admin
 Feature: Admin Projects
   Background:
     Given I sign in as an admin

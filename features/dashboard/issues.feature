@@ -1,3 +1,4 @@
+@dashboard
 Feature: Dashboard Issues
   Background:
     Given I sign in as a user

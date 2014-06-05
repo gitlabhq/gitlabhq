@@ -1,3 +1,4 @@
+@admin
 Feature: Admin active tab
   Background:
     Given I sign in as an admin
