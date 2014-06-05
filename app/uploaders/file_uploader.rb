@@ -21,7 +21,7 @@ class FileUploader < CarrierWave::Uploader::Base
   end
 
   def extension_white_list
-    @allowed_extensions
+    @allowed_extensions || super
   end
 
   def store!(file)

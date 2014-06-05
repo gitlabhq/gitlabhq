@@ -168,7 +168,7 @@ Gitlab::Application.routes.draw do
       post :fork
       post :archive
       post :unarchive
-      post :upload_image
+      post :upload_file
       get :autocomplete_sources
       get :import
       put :retry_import
