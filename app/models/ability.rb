@@ -51,7 +51,7 @@ class Ability
                   nil
                 end
 
-        if group && group.has_projects_accessible_to?(nil)
+        if group && group.public_profile?
           [:read_group]
         else
           []
