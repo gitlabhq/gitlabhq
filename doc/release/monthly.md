@@ -186,6 +186,8 @@ For GitLab CE, push to dev, GitLab.com and GitHub.
 
 For GitLab EE, push to the subscribers repo.
 
+Make sure the branch is marked 'protected' on each of the remotes you pushed to.
+
 NOTE: You might not have the rights to push to master on dev. Ask Dmitriy.
 
 ### **7. Publish blog for new release**
