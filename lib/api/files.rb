@@ -2,7 +2,6 @@ module API
   # Projects API
   class Files < Grape::API
     before { authenticate! }
-    before { authorize! :push_code, user_project }
 
     resource :projects do
       # Get file from repository
@@ -28,6 +27,8 @@ module API
       # }
       #
       get ":id/repository/files" do
+        authorize! :download_code, user_project
+
         required_attributes! [:file_path, :ref]
         attrs = attributes_for_keys [:file_path, :ref]
         ref = attrs.delete(:ref)
@@ -68,6 +69,8 @@ module API
       #   POST /projects/:id/repository/files
       #
       post ":id/repository/files" do
+        authorize! :push_code, user_project
+
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
         branch_name = attrs.delete(:branch_name)
@@ -98,6 +101,8 @@ module API
       #   PUT /projects/:id/repository/files
       #
       put ":id/repository/files" do
+        authorize! :push_code, user_project
+
         required_attributes! [:file_path, :branch_name, :content, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :content, :commit_message, :encoding]
         branch_name = attrs.delete(:branch_name)
@@ -128,6 +133,8 @@ module API
       #   DELETE /projects/:id/repository/files
       #
       delete ":id/repository/files" do
+        authorize! :push_code, user_project
+
         required_attributes! [:file_path, :branch_name, :commit_message]
         attrs = attributes_for_keys [:file_path, :branch_name, :commit_message]
         branch_name = attrs.delete(:branch_name)
