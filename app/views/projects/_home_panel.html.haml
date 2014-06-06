@@ -8,7 +8,7 @@
         = @project.name_with_namespace
 
     .col-sm-6
-      - unless empty_repo
+      - if current_user && !empty_repo
         .project-home-dropdown
           = render "dropdown"
       = render "shared/clone_panel"
