@@ -168,7 +168,11 @@ production: &base
     #
     admin_group: ''
 
-    # Allow synchronising SSH public keys with LDAP
+    # Name of attribute which holds a ssh public key of the user object.
+    # If false or nil, SSH key syncronisation will be disabled.
+    #
+    #   Ex. sshpublickey
+    #
     sync_ssh_keys: false
 
   ## OmniAuth settings

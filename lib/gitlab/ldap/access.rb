@@ -28,28 +28,7 @@ module Gitlab
         ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
 
         if Gitlab.config.ldap['sync_ssh_keys']
-          if ldap_user.entry.respond_to?(:sshpublickey)
-            sshkeys = ldap_user.entry.sshpublickey
-          else
-            sshkeys = []
-          end
-          sshkeys.each do |key|
-            k = user.keys.find_by_key(key)
-            if k && !k.is_a?(LDAPKey)
-              k.destroy
-              k = nil
-            end
-            unless k
-              k = LDAPKey.new(title: "LDAP Key", key: key)
-              k.save
-              user.keys << k
-            end
-          end
-          user.keys.all.each do |k|
-            if k.is_a?(LDAPKey) && !sshkeys.include?(k.key)
-              k.destroy
-            end
-          end
+          update_ssh_keys(user)
         end
 
         # Skip updating group permissions
@@ -75,6 +54,30 @@ module Gitlab
         end
         if Gitlab.config.ldap['admin_group'].present?
           update_admin_status(user)
+        end
+      end
+
+      # Update user ssh keys if they changed in LDAP
+      def update_ssh_keys(user)
+        # Get LDAP user entry
+        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+
+        if ldap_user.entry.respond_to?(Gitlab.config.ldap['sync_ssh_keys'].to_sym)
+          sshkeys = ldap_user.entry[Gitlab.config.ldap['sync_ssh_keys'].to_sym]
+        else
+          sshkeys = []
+        end
+        sshkeys.each do |key|
+          unless user.keys.find_by_key(key)
+            k = LDAPKey.new(title: "LDAP - #{Gitlab.config.ldap['sync_ssh_keys']}", key: key)
+            user.keys << k if k.save
+          end
+        end
+        user.keys.to_a.each do |k|
+          if k.is_a?(LDAPKey) && !sshkeys.include?(k.key)
+            user.keys.delete(k)
+            k.destroy
+          end
         end
       end
 
