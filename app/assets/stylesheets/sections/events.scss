@@ -183,3 +183,9 @@
     line-height: 24px;
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  .event-item .event-title {
+    @include str-truncated(65%);
+  }
+}
