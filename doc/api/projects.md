@@ -282,6 +282,7 @@ Parameters:
 + `snippets_enabled` (optional)
 + `public` (optional) - if `true` same as setting visibility_level = 20
 + `visibility_level` (optional)
+* `import_url` (optional)
 
 
 ## Remove project
