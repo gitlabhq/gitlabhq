@@ -122,11 +122,15 @@ class Note < ActiveRecord::Base
 
       discussions
     end
-  end
 
-  # Determine whether or not a cross-reference note already exists.
-  def self.cross_reference_exists?(noteable, mentioner)
-    where(noteable_id: noteable.id, system: true, note: "_mentioned in #{mentioner.gfm_reference}_").any?
+    def build_discussion_id(type, id, line_code)
+      [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
+    end
+
+    # Determine whether or not a cross-reference note already exists.
+    def cross_reference_exists?(noteable, mentioner)
+      where(noteable_id: noteable.id, system: true, note: "_mentioned in #{mentioner.gfm_reference}_").any?
+    end
   end
 
   def commit_author
@@ -194,7 +198,7 @@ class Note < ActiveRecord::Base
   end
 
   def discussion_id
-    @discussion_id ||= [:discussion, noteable_type.try(:underscore), noteable_id || commit_id, line_code].join("-").to_sym
+    @discussion_id ||= Note.build_discussion_id(noteable_type, noteable_id || commit_id, line_code)
   end
 
   # Returns true if this is a downvote note,
