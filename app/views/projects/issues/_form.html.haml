@@ -35,7 +35,7 @@
         .col-sm-10
           = project_users_select_tag('issue[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @issue.assignee_id)
           &nbsp;
-          = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+          = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
     .form-group
       .issue-milestone
         = f.label :milestone_id, class: 'control-label' do

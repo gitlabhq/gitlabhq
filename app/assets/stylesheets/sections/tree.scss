@@ -4,6 +4,10 @@
     width: 100%;
   }
 
+  .breadcrumb {
+    padding: 2px 0;
+  }
+
   .tree_progress {
     display: none;
     margin: 20px;
@@ -122,9 +126,17 @@
   }
 }
 
+.tree-download-holder .btn {
+  padding: 4px 12px;
+}
+
 .tree-ref-holder {
   float: left;
-  margin-top: 8px;
+  margin-right: 6px;
+
+  .select2-container .select2-choice, .select2-container.select2-drop-above .select2-choice {
+    padding: 4px 12px;
+  }
 }
 
 .readme-holder {

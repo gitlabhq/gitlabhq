@@ -1,6 +1,5 @@
 %ul.breadcrumb
   %li
-    %i.icon-angle-right
     = link_to project_tree_path(@project, @ref) do
       = @project.path
   - tree_breadcrumbs(tree, 6) do |title, path|
