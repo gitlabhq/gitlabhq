@@ -20,7 +20,7 @@
       %tr
         %th Name
         %th Last Update
-        %th.hidden-sm
+        %th.hidden-sm.hidden-xs
           Last Commit
           %span.last-commit
             &nbsp;
@@ -30,15 +30,14 @@
               = link_to @commit.short_id, project_commit_path(@project, @commit)
               &ndash;
               = truncate(@commit.title, length: 50)
-        %th= link_to "history", project_commits_path(@project, @id), class: "pull-right"
+          = link_to "history", project_commits_path(@project, @id), class: "pull-right"
 
     - if @path.present?
       %tr.tree-item
         %td.tree-item-file-name
           = link_to "..", project_tree_path(@project, up_dir_path(tree)), class: 'prepend-left-10'
         %td
-        %td
-        %td
+        %td.hidden-xs
 
     = render_tree(tree)
 
