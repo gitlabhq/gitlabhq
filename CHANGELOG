@@ -20,7 +20,7 @@ v 7.0.0
   - Improve performance of application for projects and groups with a lot of members
   - Formally support Ruby 2.1
   - Include Nginx gitlab-ssl config
-  - Add manual language detection foir highlight.js
+  - Add manual language detection for highlight.js
   - Added example.com/:username routing
   - Show notice if your profile is public
   - UI improvements for mobile devices
