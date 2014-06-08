@@ -245,7 +245,7 @@ describe "Groups", "routing" do
   end
 
   it "also display group#show on the short path" do
-    get("/1").should route_to('groups#show', id: '1')
+    get('/1').should route_to('namespaces#show', id: '1')
   end
 end
 
