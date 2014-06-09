@@ -20,17 +20,17 @@ describe ProjectTeam do
   end
 
   describe 'members collection' do
-    it { team.masters.should include(master) }
-    it { team.masters.should include(guest) }
-    it { team.masters.should_not include(reporter) }
-    it { team.masters.should_not include(nonmember) }
+    it { project.team.masters.should include(master) }
+    it { project.team.masters.should include(guest) }
+    it { project.team.masters.should_not include(reporter) }
+    it { project.team.masters.should_not include(nonmember) }
   end
 
   describe 'access methods' do
-    it { team.master?(master).should be_true }
-    it { team.master?(guest).should be_true }
-    it { team.master?(reporter).should be_false }
-    it { team.master?(nonmember).should be_false }
+    it { project.team.master?(master).should be_true }
+    it { project.team.master?(guest).should be_true }
+    it { project.team.master?(reporter).should be_false }
+    it { project.team.master?(nonmember).should be_false }
   end
 end
 
