@@ -44,6 +44,13 @@ module API
         authenticated_as_admin!
         required_attributes! [:name, :path]
 
+        if Group.find_by name: params[:name]
+          render_api_error!("Group name already exists", 409)
+        end
+        if Group.find_by path: params[:path]
+          render_api_error!("Group path already exists", 409)
+        end
+
         attrs = attributes_for_keys [:name, :path]
         @group = Group.new(attrs)
         @group.owner = current_user
