@@ -9,14 +9,11 @@ module Mentionable
   extend ActiveSupport::Concern
 
   module ClassMethods
+    attr_reader :mentionable_attrs
+
     # Indicate which attributes of the Mentionable to search for GFM references.
     def attr_mentionable *attrs
-      mentionable_attrs.concat(attrs.map(&:to_s))
-    end
-
-    # Accessor for attributes marked mentionable.
-    def mentionable_attrs
-      @mentionable_attrs ||= []
+      @mentionable_attrs = attrs.map(&:to_s)
     end
   end
 
