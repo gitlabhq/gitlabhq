@@ -13,6 +13,8 @@ class Projects::CommitsController < Projects::ApplicationController
     @limit, @offset = (params[:limit] || 40), (params[:offset] || 0)
 
     @commits = @repo.commits(@ref, @path, @limit, @offset)
+    @note_counts = Note.where(commit_id: @commits.map(&:id)).
+        group(:commit_id).count
 
     respond_to do |format|
       format.html # index.html.erb

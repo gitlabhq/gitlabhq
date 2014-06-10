@@ -32,6 +32,8 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def show
+    @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
+        group(:commit_id).count
     respond_to do |format|
       format.html
       format.diff { render text: @merge_request.to_diff(current_user) }
@@ -77,6 +79,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @commits = compare_action.commits
       @commits.map! { |commit| Commit.new(commit) }
       @commit = @commits.first
+
+      @note_counts = Note.where(commit_id: @commits.map(&:id)).
+          group(:commit_id).count
 
       @diffs = compare_action.diffs
       @merge_request.title = @merge_request.source_branch.titleize.humanize
