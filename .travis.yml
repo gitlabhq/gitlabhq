@@ -17,11 +17,13 @@ env:
     - TASK=jasmine:ci DB=postgresql
 before_install:
   - sudo apt-get install libicu-dev -y
+  - gem install bundler -v '>= 1.5.1' # Temporary workaround for gem installation error on ruby 2.1.0
 branches:
   only:
     - 'master'
 rvm:
   - 2.0.0
+  - 2.1.0
 services:
   - redis-server
 before_script:
