@@ -240,7 +240,12 @@ GitLab Shell is an ssh access and repository management software developed speci
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
     sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.5] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
 
-    # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
+    # By default, the gitlab-shell config is generated from your main gitlab config.
+    #
+    # Note: When using GitLab with HTTPS, provide paths to the certificates under `ca_file` and `ca_path options.
+    # In case you are using self signed certificate set `self_signed_cert` to `true`. `gitlab_url` must point to the https host.
+    #
+    # You can review (and modify) the gitlab-shell config as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 ### Initialize Database and Activate Advanced Features
@@ -341,9 +346,9 @@ Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has
 This is a retrospective of what is needed to configure in order to use GitLab with HTTPS:
 
 1. In `gitlab.yml` enable https by setting `https` option to `true`
-1. In gitlab-shell `config.yml` provide paths to the certificates under `ca_file` and `ca_path options.
-In case you are using self signed certificate set `self_signed_cert` to `true`. `gitlab_url` must point to the https host.
-1. Use `gitlab-ssl` nginx config
+1. In gitlab-shell `config.yml` check if certificate options `ca_file`, `ca_path options` or `self_signed_cert` are set.
+`gitlab_url` must point to the https host.
+1. Use the `gitlab-ssl` nginx config.
 
 ### Additional markup styles
 
