@@ -158,6 +158,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure to change "localhost" to the fully-qualified domain name of your
     # host serving GitLab where necessary
     #
+    # If you want to use https make sure that you set `https` to `true`. See #using-https for more details.
+    #
     # If you installed Git from source, change the git bin_path to /usr/local/bin/git
     sudo -u git -H editor config/gitlab.yml
 
@@ -238,7 +240,12 @@ GitLab Shell is an ssh access and repository management software developed speci
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
     sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.5] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
 
-    # By default, the gitlab-shell config is generated from your main gitlab config. You can review (and modify) it as follows:
+    # By default, the gitlab-shell config is generated from your main gitlab config.
+    #
+    # Note: When using GitLab with HTTPS, provide paths to the certificates under `ca_file` and `ca_path options.
+    # In case you are using self signed certificate set `self_signed_cert` to `true`. `gitlab_url` must point to the https host.
+    #
+    # You can review (and modify) the gitlab-shell config as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
 
 ### Initialize Database and Activate Advanced Features
@@ -305,7 +312,7 @@ Make sure to edit the config file to match your setup:
     # domain name of your host serving GitLab.
     sudo editor /etc/nginx/sites-available/gitlab
 
-**Note:** If you want to use https, replace the `gitlab` nginx config with `gitlab-ssl`.
+**Note:** If you want to use https, replace the `gitlab` nginx config with `gitlab-ssl`. See #using-https for more details.
 
 ### Restart
 
@@ -333,6 +340,15 @@ Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has
 **Enjoy!**
 
 ## Advanced Setup Tips
+
+### Using HTTPS
+
+This is a retrospective of what is needed to configure in order to use GitLab with HTTPS:
+
+1. In `gitlab.yml` enable https by setting `https` option to `true`
+1. In gitlab-shell `config.yml` check if certificate options `ca_file`, `ca_path options` or `self_signed_cert` are set.
+`gitlab_url` must point to the https host.
+1. Use the `gitlab-ssl` nginx config.
 
 ### Additional markup styles
 
