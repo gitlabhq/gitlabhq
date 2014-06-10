@@ -1,7 +1,7 @@
 module Issues
   class UpdateService < Issues::BaseService
     def execute(issue)
-      state = params.delete('state_event')
+      state = params.delete('state_event') || params.delete(:state_event)
 
       case state
       when 'reopen'

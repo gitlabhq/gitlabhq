@@ -10,7 +10,7 @@ module MergeRequests
       params.delete(:source_project_id)
       params.delete(:target_project_id)
 
-      state = params.delete('state_event')
+      state = params.delete('state_event') || params.delete(:state_event)
 
       case state
       when 'reopen'
