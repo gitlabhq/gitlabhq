@@ -24,10 +24,9 @@
         .light
           = f.label :description, "Description"
         = f.text_area :description, class: "form-control js-gfm-input markdown-area", rows: 10
-        .col-sm-12.hint
+        .clearfix.hint
           .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
           .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
-        .clearfix
         .error-alert
       .form-group
         .issue-assignee
@@ -37,7 +36,7 @@
           %div
             = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
             &nbsp;
-            = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+            = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
       .form-group
         .issue-milestone
           = f.label :milestone_id do
