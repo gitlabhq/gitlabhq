@@ -606,6 +606,22 @@ namespace :gitlab do
       Gitlab::Shell.new.version
     end
 
+    def required_gitlab_shell_version
+      File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
+    end
+
+    def gitlab_shell_major_version
+      required_gitlab_shell_version.split(".")[0].to_i
+    end
+
+    def gitlab_shell_minor_version
+      required_gitlab_shell_version.split(".")[1].to_i
+    end
+
+    def gitlab_shell_patch_version
+      required_gitlab_shell_version.split(".")[2].to_i
+    end
+
     def has_gitlab_shell3?
       gitlab_shell_version.try(:start_with?, "v3.")
     end
@@ -779,7 +795,7 @@ namespace :gitlab do
   end
 
   def check_gitlab_shell
-    required_version = Gitlab::VersionInfo.new(1, 9, 5)
+    required_version = Gitlab::VersionInfo.new(gitlab_shell_major_version, gitlab_shell_minor_version, gitlab_shell_patch_version)
     current_version = Gitlab::VersionInfo.parse(gitlab_shell_version)
 
     print "GitLab Shell version >= #{required_version} ? ... "
