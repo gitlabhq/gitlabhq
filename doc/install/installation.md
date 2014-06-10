@@ -158,6 +158,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure to change "localhost" to the fully-qualified domain name of your
     # host serving GitLab where necessary
     #
+    # If you want to use https make sure that you set `https` to `true`. See #using-https for more details.
+    #
     # If you installed Git from source, change the git bin_path to /usr/local/bin/git
     sudo -u git -H editor config/gitlab.yml
 
@@ -305,7 +307,7 @@ Make sure to edit the config file to match your setup:
     # domain name of your host serving GitLab.
     sudo editor /etc/nginx/sites-available/gitlab
 
-**Note:** If you want to use https, replace the `gitlab` nginx config with `gitlab-ssl`.
+**Note:** If you want to use https, replace the `gitlab` nginx config with `gitlab-ssl`. See #using-https for more details.
 
 ### Restart
 
@@ -333,6 +335,15 @@ Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has
 **Enjoy!**
 
 ## Advanced Setup Tips
+
+### Using HTTPS
+
+This is a retrospective of what is needed to configure in order to use GitLab with HTTPS:
+
+1. In `gitlab.yml` enable https by setting `https` option to `true`
+1. In gitlab-shell `config.yml` provide paths to the certificates under `ca_file` and `ca_path options.
+In case you are using self signed certificate set `self_signed_cert` to `true`. `gitlab_url` must point to the https host.
+1. Use `gitlab-ssl` nginx config
 
 ### Additional markup styles
 
