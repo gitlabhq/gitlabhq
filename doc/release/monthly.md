@@ -160,6 +160,10 @@ git push <remote> x-x-stable
 
 ### **3. Set VERSION to x.x.x and push**
 
+Change the GITLAB_SHELL_VERSION file in `master` of the CE repository if the version changed.
+
+Change the GITLAB_SHELL_VERSION file in `master` of the EE repository if the version changed.
+
 Change the VERSION file in `master` branch of the CE repository and commit. Cherry-pick into the `x-x-stable` branch of CE.
 
 Change the VERSION file in `master` branch of the EE repository and commit. Cherry-pick into the `x-x-stable-ee` branch of EE.
