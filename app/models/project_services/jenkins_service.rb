@@ -65,7 +65,7 @@ class JenkinsService < CiService
     if response.code == 200
       if response.include?('alt="Success"')
         'success'
-      elsif response.include?('alt="Failed"')
+      elsif response.include?('alt="Failed"') || response.include?('alt="Aborted"')
         'failed'
       elsif response.include?('alt="In progress"')
         'running'
