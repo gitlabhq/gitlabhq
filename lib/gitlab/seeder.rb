@@ -9,12 +9,7 @@ module Gitlab
     end
 
     def self.by_user(user)
-      begin
-        Thread.current[:current_user] = user
-        yield
-      ensure
-        Thread.current[:current_user] = nil
-      end
+      yield
     end
 
     def self.mute_mailer

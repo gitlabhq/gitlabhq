@@ -4,7 +4,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
-  around_filter :set_current_user_for_thread
   before_filter :add_abilities
   before_filter :ldap_security_check
   before_filter :dev_tools if Rails.env == 'development'
@@ -50,15 +49,6 @@ class ApplicationController < ActionController::Base
       new_user_session_path
     else
       super
-    end
-  end
-
-  def set_current_user_for_thread
-    Thread.current[:current_user] = current_user
-    begin
-      yield
-    ensure
-      Thread.current[:current_user] = nil
     end
   end
 

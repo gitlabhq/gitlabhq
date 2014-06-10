@@ -5,7 +5,7 @@ class NoteObserver < BaseObserver
     # Skip system notes, like status changes and cross-references.
     # Skip wall notes to prevent spamming of dashboard
     if note.noteable_type.present? && !note.system
-      event_service.leave_note(note, current_user)
+      event_service.leave_note(note, note.author)
     end
 
     unless note.system?
@@ -18,6 +18,6 @@ class NoteObserver < BaseObserver
   end
 
   def after_update(note)
-    note.notice_added_references(note.project, current_user)
+    note.notice_added_references(note.project, note.author)
   end
 end
