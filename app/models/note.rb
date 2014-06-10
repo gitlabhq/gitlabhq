@@ -90,6 +90,22 @@ class Note < ActiveRecord::Base
       create(note_options, without_protection: true)
     end
 
+    def create_milestone_change_note(noteable, project, author, milestone)
+      body = if milestone.nil?
+               '_Milestone removed_'
+             else
+               "_Milestone changed to #{milestone.title}_"
+             end
+
+      create({
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      }, without_protection: true)
+    end
+
     def create_assignee_change_note(noteable, project, author, assignee)
       body = assignee.nil? ? '_Assignee removed_' : "_Reassigned to @#{assignee.username}_"
 

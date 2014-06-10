@@ -22,6 +22,10 @@ module MergeRequests
       if params.present? && merge_request.update_attributes(params)
         merge_request.reset_events_cache
 
+        if merge_request.previous_changes.include?('milestone_id')
+          create_milestone_note(merge_request)
+        end
+
         if merge_request.previous_changes.include?('assignee_id')
           notification_service.reassigned_merge_request(merge_request, current_user)
           create_assignee_note(merge_request)
