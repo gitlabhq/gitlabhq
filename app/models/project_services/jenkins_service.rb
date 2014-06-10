@@ -60,7 +60,18 @@ class JenkinsService < CiService
   end
 
   def commit_status sha
-    response = HTTParty.get(build_page(sha), verify: false)
+    parsed_url = URI.parse(build_page(sha))
+
+    if parsed_url.userinfo.blank?
+      response = HTTParty.get(build_page(sha), verify: false)
+    else
+      get_url = build_page(sha).gsub("#{parsed_url.userinfo}@", "")
+      auth = {
+          username: URI.decode(parsed_url.user),
+          password: URI.decode(parsed_url.password),
+      }
+      response = HTTParty.get(get_url, verify: false, basic_auth: auth)
+    end
 
     if response.code == 200
       if response.include?('alt="Success"')
