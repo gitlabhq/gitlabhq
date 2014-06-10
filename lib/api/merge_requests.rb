@@ -184,21 +184,18 @@ module API
       #   POST /projects/:id/merge_request/:merge_request_id/comments
       #
       post ":id/merge_request/:merge_request_id/comments" do
-        set_current_user_for_thread do
-          required_attributes! [:note]
+        required_attributes! [:note]
 
-          merge_request = user_project.merge_requests.find(params[:merge_request_id])
-          note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
-          note.author = current_user
+        merge_request = user_project.merge_requests.find(params[:merge_request_id])
+        note = merge_request.notes.new(note: params[:note], project_id: user_project.id)
+        note.author = current_user
 
-          if note.save
-            present note, with: Entities::MRNote
-          else
-            not_found!
-          end
+        if note.save
+          present note, with: Entities::MRNote
+        else
+          not_found!
         end
       end
-
     end
   end
 end
