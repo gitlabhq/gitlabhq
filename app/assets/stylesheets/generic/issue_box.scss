@@ -56,23 +56,22 @@
 
   .state {
     border-bottom: 1px solid #DDD;
-    padding: 10px 25px;
+    padding: 10px 15px;
   }
 
   .title {
-    font-size: 26px;
+    font-size: 28px;
     font-weight: normal;
     line-height: 1.5;
     margin: 0;
     color: #333;
-    padding-bottom: 0;
-    padding: 15px 25px;
+    padding: 10px 15px;
   }
 
   .context {
     border: none;
     border-top: 1px solid #eee;
-    padding: 15px 25px;
+    padding: 10px 15px;
 
     // Reset text align for children
     .text-right > * { text-align: left; }
@@ -88,7 +87,7 @@
   }
 
   .description {
-    padding: 0 25px 15px 25px;
+    padding: 0 15px 10px 15px;
   }
 
   .title, .context, .description {

@@ -3,7 +3,7 @@
     .panel-heading
       %i.icon-list
       Commits (#{@commits.count})
-    .commits
+    .commits.mr-commits
       - if @commits.count > 8
         %ul.first-commits.well-list
           - @commits.first(8).each do |commit|
