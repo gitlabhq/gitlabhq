@@ -1,10 +1,10 @@
 module Milestones
   class UpdateService < Milestones::BaseService
     def execute(milestone)
-      state = params.delete('state_event')
+      state = params.delete('state_event') || params.delete(:state_event)
 
       case state
-      when 'reopen'
+      when 'activate'
         Milestones::ReopenService.new(project, current_user, {}).execute(milestone)
       when 'close'
         Milestones::CloseService.new(project, current_user, {}).execute(milestone)

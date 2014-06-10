@@ -1,7 +1,7 @@
 module Milestones
   class ReopenService < Milestones::BaseService
     def execute(milestone)
-      if milestone.reopen
+      if milestone.activate
         event_service.reopen_milestone(milestone, current_user)
       end
 
