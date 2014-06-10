@@ -158,7 +158,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure to change "localhost" to the fully-qualified domain name of your
     # host serving GitLab where necessary
     #
-    # If you want to use https make sure that you set `https` to `true`. See [Using HTTPS](#using-https) for all necessary details.
+    # If you want to use https make sure that you set `https` to `true`. See #using-https for all necessary details.
     #
     # If you installed Git from source, change the git bin_path to /usr/local/bin/git
     sudo -u git -H editor config/gitlab.yml
@@ -246,7 +246,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     # - Provide paths to the certificates under `ca_file` and `ca_path options.
     # - The `gitlab_url` option must point to the https endpoint of GitLab.
     # - In case you are using self signed certificate set `self_signed_cert` to `true`.
-    # See [Using HTTPS](#using-https) for all necessary details.
+    # See #using-https for all necessary details.
     #
     # You can review (and modify) the gitlab-shell config as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
