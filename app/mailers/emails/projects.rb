@@ -4,7 +4,7 @@ module Emails
       @users_project = UsersProject.find user_project_id
       @project = @users_project.project
       @target_url = project_url(@project)
-      mail(to: @users_project.user.email,
+      mail(cc: @users_project.user.email,
            subject: subject("Access to project was granted"))
     end
 
@@ -12,7 +12,7 @@ module Emails
       @user = User.find user_id
       @project = Project.find project_id
       @target_url = project_url(@project)
-      mail(to: @user.email,
+      mail(cc: @user.email,
            subject: subject("Project was moved"))
     end
 
@@ -30,7 +30,7 @@ module Emails
       end
 
       mail(from: sender(author_id),
-           to: recipient,
+           cc: recipient,
            subject: subject("New push to repository"))
     end
   end
