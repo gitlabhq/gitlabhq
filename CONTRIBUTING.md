@@ -102,8 +102,10 @@ For examples of feedback on merge requests please look at already [closed merge 
 
 ## Style guides
 
-1.  [Ruby](https://github.com/bbatsov/ruby-style-guide). Important sections include [Source Code Layout](https://github.com/bbatsov/ruby-style-guide#source-code-layout) and [Naming](https://github.com/bbatsov/ruby-style-guide#naming). Use:
-    - multi-line method chaining style **Option A**: leading `.`
+1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
+    Important sections include [Source Code Layout](https://github.com/bbatsov/ruby-style-guide#source-code-layout)
+    and [Naming](https://github.com/bbatsov/ruby-style-guide#naming). Use:
+    - multi-line method chaining style **Option B**: dot `.` on previous line
     - string literal quoting style **Option A**: single quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
@@ -111,4 +113,5 @@ For examples of feedback on merge requests please look at already [closed merge 
 1.  [Shell commands](doc/development/shell_commands.md)
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 
-The above styles are used by Hound CI.
+This is also the style used by linting tools such as [Rubocop](https://github.com/bbatsov/rubocop)
+and [Hound CI](https://houndci.com).
