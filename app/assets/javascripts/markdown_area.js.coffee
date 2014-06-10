@@ -1,6 +1,9 @@
 formatLink = (str) ->
-  "![" + str.alt + "](" + str.url + ")"
-
+  text = "[" + str.alt + "](" + str.url + ")"
+  if str.is_image
+    text = "!" + text
+  text
+    
 $(document).ready ->
   alertClass = "alert alert-danger alert-dismissable div-dropzone-alert"
   alertAttr = "class=\"close\" data-dismiss=\"alert\"" + "aria-hidden=\"true\""
@@ -10,7 +13,7 @@ $(document).ready ->
   iconPicture = "<i class=\"icon-picture div-dropzone-icon\"></i>"
   iconSpinner = "<i class=\"icon-spinner icon-spin div-dropzone-icon\"></i>"
   btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
-  project_image_path_upload = window.project_image_path_upload or null
+  project_file_path_upload = window.project_file_path_upload or null
 
   $("textarea.markdown-area").wrap "<div class=\"div-dropzone\"></div>"  
   
@@ -23,13 +26,12 @@ $(document).ready ->
 
 
   dropzone = $(".div-dropzone").dropzone(
-    url: project_image_path_upload
+    url: project_file_path_upload
     dictDefaultMessage: ""
     clickable: true
-    paramName: "markdown_img"
+    paramName: "markdown_file"
     maxFilesize: 10
     uploadMultiple: false
-    acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png"
     headers: 
       "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
 

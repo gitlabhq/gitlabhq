@@ -162,12 +162,12 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def upload_image
-    link_to_image = ::Projects::ImageService.new(repository, params, root_url).execute
+  def upload_file
+    link_to_file = ::Projects::FileService.new(repository, params, root_url).execute
 
     respond_to do |format|
-      if link_to_image
-        format.json { render json: { link: link_to_image } }
+      if link_to_file
+        format.json { render json: { link: link_to_file } }
       else
         format.json { render json: "Invalid file.", status: :unprocessable_entity }
       end
@@ -176,13 +176,8 @@ class ProjectsController < ApplicationController
 
   private
 
-  def upload_path
-    base_dir = FileUploader.generate_dir
-    File.join(repository.path_with_namespace, base_dir)
-  end
-
-  def accepted_images
-    %w(png jpg jpeg gif)
+  def invalid_file(error)
+    render json: { message: error.message }, status: :internal_server_error
   end
 
   def set_title
