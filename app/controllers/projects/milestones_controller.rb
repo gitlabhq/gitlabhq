@@ -1,6 +1,6 @@
 class Projects::MilestonesController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :milestone, only: [:edit, :update, :destroy, :show, :sort_issues]
+  before_filter :milestone, only: [:edit, :update, :destroy, :show, :sort_issues, :sort_merge_requests]
 
   # Allow read any milestone
   before_filter :authorize_read_milestone!
@@ -77,6 +77,16 @@ class Projects::MilestonesController < Projects::ApplicationController
     @issues.each do |issue|
       issue.position = params['sortable_issue'].index(issue.id.to_s) + 1
       issue.save
+    end
+
+    render json: { saved: true }
+  end
+
+  def sort_merge_requests
+    @merge_requests = @milestone.merge_requests.where(id: params['sortable_merge_request'])
+    @merge_requests.each do |merge_request|
+      merge_request.position = params['sortable_merge_request'].index(merge_request.id.to_s) + 1
+      merge_request.save
     end
 
     render json: { saved: true }

@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140502125220) do
+ActiveRecord::Schema.define(version: 20140611135229) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -121,9 +121,9 @@ ActiveRecord::Schema.define(version: 20140502125220) do
   add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
 
   create_table "merge_requests", force: true do |t|
-    t.string   "target_branch",     null: false
-    t.string   "source_branch",     null: false
-    t.integer  "source_project_id", null: false
+    t.string   "target_branch",                 null: false
+    t.string   "source_branch",                 null: false
+    t.integer  "source_project_id",             null: false
     t.integer  "author_id"
     t.integer  "assignee_id"
     t.string   "title"
@@ -132,9 +132,10 @@ ActiveRecord::Schema.define(version: 20140502125220) do
     t.integer  "milestone_id"
     t.string   "state"
     t.string   "merge_status"
-    t.integer  "target_project_id", null: false
+    t.integer  "target_project_id",             null: false
     t.integer  "iid"
     t.text     "description"
+    t.integer  "position",          default: 0
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree

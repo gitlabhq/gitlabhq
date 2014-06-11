@@ -1,4 +1,4 @@
-%li{ class: 'mr-row', 'data-iid' => merge_request.iid, 'data-url' => project_merge_request_path(@project, merge_request) }
+%li{ id: dom_id(merge_request, 'sortable'),  class: 'mr-row', 'data-iid' => merge_request.iid, 'data-url' => project_merge_request_path(@project, merge_request) }
   %span.str-truncated
     = link_to [@project, merge_request] do
       %span.cgray ##{merge_request.iid}
