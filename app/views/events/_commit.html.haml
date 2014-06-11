@@ -2,4 +2,4 @@
   .commit-row-title
     = link_to commit[:id][0..8], project_commit_path(project, commit[:id]), class: "commit_short_id", alt: ''
     &nbsp;
-    = gfm event_commit_title(commit[:message])
+    = gfm event_commit_title(commit[:message]), project

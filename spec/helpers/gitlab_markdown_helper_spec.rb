@@ -41,7 +41,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should forward HTML options to links" do
-      gfm("Fixed in #{commit.id}", class: "foo").should have_selector("a.gfm.foo")
+      gfm("Fixed in #{commit.id}", @project, class: 'foo').
+          should have_selector('a.gfm.foo')
     end
 
     describe "referencing a commit" do
