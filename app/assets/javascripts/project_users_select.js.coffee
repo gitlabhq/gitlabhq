@@ -43,7 +43,7 @@
       avatar = avatar.replace('%{hash}', md5(user.email))
       avatar = avatar.replace('%{size}', '24')
     else
-      avatar = gon.relative_url_root + "/assets/no_avatar.png"
+      avatar = gon.relative_url_root + "#{image_path('no_avatar.png')}"
 
     if user.id == ''
       avatarMarkup = ''
