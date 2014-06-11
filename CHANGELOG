@@ -26,6 +26,11 @@ v 7.0.0
   - UI improvements for mobile devices
   - Improve diff rendering performance
   - Drag-n-drop for issues and merge requests between states at milestone page 
+  - Fix '0 commits' message for huge repositories on project home page
+  - Prevent 500 error page when visit commit page from large repo
+  - Add notice about huge push over http to unicorn config
+  - File action in satellites uses default 30 seconds timeout instead of old 10 seconds one
+  - Overall performance improvements
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
