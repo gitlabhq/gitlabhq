@@ -281,6 +281,7 @@ Gitlab::Application.routes.draw do
       resources :milestones, except: [:destroy], constraints: {id: /\d+/} do
         member do
           put :sort_issues
+          put :sort_merge_requests
         end
       end
 
