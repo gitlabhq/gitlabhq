@@ -110,8 +110,6 @@ GEM
     email_spec (1.5.0)
       launchy (~> 2.1)
       mail (~> 2.2)
-    email_validator (1.4.0)
-      activemodel
     emoji (1.0.1)
       json
     enumerize (0.7.0)
@@ -591,7 +589,6 @@ DEPENDENCIES
   diffy (~> 3.0.3)
   dropzonejs-rails
   email_spec
-  email_validator (~> 1.4.0)
   enumerize
   factory_girl_rails
   ffaker

@@ -50,9 +50,6 @@ gem "grape", "~> 0.6.1"
 gem "grape-entity", "~> 0.4.2"
 gem 'rack-cors', require: 'rack/cors'
 
-# Email validation
-gem "email_validator", "~> 1.4.0", :require => 'email_validator/strict'
-
 # Format dates and times
 # based on human-friendly examples
 gem "stamp"
