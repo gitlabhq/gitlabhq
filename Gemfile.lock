@@ -164,7 +164,7 @@ GEM
       multi_json
     gitlab-grack (2.0.0.pre)
       rack (~> 1.5.1)
-    gitlab-grit (2.6.7)
+    gitlab-grit (2.6.8)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
