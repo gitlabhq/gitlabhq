@@ -50,7 +50,9 @@ module Gitlab
           # we look for user by extracting part of their email
           if !user && email && ldap_conf['allow_username_or_email_login']
             uname = email.partition('@').first
-            user = model.find_by(username: uname)
+            # Strip apostrophes since they are disallowed as part of username
+            username = uname.gsub("'", "")
+            user = model.find_by(username: username)
           end
 
           user
