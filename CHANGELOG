@@ -37,6 +37,7 @@ v 7.0.0
   - Remove wall feature (no data loss - you can take it from database)
   - Dont expose user emails via API unless you are admin 
   - Detect issues closed by Merge Request description
+  - Better email subject lines from email on push service (Alex Elman)
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
