@@ -1,6 +1,6 @@
 class Projects::MilestonesController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :milestone, only: [:edit, :update, :destroy, :show]
+  before_filter :milestone, only: [:edit, :update, :destroy, :show, :sort_issues]
 
   # Allow read any milestone
   before_filter :authorize_read_milestone!
@@ -70,6 +70,16 @@ class Projects::MilestonesController < Projects::ApplicationController
       format.html { redirect_to project_milestones_path }
       format.js { render nothing: true }
     end
+  end
+
+  def sort_issues
+    @issues = @milestone.issues.where(id: params['sortable_issue'])
+    @issues.each do |issue|
+      issue.position = params['sortable_issue'].index(issue.id.to_s) + 1
+      issue.save
+    end
+
+    render json: { saved: true }
   end
 
   protected

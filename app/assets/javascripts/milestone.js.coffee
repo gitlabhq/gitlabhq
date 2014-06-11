@@ -11,6 +11,18 @@ class Milestone
           new Flash("Issue update failed", 'alert')
       dataType: "json"
 
+  @sortIssues: (data) ->
+    sort_issues_url = location.href + "/sort_issues"
+
+    $.ajax
+      type: "PUT"
+      url: sort_issues_url
+      data: data
+      success: (data) ->
+        if data.saved != true
+          new Flash("Issues update failed", 'alert')
+      dataType: "json"
+
   @updateMergeRequest: (li, merge_request_url, data) ->
     $.ajax
       type: "PUT"
@@ -31,6 +43,10 @@ class Milestone
     $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed").sortable(
       connectWith: ".issues-sortable-list",
       dropOnEmpty: true,
+      update: (event, ui) ->
+        data = $(this).sortable("serialize")
+        Milestone.sortIssues(data)
+
       receive: (event, ui) ->
         new_state = $(this).data('state')
         issue_id = ui.item.data('iid')
