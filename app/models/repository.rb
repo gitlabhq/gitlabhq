@@ -106,7 +106,7 @@ class Repository
   def commit_count
     Rails.cache.fetch(cache_key(:commit_count)) do
       begin
-        raw_repository.raw.commit_count(self.root_ref)
+        raw_repository.commit_count(self.root_ref)
       rescue
         0
       end
