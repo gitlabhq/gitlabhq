@@ -39,7 +39,9 @@ module Gitlab
             # So we use part of email as username for new user
             # For LDAP, username is already set to the user's
             # uid/userid/sAMAccountName.
-            user.username = email.match(/^[^@]*/)[0]
+            email_username = email.match(/^[^@]*/)[0]
+            # Strip apostrophes since they are disallowed as part of username
+            user.username = email_username.gsub("'", "")
           end
 
           user.save!
