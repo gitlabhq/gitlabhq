@@ -226,8 +226,11 @@ module ApplicationHelper
     GitHub::Markup.render(file_name, file_content).html_safe
   end
 
-  def spinner(text = nil)
-    content_tag :div, class: 'loading hide' do
+  def spinner(text = nil, visible = false)
+    css_class = "loading"
+    css_class << " hide" unless visible
+
+    content_tag :div, class: css_class do
       content_tag(:i, nil, class: 'icon-spinner icon-spin') + text
     end
   end
