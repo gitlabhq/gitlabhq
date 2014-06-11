@@ -26,11 +26,11 @@
       - if @merge_request.closed?
         = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
 
-  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
-    = render "projects/notes/notes_with_form"
   .diffs.tab-content
     - if current_page?(action: 'diffs')
       = render "projects/merge_requests/show/diffs"
+  .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
+    = render "projects/notes/notes_with_form"
   .status
 
 :javascript
