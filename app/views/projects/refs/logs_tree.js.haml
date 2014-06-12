@@ -7,3 +7,13 @@
     var row = $("table.table_#{@hex_path} tr.file_#{hexdigest(file_name)}");
     row.find("td.tree_time_ago").html('#{escape_javascript time_ago_with_tooltip(commit.committed_date)}');
     row.find("td.tree_commit").html('#{escape_javascript render("projects/tree/tree_commit_column", commit: commit)}');
+
+- if @logs.present?
+  :plain
+    var current_url = location.href.replace(/\/?$/, '/');
+    var log_url = '#{project_tree_url(@project, tree_join(@ref, @path || '/'))}'.replace(/\/?$/, '/');
+    if(current_url == log_url) {
+      // Load 10 more commit log for each file in tree
+      // if we still on the same page
+      ajaxGet('#{logs_file_project_ref_path(@project, @ref, @path || '/', offset: (@offset +  @limit))}');
+    }
