@@ -17,3 +17,10 @@ targets:
       - libicu52
       - libpcre3
       - git
+  centos-6:
+    build_dependencies:
+      - libicu-devel
+    dependencies:
+      - libicu
+      - pcre
+      - git
