@@ -18,7 +18,7 @@ function stop
 
 function killall
 {
-  pkill -u $gitlab_user -f sidekiq
+  pkill -u $gitlab_user -f 'sidekiq [0-9]'
 }
 
 function restart
