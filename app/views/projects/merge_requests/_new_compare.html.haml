@@ -33,18 +33,23 @@
         %div= msg
 
   - if @merge_request.source_branch.present? && @merge_request.target_branch.present?
-    .light-well
-      %center
-        %h4
-          There isn't anything to merge.
-        %p.slead
-          - if @merge_request.source_branch == @merge_request.target_branch
-            You'll need to use different branch names to get a valid comparison.
-          - else
-            %span.label-branch #{@merge_request.source_branch}
-            and
-            %span.label-branch #{@merge_request.target_branch}
-            are the same.
+    - if @compare_failed
+      .alert.alert-danger
+        %h4 Compare failed
+        %p We can't compare selected branches. It may be because of huge diff or satellite timeout. Please try again or select different branches.
+    - else
+      .light-well
+        %center
+          %h4
+            There isn't anything to merge.
+          %p.slead
+            - if @merge_request.source_branch == @merge_request.target_branch
+              You'll need to use different branch names to get a valid comparison.
+            - else
+              %span.label-branch #{@merge_request.source_branch}
+              and
+              %span.label-branch #{@merge_request.target_branch}
+              are the same.
 
 
   %hr
