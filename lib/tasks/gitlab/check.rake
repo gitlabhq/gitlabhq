@@ -123,6 +123,11 @@ namespace :gitlab do
     def check_init_script_exists
       print "Init script exists? ... "
 
+      if omnibus_gitlab?
+        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        return
+      end
+
       script_path = "/etc/init.d/gitlab"
 
       if File.exists?(script_path)
@@ -141,6 +146,11 @@ namespace :gitlab do
 
     def check_init_script_up_to_date
       print "Init script up-to-date? ... "
+
+      if omnibus_gitlab?
+        puts 'skipped (omnibus-gitlab has no init script)'.magenta
+        return
+      end
 
       recipe_path = Rails.root.join("lib/support/init.d/", "gitlab")
       script_path = "/etc/init.d/gitlab"
@@ -822,5 +832,9 @@ namespace :gitlab do
       )
       fix_and_rerun
     end
+  end
+
+  def omnibus_gitlab?
+    Dir.pwd == '/opt/gitlab/embedded/service/gitlab-rails'
   end
 end
