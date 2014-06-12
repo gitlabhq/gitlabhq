@@ -38,7 +38,7 @@
 
   initChecks: ->
     $(".check_all_issues").click ->
-      $(".selected_issue").attr "checked", @checked
+      $(".selected_issue").prop("checked", @checked)
       Issues.checkChanged()
 
     $(".selected_issue").bind "change", Issues.checkChanged
