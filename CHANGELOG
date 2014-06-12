@@ -31,6 +31,7 @@ v 7.0.0
   - Add notice about huge push over http to unicorn config
   - File action in satellites uses default 30 seconds timeout instead of old 10 seconds one
   - Overall performance improvements
+  - Skip init script check on omnibus-gitlab
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
