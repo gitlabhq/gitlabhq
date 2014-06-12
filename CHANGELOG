@@ -32,6 +32,7 @@ v 7.0.0
   - File action in satellites uses default 30 seconds timeout instead of old 10 seconds one
   - Overall performance improvements
   - Skip init script check on omnibus-gitlab
+  - Be more selective when killing stray Sidekiqs
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
