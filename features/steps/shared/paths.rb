@@ -264,6 +264,10 @@ module SharedPaths
     visit project_blob_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
   end
 
+  step 'I visit "Gemfile.lock" file in repo' do
+    visit project_blob_path(@project, File.join(root_ref, 'Gemfile.lock'))
+  end
+
   step 'I visit project source page for "8470d70"' do
     visit project_tree_path(@project, "8470d70")
   end
