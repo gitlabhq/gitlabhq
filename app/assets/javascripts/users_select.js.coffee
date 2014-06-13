@@ -1,13 +1,9 @@
 $ ->
   userFormatResult = (user) ->
     if user.avatar_url
-      avatar = gon.relative_url_root + user.avatar_url
-    else if gon.gravatar_enabled
-      avatar = gon.gravatar_url
-      avatar = avatar.replace('%{hash}', md5(user.email))
-      avatar = avatar.replace('%{size}', '24')
+      avatar = user.avatar_url
     else
-      avatar = gon.relative_url_root + "#{image_path('no_avatar.png')}"
+      avatar = gon.default_avatar_url
 
     "<div class='user-result'>
        <div class='user-image'><img class='avatar s24' src='#{avatar}'></div>
