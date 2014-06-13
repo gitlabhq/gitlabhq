@@ -35,6 +35,7 @@ v 7.0.0
   - Be more selective when killing stray Sidekiqs
   - Check LDAP user filter during sign-in
   - Remove wall feature (no data loss - you can take it from database)
+  - Detect issues closed by Merge Request description
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
