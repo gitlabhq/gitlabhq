@@ -6,7 +6,7 @@ module API
     before { authenticate! }
     before { authorize! :download_code, user_project }
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?

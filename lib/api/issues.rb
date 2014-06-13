@@ -13,7 +13,7 @@ module API
       end
     end
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       # Get a list of project issues
       #
       # Parameters:

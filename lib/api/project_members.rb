@@ -3,7 +3,7 @@ module API
   class ProjectMembers < Grape::API
     before { authenticate! }
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       helpers do
         def handle_project_member_errors(errors)
           if errors[:project_access].any?

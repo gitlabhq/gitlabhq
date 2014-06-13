@@ -5,7 +5,7 @@ module API
 
     NOTEABLE_TYPES = [Issue, MergeRequest, Snippet]
 
-    resource :projects do
+    resource :projects, requirements: { id: PROJECT_ID_FORMAT } do
       # Get a list of project wall notes
       #
       # Parameters:

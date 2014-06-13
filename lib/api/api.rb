@@ -1,3 +1,7 @@
+module API
+  PROJECT_ID_FORMAT = /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+|\d+/
+end
+
 Dir["#{Rails.root}/lib/api/*.rb"].each {|file| require file}
 
 module API
