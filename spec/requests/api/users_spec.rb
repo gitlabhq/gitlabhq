@@ -23,6 +23,17 @@ describe API::API, api: true  do
         json_response.first['username'].should == user.username
       end
     end
+
+    context "when admin" do
+      it "should return an array of users" do
+        get api("/users", admin)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.first.keys.should include 'email'
+        json_response.first.keys.should include 'extern_uid'
+        json_response.first.keys.should include 'can_create_project'
+      end
+    end
   end
 
   describe "GET /users/:id" do
