@@ -1,3 +1,6 @@
+v 7.0.0
+  - Fix bug in JIRA Issue closing triggered by commit messages
+
 v 6.9.3
   - Fix check CI status only when CI service is enabled(Daniel Aquino)
 

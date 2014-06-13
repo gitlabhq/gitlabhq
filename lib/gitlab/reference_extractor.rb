@@ -24,7 +24,9 @@ module Gitlab
 
     def issues_for project
       if project.jira_tracker?
-        issues.uniq
+        issues.uniq.map do |jira_identifier|
+          JiraIssue.new(jira_identifier)
+        end
       else
         issues.map do |identifier|
           project.issues.where(iid: identifier).first
