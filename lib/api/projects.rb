@@ -82,6 +82,11 @@ module API
       #   POST /projects
       post do
         required_attributes! [:name]
+
+        if Project.find_by name: params[:name]
+          error!("Project name already exists", 409)
+        end
+
         attrs = attributes_for_keys [:name,
                                      :path,
                                      :description,
