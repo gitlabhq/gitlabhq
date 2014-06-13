@@ -6,12 +6,13 @@
     %p
       To preserve performance the diff is not shown.
       - if current_controller?(:commit) or current_controller?(:merge_requests)
-        Please, download the diff as
         - if current_controller?(:commit)
+          Please, download the diff as
           = link_to "plain diff", project_commit_path(@project, @commit, format: :diff), class: "underlined-link"
           or
           = link_to "email patch", project_commit_path(@project, @commit, format: :patch), class: "underlined-link"
-        - else
+        - elsif @merge_request && @merge_request.persisted?
+          Please, download the diff as
           = link_to "plain diff", project_merge_request_path(@project, @merge_request, format: :diff), class: "underlined-link"
           or
           = link_to "email patch", project_merge_request_path(@project, @merge_request, format: :patch), class: "underlined-link"

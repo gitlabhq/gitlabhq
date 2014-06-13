@@ -90,6 +90,9 @@ class Projects::MergeRequestsController < Projects::ApplicationController
       @merge_request.title = @merge_request.source_branch.titleize.humanize
       @target_project = @merge_request.target_project
       @target_repo = @target_project.repository
+
+      diff_line_count = Commit::diff_line_count(@diffs)
+      @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count)
     end
   end
 
