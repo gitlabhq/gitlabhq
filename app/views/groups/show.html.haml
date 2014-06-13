@@ -5,7 +5,7 @@
       = link_to dashboard_path, class: 'btn btn-tiny' do
         &larr; To dashboard
       &nbsp;
-    %span.cgray 
+    %span.cgray
       Currently you are only seeing events from the
       = @group.name
       group
@@ -23,7 +23,8 @@
         %h3.page-title
           = @group.name
         - if @group.description.present?
-          %p= @group.description
+          %p
+            = auto_link @group.description, link: :urls
     = render "projects", projects: @projects
     - if current_user
       .prepend-top-20

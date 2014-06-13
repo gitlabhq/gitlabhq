@@ -17,7 +17,7 @@
     .col-md-8
       .project-home-desc
         - if @project.description.present?
-          = @project.description
+          = auto_link @project.description, link: :urls
         - if can?(current_user, :admin_project, @project)
           &ndash;
           %strong= link_to 'Edit', edit_project_path
