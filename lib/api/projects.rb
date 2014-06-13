@@ -71,7 +71,6 @@ module API
       #   name (required) - name for new project
       #   description (optional) - short project description
       #   issues_enabled (optional)
-      #   wall_enabled (optional)
       #   merge_requests_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
@@ -86,7 +85,6 @@ module API
                                      :path,
                                      :description,
                                      :issues_enabled,
-                                     :wall_enabled,
                                      :merge_requests_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,
@@ -114,7 +112,6 @@ module API
       #   description (optional) - short project description
       #   default_branch (optional) - 'master' by default
       #   issues_enabled (optional)
-      #   wall_enabled (optional)
       #   merge_requests_enabled (optional)
       #   wiki_enabled (optional)
       #   snippets_enabled (optional)
@@ -129,7 +126,6 @@ module API
                                      :description,
                                      :default_branch,
                                      :issues_enabled,
-                                     :wall_enabled,
                                      :merge_requests_enabled,
                                      :wiki_enabled,
                                      :snippets_enabled,

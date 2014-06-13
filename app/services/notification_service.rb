@@ -106,7 +106,6 @@ class NotificationService
   # TODO: split on methods and refactor
   #
   def new_note(note)
-    # ignore wall messages
     return true unless note.noteable_type.present?
 
     # ignore gitlab service messages
