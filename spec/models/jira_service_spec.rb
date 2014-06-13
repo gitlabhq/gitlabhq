@@ -50,7 +50,7 @@ describe JiraService, models: true do
     end
 
     it "should call JIRA API" do
-      @jira_service.execute(@sample_data, "JIRA-123")
+      @jira_service.execute(@sample_data, JiraIssue.new("JIRA-123"))
       WebMock.should have_requested(:post, @api_url).with(
         body: /Issue solved with/
       ).once
