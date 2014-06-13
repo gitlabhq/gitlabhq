@@ -37,5 +37,5 @@
         %i.icon-ok
         Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
         = succeed '.' do
-          != gfm(@closes_issues.map { |i| "##{i.iid}" }.to_sentence)
+          != gfm(issues_sentence(@closes_issues))
 
