@@ -3,4 +3,4 @@
   %ul{ class: "well-list merge_requests-sortable-list", id: "merge_requests-list-#{id}", "data-state" => id }
     - merge_requests.sort_by(&:position).each do |merge_request|
       = render 'merge_request', merge_request: merge_request
-    %li.light Drag and drop available
+    %li.light.ui-sort-disabled Drag and drop available

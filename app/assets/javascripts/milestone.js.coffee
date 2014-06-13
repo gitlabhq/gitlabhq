@@ -55,6 +55,7 @@ class Milestone
     $("#issues-list-unassigned, #issues-list-ongoing, #issues-list-closed").sortable(
       connectWith: ".issues-sortable-list",
       dropOnEmpty: true,
+      items: "li:not(.ui-sort-disabled)",
       update: (event, ui) ->
         data = $(this).sortable("serialize")
         Milestone.sortIssues(data)
@@ -83,6 +84,7 @@ class Milestone
     $("#merge_requests-list-unassigned, #merge_requests-list-ongoing, #merge_requests-list-closed").sortable(
       connectWith: ".merge_requests-sortable-list",
       dropOnEmpty: true,
+      items: "li:not(.ui-sort-disabled)",
       update: (event, ui) ->
         data = $(this).sortable("serialize")
         Milestone.sortMergeRequests(data)
