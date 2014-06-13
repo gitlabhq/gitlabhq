@@ -1,6 +1,5 @@
 module Issues
   class BaseService < ::BaseService
-    include Rails.application.routes.url_helpers
 
     private
 
@@ -10,9 +9,7 @@ module Issues
 
     def execute_hooks(issue, action = 'open')
       issue_data = issue.to_hook_data
-      issue_url = project_issue_url(id: issue.iid,
-                                    project_id: issue.project,
-                                    host: Settings.gitlab['url'])
+      issue_url = Gitlab::UrlBuilder.new(:issue).build(issue.id)
       issue_data[:object_attributes].merge!(url: issue_url, action: action)
       issue.project.execute_hooks(issue_data, :issue_hooks)
     end
