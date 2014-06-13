@@ -236,7 +236,11 @@ class Ability
             :"modify_#{name}",
           ]
         else
-          subject.respond_to?(:project) ? project_abilities(user, subject.project) : []
+          if subject.respond_to?(:project)
+            project_abilities(user, subject.project)
+          else
+            []
+          end
         end
       end
     end

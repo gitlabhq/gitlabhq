@@ -1,10 +1,13 @@
 .file-holder
   .file-title
     %i.icon-file
-    %strong= @snippet.file_name
-    %span.options
-      .btn-group.tree-btn-group.pull-right
-        - if can?(current_user, :admin_project_snippet, @project) || @snippet.author == current_user
-          = link_to "Edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-tiny", title: 'Edit Snippet'
-        = link_to "Raw", raw_project_snippet_path(@project, @snippet), class: "btn btn-tiny", target: "_blank"
+    %span.file_name
+      = @snippet.file_name
+    .options
+      .btn-group
+        - if can?(current_user, :modify_project_snippet, @snippet)
+          = link_to "edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small", title: 'Edit Snippet'
+        = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn btn-small", target: "_blank"
+      - if can?(current_user, :admin_project_snippet, @snippet)
+        = link_to "remove", project_snippet_path(@project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-small btn-remove", title: 'Delete Snippet'
   = render 'snippets/blob_content'

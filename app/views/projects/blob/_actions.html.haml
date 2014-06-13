@@ -14,6 +14,6 @@
       = link_to "blame", project_blame_path(@project, @id), class: "btn btn-small" unless @blob.empty?
   = link_to "history", project_commits_path(@project, @id), class: "btn btn-small"
 
-  - if allowed_tree_edit?
-    = link_to '#modal-remove-blob', class: "remove-blob btn btn-small btn-remove", "data-toggle" => "modal" do
-      remove
+- if allowed_tree_edit?
+  = link_to '#modal-remove-blob', class: "remove-blob btn btn-small btn-remove", "data-toggle" => "modal" do
+    remove
