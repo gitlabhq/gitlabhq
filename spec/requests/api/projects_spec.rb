@@ -126,7 +126,6 @@ describe API::API, api: true  do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
         issues_enabled: false,
-        wall_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false
       })
@@ -208,7 +207,6 @@ describe API::API, api: true  do
       project = attributes_for(:project, {
         description: Faker::Lorem.sentence,
         issues_enabled: false,
-        wall_enabled: false,
         merge_requests_enabled: false,
         wiki_enabled: false
       })

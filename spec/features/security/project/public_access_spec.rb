@@ -92,17 +92,6 @@ describe "Public Project Access", feature: true  do
     it { should be_denied_for :visitor }
   end
 
-  describe "GET /:project_path/wall" do
-    subject { project_wall_path(project) }
-
-    it { should be_allowed_for master }
-    it { should be_allowed_for reporter }
-    it { should be_allowed_for :admin }
-    it { should be_allowed_for guest }
-    it { should be_allowed_for :user }
-    it { should be_allowed_for :visitor }
-  end
-
   describe "GET /:project_path/blob" do
     before do
       commit = project.repository.commit

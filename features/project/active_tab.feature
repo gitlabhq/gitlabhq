@@ -35,11 +35,6 @@ Feature: Project active tab
     Then the active main tab should be Merge Requests
     And no other main tabs should be active
 
-  Scenario: On Project Wall
-    Given I visit my project's wall page
-    Then the active main tab should be Wall
-    And no other main tabs should be active
-
   Scenario: On Project Wiki
     Given I visit my project's wiki page
     Then the active main tab should be Wiki

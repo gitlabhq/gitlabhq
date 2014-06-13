@@ -410,22 +410,6 @@ describe Notify do
         end
       end
 
-      describe 'on a project wall' do
-        let(:note_on_the_wall_path) { project_wall_path(project, anchor: "note_#{note.id}") }
-
-        subject { Notify.note_wall_email(recipient.id, note.id) }
-
-        it_behaves_like 'a note email'
-
-        it 'has the correct subject' do
-          should have_subject /#{project.name}/
-        end
-
-        it 'contains a link to the wall note' do
-          should have_body_text /#{note_on_the_wall_path}/
-        end
-      end
-
       describe 'on a commit' do
         let(:commit) { project.repository.commit }
 
