@@ -204,10 +204,6 @@ module SharedPaths
     visit project_merge_requests_path(@project)
   end
 
-  step "I visit my project's wall page" do
-    visit project_wall_path(@project)
-  end
-
   step "I visit my project's wiki page" do
     visit project_wiki_path(@project, :home)
   end
@@ -317,10 +313,6 @@ module SharedPaths
 
   step 'I visit project "Shop" team page' do
     visit project_team_index_path(project)
-  end
-
-  step 'I visit project "Shop" wall page' do
-    visit project_wall_path(project)
   end
 
   step 'I visit project wiki page' do

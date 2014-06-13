@@ -48,7 +48,6 @@ You can use GFM in
 
 - commit messages
 - comments
-- wall posts
 - issues
 - merge requests
 - milestones

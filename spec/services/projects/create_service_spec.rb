@@ -65,7 +65,6 @@ describe Projects::CreateService do
         @settings.stub(:issues) { true }
         @settings.stub(:merge_requests) { true }
         @settings.stub(:wiki) { true }
-        @settings.stub(:wall) { true }
         @settings.stub(:snippets) { true }
         stub_const("Settings", Class.new)
         @restrictions = double("restrictions")
@@ -108,7 +107,6 @@ describe Projects::CreateService do
         @settings.stub(:issues) { true }
         @settings.stub(:merge_requests) { true }
         @settings.stub(:wiki) { true }
-        @settings.stub(:wall) { true }
         @settings.stub(:snippets) { true }
         @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
         stub_const("Settings", Class.new)

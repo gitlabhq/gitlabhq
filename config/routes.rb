@@ -209,12 +209,6 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resource :wall, only: [:show], constraints: {id: /\d+/} do
-        member do
-          get 'notes'
-        end
-      end
-
       resource :repository, only: [:show] do
         member do
           get "stats"

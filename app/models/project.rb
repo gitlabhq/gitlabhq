@@ -31,7 +31,6 @@ class Project < ActiveRecord::Base
 
   default_value_for :archived, false
   default_value_for :issues_enabled, true
-  default_value_for :wall_enabled, true
   default_value_for :merge_requests_enabled, true
   default_value_for :wiki_enabled, true
   default_value_for :snippets_enabled, true
@@ -39,7 +38,7 @@ class Project < ActiveRecord::Base
   ActsAsTaggableOn.strict_case_match = true
 
   attr_accessible :name, :path, :description, :issues_tracker, :label_list,
-    :issues_enabled, :wall_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
+    :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
     :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
 
   attr_accessible :namespace_id, :creator_id, as: :admin
@@ -98,7 +97,7 @@ class Project < ActiveRecord::Base
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
                       message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
-  validates :issues_enabled, :wall_enabled, :merge_requests_enabled,
+  validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true

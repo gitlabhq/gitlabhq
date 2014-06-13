@@ -73,7 +73,6 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      wall: false
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
 

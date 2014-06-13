@@ -13,7 +13,6 @@ If a user is a GitLab administrator they receive all permissions.
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Leave comments                        | ✓       | ✓          | ✓           | ✓        | ✓      |
-| Write on project wall                 | ✓       | ✓          | ✓           | ✓        | ✓      |
 | Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
 | Download project                      |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |

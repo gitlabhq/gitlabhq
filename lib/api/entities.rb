@@ -48,7 +48,7 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, :if => lambda{ | project, options | project.forked? }
     end

@@ -34,8 +34,6 @@ class Dispatcher
         new Activities()
       when 'projects:new', 'projects:edit'
         new Project()
-      when 'projects:walls:show'
-        new Wall(project_id)
       when 'projects:teams:members:index'
         new TeamMembers()
       when 'groups:members'

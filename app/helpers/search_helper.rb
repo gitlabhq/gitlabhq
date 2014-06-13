@@ -61,7 +61,6 @@ module SearchHelper
         { label: "#{prefix} - Milestones",     url: project_milestones_path(@project) },
         { label: "#{prefix} - Snippets",       url: project_snippets_path(@project) },
         { label: "#{prefix} - Team",           url: project_team_index_path(@project) },
-        { label: "#{prefix} - Wall",           url: project_wall_path(@project) },
         { label: "#{prefix} - Wiki",           url: project_wikis_path(@project) },
       ]
     else

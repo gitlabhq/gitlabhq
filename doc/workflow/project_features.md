@@ -26,12 +26,6 @@ This is a separate system for documentation, built right into GitLab.
 
 It is source controlled and is very convenient if you don't want to keep you documentation in your source code, but you do want to keep it in your GitLab project.
 
-## Wall
-
-For simple, project specific conversations, the wall can be used.
-
-It's very lightweight and simple and works well if you're not interested in using issues, but still want to occasionally communicate within a project.
-
 ## Snippets
 
 Snippets are little bits of code or text.
