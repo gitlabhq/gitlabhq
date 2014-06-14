@@ -1,6 +1,0 @@
-= render layout: 'help/layout' do
-  %h3.page-title SSH Keys 
-
-  .help_body
-    = preserve do
-      = markdown File.read(Rails.root.join("doc", "ssh", "ssh.md")).gsub("$your_email", current_user.email)
