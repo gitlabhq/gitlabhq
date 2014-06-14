@@ -216,4 +216,8 @@ module CommitsHelper
       link_to(text.html_safe, user_path(user), options)
     end
   end
+
+  def diff_file_mode_changed?(diff)
+    diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+  end
 end
