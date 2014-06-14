@@ -24,6 +24,5 @@ Feature: Snippets Feature
 
   Scenario: I destroy "Personal snippet one"
     Given I visit snippet page "Personal snippet one"
-    And I click link "Edit"
     And I click link "Destroy"
     Then I should not see "Personal snippet one" in snippets
