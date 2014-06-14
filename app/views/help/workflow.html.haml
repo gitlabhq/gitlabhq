@@ -1,6 +1,0 @@
-= render layout: 'help/layout' do
-  %h3.page-title Workflow 
-
-  .help_body
-    = preserve do
-      = markdown File.read(Rails.root.join("doc", "workflow", "workflow.md"))

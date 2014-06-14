@@ -1,3 +1,2 @@
-.col-md-12
-  .documentation
-    = markdown File.read(Rails.root.join('doc', @category, @file + '.md'))
+.documentation.wiki
+  = markdown File.read(Rails.root.join('doc', @category, @file + '.md'))
