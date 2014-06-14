@@ -42,4 +42,8 @@ module MergeRequestsHelper
       "Branches: #{@merge_request.source_branch} #{separator} #{@merge_request.target_branch}"
     end
   end
+
+  def issues_sentence(issues)
+    issues.map { |i| "##{i.iid}" }.to_sentence
+  end
 end
