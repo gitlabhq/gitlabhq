@@ -5,7 +5,7 @@ describe Gitlab::UrlBuilder do
     it 'returns the issue url' do
       issue = create(:issue)
       url = Gitlab::UrlBuilder.new(:issue).build(issue.id)
-      expect(url).to eq "#{Settings.gitlab['url']}/namespace1/gitlabhq/issues/#{issue.iid}"
+      expect(url).to eq "#{Settings.gitlab['url']}/#{issue.project.to_param}/issues/#{issue.iid}"
     end
   end
 end
