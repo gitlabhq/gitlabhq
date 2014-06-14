@@ -199,20 +199,6 @@ $list-group-active-bg: $bg_style_color;
   color: #3c763d;
 }
 
-// Breadcrumb
-ul.breadcrumb {
-  background: white;
-  border: none;
-  li {
-    display: inline;
-    text-shadow: 0 1px 0 white
-  }
-
-  a {
-    font-size: 16px;
-  }
-}
-
 /**
  * fix to keep tooltips position in top navigation bar
  *

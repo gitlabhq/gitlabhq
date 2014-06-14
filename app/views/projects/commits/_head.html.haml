@@ -1,6 +1,4 @@
 %ul.nav.nav-tabs
-  %li= render partial: 'shared/ref_switcher', locals: {destination: 'commits'}
-
   = nav_link(controller: [:commit, :commits]) do
     = link_to 'Commits', project_commits_path(@project, @repository.root_ref)
   = nav_link(controller: :compare) do
@@ -19,9 +17,3 @@
   = nav_link(controller: :repositories, action: :stats) do
     = link_to stats_project_repository_path(@project) do
       Stats
-
-
-  - if current_user && current_controller?(:commits) && current_user.private_token
-    %li.pull-right.hidden-sm
-      = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
-        %i.icon-rss

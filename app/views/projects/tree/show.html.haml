@@ -3,7 +3,7 @@
 
 - if can? current_user, :download_code, @project
   .tree-download-holder
-    = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'btn-group-small pull-right hidden-xs', split_button: true
+    = render 'projects/repositories/download_archive', ref: @ref, btn_class: 'btn-group-small pull-right hidden-xs hidden-sm', split_button: true
 
 #tree-holder.tree-holder.clearfix
   = render "tree", tree: @tree
