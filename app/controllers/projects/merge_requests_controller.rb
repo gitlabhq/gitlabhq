@@ -93,6 +93,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
       diff_line_count = Commit::diff_line_count(@diffs)
       @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count)
+      @force_suppress_diff = @suppress_diff
     end
   end
 
