@@ -5,7 +5,7 @@
 = render 'form'
 
 :javascript
-  $('#key_key').on('keyup', function(){
+  $('#key_key').on('focusout', function(){
     var title = $('#key_title'),
         val      = $('#key_key').val(),
         key_mail = val.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+|\.[a-zA-Z0-9._-]+)/gi);
