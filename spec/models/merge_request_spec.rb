@@ -105,6 +105,14 @@ describe MergeRequest do
 
       subject.closes_issues.should be_empty
     end
+
+    it 'detects issues mentioned in the description' do
+      issue2 = create(:issue, project: subject.project)
+      subject.description = "Closes ##{issue2.iid}"
+      subject.project.stub(default_branch: subject.target_branch)
+
+      subject.closes_issues.should include(issue2)
+    end
   end
 
   it_behaves_like 'an editable mentionable' do
