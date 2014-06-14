@@ -30,6 +30,5 @@ Feature: Project Snippets
 
   Scenario: I destroy "Snippet one"
     Given I visit snippet page "Snippet one"
-    And I click link "Edit"
     And I click link "Remove Snippet"
     Then I should not see "Snippet one" in snippets
