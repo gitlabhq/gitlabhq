@@ -138,6 +138,24 @@ class Repository
     end
   end
 
+  def graph_logs_by_user_email(user)
+    graph_log.select { |u_email| u_email[:author_email] == user.email }
+  end
+
+  def timestamps_by_user_from_graph_log(user)
+    graph_logs_by_user_email(user).
+    map { |graph_log| Date.parse(graph_log[:date]).to_time.to_i }
+  end
+
+  def commits_log_of_user_by_date(user)
+    timestamps_by_user_from_graph_log(user).
+      group_by { |commit_date| commit_date }.
+      inject({}) do |hash, (timestamp_date, commits)|
+        hash[timestamp_date] = commits.count
+        hash
+      end
+  end
+
   def cache_key(type)
     "#{type}:#{path_with_namespace}"
   end

@@ -1,0 +1,26 @@
+#commit_activity
+  #onClickplaceholder
+    %h4.activity_title Commit Activity:
+
+  #loading-commits
+    %section.text-center
+      %h3
+        %i.icon-spinner.icon-spin
+
+  #onClick-placeholder
+    %span.onClicksecond
+    - if @timestamps.empty?
+      %span.activity_summary
+        %strong> #{@user.username}
+        has no activity
+    - else
+      %span.activity_summary
+        %strong> #{@user.username}
+        's last commit was on
+        %span.commit_date #{@last_commit_date}
+
+    %hr.onclick_hr
+
+:javascript
+  $("#loading-commits").hide();
+  

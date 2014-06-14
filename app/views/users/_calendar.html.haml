@@ -1,0 +1,9 @@
+#cal-heatmap
+  :javascript 
+    var CommitsCalendar = {}
+    CommitsCalendar.timestamps = #{@timestamps.to_json};
+    CommitsCalendar.starting_year = #{@starting_year};
+    CommitsCalendar.starting_month = #{@starting_month};
+    CommitsCalendar.path = '#{user_activities_path}';
+  = javascript_include_tag "calendar"
+= render "onclick"
