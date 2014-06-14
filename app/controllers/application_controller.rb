@@ -164,9 +164,8 @@ class ApplicationController < ActionController::Base
   def add_gon_variables
     gon.default_issues_tracker = Project.issues_tracker.default_value
     gon.api_version = API::API.version
-    gon.gravatar_url = request.ssl? || Gitlab.config.gitlab.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
     gon.relative_url_root = Gitlab.config.gitlab.relative_url_root
-    gon.gravatar_enabled = Gitlab.config.gravatar.enabled
+    gon.default_avatar_url = URI::join(Gitlab.config.gitlab.url, ActionController::Base.helpers.image_path('no_avatar.png')).to_s
 
     if current_user
       gon.current_user_id = current_user.id

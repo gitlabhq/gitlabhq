@@ -21,7 +21,7 @@ describe API::API, api: true  do
       response.status.should == 200
       json_response.should be_an Array
       json_response.count.should == 2
-      json_response.map { |u| u['email'] }.should include user.email
+      json_response.map { |u| u['username'] }.should include user.username
     end
 
     it "finds team members with query string" do
@@ -29,7 +29,7 @@ describe API::API, api: true  do
       response.status.should == 200
       json_response.should be_an Array
       json_response.count.should == 1
-      json_response.first['email'].should == user.email
+      json_response.first['username'].should == user.username
     end
 
     it "should return a 404 error if id not found" do
@@ -44,7 +44,7 @@ describe API::API, api: true  do
     it "should return project team member" do
       get api("/projects/#{project.id}/members/#{user.id}", user)
       response.status.should == 200
-      json_response['email'].should == user.email
+      json_response['username'].should == user.username
       json_response['access_level'].should == UsersProject::MASTER
     end
 
@@ -62,7 +62,7 @@ describe API::API, api: true  do
       }.to change { UsersProject.count }.by(1)
 
       response.status.should == 201
-      json_response['email'].should == user2.email
+      json_response['username'].should == user2.username
       json_response['access_level'].should == UsersProject::DEVELOPER
     end
 
@@ -75,7 +75,7 @@ describe API::API, api: true  do
       }.not_to change { UsersProject.count }.by(1)
 
       response.status.should == 201
-      json_response['email'].should == user2.email
+      json_response['username'].should == user2.username
       json_response['access_level'].should == UsersProject::DEVELOPER
     end
 
@@ -101,7 +101,7 @@ describe API::API, api: true  do
     it "should update project team member" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: UsersProject::MASTER
       response.status.should == 200
-      json_response['email'].should == user3.email
+      json_response['username'].should == user3.username
       json_response['access_level'].should == UsersProject::MASTER
     end
 

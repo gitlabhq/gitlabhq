@@ -35,6 +35,7 @@ v 7.0.0
   - Be more selective when killing stray Sidekiqs
   - Check LDAP user filter during sign-in
   - Remove wall feature (no data loss - you can take it from database)
+  - Dont expose user emails via API unless you are admin 
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter

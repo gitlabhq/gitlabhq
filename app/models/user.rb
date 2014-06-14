@@ -482,4 +482,12 @@ class User < ActiveRecord::Base
   def public_profile?
     authorized_projects.public_only.any?
   end
+
+  def avatar_url(size = nil)
+    if avatar.present?
+      URI::join(Gitlab.config.gitlab.url, avatar.url).to_s
+    else
+      GravatarService.new.execute(email, size)
+    end
+  end
 end

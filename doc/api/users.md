@@ -6,6 +6,34 @@ Get a list of users.
 
 This function takes pagination parameters `page` and `per_page` to restrict the list of users.
 
+### For normal users:
+
+```
+GET /users
+```
+
+```json
+[
+  {
+    "id": 1,
+    "username": "john_smith",
+    "name": "John Smith",
+    "state": "active",
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+  },
+  {
+    "id": 2,
+    "username": "jack_smith",
+    "name": "Jack Smith",
+    "state": "blocked",
+    "avatar_url": "http://gravatar.com/../e32131cd8.jpeg",
+  }
+]
+```
+
+
+### For admins: 
+
 ```
 GET /users
 ```
@@ -29,6 +57,7 @@ GET /users
     "theme_id": 1,
     "color_scheme_id": 2,
     "is_admin": false,
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "can_create_group": true
   },
   {
@@ -48,6 +77,7 @@ GET /users
     "theme_id": 1,
     "color_scheme_id": 3,
     "is_admin": false,
+    "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "can_create_group": true,
     "can_create_project": true
   }
@@ -61,6 +91,29 @@ Also see `def search query` in `app/models/user.rb`.
 ## Single user
 
 Get a single user.
+
+#### For user: 
+
+```
+GET /users/:id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a user
+
+```json
+{
+  "id": 1,
+  "username": "john_smith",
+  "name": "John Smith",
+  "state": "active",
+  "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
+}
+```
+
+
+#### For admin:
 
 ```
 GET /users/:id

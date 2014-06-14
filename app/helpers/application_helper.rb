@@ -60,23 +60,21 @@ module ApplicationHelper
 
   def avatar_icon(user_email = '', size = nil)
     user = User.find_by(email: user_email)
-    if user && user.avatar.present?
-      user.avatar.url
+
+    if user
+      user.avatar_url(size) || default_avatar
     else
       gravatar_icon(user_email, size)
     end
   end
 
   def gravatar_icon(user_email = '', size = nil)
-    size = 40 if size.nil? || size <= 0
+    GravatarService.new.execute(user_email, size) ||
+      default_avatar
+  end
 
-    if !Gitlab.config.gravatar.enabled || user_email.blank?
-      image_path('no_avatar.png')
-    else
-      gravatar_url = request.ssl? || gitlab_config.https ? Gitlab.config.gravatar.ssl_url : Gitlab.config.gravatar.plain_url
-      user_email.strip!
-      sprintf gravatar_url, hash: Digest::MD5.hexdigest(user_email.downcase), size: size, email: user_email
-    end
+  def default_avatar
+    image_path('no_avatar.png')
   end
 
   def last_commit(project)

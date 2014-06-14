@@ -93,7 +93,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
         response.status.should == 201
         json_response['body'].should == 'hi!'
-        json_response['author']['email'].should == user.email
+        json_response['author']['username'].should == user.username
       end
 
       it "should return a 400 bad request error if body not given" do
@@ -112,7 +112,7 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/snippets/#{snippet.id}/notes", user), body: 'hi!'
         response.status.should == 201
         json_response['body'].should == 'hi!'
-        json_response['author']['email'].should == user.email
+        json_response['author']['username'].should == user.username
       end
 
       it "should return a 400 bad request error if body not given" do

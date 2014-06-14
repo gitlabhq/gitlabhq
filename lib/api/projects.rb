@@ -209,7 +209,7 @@ module API
         @users = User.where(id: user_project.team.users.map(&:id))
         @users = @users.search(params[:search]) if params[:search].present?
         @users = paginate @users
-        present @users, with: Entities::User
+        present @users, with: Entities::UserBasic
       end
 
       # Get a project labels
