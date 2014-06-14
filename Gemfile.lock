@@ -452,6 +452,8 @@ GEM
       activesupport (>= 3.1, < 4.2)
     select2-rails (3.5.2)
       thor (~> 0.14)
+    semantic-ui-sass (0.16.1.0)
+      sass (~> 3.2)
     settingslogic (2.0.9)
     sexp_processor (4.4.0)
     shoulda-matchers (2.1.0)
@@ -656,6 +658,7 @@ DEPENDENCIES
   sdoc
   seed-fu
   select2-rails
+  semantic-ui-sass (~> 0.16.1.0)
   settingslogic
   shoulda-matchers (~> 2.1.0)
   sidekiq (= 2.17.0)
