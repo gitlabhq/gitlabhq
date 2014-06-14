@@ -9,6 +9,11 @@
   = nav_link(controller: :labels) do
     = link_to 'Labels', project_labels_path(@project), class: "tab"
 
+  - if current_controller?(:milestones)
+    %li.pull-right
+      %button.btn.btn-default.sidebar-expand-button
+        %i.icon.icon-list
+
   - if current_controller?(:issues)
     - if current_user
       %li
@@ -17,6 +22,8 @@
 
     %li.pull-right
       .pull-right
+        %button.btn.btn-default.sidebar-expand-button
+          %i.icon.icon-list
         = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'pull-left issue-search-form'  do
           .append-right-10.hidden-xs.hidden-sm
             = search_field_tag :issue_search, nil, { placeholder: 'Filter by title or description', class: 'form-control issue_search search-text-input input-mn-300' }
