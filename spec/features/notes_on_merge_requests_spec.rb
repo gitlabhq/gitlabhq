@@ -32,21 +32,6 @@ describe "On a merge request", js: true, feature: true do
         within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: true) }
       end
     end
-
-    describe "with preview" do
-      before do
-        within(".js-main-target-form") do
-          fill_in "note[note]", with: "This is awesome"
-          find(".js-note-preview-button").trigger("click")
-        end
-      end
-
-      it 'should have text and visible edit button' do
-        within(".js-main-target-form") { should have_css(".js-note-preview", text: "This is awesome", visible: true) }
-        within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
-        within(".js-main-target-form") { should have_css(".js-note-write-button", visible: true) }
-      end
-    end
   end
 
   describe "when posting a note" do
