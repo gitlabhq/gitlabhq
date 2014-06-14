@@ -7,12 +7,11 @@
 }
 
 .sidebar-expand-button {
-  background: #fff;
+  background: #f9f9f9;
   color: #555;
-  padding: 10px 15px;
+  padding: 9px 12px 6px 14px;
   border: 1px solid #E1E1E1;
   border-right: 0;
-  border-radius: 3px;
   position: fixed;
   top: 108px;
   right: 0px;
@@ -21,7 +20,6 @@
   transition: all 0.4s;
   -moz-transition: all 0.4s;
   -webkit-transition: all 0.4s;
-
 
   &:hover {
     background: #ddd;
