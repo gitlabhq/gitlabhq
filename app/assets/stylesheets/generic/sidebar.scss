@@ -2,8 +2,17 @@
   z-index: 1000 !important;
   background: #fff;
   padding: 10px;
-  border-left: 1px solid #e1e1e1;
   width: 285px;
+}
+
+.ui.left.sidebar {
+  border-right: 1px solid #e1e1e1;
+  border-left: 0;
+}
+
+.ui.right.sidebar {
+  border-left: 1px solid #e1e1e1;
+  border-right: 0;
 }
 
 .sidebar-expand-button {
@@ -25,5 +34,16 @@
     background: #ddd;
     color: #333;
     padding-right: 25px;
+  }
+}
+
+.left.sidebar-expand-button {
+  left: 0px;
+  right: auto;
+  border: 1px solid #E1E1E1;
+  border-left: 0;
+  &:hover {
+    padding-right: 14px;
+    padding-left: 25px;
   }
 }
