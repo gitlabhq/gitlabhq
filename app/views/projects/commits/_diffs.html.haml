@@ -42,7 +42,6 @@
 .files
   - unless @suppress_diff
     - diffs.each_with_index do |diff, i|
-      - next if diff.diff.empty?
       - file = project.repository.blob_at(@commit.id, diff.new_path)
       - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
       - next unless file
@@ -58,7 +57,7 @@
                   %span.commit-short-id= @commit.short_id(6)
           - else
             %span= diff.new_path
-            - if diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+            - if diff_file_mode_changed?(diff)
               %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
             .diff-btn-group
