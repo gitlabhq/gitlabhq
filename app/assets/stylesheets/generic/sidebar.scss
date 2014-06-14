@@ -1,0 +1,31 @@
+.ui.sidebar {
+  z-index: 1000 !important;
+  background: #fff;
+  padding: 10px;
+  border-left: 1px solid #e1e1e1;
+  width: 285px;
+}
+
+.sidebar-expand-button {
+  background: #fff;
+  color: #555;
+  padding: 10px 15px;
+  border: 1px solid #E1E1E1;
+  border-right: 0;
+  border-radius: 3px;
+  position: fixed;
+  top: 108px;
+  right: 0px;
+  margin-right: 0;
+  cursor: pointer;
+  transition: all 0.4s;
+  -moz-transition: all 0.4s;
+  -webkit-transition: all 0.4s;
+
+
+  &:hover {
+    background: #ddd;
+    color: #333;
+    padding-right: 25px;
+  }
+}

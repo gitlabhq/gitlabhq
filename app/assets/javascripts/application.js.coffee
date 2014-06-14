@@ -30,6 +30,7 @@
 #= require nprogress
 #= require nprogress-turbolinks
 #= require dropzone
+#= require semantic-ui/sidebar
 #= require_tree .
 
 window.slugify = (text) ->
