@@ -33,6 +33,7 @@ class Project < ActiveRecord::Base
   default_value_for :issues_enabled, true
   default_value_for :merge_requests_enabled, true
   default_value_for :wiki_enabled, true
+  default_value_for :wall_enabled, false
   default_value_for :snippets_enabled, true
 
   ActsAsTaggableOn.strict_case_match = true
