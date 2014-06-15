@@ -10,9 +10,9 @@
     To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 %hr
 .row
-  .left.sidebar-expand-button.hidden-lg.hidden-md
+  .fixed.sidebar-expand-button.hidden-lg.hidden-md
     %i.icon-list.icon-2x
-  .col-md-3.responsive-side-left
+  .col-md-3.responsive-side
     = render 'shared/filter', entity: 'merge_request'
   .col-md-9
     = render 'shared/merge_requests'
