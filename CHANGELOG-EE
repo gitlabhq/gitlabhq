@@ -1,4 +1,4 @@
-v 7.0.0
+v 6.9.4
   - Fix bug in JIRA Issue closing triggered by commit messages
   - Fix JIRA issue reference bug
 
