@@ -537,7 +537,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /New push to repository/
+      should have_subject /#{commits.length} new commits pushed to repository/
     end
 
     it 'includes commits list' do
@@ -573,7 +573,7 @@ describe Notify do
     end
 
     it 'has the correct subject' do
-      should have_subject /New push to repository/
+      should have_subject /#{commits.first.title}/
     end
 
     it 'includes commits list' do
