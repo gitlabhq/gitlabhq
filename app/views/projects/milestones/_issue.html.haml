@@ -3,7 +3,7 @@
     = link_to [@project, issue] do
       %span.cgray ##{issue.iid}
     = link_to_gfm issue.title, [@project, issue]
-  - if issue.assignee
-    .pull-right
+  .pull-right.assignee-icon
+    - if issue.assignee
       = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
 
