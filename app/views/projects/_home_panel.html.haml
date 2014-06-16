@@ -14,7 +14,7 @@
       = render "shared/clone_panel"
 
   .project-home-extra.row
-    .col-md-8
+    .col-md-7
       .project-home-desc
         - if @project.description.present?
           = auto_link @project.description, link: :urls
@@ -23,7 +23,7 @@
           %strong= link_to 'Edit', edit_project_path
 
     - unless empty_repo
-      .col-md-4
+      .col-md-5
         .project-home-links
           = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
           = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), project_branches_path(@project)
