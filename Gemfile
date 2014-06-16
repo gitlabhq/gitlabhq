@@ -243,5 +243,5 @@ group :test do
 end
 
 group :production do
-  gem "gitlab_meta", '6.0'
+  gem "gitlab_meta", '7.0'
 end
