@@ -1,12 +1,10 @@
 # GitLab
 
-## Self hosted Git management software
+## Open source software to collaborate on code
 
 ![logo](https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/gitlab_logo.png)
 
 ![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
-
-## Open source software to collaborate on code
 
 - Manage Git repositories with fine grained access controls that keep your code secure
 - Perform code reviews and enhance collaboration with merge requests
@@ -29,15 +27,27 @@
 
 - [![PullReview stats](https://www.pullreview.com/gitlab/gitlab-org/gitlab-ce/badges/master.svg?)](https://www.pullreview.com/gitlab.gitlab.com/gitlab-org/gitlab-ce/reviews/master)
 
-### Resources
+## Website
 
-- [www.gitlab.com](https://www.gitlab.com/) includes information about [subscriptions](https://www.gitlab.com/subscription/), [consultancy](https://www.gitlab.com/consultancy/), the [community](https://www.gitlab.com/community/) and the [hosted GitLab.com](https://www.gitlab.com/gitlab-com/).
+On [www.gitlab.com](https://www.gitlab.com/) you can find more information about:
 
-- [GitLab Enterprise Edition](https://www.gitlab.com/gitlab-ee/) offers additional features aimed at larger organizations.
+- [Subscriptions](https://www.gitlab.com/subscription/)
+- [Consultancy](https://www.gitlab.com/consultancy/)
+- [Community](https://www.gitlab.com/community/)
+- [Hosted GitLab.com](https://www.gitlab.com/gitlab-com/) use GitLab as a free service
+- [GitLab Enterprise Edition](https://www.gitlab.com/gitlab-ee/) with additional features aimed at larger organizations.
+- [GitLab CI](https://www.gitlab.com/gitlab-ci/) a continuous integration (CI) server that is easy to integrate with GitLab.
 
-- [GitLab CI](https://www.gitlab.com/gitlab-ci/) is a continuous integration (CI) server that is easy to integrate with GitLab.
+## Third-party applications
 
-- Unofficial third-party [iPhone app](http://gitlabcontrol.com/), [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en), [command line client](https://github.com/drewblessing/gitlab-cli), [Ruby API wrapper](https://github.com/NARKOZ/gitlab) and [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi) for GitLab.
+Access GitLab from multiple platforms with applications below.
+These applications are maintained by contributors, GitLab B.V. does not offer support for them.
+
+- [iPhone app](http://gitlabcontrol.com/)
+- [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en)
+- [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi)
+- [Command line client](https://github.com/drewblessing/gitlab-cli)
+- [Ruby API wrapper](https://github.com/NARKOZ/gitlab)
 
 ## Requirements
 
