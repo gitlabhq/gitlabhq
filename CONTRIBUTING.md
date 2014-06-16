@@ -110,8 +110,7 @@ For examples of feedback on merge requests please look at already [closed merge 
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
-1.  [Shell commands](doc/development/shell_commands.md)
+1.  [Shell commands](doc/development/shell_commands.md) created by GitLab contributors to enhance security
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 
-This is also the style used by linting tools such as [Rubocop](https://github.com/bbatsov/rubocop)
-and [Hound CI](https://houndci.com).
+This is also the style used by linting tools such as [Rubocop](https://github.com/bbatsov/rubocop), PullReview[https://www.pullreview.com/] and [Hound CI](https://houndci.com).
