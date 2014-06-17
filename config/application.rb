@@ -20,7 +20,6 @@ module Gitlab
 
     # Activate observers that should always be running.
     config.active_record.observers = :note_observer,
-                                     :project_observer,
                                      :system_hook_observer,
                                      :user_observer,
                                      :users_project_observer

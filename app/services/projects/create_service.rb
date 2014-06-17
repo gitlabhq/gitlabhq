@@ -51,6 +51,8 @@ module Projects
       @project.creator = current_user
 
       if @project.save
+        log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
+
         unless @project.group
           @project.users_projects.create(
             project_access: UsersProject::MASTER,
