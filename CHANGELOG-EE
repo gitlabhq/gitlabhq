@@ -1,3 +1,6 @@
+v 7.0.0
+  - Fix: empty brand images are displayed as empty image_tag on login page (Marvin Frick, sponsored by SinnerSchrader) 
+
 v 6.9.4
   - Fix bug in JIRA Issue closing triggered by commit messages
   - Fix JIRA issue reference bug
