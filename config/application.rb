@@ -19,8 +19,7 @@ module Gitlab
     # config.plugins = [ :exception_notification, :ssl_requirement, :all ]
 
     # Activate observers that should always be running.
-    config.active_record.observers = :system_hook_observer,
-                                     :user_observer,
+    config.active_record.observers = :user_observer,
                                      :users_project_observer
 
     # Set Time.zone default to the specified zone and make Active Record auto-convert to this zone.

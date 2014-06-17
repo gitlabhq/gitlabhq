@@ -10,4 +10,8 @@ class BaseObserver < ActiveRecord::Observer
   def log_info message
     Gitlab::AppLogger.info message
   end
+
+  def system_hook_service
+    SystemHooksService.new
+  end
 end

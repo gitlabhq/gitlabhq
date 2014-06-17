@@ -7,6 +7,7 @@ class UsersProjectObserver < BaseObserver
     )
 
     notification.new_team_member(users_project)
+    system_hook_service.execute_hooks_for(users_project, :create)
   end
 
   def after_update(users_project)
@@ -19,5 +20,6 @@ class UsersProjectObserver < BaseObserver
       action: Event::LEFT,
       author_id: users_project.user.id
     )
+    system_hook_service.execute_hooks_for(users_project, :destroy)
   end
 end

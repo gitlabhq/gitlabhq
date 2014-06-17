@@ -1,12 +1,13 @@
 class UserObserver < BaseObserver
   def after_create(user)
     log_info("User \"#{user.name}\" (#{user.email}) was created")
-
     notification.new_user(user)
+    system_hook_service.execute_hooks_for(user, :create)
   end
 
   def after_destroy user
     log_info("User \"#{user.name}\" (#{user.email})  was removed")
+    system_hook_service.execute_hooks_for(user, :destroy)
   end
 
   def after_save user

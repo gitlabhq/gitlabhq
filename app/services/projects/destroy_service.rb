@@ -19,6 +19,8 @@ module Projects
         project.satellite.destroy
 
         log_info("Project \"#{project.name}\" was removed")
+        system_hook_service.execute_hooks_for(project, :destroy)
+        true
       end
     end
   end

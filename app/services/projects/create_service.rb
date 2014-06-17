@@ -52,6 +52,7 @@ module Projects
 
       if @project.save
         log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
+        system_hook_service.execute_hooks_for(@project, :create)
 
         unless @project.group
           @project.users_projects.create(
