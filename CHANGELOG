@@ -38,6 +38,7 @@ v 7.0.0
   - Dont expose user emails via API unless you are admin 
   - Detect issues closed by Merge Request description
   - Better email subject lines from email on push service (Alex Elman)
+  - Enable identicon for gravatar be default
 
 v 6.9.2
   - Revert the commit that broke the LDAP user filter
