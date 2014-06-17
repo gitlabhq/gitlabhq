@@ -61,7 +61,9 @@ module Gitlab
         end
 
         def uid
-          auth.info.uid || auth.uid
+          uid = auth.info.uid || auth.uid
+          uid = uid.to_s unless uid.nil?
+          uid
         end
 
         def email
