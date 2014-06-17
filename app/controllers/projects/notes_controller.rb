@@ -21,7 +21,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, params).execute
+    @note = Notes::CreateService.new(project, current_user, params[:note]).execute
 
     respond_to do |format|
       format.json { render_note_json(@note) }
