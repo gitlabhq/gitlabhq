@@ -1,16 +1,20 @@
 require 'spec_helper'
 
-describe ProjectTransferService do
+describe Projects::TransferService do
   before(:each) { enable_observers }
   after(:each) {disable_observers}
 
-  context 'namespace -> namespace' do
-    let(:user) { create(:user) }
-    let(:group) { create(:group) }
-    let(:project) { create(:project, namespace: user.namespace) }
+  let(:user) { create(:user) }
+  let(:group) { create(:group) }
+  let(:group2) { create(:group) }
+  let(:project) { create(:project, namespace: user.namespace) }
 
+  context 'namespace -> namespace' do
     before do
-      @result = service.transfer(project, group)
+      group.add_owner(user)
+      @service = Projects::TransferService.new(project, user, namespace_id: group.id)
+      @service.gitlab_shell.stub(mv_repository: true)
+      @result = @service.execute
     end
 
     it { @result.should be_true }
@@ -18,16 +22,25 @@ describe ProjectTransferService do
   end
 
   context 'namespace -> no namespace' do
-    let(:user) { create(:user) }
-    let(:project) { create(:project, namespace: user.namespace) }
+    before do
+      group.add_owner(user)
+      @service = Projects::TransferService.new(project, user, namespace_id: nil)
+      @service.gitlab_shell.stub(mv_repository: true)
+      @result = @service.execute
+    end
 
-    it { lambda{service.transfer(project, nil)}.should raise_error(ActiveRecord::RecordInvalid) }
+    it { @result.should be_false }
+    it { project.namespace.should == user.namespace }
   end
 
-  def service
-    service = ProjectTransferService.new
-    service.gitlab_shell.stub(mv_repository: true)
-    service
+  context 'namespace -> not allowed namespace' do
+    before do
+      @service = Projects::TransferService.new(project, user, namespace_id: group2.id)
+      @service.gitlab_shell.stub(mv_repository: true)
+      @result = @service.execute
+    end
+
+    it { @result.should be_false }
+    it { project.namespace.should == user.namespace }
   end
 end
-

@@ -1,1 +1,4 @@
-= render "projects/snippets/form", url: project_snippet_path(@project, @snippet)
+%h3.page-title
+  Edit snippet
+%hr
+= render "shared/snippets/form", url: project_snippet_path(@project, @snippet)

@@ -1,13 +1,14 @@
 - commit = @repository.commit(branch.target)
-%li
+%li(class="js-branch-#{branch.name}")
   %h4
-    = link_to project_commits_path(@project, branch.name) do
+    = link_to project_tree_path(@project, branch.name) do
       %strong= truncate(branch.name, length: 60)
       - if branch.name == @repository.root_ref
         %span.label.label-info default
       - if @project.protected_branch? branch.name
         %span.label.label-success
           %i.icon-lock
+          protected
     .pull-right
       - if can?(current_user, :download_code, @project)
         = render 'projects/repositories/download_archive', ref: branch.name, btn_class: 'btn-grouped btn-group-small'
@@ -16,18 +17,13 @@
           %i.icon-copy
           Compare
 
-      - if can?(current_user, :admin_project, @project) && branch.name != @repository.root_ref
-        = link_to project_branch_path(@project, branch.name), class: 'btn btn-grouped btn-small remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
+      - if can_remove_branch?(@project, branch.name)
+        = link_to project_branch_path(@project, branch.name), class: 'btn btn-grouped btn-small btn-remove remove-row', method: :delete, data: { confirm: 'Removed branch cannot be restored. Are you sure?'}, remote: true do
           %i.icon-trash
 
   - if commit
-    %p
-      = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
-        = commit.short_id
-      = image_tag avatar_icon(commit.author_email), class: "avatar s16", alt: ''
-      %span.light
-        = gfm escape_once(truncate(commit.title, length: 40))
-      #{time_ago_with_tooltip(commit.committed_date)}
+    %ul.list-unstyled
+      = render 'projects/commits/inline_commit', commit: commit, project: @project
   - else
     %p
       Cant find HEAD commit for this branch

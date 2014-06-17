@@ -1,8 +1,8 @@
 - if @merge_requests.any?
   - @merge_requests.group_by(&:target_project).each do |group|
-    .ui-box.ui-box-small
+    .panel.panel-default.panel-small
       - project = group[0]
-      .title
+      .panel-heading
         = link_to_project project
         = link_to 'show all', project_merge_requests_path(project), class: 'pull-right'
       %ul.well-list.mr-list

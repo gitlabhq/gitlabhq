@@ -21,6 +21,8 @@ class Dispatcher
         Issues.init()
       when 'projects:issues:show'
         new Issue()
+      when 'projects:milestones:show'
+        new Milestone()
       when 'projects:issues:new', 'projects:merge_requests:new'
         GitLab.GfmAutoComplete.setup()
       when 'dashboard:show'
@@ -32,8 +34,6 @@ class Dispatcher
         new Activities()
       when 'projects:new', 'projects:edit'
         new Project()
-      when 'projects:walls:show'
-        new Wall(project_id)
       when 'projects:teams:members:index'
         new TeamMembers()
       when 'groups:members'

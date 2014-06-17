@@ -1,6 +1,5 @@
-%ul.breadcrumb
+%ul.breadcrumb.repo-breadcrumb
   %li
-    %i.icon-angle-right
     = link_to project_tree_path(@project, @ref) do
       = @project.path
   - tree_breadcrumbs(tree, 6) do |title, path|
@@ -9,11 +8,11 @@
         = link_to truncate(title, length: 40), project_tree_path(@project, path)
       - else
         = link_to title, '#'
-  - if current_user && @repository.branch_names.include?(@ref) && current_user.can?(:push_code, @project)
+  - if current_user && can_push_branch?(@project, @ref)
     %li
       = link_to project_new_tree_path(@project, @id), title: 'New file', id: 'new-file-link' do
         %small
-          %i.icon-plus.light
+          %i.icon-plus
 
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
@@ -21,9 +20,9 @@
       %tr
         %th Name
         %th Last Update
-        %th.hidden-sm
-          Last Commit
-          %span.last-commit
+        %th.hidden-xs
+          .pull-left Last Commit
+          .last-commit.hidden-sm.pull-left
             &nbsp;
             %i.icon-angle-right
             &nbsp;
@@ -31,16 +30,14 @@
               = link_to @commit.short_id, project_commit_path(@project, @commit)
               &ndash;
               = truncate(@commit.title, length: 50)
-        %th= link_to "history", project_commits_path(@project, @id), class: "pull-right"
+          = link_to "history", project_commits_path(@project, @id), class: "pull-right"
 
     - if @path.present?
       %tr.tree-item
         %td.tree-item-file-name
-          = image_tag "file_empty.png", size: '16x16'
-          = link_to "..", project_tree_path(@project, up_dir_path(tree))
+          = link_to "..", project_tree_path(@project, up_dir_path(tree)), class: 'prepend-left-10'
         %td
-        %td
-        %td
+        %td.hidden-xs
 
     = render_tree(tree)
 

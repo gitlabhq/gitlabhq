@@ -4,7 +4,7 @@ module Gitlab
       attr_accessor :file_path, :ref
 
       def initialize(user, project, ref, file_path)
-        super user, project, git_timeout: 10.seconds
+        super user, project
         @file_path = file_path
         @ref = ref
       end

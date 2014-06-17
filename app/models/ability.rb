@@ -51,7 +51,7 @@ class Ability
                   nil
                 end
 
-        if group && group.has_projects_accessible_to?(nil)
+        if group && group.public_profile?
           [:read_group]
         else
           []
@@ -71,16 +71,16 @@ class Ability
       team = project.team
 
       # Rules based on role in project
-      if team.masters.include?(user)
+      if team.master?(user)
         rules += project_master_rules
 
-      elsif team.developers.include?(user)
+      elsif team.developer?(user)
         rules += project_dev_rules
 
-      elsif team.reporters.include?(user)
+      elsif team.reporter?(user)
         rules += project_report_rules
 
-      elsif team.guests.include?(user)
+      elsif team.guest?(user)
         rules += project_guest_rules
       end
 
@@ -188,6 +188,13 @@ class Ability
         rules << :read_group
       end
 
+      # Only group masters and group owners can create new projects in group
+      if group.has_master?(user) || group.has_owner?(user) || user.admin?
+        rules += [
+          :create_projects,
+        ]
+      end
+
       # Only group owner and administrators can manage group
       if group.has_owner?(user) || user.admin?
         rules += [
@@ -205,6 +212,7 @@ class Ability
       # Only namespace owner and administrators can manage it
       if namespace.owner == user || user.admin?
         rules += [
+          :create_projects,
           :manage_namespace
         ]
       end
@@ -228,7 +236,11 @@ class Ability
             :"modify_#{name}",
           ]
         else
-          subject.respond_to?(:project) ? project_abilities(user, subject.project) : []
+          if subject.respond_to?(:project)
+            project_abilities(user, subject.project)
+          else
+            []
+          end
         end
       end
     end

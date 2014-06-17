@@ -1,12 +1,14 @@
 = render "projects/commits/head"
 
-- if can? current_user, :push_code, @project
-  .pull-right
-    = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
-      %i.icon-add-sign
-      New tag
+%h3.page-title
+  Git Tags
+  - if can? current_user, :push_code, @project
+    .pull-right
+      = link_to new_project_tag_path(@project), class: 'btn btn-create new-tag-btn' do
+        %i.icon-add-sign
+        New tag
 
-%p
+%p.light
   Tags give the ability to mark specific points in history as being important
 %hr
 

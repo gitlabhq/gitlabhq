@@ -45,11 +45,7 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
 
   Then 'I see breadcrumb links' do
     page.should have_selector('ul.breadcrumb')
-    page.should have_selector('ul.breadcrumb span.divider', count: 3)
     page.should have_selector('ul.breadcrumb a', count: 4)
-
-    find('ul.breadcrumb li:nth-child(2) a')['href'].should match(/#{@project.path_with_namespace}\/commits\/master\z/)
-    find('ul.breadcrumb li:last a')['href'].should match(%r{master/app/models/project\.rb\z})
   end
 
   Then 'I see commits stats' do

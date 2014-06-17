@@ -1,15 +1,14 @@
-.ui-box
-  .title
-    %strong= @group.name
+.panel.panel-default
+  .panel-heading
     Projects (#{projects.count})
-    - if can? current_user, :manage_group, @group
-      %span.pull-right
+    - if can? current_user, :create_projects, @group
+      .panel-head-actions
         = link_to new_project_path(namespace_id: @group.id), class: "btn btn-new" do
           %i.icon-plus
           New project
   %ul.well-list
     - if projects.blank?
-      .nothing-here-block This groups has no projects yet
+      .nothing-here-block This group has no projects yet
     - projects.each do |project|
       %li.project-row
         = link_to project_path(project), class: dom_class(project) do
@@ -17,6 +16,6 @@
             = visibility_level_icon(project.visibility_level)
           %span.str-truncated
             %span.project-name
-              = truncate(project.name, length: 25)
+              = project.name
           %span.arrow
             %i.icon-angle-right

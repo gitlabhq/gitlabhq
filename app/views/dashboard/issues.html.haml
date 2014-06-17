@@ -7,7 +7,9 @@
 %hr
 
 .row
-  .col-md-3
+  .fixed.sidebar-expand-button.hidden-lg.hidden-md
+    %i.icon-list.icon-2x
+  .col-md-3.responsive-side
     = render 'shared/filter', entity: 'issue'
   .col-md-9
     = render 'shared/issues'

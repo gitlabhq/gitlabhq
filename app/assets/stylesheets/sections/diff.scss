@@ -11,7 +11,6 @@
 
     > span {
       font-family: $monospace_font;
-      font-size: 14px;
       line-height: 2;
     }
 
@@ -19,9 +18,7 @@
       float: right;
 
       .btn {
-        background-color: #EEE;
-        color: #666;
-        font-weight: bolder;
+        background-color: #FFF;
       }
     }
 
@@ -32,6 +29,7 @@
 
     .file-mode {
       font-family: $monospace_font;
+      margin-left: 10px;
     }
   }
   .diff-content {
@@ -49,6 +47,11 @@
       span.idiff {
         background-color: #AFA;
       }
+    }
+
+    .file-mode-changed {
+      padding: 10px;
+      color: #777;
     }
 
     table {
@@ -329,4 +332,9 @@
       }
     }
   }
+}
+
+.file-content .diff-file {
+  margin: 0;
+  border: none;
 }

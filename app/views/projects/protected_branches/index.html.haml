@@ -1,52 +1,50 @@
-= render "projects/commits/head"
-.row
-  .col-md-3
-    = render "projects/branches/filter"
-  .col-md-9
-    .bs-callout.bs-callout-info
-      %p Protected branches designed to prevent push for all except #{link_to "masters", help_permissions_path, class: "vlink"}.
-      %p This ability allows:
-      %ul
-        %li keep stable branches secured
-        %li forced code review before merge to protected branches
-        %li prevents branch from force push
-      %p Read more about project permissions #{link_to "here", help_permissions_path, class: "underlined-link"}
+%h3.page-title Protected branches
+%p.light This ability allows to keep stable branches secured and force code review before merge to protected branches
+%hr
 
-    - if can? current_user, :admin_project, @project
-      = form_for [@project, @protected_branch], html: { class: 'form-horizontal' } do |f|
-        -if @protected_branch.errors.any?
-          .alert.alert-danger
-            %ul
-              - @protected_branch.errors.full_messages.each do |msg|
-                %li= msg
+.bs-callout.bs-callout-info
+  %p Protected branches designed to
+  %ul
+    %li prevent push for all except #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"}.
+    %li prevent branch from force push
+    %li prevent branch from removal
+  %p Read more about project permissions #{link_to "here", help_page_path("permissions", "permissions"), class: "underlined-link"}
 
-        .form-group
-          = f.label :name, "Branch", class: 'control-label'
-          .col-sm-10
-            = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2"})
-        .form-actions
-          = f.submit 'Protect', class: "btn-create btn"
-    - unless @branches.empty?
-      %h5 Already Protected:
-      %ul.bordered-list.protected-branches-list
-        - @branches.each do |branch|
-          %li
-            %h4
-              = link_to project_commits_path(@project, branch.name) do
-                %strong= branch.name
-                - if @project.root_ref?(branch.name)
-                  %span.label.label-info default
-                %span.label.label-success
-                  %i.icon-lock
-              .pull-right
-                - if can? current_user, :admin_project, @project
-                  = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
+- if can? current_user, :admin_project, @project
+  = form_for [@project, @protected_branch], html: { class: 'form-horizontal' } do |f|
+    -if @protected_branch.errors.any?
+      .alert.alert-danger
+        %ul
+          - @protected_branch.errors.full_messages.each do |msg|
+            %li= msg
 
-            - if commit = branch.commit
-              = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
-                = commit.short_id
-              %span.light
-                = gfm escape_once(truncate(commit.title, length: 40))
-              #{time_ago_with_tooltip(commit.committed_date)}
-            - else
-              (branch was removed from repository)
+    .form-group
+      = f.label :name, "Branch", class: 'control-label'
+      .col-sm-10
+        = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2"})
+    .form-actions
+      = f.submit 'Protect', class: "btn-create btn"
+- unless @branches.empty?
+  %h5 Already Protected:
+  %ul.bordered-list.protected-branches-list
+    - @branches.each do |branch|
+      %li
+        %h4
+          = link_to project_commits_path(@project, branch.name) do
+            %strong= branch.name
+            - if @project.root_ref?(branch.name)
+              %span.label.label-info default
+            %span.label.label-success
+              %i.icon-lock
+          .pull-right
+            - if can? current_user, :admin_project, @project
+              = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
+
+        - if commit = branch.commit
+          = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
+            = commit.short_id
+          %span.light
+            = gfm escape_once(truncate(commit.title, length: 40))
+          #{time_ago_with_tooltip(commit.committed_date)}
+        - else
+          (branch was removed from repository)

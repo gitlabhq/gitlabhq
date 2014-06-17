@@ -1,4 +1,4 @@
-%ul.breadcrumb
+%ul.breadcrumb.repo-breadcrumb
   %li
     %i.icon-angle-right
     = link_to project_tree_path(@project, @ref) do
@@ -8,7 +8,7 @@
       - if path
         - if path.end_with?(@path)
           = link_to project_blob_path(@project, path) do
-            %span.cblue
+            %strong
               = truncate(title, length: 40)
         - else
           = link_to truncate(title, length: 40), project_tree_path(@project, path)

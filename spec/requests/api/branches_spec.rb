@@ -91,7 +91,6 @@ describe API::API, api: true  do
     end
   end
 
-
   describe "POST /projects/:id/repository/branches" do
     it "should create a new branch" do
       post api("/projects/#{project.id}/repository/branches", user),
@@ -110,6 +109,28 @@ describe API::API, api: true  do
         ref: '621491c677087aa243f165eab467bfdfbee00be1'
 
       response.status.should == 403
+    end
+  end
+
+  describe "DELETE /projects/:id/repository/branches/:branch" do
+    before { Repository.any_instance.stub(rm_branch: true) }
+
+    it "should remove branch" do
+      delete api("/projects/#{project.id}/repository/branches/new_design", user)
+      response.status.should == 200
+    end
+
+    it "should remove protected branch" do
+      project.protected_branches.create(name: 'new_design')
+      delete api("/projects/#{project.id}/repository/branches/new_design", user)
+      response.status.should == 405
+      json_response['message'].should == 'Protected branch cant be removed'
+    end
+
+    it "should not remove HEAD branch" do
+      delete api("/projects/#{project.id}/repository/branches/master", user)
+      response.status.should == 405
+      json_response['message'].should == 'Cannot remove HEAD branch'
     end
   end
 end

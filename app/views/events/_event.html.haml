@@ -1,6 +1,6 @@
 - if event.proper?
   .event-item{class: "#{event.body? ? "event-block" : "event-inline" }"}
-    %span.cgray.pull-right
+    .event-item-timestamp
       #{time_ago_with_tooltip(event.created_at)}
 
     = cache event do

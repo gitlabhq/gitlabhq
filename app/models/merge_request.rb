@@ -113,6 +113,7 @@ class MergeRequest < ActiveRecord::Base
   # Closed scope for merge request should return
   # both merged and closed mr's
   scope :closed, -> { with_states(:closed, :merged) }
+  scope :declined, -> { with_states(:closed) }
 
   def validate_branches
     if target_project == source_project && target_branch == source_branch
@@ -212,10 +213,6 @@ class MergeRequest < ActiveRecord::Base
     target_project != source_project
   end
 
-  def disallow_source_branch_removal?
-    source_project.root_ref?(source_branch) || source_project.protected_branches.include?(source_branch)
-  end
-
   def project
     target_project
   end
@@ -223,7 +220,9 @@ class MergeRequest < ActiveRecord::Base
   # Return the set of issues that will be closed if this merge request is accepted.
   def closes_issues
     if target_branch == project.default_branch
-      commits.map { |c| c.closes_issues(project) }.flatten.uniq.sort_by(&:id)
+      issues = commits.flat_map { |c| c.closes_issues(project) }
+      issues += Gitlab::ClosingIssueExtractor.closed_by_message_in_project(description, project)
+      issues.uniq.sort_by(&:id)
     else
       []
     end

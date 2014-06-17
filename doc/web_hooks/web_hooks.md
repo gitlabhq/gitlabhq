@@ -1,15 +1,14 @@
+# Web hooks
+
 Project web hooks allow you to trigger an URL if new code is pushed or a new issue is created.
 
----
+You can configure web hooks to listen for specific events like pushes, issues or merge requests. GitLab will send a POST request with data to the web hook URL.
 
-You can configure web hooks to listen for specific events like pushes, issues or merge requests.
-GitLab will send a POST request with data to the web hook URL.
 Web hooks can be used to update an external issue tracker, trigger CI builds, update a backup mirror, or even deploy to your production server.
+
 If you send a web hook to an SSL endpoint [the certificate will not be verified](https://gitlab.com/gitlab-org/gitlab-ce/blob/ccd617e58ea71c42b6b073e692447d0fe3c00be6/app/models/web_hook.rb#L35) since many people use self-signed certificates.
 
----
-
-#### Push events
+## Push events
 
 Triggered when you push to the repository except when pushing tags.
 
@@ -55,7 +54,7 @@ Triggered when you push to the repository except when pushing tags.
 }
 ```
 
-#### Issues events
+## Issues events
 
 Triggered when a new issue is created or an existing issue was updated/closed/reopened.
 
@@ -82,7 +81,7 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 }
 ```
 
-#### Merge request events
+## Merge request events
 
 Triggered when a new merge request is created or an existing merge request was updated/merged/closed.
 

@@ -25,8 +25,13 @@ module TreeHelper
   #
   # type - String type of the tree item; either 'folder' or 'file'
   def tree_icon(type)
-    image = type == 'folder' ? 'file_dir.png' : 'file_txt.png'
-    image_tag(image, size: '16x16')
+    icon_class = if type == 'folder'
+                   'icon-folder-close'
+                 else
+                   'icon-file-alt'
+                 end
+
+    content_tag :i, nil, class: icon_class
   end
 
   def tree_hex_class(content)

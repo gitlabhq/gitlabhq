@@ -13,11 +13,14 @@
       %br
       %small member since #{@user.created_at.stamp("Nov 12, 2031")}
     .clearfix
-    %h4 Groups:
-    = render 'groups', groups: @groups
-    %hr
+
+    - if @groups.any?
+      %h4 Groups:
+      = render 'groups', groups: @groups
+      %hr
     %h4 User Activity:
     = render @events
   .col-md-4
     = render 'profile', user: @user
-    = render 'projects'
+    - if @projects.present?
+      = render 'projects', projects: @projects

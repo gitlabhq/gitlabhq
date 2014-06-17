@@ -1,28 +1,27 @@
 module API
   module Entities
-    class User < Grape::Entity
-      expose :id, :username, :email, :name, :bio, :skype, :linkedin, :twitter, :website_url,
-             :theme_id, :color_scheme_id, :state, :created_at, :extern_uid, :provider
-      expose :is_admin?, as: :is_admin
-      expose :can_create_group?, as: :can_create_group
-      expose :can_create_project?, as: :can_create_project
-
-      expose :avatar_url do |user, options|
-        if user.avatar.present?
-          user.avatar.url
-        end
-      end
-    end
-
     class UserSafe < Grape::Entity
       expose :name, :username
     end
 
-    class UserBasic < Grape::Entity
-      expose :id, :username, :email, :name, :state, :created_at
+    class UserBasic < UserSafe
+      expose :id, :state, :avatar_url
     end
 
-    class UserLogin < User
+    class User < UserBasic
+      expose :created_at
+      expose :is_admin?, as: :is_admin
+      expose :bio, :skype, :linkedin, :twitter, :website_url
+    end
+
+    class UserFull < User
+      expose :email
+      expose :theme_id, :color_scheme_id, :extern_uid, :provider
+      expose :can_create_group?, as: :can_create_group
+      expose :can_create_project?, as: :can_create_project
+    end
+
+    class UserLogin < UserFull
       expose :private_token
     end
 
@@ -48,7 +47,7 @@ module API
       expose :owner, using: Entities::UserBasic, unless: ->(project, options) { project.group }
       expose :name, :name_with_namespace
       expose :path, :path_with_namespace
-      expose :issues_enabled, :merge_requests_enabled, :wall_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
+      expose :issues_enabled, :merge_requests_enabled, :wiki_enabled, :snippets_enabled, :created_at, :last_activity_at
       expose :namespace
       expose :forked_from_project, using: Entities::ForkedFromProject, :if => lambda{ | project, options | project.forked? }
     end
@@ -201,6 +200,31 @@ module API
 
     class Label < Grape::Entity
       expose :name
+    end
+
+    class RepoDiff < Grape::Entity
+      expose :old_path, :new_path, :a_mode, :b_mode, :diff
+      expose :new_file, :renamed_file, :deleted_file
+    end
+
+    class Compare < Grape::Entity
+      expose :commit, using: Entities::RepoCommit do |compare, options|
+        if compare.commit
+          Commit.new compare.commit
+        end
+      end
+      expose :commits, using: Entities::RepoCommit do |compare, options|
+        Commit.decorate compare.commits
+      end
+      expose :diffs, using: Entities::RepoDiff do |compare, options|
+        compare.diffs
+      end
+
+      expose :compare_timeout do |compare, options|
+        compare.timeout
+      end
+
+      expose :same, as: :compare_same_ref
     end
   end
 end

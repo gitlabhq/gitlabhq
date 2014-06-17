@@ -3,12 +3,7 @@
 .clgray { color: #BBB }
 .cred { color: #D12F19 }
 .cgreen { color: #4a2 }
-.cblue { color: #29A }
-.cblack { color: #111 }
 .cdark { color: #444 }
-.camber { color: #ffc000 }
-.cwhite { color: #fff!important }
-.bgred { background: #F2DEDE!important }
 
 /** COMMON CLASSES **/
 .prepend-top-10 { margin-top:10px }
@@ -60,23 +55,12 @@ pre {
 
 .dropdown-menu > li > a:hover,
 .dropdown-menu > li > a:focus {
-  background: #29b;
+  background: $bg_style_color;
   color: #FFF
 }
 
-.breadcrumb > li + li:before {
-  content: "/";
-  padding: 0;
-  color: #666;
-}
-
 .str-truncated {
-  display: inline-block;
-  overflow: hidden;
-  text-overflow: ellipsis;
-  vertical-align: top;
-  white-space: nowrap;
-  max-width: 82%;
+  @include str-truncated;
 }
 
 /** FLASH message **/

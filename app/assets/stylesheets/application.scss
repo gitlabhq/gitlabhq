@@ -10,6 +10,7 @@
  *= require_self
  *= require nprogress
  *= require nprogress-bootstrap
+ *= require dropzone/basic
 */
 
 @import "main/*";
@@ -33,6 +34,7 @@
 /**
  * Page specific styles (issues, projects etc):
  */
+
 @import "sections/*";
 
 /**
@@ -49,3 +51,8 @@
  * Styles for JS behaviors.
  */
 @import "behaviors.scss";
+
+/**
+* Styles for responsive sidebar
+*/
+@import "semantic-ui/modules/sidebar"

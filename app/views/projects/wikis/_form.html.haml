@@ -15,7 +15,6 @@
     .col-sm-2
     .col-sm-10
       %p.cgray
-        Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
         To link to a (new) page you can just type
         %code [Link Title](page-slug)
         \.
@@ -23,8 +22,12 @@
   .form-group
     = f.label :content, class: 'control-label'
     .col-sm-10
-      = f.text_area :content, class: 'form-control js-gfm-input', rows: 18
-
+      = f.text_area :content, class: 'form-control js-gfm-input markdown-area', rows: 18
+      .col-sm-12.hint
+        .pull-left Wiki content is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}
+        .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+      .clearfix
+      .error-alert
   .form-group
     = f.label :commit_message, class: 'control-label'
     .col-sm-10= f.text_field :message, class: 'form-control', rows: 18
@@ -36,3 +39,7 @@
     - else
       = f.submit 'Create page', class: "btn-create btn"
       = link_to "Cancel", project_wiki_path(@project, :home), class: "btn btn-cancel"
+
+:javascript
+  window.project_image_path_upload = "#{upload_image_project_path @project}";
+

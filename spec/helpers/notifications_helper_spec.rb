@@ -8,7 +8,7 @@ describe NotificationsHelper do
       before { notification.stub(disabled?: true) }
 
       it "has a red icon" do
-        notification_icon(notification).should match('class="icon-volume-off cred"')
+        notification_icon(notification).should match('class="icon-volume-off ns-mute"')
       end
     end
 
@@ -16,7 +16,7 @@ describe NotificationsHelper do
       before { notification.stub(participating?: true) }
 
       it "has a blue icon" do
-        notification_icon(notification).should match('class="icon-volume-down cblue"')
+        notification_icon(notification).should match('class="icon-volume-down ns-part"')
       end
     end
 
@@ -24,12 +24,12 @@ describe NotificationsHelper do
       before { notification.stub(watch?: true) }
 
       it "has a green icon" do
-        notification_icon(notification).should match('class="icon-volume-up cgreen"')
+        notification_icon(notification).should match('class="icon-volume-up ns-watch"')
       end
     end
 
     it "has a blue icon" do
-      notification_icon(notification).should match('class="icon-circle-blank cblue"')
+      notification_icon(notification).should match('class="icon-circle-blank ns-default"')
     end
   end
 end

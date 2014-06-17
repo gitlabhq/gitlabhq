@@ -2,7 +2,7 @@
   Web hooks
 
 %p.light
-  #{link_to "Web hooks ", help_web_hooks_path, class: "vlink"} can be
+  #{link_to "Web hooks ", help_page_path("web_hooks", "web_hooks"), class: "vlink"} can be
   used for binding events when something is happening within the project.
 
 %hr.clearfix
@@ -51,8 +51,8 @@
     = f.submit "Add Web Hook", class: "btn btn-create"
 
 -if @hooks.any?
-  .ui-box
-    .title
+  .panel.panel-default
+    .panel-heading
       Web hooks (#{@hooks.count})
     %ul.well-list
       - @hooks.each do |hook|

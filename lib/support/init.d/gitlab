@@ -12,6 +12,7 @@
 # Default-Stop:      0 1 6
 # Short-Description: GitLab git repository management
 # Description:       GitLab git repository management
+# chkconfig: - 85 14
 ### END INIT INFO
 
 
@@ -167,14 +168,14 @@ start_gitlab() {
     # Remove old socket if it exists
     rm -f "$socket_path"/gitlab.socket 2>/dev/null
     # Start the web server
-    RAILS_ENV=$RAILS_ENV script/web start
+    RAILS_ENV=$RAILS_ENV bin/web start
   fi
 
   # If sidekiq is already running, don't start it again.
   if [ "$sidekiq_status" = "0" ]; then
     echo "The Sidekiq job dispatcher is already running with pid $spid, not restarting"
   else
-    RAILS_ENV=$RAILS_ENV script/background_jobs start &
+    RAILS_ENV=$RAILS_ENV bin/background_jobs start &
   fi
 
   # Wait for the pids to be planted
@@ -197,11 +198,11 @@ stop_gitlab() {
 
   # If the Unicorn web server is running, tell it to stop;
   if [ "$web_status" = "0" ]; then
-     RAILS_ENV=$RAILS_ENV script/web stop
+     RAILS_ENV=$RAILS_ENV bin/web stop
   fi
   # And do the same thing for the Sidekiq.
   if [ "$sidekiq_status" = "0" ]; then
-    RAILS_ENV=$RAILS_ENV script/background_jobs stop
+    RAILS_ENV=$RAILS_ENV bin/background_jobs stop
   fi
 
   # If something needs to be stopped, lets wait for it to stop. Never use SIGKILL in a script.
@@ -253,10 +254,10 @@ reload_gitlab(){
     exit 1
   fi
   printf "Reloading GitLab Unicorn configuration... "
-  RAILS_ENV=$RAILS_ENV script/web reload
+  RAILS_ENV=$RAILS_ENV bin/web reload
   echo "Done."
   echo "Restarting GitLab Sidekiq since it isn't capable of reloading its config..."
-  RAILS_ENV=$RAILS_ENV script/background_jobs restart
+  RAILS_ENV=$RAILS_ENV bin/background_jobs restart
 
   wait_for_pids
   print_status

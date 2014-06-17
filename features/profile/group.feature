@@ -1,3 +1,4 @@
+@profile
 Feature: Profile Group
   Background:
     Given I sign in as "John Doe"

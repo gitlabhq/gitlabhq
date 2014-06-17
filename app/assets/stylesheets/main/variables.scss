@@ -1,37 +1,39 @@
-/**
+/*
  * General Colors
  */
-$primary_color: #2FA0BB;
-$link_color: #3A89A3;
 $style_color: #474D57;
 $bg_style_color: #2299BB;
-$list-group-active-bg: $bg_style_color;
 $hover: #D9EDF7;
+
+/*
+ * Link colors
+ */
+$link_color: #446e9b;
+$link_hover_color: #2FA0BB;
 
 /*
  * Success colors (green)
  */
-$border_success: #4cae4c;
-$bg_success: #5cb85c;
-$bg_light_success: #dff0d8;
-$color_success: #3c763d;
+$border_success: #019875;
+$bg_success: #019875;
 
 /*
  * Danger colors (red)
  */
 $border_danger: #d43f3a;
 $bg_danger: #d9534f;
-$bg_light_danger: #f2dede;
-$color_danger: #a94442;
 
 /*
  * Primary colors (blue)
  */
-$border_primary: #358ebd;
-$bg_primary: #429bca;
-$bg_light_primary: #d9edf7;
-$color_primary: #31708f;
+$border_primary: #446e9b;
+$bg_primary: #446e9b;
 
+/*
+ * Warning colors (yellow)
+ */
+$bg_warning: #EB9532;
+$border_warning: #EB9532;
 
 /**
  * Commit Diff Colors

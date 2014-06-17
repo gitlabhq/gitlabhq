@@ -5,7 +5,7 @@
   %p.light
     Members of group have access to all group projects.
     Read more about permissions
-    %strong= link_to "here", help_permissions_path, class: "vlink"
+    %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
 %hr
 
@@ -28,8 +28,8 @@
     .js-toggle-content.hide.new-group-member-holder
       = render "new_group_member"
 
-.ui-box.prepend-top-20
-  .title
+.panel.panel-default.prepend-top-20
+  .panel-heading
     %strong #{@group.name}
     group members
     %small

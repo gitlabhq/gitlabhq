@@ -138,7 +138,7 @@ module SharedDiffNote
 
   Then 'I should see the diff comment edit button' do
     within(".diff-file") do
-      page.should have_css(".js-note-edit-button", visible: true)
+      page.should have_css(".js-note-write-button", visible: true)
     end
   end
 

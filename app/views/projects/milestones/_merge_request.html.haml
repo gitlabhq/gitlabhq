@@ -1,5 +1,5 @@
-%li
-  = link_to [@project, merge_request] do
-    %span.label.label-info ##{merge_request.iid}
-  &ndash;
-  = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
+%li{ id: dom_id(merge_request, 'sortable'),  class: 'mr-row', 'data-iid' => merge_request.iid, 'data-url' => project_merge_request_path(@project, merge_request) }
+  %span.str-truncated
+    = link_to [@project, merge_request] do
+      %span.cgray ##{merge_request.iid}
+    = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]

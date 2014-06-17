@@ -2,8 +2,11 @@
   .dashboard.row
     .activities.col-md-8
       = render 'activities'
-    .side.col-md-4.hidden-sm.hidden-xs
+    .side.col-md-4.left.responsive-side
       = render 'sidebar'
+
+  .fixed.sidebar-expand-button.hidden-lg.hidden-md
+    %i.icon-list.icon-2x
 
 - else
   = render "zero_authorized_projects"

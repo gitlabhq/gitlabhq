@@ -1,10 +1,31 @@
 = render "projects/commits/head"
-.row
-  .col-md-3
-    = render "filter"
-  .col-md-9
-    - unless @branches.empty?
-      %ul.bordered-list.top-list.all-branches
-        - @branches.each do |branch|
-          = render "projects/branches/branch", branch: branch
-      = paginate @branches, theme: 'gitlab'
+%h3.page-title
+  Branches
+  .pull-right
+    - if can? current_user, :push_code, @project
+      = link_to new_project_branch_path(@project), class: 'btn btn-create' do
+        %i.icon-add-sign
+        New branch
+      &nbsp;
+    .dropdown.inline
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %span.light sort:
+        - if @sort.present?
+          = @sort.humanize
+        - else
+          Name
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to project_branches_path(sort: nil) do
+            Name
+          = link_to project_branches_path(sort: 'recently_updated') do
+            Recently updated
+          = link_to project_branches_path(sort: 'last_updated') do
+            Last updated
+%hr
+- unless @branches.empty?
+  %ul.bordered-list.top-list.all-branches
+    - @branches.each do |branch|
+      = render "projects/branches/branch", branch: branch
+  = paginate @branches, theme: 'gitlab'

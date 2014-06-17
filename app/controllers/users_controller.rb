@@ -4,12 +4,24 @@ class UsersController < ApplicationController
 
   def show
     @user = User.find_by_username!(params[:username])
-    @projects = @user.authorized_projects.accessible_to(current_user)
-    if !current_user && @projects.empty?
+
+    unless current_user || @user.public_profile?
       return authenticate_user!
     end
-    @groups = @user.groups.accessible_to(current_user)
-    @events = @user.recent_events.where(project_id: @projects.pluck(:id)).limit(20)
+
+    # Projects user can view
+    authorized_projects_ids = ProjectsFinder.new.execute(current_user).pluck(:id)
+
+    @projects = @user.personal_projects.
+      where(id: authorized_projects_ids)
+
+    # Collect only groups common for both users
+    @groups = @user.groups & GroupsFinder.new.execute(current_user)
+
+    # Get user activity feed for projects common for both users
+    @events = @user.recent_events.
+      where(project_id: authorized_projects_ids).limit(20)
+
     @title = @user.name
   end
 

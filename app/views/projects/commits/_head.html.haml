@@ -1,15 +1,13 @@
 %ul.nav.nav-tabs
-  %li= render partial: 'shared/ref_switcher', locals: {destination: 'commits'}
-
   = nav_link(controller: [:commit, :commits]) do
     = link_to 'Commits', project_commits_path(@project, @repository.root_ref)
   = nav_link(controller: :compare) do
     = link_to 'Compare', project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref)
 
   = nav_link(html_options: {class: branches_tab_class}) do
-    = link_to recent_project_branches_path(@project) do
+    = link_to project_branches_path(@project) do
       Branches
-      %span.badge= @repository.branches.length
+      %span.badge.js-totalbranch-count= @repository.branches.size
 
   = nav_link(controller: :tags) do
     = link_to project_tags_path(@project) do
@@ -19,9 +17,3 @@
   = nav_link(controller: :repositories, action: :stats) do
     = link_to stats_project_repository_path(@project) do
       Stats
-
-
-  - if current_user && current_controller?(:commits) && current_user.private_token
-    %li.pull-right.hidden-sm
-      = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed" do
-        %i.icon-rss

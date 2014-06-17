@@ -48,7 +48,7 @@ class ProjectSnippets < Spinach::FeatureSteps
   end
 
   And 'I click link "Remove Snippet"' do
-    click_link "Remove snippet"
+    click_link "remove"
   end
 
   And 'I submit new snippet "Snippet three"' do

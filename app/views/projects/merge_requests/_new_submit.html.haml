@@ -23,8 +23,11 @@
       .form-group
         .light
           = f.label :description, "Description"
-        = f.text_area :description, class: "form-control js-gfm-input", rows: 10
-        %p.hint Description is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        = f.text_area :description, class: "form-control js-gfm-input markdown-area", rows: 10
+        .clearfix.hint
+          .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
+          .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+        .error-alert
       .form-group
         .issue-assignee
           = f.label :assignee_id do
@@ -33,7 +36,7 @@
           %div
             = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
             &nbsp;
-            = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+            = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
       .form-group
         .issue-milestone
           = f.label :milestone_id do
@@ -54,8 +57,8 @@
       = f.submit 'Submit merge request', class: "btn btn-create"
 
 .mr-compare
-  %div.ui-box
-    .title
+  %div.panel.panel-default
+    .panel-heading
       Commits (#{@commits.count})
     - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
       %ul.well-list
@@ -80,3 +83,5 @@
     $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
+
+  window.project_image_path_upload = "#{upload_image_project_path @project}";

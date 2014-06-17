@@ -1,3 +1,5 @@
+# Groups
+
 ## List project groups
 
 Get a list of groups. (As user: my groups, as admin: all groups)

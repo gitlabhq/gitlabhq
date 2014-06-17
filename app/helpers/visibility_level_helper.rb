@@ -2,11 +2,11 @@ module VisibilityLevelHelper
   def visibility_level_color(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE
-      'cgreen'
+      'vs-private'
     when Gitlab::VisibilityLevel::INTERNAL
-      'camber'
+      'vs-internal'
     when Gitlab::VisibilityLevel::PUBLIC
-      'cblue'
+      'vs-public'
     end
   end
 

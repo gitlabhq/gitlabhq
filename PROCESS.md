@@ -13,7 +13,7 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 - Monitors all issues for feedback (but especially ones commented on since automatically watching them)
 - Closes issues with no feedback from the reporter for two weeks
 
-### Merge request officers
+### Merge marshal
 
 - Responds to merge requests the issue team mentions them in and monitors for new merge requests
 - Provides feedback to the merge request submitter to improve the merge request (style, tests, etc.)
@@ -24,9 +24,9 @@ Below we describe the contributing process to GitLab for two reasons. So that co
 ## Priorities of the issue team
 
 1. Mentioning people (critical)
-2. Workflow labels (normal)
-3. Functional labels (minor)
-4. Assigning issues (avoid if possible)
+1. Workflow labels (normal)
+1. Functional labels (minor)
+1. Assigning issues (avoid if possible)
 
 ## Mentioning people
 
@@ -36,11 +36,11 @@ The most important thing is making sure valid issues receive feedback from the d
 
 Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to reevaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
 
-- _Awaiting feedback_: Feedback pending from the reporter
-- _Awaiting confirmation of fix_: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
-- _Attached MR_: There is a MR attached and the discussion should happen there
-  - We need to let issues stay in sync with the MR's. We can do this with a "Closing #XXXX" or "Fixes #XXXX" comment in the MR. We can't close the issue when there is a merge request because sometimes a MR is not good and we just close the MR, then the issue must stay.
-- _Awaiting developer action/feedback_: Issue needs to be fixed or clarified by a developer
+-   *Awaiting feedback*: Feedback pending from the reporter
+-   *Awaiting confirmation of fix*: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
+-   *Attached MR*: There is a MR attached and the discussion should happen there
+    - We need to let issues stay in sync with the MR's. We can do this with a "Closing #XXXX" or "Fixes #XXXX" comment in the MR. We can't close the issue when there is a merge request because sometimes a MR is not good and we just close the MR, then the issue must stay.
+-   *Awaiting developer action/feedback*: Issue needs to be fixed or clarified by a developer
 
 ## Functional labels
 
@@ -51,12 +51,13 @@ These labels describe what development specialities are involved such as: Postgr
 If an issue is complex and needs the attention of a specific person, assignment is a good option but assigning issues might discourage other people from contributing to that issue. We need all the contributions we can get so this should never be discouraged. Also, an assigned person might not have time for a few weeks, so others should feel free to takeover.
 
 ## Label colors
-- Light orange `#fef2c0`: workflow labels for issue team members (awaiting feedback, awaiting confirmation of fix)
-- Bright orange `#eb6420`: workflow labels for core team members (attached MR, awaiting developer action/feedback)
-- Light blue `#82C5FF`: functional labels
-- Green labels `#009800`: issues that can generally be ignored. For example, issues given the following labels normally can be closed immediately:
-  - Feature request (see copy & paste response: [Feature requests](#feature-requests))
-  - Support (see copy & paste response: [Support requests and configuration questions](#support-requests-and-configuration-questions)
+
+-   Light orange `#fef2c0`: workflow labels for issue team members (awaiting feedback, awaiting confirmation of fix)
+-   Bright orange `#eb6420`: workflow labels for core team members (attached MR, awaiting developer action/feedback)
+-   Light blue `#82C5FF`: functional labels
+-   Green labels `#009800`: issues that can generally be ignored. For example, issues given the following labels normally can be closed immediately:
+    - Feature request (see copy & paste response: [Feature requests](#feature-requests))
+    - Support (see copy & paste response: [Support requests and configuration questions](#support-requests-and-configuration-questions)
 
 ## Be kind
 
@@ -102,8 +103,4 @@ This merge request has been closed because a request for more information has no
 
 ### Accepting merge requests
 
-Is there a request on [the feature request forum](http://feedback.gitlab.com/forums/176466-general) that is similar to this?
-If so, can you make a comment with a link to it?
-Please be aware that new functionality that is not marked [accepting merge/pull requests](http://feedback.gitlab.com/forums/176466-general/status/796455) on the forum might not make it into GitLab.
-You might be asked to make changes and even after implementing them your feature might still be declined.
-If you want to reduce the chance of this happening please have a discussion in the forum first.
+Is there a request on [the feature request forum](http://feedback.gitlab.com/forums/176466-general) that is similar to this? If so, can you make a comment with a link to it? Please be aware that new functionality that is not marked [accepting merge/pull requests](http://feedback.gitlab.com/forums/176466-general/status/796455) on the forum might not make it into GitLab. You might be asked to make changes and even after implementing them your feature might still be declined. If you want to reduce the chance of this happening please have a discussion in the forum first.

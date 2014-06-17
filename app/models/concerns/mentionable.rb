@@ -50,7 +50,7 @@ module Mentionable
     matches.each do |match|
       identifier = match.delete "@"
       if has_project
-        id = project.team.members.find { |u| u.username == identifier }.try(:id)
+        id = project.team.members.find_by(username: identifier).try(:id)
       else
         id = User.where(username: identifier).pluck(:id).first
       end

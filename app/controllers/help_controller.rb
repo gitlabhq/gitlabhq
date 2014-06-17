@@ -2,12 +2,12 @@ class HelpController < ApplicationController
   def index
   end
 
-  def api
+  def show
     @category = params[:category]
-    @category = "README" if @category.blank?
+    @file = params[:file]
 
-    if File.exists?(Rails.root.join('doc', 'api', @category + '.md'))
-      render 'api'
+    if File.exists?(Rails.root.join('doc', @category, @file + '.md'))
+      render 'show'
     else
       not_found!
     end

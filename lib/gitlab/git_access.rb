@@ -44,14 +44,21 @@ module Gitlab
     def push_allowed?(user, project, ref, oldrev, newrev, forced_push)
       if user && user_allowed?(user)
         action = if project.protected_branch?(ref)
-                    if forced_push.to_s == 'true'
-                      :force_push_code_to_protected_branches
-                    else
-                      :push_code_to_protected_branches
-                    end
-                  else
-                    :push_code
-                  end
+                   # we dont allow force push to protected branch
+                   if forced_push.to_s == 'true'
+                     :force_push_code_to_protected_branches
+                   # and we dont allow remove of protected branch
+                   elsif newrev =~ /0000000/
+                     :remove_protected_branches
+                   else
+                     :push_code_to_protected_branches
+                   end
+                 elsif project.repository && project.repository.tag_names.include?(ref)
+                   # Prevent any changes to existing git tag unless user has permissions
+                   :admin_project
+                 else
+                   :push_code
+                 end
         user.can?(action, project) &&
           pass_git_hooks?(user, project, ref, oldrev, newrev)
       else

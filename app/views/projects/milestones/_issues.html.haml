@@ -1,11 +1,6 @@
-.ui-box
-  .title= title
-  %ul.well-list
-    - issues.each do |issue|
-      %li
-        = link_to [@project, issue] do
-          %span.label{class: issue.closed? ? 'label-danger' : 'label-info'} ##{issue.iid}
-        = link_to_gfm truncate(issue.title, length: 40), [@project, issue]
-        - if issue.assignee
-          .pull-right
-            = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
+.panel.panel-default
+  .panel-heading= title
+  %ul{ class: "well-list issues-sortable-list", id: "issues-list-#{id}", "data-state" => id }
+    - issues.sort_by(&:position).each do |issue|
+      = render 'issue', issue: issue
+    %li.light.ui-sort-disabled Drag and drop available

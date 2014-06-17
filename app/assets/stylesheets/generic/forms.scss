@@ -82,6 +82,7 @@ label {
   font-family: $monospace_font;
   $left: 12px;
   .max-width-marker {
+    width: 72ch;
     color: rgba(0, 0, 0, 0.0);
     font-family: inherit;
     left: $left;
@@ -97,4 +98,8 @@ label {
     position: relative;
     z-index: 2;
   }
+}
+
+.fieldset-form fieldset {
+  margin-bottom: 20px;
 }

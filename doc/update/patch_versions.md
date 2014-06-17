@@ -1,4 +1,6 @@
-# Universal update guide for patch versions. For example from 6.2.0 to 6.2.1, also see the [semantic versioning specification](http://semver.org/).
+# Universal update guide for patch versions
+
+For example from 6.2.0 to 6.2.1, also see the [semantic versioning specification](http://semver.org/).
 
 ### 0. Backup
 

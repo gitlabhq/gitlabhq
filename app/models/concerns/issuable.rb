@@ -24,6 +24,8 @@ module Issuable
     scope :unassigned, -> { where("assignee_id IS NULL") }
     scope :of_projects, ->(ids) { where(project_id: ids) }
     scope :opened, -> { with_state(:opened, :reopened) }
+    scope :only_opened, -> { with_state(:opened) }
+    scope :only_reopened, -> { with_state(:reopened) }
     scope :closed, -> { with_state(:closed) }
 
     delegate :name,
@@ -42,7 +44,7 @@ module Issuable
 
   module ClassMethods
     def search(query)
-      where("title like :query", query: "%#{query}%")
+      where("LOWER(title) like :query", query: "%#{query.downcase}%")
     end
 
     def sort(method)

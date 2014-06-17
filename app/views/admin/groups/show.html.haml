@@ -1,16 +1,18 @@
 %h3.page-title
   Group: #{@group.name}
 
-  = link_to edit_admin_group_path(@group), class: "btn btn-small pull-right" do
+  = link_to edit_admin_group_path(@group), class: "btn pull-right" do
     %i.icon-edit
     Edit
 %hr
 .row
   .col-md-6
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Group info:
       %ul.well-list
+        %li
+          = image_tag group_icon(@group.path), class: "avatar s60"
         %li
           %span.light Name:
           %strong= @group.name
@@ -29,13 +31,14 @@
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
-    .ui-box
-      .title
-        Projects
-        %small
-          (#{@group.projects.count})
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          Projects
+          %span.badge
+            #{@group.projects.count}
       %ul.well-list
-        - @group.projects.sort_by(&:name).each do |project|
+        - @projects.each do |project|
           %li
             %strong
               = link_to project.name_with_namespace, [:admin, project]
@@ -43,6 +46,8 @@
                 = repository_size(project)
             %span.pull-right.light
               %span.monospace= project.path_with_namespace + ".git"
+      .panel-footer
+        = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
     - if @group.shared_projects.any?
       .ui-box
@@ -61,13 +66,13 @@
                 %span.monospace= project.path_with_namespace + ".git"
 
   .col-md-6
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Add user(s) to the group:
-      .body.form-holder
+      .panel-body.form-holder
         %p.light
           Read more about project permissions
-          %strong= link_to "here", help_permissions_path, class: "vlink"
+          %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
 
         = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
           %div
@@ -76,14 +81,14 @@
             = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select select2"
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
-    .ui-box
-      .title
-        %strong #{@group.name}
-        Group Members
-        %small
-          (#{@group.users_groups.count})
+    .panel.panel-default
+      .panel-heading
+        %h3.panel-title
+          Members
+          %span.badge
+            #{@group.users_groups.count}
       %ul.well-list.group-users-list
-        - @group.users_groups.order('group_access DESC').each do |member|
+        - @members.each do |member|
           - user = member.user
           %li{class: dom_class(user)}
             .list-item-name
@@ -93,3 +98,5 @@
               = member.human_access
               = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                 %i.icon-minus.icon-white
+      .panel-footer
+        = paginate @members, param_name: 'members_page', theme: 'gitlab'

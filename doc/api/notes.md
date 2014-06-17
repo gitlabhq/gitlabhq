@@ -1,65 +1,6 @@
-Notes can be wall notes or comments on snippets, issues or merge requests.
+# Notes
 
-## Wall
-
-### List project wall notes
-
-Get a list of project wall notes.
-
-```
-GET /projects/:id/notes
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-
-```json
-[
-  {
-    "id": 522,
-    "body": "The solution is rather tricky",
-    "attachment": null,
-    "author": {
-      "id": 1,
-      "username": "john_smith",
-      "email": "john@example.com",
-      "name": "John Smith",
-      "state": "active",
-      "created_at": "2012-05-23T08:00:58Z"
-    },
-    "created_at": "2012-11-27T19:16:44Z"
-  }
-]
-```
-
-### Get single wall note
-
-Returns a single wall note.
-
-```
-GET /projects/:id/notes/:note_id
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `note_id` (required) - The ID of a wall note
-
-
-### Create new wall note
-
-Creates a new wall note.
-
-```
-POST /projects/:id/notes
-```
-
-Parameters:
-
-+ `id` (required) - The ID of a project
-+ `body` (required) - The content of a note
-
+Notes are comments on snippets, issues or merge requests.
 
 ## Issues
 

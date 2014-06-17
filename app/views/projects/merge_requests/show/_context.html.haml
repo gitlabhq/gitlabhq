@@ -1,6 +1,6 @@
 = form_for [@project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update'} do |f|
   .row
-    .col-md-6
+    .col-sm-6
       %strong.append-right-10
         Assignee:
 
@@ -11,7 +11,7 @@
       - else
         None
 
-    .col-md-6.text-right
+    .col-sm-6.text-right
       %strong.append-right-10
         Milestone:
       - if can?(current_user, :modify_merge_request, @merge_request)

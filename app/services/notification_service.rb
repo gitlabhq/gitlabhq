@@ -106,7 +106,6 @@ class NotificationService
   # TODO: split on methods and refactor
   #
   def new_note(note)
-    # ignore wall messages
     return true unless note.noteable_type.present?
 
     # ignore gitlab service messages
@@ -254,7 +253,7 @@ class NotificationService
   # Remove users with disabled notifications from array
   # Also remove duplications and nil recipients
   def reject_muted_users(users, project = nil)
-    users = users.compact.uniq
+    users = users.to_a.compact.uniq
 
     users.reject do |user|
       next user.notification.disabled? unless project

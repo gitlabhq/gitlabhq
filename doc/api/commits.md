@@ -10,8 +10,8 @@ GET /projects/:id/repository/commits
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `id` (required) - The ID of a project
+- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
 
 ```json
 [
@@ -44,8 +44,8 @@ GET /projects/:id/repository/commits/:sha
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `sha` (required) - The commit hash or name of a repository branch or tag
+- `id` (required) - The ID of a project
+- `sha` (required) - The commit hash or name of a repository branch or tag
 
 ```json
 {
@@ -63,7 +63,6 @@ Parameters:
 }
 ```
 
-
 ## Get the diff of a commit
 
 Get the diff of a commit in a project.
@@ -74,8 +73,8 @@ GET /projects/:id/repository/commits/:sha/diff
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `sha` (required) - The name of a repository branch or tag or if not given the default branch
+- `id` (required) - The ID of a project
+- `sha` (required) - The name of a repository branch or tag or if not given the default branch
 
 ```json
 [
@@ -91,5 +90,3 @@ Parameters:
   }
 ]
 ```
-
-

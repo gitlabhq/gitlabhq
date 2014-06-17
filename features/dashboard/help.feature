@@ -1,3 +1,4 @@
+@dashboard
 Feature: Help
   Background:
     Given I sign in as a user

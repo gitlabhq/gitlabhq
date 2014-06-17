@@ -1,7 +1,7 @@
 - if @source_branch.blank?
   Source branch has been removed
 
-- elsif @allowed_to_remove_source_branch && @merge_request.merged?
+- elsif can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && @merge_request.merged?
   .remove_source_branch_widget
     %p Changes merged into #{@merge_request.target_branch}. You can remove source branch now
     = link_to project_branch_path(@merge_request.source_project, @source_branch), remote: true, method: :delete, class: "btn btn-primary btn-small remove_source_branch" do
