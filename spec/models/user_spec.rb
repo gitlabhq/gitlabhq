@@ -145,7 +145,6 @@ describe User do
 
   describe 'projects' do
     before do
-      ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @project = create :project, namespace: @user.namespace
       @project_2 = create :project, group: create(:group) # Grant MASTER access to the user
@@ -168,7 +167,6 @@ describe User do
 
   describe 'groups' do
     before do
-      ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @group = create :group
       @group.add_owner(@user)
@@ -181,7 +179,6 @@ describe User do
 
   describe 'group multiple owners' do
     before do
-      ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @user2 = create :user
       @group = create :group
@@ -195,7 +192,6 @@ describe User do
 
   describe 'namespaced' do
     before do
-      ActiveRecord::Base.observers.enable(:user_observer)
       @user = create :user
       @project = create :project, namespace: @user.namespace
     end
@@ -339,7 +335,7 @@ describe User do
       user.all_ssh_keys.should include(key.key)
     end
   end
-    
+
   describe :avatar_type do
     let(:user) { create(:user) }
 

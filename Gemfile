@@ -11,7 +11,6 @@ end
 gem "rails", "~> 4.1.0"
 
 gem "protected_attributes"
-gem 'rails-observers'
 
 # Make links from text
 gem 'rails_autolink', '~> 1.1'

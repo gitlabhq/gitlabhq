@@ -2,9 +2,6 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
-  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
-  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
-
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group) }
   let!(:group2) { create(:group) }

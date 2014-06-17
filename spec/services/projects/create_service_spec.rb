@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Projects::CreateService do
-  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
-  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
-
   describe :create_by_user do
     before do
       @user = create :user

@@ -47,20 +47,16 @@ describe "Admin::Users", feature: true  do
     it "should call send mail" do
       Notify.should_receive(:new_user_email)
 
-      User.observers.enable :user_observer do
-        click_button "Create user"
-      end
+      click_button "Create user"
     end
 
     it "should send valid email to user with email & password" do
-      User.observers.enable :user_observer do
-        click_button "Create user"
-        user = User.last
-        email = ActionMailer::Base.deliveries.last
-        email.subject.should have_content("Account was created")
-        email.text_part.body.should have_content(user.email)
-        email.text_part.body.should have_content('password')
-      end
+      click_button "Create user"
+      user = User.last
+      email = ActionMailer::Base.deliveries.last
+      email.subject.should have_content("Account was created")
+      email.text_part.body.should have_content(user.email)
+      email.text_part.body.should have_content('password')
     end
   end
 

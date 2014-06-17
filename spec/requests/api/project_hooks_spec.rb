@@ -2,9 +2,6 @@ require 'spec_helper'
 
 describe API::API, 'ProjectHooks', api: true  do
   include ApiHelpers
-  before(:each) { enable_observers }
-  after(:each) { disable_observers }
-
   let(:user) { create(:user) }
   let(:user3) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }

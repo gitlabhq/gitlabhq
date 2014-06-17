@@ -19,8 +19,6 @@ require "spec_helper"
 
 describe SystemHook do
   describe "execute" do
-    before(:each) { ActiveRecord::Base.observers.enable(:all) }
-
     before(:each) do
       @system_hook = create(:system_hook)
       WebMock.stub_request(:post, @system_hook.url)
