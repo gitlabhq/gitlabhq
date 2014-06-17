@@ -506,7 +506,7 @@ class User < ActiveRecord::Base
 
   def post_create_hook
     log_info("User \"#{self.name}\" (#{self.email}) was created")
-    notification.new_user(self)
+    notification_service.new_user(self)
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -515,7 +515,7 @@ class User < ActiveRecord::Base
     system_hook_service.execute_hooks_for(self, :destroy)
   end
 
-  def notification
+  def notification_service
     NotificationService.new
   end
 
