@@ -69,7 +69,7 @@ describe ApplicationHelper do
     it "should call gravatar_icon when no avatar is present" do
       user = create(:user, email: 'test@example.com')
       user.save!
-      avatar_icon(user.email).to_s.should == "http://www.gravatar.com/avatar/55502f40dc8b7c769880b10874abc9d0?s=40&d=mm"
+      avatar_icon(user.email).to_s.should == "http://www.gravatar.com/avatar/55502f40dc8b7c769880b10874abc9d0?s=40&d=identicon"
     end
   end
 
