@@ -1,8 +1,9 @@
 module Projects
-  class UpdateService < BaseService
-    def execute(role = :default)
+  class DestroyService < BaseService
+    def execute
       return false unless can?(current_user, :remove_project, project)
 
+      project.team.truncate
       project.repository.expire_cache unless project.empty_repo?
 
       if project.destroy

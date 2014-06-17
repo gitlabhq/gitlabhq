@@ -98,8 +98,7 @@ class ProjectsController < ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    project.team.truncate
-    project.destroy
+    ::Projects::DestroyService.new(@project, current_user, {}).execute
 
     respond_to do |format|
       format.html { redirect_to root_path }

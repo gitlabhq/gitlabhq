@@ -65,26 +65,4 @@ describe Event do
     it { @event.branch_name.should == "master" }
     it { @event.author.should == @user }
   end
-
-  describe 'Team events' do
-    let(:user_project) { double.as_null_object }
-    let(:observer) { UsersProjectObserver.instance }
-
-    before {
-      Event.should_receive :create
-      observer.stub(notification: double.as_null_object)
-    }
-
-    describe "Joined project team" do
-      it "should create event" do
-        observer.after_create user_project
-      end
-    end
-
-    describe "Left project team" do
-      it "should create event" do
-        observer.after_destroy user_project
-      end
-    end
-  end
 end
