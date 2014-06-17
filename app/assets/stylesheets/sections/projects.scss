@@ -57,7 +57,7 @@
     font-size: 17px;
     background: #f1f1f1;
     border-radius: 4px;
-    color: #888;
+    color: #444;
     position: absolute;
     margin-left: -55px;
     text-shadow: 0 1px 1px #FFF;
@@ -85,7 +85,7 @@
 
   .btn {
     background: none;
-    color: #29b;
+    color: $link_color;
 
     &.active {
       color: #333;
@@ -179,11 +179,6 @@ ul.nav.nav-projects-tabs {
   font-weight: normal;
 }
 
-.new-tag-btn {
-  position: relative;
-  top: -5px;
-}
-
 .public-projects .repo-info {
   color: #777;
 
@@ -231,4 +226,28 @@ ul.nav.nav-projects-tabs {
 
 .deploy-project-label {
   margin: 1px;
+}
+
+.vs-public {
+  color: $bg_primary;
+}
+
+.vs-internal {
+  color: $bg_warning;
+}
+
+.vs-private {
+  color: $bg_success;
+}
+
+.breadcrumb.repo-breadcrumb {
+  padding: 2px 0;
+  background: white;
+  border: none;
+  font-size: 16px;
+
+  > li + li:before {
+    padding: 0 3px;
+    color: #999;
+  }
 }

@@ -1,6 +1,8 @@
 = render "head"
 .row
-  .col-md-3
+  .fixed.fixed.sidebar-expand-button.hidden-lg.hidden-md.hidden-xs
+    %i.icon-list.icon-2x
+  .col-md-3.responsive-side
     = render 'shared/project_filter', project_entities_path: project_issues_path(@project),
              labels: true, redirect: 'issues'
   .col-md-9.issues-holder

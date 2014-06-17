@@ -90,6 +90,8 @@ class User < ActiveRecord::Base
   has_many :users_groups, dependent: :destroy
   has_many :groups, through: :users_groups
   has_many :owned_groups, -> { where users_groups: { group_access: UsersGroup::OWNER } }, through: :users_groups, source: :group
+  has_many :masters_groups, -> { where users_groups: { group_access: UsersGroup::MASTER } }, through: :users_groups, source: :group
+
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
@@ -476,5 +478,17 @@ class User < ActiveRecord::Base
 
   def generate_tmp_oauth_email
     self.email = "temp-email-for-oauth-#{username}@gitlab.localhost"
+  end
+
+  def public_profile?
+    authorized_projects.public_only.any?
+  end
+
+  def avatar_url(size = nil)
+    if avatar.present?
+      URI::join(Gitlab.config.gitlab.url, avatar.url).to_s
+    else
+      GravatarService.new.execute(email, size)
+    end
   end
 end

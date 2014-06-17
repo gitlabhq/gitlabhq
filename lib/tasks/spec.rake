@@ -40,7 +40,6 @@ end
 
 def run_commands(cmds)
   cmds.each do |cmd|
-    system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd)
-    raise "#{cmd} failed!" unless $?.exitstatus.zero?
+    system({'RAILS_ENV' => 'test', 'force' => 'yes'}, *cmd) or raise("#{cmd} failed!")
   end
 end

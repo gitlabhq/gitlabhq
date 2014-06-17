@@ -1,3 +1,4 @@
+@profile
 Feature: Profile Emails
   Background:
     Given I sign in as a user

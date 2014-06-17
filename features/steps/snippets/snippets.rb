@@ -19,7 +19,7 @@ class SnippetsFeature < Spinach::FeatureSteps
   end
 
   And 'I click link "Destroy"' do
-    click_link "Remove"
+    click_link "remove"
   end
 
   And 'I submit new snippet "Personal snippet three"' do

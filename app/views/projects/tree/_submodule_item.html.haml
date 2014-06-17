@@ -1,7 +1,7 @@
 - tree, commit = submodule_links(submodule_item)
 %tr{ class: "tree-item" }
   %td.tree-item-file-name
-    = image_tag "submodule.png"
+    %i.icon-archive
     %span
       = link_to truncate(submodule_item.name, length: 40), tree
     @
@@ -11,5 +11,4 @@
       - else
         = link_to "#{submodule_item.id[0..10]}", commit
   %td
-  %td
-  %td
+  %td.hidden-xs

@@ -1,5 +1,5 @@
 .user_new
-  = form_for [:admin, @user], html: { class: 'form-horizontal' } do |f|
+  = form_for [:admin, @user], html: { class: 'form-horizontal fieldset-form' } do |f|
     -if @user.errors.any?
       #error_explanation
         .alert.alert-danger
@@ -61,16 +61,13 @@
           .col-sm-10 You cannot remove your own admin rights
         - else
           .col-sm-10= f.check_box :admin
-      - unless @user.new_record? || current_user == @user
-        .alert.alert-danger
-          - if @user.blocked?
-            %p This user is blocked and is not able to login to GitLab
-            = link_to 'Unblock User', unblock_admin_user_path(@user), method: :put, class: "btn btn-small"
-          - else
-            %p Blocked users will be removed from all projects &amp; will not be able to login to GitLab.
-            = link_to 'Block User', block_admin_user_path(@user), data: {confirm: 'USER WILL BE BLOCKED! Are you sure?'}, method: :put, class: "btn btn-small btn-remove"
     %fieldset
       %legend Profile
+      .form-group
+        = f.label :avatar, class: 'control-label'
+        .col-sm-10
+          = f.file_field :avatar
+
       .form-group
         = f.label :skype, class: 'control-label'
         .col-sm-10= f.text_field :skype, class: 'form-control'

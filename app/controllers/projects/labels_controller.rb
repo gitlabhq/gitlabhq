@@ -16,6 +16,8 @@ class Projects::LabelsController < Projects::ApplicationController
       redirect_to project_issues_path(@project)
     elsif params[:redirect] == 'merge_requests'
       redirect_to project_merge_requests_path(@project)
+    else
+      redirect_to project_labels_path(@project)
     end
   end
 

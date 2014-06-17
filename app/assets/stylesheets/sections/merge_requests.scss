@@ -19,12 +19,17 @@
   }
 }
 
-.merge-request .nav-tabs{
+.merge-request .merge-request-tabs{
+  border-bottom: 2px solid $border_primary;
+  margin: 20px 0;
+
   li {
     a {
-      font-weight: bold;
-      padding: 8px 20px;
-      text-align: center;
+      padding: 15px 40px;
+      font-size: 14px;
+      margin-bottom: -2px;
+      border-bottom: 2px solid $border_primary;
+      @include border-radius(0px);
     }
   }
 }
@@ -63,7 +68,7 @@
 
 .mr-list {
   .merge-request {
-    padding: 10px;
+    padding: 10px 15px;
     position: relative;
 
     .merge-request-title {
@@ -99,12 +104,6 @@
 }
 
 .mr-state-widget {
-  @include border-radius(0px);
-
-  .panel-heading {
-    @include border-radius(0px);
-  }
-
   .panel-body {
     h4 {
       margin-top: 0px;
@@ -118,4 +117,8 @@
 
 .merge-request-show-labels .label {
   padding: 6px 10px;
+}
+
+.mr-commits .commit {
+  padding: 10px 15px;
 }

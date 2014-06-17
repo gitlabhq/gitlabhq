@@ -2,8 +2,7 @@ Feature: Project Multiselect Blob
   Background:
     Given I sign in as a user
     And I own project "Shop"
-    And I visit project source page
-    And I click on "Gemfile.lock" file in repo
+    And I visit "Gemfile.lock" file in repo
 
   @javascript
   Scenario: I click line 1 in file

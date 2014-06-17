@@ -4,7 +4,7 @@ class Dashboard
 
     $(".dash-filter").keyup ->
       terms = $(this).val()
-      uiBox = $(this).parents('.ui-box').first()
+      uiBox = $(this).parents('.panel').first()
       if terms == "" || terms == undefined
         uiBox.find(".dash-list li").show()
       else

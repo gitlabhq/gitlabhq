@@ -67,10 +67,9 @@ describe ApplicationHelper do
     end
 
     it "should call gravatar_icon when no avatar is present" do
-      user = create(:user)
+      user = create(:user, email: 'test@example.com')
       user.save!
-      allow(self).to receive(:gravatar_icon).and_return('gravatar_method_called')
-      avatar_icon(user.email).to_s.should == "gravatar_method_called"
+      avatar_icon(user.email).to_s.should == "http://www.gravatar.com/avatar/55502f40dc8b7c769880b10874abc9d0?s=40&d=identicon"
     end
   end
 
@@ -79,20 +78,20 @@ describe ApplicationHelper do
 
     it "should return a generic avatar path when Gravatar is disabled" do
       Gitlab.config.gravatar.stub(:enabled).and_return(false)
-      gravatar_icon(user_email).should == '/assets/no_avatar.png'
+      gravatar_icon(user_email).should match('no_avatar.png')
     end
 
     it "should return a generic avatar path when email is blank" do
-      gravatar_icon('').should == '/assets/no_avatar.png'
+      gravatar_icon('').should match('no_avatar.png')
     end
 
     it "should return default gravatar url" do
-      allow(self).to receive(:request).and_return(double(:ssl? => false))
+      Gitlab.config.gitlab.stub(https: false)
       gravatar_icon(user_email).should match('http://www.gravatar.com/avatar/b58c6f14d292556214bd64909bcdb118')
     end
 
     it "should use SSL when appropriate" do
-      allow(self).to receive(:request).and_return(double(:ssl? => true))
+      Gitlab.config.gitlab.stub(https: true)
       gravatar_icon(user_email).should match('https://secure.gravatar.com')
     end
 
@@ -193,6 +192,29 @@ describe ApplicationHelper do
     it "disallows other tags" do
       input = "<strike><b>#{a_tag}</b></strike>"
       simple_sanitize(input).should == a_tag
+    end
+  end
+
+  describe "link_to" do
+
+    it "should not include rel=nofollow for internal links" do
+      expect(link_to("Home", root_path)).to eq("<a href=\"/\">Home</a>")
+    end
+
+    it "should include rel=nofollow for external links" do
+      expect(link_to("Example", "http://www.example.com")).to eq("<a href=\"http://www.example.com\" rel=\"nofollow\">Example</a>")
+    end
+
+    it "should include re=nofollow for external links and honor existing html_options" do
+      expect(
+        link_to("Example", "http://www.example.com", class: "toggle", data: {toggle: "dropdown"})
+      ).to eq("<a class=\"toggle\" data-toggle=\"dropdown\" href=\"http://www.example.com\" rel=\"nofollow\">Example</a>")
+    end
+
+    it "should include rel=nofollow for external links and preserver other rel values" do
+      expect(
+        link_to("Example", "http://www.example.com", rel: "noreferrer")
+      ).to eq("<a href=\"http://www.example.com\" rel=\"noreferrer nofollow\">Example</a>")
     end
   end
 end

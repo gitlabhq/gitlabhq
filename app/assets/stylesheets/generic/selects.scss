@@ -3,11 +3,27 @@
   .select2-choice {
     background: #FFF;
     border-color: #BBB;
+    padding: 6px 12px;
+    font-size: 13px;
+    line-height: 18px;
+    height: auto;
 
     .select2-arrow {
       background: #FFF;
+      border-left: 1px solid #DDD;
     }
   }
+}
+
+.select2-container-multi .select2-choices {
+  @include border-radius(4px)
+}
+
+.select2-container-multi .select2-choices .select2-search-field input {
+  padding: 6px 12px;
+  font-size: 13px;
+  line-height: 18px;
+  height: auto;
 }
 
 .select2-drop-active {

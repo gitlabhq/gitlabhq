@@ -1,0 +1,52 @@
+.div-dropzone-wrapper {
+  .div-dropzone {
+    position: relative;
+    padding: 0;
+    border: 0;
+    margin-bottom: 5px;
+
+    .div-dropzone-focus {
+      border-color: #66afe9 !important;
+      box-shadow: inset 0 1px 1px rgba(0, 0, 0, 0.075), 0 0 8px rgba(102, 175, 233, 0.6) !important;
+      outline: 0 !important;
+    }
+
+    .div-dropzone-hover {
+      position: absolute;
+      top: 50%;
+      left: 50%;
+      margin-top: -0.5em;
+      margin-left: -0.6em;
+      opacity: 0;
+      font-size: 50px;
+      transition: opacity 200ms ease-in-out;
+    }
+
+    .div-dropzone-spinner {
+      position: absolute;
+      top: 100%;
+      left: 100%;
+      margin-top: -1.1em;
+      margin-left: -1.1em;
+      opacity: 0;
+      font-size: 30px;
+      transition: opacity 200ms ease-in-out;
+    }
+
+    .div-dropzone-icon {
+      display: block;
+      text-align: center;
+      font-size: inherit;
+    }
+
+    .dz-preview {
+      display: none;
+    }
+  }
+}
+
+.div-dropzone-alert {
+  margin-top: 5px;
+  margin-bottom: 0;
+  transition: opacity 200ms ease-in-out;
+}

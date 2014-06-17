@@ -1,5 +1,5 @@
-.ui-box
-  .title.clearfix
+.panel.panel-default
+  .panel-heading.clearfix
     = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_group?
       %span.pull-right

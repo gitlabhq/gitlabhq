@@ -64,7 +64,7 @@
             left: 50%;
             width: 0;
             height: 0;
-            border-color: transparent transparent #29b transparent;
+            border-color: transparent transparent $link_color transparent;
             border-style: solid;
             border-width: 6px;
             margin-left: -6px;
@@ -116,7 +116,7 @@
         padding: 5px 0;
 
         &.active {
-          background-color: $primary_color;
+          background-color: $link_hover_color;
 
           a {
             color: #fff;

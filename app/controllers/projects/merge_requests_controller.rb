@@ -74,15 +74,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @merge_request.source_branch
       )
 
+      @compare_failed = false
       @commits = compare_action.commits
-      @commits.map! { |commit| Commit.new(commit) }
-      @commit = @commits.first
+
+      if @commits
+        @commits.map! { |commit| Commit.new(commit) }
+        @commit = @commits.first
+      else
+        # false value because failed to get commits from satellite
+        @commits = []
+        @compare_failed = true
+      end
 
       @diffs = compare_action.diffs
       @merge_request.title = @merge_request.source_branch.titleize.humanize
       @merge_request.description = @merge_request.target_project.merge_requests_template
       @target_project = @merge_request.target_project
       @target_repo = @target_project.repository
+
+      diff_line_count = Commit::diff_line_count(@diffs)
+      @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count)
+      @force_suppress_diff = @suppress_diff
     end
   end
 
@@ -226,7 +238,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @merge_request_diff = @merge_request.merge_request_diff
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
-    @allowed_to_remove_source_branch = allowed_to_remove_source_branch?
     @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
   end
 
@@ -237,11 +248,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def invalid_mr
     # Render special view for MR with removed source or target branch
     render 'invalid'
-  end
-
-  def allowed_to_remove_source_branch?
-    allowed_to_push_code?(@merge_request.source_project, @merge_request.source_branch) &&
-      !@merge_request.disallow_source_branch_removal?
   end
 
   def allowed_to_push_code?(project, branch)

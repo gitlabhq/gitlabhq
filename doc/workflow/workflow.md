@@ -1,27 +1,31 @@
-1. Clone project
+# Workflow
 
-  ```bash
-  git clone git@example.com:project-name.git
-  ```
+1.  Clone project:
 
-2. Create branch with your feature
+    ```bash
+    git clone git@example.com:project-name.git
+    ```
 
-  ```bash
-  git checkout -b $feature_name
-  ```
+1.  Create branch with your feature:
 
-3. Write code. Commit changes
+    ```bash
+    git checkout -b $feature_name
+    ```
 
-  ```bash
-  git commit -am "My feature is ready"
-  ```
+1.  Write code. Commit changes:
 
-4. Push your branch to GitLab
+    ```bash
+    git commit -am "My feature is ready"
+    ```
 
-  ```bash
-  git push origin $feature_name
-  ```
+1.  Push your branch to GitLab:
 
-5. Review your code on commits page
-6. Create a merge request
-7. Your team lead will review the code &amp; merge it to the main branch
+    ```bash
+    git push origin $feature_name
+    ```
+
+1.  Review your code on commits page.
+
+1.  Create a merge request.
+
+1.  Your team lead will review the code &amp; merge it to the main branch.

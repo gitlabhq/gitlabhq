@@ -10,7 +10,7 @@ GET /projects/:id/repository/branches
 
 Parameters:
 
-+ `id` (required) - The ID of a project
+- `id` (required) - The ID of a project
 
 ```json
 [
@@ -52,8 +52,8 @@ GET /projects/:id/repository/branches/:branch
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `branch` (required) - The name of the branch
+- `id` (required) - The ID of a project
+- `branch` (required) - The name of the branch
 
 ```json
 {
@@ -81,7 +81,6 @@ Parameters:
   "protected": true
 }
 ```
-
 
 ## Protect repository branch
 
@@ -94,8 +93,8 @@ PUT /projects/:id/repository/branches/:branch/protect
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `branch` (required) - The name of the branch
+- `id` (required) - The ID of a project
+- `branch` (required) - The name of the branch
 
 ```json
 {
@@ -124,7 +123,6 @@ Parameters:
 }
 ```
 
-
 ## Unprotect repository branch
 
 Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
@@ -136,8 +134,8 @@ PUT /projects/:id/repository/branches/:branch/unprotect
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `branch` (required) - The name of the branch
+- `id` (required) - The ID of a project
+- `branch` (required) - The name of the branch
 
 ```json
 {
@@ -168,16 +166,15 @@ Parameters:
 
 ## Create repository branch
 
-
 ```
 POST /projects/:id/repository/branches
 ```
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+  `branch_name` (required) - The name of the branch
-+  `ref` (required) - Create branch from commit sha or existing branch
+- `id` (required) - The ID of a project
+- `branch_name` (required) - The name of the branch
+- `ref` (required) - Create branch from commit sha or existing branch
 
 ```json
 {
@@ -199,3 +196,17 @@ Parameters:
   "protected": false
 }
 ```
+
+## Delete repository branch
+
+
+```
+DELETE /projects/:id/repository/branches/:branch
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `branch` (required) - The name of the branch
+
+It return 200 if succeed or 405 if failed with error message explaining reason.

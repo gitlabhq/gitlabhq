@@ -24,16 +24,11 @@ Issues and merge requests should be in English and contain appropriate language 
 
 To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
 
-The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md).
-If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request.
-When submitting an issue please conform to the issue submission guidelines listed below.
-Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
+The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md). If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request. When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
 Issues can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues) or [github.com](https://github.com/gitlabhq/gitlabhq/issues).
 
-Do not use the issue tracker for feature requests.
-We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose.
-Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
+Do not use the issue tracker for feature requests. We have a specific [feature request forum](http://feedback.gitlab.com) for this purpose. Please keep feature requests as small and simple as possible, complex ones might be edited to make them small and simple.
 
 Please send a merge request with a tested solution or a merge request with a failing test instead of opening an issue if you can. If you're unsure where to post, post to the [mailing list](https://groups.google.com/forum/#!forum/gitlabhq) or [Stack Overflow](http://stackoverflow.com/questions/tagged/gitlab) first. There are a lot of helpful GitLab users there who may be able to help you quickly. If your particular issue turns out to be a bug, it will find its way from there.
 
@@ -42,16 +37,16 @@ Please send a merge request with a tested solution or a merge request with a fai
 **[Search the issues](https://gitlab.com/gitlab-org/gitlab-ce/issues)** for similar entries before submitting your own, there's a good chance somebody else had the same issue. Show your support with `:+1:` and/or join the discussion. Please submit issues in the following format (as the first post):
 
 1. **Summary:** Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
-2. **Steps to reproduce:** How can we reproduce the issue, preferably on the [GitLab development virtual machine with vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) (start your issue with: `vagrant destroy && vagrant up && vagrant ssh`)
-3. **Expected behavior:** Describe your issue in detail
-4. **Observed behavior**
-5. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
-6. **Output of checks**
+1. **Steps to reproduce:** How can we reproduce the issue, preferably on the [GitLab development virtual machine with vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) (start your issue with: `vagrant destroy && vagrant up && vagrant ssh`)
+1. **Expected behavior:** Describe your issue in detail
+1. **Observed behavior**
+1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
+1. **Output of checks**
     * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
     * Add the last commit sha1 of the GitLab version you used to replicate the issue (obtainable from the help page)
     * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
-7. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
+1. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
 ## Merge requests
 
@@ -78,7 +73,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
 
-The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab.com team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version. This means there is less time to fix the issues created by merging large new features.
+The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab B.V. team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version. This means there is less time to fix the issues created by merging large new features.
 
 Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
 
@@ -87,10 +82,10 @@ For examples of feedback on merge requests please look at already [closed merge 
 **Please format your merge request description as follows:**
 
 1. What does this MR do?
-2. Are there points in the code the reviewer needs to double check?
-3. Why was this MR needed?
-4. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
-5. Screenshots (If appropiate)
+1. Are there points in the code the reviewer needs to double check?
+1. Why was this MR needed?
+1. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
+1. Screenshots (If appropiate)
 
 ## Contribution acceptance criteria
 
@@ -106,11 +101,16 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. It conforms to the following style guides
 
 ## Style guides
-1. [Ruby](https://github.com/bbatsov/ruby-style-guide)
-1. [Rails](https://github.com/bbatsov/rails-style-guide)
-1. [Formatting](https://github.com/thoughtbot/guides/tree/master/style#formatting)
-1. [Naming](https://github.com/thoughtbot/guides/tree/master/style#naming) 
-1. [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
-1. [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
-1. [Shell commands](doc/development/shell_commands.md)
-1. [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+
+1.  [Ruby](https://github.com/bbatsov/ruby-style-guide).
+    Important sections include [Source Code Layout](https://github.com/bbatsov/ruby-style-guide#source-code-layout)
+    and [Naming](https://github.com/bbatsov/ruby-style-guide#naming). Use:
+    - multi-line method chaining style **Option B**: dot `.` on previous line
+    - string literal quoting style **Option A**: single quoted by default
+1.  [Rails](https://github.com/bbatsov/rails-style-guide)
+1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
+1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
+1.  [Shell commands](doc/development/shell_commands.md) created by GitLab contributors to enhance security
+1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
+
+This is also the style used by linting tools such as [Rubocop](https://github.com/bbatsov/rubocop), PullReview[https://www.pullreview.com/] and [Hound CI](https://houndci.com).

@@ -3,18 +3,22 @@ env:
   global:
     - TRAVIS=true
   matrix:
-    - TASK=spinach DB=mysql
+    - TASK=spinach_project DB=mysql
+    - TASK=spinach_other DB=mysql
     - TASK=spec:api DB=mysql
     - TASK=spec:feature DB=mysql
     - TASK=spec:other DB=mysql
     - TASK=jasmine:ci DB=mysql
-    - TASK=spinach DB=postgresql
+    - TASK=spinach_project DB=postgresql
+    - TASK=spinach_other DB=postgresql
     - TASK=spec:api DB=postgresql
     - TASK=spec:feature DB=postgresql
     - TASK=spec:other DB=postgresql
     - TASK=jasmine:ci DB=postgresql
 before_install:
   - sudo apt-get install libicu-dev -y
+install: 
+  - "bundle install --deployment --without production"
 branches:
   only:
     - 'master'

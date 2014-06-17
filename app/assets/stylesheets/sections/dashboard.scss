@@ -1,10 +1,11 @@
 .dashboard {
   .side {
-    .ui-box {
-      margin: 0px;
-      box-shadow: none;
-
-      .nav-projects-tabs li { padding: 0; }
+    .panel {
+      .panel-heading {
+        background: #EEE;
+        border-top-left-radius: 0;
+      }
+      border-top-left-radius: 0;
     }
   }
 }
@@ -24,9 +25,7 @@
 
 .dashboard {
   .dash-filter {
-    margin: 7px 0;
-    padding: 4px 6px;
-    width: 220px;
+    width: 205px;
     float: left;
     height: inherit;
   }
@@ -34,7 +33,7 @@
 
 @media (max-width: 1200px) {
   .dashboard .dash-filter {
-    width: 150px;
+    width: 140px;
   }
 }
 
@@ -61,7 +60,7 @@
 }
 
 .project-row, .group-row {
-  padding: 8px 12px !important;
+  padding: 8px 15px !important;
   font-size: 14px;
   line-height: 24px;
 
@@ -75,10 +74,8 @@
 
   .arrow {
     float: right;
-    padding: 0px 5px;
     margin: 0;
     font-size: 20px;
-    color: #666;
   }
 
   .last-activity {
@@ -112,6 +109,5 @@
 .dash-project-access-icon {
   float: left;
   margin-right: 3px;
-  color: #999;
   width: 16px;
 }

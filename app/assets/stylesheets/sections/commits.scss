@@ -115,10 +115,6 @@
   line-height: 2;
 }
 
-.commit-breadcrumb {
-  padding: 0;
-}
-
 .commit-info-row {
   margin-bottom: 10px;
   .avatar {
@@ -140,8 +136,6 @@
  * COMMIT ROW
  */
 li.commit {
-  padding: 8px;
-
   .commit-row-title {
     font-size: 14px;
     margin-bottom: 2px;
@@ -210,5 +204,12 @@ li.commit {
       float: right;
       @extend .cgray;
     }
+  }
+}
+
+.commits-feed-holder {
+  float: right;
+  .btn {
+    padding: 4px 12px;
   }
 }

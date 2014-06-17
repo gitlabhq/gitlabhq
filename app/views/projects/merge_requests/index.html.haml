@@ -7,7 +7,9 @@
   %span (#{@merge_requests.total_count})
 %hr
 .row
-  .col-md-3
+  .fixed.sidebar-expand-button.hidden-lg.hidden-md
+    %i.icon-list.icon-2x
+  .col-md-3.responsive-side
     = render 'shared/project_filter', project_entities_path: project_merge_requests_path(@project),
              labels: true, redirect: 'merge_requests'
   .col-md-9
@@ -61,7 +63,7 @@
       .pull-right
         = render 'shared/sort_dropdown'
 
-    .ui-box
+    .panel.panel-default
       %ul.well-list.mr-list
         = render @merge_requests
         - if @merge_requests.blank?

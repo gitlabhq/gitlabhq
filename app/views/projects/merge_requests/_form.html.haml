@@ -22,8 +22,12 @@
     .form-group
       = f.label :description, "Description", class: 'control-label'
       .col-sm-10
-        = f.text_area :description, class: "form-control js-gfm-input", rows: 14
-        %p.hint Description is parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
+        = f.text_area :description, class: "form-control js-gfm-input markdown-area", rows: 14
+        .col-sm-12.hint
+          .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
+          .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+        .clearfix
+        .error-alert
     %hr
     .form-group
       .issue-assignee
@@ -33,7 +37,7 @@
         .col-sm-10
           = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id)
           &nbsp;
-          = link_to 'Assign to me', '#', class: 'btn btn-small assign-to-me-link'
+          = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
     .form-group
       .issue-milestone
         = f.label :milestone_id, class: 'control-label' do
@@ -98,3 +102,5 @@
         return false;
       }
     });
+
+  window.project_image_path_upload = "#{upload_image_project_path @project}";

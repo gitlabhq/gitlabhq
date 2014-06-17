@@ -1,5 +1,5 @@
-.ui-box
-  .title.clearfix
+.panel.panel-default
+  .panel-heading.clearfix
     = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_project?
       %span.pull-right
@@ -19,7 +19,7 @@
       %li.bottom
         %span.light
           #{@projects_limit} of #{pluralize(@projects_count, 'project')} displayed.
-        .pull-right.append-right-10
+        .pull-right
           = link_to projects_dashboard_path do
             Show all
             %i.icon-angle-right

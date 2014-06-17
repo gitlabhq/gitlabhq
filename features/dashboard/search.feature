@@ -1,3 +1,4 @@
+@dashboard
 Feature: Dashboard Search
   Background:
     Given I sign in as a user

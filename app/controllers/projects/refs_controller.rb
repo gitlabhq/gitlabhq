@@ -31,9 +31,23 @@ class Projects::RefsController < Projects::ApplicationController
   end
 
   def logs_tree
-    contents = tree.entries
-    @logs = contents.map do |content|
-      file = params[:path] ? File.join(params[:path], content.name) : content.name
+    @offset = if params[:offset].present?
+             params[:offset].to_i
+           else
+             0
+           end
+
+    @limit = 10
+
+    @path = params[:path]
+
+    contents = []
+    contents += tree.trees
+    contents += tree.blobs
+    contents += tree.submodules
+
+    @logs = contents[@offset, @limit].to_a.map do |content|
+      file = @path ? File.join(@path, content.name) : content.name
       last_commit = @repo.last_commit_for_path(@commit.id, file)
       {
         file_name: content.name,

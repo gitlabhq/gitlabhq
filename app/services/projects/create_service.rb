@@ -19,7 +19,6 @@ module Projects
       default_opts = {
         issues_enabled: default_features.issues,
         wiki_enabled: default_features.wiki,
-        wall_enabled: default_features.wall,
         snippets_enabled: default_features.snippets,
         merge_requests_enabled: default_features.merge_requests,
         visibility_level: default_features.visibility_level
@@ -97,7 +96,7 @@ module Projects
 
     def allowed_namespace?(user, namespace_id)
       namespace = Namespace.find_by(id: namespace_id)
-      current_user.can?(:manage_namespace, namespace)
+      current_user.can?(:create_projects, namespace)
     end
   end
 end

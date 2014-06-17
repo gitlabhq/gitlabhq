@@ -1,11 +1,37 @@
 %h3.page-title
   = @snippet.title
 
-  %small.pull-right
+  .pull-right
+    = link_to new_project_snippet_path(@project), class: "btn btn-new", title: "New Snippet" do
+      Add new snippet
+
+%hr
+
+.append-bottom-20
+  .pull-right
     = "##{@snippet.id}"
     %span.light
       by
-      = image_tag avatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
-      = @snippet.author_name
-%div= render 'projects/snippets/blob'
+      = link_to user_path(@snippet.author) do
+        = image_tag avatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
+        = @snippet.author_name
+
+  .back-link
+    = link_to project_snippets_path(@project) do
+      &larr; project snippets
+
+.file-holder
+  .file-title
+    %i.icon-file
+    %span.file_name
+      = @snippet.file_name
+    .options
+      .btn-group
+        - if can?(current_user, :modify_project_snippet, @snippet)
+          = link_to "edit", edit_project_snippet_path(@project, @snippet), class: "btn btn-small", title: 'Edit Snippet'
+        = link_to "raw", raw_project_snippet_path(@project, @snippet), class: "btn btn-small", target: "_blank"
+      - if can?(current_user, :admin_project_snippet, @snippet)
+        = link_to "remove", project_snippet_path(@project, @snippet), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-small btn-remove", title: 'Delete Snippet'
+  = render 'shared/snippets/blob'
+
 %div#notes= render "projects/notes/notes_with_form"

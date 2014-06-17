@@ -17,52 +17,36 @@
   &.issue-box-closed {
     border-color: $border_danger;
     .state {
-      background-color: $bg_light_danger;
+      background-color: $bg_danger;
+      color: #FFF;
       border-color: $border_danger;
-      color: $color_danger;
-      .state-label {
-        background-color: $bg_danger;
-        color: #FFF;
-      }
     }
   }
 
   &.issue-box-merged {
     border-color: $border_primary;
     .state {
-      background-color: $bg_light_primary;
+      background-color: $bg_primary;
+      color: #FFF;
       border-color: $border_primary;
-      color: $color_primary;
-      .state-label {
-        background-color: $bg_primary;
-        color: #FFF;
-      }
     }
   }
 
   &.issue-box-open {
     border-color: $border_success;
     .state {
-      background-color: $bg_light_success;
       border-color: $border_success;
-      color: $color_success;
-      .state-label {
-        background-color: $bg_success;
-        color: #FFF;
-      }
+      background-color: $bg_success;
+      color: #FFF;
     }
   }
 
   &.issue-box-expired {
     border-color: #cea61b;
     .state {
-      background-color: #fcf8e3;
       border-color: #faebcc;
-      color: #8a6d3b;
-      .state-label {
-        background: #cea61b;
-        color: #FFF;
-      }
+      background: #cea61b;
+      color: #FFF;
     }
   }
 
@@ -72,23 +56,22 @@
 
   .state {
     border-bottom: 1px solid #DDD;
-    line-height: 32px;
+    padding: 10px 15px;
   }
 
   .title {
-    font-size: 22px;
-    font-weight: 500;
+    font-size: 28px;
+    font-weight: normal;
     line-height: 1.5;
     margin: 0;
     color: #333;
-    padding-bottom: 0;
-    padding: 15px 25px;
+    padding: 10px 15px;
   }
 
   .context {
     border: none;
     border-top: 1px solid #eee;
-    padding: 15px 25px;
+    padding: 10px 15px;
 
     // Reset text align for children
     .text-right > * { text-align: left; }
@@ -104,7 +87,7 @@
   }
 
   .description {
-    padding: 0 25px 15px 25px;
+    padding: 0 15px 10px 15px;
   }
 
   .title, .context, .description {
@@ -115,14 +98,15 @@
 
   .state-label {
     font-size: 14px;
-    padding: 1px 25px;
-    text-align: center;
-    text-shadow: none;
-    display: inline-block;
-    line-height: 34px;
+    float: left;
+    font-weight: bold;
   }
 
   .creator {
-    padding: 2px 15px;
+    float: right;
+    a {
+      color: #FFF;
+      text-decoration: underline;
+    }
   }
 }

@@ -6,8 +6,8 @@
 %hr
 .row
   .col-md-6
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Project info:
       %ul.well-list
         %li
@@ -75,10 +75,10 @@
               = visibility_level_icon(@project.visibility_level)
               = visibility_level_label(@project.visibility_level)
 
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Transfer project
-      .body
+      .panel-body
         = form_for @project, url: transfer_admin_project_path(@project), method: :put, html: { class: 'form-horizontal' } do |f|
           .form-group
             = f.label :namespace_id, "Namespace", class: 'control-label'
@@ -92,19 +92,21 @@
 
   .col-md-6
     - if @group
-      .ui-box
-        .title
+      .panel.panel-default
+        .panel-heading
           %strong #{@group.name}
           group members (#{@group.users_groups.count})
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-small' do
               %i.icon-edit
         %ul.well-list
-          - @group.users_groups.order('group_access DESC').each do |member|
+          - @group_members.each do |member|
             = render 'users_groups/users_group', member: member, show_controls: false
+        .panel-footer
+          = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
-    .ui-box
-      .title
+    .panel.panel-default
+      .panel-heading
         Project members
         %small
           (#{@project.users.count})
@@ -113,7 +115,7 @@
             %i.icon-edit
             Manage Access
       %ul.well-list.team_members
-        - @project.users_projects.each do |users_project|
+        - @project_members.each do |users_project|
           - user = users_project.user
           %li.users_project
             .list-item-name
@@ -126,3 +128,5 @@
                 %span.light= users_project.human_access
                 = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-small btn-remove" do
                   %i.icon-remove
+      .panel-footer
+        = paginate @project_members, param_name: 'project_members_page', theme: 'gitlab'

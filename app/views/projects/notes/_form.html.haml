@@ -5,26 +5,28 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
 
-  .note_text_and_preview.js-toggler-container
-    %a.btn.js-note-preview-button.js-toggler-target.turn-off{ href: "javascript:;", data: {url: preview_project_notes_path(@project)} }
-      %i.icon-eye-open
-      Preview
-    %a.btn.btn-primary.js-note-edit-button.js-toggler-target.turn-off{ href: "javascript:;" }
-      %i.icon-edit
-      Write
+  %ul.nav.nav-tabs
+    %li.active
+      = link_to '#note-write-holder', class: 'js-note-write-button' do
+        Write
+    %li
+      = link_to '#note-preview-holder', class: 'js-note-preview-button', data: { url: preview_project_notes_path(@project) } do
+        Preview
+  %div
+    .note-write-holder
+      = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input markdown-area'
 
-    = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input turn-on'
-    .note_preview.js-note-preview.turn-off
+      .light.clearfix
+        .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}
+        .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
 
-  .hint
-    .pull-right Comments are parsed with #{link_to "GitLab Flavored Markdown", help_markdown_path, target: '_blank'}.
-  .clearfix
+    .note-preview-holder.hide
+      .js-note-preview
 
   .note-form-actions
     .buttons
       = f.submit 'Add Comment', class: "btn comment-btn btn-grouped js-comment-button"
       = yield(:note_actions)
-
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
     .note-form-option
@@ -35,4 +37,5 @@
       %span.file_name.js-attachment-filename File name...
       = f.file_field :attachment, class: "js-note-attachment-input hidden"
 
-    .clearfix
+:javascript
+  window.project_image_path_upload = "#{upload_image_project_path @project}";

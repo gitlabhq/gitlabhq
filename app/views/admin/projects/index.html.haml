@@ -1,5 +1,5 @@
 .row
-  .col-md-4
+  .col-md-3
     .admin-filter
       = form_tag admin_projects_path, method: :get, class: '' do
         .form-group
@@ -7,19 +7,21 @@
           = text_field_tag :name, params[:name], class: "form-control"
 
         .form-group
-          = label_tag :owner_id, 'Owner:'
-          %div
-            = users_select_tag :owner_id, selected: params[:owner_id], class: 'input-large input-clamp'
-        .checkbox
-          = label_tag :with_push, 'Not empty'
-          = check_box_tag :with_push, 1, params[:with_push]
-          &nbsp;
-          %span.light Projects with push events
-        .checkbox
-          = label_tag :abandoned, 'Abandoned'
-          = check_box_tag :abandoned, 1, params[:abandoned]
-          &nbsp;
-          %span.light No activity over 6 month
+          = label_tag :namespace_id, "Namespace"
+          = namespace_select_tag :namespace_id, selected: params[:namespace_id], class: 'input-large'
+
+        .form-group
+          %strong Activity
+          .checkbox
+            = label_tag :with_push, 'Not empty'
+            = check_box_tag :with_push, 1, params[:with_push]
+            &nbsp;
+            %span.light Projects with push events
+          .checkbox
+            = label_tag :abandoned, 'Abandoned'
+            = check_box_tag :abandoned, 1, params[:abandoned]
+            &nbsp;
+            %span.light No activity over 6 month
 
         %fieldset
           %strong Visibility level:
@@ -31,16 +33,16 @@
                   %span.descr
                     = visibility_level_icon(level)
                     = label
-        .form-actions
-          = hidden_field_tag :sort, params[:sort]
-          = submit_tag "Search", class: "btn submit btn-primary"
-          = link_to "Reset", admin_projects_path, class: "btn"
+        %hr
+        = hidden_field_tag :sort, params[:sort]
+        = submit_tag "Search", class: "btn submit btn-primary"
+        = link_to "Reset", admin_projects_path, class: "btn btn-cancel"
 
-  .col-md-8
-    .ui-box
-      .title
+  .col-md-9
+    .panel.panel-default
+      .panel-heading
         Projects (#{@projects.total_count})
-        .pull-right
+        .panel-head-actions
           .dropdown.inline
             %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
               %span.light sort:

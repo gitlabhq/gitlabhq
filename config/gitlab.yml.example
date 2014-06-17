@@ -35,8 +35,7 @@ production: &base
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
 
-    # Email address of your support contact (default: same as email_from)
-    support_email: support@example.com
+    # Email server smtp settings are in [a separate file](initializers/smtp_settings.rb.sample).
 
     ## User settings
     default_projects_limit: 10
@@ -74,7 +73,6 @@ production: &base
       issues: true
       merge_requests: true
       wiki: true
-      wall: false
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
 
@@ -116,8 +114,8 @@ production: &base
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
-    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
-    # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm
+    # plain_url: "http://..."     # default: http://www.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
+    # ssl_url:   "https://..."    # default: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=identicon
 
   #
   # 2. Auth settings

@@ -6,8 +6,8 @@
 = render "form"
 
 - if @commits.present?
-  %div.ui-box
-    .title
+  %div.panel.panel-default
+    .panel-heading
       Commits (#{@commits.count})
     - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
       %ul.well-list

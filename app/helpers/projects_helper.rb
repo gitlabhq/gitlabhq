@@ -139,7 +139,7 @@ module ProjectsHelper
       nav_tabs << :settings
     end
 
-    [:issues, :wiki, :wall, :snippets].each do |feature|
+    [:issues, :wiki, :snippets].each do |feature|
       nav_tabs << feature if project.send :"#{feature}_enabled"
     end
 

@@ -1,3 +1,4 @@
+@admin
 Feature: Admin Broadcast Messages
   Background:
     Given I sign in as an admin

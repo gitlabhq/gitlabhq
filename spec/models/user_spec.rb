@@ -83,8 +83,14 @@ describe User do
         user = build(:user, email: 'info@example.com')
         expect(user).to be_valid
       end
+
       it 'accepts info+test@example.com' do
         user = build(:user, email: 'info+test@example.com')
+        expect(user).to be_valid
+      end
+
+      it "accepts o'reilly@example.com" do
+        user = build(:user, email: "o'reilly@example.com")
         expect(user).to be_valid
       end
 
@@ -95,6 +101,11 @@ describe User do
 
       it 'rejects mailto:test@example.com' do
         user = build(:user, email: 'mailto:test@example.com')
+        expect(user).to be_invalid
+      end
+
+      it "rejects lol!'+=?><#$%^&*()@gmail.com" do
+        user = build(:user, email: "lol!'+=?><#$%^&*()@gmail.com")
         expect(user).to be_invalid
       end
     end

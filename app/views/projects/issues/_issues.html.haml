@@ -61,7 +61,7 @@
         = hidden_field_tag :status, params[:status]
         = button_tag "Update issues", class: "btn update_selected_issues btn-save"
 
-.ui-box
+.panel.panel-default
   %ul.well-list.issues-list
     = render @issues
     - if @issues.blank?

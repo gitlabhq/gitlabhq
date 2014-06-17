@@ -21,12 +21,22 @@
 }
 
 .admin-filter form {
-  label { width: 110px; }
-  .controls { margin-left: 130px; }
-  .form-actions { padding-left: 130px; background: #fff }
-  .visibility-levels {
-    .controls {
-        margin-bottom: 9px;
+  .select2-container {
+    width: 100%
+  }
+
+  .controls {
+    margin-left: 130px;
+  }
+
+  .form-actions {
+    padding-left: 130px;
+    background: #fff
+   }
+
+   .visibility-levels {
+     .controls {
+       margin-bottom: 9px;
     }
 
     i {

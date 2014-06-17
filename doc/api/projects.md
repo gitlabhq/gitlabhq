@@ -1,4 +1,4 @@
-## Projects
+# Projects
 
 ### List projects
 
@@ -30,7 +30,6 @@ GET /projects
     "path_with_namespace": "diaspora/diaspora-client",
     "issues_enabled": true,
     "merge_requests_enabled": true,
-    "wall_enabled": false,
     "wiki_enabled": true,
     "snippets_enabled": false,
     "created_at": "2013-09-30T13: 46: 02Z",
@@ -66,7 +65,6 @@ GET /projects
     "path_with_namespace": "brightbox/puppet",
     "issues_enabled": true,
     "merge_requests_enabled": true,
-    "wall_enabled": false,
     "wiki_enabled": true,
     "snippets_enabled": false,
     "created_at": "2013-09-30T13:46:02Z",
@@ -136,7 +134,6 @@ Parameters:
   "path_with_namespace": "diaspora/diaspora-project-site",
   "issues_enabled": true,
   "merge_requests_enabled": true,
-  "wall_enabled": false,
   "wiki_enabled": true,
   "snippets_enabled": false,
   "created_at": "2013-09-30T13: 46: 02Z",
@@ -252,7 +249,6 @@ Parameters:
 + `namespace_id` (optional) - namespace for the new project (defaults to user)
 + `description` (optional) - short project description
 + `issues_enabled` (optional)
-+ `wall_enabled` (optional)
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)
@@ -276,7 +272,6 @@ Parameters:
 + `description` (optional) - short project description
 + `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
-+ `wall_enabled` (optional)
 + `merge_requests_enabled` (optional)
 + `wiki_enabled` (optional) 
 + `snippets_enabled` (optional)

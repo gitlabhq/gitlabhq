@@ -53,8 +53,12 @@
       vertical-align: middle;
       a {
         &:hover {
-          color: $primary_color;
+          color: $link_hover_color;
         }
+      }
+
+      i {
+        color: $bg_primary;
       }
 
       img {
@@ -109,18 +113,17 @@
   }
 }
 
-.tree-btn-group {
-  top: 2px;
-
-  .btn {
-    margin-right: 0px;
-    padding: 2px 10px;
-  }
+.tree-download-holder .btn {
+  padding: 4px 12px;
 }
 
 .tree-ref-holder {
   float: left;
-  margin-top: 8px;
+  margin-right: 6px;
+
+  .select2-container .select2-choice, .select2-container.select2-drop-above .select2-choice {
+    padding: 4px 12px;
+  }
 }
 
 .readme-holder {
@@ -141,6 +144,8 @@
   margin-bottom: 10px;
 
   .commit {
+    padding: 10px 15px;
+
     .commit-row-title {
       font-size: 13px;
 

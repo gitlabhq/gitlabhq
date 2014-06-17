@@ -1,11 +1,6 @@
 # Migrating GitLab from MySQL to Postgres
 
-If you are replacing MySQL with Postgres while keeping GitLab on the same
-server all you need to do is to export from MySQL, import into Postgres and
-rebuild the indexes as described below. If you are also moving GitLab to
-another server, or if you are switching to omnibus-gitlab, you may want to use
-a GitLab backup file. The second part of this documents explains the procedure
-to do this.
+If you are replacing MySQL with Postgres while keeping GitLab on the same server all you need to do is to export from MySQL, import into Postgres and rebuild the indexes as described below. If you are also moving GitLab to another server, or if you are switching to omnibus-gitlab, you may want to use a GitLab backup file. The second part of this documents explains the procedure to do this.
 
 ## Export from MySQL and import into Postgres
 
@@ -27,36 +22,54 @@ psql -f databasename.psql -d gitlabhq_production
 sudo service gitlab start
 ```
 
-
 ## Rebuild indexes
 
-The lanyrd database converter script does not preserve all indexes, so we have
-to recreate them ourselves after migrating from MySQL. It is not necessary to
-shut down GitLab for this process.
+The lanyrd database converter script does not preserve all indexes, so we have to recreate them ourselves after migrating from MySQL. It is not necessary to shut down GitLab for this process.
+
+### For non-omnibus installations
+
+On non-omnibus installations (distributed using Git) we retrieve the index declarations from version control using `git stash`.
 
 ```
 # Clone the database converter on your Postgres-backed GitLab server
 cd /tmp
 git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 
-# Stash changes to db/schema.rb to make sure we can find the right index statements
 cd /home/git/gitlab
+
+# Stash changes to db/schema.rb to make sure we can find the right index statements
 sudo -u git -H git stash
 
-# Generate the `CREATE INDEX CONCURRENTLY` statements based on schema.rb
-cd /tmp/mysql-to-postgresql-converter
-ruby index_create_statements.rb /home/git/gitlab/db/schema.rb > index_create_statements.psql
+# Generate add_index.rb
+ruby /tmp/mysql-postgresql-converter/add_index_statements.rb db/schema.rb > /tmp/mysql-postgresql-converter/add_index.rb
 
-# Execute the SQL statements against the GitLab database
-sudo -u git psql -f index_create_statements.psql -d gitlabhq_production
+# Create the indexes
+sudo -u git -H bundle exec rails runner -e production 'eval $stdin.read' < /tmp/mysql-postgresql-converter/add_index.rb
+```
+
+### For omnibus-gitlab installations
+
+On omnibus-gitlab we need to get the index declarations from a file called `schema.rb.bundled`. For versions older than 6.9, we need to download the file.
+
+```
+# Clone the database converter on your Postgres-backed GitLab server
+cd /tmp
+/opt/gitlab/embedded/bin/git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
+cd /tmp/mysql-postgresql-converter
+
+# Download schema.rb.bundled if necessary
+test -e /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled || sudo /opt/gitlab/embedded/bin/curl -o /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled https://gitlab.com/gitlab-org/gitlab-ce/raw/v6.9.1/db/schema.rb
+
+# Generate add_index.rb
+/opt/gitlab/embedded/bin/ruby add_index_statements.rb /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled > add_index.rb
+
+# Create the indexes
+/opt/gitlab/bin/gitlab-rails runner 'eval $stdin.read' < add_index.rb
 ```
 
 ## Converting a GitLab backup file from MySQL to Postgres
 
-GitLab backup files (<timestamp>_gitlab_backup.tar) contain a SQL dump.  Using
-the lanyrd database converter we can replace a MySQL database dump inside the
-tar file with a Postgres database dump. This can be useful if you are moving to
-another server.
+GitLab backup files (<timestamp>_gitlab_backup.tar) contain a SQL dump. Using the lanyrd database converter we can replace a MySQL database dump inside the tar file with a Postgres database dump. This can be useful if you are moving to another server.
 
 ```
 # Stop GitLab

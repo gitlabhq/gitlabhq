@@ -1,9 +1,18 @@
 = render "head"
 .project-network
-  .tip
-    You can move around the graph by using the arrow keys.
+  .controls
+    = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
+      = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control input-mx-250"
+      = button_tag type: 'submit', class: 'btn btn-success' do
+        %i.icon-search
+      .inline.prepend-left-20
+        .checkbox.light
+          = label_tag :filter_ref do
+            = check_box_tag :filter_ref, 1, @options[:filter_ref]
+            %span Begin with the selected commit
+
   .network-graph
-    = spinner
+    = spinner nil, true
 
 :javascript
   new Network({

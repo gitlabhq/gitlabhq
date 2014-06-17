@@ -117,6 +117,22 @@ class ProjectTeam
     false
   end
 
+  def guest?(user)
+    find_tm(user.id).try(:access_field) == Gitlab::Access::GUEST
+  end
+
+  def reporter?(user)
+    find_tm(user.id).try(:access_field) == Gitlab::Access::REPORTER
+  end
+
+  def developer?(user)
+    find_tm(user.id).try(:access_field) == Gitlab::Access::DEVELOPER
+  end
+
+  def master?(user)
+    find_tm(user.id).try(:access_field) == Gitlab::Access::MASTER
+  end
+
   private
 
   def fetch_members(level = nil)
@@ -157,7 +173,11 @@ class ProjectTeam
       group_members = group_members.send(level) if group
     end
 
-    (project_members + group_members + invited_members).map(&:user).uniq
+    user_ids = project_members.pluck(:user_id)
+    user_ids += invited_members.map(&:user_id) if invited_members.any?
+    user_ids += group_members.pluck(:user_id) if group
+
+    User.where(id: user_ids)
   end
 
   def group

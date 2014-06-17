@@ -23,4 +23,4 @@
                   %td.new_line= link_to raw(type == "old" ? "&nbsp;" : line_new) , "##{line_code}", id: line_code
                   %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line)
         - else
-          %p.nothing_here_message No changes.
+          .nothing-here-block No changes.

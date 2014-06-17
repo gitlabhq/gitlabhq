@@ -1,6 +1,6 @@
 class Projects::MilestonesController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :milestone, only: [:edit, :update, :destroy, :show]
+  before_filter :milestone, only: [:edit, :update, :destroy, :show, :sort_issues, :sort_merge_requests]
 
   # Allow read any milestone
   before_filter :authorize_read_milestone!
@@ -37,7 +37,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def create
-    @milestone = @project.milestones.new(params[:milestone])
+    @milestone = Milestones::CreateService.new(project, current_user, params[:milestone]).execute
 
     if @milestone.save
       redirect_to project_milestone_path(@project, @milestone)
@@ -47,7 +47,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def update
-    @milestone.update_attributes(params[:milestone])
+    @milestone = Milestones::UpdateService.new(project, current_user, params[:milestone]).execute(milestone)
 
     respond_to do |format|
       format.js
@@ -70,6 +70,26 @@ class Projects::MilestonesController < Projects::ApplicationController
       format.html { redirect_to project_milestones_path }
       format.js { render nothing: true }
     end
+  end
+
+  def sort_issues
+    @issues = @milestone.issues.where(id: params['sortable_issue'])
+    @issues.each do |issue|
+      issue.position = params['sortable_issue'].index(issue.id.to_s) + 1
+      issue.save
+    end
+
+    render json: { saved: true }
+  end
+
+  def sort_merge_requests
+    @merge_requests = @milestone.merge_requests.where(id: params['sortable_merge_request'])
+    @merge_requests.each do |merge_request|
+      merge_request.position = params['sortable_merge_request'].index(merge_request.id.to_s) + 1
+      merge_request.save
+    end
+
+    render json: { saved: true }
   end
 
   protected

@@ -1,10 +1,18 @@
 = render "head"
 
-- if @path.present?
-  %ul.breadcrumb.commit-breadcrumb
-    %li.light
-      History for
-    = commits_breadcrumbs
+.tree-ref-holder
+  = render 'shared/ref_switcher', destination: 'commits'
+
+- if current_user && current_user.private_token
+  .commits-feed-holder.hidden-xs.hidden-sm
+    = link_to project_commits_path(@project, @ref, {format: :atom, private_token: current_user.private_token}), title: "Feed", class: 'btn' do
+      %i.icon-rss
+      Commits feed
+
+%ul.breadcrumb.repo-breadcrumb
+  = commits_breadcrumbs
+  %li.active
+    commits
 
 %div{id: dom_id(@project)}
   #commits-list= render "commits"

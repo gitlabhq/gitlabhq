@@ -1,6 +1,6 @@
 .issue-box{ class: issue_box_class(@merge_request) }
   .state.clearfix
-    %span.state-label.col-sm-2.col-xs-12
+    .state-label
       - if @merge_request.merged?
         Merged
       - elsif @merge_request.closed?
@@ -8,7 +8,7 @@
       - else
         Open
 
-    %span.creator.col-sm-9.col-xs-12
+    .creator
       Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
   %h4.title

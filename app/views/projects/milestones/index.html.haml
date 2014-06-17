@@ -8,7 +8,9 @@
         New Milestone
 
   .row
-    .col-md-3.hidden-sm
+    .fixed.sidebar-expand-button.hidden-lg.hidden-md.hidden-xs
+      %i.icon-list.icon-2x
+    .col-md-3.responsive-side
       %ul.nav.nav-pills.nav-stacked
         %li{class: ("active" if (params[:f] == "active" || !params[:f]))}
           = link_to project_milestones_path(@project, f: "active") do
@@ -20,7 +22,7 @@
           = link_to project_milestones_path(@project, f: "all") do
             All
     .col-md-9
-      .ui-box
+      .panel.panel-default
         %ul.well-list
           = render @milestones
 

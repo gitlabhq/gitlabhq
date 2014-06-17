@@ -82,5 +82,17 @@ describe "Group access", feature: true  do
       it { should be_denied_for :user }
       it { should be_denied_for :visitor }
     end
+
+    describe "GET /groups/:path/projects" do
+      subject { projects_group_path(group) }
+
+      it { should be_allowed_for owner }
+      it { should be_denied_for master }
+      it { should be_denied_for reporter }
+      it { should be_allowed_for :admin }
+      it { should be_denied_for guest }
+      it { should be_denied_for :user }
+      it { should be_denied_for :visitor }
+    end
   end
 end

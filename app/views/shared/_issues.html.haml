@@ -1,8 +1,8 @@
 - if @issues.any?
   - @issues.group_by(&:project).each do |group|
-    .ui-box.ui-box-small
+    .panel.panel-default.panel-small
       - project = group[0]
-      .title
+      .panel-heading
         = link_to_project project
         = link_to 'show all', project_issues_path(project), class: 'pull-right'
 

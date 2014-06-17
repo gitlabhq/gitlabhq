@@ -22,18 +22,24 @@
 
 .issue-box{ class: issue_box_class(@milestone) }
   .state.clearfix
-    .state-label.col-sm-2.col-xs-12
+    .state-label
       - if @milestone.closed?
         Closed
       - elsif @milestone.expired?
         Expired
       - else
         Open
-    %span.creator.col-sm-9.col-xs-12
+    .creator
       = @milestone.expires_at
 
   %h4.title
     = gfm escape_once(@milestone.title)
+
+  - if @milestone.description.present?
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
 
   .context
     %p
@@ -45,11 +51,6 @@
     .progress.progress-info
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
-  - if @milestone.description.present?
-    .description
-      .wiki
-        = preserve do
-          = markdown @milestone.description
 
 %ul.nav.nav-tabs
   %li.active
@@ -75,25 +76,25 @@
   .tab-pane.active#tab-issues
     .row
       .col-md-4
-        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned)
+        = render('issues', title: 'Unstarted Issues (open and unassigned)', issues: @issues.opened.unassigned, id: 'unassigned')
       .col-md-4
-        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned)
+        = render('issues', title: 'Ongoing Issues (open and assigned)', issues: @issues.opened.assigned, id: 'ongoing')
       .col-md-4
-        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed)
+        = render('issues', title: 'Completed Issues (closed)', issues: @issues.closed, id: 'closed')
 
   .tab-pane#tab-merge-requests
     .row
-      .col-md-6
-        .ui-box
-          .title Open
+      .col-md-3
+        = render('merge_requests', title: 'Work in progress (open and unassigned)', merge_requests: @merge_requests.opened.unassigned, id: 'unassigned')
+      .col-md-3
+        = render('merge_requests', title: 'Waiting for merge (open and assigned)', merge_requests: @merge_requests.opened.assigned, id: 'ongoing')
+      .col-md-3
+        = render('merge_requests', title: 'Declined (closed)', merge_requests: @merge_requests.declined, id: 'closed')
+      .col-md-3
+        .panel.panel-primary
+          .panel-heading Merged
           %ul.well-list
-            - @merge_requests.opened.each do |merge_request|
-              = render 'merge_request', merge_request: merge_request
-      .col-md-6
-        .ui-box
-          .title Closed
-          %ul.well-list
-            - @merge_requests.closed.each do |merge_request|
+            - @merge_requests.merged.each do |merge_request|
               = render 'merge_request', merge_request: merge_request
 
   .tab-pane#tab-participants

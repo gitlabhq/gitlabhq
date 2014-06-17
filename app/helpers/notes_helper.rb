@@ -42,4 +42,23 @@ module NotesHelper
       project_id: noteable.project.id,
     }.to_json
   end
+
+  def link_to_new_diff_note(line_code)
+    discussion_id = Note.build_discussion_id(
+      @comments_target[:noteable_type],
+      @comments_target[:noteable_id] || @comments_target[:commit_id],
+      line_code
+    )
+
+    data = {
+      noteable_type: @comments_target[:noteable_type],
+      noteable_id:   @comments_target[:noteable_id],
+      commit_id:     @comments_target[:commit_id],
+      line_code:     line_code,
+      discussion_id: discussion_id
+    }
+
+    link_to "", "javascript:;", class: "add-diff-note js-add-diff-note-button",
+      data: data, title: "Add a comment to this line"
+  end
 end

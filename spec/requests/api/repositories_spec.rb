@@ -23,6 +23,24 @@ describe API::API, api: true  do
     end
   end
 
+  describe 'POST /projects/:id/repository/tags' do
+    it 'should create a new tag' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v1.0.0',
+           ref: 'master'
+
+      response.status.should == 201
+      json_response['name'].should == 'v1.0.0'
+    end
+    it 'should deny for user without push access' do
+      post api("/projects/#{project.id}/repository/tags", user2),
+           tag_name: 'v1.0.0',
+           ref: '621491c677087aa243f165eab467bfdfbee00be1'
+
+      response.status.should == 403
+    end
+  end
+
   describe "GET /projects/:id/repository/tree" do
     context "authorized user" do
       before { project.team << [user2, :reporter] }
@@ -110,6 +128,45 @@ describe API::API, api: true  do
     it "should return 404 for invalid sha" do
       get api("/projects/#{project.id}/repository/archive/?sha=xxx", user)
       response.status.should == 404
+    end
+  end
+
+  describe 'GET /GET /projects/:id/repository/compare' do
+    it "should compare branches" do
+      get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'simple_merge_request'
+      response.status.should == 200
+      json_response['commits'].should be_present
+      json_response['diffs'].should be_present
+    end
+
+    it "should compare tags" do
+      get api("/projects/#{project.id}/repository/compare", user), from: 'v1.0.1', to: 'v1.0.2'
+      response.status.should == 200
+      json_response['commits'].should be_present
+      json_response['diffs'].should be_present
+    end
+
+    it "should compare commits" do
+      get api("/projects/#{project.id}/repository/compare", user), from: 'b1e6a9dbf1c85', to: '1e689bfba395'
+      response.status.should == 200
+      json_response['commits'].should be_empty
+      json_response['diffs'].should be_empty
+      json_response['compare_same_ref'].should be_false
+    end
+
+    it "should compare commits in reverse order" do
+      get api("/projects/#{project.id}/repository/compare", user), from: '1e689bfba395', to: 'b1e6a9dbf1c85'
+      response.status.should == 200
+      json_response['commits'].should be_present
+      json_response['diffs'].should be_present
+    end
+
+    it "should compare same refs" do
+      get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'master'
+      response.status.should == 200
+      json_response['commits'].should be_empty
+      json_response['diffs'].should be_empty
+      json_response['compare_same_ref'].should be_true
     end
   end
 end

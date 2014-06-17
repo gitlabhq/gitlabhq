@@ -109,8 +109,6 @@ module EventsHelper
           "#{event.note_target_type} ##{truncate event.note_target_iid}"
         end
       end
-    elsif event.wall_note?
-      link_to 'wall', project_wall_path(event.project)
     else
       content_tag :strong do
         "(deleted)"

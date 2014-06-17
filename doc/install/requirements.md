@@ -1,8 +1,10 @@
-# Operating Systems
+# Requirements
+
+## Operating Systems
 
 GitLab is developed for the Linux operating system. For the installations options and instructions please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
-## Supported Linux distributions
+### Supported Linux distributions
 
 - Ubuntu
 - Debian
@@ -11,50 +13,54 @@ GitLab is developed for the Linux operating system. For the installations option
 - Scientific Linux
 - Oracle Linux
 
-## Unsupported Linux distributions
+### Unsupported Linux distributions
 
 - Arch Linux
 - Fedora
 - Gentoo
 
-But on the above unsupported distributions is stll possible to install GitLab yourself with the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md).
+But on the above unsupported distributions is still possible to install GitLab yourself with the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md).
 
-## Unsupported Unix operating systems
+### Unsupported Unix operating systems
 
 There is nothing that prevents GitLab from running on other Unix operating systems.
+
 This means you may get it to work on systems running FreeBSD or OS X.
+
 If you want to do this, please be aware it could be a lot of work.
+
 Please consider using a virtual machine to run GitLab.
 
-## Other operating systems such as Windows
+### Other operating systems such as Windows
 
 GitLab does **not** run on Windows and we have no plans of supporting it in the near future.
+
 Please consider using a virtual machine to run GitLab.
 
+## Ruby versions
 
-# Ruby versions
+GitLab requires Ruby (MRI) 2.0 or 2.1
 
-GitLab requires Ruby (MRI) 1.9.3 or 2.0+.
 You will have to use the standard MRI implementation of Ruby.
+
 We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab needs several Gems that have native extensions.
 
+## Hardware requirements
 
-# Hardware requirements
-
-## CPU
+### CPU
 
 - 1 core works supports up to 100 users but the application will not be responsive
 - **2 cores** is the **recommended** number of cores and supports up to 500 users
 - 4 cores supports up to 2,000 users
 - 8 cores supports up to 5,000 users
-- 16 cores supports up to 10,0000 users
-- 32 cores supports up to 20,0000 users
-- 64 cores supports up to 40,0000 users
+- 16 cores supports up to 10,000 users
+- 32 cores supports up to 20,000 users
+- 64 cores supports up to 40,000 users
 
-## Memory
+### Memory
 
-- 512MB is the absolute minimum, you need 256MB of swap, you can configure only one slow unicorn worker, only ssh access will work, we do not recommend this
-- 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates using swap space)
+- 512MB is the absolute minimum but we do not recommend this amount of memory, you'll need to configure a minimum swap of 256MB, you're memory will only allow you to run one slow unicorn worker, things will case only git ssh access to work because the git http access requires two running workers (one to receive the user request and one for the authorization check),
+- 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates configuring swap space)
 - **2GB** is the **recommended** memory size and supports up to 500 users
 - 4GB supports up to 2,000 users
 - 8GB supports up to 5,000 users
@@ -62,11 +68,9 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 - 32GB supports up to 20,000 users
 - 64GB supports up to 40,000 users
 
-## Storage
+### Storage
 
-The necessary hard drive space largely depends on the size of the repos you want
-to store in GitLab. But as a *rule of thumb* you should have at least twice as much
-free space as your all repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
+The necessary hard drive space largely depends on the size of the repos you want to store in GitLab. But as a *rule of thumb* you should have at least twice as much free space as your all repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
 
@@ -78,7 +82,7 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 
 If you want to run the database separately, the **recommended** database size is **1 MB per user**
 
-# Supported webbrowsers
+## Supported webbrowsers
 
 - Chrome (Latest stable version)
 - Firefox (Latest released version) 

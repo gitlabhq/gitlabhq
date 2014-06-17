@@ -6,12 +6,12 @@
   SSH keys allow you to establish a secure connection between your computer and GitLab
   %br
   Before you can add an SSH key you need to
-  = link_to "generate it", help_ssh_path
+  = link_to "generate it", help_page_path("ssh", "README")
 %hr
 
 
-.ui-box
-  .title
+.panel.panel-default
+  .panel-heading
     SSH Keys (#{@keys.count})
   %ul.well-list#keys-table
     = render @keys
