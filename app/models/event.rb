@@ -309,7 +309,7 @@ class Event < ActiveRecord::Base
 
   def reset_project_activity
     if project
-      project.update_column(:last_activity_at, event.created_at)
+      project.update_column(:last_activity_at, self.created_at)
     end
   end
 end
