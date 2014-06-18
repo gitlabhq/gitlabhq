@@ -76,30 +76,10 @@ label {
   }
 }
 
-.commit-message-container {
-  background-color: $body-bg;
-  position: relative;
-  font-family: $monospace_font;
-  $left: 12px;
-  .max-width-marker {
-    width: 72ch;
-    color: rgba(0, 0, 0, 0.0);
-    font-family: inherit;
-    left: $left;
-    height: 100%;
-    border-right: 1px solid mix($input-border, white);
-    position: absolute;
-    z-index: 1;
-  }
-  > textarea {
-    background-color: rgba(0, 0, 0, 0.0);
-    font-family: inherit;
-    padding-left: $left;
-    position: relative;
-    z-index: 2;
-  }
-}
-
 .fieldset-form fieldset {
   margin-bottom: 20px;
+}
+
+.form-control {
+  @include box-shadow(none);
 }
