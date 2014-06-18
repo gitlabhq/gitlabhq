@@ -4,7 +4,7 @@
     %div
       %h3.page-title
         Project settings:
-      %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below
+      %p.light Some settings, such as "Transfer Project", are hidden inside the danger area below.
       %hr
       .panel-body
         = form_for @project, remote: true, html: { class: "edit_project form-horizontal" } do |f|
@@ -94,7 +94,7 @@
 
         %p Project settings below may result in data loss!
         = link_to '#', class: 'btn js-toggle-button' do
-          Show it to me
+          Show them to me
           %i.icon-chevron-down
 
       .js-toggle-content.hide
