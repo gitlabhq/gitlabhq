@@ -54,15 +54,18 @@ module API
       #   bio                               - Bio
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
+      #   confirm                           - Require user confirmation - true (default) or false
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :confirm, :admin]
         user = User.build_user(attrs)
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
+        confirm = ! (attrs.delete(:confirm) =~ (/(false|f|no|0)$/i))
+        user.skip_confirmation! unless confirm
         if user.save
           present user, with: Entities::UserFull
         else
