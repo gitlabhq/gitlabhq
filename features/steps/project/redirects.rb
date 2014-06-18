@@ -31,5 +31,11 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
     project = Project.find_by(name: 'Community')
     visit project_path(project) + 'DoesNotExist'
   end
+
+  step 'I should be redirected to "Community" page' do
+    project = Project.find_by(name: 'Community')
+    page.current_path.should == "/#{project.path_with_namespace}"
+    page.status_code.should == 200
+  end
 end
 
