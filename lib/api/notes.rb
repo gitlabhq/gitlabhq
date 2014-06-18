@@ -50,12 +50,15 @@ module API
         post ":id/#{noteables_str}/:#{noteable_id_str}/notes" do
           required_attributes! [:body]
 
-          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
-          @note = @noteable.notes.new(note: params[:body])
-          @note.author = current_user
-          @note.project = user_project
+          opts = {
+           note: params[:body],
+           noteable_type: noteables_str.classify,
+           noteable_id: params[noteable_id_str]
+          }
 
-          if @note.save
+          @note = ::Notes::CreateService.new(user_project, current_user, opts).execute
+
+          if @note.valid?
             present @note, with: Entities::Note
           else
             not_found!
