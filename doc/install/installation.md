@@ -141,12 +141,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 6-9-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-0-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
-**Note:** You can change `6-9-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-0-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure it
 
@@ -238,7 +238,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.5] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.6] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main gitlab config.
     #
