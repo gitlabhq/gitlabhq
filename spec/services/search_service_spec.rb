@@ -1,19 +1,18 @@
 require 'spec_helper'
 
 describe 'Search::GlobalService' do
-  let(:user) { create(:user, namespace: found_namespace) }
-  let(:public_user) { create(:user, namespace: public_namespace) }
-  let(:internal_user) { create(:user, namespace: internal_namespace) }
+  let(:user) { create(:user) }
+  let(:public_user) { create(:user) }
+  let(:internal_user) { create(:user) }
 
-  let(:found_namespace) { create(:namespace, name: 'searchable namespace', path:'another_thing') }
-  let(:unfound_namespace) { create(:namespace, name: 'unfound namespace', path: 'yet_something_else') }
-  let(:internal_namespace) { create(:namespace, name: 'searchable internal namespace', path: 'something_internal') }
-  let(:public_namespace) { create(:namespace, name: 'searchable public namespace', path: 'something_public') }
+  let!(:found_project)    { create(:empty_project, :private, name: 'searchable_project') }
+  let!(:unfound_project)  { create(:empty_project, :private, name: 'unfound_project') }
+  let!(:internal_project) { create(:empty_project, :internal, name: 'searchable_internal_project') }
+  let!(:public_project)   { create(:empty_project, :public, name: 'searchable_public_project') }
 
-  let!(:found_project) { create(:project, :private, name: 'searchable_project', creator_id: user.id, namespace: found_namespace) }
-  let!(:unfound_project) { create(:project, :private, name: 'unfound_project', creator_id: user.id, namespace: unfound_namespace) }
-  let!(:internal_project) { create(:project, :internal, name: 'searchable_internal_project', creator_id: internal_user.id, namespace: internal_namespace) }
-  let!(:public_project) { create(:project, :public, name: 'searchable_public_project', creator_id: public_user.id, namespace: public_namespace) }
+  before do
+    found_project.team << [user, :master]
+  end
 
   describe '#execute' do
     context 'unauthenticated' do
@@ -38,7 +37,7 @@ describe 'Search::GlobalService' do
       end
 
       it 'namespace name should be searchable' do
-        context = Search::GlobalService.new(user, search: "searchable namespace")
+        context = Search::GlobalService.new(user, search: found_project.namespace.path)
         results = context.execute
         results[:projects].should match_array [found_project]
       end
