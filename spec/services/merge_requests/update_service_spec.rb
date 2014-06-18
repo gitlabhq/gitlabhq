@@ -31,7 +31,7 @@ describe MergeRequests::UpdateService do
 
       it 'should send email to user2 about assign of new merge_request' do
         email = ActionMailer::Base.deliveries.last
-        email.cc.first.should == user2.email
+        email.to.first.should == user2.email
         email.subject.should include(merge_request.title)
       end
 
