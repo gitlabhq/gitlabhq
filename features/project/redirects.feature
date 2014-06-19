@@ -29,4 +29,5 @@ Feature: Project Redirects
     When I visit project "Community" page
     And I should see project "Community" home page
     And I click on "Sign In"
+    And Authenticate
     Then I should be redirected to "Community" page
