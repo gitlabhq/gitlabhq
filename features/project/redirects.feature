@@ -28,5 +28,5 @@ Feature: Project Redirects
   Scenario: I visit a public project without signing in
     When I visit project "Community" page
     And I should see project "Community" home page
-    And I sign in as a user
+    And I click on "Sign In"
     Then I should be redirected to "Community" page
