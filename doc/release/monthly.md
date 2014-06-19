@@ -29,9 +29,14 @@ Consider naming the issue "Release x.x.x.rc1" to make it easier for later search
 1. Check the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794)
 1. There might be other changes. Ask around.
 
-### **3. Create an update guide**
+### **3. Create an update guides**
 
-It's best to copy paste the previous guide and make changes where necessary. The typical steps are listed below with any points you should specifically look at.
+1. Create: CE update guide from previous version. Like `from-6-8-to-6.9`
+1. Create: CE to EE update guide in EE repository for latest version.
+1. Update: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/6.0-to-6.x.md to latest version. 
+
+It's best to copy paste the previous guide and make changes where necessary. 
+The typical steps are listed below with any points you should specifically look at.
 
 #### 0. Any major changes?
 
