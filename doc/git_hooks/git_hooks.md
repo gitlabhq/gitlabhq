@@ -16,7 +16,7 @@ Let's assume you have the following requirements for your workflow:
 * every commit should reference a reference JIRA issue. For example: `Refactored css. Fixes JIRA-123. `
 * users should not be able to remove git tags with `git push`
 
-All you need to do is write simple regular expression that requires mention of JIRA issue in commit message. 
+All you need to do is write simple regular expression that requires mention of JIRA issue in a commit message. 
 It can be something like this `/JIRA\-\d+/`. 
 Just paste regular expression into commit message textfield(without start and ending slash) and save changes. 
 See screenshot below: 
