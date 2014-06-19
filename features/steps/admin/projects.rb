@@ -19,4 +19,30 @@ class AdminProjects < Spinach::FeatureSteps
     page.should have_content(project.name_with_namespace)
     page.should have_content(project.creator.name)
   end
+
+  step 'I visit admin project page' do
+    visit admin_project_path(project)
+  end
+
+  step 'I transfer project to group \'Web\'' do
+    find(:xpath, "//input[@id='namespace_id']").set group.id
+    click_button 'Transfer'
+  end
+
+  step 'group \'Web\'' do
+    create(:group, name: 'Web')
+  end
+
+  step 'I should see project transfered' do
+    page.should have_content 'Web / ' + project.name
+    page.should have_content 'Namespace: Web'
+  end
+
+  def project
+    @project ||= Project.first
+  end
+
+  def group
+    Group.find_by(name: 'Web')
+  end
 end

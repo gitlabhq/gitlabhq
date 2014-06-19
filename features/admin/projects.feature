@@ -12,3 +12,9 @@ Feature: Admin Projects
     When I visit admin projects page
     And I click on first project
     Then I should see project details
+
+  Scenario: Transfer project
+    Given group 'Web'
+    And I visit admin project page
+    When I transfer project to group 'Web'
+    Then I should see project transfered
