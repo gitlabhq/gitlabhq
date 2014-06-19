@@ -1,12 +1,12 @@
 # Git Hooks
 
 Sometimes you need additional control over pushes to your repository. 
-GitLab already has protected branches. 
-But there are cases when you need some specific rules like preventing git tag removal or special format of commit messages. 
-And instead of manually writing shell script files directly into git repository GitLab Enterprise Edition offers a user-friendly interface for such cases. 
+GitLab already offers protected branches. 
+But there are cases when you need some specific rules like preventing git tag removal or enforcing a special format for commit messages. 
+GitLab Enterprise Edition offers a user-friendly interface for such cases.
 
-Git hooks are defined per project so you can have different rules applied for different projects depends on your needs. 
-Git hooks settings you can find at Project settings -> Git Hooks page. 
+Git hooks are defined per project so you can have different rules applied to different projects depends on your needs. 
+Git hooks settings can be found at Project settings -> Git Hooks page. 
 
 
 ## How to use
