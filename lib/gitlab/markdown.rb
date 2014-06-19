@@ -228,7 +228,7 @@ module Gitlab
 
     def reference_jira_issue(identifier, project = @project)
       url = url_for_issue(identifier)
-      title = Gitlab.config.issues_tracker[@project.issues_tracker]["title"]
+      title = Gitlab.config.issues_tracker[project.issues_tracker]["title"]
 
       options = html_options.merge(
         title: "Issue in #{title}",
