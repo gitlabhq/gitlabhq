@@ -56,10 +56,10 @@
     text-align: center;
 
     .prev {
-      @extend .thumbnail;
-      height: 30px;
-      width: 175px;
+      height: 80px;
+      width: 160px;
       margin-bottom: 10px;
+      @include border-radius(4px);
 
       &.classic {
         background: #31363e;
@@ -92,10 +92,13 @@
     text-align: center;
 
     .prev {
-      @extend .thumbnail;
-      height: 151px;
-      width: 220px;
+      width: 160px;
       margin-bottom: 10px;
+
+      img {
+        max-width: 100%;
+        @include border-radius(4px);
+      }
     }
   }
 }
