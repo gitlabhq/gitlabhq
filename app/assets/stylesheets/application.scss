@@ -8,8 +8,6 @@
  *= require select2
  *= require highlightjs.min
  *= require_self
- *= require nprogress
- *= require nprogress-bootstrap
  *= require dropzone/basic
 */
 
@@ -19,6 +17,12 @@
  * Customized Twitter bootstrap
  */
 @import 'gl_bootstrap';
+
+/**
+ * NProgress load bar css
+ */
+@import 'nprogress';
+@import 'nprogress-bootstrap';
 
 /**
  * Font icons
