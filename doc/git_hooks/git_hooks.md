@@ -19,7 +19,7 @@ Let's assume you have the following requirements for your workflow:
 All you need to do is write simple regular expression that requires mention of JIRA issue in a commit message. 
 It can be something like this `/JIRA\-\d+/`. 
 Just paste regular expression into commit message textfield(without start and ending slash) and save changes. 
-See screenshot below: 
+See the screenshot below: 
 
 ![screenshot](git_hooks.png)
 
