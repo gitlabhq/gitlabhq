@@ -118,19 +118,30 @@ class ProjectTeam
   end
 
   def guest?(user)
-    find_tm(user.id).try(:access_field) == Gitlab::Access::GUEST
+    max_tm_access(user.id) == Gitlab::Access::GUEST
   end
 
   def reporter?(user)
-    find_tm(user.id).try(:access_field) == Gitlab::Access::REPORTER
+    max_tm_access(user.id) == Gitlab::Access::REPORTER
   end
 
   def developer?(user)
-    find_tm(user.id).try(:access_field) == Gitlab::Access::DEVELOPER
+    max_tm_access(user.id) == Gitlab::Access::DEVELOPER
   end
 
   def master?(user)
-    find_tm(user.id).try(:access_field) == Gitlab::Access::MASTER
+    max_tm_access(user.id) == Gitlab::Access::MASTER
+  end
+
+  def max_tm_access(user_id)
+    access = []
+    access << project.users_projects.find_by(user_id: user_id).try(:access_field)
+
+    if group
+      access << group.users_groups.find_by(user_id: user_id).try(:access_field)
+    end
+
+    access.compact.max
   end
 
   private
