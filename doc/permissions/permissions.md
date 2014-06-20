@@ -16,6 +16,7 @@ If a user is a GitLab administrator they receive all permissions.
 | Pull project code                     |         | ✓          | ✓           | ✓        | ✓      |
 | Download project                      |         | ✓          | ✓           | ✓        | ✓      |
 | Create code snippets                  |         | ✓          | ✓           | ✓        | ✓      |
+| Create new milestones                 |         |            | ✓           | ✓        | ✓      |
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches        |         |            | ✓           | ✓        | ✓      |
