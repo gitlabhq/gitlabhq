@@ -421,7 +421,7 @@ Parameters:
   "push_events": "true",
   "issues_events": "true",
   "merge_requests_events": "true",
-  'tag_push_events': "true",
+  "tag_push_events": "true",
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
