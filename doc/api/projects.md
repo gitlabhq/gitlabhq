@@ -421,6 +421,7 @@ Parameters:
   "push_events": "true",
   "issues_events": "true",
   "merge_requests_events": "true",
+  "tag_push_events": "true",
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
@@ -441,6 +442,7 @@ Parameters:
 + `push_events` - Trigger hook on push events
 + `issues_events` - Trigger hook on issues events
 + `merge_requests_events` - Trigger hook on merge_requests events
++ `tag_push_events` - Trigger hook on tag push events
 
 
 ### Edit project hook
@@ -459,6 +461,7 @@ Parameters:
 + `push_events` - Trigger hook on push events
 + `issues_events` - Trigger hook on issues events
 + `merge_requests_events` - Trigger hook on merge_requests events
++ `tag_push_events` - Trigger hook on tag push events
 
 
 ### Delete project hook
