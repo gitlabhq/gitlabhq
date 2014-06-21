@@ -1,6 +1,6 @@
 - if @project.import_in_progress?
   .save-project-loader
-    %center
+    .center
       %h2
         %i.icon-spinner.icon-spin
         Import in progress.
@@ -11,7 +11,7 @@
 
 - elsif @project.import_failed?
   .save-project-loader
-    %center
+    .center
       %h2
         Import failed. Retry?
   %hr
