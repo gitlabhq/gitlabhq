@@ -482,7 +482,7 @@ class User < ActiveRecord::Base
 
   def avatar_url(size = nil)
     if avatar.present?
-      [Gitlab.config.gitlab.url, avatar.url].join().to_s
+      [Gitlab.config.gitlab.url, avatar.url].join.to_s
     else
       GravatarService.new.execute(email, size)
     end
