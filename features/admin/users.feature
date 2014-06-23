@@ -21,3 +21,11 @@ Feature: Admin Users
     And click edit on my user
     When I submit modified user
     Then I see user attributes changed
+
+@javascript
+  Scenario: Remove users secondary email
+    Given I visit admin users page
+    And I view the user with secondary email
+    And I see the secondary email
+    When I click remove secondary email
+    Then I should not see secondary email anymore
