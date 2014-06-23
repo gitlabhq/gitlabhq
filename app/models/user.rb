@@ -132,6 +132,10 @@ class User < ActiveRecord::Base
   before_validation :sanitize_attrs
 
   before_save :ensure_authentication_token
+  after_save :ensure_namespace_correct
+  after_create :post_create_hook
+  after_destroy :post_destroy_hook
+
 
   alias_attribute :private_token, :authentication_token
 
@@ -489,5 +493,37 @@ class User < ActiveRecord::Base
     else
       GravatarService.new.execute(email, size)
     end
+  end
+
+  def ensure_namespace_correct
+    # Ensure user has namespace
+    self.create_namespace!(path: self.username, name: self.username) unless self.namespace
+
+    if self.username_changed?
+      self.namespace.update_attributes(path: self.username, name: self.username)
+    end
+  end
+
+  def post_create_hook
+    log_info("User \"#{self.name}\" (#{self.email}) was created")
+    notification_service.new_user(self)
+    system_hook_service.execute_hooks_for(self, :create)
+  end
+
+  def post_destroy_hook
+    log_info("User \"#{self.name}\" (#{self.email})  was removed")
+    system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def notification_service
+    NotificationService.new
+  end
+
+  def log_info message
+    Gitlab::AppLogger.info message
+  end
+
+  def system_hook_service
+    SystemHooksService.new
   end
 end

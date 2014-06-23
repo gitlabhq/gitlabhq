@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Projects::UpdateService do
-  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
-  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
-
   describe :update_by_user do
     before do
       @user = create :user

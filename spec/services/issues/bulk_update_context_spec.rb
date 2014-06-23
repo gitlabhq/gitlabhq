@@ -1,12 +1,9 @@
 require 'spec_helper'
 
 describe Issues::BulkUpdateService do
-  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
-  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
-
   let(:issue) {
     create(:issue, project: @project)
-  } 
+  }
 
   before do
     @user = create :user
@@ -23,7 +20,7 @@ describe Issues::BulkUpdateService do
       @issues = 5.times.collect do
         create(:issue, project: @project)
       end
-      @params = { 
+      @params = {
         update: {
           status: 'closed',
           issues_ids: @issues.map(&:id)
@@ -48,7 +45,7 @@ describe Issues::BulkUpdateService do
       @issues = 5.times.collect do
         create(:closed_issue, project: @project)
       end
-      @params = { 
+      @params = {
         update: {
           status: 'reopen',
           issues_ids: @issues.map(&:id)
@@ -71,7 +68,7 @@ describe Issues::BulkUpdateService do
 
     before do
       @new_assignee = create :user
-      @params = { 
+      @params = {
         update: {
           issues_ids: [issue.id],
           assignee_id: @new_assignee.id
@@ -93,7 +90,7 @@ describe Issues::BulkUpdateService do
 
     before do
       @milestone = create :milestone
-      @params = { 
+      @params = {
         update: {
           issues_ids: [issue.id],
           milestone_id: @milestone.id

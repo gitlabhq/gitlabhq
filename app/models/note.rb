@@ -57,6 +57,7 @@ class Note < ActiveRecord::Base
 
   serialize :st_diff
   before_create :set_diff, if: ->(n) { n.line_code.present? }
+  after_update :set_references
 
   class << self
     def create_status_change_note(noteable, project, author, status, source)
@@ -313,5 +314,9 @@ class Note < ActiveRecord::Base
     Event.where(target_id: self.id, target_type: 'Note').
       order('id DESC').limit(100).
       update_all(updated_at: Time.now)
+  end
+
+  def set_references
+    notice_added_references(project, author)
   end
 end

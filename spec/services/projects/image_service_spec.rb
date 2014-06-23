@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Projects::ImageService do
-  before(:each) { enable_observers }
-  after(:each) { disable_observers }
-
   describe 'Image service' do
     before do
       @user = create :user
