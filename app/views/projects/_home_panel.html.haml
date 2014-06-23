@@ -21,7 +21,7 @@
         - if can?(current_user, :admin_project, @project)
           &ndash;
           %strong= link_to 'Edit', edit_project_path
-        - else
+        - elsif @repository.readme
           - readme = @repository.readme
           = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)), class: 'btn btn-block' do
             = readme.name
