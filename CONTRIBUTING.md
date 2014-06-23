@@ -1,8 +1,8 @@
 # Contribute to GitLab
 
-This guide details how contribute to GitLab.
-
-If you want to know how the GitLab team handles contributions have a look at [the GitLab contributing process](PROCESS.md).
+Thank you for your interest in contributing to GitLab.
+This guide details how contribute to GitLab in a way that is efficient for everyone.
+If you have read this guide and want to know how the GitLab core-team operates please see [the GitLab contributing process](PROCESS.md).
 
 ## Contributor license agreement
 
@@ -77,7 +77,7 @@ The **official merge window** is in the beginning of the month from the 1st to t
 
 Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? The smaller a MR is the more likely it is it will be merged, after that you can send more MR's to enhance it.
 
-For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). Please ensure that your merge request meets the following contribution acceptance criteria.
+For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the following contribution acceptance criteria.
 
 **Please format your merge request description as follows:**
 
