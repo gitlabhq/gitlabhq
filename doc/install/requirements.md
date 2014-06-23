@@ -59,7 +59,11 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ### Memory
 
-- 512MB is the absolute minimum but we do not recommend this amount of memory, you'll need to configure a minimum swap of 256MB, you're memory will only allow you to run one slow unicorn worker, things will case only git ssh access to work because the git http access requires two running workers (one to receive the user request and one for the authorization check),
+- 512MB is the absolute minimum but we do not recommend this amount of memory.
+You will either need to configure a minimum swap of 256MB and this will only allow you to run one slow unicorn worker.
+One unicorn worker will cause only git ssh access to work because the git http access requires two running workers.
+It requires one worker to receive the user request and one worker for the authorization check.
+Or if you use SSD you can configure 2GB of swap to use two Unicorn workers and have slow operation with http access.
 - 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates configuring swap space)
 - **2GB** is the **recommended** memory size and supports up to 500 users
 - 4GB supports up to 2,000 users
