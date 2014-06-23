@@ -6,14 +6,12 @@ header {
   &.navbar-gitlab {
     margin-bottom: 0;
     min-height: 40px;
+    border: none;
 
     .navbar-inner {
-      background: #F1F1F1;
-      border-bottom: 1px solid #DDD;
       filter: none;
 
       .nav > li > a {
-        color: $style_color;
         font-size: 14px;
         line-height: 32px;
         padding: 6px 10px;
@@ -248,8 +246,6 @@ header {
     float: left;
     height: 46px;
     width: 2px;
-    background: white;
-    border-left: 1px solid #DDD;
     margin-left: 10px;
     margin-right: 10px;
   }
