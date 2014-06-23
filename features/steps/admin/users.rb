@@ -44,4 +44,23 @@ class AdminUsers < Spinach::FeatureSteps
   step 'click edit on my user' do
     find("#edit_user_#{current_user.id}").click
   end
+
+  step 'I view the user with secondary email' do
+    @user_with_secondary_email = User.last
+    @user_with_secondary_email.emails.new(email: "secondary@example.com")
+    @user_with_secondary_email.save
+    visit "/admin/users/#{@user_with_secondary_email.username}"
+  end
+
+  step 'I see the secondary email' do
+    page.should have_content "Secondary email: #{@user_with_secondary_email.emails.last.email}"
+  end
+
+  step 'I click remove secondary email' do
+    find("#remove_email_#{@user_with_secondary_email.emails.last.id}").click
+  end
+
+  step 'I should not see secondary email anymore' do
+    page.should_not have_content "Secondary email:"
+  end
 end

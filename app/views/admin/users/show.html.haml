@@ -44,6 +44,8 @@
               %li
                 %span.light Secondary email:
                 %strong= email.email
+                = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-tiny btn btn-remove pull-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
+                  %i.icon-remove
 
             %li
               %span.light Can create groups:
