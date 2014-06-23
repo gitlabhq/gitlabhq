@@ -55,7 +55,7 @@ module Mentionable
         if has_project
           id = project.team.members.find_by(username: identifier).try(:id)
         else
-          id = User.where(username: identifier).pluck(:id).first
+          id = User.find_by(username: identifier).try(:id)
         end
         users << User.find(id) unless id.blank?
       end
