@@ -169,7 +169,12 @@ module Gitlab
     end
 
     def reference_user(identifier, project = @project)
-      if user = User.find_by(username: identifier)
+      if identifier == "all"
+        options = html_options.merge(
+          class: "gfm gfm-team_member #{html_options[:class]}"
+        )
+        link_to("@all", project_url(project), options)
+      elsif user = User.find_by(username: identifier)
         options = html_options.merge(
           class: "gfm gfm-team_member #{html_options[:class]}"
         )
