@@ -100,6 +100,16 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def remove_email
+    email = user.emails.find(params[:email_id])
+    email.destroy
+
+    respond_to do |format|
+      format.html { redirect_to :back, notice: "Successfully removed email." }
+      format.js { render nothing: true }
+    end
+  end
+
   protected
 
   def user
