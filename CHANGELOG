@@ -1,3 +1,13 @@
+v 7.1.0
+  - Remove observers
+  - Improve MR discussions
+  - Filter by description on Issues#index page
+  - Fix bug with namespace select when create new project page
+  - Show README link after description for non-master members
+  - Add @all mention for comments
+  - Dont show reply button if user is not signed in
+  - Expose more information for issues with webhook
+
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar
   - Improve edit file UI
