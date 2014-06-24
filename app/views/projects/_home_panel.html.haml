@@ -23,7 +23,7 @@
           %strong= link_to 'Edit', edit_project_path
         - elsif @repository.readme
           - readme = @repository.readme
-          = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)), class: 'btn btn-block' do
+          = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
             = readme.name
 
     - unless empty_repo
