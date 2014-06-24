@@ -243,7 +243,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     # By default, the gitlab-shell config is generated from your main gitlab config.
     #
     # Note: When using GitLab with HTTPS please change the following:
-    # - Provide paths to the certificates under `ca_file` and `ca_path options.
+    # - Provide paths to the certificates under `ca_file` and `ca_path` options.
     # - The `gitlab_url` option must point to the https endpoint of GitLab.
     # - In case you are using self signed certificate set `self_signed_cert` to `true`.
     # See #using-https for all necessary details.
