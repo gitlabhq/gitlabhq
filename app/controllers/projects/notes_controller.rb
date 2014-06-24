@@ -85,12 +85,22 @@ class Projects::NotesController < Projects::ApplicationController
     )
   end
 
+  def note_to_discussion_with_diff_html(note)
+    render_to_string(
+      "projects/notes/_discussion",
+      layout: false,
+      formats: [:html],
+      locals: { discussion_notes: [note] }
+    )
+  end
+
   def render_note_json(note)
     render json: {
       id: note.id,
       discussion_id: note.discussion_id,
       html: note_to_html(note),
-      discussion_html: note_to_discussion_html(note)
+      discussion_html: note_to_discussion_html(note),
+      discussion_with_diff_html: note_to_discussion_with_diff_html(note)
     }
   end
 
