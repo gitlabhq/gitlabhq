@@ -138,14 +138,14 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I should see a discussion has started on commit b1e6a9dbf1:L185' do
     page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content "app/assets/stylesheets/tree.scss:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss"
     page.should have_content "Line is wrong"
   end
 
   step 'I should see a discussion has started on commit b1e6a9dbf1' do
     page.should have_content "#{current_user.name} started a discussion on commit"
     page.should have_content "One comment to rule them all"
-    page.should have_content "app/assets/stylesheets/tree.scss:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss"
   end
 
   step 'merge request is mergeable' do
