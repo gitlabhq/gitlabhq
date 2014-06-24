@@ -63,6 +63,8 @@ module NotesHelper
   end
 
   def link_to_reply_diff(note)
+    return unless current_user
+
     data = {
       noteable_type: note.noteable_type,
       noteable_id:   note.noteable_id,
