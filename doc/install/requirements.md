@@ -84,7 +84,15 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 
 ## Database
 
-If you want to run the database separately, the **recommended** database size is **1 MB per user**
+If you want to run the database separately, the **recommended** database size is **1 MB per user**.
+
+## Redis and Sidekiq
+
+Redis stores all user sessions and the background task queue.
+The storage requirements for Redis are minimal, about 25kB per user.
+Sidekiq processes the background jobs with a multithreaded process.
+This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
+On a very active server (10.000 active users) the Sidekiq process can use 1GB+ of memory.
 
 ## Supported webbrowsers
 
