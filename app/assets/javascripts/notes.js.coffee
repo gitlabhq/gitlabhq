@@ -145,9 +145,9 @@ class Notes
       # Add note to 'Changes' page discussions
       $(".notes[rel='" + note.discussion_id + "']").append note.html
 
-      # Init discussion on 'Discussion' page
-      $('ul.main-notes-list').append(note.discussion_with_diff_html)
-
+      # Init discussion on 'Discussion' page if it is merge request page
+      if $('body').attr('data-page').indexOf('projects:merge_request') == 0
+        $('ul.main-notes-list').append(note.discussion_with_diff_html)
     else
       # append new note to all matching discussions
       $(".notes[rel='" + note.discussion_id + "']").append note.html
