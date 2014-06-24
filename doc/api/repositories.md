@@ -50,6 +50,7 @@ Parameters:
 - `id` (required) - The ID of a project
 - `tag_name` (required) - The name of a tag
 - `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
+- `message` (optional) - Creates annotated tag.
 
 ```json
 [

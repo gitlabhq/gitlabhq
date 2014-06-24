@@ -15,6 +15,7 @@ v 7.3.0
   - API: filter issues by labels (Julien Bianchi)
   - Add system hook for ssh key changes
   - Add blob permalink link (Ciro Santilli)
+  - Create annotated tags through UI and API (Sean Edge)
 
 v 7.2.0
   - Explore page

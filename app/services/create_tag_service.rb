@@ -1,5 +1,5 @@
 class CreateTagService
-  def execute(project, tag_name, ref, current_user)
+  def execute(project, tag_name, ref, message, current_user)
     valid_tag = Gitlab::GitRefValidator.validate(tag_name)
     if valid_tag == false
       return error('Tag name invalid')
@@ -11,7 +11,11 @@ class CreateTagService
       return error('Tag already exists')
     end
 
-    repository.add_tag(tag_name, ref)
+    if message
+      message.gsub!(/^\s+|\s+$/, '')
+    end
+
+    repository.add_tag(tag_name, ref, message)
     new_tag = repository.find_tag(tag_name)
 
     if new_tag
