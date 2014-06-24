@@ -1,0 +1,8 @@
+stage:
+  before:
+    - cp config/gitlab.teatro.yml config/gitlab.yml
+    - mkdir /apps/gitlab-satellites
+    - mkdir /apps/repositories
+    
+  database:
+    - RAILS_ENV=development force=yes bundle exec rake db:create gitlab:setup
