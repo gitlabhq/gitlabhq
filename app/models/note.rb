@@ -179,10 +179,26 @@ class Note < ActiveRecord::Base
     @diff ||= Gitlab::Git::Diff.new(st_diff) if st_diff.respond_to?(:map)
   end
 
+  # Check if such line of code exists in merge request diff
+  # If exists - its active discussion
+  # If not - its outdated diff
   def active?
-    # TODO: determine if discussion is outdated
-    # according to recent MR diff or not
-    true
+    noteable.diffs.each do |mr_diff|
+      next unless mr_diff.new_path == self.diff.new_path
+
+      Gitlab::DiffParser.new(mr_diff.diff.lines.to_a, mr_diff.new_path).
+        each do |full_line, type, line_code, line_new, line_old|
+        if full_line == diff_line
+          return true
+        end
+      end
+    end
+
+    false
+  end
+
+  def outdated?
+    !active?
   end
 
   def diff_file_index
