@@ -31,6 +31,12 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  def omniauth_error
+    @provider = params[:provider]
+    @error = params[:error]
+    render 'errors/omniauth_error', layout: "errors", status: 422
+  end
+
   private
 
   def handle_omniauth
@@ -54,7 +60,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       else
         if errors
           error_message = errors.map{ |attribute, message| "#{attribute} #{message}" }.join(", ")
-          flash[:notice] = "There was a problem creating your account. #{error_message}"
+          redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
         else
           flash[:notice] = "There's no such user!"
         end

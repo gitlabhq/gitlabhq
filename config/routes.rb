@@ -160,6 +160,9 @@ Gitlab::Application.routes.draw do
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :users_sessions }
 
+  devise_scope :user do
+    get "/users/auth/:provider/omniauth_error" => "omniauth_callbacks#omniauth_error", as: :omniauth_error
+  end
   #
   # Project Area
   #
