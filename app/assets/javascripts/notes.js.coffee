@@ -142,8 +142,15 @@ class Notes
       # remove the note (will be added again below)
       row.next().find(".note").remove()
 
-    # append new note to all matching discussions
-    $(".notes[rel='" + note.discussion_id + "']").append note.html
+      # Add note to 'Changes' page discussions
+      $(".notes[rel='" + note.discussion_id + "']").append note.html
+
+      # Init discussion on 'Discussion' page
+      $('ul.main-notes-list').append(note.discussion_with_diff_html)
+
+    else
+      # append new note to all matching discussions
+      $(".notes[rel='" + note.discussion_id + "']").append note.html
 
     # cleanup after successfully creating a diff/discussion note
     @removeDiscussionNoteForm(form)
