@@ -14,6 +14,9 @@ Please contact subscribers@gitlab.com for more information.
 - 7.0.0-ee - Ubuntu 12.04 64-bit [gitlab_7.0.0-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/1ad8765351d114afdc9b96f1044551d209e6742c/ubuntu-12.04/gitlab_7.0.0-ee.omnibus-1_amd64.deb)
     - MD5: 4d243a7d075d940963ad0909e60e18e5
 
+- 7.0.0-ee - Ubuntu 14.04 64-bit [gitlab_7.0.0-ee.omnibus.1-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/7e416d0421a055dc87c471d9be981c8959615406/ubuntu-14.04/gitlab_7.0.0-ee.omnibus.1-1_amd64.deb)
+    - MD5: 0a0a821a166dc08499359a72daf2aa88
+
 - 7.0.0-ee - Enterprise Linux 6 64-bit [gitlab-7.0.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/6232e9f5ee819537011a57d3f8eb40c149795052/centos-6.5/gitlab-7.0.0_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 49a9eb63daba98bec85d3dbc175bac9d
 
