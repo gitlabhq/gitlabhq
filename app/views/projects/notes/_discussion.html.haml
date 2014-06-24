@@ -43,4 +43,4 @@
     - else
       .notes{ rel: discussion_notes.first.discussion_id }
         = render discussion_notes
-      = render "projects/notes/discussion_reply_button", note: discussion_notes.first
+      = link_to_reply_diff(discussion_notes.first)
