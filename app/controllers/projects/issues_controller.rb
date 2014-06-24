@@ -20,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
     terms = params['issue_search']
 
     @issues = issues_filtered
-    @issues = @issues.where("title LIKE ?", "%#{terms}%") if terms.present?
+    @issues = @issues.where("title LIKE ? OR description LIKE ?", "%#{terms}%", "%#{terms}%") if terms.present?
     @issues = @issues.page(params[:page]).per(20)
 
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
