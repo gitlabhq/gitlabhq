@@ -15,7 +15,18 @@
   .col-md-3.responsive-side
     = render 'groups/filter', entity: 'milestones'
   .col-md-9
-    - if @milestones.blank?
-      .nothing-here-block No milestones to show
-    - else
-      = render 'groups/milestones/milestone'
+    .panel.panel-default
+      %ul.well-list
+        - if @milestones.blank?
+          %li
+            .nothing-here-block No milestones to show
+        - else
+          - @milestones.group_by(&:title).each do |milestone|
+            %li{class: "milestone milestone-open", id: 1 }
+              .pull-right
+                = link_to root_path, class: "btn btn-small edit-milestone-link btn-grouped" do
+                  %i.icon-edit
+                  Edit
+                = link_to 'Close Milestone', root_path, method: :put, remote: true, class: "btn btn-small btn-remove"
+              %h4
+                = link_to_gfm truncate(milestone.first, length: 100), root_path
