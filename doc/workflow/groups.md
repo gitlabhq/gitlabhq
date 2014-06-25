@@ -37,7 +37,7 @@ One of the benefits of putting multiple projects in one group is that you can gi
 
 Suppose we have a group with two projects.
 
-![Group with two projects](groups/groups/group_with_two_projects.png)
+![Group with two projects](groups/group_with_two_projects.png)
 
 On the 'Group Members' page we can now add a new user Barry to the group.
 
