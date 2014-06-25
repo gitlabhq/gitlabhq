@@ -1,0 +1,13 @@
+- if @milestones.any?
+  - @issues.group_by(&:project).each do |group|
+    .panel.panel-default.panel-small
+      - project = group[0]
+      .panel-heading
+        = link_to_project project
+        = link_to 'show all', project_issues_path(project), class: 'pull-right'
+
+      %ul.well-list.issues-list
+        - group[1].each do |issue|
+          = render 'projects/issues/issue', issue: issue
+  = paginate @issues, theme: "gitlab"
+

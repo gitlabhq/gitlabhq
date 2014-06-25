@@ -1,0 +1,21 @@
+%h3.page-title
+  Milestones
+  %span.pull-right milestones
+
+%p.light
+  Only milestones from
+  %strong #{@group.name}
+  group are listed here.
+
+%hr
+
+.row
+  .fixed.sidebar-expand-button.hidden-lg.hidden-md
+    %i.icon-list.icon-2x
+  .col-md-3.responsive-side
+    = render 'groups/filter', entity: 'milestones'
+  .col-md-9
+    - if @milestones.blank?
+      .nothing-here-block No milestones to show
+    - else
+      = render 'groups/milestones/milestone'
