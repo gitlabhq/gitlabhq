@@ -84,7 +84,7 @@ GET /users
 ]
 ```
 
-You can search for a users by email or username with: `/users?search=John`
+You can search for users by email or username with: `/users?search=John`
 
 Also see `def search query` in `app/models/user.rb`.
 
