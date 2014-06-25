@@ -64,6 +64,33 @@ module API
             not_found!
           end
         end
+
+        # Edit a +noteable+ note
+        #
+        # Parameters:
+        #   id (required) - The ID of a project
+        #   noteable_id (required) - The ID of an issue or snippet
+        #   note_id (required) - The ID of a note
+        #   body (required) - The content of a note
+        # Example Request:
+        #   POST /projects/:id/issues/:noteable_id/notes/:note_id
+        #   POST /projects/:id/snippets/:noteable_id/notes/:note_id
+        post ":id/#{noteables_str}/:#{noteable_id_str}/notes/:note_id" do
+          required_attributes! [:body]
+
+          @noteable = user_project.send(:"#{noteables_str}").find(params[:"#{noteable_id_str}"])
+          @note = @noteable.notes.find(params[:note_id])
+
+          if @note.author != current_user
+            forbidden!
+          elsif @note.project != user_project
+            not_found!
+          elsif @note.update_attributes(note: params[:body])
+            present @note, with: Entities::Note
+          else
+            not_found!
+          end
+        end
       end
     end
   end
