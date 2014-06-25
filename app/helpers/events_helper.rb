@@ -73,8 +73,6 @@ module EventsHelper
         else
           event_note_target_path(event)
         end
-      elsif event.wall_note?
-        project_wall_path(event.project)
       end
     elsif event.push?
       if event.push_with_commits?
