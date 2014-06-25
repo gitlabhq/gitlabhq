@@ -12,6 +12,11 @@
       Merge Requests
       - if current_user
         %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
+  = nav_link(path: 'groups#milestones') do
+    = link_to merge_requests_group_path(@group) do
+      Milestones
+      - if current_user
+        %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
   = nav_link(path: 'groups#members') do
     = link_to "Members", members_group_path(@group)
 
