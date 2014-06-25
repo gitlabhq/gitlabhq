@@ -12,7 +12,8 @@
       %ul.notes{ rel: note1.discussion_id }
         = render notes1
 
-      = link_to_reply_diff(note1)
+      .discussion-reply-holder
+        = link_to_reply_diff(note1)
   - else
     %td= ""
     %td= ""
@@ -26,7 +27,8 @@
       %ul.notes{ rel: note2.discussion_id }
         = render notes2
 
-      = link_to_reply_diff(note2)
+      .discussion-reply-holder
+        = link_to_reply_diff(note2)
   - else
     %td= ""
     %td= ""

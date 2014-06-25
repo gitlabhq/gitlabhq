@@ -45,7 +45,7 @@
       - file = project.repository.blob_at(@commit.id, diff.new_path)
       - file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
       - next unless file
-      .diff-file.js-toggle-container{id: "diff-#{i}"}
+      .diff-file{id: "diff-#{i}"}
         .diff-header{id: "file-path-#{hexdigest(diff.new_path || diff.old_path)}"}
           - if diff.deleted_file
             %span= diff.old_path
@@ -61,7 +61,7 @@
               %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
 
             .diff-btn-group
-              = link_to "#", class: "js-toggle-button btn btn-small" do
+              = link_to "#", class: "js-toggle-diff-comments btn btn-small" do
                 %i.icon-chevron-down
                 Diff comments
               &nbsp;
