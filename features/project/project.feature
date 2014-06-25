@@ -24,3 +24,8 @@ Feature: Project Feature
     When I visit edit project "Shop" page
     And change project path settings
     Then I should see project with new path settings
+
+  Scenario: I should see project readme and version
+    When I visit project "Shop" page
+    Then I should see project "Shop" README link
+    And I should see project "Shop" version

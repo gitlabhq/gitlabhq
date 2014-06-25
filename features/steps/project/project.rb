@@ -24,4 +24,16 @@ class ProjectFeature < Spinach::FeatureSteps
   step 'I should see project with new path settings' do
     project.path.should == "new-path"
   end
+
+  step 'I should see project "Shop" README link' do
+    within '.project-side' do
+      page.should have_content "README.md"
+    end
+  end
+
+  step 'I should see project "Shop" version' do
+    within '.project-side' do
+      page.should have_content "Version: 2.2.0"
+    end
+  end
 end

@@ -128,6 +128,7 @@ class Repository
     Rails.cache.delete(cache_key(:commit_count))
     Rails.cache.delete(cache_key(:graph_log))
     Rails.cache.delete(cache_key(:readme))
+    Rails.cache.delete(cache_key(:version))
     Rails.cache.delete(cache_key(:contribution_guide))
   end
 
@@ -156,9 +157,21 @@ class Repository
     Gitlab::Git::Blob.find(self, sha, path)
   end
 
+  def blob_by_oid(oid)
+    Gitlab::Git::Blob.raw(self, oid)
+  end
+
   def readme
     Rails.cache.fetch(cache_key(:readme)) do
       tree(:head).readme
+    end
+  end
+
+  def version
+    Rails.cache.fetch(cache_key(:version)) do
+      tree(:head).blobs.find do |file|
+        file.name.downcase == 'version'
+      end
     end
   end
 

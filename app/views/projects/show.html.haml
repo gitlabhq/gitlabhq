@@ -44,6 +44,12 @@
           = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)), class: 'btn btn-block' do
             = readme.name
 
+        - if @repository.version
+          - version = @repository.version
+          = link_to project_blob_path(@project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
+            Version:
+            = @repository.blob_by_oid(version.id).data
+
     .prepend-top-10
       %p
         %span.light Created on
