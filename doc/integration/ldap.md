@@ -29,17 +29,17 @@ Suppose we want to synchronize the GitLab group 'example group' with the LDAP gr
 
 1. As an owner, go to the group settings page for 'example group'.
 
-[LDAP group settings](ldap/select_group_cn.png)
+![LDAP group settings](ldap/select_group_cn.png)
 
 As an admin you can also go to the group edit page in the admin area.
 
-[LDAP group settings for admins](ldap/select_group_cn_admin.png)
+![LDAP group settings for admins](ldap/select_group_cn_admin.png)
 
 2. Enter 'Engineering' as the LDAP Common Name (CN) in the 'LDAP Group cn' field.
 
 3. Enter a default group access level in the 'LDAP Access' field; let's say Developer.
 
-[LDAP group settings filled in](ldap/select_group_cn_engineering.png)
+![LDAP group settings filled in](ldap/select_group_cn_engineering.png)
 
 4. Save your changes to the group settings.
 
