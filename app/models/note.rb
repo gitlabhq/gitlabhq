@@ -183,6 +183,8 @@ class Note < ActiveRecord::Base
   # If exists - its active discussion
   # If not - its outdated diff
   def active?
+    return true unless self.diff
+
     noteable.diffs.each do |mr_diff|
       next unless mr_diff.new_path == self.diff.new_path
 

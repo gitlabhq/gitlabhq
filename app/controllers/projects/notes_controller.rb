@@ -86,6 +86,8 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def note_to_discussion_with_diff_html(note)
+    return unless note.for_diff_line?
+
     render_to_string(
       "projects/notes/_discussion",
       layout: false,
