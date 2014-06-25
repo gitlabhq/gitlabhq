@@ -17,11 +17,11 @@
   .col-md-9
     .panel.panel-default
       %ul.well-list
-        - if @milestones.blank?
+        - if @group_milestones.blank?
           %li
             .nothing-here-block No milestones to show
         - else
-          - @milestones.group_by(&:title).each do |milestone|
+          - @group_milestones.titles.each do |title|
             %li{class: "milestone milestone-open", id: 1 }
               .pull-right
                 = link_to root_path, class: "btn btn-small edit-milestone-link btn-grouped" do
@@ -29,4 +29,23 @@
                   Edit
                 = link_to 'Close Milestone', root_path, method: :put, remote: true, class: "btn btn-small btn-remove"
               %h4
-                = link_to_gfm truncate(milestone.first, length: 100), root_path
+                = link_to_gfm truncate(title, length: 100), root_path
+              - if false
+                %span.muted Empty
+              - else
+                %div
+                  %div
+                    = link_to root_path do
+                      = pluralize @group_milestones.issue_count[title], 'Issue'
+                    &nbsp;
+                    = link_to root_path do
+                      = pluralize @group_milestones.mr_count[title], 'Merge Request'
+                    &nbsp;
+                    %span.light #{@group_milestones.percent_complete[title]}% complete
+                  .progress.progress-info
+                  .progress-bar{style: "width: #{@group_milestones.percent_complete[title]}%;"}
+                  %div
+                    %br
+                    - @group_milestones.project_names[title].each do |name|
+                      %span.label.label-default
+                        = name
