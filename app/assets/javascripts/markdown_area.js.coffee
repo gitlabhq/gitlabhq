@@ -21,7 +21,6 @@ $(document).ready ->
   $(".div-dropzone").append divSpinner 
   $(".div-dropzone-spinner").append iconSpinner
 
-
   dropzone = $(".div-dropzone").dropzone(
     url: project_image_path_upload
     dictDefaultMessage: ""
@@ -76,6 +75,107 @@ $(document).ready ->
       $(".div-dropzone-spinner").css "opacity", 0
       return
   )
+
+  child = $(dropzone[0]).children("textarea")
+
+  formatLink = (str) ->
+    "![" + str.alt + "](" + str.url + ")"
+
+  handlePaste = (e) ->
+    e.preventDefault()
+    my_event = e.originalEvent
+    
+    if my_event.clipboardData and my_event.clipboardData.items
+      processItem(my_event)
+
+  processItem = (e) ->
+    image = isImage(e)
+    if image
+      filename = getFilename(e) or "image.png"
+      text = "{{" + filename + "}}"
+      pasteText(text)
+      uploadFile image.getAsFile(), filename
+
+    else
+      text = e.clipboardData.getData("text/plain")
+      pasteText(text)
+
+  isImage = (data) ->
+    i = 0
+    while i < data.clipboardData.items.length
+      item = data.clipboardData.items[i]
+      if item.type.indexOf("image") isnt -1
+        return item
+      i++
+    return false
+  
+  pasteText = (text) ->
+    caretStart = $(child)[0].selectionStart
+    caretEnd = $(child)[0].selectionEnd
+    textEnd = $(child).val().length
+
+    beforeSelection = $(child).val().substring 0, caretStart
+    afterSelection = $(child).val().substring caretEnd, textEnd
+    $(child).val beforeSelection + text + afterSelection
+    $(".markdown-area").trigger "input"
+
+  getFilename = (e) -> 
+    if window.clipboardData and window.clipboardData.getData
+      value = window.clipboardData.getData("Text")
+    else if e.clipboardData and e.clipboardData.getData
+      value = e.clipboardData.getData("text/plain")
+    
+    value = value.split("\r")
+    value.first()
+
+  uploadFile = (item, filename) ->
+    formData = new FormData()
+    formData.append "markdown_img", item, filename
+    $.ajax
+      url: project_image_path_upload
+      type: "POST"
+      data: formData
+      dataType: "json"
+      processData: false
+      contentType: false
+      headers:
+        "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
+
+      beforeSend: ->
+        showSpinner()
+        closeAlertMessage()
+
+      success: (e, textStatus, response) ->
+        insertToTextArea(filename, formatLink(response.responseJSON.link))
+      
+      error: (response) ->
+        showError(response.responseJSON.message)
+
+      complete: ->
+        closeSpinner()
+
+  insertToTextArea = (filename, url) ->
+    $(child).val (index, val) ->
+      val.replace("{{" + filename + "}}", url + "\n")
+
+  appendToTextArea = (url) ->
+    $(child).val (index, val) ->
+      val + url + "\n"
+
+  showSpinner = (e) ->
+    $(".div-dropzone-spinner").css "opacity", 0.7
+
+  closeSpinner = ->
+    $(".div-dropzone-spinner").css "opacity", 0
+
+  showError = (message) ->
+    checkIfMsgExists = $(".error-alert").children().length
+    if checkIfMsgExists is 0
+      $(".error-alert").append divAlert
+      $(".div-dropzone-alert").append btnAlert + message
+
+  closeAlertMessage = ->
+    $(".div-dropzone-alert").alert "close"
 
   $(".markdown-selector").click (e) ->
     e.preventDefault()

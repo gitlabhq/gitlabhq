@@ -63,10 +63,14 @@ module GitlabMarkdownHelper
     paths = extract_paths(text)
 
     paths.uniq.each do |file_path|
-      new_path = rebuild_path(file_path)
-      # Finds quoted path so we don't replace other mentions of the string
-      # eg. "doc/api" will be replaced and "/home/doc/api/text" won't
-      text.gsub!("\"#{file_path}\"", "\"/#{new_path}\"")
+      # If project does not have repository
+      # its nothing to rebuild
+      if @repository.exists? && !@repository.empty?
+        new_path = rebuild_path(file_path)
+        # Finds quoted path so we don't replace other mentions of the string
+        # eg. "doc/api" will be replaced and "/home/doc/api/text" won't
+        text.gsub!("\"#{file_path}\"", "\"/#{new_path}\"")
+      end
     end
 
     text
@@ -91,7 +95,12 @@ module GitlabMarkdownHelper
   end
 
   def link_to_ignore?(link)
-    ignored_protocols.map{ |protocol| link.include?(protocol) }.any?
+    if link =~ /\#\w+/
+      # ignore anchors like <a href="#my-header">
+      true
+    else
+      ignored_protocols.map{ |protocol| link.include?(protocol) }.any?
+    end
   end
 
   def ignored_protocols
@@ -169,7 +178,7 @@ module GitlabMarkdownHelper
   def current_sha
     if @commit
       @commit.id
-    else
+    elsif @repository && !@repository.empty?
       @repository.head_commit.sha
     end
   end

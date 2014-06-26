@@ -31,7 +31,8 @@
       = render "projects/merge_requests/show/diffs"
   .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
     = render "projects/notes/notes_with_form"
-  .status
+  .mr-loading-status
+    = spinner
 
 :javascript
   var merge_request;

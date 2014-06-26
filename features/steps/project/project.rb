@@ -34,4 +34,16 @@ class ProjectFeature < Spinach::FeatureSteps
   step 'I should see project with merge request template saved' do
     find_field('project_merge_requests_template').value.should == 'This merge request should contain the following.'
   end
+
+  step 'I should see project "Shop" README link' do
+    within '.project-side' do
+      page.should have_content "README.md"
+    end
+  end
+
+  step 'I should see project "Shop" version' do
+    within '.project-side' do
+      page.should have_content "Version: 2.2.0"
+    end
+  end
 end

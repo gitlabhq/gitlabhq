@@ -1,46 +1,8 @@
 - note = discussion_notes.first
-.discussion.js-toggle-container{ class: note.discussion_id }
-  .discussion-header
-    .discussion-actions
-      = link_to "#", class: "js-toggle-button" do
-        %i.icon-chevron-up
-        Show/hide discussion
-    = image_tag avatar_icon(note.author_email), class: "avatar s32"
-    %div
-      = link_to_member(@project, note.author, avatar: false)
-      - if note.for_merge_request?
-        - if note.diff
-          started a discussion on this merge request diff
-          = link_to_merge_request_diff_line_note(note)
-        - else
-          started
-          %strong
-            %i.icon-remove
-            outdated
-          discussion on this merge request diff
-      - elsif note.for_commit?
-        started a discussion on commit
-        #{link_to note.noteable.short_id, project_commit_path(note.project, note.noteable)}
-        = link_to_commit_diff_line_note(note) if note.for_diff_line?
-      - else
-        %cite.cgray started a discussion
-    %div
-      - last_note = discussion_notes.last
-      last updated by
-      = link_to_member(@project, last_note.author, avatar: false)
-      %span.discussion-last-update
-        #{time_ago_with_tooltip(last_note.updated_at, 'bottom', 'discussion_updated_ago')}
-  .discussion-body.js-toggle-content
-    - if note.for_diff_line?
-      - if note.active?
-        = render "projects/notes/discussion_diff", discussion_notes: discussion_notes, note: note
-      - else
-        = link_to 'show outdated discussion', '#', class: 'js-show-outdated-discussion'
-        %div.hide.outdated-discussion
-          .notes{ rel: discussion_notes.first.discussion_id }
-            = render discussion_notes
-
-    - else
-      .notes{ rel: discussion_notes.first.discussion_id }
-        = render discussion_notes
-      = render "projects/notes/discussion_reply_button", note: discussion_notes.first
+- if note.for_merge_request?
+  - if note.outdated?
+    = render "projects/notes/discussions/outdated", discussion_notes: discussion_notes
+  - else
+    = render "projects/notes/discussions/active", discussion_notes: discussion_notes
+- else
+  = render "projects/notes/discussions/commit", discussion_notes: discussion_notes

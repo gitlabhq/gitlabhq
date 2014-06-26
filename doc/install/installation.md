@@ -95,8 +95,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.0/ruby-2.0.0-p481.tar.gz | tar xz
-    cd ruby-2.0.0-p481
+    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
+    cd ruby-2.1.2
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -243,7 +243,7 @@ GitLab Shell is an ssh access and repository management software developed speci
     # By default, the gitlab-shell config is generated from your main gitlab config.
     #
     # Note: When using GitLab with HTTPS please change the following:
-    # - Provide paths to the certificates under `ca_file` and `ca_path options.
+    # - Provide paths to the certificates under `ca_file` and `ca_path` options.
     # - The `gitlab_url` option must point to the https endpoint of GitLab.
     # - In case you are using self signed certificate set `self_signed_cert` to `true`.
     # See #using-https for all necessary details.

@@ -95,6 +95,49 @@ describe NotificationService do
       end
     end
 
+    context 'issue note mention' do
+      let(:issue) { create(:issue, assignee: create(:user)) }
+      let(:mentioned_issue) { create(:issue, assignee: issue.assignee) }
+      let(:note) { create(:note_on_issue, noteable: issue, project_id: issue.project_id, note: '@all mentioned') }
+
+      before do
+        build_team(note.project)
+      end
+
+      describe :new_note do
+        it do
+          # Notify all team members
+          note.project.team.members.each do |member|
+            # User with disabled notification should not be notified
+            next if member.id == @u_disabled.id
+            should_email(member.id)
+          end
+          should_email(note.noteable.author_id)
+          should_email(note.noteable.assignee_id)
+
+          should_not_email(note.author_id)
+          should_not_email(@u_disabled.id)
+          should_not_email(@u_not_mentioned.id)
+          notification.new_note(note)
+        end
+
+        it 'filters out "mentioned in" notes' do
+          mentioned_note = Note.create_cross_reference_note(mentioned_issue, issue, issue.author, issue.project)
+
+          Notify.should_not_receive(:note_issue_email)
+          notification.new_note(mentioned_note)
+        end
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:note_issue_email).with(user_id, note.id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:note_issue_email).with(user_id, note.id)
+      end
+    end
+
     context 'commit note' do
       let(:note) { create(:note_on_commit) }
 
@@ -312,6 +355,7 @@ describe NotificationService do
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
     @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_PARTICIPATING)
     @u_committer = create(:user, username: 'committer')
+    @u_not_mentioned = create(:user, username: 'regular', notification_level: Notification::N_PARTICIPATING)
 
     project.team << [@u_watcher, :master]
     project.team << [@u_participating, :master]

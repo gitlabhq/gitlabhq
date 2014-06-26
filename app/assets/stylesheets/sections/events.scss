@@ -156,12 +156,13 @@
   .filter_icon {
     a {
       text-align:center;
-      background: #EEE;
+      background: $bg_primary;
       margin-bottom: 10px;
       float: left;
       padding: 9px 6px;
       font-size: 18px;
       width: 40px;
+      color: #FFF;
       @include border-radius(3px);
     }
 

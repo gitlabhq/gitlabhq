@@ -41,6 +41,9 @@ class Event < ActiveRecord::Base
   # For Hash only
   serialize :data
 
+  # Callbacks
+  after_create :reset_project_activity
+
   # Scopes
   scope :recent, -> { order("created_at DESC") }
   scope :code_push, -> { where(action: PUSHED) }
@@ -301,6 +304,12 @@ class Event < ActiveRecord::Base
       true
     else
       target.respond_to? :title
+    end
+  end
+
+  def reset_project_activity
+    if project
+      project.update_column(:last_activity_at, self.created_at)
     end
   end
 end
