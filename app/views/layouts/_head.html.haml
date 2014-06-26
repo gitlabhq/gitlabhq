@@ -7,6 +7,7 @@
   -# https://github.com/gitlabhq/gitlabhq/pull/5958#issuecomment-45397555
   - if controller_name == 'projects' && action_name == 'show'
     %meta{name: "go-import", content: "#{@project.web_url_without_protocol} git #{@project.web_url}.git"}
+  %meta{content: "GitLab Community Edition", name: "description"}
 
   %title
     = "#{title} | " if defined?(title)
