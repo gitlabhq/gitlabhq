@@ -23,9 +23,12 @@
         - else
           - @group_milestones.each do |milestone|
             %li{class: "milestone milestone-#{milestone.state == 'closed' ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
-              - unless milestone.state == 'closed'
-                .pull-right
-                  = link_to 'Close Milestone', root_path, method: :put, remote: true, class: "btn btn-small btn-remove"
+              .pull-right
+                - safe_title = milestone.title.gsub(".", "-")
+                - if milestone.state == 'closed'
+                  = link_to 'Reopen Milestone', group_milestone_path(@group, safe_title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped"
+                - else
+                  = link_to 'Close Milestone', group_milestone_path(@group, safe_title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-remove"
               %h4
                 = link_to_gfm truncate(milestone.title, length: 100), root_path
               %div
@@ -41,6 +44,6 @@
                   .progress-bar{style: "width: #{milestone.percent_complete}%;"}
                 %div
                   %br
-                  - milestone.project_names.each do |name|
+                  - milestone.projects.each do |project|
                     %span.label.label-default
-                      = name
+                      = project.name

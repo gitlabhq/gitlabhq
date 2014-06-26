@@ -13,8 +13,8 @@ class GroupMilestone
     @milestones
   end
 
-  def project_names
-    milestones.map{ |milestone| milestone.project.name }
+  def projects
+    milestones.map{ |milestone| milestone.project }
   end
 
   def issue_count
@@ -41,7 +41,8 @@ class GroupMilestone
 
   def state
     state = milestones.map{ |milestone| milestone.state }
-    if state.all?{ |milestone_state| milestone_state == 'active' }
+
+    if state.count("active") == state.size
       'active'
     else
       'closed'
