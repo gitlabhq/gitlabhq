@@ -23,6 +23,7 @@
           %strong= link_to 'Edit', edit_project_path
         - elsif !@project.empty_repo? && @repository.readme
           - readme = @repository.readme
+          &ndash;
           = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
             = readme.name
 
