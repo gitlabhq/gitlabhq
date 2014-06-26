@@ -6,7 +6,7 @@ module MergeRequests
   # Called when you do merge via GitLab UI
   class AutoMergeService < BaseMergeService
     def execute(merge_request, current_user, commit_message)
-      merge_request.lock
+      merge_request.lock_mr
 
       if Gitlab::Satellite::MergeAction.new(current_user, merge_request).merge!(commit_message)
         merge_request.merge
@@ -17,11 +17,11 @@ module MergeRequests
 
         true
       else
-        merge_request.unlock
+        merge_request.unlock_mr
         false
       end
     rescue
-      merge_request.unlock if merge_request.locked?
+      merge_request.unlock_mr if merge_request.locked?
       merge_request.mark_as_unmergeable
       false
     end
