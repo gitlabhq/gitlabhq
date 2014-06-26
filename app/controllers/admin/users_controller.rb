@@ -37,14 +37,14 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def create
-    admin = params[:user].delete("admin")
+    admin = user_params.delete("admin")
 
     opts = {
       force_random_password: true,
       password_expires_at: Time.now
     }
 
-    @user = User.build_user(params[:user].merge(opts), as: :admin)
+    @user = User.build_user(user_params.merge(opts), as: :admin)
     @user.admin = (admin && admin.to_i > 0)
     @user.created_by_id = current_user.id
     @user.generate_password
@@ -62,11 +62,11 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def update
-    admin = params[:user].delete("admin")
+    admin = user_params.delete("admin")
 
-    if params[:user][:password].blank?
-      params[:user].delete(:password)
-      params[:user].delete(:password_confirmation)
+    if user_params[:password].blank?
+      user_params.delete(:password)
+      user_params.delete(:password_confirmation)
     end
 
     if admin.present?
@@ -74,7 +74,7 @@ class Admin::UsersController < Admin::ApplicationController
     end
 
     respond_to do |format|
-      if user.update_attributes(params[:user], as: :admin)
+      if user.update_attributes(user_params, as: :admin)
         user.confirm!
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
@@ -114,5 +114,14 @@ class Admin::UsersController < Admin::ApplicationController
 
   def user
     @user ||= User.find_by!(username: params[:id])
+  end
+
+  def user_params
+    params.require(:user).permit(
+      :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
+      :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
+      :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
+      :projects_limit, :can_create_group,
+    )
   end
 end

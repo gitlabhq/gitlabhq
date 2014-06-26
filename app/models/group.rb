@@ -20,7 +20,7 @@ class Group < Namespace
   has_many :users_groups, dependent: :destroy
   has_many :users, through: :users_groups
 
-  attr_accessible :avatar
+  #attr_accessible :avatar
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }

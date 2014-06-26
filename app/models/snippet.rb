@@ -18,7 +18,7 @@
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
 
-  attr_accessible :title, :content, :file_name, :expires_at, :private
+  #attr_accessible :title, :content, :file_name, :expires_at, :private
 
   default_value_for :private, true
 

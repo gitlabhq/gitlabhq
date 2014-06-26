@@ -58,22 +58,10 @@ class User < ActiveRecord::Base
   devise :database_authenticatable, :token_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
-                  :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-                  as: [:default, :admin]
-
-  attr_accessible :projects_limit, :can_create_group,
-                  as: :admin
-
   attr_accessor :force_random_password
 
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
-
-  # Add login to attr_accessible
-  attr_accessible :login
-
 
   #
   # Relations

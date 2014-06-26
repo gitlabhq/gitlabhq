@@ -16,7 +16,7 @@
 class Namespace < ActiveRecord::Base
   include Gitlab::ShellAdapter
 
-  attr_accessible :name, :description, :path
+  #attr_accessible :name, :description, :path
 
   has_many :projects, dependent: :destroy
   belongs_to :owner, class_name: "User"
