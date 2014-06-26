@@ -18,8 +18,6 @@
 #
 
 class EmailsOnPushService < Service
-  attr_accessible :recipients
-
   validates :recipients, presence: true, if: :activated?
 
   def title
