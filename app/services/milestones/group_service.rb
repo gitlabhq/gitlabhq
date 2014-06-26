@@ -44,11 +44,11 @@ module Milestones
     end
 
     def open_items_count
-      open_issues_count.merge(open_mr_count){ |title,issue,mr| issue + mr }
+      @project_milestones.merge(@project_milestones){ |title, milestone| milestone.map{|m| m.open_items_count }.sum }
     end
 
     def closed_items_count
-      closed_issues_count.merge(close_mr_count){ |title,issue,mr| issue + mr }
+      @project_milestones.merge(@project_milestones){ |title, milestone| milestone.map{|m| m.closed_items_count }.sum }
     end
 
     def total_items_count
