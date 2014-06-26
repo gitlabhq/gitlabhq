@@ -16,7 +16,7 @@
 class Milestone < ActiveRecord::Base
   include InternalId
 
-  attr_accessible :title, :description, :due_date, :state_event
+  #attr_accessible :title, :description, :due_date, :state_event
 
   belongs_to :project
   has_many :issues

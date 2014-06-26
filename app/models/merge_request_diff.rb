@@ -22,8 +22,6 @@ class MergeRequestDiff < ActiveRecord::Base
 
   belongs_to :merge_request
 
-  attr_accessible :state, :st_commits, :st_diffs
-
   delegate :target_branch, :source_branch, to: :merge_request, prefix: nil
 
   state_machine :state, initial: :empty do
