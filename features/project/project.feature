@@ -31,3 +31,8 @@ Feature: Project Feature
     And I fill in merge request template
     And I save project
     Then I should see project with merge request template saved
+
+  Scenario: I should see project readme and version
+    When I visit project "Shop" page
+    Then I should see project "Shop" README link
+    And I should see project "Shop" version

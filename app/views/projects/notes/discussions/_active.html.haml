@@ -1,0 +1,21 @@
+- note = discussion_notes.first
+.discussion.js-toggle-container{ class: note.discussion_id }
+  .discussion-header
+    .discussion-actions
+      = link_to "#", class: "js-toggle-button" do
+        %i.icon-chevron-up
+        Show/hide discussion
+    = image_tag avatar_icon(note.author_email), class: "avatar s32"
+    %div
+      = link_to_member(@project, note.author, avatar: false)
+      started a discussion
+      = link_to diffs_project_merge_request_path(note.project, note.noteable, anchor: note.line_code) do
+        %strong on the diff
+    .last-update.hide.js-toggle-content
+      - last_note = discussion_notes.last
+      last updated by
+      = link_to_member(@project, last_note.author, avatar: false)
+      %span.discussion-last-update
+        #{time_ago_with_tooltip(last_note.updated_at, 'bottom', 'discussion_updated_ago')}
+  .discussion-body.js-toggle-content
+    = render "projects/notes/discussions/diff", discussion_notes: discussion_notes, note: note

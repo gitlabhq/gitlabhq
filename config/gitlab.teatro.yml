@@ -1,0 +1,86 @@
+
+production: &base
+  gitlab:
+    host: localhost
+    port: 80
+    https: false
+
+    user: root
+
+    email_from: example@example.com
+
+    support_email: support@example.com
+
+    default_projects_features:
+      issues: true
+      merge_requests: true
+      wiki: true
+      wall: false
+      snippets: false
+      visibility_level: "private"  # can be "private" | "internal" | "public"
+
+  issues_tracker:
+
+  gravatar:
+    enabled: true                 # Use user avatar image from Gravatar.com (default: true)
+
+  ldap:
+    enabled: false
+    host: '_your_ldap_server'
+    port: 636
+    uid: 'sAMAccountName'
+    method: 'ssl' # "tls" or "ssl" or "plain"
+    bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+    password: '_the_password_of_the_bind_user'
+    allow_username_or_email_login: true
+
+    base: ''
+
+    user_filter: ''
+
+  omniauth:
+    enabled: false
+
+  satellites:
+    # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
+    path: /apps/gitlab-satellites/
+
+  backup:
+    path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
+
+  gitlab_shell:
+    path: /apps/gitlab-shell/
+
+    # REPOS_PATH MUST NOT BE A SYMLINK!!!
+    repos_path: /apps/repositories/
+    hooks_path: /apps/gitlab-shell/hooks/
+
+    upload_pack: true
+    receive_pack: true
+
+  git:
+    bin_path: /usr/bin/git
+    max_size: 5242880 # 5.megabytes
+    timeout: 10
+
+  extra:
+
+development:
+  <<: *base
+
+test:
+  <<: *base
+  gravatar:
+    enabled: true
+  gitlab:
+    host: localhost
+    port: 80
+  issues_tracker:
+    redmine:
+      title: "Redmine"
+      project_url: "http://redmine/projects/:issues_tracker_id"
+      issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
+      new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
+
+staging:
+  <<: *base

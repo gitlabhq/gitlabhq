@@ -109,10 +109,10 @@ class MergeRequest
       type: 'GET'
       url: this.$('.merge-request-tabs .diffs-tab a').attr('href')
       beforeSend: =>
-        this.$('.status').addClass 'loading'
+        this.$('.mr-loading-status .loading').show()
       complete: =>
         @diffs_loaded = true
-        this.$('.status').removeClass 'loading'
+        this.$('.mr-loading-status .loading').hide()
       success: (data) =>
         this.$(".diffs").html(data.html)
       dataType: 'json'

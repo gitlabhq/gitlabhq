@@ -31,5 +31,27 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
     project = Project.find_by(name: 'Community')
     visit project_path(project) + 'DoesNotExist'
   end
+
+  step 'I click on "Sign In"' do
+    within '.pull-right' do
+      click_link "Sign in"
+    end
+  end
+
+  step 'Authenticate' do
+    admin = create(:admin)
+    project = Project.find_by(name: 'Community')
+    find(:xpath, "//input[@id='return_to']").set "/#{project.path_with_namespace}"
+    fill_in "user_login", with: admin.email
+    fill_in "user_password", with: admin.password
+    click_button "Sign in"
+    Thread.current[:current_user] = admin
+  end
+
+  step 'I should be redirected to "Community" page' do
+    project = Project.find_by(name: 'Community')
+    page.current_path.should == "/#{project.path_with_namespace}"
+    page.status_code.should == 200
+  end
 end
 

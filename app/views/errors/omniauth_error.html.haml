@@ -1,0 +1,12 @@
+%h1 422
+%h3 Sign-in using #{@provider} auth failed
+%hr
+%p Sign-in failed because #{@error}.
+%p There are couple of steps you can take:
+
+%ul
+  %li Try logging in using your email
+  %li Try logging in using your username
+  %li If you have forgotten your password, try recovering it using #{ link_to "Password recovery", new_password_path(resource_name) }
+
+%p If none of the options work, try contacting the GitLab administrator.

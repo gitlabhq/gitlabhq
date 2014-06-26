@@ -5,6 +5,10 @@
 This command gathers information about your GitLab installation and the System it runs on. These may be useful when asking for help or reporting issues.
 
 ```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:env:info
+
+# installation from source or cookbook
 bundle exec rake gitlab:env:info RAILS_ENV=production
 ```
 
@@ -52,6 +56,10 @@ It will check that each component was setup according to the installation guide 
 You may also have a look at our [Trouble Shooting Guide](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Trouble-Shooting-Guide).
 
 ```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:check
+
+# installation from source or cookbook
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 

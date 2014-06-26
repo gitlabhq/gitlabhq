@@ -49,12 +49,16 @@ module Mentionable
     matches = mentionable_text.scan(/@[a-zA-Z][a-zA-Z0-9_\-\.]*/)
     matches.each do |match|
       identifier = match.delete "@"
-      if has_project
-        id = project.team.members.find_by(username: identifier).try(:id)
+      if identifier == "all"
+        users += project.team.members.flatten
       else
-        id = User.where(username: identifier).pluck(:id).first
+        if has_project
+          id = project.team.members.find_by(username: identifier).try(:id)
+        else
+          id = User.find_by(username: identifier).try(:id)
+        end
+        users << User.find(id) unless id.blank?
       end
-      users << User.find(id) unless id.blank?
     end
     users.uniq
   end

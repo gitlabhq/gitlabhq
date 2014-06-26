@@ -13,7 +13,15 @@ module Projects
         project.change_head(new_branch)
       end
 
-      project.update_attributes(params[:project], as: role)
+      if project.update_attributes(params[:project], as: role)
+        if project.previous_changes.include?('namespace_id')
+          project.send_move_instructions
+        end
+
+        if project.previous_changes.include?('path')
+          project.rename_repo
+        end
+      end
     end
   end
 end

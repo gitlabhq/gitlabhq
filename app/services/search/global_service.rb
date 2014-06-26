@@ -28,6 +28,7 @@ module Search
         projects: [],
         merge_requests: [],
         issues: [],
+        notes: [],
         total_results: 0,
       }
     end

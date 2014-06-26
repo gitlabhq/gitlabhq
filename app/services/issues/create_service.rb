@@ -8,7 +8,7 @@ module Issues
         notification_service.new_issue(issue, current_user)
         event_service.open_issue(issue, current_user)
         issue.create_cross_references!(issue.project, current_user)
-        execute_hooks(issue)
+        execute_hooks(issue, 'open')
       end
 
       issue

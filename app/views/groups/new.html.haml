@@ -6,12 +6,12 @@
     = f.label :name, class: 'control-label' do
       Group name
     .col-sm-10
-      = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control"
+      = f.text_field :name, placeholder: "Ex. OpenSource", class: "form-control", tabindex: 1, autofocus: true
 
   .form-group.group-description-holder
     = f.label :description, "Details", class: 'control-label'
     .col-sm-10
-      = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4
+      = f.text_area :description, maxlength: 250, class: "form-control js-gfm-input", rows: 4, tabindex: 2
 
   .form-group.group-description-holder
     = f.label :avatar, "Group avatar", class: 'control-label'
@@ -35,6 +35,4 @@
         %li Existing projects may be moved into a group
 
   .form-actions
-    = f.submit 'Create group', class: "btn btn-create"
-
-
+    = f.submit 'Create group', class: "btn btn-create", tabindex: 3

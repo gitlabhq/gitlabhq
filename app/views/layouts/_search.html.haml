@@ -1,6 +1,6 @@
 .search
   = form_tag search_path, method: :get, class: 'navbar-form pull-left' do |f|
-    = text_field_tag "search", nil, placeholder: search_placeholder, class: "search-input"
+    = search_field_tag "search", nil, placeholder: search_placeholder, class: "search-input"
     = hidden_field_tag :group_id, @group.try(:id)
     - if @project && @project.persisted?
       = hidden_field_tag :project_id, @project.id
