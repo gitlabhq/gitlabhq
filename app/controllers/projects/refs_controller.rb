@@ -37,7 +37,7 @@ class Projects::RefsController < Projects::ApplicationController
              0
            end
 
-    @limit = 10
+    @limit = 25
 
     @path = params[:path]
 
