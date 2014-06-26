@@ -2,8 +2,7 @@ class Groups::MilestonesController < ApplicationController
   layout 'group'
 
   def index
-    @group = group
-    project_milestones = Milestone.where(project_id: @group.projects)
+    project_milestones = Milestone.where(project_id: group.projects)
     @group_milestones = Milestones::GroupService.new(project_milestones).execute
     @group_milestones = case params[:status]
                         when 'all'; @group_milestones
@@ -12,16 +11,17 @@ class Groups::MilestonesController < ApplicationController
                         end
   end
 
+  def show
+    project_milestones = Milestone.where(project_id: group.projects)
+    @group_milestones = Milestones::GroupService.new(project_milestones).milestone(title)
+  end
+
   def update
     project_milestones = Milestone.where(project_id: group.projects)
-    @group_milestones = Milestones::GroupService.new(project_milestones).execute
-    title = params[:id].gsub("-", ".")
+    @group_milestones = Milestones::GroupService.new(project_milestones).milestone(title)
 
-    @group_milestones.each do |group_milestone|
-      next unless group_milestone.title == title
-      group_milestone.milestones.each do |milestone|
-        Milestones::UpdateService.new(milestone.project, current_user, params[:milestone]).execute(milestone)
-      end
+    @group_milestones.each do |milestone|
+      Milestones::UpdateService.new(milestone.project, current_user, params[:milestone]).execute(milestone)
     end
 
     respond_to do |format|
@@ -36,6 +36,10 @@ class Groups::MilestonesController < ApplicationController
 
   def group
     @group ||= Group.find_by(path: params[:group_id])
+  end
+
+  def title
+    params[:id].gsub("-", ".")
   end
 
   def status(state)

@@ -8,5 +8,13 @@ module Milestones
       @project_milestones.map{ |title, milestone| GroupMilestone.new(title, milestone) }
     end
 
+    def milestone(title)
+      if title
+        @project_milestones[title]
+      else
+        nil
+      end
+    end
+
   end
 end
