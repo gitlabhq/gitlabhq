@@ -331,8 +331,6 @@ GEM
       websocket-driver (>= 0.2.0)
     polyglot (0.3.4)
     posix-spawn (0.3.8)
-    protected_attributes (1.0.5)
-      activemodel (>= 4.0.1, < 5.0)
     pry (0.9.12.4)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -635,7 +633,6 @@ DEPENDENCIES
   org-ruby
   pg
   poltergeist (~> 1.5.1)
-  protected_attributes
   pry
   quiet_assets (~> 1.0.1)
   rack-attack

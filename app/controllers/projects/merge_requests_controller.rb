@@ -60,7 +60,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    @merge_request = MergeRequest.new(params[:merge_request])
+    @merge_request = MergeRequest.new(merge_request_params)
     @merge_request.source_project = @project unless @merge_request.source_project
     @merge_request.target_project ||= (@project.forked_from_project || @project)
     @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
@@ -110,7 +110,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def create
     @target_branches ||= []
-    @merge_request = MergeRequests::CreateService.new(project, current_user, params[:merge_request]).execute
+    @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
 
     if @merge_request.valid?
       redirect_to project_merge_request_path(@merge_request.target_project, @merge_request), notice: 'Merge request was successfully created.'
@@ -122,7 +122,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    @merge_request = MergeRequests::UpdateService.new(project, current_user, params[:merge_request]).execute(@merge_request)
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
 
     if @merge_request.valid?
       respond_to do |format|
@@ -262,5 +262,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
              end
 
     can?(current_user, action, project)
+  end
+
+  def merge_request_params
+    params.require(:merge_request).permit(
+      :title, :assignee_id, :source_project_id, :source_branch,
+      :target_project_id, :target_branch, :milestone_id,
+      :state_event, :description, :label_list
+    )
   end
 end

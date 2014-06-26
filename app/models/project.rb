@@ -38,12 +38,6 @@ class Project < ActiveRecord::Base
 
   ActsAsTaggableOn.strict_case_match = true
 
-  attr_accessible :name, :path, :description, :issues_tracker, :label_list,
-    :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
-
-  attr_accessible :namespace_id, :creator_id, as: :admin
-
   acts_as_taggable_on :labels, :issues_default_labels
 
   attr_accessor :new_default_branch
