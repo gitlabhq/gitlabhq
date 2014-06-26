@@ -5,6 +5,7 @@ describe GitlabMarkdownHelper do
   include IssuesHelper
 
   let!(:project) { create(:project) }
+  let(:empty_project) { create(:empty_project) }
 
   let(:user)          { create(:user, username: 'gfm') }
   let(:commit)        { project.repository.commit }
@@ -502,6 +503,19 @@ describe GitlabMarkdownHelper do
      it "should not handle malformed relative urls in reference links for a file in master" do
       actual = "[GitLab readme]: doc/api/README.md\n"
       expected = ""
+      markdown(actual).should match(expected)
+    end
+  end
+
+  describe "markdwon for empty repository" do
+    before do
+      @project = empty_project
+      @repository = empty_project.repository
+    end
+
+    it "should not touch relative urls" do
+      actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
+      expected = "<p><a href=\"doc/api/README.md\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
   end
