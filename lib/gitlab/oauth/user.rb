@@ -27,7 +27,7 @@ module Gitlab
             password_confirmation: password,
           }
 
-          user = model.build_user(opts, as: :admin)
+          user = model.build_user(opts)
           user.skip_confirmation!
 
           # Services like twitter and github does not return email via oauth

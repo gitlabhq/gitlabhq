@@ -27,14 +27,17 @@
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
+  include Gitlab::ConfigHelper
+  extend Gitlab::ConfigHelper
   extend Enumerize
 
   default_value_for :archived, false
-  default_value_for :issues_enabled, true
-  default_value_for :merge_requests_enabled, true
-  default_value_for :wiki_enabled, true
+  default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :issues_enabled, gitlab_config_features.issues
+  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
+  default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
-  default_value_for :snippets_enabled, true
+  default_value_for :snippets_enabled, gitlab_config_features.snippets
 
   ActsAsTaggableOn.strict_case_match = true
 
@@ -249,7 +252,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [Gitlab.config.gitlab.url, path_with_namespace].join("/")
+    [gitlab_config.url, path_with_namespace].join("/")
   end
 
   def web_url_without_protocol
@@ -470,7 +473,7 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    [gitlab_config.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system
