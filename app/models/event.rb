@@ -15,9 +15,6 @@
 #
 
 class Event < ActiveRecord::Base
-  #attr_accessible :project, :action, :data, :author_id, :project_id,
-                  #:target_id, :target_type
-
   default_scope { where.not(author_id: nil) }
 
   CREATED   = 1
