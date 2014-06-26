@@ -65,8 +65,6 @@ describe User do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:projects_limit) }
-    it { should allow_mass_assignment_of(:projects_limit).as(:admin) }
   end
 
   describe 'validations' do
