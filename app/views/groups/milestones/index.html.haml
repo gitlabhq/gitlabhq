@@ -1,6 +1,6 @@
 %h3.page-title
   Milestones
-  %span.pull-right #{@group_milestones.titles.count} milestones
+  %span.pull-right #{@group_milestones.count} milestones
 
 %p.light
   Only milestones from
@@ -21,31 +21,28 @@
           %li
             .nothing-here-block No milestones to show
         - else
-          - @group_milestones.titles.each do |title|
+          - @group_milestones.each do |milestone|
             %li{class: "milestone milestone-open", id: 1 }
               .pull-right
-                = link_to root_path, class: "btn btn-small edit-milestone-link btn-grouped" do
-                  %i.icon-edit
-                  Edit
                 = link_to 'Close Milestone', root_path, method: :put, remote: true, class: "btn btn-small btn-remove"
               %h4
-                = link_to_gfm truncate(title, length: 100), root_path
+                = link_to_gfm truncate(milestone.title, length: 100), root_path
               - if false
                 %span.muted Empty
               - else
                 %div
                   %div
                     = link_to root_path do
-                      = pluralize @group_milestones.issue_count[title], 'Issue'
+                      = pluralize milestone.issue_count, 'Issue'
                     &nbsp;
                     = link_to root_path do
-                      = pluralize @group_milestones.mr_count[title], 'Merge Request'
+                      = pluralize milestone.merge_requests_count, 'Merge Request'
                     &nbsp;
-                    %span.light #{@group_milestones.percent_complete[title]}% complete
+                    %span.light #{milestone.percent_complete}% complete
                   .progress.progress-info
-                  .progress-bar{style: "width: #{@group_milestones.percent_complete[title]}%;"}
+                    .progress-bar{style: "width: #{milestone.percent_complete}%;"}
                   %div
                     %br
-                    - @group_milestones.project_names[title].each do |name|
+                    - milestone.project_names.each do |name|
                       %span.label.label-default
                         = name
