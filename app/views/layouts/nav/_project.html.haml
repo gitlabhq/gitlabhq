@@ -1,7 +1,7 @@
 %ul
   = nav_link(path: 'projects#show', html_options: {class: "home"}) do
     = link_to project_path(@project), title: "Project" do
-      %i.icon-home
+      Activity
 
   - if project_nav_tab? :files
     = nav_link(controller: %w(tree blob blame edit_tree new_tree)) do
