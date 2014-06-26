@@ -62,11 +62,11 @@ class MergeRequest < ActiveRecord::Base
       transition closed: :reopened
     end
 
-    event :lock do
+    event :lock_mr do
       transition [:reopened, :opened] => :locked
     end
 
-    event :unlock do
+    event :unlock_mr do
       transition locked: :reopened
     end
 
