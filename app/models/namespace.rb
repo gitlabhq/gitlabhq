@@ -25,12 +25,12 @@ class Namespace < ActiveRecord::Base
   validates :name, presence: true, uniqueness: true,
             length: { within: 0..255 },
             format: { with: Gitlab::Regex.name_regex,
-                      message: "only letters, digits, spaces & '_' '-' '.' allowed." }
+                      message: Gitlab::Regex.name_regex_message }
   validates :description, length: { within: 0..255 }
   validates :path, uniqueness: { case_sensitive: false }, presence: true, length: { within: 1..255 },
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
-                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
+                      message: Gitlab::Regex.path_regex_message }
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
 
