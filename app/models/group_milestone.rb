@@ -38,4 +38,13 @@ class GroupMilestone
   rescue ZeroDivisionError
     100
   end
+
+  def state
+    state = milestones.map{ |milestone| milestone.state }
+    if state.all?{ |milestone_state| milestone_state == 'active' }
+      'active'
+    else
+      'closed'
+    end
+  end
 end

@@ -1,8 +1,8 @@
 = form_tag group_filter_path(entity), method: 'get' do
   %fieldset
     %ul.nav.nav-pills.nav-stacked
-      %li{class: ("active" if !params[:status])}
-        = link_to group_filter_path(entity, status: nil) do
+      %li{class: ("active" if (params[:status] == 'active' || !params[:status]))}
+        = link_to group_filter_path(entity, status: 'active') do
           Active
       %li{class: ("active" if params[:status] == 'closed')}
         = link_to group_filter_path(entity, status: 'closed') do

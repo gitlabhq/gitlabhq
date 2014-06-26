@@ -13,7 +13,7 @@
   .fixed.sidebar-expand-button.hidden-lg.hidden-md
     %i.icon-list.icon-2x
   .col-md-3.responsive-side
-    = render 'groups/filter', entity: 'milestones'
+    = render 'groups/filter', entity: 'milestone'
   .col-md-9
     .panel.panel-default
       %ul.well-list
@@ -22,27 +22,25 @@
             .nothing-here-block No milestones to show
         - else
           - @group_milestones.each do |milestone|
-            %li{class: "milestone milestone-open", id: 1 }
-              .pull-right
-                = link_to 'Close Milestone', root_path, method: :put, remote: true, class: "btn btn-small btn-remove"
+            %li{class: "milestone milestone-#{milestone.state == 'closed' ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
+              - unless milestone.state == 'closed'
+                .pull-right
+                  = link_to 'Close Milestone', root_path, method: :put, remote: true, class: "btn btn-small btn-remove"
               %h4
                 = link_to_gfm truncate(milestone.title, length: 100), root_path
-              - if false
-                %span.muted Empty
-              - else
+              %div
                 %div
-                  %div
-                    = link_to root_path do
-                      = pluralize milestone.issue_count, 'Issue'
-                    &nbsp;
-                    = link_to root_path do
-                      = pluralize milestone.merge_requests_count, 'Merge Request'
-                    &nbsp;
-                    %span.light #{milestone.percent_complete}% complete
-                  .progress.progress-info
-                    .progress-bar{style: "width: #{milestone.percent_complete}%;"}
-                  %div
-                    %br
-                    - milestone.project_names.each do |name|
-                      %span.label.label-default
-                        = name
+                  = link_to root_path do
+                    = pluralize milestone.issue_count, 'Issue'
+                  &nbsp;
+                  = link_to root_path do
+                    = pluralize milestone.merge_requests_count, 'Merge Request'
+                  &nbsp;
+                  %span.light #{milestone.percent_complete}% complete
+                .progress.progress-info
+                  .progress-bar{style: "width: #{milestone.percent_complete}%;"}
+                %div
+                  %br
+                  - milestone.project_names.each do |name|
+                    %span.label.label-default
+                      = name

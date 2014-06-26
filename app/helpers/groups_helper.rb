@@ -35,8 +35,7 @@ module GroupsHelper
 
   def group_filter_path(entity, options={})
     exist_opts = {
-      state: params[:state],
-      scope: params[:scope]
+      status: params[:status]
     }
 
     options = exist_opts.merge(options)
