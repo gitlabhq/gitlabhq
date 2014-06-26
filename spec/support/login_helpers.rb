@@ -20,6 +20,6 @@ module LoginHelpers
   end
 
   def logout
-    click_link "Logout" rescue nil
+    page.find(:css, ".icon-signout").click rescue nil
   end
 end

@@ -27,10 +27,30 @@
           = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
             = readme.name
 
-    - unless empty_repo
-      .col-md-5
-        .project-home-links
+    .col-md-5
+      .project-home-links
+        - unless empty_repo
           = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
           = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), project_branches_path(@project)
           = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), project_tags_path(@project)
           %span.light.prepend-left-20= repository_size
+        %span.star.js-toggler-container.on
+          - if current_user
+            = render 'link_to_toggle_star',
+                title:   'Star this project.',
+                starred: false,
+                signed_in: true
+            = render 'link_to_toggle_star',
+                title:   'Unstar this project.',
+                starred: true,
+                signed_in: true
+            :coffeescript
+              $('.star').on 'ajax:success', (e, data, status, xhr) ->
+                $(@).toggleClass('on').find('.count').html(data.star_count)
+              .on 'ajax:error', (e, xhr, status, error) ->
+                new Flash('Star toggle failed. Try again later.', 'alert')
+          - else
+            = render 'link_to_toggle_star',
+                title:   'You must sign in to star a project.',
+                starred: false,
+                signed_in: false

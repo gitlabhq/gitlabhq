@@ -2,6 +2,7 @@ require('spec_helper')
 
 describe ProjectsController do
   let(:project) { create(:project) }
+  let(:public_project) { create(:project, :public) }
   let(:user)    { create(:user) }
   let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
@@ -38,6 +39,19 @@ describe ProjectsController do
         expect(response.body).to match "\"alt\":\"rails_sample\""
         expect(response.body).to match "\"url\":\"http://test.host/uploads/#{project.path_with_namespace}"
       end
+    end
+  end
+
+  describe "POST #toggle_star" do
+    it "increases star count if user is signed in" do
+      sign_in(user)
+      post :toggle_star, id: public_project.to_param
+      expect(public_project.star_count).to eq(1)
+    end
+
+    it "does nothing if user is not signed in" do
+      post :toggle_star, id: public_project.to_param
+      expect(public_project.star_count).to eq(0)
     end
   end
 end

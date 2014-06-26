@@ -81,6 +81,8 @@ class Project < ActiveRecord::Base
   has_many :users, through: :users_projects
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starrers, through: :users_star_projects, source: :user
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -574,5 +576,9 @@ class Project < ActiveRecord::Base
 
   def update_repository_size
     update_attribute(:repository_size, repository.size)
+  end
+
+  def star_count
+    starrers.count
   end
 end

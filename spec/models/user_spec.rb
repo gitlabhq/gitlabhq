@@ -355,4 +355,17 @@ describe User do
       expect(user.short_website_url).to eq 'test.com'
     end
   end
+
+  describe "#toggle_star" do
+    it "toggles stars" do
+      user = create :user
+      project = create :project, :public
+
+      expect(user.starred?(project)).to be_false
+      user.toggle_star(project)
+      expect(user.starred?(project)).to be_true
+      user.toggle_star(project)
+      expect(user.starred?(project)).to be_false
+    end
+  end
 end

@@ -167,6 +167,11 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def toggle_star
+    current_user.toggle_star(@project)
+    render json: { star_count: @project.star_count }
+  end
+
   private
 
   def upload_path

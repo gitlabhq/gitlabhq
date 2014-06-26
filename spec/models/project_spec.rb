@@ -240,4 +240,22 @@ describe Project do
     it { project.open_branches.map(&:name).should include('bootstrap') }
     it { project.open_branches.map(&:name).should_not include('master') }
   end
+
+  describe "#count_star" do
+    it "counts stars" do
+      user1 = create :user
+      user2 = create :user
+      project = create :project, :public
+
+      expect(project.star_count).to eq(0)
+      user1.toggle_star(project)
+      expect(project.star_count).to eq(1)
+      user2.toggle_star(project)
+      expect(project.star_count).to eq(2)
+      user1.toggle_star(project)
+      expect(project.star_count).to eq(1)
+      user2.toggle_star(project)
+      expect(project.star_count).to eq(0)
+    end
+  end
 end

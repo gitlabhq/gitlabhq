@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140611135229) do
+ActiveRecord::Schema.define(version: 20140625115202) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -368,6 +368,17 @@ ActiveRecord::Schema.define(version: 20140611135229) do
   add_index "users_projects", ["project_access"], name: "index_users_projects_on_project_access", using: :btree
   add_index "users_projects", ["project_id"], name: "index_users_projects_on_project_id", using: :btree
   add_index "users_projects", ["user_id"], name: "index_users_projects_on_user_id", using: :btree
+
+  create_table "users_star_projects", force: true do |t|
+    t.integer  "project_id", null: false
+    t.integer  "user_id",    null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
+  add_index "users_star_projects", ["project_id"], name: "index_users_star_projects_on_project_id", using: :btree
+  add_index "users_star_projects", ["user_id", "project_id"], name: "index_users_star_projects_on_user_id_and_project_id", unique: true, using: :btree
+  add_index "users_star_projects", ["user_id"], name: "index_users_star_projects_on_user_id", using: :btree
 
   create_table "web_hooks", force: true do |t|
     t.string   "url"
