@@ -2,10 +2,10 @@
 
 ## Operating Systems
 
-GitLab is developed for the Linux operating system.
-For the installations options and instructions please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
+GitLab is developed for Unix operating systems.
+For the installations options please see [the installation page in the GitLab website](https://about.gitlab.com/installation/).
 
-### Supported Linux distributions
+### Supported Unix distributions
 
 - Ubuntu
 - Debian
@@ -14,22 +14,18 @@ For the installations options and instructions please see [the installation sect
 - Scientific Linux
 - Oracle Linux
 
-### Unsupported Linux distributions
+### Unsupported Unix distributions
 
+- OS X
 - Arch Linux
 - Fedora
 - Gentoo
+- FreeBSD
 
-But on the above unsupported distributions is still possible to install GitLab yourself with the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md).
+On the above unsupported distributions is still possible to install GitLab yourself.
+Please see the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
 
-### Unsupported Unix operating systems
-
-There is nothing that prevents GitLab from running on other Unix operating systems.
-This means you may get it to work on systems running FreeBSD or OS X.
-If you want to do this, please be aware it could be a lot of work.
-Please consider using a virtual machine to run GitLab.
-
-### Other operating systems such as Windows
+### Non Unix operating systems such as Windows
 
 GitLab does **not** run on Windows and we have no plans of supporting it in the near future.
 Please consider using a virtual machine to run GitLab.
