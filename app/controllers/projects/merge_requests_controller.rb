@@ -60,6 +60,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
+    params[:merge_request] ||= ActionController::Parameters.new(
+      source_project: @project
+    )
+
     @merge_request = MergeRequest.new(merge_request_params)
     @merge_request.source_project = @project unless @merge_request.source_project
     @merge_request.target_project ||= (@project.forked_from_project || @project)
