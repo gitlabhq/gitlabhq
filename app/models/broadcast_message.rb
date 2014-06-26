@@ -14,8 +14,6 @@
 #
 
 class BroadcastMessage < ActiveRecord::Base
-  attr_accessible :alert_type, :color, :ends_at, :font, :message, :starts_at
-
   validates :message, presence: true
   validates :starts_at, presence: true
   validates :ends_at, presence: true
