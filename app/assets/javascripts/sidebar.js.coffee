@@ -7,6 +7,11 @@ responsive_resize = ->
   else
     $('.responsive-side').removeClass("ui right wide sidebar")
 
+hide_sidebar = (e) ->
+  container = $(".ui.sidebar")
+  container.sidebar "hide"  if not container.is(e.target) and container.has(e.target).length is 0
+  return
+
 $ ->
   # Depending on window size, set the sidebar offscreen.
   responsive_resize()
@@ -17,10 +22,7 @@ $ ->
       .sidebar('toggle')
 
   # Hide sidebar on click outside of sidebar
-  $(document).mouseup (e) ->
-    container = $(".ui.sidebar")
-    container.sidebar "hide"  if not container.is(e.target) and container.has(e.target).length is 0
-    return
+  $(document).on('touchend', hide_sidebar).mouseup(hide_sidebar)
 
 # On resize, check if sidebar should be offscreen.
 $(window).resize ->
