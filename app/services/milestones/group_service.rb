@@ -5,16 +5,22 @@ module Milestones
     end
 
     def execute
-      @project_milestones.map{ |title, milestone| GroupMilestone.new(title, milestone) }
+      build(@project_milestones)
     end
 
     def milestone(title)
       if title
-        @project_milestones[title]
+        group_milestone = @project_milestones[title].group_by(&:title)
+        build(group_milestone).first
       else
         nil
       end
     end
 
+  private
+
+    def build(milestone)
+      milestone.map{ |title, milestones| GroupMilestone.new(title, milestones) }
+    end
   end
 end

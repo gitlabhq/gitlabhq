@@ -22,21 +22,20 @@
             .nothing-here-block No milestones to show
         - else
           - @group_milestones.each do |milestone|
-            %li{class: "milestone milestone-#{milestone.state == 'closed' ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
+            %li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
               .pull-right
-                - safe_title = milestone.title.gsub(".", "-")
-                - if milestone.state == 'closed'
-                  = link_to 'Reopen Milestone', group_milestone_path(@group, safe_title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped"
+                - if milestone.closed?
+                  = link_to 'Reopen Milestone', group_milestone_path(@group, milestone.safe_title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped"
                 - else
-                  = link_to 'Close Milestone', group_milestone_path(@group, safe_title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-remove"
+                  = link_to 'Close Milestone', group_milestone_path(@group, milestone.safe_title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-remove"
               %h4
-                = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, safe_title)
+                = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title)
               %div
                 %div
-                  = link_to root_path do
+                  = link_to group_milestone_path(@group, milestone.safe_title) do
                     = pluralize milestone.issue_count, 'Issue'
                   &nbsp;
-                  = link_to root_path do
+                  = link_to group_milestone_path(@group, milestone.safe_title) do
                     = pluralize milestone.merge_requests_count, 'Merge Request'
                   &nbsp;
                   %span.light #{milestone.percent_complete}% complete

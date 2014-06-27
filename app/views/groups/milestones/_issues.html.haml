@@ -1,0 +1,6 @@
+.panel.panel-default
+  .panel-heading= name
+  %ul{ class: "well-list issues-sortable-list" }
+    - issues.each do |issue|
+      = render 'issue', issue: issue
+

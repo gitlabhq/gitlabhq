@@ -1,0 +1,5 @@
+.panel.panel-default
+  .panel-heading= name
+  %ul{ class: "well-list merge_requests-sortable-list" }
+    - merge_requests.sort_by(&:position).each do |merge_request|
+      = render 'merge_request', merge_request: merge_request

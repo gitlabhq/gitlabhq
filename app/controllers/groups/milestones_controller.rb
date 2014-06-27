@@ -13,14 +13,16 @@ class Groups::MilestonesController < ApplicationController
 
   def show
     project_milestones = Milestone.where(project_id: group.projects)
-    @group_milestones = Milestones::GroupService.new(project_milestones).milestone(title)
+    @group_milestone = Milestones::GroupService.new(project_milestones).milestone(title)
+    @project_issues = @group_milestone.filter_by(params[:status], "issues")
+    @project_merge_requests = @group_milestone.filter_by(params[:status], "merge_requests")
   end
 
   def update
     project_milestones = Milestone.where(project_id: group.projects)
     @group_milestones = Milestones::GroupService.new(project_milestones).milestone(title)
 
-    @group_milestones.each do |milestone|
+    @group_milestones.milestones.each do |milestone|
       Milestones::UpdateService.new(milestone.project, current_user, params[:milestone]).execute(milestone)
     end
 
