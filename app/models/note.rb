@@ -226,7 +226,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_file_index
-    line_code.split('_')[0]
+    line_code.split('_')[0] if line_code
   end
 
   def diff_file_name
@@ -242,11 +242,11 @@ class Note < ActiveRecord::Base
   end
 
   def diff_old_line
-    line_code.split('_')[1].to_i
+    line_code.split('_')[1].to_i if line_code
   end
 
   def diff_new_line
-    line_code.split('_')[2].to_i
+    line_code.split('_')[2].to_i if line_code
   end
 
   def generate_line_code(line)
@@ -265,6 +265,20 @@ class Note < ActiveRecord::Base
     end
 
     @diff_line
+  end
+
+  def diff_line_type
+    return @diff_line_type if @diff_line_type
+
+    if diff
+      diff_lines.each do |line|
+        if generate_line_code(line) == self.line_code
+          @diff_line_type = line.type
+        end
+      end
+    end
+
+    @diff_line_type
   end
 
   def truncated_diff_lines
