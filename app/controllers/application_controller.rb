@@ -180,7 +180,7 @@ class ApplicationController < ActionController::Base
   end
 
   def ldap_security_check
-    if current_user && current_user.requires_ldap_check?
+    if current_user && current_user.requires_ldap_check? && Gitlab.config.ldap.enabled
       gitlab_ldap_access do |access|
         if access.allowed?(current_user)
           current_user.last_credential_check_at = Time.now
