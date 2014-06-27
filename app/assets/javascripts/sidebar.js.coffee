@@ -1,6 +1,8 @@
 responsive_resize = ->
   current_width = $(window).width()
-  if current_width < 985
+  if current_width < 385
+    $('.responsive-side').removeClass("wide").addClass("ui right sidebar")
+  else if current_width < 985
     $('.responsive-side').addClass("ui right wide sidebar")
   else
     $('.responsive-side').removeClass("ui right wide sidebar")
