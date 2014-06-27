@@ -107,20 +107,12 @@ Create an annotated tag that points to the version change commit:
 git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 ```
 
-### **7. Tweet**
-
-Tweet about the RC release:
-
-> GitLab x.x.x.rc1 is out. This is a release candidate intended for testing only. Please let us know if you find regressions.
-
-n
-### **8. Update GitLab.com**
+### **7. Update GitLab.com**
 
 Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morning.
-
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
-### **9. Create a regressions issue**
+### **8. Create a regressions issue**
 
 On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
 
@@ -130,6 +122,12 @@ The decision to create a patch release or not is with the release manager who is
 The release manager will comment here about the plans for patch releases.
 
 Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
+
+### **9. Tweet**
+
+Tweet about the RC release:
+
+> GitLab x.x.x.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
 
 # **21st - Preparation **
 
