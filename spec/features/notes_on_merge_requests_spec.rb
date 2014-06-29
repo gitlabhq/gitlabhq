@@ -15,7 +15,7 @@ describe "On a merge request", js: true, feature: true do
   describe "the note form" do
     it 'should be valid' do
       should have_css(".js-main-target-form", visible: true, count: 1)
-      find(".js-main-target-form input[type=submit]").value.should == "Add Comment"
+      expect(find(".js-main-target-form input[type=submit]").value).to eq("Add Comment")
       within(".js-main-target-form") { should_not have_link("Cancel") }
       within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
     end
@@ -64,8 +64,8 @@ describe "On a merge request", js: true, feature: true do
 
       it "should show the note edit form and hide the note body" do
         within("#note_#{note.id}") do
-          find(".note-edit-form", visible: true).should be_visible
-          find(".note-text", visible: false).should_not be_visible
+          expect(find(".note-edit-form", visible: true)).to be_visible
+          expect(find(".note-text", visible: false)).not_to be_visible
         end
       end
 
@@ -76,7 +76,7 @@ describe "On a merge request", js: true, feature: true do
         within(".note-edit-form") do
           fill_in "note[note]", with: "Some new content"
           find(".btn-cancel").click
-          find(".js-note-text", visible: false).text.should == note.note
+          expect(find(".js-note-text", visible: false).text).to eq(note.note)
         end
       end
 
@@ -91,7 +91,7 @@ describe "On a merge request", js: true, feature: true do
 
         within("#note_#{note.id}") do
           should have_css(".note-last-update small")
-          find(".note-last-update small").text.should match(/Edited less than a minute ago/)
+          expect(find(".note-last-update small").text).to match(/Edited less than a minute ago/)
         end
       end
     end
@@ -111,7 +111,7 @@ describe "On a merge request", js: true, feature: true do
       it "removes the attachment div and resets the edit form" do
         find(".js-note-attachment-delete").click
         should_not have_css(".note-attachment")
-        find(".note-edit-form", visible: false).should_not be_visible
+        expect(find(".note-edit-form", visible: false)).not_to be_visible
       end
     end
   end

@@ -3,49 +3,49 @@ require 'spec_helper'
 describe Gitlab::ReferenceExtractor do
   it 'extracts username references' do
     subject.analyze "this contains a @user reference"
-    subject.users.should == ["user"]
+    expect(subject.users).to eq(["user"])
   end
 
   it 'extracts issue references' do
     subject.analyze "this one talks about issue #1234"
-    subject.issues.should == ["1234"]
+    expect(subject.issues).to eq(["1234"])
   end
 
   it 'extracts JIRA issue references' do
-    Gitlab.config.gitlab.stub(:issues_tracker).and_return("jira")
+    allow(Gitlab.config.gitlab).to receive(:issues_tracker).and_return("jira")
     subject.analyze "this one talks about issue JIRA-1234"
-    subject.issues.should == ["JIRA-1234"]
+    expect(subject.issues).to eq(["JIRA-1234"])
   end
 
   it 'extracts merge request references' do
     subject.analyze "and here's !43, a merge request"
-    subject.merge_requests.should == ["43"]
+    expect(subject.merge_requests).to eq(["43"])
   end
 
   it 'extracts snippet ids' do
     subject.analyze "snippets like $12 get extracted as well"
-    subject.snippets.should == ["12"]
+    expect(subject.snippets).to eq(["12"])
   end
 
   it 'extracts commit shas' do
     subject.analyze "commit shas 98cf0ae3 are pulled out as Strings"
-    subject.commits.should == ["98cf0ae3"]
+    expect(subject.commits).to eq(["98cf0ae3"])
   end
 
   it 'extracts multiple references and preserves their order' do
     subject.analyze "@me and @you both care about this"
-    subject.users.should == ["me", "you"]
+    expect(subject.users).to eq(["me", "you"])
   end
 
   it 'leaves the original note unmodified' do
     text = "issue #123 is just the worst, @user"
     subject.analyze text
-    text.should == "issue #123 is just the worst, @user"
+    expect(text).to eq("issue #123 is just the worst, @user")
   end
 
   it 'handles all possible kinds of references' do
     accessors = Gitlab::Markdown::TYPES.map { |t| "#{t}s".to_sym }
-    subject.should respond_to(*accessors)
+    expect(subject).to respond_to(*accessors)
   end
 
   context 'with a project' do
@@ -60,7 +60,7 @@ describe Gitlab::ReferenceExtractor do
       project.team << [@u_bar, :guest]
 
       subject.analyze "@foo, @baduser, @bar, and @offteam"
-      subject.users_for(project).should == [@u_foo, @u_bar]
+      expect(subject.users_for(project)).to eq([@u_foo, @u_bar])
     end
 
     it 'accesses valid issue objects' do
@@ -68,7 +68,7 @@ describe Gitlab::ReferenceExtractor do
       @i1 = create(:issue, project: project)
 
       subject.analyze "##{@i0.iid}, ##{@i1.iid}, and #999."
-      subject.issues_for(project).should == [@i0, @i1]
+      expect(subject.issues_for(project)).to eq([@i0, @i1])
     end
 
     it 'accesses valid merge requests' do
@@ -76,7 +76,7 @@ describe Gitlab::ReferenceExtractor do
       @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'bbb')
 
       subject.analyze "!999, !#{@m1.iid}, and !#{@m0.iid}."
-      subject.merge_requests_for(project).should == [@m1, @m0]
+      expect(subject.merge_requests_for(project)).to eq([@m1, @m0])
     end
 
     it 'accesses valid snippets' do
@@ -85,7 +85,7 @@ describe Gitlab::ReferenceExtractor do
       @s2 = create(:project_snippet)
 
       subject.analyze "$#{@s0.id}, $999, $#{@s2.id}, $#{@s1.id}"
-      subject.snippets_for(project).should == [@s0, @s1]
+      expect(subject.snippets_for(project)).to eq([@s0, @s1])
     end
 
     it 'accesses valid commits' do
@@ -93,9 +93,9 @@ describe Gitlab::ReferenceExtractor do
 
       subject.analyze "this references commits #{commit.sha[0..6]} and 012345"
       extracted = subject.commits_for(project)
-      extracted.should have(1).item
-      extracted[0].sha.should == commit.sha
-      extracted[0].message.should == commit.message
+      expect(extracted.size).to eq(1)
+      expect(extracted[0].sha).to eq(commit.sha)
+      expect(extracted[0].message).to eq(commit.message)
     end
   end
 end

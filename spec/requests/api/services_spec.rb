@@ -9,13 +9,13 @@ describe API::API, api: true  do
     it "should update gitlab-ci settings" do
       put api("/projects/#{project.id}/services/gitlab-ci", user), token: 'secret-token', project_url: "http://ci.example.com/projects/1"
 
-      response.status.should == 200
+      expect(response.status).to eq(200)
     end
 
     it "should return if required fields missing" do
       put api("/projects/#{project.id}/services/gitlab-ci", user), project_url: "http://ci.example.com/projects/1", active: true
 
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 
@@ -23,8 +23,8 @@ describe API::API, api: true  do
     it "should update gitlab-ci settings" do
       delete api("/projects/#{project.id}/services/gitlab-ci", user)
 
-      response.status.should == 200
-      project.gitlab_ci_service.should be_nil
+      expect(response.status).to eq(200)
+      expect(project.gitlab_ci_service).to be_nil
     end
   end
 end

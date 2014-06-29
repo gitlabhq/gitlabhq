@@ -38,10 +38,10 @@ describe Issue do
   describe '#is_being_reassigned?' do
     it 'returns true if the issue assignee has changed' do
       subject.assignee = create(:user)
-      subject.is_being_reassigned?.should be_true
+      expect(subject.is_being_reassigned?).to be_true
     end
     it 'returns false if the issue assignee has not changed' do
-      subject.is_being_reassigned?.should be_false
+      expect(subject.is_being_reassigned?).to be_false
     end
   end
 
@@ -53,7 +53,7 @@ describe Issue do
         issue = create :issue, assignee: user
       end
 
-      Issue.open_for(user).count.should eq 2
+      expect(Issue.open_for(user).count).to eq 2
     end
   end
 

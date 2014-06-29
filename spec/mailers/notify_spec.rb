@@ -17,8 +17,8 @@ describe Notify do
   shared_examples 'an email sent from GitLab' do
     it 'is sent from GitLab' do
       sender = subject.header[:from].addrs[0]
-      sender.display_name.should eq('GitLab')
-      sender.address.should eq(gitlab_sender)
+      expect(sender.display_name).to eq('GitLab')
+      expect(sender.address).to eq(gitlab_sender)
     end
   end
 
@@ -136,8 +136,8 @@ describe Notify do
       shared_examples 'an assignee email' do
         it 'is sent as the author' do
           sender = subject.header[:from].addrs[0]
-          sender.display_name.should eq(current_user.name)
-          sender.address.should eq(gitlab_sender)
+          expect(sender.display_name).to eq(current_user.name)
+          expect(sender.address).to eq(gitlab_sender)
         end
 
         it 'is sent to the assignee' do
@@ -182,8 +182,8 @@ describe Notify do
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
-            sender.display_name.should eq(current_user.name)
-            sender.address.should eq(gitlab_sender)
+            expect(sender.display_name).to eq(current_user.name)
+            expect(sender.address).to eq(gitlab_sender)
           end
 
           it 'has the correct subject' do
@@ -213,8 +213,8 @@ describe Notify do
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
-            sender.display_name.should eq(current_user.name)
-            sender.address.should eq(gitlab_sender)
+            expect(sender.display_name).to eq(current_user.name)
+            expect(sender.address).to eq(gitlab_sender)
           end
 
           it 'has the correct subject' do
@@ -286,8 +286,8 @@ describe Notify do
 
           it 'is sent as the author' do
             sender = subject.header[:from].addrs[0]
-            sender.display_name.should eq(current_user.name)
-            sender.address.should eq(gitlab_sender)
+            expect(sender.display_name).to eq(current_user.name)
+            expect(sender.address).to eq(gitlab_sender)
           end
 
           it 'has the correct subject' do
@@ -314,8 +314,8 @@ describe Notify do
 
           it 'is sent as the merge author' do
             sender = subject.header[:from].addrs[0]
-            sender.display_name.should eq(merge_author.name)
-            sender.address.should eq(gitlab_sender)
+            expect(sender.display_name).to eq(merge_author.name)
+            expect(sender.address).to eq(gitlab_sender)
           end
 
           it 'has the correct subject' do
@@ -383,14 +383,14 @@ describe Notify do
       let(:note) { create(:note, project: project, author: note_author) }
 
       before :each do
-        Note.stub(:find).with(note.id).and_return(note)
+        allow(Note).to receive(:find).with(note.id).and_return(note)
       end
 
       shared_examples 'a note email' do
         it 'is sent as the author' do
           sender = subject.header[:from].addrs[0]
-          sender.display_name.should eq(note_author.name)
-          sender.address.should eq(gitlab_sender)
+          expect(sender.display_name).to eq(note_author.name)
+          expect(sender.address).to eq(gitlab_sender)
         end
 
         it 'is sent to the given recipient' do
@@ -405,7 +405,7 @@ describe Notify do
       describe 'on a commit' do
         let(:commit) { project.repository.commit }
 
-        before(:each) { note.stub(:noteable).and_return(commit) }
+        before(:each) { allow(note).to receive(:noteable).and_return(commit) }
 
         subject { Notify.note_commit_email(recipient.id, note.id) }
 
@@ -423,7 +423,7 @@ describe Notify do
       describe 'on a merge request' do
         let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
         let(:note_on_merge_request_path) { project_merge_request_path(project, merge_request, anchor: "note_#{note.id}") }
-        before(:each) { note.stub(:noteable).and_return(merge_request) }
+        before(:each) { allow(note).to receive(:noteable).and_return(merge_request) }
 
         subject { Notify.note_merge_request_email(recipient.id, note.id) }
 
@@ -441,7 +441,7 @@ describe Notify do
       describe 'on an issue' do
         let(:issue) { create(:issue, project: project) }
         let(:note_on_issue_path) { project_issue_path(project, issue, anchor: "note_#{note.id}") }
-        before(:each) { note.stub(:noteable).and_return(issue) }
+        before(:each) { allow(note).to receive(:noteable).and_return(issue) }
 
         subject { Notify.note_issue_email(recipient.id, note.id) }
 
@@ -517,8 +517,8 @@ describe Notify do
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
-      sender.display_name.should eq(user.name)
-      sender.address.should eq(gitlab_sender)
+      expect(sender.display_name).to eq(user.name)
+      expect(sender.address).to eq(gitlab_sender)
     end
 
     it 'is sent to recipient' do
@@ -553,8 +553,8 @@ describe Notify do
 
     it 'is sent as the author' do
       sender = subject.header[:from].addrs[0]
-      sender.display_name.should eq(user.name)
-      sender.address.should eq(gitlab_sender)
+      expect(sender.display_name).to eq(user.name)
+      expect(sender.address).to eq(gitlab_sender)
     end
 
     it 'is sent to recipient' do

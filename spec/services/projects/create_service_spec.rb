@@ -16,9 +16,9 @@ describe Projects::CreateService do
         @project = create_project(@user, @opts)
       end
 
-      it { @project.should be_valid }
-      it { @project.owner.should == @user }
-      it { @project.namespace.should == @user.namespace }
+      it { expect(@project).to be_valid }
+      it { expect(@project.owner).to eq(@user) }
+      it { expect(@project.namespace).to eq(@user.namespace) }
     end
 
     context 'group namespace' do
@@ -30,9 +30,9 @@ describe Projects::CreateService do
         @project = create_project(@user, @opts)
       end
 
-      it { @project.should be_valid }
-      it { @project.owner.should == @group }
-      it { @project.namespace.should == @group }
+      it { expect(@project).to be_valid }
+      it { expect(@project.owner).to eq(@group) }
+      it { expect(@project.namespace).to eq(@group) }
     end
 
     context 'wiki_enabled creates repository directory' do
@@ -42,7 +42,7 @@ describe Projects::CreateService do
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
-        it { File.exists?(@path).should be_true }
+        it { expect(File.exists?(@path)).to be_true }
       end
 
       context 'wiki_enabled false does not create wiki repository directory' do
@@ -52,60 +52,60 @@ describe Projects::CreateService do
           @path = ProjectWiki.new(@project, @user).send(:path_to_repo)
         end
 
-        it { File.exists?(@path).should be_false }
+        it { expect(File.exists?(@path)).to be_false }
       end
     end
 
     context 'respect configured visibility setting' do
       before(:each) do
         @settings = double("settings")
-        @settings.stub(:issues) { true }
-        @settings.stub(:merge_requests) { true }
-        @settings.stub(:wiki) { true }
-        @settings.stub(:snippets) { true }
+        allow(@settings).to receive(:issues) { true }
+        allow(@settings).to receive(:merge_requests) { true }
+        allow(@settings).to receive(:wiki) { true }
+        allow(@settings).to receive(:snippets) { true }
         Gitlab.config.gitlab.stub(restricted_visibility_levels: [])
-        Gitlab.config.gitlab.stub(:default_projects_features).and_return(@settings)
+        allow(Gitlab.config.gitlab).to receive(:default_projects_features).and_return(@settings)
       end
 
       context 'should be public when setting is public' do
         before do
-          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
+          allow(@settings).to receive(:visibility_level) { Gitlab::VisibilityLevel::PUBLIC }
           @project = create_project(@user, @opts)
         end
 
-        it { @project.public?.should be_true }
+        it { expect(@project.public?).to be_true }
       end
 
       context 'should be private when setting is private' do
         before do
-          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+          allow(@settings).to receive(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
           @project = create_project(@user, @opts)
         end
 
-        it { @project.private?.should be_true }
+        it { expect(@project.private?).to be_true }
       end
 
       context 'should be internal when setting is internal' do
         before do
-          @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
+          allow(@settings).to receive(:visibility_level) { Gitlab::VisibilityLevel::INTERNAL }
           @project = create_project(@user, @opts)
         end
 
-        it { @project.internal?.should be_true }
+        it { expect(@project.internal?).to be_true }
       end
     end
 
     context 'respect configured visibility restrictions setting' do
       before(:each) do
         @settings = double("settings")
-        @settings.stub(:issues) { true }
-        @settings.stub(:merge_requests) { true }
-        @settings.stub(:wiki) { true }
-        @settings.stub(:snippets) { true }
-        @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
+        allow(@settings).to receive(:issues) { true }
+        allow(@settings).to receive(:merge_requests) { true }
+        allow(@settings).to receive(:wiki) { true }
+        allow(@settings).to receive(:snippets) { true }
+        allow(@settings).to receive(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
         @restrictions = [ Gitlab::VisibilityLevel::PUBLIC ]
         Gitlab.config.gitlab.stub(restricted_visibility_levels: @restrictions)
-        Gitlab.config.gitlab.stub(:default_projects_features).and_return(@settings)
+        allow(Gitlab.config.gitlab).to receive(:default_projects_features).and_return(@settings)
       end
 
       context 'should be private when option is public' do
@@ -114,7 +114,7 @@ describe Projects::CreateService do
           @project = create_project(@user, @opts)
         end
 
-        it { @project.private?.should be_true }
+        it { expect(@project.private?).to be_true }
       end
 
       context 'should be public when option is public for admin' do
@@ -123,7 +123,7 @@ describe Projects::CreateService do
           @project = create_project(@admin, @opts)
         end
 
-        it { @project.public?.should be_true }
+        it { expect(@project.public?).to be_true }
       end
 
       context 'should be private when option is private' do
@@ -132,7 +132,7 @@ describe Projects::CreateService do
           @project = create_project(@user, @opts)
         end
 
-        it { @project.private?.should be_true }
+        it { expect(@project.private?).to be_true }
       end
 
       context 'should be internal when option is internal' do
@@ -141,7 +141,7 @@ describe Projects::CreateService do
           @project = create_project(@user, @opts)
         end
 
-        it { @project.internal?.should be_true }
+        it { expect(@project.internal?).to be_true }
       end
     end
   end

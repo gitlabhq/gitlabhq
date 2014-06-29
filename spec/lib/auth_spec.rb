@@ -14,15 +14,15 @@ describe Gitlab::Auth do
     end
 
     it "should find user by valid login/password" do
-      gl_auth.find('john', '88877711').should == @user
+      expect(gl_auth.find('john', '88877711')).to eq(@user)
     end
 
     it "should not find user with invalid password" do
-      gl_auth.find('john', 'invalid11').should_not == @user
+      expect(gl_auth.find('john', 'invalid11')).not_to eq(@user)
     end
 
     it "should not find user with invalid login and password" do
-      gl_auth.find('jon', 'invalid11').should_not == @user
+      expect(gl_auth.find('jon', 'invalid11')).not_to eq(@user)
     end
   end
 end

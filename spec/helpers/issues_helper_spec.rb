@@ -8,18 +8,18 @@ describe IssuesHelper do
   describe :title_for_issue do
     it "should return issue title if used internal tracker" do
       @project = project
-      title_for_issue(issue.iid).should eq issue.title
+      expect(title_for_issue(issue.iid)).to eq issue.title
     end
 
     it "should always return empty string if used external tracker" do
       @project = ext_project
-      title_for_issue(rand(100)).should eq ""
+      expect(title_for_issue(rand(100))).to eq ""
     end
 
     it "should always return empty string if project nil" do
       @project = nil
 
-      title_for_issue(rand(100)).should eq ""
+      expect(title_for_issue(rand(100))).to eq ""
     end
   end
 
@@ -33,29 +33,29 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_project_issues.should match(int_expected)
+      expect(url_for_project_issues).to match(int_expected)
     end
 
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_project_issues.should match(ext_expected)
+      expect(url_for_project_issues).to match(ext_expected)
     end
 
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_project_issues.should eq ""
+      expect(url_for_project_issues).to eq ""
     end
 
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
-        Gitlab.config.stub(:issues_tracker).and_return(nil)
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
       it "should return path to internal tracker" do
-        url_for_project_issues.should match(polymorphic_path([@project]))
+        expect(url_for_project_issues).to match(polymorphic_path([@project]))
       end
     end
   end
@@ -72,29 +72,29 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_issue(issue.iid).should match(int_expected)
+      expect(url_for_issue(issue.iid)).to match(int_expected)
     end
 
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_issue(issue_id).should match(ext_expected)
+      expect(url_for_issue(issue_id)).to match(ext_expected)
     end
 
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_issue(issue.iid).should eq ""
+      expect(url_for_issue(issue.iid)).to eq ""
     end
 
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
-        Gitlab.config.stub(:issues_tracker).and_return(nil)
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
       it "should return internal path" do
-        url_for_issue(issue.iid).should match(polymorphic_path([@project, issue]))
+        expect(url_for_issue(issue.iid)).to match(polymorphic_path([@project, issue]))
       end
     end
   end
@@ -109,29 +109,29 @@ describe IssuesHelper do
 
     it "should return internal path if used internal tracker" do
       @project = project
-      url_for_new_issue.should match(int_expected)
+      expect(url_for_new_issue).to match(int_expected)
     end
 
     it "should return path to external tracker" do
       @project = ext_project
 
-      url_for_new_issue.should match(ext_expected)
+      expect(url_for_new_issue).to match(ext_expected)
     end
 
     it "should return empty string if project nil" do
       @project = nil
 
-      url_for_new_issue.should eq ""
+      expect(url_for_new_issue).to eq ""
     end
 
     describe "when external tracker was enabled and then config removed" do
       before do
         @project = ext_project
-        Gitlab.config.stub(:issues_tracker).and_return(nil)
+        allow(Gitlab.config).to receive(:issues_tracker).and_return(nil)
       end
 
       it "should return internal path" do
-        url_for_new_issue.should match(new_project_issue_path(@project))
+        expect(url_for_new_issue).to match(new_project_issue_path(@project))
       end
     end
   end

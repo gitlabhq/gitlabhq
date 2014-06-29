@@ -25,34 +25,34 @@ describe IssuesFinder do
     it 'should filter by all' do
       params = { scope: "all", state: 'opened' }
       issues = IssuesFinder.new.execute(user, params)
-      issues.size.should == 3
+      expect(issues.size).to eq(3)
     end
 
     it 'should filter by assignee' do
       params = { scope: "assigned-to-me", state: 'opened' }
       issues = IssuesFinder.new.execute(user, params)
-      issues.size.should == 2
+      expect(issues.size).to eq(2)
     end
 
     it 'should filter by project' do
       params = { scope: "assigned-to-me", state: 'opened', project_id: project1.id }
       issues = IssuesFinder.new.execute(user, params)
-      issues.size.should == 1
+      expect(issues.size).to eq(1)
     end
 
     it 'should be empty for unauthorized user' do
       params = { scope: "all", state: 'opened' }
       issues = IssuesFinder.new.execute(nil, params)
-      issues.size.should be_zero
+      expect(issues.size).to be_zero
     end
 
     it 'should not include unauthorized issues' do
       params = { scope: "all", state: 'opened' }
       issues = IssuesFinder.new.execute(user2, params)
-      issues.size.should == 2
-      issues.should_not include(issue1)
-      issues.should include(issue2)
-      issues.should include(issue3)
+      expect(issues.size).to eq(2)
+      expect(issues).not_to include(issue1)
+      expect(issues).to include(issue2)
+      expect(issues).to include(issue3)
     end
   end
 end

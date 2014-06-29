@@ -16,8 +16,8 @@ describe Issues::CreateService do
         @issue = Issues::CreateService.new(project, user, opts).execute
       end
 
-      it { @issue.should be_valid }
-      it { @issue.title.should == 'Awesome issue' }
+      it { expect(@issue).to be_valid }
+      it { expect(@issue.title).to eq('Awesome issue') }
     end
   end
 end

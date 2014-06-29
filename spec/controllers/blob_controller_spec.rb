@@ -9,8 +9,8 @@ describe Projects::BlobController do
 
     project.team << [user, :master]
 
-    project.stub(:branches).and_return(['master', 'foo/bar/baz'])
-    project.stub(:tags).and_return(['v1.0.0', 'v2.0.0'])
+    allow(project).to receive(:branches).and_return(['master', 'foo/bar/baz'])
+    allow(project).to receive(:tags).and_return(['v1.0.0', 'v2.0.0'])
     controller.instance_variable_set(:@project, project)
   end
 

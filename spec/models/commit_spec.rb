@@ -6,29 +6,29 @@ describe Commit do
 
   describe '#title' do
     it "returns no_commit_message when safe_message is blank" do
-      commit.stub(:safe_message).and_return('')
-      commit.title.should == "--no commit message"
+      allow(commit).to receive(:safe_message).and_return('')
+      expect(commit.title).to eq("--no commit message")
     end
 
     it "truncates a message without a newline at 80 characters" do
       message = commit.safe_message * 10
 
-      commit.stub(:safe_message).and_return(message)
-      commit.title.should == "#{message[0..79]}&hellip;"
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.title).to eq("#{message[0..79]}&hellip;")
     end
 
     it "truncates a message with a newline before 80 characters at the newline" do
       message = commit.safe_message.split(" ").first
 
-      commit.stub(:safe_message).and_return(message + "\n" + message)
-      commit.title.should == message
+      allow(commit).to receive(:safe_message).and_return(message + "\n" + message)
+      expect(commit.title).to eq(message)
     end
 
     it "truncates a message with a newline after 80 characters at 70 characters" do
       message = (commit.safe_message * 10) + "\n"
 
-      commit.stub(:safe_message).and_return(message)
-      commit.title.should == "#{message[0..79]}&hellip;"
+      allow(commit).to receive(:safe_message).and_return(message)
+      expect(commit.title).to eq("#{message[0..79]}&hellip;")
     end
   end
 
@@ -53,7 +53,7 @@ describe Commit do
 
     it 'detects issues that this commit is marked as closing' do
       commit.stub(issue_closing_regex: /^([Cc]loses|[Ff]ixes) #\d+/, safe_message: "Fixes ##{issue.iid}")
-      commit.closes_issues(project).should == [issue]
+      expect(commit.closes_issues(project)).to eq([issue])
     end
   end
 

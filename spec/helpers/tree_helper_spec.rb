@@ -4,12 +4,12 @@ describe TreeHelper do
   describe '#markup?' do
     %w(textile rdoc org creole mediawiki rst asciidoc pod).each do |type|
       it "returns true for #{type} files" do
-        markup?("README.#{type}").should be_true
+        expect(markup?("README.#{type}")).to be_true
       end
     end
 
     it "returns false when given a non-markup filename" do
-      markup?('README.rb').should_not be_true
+      expect(markup?('README.rb')).not_to be_true
     end
   end
 end

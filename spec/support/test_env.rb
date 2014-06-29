@@ -30,13 +30,13 @@ module TestEnv
   end
 
   def enable_mailer
-    NotificationService.any_instance.unstub(:mailer)
+    allow_any_instance_of(NotificationService).to receive(:mailer).and_call_original
   end
 
   def setup_stubs()
     # Use tmp dir for FS manipulations
     repos_path = testing_path()
-    ProjectWiki.any_instance.stub(:init_repo) do |path|
+    allow_any_instance_of(ProjectWiki).to receive(:init_repo) do |path|
       create_temp_repo(File.join(repos_path, "#{path}.git"))
     end
 
