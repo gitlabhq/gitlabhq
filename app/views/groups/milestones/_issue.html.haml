@@ -1,6 +1,8 @@
 %li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid }
-  %span.str-truncated
+  %span.milestone-row
     - project = issue.project
+    %span.label.label-default.project-name
+      = project.name
     = link_to [project, issue] do
       %span.cgray ##{issue.iid}
     = link_to_gfm issue.title, [project, issue]

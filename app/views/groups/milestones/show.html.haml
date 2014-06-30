@@ -52,19 +52,17 @@
 .tab-content
   .tab-pane.active#tab-issues
     .row
-      .col-md-4.responsive-side
-        = render 'groups/filter', entity: 'milestone'
-      .col-md-8
-        - @project_issues.each do |name, issues|
-          = render 'issues', name: name, issues: issues
+      .col-md-6
+        = render 'issues', title: "Open", issues: @issues["opened"]
+      .col-md-6
+        = render 'issues', title: "Closed", issues: @issues["closed"]
 
   .tab-pane#tab-merge-requests
     .row
-      .col-md-4.responsive-side
-        = render 'groups/filter', entity: 'milestone'
-      .col-md-8
-        - @project_merge_requests.each do |name, merge_requests|
-          = render 'merge_requests', name: name, merge_requests: merge_requests
+      .col-md-6
+        = render 'merge_requests', title: "Open", merge_requests: @merge_requests["opened"]
+      .col-md-6
+        = render 'merge_requests', title: "Closed", merge_requests: @merge_requests["closed"]
 
   .tab-pane#tab-participants
     %ul.bordered-list

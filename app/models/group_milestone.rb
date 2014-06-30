@@ -65,16 +65,12 @@ class GroupMilestone
     state == 'closed'
   end
 
-  def opened_unassigned_issues
-    milestones.map{ |milestone| milestone.issues.opened.unassigned }
+  def issues
+    milestones.map{ |milestone| milestone.issues }.flatten.group_by(&:state)
   end
 
-  def opened_assigned_issues
-    milestones.map{ |milestone| milestone.issues.opened.assigned }
-  end
-
-  def closed_issues
-    milestones.map{ |milestone| milestone.issues.closed }
+  def merge_requests
+    milestones.map{ |milestone| milestone.merge_requests }.flatten.group_by(&:state)
   end
 
   def participants
