@@ -96,7 +96,7 @@ module API
 
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
-        if user.update_attributes(attrs, as: :admin)
+        if user.update_attributes(attrs)
           present user, with: Entities::UserFull
         else
           not_found!

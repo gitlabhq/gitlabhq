@@ -97,19 +97,6 @@ describe API::API, api: true  do
       response.status.should == 201
     end
 
-    it "creating a user should respect default project limit" do
-      limit = 123456
-      Gitlab.config.gitlab.stub(:default_projects_limit).and_return(limit)
-      attr = attributes_for(:user )
-      expect {
-        post api("/users", admin), attr
-      }.to change { User.count }.by(1)
-      user = User.find_by(username: attr[:username])
-      user.projects_limit.should == limit
-      user.theme_id.should == Gitlab::Theme::MARS
-      Gitlab.config.gitlab.unstub(:default_projects_limit)
-    end
-
     it "should not create user with invalid email" do
       post api("/users", admin), { email: "invalid email", password: 'password' }
       response.status.should == 400

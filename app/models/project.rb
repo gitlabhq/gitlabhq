@@ -97,6 +97,9 @@ class Project < ActiveRecord::Base
                       message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+  validates :visibility_level,
+    exclusion: { in: gitlab_config.restricted_visibility_levels },
+    if: -> { gitlab_config.restricted_visibility_levels.any? }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
