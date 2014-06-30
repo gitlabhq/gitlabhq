@@ -98,10 +98,14 @@ module API
 
     def attributes_for_keys(keys)
       attrs = {}
+
       keys.each do |key|
-        attrs[key] = params[key] if params[key].present? or (params.has_key?(key) and params[key] == false)
+        if params[key].present? or (params.has_key?(key) and params[key] == false)
+          attrs[key] = params[key]
+        end
       end
-      attrs
+
+      ActionController::Parameters.new(attrs).permit!
     end
 
     # error helpers

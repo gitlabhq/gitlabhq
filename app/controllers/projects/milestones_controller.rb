@@ -37,7 +37,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def create
-    @milestone = Milestones::CreateService.new(project, current_user, params[:milestone]).execute
+    @milestone = Milestones::CreateService.new(project, current_user, milestone_params).execute
 
     if @milestone.save
       redirect_to project_milestone_path(@project, @milestone)
@@ -47,7 +47,7 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def update
-    @milestone = Milestones::UpdateService.new(project, current_user, params[:milestone]).execute(milestone)
+    @milestone = Milestones::UpdateService.new(project, current_user, milestone_params).execute(milestone)
 
     respond_to do |format|
       format.js
@@ -104,5 +104,9 @@ class Projects::MilestonesController < Projects::ApplicationController
 
   def module_enabled
     return render_404 unless @project.issues_enabled
+  end
+
+  def milestone_params
+    params.require(:milestone).permit(:title, :description, :due_date, :state_event)
   end
 end

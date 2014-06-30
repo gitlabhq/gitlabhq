@@ -21,7 +21,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def create
-    @note = Notes::CreateService.new(project, current_user, params[:note]).execute
+    @note = Notes::CreateService.new(project, current_user, note_params).execute
 
     respond_to do |format|
       format.json { render_note_json(@note) }
@@ -30,7 +30,7 @@ class Projects::NotesController < Projects::ApplicationController
   end
 
   def update
-    note.update_attributes(params[:note])
+    note.update_attributes(note_params)
     note.reset_events_cache
 
     respond_to do |format|
@@ -108,5 +108,12 @@ class Projects::NotesController < Projects::ApplicationController
 
   def authorize_admin_note!
     return access_denied! unless can?(current_user, :admin_note, note)
+  end
+
+  def note_params
+    params.require(:note).permit(
+      :note, :noteable, :noteable_id, :noteable_type, :project_id,
+      :attachment, :line_code, :commit_id
+    )
   end
 end

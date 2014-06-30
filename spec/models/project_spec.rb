@@ -48,8 +48,6 @@ describe Project do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:namespace_id) }
-    it { should_not allow_mass_assignment_of(:creator_id) }
   end
 
   describe "Validation" do

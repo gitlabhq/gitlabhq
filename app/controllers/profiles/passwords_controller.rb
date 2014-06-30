@@ -11,8 +11,8 @@ class Profiles::PasswordsController < ApplicationController
   end
 
   def create
-    new_password = params[:user][:password]
-    new_password_confirmation = params[:user][:password_confirmation]
+    new_password = user_params[:password]
+    new_password_confirmation = user_params[:password_confirmation]
 
     result = @user.update_attributes(
       password: new_password,
@@ -31,11 +31,11 @@ class Profiles::PasswordsController < ApplicationController
   end
 
   def update
-    password_attributes = params[:user].select do |key, value|
+    password_attributes = user_params.select do |key, value|
       %w(password password_confirmation).include?(key.to_s)
     end
 
-    unless @user.valid_password?(params[:user][:current_password])
+    unless @user.valid_password?(user_params[:current_password])
       redirect_to edit_profile_password_path, alert: 'You must provide a valid current password'
       return
     end
@@ -73,5 +73,9 @@ class Profiles::PasswordsController < ApplicationController
 
   def authorize_change_password!
     return render_404 if @user.ldap_user?
+  end
+
+  def user_params
+    params.require(:user).permit(:current_password, :password, :password_confirmation)
   end
 end

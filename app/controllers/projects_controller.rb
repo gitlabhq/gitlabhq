@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateService.new(current_user, params[:project]).execute
+    @project = ::Projects::CreateService.new(current_user, project_params).execute
     flash[:notice] = 'Project was successfully created.' if @project.saved?
 
     respond_to do |format|
@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, params).execute
+    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     respond_to do |format|
       if status
@@ -44,7 +44,7 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(project, current_user, params[:project]).execute
+    ::Projects::TransferService.new(project, current_user, project_params).execute
   end
 
   def show
@@ -85,7 +85,7 @@ class ProjectsController < ApplicationController
       redirect_to import_project_path(@project)
     end
 
-    @project.import_url = params[:project][:import_url]
+    @project.import_url = project_params[:import_url]
 
     if @project.save
       @project.reload
@@ -184,5 +184,13 @@ class ProjectsController < ApplicationController
 
   def user_layout
     current_user ? "projects" : "public_projects"
+  end
+
+  def project_params
+    params.require(:project).permit(
+      :name, :path, :description, :issues_tracker, :label_list,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id
+    )
   end
 end

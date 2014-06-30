@@ -6,14 +6,14 @@ describe Projects::UpdateService do
       @user = create :user
       @admin = create :user, admin: true
       @project = create :project, creator_id: @user.id, namespace: @user.namespace
-      @opts = { project: {} }
+      @opts = {}
     end
 
     context 'should be private when updated to private' do
       before do
        @created_private = @project.private?
 
-        @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
         update_project(@project, @user, @opts)
       end
 
@@ -25,7 +25,7 @@ describe Projects::UpdateService do
       before do
         @created_private = @project.private?
 
-        @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
         update_project(@project, @user, @opts)
       end
 
@@ -37,7 +37,7 @@ describe Projects::UpdateService do
       before do
         @created_private = @project.private?
 
-        @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+        @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
         update_project(@project, @user, @opts)
       end
 
@@ -56,7 +56,7 @@ describe Projects::UpdateService do
         before do
           @created_private = @project.private?
 
-          @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PRIVATE)
           update_project(@project, @user, @opts)
         end
 
@@ -68,7 +68,7 @@ describe Projects::UpdateService do
         before do
           @created_private = @project.private?
 
-          @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::INTERNAL)
           update_project(@project, @user, @opts)
         end
 
@@ -80,7 +80,7 @@ describe Projects::UpdateService do
         before do
           @created_private = @project.private?
 
-          @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
           update_project(@project, @user, @opts)
         end
 
@@ -92,7 +92,7 @@ describe Projects::UpdateService do
         before do
           @created_private = @project.private?
 
-          @opts[:project].merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
+          @opts.merge!(visibility_level: Gitlab::VisibilityLevel::PUBLIC)
           update_project(@project, @admin, @opts)
         end
 

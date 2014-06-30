@@ -13,7 +13,6 @@ class RegistrationsController < Devise::RegistrationsController
 
   def build_resource(hash=nil)
     super
-    self.resource.with_defaults
   end
 
   private

@@ -150,6 +150,6 @@ Settings['extra'] ||= Settingslogic.new({})
 #
 if Rails.env.test?
   Settings.gitlab['default_projects_limit']   = 42
-  Settings.gitlab['default_can_create_group'] = false
+  Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
 end

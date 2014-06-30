@@ -12,7 +12,7 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def create
-    @hook = @project.hooks.new(params[:hook])
+    @hook = @project.hooks.new(hook_params)
     @hook.save
 
     if @hook.valid?
@@ -39,5 +39,9 @@ class Projects::HooksController < Projects::ApplicationController
 
   def hook
     @hook ||= @project.hooks.find(params[:id])
+  end
+
+  def hook_params
+    params.require(:hook).permit(:url, :push_events, :issues_events, :merge_requests_events, :tag_push_events)
   end
 end

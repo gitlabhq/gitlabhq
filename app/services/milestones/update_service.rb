@@ -1,7 +1,7 @@
 module Milestones
   class UpdateService < Milestones::BaseService
     def execute(milestone)
-      state = params.delete('state_event') || params.delete(:state_event)
+      state = params[:state_event]
 
       case state
       when 'activate'
@@ -11,7 +11,7 @@ module Milestones
       end
 
       if params.present?
-        milestone.update_attributes(params)
+        milestone.update_attributes(params.except(:state_event))
       end
 
       milestone

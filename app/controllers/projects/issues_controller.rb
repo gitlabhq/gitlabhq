@@ -42,7 +42,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def new
-    @issue = @project.issues.new(params[:issue])
+    @issue = @project.issues.new(issue_params)
     respond_with(@issue)
   end
 
@@ -59,7 +59,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def create
-    @issue = Issues::CreateService.new(project, current_user, params[:issue]).execute
+    @issue = Issues::CreateService.new(project, current_user, issue_params).execute
 
     respond_to do |format|
       format.html do
@@ -76,7 +76,7 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def update
-    @issue = Issues::UpdateService.new(project, current_user, params[:issue]).execute(issue)
+    @issue = Issues::UpdateService.new(project, current_user, issue_params).execute(issue)
 
     respond_to do |format|
       format.js
@@ -143,5 +143,12 @@ class Projects::IssuesController < Projects::ApplicationController
     else
       raise ActiveRecord::RecordNotFound.new
     end
+  end
+
+  def issue_params
+    params.require(:issue).permit(
+      :title, :assignee_id, :position, :description,
+      :milestone_id, :label_list, :state_event
+    )
   end
 end
