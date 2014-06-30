@@ -54,16 +54,16 @@
   .tab-pane.active#tab-issues
     .row
       .col-md-6
-        = render 'issues', title: "Open", issues: @issues["opened"]
+        = render 'issues', title: "Open", issues: @group_milestone.opened_issues
       .col-md-6
-        = render 'issues', title: "Closed", issues: @issues["closed"]
+        = render 'issues', title: "Closed", issues: @group_milestone.closed_issues
 
   .tab-pane#tab-merge-requests
     .row
       .col-md-6
-        = render 'merge_requests', title: "Open", merge_requests: @merge_requests["opened"]
+        = render 'merge_requests', title: "Open", merge_requests: @group_milestone.opened_merge_requests
       .col-md-6
-        = render 'merge_requests', title: "Closed", merge_requests: @merge_requests["closed"]
+        = render 'merge_requests', title: "Closed", merge_requests: @group_milestone.closed_merge_requests
 
   .tab-pane#tab-participants
     %ul.bordered-list

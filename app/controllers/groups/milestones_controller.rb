@@ -16,8 +16,6 @@ class Groups::MilestonesController < ApplicationController
   def show
     project_milestones = Milestone.where(project_id: group.projects)
     @group_milestone = Milestones::GroupService.new(project_milestones).milestone(title)
-    @issues = @group_milestone.issues
-    @merge_requests = @group_milestone.merge_requests
   end
 
   def update

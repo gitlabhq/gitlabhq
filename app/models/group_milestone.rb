@@ -66,14 +66,30 @@ class GroupMilestone
   end
 
   def issues
-    milestones.map{ |milestone| milestone.issues }.flatten.group_by(&:state)
+    @group_issues ||= milestones.map{ |milestone| milestone.issues }.flatten.group_by(&:state)
   end
 
   def merge_requests
-    milestones.map{ |milestone| milestone.merge_requests }.flatten.group_by(&:state)
+    @group_merge_requests ||= milestones.map{ |milestone| milestone.merge_requests }.flatten.group_by(&:state)
   end
 
   def participants
     milestones.map{ |milestone| milestone.participants.uniq }.reject(&:empty?).flatten
+  end
+
+  def opened_issues
+    issues.values_at("opened", "reopened").compact.flatten
+  end
+
+  def closed_issues
+    issues['closed']
+  end
+
+  def opened_merge_requests
+    merge_requests.values_at("opened", "reopened").compact.flatten
+  end
+
+  def closed_merge_requests
+    merge_requests.values_at("closed", "merged", "locked").compact.flatten
   end
 end
