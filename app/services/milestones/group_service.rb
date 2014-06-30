@@ -17,7 +17,7 @@ module Milestones
       end
     end
 
-  private
+    private
 
     def build(milestone)
       milestone.map{ |title, milestones| GroupMilestone.new(title, milestones) }

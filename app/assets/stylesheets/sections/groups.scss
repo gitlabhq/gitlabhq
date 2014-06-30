@@ -11,8 +11,3 @@
 .milestone-row {
   @include str-truncated(90%);
 }
-
-.label.label-default.project-name {
-  width: 80px;
-  @include str-truncated(80%);
-}

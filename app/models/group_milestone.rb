@@ -18,27 +18,27 @@ class GroupMilestone
   end
 
   def projects
-    milestones.map{ |milestone| milestone.project }
+    milestones.map { |milestone| milestone.project }
   end
 
   def issue_count
-    milestones.map{ |milestone| milestone.issues.count }.sum
+    milestones.map { |milestone| milestone.issues.count }.sum
   end
 
   def merge_requests_count
-    milestones.map{ |milestone| milestone.merge_requests.count }.sum
+    milestones.map { |milestone| milestone.merge_requests.count }.sum
   end
 
   def open_items_count
-    milestones.map{ |milestone| milestone.open_items_count }.sum
+    milestones.map { |milestone| milestone.open_items_count }.sum
   end
 
   def closed_items_count
-    milestones.map{ |milestone| milestone.closed_items_count }.sum
+    milestones.map { |milestone| milestone.closed_items_count }.sum
   end
 
   def total_items_count
-    milestones.map{ |milestone| milestone.total_items_count }.sum
+    milestones.map { |milestone| milestone.total_items_count }.sum
   end
 
   def percent_complete
@@ -48,7 +48,7 @@ class GroupMilestone
   end
 
   def state
-    state = milestones.map{ |milestone| milestone.state }
+    state = milestones.map { |milestone| milestone.state }
 
     if state.count('active') == state.size
       'active'
@@ -66,15 +66,15 @@ class GroupMilestone
   end
 
   def issues
-    @group_issues ||= milestones.map{ |milestone| milestone.issues }.flatten.group_by(&:state)
+    @group_issues ||= milestones.map { |milestone| milestone.issues }.flatten.group_by(&:state)
   end
 
   def merge_requests
-    @group_merge_requests ||= milestones.map{ |milestone| milestone.merge_requests }.flatten.group_by(&:state)
+    @group_merge_requests ||= milestones.map { |milestone| milestone.merge_requests }.flatten.group_by(&:state)
   end
 
   def participants
-    milestones.map{ |milestone| milestone.participants.uniq }.reject(&:empty?).flatten
+    milestones.map { |milestone| milestone.participants.uniq }.reject(&:empty?).flatten
   end
 
   def opened_issues
