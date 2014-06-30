@@ -76,39 +76,4 @@ class GroupMilestone
   def participants
     milestones.map{ |milestone| milestone.participants.uniq }.reject(&:empty?).flatten
   end
-
-  def filter_by(filter, entity)
-    if entity
-      milestones = self.milestones.sort_by(&:project_id)
-      entities = {}
-      milestones.each do |project_milestone|
-        next unless project_milestone.send(entity).any?
-        project_name = project_milestone.project.name
-        entities_by_state = state_filter(filter, project_milestone.send(entity))
-        entities.store(project_name, entities_by_state)
-      end
-      entities
-    else
-      {}
-    end
-  end
-
-  def state_filter(filter, entities)
-    if entities.present?
-      sorted_entities = entities.sort_by(&:position)
-      entities_by_state =  case filter
-                           when 'active'; sorted_entities.group_by(&:state)['opened']
-                           when 'closed'; sorted_entities.group_by(&:state)['closed']
-                           else sorted_entities
-                           end
-      if entities_by_state.blank?
-        []
-      else
-        entities_by_state
-      end
-    else
-      []
-    end
-  end
-
 end

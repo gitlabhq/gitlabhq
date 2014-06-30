@@ -1,6 +1,8 @@
 class Groups::MilestonesController < ApplicationController
   layout 'group'
 
+  before_filter :authorize_group_milestone!, only: :update
+
   def index
     project_milestones = Milestone.where(project_id: group.projects)
     @group_milestones = Milestones::GroupService.new(project_milestones).execute
@@ -46,5 +48,9 @@ class Groups::MilestonesController < ApplicationController
 
   def status(state)
     @group_milestones.map{ |milestone| next if milestone.state != state; milestone }.compact
+  end
+
+  def authorize_group_milestone!
+    return render_404 unless can?(current_user, :manage_group, group)
   end
 end
