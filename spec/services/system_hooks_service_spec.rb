@@ -6,21 +6,21 @@ describe SystemHooksService do
   let (:users_project) { create :users_project }
 
   context 'event data' do
-    it { event_data(user, :create).should include(:event_name, :name, :created_at, :email, :user_id) }
-    it { event_data(user, :destroy).should include(:event_name, :name, :created_at, :email, :user_id) }
-    it { event_data(project, :create).should include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
-    it { event_data(project, :destroy).should include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
-    it { event_data(users_project, :create).should include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access, :project_visibility) }
-    it { event_data(users_project, :destroy).should include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access, :project_visibility) }
+    it { expect(event_data(user, :create)).to include(:event_name, :name, :created_at, :email, :user_id) }
+    it { expect(event_data(user, :destroy)).to include(:event_name, :name, :created_at, :email, :user_id) }
+    it { expect(event_data(project, :create)).to include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
+    it { expect(event_data(project, :destroy)).to include(:event_name, :name, :created_at, :path, :project_id, :owner_name, :owner_email, :project_visibility) }
+    it { expect(event_data(users_project, :create)).to include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access, :project_visibility) }
+    it { expect(event_data(users_project, :destroy)).to include(:event_name, :created_at, :project_name, :project_path, :project_id, :user_name, :user_email, :project_access, :project_visibility) }
   end
 
   context 'event names' do
-    it { event_name(user, :create).should eq "user_create" }
-    it { event_name(user, :destroy).should eq "user_destroy" }
-    it { event_name(project, :create).should eq "project_create" }
-    it { event_name(project, :destroy).should eq "project_destroy" }
-    it { event_name(users_project, :create).should eq "user_add_to_team" }
-    it { event_name(users_project, :destroy).should eq "user_remove_from_team" }
+    it { expect(event_name(user, :create)).to eq "user_create" }
+    it { expect(event_name(user, :destroy)).to eq "user_destroy" }
+    it { expect(event_name(project, :create)).to eq "project_create" }
+    it { expect(event_name(project, :destroy)).to eq "project_destroy" }
+    it { expect(event_name(users_project, :create)).to eq "user_add_to_team" }
+    it { expect(event_name(users_project, :destroy)).to eq "user_remove_from_team" }
   end
 
   def event_data(*args)

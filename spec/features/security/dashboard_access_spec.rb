@@ -42,14 +42,14 @@ describe "Dashboard access", feature: true  do
   end
 
   describe "GET /projects/new" do
-    it { new_project_path.should be_allowed_for :admin }
-    it { new_project_path.should be_allowed_for :user }
-    it { new_project_path.should be_denied_for :visitor }
+    it { expect(new_project_path).to be_allowed_for :admin }
+    it { expect(new_project_path).to be_allowed_for :user }
+    it { expect(new_project_path).to be_denied_for :visitor }
   end
 
   describe "GET /groups/new" do
-    it { new_group_path.should be_allowed_for :admin }
-    it { new_group_path.should be_allowed_for :user }
-    it { new_group_path.should be_denied_for :visitor }
+    it { expect(new_group_path).to be_allowed_for :admin }
+    it { expect(new_group_path).to be_allowed_for :user }
+    it { expect(new_group_path).to be_denied_for :visitor }
   end
 end

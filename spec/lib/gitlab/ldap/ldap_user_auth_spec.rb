@@ -26,8 +26,8 @@ describe Gitlab::LDAP do
     it "should update credentials by email if missing uid" do
       user = double('User')
       User.stub find_by_extern_uid_and_provider: nil
-      User.stub(:find_by).with(hash_including(email: anything())) { user }
-      user.should_receive :update_attributes
+      allow(User).to receive(:find_by).with(hash_including(email: anything())) { user }
+      expect(user).to receive :update_attributes
       gl_auth.find_or_create(@auth)
     end
 
@@ -36,9 +36,9 @@ describe Gitlab::LDAP do
       value = Gitlab.config.ldap.allow_username_or_email_login
       Gitlab.config.ldap['allow_username_or_email_login'] = true
       User.stub find_by_extern_uid_and_provider: nil
-      User.stub(:find_by).with(hash_including(email: anything())) { nil }
-      User.stub(:find_by).with(hash_including(username: anything())) { user }
-      user.should_receive :update_attributes
+      allow(User).to receive(:find_by).with(hash_including(email: anything())) { nil }
+      allow(User).to receive(:find_by).with(hash_including(username: anything())) { user }
+      expect(user).to receive :update_attributes
       gl_auth.find_or_create(@auth)
       Gitlab.config.ldap['allow_username_or_email_login'] = value
     end
@@ -48,9 +48,9 @@ describe Gitlab::LDAP do
       value = Gitlab.config.ldap.allow_username_or_email_login
       Gitlab.config.ldap['allow_username_or_email_login'] = false
       User.stub find_by_extern_uid_and_provider: nil
-      User.stub(:find_by).with(hash_including(email: anything())) { nil }
-      User.stub(:find_by).with(hash_including(username: anything())) { user }
-      user.should_not_receive :update_attributes
+      allow(User).to receive(:find_by).with(hash_including(email: anything())) { nil }
+      allow(User).to receive(:find_by).with(hash_including(username: anything())) { user }
+      expect(user).not_to receive :update_attributes
       gl_auth.find_or_create(@auth)
       Gitlab.config.ldap['allow_username_or_email_login'] = value
     end

@@ -15,8 +15,8 @@ describe Projects::ForkService do
       it "successfully creates project in the user namespace" do
         @to_project = fork_project(@from_project, @to_user)
 
-        @to_project.owner.should == @to_user
-        @to_project.namespace.should == @to_user.namespace
+        expect(@to_project.owner).to eq(@to_user)
+        expect(@to_project.namespace).to eq(@to_user.namespace)
       end
     end
 
@@ -26,8 +26,8 @@ describe Projects::ForkService do
         # make the mock gitlab-shell fail
         @to_project = fork_project(@from_project, @to_user, false)
 
-        @to_project.errors.should_not be_empty
-        @to_project.errors[:base].should include("Fork transaction failed.")
+        expect(@to_project.errors).not_to be_empty
+        expect(@to_project.errors[:base]).to include("Fork transaction failed.")
       end
 
     end
@@ -38,9 +38,9 @@ describe Projects::ForkService do
         @existing_project = create(:project, creator_id: @to_user.id, name: @from_project.name, namespace: @to_namespace)
         @to_project = fork_project(@from_project, @to_user)
 
-        @existing_project.persisted?.should be_true
-        @to_project.errors[:base].should include("Invalid fork destination")
-        @to_project.errors[:base].should_not include("Fork transaction failed.")
+        expect(@existing_project.persisted?).to be_true
+        expect(@to_project.errors[:base]).to include("Invalid fork destination")
+        expect(@to_project.errors[:base]).not_to include("Fork transaction failed.")
       end
 
     end

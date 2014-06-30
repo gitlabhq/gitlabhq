@@ -23,17 +23,17 @@ describe BroadcastMessage do
   describe :current do
     it "should return last message if time match" do
       broadcast_message = create(:broadcast_message, starts_at: Time.now.yesterday, ends_at: Time.now.tomorrow)
-      BroadcastMessage.current.should == broadcast_message
+      expect(BroadcastMessage.current).to eq(broadcast_message)
     end
 
     it "should return nil if time not come" do
       broadcast_message = create(:broadcast_message, starts_at: Time.now.tomorrow, ends_at: Time.now + 2.days)
-      BroadcastMessage.current.should be_nil
+      expect(BroadcastMessage.current).to be_nil
     end
 
     it "should return nil if time has passed" do
       broadcast_message = create(:broadcast_message, starts_at: Time.now - 2.days, ends_at: Time.now.yesterday)
-      BroadcastMessage.current.should be_nil
+      expect(BroadcastMessage.current).to be_nil
     end
   end
 end

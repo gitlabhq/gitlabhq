@@ -69,9 +69,9 @@ describe Project do
 
     it "should not allow new projects beyond user limits" do
       project2 = build(:project)
-      project2.stub(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
-      project2.should_not be_valid
-      project2.errors[:limit_reached].first.should match(/Your project limit is 0/)
+      allow(project2).to receive(:creator).and_return(double(can_create_project?: false, projects_limit: 0).as_null_object)
+      expect(project2).not_to be_valid
+      expect(project2.errors[:limit_reached].first).to match(/Your project limit is 0/)
     end
   end
 
@@ -88,17 +88,17 @@ describe Project do
 
   it "should return valid url to repo" do
     project = Project.new(path: "somewhere")
-    project.url_to_repo.should == Gitlab.config.gitlab_shell.ssh_path_prefix + "somewhere.git"
+    expect(project.url_to_repo).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "somewhere.git")
   end
 
   it "returns the full web URL for this repo" do
     project = Project.new(path: "somewhere")
-    project.web_url.should == "#{Gitlab.config.gitlab.url}/somewhere"
+    expect(project.web_url).to eq("#{Gitlab.config.gitlab.url}/somewhere")
   end
 
   it "returns the web URL without the protocol for this repo" do
     project = Project.new(path: "somewhere")
-    project.web_url_without_protocol.should == "#{Gitlab.config.gitlab.url.split("://")[1]}/somewhere"
+    expect(project.web_url_without_protocol).to eq("#{Gitlab.config.gitlab.url.split("://")[1]}/somewhere")
   end
 
   describe "last_activity methods" do
@@ -108,18 +108,18 @@ describe Project do
     describe "last_activity" do
       it "should alias last_activity to last_event" do
         project.stub(last_event: last_event)
-        project.last_activity.should == last_event
+        expect(project.last_activity).to eq(last_event)
       end
     end
 
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
         last_activity_event = create(:event, project: project)
-        project.last_activity_at.to_i.should == last_event.created_at.to_i
+        expect(project.last_activity_at.to_i).to eq(last_event.created_at.to_i)
       end
 
       it 'returns the project\'s last update date if it has no events' do
-        project.last_activity_date.should == project.updated_at
+        expect(project.last_activity_date).to eq(project.updated_at)
       end
     end
   end
@@ -134,16 +134,16 @@ describe Project do
 
     it "should close merge request if last commit from source branch was pushed to target branch" do
       @merge_request.reload_code
-      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
+      expect(@merge_request.last_commit.id).to eq("69b34b7e9ad9f496f0ad10250be37d6265a03bba")
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/stable", @key.user)
       @merge_request.reload
-      @merge_request.merged?.should be_true
+      expect(@merge_request.merged?).to be_true
     end
 
     it "should update merge request commits with new one if pushed to source branch" do
       project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/master", @key.user)
       @merge_request.reload
-      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
+      expect(@merge_request.last_commit.id).to eq("69b34b7e9ad9f496f0ad10250be37d6265a03bba")
     end
   end
 
@@ -155,8 +155,8 @@ describe Project do
         @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
-      it { Project.find_with_namespace('gitlab/gitlabhq').should == @project }
-      it { Project.find_with_namespace('gitlab-ci').should be_nil }
+      it { expect(Project.find_with_namespace('gitlab/gitlabhq')).to eq(@project) }
+      it { expect(Project.find_with_namespace('gitlab-ci')).to be_nil }
     end
   end
 
@@ -167,7 +167,7 @@ describe Project do
         @project = create(:project, name: 'gitlabhq', namespace: @group)
       end
 
-      it { @project.to_param.should == "gitlab/gitlabhq" }
+      it { expect(@project.to_param).to eq("gitlab/gitlabhq") }
     end
   end
 
@@ -175,7 +175,7 @@ describe Project do
     let(:project) { create(:project) }
 
     it "should return valid repo" do
-      project.repository.should be_kind_of(Repository)
+      expect(project.repository).to be_kind_of(Repository)
     end
   end
 
@@ -186,15 +186,15 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     it "should be true or if used internal tracker and issue exists" do
-      project.issue_exists?(existed_issue.iid).should be_true
+      expect(project.issue_exists?(existed_issue.iid)).to be_true
     end
 
     it "should be false or if used internal tracker and issue not exists" do
-      project.issue_exists?(not_existed_issue.iid).should be_false
+      expect(project.issue_exists?(not_existed_issue.iid)).to be_false
     end
 
     it "should always be true if used other tracker" do
-      ext_project.issue_exists?(rand(100)).should be_true
+      expect(ext_project.issue_exists?(rand(100))).to be_true
     end
   end
 
@@ -203,11 +203,11 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     it "should be true if used internal tracker" do
-      project.used_default_issues_tracker?.should be_true
+      expect(project.used_default_issues_tracker?).to be_true
     end
 
     it "should be false if used other tracker" do
-      ext_project.used_default_issues_tracker?.should be_false
+      expect(ext_project.used_default_issues_tracker?).to be_false
     end
   end
 
@@ -216,19 +216,19 @@ describe Project do
     let(:ext_project) { create(:redmine_project) }
 
     it "should be true for projects with external issues tracker if issues enabled" do
-      ext_project.can_have_issues_tracker_id?.should be_true
+      expect(ext_project.can_have_issues_tracker_id?).to be_true
     end
 
     it "should be false for projects with internal issue tracker if issues enabled" do
-      project.can_have_issues_tracker_id?.should be_false
+      expect(project.can_have_issues_tracker_id?).to be_false
     end
 
     it "should be always false if issues disabled" do
       project.issues_enabled = false
       ext_project.issues_enabled = false
 
-      project.can_have_issues_tracker_id?.should be_false
-      ext_project.can_have_issues_tracker_id?.should be_false
+      expect(project.can_have_issues_tracker_id?).to be_false
+      expect(ext_project.can_have_issues_tracker_id?).to be_false
     end
   end
 
@@ -239,7 +239,7 @@ describe Project do
       project.protected_branches.create(name: 'master')
     end
 
-    it { project.open_branches.map(&:name).should include('bootstrap') }
-    it { project.open_branches.map(&:name).should_not include('master') }
+    it { expect(project.open_branches.map(&:name)).to include('bootstrap') }
+    it { expect(project.open_branches.map(&:name)).not_to include('master') }
   end
 end

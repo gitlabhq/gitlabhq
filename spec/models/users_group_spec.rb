@@ -43,7 +43,7 @@ describe UsersGroup do
       it "should send email to user" do
         membership = build(:users_group)
         membership.stub(notification_service: double('NotificationService').as_null_object)
-        membership.should_receive(:notification_service)
+        expect(membership).to receive(:notification_service)
         membership.save
       end
     end
@@ -55,12 +55,12 @@ describe UsersGroup do
       end
 
       it "should send email to user" do
-        @membership.should_receive(:notification_service)
+        expect(@membership).to receive(:notification_service)
         @membership.update_attribute(:group_access, UsersGroup::MASTER)
       end
 
       it "does not send an email when the access level has not changed" do
-        @membership.should_not_receive(:notification_service)
+        expect(@membership).not_to receive(:notification_service)
         @membership.update_attribute(:group_access, UsersGroup::OWNER)
       end
     end

@@ -14,8 +14,8 @@ describe Projects::TransferService do
       @result = @service.execute
     end
 
-    it { @result.should be_true }
-    it { project.namespace.should == group }
+    it { expect(@result).to be_true }
+    it { expect(project.namespace).to eq(group) }
   end
 
   context 'namespace -> no namespace' do
@@ -26,8 +26,8 @@ describe Projects::TransferService do
       @result = @service.execute
     end
 
-    it { @result.should be_false }
-    it { project.namespace.should == user.namespace }
+    it { expect(@result).to be_false }
+    it { expect(project.namespace).to eq(user.namespace) }
   end
 
   context 'namespace -> not allowed namespace' do
@@ -37,7 +37,7 @@ describe Projects::TransferService do
       @result = @service.execute
     end
 
-    it { @result.should be_false }
-    it { project.namespace.should == user.namespace }
+    it { expect(@result).to be_false }
+    it { expect(project.namespace).to eq(user.namespace) }
   end
 end

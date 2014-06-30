@@ -18,8 +18,8 @@ describe MergeRequests::CreateService do
         @merge_request = MergeRequests::CreateService.new(project, user, opts).execute
       end
 
-      it { @merge_request.should be_valid }
-      it { @merge_request.title.should == 'Awesome merge_request' }
+      it { expect(@merge_request).to be_valid }
+      it { expect(@merge_request.title).to eq('Awesome merge_request') }
     end
   end
 end

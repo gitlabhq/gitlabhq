@@ -14,5 +14,5 @@ describe Gitlab::Shell do
   it { should respond_to :remove_repository }
   it { should respond_to :fork_repository }
 
-  it { gitlab_shell.url_to_repo('diaspora').should == Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git" }
+  it { expect(gitlab_shell.url_to_repo('diaspora')).to eq(Gitlab.config.gitlab_shell.ssh_path_prefix + "diaspora.git") }
 end

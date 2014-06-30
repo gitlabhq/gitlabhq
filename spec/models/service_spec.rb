@@ -46,7 +46,7 @@ describe Service do
       end
 
       describe :can_test do
-        it { @testable.should == true }
+        it { expect(@testable).to eq(true) }
       end
     end
 
@@ -61,7 +61,7 @@ describe Service do
       end
 
       describe :can_test do
-        it { @testable.should == true }
+        it { expect(@testable).to eq(true) }
       end
     end
   end

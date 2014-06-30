@@ -14,7 +14,7 @@ describe "Search", feature: true  do
   end
 
   it "should show project in search results" do
-    page.should have_content @project.name
+    expect(page).to have_content @project.name
   end
 end
 

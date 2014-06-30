@@ -10,8 +10,8 @@ describe API::API, api: true  do
     it do
       get api("/internal/check")
 
-      response.status.should == 200
-      json_response['api_version'].should == API::API.version
+      expect(response.status).to eq(200)
+      expect(json_response['api_version']).to eq(API::API.version)
     end
   end
 
@@ -19,9 +19,9 @@ describe API::API, api: true  do
     it do
       get(api("/internal/discover"), key_id: key.id)
 
-      response.status.should == 200
+      expect(response.status).to eq(200)
 
-      json_response['name'].should == user.name
+      expect(json_response['name']).to eq(user.name)
     end
   end
 
@@ -35,8 +35,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('true')
         end
       end
 
@@ -44,8 +44,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('true')
         end
       end
     end
@@ -59,8 +59,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('false')
         end
       end
 
@@ -68,8 +68,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('false')
         end
       end
     end
@@ -85,8 +85,8 @@ describe API::API, api: true  do
         it do
           pull(key, personal_project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('false')
         end
       end
 
@@ -94,8 +94,8 @@ describe API::API, api: true  do
         it do
           push(key, personal_project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('false')
         end
       end
     end
@@ -112,8 +112,8 @@ describe API::API, api: true  do
         it do
           pull(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('true')
         end
       end
 
@@ -121,8 +121,8 @@ describe API::API, api: true  do
         it do
           push(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('false')
         end
       end
     end
@@ -138,8 +138,8 @@ describe API::API, api: true  do
         it do
           archive(key, project)
 
-          response.status.should == 200
-          response.body.should == 'true'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('true')
         end
       end
 
@@ -147,8 +147,8 @@ describe API::API, api: true  do
         it do
           archive(key, project)
 
-          response.status.should == 200
-          response.body.should == 'false'
+          expect(response.status).to eq(200)
+          expect(response.body).to eq('false')
         end
       end
     end

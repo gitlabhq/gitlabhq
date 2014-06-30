@@ -54,22 +54,22 @@ describe ProjectHook do
 
     it "POSTs to the web hook URL" do
       @project_hook.execute(@data)
-      WebMock.should have_requested(:post, @project_hook.url).once
+      expect(WebMock).to have_requested(:post, @project_hook.url).once
     end
 
     it "POSTs the data as JSON" do
       json = @data.to_json
 
       @project_hook.execute(@data)
-      WebMock.should have_requested(:post, @project_hook.url).with(body: json).once
+      expect(WebMock).to have_requested(:post, @project_hook.url).with(body: json).once
     end
 
     it "catches exceptions" do
-      WebHook.should_receive(:post).and_raise("Some HTTP Post error")
+      expect(WebHook).to receive(:post).and_raise("Some HTTP Post error")
 
-      lambda {
+      expect {
         @project_hook.execute(@data)
-      }.should raise_error
+      }.to raise_error
     end
   end
 end

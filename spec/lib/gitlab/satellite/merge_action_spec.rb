@@ -19,9 +19,9 @@ describe 'Gitlab::Satellite::MergeAction' do
 
   describe '#commits_between' do
     def verify_commits(commits, first_commit_sha, last_commit_sha)
-      commits.each { |commit| commit.class.should == Gitlab::Git::Commit }
-      commits.first.id.should == first_commit_sha
-      commits.last.id.should == last_commit_sha
+      commits.each { |commit| expect(commit.class).to eq(Gitlab::Git::Commit) }
+      expect(commits.first.id).to eq(first_commit_sha)
+      expect(commits.last.id).to eq(last_commit_sha)
     end
 
     context 'on fork' do
@@ -56,15 +56,15 @@ describe 'Gitlab::Satellite::MergeAction' do
     let(:source_commit) {['metior', '313d96e42b313a0af5ab50fa233bf43e27118b3f']}
 
     def verify_content(patch)
-      (patch.include? source_commit[1]).should be_true
-      (patch.include? '635d3e09b72232b6e92a38de6cc184147e5bcb41').should be_true
-      (patch.include? '2bb2dee057327c81978ed0aa99904bd7ff5e6105').should be_true
-      (patch.include? '2e83de1924ad3429b812d17498b009a8b924795d').should be_true
-      (patch.include? 'ee45a49c57a362305431cbf004e4590b713c910e').should be_true
-      (patch.include? 'a6870dd08f8f274d9a6b899f638c0c26fefaa690').should be_true
+      expect(patch.include? source_commit[1]).to be_true
+      expect(patch.include? '635d3e09b72232b6e92a38de6cc184147e5bcb41').to be_true
+      expect(patch.include? '2bb2dee057327c81978ed0aa99904bd7ff5e6105').to be_true
+      expect(patch.include? '2e83de1924ad3429b812d17498b009a8b924795d').to be_true
+      expect(patch.include? 'ee45a49c57a362305431cbf004e4590b713c910e').to be_true
+      expect(patch.include? 'a6870dd08f8f274d9a6b899f638c0c26fefaa690').to be_true
 
-      (patch.include? 'e74fae147abc7d2ffbf93d363dbbe45b87751f6f').should be_false
-      (patch.include? '86f76b11c670425bbab465087f25172378d76147').should be_false
+      expect(patch.include? 'e74fae147abc7d2ffbf93d363dbbe45b87751f6f').to be_false
+      expect(patch.include? '86f76b11c670425bbab465087f25172378d76147').to be_false
     end
 
     context 'on fork' do
@@ -90,11 +90,11 @@ describe 'Gitlab::Satellite::MergeAction' do
 
     def is_a_matching_diff(diff, diffs)
       diff_count = diff.scan('diff --git').size
-      diff_count.should >= 1
-      diffs.size.should == diff_count
+      expect(diff_count).to be >= 1
+      expect(diffs.size).to eq(diff_count)
       diffs.each do |a_diff|
-        a_diff.class.should == Gitlab::Git::Diff
-        (diff.include? a_diff.diff).should be_true
+        expect(a_diff.class).to eq(Gitlab::Git::Diff)
+        expect(diff.include? a_diff.diff).to be_true
       end
     end
 
@@ -126,11 +126,11 @@ describe 'Gitlab::Satellite::MergeAction' do
       it 'return true or false depending on if something is mergable' do
         merge_request_fork.target_branch = @one_after_stable[0]
         merge_request_fork.source_branch = @master[0]
-        Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).can_be_merged?.should be_true
+        expect(Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).can_be_merged?).to be_true
 
         merge_request_fork.target_branch = @conflicting_metior[0]
         merge_request_fork.source_branch = @wiki_branch[0]
-        Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).can_be_merged?.should be_false
+        expect(Gitlab::Satellite::MergeAction.new(merge_request_fork.author, merge_request_fork).can_be_merged?).to be_false
       end
     end
 
@@ -138,11 +138,11 @@ describe 'Gitlab::Satellite::MergeAction' do
       it 'return true or false depending on if something is mergable' do
         merge_request.target_branch = @one_after_stable[0]
         merge_request.source_branch = @master[0]
-        Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).can_be_merged?.should be_true
+        expect(Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).can_be_merged?).to be_true
 
         merge_request.target_branch = @conflicting_metior[0]
         merge_request.source_branch = @wiki_branch[0]
-        Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).can_be_merged?.should be_false
+        expect(Gitlab::Satellite::MergeAction.new(merge_request.author, merge_request).can_be_merged?).to be_false
       end
     end
   end
