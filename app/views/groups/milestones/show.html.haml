@@ -3,9 +3,9 @@
   .pull-right
     - if can?(current_user, :manage_group, @group)
       - if @group_milestone.active?
-        = link_to 'Close Milestone', group_milestone_path(@group, @group_milestone.safe_title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-remove"
+        = link_to 'Close Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-remove"
       - else
-        = link_to 'Reopen Milestone', group_milestone_path(@group, @group_milestone.safe_title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped"
+        = link_to 'Reopen Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped"
 
 - if (@group_milestone.total_items_count == @group_milestone.closed_items_count) && @group_milestone.active?
   .alert.alert-success

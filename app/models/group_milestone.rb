@@ -10,7 +10,7 @@ class GroupMilestone
   end
 
   def safe_title
-    @title.gsub(".", "-")
+    @title.parameterize
   end
 
   def milestones

@@ -41,7 +41,7 @@ class Groups::MilestonesController < ApplicationController
   end
 
   def title
-    params[:id].gsub("-", ".")
+    params[:title]
   end
 
   def status(state)
