@@ -117,7 +117,8 @@ describe Project do
         last_activity_event = create(:event, project: project)
         # Give it 1 second tolerance so that this test passes on slow systems
         # like Travis CI.
-        (project.last_activity_date - last_event.created_at).to_i.abs.should < 2
+        date_difference = (project.last_activity_date - last_event.created_at).to_i.abs
+        expect(date_difference).to be_within(2)
       end
 
       it 'returns the project\'s last update date if it has no events' do
