@@ -151,8 +151,10 @@ Gitlab::Application.routes.draw do
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
+
     scope module: :groups do
       resource :avatar, only: [:destroy]
+      resources :milestones
     end
   end
 
