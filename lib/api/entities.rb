@@ -129,6 +129,7 @@ module API
       expose :label_list, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
+      expose :metadata
     end
 
     class MergeRequest < ProjectEntity
