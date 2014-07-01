@@ -107,7 +107,7 @@ For examples of feedback on merge requests please look at already [closed merge 
     Important sections include [Source Code Layout](https://github.com/bbatsov/ruby-style-guide#source-code-layout)
     and [Naming](https://github.com/bbatsov/ruby-style-guide#naming). Use:
     - multi-line method chaining style **Option B**: dot `.` on previous line
-    - string literal quoting style **Option A**: single quoted by default
+    - string literal quoting style **Option B**: double quoted by default
 1.  [Rails](https://github.com/bbatsov/rails-style-guide)
 1.  [Testing](https://github.com/thoughtbot/guides/tree/master/style#testing)
 1.  [CoffeeScript](https://github.com/thoughtbot/guides/tree/master/style#coffeescript)
