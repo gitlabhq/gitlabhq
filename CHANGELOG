@@ -1,6 +1,7 @@
 v 7.2.0
   - Explore page
   - Add project stars (Ciro Santilli)
+  - Expose the full commit message via API
 
 v 7.1.0
   - Remove observers
