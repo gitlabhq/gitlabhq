@@ -6,7 +6,7 @@
       %i
         at
         = commit[:timestamp].to_time.to_s(:short)
-    %blockquote= simple_format(escape_once(commit[:message]))
+    %blockquote= markdown(escape_once(commit[:message]))
   - if event.commits_count > 15
     %p
       %i
