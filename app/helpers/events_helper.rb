@@ -64,7 +64,16 @@ module EventsHelper
       project_issue_url(event.project, event.issue)
     elsif event.merge_request?
       project_merge_request_url(event.project, event.merge_request)
-
+    elsif event.note?
+      if event.note_target
+        if event.note_commit?
+          project_commit_path(event.project, event.note_commit_id, anchor: dom_id(event.target))
+        elsif event.note_project_snippet?
+          project_snippet_path(event.project, event.note_target)
+        else
+          event_note_target_path(event)
+        end
+      end
     elsif event.push?
       if event.push_with_commits?
         if event.commits_count > 1
