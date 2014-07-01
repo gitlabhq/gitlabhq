@@ -112,12 +112,14 @@ production: &base
   # 2. Auth settings
   # ==========================
 
-  ## TODO This seems to be the ability to sign yourself up, but it is disabled by default
-  # default: false - Account passwords are not sent via the email if signup is enabled.
+  ## Users can create accounts
+  # This also allows normal users to sign up for accounts themselves
+  # default: false - By default GitLab administrators must create all new accounts
   # signup_enabled: true
 
   ## Standard login settings
-  # default: true - If set to false, standard login form won't be shown on the sign-in page
+  # The standard login can be disabled to force login via LDAP
+  # default: true - If set to false the standard login form won't be shown on the sign-in page
   # signin_enabled: false
 
   ## LDAP settings
