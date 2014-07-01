@@ -42,6 +42,10 @@ class Projects::IssuesController < Projects::ApplicationController
   end
 
   def new
+    params[:issue] ||= ActionController::Parameters.new(
+      assignee_id: ""
+    )
+
     @issue = @project.issues.new(issue_params)
     respond_with(@issue)
   end
