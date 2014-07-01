@@ -2,7 +2,7 @@
   %span.str-truncated
     = link_to [@project, issue] do
       %span.cgray ##{issue.iid}
-    = link_to_gfm issue.title, [@project, issue]
+    = link_to_gfm issue.title, [@project, issue], title: issue.title
   .pull-right.assignee-icon
     - if issue.assignee
       = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"
