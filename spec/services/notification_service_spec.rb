@@ -215,7 +215,7 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id, @u_disabled.id)
+        Notify.should_receive(:reassigned_issue_email).with(user_id, issue.id, nil, @u_disabled.id)
       end
 
       def should_not_email(user_id)
@@ -279,7 +279,7 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id, merge_request.author_id)
+        Notify.should_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, nil, merge_request.author_id)
       end
 
       def should_not_email(user_id)
