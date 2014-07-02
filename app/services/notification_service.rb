@@ -301,7 +301,9 @@ class NotificationService
   end
 
   def reassign_resource_email(target, project, current_user, method)
-    recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
+    assignee_id_was = previous_record(target, "assignee_id")
+
+    recipients = User.where(id: [target.assignee_id, assignee_id_was])
 
     # Add watchers to email list
     recipients = recipients.concat(project_watchers(project))
@@ -313,11 +315,20 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, target.assignee_id_was, current_user.id)
+      mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
     end
   end
 
   def mailer
     Notify.delay
+  end
+
+  def previous_record(object, attribute)
+    if object && attribute
+      if object.previous_changes.include?(attribute)
+        return object.previous_changes[attribute].first
+      end
+    end
+    nil
   end
 end
