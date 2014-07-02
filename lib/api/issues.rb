@@ -49,7 +49,7 @@ module API
       #   POST /projects/:id/issues
       post ":id/issues" do
         required_attributes! [:title]
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :metadata]
         attrs[:label_list] = params[:labels] if params[:labels].present?
         issue = ::Issues::CreateService.new(user_project, current_user, attrs).execute
 
@@ -77,7 +77,7 @@ module API
         issue = user_project.issues.find(params[:issue_id])
         authorize! :modify_issue, issue
 
-        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event, :metadata]
         attrs[:label_list] = params[:labels] if params[:labels].present?
 
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
