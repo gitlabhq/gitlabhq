@@ -160,29 +160,7 @@ module API
       get ':id/repository/contributors' do
         authorize! :download_code, user_project
 
-        contributors = {}
-        contributors
-
-        log = user_project.repository.graph_log
-        log.each do |entry|
-          email = entry[:author_email].to_s
-
-          if contributors.has_key?(email)
-            contributors[email][:commits] += 1
-            contributors[email][:additions] += entry[:additions] || 0
-            contributors[email][:deletions] += entry[:deletions] || 0
-          else
-            contributors[email] = {
-              email: email,
-              name: entry[:author_name],
-              commits: 1,
-              additions: entry[:additions] || 0,
-              deletions: entry[:deletions] || 0,
-            }
-          end
-        end
-
-        contributors
+        user_project.repository.contributors
       end
     end
   end

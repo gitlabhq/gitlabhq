@@ -171,7 +171,8 @@ describe API::API, api: true  do
     it 'should return valid data' do
       get api("/projects/#{project.id}/repository/contributors", user)
       response.status.should == 200
-      contributor = json_response.values.first
+      json_response.should be_an Array
+      contributor = json_response.first
       contributor['email'].should == 'dmitriy.zaporozhets@gmail.com'
       contributor['name'].should == 'Dmitriy Zaporozhets'
       contributor['commits'].should == 185

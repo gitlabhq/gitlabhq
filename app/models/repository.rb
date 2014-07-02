@@ -242,4 +242,30 @@ class Repository
       branches
     end
   end
+
+  def contributors
+    contributors = {}
+    log = graph_log.group_by { |i| i[:author_email] }
+
+    log.each do |email, contributions|
+      contributors[email] = {
+        email: email,
+        commits: 0,
+        additions: 0,
+        deletions: 0,
+      }
+
+      contributions.each do |contribution|
+        if contributors[email][:name].blank?
+          contributors[email][:name] = contribution[:author_name]
+        end
+
+        contributors[email][:commits] += 1
+        contributors[email][:additions] += contribution[:additions] || 0
+        contributors[email][:deletions] += contribution[:deletions] || 0
+      end
+    end
+
+    contributors.values
+  end
 end
