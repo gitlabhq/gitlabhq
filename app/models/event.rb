@@ -30,6 +30,7 @@ class Event < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
+  delegate :title, to: :note, prefix: true, allow_nil: true
 
   belongs_to :author, class_name: "User"
   belongs_to :project
@@ -145,6 +146,10 @@ class Event < ActiveRecord::Base
 
   def merge_request
     target if target_type == "MergeRequest"
+  end
+
+  def note
+    target if target_type == "Note"
   end
 
   def action_name

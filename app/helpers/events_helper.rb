@@ -92,6 +92,10 @@ module EventsHelper
       render "events/event_issue", issue: event.issue
     elsif event.push?
       render "events/event_push", event: event
+    elsif event.merge_request?
+      render "events/event_merge_request", merge_request: event.merge_request
+    elsif event.note?
+      render "events/event_note", note: event.note
     end
   end
 
