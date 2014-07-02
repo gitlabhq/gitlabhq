@@ -46,7 +46,6 @@ gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
 
 # API
 gem "grape", "~> 0.6.1"
-# Replace with rubygems when nesteted entities get released
 gem "grape-entity", "~> 0.4.2"
 gem 'rack-cors', require: 'rack/cors'
 
