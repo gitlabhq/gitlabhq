@@ -162,6 +162,11 @@ production: &base
     #
     group_base: ''
 
+    # LDAP group of users who should be admins in GitLab
+    #
+    #   Ex. GLAdmins
+    #
+    admin_group: ''
 
   ## OmniAuth settings
   omniauth:

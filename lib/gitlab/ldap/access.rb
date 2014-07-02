@@ -48,6 +48,9 @@ module Gitlab
             remove_user_from_groups(user.id, ldap_group.cn)
           end
         end
+        if Gitlab.config.ldap['admin_group'].present?
+          update_admin_status(user)
+        end
       end
 
       # Update user email if it changed in LDAP
@@ -89,6 +92,21 @@ module Gitlab
         groups = ::Group.where(ldap_cn: group_cn)
         groups.each do |group|
           group.users_groups.where(user_id: user_id).destroy_all
+        end
+      end
+
+      def update_admin_status(user)
+        admin_group = Gitlab::LDAP::Group.find_by_cn(Gitlab.config.ldap['admin_group'], adapter)
+        if admin_group.has_member?(Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter))
+          unless user.admin?
+            user.admin = true
+            user.save
+          end
+        else
+          if user.admin?
+            user.admin = false
+            user.save
+          end
         end
       end
     end
