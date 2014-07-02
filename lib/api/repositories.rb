@@ -160,7 +160,7 @@ module API
       get ':id/repository/contributors' do
         authorize! :download_code, user_project
 
-        user_project.repository.contributors
+        present user_project.repository.contributors, with: Entities::Contributor
       end
     end
   end
