@@ -88,7 +88,10 @@ class NotificationService
   #
   def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
+
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
+
+    recipients.delete(merge_request.merge_event.author) if merge_request.merged?
 
     recipients.each do |recipient|
       mailer.merged_merge_request_email(recipient.id, merge_request.id, current_user.id)
