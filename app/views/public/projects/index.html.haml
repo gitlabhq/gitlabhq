@@ -54,6 +54,9 @@
 
         .repo-info
           - unless project.empty_repo?
+            - if project.gitlab_ci?
+              = link_to project.gitlab_ci_service.builds_path do
+                = image_tag project.gitlab_ci_service.status_img_path, alt: "build status"
             = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
             &middot;
             = link_to pluralize(project.repository.branch_names.count, 'branch'), project_branches_path(project)
