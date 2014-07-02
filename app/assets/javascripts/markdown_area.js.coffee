@@ -20,6 +20,9 @@ $(document).ready ->
   $(".div-dropzone-hover").append iconPicture
   $(".div-dropzone").append divSpinner 
   $(".div-dropzone-spinner").append iconSpinner
+  $(".div-dropzone-spinner").css
+    "opacity": 0
+    "display": "none"
 
   dropzone = $(".div-dropzone").dropzone(
     url: project_image_path_upload
@@ -66,13 +69,17 @@ $(document).ready ->
       return
 
     sending: ->
-      $(".div-dropzone-spinner").css "opacity", 0.7
+      $(".div-dropzone-spinner").css
+        "opacity": 0.7
+        "display": "inherit"
       return
 
     complete: ->
       $(".dz-preview").remove()
       $(".markdown-area").trigger "input"
-      $(".div-dropzone-spinner").css "opacity", 0
+      $(".div-dropzone-spinner").css
+        "opacity": 0
+        "display": "none"
       return
   )
 
@@ -163,10 +170,14 @@ $(document).ready ->
       val + url + "\n"
 
   showSpinner = (e) ->
-    $(".div-dropzone-spinner").css "opacity", 0.7
+    $(".div-dropzone-spinner").css
+      "opacity": 0.7
+      "display": "inherit"
 
   closeSpinner = ->
-    $(".div-dropzone-spinner").css "opacity", 0
+    $(".div-dropzone-spinner").css
+      "opacity": 0
+      "display": "none"
 
   showError = (message) ->
     checkIfMsgExists = $(".error-alert").children().length
