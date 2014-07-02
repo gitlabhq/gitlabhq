@@ -21,7 +21,10 @@ module Files
       file_path = path
 
       unless file_name =~ Gitlab::Regex.path_regex
-        return error("Your changes could not be committed, because file name contains not allowed characters")
+        return error(
+          'Your changes could not be committed, because the file name ' +
+          Gitlab::Regex.path_regex_message
+        )
       end
 
       blob = repository.blob_at_branch(ref, file_path)
