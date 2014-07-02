@@ -220,3 +220,32 @@ Response:
   "compare_same_ref": false
 }
 ```
+
+## Contributors
+
+Get repository contributors list
+
+```
+GET /projects/:id/repository/contributors
+```
+
+Parameters:
++ `id` (required) - The ID of a project
+
+Response:
+
+```
+[{
+  "name": "Dmitriy Zaporozhets",
+  "email": "dmitriy.zaporozhets@gmail.com",
+  "commits": 117,
+  "additions": 2097,
+  "deletions": 517
+}, {
+  "name": "Jacob Vosmaer",
+  "email": "contact@jacobvosmaer.nl",
+  "commits": 33,
+  "additions": 338,
+  "deletions": 244
+}]
+```
