@@ -7,6 +7,7 @@ v 7.1.0
   - Add @all mention for comments
   - Dont show reply button if user is not signed in
   - Expose more information for issues with webhook
+  - Fix cpu usage issue in Firefox
 
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar
