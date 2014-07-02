@@ -90,11 +90,11 @@ class Project < ActiveRecord::Base
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
-                      message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter or digit should be first" }
+                      message: Gitlab::Regex.project_regex_message }
   validates :path, presence: true, length: { within: 0..255 },
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
-                      message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
+                      message: Gitlab::Regex.path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
   validates :visibility_level,
@@ -243,7 +243,7 @@ class Project < ActiveRecord::Base
   end
 
   def check_limit
-    unless creator.can_create_project?
+    unless creator.can_create_project? or namespace.kind == 'group'
       errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
     end
   rescue
