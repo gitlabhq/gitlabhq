@@ -293,6 +293,8 @@ class MergeRequest < ActiveRecord::Base
     message << title.to_s
     message << "\n\n"
     message << description.to_s
+    message << "\n\n"
+    message << "See merge request !#{iid}"
     message
   end
 
