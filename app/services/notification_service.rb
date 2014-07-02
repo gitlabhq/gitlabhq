@@ -326,9 +326,8 @@ class NotificationService
   def previous_record(object, attribute)
     if object && attribute
       if object.previous_changes.include?(attribute)
-        return object.previous_changes[attribute].first
+        object.previous_changes[attribute].first
       end
     end
-    nil
   end
 end
