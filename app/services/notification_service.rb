@@ -80,6 +80,10 @@ class NotificationService
     close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
 
+  def reopen_issue(issue, current_user)
+    reopen_resource_email(issue, issue.project, current_user, 'issue_status_changed_email', 'reopened')
+  end
+
   # When we merge a merge request we should send next emails:
   #
   #  * merge_request author if their notification level is not Disabled
@@ -316,6 +320,16 @@ class NotificationService
 
     recipients.each do |recipient|
       mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
+    end
+  end
+
+  def reopen_resource_email(target, project, current_user, method, status)
+    recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients.delete(current_user)
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, status, current_user.id)
     end
   end
 
