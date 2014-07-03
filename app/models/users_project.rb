@@ -124,7 +124,7 @@ class UsersProject < ActiveRecord::Base
       author_id: self.user.id
     )
 
-    notification_service.new_team_member(self)
+    notification_service.new_team_member(self) unless owner?
     system_hook_service.execute_hooks_for(self, :create)
   end
 
