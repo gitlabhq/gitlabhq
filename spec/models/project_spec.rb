@@ -118,7 +118,7 @@ describe Project do
         # Give it 1 second tolerance so that this test passes on slow systems
         # like Travis CI.
         diff = (project.last_activity_date - last_event.created_at).to_i.abs
-        expect(diff).to be_within(2)
+        expect(diff).to be_between(0, 2)
       end
 
       it 'returns the project\'s last update date if it has no events' do
