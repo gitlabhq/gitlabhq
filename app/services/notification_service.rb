@@ -99,6 +99,10 @@ class NotificationService
     end
   end
 
+  def reopen_mr(merge_request, current_user)
+    reopen_resource_email(merge_request, merge_request.target_project, current_user, 'merge_request_status_email', 'reopened')
+  end
+
   # Notify new user with email after creation
   def new_user(user)
     # Don't email omniauth created users
