@@ -6,4 +6,4 @@
       = truncate issue.title, length: 50
   %span.light (#{issue.project.name_with_namespace})
   - if issue.closed?
-    %span.label Closed
+    %span.label.label-danger Closed
