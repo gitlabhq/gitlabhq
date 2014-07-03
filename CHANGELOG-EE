@@ -1,3 +1,6 @@
+v 7.1.0
+  - Synchronize LDAP-enabled GitLab administrators with an LDAP group (Marvin Frick, sponsored by SinnerSchrader)
+
 v 7.0.0
   - Fix: empty brand images are displayed as empty image_tag on login page (Marvin Frick, sponsored by SinnerSchrader) 
 

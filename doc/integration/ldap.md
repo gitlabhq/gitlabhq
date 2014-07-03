@@ -60,3 +60,25 @@ If this is the case, these users will not be affected by LDAP group synchronizat
 
 If you are using ActiveDirectory, it is possible to create nested LDAP groups: the 'Engineering' LDAP group may contain another LDAP group 'Software', with 'Software' containing LDAP users Alice and Bob.
 GitLab will recognize Alice and Bob as members of the 'Engineering' group.
+
+## Define GitLab admin status via LDAP
+
+It is possible to configure GitLab Enterprise Edition (7.1 and newer) so that GitLab admin rights are bestowed on the members of a given LDAP group.
+GitLab administrator users who do not have LDAP enabled are not affected by the LDAP admin group feature.
+
+### Enabling the admin group feature
+
+Below we assume that you have an LDAP group with the common name (CN) 'GitLab administrators' containing the users that should be GitLab administrators.
+We recommend that you keep a non-LDAP GitLab administrator user around on your GitLab instance in case you accidentally remove the admin status from your own LDAP-enabled GitLab user.
+
+For omnibus-gitlab, add the following to `/etc/gitlab/gitlab.rb` and run `gitlab-ctl reconfigure`.
+
+```ruby
+gitlab_rails['ldap_admin_group'] = 'GitLab administrators'
+```
+
+For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
+
+```yaml
+    admin_group: 'Gitlab administrators'
+```
