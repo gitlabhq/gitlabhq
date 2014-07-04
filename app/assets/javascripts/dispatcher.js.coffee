@@ -77,6 +77,9 @@ class Dispatcher
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
         shortcut_handler = true
+      when 'projects:edit_tree:show', 'projects:edit_tree:update',\
+           'projects:new_tree:show', 'projects:new_tree:update'
+        new EditTreeView()
       when 'users:show'
         new User()
 

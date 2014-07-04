@@ -16,7 +16,7 @@
           .btn-group.tree-btn-group
             = link_to "Cancel", @after_edit_path, class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
       .file-content.code
-        %pre.js-edit-mode-pane#editor
+        %div.js-edit-mode-pane#editor= params[:content]
         .js-edit-mode-pane#preview.hide
           .center
             %h2
@@ -24,17 +24,15 @@
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
     = hidden_field_tag 'last_commit', @last_commit
-    = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
-    = render 'projects/commit_button', ref: @ref,
-              cancel_path: @after_edit_path
+    = render 'projects/commit_button', params: params,
+             cancel_path: project_tree_path(@project, @id)
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
   ace.config.loadModule("ace/ext/searchbox");
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
-  editor.setValue("#{escape_javascript(@blob.data)}");
   if (ace_mode) {
     editor.getSession().setMode('ace/mode/' + ace_mode);
   }

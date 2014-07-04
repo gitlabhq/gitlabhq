@@ -25,11 +25,10 @@
       .file-title
         %i.fa.fa-file
       .file-content.code
-        %pre#editor= params[:content]
+        %div#editor= params[:content]
 
-    = hidden_field_tag 'content', '', id: 'file-content'
-    = render 'projects/commit_button', ref: @ref,
-              cancel_path: project_tree_path(@project, @id)
+    = render 'projects/commit_button', params: params,
+             cancel_path: project_tree_path(@project, @id)
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")

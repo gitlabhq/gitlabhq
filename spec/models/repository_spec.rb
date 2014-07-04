@@ -18,4 +18,15 @@ describe Repository do
 
     it { should eq('c1acaa58bbcbc3eafe538cb8274ba387047b69f8') }
   end
+
+  describe :free_branch_name do
+    it 'returns the smallest new free branch name' do
+      prefix = valid_new_branch_name
+      expect(repository.free_branch_name(prefix)).to eq(prefix + '1')
+      repository.add_branch(prefix + '1', 'HEAD')
+      expect(repository.free_branch_name(prefix)).to eq(prefix + '2')
+      repository.rm_branch(prefix + '1')
+      expect(repository.free_branch_name(prefix)).to eq(prefix + '1')
+    end
+  end
 end

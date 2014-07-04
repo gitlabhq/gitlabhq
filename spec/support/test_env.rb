@@ -1,4 +1,5 @@
 require 'rspec/mocks'
+require 'webrick'
 
 module TestEnv
   extend self
@@ -14,8 +15,6 @@ module TestEnv
     disable_mailer if opts[:mailer] == false
 
     # Clean /tmp/tests
-    tmp_test_path = Rails.root.join('tmp', 'tests')
-
     if File.directory?(tmp_test_path)
       Dir.entries(tmp_test_path).each do |entry|
         unless ['.', '..', 'gitlab-shell'].include?(entry)
@@ -28,6 +27,8 @@ module TestEnv
 
     # Setup GitLab shell for test instance
     setup_gitlab_shell
+
+    setup_internal_api_mock
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
@@ -74,5 +75,53 @@ module TestEnv
 
   def factory_repo_name
     'gitlab-test'
+  end
+
+  def tmp_test_path
+    Rails.root.join('tmp', 'tests')
+  end
+
+  def internal_api_mock_pid_path
+    File.join(tmp_test_path, 'internal_api_mock.pid')
+  end
+
+  # This mock server exists because during testing GitLab is not served
+  # on any port, but gitlab-shell needs to ask the GitLab internal API
+  # if it is OK to push to repositories. This can happen during blob web
+  # edit tests. The server always replies yes: this should not modify affect
+  # web interface tests.
+  def setup_internal_api_mock
+    begin
+      server = WEBrick::HTTPServer.new(
+        BindAddress: '0.0.0.0',
+        Port: Gitlab.config.gitlab.port,
+        AccessLog: [],
+        Logger: WEBrick::Log.new('/dev/null')
+      )
+    rescue => ex
+      ex.message.prepend('could not start mock server on configured port. ')
+      raise ex
+    end
+    fork do
+      trap(:INT) { server.shutdown }
+      server.mount_proc('/') do |_req, res|
+        res.status = 200
+        res.body = 'true'
+      end
+      WEBrick::Daemon.start do
+        File.write(internal_api_mock_pid_path, Process.pid)
+      end
+      server.start
+    end
+    # Ideally this should be called from `config.after(:suite)`,
+    # but on Spinach when user hits Ctrl+C the server does not get killed
+    # if the hook is set up with `Spinach.hooks.after_run`.
+    at_exit do
+      # The file should exist on normal operation,
+      # but certain errors can lead to it not existing.
+      if File.exists?(internal_api_mock_pid_path)
+        Process.kill(:INT, File.read(internal_api_mock_pid_path).to_i)
+      end
+    end
   end
 end

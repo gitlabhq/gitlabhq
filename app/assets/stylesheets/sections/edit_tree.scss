@@ -1,0 +1,15 @@
+body {
+  $attr: 'data-page';
+  $prefix: 'projects';
+  @each $suffix in 'new_tree:show', 'new_tree:update',
+                   'edit_tree:show', 'edit_tree:update' {
+    &[#{$attr}="#{$prefix}:#{$suffix}"] {
+      #source_branch {
+        overflow: hidden;
+      }
+      #source_project, #source_branch {
+        line-height: $form-control-height;
+      }
+    }
+  }
+}

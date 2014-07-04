@@ -3,12 +3,20 @@
 module ExtractsPath
   extend ActiveSupport::Concern
 
+  URL_SEPARATOR = '/'
+
   # Raised when given an invalid file path
   class InvalidPathError < StandardError; end
 
   included do
     if respond_to?(:before_filter)
       before_filter :assign_ref_vars
+    end
+  end
+
+  class <<self
+    def id_from_ref_path(ref, path)
+      ref + URL_SEPARATOR + path
     end
   end
 
@@ -58,10 +66,10 @@ module ExtractsPath
       # branches and tags
 
       # Append a trailing slash if we only get a ref and no file path
-      id += '/' unless id.ends_with?('/')
+      id += URL_SEPARATOR unless id.ends_with?(URL_SEPARATOR)
 
       valid_refs = @project.repository.ref_names
-      valid_refs.select! { |v| id.start_with?("#{v}/") }
+      valid_refs.select! { |v| id.start_with?("#{v}#{URL_SEPARATOR}") }
 
       if valid_refs.length != 1
         # No exact ref match, so just try our best
@@ -124,7 +132,7 @@ module ExtractsPath
 
   def get_id
     id = params[:id] || params[:ref]
-    id += "/" + params[:path] unless params[:path].blank?
+    id += URL_SEPARATOR + params[:path] unless params[:path].blank?
     id
   end
 end

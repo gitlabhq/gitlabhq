@@ -56,11 +56,15 @@ class Repository
     branches.find { |branch| branch.name == name }
   end
 
+  def has_branch?(name)
+    find_branch(name) != nil
+  end
+
   def find_tag(name)
     tags.find { |tag| tag.name == name }
   end
 
-  def add_branch(branch_name, ref)
+  def add_branch(branch_name, ref = 'HEAD')
     Rails.cache.delete(cache_key(:branch_names))
 
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
@@ -100,6 +104,18 @@ class Repository
     Rails.cache.fetch(cache_key(:branch_names)) do
       raw_repository.branch_names
     end
+  end
+
+  # Generate a free branch name of form prefix<Number>,
+  # where Number is the smallest unused positive integer.
+  def free_branch_name(prefix)
+    n_taken = []
+    branch_names.each do |name|
+      if name =~ /#{prefix}(\d+)/
+        n_taken << $1.to_i
+      end
+    end
+    "#{prefix}#{((1..n_taken.length + 1).to_a - n_taken)[0]}"
   end
 
   def tag_names

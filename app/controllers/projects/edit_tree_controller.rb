@@ -1,30 +1,18 @@
 class Projects::EditTreeController < Projects::BaseTreeController
-  before_filter :require_branch_head
+  before_filter :authorize_show_blob_edit!
+
   before_filter :blob
-  before_filter :authorize_push_code!
   before_filter :from_merge_request
   before_filter :after_edit_path
+  before_filter :set_last_commit, only: [:show, :update]
 
   def show
-    @last_commit = Gitlab::Git::Commit.last_for_path(@repository, @ref, @path).sha
+    set_new_mr_vars
+    params[:content] = @blob.data
   end
 
   def update
-    result = Files::UpdateService.
-      new(@project, current_user, params, @ref, @path).execute
-
-    if result[:status] == :success
-      flash[:notice] = "Your changes have been successfully committed"
-
-      if from_merge_request
-        from_merge_request.reload_code
-      end
-
-      redirect_to after_edit_path
-    else
-      flash[:alert] = result[:message]
-      render :show
-    end
+    update_new_mr(Files::UpdateService, @path)
   end
 
   def preview
@@ -53,8 +41,8 @@ class Projects::EditTreeController < Projects::BaseTreeController
       end
   end
 
-  def from_merge_request
-    # If blob edit was initiated from merge request page
-    @from_merge_request ||= MergeRequest.find_by(id: params[:from_merge_request_id])
+  def set_last_commit
+    @last_commit = Gitlab::Git::Commit.
+      last_for_path(@repository, @ref, @path).sha
   end
 end

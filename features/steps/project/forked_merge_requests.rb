@@ -5,17 +5,6 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedPaths
   include Select2Helper
 
-  step 'I am a member of project "Shop"' do
-    @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, name: "Shop")
-    @project.team << [@user, :reporter]
-    @project.ensure_satellite_exists
-  end
-
-  step 'I have a project forked off of "Shop" called "Forked Shop"' do
-    @forked_project = Projects::ForkService.new(@project, @user).execute
-  end
-
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
   end

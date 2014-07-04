@@ -1,9 +1,48 @@
+.form-group
+  .col-sm-offset-2.col-sm-10
+    %div{class: ['checkbox',
+        @create_merge_request_checkbox_disabled ? 'disabled' : '']}
+      = label_tag do
+        = check_box_tag 'create_merge_request', '1',
+            @create_merge_request_checkbox_checked,
+            disabled: @create_merge_request_checkbox_disabled
+        Create merge request
+#on_my_fork_group{style: @create_merge_request_checkbox_checked ? |
+                         '' :  'display:none;'}                   |
+  - if @project.namespace != current_user.namespace
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %div{class: ['checkbox',
+             @on_my_fork_checkbox_disabled ? 'disabled' : '']}
+          = label_tag do
+            = check_box_tag 'on_my_fork', '1', @on_my_fork_checkbox_checked,
+                            disabled: @on_my_fork_checkbox_disabled
+            Create branch on my fork
+        - if @on_my_fork_checkbox_disabled
+          .help-block
+            %p You must fork because you don't have push permission.
+.form-group
+  = label_tag 'new_branch_name', 'Commit to branch',
+      class: 'col-sm-2 control-label'
+  .col-sm-10
+    #source_project.pull-left.js-toggler-container-initial{ |
+        class: @source_project_show_my_fork ? '': 'on'}     |
+      %span.turn-on
+        = current_user.namespace.path
+      %span.turn-off
+        = @project.namespace.path
+      \:&nbsp;
+    #source_branch.js-toggler-container-initial{                   |
+        class: @create_merge_request_checkbox_checked ? 'on' : ''} |
+      %div.turn-on
+        = @ref
+      %div.turn-off
+        = text_field_tag 'new_branch_name', params[:new_branch_name],
+                         class: 'form-control'
+= hidden_field_tag 'content', '', id: 'file-content'
 .form-actions
   .commit-button-annotation
     = button_tag 'Commit Changes',
                  class: 'btn commit-btn js-commit-button btn-create'
-    .message
-      to branch
-      %strong= ref
   = link_to 'Cancel', cancel_path,
             class: 'btn btn-cancel', data: {confirm: leave_edit_message}

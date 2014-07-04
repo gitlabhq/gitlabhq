@@ -621,4 +621,13 @@ class Project < ActiveRecord::Base
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
   end
+
+  def can_push_to?(user, ref)
+    abilities = Ability.abilities
+    if protected_branch?(ref)
+      abilities.allowed?(user, :push_code_to_protected_branches, self)
+    else
+      abilities.allowed?(user, :push_code, self)
+    end
+  end
 end
