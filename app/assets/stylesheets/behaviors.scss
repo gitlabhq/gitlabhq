@@ -10,3 +10,13 @@
 .js-toggler-container .turn-off { display: none; }
 .js-toggler-container.on .turn-on  { display: none; }
 .js-toggler-container.on .turn-off { display: block; }
+
+// Maintain element's original display when on.
+.js-toggler-container-initial {
+  .turn-on  { display: initial; }
+  .turn-off { display: none; }
+  &.on {
+    .turn-on  { display: none; }
+    .turn-off { display: initial; }
+  }
+}

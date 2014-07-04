@@ -12,6 +12,12 @@ module ExtractsPath
     end
   end
 
+  class << self
+    def join(ref, path)
+      ref + SEPARATOR + path
+    end
+  end
+
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.
   #
@@ -121,6 +127,8 @@ module ExtractsPath
   end
 
   private
+
+  SEPARATOR = '/'
 
   def get_id
     id = params[:id] || params[:ref]

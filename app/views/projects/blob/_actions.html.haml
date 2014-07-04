@@ -1,7 +1,7 @@
 .btn-group.tree-btn-group
   -# only show edit link for text files
   - if @blob.text?
-    - if allowed_tree_edit?
+    - if show_blob_edit
       = link_to 'Edit', project_edit_tree_path(@project, @id),
           class: 'btn btn-small'
     - else

@@ -96,4 +96,85 @@ eos
       commits: commits
     )
   end
+
+  # Seed repository information.
+
+  # Constant valid non-existent branch name.
+  def valid_new_branch_name
+    'new-branch'
+  end
+
+  def default_branch_name
+    'master'
+  end
+
+  def non_default_branch_name
+    'non-default'
+  end
+
+  def existing_branch_name
+    default_branch_name
+  end
+
+  def invalid_branch_name
+    'a b'
+  end
+
+  # Constant existing path on branch master.
+  def existing_file_path
+    '.gitignore'
+  end
+
+  # Constant existing branch/path pair.
+  def existing_file_id
+    ExtractsPath.join(existing_branch_name, existing_file_path)
+  end
+
+  def existing_directory_id
+    ExtractsPath.join(existing_branch_name, '')
+  end
+
+  # Constant valid non-existent file name on top of existing_directory_id.
+  def new_file_name
+    'new_file'
+  end
+
+  # Content of existing_file_path.
+  def old_content
+    <<EOS
+*.rbc
+*.sassc
+.sass-cache
+capybara-*.html
+.rspec
+.rvmrc
+/.bundle
+/vendor/bundle
+/log/*
+/tmp/*
+/db/*.sqlite3
+/public/system/*
+/coverage/
+/spec/tmp/*
+**.orig
+rerun.txt
+pickle-email-*.html
+.project
+config/initializers/secret_token.rb
+.DS_Store
+EOS
+  end
+
+  def new_content
+    old_content + new_content_diff
+  end
+
+  def new_content_diff
+    "New content\n"
+  end
+
+  # Constant inexistent commit message.
+  def new_commit_message
+    'New commit message'
+  end
 end
