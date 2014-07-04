@@ -37,7 +37,7 @@ namespace :gitlab do
             bin: %x{which redis-cli}.chomp,
             namespace: "resque:gitlab"
           }.stringify_keys,
-          log_level: "INFO",
+          log_level: Rails.env.test? ? 'DEBUG' : 'INFO',
           audit_usernames: false
         }.stringify_keys
 
