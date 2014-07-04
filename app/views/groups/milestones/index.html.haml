@@ -47,3 +47,4 @@
                   - milestone.projects.each do |project|
                     %span.label.label-default
                       = project.name
+    = paginate @group_milestones, theme: "gitlab"

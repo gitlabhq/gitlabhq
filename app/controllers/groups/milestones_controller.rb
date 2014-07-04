@@ -4,22 +4,22 @@ class Groups::MilestonesController < ApplicationController
   before_filter :authorize_group_milestone!, only: :update
 
   def index
-    project_milestones = Milestone.where(project_id: group.projects)
+    project_milestones = case params[:status]
+                         when 'all'; status
+                         when 'closed'; status('closed')
+                         else status('active')
+                         end
     @group_milestones = Milestones::GroupService.new(project_milestones).execute
-    @group_milestones = case params[:status]
-                        when 'all'; @group_milestones
-                        when 'closed'; status('closed')
-                        else status('active')
-                        end
+    @group_milestones = Kaminari.paginate_array(@group_milestones).page(params[:page]).per(30)
   end
 
   def show
-    project_milestones = Milestone.where(project_id: group.projects)
+    project_milestones = Milestone.where(project_id: group.projects).order("due_date ASC")
     @group_milestone = Milestones::GroupService.new(project_milestones).milestone(title)
   end
 
   def update
-    project_milestones = Milestone.where(project_id: group.projects)
+    project_milestones = Milestone.where(project_id: group.projects).order("due_date ASC")
     @group_milestones = Milestones::GroupService.new(project_milestones).milestone(title)
 
     @group_milestones.milestones.each do |milestone|
@@ -44,8 +44,10 @@ class Groups::MilestonesController < ApplicationController
     params[:title]
   end
 
-  def status(state)
-    @group_milestones.map{ |milestone| next if milestone.state != state; milestone }.compact
+  def status(state = nil)
+    conditions = { project_id: group.projects }
+    conditions.reverse_merge!(state: state) if state
+    Milestone.where(conditions).order("title ASC")
   end
 
   def authorize_group_milestone!
