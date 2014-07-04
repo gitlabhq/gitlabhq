@@ -229,6 +229,10 @@ module SharedPaths
     visit project_merge_requests_path(@forked_project)
   end
 
+  step 'I visit ".gitignore" file edit page of project "Forked Shop"' do
+    visit project_edit_tree_path(@forked_project, File.join(root_ref, '.gitignore'))
+  end
+
   step 'I visit edit project "Shop" page' do
     visit edit_project_path(project)
   end
@@ -257,12 +261,40 @@ module SharedPaths
     visit project_tree_path(@project, root_ref)
   end
 
+  step 'I am redirected to the files URL' do
+    current_path.should == project_tree_path(@project,root_ref)
+  end
+
   step 'I visit blob file from repo' do
     visit project_blob_path(@project, File.join(sample_commit.id, sample_blob.path))
   end
 
   step 'I visit ".gitignore" file in repo' do
     visit project_blob_path(@project, File.join(root_ref, '.gitignore'))
+  end
+
+  step 'I am redirected to the ".gitignore"' do
+    expect(current_path).to eq(project_blob_path(
+      @project, File.join(root_ref, '.gitignore')))
+  end
+
+  step 'I am redirected to the permalink URL' do
+    expect(current_path).to eq(project_blob_path(
+      @project, @project.repository.commit.sha + '/.gitignore'))
+  end
+
+  step 'I am redirected to the new file' do
+    expect(current_path).to eq(project_blob_path(
+      @project, File.join(root_ref, new_file_name)))
+  end
+
+  step 'I visit ".gitignore" file edit page' do
+    visit project_edit_tree_path(@project, File.join(root_ref, '.gitignore'))
+  end
+
+  step 'I should be on ".gitignore" file edit page' do
+    expect(current_path).to eq(
+      project_edit_tree_path(@project, File.join(root_ref, '.gitignore')))
   end
 
   step 'I visit project source page for "6d39438"' do
@@ -371,6 +403,11 @@ module SharedPaths
     visit project_path(project)
   end
 
+  step 'I visit ".gitignore" file edit page of project "Community"' do
+    project = Project.find_by(name: 'Community')
+    visit project_edit_tree_path(project, File.join(root_ref, '.gitignore'))
+  end
+
   step 'I visit project "Internal" page' do
     project = Project.find_by(name: "Internal")
     visit project_path(project)
@@ -379,6 +416,15 @@ module SharedPaths
   step 'I visit project "Enterprise" page' do
     project = Project.find_by(name: "Enterprise")
     visit project_path(project)
+  end
+
+  # ----------------------------------------
+  # Membership projects
+  # ----------------------------------------
+
+  step 'I visit ".gitignore" file page of project "Reporter"' do
+    project = Project.find_by(name: 'Reporter')
+    visit project_blob_path(project, File.join(root_ref, '.gitignore'))
   end
 
   # ----------------------------------------
