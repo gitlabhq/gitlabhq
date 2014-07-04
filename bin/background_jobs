@@ -43,7 +43,7 @@ start_sidekiq()
 load_ok()
 {
   sidekiq_pid=$(cat $sidekiq_pidfile)
-  if [[ -z $sidekiq_pid ]] ; then
+  if [ -z $sidekiq_pid ] ; then
     warn "Could not find a PID in $sidekiq_pidfile"
     exit 0
   fi
