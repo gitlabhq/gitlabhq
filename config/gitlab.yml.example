@@ -281,7 +281,7 @@ test:
     enabled: true
   gitlab:
     host: localhost
-    port: 80
+    port: 3001
 
     # When you run tests we clone and setup gitlab-shell
     # In order to setup it correctly you need to specify
