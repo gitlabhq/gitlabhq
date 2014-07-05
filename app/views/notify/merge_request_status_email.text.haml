@@ -1,0 +1,8 @@
+= "Merge Request ##{@merge_request.iid} was #{@mr_status} by #{@updated_by.name}"
+
+Merge Request url: #{project_merge_request_url(@merge_request.target_project, @merge_request)}
+
+= merge_path_description(@merge_request, 'to')
+
+Author: #{@merge_request.author_name}
+Assignee: #{@merge_request.assignee_name}
