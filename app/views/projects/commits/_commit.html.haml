@@ -7,7 +7,7 @@
       - if commit.description?
         %a.text-expander.js-toggle-button ...
 
-    - if @path.present?
+    - if @repo.blob_at(commit.id, @path)
       = link_to "Browse File »", project_blob_path(project, tree_join(commit.id, @path)), class: "pull-right"
     - else
       = link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
