@@ -13,10 +13,10 @@
         %i.icon-reorder
 
       .pull-right.hidden-xs
-        = link_to "Sign in", new_session_path(:user), class: 'btn btn-sign-in btn-new'
+        = link_to "Sign in", new_session_path(:user, return_to: request.fullpath), class: 'btn btn-sign-in btn-new'
 
       .navbar-collapse.collapse
         %ul.nav.navbar-nav
           %li.visible-xs
-            = link_to "Sign in", new_session_path(:user)
+            = link_to "Sign in", new_session_path(:user, return_to: request.fullpath)
 

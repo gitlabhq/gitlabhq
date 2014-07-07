@@ -131,21 +131,21 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see a discussion has started on line 185' do
-    page.should have_content "#{current_user.name} started a discussion on this merge request diff"
-    page.should have_content "app/assets/stylesheets/tree.scss:L185"
+    page.should have_content "#{current_user.name} started a discussion"
+    page.should have_content "app/assets/stylesheets/tree.scss"
     page.should have_content "Line is wrong"
   end
 
   step 'I should see a discussion has started on commit b1e6a9dbf1:L185' do
     page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content "app/assets/stylesheets/tree.scss:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss"
     page.should have_content "Line is wrong"
   end
 
   step 'I should see a discussion has started on commit b1e6a9dbf1' do
     page.should have_content "#{current_user.name} started a discussion on commit"
     page.should have_content "One comment to rule them all"
-    page.should have_content "app/assets/stylesheets/tree.scss:L185"
+    page.should have_content "app/assets/stylesheets/tree.scss"
   end
 
   step 'merge request is mergeable' do
@@ -267,9 +267,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
       click_button "Add Comment"
     end
 
-    within ".note-text" do
-      page.should have_content message
-    end
+    page.should have_content message
   end
 
   def init_diff_note_first_file

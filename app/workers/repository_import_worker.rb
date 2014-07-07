@@ -14,6 +14,7 @@ class RepositoryImportWorker
       project.import_finish
       project.save
       project.satellite.create unless project.satellite.exists?
+      project.update_repository_size
     else
       project.import_fail
     end

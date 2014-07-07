@@ -4,11 +4,21 @@
  *
  */
 .ui_basic {
-  .separator {
-    background: #F9F9F9;
-    border-left: 1px solid #DDD;
+  header {
+    &.navbar-gitlab {
+      .navbar-inner {
+        background: #F1F1F1;
+        border-bottom: 1px solid #DDD;
+        .nav > li > a {
+          color: $style_color;
+        }
+        .separator {
+          background: #F9F9F9;
+          border-left: 1px solid #DDD;
+        }
+      }
+    }
   }
-
   .main-nav {
     background: #FFF;
   }

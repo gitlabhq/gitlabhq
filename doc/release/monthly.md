@@ -120,6 +120,17 @@ Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morni
 
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
+### **9. Create a regressions issue**
+
+On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
+
+This is a meta issue to discuss possible regressions in this monthly release and any patch versions.
+Please do not raise issues directly in this issue but link to issues that might warrant a patch release.
+The decision to create a patch release or not is with the release manager who is assigned to this issue.
+The release manager will comment here about the plans for patch releases.
+
+Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
+
 # **21st - Preparation **
 
 ### **1. Prepare the blog post**
@@ -218,17 +229,6 @@ In MailChimp replicate the former release newsletters to customers / newsletter 
 Include a link to the blog post and keep it short.
 
 Proposed email for CE: "We have released a new version of GitLab Community Edition and its packages. See our blog post(<link>) for more information."
-
-### **10. Create a regressions issue**
-
-On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
-
-This is a meta issue to discuss possible regressions in this monthly release and any patch versions.
-Please do not raise issues directly in this issue but link to issues that might warrant a patch release.
-The decision to create a patch release or not is with the release manager who is assigned to this issue.
-The release manager will comment here about the plans for patch releases.
-
-Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
 
 # **23rd - Optional Patch Release**
 

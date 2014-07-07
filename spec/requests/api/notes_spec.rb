@@ -2,9 +2,6 @@ require 'spec_helper'
 
 describe API::API, api: true  do
   include ApiHelpers
-  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
-  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
-
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, project: project, author: user) }
@@ -128,14 +125,10 @@ describe API::API, api: true  do
   end
 
   describe "POST /projects/:id/noteable/:noteable_id/notes to test observer on create" do
-    before { enable_observers }
-    after { disable_observers }
-
     it "should create an activity event when an issue note is created" do
       Event.should_receive(:create)
 
       post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
     end
   end
-
 end

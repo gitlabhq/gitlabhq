@@ -68,6 +68,7 @@ Gitlab::Application.routes.draw do
         put :team_update
         put :block
         put :unblock
+        delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
 
@@ -171,8 +172,11 @@ Gitlab::Application.routes.draw do
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords}
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :users_sessions }
 
+  devise_scope :user do
+    get "/users/auth/:provider/omniauth_error" => "omniauth_callbacks#omniauth_error", as: :omniauth_error
+  end
   #
   # Project Area
   #

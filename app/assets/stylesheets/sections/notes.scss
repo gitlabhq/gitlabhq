@@ -43,38 +43,14 @@ ul.notes {
   }
 
   .discussion {
-    padding: 8px 0;
+    padding: 10px 0;
     overflow: hidden;
     display: block;
     position:relative;
+    border-bottom: 1px solid #EEE;
 
     .discussion-body {
       margin-left: 50px;
-
-      .diff-file,
-      .discussion-hidden,
-      .notes {
-        background-color: #F9F9F9;
-      }
-      .diff-file .notes {
-        /* reset */
-        background: inherit;
-        border: none;
-        @include box-shadow(none);
-
-      }
-      .discussion-hidden .note {
-        @extend .cgray;
-        padding: 8px;
-        text-align: center;
-      }
-      .notes .note {
-        border-color: #ddd;
-        padding: 8px;
-      }
-      .reply-btn {
-        margin-top: 8px;
-      }
     }
   }
 
@@ -136,10 +112,6 @@ ul.notes {
       padding-top: 0;
       vertical-align: top;
     }
-  }
-
-  .reply-btn {
-    margin: 5px;
   }
 }
 
@@ -375,4 +347,18 @@ ul.notes {
 .error-alert > .alert {
   margin-top: 5px;
   margin-bottom: 5px;
+}
+
+.discussion-body,
+.diff-file {
+  .notes .note {
+    border-color: #ddd;
+    padding: 10px 15px;
+  }
+
+  .discussion-reply-holder {
+    background: #f9f9f9;
+    padding: 10px 15px;
+    border-top: 1px solid #DDD;
+  }
 }

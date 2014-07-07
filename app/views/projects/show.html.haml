@@ -1,12 +1,12 @@
 = render "home_panel"
 
 .row
-  .col-md-9
+  %section.col-md-9
     = render "events/event_last_push", event: @last_push
     = render 'shared/event_filter'
     .content_list
     = spinner
-  .col-md-3.project-side.hidden-sm.hidden-xs
+  %aside.col-md-3.project-side.hidden-sm.hidden-xs
     .clearfix
       - if @project.archived?
         .alert.alert-warning
@@ -43,6 +43,12 @@
           - readme = @repository.readme
           = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)), class: 'btn btn-block' do
             = readme.name
+
+        - if @repository.version
+          - version = @repository.version
+          = link_to project_blob_path(@project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
+            Version:
+            = @repository.blob_by_oid(version.id).data
 
     .prepend-top-10
       %p

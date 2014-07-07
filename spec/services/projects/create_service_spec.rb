@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Projects::CreateService do
-  before(:each) { ActiveRecord::Base.observers.enable(:user_observer) }
-  after(:each) { ActiveRecord::Base.observers.disable(:user_observer) }
-
   describe :create_by_user do
     before do
       @user = create :user
@@ -66,11 +63,8 @@ describe Projects::CreateService do
         @settings.stub(:merge_requests) { true }
         @settings.stub(:wiki) { true }
         @settings.stub(:snippets) { true }
-        stub_const("Settings", Class.new)
-        @restrictions = double("restrictions")
-        @restrictions.stub(:restricted_visibility_levels) { [] }
-        Settings.stub_chain(:gitlab).and_return(@restrictions)
-        Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
+        Gitlab.config.gitlab.stub(restricted_visibility_levels: [])
+        Gitlab.config.gitlab.stub(:default_projects_features).and_return(@settings)
       end
 
       context 'should be public when setting is public' do
@@ -109,11 +103,9 @@ describe Projects::CreateService do
         @settings.stub(:wiki) { true }
         @settings.stub(:snippets) { true }
         @settings.stub(:visibility_level) { Gitlab::VisibilityLevel::PRIVATE }
-        stub_const("Settings", Class.new)
-        @restrictions = double("restrictions")
-        @restrictions.stub(:restricted_visibility_levels) { [ Gitlab::VisibilityLevel::PUBLIC ] }
-        Settings.stub_chain(:gitlab).and_return(@restrictions)
-        Settings.stub_chain(:gitlab, :default_projects_features).and_return(@settings)
+        @restrictions = [ Gitlab::VisibilityLevel::PUBLIC ]
+        Gitlab.config.gitlab.stub(restricted_visibility_levels: @restrictions)
+        Gitlab.config.gitlab.stub(:default_projects_features).and_return(@settings)
       end
 
       context 'should be private when option is public' do
@@ -158,4 +150,3 @@ describe Projects::CreateService do
     Projects::CreateService.new(user, opts).execute
   end
 end
-

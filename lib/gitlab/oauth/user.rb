@@ -44,7 +44,13 @@ module Gitlab
             user.username = email_username.gsub("'", "")
           end
 
-          user.save!
+          begin
+            user.save!
+          rescue ActiveRecord::RecordInvalid => e
+            log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
+            return nil, e.record.errors
+          end
+
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
 
           if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?

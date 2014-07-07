@@ -1,9 +1,6 @@
 require 'spec_helper'
 
 describe Projects::TransferService do
-  before(:each) { enable_observers }
-  after(:each) {disable_observers}
-
   let(:user) { create(:user) }
   let(:group) { create(:group) }
   let(:group2) { create(:group) }

@@ -15,7 +15,7 @@
 
 ## Canonical source
 
-- The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
+- The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://dev.gitlab.org/gitlab/gitlab-ee/) and acessible only to [subscribers](https://about.gitlab.com/subscription/).
 
 ## Code status
 
@@ -61,7 +61,11 @@ These applications are maintained by contributors, GitLab B.V. does not offer su
 
 ## Installation
 
-Please see [the installation page on the GitLab website](https://www.gitlab.com/installation/).
+We recommend the [GitLab Enterprise Edition packages](https://gitlab.com/subscribers/gitlab-ee/blob/master/doc/install/packages.md).
+
+You can also use the [Chef cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md) or the [manual installation](doc/install/installation.md).
+
+Other options are listed on the [installation page on the GitLab website](https://www.gitlab.com/installation/) but most of these assume GitLab Community Edition.
 
 ### New versions
 
@@ -122,7 +126,7 @@ And surf to [localhost:3000](http://localhost:3000/) and login with `root` / `5i
 
 ## Documentation
 
-All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/).
+All documentation can be found on [doc.gitlab.com/ee/](http://doc.gitlab.com/ee/).
 
 ## Getting help
 

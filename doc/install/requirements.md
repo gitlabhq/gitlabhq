@@ -2,9 +2,7 @@
 
 ## Operating Systems
 
-GitLab is developed for the Linux operating system. For the installations options and instructions please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
-
-### Supported Linux distributions
+### Supported Unix distributions
 
 - Ubuntu
 - Debian
@@ -13,36 +11,29 @@ GitLab is developed for the Linux operating system. For the installations option
 - Scientific Linux
 - Oracle Linux
 
-### Unsupported Linux distributions
+For the installations options please see [the installation page on the GitLab website](https://about.gitlab.com/installation/).
 
+### Unsupported Unix distributions
+
+- OS X
 - Arch Linux
 - Fedora
 - Gentoo
+- FreeBSD
 
-But on the above unsupported distributions is still possible to install GitLab yourself with the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md).
+On the above unsupported distributions is still possible to install GitLab yourself.
+Please see the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
 
-### Unsupported Unix operating systems
+### Non Unix operating systems such as Windows
 
-There is nothing that prevents GitLab from running on other Unix operating systems.
-
-This means you may get it to work on systems running FreeBSD or OS X.
-
-If you want to do this, please be aware it could be a lot of work.
-
-Please consider using a virtual machine to run GitLab.
-
-### Other operating systems such as Windows
-
+GitLab is developed for Unix operating systems.
 GitLab does **not** run on Windows and we have no plans of supporting it in the near future.
-
 Please consider using a virtual machine to run GitLab.
 
 ## Ruby versions
 
 GitLab requires Ruby (MRI) 2.0 or 2.1
-
 You will have to use the standard MRI implementation of Ruby.
-
 We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab needs several Gems that have native extensions.
 
 ## Hardware requirements
@@ -59,7 +50,11 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ### Memory
 
-- 512MB is the absolute minimum but we do not recommend this amount of memory, you'll need to configure a minimum swap of 256MB, you're memory will only allow you to run one slow unicorn worker, things will case only git ssh access to work because the git http access requires two running workers (one to receive the user request and one for the authorization check),
+- 512MB is the absolute minimum but we do not recommend this amount of memory.
+You will either need to configure a minimum swap of 256MB and this will only allow you to run one slow unicorn worker.
+One unicorn worker will cause only git ssh access to work because the git http access requires two running workers.
+It requires one worker to receive the user request and one worker for the authorization check.
+Or if you use SSD you can configure 2GB of swap to use two Unicorn workers and have slow operation with http access.
 - 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates configuring swap space)
 - **2GB** is the **recommended** memory size and supports up to 500 users
 - 4GB supports up to 2,000 users
@@ -80,7 +75,15 @@ If you have enough RAM memory and a recent CPU the speed of GitLab is mainly lim
 
 ## Database
 
-If you want to run the database separately, the **recommended** database size is **1 MB per user**
+If you want to run the database separately, the **recommended** database size is **1 MB per user**.
+
+## Redis and Sidekiq
+
+Redis stores all user sessions and the background task queue.
+The storage requirements for Redis are minimal, about 25kB per user.
+Sidekiq processes the background jobs with a multithreaded process.
+This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
+On a very active server (10.000 active users) the Sidekiq process can use 1GB+ of memory.
 
 ## Supported webbrowsers
 

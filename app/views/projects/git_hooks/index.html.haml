@@ -44,5 +44,10 @@
         If this field is empty it allows any commit message.
         For example you can require that an issue number is always mentioned in the commit message.
 
+  .alert.alert-warning.alert-dismissible{ role: 'alert'}
+    %button.close{"data-dismiss" => "alert", type: "button"}
+      %span{"aria-hidden" => "true"} ×
+      %span.sr-only Close
+    Would you like to see another Git Hook? If you are a subscriber we'll be glad to implement it without any costs. Please contact your GitLab account manager.
   .form-actions
     = f.submit "Save Git hooks", class: "btn btn-create"

@@ -2,7 +2,7 @@
 - note2 = notes2.first # example note
 -# Check if line want not changed since comment was left
 /- if !defined?(line) || line == note.diff_line
-%tr.notes_holder.js-toggle-content
+%tr.notes_holder
   - if note1
     %td.notes_line
       %span.btn.disabled
@@ -12,7 +12,8 @@
       %ul.notes{ rel: note1.discussion_id }
         = render notes1
 
-      = render "projects/notes/discussion_reply_button", note: note1
+      .discussion-reply-holder
+        = link_to_reply_diff(note1)
   - else
     %td= ""
     %td= ""
@@ -26,7 +27,8 @@
       %ul.notes{ rel: note2.discussion_id }
         = render notes2
 
-      = render "projects/notes/discussion_reply_button", note: note2
+      .discussion-reply-holder
+        = link_to_reply_diff(note2)
   - else
     %td= ""
     %td= ""

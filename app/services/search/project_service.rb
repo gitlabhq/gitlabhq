@@ -18,8 +18,9 @@ module Search
         result[:total_results] = blobs.total_count
       else
         result[:merge_requests] = project.merge_requests.search(query).order('updated_at DESC').limit(20)
-        result[:issues] = project.issues.search(query).order('updated_at DESC').limit(20)
-        result[:total_results] = %w(issues merge_requests).sum { |items| result[items.to_sym].size }
+        result[:issues] = project.issues.where("title like :query OR description like :query ", query: "%#{query}%").order('updated_at DESC').limit(20)
+        result[:notes] = Note.where(noteable_type: 'issue').where(project_id: project.id).where("note like :query", query: "%#{query}%").order('updated_at DESC').limit(20)
+        result[:total_results] = %w(issues merge_requests notes).sum { |items| result[items.to_sym].size }
       end
 
       result
@@ -30,6 +31,7 @@ module Search
         merge_requests: [],
         issues: [],
         blobs: [],
+        notes: [],
         total_results: 0,
       }
     end

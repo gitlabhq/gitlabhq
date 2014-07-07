@@ -29,17 +29,17 @@ Suppose we want to synchronize the GitLab group 'example group' with the LDAP gr
 
 1. As an owner, go to the group settings page for 'example group'.
 
-[LDAP group settings](ldap/select_group_cn.png)
+![LDAP group settings](ldap/select_group_cn.png)
 
 As an admin you can also go to the group edit page in the admin area.
 
-[LDAP group settings for admins](ldap/select_group_cn_admin.png)
+![LDAP group settings for admins](ldap/select_group_cn_admin.png)
 
 2. Enter 'Engineering' as the LDAP Common Name (CN) in the 'LDAP Group cn' field.
 
 3. Enter a default group access level in the 'LDAP Access' field; let's say Developer.
 
-[LDAP group settings filled in](ldap/select_group_cn_engineering.png)
+![LDAP group settings filled in](ldap/select_group_cn_engineering.png)
 
 4. Save your changes to the group settings.
 
@@ -60,3 +60,25 @@ If this is the case, these users will not be affected by LDAP group synchronizat
 
 If you are using ActiveDirectory, it is possible to create nested LDAP groups: the 'Engineering' LDAP group may contain another LDAP group 'Software', with 'Software' containing LDAP users Alice and Bob.
 GitLab will recognize Alice and Bob as members of the 'Engineering' group.
+
+## Define GitLab admin status via LDAP
+
+It is possible to configure GitLab Enterprise Edition (7.1 and newer) so that GitLab admin rights are bestowed on the members of a given LDAP group.
+GitLab administrator users who do not have LDAP enabled are not affected by the LDAP admin group feature.
+
+### Enabling the admin group feature
+
+Below we assume that you have an LDAP group with the common name (CN) 'GitLab administrators' containing the users that should be GitLab administrators.
+We recommend that you keep a non-LDAP GitLab administrator user around on your GitLab instance in case you accidentally remove the admin status from your own LDAP-enabled GitLab user.
+
+For omnibus-gitlab, add the following to `/etc/gitlab/gitlab.rb` and run `gitlab-ctl reconfigure`.
+
+```ruby
+gitlab_rails['ldap_admin_group'] = 'GitLab administrators'
+```
+
+For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
+
+```yaml
+    admin_group: 'Gitlab administrators'
+```

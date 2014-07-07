@@ -92,4 +92,51 @@ describe Gitlab::LDAP::Access do
       end
     end
   end
+
+  describe :update_admin_status do
+    let(:gitlab_user) { create(:user, provider: 'ldap', extern_uid: "admin2")}
+    let(:gitlab_admin) { create(:admin, provider: 'ldap', extern_uid: "admin2")}
+
+    before do
+      Gitlab.config.ldap['admin_group'] = "GLAdmins"
+      ldap_user_entry = Net::LDAP::Entry.new
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(ldap_user_entry) }
+      Gitlab::LDAP::Person.any_instance.stub(:uid) { 'admin2' }
+    end
+
+    it "should give admin privileges to an User" do
+      admin_group = Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
+cn: #{Gitlab.config.ldap['admin_group']}
+description: GitLab admins
+gidnumber: 42
+memberuid: admin1
+memberuid: admin2
+memberuid: admin3
+objectclass: top
+objectclass: posixGroup
+})
+      Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(admin_group) }
+      expect(gitlab_user.admin?).to be false
+      access.update_admin_status(gitlab_user)
+      expect(gitlab_user.admin?).to be true
+    end
+
+    it "should remove admin privileges from an User" do
+      admin_group = Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
+cn: #{Gitlab.config.ldap['admin_group']}
+description: GitLab admins
+gidnumber: 42
+memberuid: admin1
+memberuid: admin3
+objectclass: top
+objectclass: posixGroup
+})
+      Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(admin_group) }
+      expect(gitlab_admin.admin?).to be true
+      access.update_admin_status(gitlab_admin)
+      expect(gitlab_admin.admin?).to be false
+    end
+  end
 end

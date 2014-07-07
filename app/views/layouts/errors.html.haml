@@ -4,7 +4,6 @@
   %body{class: "#{app_theme} application"}
     = render "layouts/head_panel", title: "" if current_user
     = render "layouts/flash"
-    .container
-      .content
-        %center.padded.prepend-top-20
-          = yield
+    .container.navless-container
+      .error-page
+        = yield

@@ -1,3 +1,5 @@
 - [Workflow](workflow.md)
 - [Project Features](project_features.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
+- [Groups](groups.md)
+- [Share projects with other groups](share_projects_with_other_groups.md)
