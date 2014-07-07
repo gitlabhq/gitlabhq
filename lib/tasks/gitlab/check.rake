@@ -216,12 +216,7 @@ namespace :gitlab do
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
-        message = if sanitize
-            "#{project.namespace_id.to_s.yellow}/#{project.id.to_s.yellow} ... "
-          else
-            "#{project.name_with_namespace.yellow} ... "
-          end
-        print message
+        print sanitized_message(project)
 
         if project.satellite.exists?
           puts "yes".green
@@ -530,12 +525,7 @@ namespace :gitlab do
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
-        message = if sanitize
-                    "#{project.id.to_s.yellow} ... "
-                  else
-                    "#{project.name_with_namespace.yellow} ... "
-                  end
-        print message
+        print sanitized_message(project)
 
         if project.empty_repo?
           puts "repository is empty".magenta
@@ -598,12 +588,7 @@ namespace :gitlab do
       puts ""
 
       Project.find_each(batch_size: 100) do |project|
-        message = if sanitize
-            "#{project.namespace_id.to_s.yellow}/#{project.id.to_s.yellow} ... "
-          else
-            "#{project.name_with_namespace.yellow} ... "
-          end
-        print message
+        print sanitized_message(project)
 
         if project.namespace
           puts "yes".green
@@ -851,6 +836,14 @@ namespace :gitlab do
 
   def omnibus_gitlab?
     Dir.pwd == '/opt/gitlab/embedded/service/gitlab-rails'
+  end
+
+  def sanitized_message(project)
+    if sanitize
+      "#{project.namespace_id.to_s.yellow}/#{project.id.to_s.yellow} ... "
+    else
+      "#{project.name_with_namespace.yellow} ... "
+    end
   end
 
   def sanitize
