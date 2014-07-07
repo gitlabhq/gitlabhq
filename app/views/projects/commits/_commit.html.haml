@@ -7,7 +7,10 @@
       - if commit.description?
         %a.text-expander.js-toggle-button ...
 
-    = link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
+    - if @path.present?
+      = link_to "Browse File »", project_blob_path(project, tree_join(commit.id, @path)), class: "pull-right"
+    - else
+      = link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
     .notes_count
       - if @note_counts
         - note_count = @note_counts.fetch(commit.id, 0)
