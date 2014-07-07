@@ -331,6 +331,8 @@ To make sure you didn't miss anything run a more thorough check with:
 
 If all items are green, then congratulations on successfully installing GitLab!
 
+NOTE: Supply `SANITIZE=true` environment variable to `gitlab:check` to omit project names from the output of the check command.
+
 ### Initial Login
 
 Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has created an admin account for you. You can use it to log in:
