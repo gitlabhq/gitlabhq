@@ -68,7 +68,7 @@ class ApplicationController < ActionController::Base
       flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       new_user_session_path
     else
-      @return_to || root_path
+      super
     end
   end
 
