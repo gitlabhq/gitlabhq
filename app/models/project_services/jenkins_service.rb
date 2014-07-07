@@ -74,11 +74,12 @@ class JenkinsService < CiService
     end
 
     if response.code == 200
-      if response.include?('alt="Success"')
+      status = Nokogiri.parse(response).xpath('//img[@class="build-caption-status-icon"]').first.attributes['alt'].value
+      if status.include?('Success')
         'success'
-      elsif response.include?('alt="Failed"') || response.include?('alt="Aborted"')
+      elsif status.include?('Failed') || status.include?('Aborted')
         'failed'
-      elsif response.include?('alt="In progress"')
+      elsif status.include?('In progress')
         'running'
       else
         'pending'
