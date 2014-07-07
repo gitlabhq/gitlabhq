@@ -250,7 +250,7 @@ Parameters:
 + `description` (optional) - short project description
 + `issues_enabled` (optional)
 + `merge_requests_enabled` (optional)
-+ `wiki_enabled` (optional) 
++ `wiki_enabled` (optional)
 + `snippets_enabled` (optional)
 + `public` (optional) - if `true` same as setting visibility_level = 20
 + `visibility_level` (optional)
@@ -273,7 +273,7 @@ Parameters:
 + `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
 + `merge_requests_enabled` (optional)
-+ `wiki_enabled` (optional) 
++ `wiki_enabled` (optional)
 + `snippets_enabled` (optional)
 + `public` (optional) - if `true` same as setting visibility_level = 20
 + `visibility_level` (optional)
@@ -421,6 +421,7 @@ Parameters:
   "push_events": "true",
   "issues_events": "true",
   "merge_requests_events": "true",
+  "tag_push_events": "true",
   "created_at": "2012-10-12T17:04:47Z"
 }
 ```
@@ -441,6 +442,7 @@ Parameters:
 + `push_events` - Trigger hook on push events
 + `issues_events` - Trigger hook on issues events
 + `merge_requests_events` - Trigger hook on merge_requests events
++ `tag_push_events` - Trigger hook on tag push events
 
 
 ### Edit project hook
@@ -459,6 +461,7 @@ Parameters:
 + `push_events` - Trigger hook on push events
 + `issues_events` - Trigger hook on issues events
 + `merge_requests_events` - Trigger hook on merge_requests events
++ `tag_push_events` - Trigger hook on tag push events
 
 
 ### Delete project hook

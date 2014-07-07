@@ -21,6 +21,7 @@ class WebHook < ActiveRecord::Base
   default_value_for :push_events, true
   default_value_for :issues_events, false
   default_value_for :merge_requests_events, false
+  default_value_for :tag_push_events, false
 
   # HTTParty timeout
   default_timeout 10
