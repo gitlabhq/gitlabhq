@@ -107,6 +107,13 @@ describe User do
         expect(user).to be_invalid
       end
     end
+
+    describe "username" do
+      it "cannot start with ?" do
+        user = build(:user, username: "?a")
+        expect(user).to be_invalid
+      end
+    end
   end
 
   describe "Respond to" do
