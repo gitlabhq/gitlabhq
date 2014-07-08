@@ -7,9 +7,9 @@ class DashboardController < ApplicationController
 
 
   def show
-    # Fetch only 30 projects.
+    # Fetch only 10 projects.
     # If user needs more - point to Dashboard#projects page
-    @projects_limit = 30
+    @projects_limit = 10
 
     @groups = current_user.authorized_groups.sort_by(&:human_name)
     @has_authorized_projects = @projects.count > 0
