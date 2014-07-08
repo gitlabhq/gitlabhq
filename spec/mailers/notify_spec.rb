@@ -322,6 +322,35 @@ describe Notify do
           end
         end
 
+        describe 'status changed' do
+          let(:status) { 'reopened' }
+          subject { Notify.merge_request_status_email(recipient.id, merge_request.id, status, current_user) }
+
+          it_behaves_like 'an answer to an existing thread', 'merge_request'
+
+          it 'is sent as the author' do
+            sender = subject.header[:from].addrs[0]
+            sender.display_name.should eq(current_user.name)
+            sender.address.should eq(gitlab_sender)
+          end
+
+          it 'has the correct subject' do
+            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/i
+          end
+
+          it 'contains the new status' do
+            should have_body_text /#{status}/i
+          end
+
+          it 'contains the user name' do
+            should have_body_text /#{current_user.name}/i
+          end
+
+          it 'contains a link to the merge request' do
+            should have_body_text /#{project_merge_request_path project, merge_request}/
+          end
+        end
+
         describe 'that are merged' do
           subject { Notify.merged_merge_request_email(recipient.id, merge_request.id, merge_author.id) }
 
