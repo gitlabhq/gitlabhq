@@ -34,4 +34,18 @@ describe Projects::BlobController do
       it { should respond_with(:not_found) }
     end
   end
+
+  describe 'GET show with tree path' do
+    render_views
+
+    before do
+      get :show, project_id: project.to_param, id: id
+      controller.instance_variable_set(:@blob, nil)
+    end
+
+    context 'redirect to tree' do
+      let(:id) { 'master/doc' }
+      it { should redirect_to("/#{project.path_with_namespace}/tree/master/doc") }
+    end
+  end
 end

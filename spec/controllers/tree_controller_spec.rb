@@ -40,4 +40,17 @@ describe Projects::TreeController do
       it { should respond_with(:not_found) }
     end
   end
+
+  describe 'GET show with blob path' do
+    render_views
+
+    before do
+      get :show, project_id: project.to_param, id: id
+    end
+
+    context 'redirect to blob' do
+      let(:id) { 'master/README.md' }
+      it { should redirect_to("/#{project.path_with_namespace}/blob/master/README.md") }
+    end
+  end
 end
