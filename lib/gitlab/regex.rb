@@ -72,7 +72,7 @@ module Gitlab
     end
 
     def default_regex
-      /\A[.?]?[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+      /\A[.]?[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
     end
   end
 end
