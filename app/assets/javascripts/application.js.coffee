@@ -23,7 +23,7 @@
 #= require g.raphael-min
 #= require g.bar-min
 #= require branch-graph
-#= require highlightjs.min
+#= require highlight.pack
 #= require ace/ace
 #= require d3
 #= require underscore
