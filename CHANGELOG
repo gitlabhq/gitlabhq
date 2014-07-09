@@ -86,6 +86,7 @@ v 6.9.0
   - Fix wiki backup skip bug
   - Two Step MR creation process
   - Remove unwanted files from satellite working directory with git clean -fdx
+  - Do not accept merge request if contains `WIP` label
   - Accept merge request via API (sponsored by O'Reilly Media)
   - Add more access checks during API calls
   - Block SSH access for 'disabled' Active Directory users
@@ -132,7 +133,7 @@ v 6.7.0
   - Blob and tree gfm links to anchors work
   - Piwik Integration (Sebastian Winkler)
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
-  - Fix CI status for merge requests from fork 
+  - Fix CI status for merge requests from fork
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
   - New page load indicator that includes a spinner that scrolls with the page
   - Converted all the help sections into markdown
@@ -323,7 +324,7 @@ v 6.2.0
   - Store the sessions in Redis instead of the cookie store
   - Fixed relative links in markdown
   - User must confirm their email if signup enabled
-  - User must confirm changed email 
+  - User must confirm changed email
 
 v 6.1.0
   - Project specific IDs for issues, mr, milestones

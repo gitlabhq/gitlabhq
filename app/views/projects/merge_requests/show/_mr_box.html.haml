@@ -5,6 +5,8 @@
         Merged
       - elsif @merge_request.closed?
         Closed
+      - elsif @merge_request.wip?
+        WIP
       - else
         Open
 

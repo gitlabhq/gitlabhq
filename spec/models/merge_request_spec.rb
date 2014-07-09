@@ -118,4 +118,30 @@ describe MergeRequest do
     let(:backref_text) { "merge request !#{subject.iid}" }
     let(:set_mentionable_text) { ->(txt){ subject.title = txt } }
   end
+
+  describe '#wip?' do
+    subject { merge_request.wip? }
+
+    let!(:merge_request) { create(:merge_request, label_list: label_list) }
+
+    context 'contains "WIP" label' do
+      let(:label_list) { 'test, WIP' }
+      it { should be true }
+    end
+
+    context 'contains "wip" label' do
+      let(:label_list) { 'test, wip' }
+      it { should be true }
+    end
+
+    context 'contains "*WIP*" label' do
+      let(:label_list) { 'test, wipeout' }
+      it { should be false }
+    end
+
+    context 'not contains "WIP" label' do
+      let(:label_list) { 'test' }
+      it { should be false }
+    end
+  end
 end

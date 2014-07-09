@@ -317,4 +317,9 @@ class MergeRequest < ActiveRecord::Base
       source_project.repository.branch_names
     end
   end
+
+  # whether this is WIP merge request
+  def wip?
+    labels.map(&:name).any? { |label| label =~ /^wip$/i }
+  end
 end

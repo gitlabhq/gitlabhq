@@ -53,7 +53,7 @@
           Labels
         .col-sm-10
           = f.text_field :label_list, maxlength: 2000, class: "form-control"
-          %p.hint Separate labels with commas.
+          %p.hint Separate labels with commas. If input "WIP", this merge request will not be able to accept
 
   .form-actions
     - if @merge_request.new_record?

@@ -96,6 +96,8 @@ module IssuesHelper
       'issue-box-merged'
     elsif item.closed?
       'issue-box-closed'
+    elsif item.respond_to?(:wip?) && item.wip?
+      'issue-box-wip'
     else
       'issue-box-open'
     end

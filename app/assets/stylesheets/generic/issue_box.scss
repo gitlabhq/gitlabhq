@@ -50,6 +50,19 @@
     }
   }
 
+  &.issue-box-wip {
+    border-color: #cea61b;
+    .state {
+      background-color: #fcf8e3;
+      border-color: #faebcc;
+      color: #8a6d3b;
+      .state-label {
+        background: #cea61b;
+        color: #FFF;
+      }
+    }
+  }
+
   .control-group {
     margin-bottom: 0;
   }

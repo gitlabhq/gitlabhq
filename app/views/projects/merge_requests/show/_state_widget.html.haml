@@ -5,7 +5,10 @@
   .panel-body
     - if @merge_request.open?
       - if @merge_request.source_branch_exists? && @merge_request.target_branch_exists?
-        = render "projects/merge_requests/show/mr_accept"
+        - if @merge_request.wip?
+          = render "projects/merge_requests/show/wip_accept"
+        - else
+          = render "projects/merge_requests/show/mr_accept"
       - else
         = render "projects/merge_requests/show/no_accept"
 
