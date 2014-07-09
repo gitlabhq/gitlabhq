@@ -62,21 +62,20 @@ module Gitlab
         # Get LDAP user entry
         ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
 
-        if ldap_user.entry.respond_to?(Gitlab.config.ldap['sync_ssh_keys'].to_sym)
-          sshkeys = ldap_user.entry[Gitlab.config.ldap['sync_ssh_keys'].to_sym]
-        else
-          sshkeys = []
-        end
-        sshkeys.each do |key|
-          unless user.keys.find_by_key(key)
-            k = LDAPKey.new(title: "LDAP - #{Gitlab.config.ldap['sync_ssh_keys']}", key: key)
-            user.keys << k if k.save
+        user.keys.ldap.where.not(key: ldap_user.ssh_keys).each do |deleted_key|
+          Rails.logger.info "#{self.class.name}: removing LDAP SSH key #{deleted_key.key} from #{user.name} (#{user.id})"
+          unless deleted_key.destroy
+            Rails.logger.error "#{self.class.name}: failed to remove LDAP SSH key #{key.inspect} from #{user.name} (#{user.id})"
           end
         end
-        user.keys.to_a.each do |k|
-          if k.is_a?(LDAPKey) && !sshkeys.include?(k.key)
-            user.keys.delete(k)
-            k.destroy
+
+        (ldap_user.ssh_keys - user.keys.ldap.pluck(:key)).each do |key|
+          Rails.logger.info "#{self.class.name}: adding LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})"
+          new_key = LDAPKey.new(title: "LDAP - #{Gitlab.config.ldap['sync_ssh_keys']}", key: key)
+          new_key.user = user
+          unless new_key.save
+            Rails.logger.error "#{self.class.name}: failed to add LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})\n"\
+              "error messages: #{new_key.errors.messages}"
           end
         end
       end

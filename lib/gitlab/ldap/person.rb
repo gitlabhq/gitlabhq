@@ -46,11 +46,20 @@ module Gitlab
         entry.dn
       end
 
-      def entry
-        @entry
+      def ssh_keys
+        ssh_keys_attribute = Gitlab.config.ldap['sync_ssh_keys'].to_sym
+        if entry.respond_to?(ssh_keys_attribute)
+          entry[ssh_keys_attribute]
+        else
+          []
+        end
       end
 
       private
+
+      def entry
+        @entry
+      end
 
       def adapter
         @adapter ||= Gitlab::LDAP::Adapter.new
