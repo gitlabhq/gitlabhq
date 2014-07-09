@@ -62,19 +62,14 @@ module Gitlab
         # Get LDAP user entry
         ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
 
-        if ldap_user.entry.respond_to?(Gitlab.config.ldap['sync_ssh_keys'].to_sym)
-          sshkeys = ldap_user.entry[Gitlab.config.ldap['sync_ssh_keys'].to_sym]
-        else
-          sshkeys = []
-        end
-        sshkeys.each do |key|
+        ldap_user.ssh_keys.each do |key|
           unless user.keys.find_by_key(key)
             k = LDAPKey.new(title: "LDAP - #{Gitlab.config.ldap['sync_ssh_keys']}", key: key)
             user.keys << k if k.save
           end
         end
         user.keys.to_a.each do |k|
-          if k.is_a?(LDAPKey) && !sshkeys.include?(k.key)
+          if k.is_a?(LDAPKey) && !ldap_user.ssh_keys.include?(k.key)
             user.keys.delete(k)
             k.destroy
           end
