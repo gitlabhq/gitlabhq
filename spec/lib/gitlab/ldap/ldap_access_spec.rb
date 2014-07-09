@@ -88,6 +88,7 @@ describe Gitlab::LDAP::Access do
 
       expect(user_ldap.keys.size).to be(0)
       access.update_ssh_keys(user_ldap)
+      user_ldap.reload
       expect(user_ldap.keys.size).to be(1)
     end
 
