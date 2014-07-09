@@ -1,6 +1,7 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
@@ -27,6 +28,20 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
+  def authenticate_user_from_token!
+    user_token = params[:user_token].presence
+    user = user_token && User.find_by_authentication_token(user_token.to_s)
+
+    if user
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    end
+  end
 
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace

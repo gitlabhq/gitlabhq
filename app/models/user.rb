@@ -52,6 +52,7 @@ require 'file_size_validator'
 class User < ActiveRecord::Base
   include Gitlab::ConfigHelper
   extend Gitlab::ConfigHelper
+  include TokenAuthenticatable
 
   default_value_for :admin, false
   default_value_for :can_create_group, gitlab_config.default_can_create_group
@@ -60,7 +61,7 @@ class User < ActiveRecord::Base
   default_value_for :projects_limit, gitlab_config.default_projects_limit
   default_value_for :theme_id, gitlab_config.default_theme
 
-  devise :database_authenticatable, :token_authenticatable, :lockable, :async,
+  devise :database_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
 
   attr_accessor :force_random_password
