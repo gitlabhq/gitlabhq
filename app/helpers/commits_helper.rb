@@ -122,9 +122,11 @@ module CommitsHelper
     old_lines = []
     new_lines = []
 
-    max_length.times do |line_index|
-      line_index1 = line_index - offset1
-      line_index2 = line_index - offset2
+    line_index1 = 0
+    line_index2 = 0
+    line_index = 0
+
+    while line_index1 < max_length && line_index2 < max_length
       deleted_line = deleted_lines[line_index1 + 1]
       added_line = added_lines[line_index2 + 1]
       old_line = old_file.lines[line_index1] if old_file
@@ -175,6 +177,10 @@ module CommitsHelper
       else
         new_lines[line_index].type = :deleted
       end
+
+      line_index += 1
+      line_index1 = line_index - offset1
+      line_index2 = line_index - offset2
     end
 
     return old_lines, new_lines
