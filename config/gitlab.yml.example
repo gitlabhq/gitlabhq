@@ -168,6 +168,13 @@ production: &base
     #
     admin_group: ''
 
+    # Name of attribute which holds a ssh public key of the user object.
+    # If false or nil, SSH key syncronisation will be disabled.
+    #
+    #   Ex. sshpublickey
+    #
+    sync_ssh_keys: false
+
   ## OmniAuth settings
   omniauth:
     # Allow login via Twitter, Google, etc. using OmniAuth providers

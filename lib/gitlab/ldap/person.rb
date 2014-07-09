@@ -46,11 +46,11 @@ module Gitlab
         entry.dn
       end
 
-      private
-
       def entry
         @entry
       end
+
+      private
 
       def adapter
         @adapter ||= Gitlab::LDAP::Adapter.new

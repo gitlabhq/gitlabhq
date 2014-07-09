@@ -82,3 +82,24 @@ For installations from source, add the following setting in the 'ldap' section o
 ```yaml
     admin_group: 'Gitlab administrators'
 ```
+
+## Synchronising user SSH keys with LDAP
+
+It is possible to configure GitLab Enterprise Edition (7.1 and newer) so that users have their SSH public keys synchronised with an attribute in their LDAP object.
+Existing SSH public keys that are manually manged in GitLab are not affected by this feature.
+
+### Enabling the key synchronisation feature
+
+Below we assume that you have LDAP users with an attribute  'sshpublickey' containing the users ssh public key.
+
+For omnibus-gitlab, add the following to `/etc/gitlab/gitlab.rb` and run `gitlab-ctl reconfigure`.
+
+```ruby
+gitlab_rails['ldap_sync_ssh_keys'] = 'sshpublickey'
+```
+
+For installations from source, add the following setting in the 'ldap' section of gitlab.yml, and run `service gitlab reload` afterwards.
+
+```yaml
+    sync_ssh_keys: 'sshpublickey'
+```
