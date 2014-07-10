@@ -30,8 +30,13 @@ class ApplicationController < ActionController::Base
   protected
 
   # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
+  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
   def authenticate_user_from_token!
-    user_token = params[:user_token].presence
+    user_token = if params[:authenticity_token].presence
+                   params[:authenticity_token].presence
+                 elsif params[:private_token].presence
+                   params[:private_token].presence
+                 end
     user = user_token && User.find_by_authentication_token(user_token.to_s)
 
     if user
