@@ -35,4 +35,42 @@ module DashboardHelper
     path << "?#{options.to_param}"
     path
   end
+
+  def assigned_entities_count(current_user, entity, scope = nil)
+    items = current_user.send("assigned_" + entity.pluralize).opened
+
+    if scope.kind_of?(Group)
+      items = items.of_group(scope)
+    elsif scope.kind_of?(Project)
+      items = items.of_projects(scope)
+    end
+
+    items.count
+  end
+
+  def authored_entities_count(current_user, entity, scope = nil)
+    items = current_user.send(entity.pluralize).opened
+
+    if scope.kind_of?(Group)
+      items = items.of_group(scope)
+    elsif scope.kind_of?(Project)
+      items = items.of_projects(scope)
+    end
+
+    items.count
+  end
+
+  def authorized_entities_count(current_user, entity, scope = nil)
+    items = entity.classify.constantize.opened
+
+    if scope.kind_of?(Group)
+      items = items.of_group(scope)
+    elsif scope.kind_of?(Project)
+      items = items.of_projects(scope)
+    else
+      items = items.of_projects(current_user.authorized_projects)
+    end
+
+    items.count
+  end
 end

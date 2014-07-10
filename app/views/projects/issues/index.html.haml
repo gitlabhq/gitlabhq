@@ -4,6 +4,6 @@
     %i.icon-list.icon-2x
   .col-md-3.responsive-side
     = render 'shared/project_filter', project_entities_path: project_issues_path(@project),
-             labels: true, redirect: 'issues'
+             labels: true, redirect: 'issues', entity: 'issue'
   .col-md-9.issues-holder
     = render "issues"
