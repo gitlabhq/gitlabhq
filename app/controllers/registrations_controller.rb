@@ -28,4 +28,8 @@ class RegistrationsController < Devise::RegistrationsController
   def signup_enabled?
     redirect_to new_user_session_path unless Gitlab.config.gitlab.signup_enabled
   end
+
+  def sign_up_params
+    params.require(:user).permit(:username, :email, :name, :password, :password_confirmation)
+  end
 end
