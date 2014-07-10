@@ -29,11 +29,9 @@
   .description
     - @group_milestone.milestones.each do |milestone|
       %hr
-      %strong
+      %h4
         = link_to "#{milestone.project.name} - #{milestone.title}", project_milestone_path(milestone.project, milestone)
         %span.pull-right= milestone.expires_at
-      %br
-      %br
       = preserve do
         - if milestone.description.present?
           = milestone.description
