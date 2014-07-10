@@ -138,7 +138,7 @@ module GitlabMarkdownHelper
   # If we are at doc/api/README.md and the README.md contains relative links like [Users](users.md)
   # this takes the request path(doc/api/README.md), and replaces the README.md with users.md so the path looks like doc/api/users.md
   # If we are at doc/api and the README.md shown in below the tree view
-  # this takes the rquest path(doc/api) and adds users.md so the path looks like doc/api/users.md
+  # this takes the request path(doc/api) and adds users.md so the path looks like doc/api/users.md
   def build_nested_path(path, request_path)
     return request_path if path == ""
     return path unless request_path
