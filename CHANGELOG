@@ -19,6 +19,7 @@ v 7.1.0
   - Fix LDAP TLS authentication (Boris HUISGEN)
   - Show VERSION information on project sidebar
   - Improve branch removal logic when accept MR
+  - Fix bug where comment form is spawned inside the Reply button
 
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar
