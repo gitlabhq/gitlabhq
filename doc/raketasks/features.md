@@ -18,21 +18,3 @@ New path: `git@example.org:username/myrepo.git` or `git@example.org:groupname/my
 ```
 bundle exec rake gitlab:enable_namespaces RAILS_ENV=production
 ```
-
-## Rebuild project satellites
-
-This command will build missing satellites for projects. After this you will be able to **merge a merge request** via GitLab and use the **online editor**.
-
-```
-bundle exec rake gitlab:satellites:create RAILS_ENV=production
-```
-
-Example output:
-
-```
-Creating satellite for abcd.git
-[git clone output]
-Creating satellite for abcd2.git
-[git clone output]
-done
-```

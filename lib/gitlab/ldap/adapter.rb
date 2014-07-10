@@ -14,7 +14,15 @@ module Gitlab
       end
 
       def self.adapter_options
-        encryption = config['method'].to_s == 'ssl' ? :simple_tls : nil
+        encryption =
+          case config['method'].to_s
+          when 'ssl'
+            :simple_tls
+          when 'tls'
+            :start_tls
+          else
+            nil
+          end
 
         options = {
           host: config['host'],

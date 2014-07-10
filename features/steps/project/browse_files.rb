@@ -62,4 +62,32 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_content "File name"
     page.should have_content "Commit message"
   end
+
+  step 'I click on app directory' do
+    click_link 'app'
+  end
+
+  step 'I click on history link' do
+    click_link 'history'
+  end
+
+  step 'I see Browse dir link' do
+    page.should have_link 'Browse Dir »'
+    page.should_not have_link 'Browse Code »'
+  end
+
+  step 'I click on readme file' do
+    click_link 'README.md'
+  end
+
+  step 'I see Browse file link' do
+    page.should have_link 'Browse File »'
+    page.should_not have_link 'Browse Code »'
+  end
+
+  step 'I see Browse code link' do
+    page.should have_link 'Browse Code »'
+    page.should_not have_link 'Browse File »'
+    page.should_not have_link 'Browse Dir »'
+  end
 end

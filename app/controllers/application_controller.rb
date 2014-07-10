@@ -1,6 +1,7 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
@@ -27,6 +28,25 @@ class ApplicationController < ActionController::Base
   end
 
   protected
+
+  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
+  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
+  def authenticate_user_from_token!
+    user_token = if params[:authenticity_token].presence
+                   params[:authenticity_token].presence
+                 elsif params[:private_token].presence
+                   params[:private_token].presence
+                 end
+    user = user_token && User.find_by_authentication_token(user_token.to_s)
+
+    if user
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    end
+  end
 
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
@@ -227,8 +247,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me) }
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :name, :password, :password_confirmation) }
+    devise_parameter_sanitizer.sanitize(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me) }
   end
 
   def hexdigest(string)

@@ -2,4 +2,4 @@
   %span.str-truncated
     = link_to [@project, merge_request] do
       %span.cgray ##{merge_request.iid}
-    = link_to_gfm truncate(merge_request.title, length: 60), [@project, merge_request]
+    = link_to_gfm merge_request.title, [@project, merge_request], title: merge_request.title

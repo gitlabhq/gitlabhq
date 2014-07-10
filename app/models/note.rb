@@ -25,8 +25,6 @@ class Note < ActiveRecord::Base
 
   default_value_for :system, false
 
-  attr_accessible :note, :noteable, :noteable_id, :noteable_type, :project_id,
-                  :attachment, :line_code, :commit_id
   attr_mentionable :note
 
   belongs_to :project
@@ -63,13 +61,13 @@ class Note < ActiveRecord::Base
     def create_status_change_note(noteable, project, author, status, source)
       body = "_Status changed to #{status}#{' by ' + source.gfm_reference if source}_"
 
-      create({
+      create(
         noteable: noteable,
         project: project,
         author: author,
         note: body,
         system: true
-      }, without_protection: true)
+      )
     end
 
     # +noteable+ was referenced from +mentioner+, by including GFM in either +mentioner+'s description or an associated Note.
@@ -88,7 +86,7 @@ class Note < ActiveRecord::Base
         note_options.merge!(noteable: noteable)
       end
 
-      create(note_options, without_protection: true)
+      create(note_options)
     end
 
     def create_milestone_change_note(noteable, project, author, milestone)
@@ -98,13 +96,13 @@ class Note < ActiveRecord::Base
                "_Milestone changed to #{milestone.title}_"
              end
 
-      create({
+      create(
         noteable: noteable,
         project: project,
         author: author,
         note: body,
         system: true
-      }, without_protection: true)
+      )
     end
 
     def create_assignee_change_note(noteable, project, author, assignee)
@@ -116,7 +114,7 @@ class Note < ActiveRecord::Base
         author: author,
         note: body,
         system: true
-      }, without_protection: true)
+      })
     end
 
     def discussions_from_notes(notes)

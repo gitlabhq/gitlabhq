@@ -27,7 +27,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def update
     @user_project_relation = project.users_projects.find_by(user_id: member)
-    @user_project_relation.update_attributes(params[:team_member])
+    @user_project_relation.update_attributes(member_params)
 
     unless @user_project_relation.valid?
       flash[:alert] = "User should have at least one role"
@@ -66,5 +66,9 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def member
     @member ||= User.find_by(username: params[:id])
+  end
+
+  def member_params
+    params.require(:team_member).permit(:user_id, :project_access)
   end
 end

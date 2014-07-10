@@ -3,7 +3,9 @@
 \
 Commits:
 - @commits.each do |commit|
-  #{commit.short_id} - #{truncate(commit.title, length: 40)}
+  #{commit.short_id} by #{commit.author_name}
+  #{commit.safe_message}
+  \- - - - -
 \
 \
 Changes:

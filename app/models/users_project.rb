@@ -16,8 +16,6 @@ class UsersProject < ActiveRecord::Base
   include Notifiable
   include Gitlab::Access
 
-  attr_accessible :user, :user_id, :project_access
-
   belongs_to :user
   belongs_to :project
 
@@ -126,7 +124,7 @@ class UsersProject < ActiveRecord::Base
       author_id: self.user.id
     )
 
-    notification_service.new_team_member(self)
+    notification_service.new_team_member(self) unless owner?
     system_hook_service.execute_hooks_for(self, :create)
   end
 

@@ -5,7 +5,9 @@
 %ul
   - @commits.each do |commit|
     %li
-      #{commit.short_id} - #{commit.title}
+      %strong #{commit.short_id}
+      %span by #{commit.author_name}
+      %pre #{commit.safe_message}
 
 %h4 Changes:
 - @diffs.each do |diff|

@@ -2,8 +2,6 @@
   = nav_link(controller: :issues) do
     = link_to project_issues_path(@project), class: "tab" do
       Browse Issues
-      - if current_controller?(:issues)
-        %span.badge.issue_counter #{@issues.total_count}
   = nav_link(controller: :milestones) do
     = link_to 'Milestones', project_milestones_path(@project), class: "tab"
   = nav_link(controller: :labels) do

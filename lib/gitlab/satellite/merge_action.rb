@@ -31,8 +31,9 @@ module Gitlab
             # push merge back to bare repo
             # will raise CommandFailed when push fails
             merge_repo.git.push(default_options, :origin, merge_request.target_branch)
+
             # remove source branch
-            if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch)
+            if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch) && !merge_request.for_fork?
               # will raise CommandFailed when push fails
               merge_repo.git.push(default_options, :origin, ":#{merge_request.source_branch}")
             end

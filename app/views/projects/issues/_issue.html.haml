@@ -38,9 +38,9 @@
   .issue-actions
     - if can? current_user, :modify_issue, issue
       - if issue.closed?
-        = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-small btn-grouped reopen_issue", remote: true
+        = link_to 'Reopen', project_issue_path(issue.project, issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-small btn-grouped reopen_issue btn-reopen", remote: true
       - else
-        = link_to 'Close', project_issue_path(issue.project, issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-small btn-grouped close_issue", remote: true
+        = link_to 'Close', project_issue_path(issue.project, issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-small btn-grouped close_issue btn-close", remote: true
       = link_to edit_project_issue_path(issue.project, issue), class: "btn btn-small edit-issue-link btn-grouped" do
         %i.icon-edit
         Edit

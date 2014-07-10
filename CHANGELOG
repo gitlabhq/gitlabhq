@@ -7,6 +7,19 @@ v 7.1.0
   - Add @all mention for comments
   - Dont show reply button if user is not signed in
   - Expose more information for issues with webhook
+  - Add a mention of the merge request into the default merge request commit message
+  - Imrpove code highlight, introduce support for more languages like Go, Clojure, Erlang etc
+  - Fix concurrency issue in repository download
+  - Dont allow repository name start with ?
+  - Improve email threading (Pierre de La Morinerie)
+  - Cleaner help page
+  - Group milestones
+  - Improved email notifications
+  - Contributors API (sponsored by Mobbr)
+  - Fix LDAP TLS authentication (Boris HUISGEN)
+  - Show VERSION information on project sidebar
+  - Improve branch removal logic when accept MR
+  - Fix bug where comment form is spawned inside the Reply button
 
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar

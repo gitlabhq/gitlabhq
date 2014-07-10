@@ -4,7 +4,7 @@
       = link_to edit_project_milestone_path(milestone.project, milestone), class: "btn btn-small edit-milestone-link btn-grouped" do
         %i.icon-edit
         Edit
-      = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-small btn-remove"
+      = link_to 'Close Milestone', project_milestone_path(@project, milestone, milestone: {state_event: :close }), method: :put, remote: true, class: "btn btn-small btn-close"
   %h4
     = link_to_gfm truncate(milestone.title, length: 100), project_milestone_path(milestone.project, milestone)
     - if milestone.expired? and not milestone.closed?

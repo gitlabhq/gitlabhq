@@ -150,6 +150,18 @@ module API
         compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to], MergeRequestDiff::COMMITS_SAFE_SIZE)
         present compare, with: Entities::Compare
       end
+
+      # Get repository contributors
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request:
+      #   GET /projects/:id/repository/contributors
+      get ':id/repository/contributors' do
+        authorize! :download_code, user_project
+
+        present user_project.repository.contributors, with: Entities::Contributor
+      end
     end
   end
 end

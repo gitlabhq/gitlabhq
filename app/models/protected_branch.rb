@@ -12,8 +12,6 @@
 class ProtectedBranch < ActiveRecord::Base
   include Gitlab::ShellAdapter
 
-  attr_accessible :name
-
   belongs_to :project
   validates :name, presence: true
   validates :project, presence: true

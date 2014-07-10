@@ -11,7 +11,7 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   end
 
   def create
-    @project.protected_branches.create(params[:protected_branch])
+    @project.protected_branches.create(protected_branch_params)
     redirect_to project_protected_branches_path(@project)
   end
 
@@ -22,5 +22,11 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
       format.html { redirect_to project_protected_branches_path }
       format.js { render nothing: true }
     end
+  end
+
+  private
+
+  def protected_branch_params
+    params.require(:protected_branch).permit(:name)
   end
 end

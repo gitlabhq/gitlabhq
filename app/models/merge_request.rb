@@ -36,10 +36,6 @@ class MergeRequest < ActiveRecord::Base
 
   delegate :commits, :diffs, :last_commit, :last_commit_short_sha, to: :merge_request_diff, prefix: nil
 
-  attr_accessible :title, :assignee_id, :source_project_id, :source_branch,
-                  :target_project_id, :target_branch, :milestone_id,
-                  :state_event, :description, :label_list
-
   attr_accessor :should_remove_source_branch
 
   # When this attribute is true some MR validation is ignored
@@ -62,11 +58,11 @@ class MergeRequest < ActiveRecord::Base
       transition closed: :reopened
     end
 
-    event :lock do
+    event :lock_mr do
       transition [:reopened, :opened] => :locked
     end
 
-    event :unlock do
+    event :unlock_mr do
       transition locked: :reopened
     end
 
@@ -297,6 +293,8 @@ class MergeRequest < ActiveRecord::Base
     message << title.to_s
     message << "\n\n"
     message << description.to_s
+    message << "\n\n"
+    message << "See merge request !#{iid}"
     message
   end
 

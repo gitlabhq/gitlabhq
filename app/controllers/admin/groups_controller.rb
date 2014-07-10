@@ -20,7 +20,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def create
-    @group = Group.new(params[:group])
+    @group = Group.new(group_params)
     @group.path = @group.name.dup.parameterize if @group.name
 
     if @group.save
@@ -32,7 +32,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def update
-    if @group.update_attributes(params[:group])
+    if @group.update_attributes(group_params)
       redirect_to [:admin, @group], notice: 'Group was successfully updated.'
     else
       render "edit"
@@ -55,5 +55,9 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def group
     @group = Group.find_by(path: params[:id])
+  end
+
+  def group_params
+    params.require(:group).permit(:name, :description, :path, :avatar)
   end
 end
