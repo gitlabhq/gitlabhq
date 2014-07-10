@@ -121,6 +121,7 @@ Feature: Groups
     Then I should see user "Mary Jane" in team list
     Then I should not see user "John Doe" in team list
 
+  # Group milestones
 
   Scenario: I should see group "Owned" milestone index page with no milestones
     When I visit group "Owned" page
@@ -138,4 +139,5 @@ Feature: Groups
     When I visit group "Owned" page
     And I click on group milestones
     And I click on one group milestone
-    Then I should see group milestone with all issues and MRs assigned to that milestone
+    Then I should see group milestone with descriptions and expiry date
+    And I should see group milestone with all issues and MRs assigned to that milestone
