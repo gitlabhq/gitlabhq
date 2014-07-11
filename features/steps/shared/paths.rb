@@ -332,6 +332,14 @@ module SharedPaths
   end
 
   # ----------------------------------------
+  # Public Groups
+  # ----------------------------------------
+
+  step 'I visit the public groups area' do
+    visit public_groups_path
+  end
+
+  # ----------------------------------------
   # Snippets
   # ----------------------------------------
 
