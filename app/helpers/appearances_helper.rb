@@ -1,4 +1,4 @@
-module BrandHelper
+module AppearancesHelper
   def brand_title
     'GitLab Community Edition'
   end
