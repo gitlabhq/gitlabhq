@@ -6,11 +6,6 @@ describe ProjectGroupLink do
     it { should belong_to(:project) }
   end
 
-  describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:group_id) }
-    it { should_not allow_mass_assignment_of(:project_id) }
-  end
-
   describe "Validation" do
     let!(:project_group_link) { create(:project_group_link) }
 
