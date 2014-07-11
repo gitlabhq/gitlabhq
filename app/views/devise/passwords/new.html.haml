@@ -1,14 +1,13 @@
-= form_for(resource, as: resource_name, url: password_path(resource_name), html: { class: "login-box", method: :post }) do |f|
-  %h3.page-title Reset password
-  .devise-errors
-    = devise_error_messages!
-  .clearfix.append-bottom-20
-    = f.email_field :email, placeholder: "Email",  class: "form-control", required: true
-  .clearfix.append-bottom-10
-    = f.submit "Reset password", class: "btn-primary btn"
-  %hr
-  %p
-    %span.light
-      Already have login and password?
-    %strong
-      = link_to "Sign in", new_session_path(resource_name)
+.login-box.panel.panel-default
+  .panel-heading
+    %h3.panel-title Reset password
+  .panel-body
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :post }) do |f|
+      .devise-errors
+        = devise_error_messages!
+      .clearfix.append-bottom-20
+        = f.email_field :email, placeholder: "Email",  class: "form-control", required: true
+      .clearfix.append-bottom-10
+        = f.submit "Reset password", class: "btn-primary btn"
+  .panel-footer
+    = render 'devise/shared/sign_in_link'
