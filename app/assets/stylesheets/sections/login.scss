@@ -6,11 +6,18 @@
   }
 
   .login-box{
-    max-width: 304px;
     position: relative;
-    @include border-radius(5px);
     margin: auto;
-    background: white;
+    padding: 20px;
+    background: #f5f5f5;
+    border: 1px solid #EEE;
+  }
+
+  .brand-image {
+    margin-bottom:  20px;
+    img {
+      max-width: 100%;
+    }
   }
 
   .login-logo{
@@ -19,7 +26,7 @@
   }
 
   .form-control {
-    background-color: #f1f1f1;
+    background-color: #FFF;
     font-size: 16px;
     padding: 14px 10px;
     width: 100%;
