@@ -15,8 +15,8 @@ Manage git repositories with fine grained access controls that keep your code se
 Perform code reviews and enhance collaboration with merge requests.
 Each project can also have an issue tracker and a wiki.
 
-Used by more than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
-Read more about GitLab at #{link_to "www.gitlab.com", "https://www.gitlab.com/", target: "_blank"}.
+Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
+Read more about GitLab at [about.gitlab.com](https://about.gitlab.com/).
 eos
     markdown default_text
   end
