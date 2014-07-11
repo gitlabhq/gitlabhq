@@ -1,15 +1,18 @@
-= form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put, class: "login-box" }) do |f|
-  %h3 Change your password
-  .devise-errors
-    = devise_error_messages!
-  = f.hidden_field :reset_password_token
-  %div
-    = f.password_field :password, class: "form-control top", placeholder: "New password", required: true
-  %div
-    = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
-  %div
-  .clearfix.append-bottom-10
-    = f.submit "Change my password", class: "btn btn-primary"
-    = link_to "Sign in", new_session_path(resource_name), class: "btn pull-right"
-  %div
-    = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
+.login-box.panel.panel-default
+  .panel-heading
+    %h3.panel-title Change your password
+  .panel-body
+    = form_for(resource, as: resource_name, url: password_path(resource_name), html: { method: :put }) do |f|
+      .devise-errors
+        = devise_error_messages!
+      = f.hidden_field :reset_password_token
+      %div
+        = f.password_field :password, class: "form-control top", placeholder: "New password", required: true
+      %div
+        = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
+      .clearfix.append-bottom-10
+        = f.submit "Change my password", class: "btn btn-primary"
+  .panel-footer
+    %p
+      = link_to "Didn't receive confirmation instructions?", new_confirmation_path(resource_name)
+    = render 'devise/shared/sign_in_link'

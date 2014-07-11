@@ -6,12 +6,6 @@
   }
 
   .login-box{
-    position: relative;
-    margin: auto;
-    padding: 20px;
-    background: #f5f5f5;
-    border: 1px solid #EEE;
-    @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
   }
 
   .brand-image {
@@ -27,7 +21,7 @@
   }
 
   .form-control {
-    background-color: #FFF;
+    background-color: #F5F5F5;
     font-size: 16px;
     padding: 14px 10px;
     width: 100%;
@@ -48,6 +42,10 @@
       border-top: 0;
       margin-bottom:0px;
       @include border-radius(0);
+    }
+
+    &:active, &:focus {
+      background-color: #FFF;
     }
   }
 
