@@ -38,4 +38,16 @@ Feature: Project Browse files
     And I click link "Diff"
     Then I see diff
 
+  Scenario: I can browse directory with Browse Dir
+    Given I click on app directory
+    And I click on history link
+    Then I see Browse dir link
 
+  Scenario: I can browse file with Browse File
+    Given I click on readme file
+    And I click on history link
+    Then I see Browse file link
+
+  Scenario: I can browse code with Browse Code
+    Given I click on history link
+    Then I see Browse code link

@@ -11,7 +11,6 @@ describe Notes::CreateService do
         project.team << [user, :master]
         opts = {
           note: 'Awesome comment',
-          description: 'please fix',
           noteable_type: 'Issue',
           noteable_id: issue.id
         }

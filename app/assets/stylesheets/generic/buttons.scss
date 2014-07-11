@@ -152,16 +152,16 @@
   }
 
   &.btn-close {
-    color: #B94A48;
-    font-weight: bold;
+    color: $bg_danger;
+    border-color: $border_danger;
     &:hover {
       color: #B94A48;
     }
   }
 
   &.btn-reopen {
-    color: #468847;
-    font-weight: bold;
+    color: $bg_success;
+    border-color: $border_success;
     &:hover {
       color: #468847;
     }

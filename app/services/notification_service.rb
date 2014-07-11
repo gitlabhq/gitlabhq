@@ -80,6 +80,10 @@ class NotificationService
     close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
 
+  def reopen_issue(issue, current_user)
+    reopen_resource_email(issue, issue.project, current_user, 'issue_status_changed_email', 'reopened')
+  end
+
   # When we merge a merge request we should send next emails:
   #
   #  * merge_request author if their notification level is not Disabled
@@ -89,10 +93,15 @@ class NotificationService
   def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
+    recipients.delete(current_user)
 
     recipients.each do |recipient|
       mailer.merged_merge_request_email(recipient.id, merge_request.id, current_user.id)
     end
+  end
+
+  def reopen_mr(merge_request, current_user)
+    reopen_resource_email(merge_request, merge_request.target_project, current_user, 'merge_request_status_email', 'reopened')
   end
 
   # Notify new user with email after creation
@@ -301,7 +310,9 @@ class NotificationService
   end
 
   def reassign_resource_email(target, project, current_user, method)
-    recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
+    assignee_id_was = previous_record(target, "assignee_id")
+
+    recipients = User.where(id: [target.assignee_id, assignee_id_was])
 
     # Add watchers to email list
     recipients = recipients.concat(project_watchers(project))
@@ -313,11 +324,29 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, target.assignee_id_was, current_user.id)
+      mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
+    end
+  end
+
+  def reopen_resource_email(target, project, current_user, method, status)
+    recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients.delete(current_user)
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, status, current_user.id)
     end
   end
 
   def mailer
     Notify.delay
+  end
+
+  def previous_record(object, attribute)
+    if object && attribute
+      if object.previous_changes.include?(attribute)
+        object.previous_changes[attribute].first
+      end
+    end
   end
 end

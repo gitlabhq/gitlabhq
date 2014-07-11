@@ -12,7 +12,7 @@ module Projects
     class TransferError < StandardError; end
 
     def execute
-      namespace_id = params.delete(:namespace_id)
+      namespace_id = params[:namespace_id]
       namespace = Namespace.find_by(id: namespace_id)
 
       if allowed_transfer?(current_user, project, namespace)

@@ -226,5 +226,9 @@ module API
 
       expose :same, as: :compare_same_ref
     end
+
+    class Contributor < Grape::Entity
+      expose :name, :email, :commits, :additions, :deletions
+    end
   end
 end

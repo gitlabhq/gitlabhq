@@ -26,7 +26,6 @@ describe GitlabCiService do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:project_id) }
   end
 
   describe 'commits methods' do

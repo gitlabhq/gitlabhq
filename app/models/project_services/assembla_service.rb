@@ -18,8 +18,6 @@
 #
 
 class AssemblaService < Service
-  attr_accessible :subdomain
-
   include HTTParty
 
   validates :token, presence: true, if: :activated?

@@ -20,9 +20,7 @@
 #  api_version    :string(255)
 
 class JiraService < Service
-
   include HTTParty
-  attr_accessible :project_url, :username, :password, :api_version
 
   validates :username, :password, presence: true, if: :activated?
   before_validation :set_api_version

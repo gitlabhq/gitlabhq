@@ -7,3 +7,7 @@
 .member-search-form {
   float: left;
 }
+
+.milestone-row {
+  @include str-truncated(90%);
+}

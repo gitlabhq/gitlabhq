@@ -376,7 +376,7 @@ class Notes
   ###
   replyToDiscussionNote: (e) =>
     form = $(".js-new-note-form")
-    replyLink = $(e.target)
+    replyLink = $(e.target).closest(".js-discussion-reply-button")
     replyLink.hide()
 
     # insert the form after the button

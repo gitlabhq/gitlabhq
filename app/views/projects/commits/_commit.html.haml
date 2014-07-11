@@ -7,7 +7,8 @@
       - if commit.description?
         %a.text-expander.js-toggle-button ...
 
-    = link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
+    = link_to_browse_code(project, commit)
+
     .notes_count
       - if @note_counts
         - note_count = @note_counts.fetch(commit.id, 0)
@@ -21,7 +22,8 @@
 
   - if commit.description?
     .commit-row-description.js-toggle-content
-      = simple_format(commit.description)
+      %pre
+        = commit.description
 
   .commit-row-info
     = commit_author_link(commit, avatar: true, size: 16)

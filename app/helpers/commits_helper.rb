@@ -180,6 +180,17 @@ module CommitsHelper
     return old_lines, new_lines
   end
 
+  def link_to_browse_code(project, commit)
+    if current_controller?(:projects, :commits)
+      if @repo.blob_at(commit.id, @path)
+        return link_to "Browse File »", project_blob_path(project, tree_join(commit.id, @path)), class: "pull-right"
+      elsif @path.present?
+        return link_to "Browse Dir »", project_tree_path(project, tree_join(commit.id, @path)), class: "pull-right"
+      end
+    end
+    link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and

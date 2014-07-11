@@ -59,7 +59,7 @@ module API
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
         attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
-        user = User.build_user(attrs, as: :admin)
+        user = User.build_user(attrs)
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
         if user.save
@@ -96,7 +96,7 @@ module API
 
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
-        if user.update_attributes(attrs, as: :admin)
+        if user.update_attributes(attrs)
           present user, with: Entities::UserFull
         else
           not_found!

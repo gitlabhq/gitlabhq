@@ -242,4 +242,25 @@ class Repository
       branches
     end
   end
+
+  def contributors
+    log = graph_log.group_by { |i| i[:author_email] }
+
+    log.map do |email, contributions|
+      contributor = Gitlab::Contributor.new
+      contributor.email = email
+
+      contributions.each do |contribution|
+        if contributor.name.blank?
+          contributor.name = contribution[:author_name]
+        end
+
+        contributor.commits += 1
+        contributor.additions += contribution[:additions] || 0
+        contributor.deletions += contribution[:deletions] || 0
+      end
+
+      contributor
+    end
+  end
 end

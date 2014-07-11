@@ -53,13 +53,9 @@ header {
       font-size: 18px;
 
       .app_logo { margin-left: -15px; }
+
       .title {
-        display: inline-block;
-        overflow: hidden;
-        text-overflow: ellipsis;
-        vertical-align: top;
-        white-space: nowrap;
-        max-width: 70%;
+        @include str-truncated(70%);
       }
 
       .navbar-collapse {
@@ -130,6 +126,7 @@ header {
     margin: 0;
     margin-left: 5px;
     @include header-font;
+    @include str-truncated(37%);
   }
 
   .profile-pic {
@@ -254,7 +251,7 @@ header {
 .search .search-input {
   width: 300px;
   &:focus {
-    width: 400px;
+    width: 330px;
   }
 }
 
@@ -262,7 +259,7 @@ header {
   .search .search-input {
     width: 200px;
     &:focus {
-      width: 300px;
+      width: 230px;
     }
   }
 }

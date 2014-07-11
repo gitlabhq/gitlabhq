@@ -18,9 +18,6 @@
 #
 
 class SlackService < Service
-  attr_accessible :room
-  attr_accessible :subdomain
-
   validates :room, presence: true, if: :activated?
   validates :subdomain, presence: true, if: :activated?
   validates :token, presence: true, if: :activated?

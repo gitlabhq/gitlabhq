@@ -4,39 +4,25 @@
 
 **[GitLab Flavored Markdown](#gitlab-flavored-markdown-gfm)**
 
-[Newlines](#newlines)
-
-[Multiple underscores in words](#multiple-underscores-in-words)
-
-[URL autolinking](#url-autolinking)
-
-[Code and Syntax Highlighting](#code-and-syntax-highlighting)
-
-[Emoji](#emoji)
-
-[Special GitLab references](#special-gitlab-references)
+* [Newlines](#newlines)
+* [Multiple underscores in words](#multiple-underscores-in-words)
+* [URL autolinking](#url-autolinking)
+* [Code and Syntax Highlighting](#code-and-syntax-highlighting)
+* [Emoji](#emoji)
+* [Special GitLab references](#special-gitlab-references)
 
 **[Standard Markdown](#standard-markdown)**
 
-[Headers](#headers)
-
-[Emphasis](#emphasis)
-
-[Lists](#lists)
-
-[Links](#links)
-
-[Images](#images)
-
-[Blockquotes](#blockquotes)
-
-[Inline HTML](#inline-html)
-
-[Horizontal Rule](#horizontal-rule)
-
-[Line Breaks](#line-breaks)
-
-[Tables](#tables)
+* [Headers](#headers)
+* [Emphasis](#emphasis)
+* [Lists](#lists)
+* [Links](#links)
+* [Images](#images)
+* [Blockquotes](#blockquotes)
+* [Inline HTML](#inline-html)
+* [Horizontal Rule](#horizontal-rule)
+* [Line Breaks](#line-breaks)
+* [Tables](#tables)
 
 **[References](#references)**
 

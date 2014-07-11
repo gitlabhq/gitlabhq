@@ -63,6 +63,8 @@ sudo gitlab-rake gitlab:check
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
+NOTE: Use SANITIZE=true for gitlab:check if you want to omit project names from the output.
+
 Example output:
 
 ```

@@ -1,7 +1,7 @@
 module Issues
   class UpdateService < Issues::BaseService
     def execute(issue)
-      state = params.delete('state_event') || params.delete(:state_event)
+      state = params[:state_event]
 
       case state
       when 'reopen'
@@ -10,7 +10,7 @@ module Issues
         Issues::CloseService.new(project, current_user, {}).execute(issue)
       end
 
-      if params.present? && issue.update_attributes(params)
+      if params.present? && issue.update_attributes(params.except(:state_event))
         issue.reset_events_cache
 
         if issue.previous_changes.include?('milestone_id')

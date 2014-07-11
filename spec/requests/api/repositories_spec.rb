@@ -128,7 +128,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /GET /projects/:id/repository/compare' do
+  describe 'GET /projects/:id/repository/compare' do
     it "should compare branches" do
       get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'simple_merge_request'
       response.status.should == 200
@@ -164,6 +164,20 @@ describe API::API, api: true  do
       json_response['commits'].should be_empty
       json_response['diffs'].should be_empty
       json_response['compare_same_ref'].should be_true
+    end
+  end
+
+  describe 'GET /projects/:id/repository/contributors' do
+    it 'should return valid data' do
+      get api("/projects/#{project.id}/repository/contributors", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      contributor = json_response.first
+      contributor['email'].should == 'dmitriy.zaporozhets@gmail.com'
+      contributor['name'].should == 'Dmitriy Zaporozhets'
+      contributor['commits'].should == 185
+      contributor['additions'].should == 66072
+      contributor['deletions'].should == 63013
     end
   end
 end

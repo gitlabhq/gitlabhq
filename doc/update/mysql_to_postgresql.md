@@ -91,7 +91,7 @@ cd tmp/backups/postgresql
 sudo -u git -H mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production
 
 # Clone the database converter
-sudo -u git -H git clone https://github.com/lanyrd/mysql-postgresql-converter.git
+sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 
 # Convert gitlabhq_production.mysql
 sudo -u git -H mkdir db

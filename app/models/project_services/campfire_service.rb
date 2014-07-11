@@ -18,8 +18,6 @@
 #
 
 class CampfireService < Service
-  attr_accessible :subdomain, :room
-
   validates :token, presence: true, if: :activated?
 
   def title

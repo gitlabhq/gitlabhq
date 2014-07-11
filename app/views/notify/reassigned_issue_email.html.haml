@@ -4,5 +4,8 @@
     from
     %strong #{@previous_assignee.name}
   to
-  %strong #{@issue.assignee_name}
+  - if @issue.assignee_id
+    %strong #{@issue.assignee_name}
+  - else
+    %strong Unassigned
 

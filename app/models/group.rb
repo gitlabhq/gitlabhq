@@ -19,18 +19,13 @@ require 'file_size_validator'
 class Group < Namespace
   has_many :users_groups, dependent: :destroy
   has_many :users, through: :users_groups
-
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
-
-  attr_accessible :ldap_cn, :ldap_access
 
   validates :ldap_access,
     inclusion: { in: UsersGroup.group_access_roles.values },
     presence: true,
     if: ->(group) { group.ldap_cn.present? }
-
-  attr_accessible :avatar
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }

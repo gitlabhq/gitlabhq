@@ -8,5 +8,7 @@
     %span.light (#{merge_request.source_project.name_with_namespace}:#{merge_request.source_branch} &rarr; #{merge_request.target_project.name_with_namespace}:#{merge_request.target_branch})
   - else
     %span.light (#{merge_request.source_branch} &rarr; #{merge_request.target_branch})
-  - if merge_request.closed?
-    %span.label Closed
+  - if merge_request.merged?
+    %span.label.label-primary Merged
+  - elsif merge_request.closed?
+    %span.label.label-danger Closed

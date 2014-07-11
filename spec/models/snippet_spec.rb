@@ -24,7 +24,6 @@ describe Snippet do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:author_id) }
   end
 
   describe "Validation" do

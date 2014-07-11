@@ -18,8 +18,6 @@
 #
 
 class JenkinsService < CiService
-  attr_accessible :project_url
-
   validates :project_url, presence: true, if: :activated?
 
   delegate :execute, to: :service_hook, prefix: nil
