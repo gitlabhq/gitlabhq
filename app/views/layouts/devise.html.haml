@@ -12,10 +12,22 @@
       .content
         .row
           .col-md-7
-            .brand-image
-              = brand_image
-            .brand_text
-              = brand_text
+            - if brand_item
+              .brand-image
+                = brand_image
+              .brand_text
+                = brand_text
+            - else
+              .brand-image.hidden-sm.hidden-xs
+                = image_tag 'brand_logo.png'
+              .brand_text.hidden-xs
+                %h2 Open source software to collaborate on code
+
+                %p.lead
+                  Manage git repositories with fine grained access controls that keep your code secure.
+                  Perform code reviews and enhance collaboration with merge requests.
+                  Each project can also have an issue tracker and a wiki.
+
           .col-md-5
             = yield
     %hr
