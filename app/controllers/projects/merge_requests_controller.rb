@@ -105,7 +105,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
         @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count)
         @force_suppress_diff = @suppress_diff
       rescue Gitlab::Satellite::BranchesWithoutParent
-        @error = "Selected branches have no common commit so they cannot be compared."
+        @error = "Selected branches have no common commit so they cannot be merged."
       end
     end
   end
