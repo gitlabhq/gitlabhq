@@ -18,6 +18,11 @@
           %i.icon-list-alt
           Changes
           %span.badge= @merge_request.diffs.size
+      %li.conflicts-tab{data: {action: "conflicts"}}
+        = link_to conflicts_project_merge_request_path(@project, @merge_request) do
+          %i.icon-resize-small
+          Conflicts
+          %span.badge= @merge_request.conflicts.size
 
   - content_for :note_actions do
     - if can?(current_user, :modify_merge_request, @merge_request)
@@ -29,6 +34,9 @@
   .diffs.tab-content
     - if current_page?(action: 'diffs')
       = render "projects/merge_requests/show/diffs"
+  .conflicts.tab-content
+    - if current_page?(action: 'conflicts')
+      = render "projects/merge_requests/show/conflicts"
   .notes.tab-content.voting_notes#notes{ class: (controller.action_name == 'show') ? "" : "hide" }
     = render "projects/notes/notes_with_form"
   .mr-loading-status

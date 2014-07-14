@@ -1,0 +1,52 @@
+.files
+  = form_tag [:resolve_conflict_merge, @project, @merge_request],
+      method: :post do |f|
+    - @conflicts.each_with_index do |file_conflicts, file_id|
+      .diff-file
+        .diff-header
+          %span= file_conflicts.path
+        .diff-content
+          %table.text-file
+            - file_conflicts.lines.each do |line|
+              - case line.type
+              - when :match
+                %tr.line_holder
+                  -# TODO dry this constant with diff view
+                  %td.old_line= '...'
+                  %td.line_content
+              - when :context
+                %tr.line_holder
+                  %td.old_line= line.number.to_s
+                  %td.line_content= line.content
+              - else
+                - radio_name = "#{file_id}-#{line.id}"
+                %tbody.radio_holder
+                  %tr.line_holder.new
+                    %td.old_line
+                      %label
+                        = radio_button_tag radio_name, 'ours', true, title: 'ours'
+                    %td.line_content.new
+                      -# TODO remove raw, set html_safe elsewhere considering inserted idiff spans.
+                      %pre>= raw line.ours
+                  %tr.line_holder.old
+                    %td.old_line
+                      %label
+                        = radio_button_tag radio_name, 'base', false, title: 'base'
+                    %td.line_content.old
+                      %pre>= raw line.base
+                  %tr.line_holder.theirs
+                    %td.old_line
+                      %label
+                        = radio_button_tag radio_name, 'theirs', false, title: 'theirs'
+                    %td.line_content
+                      %pre>= raw line.theirs
+                  %tr.line_holder.custom
+                    %td.old_line
+                      %label
+                        = radio_button_tag radio_name, 'custom', false, title: 'custom'
+                    %td.line_content
+                      = text_area_tag 'custom', line.custom[0..-2],
+                          class: 'form-control'
+-if current_user
+  .line_content
+    = button_tag 'Resolve conflicts and merge pull request.', class: 'btn btn-create accept_merge_request'

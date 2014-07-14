@@ -53,11 +53,17 @@
 
   .automerge_widget.cannot_be_merged.hide
     %h4
-      This request can't be merged with GitLab.
+      This request can't be merged automatically.
     %p
-      You should do it manually with
+      You can
       %strong
-        = link_to "command line", "#modal_merge_info", class: "how_to_merge_link", title: "How To Merge", "data-toggle" => "modal"
+        = link_to "resolve the conflicts here", conflicts_project_merge_request_path(@project, @merge_request)
+      or do it from the
+      %strong
+        = link_to "command line", "#modal_merge_info",
+            class: "how_to_merge_link",
+            title: "How to merge from the command line",
+            "data-toggle" => "modal"
 
   .automerge_widget.unchecked
     %p

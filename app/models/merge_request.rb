@@ -318,4 +318,73 @@ class MergeRequest < ActiveRecord::Base
       source_project.repository.branch_names
     end
   end
+
+  def conflicts
+    # TODO stub
+    [
+      # Context don't touch each other nor file borders.
+      OpenStruct.new(
+        path: 'conflict/conflict1.md',
+        lines: [
+          OpenStruct.new(type: :context,  content: 'a', number: 1),
+          OpenStruct.new(type: :context,  content: 'b', number: 2),
+          OpenStruct.new(type: :context,  content: 'c', number: 3),
+          OpenStruct.new(type: :conflict, id: 1,
+            ours:   %{d d <span class="idiff">2</span>\nd <span class="idiff">2</span> d\n},
+            base:   %{d <span class="idiff">d</span> <span class="idiff">d</span>\nd <span class="idiff">d</span> <span class="idiff">d</span>\n},
+            theirs: %{d <span class="idiff">1</span> d\nd d <span class="idiff">1</span>\n},
+            custom: %{d d 2\nd 2 d\n},
+          ),
+          OpenStruct.new(type: :context,  content: 'e', number: 5),
+          OpenStruct.new(type: :context,  content: 'f', number: 6),
+          OpenStruct.new(type: :context,  content: 'g', number: 7),
+          OpenStruct.new(type: :match),
+          OpenStruct.new(type: :context,  content: 'i', number: 9),
+          OpenStruct.new(type: :context,  content: 'j', number: 10),
+          OpenStruct.new(type: :context,  content: 'k', number: 11),
+          OpenStruct.new(type: :conflict, id: 2,
+            ours:   %{l l <span class="idiff">2</span>\nl <span class="idiff">2</span> l\n},
+            base:   %{l <span class="idiff">l</span> <span class="idiff">l</span>\nl <span class="idiff">l</span> <span class="idiff">l</span>\n},
+            theirs: %{l <span class="idiff">1</span> l\nl l <span class="idiff">1</span>\n},
+            custom: %{l l 2\nl 2 l\n},
+          ),
+          OpenStruct.new(type: :context,  content: 'm', number: 13),
+          OpenStruct.new(type: :context,  content: 'n', number: 14),
+          OpenStruct.new(type: :context,  content: 'o', number: 15),
+        ]
+      ),
+
+      # Context don't touch each other nor file borders.
+      OpenStruct.new(
+        path: 'conflict/conflict2.md',
+        lines: [
+          OpenStruct.new(type: :context,  content: 'a', number: 1),
+          OpenStruct.new(type: :context,  content: 'b', number: 2),
+          OpenStruct.new(type: :context,  content: 'c', number: 3),
+          OpenStruct.new(type: :conflict, id: 1,
+            ours:   %{d d <span class="idiff">2</span>\nd <span class="idiff">2</span> d\n},
+            base:   %{d <span class="idiff">d</span> <span class="idiff">d</span>\nd <span class="idiff">d</span> <span class="idiff">d</span>\n},
+            theirs: %{d <span class="idiff">1</span> d\nd d <span class="idiff">1</span>\n},
+            custom: %{d d 2\nd 2 d\n},
+          ),
+          OpenStruct.new(type: :context,  content: 'e', number: 5),
+          OpenStruct.new(type: :context,  content: 'f', number: 6),
+          OpenStruct.new(type: :context,  content: 'g', number: 7),
+          OpenStruct.new(type: :match),
+          OpenStruct.new(type: :context,  content: 'i', number: 9),
+          OpenStruct.new(type: :context,  content: 'j', number: 10),
+          OpenStruct.new(type: :context,  content: 'k', number: 11),
+          OpenStruct.new(type: :conflict, id: 2,
+            ours:   %{l l <span class="idiff">2</span>\nl <span class="idiff">2</span> l\n},
+            base:   %{l <span class="idiff">l</span> <span class="idiff">l</span>\nl <span class="idiff">l</span> <span class="idiff">l</span>\n},
+            theirs: %{l <span class="idiff">1</span> l\nl l <span class="idiff">1</span>\n},
+            custom: %{l l 2\nl 2 l\n},
+          ),
+          OpenStruct.new(type: :context,  content: 'm', number: 13),
+          OpenStruct.new(type: :context,  content: 'n', number: 14),
+          OpenStruct.new(type: :context,  content: 'o', number: 15),
+        ]
+      ),
+    ]
+  end
 end

@@ -2,7 +2,10 @@ class MergeRequest
   constructor: (@opts) ->
     @initContextWidget()
     this.$el = $('.merge-request')
-    @diffs_loaded = if @opts.action == 'diffs' then true else false
+    @tabs_loaded =
+      diffs: false
+      conflicts: false
+    @tabs_loaded[@opts.action] = true
     @commits_loaded = false
 
     this.activateTab(@opts.action)
@@ -73,14 +76,13 @@ class MergeRequest
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
-    switch action
-      when 'diffs'
-        this.$('.merge-request-tabs .diffs-tab').addClass 'active'
-        this.loadDiff() unless @diffs_loaded
-        this.$('.diffs').show()
-      else
-        this.$('.merge-request-tabs .notes-tab').addClass 'active'
-        this.$('.notes').show()
+    if action == 'diffs' or action == 'conflicts'
+      this.$(".merge-request-tabs .#{action}-tab").addClass 'active'
+      this.loadTab(action) unless @tabs_loaded[action]
+      this.$(".#{action}").show()
+    else
+      this.$('.merge-request-tabs .notes-tab').addClass 'active'
+      this.$('.notes').show()
 
   showState: (state) ->
     $('.automerge_widget').hide()
@@ -102,20 +104,18 @@ class MergeRequest
       when "running", "pending"
         $('.mr-state-widget').addClass("panel-warning")
 
-
-
-  loadDiff: (event) ->
+  loadTab: (action) ->
     $.ajax
       type: 'GET'
-      url: this.$('.merge-request-tabs .diffs-tab a').attr('href')
+      url: this.$(".merge-request-tabs .#{action}-tab a").attr("href")
       beforeSend: =>
-        this.$('.mr-loading-status .loading').show()
+        this.$(".mr-loading-status .loading").show()
       complete: =>
-        @diffs_loaded = true
-        this.$('.mr-loading-status .loading').hide()
+        @tabs_loaded[action] = true
+        this.$(".mr-loading-status .loading").hide()
       success: (data) =>
-        this.$(".diffs").html(data.html)
-      dataType: 'json'
+        this.$(".#{action}").html(data.html)
+      dataType: "json"
 
   showAllCommits: ->
     this.$('.first-commits').remove()

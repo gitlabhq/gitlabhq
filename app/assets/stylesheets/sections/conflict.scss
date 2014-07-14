@@ -1,0 +1,65 @@
+.diff-file {
+  tbody.radio_holder {
+    border: 2px solid #666;
+    tr.line_holder {
+      &.theirs {
+        td.old_line {
+          background: #CCF;
+        }
+        td.line_content {
+          background: #DDF;
+          span.idiff {
+            background: #AAF;
+          }
+        }
+      }
+      &.custom {
+        td.old_line {
+          background: #FFA;
+        }
+        td.line_content {
+          background: #FFA;
+          padding: 1px;
+          textarea {
+            font: inherit;
+            /* TODO determine exact of lines to show */
+            height: 4em;
+            /* TODO DRY 4px to match context lines (6px = 1 td padding + 1 border + 4 textarea padding) */
+            padding: 1px 4px;
+            resize: vertical;
+          }
+        }
+      }
+      &:not(:last-child) {
+        /* TODO factor out with other colors */
+        border-bottom: 1px solid #666;
+      }
+      td.old_line {
+        padding: 0px;
+        label {
+          display: block;
+          /* TODO make this work with parent of unknown height */
+          height: 100%;
+          margin: 0px;
+          text-align: center;
+          width: 100%;
+          input {
+            margin: 0;
+          }
+        }
+      }
+      td.line_content {
+        /* TODO same padding as context to align things */
+        height: initial;
+        padding-left: 0.5em;
+        pre {
+          background: transparent;
+          border-style: none;
+          margin: 0;
+          padding: 0;
+        }
+        white-space: initial;
+      }
+    }
+  }
+}

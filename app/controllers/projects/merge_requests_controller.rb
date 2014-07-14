@@ -2,10 +2,10 @@ require 'gitlab/satellite/satellite'
 
 class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :automerge, :automerge_check, :ci_status]
-  before_filter :closes_issues, only: [:edit, :update, :show, :diffs]
-  before_filter :validates_merge_request, only: [:show, :diffs]
-  before_filter :define_show_vars, only: [:show, :diffs]
+  before_filter :merge_request, only: [:edit, :update, :show, :diffs, :conflicts, :automerge, :automerge_check, :ci_status]
+  before_filter :closes_issues, only: [:edit, :update, :show, :diffs, :conflicts]
+  before_filter :validates_merge_request, only: [:show, :diffs, :conflicts]
+  before_filter :define_show_vars, only: [:show, :diffs, :conflicts]
 
   # Allow read any merge_request
   before_filter :authorize_read_merge_request!
@@ -54,6 +54,16 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     respond_to do |format|
       format.html
       format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_diffs") } }
+    end
+  end
+
+  def conflicts
+    @conflicts = @merge_request.conflicts
+    @commit = @merge_request.last_commit
+
+    respond_to do |format|
+      format.html
+      format.json { render json: { html: view_to_html_string("projects/merge_requests/show/_conflicts") } }
     end
   end
 
@@ -127,6 +137,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     else
       @status = false
     end
+  end
+
+  def resolve_conflict_merge
+    return access_denied! unless allowed_to_merge?
+    # TODO stub
   end
 
   def branch_from
