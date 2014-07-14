@@ -1,5 +1,7 @@
 module Gitlab
   module Satellite
+    class BranchesWithoutParent < StandardError; end
+
     class CompareAction < Action
       def initialize(user, target_project, target_branch, source_project, source_branch)
         super user, target_project
@@ -22,7 +24,7 @@ module Gitlab
           diffs
         end
       rescue Grit::Git::CommandFailed => ex
-        handle_exception(ex)
+        raise BranchesWithoutParent
       end
 
       # Retrieve an array of commits between the source and the target
