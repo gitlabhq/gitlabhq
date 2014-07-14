@@ -86,6 +86,7 @@ gem "seed-fu"
 gem "redcarpet",     "~> 2.2.2"
 gem "github-markup"
 gem "org-ruby" # For rendering .org files
+gem "RedCloth"
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
