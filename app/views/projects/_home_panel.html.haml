@@ -44,11 +44,6 @@
                 title:   'Unstar this project.',
                 starred: true,
                 signed_in: true
-            :coffeescript
-              $('.star').on 'ajax:success', (e, data, status, xhr) ->
-                $(@).toggleClass('on').find('.count').html(data.star_count)
-              .on 'ajax:error', (e, xhr, status, error) ->
-                new Flash('Star toggle failed. Try again later.', 'alert')
           - else
             = render 'link_to_toggle_star',
                 title:   'You must sign in to star a project.',
