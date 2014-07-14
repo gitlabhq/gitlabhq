@@ -53,7 +53,7 @@ module Gitlab
         File.open(lock_file, "w+") do |f|
           begin
             f.flock File::LOCK_EX
-            Dir.chdir(path) { return yield }
+            yield
           ensure
             f.flock File::LOCK_UN
           end

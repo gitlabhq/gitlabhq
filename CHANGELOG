@@ -20,6 +20,7 @@ v 7.1.0
   - Show VERSION information on project sidebar
   - Improve branch removal logic when accept MR
   - Fix bug where comment form is spawned inside the Reply button
+  - Remove Dir.chdir from Satellite#lock for thread-safety
 
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar
