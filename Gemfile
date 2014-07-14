@@ -173,6 +173,7 @@ gem "font-awesome-rails", '~> 3.2'
 gem "gitlab_emoji", "~> 0.0.1.1"
 gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
+gem 'request_store'
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"

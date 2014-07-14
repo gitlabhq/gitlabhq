@@ -67,40 +67,42 @@ class Ability
 
     def project_abilities(user, project)
       rules = []
+      key = "/user/#{user.id}/project/#{project.id}"
+      RequestStore.store[key] ||= begin
+        team = project.team
 
-      team = project.team
+        # Rules based on role in project
+        if team.master?(user)
+          rules += project_master_rules
 
-      # Rules based on role in project
-      if team.master?(user)
-        rules += project_master_rules
+        elsif team.developer?(user)
+          rules += project_dev_rules
 
-      elsif team.developer?(user)
-        rules += project_dev_rules
+        elsif team.reporter?(user)
+          rules += project_report_rules
 
-      elsif team.reporter?(user)
-        rules += project_report_rules
+        elsif team.guest?(user)
+          rules += project_guest_rules
+        end
 
-      elsif team.guest?(user)
-        rules += project_guest_rules
+        if project.public? || project.internal?
+          rules += public_project_rules
+        end
+
+        if project.owner == user || user.admin?
+          rules += project_admin_rules
+        end
+
+        if project.group && project.group.has_owner?(user)
+          rules += project_admin_rules
+        end
+
+        if project.archived?
+          rules -= project_archived_rules
+        end
+
+        rules
       end
-
-      if project.public? || project.internal?
-        rules += public_project_rules
-      end
-
-      if project.owner == user || user.admin?
-        rules += project_admin_rules
-      end
-
-      if project.group && project.group.has_owner?(user)
-        rules += project_admin_rules
-      end
-
-      if project.archived?
-        rules -= project_archived_rules
-      end
-
-      rules
     end
 
     def public_project_rules
