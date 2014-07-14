@@ -224,11 +224,13 @@ ActiveRecord::Schema.define(version: 20140625115202) do
     t.boolean  "archived",               default: false,    null: false
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
+    t.integer  "star_count",             default: 0,        null: false
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
   add_index "projects", ["last_activity_at"], name: "index_projects_on_last_activity_at", using: :btree
   add_index "projects", ["namespace_id"], name: "index_projects_on_namespace_id", using: :btree
+  add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
 
   create_table "protected_branches", force: true do |t|
     t.integer  "project_id", null: false

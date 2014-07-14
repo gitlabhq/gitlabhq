@@ -34,7 +34,7 @@
           = link_to pluralize(number_with_delimiter(@repository.branch_names.count), 'branch'), project_branches_path(@project)
           = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), project_tags_path(@project)
           %span.light.prepend-left-20= repository_size
-        %span.star.js-toggler-container.on
+        %span.star.js-toggler-container{class: @show_star ? 'on' : ''}
           - if current_user
             = render 'link_to_toggle_star',
                 title:   'Star this project.',

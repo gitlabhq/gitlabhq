@@ -356,6 +356,33 @@ describe User do
     end
   end
 
+  describe "#starred?" do
+    it "determines if user starred a project" do
+      user = create :user
+      project1 = create :project, :public
+      project2 = create :project, :public
+
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_false
+
+      star1 = UsersStarProject.create!(project: project1, user: user)
+      expect(user.starred?(project1)).to be_true
+      expect(user.starred?(project2)).to be_false
+
+      star2 = UsersStarProject.create!(project: project2, user: user)
+      expect(user.starred?(project1)).to be_true
+      expect(user.starred?(project2)).to be_true
+
+      star1.destroy
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_true
+
+      star2.destroy
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_false
+    end
+  end
+
   describe "#toggle_star" do
     it "toggles stars" do
       user = create :user

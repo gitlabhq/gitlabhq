@@ -60,6 +60,8 @@ class ProjectsController < ApplicationController
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
 
+    @show_star = !(current_user and current_user.starred?(@project))
+
     respond_to do |format|
       format.html do
         if @project.empty_repo?
@@ -169,6 +171,7 @@ class ProjectsController < ApplicationController
 
   def toggle_star
     current_user.toggle_star(@project)
+    @project.reload
     render json: { star_count: @project.star_count }
   end
 

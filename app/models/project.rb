@@ -22,6 +22,7 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
+#  star_count             :integer
 #
 
 class Project < ActiveRecord::Base
@@ -109,6 +110,7 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
+  validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
 
   # Scopes
@@ -576,9 +578,5 @@ class Project < ActiveRecord::Base
 
   def update_repository_size
     update_attribute(:repository_size, repository.size)
-  end
-
-  def star_count
-    starrers.count
   end
 end

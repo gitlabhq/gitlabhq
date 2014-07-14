@@ -43,15 +43,20 @@ describe ProjectsController do
   end
 
   describe "POST #toggle_star" do
-    it "increases star count if user is signed in" do
+    it "toggles star if user is signed in" do
       sign_in(user)
+      expect(user.starred?(public_project)).to be_false
       post :toggle_star, id: public_project.to_param
-      expect(public_project.star_count).to eq(1)
+      expect(user.starred?(public_project)).to be_true
+      post :toggle_star, id: public_project.to_param
+      expect(user.starred?(public_project)).to be_false
     end
 
     it "does nothing if user is not signed in" do
       post :toggle_star, id: public_project.to_param
-      expect(public_project.star_count).to eq(0)
+      expect(user.starred?(public_project)).to be_false
+      post :toggle_star, id: public_project.to_param
+      expect(user.starred?(public_project)).to be_false
     end
   end
 end

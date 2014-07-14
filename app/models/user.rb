@@ -516,7 +516,8 @@ class User < ActiveRecord::Base
   end
 
   def toggle_star(project)
-    user_star_project = users_star_projects.where(project: project).take
+    user_star_project = users_star_projects.
+      where(project: project, user: self).take
     if user_star_project
       user_star_project.destroy
     else
