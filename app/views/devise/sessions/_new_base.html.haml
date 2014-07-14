@@ -7,8 +7,6 @@
         = f.check_box :remember_me
         %span Remember me
   %div
-    = f.submit "Sign in", class: "btn-create btn"
+    = f.submit "Sign in", class: "btn-save btn"
     .pull-right
       = link_to "Forgot your password?", new_password_path(resource_name), class: "btn"
-
-
