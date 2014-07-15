@@ -34,6 +34,7 @@ Gitlab::Application.routes.draw do
 
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page
+  get 'help/:category/*file'  => 'help#show'
   get 'help/shortcuts'
 
   #
