@@ -60,7 +60,7 @@ class ProjectsController < ApplicationController
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
 
-    @show_star = !(current_user and current_user.starred?(@project))
+    @show_star = !(current_user && current_user.starred?(@project))
 
     respond_to do |format|
       format.html do
