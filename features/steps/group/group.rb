@@ -190,7 +190,6 @@ class Groups < Spinach::FeatureSteps
   step 'I should see group milestone with descriptions and expiry date' do
     page.should have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
     page.should have_content('expires at Aug 20, 2014')
-    page.should have_content('Project milestone has no description')
   end
 
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
