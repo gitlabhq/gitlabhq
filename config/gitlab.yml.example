@@ -226,7 +226,7 @@ production: &base
     # The next value is the maximum memory size grit can use
     # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
-    max_size: 5242880 # 5.megabytes
+    max_size: 15242880 # 15.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
 
