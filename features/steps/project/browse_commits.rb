@@ -61,8 +61,7 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
 
   Then 'I see big commit warning' do
     page.should have_content BigCommits::BIG_COMMIT_MESSAGE
-    page.should have_content "Warning! This is a large diff"
-    page.should have_content "If you still want to see the diff"
+    page.should have_content "Too many changes"
   end
 
   Given 'I visit huge commit page' do
@@ -71,8 +70,6 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
 
   Then 'I see huge commit message' do
     page.should have_content BigCommits::HUGE_COMMIT_MESSAGE
-    page.should have_content "Warning! This is a large diff"
-    page.should_not have_content "If you still want to see the diff"
   end
 
   Given 'I visit a commit with an image that changed' do
