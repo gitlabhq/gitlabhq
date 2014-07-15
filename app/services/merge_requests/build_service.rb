@@ -51,7 +51,7 @@ module MergeRequests
         end
       else
         merge_request.can_be_created = false
-        merge_request.compare_failed = true
+        merge_request.compare_failed = false
       end
 
       merge_request
