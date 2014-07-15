@@ -34,6 +34,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def show
     @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
         group(:commit_id).count
+
     respond_to do |format|
       format.html
       format.diff { render text: @merge_request.to_diff(current_user) }
@@ -43,15 +44,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def diffs
     @commit = @merge_request.last_commit
-
     @comments_allowed = @reply_allowed = true
-    @comments_target = {noteable_type: 'MergeRequest',
-                        noteable_id: @merge_request.id}
+    @comments_target = {
+      noteable_type: 'MergeRequest',
+      noteable_id: @merge_request.id
+    }
     @line_notes = @merge_request.notes.where("line_code is not null")
-
-    diff_line_count = Commit::diff_line_count(@merge_request.diffs)
-    @suppress_diff = Commit::diff_suppress?(@merge_request.diffs, diff_line_count) && !params[:force_show_diff]
-    @force_suppress_diff = Commit::diff_force_suppress?(@merge_request.diffs, diff_line_count)
 
     respond_to do |format|
       format.html
@@ -76,12 +74,6 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @diffs = @merge_request.compare_diffs
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
-
-    if @diffs.any?
-      @diff_line_count = Commit::diff_line_count(@diffs)
-      @suppress_diff = Commit::diff_suppress?(@diffs, @diff_line_count)
-      @force_suppress_diff = @suppress_diff
-    end
   end
 
   def edit

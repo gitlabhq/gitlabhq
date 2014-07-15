@@ -1,0 +1,48 @@
+- file = project.repository.blob_at(@commit.id, diff.new_path)
+- file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
+- return unless file
+.diff-file{id: "diff-#{i}"}
+  .diff-header{id: "file-path-#{hexdigest(diff.new_path || diff.old_path)}"}
+    - if diff.deleted_file
+      %span= diff.old_path
+
+      .diff-btn-group
+        - if @commit.parent_ids.present?
+          = link_to project_blob_path(project, tree_join(@commit.parent_id, diff.new_path)), { class: 'btn btn-small view-file' } do
+            View file @
+            %span.commit-short-id= @commit.short_id(6)
+    - else
+      %span= diff.new_path
+      - if diff_file_mode_changed?(diff)
+        %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+
+      .diff-btn-group
+        = link_to "#", class: "js-toggle-diff-comments btn btn-small" do
+          %i.icon-chevron-down
+          Diff comments
+        &nbsp;
+
+        - if @merge_request && @merge_request.source_project
+          = link_to project_edit_tree_path(@merge_request.source_project, tree_join(@merge_request.source_branch, diff.new_path), from_merge_request_id: @merge_request.id), { class: 'btn btn-small' } do
+            Edit
+          &nbsp;
+
+        = link_to project_blob_path(project, tree_join(@commit.id, diff.new_path)), { class: 'btn btn-small view-file' } do
+          View file @
+          %span.commit-short-id= @commit.short_id(6)
+
+
+  .diff-content
+    -# Skipp all non non-supported blobs
+    - return unless file.respond_to?('text?')
+    - if file.text?
+      - if params[:view] == 'parallel'
+        = render "projects/commits/parallel_view", diff: diff, project: project, file: file, index: i
+      - else
+        = render "projects/commits/text_file", diff: diff, index: i
+    - elsif file.image?
+      - old_file = project.repository.blob_at(@commit.parent_id, diff.old_path) if @commit.parent_id
+      = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i
+    - else
+      .nothing-here-block No preview for this file type
+

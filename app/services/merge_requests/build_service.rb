@@ -39,12 +39,15 @@ module MergeRequests
         merge_request.compare_failed = false
 
         # Try to collect diff for merge request.
-        # Note: even if diff is huge and we can't show it - we still should allow
-        # people to create MR.
         diffs = compare_action.diffs
 
         if diffs.present?
           merge_request.compare_diffs = diffs
+
+        elsif diffs == false
+          # satellite timeout return false
+          merge_request.can_be_created = false
+          merge_request.compare_failed = true
         end
       else
         merge_request.can_be_created = false
@@ -55,8 +58,6 @@ module MergeRequests
 
     rescue Gitlab::Satellite::BranchesWithoutParent
       return build_failed(merge_request, "Selected branches have no common commit so they cannot be merged.")
-    #rescue
-      #return build_failed(merge_request, "We cannot create merge request because of huge diff.")
     end
 
     def build_failed(merge_request, message)

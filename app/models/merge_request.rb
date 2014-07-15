@@ -44,7 +44,8 @@ class MergeRequest < ActiveRecord::Base
 
   # Temporary fields to store compare vars
   # when creating new merge request
-  attr_accessor :can_be_created, :compare_failed, :compare_base_commit, :compare_commits, :compare_diffs
+  attr_accessor :can_be_created, :compare_failed, :compare_base_commit,
+    :compare_commits, :compare_diffs
 
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :labels

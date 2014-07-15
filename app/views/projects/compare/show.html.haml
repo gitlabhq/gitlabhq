@@ -18,18 +18,7 @@
     - else
       %ul.well-list= render Commit.decorate(@commits), project: @project
 
-  %h4 Changes
-  - if @diffs.present?
-    = render "projects/commits/diffs", diffs: @diffs, project: @project
-  - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-    .bs-callout.bs-callout-danger
-      %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
-      %p To preserve performance the line changes are not shown.
-  - elsif @timeout
-    .bs-callout.bs-callout-danger
-      %h4 Number of changed files for this comparison is extremely large.
-      %p Use command line to browse through changes for this comparison.
-
+  = render "projects/commits/diffs", diffs: @diffs, project: @project
 
 - else
   .light-well

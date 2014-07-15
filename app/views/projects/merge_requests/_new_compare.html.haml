@@ -33,7 +33,7 @@
         %div= msg
 
   - elsif @merge_request.source_branch.present? && @merge_request.target_branch.present?
-    - if @compare_failed
+    - if @merge_request.compare_failed
       .alert.alert-danger
         %h4 Compare failed
         %p We can't compare selected branches. It may be because of huge diff or satellite timeout. Please try again or select different branches.
