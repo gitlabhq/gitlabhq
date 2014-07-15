@@ -27,12 +27,12 @@
         .panel-footer
           .mr_target_commit
 
-  -if @merge_request.errors.any?
+  - if @merge_request.errors.any?
     .alert.alert-danger
       - @merge_request.errors.full_messages.each do |msg|
         %div= msg
 
-  - if @merge_request.source_branch.present? && @merge_request.target_branch.present?
+  - elsif @merge_request.source_branch.present? && @merge_request.target_branch.present?
     - if @compare_failed
       .alert.alert-danger
         %h4 Compare failed

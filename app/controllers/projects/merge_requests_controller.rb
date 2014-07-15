@@ -60,53 +60,27 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    params[:merge_request] ||= ActionController::Parameters.new(
-      source_project: @project
-    )
+    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
 
-    @merge_request = MergeRequest.new(merge_request_params)
-    @merge_request.source_project = @project unless @merge_request.source_project
-    @merge_request.target_project ||= (@project.forked_from_project || @project)
-    @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
-    @merge_request.target_branch ||= @merge_request.target_project.default_branch
-    @source_project = @merge_request.source_project
+    @target_branches = if @merge_request.target_project
+                         @merge_request.target_project.repository.branch_names
+                       else
+                         []
+                       end
 
-    if @merge_request.target_branch && @merge_request.source_branch
-      compare_action = Gitlab::Satellite::CompareAction.new(
-        current_user,
-        @merge_request.target_project,
-        @merge_request.target_branch,
-        @merge_request.source_project,
-        @merge_request.source_branch
-      )
+    @target_project = merge_request.target_project
+    @source_project = merge_request.source_project
+    @commits = @merge_request.compare_commits
+    @commit = @merge_request.compare_base_commit
+    @diffs = @merge_request.compare_diffs
+    @note_counts = Note.where(commit_id: @commits.map(&:id)).
+      group(:commit_id).count
 
-      @compare_failed = false
-      @commits = compare_action.commits
-
-      if @commits
-        @commits.map! { |commit| Commit.new(commit) }
-        @commit = @commits.first
-      else
-        # false value because failed to get commits from satellite
-        @commits = []
-        @compare_failed = true
-      end
-
-      @note_counts = Note.where(commit_id: @commits.map(&:id)).
-          group(:commit_id).count
-
-      begin
-        @diffs = compare_action.diffs
-        @merge_request.title = @merge_request.source_branch.titleize.humanize
-        @target_project = @merge_request.target_project
-        @target_repo = @target_project.repository
-
-        diff_line_count = Commit::diff_line_count(@diffs)
-        @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count)
-        @force_suppress_diff = @suppress_diff
-      rescue Gitlab::Satellite::BranchesWithoutParent
-        @error = "Selected branches have no common commit so they cannot be merged."
-      end
+    if @diffs.any?
+      @diff_line_count = Commit::diff_line_count(@diffs)
+      @suppress_diff = Commit::diff_suppress?(@diffs, @diff_line_count)
+      @force_suppress_diff = @suppress_diff
     end
   end
 
