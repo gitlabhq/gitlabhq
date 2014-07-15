@@ -23,21 +23,31 @@
         If you still want to see the diff
         = link_to "click this link", url_for(force_show_diff: true), class: "underlined-link"
 
-%p.commit-stat-summary
-  Showing
-  %strong.cdark #{pluralize(diffs.count, "changed file")}
-  - if current_controller?(:commit)
-    - unless @commit.has_zero_stats?
-      with
-      %strong.cgreen #{@commit.stats.additions} additions
-      and
-      %strong.cred #{@commit.stats.deletions} deletions
-  - if params[:view] == 'parallel'
-    = link_to "Inline Diff", url_for(view: 'inline'), {id: "commit-diff-viewtype", class: 'btn btn-tiny pull-right'}
-  - else
-    = link_to "Side-by-side Diff", url_for(view: 'parallel'), {id: "commit-diff-viewtype", class: 'btn btn-tiny pull-right'}
-.file-stats
-  = render "projects/commits/diff_head", diffs: diffs
+
+.row
+  .col-md-8
+    .js-toggle-container
+      .commit-stat-summary
+        Showing
+        %strong.cdark #{pluralize(diffs.count, "changed file")}
+        - if current_controller?(:commit)
+          - unless @commit.has_zero_stats?
+            with
+            %strong.cgreen #{@commit.stats.additions} additions
+            and
+            %strong.cred #{@commit.stats.deletions} deletions
+        &nbsp;
+        = link_to '#', class: 'btn btn-small js-toggle-button' do
+          Show diff stats
+          %i.icon-chevron-down
+      .file-stats.js-toggle-content.hide
+        = render "projects/commits/diff_head", diffs: diffs
+  .col-md-4
+    %ul.nav.nav-tabs
+      %li.pull-right{class: params[:view] == 'parallel' ? 'active' : ''}
+        = link_to "Side-by-side Diff", url_for(view: 'parallel'), {id: "commit-diff-viewtype"}
+      %li.pull-right{class: params[:view] != 'parallel' ? 'active' : ''}
+        = link_to "Inline Diff", url_for(view: 'inline'), {id: "commit-diff-viewtype"}
 
 .files
   - unless @suppress_diff
