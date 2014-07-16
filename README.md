@@ -127,3 +127,12 @@ All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/
 ## Getting help
 
 Please see [Getting help for GitLab](https://www.gitlab.com/getting-help/) on our website for the many options to get help.
+
+## Is it any good?
+
+[Yes](https://news.ycombinator.com/item?id=3067434)
+
+## Is it awesome?
+
+Thanks for [asking this question](https://twitter.com/supersloth/status/489462789384056832) Joshua.
+[These people](https://twitter.com/gitlabhq/favorites) seem to like it.
