@@ -14,13 +14,47 @@ A release manager is selected that coordinates the entire release of this versio
 
 Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
 
-# **18th - Releasing RC1**
+### **4. Create an overall issue**
+
+```
+15th:
+
+* Update the changelog (LINK)
+
+17th:
+
+* Create x.x.x.rc1 (LINK)
+
+18th:
+
+* Update GitLab.com with rc1 (LINK)
+* Regression issue and tweet about rc1 (LINK)
+* Start blog post (LINK)
+
+21th:
+
+* Do QA and fix anything coming out of it (LINK)
+
+22nd:
+
+* Release CE and EE (LINK)
+
+23th:
+
+* Prepare package for GitLab.com release (LINK)
+
+24th:
+
+* Deploy to GitLab.com (LINK)
+```
+
+# **17th - Release RC1**
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
-### **1. Create an issue for RC1 release**
+### **1. Merge the CE code into EE**
 
-Consider naming the issue "Release x.x.x.rc1" to make it easier for later searches.
+Do this via a merge request.
 
 ### **2. Update the installation guide**
 
@@ -107,12 +141,22 @@ Create an annotated tag that points to the version change commit:
 git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 ```
 
-### **7. Update GitLab.com**
+# **18th - Release RC1**
+
+### **1. Update GitLab.com**
 
 Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
-### **8. Create a regressions issue**
+### **2. Prepare the blog post**
+
+- Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
+- Create a WIP MR for the blog post and cc the team so everyone can give feedback.
+- Ask Dmitriy to add screenshots to the WIP MR.
+- Decide with team who will be the MVP user.
+- Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+
+### **3. Create a regressions issue**
 
 On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
 
@@ -123,23 +167,16 @@ The release manager will comment here about the plans for patch releases.
 
 Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
 
-### **9. Tweet**
+### **4. Tweet**
 
 Tweet about the RC release:
 
 > GitLab x.x.x.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
 
+
 # **21st - Preparation **
 
-### **1. Prepare the blog post**
-
-- Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
-- Create a WIP MR for the blog post and cc the team so everyone can give feedback.
-- Ask Dmitriy to add screenshots to the WIP MR.
-- Decide with team who will be the MVP user.
-- Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
-
-### **2. Q&A**
+### **1. Q&A**
 
 Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X release" in order to keep track of the progress.
 
@@ -147,7 +184,7 @@ Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gi
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
 
-### **3. Fix anything coming out of the QA**
+### **2. Fix anything coming out of the QA**
 
 Create an issue with description of a problem, if it is quick fix fix yourself otherwise contact the team for advice.
 
