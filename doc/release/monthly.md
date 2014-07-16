@@ -145,7 +145,9 @@ git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 
 ### **1. Update GitLab.com**
 
-Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morning.
+Merge the RC1 EE code into GitLab.com.
+Once the build is green, create a package.
+Try to deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
 ### **2. Prepare the blog post**
@@ -173,7 +175,7 @@ Tweet about the RC release:
 
 > GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
 
-# **21st - Preparation **
+# **21st - Preparation**
 
 ### **1. Q&A**
 
