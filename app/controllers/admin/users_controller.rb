@@ -59,15 +59,17 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def update
+    user_params_with_pass = user_params.dup
+
     if params[:user][:password].present?
-      user_params.merge(
+      user_params_with_pass.merge!(
         password: params[:user][:password],
         password_confirmation: params[:user][:password_confirmation],
       )
     end
 
     respond_to do |format|
-      if user.update_attributes(user_params)
+      if user.update_attributes(user_params_with_pass)
         user.confirm!
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
