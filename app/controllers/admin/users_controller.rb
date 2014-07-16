@@ -114,7 +114,7 @@ class Admin::UsersController < Admin::ApplicationController
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-      :projects_limit, :can_create_group, :admin
+      :projects_limit, :can_create_group, :admin, :password, :password_confirmation
     )
   end
 end
