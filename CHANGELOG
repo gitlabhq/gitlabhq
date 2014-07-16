@@ -23,7 +23,7 @@ v 7.1.0
   - Remove Dir.chdir from Satellite#lock for thread-safety
   - Increased default git max_size value from 5MB to 20MB in gitlab.yml. Please update your configs!
   - Show error message in case of timeout in satellite when create MR
-  - How first 100 files for huge diff instead of hiding all
+  - Show first 100 files for huge diff instead of hiding all
 
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar
