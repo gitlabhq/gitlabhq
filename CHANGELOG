@@ -20,6 +20,10 @@ v 7.1.0
   - Show VERSION information on project sidebar
   - Improve branch removal logic when accept MR
   - Fix bug where comment form is spawned inside the Reply button
+  - Remove Dir.chdir from Satellite#lock for thread-safety
+  - Increased default git max_size value from 5MB to 20MB in gitlab.yml. Please update your configs!
+  - Show error message in case of timeout in satellite when create MR
+  - Show first 100 files for huge diff instead of hiding all
 
 v 7.0.0
   - The CPU no longer overheats when you hold down the spacebar

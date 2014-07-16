@@ -1,0 +1,19 @@
+.bs-callout.bs-callout-warning
+  %h4
+    Too many changes.
+    .pull-right
+      - unless diff_hard_limit_enabled?
+        = link_to "Reload with full diff", url_for(params.merge(force_show_diff: true)), class: "btn btn-small btn-warning"
+
+      - if current_controller?(:commit) or current_controller?(:merge_requests)
+        - if current_controller?(:commit)
+          = link_to "Plain diff", project_commit_path(@project, @commit, format: :diff), class: "btn btn-warning btn-small"
+          = link_to "Email patch", project_commit_path(@project, @commit, format: :patch), class: "btn btn-warning btn-small"
+        - elsif @merge_request && @merge_request.persisted?
+          = link_to "Plain diff", project_merge_request_path(@project, @merge_request, format: :diff), class: "btn btn-warning btn-small"
+          = link_to "Email patch", project_merge_request_path(@project, @merge_request, format: :patch), class: "btn btn-warning btn-small"
+  %p
+    To preserve performance only
+    %strong #{safe_diff_files(diffs).size} of #{diffs.size}
+    files displayed.
+

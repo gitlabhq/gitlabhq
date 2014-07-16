@@ -32,11 +32,11 @@
       %h4
         = link_to "#{milestone.project.name} - #{milestone.title}", project_milestone_path(milestone.project, milestone)
         %span.pull-right= milestone.expires_at
+        - if milestone.closed?
+          %span.label.label-danger #{milestone.state}
       = preserve do
         - if milestone.description.present?
           = milestone.description
-        - else
-          %em Project milestone has no description
 
   .context
     %p
