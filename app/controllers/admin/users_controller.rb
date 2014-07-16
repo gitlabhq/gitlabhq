@@ -59,15 +59,17 @@ class Admin::UsersController < Admin::ApplicationController
   end
 
   def update
+    user_params_with_pass = user_params.dup
+
     if params[:user][:password].present?
-      user_params.merge(
+      user_params_with_pass.merge!(
         password: params[:user][:password],
         password_confirmation: params[:user][:password_confirmation],
       )
     end
 
     respond_to do |format|
-      if user.update_attributes(user_params)
+      if user.update_attributes(user_params_with_pass)
         user.confirm!
         format.html { redirect_to [:admin, user], notice: 'User was successfully updated.' }
         format.json { head :ok }
@@ -114,7 +116,7 @@ class Admin::UsersController < Admin::ApplicationController
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-      :projects_limit, :can_create_group, :admin, :password, :password_confirmation
+      :projects_limit, :can_create_group, :admin
     )
   end
 end
