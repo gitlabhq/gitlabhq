@@ -19,36 +19,36 @@ Any changes not yet added to the changelog are added by lead developer and in th
 ```
 15th:
 
-* Update the changelog (LINK)
+* Update the changelog (#LINK)
 
 17th:
 
-* Create x.x.x.rc1 (LINK)
+* Create x.x.0.rc1 (#LINK)
 
 18th:
 
-* Update GitLab.com with rc1 (LINK)
-* Regression issue and tweet about rc1 (LINK)
-* Start blog post (LINK)
+* Update GitLab.com with rc1 (#LINK)
+* Regression issue and tweet about rc1 (#LINK)
+* Start blog post (#LINK)
 
 21th:
 
-* Do QA and fix anything coming out of it (LINK)
+* Do QA and fix anything coming out of it (#LINK)
 
 22nd:
 
-* Release CE and EE (LINK)
+* Release CE and EE (#LINK)
 
 23th:
 
-* Prepare package for GitLab.com release (LINK)
+* Prepare package for GitLab.com release (#LINK)
 
 24th:
 
-* Deploy to GitLab.com (LINK)
+* Deploy to GitLab.com (#LINK)
 ```
 
-# **17th - Release RC1**
+# **17th - Create RC1**
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
@@ -171,8 +171,7 @@ Assign the issue to the release manager and /cc all the core-team members active
 
 Tweet about the RC release:
 
-> GitLab x.x.x.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
-
+> GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
 
 # **21st - Preparation **
 
