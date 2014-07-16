@@ -1,6 +1,6 @@
 module Emails
   module Profile
-    def new_user_email(user_id, password, token)
+    def new_user_email(user_id, password, token = nil)
       @user = User.find(user_id)
       @password = password
       @target_url = user_url(@user)
