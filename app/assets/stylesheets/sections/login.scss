@@ -5,18 +5,13 @@
     font-weight: 200;
   }
 
-  .login-box {
-    position: relative;
-    margin: auto;
-    padding: 20px;
-    background: #f5f5f5;
-    border: 1px solid #EEE;
+  .login-box{
   }
 
   .brand-image {
-    margin-bottom:  20px;
     img {
-     max-width: 100%;
+      max-width: 100%;
+      margin-bottom:  20px;
     }
   }
 
@@ -26,7 +21,7 @@
   }
 
   .form-control {
-    background-color: #FFF;
+    background-color: #F5F5F5;
     font-size: 16px;
     padding: 14px 10px;
     width: 100%;
@@ -47,6 +42,10 @@
       border-top: 0;
       margin-bottom:0px;
       @include border-radius(0);
+    }
+
+    &:active, &:focus {
+      background-color: #FFF;
     }
   }
 

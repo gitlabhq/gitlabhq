@@ -11,10 +11,28 @@
     .container
       .content
         .row
-          .col-sm-7
-            .brand-image
-              = brand_image
-            .brand_text
-              = brand_text
-          .col-sm-5
+          .col-md-7
+            - if brand_item
+              .brand-image
+                = brand_image
+              .brand_text
+                = brand_text
+            - else
+              .brand-image.hidden-sm.hidden-xs
+                = image_tag 'brand_logo.png'
+              .brand_text.hidden-xs
+                %h2 Open source software to collaborate on code
+
+                %p.lead
+                  Manage git repositories with fine grained access controls that keep your code secure.
+                  Perform code reviews and enhance collaboration with merge requests.
+                  Each project can also have an issue tracker and a wiki.
+
+          .col-md-5
             = yield
+    %hr
+    .container
+      .footer-links
+        = link_to "Explore public projects", public_projects_path
+        = link_to "Documentation", "http://doc.gitlab.com/"
+        = link_to "About GitLab", "https://about.gitlab.com/"

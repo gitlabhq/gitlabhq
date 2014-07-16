@@ -1,0 +1,41 @@
+.js-toggle-container
+  .commit-stat-summary
+    Showing
+    %strong.cdark #{pluralize(diffs.count, "changed file")}
+    - if current_controller?(:commit)
+      - unless @commit.has_zero_stats?
+        with
+        %strong.cgreen #{@commit.stats.additions} additions
+        and
+        %strong.cred #{@commit.stats.deletions} deletions
+    &nbsp;
+    = link_to '#', class: 'btn btn-small js-toggle-button' do
+      Show diff stats
+      %i.icon-chevron-down
+  .file-stats.js-toggle-content.hide
+    %ul.bordered-list
+      - diffs.each_with_index do |diff, i|
+        %li
+          - if diff.deleted_file
+            %span.deleted-file
+              %a{href: "#diff-#{i}"}
+                %i.icon-minus
+                = diff.old_path
+          - elsif diff.renamed_file
+            %span.renamed-file
+              %a{href: "#diff-#{i}"}
+                %i.icon-minus
+                = diff.old_path
+                = "->"
+                = diff.new_path
+          - elsif diff.new_file
+            %span.new-file
+              %a{href: "#diff-#{i}"}
+                %i.icon-plus
+                = diff.new_path
+          - else
+            %span.edit-file
+              %a{href: "#diff-#{i}"}
+                %i.icon-adjust
+                = diff.new_path
+

@@ -8,37 +8,15 @@ module AppearancesHelper
   end
 
   def brand_image
-    if brand_item
-      if brand_item.logo?
-        image_tag brand_item.logo
-      else
-        nil
-      end
+    if brand_item.logo?
+      image_tag brand_item.logo
     else
-      image_tag 'brand_logo.png'
+      nil
     end
   end
 
   def brand_text
-    default_text =<<eos
-### GitLab is open source software to collaborate on code.
-
-Manage git repositories with fine grained access controls that keep your code secure.
-Perform code reviews and enhance collaboration with merge requests.
-Each project can also have an issue tracker and a wiki.
-
-Used by more than 50,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
-Read more about GitLab at #{link_to "www.gitlab.com", "https://www.gitlab.com/", target: "_blank"}.
-eos
-
-
-    text = if brand_item
-             brand_item.description
-           else
-             default_text
-           end
-
-    markdown text
+    markdown(brand_item.description)
   end
 
   def brand_item

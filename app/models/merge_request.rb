@@ -42,6 +42,11 @@ class MergeRequest < ActiveRecord::Base
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken
 
+  # Temporary fields to store compare vars
+  # when creating new merge request
+  attr_accessor :can_be_created, :compare_failed, :compare_base_commit,
+    :compare_commits, :compare_diffs
+
   ActsAsTaggableOn.strict_case_match = true
   acts_as_taggable_on :labels
 

@@ -1,4 +1,4 @@
-- too_big = diff.diff.lines.count > 1000
+- too_big = diff.diff.lines.count > Commit::DIFF_SAFE_LINES
 - if too_big
   %a.supp_diff_link Changes suppressed. Click to show
 

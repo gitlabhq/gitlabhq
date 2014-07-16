@@ -1,4 +1,4 @@
-- if @commits.present?
+- if @merge_request.can_be_created
   = render 'new_submit'
 - else
   = render 'new_compare'

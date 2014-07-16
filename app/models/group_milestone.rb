@@ -50,10 +50,10 @@ class GroupMilestone
   def state
     state = milestones.map { |milestone| milestone.state }
 
-    if state.count('active') == state.size
-      'active'
-    else
+    if state.count('closed') == state.size
       'closed'
+    else
+      'active'
     end
   end
 
