@@ -1,0 +1,4 @@
+# Prefer single quotes
+StringLiterals:
+  EnforcedStyle: single_quotes
+  Enabled: true
