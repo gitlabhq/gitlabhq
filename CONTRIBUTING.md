@@ -65,12 +65,12 @@ If you can, please submit a merge request with the fix or improvements including
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a merge request (MR) to the master branch
-1. The MR title should describes the change you want to make
+1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you used to achieve it
 1. If the MR changes the UI it should include before and after screenshots
 1. If the MR changes CSS classes please include the list of affected pages `grep css-class ./app -R`
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feature requests](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
-1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
+1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submission
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
 
 The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab B.V. team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version. This means there is less time to fix the issues created by merging large new features.
