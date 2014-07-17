@@ -36,13 +36,3 @@ Feature: Project Star
     And I visit project "Community" page
     When I click on the star toggle button
     Then The project has 2 stars
-
-  @javascript
-  Scenario: If an user deletes his account his stars are destroyed
-    Given I sign in as "John Doe"
-    And public project "Community"
-    And I visit project "Community" page
-    And I click on the star toggle button
-    And I delete my account
-    When I visit project "Community" page
-    Then The project has 0 stars

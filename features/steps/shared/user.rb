@@ -9,11 +9,6 @@ module SharedUser
     user_exists("Mary Jane", {username: "mary_jane"})
   end
 
-  step "I delete my account" do
-    visit profile_account_path
-    click_link "Delete account"
-  end
-
   protected
 
   def user_exists(name, options = {})
