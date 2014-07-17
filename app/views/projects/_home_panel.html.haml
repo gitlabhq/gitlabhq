@@ -36,16 +36,7 @@
           %span.light.prepend-left-20= repository_size
         %span.star.js-toggler-container{class: @show_star ? 'on' : ''}
           - if current_user
-            = render 'link_to_toggle_star',
-                title:   'Star this project.',
-                starred: false,
-                signed_in: true
-            = render 'link_to_toggle_star',
-                title:   'Unstar this project.',
-                starred: true,
-                signed_in: true
+            = link_to_toggle_star('Star this project.', false, true)
+            = link_to_toggle_star('Unstar this project.', true, true)
           - else
-            = render 'link_to_toggle_star',
-                title:   'You must sign in to star a project.',
-                starred: false,
-                signed_in: false
+            = link_to_toggle_star('You must sign in to star a project.', false, false)
