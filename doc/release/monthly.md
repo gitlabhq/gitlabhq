@@ -177,7 +177,7 @@ Assign the issue to the release manager and /cc all the core-team members active
 
 Tweet about the RC release:
 
-> GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
+> GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 # **21st - Preparation**
 
