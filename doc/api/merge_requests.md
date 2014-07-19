@@ -30,7 +30,7 @@ Parameters:
     "author": {
       "id": 1,
       "username": "admin",
-      "email": "admin@local.host",
+      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
@@ -38,7 +38,7 @@ Parameters:
     "assignee": {
       "id": 1,
       "username": "admin",
-      "email": "admin@local.host",
+      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
@@ -74,7 +74,7 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -82,7 +82,7 @@ Parameters:
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -120,7 +120,7 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -128,7 +128,7 @@ Parameters:
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -167,7 +167,7 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -175,7 +175,7 @@ Parameters:
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -218,7 +218,7 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -226,7 +226,7 @@ Parameters:
   "assignee": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
@@ -253,7 +253,7 @@ Parameters:
   "author": {
     "id": 1,
     "username": "admin",
-    "email": "admin@local.host",
+    "email": "admin@example.com",
     "name": "Administrator",
     "blocked": false,
     "created_at": "2012-04-29T08:46:00Z"
@@ -282,7 +282,7 @@ Parameters:
     "author": {
       "id": 11,
       "username": "admin",
-      "email": "admin@local.host",
+      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
       "created_at": "2014-03-06T08:17:35.000Z"
@@ -293,7 +293,7 @@ Parameters:
     "author": {
       "id": 11,
       "username": "admin",
-      "email": "admin@local.host",
+      "email": "admin@example.com",
       "name": "Administrator",
       "state": "active",
       "created_at": "2014-03-06T08:17:35.000Z"
