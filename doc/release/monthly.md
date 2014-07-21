@@ -262,13 +262,14 @@ Proposed tweet for CE "GitLab X.X.X CE is released! It brings *** <link-to-blogp
 
 Proposed tweet for EE "GitLab X.X.X EE is released! It brings *** <link-to-blogpost>"
 
-### **9. Send out newsletter**
+### **9. Send out the newsletter**
 
-In MailChimp replicate the former release newsletters to customers / newsletter subscribers (these are two separate things) and modify them accordingly.
-
+Send out an email to the 'GitLab Newsletter' mailing list on MailChimp.
+Replicate the former release newsletter and modify it accordingly.
 Include a link to the blog post and keep it short.
 
-Proposed email for CE: "We have released a new version of GitLab Community Edition and its packages. See our blog post(<link>) for more information."
+Proposed email text:
+"We have released a new version of GitLab. See our blog post(<link>) for more information."
 
 # **23rd - Optional Patch Release**
 

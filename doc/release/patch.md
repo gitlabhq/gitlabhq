@@ -27,4 +27,5 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. [Build new packages with the latest version](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 1. Cherry-pick the changelog update back into master
 1. Send tweets about the release from `@gitlabhq`, tweet should include the most important feature that the release is addressing as well as the link to the changelog
-1. Note in the 'GitLab X.X regressions' issue that the patch was published(CE only)
+1. Note in the 'GitLab X.X regressions' issue that the patch was published (CE only)
+1. Send out an email to the 'GitLab Newsletter' mailing list on MailChimp (or the 'Subscribers' list if the patch is EE only)
