@@ -179,7 +179,7 @@ $(document).ready ->
 
   $(".markdown-selector").click (e) ->
     e.preventDefault()
-    $(".div-dropzone").click()
+    $(@).closest(".div-dropzone-wrapper").find(".div-dropzone").click()
     return
 
   return

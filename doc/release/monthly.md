@@ -21,6 +21,10 @@ Any changes not yet added to the changelog are added by lead developer and in th
 
 * Update the changelog (#LINK)
 
+16th:
+
+* Merge CE in to EE (#LINK)
+
 17th:
 
 * Create x.x.0.rc1 (#LINK)
@@ -48,22 +52,22 @@ Any changes not yet added to the changelog are added by lead developer and in th
 * Deploy to GitLab.com (#LINK)
 ```
 
+# **16th - Merge the CE into EE**
+
+Do this via a merge request.
+
 # **17th - Create RC1**
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
-### **1. Merge the CE code into EE**
-
-Do this via a merge request.
-
-### **2. Update the installation guide**
+### **1. Update the installation guide**
 
 1. Check if it references the correct branch `x-x-stable` (doesn't exist yet, but that is okay)
 1. Check the [GitLab Shell version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L782)
 1. Check the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794)
 1. There might be other changes. Ask around.
 
-### **3. Create an update guides**
+### **2. Create an update guides**
 
 1. Create: CE update guide from previous version. Like `from-6-8-to-6.9`
 1. Create: CE to EE update guide in EE repository for latest version.
@@ -115,7 +119,7 @@ Check if the `init.d/gitlab` script changed since last release: <https://gitlab.
 
 #### 10. Check application status
 
-### **4. Code quality indicators**
+### **3. Code quality indicators**
 
 Make sure the code quality indicators are green / good.
 
@@ -129,11 +133,11 @@ Make sure the code quality indicators are green / good.
 
 - [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 
-### **5. Set VERSION**
+### **4. Set VERSION**
 
 Change version in VERSION to `x.x.0.rc1`.
 
-### **6. Tag**
+### **5. Tag**
 
 Create an annotated tag that points to the version change commit:
 
@@ -145,7 +149,9 @@ git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 
 ### **1. Update GitLab.com**
 
-Merge the RC1 code into GitLab.com. Once the build is green, deploy in the morning.
+Merge the RC1 EE code into GitLab.com.
+Once the build is green, create a package.
+Try to deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
 ### **2. Prepare the blog post**
@@ -171,9 +177,9 @@ Assign the issue to the release manager and /cc all the core-team members active
 
 Tweet about the RC release:
 
-> GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please create issues for regressions and add a link from LINK_TO_ISSUE.
+> GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
-# **21st - Preparation **
+# **21st - Preparation**
 
 ### **1. Q&A**
 

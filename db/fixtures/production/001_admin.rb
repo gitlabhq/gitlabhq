@@ -1,5 +1,5 @@
 admin = User.create(
-  email: "admin@local.host",
+  email: "admin@example.com",
   name: "Administrator",
   username: 'root',
   password: "5iveL!fe",
@@ -18,7 +18,7 @@ if admin.valid?
 puts %q[
 Administrator account created:
 
-login.........admin@local.host
+login.........root
 password......5iveL!fe
 ]
 end
