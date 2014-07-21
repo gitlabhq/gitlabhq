@@ -8,14 +8,17 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 
 ## GitLab 7.0 Enterprise Edition
 
-- 7.0.1-ee Ubuntu 14.04 64-bit [gitlab_7.0.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/0c687476e83a80fa4fa717ad5881f41e31a41eb0/ubuntu-14.04/gitlab_7.0.1-ee.omnibus-1_amd64.deb)
+- 7.0.1-ee - Ubuntu 14.04 64-bit [gitlab_7.0.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/0c687476e83a80fa4fa717ad5881f41e31a41eb0/ubuntu-14.04/gitlab_7.0.1-ee.omnibus-1_amd64.deb)
     + MD5: 547d15f7a6bb05ce0b3b0776c99eb40c
 
-- 7.0.1-ee Ubuntu 12.04 64-bit [gitlab_7.0.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/e52f5de30db26d895438b81ea13ce6a89a22b3cc/ubuntu-12.04/gitlab_7.0.1-ee.omnibus-1_amd64.deb)
+- 7.0.1-ee - Ubuntu 12.04 64-bit [gitlab_7.0.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/e52f5de30db26d895438b81ea13ce6a89a22b3cc/ubuntu-12.04/gitlab_7.0.1-ee.omnibus-1_amd64.deb)
     + MD5: fc32a7de460dbfb3f0249cf3e1c56056
 
 - 7.0.1-ee - Debian 7 64-bit [gitlab_7.0.0-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/c0190e8bf1fc0b61f27c3482e26ccc8adc58e82e/debian-7.5/gitlab_7.0.1-ee.omnibus-1_amd64.deb)
     - MD5: 572866c64e3dc2bead15566abd1590c2
+
+- 7.0.1-ee - Enterprise Linux 6 64-bit [gitlab-7.0.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/09a89ba7f0fe28ba9c4b52a492d02135e5a39a9c/centos-6.5/gitlab-7.0.1_ee.omnibus.1-1.el6.x86_64.rpm)
+    + MD5: d9b518df79b2abd63ce70f1d028f5c30
 
 ## Previous versions
 
