@@ -36,4 +36,15 @@ class ProjectFeature < Spinach::FeatureSteps
       page.should have_content "Version: 2.2.0"
     end
   end
+
+  step 'change project default branch' do
+    select 'stable', from: 'project_default_branch'
+  end
+
+  step 'I should see project default branch changed' do
+    # TODO: Uncomment this when we can do real gitlab-shell calls
+    # from spinach tests. Right now gitlab-shell calls are stubbed so this test
+    # will not pass
+    # find(:css, 'select#project_default_branch').value.should == 'stable'
+  end
 end
