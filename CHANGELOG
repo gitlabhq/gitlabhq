@@ -8,7 +8,7 @@ v 7.1.0
   - Dont show reply button if user is not signed in
   - Expose more information for issues with webhook
   - Add a mention of the merge request into the default merge request commit message
-  - Imrpove code highlight, introduce support for more languages like Go, Clojure, Erlang etc
+  - Improve code highlight, introduce support for more languages like Go, Clojure, Erlang etc
   - Fix concurrency issue in repository download
   - Dont allow repository name start with ?
   - Improve email threading (Pierre de La Morinerie)
