@@ -51,6 +51,7 @@ Gitlab::Application.routes.draw do
   #
   namespace :public do
     resources :projects, only: [:index]
+    resources :groups, only: [:index]
     root to: "projects#index"
   end
 

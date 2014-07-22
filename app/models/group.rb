@@ -73,4 +73,20 @@ class Group < Namespace
   def public_profile?
     projects.public_only.any?
   end
+
+  class << self
+    def search(query)
+      where("LOWER(namespaces.name) LIKE :query", query: "%#{query.downcase}%")
+    end
+
+    def sort(method)
+      case method.to_s
+      when "newest" then reorder("namespaces.created_at DESC")
+      when "oldest" then reorder("namespaces.created_at ASC")
+      when "recently_updated" then reorder("namespaces.updated_at DESC")
+      when "last_updated" then reorder("namespaces.updated_at ASC")
+      else reorder("namespaces.path, namespaces.name ASC")
+      end
+    end
+  end
 end

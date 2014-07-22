@@ -21,6 +21,14 @@ module SharedGroup
     is_member_of("Mary Jane", "Guest", Gitlab::Access::GUEST)
   end
 
+  step 'I should see group "TestGroup"' do
+    page.should have_content "TestGroup"
+  end
+
+  step 'I should not see group "TestGroup"' do
+    page.should_not have_content "TestGroup"
+  end
+
   protected
 
   def is_member_of(username, groupname, role)
