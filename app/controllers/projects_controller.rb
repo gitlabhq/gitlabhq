@@ -189,7 +189,7 @@ class ProjectsController < ApplicationController
   def project_params
     params.require(:project).permit(
       :name, :path, :description, :issues_tracker, :label_list,
-      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id
     )
   end
