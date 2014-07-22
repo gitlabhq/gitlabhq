@@ -117,29 +117,29 @@ module TestEnv
   end
 
   def satellite_path
-    "#{testing_path()}/satellite"
+    "#{testing_path}/satellite"
   end
 
   def repo(namespace, name)
     unless (namespace.nil? || namespace.path.nil? || namespace.path.strip.empty?)
-      repo = File.join(testing_path(), "#{namespace.path}/#{name}.git")
+      File.join(testing_path, "#{namespace.path}/#{name}.git")
     else
-      repo = File.join(testing_path(), "#{name}.git")
+      File.join(testing_path, "#{name}.git")
     end
   end
 
   def satellite(namespace, name)
     unless (namespace.nil? || namespace.path.nil? || namespace.path.strip.empty?)
-      satellite_repo = File.join(satellite_path, namespace.path, name)
+      File.join(satellite_path, namespace.path, name)
     else
-      satellite_repo = File.join(satellite_path, name)
+      File.join(satellite_path, name)
     end
   end
 
-  def setup_test_repos(opts ={})
-    create_repo(nil, 'gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('')
-    create_repo(nil, 'source_gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('source_')
-    create_repo(nil, 'target_gitlabhq') #unless opts[:repo].nil? || !opts[:repo].include?('target_')
+  def setup_test_repos
+    create_repo(nil, 'gitlabhq')
+    create_repo(nil, 'source_gitlabhq')
+    create_repo(nil, 'target_gitlabhq')
   end
 
   def clear_test_repo_dir
@@ -160,7 +160,7 @@ module TestEnv
     satellite_repo = satellite(namespace, satellite_name)
     # Symlink tmp/satellite/gitlabhq to tmp/test-git-base-path/satellite/gitlabhq, create the directory if it doesn't exist already
     satellite_dir = File.dirname(satellite_repo)
-    FileUtils.mkdir_p(satellite_dir) unless File.exists?(satellite_dir)
+    FileUtils.mkdir_p(satellite_dir) unless File.exist?(satellite_dir)
     FileUtils.ln_sf(seed_satellite_path, satellite_repo)
   end
 
