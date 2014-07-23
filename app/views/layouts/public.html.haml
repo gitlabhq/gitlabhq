@@ -1,11 +1,28 @@
+- page_title = 'Explore'
 !!! 5
 %html{ lang: "en"}
-  = render "layouts/head", title: "Public Projects"
+  = render "layouts/head", title: page_title
   %body{class: "#{app_theme} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     - if current_user
-      = render "layouts/head_panel", title: "Public Projects"
+      = render "layouts/head_panel", title: page_title
     - else
-      = render "layouts/public_head_panel", title: "Public Projects"
+      = render "layouts/public_head_panel", title: page_title
     .container.navless-container
-      .content= yield
+      .content
+        .explore-title
+          %h3
+            Explore GitLab
+          %p.lead
+            Discover projects and groups. Share your projects with others
+
+
+        %ul.nav.nav-tabs
+          = nav_link(controller: :explore) do
+            = link_to 'Trending Projects', public_explore_path
+          = nav_link(controller: :projects) do
+            = link_to 'All Projects', public_projects_path
+          = nav_link(controller: :groups) do
+            = link_to 'All Groups', public_groups_path
+
+        = yield

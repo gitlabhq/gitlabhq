@@ -3,7 +3,7 @@ class Public::GroupsController < ApplicationController
                      :reject_blocked, :set_current_user_for_observers,
                      :add_abilities
 
-  layout "public_groups"
+  layout "public"
 
   def index
     @groups = GroupsFinder.new.execute(current_user)

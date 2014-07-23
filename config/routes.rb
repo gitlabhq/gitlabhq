@@ -52,7 +52,8 @@ Gitlab::Application.routes.draw do
   namespace :public do
     resources :projects, only: [:index]
     resources :groups, only: [:index]
-    root to: "projects#index"
+    get 'explore' => 'explore#index'
+    root to: "explore#index"
   end
 
   #

@@ -1,0 +1,18 @@
+.explore-trending-block
+  %p.lead
+    %i.icon-comments-alt
+    See most discussed projects for last month
+  %hr
+  %ul.bordered-list
+    - @trending_projects.each do |project|
+      %li
+        %h4.project-title
+          .project-access-icon
+            = visibility_level_icon(project.visibility_level)
+          = link_to project.name_with_namespace, project
+
+        .project-description
+          = project.description
+
+  .center
+    = link_to 'Show all projects', public_projects_path, class: 'btn btn-primary'
