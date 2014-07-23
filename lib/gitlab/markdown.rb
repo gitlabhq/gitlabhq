@@ -181,7 +181,8 @@ module Gitlab
     end
 
     def reference_issue(identifier, project = @project)
-      if project.used_default_issues_tracker? || !external_issues_tracker_enabled?
+      if project.used_default_issues_tracker? ||
+        (external_issues_tracker_enabled? && project.issues_tracker != "jira")
         if project.issue_exists? identifier
           url = url_for_issue(identifier, project)
           title = title_for_issue(identifier)
@@ -192,7 +193,7 @@ module Gitlab
 
           link_to("##{identifier}", url, options)
         end
-      elsif project.issues_tracker == 'jira'
+      elsif project.issues_tracker == "jira"
         reference_jira_issue(identifier, project)
       end
     end
