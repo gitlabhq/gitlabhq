@@ -256,11 +256,10 @@ Merge the [blog merge request](#1-prepare-the-blog-post) in `www-gitlab-com` rep
 
 ### **8. Tweet to blog**
 
-Send out a tweet to share the good news with the world. List the features in short and link to the blog post.
+Send out a tweet to share the good news with the world.
+List the most important features and link to the blog post.
 
-Proposed tweet for CE "GitLab X.X.X CE is released! It brings *** <link-to-blogpost>"
-
-Proposed tweet for EE "GitLab X.X.X EE is released! It brings *** <link-to-blogpost>"
+Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 
 ### **9. Send out the newsletter**
 
