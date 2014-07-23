@@ -99,7 +99,7 @@ end
 gem "state_machine"
 
 # Issue tags
-gem "acts-as-taggable-on"
+gem "acts-as-taggable-on", '3.3.0'
 
 # Background jobs
 gem 'slim'

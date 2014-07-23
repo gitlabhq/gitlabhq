@@ -28,8 +28,8 @@ GEM
       minitest (~> 5.1)
       thread_safe (~> 0.1)
       tzinfo (~> 1.1)
-    acts-as-taggable-on (2.4.1)
-      rails (>= 3, < 5)
+    acts-as-taggable-on (3.3.0)
+      activerecord (>= 3, < 5)
     addressable (2.3.5)
     annotate (2.6.0)
       activerecord (>= 2.3.0)
@@ -571,7 +571,7 @@ PLATFORMS
 
 DEPENDENCIES
   ace-rails-ap
-  acts-as-taggable-on
+  acts-as-taggable-on (= 3.3.0)
   annotate (~> 2.6.0.beta2)
   asciidoctor
   awesome_print
