@@ -233,8 +233,7 @@ GEM
       railties (>= 4.0.1)
     hashie (2.0.5)
     hike (1.2.3)
-    hipchat (0.14.0)
-      httparty
+    hipchat (1.2.0)
       httparty
     http_parser.rb (0.5.3)
     httparty (0.13.0)
@@ -614,7 +613,7 @@ DEPENDENCIES
   guard-rspec
   guard-spinach
   haml-rails
-  hipchat (~> 0.14.0)
+  hipchat (~> 1.2.0)
   httparty
   jasmine (= 2.0.2)
   jquery-atwho-rails (~> 0.3.3)
