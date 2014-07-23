@@ -324,7 +324,7 @@ module SharedPaths
   # ----------------------------------------
 
   step 'I visit the public projects area' do
-    visit public_root_path
+    visit explore_projects_path
   end
 
   step 'I visit public page for "Community" project' do
@@ -336,7 +336,7 @@ module SharedPaths
   # ----------------------------------------
 
   step 'I visit the public groups area' do
-    visit public_groups_path
+    visit explore_groups_path
   end
 
   # ----------------------------------------
