@@ -240,6 +240,15 @@ class User < ActiveRecord::Base
     end
   end
 
+  def generate_reset_token
+    @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
+
+    self.reset_password_token   = enc
+    self.reset_password_sent_at = Time.now.utc
+
+    @reset_token
+  end
+
   def namespace_uniq
     namespace_name = self.username
     if Namespace.find_by(path: namespace_name)
@@ -488,7 +497,7 @@ class User < ActiveRecord::Base
 
   def post_create_hook
     log_info("User \"#{self.name}\" (#{self.email}) was created")
-    notification_service.new_user(self)
+    notification_service.new_user(self, @reset_token)
     system_hook_service.execute_hooks_for(self, :create)
   end
 
