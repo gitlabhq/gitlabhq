@@ -1,5 +1,5 @@
 @public
-Feature: Public Projects Feature
+Feature: Explore Groups Feature
   Background:
     Given group "TestGroup" has private project "Enterprise"
 
@@ -117,3 +117,35 @@ Feature: Public Projects Feature
     And I visit group "TestGroup" members page
     Then I should see group member "John Doe"
     And I should not see member roles
+
+  Scenario: I should see group with public project in public groups area
+    Given group "TestGroup" has public project "Community"
+    When I visit the public groups area
+    Then I should see group "TestGroup"
+
+  Scenario: I should not see group with internal project in public groups area
+    Given group "TestGroup" has internal project "Internal"
+    When I visit the public groups area
+    Then I should not see group "TestGroup"
+
+  Scenario: I should not see group with private project in public groups area
+    When I visit the public groups area
+    Then I should not see group "TestGroup"
+
+  Scenario: I should see group with public project in public groups area as user
+    Given group "TestGroup" has public project "Community"
+    When I sign in as a user
+    And I visit the public groups area
+    Then I should see group "TestGroup"
+
+  Scenario: I should see group with internal project in public groups area as user
+    Given group "TestGroup" has internal project "Internal"
+    When I sign in as a user
+    And I visit the public groups area
+    Then I should see group "TestGroup"
+
+  Scenario: I should not see group with private project in public groups area as user
+    When I sign in as a user
+    And I visit the public groups area
+    Then I should not see group "TestGroup"
+

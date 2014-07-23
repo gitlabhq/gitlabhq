@@ -47,12 +47,22 @@ Gitlab::Application.routes.draw do
   get "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
 
   #
-  # Public namespace
+  # Explroe area
   #
-  namespace :public do
-    resources :projects, only: [:index]
-    root to: "projects#index"
+  namespace :explore do
+    resources :projects, only: [:index] do
+      collection do
+        get :trending
+      end
+    end
+
+    resources :groups, only: [:index]
+    root to: "projects#trending"
   end
+
+  # Compatibility with old routing
+  get 'public' => "explore/projects#index"
+  get 'public/projects' => "explore/projects#index"
 
   #
   # Attachments serving

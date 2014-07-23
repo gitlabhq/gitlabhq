@@ -324,11 +324,19 @@ module SharedPaths
   # ----------------------------------------
 
   step 'I visit the public projects area' do
-    visit public_root_path
+    visit explore_projects_path
   end
 
   step 'I visit public page for "Community" project' do
     visit public_project_path(Project.find_by(name: "Community"))
+  end
+
+  # ----------------------------------------
+  # Public Groups
+  # ----------------------------------------
+
+  step 'I visit the public groups area' do
+    visit explore_groups_path
   end
 
   # ----------------------------------------
