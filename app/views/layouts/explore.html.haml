@@ -18,11 +18,11 @@
 
 
         %ul.nav.nav-tabs
-          = nav_link(controller: :explore) do
-            = link_to 'Trending Projects', public_explore_path
-          = nav_link(controller: :projects) do
-            = link_to 'All Projects', public_projects_path
+          = nav_link(path: 'projects#trending') do
+            = link_to 'Trending Projects', explore_root_path
+          = nav_link(path: 'projects#index') do
+            = link_to 'All Projects', explore_projects_path
           = nav_link(controller: :groups) do
-            = link_to 'All Groups', public_groups_path
+            = link_to 'All Groups', explore_groups_path
 
         = yield

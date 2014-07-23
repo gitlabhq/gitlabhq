@@ -31,32 +31,7 @@
 %hr
 .public-projects
   %ul.bordered-list.top-list
-    - @projects.each do |project|
-      %li
-        %h4
-          = link_to project_path(project) do
-            = project.name_with_namespace
-          - if project.internal?
-            %small.access-icon
-              = internal_icon
-              Internal
-          .pull-right.hidden-sm.hidden-xs
-            %pre.public-clone git clone #{project.http_url_to_repo}
-
-        - if project.description.present?
-          %p
-            = project.description
-
-        .repo-info
-          - unless project.empty_repo?
-            = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
-            &middot;
-            = link_to pluralize(project.repository.branch_names.count, 'branch'), project_branches_path(project)
-            &middot;
-            = link_to pluralize(project.repository.tag_names.count, 'tag'), project_tags_path(project)
-          - else
-            %i.icon-warning-sign
-            Empty repository
+    = render @projects
     - unless @projects.present?
       .nothing-here-block No public projects
 
