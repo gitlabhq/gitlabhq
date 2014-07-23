@@ -149,6 +149,40 @@ describe ProjectWiki do
     end
   end
 
+  describe '#find_file' do
+    before do
+      file = Gollum::File.new(subject.wiki)
+      Gollum::Wiki.any_instance.
+                   stub(:file).with('image.jpg', 'master', true).
+                   and_return(file)
+      Gollum::File.any_instance.
+                   stub(:mime_type).
+                   and_return('image/jpeg')
+      Gollum::Wiki.any_instance.
+                   stub(:file).with('non-existant', 'master', true).
+                   and_return(nil)
+    end
+
+    after do
+      Gollum::Wiki.any_instance.unstub(:file)
+      Gollum::File.any_instance.unstub(:mime_type)
+    end
+
+    it 'returns the latest version of the file if it exists' do
+      file = subject.find_file('image.jpg')
+      file.mime_type.should == 'image/jpeg'
+    end
+
+    it 'returns nil if the page does not exist' do
+      subject.find_file('non-existant').should == nil
+    end
+
+    it 'returns a Gollum::File instance' do
+      file = subject.find_file('image.jpg')
+      file.should be_a Gollum::File
+    end
+  end
+
   describe "#create_page" do
     after do
       destroy_page(subject.pages.first.page)
