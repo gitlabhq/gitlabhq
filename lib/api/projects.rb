@@ -77,6 +77,7 @@ module API
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
+      #   import_url (optional)
       # Example Request
       #   POST /projects
       post do
@@ -117,6 +118,7 @@ module API
       #   snippets_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
+      #   import_url (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -130,7 +132,8 @@ module API
                                      :wiki_enabled,
                                      :snippets_enabled,
                                      :public,
-                                     :visibility_level]
+                                     :visibility_level,
+                                     :import_url]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
