@@ -50,6 +50,22 @@
         margin-left: 10px;
         font-weight: 500;
       }
+
+      .star .btn {
+        font-weight: bold;
+        line-height: 22px;
+        padding: 0px;
+        $margin-x: 6px;
+        .toggle {
+          display: inline-block;
+          padding: 0px $margin-x;
+        }
+        .count {
+          border-left: $btn-border;
+          display: inline-block;
+          padding: 0px $margin-x;
+        }
+      }
     }
   }
 

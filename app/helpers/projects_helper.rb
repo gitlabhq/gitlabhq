@@ -122,6 +122,28 @@ module ProjectsHelper
     options_for_select(values, current_tracker)
   end
 
+  def link_to_toggle_star(title, starred, signed_in)
+    cls = 'btn'
+    cls += ' disabled' unless signed_in
+    content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
+      link_to toggle_star_project_path(@project),
+        title: title, class: cls, method: :post, remote: true,
+        data: {type: 'json'} do
+        content_tag('span', class: 'toggle') do
+          content_tag('i', ' ', class: 'icon-star') <<
+          if starred
+            'Unstar'
+          else
+            'Star'
+          end
+        end <<
+        content_tag('span', class: 'count') do
+          @project.star_count.to_s
+        end
+      end
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
