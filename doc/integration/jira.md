@@ -19,7 +19,10 @@ We can also enable JIRA service that will allow us to interact with JIRA issues.
 
 For example, we can close issues in JIRA by a commit in GitLab.
 
-Go to project settings page and fill in the project name for the JIRA project, see [screenshot](jira_project_name.png).
+Go to project settings page and fill in the project name for the JIRA project:
+
+![Set the JIRA project name in GitLab to 'NEW'](jira_project_name.png)
+
 Next, go to the services page and find JIRA.
 
 1. Tick the active check box to enable the service.
@@ -31,5 +34,10 @@ Next, go to the services page and find JIRA.
 
 Now we should be able to interact with JIRA issues, for example we can close a JIRA issue by commiting to our GitLab repository and referencing the JIRA issue( in the format of JIRAPROJECT-123). 
 
-For example, for project named NEW we commit with a commit message `Add new file fixes NEW-1` [screenshot](jira_service_commit.png) and that will close an issue NEW-1 in JIRA and add a comment with a link to the commit that closed the issue as shown on the [screenshot](jira_service_close_issue.png)
+For example, for project named NEW we commit with a commit message `Add new file fixes NEW-1`:
 
+![A Git commit that causes the JIRA issue to be closed](jira_service_commit.png)
+
+That will close an issue NEW-1 in JIRA and add a comment with a link to the commit that closed the issue:
+
+![The GitLab integration user leaves a comment on JIRA](jira_service_close_issue.png)
