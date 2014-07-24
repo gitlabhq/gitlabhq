@@ -91,6 +91,8 @@ class User < ActiveRecord::Base
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
@@ -516,5 +518,19 @@ class User < ActiveRecord::Base
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def starred?(project)
+    starred_projects.exists?(project)
+  end
+
+  def toggle_star(project)
+    user_star_project = users_star_projects.
+      where(project: project, user: self).take
+    if user_star_project
+      user_star_project.destroy
+    else
+      UsersStarProject.create!(project: project, user: self)
+    end
   end
 end

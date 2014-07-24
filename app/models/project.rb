@@ -22,6 +22,7 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
+#  star_count             :integer
 #
 
 class Project < ActiveRecord::Base
@@ -81,6 +82,8 @@ class Project < ActiveRecord::Base
   has_many :users, through: :users_projects
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starrers, through: :users_star_projects, source: :user
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -107,6 +110,7 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
+  validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
 
   # Scopes

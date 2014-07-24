@@ -320,15 +320,39 @@ module SharedPaths
   end
 
   # ----------------------------------------
+  # Visibility Projects
+  # ----------------------------------------
+
+  step 'I visit project "Community" page' do
+    project = Project.find_by(name: "Community")
+    visit project_path(project)
+  end
+
+  step 'I visit project "Internal" page' do
+    project = Project.find_by(name: "Internal")
+    visit project_path(project)
+  end
+
+  step 'I visit project "Enterprise" page' do
+    project = Project.find_by(name: "Enterprise")
+    visit project_path(project)
+  end
+
+  # ----------------------------------------
+  # Empty Projects
+  # ----------------------------------------
+
+  step "I visit empty project page" do
+    project = Project.find_by(name: "Empty Public Project")
+    visit project_path(project)
+  end
+
+  # ----------------------------------------
   # Public Projects
   # ----------------------------------------
 
   step 'I visit the public projects area' do
     visit explore_projects_path
-  end
-
-  step 'I visit public page for "Community" project' do
-    visit public_project_path(Project.find_by(name: "Community"))
   end
 
   # ----------------------------------------

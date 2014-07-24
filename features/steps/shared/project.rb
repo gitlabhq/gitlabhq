@@ -122,4 +122,12 @@ module SharedProject
     project ||= create :empty_project, :public, name: 'Community', namespace: user.namespace
     project.team << [user, :master]
   end
+
+  # ----------------------------------------
+  # Empty projects
+  # ----------------------------------------
+
+  step 'public empty project "Empty Public Project"' do
+    create :empty_project, :public, name: "Empty Public Project"
+  end
 end

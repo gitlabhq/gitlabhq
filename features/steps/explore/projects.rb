@@ -3,10 +3,6 @@ class Spinach::Features::ExploreProjectsFeature < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
 
-  step 'public empty project "Empty Public Project"' do
-    create :empty_project, :public, name: 'Empty Public Project'
-  end
-
   step 'I should see project "Empty Public Project"' do
     page.should have_content "Empty Public Project"
   end
@@ -18,16 +14,6 @@ class Spinach::Features::ExploreProjectsFeature < Spinach::FeatureSteps
 
   step 'I should see project readme' do
     page.should have_content 'README.md'
-  end
-
-  step 'I visit empty project page' do
-    project = Project.find_by(name: 'Empty Public Project')
-    visit project_path(project)
-  end
-
-  step 'I visit project "Community" page' do
-    project = Project.find_by(name: 'Community')
-    visit project_path(project)
   end
 
   step 'I should see empty public project details' do
@@ -48,20 +34,10 @@ class Spinach::Features::ExploreProjectsFeature < Spinach::FeatureSteps
     end
   end
 
-  step 'I visit project "Enterprise" page' do
-    project = Project.find_by(name: 'Enterprise')
-    visit project_path(project)
-  end
-
   step 'I should see project "Community" home page' do
     within '.project-home-title' do
       page.should have_content 'Community'
     end
-  end
-
-  step 'I visit project "Internal" page' do
-    project = Project.find_by(name: 'Internal')
-    visit project_path(project)
   end
 
   step 'I should see project "Internal" home page' do

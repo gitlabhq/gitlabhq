@@ -19,7 +19,8 @@ module LoginHelpers
     Thread.current[:current_user] = user
   end
 
+  # Requires Javascript driver.
   def logout
-    click_link "Logout" rescue nil
+    page.find(:css, ".icon-signout").click
   end
 end

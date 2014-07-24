@@ -1,3 +1,6 @@
+v 7.2.0
+  - Add project stars (Ciro Santilli)
+
 v 7.1.0
   - Remove observers
   - Improve MR discussions

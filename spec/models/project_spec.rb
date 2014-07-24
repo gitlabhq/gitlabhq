@@ -240,4 +240,73 @@ describe Project do
     it { project.open_branches.map(&:name).should include('bootstrap') }
     it { project.open_branches.map(&:name).should_not include('master') }
   end
+
+  describe '#star_count' do
+    it 'counts stars from multiple users' do
+      user1 = create :user
+      user2 = create :user
+      project = create :project, :public
+
+      expect(project.star_count).to eq(0)
+
+      user1.toggle_star(project)
+      expect(project.reload.star_count).to eq(1)
+
+      user2.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(2)
+
+      user1.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(1)
+
+      user2.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(0)
+    end
+
+    it 'counts stars on the right project' do
+      user = create :user
+      project1 = create :project, :public
+      project2 = create :project, :public
+
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(0)
+
+      user.toggle_star(project1)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(1)
+      expect(project2.star_count).to eq(0)
+
+      user.toggle_star(project1)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(0)
+
+      user.toggle_star(project2)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(1)
+
+      user.toggle_star(project2)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(0)
+    end
+
+    it 'is decremented when an upvoter account is deleted' do
+      user = create :user
+      project = create :project, :public
+      user.toggle_star(project)
+      project.reload
+      expect(project.star_count).to eq(1)
+      user.destroy
+      project.reload
+      expect(project.star_count).to eq(0)
+    end
+  end
 end
