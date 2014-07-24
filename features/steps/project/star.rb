@@ -4,6 +4,10 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
   include SharedPaths
   include SharedUser
 
+  step "The project has no stars" do
+    page.should_not have_content '.star-buttons'
+  end
+
   step "The project has 0 stars" do
     has_n_stars(0)
   end

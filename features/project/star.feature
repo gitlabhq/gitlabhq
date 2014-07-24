@@ -2,12 +2,12 @@ Feature: Project Star
   Scenario: New projects have 0 stars
     Given public project "Community"
     When I visit project "Community" page
-    Then The project has 0 stars
+    Then The project has no stars
 
   Scenario: Empty projects show star count
     Given public empty project "Empty Public Project"
     When I visit empty project page
-    Then The project has 0 stars
+    Then The project has no stars
 
   Scenario: Signed off users can't star projects
     Given public project "Community"
