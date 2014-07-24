@@ -6,8 +6,7 @@ describe 'Gitlab::Satellite::Action' do
 
   describe '#prepare_satellite!' do
     it 'should be able to fetch timeout from conf' do
-      Gitlab.config.satellites.timeout = 30
-      DEFAULT_OPTIONS['git_timeout'].should == 30.seconds
+      Gitlab::Satellite::Action::DEFAULT_OPTIONS[:git_timeout].should == 30.seconds
     end
 
     it 'create a repository with a parking branch and one remote: origin' do
