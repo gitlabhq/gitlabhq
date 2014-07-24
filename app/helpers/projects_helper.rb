@@ -123,23 +123,35 @@ module ProjectsHelper
   end
 
   def link_to_toggle_star(title, starred, signed_in)
-    cls = 'btn'
+    cls = 'btn btn-block'
     cls += ' disabled' unless signed_in
+
+    toggle_html = content_tag('span', class: 'toggle') do
+      toggle_text = if starred
+                      'Unstar'
+                    else
+                      'Star'
+                    end
+
+      content_tag('i', ' ', class: 'icon-star') + toggle_text
+    end
+
+    count_html = content_tag('span', class: 'count') do
+      @project.star_count.to_s
+    end
+
+    link_opts = {
+      title: title,
+      class: cls,
+      method: :post,
+      remote: true,
+      data: {type: 'json'}
+    }
+
+
     content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
-      link_to toggle_star_project_path(@project),
-        title: title, class: cls, method: :post, remote: true,
-        data: {type: 'json'} do
-        content_tag('span', class: 'toggle') do
-          content_tag('i', ' ', class: 'icon-star') <<
-          if starred
-            'Unstar'
-          else
-            'Star'
-          end
-        end <<
-        content_tag('span', class: 'count') do
-          @project.star_count.to_s
-        end
+      link_to toggle_star_project_path(@project), link_opts do
+        toggle_html + count_html
       end
     end
   end
