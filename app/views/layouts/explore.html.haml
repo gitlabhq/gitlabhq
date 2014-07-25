@@ -20,6 +20,8 @@
         %ul.nav.nav-tabs
           = nav_link(path: 'projects#trending') do
             = link_to 'Trending Projects', explore_root_path
+          = nav_link(path: 'projects#starred') do
+            = link_to 'Most Starred Projects', starred_explore_projects_path
           = nav_link(path: 'projects#index') do
             = link_to 'All Projects', explore_projects_path
           = nav_link(controller: :groups) do
