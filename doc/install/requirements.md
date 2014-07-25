@@ -40,7 +40,7 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ### CPU
 
-- 1 core works supports up to 100 users but the application will not be responsive
+- 1 core works supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
 - **2 cores** is the **recommended** number of cores and supports up to 500 users
 - 4 cores supports up to 2,000 users
 - 8 cores supports up to 5,000 users
