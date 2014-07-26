@@ -53,6 +53,7 @@ Gitlab::Application.routes.draw do
     resources :projects, only: [:index] do
       collection do
         get :trending
+        get :starred
       end
     end
 

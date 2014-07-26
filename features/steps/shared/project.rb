@@ -130,4 +130,9 @@ module SharedProject
   step 'public empty project "Empty Public Project"' do
     create :empty_project, :public, name: "Empty Public Project"
   end
+
+  step 'project "Community" has comments' do
+    project = Project.find_by(name: "Community")
+    2.times { create(:note_on_issue, project: project) }
+  end
 end
