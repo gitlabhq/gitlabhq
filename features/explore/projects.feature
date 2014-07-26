@@ -100,3 +100,17 @@ Feature: Explore Projects Feature
     And I visit "Internal" merge requests page
     And project "Internal" has "Feature implemented" open merge request
     Then I should see list of merge requests for "Internal" project
+
+  Scenario: Trending page
+    Given I sign in as a user
+    And project "Community" has comments
+    When I visit the explore trending projects
+    Then I should see project "Community"
+    And I should not see project "Internal"
+    And I should not see project "Enterprise"
+
+  Scenario: Most starred page
+    Given I sign in as a user
+    When I visit the explore starred projects
+    Then I should see project "Community"
+    And I should see project "Internal"
