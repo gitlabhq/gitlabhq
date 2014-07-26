@@ -54,7 +54,7 @@ server {
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root /nowhere; ## root doesn't have to be a valid path since we are redirecting
-  rewrite ^ https://$server_name$request_uri permanent;
+  rewrite ^ https://$server_name$request_uri? permanent;
 }
 
 server {
