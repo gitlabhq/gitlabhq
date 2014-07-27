@@ -156,11 +156,14 @@ It is important to do this as soon as possible, so we can catch any errors befor
 
 ### **2. Prepare the blog post**
 
-- Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
-- Create a WIP MR for the blog post and cc the team so everyone can give feedback.
+- Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
+- Check the changelog of CE and EE for important changes.
+- Create a WIP MR for the blog post
 - Ask Dmitriy to add screenshots to the WIP MR.
 - Decide with team who will be the MVP user.
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+- Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
+- After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
 
 ### **3. Create a regressions issue**
 
@@ -181,7 +184,11 @@ Tweet about the RC release:
 
 # **21st - Preparation**
 
-### **1. Q&A**
+### **1. Pre QA merge**
+
+Merge CE into EE before doing the QA.
+
+### **2. QA**
 
 Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X release" in order to keep track of the progress.
 
@@ -189,7 +196,7 @@ Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gi
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
 
-### **2. Fix anything coming out of the QA**
+### **3. Fix anything coming out of the QA**
 
 Create an issue with description of a problem, if it is quick fix fix yourself otherwise contact the team for advice.
 
@@ -200,6 +207,8 @@ For GitLab EE, append `-ee` to the branches and tags.
 `x-x-stable-ee`
 
 `v.x.x.0-ee`
+
+Merge CE into EE if needed.
 
 ### **1. Create x-x-stable branch and push to the repositories**
 
@@ -212,7 +221,8 @@ git push <remote> x-x-stable
 
 ### **2. Build the Omnibus packages**
 
-[Follow this guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
+Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md).
+This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
 
 ### **3. Set VERSION to x.x.x and push**
 
