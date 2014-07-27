@@ -1,6 +1,7 @@
 v 7.2.0
   - Explore page
   - Add project stars (Ciro Santilli)
+  - Add ability to configure webhook timeout via gitlab.yml
 
 v 7.1.0
   - Remove observers
