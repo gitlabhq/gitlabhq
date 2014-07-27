@@ -23,3 +23,21 @@ Feature: Project Browse branches
     Given I visit project branches page
     And I click branch 'improve/awesome' delete link
     Then I should not see branch 'improve/awesome'
+
+  Scenario: I create a branch with invalid name
+    Given I visit project branches page
+    And I click new branch link
+    When I submit new branch form with invalid name
+    Then I should see new an error that branch is invalid
+
+  Scenario: I create a branch with invalid reference
+    Given I visit project branches page
+    And I click new branch link
+    When I submit new branch form with invalid reference
+    Then I should see new an error that ref is invalid
+
+  Scenario: I create a branch that already exists
+    Given I visit project branches page
+    And I click new branch link
+    When I submit new branch form with branch that already exists
+    Then I should see new an error that branch already exists
