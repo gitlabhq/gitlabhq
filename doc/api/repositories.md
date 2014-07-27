@@ -71,6 +71,9 @@ Parameters:
 ]
 ```
 
+It returns 200 if the operation succeed. In case of an error,
+405 with an explaining error message is returned.
+
 ## List repository tree
 
 Get a list of repository files and directories in a project.

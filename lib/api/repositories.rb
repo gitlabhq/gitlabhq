@@ -36,10 +36,15 @@ module API
       #   POST /projects/:id/repository/tags
       post ':id/repository/tags' do
         authorize_push_project
-        @tag = CreateTagService.new.execute(user_project, params[:tag_name],
-                                            params[:ref], current_user)
-
-        present @tag, with: Entities::RepoObject, project: user_project
+        result = CreateTagService.new.execute(user_project, params[:tag_name],
+                                              params[:ref], current_user)
+        if result[:status] == :success
+          present result[:tag],
+                  with: Entities::RepoObject,
+                  project: user_project
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       # Get a project repository tree
