@@ -20,10 +20,12 @@ Any changes not yet added to the changelog are added by lead developer and in th
 15th:
 
 * Update the changelog (#LINK)
+* Triage the omnibus-gitlab milestone
 
 16th:
 
 * Merge CE in to EE (#LINK)
+* Close the omnibus-gitlab milestone
 
 17th:
 
