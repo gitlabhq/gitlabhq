@@ -2,6 +2,7 @@ v 7.2.0
   - Explore page
   - Add project stars (Ciro Santilli)
   - Log Sidekiq arguments
+  - Fix cpu usage issue in Firefox
 
 v 7.1.0
   - Remove observers
