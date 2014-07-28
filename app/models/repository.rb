@@ -263,4 +263,20 @@ class Repository
       contributor
     end
   end
+
+  def blob_for_diff(commit, diff)
+    file = blob_at(commit.id, diff.new_path)
+
+    unless file
+      file = prev_blob_for_diff(commit, diff)
+    end
+
+    file
+  end
+
+  def prev_blob_for_diff(commit, diff)
+    if commit.parent_id
+      blob_at(commit.parent_id, diff.old_path)
+    end
+  end
 end
