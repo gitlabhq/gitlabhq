@@ -1,5 +1,4 @@
-- file = project.repository.blob_at(@commit.id, diff.new_path)
-- file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
+- file = project.repository.blob_for_diff(@commit, diff)
 - return unless file
 .diff-file{id: "diff-#{i}"}
   .diff-header{id: "file-path-#{hexdigest(diff.new_path || diff.old_path)}"}
@@ -41,7 +40,7 @@
       - else
         = render "projects/commits/text_file", diff: diff, index: i
     - elsif file.image?
-      - old_file = project.repository.blob_at(@commit.parent_id, diff.old_path) if @commit.parent_id
+      - old_file = project.repository.prev_blob_for_diff(@commit, diff)
       = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i
     - else
       .nothing-here-block No preview for this file type
