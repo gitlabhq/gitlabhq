@@ -7,7 +7,7 @@ module API
       helpers do
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
-          publik = [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(publik)
+          publik = parse_boolean(publik)
           attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
           attrs
         end
@@ -15,10 +15,18 @@ module API
 
       # Get a projects list for authenticated user
       #
+      # Parameters:
+      #   archived (optional) - if passed, limit by archived status
+      #
       # Example Request:
       #   GET /projects
       get do
-        @projects = paginate current_user.authorized_projects
+        @query = current_user.authorized_projects
+        # If the archived parameter is passed, limit results accordingly
+        if params[:archived].present?
+          @query = @query.where(archived: parse_boolean(params[:archived]))
+        end
+        @projects = paginate @query
         present @projects, with: Entities::Project
       end
 

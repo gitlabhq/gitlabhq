@@ -5,6 +5,10 @@ module API
     SUDO_HEADER ="HTTP_SUDO"
     SUDO_PARAM = :sudo
 
+    def parse_boolean(value)
+      [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
+    end
+
     def current_user
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
       @current_user ||= User.find_by(authentication_token: private_token)
