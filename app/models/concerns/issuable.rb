@@ -13,6 +13,8 @@ module Issuable
     belongs_to :assignee, class_name: "User"
     belongs_to :milestone
     has_many :notes, as: :noteable, dependent: :destroy
+    has_many :label_links, as: :target, dependent: :destroy
+    has_many :labels, through: :label_links
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }

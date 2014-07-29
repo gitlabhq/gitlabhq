@@ -47,9 +47,6 @@ class MergeRequest < ActiveRecord::Base
   attr_accessor :can_be_created, :compare_failed,
     :compare_commits, :compare_diffs
 
-  ActsAsTaggableOn.strict_case_match = true
-  acts_as_taggable_on :labels
-
   state_machine :state, initial: :opened do
     event :close do
       transition [:reopened, :opened] => :closed

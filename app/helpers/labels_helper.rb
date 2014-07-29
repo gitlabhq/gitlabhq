@@ -1,11 +1,11 @@
 module LabelsHelper
   def issue_label_names
-    @project.issues_labels.map(&:name)
+    @project.labels.pluck(:title)
   end
 
   def labels_autocomplete_source
-    labels = @project.issues_labels
-    labels = labels.map{ |l| { label: l.name, value: l.name } }
+    labels = @project.labels
+    labels = labels.map { |l| { label: l.name, value: l.name } }
     labels.to_json
   end
 

@@ -18,10 +18,11 @@ module Gitlab
       end
 
       def generate(project)
-        labels = important_labels + warning_labels + neutral_labels + positive_labels
+        label_names = important_labels + warning_labels + neutral_labels + positive_labels
 
-        project.issues_default_label_list = labels
-        project.save
+        label_names.each do |label_name|
+          project.labels.create(title: label_name)
+        end
       end
     end
   end
