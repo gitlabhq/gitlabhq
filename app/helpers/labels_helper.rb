@@ -1,28 +1,20 @@
 module LabelsHelper
-  def issue_label_names
+  def project_label_names
     @project.labels.pluck(:title)
   end
 
-  def labels_autocomplete_source
-    labels = @project.labels
-    labels = labels.map { |l| { label: l.name, value: l.name } }
-    labels.to_json
-  end
+  def render_colored_label(label)
+    label_color = label.color || "#428bca"
+    r, g, b = label_color.slice(1,7).scan(/.{2}/).map(&:hex)
 
-  def label_css_class(name)
-    klass = Gitlab::IssuesLabels
-
-    case name.downcase
-    when *klass.warning_labels
-      'label-warning'
-    when *klass.neutral_labels
-      'label-primary'
-    when *klass.positive_labels
-      'label-success'
-    when *klass.important_labels
-      'label-danger'
+    if (r + g + b) > 500
+      text_color = "#333"
     else
-      'label-info'
+      text_color = "#FFF"
+    end
+
+    content_tag :span, class: 'label', style: "background:#{label_color};color:#{text_color}" do
+      label.name
     end
   end
 end

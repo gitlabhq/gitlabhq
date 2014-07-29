@@ -1,27 +1,26 @@
 module Gitlab
   class IssuesLabels
     class << self
-      def important_labels
-        %w(bug critical confirmed)
-      end
-
-      def warning_labels
-        %w(documentation support)
-      end
-
-      def neutral_labels
-        %w(discussion suggestion)
-      end
-
-      def positive_labels
-        %w(feature enhancement)
-      end
-
       def generate(project)
-        label_names = important_labels + warning_labels + neutral_labels + positive_labels
+        red = '#d9534f'
+        yellow = '#f0ad4e'
+        blue = '#428bca'
+        green = '#5cb85c'
 
-        label_names.each do |label_name|
-          project.labels.create(title: label_name)
+        labels = [
+          { title: "bug", color: red },
+          { title: "critical", color: red },
+          { title: "confirmed", color: red },
+          { title: "documentation", color: yellow },
+          { title: "support", color: yellow },
+          { title: "discussion", color: blue },
+          { title: "suggestion", color: blue },
+          { title: "feature", color: green },
+          { title: "enhancement", color: green }
+        ]
+
+        labels.each do |label|
+          project.labels.create(label)
         end
       end
     end

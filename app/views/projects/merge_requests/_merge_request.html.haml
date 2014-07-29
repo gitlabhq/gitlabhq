@@ -34,6 +34,4 @@
 
     .merge-request-labels
       - merge_request.labels.each do |label|
-        %span{class: "label #{label_css_class(label.name)}"}
-          %i.icon-tag
-          = label.name
+        = render_colored_label(label)

@@ -6,7 +6,7 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @labels = @project.issues_labels
+    @labels = @project.labels
   end
 
   def generate
