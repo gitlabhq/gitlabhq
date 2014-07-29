@@ -38,6 +38,11 @@ class ProjectHooks < Spinach::FeatureSteps
     click_link 'Test Hook'
   end
 
+  step 'I click test hook button with invalid URL' do
+    stub_request(:post, @hook.url).to_raise(SocketError)
+    click_link 'Test Hook'
+  end
+
   step 'hook should be triggered' do
     page.current_path.should == project_hooks_path(current_project)
     page.should have_selector '.flash-notice',
@@ -48,5 +53,12 @@ class ProjectHooks < Spinach::FeatureSteps
     page.should have_selector '.flash-alert',
                               text: 'Hook execution failed. '\
                               'Ensure the project has commits.'
+  end
+
+  step 'I should see hook service down error message' do
+    page.should have_selector '.flash-alert',
+                              text: 'Hook execution failed. '\
+                                    'Ensure hook URL is correct and '\
+                                    'service is up.'
   end
 end

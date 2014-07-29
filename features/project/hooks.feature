@@ -24,3 +24,9 @@ Feature: Project Hooks
     And I visit project hooks page
     When I click test hook button
     Then I should see hook error message
+
+  Scenario: I test a hook on down URL
+    Given project has hook
+    And I visit project hooks page
+    When I click test hook button with invalid URL
+    Then I should see hook service down error message
