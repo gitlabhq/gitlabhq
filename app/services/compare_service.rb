@@ -12,7 +12,6 @@ class CompareService
           target_project.repository.raw_repository,
           target_branch,
           source_branch,
-          10000
         )
       )
     else
