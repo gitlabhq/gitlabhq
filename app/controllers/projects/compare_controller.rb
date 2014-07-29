@@ -14,9 +14,9 @@ class Projects::CompareController < Projects::ApplicationController
     compare_result = CompareService.new.execute(
       current_user,
       @project,
-      base_ref,
+      head_ref,
       @project,
-      head_ref
+      base_ref
     )
 
     @commits = compare_result.commits
