@@ -19,16 +19,15 @@ module MergeRequests
       # Generate suggested MR title based on source branch name
       merge_request.title = merge_request.source_branch.titleize.humanize
 
-      # Try to compare branches to get commits list and diffs
-      compare_action = Gitlab::Satellite::CompareAction.new(
+      compare_result = CompareService.new.execute(
         current_user,
+        merge_request.source_project,
+        merge_request.source_branch,
         merge_request.target_project,
         merge_request.target_branch,
-        merge_request.source_project,
-        merge_request.source_branch
       )
 
-      commits = compare_action.commits
+      commits = compare_result.commits
 
       # At this point we decide if merge request can be created
       # If we have at least one commit to merge -> creation allowed
@@ -38,7 +37,7 @@ module MergeRequests
         merge_request.compare_failed = false
 
         # Try to collect diff for merge request.
-        diffs = compare_action.diffs
+        diffs = compare_result.diffs
 
         if diffs.present?
           merge_request.compare_diffs = diffs

@@ -147,7 +147,7 @@ module API
       get ':id/repository/compare' do
         authorize! :download_code, user_project
         required_attributes! [:from, :to]
-        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to], MergeRequestDiff::COMMITS_SAFE_SIZE)
+        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
         present compare, with: Entities::Compare
       end
 
