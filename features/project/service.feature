@@ -48,3 +48,9 @@ Feature: Project Services
     And I click email on push service link
     And I fill email on push settings
     Then I should see email on push service settings saved
+
+  Scenario: Activate Asana service
+    When I visit project "Shop" services page
+    And I click Asana service link
+    And I fill Asana settings
+    Then I should see Asana service settings saved

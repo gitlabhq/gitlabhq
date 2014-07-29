@@ -47,6 +47,7 @@ describe Project do
     it { should have_many(:protected_branches).dependent(:destroy) }
     it { should have_one(:forked_project_link).dependent(:destroy) }
     it { should have_one(:slack_service).dependent(:destroy) }
+    it { should have_one(:asana_service).dependent(:destroy) }
   end
 
   describe "Mass assignment" do
