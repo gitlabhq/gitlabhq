@@ -1,3 +1,8 @@
+v 7.1.1
+  - Fix cpu usage issue in Firefox
+  - Fix redirect loop when changing password by new user
+  - Fix 500 error on new merge request page
+
 v 7.1.0
   - Remove observers
   - Improve MR discussions

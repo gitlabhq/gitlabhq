@@ -34,7 +34,6 @@ module MergeRequests
       # If we have at least one commit to merge -> creation allowed
       if commits.present?
         merge_request.compare_commits = Commit.decorate(commits)
-        merge_request.compare_base_commit = Commit.new(commits.first)
         merge_request.can_be_created = true
         merge_request.compare_failed = false
 
