@@ -63,6 +63,13 @@
 @media (min-width: 800px)  { .issues_bulk_update .select2-container { min-width: 120px; }  }
 @media (min-width: 1200px) { .issues_bulk_update .select2-container { min-width: 160px; }  }
 
+.issues_bulk_update {
+  .select2-container .select2-choice {
+    color: #444 !important;
+    font-weight: 500;
+  }
+}
+
 #update_status {
   width: 100px;
 }
