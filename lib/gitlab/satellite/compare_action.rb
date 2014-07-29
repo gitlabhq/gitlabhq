@@ -45,7 +45,7 @@ module Gitlab
       end
 
       def compare(repo)
-        @compare ||= Gitlab::Git::Compare.new(Gitlab::Git::Repository.new(repo.path), "origin/#{@target_branch}", "source/#{@source_branch}")
+        @compare ||= Gitlab::Git::Compare.new(Gitlab::Git::Repository.new(repo.path), "origin/#{@target_branch}", "source/#{@source_branch}", 10000)
       end
     end
   end
