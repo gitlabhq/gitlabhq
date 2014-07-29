@@ -17,11 +17,7 @@ module Gitlab
         in_locked_and_timed_satellite do |target_repo|
           prepare_satellite!(target_repo)
           update_satellite_source_and_target!(target_repo)
-          common_commit = target_repo.git.native(:merge_base, default_options, ["origin/#{@target_branch}", "source/#{@source_branch}"]).strip
-          #this method doesn't take default options
-          diffs = target_repo.diff(common_commit, "source/#{@source_branch}")
-          diffs = diffs.map { |diff| Gitlab::Git::Diff.new(diff) }
-          diffs
+          compare(target_repo).diffs
         end
       rescue Grit::Git::CommandFailed => ex
         raise BranchesWithoutParent
@@ -32,9 +28,7 @@ module Gitlab
         in_locked_and_timed_satellite do |target_repo|
           prepare_satellite!(target_repo)
           update_satellite_source_and_target!(target_repo)
-          commits = target_repo.commits_between("origin/#{@target_branch}", "source/#{@source_branch}")
-          commits = commits.map { |commit| Gitlab::Git::Commit.new(commit, nil) }
-          commits
+          compare(target_repo).commits
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
@@ -46,9 +40,12 @@ module Gitlab
       def update_satellite_source_and_target!(target_repo)
         target_repo.remote_add('source', @source_project.repository.path_to_repo)
         target_repo.remote_fetch('source')
-        target_repo.git.checkout(default_options({b: true}), @target_branch, "origin/#{@target_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
+      end
+
+      def compare(repo)
+        @compare ||= Gitlab::Git::Compare.new(Gitlab::Git::Repository.new(repo.path), "origin/#{@target_branch}", "source/#{@source_branch}")
       end
     end
   end
