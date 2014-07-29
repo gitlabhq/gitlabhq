@@ -42,7 +42,7 @@ class Project < ActiveRecord::Base
 
   ActsAsTaggableOn.strict_case_match = true
 
-  acts_as_taggable_on :labels, :issues_default_labels
+  acts_as_taggable_on :tags, :issues_default_labels
 
   attr_accessor :new_default_branch
 

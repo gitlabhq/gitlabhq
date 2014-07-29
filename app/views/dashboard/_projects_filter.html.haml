@@ -44,12 +44,12 @@
 
 
 
-- if @labels.present?
+- if @tags.present?
   %fieldset
-    %legend Labels
+    %legend Tags
     %ul.nav.nav-pills.nav-stacked.nav-small
-      - @labels.each do |label|
-        %li{ class: (label.name == params[:label]) ? 'active' : 'light' }
-          = link_to projects_dashboard_filter_path(scope: params[:scope], label: label.name) do
+      - @tags.each do |tag|
+        %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
+          = link_to projects_dashboard_filter_path(scope: params[:scope], tag: tag.name) do
             %i.icon-tag
-            = label.name
+            = tag.name
