@@ -7,7 +7,7 @@ class Projects::LabelsController < Projects::ApplicationController
   respond_to :js, :html
 
   def index
-    @labels = @project.labels.order('title ASC').page(params[:page]).per(20)
+    @labels = @project.labels.order_by_name.page(params[:page]).per(20)
   end
 
   def new

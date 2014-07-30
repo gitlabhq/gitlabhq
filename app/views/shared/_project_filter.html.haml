@@ -36,7 +36,7 @@
       %fieldset
         %legend Labels
         %ul.nav.nav-pills.nav-stacked.nav-small.labels-filter
-          - @project.labels.each do |label|
+          - @project.labels.order_by_name.each do |label|
             %li{class: label_filter_class(label.name)}
               = link_to labels_filter_path(label.name) do
                 = render_colored_label(label)
