@@ -13,7 +13,7 @@ module LabelsHelper
       text_color = "#FFF"
     end
 
-    content_tag :span, class: 'label', style: "background:#{label_color};color:#{text_color}" do
+    content_tag :span, class: 'label color-label', style: "background:#{label_color};color:#{text_color}" do
       label.name
     end
   end

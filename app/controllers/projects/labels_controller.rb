@@ -1,18 +1,17 @@
 class Projects::LabelsController < Projects::ApplicationController
   before_filter :module_enabled
-  before_filter :label, only: [:edit, :update]
+  before_filter :label, only: [:edit, :update, :destroy]
   before_filter :authorize_labels!
-  before_filter :authorize_admin_labels!, only: [:edit, :update, :new, :create, :destroy]
+  before_filter :authorize_admin_labels!, except: [:index]
 
   respond_to :js, :html
 
   def index
-    @labels = @project.labels
+    @labels = @project.labels.order('title ASC').page(params[:page]).per(20)
   end
 
   def new
     @label = @project.labels.new
-
   end
 
   def create
@@ -46,6 +45,12 @@ class Projects::LabelsController < Projects::ApplicationController
     else
       redirect_to project_labels_path(@project)
     end
+  end
+
+  def destroy
+    @label.destroy
+
+    redirect_to project_labels_path(@project), notice: 'Label was removed'
   end
 
   protected
