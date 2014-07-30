@@ -1,2 +1,4 @@
 %li
   = render_colored_label(label)
+  .pull-right
+    = link_to 'Edit', edit_project_label_path(@project, label), class: 'btn'

@@ -17,4 +17,17 @@ module LabelsHelper
       label.name
     end
   end
+
+  def suggested_colors
+    [
+      '#d9534f',
+      '#f0ad4e',
+      '#428bca',
+      '#5cb85c',
+      '#34495e',
+      '#7f8c8d',
+      '#8e44ad',
+      '#FFECDB'
+    ]
+  end
 end
