@@ -125,7 +125,7 @@ class BaseFinder
 
   def by_label(items)
     if params[:label_name].present?
-      items = items.joins(:labels).where("labels.title = ?", params[:label_name])
+      items = items.joins(:labels).where("labels.title in (?)", params[:label_name].split(","))
     end
 
     items
