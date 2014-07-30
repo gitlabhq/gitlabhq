@@ -133,4 +133,15 @@ module Issuable
       object_attributes: self.attributes
     }
   end
+
+  def label_names
+    labels.order('title ASC').pluck(:title)
+  end
+
+  def add_labels_by_names(label_names)
+    label_names.each do |label_name|
+      label = project.labels.find_or_create_by(title: label_name.strip)
+      self.labels << label
+    end
+  end
 end

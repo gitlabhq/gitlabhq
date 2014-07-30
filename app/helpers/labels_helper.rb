@@ -5,13 +5,7 @@ module LabelsHelper
 
   def render_colored_label(label)
     label_color = label.color || "#428bca"
-    r, g, b = label_color.slice(1,7).scan(/.{2}/).map(&:hex)
-
-    if (r + g + b) > 500
-      text_color = "#333"
-    else
-      text_color = "#FFF"
-    end
+    text_color = text_color_for_bg(label_color)
 
     content_tag :span, class: 'label color-label', style: "background:#{label_color};color:#{text_color}" do
       label.name
@@ -29,5 +23,15 @@ module LabelsHelper
       '#8e44ad',
       '#FFECDB'
     ]
+  end
+
+  def text_color_for_bg(bg_color)
+    r, g, b = bg_color.slice(1,7).scan(/.{2}/).map(&:hex)
+
+    if (r + g + b) > 500
+      "#333"
+    else
+      "#FFF"
+    end
   end
 end
