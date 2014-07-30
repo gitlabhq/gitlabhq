@@ -3,13 +3,6 @@ class ProjectFilterLabels < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  step 'project "Shop" has labels: "bug", "feature", "enhancement"' do
-    project = Project.find_by(name: "Shop")
-    create(:label, project: project, title: 'bug')
-    create(:label, project: project, title: 'feature')
-    create(:label, project: project, title: 'enhancement')
-  end
-
   step 'I should see "bug" in labels filter' do
     within ".labels-filter" do
       page.should have_content "bug"

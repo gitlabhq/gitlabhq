@@ -123,10 +123,6 @@ module SharedProject
     project.team << [user, :master]
   end
 
-  # ----------------------------------------
-  # Empty projects
-  # ----------------------------------------
-
   step 'public empty project "Empty Public Project"' do
     create :empty_project, :public, name: "Empty Public Project"
   end
@@ -134,5 +130,12 @@ module SharedProject
   step 'project "Community" has comments' do
     project = Project.find_by(name: "Community")
     2.times { create(:note_on_issue, project: project) }
+  end
+
+  step 'project "Shop" has labels: "bug", "feature", "enhancement"' do
+    project = Project.find_by(name: "Shop")
+    create(:label, project: project, title: 'bug')
+    create(:label, project: project, title: 'feature')
+    create(:label, project: project, title: 'enhancement')
   end
 end

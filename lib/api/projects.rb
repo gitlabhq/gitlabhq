@@ -222,7 +222,7 @@ module API
       # Example Request:
       #   GET /projects/:id/labels
       get ':id/labels' do
-        @labels = user_project.issues_labels
+        @labels = user_project.labels
         present @labels, with: Entities::Label
       end
     end
