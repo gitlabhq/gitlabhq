@@ -3,15 +3,19 @@
   %hr
   - if @repository.exists? && !@repository.empty? && @repository.contribution_guide && !@issue.persisted?
     - contribution_guide_url = project_blob_path(@project, tree_join(@repository.root_ref, @repository.contribution_guide.name))
-    .alert.alert-info.col-sm-10.col-sm-offset-2
-      ="Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
+    .row
+      .col-sm-10.col-sm-offset-2
+        .alert.alert-info
+          = "Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
 
   = form_for [@project, @issue], html: { class: 'form-horizontal issue-form' } do |f|
     -if @issue.errors.any?
-      .alert.alert-danger
-        - @issue.errors.full_messages.each do |msg|
-          %span= msg
-          %br
+      .row
+        .col-sm-10.col-sm-offset-2
+          .alert.alert-danger
+            - @issue.errors.full_messages.each do |msg|
+              %span= msg
+              %br
     .form-group
       = f.label :title, class: 'control-label' do
         %strong= 'Title *'
