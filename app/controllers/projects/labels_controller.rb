@@ -1,12 +1,39 @@
 class Projects::LabelsController < Projects::ApplicationController
   before_filter :module_enabled
-
+  before_filter :label, only: [:edit, :update]
   before_filter :authorize_labels!
+  before_filter :authorize_admin_labels!, only: [:edit, :update, :new, :create, :destroy]
 
   respond_to :js, :html
 
   def index
     @labels = @project.labels
+  end
+
+  def new
+    @label = @project.labels.new
+
+  end
+
+  def create
+    @label = @project.labels.create(label_params)
+
+    if @label.valid?
+      redirect_to project_labels_path(@project)
+    else
+      render 'new'
+    end
+  end
+
+  def edit
+  end
+
+  def update
+    if @label.update_attributes(label_params)
+      redirect_to project_labels_path(@project)
+    else
+      render 'edit'
+    end
   end
 
   def generate
@@ -27,5 +54,17 @@ class Projects::LabelsController < Projects::ApplicationController
     unless @project.issues_enabled || @project.merge_requests_enabled
       return render_404
     end
+  end
+
+  def label_params
+    params.require(:label).permit(:title, :color)
+  end
+
+  def label
+    @label = @project.labels.find(params[:id])
+  end
+
+  def authorize_admin_labels!
+    return render_404 unless can?(current_user, :admin_label, @project)
   end
 end
