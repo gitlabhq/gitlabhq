@@ -34,7 +34,11 @@
 
     - if defined?(labels)
       %fieldset
-        %legend Labels
+        %legend
+          Labels
+          %small.pull-right
+            = link_to project_labels_path(@project), class: 'light' do
+              %i.icon-edit
         %ul.nav.nav-pills.nav-stacked.nav-small.labels-filter
           - @project.labels.order_by_name.each do |label|
             %li{class: label_filter_class(label.name)}
@@ -46,7 +50,8 @@
 
         - if @project.labels.empty?
           .light-well
-            Add first label to your issues
+            Create first label at
+            = link_to 'labels page', project_labels_path(@project)
             %br
             or #{link_to 'generate', generate_project_labels_path(@project, redirect: redirect), method: :post} default set of labels
 
