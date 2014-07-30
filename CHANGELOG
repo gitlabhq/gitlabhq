@@ -3,6 +3,9 @@ v 7.2.0
   - Add project stars (Ciro Santilli)
   - Log Sidekiq arguments
   - Fix cpu usage issue in Firefox
+  - Better labels: colors, ability to rename and remove
+  - Improve the way merge request collects diffs
+  - Improve compare page for large diffs  
 
 v 7.1.0
   - Remove observers
