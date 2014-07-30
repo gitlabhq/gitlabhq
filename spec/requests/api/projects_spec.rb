@@ -10,13 +10,6 @@ describe API::API, api: true  do
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
-  let(:issue_with_labels) { create(:issue, author: user, assignee: user, project: project, :label_list => "label1, label2") }
-  let(:merge_request_with_labels) do
-    create(:merge_request, :simple, author: user, assignee: user,
-           source_project: project, target_project: project, title: 'Test',
-           label_list: 'label3, label4')
-  end
-
 
   describe "GET /projects" do
     before { project }
@@ -631,48 +624,6 @@ describe API::API, api: true  do
       it "should not remove a non existing project" do
         delete api("/projects/1328", admin)
         response.status.should == 404
-      end
-    end
-  end
-
-  describe 'GET /projects/:id/labels' do
-    context 'with an issue' do
-      before { issue_with_labels }
-
-      it 'should return project labels' do
-        get api("/projects/#{project.id}/labels", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['name'].should == issue_with_labels.labels.first.name
-        json_response.last['name'].should == issue_with_labels.labels.last.name
-      end
-    end
-
-    context 'with a merge request' do
-      before { merge_request_with_labels }
-
-      it 'should return project labels' do
-        get api("/projects/#{project.id}/labels", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['name'].should == merge_request_with_labels.labels.first.name
-        json_response.last['name'].should == merge_request_with_labels.labels.last.name
-      end
-    end
-
-    context 'with an issue and a merge request' do
-      before do
-        issue_with_labels
-        merge_request_with_labels
-      end
-
-      it 'should return project labels from both' do
-        get api("/projects/#{project.id}/labels", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        all_labels = issue_with_labels.labels.map(&:name).to_a
-                       .concat(merge_request_with_labels.labels.map(&:name).to_a)
-        json_response.map { |e| e['name'] }.should =~ all_labels
       end
     end
   end

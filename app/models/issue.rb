@@ -32,9 +32,6 @@ class Issue < ActiveRecord::Base
 
   scope :of_group, ->(group) { where(project_id: group.project_ids) }
   scope :of_user_team, ->(team) { where(project_id: team.project_ids, assignee_id: team.member_ids) }
-
-  acts_as_taggable_on :labels
-
   scope :cared, ->(user) { where(assignee_id: user) }
   scope :open_for, ->(user) { opened.assigned_to(user) }
 

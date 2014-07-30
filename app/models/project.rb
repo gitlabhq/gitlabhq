@@ -41,8 +41,7 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
 
   ActsAsTaggableOn.strict_case_match = true
-
-  acts_as_taggable_on :labels, :issues_default_labels
+  acts_as_taggable_on :tags
 
   attr_accessor :new_default_branch
 
@@ -71,6 +70,7 @@ class Project < ActiveRecord::Base
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
   has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
+  has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
@@ -280,13 +280,6 @@ class Project < ActiveRecord::Base
 
   def project_id
     self.id
-  end
-
-  # Tags are shared by issues and merge requests
-  def issues_labels
-    @issues_labels ||= (issues_default_labels +
-                        merge_requests.tags_on(:labels) +
-                        issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)

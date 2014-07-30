@@ -297,7 +297,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :labels, only: [:index] do
+      resources :labels, constraints: {id: /\d+/} do
         collection do
           post :generate
         end

@@ -2,7 +2,7 @@ Feature: Project Labels
   Background:
     Given I sign in as a user
     And I own project "Shop"
-    And project "Shop" have issues tags: "bug", "feature"
+    And project "Shop" has labels: "bug", "feature", "enhancement"
     Given I visit project "Shop" labels page
 
   Scenario: I should see active milestones

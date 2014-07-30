@@ -126,7 +126,7 @@ module API
     end
 
     class Issue < ProjectEntity
-      expose :label_list, as: :labels
+      expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
     end
@@ -135,7 +135,7 @@ module API
       expose :target_branch, :source_branch, :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
-      expose :label_list, as: :labels
+      expose :label_names, as: :labels
     end
 
     class SSHKey < Grape::Entity

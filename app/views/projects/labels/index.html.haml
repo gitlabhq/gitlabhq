@@ -1,9 +1,15 @@
 = render "projects/issues/head"
 
+- if can? current_user, :admin_label, @project
+  = link_to new_project_label_path(@project), class: "pull-right btn btn-new" do
+    New label
+%h3.page-title
+  Labels
+%hr
+
 - if @labels.present?
-  %ul.bordered-list.labels-table
-    - @labels.each do |label|
-      = render 'label', label: label
+  %ul.bordered-list.manage-labels-list
+    = render @labels
 
 - else
   .light-well
