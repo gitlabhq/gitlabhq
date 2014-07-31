@@ -221,7 +221,8 @@ module ApplicationHelper
   end
 
   def render_markup(file_name, file_content)
-    GitHub::Markup.render(file_name, file_content).html_safe
+    GitHub::Markup.render(file_name, file_content).
+      force_encoding(file_content.encoding).html_safe
   rescue RuntimeError
     simple_format(file_content)
   end

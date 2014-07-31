@@ -217,4 +217,13 @@ describe ApplicationHelper do
       ).to eq("<a href=\"http://www.example.com\" rel=\"noreferrer nofollow\">Example</a>")
     end
   end
+
+  describe 'markup_render' do
+    let(:content) { 'Noël' }
+
+    it 'should preserve encoding' do
+      content.encoding.name.should == 'UTF-8'
+      expect(render_markup('foo.rst', content).encoding.name).to eq('UTF-8')
+    end
+  end
 end
