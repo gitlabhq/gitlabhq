@@ -13,13 +13,13 @@ module TestEnv
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
 
-    # Setup GitLab shell for test instance
-    setup_gitlab_shell
-
     # Clean /tmp/tests
     tmp_test_path = Rails.root.join('tmp', 'tests')
     FileUtils.rm_r(tmp_test_path)
     FileUtils.mkdir(tmp_test_path)
+
+    # Setup GitLab shell for test instance
+    setup_gitlab_shell
 
     # Create repository for FactoryGirl.create(:project)
     setup_factory_repo
