@@ -61,9 +61,7 @@ FactoryGirl.define do
     path { 'gitlabhq' }
 
     after :create do |project|
-      TestEnv.clear_repo_dir(project.namespace, project.path)
-      TestEnv.reset_satellite_dir
-      TestEnv.create_repo(project.namespace, project.path)
+      TestEnv.copy_repo(project)
     end
   end
 
