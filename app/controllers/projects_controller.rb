@@ -37,6 +37,7 @@ class ProjectsController < ApplicationController
         format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
       else
+        flash[:alert] = 'Error while updating project.'
         format.html { render "edit", layout: "project_settings" }
         format.js
       end

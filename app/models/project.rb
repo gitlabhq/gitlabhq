@@ -493,9 +493,9 @@ class Project < ActiveRecord::Base
     !group
   end
 
-  def rename_repo
-    old_path_with_namespace = File.join(namespace_dir, path_was)
-    new_path_with_namespace = File.join(namespace_dir, path)
+  def rename_repo(new_path)
+    old_path_with_namespace = File.join(namespace_dir, path)
+    new_path_with_namespace = File.join(namespace_dir, new_path)
 
     if gitlab_shell.mv_repository(old_path_with_namespace, new_path_with_namespace)
       # If repository moved successfully we need to remove old satellite
@@ -509,14 +509,14 @@ class Project < ActiveRecord::Base
         send_move_instructions
         reset_events_cache
       rescue
-        # Returning false does not rollback after_* transaction but gives
-        # us information about failing some of tasks
+        # Return false to indicate there was a problem while renaming,
+        # but update db
         false
       end
     else
-      # if we cannot move namespace directory we should rollback
-      # db changes in order to prevent out of sync between db and fs
-      raise Exception.new('repository cannot be renamed')
+      # if we cannot move namespace directory indicate we're not allowed to save
+      # the new path to keep sync between db and fs
+      raise 'repository cannot be renamed'
     end
   end
 
