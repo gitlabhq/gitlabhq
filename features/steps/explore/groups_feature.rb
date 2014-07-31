@@ -90,4 +90,3 @@ class Spinach::Features::ExploreGroupsFeature < Spinach::FeatureSteps
     )
   end
 end
-

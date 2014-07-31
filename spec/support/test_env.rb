@@ -49,15 +49,16 @@ module TestEnv
 
     unless File.directory?(repo_path)
       git_cmd = %W(git clone --bare #{clone_url} #{repo_path})
-      puts git_cmd.inspect
       system(*git_cmd)
     end
   end
 
   def copy_repo(project)
-    base_repo_path = repos_path + "/root/testme.git"
-    target_repo_path = repos_path + "/#{project.namespace.path}/#{project.path}.git"
-    FileUtils.cp_r(base_repo_path, target_repo_path)
+    base_repo_path = File.expand_path(repos_path + "/root/testme.git")
+    target_repo_path = File.expand_path(repos_path + "/#{project.namespace.path}/#{project.path}.git")
+    FileUtils.mkdir_p(target_repo_path)
+    FileUtils.cp_r("#{base_repo_path}/.", target_repo_path)
+    FileUtils.chmod_R 0755, target_repo_path
   end
 
   def repos_path
