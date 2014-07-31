@@ -32,6 +32,8 @@ eos
       author_full_name: "Dmitriy Zaporozhets",
       author_email: "dmitriy.zaporozhets@gmail.com",
       files_changed_count: 2,
+      line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14',
+      del_line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13',
       message: <<eos
 Change some files
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>

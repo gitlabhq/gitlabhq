@@ -61,8 +61,8 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I submit new merge request "Wiki Feature"' do
-    select "master", from: "merge_request_source_branch"
-    select "notes_refactoring", from: "merge_request_target_branch"
+    select "fix", from: "merge_request_source_branch"
+    select "feature", from: "merge_request_target_branch"
     click_button "Compare branches"
     fill_in "merge_request_title", with: "Wiki Feature"
     click_button "Submit merge request"
@@ -73,7 +73,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
            title: "Bug NS-04",
            source_project: project,
            target_project: project,
-           source_branch: 'stable',
+           source_branch: 'fix',
            target_branch: 'master',
            author: project.users.first,
            description: "# Description header"
@@ -116,7 +116,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I leave a comment on the diff page in commit' do
-    find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
+    click_diff_line(sample_commit.line_code)
     leave_comment "One comment to rule them all"
   end
 
@@ -126,7 +126,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I leave a comment like "Line is wrong" on line 185 of the first file in commit' do
-    find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_185_185"]').click
+    click_diff_line(sample_commit.line_code)
     leave_comment "Line is wrong"
   end
 
@@ -248,7 +248,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def init_diff_note
-    find('a[data-line-code="4735dfc552ad7bf15ca468adc3cad9d05b624490_172_185"]').click
+    click_diff_line(sample_commit.line_code)
   end
 
   def leave_comment(message)
@@ -261,14 +261,18 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def init_diff_note_first_file
-    find('a[data-line-code="a5cc2925ca8258af241be7e5b0381edf30266302_12_12"]').click
+    click_diff_line(sample_commit.line_code)
   end
 
   def init_diff_note_second_file
-    find('a[data-line-code="8ec9a00bfd09b3190ac6b22251dbb1aa95a0579d_28_39"]').click
+    click_diff_line(sample_commit.del_line_code)
   end
 
   def have_visible_content (text)
     have_css("*", text: text, visible: true)
+  end
+
+  def click_diff_line(code)
+    find("a[data-line-code='#{code}']").click
   end
 end
