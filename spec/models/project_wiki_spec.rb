@@ -1,33 +1,14 @@
 require "spec_helper"
 
 describe ProjectWiki do
-
-  def remove_temp_repo(path)
-    FileUtils.rm_rf path
-  end
-
-  def commit_details
-    commit = {name: user.name, email: user.email, message: "test commit"}
-  end
-
-  def create_page(name, content)
-    subject.wiki.write_page(name, :markdown, content, commit_details)
-  end
-
-  def destroy_page(page)
-    subject.wiki.delete_page(page, commit_details)
-  end
-
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:project_wiki) { ProjectWiki.new(project, user) }
 
-  subject { ProjectWiki.new(project, user) }
-
-  before do
-    create_temp_repo(subject.send(:path_to_repo))
-  end
+  subject { project_wiki }
+  before { project_wiki.wiki }
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
@@ -242,4 +223,26 @@ describe ProjectWiki do
     end
   end
 
+  private
+
+  def create_temp_repo(path)
+    FileUtils.mkdir_p path
+    system(*%W(git init --quiet --bare -- #{path}))
+  end
+
+  def remove_temp_repo(path)
+    FileUtils.rm_rf path
+  end
+
+  def commit_details
+    commit = {name: user.name, email: user.email, message: "test commit"}
+  end
+
+  def create_page(name, content)
+    subject.wiki.write_page(name, :markdown, content, commit_details)
+  end
+
+  def destroy_page(page)
+    subject.wiki.delete_page(page, commit_details)
+  end
 end
