@@ -26,8 +26,8 @@ module SharedProject
 
     data = {
       before: "0000000000000000000000000000000000000000",
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/new_design",
+      after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
+      ref: "refs/heads/fix",
       user_id: @user.id,
       user_name: @user.name,
       repository: {
@@ -49,7 +49,7 @@ module SharedProject
 
   Then 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name_with_namespace}"
+    page.should have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
   end
 
   Then 'I should see project settings' do
