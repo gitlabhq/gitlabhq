@@ -289,6 +289,10 @@ module SharedPaths
     visit project_labels_path(project)
   end
 
+  step 'I visit new label page' do
+    visit new_project_label_path(project)
+  end
+
   step 'I visit merge request page "Bug NS-04"' do
     mr = MergeRequest.find_by(title: "Bug NS-04")
     visit project_merge_request_path(mr.target_project, mr)
