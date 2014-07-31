@@ -104,9 +104,9 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     visit project_merge_request_path(project, merge_request)
   end
 
-  step 'I click on the first commit in the merge request' do
-    within '.first-commits' do
-      click_link merge_request.commits.first.short_id(8)
+  step 'I click on the commit in the merge request' do
+    within '.mr-commits' do
+      click_link sample_commit.id[0..8]
     end
   end
 
@@ -120,32 +120,31 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     leave_comment "One comment to rule them all"
   end
 
-  step 'I leave a comment like "Line is wrong" on line 185 of the first file' do
+  step 'I leave a comment like "Line is wrong" on diff' do
     init_diff_note
     leave_comment "Line is wrong"
   end
 
-  step 'I leave a comment like "Line is wrong" on line 185 of the first file in commit' do
+  step 'I leave a comment like "Line is wrong" on diff in commit' do
     click_diff_line(sample_commit.line_code)
     leave_comment "Line is wrong"
   end
 
-  step 'I should see a discussion has started on line 185' do
+  step 'I should see a discussion has started on diff' do
     page.should have_content "#{current_user.name} started a discussion"
-    page.should have_content "app/assets/stylesheets/tree.scss"
+    page.should have_content sample_commit.line_code_path
     page.should have_content "Line is wrong"
   end
 
-  step 'I should see a discussion has started on commit b1e6a9dbf1:L185' do
+  step 'I should see a discussion has started on commit diff' do
     page.should have_content "#{current_user.name} started a discussion on commit"
-    page.should have_content "app/assets/stylesheets/tree.scss"
+    page.should have_content sample_commit.line_code_path
     page.should have_content "Line is wrong"
   end
 
-  step 'I should see a discussion has started on commit b1e6a9dbf1' do
+  step 'I should see a discussion has started on commit' do
     page.should have_content "#{current_user.name} started a discussion on commit"
     page.should have_content "One comment to rule them all"
-    page.should have_content "app/assets/stylesheets/tree.scss"
   end
 
   step 'merge request is mergeable' do
@@ -162,6 +161,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I accept this merge request' do
+    Gitlab::Satellite::MergeAction.any_instance.stub(
+      merge!: true,
+    )
+
     click_button "Accept Merge Request"
   end
 
@@ -261,11 +264,11 @@ class ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   def init_diff_note_first_file
-    click_diff_line(sample_commit.line_code)
+    click_diff_line(sample_compare.changes[0][:line_code])
   end
 
   def init_diff_note_second_file
-    click_diff_line(sample_commit.del_line_code)
+    click_diff_line(sample_compare.changes[1][:line_code])
   end
 
   def have_visible_content (text)

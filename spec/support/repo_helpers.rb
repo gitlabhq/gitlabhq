@@ -33,6 +33,7 @@ eos
       author_email: "dmitriy.zaporozhets@gmail.com",
       files_changed_count: 2,
       line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_15_14',
+      line_code_path: 'files/ruby/popen.rb',
       del_line_code: '2f6fcd96b88b36ce98c38da085c795a27d92a3dd_13_13',
       message: <<eos
 Change some files
@@ -64,6 +65,25 @@ eos
 Modified image
 Signed-off-by: Dmitriy Zaporozhets <dmitriy.zaporozhets@gmail.com>
 eos
+    )
+  end
+
+  def sample_compare
+    changes = [
+      {
+        line_code: 'a5cc2925ca8258af241be7e5b0381edf30266302_20_20',
+        file_path: '.gitignore',
+      },
+      {
+        line_code: '7445606fbf8f3683cd42bdc54b05d7a0bc2dfc44_4_6',
+        file_path: '.gitmodules',
+      }
+    ]
+
+    OpenStruct.new(
+      source_branch: 'master',
+      target_branch: 'feature',
+      changes: changes
     )
   end
 end
