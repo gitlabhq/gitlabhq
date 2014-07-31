@@ -45,7 +45,7 @@ module TestEnv
 
   def setup_factory_repo
     repo_path = repos_path + "/root/testme.git"
-    clone_url = 'https://gitlab.com/gitlab-org/testme.git'
+    clone_url = 'https://gitlab.com/gitlab-org/gitlab-test.git'
 
     unless File.directory?(repo_path)
       git_cmd = %W(git clone --bare #{clone_url} #{repo_path})
