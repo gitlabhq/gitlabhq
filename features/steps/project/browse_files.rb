@@ -2,6 +2,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include RepoHelpers
 
   step 'I should see files from repository' do
     page.should have_content "VERSION"
@@ -28,7 +29,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see raw file content' do
-    page.source.should == ValidCommit::BLOB_FILE
+    page.source.should == sample_blob.data
   end
 
   step 'I click button "edit"' do

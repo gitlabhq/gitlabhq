@@ -1,5 +1,6 @@
 module SharedPaths
   include Spinach::DSL
+  include RepoHelpers
 
   step 'I visit new project page' do
     visit new_project_path
@@ -257,7 +258,7 @@ module SharedPaths
   end
 
   step 'I visit blob file from repo' do
-    visit project_blob_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
+    visit project_blob_path(@project, File.join(sample_commit.id, sample_blob.path))
   end
 
   step 'I visit ".gitignore" file in repo' do
@@ -273,7 +274,7 @@ module SharedPaths
   end
 
   step 'I visit project commit page' do
-    visit project_commit_path(@project, ValidCommit::ID)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   step 'I visit project "Shop" issues page' do
