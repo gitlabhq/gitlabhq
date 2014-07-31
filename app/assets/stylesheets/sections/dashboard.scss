@@ -60,12 +60,13 @@
 }
 
 .project-row, .group-row {
-  padding: 8px 15px !important;
+  padding: 0 !important;
   font-size: 14px;
   line-height: 24px;
 
   a {
     display: block;
+    padding: 8px 15px;
   }
 
   .project-name, .group-name {
