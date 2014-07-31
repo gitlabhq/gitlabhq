@@ -15,8 +15,12 @@ module TestEnv
 
     # Clean /tmp/tests
     tmp_test_path = Rails.root.join('tmp', 'tests')
-    FileUtils.rm_r(tmp_test_path)
-    FileUtils.mkdir(tmp_test_path)
+
+    if File.directory?(tmp_test_path)
+      FileUtils.rm_r(tmp_test_path)
+    end
+
+    FileUtils.mkdir_p(tmp_test_path)
 
     # Setup GitLab shell for test instance
     setup_gitlab_shell
