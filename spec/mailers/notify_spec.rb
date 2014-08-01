@@ -3,6 +3,7 @@ require 'spec_helper'
 describe Notify do
   include EmailSpec::Helpers
   include EmailSpec::Matchers
+  include RepoHelpers
 
   let(:gitlab_sender) { Gitlab.config.gitlab.email_from }
   let(:recipient) { create(:user, email: 'recipient@example.com') }
@@ -524,7 +525,7 @@ describe Notify do
   describe 'email on push with multiple commits' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, 'cd5c4bac', 'b1e6a9db') }
+    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_image_commit.id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { project_compare_path(project, from: commits.first, to: commits.last) }
 
@@ -545,11 +546,11 @@ describe Notify do
     end
 
     it 'includes commits list' do
-      should have_body_text /tree css fixes/
+      should have_body_text /Change some files/
     end
 
     it 'includes diffs' do
-      should have_body_text /Checkout wiki pages for installation information/
+      should have_body_text /def archive_formats_regex/
     end
 
     it 'contains a link to the diff' do
@@ -560,7 +561,7 @@ describe Notify do
   describe 'email on push with a single commit' do
     let(:example_site_path) { root_path }
     let(:user) { create(:user) }
-    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, '8716fc78', 'b1e6a9db') }
+    let(:compare) { Gitlab::Git::Compare.new(project.repository.raw_repository, sample_commit.parent_id, sample_commit.id) }
     let(:commits) { Commit.decorate(compare.commits) }
     let(:diff_path) { project_commit_path(project, commits.first) }
 
@@ -581,11 +582,11 @@ describe Notify do
     end
 
     it 'includes commits list' do
-      should have_body_text /tree css fixes/
+      should have_body_text /Change some files/
     end
 
     it 'includes diffs' do
-      should have_body_text /Checkout wiki pages for installation information/
+      should have_body_text /def archive_formats_regex/
     end
 
     it 'contains a link to the diff' do
