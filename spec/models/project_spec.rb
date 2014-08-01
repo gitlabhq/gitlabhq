@@ -124,24 +124,21 @@ describe Project do
 
   describe :update_merge_requests do
     let(:project) { create(:project) }
-
-    before do
-      @merge_request = create(:merge_request, source_project: project, target_project: project)
-      @key = create(:key, user_id: project.owner.id)
-    end
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:key) { create(:key, user_id: project.owner.id) }
+    let(:prev_commit_id) { merge_request.commits.last.id }
+    let(:commit_id) { merge_request.commits.first.id }
 
     it "should close merge request if last commit from source branch was pushed to target branch" do
-      @merge_request.reload_code
-      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
-      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/stable", @key.user)
-      @merge_request.reload
-      @merge_request.merged?.should be_true
+      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
+      merge_request.reload
+      merge_request.merged?.should be_true
     end
 
     it "should update merge request commits with new one if pushed to source branch" do
-      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/master", @key.user)
-      @merge_request.reload
-      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
+      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
+      merge_request.reload
+      merge_request.last_commit.id.should == commit_id
     end
   end
 
@@ -237,7 +234,7 @@ describe Project do
       project.protected_branches.create(name: 'master')
     end
 
-    it { project.open_branches.map(&:name).should include('bootstrap') }
+    it { project.open_branches.map(&:name).should include('feature') }
     it { project.open_branches.map(&:name).should_not include('master') }
   end
 
