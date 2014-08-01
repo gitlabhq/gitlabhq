@@ -86,7 +86,7 @@ GET /projects
 
 #### List owned projects
 
-Get a list of projects owned by the authenticated user.
+Get a list of projects which are owned by the authenticated user.
 
 ```
 GET /projects/owned
@@ -102,7 +102,7 @@ GET /projects/all
 
 ### Get single project
 
-Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME , which is owned by the authentication user.
+Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME, which is owned by the authenticated user.
 If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`).
 
 ```
@@ -163,7 +163,7 @@ Parameters:
 
 ### Get project events
 
-Get a project events for specific project.
+Get the events for the specified project.
 Sorted from newest to latest
 
 ```
@@ -237,7 +237,7 @@ Parameters:
 
 ### Create project
 
-Creates new project owned by user.
+Creates a new project owned by the authenticated user.
 
 ```
 POST /projects
@@ -259,7 +259,7 @@ Parameters:
 
 ### Create project for user
 
-Creates a new project owned by user. Available only for admins.
+Creates a new project owned by the specified user. Available only for admins.
 
 ```
 POST /projects/user/:user_id
@@ -282,7 +282,7 @@ Parameters:
 
 ## Remove project
 
-Removes project with all resources(issues, merge requests etc)
+Removes a project including all associated resources (issues, merge requests etc.)
 
 ```
 DELETE /projects/:id
@@ -297,7 +297,7 @@ Parameters:
 
 ### List project team members
 
-Get a list of project team members.
+Get a list of a project's team members.
 
 ```
 GET /projects/:id/members
@@ -354,7 +354,7 @@ Parameters:
 
 ### Edit project team member
 
-Updates project team member to a specified access level.
+Updates a project team member to a specified access level.
 
 ```
 PUT /projects/:id/members/:user_id
@@ -369,7 +369,7 @@ Parameters:
 
 ### Remove project team member
 
-Removes user from project team.
+Removes a user from a project team.
 
 ```
 DELETE /projects/:id/members/:user_id
@@ -390,7 +390,7 @@ rely on the returned JSON structure.
 
 ### List project hooks
 
-Get list of project hooks.
+Get a list of project hooks.
 
 ```
 GET /projects/:id/hooks
@@ -403,7 +403,7 @@ Parameters:
 
 ### Get project hook
 
-Get a specific hook for project.
+Get a specific hook for a project.
 
 ```
 GET /projects/:id/hooks/:hook_id
@@ -429,7 +429,7 @@ Parameters:
 
 ### Add project hook
 
-Adds a hook to project.
+Adds a hook to a specified project.
 
 ```
 POST /projects/:id/hooks
@@ -446,7 +446,7 @@ Parameters:
 
 ### Edit project hook
 
-Edits a hook for project.
+Edits a hook for a specified project.
 
 ```
 PUT /projects/:id/hooks/:hook_id
@@ -464,7 +464,7 @@ Parameters:
 
 ### Delete project hook
 
-Removes a hook from project. This is an idempotent method and can be called multiple times.
+Removes a hook from a project. This is an idempotent method and can be called multiple times.
 Either the hook is available or not.
 
 ```
@@ -591,7 +591,7 @@ Parameters:
 
 ## Admin fork relation
 
-Allows modification of the forked relationship between existing projects. . Available only for admins.
+Allows modification of the forked relationship between existing projects. Available only for admins.
 
 ### Create a forked from/to relation between existing projects.
 
@@ -617,7 +617,7 @@ Parameter:
 
 ## Search for projects by name
 
-Search for projects by name which are public or the calling user has access to
+Search for projects by name which are accessible to the authenticated user.
 
 ```
 GET /projects/search/:query
