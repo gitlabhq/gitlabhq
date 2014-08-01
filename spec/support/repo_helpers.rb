@@ -13,6 +13,7 @@ module RepoHelpers
   #
   def sample_blob
     OpenStruct.new(
+      oid: '5f53439ca4b009096571d3c8bc3d09d30e7431b3',
       path: "files/js/commit.js.coffee",
       data: <<eos
 class Commit
