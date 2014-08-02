@@ -40,9 +40,9 @@ If a user is a GitLab administrator they receive all permissions.
 | Action                  | Guest | Reporter | Developer | Master | Owner |
 |-------------------------|-------|----------|-----------|--------|-------|
 | Browse group            | ✓     | ✓        | ✓         | ✓      | ✓     |
-| Edit group              |       |          |           |        | ✓     |
 | Create project in group |       |          |           | ✓      | ✓     |
-| Manage group members    |       |          |           |        | ✓     |
+| Manage group members    |       |          |           | ✓      | ✓     |
+| Edit group              |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
 
 Any user can remove himself from a group, unless he is the last Owner of the group.

@@ -45,6 +45,10 @@ class UsersGroup < ActiveRecord::Base
     group_access
   end
 
+  def access_roles
+    Gitlab::Access.options_with_owner.select { |k, v| v <= group_access }
+  end
+
   def notify_create
     notification_service.new_group_member(self)
   end
