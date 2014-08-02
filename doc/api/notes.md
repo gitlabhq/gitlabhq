@@ -80,6 +80,23 @@ Parameters:
 + `body` (required) - The content of a note
 
 
+### Edit existing issue note
+
+Updates the body of an existing note for a specific project issue.  The user editing
+the note must be the same as the one who created it.
+
+```
+POST /projects/:id/issues/:issue_id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `issue_id` (required) - The ID of a project issue
++ `note_id` (required) - The ID of an issue note
++ `body` (required) - The new content for the note
+
+
 ## Snippets
 
 ### List all snippet notes
@@ -144,6 +161,23 @@ Parameters:
 + `body` (required) - The content of a note
 
 
+### Edit existing snippet note
+
+Updates the body of an existing note for a specific project snippet.  The user editing
+the note must be the same as the one who created it.
+
+```
+POST /projects/:id/snippets/:snippet_id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `snippet_id` (required) - The ID of a project snippet
++ `note_id` (required) - The ID of an snippet note
++ `body` (required) - The new content for the note
+
+
 ## Merge Requests
 
 ### List all merge request notes
@@ -204,4 +238,21 @@ Parameters:
 + `id` (required) - The ID of a project
 + `merge_request_id` (required) - The ID of a merge request
 + `body` (required) - The content of a note
+
+
+### Edit existing merge request note
+
+Updates the body of an existing note for a given merge request.  The user editing
+the note must be the same as the one who created it.
+
+```
+POST /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+```
+
+Parameters:
+
++ `id` (required) - The ID of a project
++ `merge request_id` (required) - The ID of a merge request
++ `note_id` (required) - The ID of an merge request note
++ `body` (required) - The new content for the note
 
