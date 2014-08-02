@@ -139,3 +139,11 @@ Feature: Project Merge Requests
     And I click link "Show inline discussion" of the second file
     Then I should see a comment like "Line is wrong" in the second file
     And I should still see a comment like "Line is correct" in the first file
+
+  @javascript
+  Scenario: I unfold diff
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I switch to the diff tab
+    And I unfold diff
+    Then I should see additional file lines

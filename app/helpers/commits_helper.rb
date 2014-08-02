@@ -232,4 +232,16 @@ module CommitsHelper
   def diff_file_mode_changed?(diff)
     diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
   end
+
+  def unfold_bottom_class(bottom)
+    (bottom) ? 'js-unfold-bottom' : ''
+  end
+
+  def view_file_btn(commit_sha, diff, project)
+    link_to project_blob_path(project, tree_join(commit_sha, diff.new_path)),
+            class: 'btn btn-small view-file js-view-file' do
+      raw('View file @') + content_tag(:span, commit_sha[0..6],
+                                       class: 'commit-short-id')
+    end
+  end
 end

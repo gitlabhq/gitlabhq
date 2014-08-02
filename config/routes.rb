@@ -193,7 +193,9 @@ Gitlab::Application.routes.draw do
     end
 
     scope module: :projects do
-      resources :blob,      only: [:show, :destroy], constraints: {id: /.+/}
+      resources :blob, only: [:show, :destroy], constraints: { id: /.+/ } do
+        get :diff, on: :member
+      end
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
       resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
