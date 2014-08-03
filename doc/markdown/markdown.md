@@ -163,13 +163,14 @@ Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of
 
 GFM recognized special references.
 
-You can easily reference e.g. a team member, an issue, or a commit within a project.
+You can easily reference e.g. an issue, a commit, a team member or even the whole team within a project.
 
 GFM will turn that reference into a link so you can navigate between them easily.
 
 GFM will recognize the following:
 
 - @foo : for team members
+- @all : for the whole team
 - #123 : for issues
 - !123 : for merge requests
 - $123 : for snippets
