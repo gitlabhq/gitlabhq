@@ -257,6 +257,7 @@ class Notes
   ###
   setupNoteForm: (form) ->
     disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
+    changeButtonTextIfEmptyField form.find(".js-note-text"), form.find(".js-comment-action-button")
     form.removeClass "js-new-note-form"
 
     # setup preview buttons
@@ -414,6 +415,7 @@ class Notes
   ###
   setupNoteForm: (form) =>
     disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
+    changeButtonTextIfEmptyField form.find(".js-note-text"), form.find(".js-comment-action-button")
     form.removeClass "js-new-note-form"
     form.removeClass "js-new-note-form"
     GitLab.GfmAutoComplete.setup()

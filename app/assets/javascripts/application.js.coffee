@@ -66,6 +66,22 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
     else
       closest_submit.enable()
 
+# Changes the text of button if text field is not empty
+window.changeButtonTextIfEmptyField = (field_selector, button_selector) ->
+  field = $(field_selector)
+  closest_submit = field.closest("form").find(button_selector)
+
+  if field.val() is ""
+    closest_submit.text(closest_submit.attr('data-action-text'))
+  else
+    closest_submit.attr(closest_submit.attr('data-comment-text'))
+
+  field.on "input", ->
+    if $(@).val() is ""
+      closest_submit.text(closest_submit.attr('data-action-text'))
+    else
+      closest_submit.text(closest_submit.attr('data-comment-text'))
+
 window.sanitize = (str) ->
   return str.replace(/<(?:.|\n)*?>/gm, '')
 
