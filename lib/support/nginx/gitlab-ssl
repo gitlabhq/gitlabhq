@@ -29,7 +29,6 @@
 ## Edit `gitlab/config/gitlab.yml`:
 ##  1) Define port for http "port: 443"
 ##  2) Enable https "https: true"
-##  3) Update ssl for gravatar "ssl_url: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm"
 ##
 ##################################
 ##        CHUNKED TRANSFER      ##
