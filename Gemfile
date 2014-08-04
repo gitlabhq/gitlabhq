@@ -8,7 +8,7 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
-gem "rails", "~> 4.1.0"
+gem "rails", "~> 4.1.4"
 
 # Make links from text
 gem 'rails_autolink', '~> 1.1'
