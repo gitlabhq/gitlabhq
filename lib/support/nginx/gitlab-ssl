@@ -29,6 +29,8 @@
 ## Edit `gitlab/config/gitlab.yml`:
 ##  1) Define port for http "port: 443"
 ##  2) Enable https "https: true"
+## Check that nginx is setup correctly
+##  1) sudo nginx -t
 ##
 ##################################
 ##        CHUNKED TRANSFER      ##
