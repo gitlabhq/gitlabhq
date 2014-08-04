@@ -58,10 +58,10 @@ window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
   closest_submit = field.closest("form").find(button_selector)
 
-  closest_submit.disable() if field.val() is ""
+  closest_submit.disable() if field.val().replace(/\s+$/, "") is ""
 
   field.on "input", ->
-    if $(@).val() is ""
+    if $(@).val().replace(/\s+$/, "") is ""
       closest_submit.disable()
     else
       closest_submit.enable()
