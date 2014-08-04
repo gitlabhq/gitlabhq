@@ -25,6 +25,7 @@ ActiveRecord::Schema.define(version: 20141007100818) do
     t.datetime "updated_at"
     t.string   "color"
     t.string   "font"
+    t.boolean  "email"
   end
 
   create_table "deploy_keys_projects", force: true do |t|

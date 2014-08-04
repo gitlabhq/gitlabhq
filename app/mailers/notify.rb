@@ -1,6 +1,5 @@
 class Notify < ActionMailer::Base
   include ActionDispatch::Routing::PolymorphicRoutes
-
   include Emails::Issues
   include Emails::MergeRequests
   include Emails::Notes

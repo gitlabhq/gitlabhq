@@ -1,4 +1,5 @@
 v 7.5.0
+  - Notification message as broadcast email (Per Gärden)
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration on gitlab.yml (Sullivan Senechal)
   - Fix LDAP authentication for Git HTTP access

@@ -36,6 +36,10 @@
     = f.label :ends_at, class: 'control-label'
     .col-sm-10.datetime-controls
       = f.datetime_select :ends_at
+  .form-group
+    = f.label :email, 'Email', class: 'control-label'
+    .col-sm-10
+      = f.check_box :email, class: 'checkbox'
   .form-actions
     = f.submit "Add broadcast message", class: "btn btn-create"
 
@@ -44,6 +48,12 @@
     - @broadcast_messages.each do |broadcast_message|
       %li
         .pull-right
+          - if broadcast_message.email
+            %strong
+              = 'Email'
+              \
+              = check_box_tag nil, nil, broadcast_message.email, disabled: true
+
           - if broadcast_message.starts_at
             %strong
               #{broadcast_message.starts_at.to_s(:short)}
