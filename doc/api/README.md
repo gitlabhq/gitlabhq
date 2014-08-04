@@ -132,14 +132,14 @@ When listing resources you can pass the following parameters:
 
 ## id vs iid
 
-When you work with API you may notice two similar fields in api entites: id and iid. The main difference between them is scope. Example: 
+When you work with API you may notice two similar fields in api entities: id and iid. The main difference between them is scope. Example:
 
 Issue:
 
     id: 46
     iid: 5
 
-- id - is uniq across all Issues table. It used for any api calls. 
-- iid - is uniq only in scope of single project. When you browse issues or merge requests with Web UI - you see iid. 
+- id - is unique across all issues. It's used for any api call.
+- iid - is unique only in scope of a single project. When you browse issues or merge requests with Web UI, you see iid.
 
 So if you want to get issue with api you use `http://host/api/v3/.../issues/:id.json`. But when you want to create a link to web page - use  `http:://host/project/issues/:iid.json`

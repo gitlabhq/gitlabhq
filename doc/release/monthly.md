@@ -45,7 +45,7 @@ Any changes not yet added to the changelog are added by lead developer and in th
 
 * Release CE and EE (#LINK)
 
-23th:
+23rd:
 
 * Prepare package for GitLab.com release (#LINK)
 
@@ -73,9 +73,9 @@ The RC1 release comes with the task to update the installation and upgrade docs.
 
 1. Create: CE update guide from previous version. Like `from-6-8-to-6.9`
 1. Create: CE to EE update guide in EE repository for latest version.
-1. Update: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/6.0-to-6.x.md to latest version. 
+1. Update: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/6.0-to-6.x.md to latest version.
 
-It's best to copy paste the previous guide and make changes where necessary. 
+It's best to copy paste the previous guide and make changes where necessary.
 The typical steps are listed below with any points you should specifically look at.
 
 #### 0. Any major changes?
