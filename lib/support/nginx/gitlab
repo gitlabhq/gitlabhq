@@ -20,9 +20,9 @@ upstream gitlab {
 }
 
 server {
-  listen *:80 default_server;         # e.g., listen 192.168.1.1:80; In most cases *:80 is a good idea
-  server_name YOUR_SERVER_FQDN;     # e.g., server_name source.example.com;
-  server_tokens off;     # don't show the version number, a security best practice
+  listen *:80 default_server;
+  server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
+  server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
   
   # Increase this if you want to upload large attachments
