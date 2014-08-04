@@ -99,6 +99,7 @@ server {
   ssl_stapling on;
   ssl_stapling_verify on;
   ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
+  ## [Optional] Change to your DNS resolver
   resolver 208.67.222.222 208.67.222.220 valid=300s;
   resolver_timeout 10s;
 
