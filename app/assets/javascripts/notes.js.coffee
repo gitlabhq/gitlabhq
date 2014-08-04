@@ -405,30 +405,6 @@ class Notes
     form.addClass "js-discussion-note-form"
 
   ###
-  General note form setup.
-
-  deactivates the submit button when text is empty
-  hides the preview button when text is empty
-  setup GFM auto complete
-  show the form
-  ###
-  setupNoteForm: (form) =>
-    disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
-    form.removeClass "js-new-note-form"
-    form.removeClass "js-new-note-form"
-    GitLab.GfmAutoComplete.setup()
-
-    # setup preview buttons
-    previewButton = form.find(".js-note-preview-button")
-    form.find(".js-note-text").on "input", ->
-      if $(this).val().trim() isnt ""
-        previewButton.removeClass("turn-off").addClass "turn-on"
-      else
-        previewButton.removeClass("turn-on").addClass "turn-off"
-
-    form.show()
-
-  ###
   Called when clicking on the "add a comment" button on the side of a diff line.
 
   Inserts a temporary row for the form below the line.
