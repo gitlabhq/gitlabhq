@@ -10,7 +10,7 @@ module Issues
         Issues::CloseService.new(project, current_user, {}).execute(issue)
       end
 
-      if params.present? && issue.update_attributes(params.except(:state_event))
+      if params.present? && issue.update_attributes(params.except(:state_event, :comment))
         issue.reset_events_cache
 
         if issue.previous_changes.include?('milestone_id')

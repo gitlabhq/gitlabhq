@@ -82,6 +82,10 @@ window.changeButtonTextIfEmptyField = (field_selector, button_selector) ->
     else
       closest_submit.text(closest_submit.attr('data-comment-text'))
 
+window.my_function = (e) ->
+  f = form.find(".js-note-text").val()
+  alert(f);
+
 window.sanitize = (str) ->
   return str.replace(/<(?:.|\n)*?>/gm, '')
 
