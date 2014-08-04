@@ -105,7 +105,7 @@ server {
   ssl_prefer_server_ciphers   on;
   ## [Optional] Generate a stronger DHE parameter (recommended):
   ##   cd /etc/ssl/certs
-  ##   openssl dhparam -out dhparam.pem 2048
+  ##   sudo openssl dhparam -out dhparam.pem 2048
   ##
   # ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
