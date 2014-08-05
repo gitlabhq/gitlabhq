@@ -318,7 +318,8 @@ namespace :gitlab do
 
       options = {
         "user.name"  => "GitLab",
-        "user.email" => Gitlab.config.gitlab.email_from
+        "user.email" => Gitlab.config.gitlab.email_from,
+        "core.autocrlf" => "input"
       }
       correct_options = options.map do |name, value|
         run(%W(git config --global --get #{name})).try(:squish) == value
@@ -330,7 +331,8 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           sudo_gitlab("git config --global user.name  \"#{options["user.name"]}\""),
-          sudo_gitlab("git config --global user.email \"#{options["user.email"]}\"")
+          sudo_gitlab("git config --global user.email \"#{options["user.email"]}\""),
+          sudo_gitlab("git config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
         )
         for_more_information(
           see_installation_guide_section "GitLab"
