@@ -44,6 +44,20 @@ Feature: Project Issues
     Then I should see comment "XML attached"
 
   @javascript
+  Scenario: I close and comment issue
+    Given I visit issue page "Release 0.4"
+    And I close and comment with comment "XML attached"
+    Then I should see comment "XML attached"
+    And issue "Release 0.4" should be closed
+
+  @javascript
+  Scenario: I reopen and comment issue
+    Given I visit issue page "Release 0.3"
+    And I reopen and comment with comment "XML attached"
+    Then I should see comment "XML attached"
+    And issue "Release 0.3" should be open
+
+  @javascript
   Scenario: I search issue
     Given I fill in issue search with "Re"
     Then I should see "Release 0.4" in issues

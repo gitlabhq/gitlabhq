@@ -285,6 +285,11 @@ module SharedPaths
     visit project_issue_path(issue.project, issue)
   end
 
+  step 'I visit issue page "Release 0.3"' do
+    issue = Issue.find_by(title: "Release 0.3")
+    visit project_issue_path(issue.project, issue)
+  end
+
   step 'I visit project "Shop" labels page' do
     visit project_labels_path(project)
   end

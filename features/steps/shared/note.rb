@@ -67,12 +67,6 @@ module SharedNote
     end
   end
 
-  Then 'I should see a comment saying "XML attached"' do
-    within(".note") do
-      page.should have_content("XML attached")
-    end
-  end
-
   Then 'I should see an empty comment text field' do
     within(".js-main-target-form") do
       page.should have_field("note[note]", with: "")
@@ -98,7 +92,7 @@ module SharedNote
   end
 
   Then 'I should see comment "XML attached"' do
-    within(".note") do
+    within(".notes") do
       page.should have_content("XML attached")
     end
   end
