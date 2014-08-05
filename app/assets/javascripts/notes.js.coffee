@@ -16,7 +16,7 @@ class Notes
     $(document).on "ajax:success", ".js-main-target-form", @addNote
     $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
 
-        # change note in UI after update
+    # change note in UI after update
     $(document).on "ajax:success", "form.edit_note", @updateNote
 
     # Edit note link
@@ -32,8 +32,11 @@ class Notes
     # Preview button
     $(document).on "click", ".js-note-preview-button", @previewNote
 
-    # Preview button
+    # Write button
     $(document).on "click", ".js-note-write-button", @writeNote
+
+    # Close/Reopen and comment button
+    $(document).on "click", ".js-comment-action-button", @submitNote
 
     # reset main target form after submit
     $(document).on "ajax:complete", ".js-main-target-form", @resetMainTargetForm
@@ -72,6 +75,7 @@ class Notes
     $(document).off "click", ".js-note-attachment-delete"
     $(document).off "click", ".js-note-preview-button"
     $(document).off "click", ".js-note-write-button"
+    $(document).off "click", ".js-comment-action-button"
     $(document).off "ajax:complete", ".js-main-target-form"
     $(document).off "click", ".js-choose-note-attachment-button"
     $(document).off "click", ".js-discussion-reply-button"
@@ -275,6 +279,19 @@ class Notes
     GitLab.GfmAutoComplete.setup()
     form.show()
 
+  ###
+  Called when the user presses 'close' or 'Reopen'
+  If there is input in the form the link changes to 'Reopen/Close and comment'
+
+  Submits a new new not if there is an input
+  ###
+  submitNote: (e) ->
+    e.preventDefault()
+    form = $('.new_note')
+    field = form.find(".js-note-text")
+    # Ensure there is no trailing whitespace
+    if field.val().replace(/\s+$/, "") isnt ""
+      form.submit()
 
   ###
   Called in response to the new note form being submitted
