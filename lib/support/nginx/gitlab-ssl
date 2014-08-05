@@ -94,16 +94,17 @@ server {
   ssl_protocols  TLSv1 TLSv1.1 TLSv1.2;
   ssl_session_cache  builtin:1000  shared:SSL:10m;
 
-  ## Enable OCSP stapling to reduce the overhead and latency of running SSL.
+  ## [Optional] If your certficate has OCSP, enable OCSP stapling to reduce the overhead and latency of running SSL.
   ## Replace with your ssl_trusted_certificate. For more info see:
   ## - https://medium.com/devops-programming/4445f4862461
   ## - https://www.ruby-forum.com/topic/4419319
-  ssl_stapling on;
-  ssl_stapling_verify on;
-  ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
+  ## - https://www.digitalocean.com/community/tutorials/how-to-configure-ocsp-stapling-on-apache-and-nginx
+  # ssl_stapling on;
+  # ssl_stapling_verify on;
+  # ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
   ## [Optional] Change to your DNS resolver
-  resolver 208.67.222.222 208.67.222.220 valid=300s;
-  resolver_timeout 10s;
+  # resolver 208.67.222.222 208.67.222.220 valid=300s;
+  # resolver_timeout 10s;
 
   ssl_prefer_server_ciphers   on;
   ## [Optional] Generate a stronger DHE parameter (recommended):
