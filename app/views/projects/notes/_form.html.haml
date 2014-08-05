@@ -1,4 +1,4 @@
-= form_for [@project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: 'note_form', class: "new_note js-new-note-form common-note-form" }, authenticity_token: true do |f|
+= form_for [@project, @note], remote: true, html: { :'data-type' => 'json', multipart: true, id: nil, class: "new_note js-new-note-form common-note-form" }, authenticity_token: true do |f|
   = note_target_fields
   = f.hidden_field :commit_id
   = f.hidden_field :line_code
@@ -14,7 +14,7 @@
         Preview
   %div
     .note-write-holder
-      = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input markdown-area', id: :note_text
+      = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input markdown-area'
 
       .light.clearfix
         .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
@@ -26,7 +26,7 @@
   .note-form-actions
     .buttons
       = f.submit 'Add Comment', class: "btn comment-btn btn-grouped js-comment-button"
-      = render partial: 'projects/issues/issue_actions', locals: {}
+      = yield(:note_actions)
       %a.btn.grouped.js-close-discussion-note-form Cancel
 
     .note-form-option
@@ -39,4 +39,3 @@
 
 :javascript
   window.project_image_path_upload = "#{upload_image_project_path @project}";
-
