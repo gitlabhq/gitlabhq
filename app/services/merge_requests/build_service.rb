@@ -19,6 +19,9 @@ module MergeRequests
       # Generate suggested MR title based on source branch name
       merge_request.title = merge_request.source_branch.titleize.humanize
 
+      # Set MR description based on project template
+      merge_request.description = merge_request.target_project.merge_requests_template
+
       # Try to compare branches to get commits list and diffs
       compare_action = Gitlab::Satellite::CompareAction.new(
         current_user,

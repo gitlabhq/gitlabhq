@@ -34,6 +34,7 @@ Gitlab::Application.routes.draw do
 
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page
+  get 'help/:category/*file'  => 'help#show'
   get 'help/shortcuts'
 
   #
@@ -89,6 +90,12 @@ Gitlab::Application.routes.draw do
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
       member do
         put :transfer
+      end
+    end
+
+    resource :appearances do
+      member do
+        get :preview
       end
     end
 
@@ -148,6 +155,14 @@ Gitlab::Application.routes.draw do
       get :merge_requests
       get :members
       get :projects
+    end
+
+    scope module: :groups do
+      resource :ldap, only: [] do
+        member do
+          put :reset_access
+        end
+      end
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
@@ -271,6 +286,8 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :git_hooks, constraints: {id: /\d+/}
+
       resources :hooks, only: [:index, :create, :destroy], constraints: {id: /\d+/} do
         member do
           get :test
@@ -307,6 +324,8 @@ Gitlab::Application.routes.draw do
           post :apply_import
         end
       end
+
+      resources :group_links, only: [:index, :create, :destroy], constraints: {id: /\d+/}
 
       resources :notes, only: [:index, :create, :destroy, :update], constraints: {id: /\d+/} do
         member do

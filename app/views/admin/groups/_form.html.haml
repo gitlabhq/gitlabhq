@@ -51,6 +51,30 @@
             %li Renaming group path will rename directory for all related projects
             %li It will change web url for access group and group projects.
             %li It will change the git path to repositories under this group.
+
+      %fieldset
+        %legend LDAP group settings
+        %div.form-holder
+          .form-group.clearfix
+            = f.label :ldap_cn, class: 'control-label' do
+              LDAP Group cn
+            .col-sm-10
+              = f.hidden_field :ldap_cn, placeholder: "Ex. QA group", class: "xxlarge ajax-ldap-groups-select input-mn-300"
+              .help-block
+                Synchronize #{@group.name}'s members with this LDAP group.
+                %br
+                If you select an LDAP group you do not belong to you will lose ownership of #{@group.name}.
+
+          .form-group.clearfix
+            = f.label :ldap_access, class: 'control-label' do
+              LDAP Access
+            .col-sm-10
+              = f.select :ldap_access, options_for_select(UsersGroup.group_access_roles, @group.ldap_access)
+              .help-block
+                Default, minimum permission level for LDAP group members of #{@group.name}.
+                %br
+                You can manage permission levels for individual group members in the Members tab.
+
     .form-actions
       = f.submit 'Save changes', class: "btn btn-primary"
       = link_to  'Cancel', admin_group_path(@group), class: "btn btn-cancel"

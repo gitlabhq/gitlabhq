@@ -6,7 +6,7 @@ describe API::API, api: true  do
   let(:user1) { create(:user) }
   let(:user2) { create(:user) }
   let(:admin) { create(:admin) }
-  let!(:group1) { create(:group) }
+  let!(:group1) { create(:group, ldap_cn: "ldap-group", ldap_access: Gitlab::Access::MASTER ) }
   let!(:group2) { create(:group) }
 
   before do
@@ -29,6 +29,8 @@ describe API::API, api: true  do
         json_response.should be_an Array
         json_response.length.should == 1
         json_response.first['name'].should == group1.name
+        json_response.first['ldap_cn'].should == group1.ldap_cn
+        json_response.first['ldap_access'].should == group1.ldap_access
       end
     end
 

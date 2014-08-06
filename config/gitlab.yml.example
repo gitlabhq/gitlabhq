@@ -67,7 +67,7 @@ production: &base
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
-    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)'
+    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) (#\d+|([A-Z\-]+-)\d+)'
 
     ## Default project features settings
     default_projects_features:
@@ -157,6 +157,24 @@ production: &base
     #
     user_filter: ''
 
+    # Base where we can search for groups
+    #
+    #   Ex. ou=Groups,dc=gitlab,dc=example
+    #
+    group_base: ''
+
+    # LDAP group of users who should be admins in GitLab
+    #
+    #   Ex. GLAdmins
+    #
+    admin_group: ''
+
+    # Name of attribute which holds a ssh public key of the user object.
+    # If false or nil, SSH key syncronisation will be disabled.
+    #
+    #   Ex. sshpublickey
+    #
+    sync_ssh_keys: false
 
   ## OmniAuth settings
   omniauth:

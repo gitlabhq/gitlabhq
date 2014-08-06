@@ -17,6 +17,10 @@
 
   - if current_user && current_user.can?(:manage_group, @group)
     .pull-right
+      - if ldap_enabled? && @group.ldap_cn.present?
+        = link_to reset_access_group_ldap_path(@group), class: 'btn grouped', data: { confirm: "Reset the access level of all other LDAP group team members to '#{@group.human_ldap_access}'?" }, method: :put do
+          Reset access
+
       = link_to '#', class: 'btn btn-new js-toggle-button' do
         Add members
         %i.icon-chevron-down

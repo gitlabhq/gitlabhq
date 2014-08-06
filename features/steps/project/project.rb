@@ -14,6 +14,8 @@ class ProjectFeature < Spinach::FeatureSteps
 
   step 'I should see project with new settings' do
     find_field('project_name').value.should == 'NewName'
+    find('#project_issues_enabled').should_not be_checked
+    find('#project_merge_requests_enabled').should be_checked
   end
 
   step 'change project path settings' do
@@ -23,6 +25,14 @@ class ProjectFeature < Spinach::FeatureSteps
 
   step 'I should see project with new path settings' do
     project.path.should == "new-path"
+  end
+
+  step 'I fill in merge request template' do
+    fill_in 'project_merge_requests_template', with: "This merge request should contain the following."
+  end
+
+  step 'I should see project with merge request template saved' do
+    find_field('project_merge_requests_template').value.should == 'This merge request should contain the following.'
   end
 
   step 'I should see project "Shop" README link' do

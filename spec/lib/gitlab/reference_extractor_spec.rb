@@ -71,6 +71,15 @@ describe Gitlab::ReferenceExtractor do
       subject.issues_for(project).should == [@i0, @i1]
     end
 
+    it 'returns JIRA issues for a JIRA-integrated project' do
+      project.stub(jira_tracker?: true)
+
+      subject.analyze('JIRA-123 and FOOBAR-4567')
+      subject.issues_for(project).should eq(
+        [JiraIssue.new('JIRA-123'), JiraIssue.new('FOOBAR-4567')]
+      )
+    end
+
     it 'accesses valid merge requests' do
       @m0 = create(:merge_request, source_project: project, target_project: project, source_branch: 'aaa')
       @m1 = create(:merge_request, source_project: project, target_project: project, source_branch: 'bbb')

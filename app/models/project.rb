@@ -50,6 +50,7 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: Group) }, foreign_key: "namespace_id"
   belongs_to :namespace
 
+  has_one :git_hook, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services
@@ -63,6 +64,9 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
+  has_one :jira_service, dependent: :destroy
+  has_one :jenkins_service, dependent: :destroy
+
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
@@ -81,6 +85,9 @@ class Project < ActiveRecord::Base
   has_many :users, through: :users_projects
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
+
+  has_many :project_group_links, dependent: :destroy
+  has_many :invited_groups, through: :project_group_links, source: :group
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -312,7 +319,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack jira jenkins)
   end
 
   def gitlab_ci?
@@ -325,6 +332,10 @@ class Project < ActiveRecord::Base
 
   def ci_service
     @ci_service ||= ci_services.select(&:activated?).first
+  end
+
+  def jira_tracker?
+    self.issues_tracker == "jira"
   end
 
   # For compatibility with old code

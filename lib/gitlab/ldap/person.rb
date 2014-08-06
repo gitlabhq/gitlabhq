@@ -8,7 +8,7 @@ module Gitlab
 
       def self.find_by_uid(uid, adapter=nil)
         adapter ||= Gitlab::LDAP::Adapter.new
-        adapter.user(config.uid, uid)
+        adapter.user(Gitlab.config.ldap.uid, uid)
       end
 
       def self.find_by_dn(dn, adapter=nil)
@@ -38,8 +38,21 @@ module Gitlab
         uid
       end
 
+      def email
+        entry.try(:mail)
+      end
+
       def dn
         entry.dn
+      end
+
+      def ssh_keys
+        ssh_keys_attribute = Gitlab.config.ldap['sync_ssh_keys'].to_sym
+        if entry.respond_to?(ssh_keys_attribute)
+          entry[ssh_keys_attribute]
+        else
+          []
+        end
       end
 
       private

@@ -1,4 +1,6 @@
-- [The individual upgrade guides](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update)
-- [Upgrader](upgrader.md)
+- [The individual version update guides](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update)
+- [The CE to EE update guides (subscribers only)](https://gitlab.com/subscribers/gitlab-ee/tree/master/doc/update) the steps are very similar to a version upgrade: stop the server, get the code, update config files for the new functionality, install libs and do migrations, update the init script, start the application and check the application status.
+- [Upgrader](upgrader.md) automatic script to perform the update
 - [Patch versions](patch_versions.md)
 - [MySQL to PostgreSQL](mysql_to_postgresql.md)
+- [Omnibus update guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md)

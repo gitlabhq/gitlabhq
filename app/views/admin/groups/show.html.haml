@@ -49,6 +49,22 @@
       .panel-footer
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
+    - if @group.shared_projects.any?
+      .ui-box
+        .title
+          Projects shared with #{@group.name}
+          %small
+            (#{@group.shared_projects.count})
+        %ul.well-list
+          - @group.shared_projects.sort_by(&:name).each do |project|
+            %li
+              %strong
+                = link_to project.name_with_namespace, [:admin, project]
+                %span.label.label-gray
+                  = repository_size(project)
+              %span.pull-right.light
+                %span.monospace= project.path_with_namespace + ".git"
+
   .col-md-6
     .panel.panel-default
       .panel-heading

@@ -139,3 +139,8 @@ Feature: Project Merge Requests
     And I click link "Show inline discussion" of the second file
     Then I should see a comment like "Line is wrong" in the second file
     And I should still see a comment like "Line is correct" in the first file
+
+  Scenario: I submit new unassigned merge request with template description
+      Given I click link "New Merge Request"
+      And I select "notes_refactoring" as source
+      Then I should see description field pre-filled

@@ -59,10 +59,38 @@ module Gitlab
                  else
                    :push_code
                  end
-        user.can?(action, project)
+        user.can?(action, project) &&
+          pass_git_hooks?(user, project, ref, oldrev, newrev)
       else
         false
       end
+    end
+
+    def pass_git_hooks?(user, project, ref, oldrev, newrev)
+      return true unless project.git_hook
+
+      return true unless newrev && oldrev
+
+      git_hook = project.git_hook
+
+      # Prevent tag removal
+      if git_hook.deny_delete_tag
+        if project.repository.tag_names.include?(ref) && newrev =~ /0000000/
+          return false
+        end
+      end
+
+      # Check commit messages unless its branch removal
+      if git_hook.commit_message_regex.present? && newrev !~ /00000000/
+        commits = project.repository.commits_between(oldrev, newrev)
+        commits.each do |commit|
+          unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
+            return false
+          end
+        end
+      end
+
+      true
     end
 
     private

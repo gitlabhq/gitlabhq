@@ -16,6 +16,15 @@ ActiveRecord::Schema.define(version: 20140611135229) do
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
+  create_table "appearances", force: true do |t|
+    t.string   "title"
+    t.text     "description"
+    t.string   "logo"
+    t.integer  "updated_by"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
     t.datetime "starts_at"
@@ -73,6 +82,16 @@ ActiveRecord::Schema.define(version: 20140611135229) do
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
+
+  create_table "git_hooks", force: true do |t|
+    t.string   "force_push_regex"
+    t.string   "delete_branch_regex"
+    t.string   "commit_message_regex"
+    t.boolean  "deny_delete_tag"
+    t.integer  "project_id"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "issues", force: true do |t|
     t.string   "title"
@@ -171,6 +190,8 @@ ActiveRecord::Schema.define(version: 20140611135229) do
     t.datetime "updated_at"
     t.string   "type"
     t.string   "description", default: "", null: false
+    t.string   "ldap_cn"
+    t.integer  "ldap_access"
     t.string   "avatar"
   end
 
@@ -203,6 +224,14 @@ ActiveRecord::Schema.define(version: 20140611135229) do
   add_index "notes", ["project_id"], name: "index_notes_on_project_id", using: :btree
   add_index "notes", ["updated_at"], name: "index_notes_on_updated_at", using: :btree
 
+  create_table "project_group_links", force: true do |t|
+    t.integer  "project_id",                null: false
+    t.integer  "group_id",                  null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+    t.integer  "group_access", default: 30, null: false
+  end
+
   create_table "projects", force: true do |t|
     t.string   "name"
     t.string   "path"
@@ -210,20 +239,21 @@ ActiveRecord::Schema.define(version: 20140611135229) do
     t.datetime "created_at"
     t.datetime "updated_at"
     t.integer  "creator_id"
-    t.boolean  "issues_enabled",         default: true,     null: false
-    t.boolean  "wall_enabled",           default: true,     null: false
-    t.boolean  "merge_requests_enabled", default: true,     null: false
-    t.boolean  "wiki_enabled",           default: true,     null: false
+    t.boolean  "issues_enabled",          default: true,     null: false
+    t.boolean  "wall_enabled",            default: true,     null: false
+    t.boolean  "merge_requests_enabled",  default: true,     null: false
+    t.boolean  "wiki_enabled",            default: true,     null: false
     t.integer  "namespace_id"
-    t.string   "issues_tracker",         default: "gitlab", null: false
+    t.string   "issues_tracker",          default: "gitlab", null: false
     t.string   "issues_tracker_id"
-    t.boolean  "snippets_enabled",       default: true,     null: false
+    t.boolean  "snippets_enabled",        default: true,     null: false
     t.datetime "last_activity_at"
     t.string   "import_url"
-    t.integer  "visibility_level",       default: 0,        null: false
-    t.boolean  "archived",               default: false,    null: false
+    t.integer  "visibility_level",        default: 0,        null: false
+    t.boolean  "archived",                default: false,    null: false
     t.string   "import_status"
-    t.float    "repository_size",        default: 0.0
+    t.float    "repository_size",         default: 0.0
+    t.text     "merge_requests_template"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -252,6 +282,9 @@ ActiveRecord::Schema.define(version: 20140611135229) do
     t.string   "room"
     t.text     "recipients"
     t.string   "api_key"
+    t.string   "username"
+    t.string   "password"
+    t.string   "api_version"
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
@@ -325,6 +358,7 @@ ActiveRecord::Schema.define(version: 20140611135229) do
     t.integer  "notification_level",       default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -332,7 +366,6 @@ ActiveRecord::Schema.define(version: 20140611135229) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
-    t.datetime "last_credential_check_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

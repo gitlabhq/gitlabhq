@@ -39,6 +39,8 @@ class GroupsController < ApplicationController
     @events = @events.limit(20).offset(params[:offset] || 0)
     @last_push = current_user.recent_push if current_user
 
+    @shared_projects = @group.shared_projects
+
     respond_to do |format|
       format.html
       format.json { pager_json("events/_events", @events.count) }
@@ -161,6 +163,6 @@ class GroupsController < ApplicationController
   end
 
   def group_params
-    params.require(:group).permit(:name, :description, :path, :avatar)
+    params.require(:group).permit(:name, :description, :path, :avatar, :ldap_access, :ldap_cn)
   end
 end

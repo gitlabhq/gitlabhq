@@ -1,0 +1,53 @@
+%h3.page-title
+  Git hooks
+%p.light
+  Rules that define what git pushes are accepted for this project
+
+%hr.clearfix
+
+= form_for [@project, @pre_receive_hook], html: { class: 'form-horizontal' } do |f|
+  -if @pre_receive_hook.errors.any?
+    .alert.alert-danger
+      - @pre_receive_hook.errors.full_messages.each do |msg|
+        %p= msg
+  .form-group
+    = f.label :deny_delete_tag, "Prevent tag removal", class: 'control-label'
+    .col-sm-10
+      .checkbox
+        = f.check_box :deny_delete_tag
+        %span.descr
+          Do not allow users to remove git tags with
+          = succeed '.' do
+            %code git push
+          Tags can still be deleted through the web UI.
+
+  -#.form-group
+    = f.label :force_push_regex, "Force push", class: 'control-label'
+    .col-sm-10
+      = f.text_field :force_push_regex, class: "form-control"
+      %p.hint Regular expression that finds branches that you can force push to. If this field is empty it allows force pushes to any branch.
+
+  -#.form-group
+    = f.label :delete_branch_regex, "Branch removal", class: 'control-label'
+    .col-sm-10
+      = f.text_field :delete_branch_regex, class: "form-control"
+      %p.hint Regular expression that finds branches that can be removed. If this field is empty it allows removal of all branches.
+
+  .form-group
+    = f.label :commit_message_regex, "Commit message", class: 'control-label'
+    .col-sm-10
+      = f.text_field :commit_message_regex, class: "form-control", placeholder: 'Example: Fixes \d+\..*'
+      %p.hint
+        All commit messages must match this
+        = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+        to be pushed.
+        If this field is empty it allows any commit message.
+        For example you can require that an issue number is always mentioned in the commit message.
+
+  .alert.alert-warning.alert-dismissible{ role: 'alert'}
+    %button.close{"data-dismiss" => "alert", type: "button"}
+      %span{"aria-hidden" => "true"} ×
+      %span.sr-only Close
+    Would you like to see another Git Hook? If you are a subscriber we'll be glad to implement it without any costs. Please contact your GitLab account manager.
+  .form-actions
+    = f.submit "Save Git hooks", class: "btn btn-create"

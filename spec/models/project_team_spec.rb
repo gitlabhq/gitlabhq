@@ -62,5 +62,23 @@ describe ProjectTeam do
       it { project.team.master?(nonmember).should be_false }
     end
   end
-end
 
+  describe :max_invited_level do
+    let(:group) { create(:group) }
+    let(:project) { create(:empty_project) }
+
+    before do
+      project.project_group_links.create(
+        group: group,
+        group_access: Gitlab::Access::DEVELOPER
+      )
+
+      group.add_user(master, Gitlab::Access::MASTER)
+      group.add_user(reporter, Gitlab::Access::REPORTER)
+    end
+
+    it { project.team.max_invited_level(master.id).should == Gitlab::Access::DEVELOPER }
+    it { project.team.max_invited_level(reporter.id).should == Gitlab::Access::REPORTER }
+    it { project.team.max_invited_level(nonmember.id).should be_nil }
+  end
+end

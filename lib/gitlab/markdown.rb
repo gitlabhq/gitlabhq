@@ -192,8 +192,8 @@ module Gitlab
 
           link_to("##{identifier}", url, options)
         end
-      elsif project.issues_tracker == 'jira'
-        reference_jira_issue(identifier, project)
+      else
+        reference_jira_issue(identifier, project) if project.jira_tracker?
       end
     end
 

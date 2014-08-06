@@ -92,6 +92,17 @@ class Groups < Spinach::FeatureSteps
     page.should have_content "Currently you are only seeing events from the"
   end
 
+  Then 'I should be redirected to group page' do
+    current_path.should == group_path(Group.last)
+  end
+
+  And 'I change group name' do
+    within '#tab-edit' do
+      fill_in 'group_name', with: 'new-name'
+      click_button "Save group"
+    end
+  end
+
   And 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
     click_button "Save group"

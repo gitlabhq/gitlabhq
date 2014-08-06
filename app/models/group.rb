@@ -19,6 +19,13 @@ require 'file_size_validator'
 class Group < Namespace
   has_many :users_groups, dependent: :destroy
   has_many :users, through: :users_groups
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: :project
+
+  validates :ldap_access,
+    inclusion: { in: UsersGroup.group_access_roles.values },
+    presence: true,
+    if: ->(group) { group.ldap_cn.present? }
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
@@ -68,6 +75,10 @@ class Group < Namespace
     unless self.avatar.image?
       self.errors.add :avatar, "only images allowed"
     end
+  end
+
+  def human_ldap_access
+    Gitlab::Access.options_with_owner.key ldap_access
   end
 
   def public_profile?

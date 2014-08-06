@@ -5,6 +5,10 @@ module SharedPaths
     visit new_project_path
   end
 
+  step 'I visit login page' do
+    visit new_user_session_path
+  end
+
   # ----------------------------------------
   # User
   # ----------------------------------------
@@ -155,6 +159,10 @@ module SharedPaths
 
   step 'I visit admin groups page' do
     visit admin_groups_path
+  end
+
+  step 'I visit admin appearance page' do
+    visit admin_appearances_path
   end
 
   step 'I visit admin teams page' do
