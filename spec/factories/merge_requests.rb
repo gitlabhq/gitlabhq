@@ -11,12 +11,20 @@ FactoryGirl.define do
     # 6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9 More submodules
     # d14d6c0abdd253381df51a723d58691b2ee1ab08 Remove ds_store files
     # c1acaa58bbcbc3eafe538cb8274ba387047b69f8 Ignore DS files
+    #
+    # See also RepoHelpers.sample_compare
+    #
     source_branch "master"
     target_branch "feature"
 
     merge_status :can_be_merged
 
     trait :with_diffs do
+    end
+
+    trait :conflict do
+      source_branch "feature_conflict"
+      target_branch "feature"
     end
 
     trait :closed do
