@@ -44,5 +44,15 @@ namespace :gitlab do
         group.add_users(Array.wrap(user.id), UsersGroup::DEVELOPER)
       end
     end
+    
+    desc "GITLAB | Add a specific user to all groups (as a guest) without clobbering higher privileges."
+    task :user_to_groups_as_guest, [:email] => :environment  do |t, args|
+      user = User.find_by_email args.email
+      groups = Group.all
+      puts "Importing #{user.email} users into #{groups.size} groups"
+      groups.each do |group|
+        group.add_users(Array.wrap(user.id), UsersGroup::GUEST) unless group.users_groups.find_by(user_id: user.id)
+      end
+    end
   end
 end
