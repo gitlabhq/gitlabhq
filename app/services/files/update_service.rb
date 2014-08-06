@@ -33,7 +33,7 @@ module Files
       if created_successfully
         success
       else
-        error("Your changes could not be committed, because the file has been changed")
+        error("Your changes could not be committed. Maybe the file was changed by another process or there was nothing to commit?")
       end
     end
   end

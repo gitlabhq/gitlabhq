@@ -80,6 +80,15 @@ Parameters:
 - `content` (required) - New file content
 - `commit_message` (required) - Commit message
 
+If the commit fails for any reason we return a 400 error with a non-specific
+error message. Possible causes for a failed commit include:
+- the `file_path` contained `/../` (attempted directory traversal);
+- the new file contents were identical to the current file contents, i.e. the
+  user tried to make an empty commit;
+- the branch was updated by a Git push while the file edit was in progress.
+
+Currently gitlab-shell has a boolean return code, preventing GitLab from specifying the error.
+
 ## Delete existing file in repository
 
 ```
