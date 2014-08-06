@@ -315,22 +315,33 @@ describe User do
   describe :requires_ldap_check? do
     let(:user) { User.new }
 
-    it 'is false for non-LDAP users' do
-      user.stub(ldap_user?: false)
+    it 'is false when LDAP is disabled' do
+      # Create a condition which would otherwise cause 'true' to be returned
+      user.stub(ldap_user?: true)
+      user.last_credential_check_at = nil
       expect(user.requires_ldap_check?).to be_false
     end
 
-    context 'when the user is an LDAP user' do
-      before { user.stub(ldap_user?: true) }
+    context 'when LDAP is enabled' do
+      before { Gitlab.config.ldap.stub(enabled: true) }
 
-      it 'is true when the user has never had an LDAP check before' do
-        user.last_credential_check_at = nil
-        expect(user.requires_ldap_check?).to be_true
+      it 'is false for non-LDAP users' do
+        user.stub(ldap_user?: false)
+        expect(user.requires_ldap_check?).to be_false
       end
 
-      it 'is true when the last LDAP check happened over 1 hour ago' do
-        user.last_credential_check_at = 2.hours.ago
-        expect(user.requires_ldap_check?).to be_true
+      context 'and when the user is an LDAP user' do
+        before { user.stub(ldap_user?: true) }
+
+        it 'is true when the user has never had an LDAP check before' do
+          user.last_credential_check_at = nil
+          expect(user.requires_ldap_check?).to be_true
+        end
+
+        it 'is true when the last LDAP check happened over 1 hour ago' do
+          user.last_credential_check_at = 2.hours.ago
+          expect(user.requires_ldap_check?).to be_true
+        end
       end
     end
   end
