@@ -179,7 +179,11 @@ module GitlabMarkdownHelper
     if @commit
       @commit.id
     elsif @repository && !@repository.empty?
-      @repository.head_commit.sha
+      if @ref
+        @repository.commit(@ref).try(:sha)
+      else
+        @repository.head_commit.sha
+      end
     end
   end
 
