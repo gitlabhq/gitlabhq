@@ -17,6 +17,7 @@ describe GitlabMarkdownHelper do
   before do
     # Helper expects a @project instance variable
     @project = project
+    @ref = 'markdown'
     @repository = project.repository
   end
 
@@ -472,13 +473,13 @@ describe GitlabMarkdownHelper do
 
     it "should handle relative urls for a file in master" do
       actual = "[GitLab API doc](doc/api/README.md)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
 
     it "should handle relative urls for a directory in master" do
       actual = "[GitLab API doc](doc/api)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api\">GitLab API doc</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
 
@@ -490,13 +491,13 @@ describe GitlabMarkdownHelper do
 
     it "should handle relative urls in reference links for a file in master" do
       actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
 
     it "should handle relative urls in reference links for a directory in master" do
       actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api\">GitLab API doc directory</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc directory</a></p>\n"
       markdown(actual).should match(expected)
     end
 
