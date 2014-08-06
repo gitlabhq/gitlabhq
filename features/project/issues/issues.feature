@@ -47,8 +47,8 @@ Feature: Project Issues
   Scenario: I close and comment issue
     Given I visit issue page "Release 0.4"
     And I close and comment with comment "XML attached"
-    Then I should see comment "XML attached"
-    And issue "Release 0.4" should be closed
+    Then issue "Release 0.4" should be closed
+    And I should see comment "XML attached"
 
   @javascript
   Scenario: I reopen and comment issue
