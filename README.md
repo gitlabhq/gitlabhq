@@ -81,7 +81,7 @@ or by directly calling the script:
 
      sudo /etc/init.d/gitlab start
 
-Please login with `root` / `5iveL!fe`.
+Please login with `root` / `5iveL!fe`
 
 ## Install a development environment
 
