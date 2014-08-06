@@ -1,4 +1,6 @@
 class OmniauthCallbacksController < Devise::OmniauthCallbacksController
+  skip_before_filter :verify_authenticity_token
+
   Gitlab.config.omniauth.providers.each do |provider|
     define_method provider['name'] do
       handle_omniauth
@@ -35,6 +37,10 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     @provider = params[:provider]
     @error = params[:error]
     render 'errors/omniauth_error', layout: "errors", status: 422
+  end
+
+  def openid
+     handle_omniauth
   end
 
   private
