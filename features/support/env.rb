@@ -25,13 +25,11 @@ WebMock.allow_net_connect!
 #
 # JS driver
 #
-#require 'capybara/poltergeist'
-#Capybara.javascript_driver = :poltergeist
-#Capybara.register_driver :poltergeist do |app|
-#  Capybara::Poltergeist::Driver.new(app, js_errors: true, timeout: 90, debug: true)
-#end
-Capybara.javascript_driver = :webkit
-
+require 'capybara/poltergeist'
+Capybara.javascript_driver = :poltergeist
+Capybara.register_driver :poltergeist do |app|
+  Capybara::Poltergeist::Driver.new(app, js_errors: false, timeout: 90)
+end
 Spinach.hooks.on_tag("javascript") do
   ::Capybara.current_driver = ::Capybara.javascript_driver
 end
