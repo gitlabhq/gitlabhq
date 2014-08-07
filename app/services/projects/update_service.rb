@@ -12,11 +12,16 @@ module Projects
         project.change_head(new_branch)
       end
 
-      if project.update_attributes(params.except(:default_branch))
-        if project.previous_changes.include?('path')
-          project.rename_repo
-        end
+      new_path = params[:path]
+      status = true
+
+      if new_path && new_path != project.path
+        status = project.rename_repo(new_path)
       end
+
+      project.update_attributes(params.except(:default_branch))
+      status
+    rescue RuntimeError
     end
   end
 end
