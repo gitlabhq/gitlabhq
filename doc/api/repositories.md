@@ -49,7 +49,7 @@ Parameters:
 
 + `id` (required) - The ID of a project
 + `tag_name` (required) - The name of a tag
-+ `ref` (required) - Create tag using commit sha, another tag name, or branch name.
++ `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
 
 ```json
 [
@@ -129,7 +129,7 @@ Parameters:
 
 ## Raw file content
 
-Get the raw file contents for a file by commit sha and path.
+Get the raw file contents for a file by commit SHA and path.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -144,7 +144,7 @@ Parameters:
 
 ## Raw blob content
 
-Get the raw file contents for a blob by blob sha.
+Get the raw file contents for a blob by blob SHA.
 
 ```
 GET /projects/:id/repository/raw_blobs/:sha
@@ -153,7 +153,7 @@ GET /projects/:id/repository/raw_blobs/:sha
 Parameters:
 
 + `id` (required) - The ID of a project
-+ `sha` (required) - The blob sha
++ `sha` (required) - The blob SHA
 
 
 ## Get file archive
@@ -166,7 +166,7 @@ GET /projects/:id/repository/archive
 
 Parameters:
 + `id` (required) - The ID of a project
-+ `sha` (optional) - The commit sha to download defaults to the tip of the default branch
++ `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
 
 
 ## Compare branches, tags or commits
@@ -177,15 +177,15 @@ GET /projects/:id/repository/compare
 
 Parameters:
 + `id` (required) - The ID of a project
-+ `from` (required) - the commit sha or branch name
-+ `to` (required) - the commit sha or branch name
++ `from` (required) - the commit SHA or branch name
++ `to` (required) - the commit SHA or branch name
 
 
 ```
 GET /projects/:id/repository/compare?from=master&to=feature
 ```
 
-Response: 
+Response:
 
 ```json
 

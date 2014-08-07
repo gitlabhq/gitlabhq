@@ -174,7 +174,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `branch_name` (required) - The name of the branch
-- `ref` (required) - Create branch from commit sha or existing branch
+- `ref` (required) - Create branch from commit SHA or existing branch
 
 ```json
 {
