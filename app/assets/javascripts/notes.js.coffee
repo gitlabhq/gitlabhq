@@ -246,6 +246,7 @@ class Notes
     # fix classes
     form.removeClass "js-new-note-form"
     form.addClass "js-main-target-form"
+    form.addClass "myForm"
 
     # remove unnecessary fields and buttons
     form.find("#note_line_code").remove()
@@ -286,8 +287,9 @@ class Notes
   Submits a new new not if there is an input
   ###
   submitNote: (e) ->
-    e.preventDefault()
-    form = $('.new_note')
+    console.log("console log")
+    # e.preventDefault()
+    form = $('.myForm')
     field = form.find(".js-note-text")
     # Ensure there is no trailing whitespace
     if field.val().replace(/\s+$/, "") isnt ""

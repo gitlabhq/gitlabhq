@@ -189,18 +189,21 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I close and comment with comment "XML attached"' do
-    within('.js-main-target-form') do
+    within('.myForm') do
       fill_in 'note[note]', with: 'XML attached'
+      save_and_open_page
       click_link 'Close and comment'
-      sleep 0.5
+
+      sleep 0.05
     end
   end
 
   step 'I reopen and comment with comment "XML attached"' do
     within('.js-main-target-form') do
       fill_in 'note[note]', with: 'XML attached'
+      save_and_open_page
       click_link 'Reopen and comment'
-      sleep 0.5
+
     end
   end
 
