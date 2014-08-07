@@ -51,7 +51,7 @@ Deleting old backups... [SKIPPING]
 Please be informed that a backup does not store your configuration files.
 If you use Omnibus-GitLab please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
-If you have a manual installation please consider backing up your gitlab.yml file and any ssl keys and certificates.
+If you have a manual installation please consider backing up your gitlab.yml file and any SSL keys and certificates.
 
 ## Restore a previously created backup
 
