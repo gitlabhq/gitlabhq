@@ -41,23 +41,13 @@ describe ProjectWiki do
       subject.wiki.should be_a Gollum::Wiki
     end
 
-    before do
-      Gitlab::Shell.any_instance.stub(:add_repository) do
-        create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
-      end
-      project.stub(:path_with_namespace).and_return("non-existant")
-    end
-
     it "creates a new wiki repo if one does not yet exist" do
-      wiki = ProjectWiki.new(project, user)
-      wiki.create_page("index", "test content").should_not == false
-
-      FileUtils.rm_rf wiki.send(:path_to_repo)
+      project_wiki.create_page("index", "test content").should be_true
     end
 
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
-      ProjectWiki.any_instance.stub(:init_repo).and_return(false)
-      expect { ProjectWiki.new(project, user).wiki }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
+      project_wiki.stub(:init_repo).and_return(false)
+      expect { project_wiki.send(:create_repo!) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
     end
   end
 
