@@ -232,7 +232,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 ### Install GitLab shell
 
-GitLab Shell is an ssh access and repository management software developed specially for GitLab.
+GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Go to the Gitlab installation folder:
     cd /home/git/gitlab
@@ -269,7 +269,7 @@ And if you are installing with a non-default folder or user copy and edit the de
 
     sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 
-If you installed gitlab in another directory or as a user other than the default you should change these settings in /etc/default/gitlab. Do not edit /etc/init.d/gitlab as it will be changed on upgrade.
+If you installed gitlab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
 
 Make GitLab start on boot:
 
@@ -380,11 +380,11 @@ If you are running SSH on a non-standard port, you must change the gitlab user's
         port 2222           # Your port number
         hostname 127.0.0.1; # Your server name or IP
 
-You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
+You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
 ### LDAP authentication
 
-You can configure LDAP authentication in config/gitlab.yml. Please restart GitLab after editing this file.
+You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
 
 ### Using Custom Omniauth Providers
 
