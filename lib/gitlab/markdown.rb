@@ -192,8 +192,10 @@ module Gitlab
 
           link_to("##{identifier}", url, options)
         end
-      else
-        reference_jira_issue(identifier, project) if project.jira_tracker?
+      elsif project.redmine_tracker?
+	reference_redmine_issue(identifier, project)
+      elsif project.jira_tracker?
+        reference_jira_issue(identifier, project)
       end
     end
 
@@ -238,6 +240,17 @@ module Gitlab
         class: "gfm gfm-issue #{html_options[:class]}"
       )
       link_to("#{identifier}", url, options)
+    end
+
+    def reference_redmine_issue(identifier, project = @project)
+      url = url_for_issue(identifier)
+      title = Gitlab.config.issues_tracker[project.issues_tracker]["title"]
+
+      options = html_options.merge(
+        title: "Issue in #{title}",
+        class: "gfm gfm-issue #{html_options[:class]}"
+      )
+      link_to("rm##{identifier}", url, options)
     end
   end
 end
