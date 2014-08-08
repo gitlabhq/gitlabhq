@@ -19,7 +19,7 @@ class RemoveDuplicateIid
       iid = duplicate.iid
       items = klass.of_projects(project_id).where(iid: iid)
 
-      if items.size > 1
+      if items.is_a? Array && items.size > 1
         puts "Remove #{klass.name} duplicates for iid: #{iid} and project_id: #{project_id}"
         items.shift
         items.each do |item|
