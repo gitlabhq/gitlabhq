@@ -1,5 +1,5 @@
 class Admin::EmailsController < Admin::ApplicationController
-  def index
-    render text: 'hello world', layout: nil
+  def show
+    render text: 'hello world'
   end
 end

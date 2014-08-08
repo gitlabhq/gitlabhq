@@ -170,7 +170,7 @@ module SharedPaths
   end
 
   step 'I visit admin email page' do
-    visit admin_emails_path
+    visit admin_email_path
   end
   # ----------------------------------------
   # Generic Project

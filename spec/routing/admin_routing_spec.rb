@@ -120,7 +120,7 @@ describe Admin::DashboardController, "routing" do
 end
 
 describe Admin::EmailsController, "routing" do
-  it "to #index" do
-    get("/admin/emails").should route_to('admin/emails#index')
+  it "to #show" do
+    get("/admin/email").should route_to('admin/emails#show')
   end
 end
