@@ -119,3 +119,8 @@ describe Admin::DashboardController, "routing" do
   end
 end
 
+describe Admin::EmailsController, "routing" do
+  it "to #index" do
+    get("/admin/emails").should route_to('admin/emails#index')
+  end
+end
