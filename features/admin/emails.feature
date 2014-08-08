@@ -7,4 +7,4 @@ Feature: Admin email
   Scenario: Create a new email notification
     When I click new email notification
     And submit form with email notification info
-    Then I should see notification about being sent
+    Then I should see a notification email is begin send
