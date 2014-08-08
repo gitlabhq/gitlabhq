@@ -169,6 +169,9 @@ module SharedPaths
     visit admin_teams_path
   end
 
+  step 'I visit admin email page' do
+    visit admin_emails_path
+  end
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------
