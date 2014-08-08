@@ -40,7 +40,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   def openid
-     handle_omniauth
+    handle_omniauth
   end
 
   private

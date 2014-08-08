@@ -171,6 +171,9 @@ production: &base
     # Locks down those users until they have been cleared by the admin (default: true).
     block_auto_created_users: true
 
+    # List of certificates for OpenID
+    openid_ca_file = '/etc/ssl/certs/ca-certificates.crt'
+
     ## Auth providers
     # Uncomment the following lines and fill in the data of the auth provider you want to use
     # If your favorite auth provider is not listed you can use others:
