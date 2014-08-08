@@ -269,6 +269,12 @@ module SharedPaths
     visit project_tree_path(@project, "6d39438")
   end
 
+  step 'I visit project source page for' \
+       ' "6d394385cf567f80a8fd85055db1ab4c5295806f"' do
+    visit project_tree_path(@project,
+                            '6d394385cf567f80a8fd85055db1ab4c5295806f')
+  end
+
   step 'I visit project tags page' do
     visit project_tags_path(@project)
   end
