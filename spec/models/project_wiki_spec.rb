@@ -1,33 +1,14 @@
 require "spec_helper"
 
 describe ProjectWiki do
-
-  def remove_temp_repo(path)
-    FileUtils.rm_rf path
-  end
-
-  def commit_details
-    commit = {name: user.name, email: user.email, message: "test commit"}
-  end
-
-  def create_page(name, content)
-    subject.wiki.write_page(name, :markdown, content, commit_details)
-  end
-
-  def destroy_page(page)
-    subject.wiki.delete_page(page, commit_details)
-  end
-
-  let(:project) { create(:project) }
+  let(:project) { create(:empty_project) }
   let(:repository) { project.repository }
   let(:user) { project.owner }
   let(:gitlab_shell) { Gitlab::Shell.new }
+  let(:project_wiki) { ProjectWiki.new(project, user) }
 
-  subject { ProjectWiki.new(project, user) }
-
-  before do
-    create_temp_repo(subject.send(:path_to_repo))
-  end
+  subject { project_wiki }
+  before { project_wiki.wiki }
 
   describe "#path_with_namespace" do
     it "returns the project path with namespace with the .wiki extension" do
@@ -60,23 +41,13 @@ describe ProjectWiki do
       subject.wiki.should be_a Gollum::Wiki
     end
 
-    before do
-      Gitlab::Shell.any_instance.stub(:add_repository) do
-        create_temp_repo("#{Rails.root}/tmp/test-git-base-path/non-existant.wiki.git")
-      end
-      project.stub(:path_with_namespace).and_return("non-existant")
-    end
-
     it "creates a new wiki repo if one does not yet exist" do
-      wiki = ProjectWiki.new(project, user)
-      wiki.create_page("index", "test content").should_not == false
-
-      FileUtils.rm_rf wiki.send(:path_to_repo)
+      project_wiki.create_page("index", "test content").should be_true
     end
 
     it "raises CouldNotCreateWikiError if it can't create the wiki repository" do
-      ProjectWiki.any_instance.stub(:init_repo).and_return(false)
-      expect { ProjectWiki.new(project, user).wiki }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
+      project_wiki.stub(:init_repo).and_return(false)
+      expect { project_wiki.send(:create_repo!) }.to raise_exception(ProjectWiki::CouldNotCreateWikiError)
     end
   end
 
@@ -242,4 +213,26 @@ describe ProjectWiki do
     end
   end
 
+  private
+
+  def create_temp_repo(path)
+    FileUtils.mkdir_p path
+    system(*%W(git init --quiet --bare -- #{path}))
+  end
+
+  def remove_temp_repo(path)
+    FileUtils.rm_rf path
+  end
+
+  def commit_details
+    commit = {name: user.name, email: user.email, message: "test commit"}
+  end
+
+  def create_page(name, content)
+    subject.wiki.write_page(name, :markdown, content, commit_details)
+  end
+
+  def destroy_page(page)
+    subject.wiki.delete_page(page, commit_details)
+  end
 end

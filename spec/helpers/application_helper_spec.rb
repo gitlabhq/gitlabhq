@@ -132,12 +132,12 @@ describe ApplicationHelper do
 
     it "includes a list of branch names" do
       options[0][0].should == 'Branches'
-      options[0][1].should include('master', 'stable')
+      options[0][1].should include('master', 'feature')
     end
 
     it "includes a list of tag names" do
       options[1][0].should == 'Tags'
-      options[1][1].should include('v0.9.4','v1.2.0')
+      options[1][1].should include('v1.0.0','v1.1.0')
     end
 
     it "includes a specific commit ref if defined" do

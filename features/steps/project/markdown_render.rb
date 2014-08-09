@@ -12,11 +12,10 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
     @project.team << [@user, :master]
   end
 
-  Then 'I should see files from repository in master' do
-    current_path.should == project_tree_path(@project, "master")
-    page.should have_content "Gemfile"
-    page.should have_content "app"
-    page.should have_content "README"
+  Then 'I should see files from repository in markdown' do
+    current_path.should == project_tree_path(@project, "markdown")
+    page.should have_content "README.md"
+    page.should have_content "CHANGELOG"
   end
 
   And 'I should see rendered README which contains correct links' do
@@ -34,7 +33,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct document rendered' do
-    current_path.should == project_blob_path(@project, "master/doc/api/README.md")
+    current_path.should == project_blob_path(@project, "markdown/doc/api/README.md")
     page.should have_content "All API requests require authentication"
   end
 
@@ -43,7 +42,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct directory rendered' do
-    current_path.should == project_tree_path(@project, "master/doc/raketasks")
+    current_path.should == project_tree_path(@project, "markdown/doc/raketasks")
     page.should have_content "backup_restore.md"
     page.should have_content "maintenance.md"
   end
@@ -53,7 +52,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct doc/api directory rendered' do
-    current_path.should == project_tree_path(@project, "master/doc/api")
+    current_path.should == project_tree_path(@project, "markdown/doc/api")
     page.should have_content "README.md"
     page.should have_content "users.md"
   end
@@ -63,7 +62,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see correct maintenance file rendered' do
-    current_path.should == project_blob_path(@project, "master/doc/raketasks/maintenance.md")
+    current_path.should == project_blob_path(@project, "markdown/doc/raketasks/maintenance.md")
     page.should have_content "bundle exec rake gitlab:env:info RAILS_ENV=production"
   end
 
@@ -86,7 +85,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   And 'I see correct file rendered' do
-    current_path.should == project_blob_path(@project, "master/doc/api/README.md")
+    current_path.should == project_blob_path(@project, "markdown/doc/api/README.md")
     page.should have_content "Contents"
     page.should have_link "Users"
     page.should have_link "Rake tasks"
@@ -97,7 +96,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see the correct document file' do
-    current_path.should == project_blob_path(@project, "master/doc/api/users.md")
+    current_path.should == project_blob_path(@project, "markdown/doc/api/users.md")
     page.should have_content "Get a list of users."
   end
 
@@ -125,9 +124,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
 
   Then 'I should see files from repository in markdown branch' do
     current_path.should == project_tree_path(@project, "markdown")
-    page.should have_content "Gemfile"
-    page.should have_content "app"
-    page.should have_content "README"
+    page.should have_content "README.md"
+    page.should have_content "CHANGELOG"
   end
 
   And 'I see correct file rendered in markdown branch' do
@@ -256,8 +254,8 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Given 'I go directory which contains README file' do
-    visit project_tree_path(@project, "master/doc/api")
-    current_path.should == project_tree_path(@project, "master/doc/api")
+    visit project_tree_path(@project, "markdown/doc/api")
+    current_path.should == project_tree_path(@project, "markdown/doc/api")
   end
 
   And 'I click on a relative link in README' do
@@ -265,7 +263,7 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   Then 'I should see the correct markdown' do
-    current_path.should == project_blob_path(@project, "master/doc/api/users.md")
+    current_path.should == project_blob_path(@project, "markdown/doc/api/users.md")
     page.should have_content "List users"
   end
 

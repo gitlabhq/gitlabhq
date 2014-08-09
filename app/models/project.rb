@@ -494,6 +494,7 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo
+    path_was = previous_changes['path'].first
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 

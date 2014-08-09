@@ -38,10 +38,6 @@ Feature: Project Browse commits
     Given I visit big commit page
     Then I see big commit warning
 
-  Scenario: I browse huge commit
-    Given I visit huge commit page
-    Then I see huge commit message
-
   Scenario: I browse a commit with an image
     Given I visit a commit with an image that changed
     Then The diff links to both the previous and current image
