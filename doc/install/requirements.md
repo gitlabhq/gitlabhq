@@ -63,6 +63,8 @@ Or if you use SSD you can configure 2GB of swap to use two Unicorn workers and h
 - 32GB supports up to 20,000 users
 - 64GB supports up to 40,000 users
 
+Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application.
+
 ### Storage
 
 The necessary hard drive space largely depends on the size of the repos you want to store in GitLab. But as a *rule of thumb* you should have at least twice as much free space as your all repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
