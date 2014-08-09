@@ -64,6 +64,10 @@
             %span.count
               = @repository.blob_by_oid(version.id).data
 
+        -# TODO use correct link.
+        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+          Request access
+
     .prepend-top-10
       %p
         %span.light Created on
