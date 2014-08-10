@@ -52,10 +52,6 @@ module TreeHelper
     filename.downcase.end_with?(*%w(.mdown .md .markdown))
   end
 
-  def plain_text_readme? filename
-    filename =~ /^README(.txt)?$/i
-  end
-
   # Simple shortcut to File.join
   def tree_join(*args)
     File.join(*args)
