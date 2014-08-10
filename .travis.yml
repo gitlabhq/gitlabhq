@@ -17,8 +17,8 @@ env:
     - TASK=jasmine:ci DB=postgresql
 before_install:
   - sudo apt-get install libicu-dev -y
-install: 
-  - "bundle install --deployment --without production"
+install:
+  - "travis_retry bundle install --deployment --without production --retry 5"
 branches:
   only:
     - 'master'
