@@ -30,11 +30,23 @@ Feature: Project Merge Requests
     Then I should see closed merge request "Bug NS-04"
 
   Scenario: I reopen merge request page
-    Given I click link "Bug NS-04"
-    And I click link "Close"
-    Then I should see closed merge request "Bug NS-04"
+    Given I click link "Feature NS-03"
     When I click link "Reopen"
-    Then I should see reopened merge request "Bug NS-04"
+    Then I should see reopened merge request "Feature NS-03"
+
+  @javascript
+  Scenario: I comment and close a merge request
+    Given I click link "Bug NS-04"
+    And I close and comment merge request with comment "XML attached"
+    Then I should see comment "XML attached"
+    And I should see closed merge request "Bug NS-04"
+
+  @javascript
+  Scenario: I comment and reopen a merge request
+    Given I click link "Feature NS-03"
+    And I close and comment merge request with comment "XML attached"
+    Then I should see comment "XML attached"
+    And I should see reopened merge request "Feature NS-03"
 
   Scenario: I submit new unassigned merge request
     Given I click link "New Merge Request"

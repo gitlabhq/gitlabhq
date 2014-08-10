@@ -187,4 +187,30 @@ class ProjectIssues < Spinach::FeatureSteps
   step 'The code block should be unchanged' do
     page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
   end
+
+  step 'I close and comment with comment "XML attached"' do
+    within('.js-main-target-form') do
+      fill_in 'note[note]', with: 'XML attached'
+      click_link 'Close and comment'
+      sleep 0.5
+    end
+  end
+
+  step 'I reopen and comment with comment "XML attached"' do
+    within('.js-main-target-form') do
+      fill_in 'note[note]', with: 'XML attached'
+      click_link 'Reopen and comment'
+      sleep 0.5
+    end
+  end
+
+  step 'issue "Release 0.4" should be closed' do
+    issue = Issue.find_by(title: 'Release 0.4')
+    issue.state.should == 'closed'
+  end
+
+  step 'issue "Release 0.3" should be open' do
+    issue = Issue.find_by(title: 'Release 0.3')
+    issue.state.should == 'reopened'
+  end
 end

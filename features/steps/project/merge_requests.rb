@@ -180,6 +180,22 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I close and comment merge request with comment "XML attached"' do
+    within('.js-main-target-form') do
+      fill_in 'note[note]', with: 'XML attached'
+      click_link 'Close and comment'
+      sleep 0.05
+    end
+  end
+
+  step 'I reopen and comment merge request with comment "XML attached"' do
+    within('.js-main-target-form') do
+      fill_in 'note[note]', with: 'XML attached'
+      click_link 'Reopen and comment'
+      sleep 0.05
+    end
+  end
+
   step 'I should see reopened merge request "Bug NS-04"' do
     within '.state-label' do
       page.should have_content "Open"

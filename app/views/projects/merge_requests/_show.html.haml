@@ -22,9 +22,9 @@
   - content_for :note_actions do
     - if can?(current_user, :modify_merge_request, @merge_request)
       - unless @merge_request.closed? || @merge_request.merged?
-        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link", title: "Close merge request"
+        = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link js-comment-action-button", title: "Close merge request", :'data-action-text' => 'Close merge request', :'data-comment-text' => 'Close and comment'
       - if @merge_request.closed?
-        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
+        = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link js-comment-action-button", title: "Reopen merge request", :'data-action-text' => 'Reopen merge request', :'data-comment-text' => 'Reopen and comment'
 
   .diffs.tab-content
     - if current_page?(action: 'diffs')

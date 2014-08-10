@@ -290,8 +290,8 @@ ul.notes {
 
   .note-form-option {
     margin-top: 8px;
-    margin-left: 30px;
-    @extend .pull-left;
+    margin-right: 600px;
+    @extend .pull-right;
   }
 
   .js-notify-commit-author {

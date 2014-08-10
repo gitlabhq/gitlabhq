@@ -7,7 +7,7 @@ Feature: Comments on commits
   @javascript
   Scenario: I can comment on a commit
     Given I leave a comment like "XML attached"
-    Then I should see a comment saying "XML attached"
+    Then I should see a comment "XML attached"
 
   @javascript
   Scenario: I can't cancel the main form

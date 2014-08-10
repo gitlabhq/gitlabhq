@@ -14,6 +14,16 @@ Feature: Project Labels
     When I submit new label 'support'
     Then I should see label 'support'
 
+  Scenario: I create a label without color
+    Given I visit new label page
+    When I submit new label without color
+    Then I should see label color error message
+
+  Scenario: I create a label without name
+    Given I visit new label page
+    When I submit new label without name
+    Then I should see label title error message
+
   Scenario: I edit label
     Given I visit 'bug' label edit page
     When I change label 'bug' to 'fix'
