@@ -31,6 +31,18 @@ class ProjectLabels < Spinach::FeatureSteps
     click_button 'Save'
   end
 
+  step 'I submit new label with invalid color' do
+    fill_in 'Title', with: 'support'
+    fill_in 'Background Color', with: '#12'
+    click_button 'Save'
+  end
+
+  step 'I should see label color error message' do
+    within '.label-form' do
+      page.should have_content 'Color is invalid'
+    end
+  end
+
   step 'I should not see label \'bug\'' do
     within '.manage-labels-list' do
       page.should_not have_content 'bug'

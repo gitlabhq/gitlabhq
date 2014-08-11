@@ -23,3 +23,8 @@ Feature: Project Labels
   Scenario: I remove label
     When I remove label 'bug'
     Then I should not see label 'bug'
+
+  Scenario: I create a label with invalid color
+    Given I visit new label page
+    When I submit new label with invalid color
+    Then I should see label color error message
