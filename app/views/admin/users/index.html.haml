@@ -32,6 +32,7 @@
       .panel-heading
         Users (#{@users.total_count})
         .panel-head-actions
+          = link_to 'Send email to users', admin_email_path, class: 'btn btn-info'
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|
