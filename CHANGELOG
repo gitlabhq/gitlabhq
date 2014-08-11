@@ -6,6 +6,7 @@ v 7.2.0
   - Better labels: colors, ability to rename and remove
   - Improve the way merge request collects diffs
   - Improve compare page for large diffs  
+  - Expose the full commit message via API
 
 v 7.1.0
   - Remove observers
