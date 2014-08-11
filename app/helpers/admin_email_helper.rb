@@ -1,6 +1,6 @@
 module AdminEmailHelper
   def admin_email_grouped_recipient_options
-    options_for_select([['Everyone', 'all']]) +
+    options_for_select([['All GitLab users', 'all']]) +
     grouped_options_for_select(
       'Groups' => Group.pluck(:name, :id).map{ |name, id| [name, "group-#{id}"] },
       'Projects' => grouped_project_list
