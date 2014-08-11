@@ -1,18 +1,33 @@
 class Labels
   constructor: ->
-    # find the form
     form = $('.label-form')
     @setupLabelForm(form)
+    @cleanBinding()
+    @addBinding()
+    @updateColorPreview
 
-  ###
-  General note form setup.
+  addBinding: ->
+    $(document).on 'click', '.suggest-colors a', @setSuggestedColor
+    $(document).on 'input', 'input#label_color', @updateColorPreview
 
-  deactivates the submit button when text is empty
-  hides the preview button when text is empty
-  setup GFM auto complete
-  show the form
-  ###
+  cleanBinding: ->
+    $(document).off 'click', '.suggest-colors a'
+    $(document).off 'input', 'input#label_color'
+
+  # Initializes the form to disable the save button if no color or title is entered
   setupLabelForm: (form) ->
     disableButtonIfEmptyField form, '.form-control', form.find('.js-save-button')
+
+  # Updates the the preview color with the hex-color input
+  updateColorPreview: =>
+    previewColor = $('input#label_color').val()
+    $('div.label-color-preview').css('background-color', previewColor)
+
+  # Updates the preview color with a click on a suggested color
+  setSuggestedColor: (e) =>
+    color = $(e.currentTarget).data('color')
+    $('input#label_color').val(color)
+    @updateColorPreview()
+    e.preventDefault()
 
 @Labels = Labels
