@@ -52,6 +52,8 @@ Gitlab::Application.routes.draw do
   #
   namespace :public do
     resources :projects, only: [:index]
+    get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
+    post 'unsubscribes/:email', to: 'unsubscribes#create'
     root to: "projects#index"
   end
 

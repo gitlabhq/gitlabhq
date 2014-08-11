@@ -11,11 +11,11 @@ class AdminEmailsWorker
   def recipient_list(recipient_id)
     case recipient_id
     when 'all'
-      User.where(nil)
+      User.subscribed_for_admin_email
     when /group-(\d+)\z/
-      Group.find($1).users
+      Group.find($1).users.subscribed_for_admin_email
     when /project-(\d+)\z/
-      Project.find($1).users
+      Project.find($1).users.subscribed_for_admin_email
     end
   end
 end
