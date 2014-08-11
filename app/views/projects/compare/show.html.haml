@@ -27,9 +27,9 @@
         There isn't anything to compare.
       %p.slead
         - if params[:to] == params[:from]
-          You'll need to use different branch names to get a valid comparison.
-        - else
           %span.label-branch #{params[:from]}
           and
           %span.label-branch #{params[:to]}
           are the same.
+        - else
+          You'll need to use different branch names to get a valid comparison.
