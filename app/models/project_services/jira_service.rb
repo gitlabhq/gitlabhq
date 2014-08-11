@@ -42,7 +42,8 @@ class JiraService < Service
       { type: 'text', name: 'project_url', placeholder: 'Url to JIRA, http://jira.example' },
       { type: 'text', name: 'username', placeholder: '' },
       { type: 'password', name: 'password', placeholder: '' },
-      { type: 'text', name: 'api_version', placeholder: '2' }
+      { type: 'text', name: 'api_version', placeholder: '2' },
+      { type: 'text', name: 'jira_issue_transition_id', placeholder: '2' }
     ]
   end
 
