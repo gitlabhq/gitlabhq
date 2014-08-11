@@ -6,6 +6,4 @@ class Admin::EmailsController < Admin::ApplicationController
     AdminEmailsWorker.perform_async(params[:recipients], params[:subject], params[:body])
     redirect_to admin_email_path, notice: 'Email send'
   end
-
-  protected
 end
