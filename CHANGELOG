@@ -10,6 +10,7 @@ v 7.2.0
   - Fix 500 error on repository rename
   - Fix bug when MR download patch return invalid diff
   - Test gitlab-shell integration
+  - Repository import timeout increased from 2 to 4 minutes allowing larger repos to be imported
 
 v 7.1.0
   - Remove observers
