@@ -70,7 +70,7 @@ class JiraService < Service
         }]
       },
       'transition' => {
-        'id' => '2'
+        'id' => jira_issue_transition_id
       }
     }
 
