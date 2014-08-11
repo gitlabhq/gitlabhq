@@ -8,3 +8,4 @@ Feature: Admin email
     Given I visit admin email page
     When I submit form with email notification info
     Then I should see a notification email is begin send
+    And admin emails are being sent
