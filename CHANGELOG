@@ -7,6 +7,9 @@ v 7.2.0
   - Improve the way merge request collects diffs
   - Improve compare page for large diffs  
   - Expose the full commit message via API
+  - Fix 500 error on repository rename
+  - Fix bug when MR download patch return invalid diff
+  - Test gitlab-shell integration
 
 v 7.1.0
   - Remove observers
