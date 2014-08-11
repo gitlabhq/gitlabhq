@@ -222,6 +222,16 @@ module ApplicationHelper
 
   def render_markup(file_name, file_content)
     GitHub::Markup.render(file_name, file_content).html_safe
+  rescue RuntimeError
+    simple_format(file_content)
+  end
+
+  def markup?(filename)
+    Gitlab::MarkdownHelper.markup?(filename)
+  end
+
+  def gitlab_markdown?(filename)
+    Gitlab::MarkdownHelper.gitlab_markdown?(filename)
   end
 
   def spinner(text = nil, visible = false)
