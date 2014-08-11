@@ -226,6 +226,14 @@ module ApplicationHelper
     simple_format(file_content)
   end
 
+  def markup?(filename)
+    Gitlab::MarkdownHelper.markup?(filename)
+  end
+
+  def gitlab_markdown?(filename)
+    Gitlab::MarkdownHelper.gitlab_markdown?(filename)
+  end
+
   def spinner(text = nil, visible = false)
     css_class = "loading"
     css_class << " hide" unless visible

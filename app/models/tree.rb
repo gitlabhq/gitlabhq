@@ -1,4 +1,6 @@
 class Tree
+  include Gitlab::MarkdownHelper
+
   attr_accessor :entries, :readme, :contribution_guide
 
   def initialize(repository, sha, path = '/')
@@ -13,8 +15,7 @@ class Tree
       # by markup renderer.
       if available_readmes.length > 1
         supported_readmes = available_readmes.select do |readme|
-          Gitlab::MarkdownHelper.gitlab_markdown?(readme.name) ||
-          Gitlab::MarkdownHelper.markup?(readme.name)
+          gitlab_markdown?(readme.name) || markup?(readme.name)
         end
 
         # Take the first supported readme, or the first available readme, if we

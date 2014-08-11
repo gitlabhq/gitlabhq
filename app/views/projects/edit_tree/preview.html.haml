@@ -1,12 +1,12 @@
 .diff-file
   .diff-content
-    - if Gitlab::MarkdownHelper.gitlab_markdown?(@blob.name)
+    - if gitlab_markdown?(@blob.name)
       .file-content.wiki
         = preserve do
           = markdown(@content)
-    - elsif Gitlab::MarkdownHelper.markup?(@blob.name)
+    - elsif markup?(@blob.name)
       .file-content.wiki
-        = raw GitHub::Markup.render(@blob.name, @content)
+        = raw render_markup(@blob.name, @content)
     - else
       .file-content.code
         - unless @diff.empty?

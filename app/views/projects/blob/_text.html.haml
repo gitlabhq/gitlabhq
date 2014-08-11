@@ -1,8 +1,8 @@
-- if Gitlab::MarkdownHelper.gitlab_markdown?(blob.name)
+- if gitlab_markdown?(blob.name)
   .file-content.wiki
     = preserve do
       = markdown(blob.data)
-- elsif Gitlab::MarkdownHelper.markup?(blob.name)
+- elsif markup?(blob.name)
   .file-content.wiki
     = render_markup(blob.name, blob.data)
 - else

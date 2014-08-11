@@ -22,9 +22,9 @@ module TreeHelper
   end
 
   def render_readme(readme)
-    if Gitlab::MarkdownHelper.gitlab_markdown?(readme.name)
+    if gitlab_markdown?(readme.name)
       preserve(markdown(readme.data))
-    elsif Gitlab::MarkdownHelper.markup?(readme.name)
+    elsif markup?(readme.name)
       render_markup(readme.name, readme.data)
     else
       simple_format(readme.data)
@@ -90,8 +90,7 @@ module TreeHelper
   end
 
   def editing_preview_title(filename)
-    if Gitlab::MarkdownHelper.gitlab_markdown?(filename) ||
-       Gitlab::MarkdownHelper.markup?(filename)
+    if gitlab_markdown?(filename) || markup?(filename)
       'Preview'
     else
       'Diff'
