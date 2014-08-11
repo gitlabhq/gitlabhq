@@ -21,12 +21,14 @@ module API
       # Example Request:
       #   GET /projects
       get do
-        @query = current_user.authorized_projects
+        @projects = current_user.authorized_projects
+
         # If the archived parameter is passed, limit results accordingly
         if params[:archived].present?
-          @query = @query.where(archived: parse_boolean(params[:archived]))
+          @projects = @projects.where(archived: parse_boolean(params[:archived]))
         end
-        @projects = paginate @query
+
+        @projects = paginate @projects
         present @projects, with: Entities::Project
       end
 
