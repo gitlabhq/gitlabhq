@@ -8,6 +8,10 @@ Get a list of projects accessible by the authenticated user.
 GET /projects
 ```
 
+Parameters:
+
++ `archived` (optional) - if passed, limit by archived status
+
 ```json
 [
   {
@@ -250,7 +254,7 @@ Parameters:
 + `description` (optional) - short project description
 + `issues_enabled` (optional)
 + `merge_requests_enabled` (optional)
-+ `wiki_enabled` (optional) 
++ `wiki_enabled` (optional)
 + `snippets_enabled` (optional)
 + `public` (optional) - if `true` same as setting visibility_level = 20
 + `visibility_level` (optional)
@@ -273,7 +277,7 @@ Parameters:
 + `default_branch` (optional) - 'master' by default
 + `issues_enabled` (optional)
 + `merge_requests_enabled` (optional)
-+ `wiki_enabled` (optional) 
++ `wiki_enabled` (optional)
 + `snippets_enabled` (optional)
 + `public` (optional) - if `true` same as setting visibility_level = 20
 + `visibility_level` (optional)
