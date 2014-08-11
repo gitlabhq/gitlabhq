@@ -321,7 +321,9 @@ class Notes
     GitLab.GfmAutoComplete.setup()
     form = note.find(".note-edit-form")
     form.show()
-    form.find("textarea").focus()
+    textarea = form.find("textarea")
+    textarea.focus()
+    disableButtonIfEmptyField textarea, form.find(".js-comment-button")
 
   ###
   Called in response to clicking the edit note link
