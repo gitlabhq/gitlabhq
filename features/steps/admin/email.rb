@@ -1,52 +1,20 @@
 class Spinach::Features::AdminEmail < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
+  include SharedAdmin
 
-  step 'I see all previous email notifications' do
-    pending 'step not implemented'
+  step 'I submit form with email notification info' do
+    @email_text = "I've moved the project"
+    @selected_project = Group.last.projects.first
+    within('form#new-admin-email') do
+      fill_in :subject, with: 'my subject'
+      fill_in :body, with: @email_text
+      select "#{@selected_project.group.name} / #{@selected_project.name}", from: :recipients
+      find('.btn-create').click
+    end
   end
 
-  step 'I click new email notification' do
-    pending 'step not implemented'
-  end
-
-  step 'submit form with email notification info' do
-    pending 'step not implemented'
-  end
-
-  step 'I should be redirected to the email notification page' do
-    pending 'step not implemented'
-  end
-
-  step 'I should see newly created email notification' do
-    pending 'step not implemented'
-  end
-
-  step 'email notification \'maintenance\'' do
-    pending 'step not implemented'
-  end
-
-  step 'I visit email notification \'maintenance\'' do
-    pending 'step not implemented'
-  end
-
-  step 'I submit recipients' do
-    pending 'step not implemented'
-  end
-
-  step 'I should see the reciepints' do
-    pending 'step not implemented'
-  end
-
-  step 'email notification \'maintenance\' with selected recipients' do
-    pending 'step not implemented'
-  end
-
-  step 'I click send' do
-    pending 'step not implemented'
-  end
-
-  step 'I should see the notification has been sent' do
-    pending 'step not implemented'
+  step 'I should see a notification email is begin send' do
+    expect(find('.flash-notice')).to have_content 'Email send'
   end
 end

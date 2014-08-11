@@ -3,7 +3,7 @@
 %p.light
   You can notify the app / group or a project by sending them an email notification
 
-= form_tag admin_email_path, class: 'form-horizontal' do
+= form_tag admin_email_path, class: 'form-horizontal', id: 'new-admin-email' do
   .form-group
     %label.control-label{for: :subject} Subject
     .col-sm-10
