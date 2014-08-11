@@ -21,6 +21,13 @@ module SharedProject
     @project.team << [@user, :master]
   end
 
+  # Create an empty project without caring about the name
+  And 'I own an empty project' do
+    @project = create(:empty_project,
+                      name: 'Empty Project', namespace: @user.namespace)
+    @project.team << [@user, :master]
+  end
+
   And 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 
