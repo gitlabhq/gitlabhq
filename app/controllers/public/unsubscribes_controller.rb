@@ -11,14 +11,14 @@ module Public
 
     def create
       @user = get_user
-      @user.admin_unsubscribe!
+      @user.admin_unsubscribe! if @user
       redirect_to new_user_session_path, notice: 'You have been unsubscribed'
     end
 
     protected
     def get_user
       @email = "#{params[:email]}.#{params[:format]}"
-      User.where(email: @email).first!
+      User.where(email: @email).first
     end
   end
 end
