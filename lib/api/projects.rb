@@ -224,17 +224,6 @@ module API
         @users = paginate @users
         present @users, with: Entities::UserBasic
       end
-
-      # Get a project labels
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/labels
-      get ':id/labels' do
-        @labels = user_project.labels
-        present @labels, with: Entities::Label
-      end
     end
   end
 end

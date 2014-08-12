@@ -7,13 +7,14 @@ class Label < ActiveRecord::Base
   validates :project, presence: true
 
   # Dont allow '?', '&', and ',' for label titles
-  validates :title, presence: true, format: { with: /\A[^&\?,&]*\z/ }
+  validates :title,
+            presence: true,
+            format: { with: /\A[^&\?,&]*\z/ },
+            uniqueness: true
 
   scope :order_by_name, -> { reorder("labels.title ASC") }
 
-  def name
-    title
-  end
+  alias_attribute :name, :title
 
   def open_issues_count
     issues.opened.count

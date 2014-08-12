@@ -192,7 +192,7 @@ module API
     end
 
     class Label < Grape::Entity
-      expose :name
+      expose :name, :color
     end
 
     class RepoDiff < Grape::Entity

@@ -577,4 +577,8 @@ class Project < ActiveRecord::Base
   def forks_count
     ForkedProjectLink.where(forked_from_project_id: self.id).count
   end
+
+  def find_label(name)
+    labels.find_by(name: name)
+  end
 end
