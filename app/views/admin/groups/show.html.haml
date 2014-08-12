@@ -31,6 +31,17 @@
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
+        - if @group.ldap_cn.present?
+          %li
+            %span.light LDAP group cn:
+            %strong
+              = @group.ldap_cn
+
+          %li
+            %span.light LDAP access level:
+            %strong
+              = @group.human_ldap_access
+
     .panel.panel-default
       .panel-heading
         %h3.panel-title
@@ -50,11 +61,11 @@
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
 
     - if @group.shared_projects.any?
-      .ui-box
-        .title
+      .panel.panel-default
+        .panel-heading
           Projects shared with #{@group.name}
-          %small
-            (#{@group.shared_projects.count})
+          %span.badge
+            #{@group.shared_projects.count}
         %ul.well-list
           - @group.shared_projects.sort_by(&:name).each do |project|
             %li

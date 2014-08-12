@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140811083829) do
+ActiveRecord::Schema.define(version: 20140811155127) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -273,10 +273,10 @@ ActiveRecord::Schema.define(version: 20140811083829) do
     t.string   "type"
     t.string   "title"
     t.string   "token"
-    t.integer  "project_id",                  null: false
+    t.integer  "project_id",                               null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",      default: false, null: false
+    t.boolean  "active",                   default: false, null: false
     t.string   "project_url"
     t.string   "subdomain"
     t.string   "room"
@@ -285,6 +285,7 @@ ActiveRecord::Schema.define(version: 20140811083829) do
     t.string   "username"
     t.string   "password"
     t.string   "api_version"
+    t.string   "jira_issue_transition_id", default: "2"
   end
 
   add_index "services", ["project_id"], name: "index_services_on_project_id", using: :btree
