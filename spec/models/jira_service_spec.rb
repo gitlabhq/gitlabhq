@@ -55,5 +55,13 @@ describe JiraService, models: true do
         body: /Issue solved with/
       ).once
     end
+
+    it "calls the api with jira_issue_transition_id" do
+      @jira_service.jira_issue_transition_id = 'this-is-a-custom-id'
+      @jira_service.execute(@sample_data, JiraIssue.new("JIRA-123"))
+      WebMock.should have_requested(:post, @api_url).with(
+        body: /this-is-a-custom-id/
+      ).once
+    end
   end
 end
