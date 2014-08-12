@@ -18,7 +18,7 @@
   - if current_user && current_user.can?(:manage_group, @group)
     .pull-right
       - if ldap_enabled? && @group.ldap_cn.present?
-        = link_to reset_access_group_ldap_path(@group), class: 'btn grouped', data: { confirm: "Reset the access level of all other LDAP group team members to '#{@group.human_ldap_access}'?" }, method: :put do
+        = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Reset the access level of all other LDAP group team members to '#{@group.human_ldap_access}'?" }, method: :put do
           Reset access
 
       = link_to '#', class: 'btn btn-new js-toggle-button' do
@@ -28,6 +28,14 @@
     .js-toggle-content.hide.new-group-member-holder
       = render "new_group_member"
 
+- if ldap_enabled? && @group.ldap_cn.present?
+  .bs-callout.bs-callout-info
+    The members of this group are synced with the LDAP group with cn 
+    %code #{@group.ldap_cn}
+    \. They are given 
+    %code #{@group.human_ldap_access}
+    access.
+    
 .panel.panel-default.prepend-top-20
   .panel-heading
     %strong #{@group.name}
