@@ -143,7 +143,7 @@ production: &base
     #
     # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
     # disable this setting, because the userPrincipalName contains an '@'.
-    allow_username_or_email_login: true
+    allow_username_or_email_login: false
 
     # Base where we can search for users
     #
