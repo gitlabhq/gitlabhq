@@ -7,5 +7,5 @@ Feature: Admin email
   Scenario: Create a new email notification
     Given I visit admin email page
     When I submit form with email notification info
-    Then I should see a notification email is begin send
+    Then I should see a notification email is begin sent
     And admin emails are being sent

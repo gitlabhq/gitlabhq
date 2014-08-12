@@ -20,8 +20,8 @@ class Spinach::Features::AdminEmail < Spinach::FeatureSteps
     end
   end
 
-  step 'I should see a notification email is begin send' do
-    expect(find('.flash-notice')).to have_content 'Email send'
+  step 'I should see a notification email is begin sent' do
+    expect(find('.flash-notice')).to have_content 'Email sent'
   end
 
   step 'admin emails are being sent' do
