@@ -1,7 +1,7 @@
 %h3.page-title Unsubscribe from Admin notifications
 
 %hr
-= form_tag public_unsubscribe_path(@email) do
+= form_tag unsubscribe_path(@email) do
   %p
     Yes, I want to unsubscribe
     %strong= @email
