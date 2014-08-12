@@ -30,11 +30,12 @@
 
 - if ldap_enabled? && @group.ldap_cn.present?
   .bs-callout.bs-callout-info
-    This group sync members from LDAP group with cn
+    The members of this group are synced with the LDAP group with cn 
     %code #{@group.ldap_cn}
-    and give them access level
+    \. They are given 
     %code #{@group.human_ldap_access}
-
+    access.
+    
 .panel.panel-default.prepend-top-20
   .panel-heading
     %strong #{@group.name}
