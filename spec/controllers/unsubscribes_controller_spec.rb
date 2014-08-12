@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Public::UnsubscribesController do
+describe UnsubscribesController do
   let!(:user) { create :user, email: 'me@example.com' }
 
   describe "show" do
