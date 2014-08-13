@@ -137,6 +137,8 @@ module API
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
       expose :label_names, as: :labels
+      expose :description
+      expose :milestone, using: Entities::Milestone
     end
 
     class SSHKey < Grape::Entity

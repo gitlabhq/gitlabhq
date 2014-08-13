@@ -42,7 +42,8 @@ Parameters:
       "name": "Administrator",
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
-    }
+    },
+    "description":"fixed login page css paddings"
   }
 ]
 ```
@@ -86,7 +87,8 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "description":"fixed login page css paddings"
 }
 ```
 
@@ -132,7 +134,8 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "description":"fixed login page css paddings"
 }
 ```
 
