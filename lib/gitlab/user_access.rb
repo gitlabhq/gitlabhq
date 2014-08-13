@@ -3,13 +3,8 @@ module Gitlab
     def self.allowed?(user)
       return false if user.blocked?
 
-      if Gitlab.config.ldap.enabled
-        if user.ldap_user?
-          # Check if LDAP user exists and match LDAP user_filter
-          Gitlab::LDAP::Access.open do |adapter|
-            return false unless adapter.allowed?(user)
-          end
-        end
+      if user.requires_ldap_check?
+        return false unless Gitlab::LDAP::Access.allowed?(user)
       end
 
       true
