@@ -15,7 +15,7 @@ class AdminEmailsWorker
     when /group-(\d+)\z/
       Group.find($1).users.subscribed_for_admin_email
     when /project-(\d+)\z/
-      Project.find($1).users.subscribed_for_admin_email
+      Project.find($1).team.users.subscribed_for_admin_email
     end
   end
 end
