@@ -7,4 +7,4 @@
 
     - if can? current_user, :admin_label, @project
       = link_to 'Edit', edit_project_label_path(@project, label), class: 'btn'
-      = link_to 'Remove', project_label_path(@project, label), class: 'btn btn-remove', method: :delete, data: {confirm: "Remove this label? Are you sure?"}
+      = link_to 'Remove', project_label_path(@project, label), class: 'btn btn-remove remove-row', method: :delete, remote: true, data: {confirm: "Remove this label? Are you sure?"}
