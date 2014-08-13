@@ -144,9 +144,9 @@ module Gitlab
       end
 
       # returns a collection of cn strings to which the user has access
-      def cns_with_access(user)
+      def cns_with_access(ldap_user)
         @ldap_groups_with_access ||= ldap_groups.select do |ldap_group|
-          ldap_group.has_member?(user)
+          ldap_group.has_member?(ldap_user)
         end.map(&:cn)
       end
     end
