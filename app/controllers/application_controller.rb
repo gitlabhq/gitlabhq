@@ -201,15 +201,10 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
-      gitlab_ldap_access do |access|
-        if access.allowed?(current_user)
-          current_user.last_credential_check_at = Time.now
-          current_user.save
-        else
-          sign_out current_user
-          flash[:alert] = "Access denied for your LDAP account."
-          redirect_to new_user_session_path
-        end
+      unless Gitlab::LDAP::Access.allowed?(current_user)
+        sign_out current_user
+        flash[:alert] = "Access denied for your LDAP account."
+        redirect_to new_user_session_path
       end
     end
   end
