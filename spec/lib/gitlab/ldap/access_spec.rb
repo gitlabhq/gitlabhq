@@ -208,4 +208,66 @@ objectclass: posixGroup
       expect(gitlab_admin.admin?).to be false
     end
   end
+
+  describe 'ldap_groups' do
+    let(:ldap_group_1) do
+      Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
+cn: #{Gitlab.config.ldap['admin_group']}
+description: GitLab group 1
+gidnumber: 42
+memberuid: user1
+memberuid: user2
+objectclass: top
+objectclass: posixGroup
+})
+    end
+    it "returns an interator of LDAP Groups" do
+      ::LdapGroupLink.create cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: Group.first.id
+      Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(ldap_group_1) }
+      expect(access.ldap_groups.first).to be_a Gitlab::LDAP::Group
+    end
+  end
+
+  describe "cns_with_access" do
+    let(:ldap_group_response_1) do
+      Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=group1,ou=groups,dc=bar,dc=com
+cn: group1
+description: GitLab group 1
+gidnumber: 21
+memberuid: #{ldap_user.uid}
+memberuid: user2
+objectclass: top
+objectclass: posixGroup
+})
+    end
+    let(:ldap_group_response_2) do
+      Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=group2,ou=groups,dc=bar,dc=com
+cn: group2
+description: GitLab group 2
+gidnumber: 42
+memberuid: user3
+memberuid: user4
+objectclass: top
+objectclass: posixGroup
+})
+    end
+    let(:ldap_groups) do
+      [
+        Gitlab::LDAP::Group.new(ldap_group_response_1),
+        Gitlab::LDAP::Group.new(ldap_group_response_2)
+      ]
+    end
+    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new) }
+
+    before { ldap_user.stub(:uid) { 'user42' } }
+
+    it "only returns ldap cns to which the user has access" do
+      access.stub(ldap_groups: ldap_groups)
+      expect(access.cns_with_access(ldap_user)).to eql ['group1']
+    end
+  end
 end
+
