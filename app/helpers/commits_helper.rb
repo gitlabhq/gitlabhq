@@ -232,4 +232,9 @@ module CommitsHelper
   def diff_file_mode_changed?(diff)
     diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
   end
+
+  def commit_description(commit)
+    description = preserve(gfm(escape_once(commit.description)))
+    content_tag(:pre, description, class: 'commit-description')
+  end
 end
