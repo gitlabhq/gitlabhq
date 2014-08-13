@@ -179,7 +179,7 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.0.1.1)
       emoji (~> 1.0.1)
-    gitlab_git (6.2.0)
+    gitlab_git (6.2.1)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-grit (~> 2.6)
