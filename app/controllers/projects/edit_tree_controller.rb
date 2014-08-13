@@ -44,11 +44,16 @@ class Projects::EditTreeController < Projects::BaseTreeController
 
   def after_edit_path
     @after_edit_path ||=
-      if from_merge_request
-        diffs_project_merge_request_path(from_merge_request.target_project, from_merge_request) +
-          "#file-path-#{hexdigest(@path)}"
+      if params[:continue_editing] == '1'
+        project_edit_tree_path(@project, @id)
       else
-        project_blob_path(@project, @id)
+        if from_merge_request
+          diffs_project_merge_request_path(
+            from_merge_request.target_project, from_merge_request) +
+            "#file-path-#{hexdigest(@path)}"
+        else
+          project_blob_path(@project, @id)
+        end
       end
   end
 

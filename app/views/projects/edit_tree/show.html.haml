@@ -32,8 +32,12 @@
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"
       = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
+      = hidden_field_tag 'continue_editing', '0'
       .commit-button-annotation
         = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-primary'
+        = button_tag "and continue editing",
+            class: 'btn commit-btn js-commit-button btn-primary',
+            data: {'continue-editing' => '1'}, style: 'margin-left: 5px;'
         .message
           to branch
           %strong= @ref
@@ -52,6 +56,9 @@
 
   $(".js-commit-button").click(function(){
     $("#file-content").val(editor.getValue());
+    if ($(this).data('continue-editing')) {
+      $('#continue_editing').val('1');
+    }
     $(".file-editor form").submit();
   });
 
