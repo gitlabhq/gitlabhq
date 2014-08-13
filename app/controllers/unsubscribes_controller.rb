@@ -16,7 +16,7 @@ class UnsubscribesController < ApplicationController
 
   protected
   def get_user
-    @email = "#{params[:email]}.#{params[:format]}"
+    @email = CGI.unescape(params[:email])
     User.where(email: @email).first
   end
 end
