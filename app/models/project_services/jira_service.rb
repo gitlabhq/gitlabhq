@@ -74,9 +74,12 @@ class JiraService < Service
       }
     }
 
+    json_body = message.to_json
+    Rails.logger.info("#{self.class.name}: sending POST with body #{json_body} to #{url}")
+
     JiraService.post(
       url,
-      body: message.to_json,
+      body: json_body,
       headers: {
         'Content-Type' => 'application/json',
         'Authorization' => "Basic #{auth}"
