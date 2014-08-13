@@ -60,4 +60,26 @@ DELETE /projects/:id/labels
 
 It returns 200 if the label successfully was deleted, 404 for wrong parameters
 and 400 if the label does not exist.
-In case of an error, additionally an error is returned.
+In case of an error, additionally an error message is returned.
+
+## Edit an existing label
+
+Updates an existing label with new name or now color. At least one parameter
+is required, to update the label.
+
+```
+PUT /projects/:id/labels
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `name` (required) - The name of the existing label
+- `new_name` (optional) - The new name of the label
+- `color` (optional) -  New color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB)
+
+On success, this method returns 200 with the updated label.
+If required parameters are missing, 400 is returned.
+If the label to be updated is missing, 404 is returned.
+If parameters are invalid, 405 is returned. In case of an error,
+additionally an error message is returned.

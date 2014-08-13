@@ -60,6 +60,41 @@ module API
 
         label.destroy
       end
+
+      # Updates an existing label. At least one optional parameter is required.
+      #
+      # Parameters:
+      #   id    (required) - The ID of a project
+      #   name  (optional) - The name of the label to be deleted
+      #   color (optional) - Color of the label given in 6-digit hex
+      #                      notation with leading '#' sign (e.g. #FFAABB)
+      # Example Request:
+      #   PUT /projects/:id/labels
+      put ':id/labels' do
+        required_attributes! [:name]
+
+        label = user_project.find_label(params[:name])
+        if !label
+          return render_api_error!('Label not found', 404)
+        end
+
+        attrs = attributes_for_keys [:new_name, :color]
+
+        if attrs.empty?
+          return render_api_error!('Required parameters "name" or "color" ' \
+                                   'missing',
+                                   400)
+        end
+
+        # Rename new name to the actual label attribute name
+        attrs[:name] = attrs.delete(:new_name) if attrs.key?(:new_name)
+
+        if label.update(attrs)
+          present label, with: Entities::Label
+        else
+          render_api_error!(label.errors.full_messages.join(', '), 405)
+        end
+      end
     end
   end
 end

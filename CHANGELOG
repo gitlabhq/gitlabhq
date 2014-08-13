@@ -11,6 +11,7 @@ v 7.2.0
   - Fix bug when MR download patch return invalid diff
   - Test gitlab-shell integration
   - Repository import timeout increased from 2 to 4 minutes allowing larger repos to be imported
+  - API for labels (Robert Schilling)
 
 v 7.1.0
   - Remove observers

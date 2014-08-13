@@ -69,14 +69,12 @@ describe API::API, api: true  do
 
   describe 'DELETE /projects/:id/labels' do
     it 'should return 200 for existing label' do
-      delete api("/projects/#{project.id}/labels", user),
-             name: 'label1'
+      delete api("/projects/#{project.id}/labels", user), name: 'label1'
       response.status.should == 200
     end
 
     it 'should return 404 for non existing label' do
-      delete api("/projects/#{project.id}/labels", user),
-             name: 'label2'
+      delete api("/projects/#{project.id}/labels", user), name: 'label2'
       response.status.should == 404
       json_response['message'].should == 'Label not found'
     end
@@ -84,6 +82,70 @@ describe API::API, api: true  do
     it 'should return 400 for wrong parameters' do
       delete api("/projects/#{project.id}/labels", user)
       response.status.should == 400
+    end
+  end
+
+  describe 'PUT /projects/:id/labels' do
+    it 'should return 200 if name and colors are changed' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label1',
+          new_name: 'New Label',
+          color: '#FFFFFF'
+      response.status.should == 200
+      json_response['name'].should == 'New Label'
+      json_response['color'].should == '#FFFFFF'
+    end
+
+    it 'should return 200 if name is changed' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label1',
+          new_name: 'New Label'
+      response.status.should == 200
+      json_response['name'].should == 'New Label'
+      json_response['color'].should == label1.color
+    end
+
+    it 'should return 200 if colors is changed' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label1',
+          color: '#FFFFFF'
+      response.status.should == 200
+      json_response['name'].should == label1.name
+      json_response['color'].should == '#FFFFFF'
+    end
+
+    it 'should return 404 if label does not exist' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label2',
+          new_name: 'label3'
+      response.status.should == 404
+    end
+
+    it 'should return 400 if no label name given' do
+      put api("/projects/#{project.id}/labels", user), new_name: 'label2'
+      response.status.should == 400
+    end
+
+    it 'should return 400 if no new parameters given' do
+      put api("/projects/#{project.id}/labels", user), name: 'label1'
+      response.status.should == 400
+    end
+
+    it 'should return 405 for invalid name' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label1',
+          new_name: '?',
+          color: '#FFFFFF'
+      response.status.should == 405
+      json_response['message'].should == 'Title is invalid'
+    end
+
+    it 'should return 405 for invalid name' do
+      put api("/projects/#{project.id}/labels", user),
+          name: 'label1',
+          color: '#FF'
+      response.status.should == 405
+      json_response['message'].should == 'Color is invalid'
     end
   end
 end

@@ -7,10 +7,7 @@ class Label < ActiveRecord::Base
   validates :project, presence: true
 
   # Dont allow '?', '&', and ',' for label titles
-  validates :title,
-            presence: true,
-            format: { with: /\A[^&\?,&]*\z/ },
-            uniqueness: true
+  validates :title, presence: true, format: { with: /\A[^&\?,&]*\z/ }
 
   scope :order_by_name, -> { reorder("labels.title ASC") }
 
