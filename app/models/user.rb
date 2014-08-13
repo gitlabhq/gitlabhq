@@ -175,6 +175,7 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
   scope :ldap, -> { where(provider:  'ldap') }
+  scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
@@ -508,5 +509,9 @@ class User < ActiveRecord::Base
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def admin_unsubscribe!
+    update_column :admin_email_unsubscribed_at, Time.now
   end
 end

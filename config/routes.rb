@@ -86,6 +86,7 @@ Gitlab::Application.routes.draw do
     resources :broadcast_messages, only: [:index, :create, :destroy]
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
+    resource :email, only: [:show, :create]
 
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
       member do
@@ -173,6 +174,8 @@ Gitlab::Application.routes.draw do
     end
   end
 
+  get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
+  post 'unsubscribes/:email', to: 'unsubscribes#create'
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions }
