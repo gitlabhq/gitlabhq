@@ -10,7 +10,7 @@ Feature: Project Labels
     And I should see label "feature"
 
   Scenario: I create new label
-    Given I visit new label page
+    Given I visit project "Shop" new label page
     When I submit new label 'support'
     Then I should see label 'support'
 
@@ -25,6 +25,19 @@ Feature: Project Labels
     Then I should not see label 'bug'
 
   Scenario: I create a label with invalid color
-    Given I visit new label page
+    Given I visit project "Shop" new label page
     When I submit new label with invalid color
     Then I should see label color error message
+
+  Scenario: I create a label that already exists
+    Given I visit project "Shop" new label page
+    When I submit new label 'bug'
+    Then I should see label label exist error message
+
+  Scenario: I create the same label on another project
+    Given I own project "Forum"
+    And I visit project "Forum" labels page
+    And I visit project "Forum" new label page
+    When I submit new label 'bug'
+    Then I should see label 'bug'
+

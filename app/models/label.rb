@@ -12,7 +12,7 @@ class Label < ActiveRecord::Base
   validates :title,
             presence: true,
             format: { with: /\A[^&\?,&]*\z/ },
-            uniqueness: true
+            uniqueness: { scope: :project_id }
 
   scope :order_by_name, -> { reorder("labels.title ASC") }
 
