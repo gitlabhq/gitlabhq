@@ -50,7 +50,10 @@ class Projects::LabelsController < Projects::ApplicationController
   def destroy
     @label.destroy
 
-    redirect_to project_labels_path(@project), notice: 'Label was removed'
+    respond_to do |format|
+      format.html { redirect_to project_labels_path(@project), notice: 'Label was removed' }
+      format.js { render nothing: true }
+    end
   end
 
   protected
