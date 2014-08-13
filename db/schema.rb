@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140811155127) do
+ActiveRecord::Schema.define(version: 20140813090117) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,6 +128,14 @@ ActiveRecord::Schema.define(version: 20140811155127) do
 
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
+  create_table "ldap_groups", force: true do |t|
+    t.string   "cn",           null: false
+    t.integer  "group_access", null: false
+    t.integer  "group_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "merge_request_diffs", force: true do |t|
     t.string   "state"
     t.text     "st_commits"
@@ -136,8 +144,6 @@ ActiveRecord::Schema.define(version: 20140811155127) do
     t.datetime "created_at"
     t.datetime "updated_at"
   end
-
-  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
 
   create_table "merge_requests", force: true do |t|
     t.string   "target_branch",                 null: false
