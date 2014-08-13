@@ -16,7 +16,7 @@ class Labels
 
   # Initializes the form to disable the save button if no color or title is entered
   setupLabelForm: (form) ->
-    disableButtonIfEmptyField form, '.form-control', form.find('.js-save-button')
+    disableButtonIfAnyEmptyField form, '.form-control', form.find('.js-save-button')
 
   # Updates the the preview color with the hex-color input
   updateColorPreview: =>
@@ -28,6 +28,8 @@ class Labels
     color = $(e.currentTarget).data('color')
     $('input#label_color').val(color)
     @updateColorPreview()
+    # Notify the form, that color has changed
+    $('.label-form').trigger('keyup')
     e.preventDefault()
 
 @Labels = Labels

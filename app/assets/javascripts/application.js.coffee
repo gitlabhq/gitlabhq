@@ -59,18 +59,18 @@ window.rstrip = (val) ->
 # Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
-  closest_submit = field.closest("form").find(button_selector)
+  closest_submit = field.closest('form').find(button_selector)
 
   closest_submit.disable() if rstrip(field.val()) is ""
 
-  field.on "input", ->
+  field.on 'input', ->
     if rstrip($(@).val()) is ""
       closest_submit.disable()
     else
       closest_submit.enable()
 
 # Disable button if any input field with given selector is empty
-window.disableButtonIfEmptyField = (form, form_selector, button_selector) ->
+window.disableButtonIfAnyEmptyField = (form, form_selector, button_selector) ->
   closest_submit = form.find(button_selector)
   empty = false
   form.find('input').filter(form_selector).each ->
