@@ -54,5 +54,4 @@
   %h3.commit-title
     = gfm escape_once(@commit.title)
   - if @commit.description.present?
-    %pre.commit-description
-      = gfm escape_once(@commit.description)
+    = commit_description(@commit)
