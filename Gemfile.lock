@@ -323,8 +323,8 @@ GEM
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    org-ruby (0.9.1)
-      rubypants (>= 0.2.0)
+    org-ruby (0.9.8)
+      rubypants (~> 0.2)
     orm_adapter (0.5.0)
     pg (0.15.1)
     phantomjs (1.9.2.0)
@@ -643,7 +643,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter
-  org-ruby (= 0.9.1)
+  org-ruby
   pg
   poltergeist (~> 1.5.1)
   pry

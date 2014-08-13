@@ -86,7 +86,7 @@ gem "github-markup"
 gem 'redcarpet', '~> 2.2.2'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
-gem 'org-ruby', '= 0.9.1'
+gem 'org-ruby'
 gem 'creole', '~>0.3.6'
 gem 'wikicloth', '=0.8.1'
 gem 'asciidoctor', '= 0.1.4'
