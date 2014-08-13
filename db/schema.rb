@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140813090117) do
+ActiveRecord::Schema.define(version: 20140813133925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -128,7 +128,7 @@ ActiveRecord::Schema.define(version: 20140813090117) do
 
   add_index "keys", ["user_id"], name: "index_keys_on_user_id", using: :btree
 
-  create_table "ldap_groups", force: true do |t|
+  create_table "ldap_group_links", force: true do |t|
     t.string   "cn",           null: false
     t.integer  "group_access", null: false
     t.integer  "group_id",     null: false

@@ -21,7 +21,7 @@ class Group < Namespace
   has_many :users, through: :users_groups
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
-  has_many :ldap_groups, foreign_key: 'group_id'
+  has_many :ldap_group_links, foreign_key: 'group_id'
 
   validates :ldap_access,
     inclusion: { in: UsersGroup.group_access_roles.values },
