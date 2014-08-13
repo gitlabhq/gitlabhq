@@ -14,11 +14,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
       render_404 and return
     end
 
-    storage_path = Gitlab.config.gitlab.repository_downloads_path
-
-    @repository.clean_old_archives
-
-    file_path = @repository.archive_repo(params[:ref], storage_path, params[:format].downcase)
+    file_path = ArchiveRepositoryService.new.execute(@project, params[:ref], params[:format])
 
     if file_path
       # Send file to user
