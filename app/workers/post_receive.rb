@@ -12,7 +12,7 @@ class PostReceive
       log("Check gitlab.yml config for correct gitlab_shell.repos_path variable. \"#{Gitlab.config.gitlab_shell.repos_path}\" does not match \"#{repo_path}\"")
     end
 
-    repo_path.gsub!(/.git$/, "")
+    repo_path.gsub!(/\.git$/, "")
     repo_path.gsub!(/^\//, "")
 
     project = Project.find_with_namespace(repo_path)
