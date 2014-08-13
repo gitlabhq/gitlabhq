@@ -59,11 +59,15 @@ class HipchatService < Service
     message = ""
     message << "#{push[:user_name]} "
     if before =~ /000000/
-      message << "pushed new branch <a href=\"#{project.web_url}/commits/#{ref}\">#{ref}</a> to <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a>\n"
+      message << "pushed new branch <a href=\""\
+                 "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
+                 " to <a href=\"#{project.web_url}\">"\
+                 "#{project.name_with_namespace.gsub!(/\s/, "")}</a>\n"
     elsif after =~ /000000/
       message << "removed branch #{ref} from <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> \n"
     else
-      message << "pushed to branch <a href=\"#{project.web_url}/commits/#{ref}\">#{ref}</a> "
+      message << "pushed to branch <a href=\""\
+                  "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a> "
       message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
 
