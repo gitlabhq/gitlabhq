@@ -52,8 +52,24 @@
             %li It will change web url for access group and group projects.
             %li It will change the git path to repositories under this group.
 
+    %section.ldap-group-links
       %fieldset
-        %legend LDAP group settings
+        %legend Current LDAP links
+        - if @group.ldap_group_links.any?
+          %ul.bordered-list
+            - @group.ldap_group_links.each do |ldap_group_link|
+              %li
+                %h4
+                  = ldap_group_link.cn
+                  %small.light== as #{ldap_group_link.human_access}
+                  .pull-right
+                    = link_to group_ldap_group_link_path(@group, ldap_group_link), method: :destroy, class: 'btn btn-danger btn-small' do
+                      = fa_icon('unlink', text: 'unlink')
+        - else
+          %p No links yet
+
+      %fieldset
+        %legend Add new ldap group link
         %div.form-holder
           .form-group.clearfix
             = f.label :ldap_cn, class: 'control-label' do
