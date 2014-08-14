@@ -36,17 +36,7 @@
       }
       td.old_line {
         padding: 0px;
-        label {
-          display: block;
-          /* TODO make this work with parent of unknown height */
-          height: 100%;
-          margin: 0px;
-          text-align: center;
-          width: 100%;
-          input {
-            margin: 0;
-          }
-        }
+        text-align: center;
       }
       td.line_content {
         /* TODO same padding as context to align things */

@@ -23,29 +23,24 @@
                 %tbody.radio_holder
                   %tr.line_holder.new
                     %td.old_line
-                      %label
-                        = radio_button_tag radio_name, 'ours', true, title: 'ours'
+                      %i.icon-plus-sign-alt
                     %td.line_content.new
                       -# TODO remove raw, set html_safe elsewhere considering inserted idiff spans.
                       %pre>= raw line.ours
                   %tr.line_holder.old
                     %td.old_line
-                      %label
-                        = radio_button_tag radio_name, 'base', false, title: 'base'
+                      %i.icon-plus-sign-alt
                     %td.line_content.old
                       %pre>= raw line.base
                   %tr.line_holder.theirs
                     %td.old_line
-                      %label
-                        = radio_button_tag radio_name, 'theirs', false, title: 'theirs'
+                      %i.icon-plus-sign-alt
                     %td.line_content
                       %pre>= raw line.theirs
                   %tr.line_holder.custom
                     %td.old_line
-                      %label
-                        = radio_button_tag radio_name, 'custom', false, title: 'custom'
                     %td.line_content
-                      = text_area_tag 'custom', line.custom[0..-2],
+                      = text_area_tag "#{file_id}-#{line.id}", line.custom[0..-2],
                           class: 'form-control'
 -if current_user
   .line_content
