@@ -59,3 +59,4 @@
 - if @group.persisted?
   %h3.page-title LDAP Synchronizations
   = render 'ldap_group_links/form', group: @group
+  = render 'ldap_group_links/ldap_group_links', group: @group

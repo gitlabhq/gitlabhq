@@ -2,6 +2,9 @@ class Groups::LdapGroupLinksController < ApplicationController
   before_action :group
   before_action :authorize_admin_group!
 
+  def index
+  end
+
   def create
     ldap_group_link = @group.ldap_group_links.build(ldap_group_link_params)
     if ldap_group_link.save
