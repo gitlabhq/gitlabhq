@@ -1,21 +1,7 @@
 %section.ldap-group-links
-  %fieldset
-    %legend Current LDAP links
-    - if group.ldap_group_links.any?
-      %ul.bordered-list
-        - group.ldap_group_links.each do |ldap_group_link|
-          %li
-            %h4
-              = ldap_group_link.cn
-              %small.light== as #{ldap_group_link.human_access}
-              .pull-right
-                = link_to group_ldap_group_link_path(group, ldap_group_link), method: :delete, class: 'btn btn-danger btn-small' do
-                  = fa_icon('unlink', text: 'unlink')
-    - else
-      %p No links yet
-  = form_for [group, group.ldap_group_links.new] do |f|
+  = form_for [group, LdapGroupLink.new] do |f|
     %fieldset
-      %legend Add new LDAP link
+      %legend
       %div.form-holder
         .form-group.clearfix
           = f.label :ldap_cn, class: 'control-label' do
@@ -38,4 +24,6 @@
               You can manage permission levels for individual group members in the Members tab.
 
       .form-actions
-        = f.submit 'Save changes', class: "btn btn-primary"
+        = f.submit 'Add Synchronization', class: "btn btn-create"
+
+  = render partial: 'ldap_group_links/ldap_group_links', locals: { group: group }

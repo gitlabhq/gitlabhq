@@ -57,4 +57,5 @@
       = link_to  'Cancel', admin_group_path(@group), class: "btn btn-cancel"
 
 - if @group.persisted?
-  = render 'groups/ldap_group_links/form', group: @group
+  %h3.page-title LDAP Synchronizations
+  = render 'ldap_group_links/form', group: @group
