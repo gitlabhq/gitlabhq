@@ -28,14 +28,24 @@
     .js-toggle-content.hide.new-group-member-holder
       = render "new_group_member"
 
-- if ldap_enabled? && @group.ldap_cn.present?
+- if ldap_enabled? && @group.ldap_group_links.any?
   .bs-callout.bs-callout-info
-    The members of this group are synced with the LDAP group with cn 
+    The members of this group are sync with LDAP.
+    %ul
+      - @group.ldap_group_links.each do |ldap_group_link|
+        %li
+          People in cn
+          %code= ldap_group_link.cn
+          are given
+          %code= ldap_group_link.human_access
+          access.
+  -#
+    The members of this group are synced with the LDAP group with cn
     %code #{@group.ldap_cn}
-    \. They are given 
+    \. They are given
     %code #{@group.human_ldap_access}
     access.
-    
+
 .panel.panel-default.prepend-top-20
   .panel-heading
     %strong #{@group.name}
