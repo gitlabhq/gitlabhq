@@ -23,10 +23,11 @@ module Gitlab
         false
       end
 
-      def update_permissions(user)
-        # Get LDAP user entry
-        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+      def get_ldap_user(user)
+        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+      end
 
+      def update_permissions(user)
         if Gitlab.config.ldap['sync_ssh_keys']
           update_ssh_keys(user)
         end
@@ -35,23 +36,8 @@ module Gitlab
         # if instance does not use group_base setting
         return true unless Gitlab.config.ldap['group_base'].present?
 
-        # Get all GitLab groups with activated LDAP
-        groups = ::Group.where('ldap_cn IS NOT NULL')
+        update_ldap_group_links(user)
 
-        # Get LDAP groups based on cn from GitLab groups
-        ldap_groups = groups.pluck(:ldap_cn).map { |cn| Gitlab::LDAP::Group.find_by_cn(cn, adapter) }
-        ldap_groups = ldap_groups.compact.uniq
-
-        # Iterate over ldap groups and check user membership
-        ldap_groups.each do |ldap_group|
-          if ldap_group.has_member?(ldap_user)
-            # If user present in LDAP group -> add him to GitLab groups
-            add_user_to_groups(user.id, ldap_group.cn)
-          else
-            # If not - remove him from GitLab groups
-            remove_user_from_groups(user.id, ldap_group.cn)
-          end
-        end
         if Gitlab.config.ldap['admin_group'].present?
           update_admin_status(user)
         end
@@ -60,7 +46,7 @@ module Gitlab
       # Update user ssh keys if they changed in LDAP
       def update_ssh_keys(user)
         # Get LDAP user entry
-        ldap_user = Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+        ldap_user = get_ldap_user(user)
 
         user.keys.ldap.where.not(key: ldap_user.ssh_keys).each do |deleted_key|
           Rails.logger.info "#{self.class.name}: removing LDAP SSH key #{deleted_key.key} from #{user.name} (#{user.id})"
@@ -83,7 +69,7 @@ module Gitlab
       # Update user email if it changed in LDAP
       def update_email(user)
         uid = user.extern_uid
-        ldap_user = Gitlab::LDAP::Person.find_by_dn(uid, adapter)
+        ldap_user = get_ldap_user(user)
         gitlab_user = ::User.where(provider: 'ldap', extern_uid: uid).last
 
         if gitlab_user && ldap_user && ldap_user.email
@@ -149,6 +135,36 @@ module Gitlab
           ldap_group.has_member?(ldap_user)
         end.map(&:cn)
       end
+
+      def gitlab_groups_with_ldap_link
+        ::Group.includes(:ldap_group_links).references(:ldap_group_links).
+          where.not(ldap_group_links: { id: nil })
+      end
+
+      # Loop throug all ldap conneted groups, and update the users link with it
+      def update_ldap_group_links(user)
+        gitlab_groups_with_ldap_link.each do |group|
+          active_group_links = group.ldap_group_links.where(cn: cns_with_access(ldap_user))
+
+          if active_group_links.any?
+            group.add_user(user, fetch_group_access(group, user, active_group_links))
+          else
+            group.users.delete(user) #ensure this is the nice way to do it
+          end
+        end
+      end
+
+      # Get the group_access for a give user.
+      # Always respect the current level, never downgrade it.
+      def fetch_group_acess(group, user, active_group_links)
+        current_access_level = group.users_groups.where(user_id: user).maximum(:group_access)
+        max_group_access_level = active_group_links.maximum(:group_access)
+
+        # TODO: Test if nil value of current_access_level in handled properly
+        [current_access_level, max_group_access_level].compact.max
+      end
     end
   end
 end
+
+
