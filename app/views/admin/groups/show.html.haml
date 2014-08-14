@@ -31,16 +31,17 @@
           %strong
             = @group.created_at.stamp("March 1, 1999")
 
-        - if @group.ldap_cn.present?
-          %li
-            %span.light LDAP group cn:
-            %strong
-              = @group.ldap_cn
-
-          %li
-            %span.light LDAP access level:
-            %strong
-              = @group.human_ldap_access
+    .panel.panel-default
+      .panel-heading
+        LDAP Connections
+      %ul.well-list
+        - if @group.ldap_group_links.any?
+          - @group.ldap_group_links.each do |ldap_group_link|
+            %li
+              cn:
+              %strong= ldap_group_link.cn
+              as
+              %strong= ldap_group_link.human_access
 
     .panel.panel-default
       .panel-heading
