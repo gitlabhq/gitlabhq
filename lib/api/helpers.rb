@@ -112,6 +112,21 @@ module API
       ActionController::Parameters.new(attrs).permit!
     end
 
+    # Helper method for validating all labels against its names
+    def validate_label_params(params)
+      if params[:labels].present?
+        params[:labels].split(',').each do |label_name|
+          label = user_project.labels.create_with(
+            color: Label::DEFAULT_COLOR).find_or_initialize_by(
+              title: label_name.strip)
+          if label.invalid?
+            return true
+          end
+        end
+      end
+      false
+    end
+
     # error helpers
 
     def forbidden!

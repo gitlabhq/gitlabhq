@@ -76,6 +76,12 @@ module API
         authorize! :write_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
+
+        # Validate label names in advance
+        if validate_label_params(params)
+          return render_api_error!('Label names invalid', 405)
+        end
+
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, attrs).execute
 
         if merge_request.valid?
@@ -109,6 +115,12 @@ module API
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event, :description]
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         authorize! :modify_merge_request, merge_request
+
+        # Validate label names in advance
+        if validate_label_params(params)
+          return render_api_error!('Label names invalid', 405)
+        end
+
         merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)
 
         if merge_request.valid?

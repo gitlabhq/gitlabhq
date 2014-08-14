@@ -5,6 +5,10 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, author: user, assignee: user, project: project) }
+  let!(:label) do
+    create(:label, title: 'label', color: '#FFAABB', project: project)
+  end
+
   before { project.team << [user, :reporter] }
 
   describe "GET /issues" do
@@ -68,6 +72,14 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
       response.status.should == 400
     end
+
+    it 'should return 405 on invalid label names' do
+      post api("/projects/#{project.id}/issues", user),
+           title: 'new issue',
+           labels: 'label, ?'
+      response.status.should == 405
+      json_response['message'].should == 'Label names invalid'
+    end
   end
 
   describe "PUT /projects/:id/issues/:issue_id to update only title" do
@@ -83,6 +95,14 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
       response.status.should == 404
+    end
+
+    it 'should return 405 on invalid label names' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'updated title',
+          labels: 'label, ?'
+      response.status.should == 405
+      json_response['message'].should == 'Label names invalid'
     end
   end
 

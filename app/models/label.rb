@@ -1,4 +1,6 @@
 class Label < ActiveRecord::Base
+  DEFAULT_COLOR = '#82C5FF'
+
   belongs_to :project
   has_many :label_links, dependent: :destroy
   has_many :issues, through: :label_links, source: :target, source_type: 'Issue'
