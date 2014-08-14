@@ -70,7 +70,7 @@ class Project < ActiveRecord::Base
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
-  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
+  has_many :issues, -> { order 'issues.state DESC, issues.created_at DESC' }, dependent: :destroy
   has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
