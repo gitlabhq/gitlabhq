@@ -9,29 +9,6 @@ describe Gitlab::LDAP::Access do
     group
   end
 
-  describe :add_user_to_groups do
-    it "should add user to group" do
-      access.add_user_to_groups(user.id, "oss")
-      member = group.members.first
-      member.user.should == user
-      member.group_access.should == Gitlab::Access::DEVELOPER
-    end
-
-    it "should respect higher permissions" do
-      group.add_owner(user)
-      access.add_user_to_groups(user.id, "oss")
-      group.owners.should include(user)
-    end
-
-    it "should update lower permissions" do
-      group.add_user(user, Gitlab::Access::REPORTER)
-      access.add_user_to_groups(user.id, "oss")
-      member = group.members.first
-      member.user.should == user
-      member.group_access.should == Gitlab::Access::DEVELOPER
-    end
-  end
-
   describe :update_user_email do
     let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
 
@@ -229,7 +206,7 @@ objectclass: posixGroup
     end
   end
 
-  describe "cns_with_access" do
+  describe :cns_with_access do
     let(:ldap_group_response_1) do
       Net::LDAP::Entry.from_single_ldif_string(
 %Q{dn: cn=group1,ou=groups,dc=bar,dc=com
@@ -268,6 +245,10 @@ objectclass: posixGroup
       access.stub(ldap_groups: ldap_groups)
       expect(access.cns_with_access(ldap_user)).to eql ['group1']
     end
+  end
+
+  describe :update_ldap_group_links do
+    pending("I really need some test code!")
   end
 end
 
