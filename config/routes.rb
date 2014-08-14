@@ -166,8 +166,8 @@ Gitlab::Application.routes.draw do
     end
 
     resources :users_groups, only: [:create, :update, :destroy]
-    resources :ldap_group_links, only: [:create, :destroy]
     scope module: :groups do
+      resources :ldap_group_links, only: [:create, :destroy]
       resource :avatar, only: [:destroy]
       resources :milestones
     end
