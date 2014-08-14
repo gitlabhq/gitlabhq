@@ -259,6 +259,11 @@ test:
   gitlab:
     host: localhost
     port: 80
+
+    # When you run tests we clone and setup gitlab-shell
+    # In order to setup it correctly you need to specify 
+    # your system username you use to run GitLab
+    # user: YOUR_USERNAME 
   satellites:
     path: tmp/tests/gitlab-satellites/
   gitlab_shell:
