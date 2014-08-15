@@ -287,10 +287,22 @@ module SharedPaths
   end
 
   step 'I visit project "Shop" labels page' do
+    project = Project.find_by(name: 'Shop')
     visit project_labels_path(project)
   end
 
-  step 'I visit new label page' do
+  step 'I visit project "Forum" labels page' do
+    project = Project.find_by(name: 'Forum')
+    visit project_labels_path(project)
+  end
+
+  step 'I visit project "Shop" new label page' do
+    project = Project.find_by(name: 'Shop')
+    visit new_project_label_path(project)
+  end
+
+  step 'I visit project "Forum" new label page' do
+    project = Project.find_by(name: 'Forum')
     visit new_project_label_path(project)
   end
 

@@ -28,22 +28,6 @@
             &nbsp;
 
   .form-actions
-    = f.submit 'Save', class: 'btn btn-save'
+    = f.submit 'Save', class: 'btn btn-save js-save-button'
     = link_to "Cancel", project_labels_path(@project), class: 'btn btn-cancel'
 
-
-:coffeescript
-  updateColorPreview = ->
-    previewColor = $('input#label_color').val()
-    $('div.label-color-preview').css('background-color', previewColor)
-
-  $('.suggest-colors a').on 'click', (e) ->
-    color = $(this).data("color")
-    $('input#label_color').val(color)
-    updateColorPreview()
-    e.preventDefault()
-
-  $('input#label_color').on 'input', ->
-    updateColorPreview()
-
-  updateColorPreview()

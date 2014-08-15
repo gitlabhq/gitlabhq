@@ -157,6 +157,9 @@ Parameters:
 - `milestone_id` (optional) - The ID of a milestone to assign issue
 - `labels` (optional) - Comma-separated label names for an issue
 
+If the operation is successful, 200 and the newly created issue is returned.
+If an error occurs, an error number and a message explaining the reason is returned.
+
 ## Edit issue
 
 Updates an existing project issue. This function is also used to mark an issue as closed.
@@ -175,6 +178,9 @@ Parameters:
 - `milestone_id` (optional) - The ID of a milestone to assign issue
 - `labels` (optional) - Comma-separated label names for an issue
 - `state_event` (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
+
+If the operation is successful, 200 and the updated issue is returned.
+If an error occurs, an error number and a message explaining the reason is returned.
 
 ## Delete existing issue (**Deprecated**)
 

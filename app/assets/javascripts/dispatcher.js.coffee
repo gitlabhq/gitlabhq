@@ -50,6 +50,8 @@ class Dispatcher
         new TreeView()
       when 'projects:blob:show'
         new BlobView()
+      when 'projects:labels:new'
+        new Labels()
 
     switch path.first()
       when 'admin' then new Admin()

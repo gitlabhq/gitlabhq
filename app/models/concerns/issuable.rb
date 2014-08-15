@@ -140,7 +140,8 @@ module Issuable
 
   def add_labels_by_names(label_names)
     label_names.each do |label_name|
-      label = project.labels.find_or_create_by(title: label_name.strip)
+      label = project.labels.create_with(
+        color: Label::DEFAULT_COLOR).find_or_create_by(title: label_name.strip)
       self.labels << label
     end
   end
