@@ -692,5 +692,6 @@ DEPENDENCIES
   unicorn (~> 4.6.3)
   unicorn-worker-killer
   version_sorter
+  virtus
   webmock
   wikicloth (= 0.8.1)
