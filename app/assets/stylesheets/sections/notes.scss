@@ -55,22 +55,18 @@ ul.notes {
   }
 
   .note {
-    padding: 8px 0;
-    overflow: hidden;
     display: block;
     position:relative;
-    border-bottom: 1px solid #eee;
     p { color: $style_color; }
 
     .avatar {
-      margin-top: 3px;
+      margin: 0;
     }
     .attachment {
       font-size: 14px;
     }
     .note-body {
       @include md-typography;
-      margin-left: 43px;
     }
     .note-header {
       padding-bottom: 3px;
