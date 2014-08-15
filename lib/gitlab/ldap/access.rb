@@ -132,7 +132,7 @@ module Gitlab
           active_group_links = group.ldap_group_links.where(cn: cns_with_access(get_ldap_user(user)))
 
           if active_group_links.any?
-            group.add_user(user, fetch_group_access(group, user, active_group_links))
+            group.add_users([user.id], fetch_group_access(group, user, active_group_links))
           else
             group.users.delete(user)
           end

@@ -253,15 +253,51 @@ objectclass: posixGroup
       access.stub(cns_with_access: cns_with_access)
     end
 
-    context "non existing access for group-1, allowed via ldap-group1 as DEVELOPER" do
+    context "non existing access for group-1, allowed via ldap-group1 as MASTER" do
       before do
         gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
       end
 
       it "gives the user master access for group 1" do
         access.update_ldap_group_links(user)
-
         expect( gitlab_group_1.has_master?(user) ).to be_true
+      end
+    end
+
+    context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
+      before do
+        gitlab_group_1.users_groups.guests.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+      end
+
+      it "upgrades the users access to master for group 1" do
+        expect { access.update_ldap_group_links(user) }.to \
+          change{ gitlab_group_1.has_master?(user) }.from(false).to(true)
+      end
+    end
+
+    context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
+      before do
+        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER
+      end
+
+      it "keeps the users master access for group 1" do
+        expect { access.update_ldap_group_links(user) }.not_to \
+          change{ gitlab_group_1.has_master?(user) }
+      end
+    end
+
+    context "existing access as master for group-1, not allowed" do
+      before do
+        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+        access.stub(cns_with_access: ['ldap-group2'])
+      end
+
+      it "removes user from gitlab_group_1" do
+        expect { access.update_ldap_group_links(user) }.to \
+          change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
       end
     end
   end
