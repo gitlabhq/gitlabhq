@@ -141,9 +141,9 @@ Feature: Project Merge Requests
     And I should still see a comment like "Line is correct" in the first file
 
   Scenario: I submit new unassigned merge request with template description
-      Given I click link "New Merge Request"
-      And I select "notes_refactoring" as source
-      Then I should see description field pre-filled
+    Given I click link "New Merge Request"
+    And I select "fix" as source
+    Then I should see description field pre-filled
 
   @javascript
   Scenario: I unfold diff

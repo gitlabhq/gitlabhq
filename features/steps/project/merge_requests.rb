@@ -242,9 +242,9 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  step 'I select "notes_refactoring" as source' do
-    select "master", from: "merge_request_source_branch"
-    select "notes_refactoring", from: "merge_request_target_branch"
+  step 'I select "fix" as source' do
+    select "fix", from: "merge_request_source_branch"
+    select "feature", from: "merge_request_target_branch"
     click_button "Compare branches"
   end
 
