@@ -4,7 +4,7 @@ module LabelsHelper
   end
 
   def render_colored_label(label)
-    label_color = label.color || "#428bca"
+    label_color = label.color || Label::DEFAULT_COLOR
     text_color = text_color_for_bg(label_color)
 
     content_tag :span, class: 'label color-label', style: "background:#{label_color};color:#{text_color}" do
