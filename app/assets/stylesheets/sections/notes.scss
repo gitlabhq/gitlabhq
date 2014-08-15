@@ -17,7 +17,6 @@ ul.notes {
   .discussion-header,
   .note-header {
     @extend .cgray;
-    padding-top: 5px;
     padding-bottom: 15px;
 
     .avatar {
@@ -43,25 +42,15 @@ ul.notes {
   }
 
   .discussion {
-    padding: 10px 0;
     overflow: hidden;
     display: block;
     position:relative;
-    border-bottom: 1px solid #EEE;
-
-    .discussion-body {
-      margin-left: 50px;
-    }
   }
 
   .note {
     display: block;
     position:relative;
     p { color: $style_color; }
-
-    .avatar {
-      margin: 0;
-    }
     .attachment {
       font-size: 14px;
     }
@@ -75,11 +64,6 @@ ul.notes {
     &:last-child {
       border-bottom: none;
     }
-  }
-
-  .note:target {
-    -webkit-animation:target-note 2s linear;
-    background: #fffff0;
   }
 }
 
@@ -95,7 +79,7 @@ ul.notes {
     &.notes_line {
       text-align: center;
       padding: 10px 0;
-      background: #eee;
+      background: #FFF;
     }
     &.notes_line2 {
       text-align: center;
@@ -357,4 +341,8 @@ ul.notes {
     padding: 10px 15px;
     border-top: 1px solid #DDD;
   }
+}
+
+.discussion-notes-count {
+  font-size: 16px;
 }

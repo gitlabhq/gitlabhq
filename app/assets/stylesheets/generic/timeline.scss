@@ -21,6 +21,13 @@
     clear: both;
 
 
+    &:target {
+      .timeline-entry-inner .timeline-content {
+        -webkit-animation:target-note 2s linear;
+        background: $hover;
+      }
+    }
+
     .timeline-entry-inner {
       position: relative;
       margin-left: -20px;
@@ -37,6 +44,10 @@
         float: left;
         @include border-radius(4px);
         @include box-shadow(0 0 0 3px #EEE);
+
+        .avatar {
+          margin: 0;
+        }
       }
 
       .timeline-content {

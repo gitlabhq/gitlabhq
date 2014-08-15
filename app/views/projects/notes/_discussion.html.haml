@@ -1,8 +1,13 @@
 - note = discussion_notes.first
-- if note.for_merge_request?
-  - if note.outdated?
-    = render "projects/notes/discussions/outdated", discussion_notes: discussion_notes
-  - else
-    = render "projects/notes/discussions/active", discussion_notes: discussion_notes
-- else
-  = render "projects/notes/discussions/commit", discussion_notes: discussion_notes
+.timeline-entry
+  .timeline-entry-inner
+    .timeline-icon
+      = image_tag avatar_icon(note.author_email), class: "avatar s32"
+    .timeline-content
+      - if note.for_merge_request?
+        - if note.outdated?
+          = render "projects/notes/discussions/outdated", discussion_notes: discussion_notes
+        - else
+          = render "projects/notes/discussions/active", discussion_notes: discussion_notes
+      - else
+        = render "projects/notes/discussions/commit", discussion_notes: discussion_notes
