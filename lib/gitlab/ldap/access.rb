@@ -129,7 +129,7 @@ module Gitlab
       # Loop throug all ldap conneted groups, and update the users link with it
       def update_ldap_group_links(user)
         gitlab_groups_with_ldap_link.each do |group|
-          active_group_links = group.ldap_group_links.where(cn: cns_with_access(ldap_user))
+          active_group_links = group.ldap_group_links.where(cn: cns_with_access(get_ldap_user(user)))
 
           if active_group_links.any?
             group.add_user(user, fetch_group_access(group, user, active_group_links))
@@ -141,7 +141,7 @@ module Gitlab
 
       # Get the group_access for a give user.
       # Always respect the current level, never downgrade it.
-      def fetch_group_acess(group, user, active_group_links)
+      def fetch_group_access(group, user, active_group_links)
         current_access_level = group.users_groups.where(user_id: user).maximum(:group_access)
         max_group_access_level = active_group_links.maximum(:group_access)
 
