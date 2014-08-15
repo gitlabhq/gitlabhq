@@ -193,7 +193,7 @@ module Gitlab
           link_to("##{identifier}", url, options)
         end
       elsif project.redmine_tracker?
-	reference_redmine_issue(identifier, project)
+        reference_redmine_issue(identifier, project)
       elsif project.jira_tracker?
         reference_jira_issue(identifier, project)
       end
