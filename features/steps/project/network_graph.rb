@@ -19,8 +19,8 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     page.should have_selector '.select2-chosen', text: "master"
   end
 
-  And 'page should select "v2.1.0" in select box' do
-    page.should have_selector '.select2-chosen', text: "v2.1.0"
+  And 'page should select "v1.0.0" in select box' do
+    page.should have_selector '.select2-chosen', text: "v1.0.0"
   end
 
   And 'page should have "master" on graph' do
@@ -29,13 +29,13 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     end
   end
 
-  When 'I switch ref to "stable"' do
-    page.select 'stable', from: 'ref'
+  When 'I switch ref to "feature"' do
+    page.select 'feature', from: 'ref'
     sleep 2
   end
 
-  When 'I switch ref to "v2.1.0"' do
-    page.select 'v2.1.0', from: 'ref'
+  When 'I switch ref to "v1.0.0"' do
+    page.select 'v1.0.0', from: 'ref'
     sleep 2
   end
 
@@ -44,43 +44,43 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
-  Then 'page should have content not containing "v2.1.0"' do
+  Then 'page should have content not containing "v1.0.0"' do
     within '.network-graph' do
-      page.should have_content 'cleaning'
+      page.should have_content 'Change some files'
     end
   end
 
-  Then 'page should not have content not containing "v2.1.0"' do
+  Then 'page should not have content not containing "v1.0.0"' do
     within '.network-graph' do
-      page.should_not have_content 'cleaning'
+      page.should_not have_content 'Change some files'
     end
   end
 
-  And 'page should select "stable" in select box' do
-    page.should have_selector '.select2-chosen', text: "stable"
+  And 'page should select "feature" in select box' do
+    page.should have_selector '.select2-chosen', text: "feature"
   end
 
-  And 'page should select "v2.1.0" in select box' do
-    page.should have_selector '.select2-chosen', text: "v2.1.0"
+  And 'page should select "v1.0.0" in select box' do
+    page.should have_selector '.select2-chosen', text: "v1.0.0"
   end
 
-  And 'page should have "stable" on graph' do
+  And 'page should have "feature" on graph' do
     within '.network-graph' do
-      page.should have_content 'stable'
+      page.should have_content 'feature'
     end
   end
 
-  When 'I looking for a commit by SHA of "v2.1.0"' do
+  When 'I looking for a commit by SHA of "v1.0.0"' do
     within ".network-form" do
-      fill_in 'extended_sha1', with: '98d6492'
+      fill_in 'extended_sha1', with: '6f6d7e7ed97bb5f0054f2b1df789b39ca89b6ff9'
       find('button').click
     end
     sleep 2
   end
 
-  And 'page should have "v2.1.0" on graph' do
+  And 'page should have "v1.0.0" on graph' do
     within '.network-graph' do
-      page.should have_content 'v2.1.0'
+      page.should have_content 'v1.0.0'
     end
   end
 

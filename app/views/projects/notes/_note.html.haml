@@ -38,10 +38,10 @@
         = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
 
         .form-actions.clearfix
-          = f.submit 'Save changes', class: "btn btn-primary btn-save"
+          = f.submit 'Save changes', class: "btn btn-primary btn-save js-comment-button"
 
           .note-form-option
-            %a.choose-btn.btn.btn-small.js-choose-note-attachment-button
+            %a.choose-btn.btn.js-choose-note-attachment-button
               %i.icon-paper-clip
               %span Choose File ...
             &nbsp;

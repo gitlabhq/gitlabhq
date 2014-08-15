@@ -6,7 +6,7 @@
           = markdown(@content)
     - elsif markup?(@blob.name)
       .file-content.wiki
-        = raw GitHub::Markup.render(@blob.name, @content)
+        = raw render_markup(@blob.name, @content)
     - else
       .file-content.code
         - unless @diff.empty?

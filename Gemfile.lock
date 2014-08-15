@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    RedCloth (4.2.9)
     ace-rails-ap (2.0.1)
     actionmailer (4.1.1)
       actionpack (= 4.1.1)
@@ -86,6 +87,7 @@ GEM
       thor
     crack (0.4.1)
       safe_yaml (~> 0.9.0)
+    creole (0.3.8)
     d3_rails (3.1.10)
       railties (>= 3.1.0)
     daemons (1.1.9)
@@ -121,6 +123,7 @@ GEM
     eventmachine (1.0.3)
     excon (0.32.1)
     execjs (2.0.2)
+    expression_parser (0.9.0)
     factory_girl (4.3.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.3.0)
@@ -176,12 +179,12 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.0.1.1)
       emoji (~> 1.0.1)
-    gitlab_git (6.0.1)
+    gitlab_git (6.2.1)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-grit (~> 2.6)
       gitlab-linguist (~> 3.0)
-      rugged (~> 0.19.0)
+      rugged (~> 0.21.0)
     gitlab_meta (7.0)
     gitlab_omniauth-ldap (1.0.4)
       net-ldap (~> 0.3.1)
@@ -241,7 +244,7 @@ GEM
       json (~> 1.8)
       multi_xml (>= 0.5.2)
     httpauth (0.2.0)
-    i18n (0.6.9)
+    i18n (0.6.11)
     ice_nine (0.10.0)
     jasmine (2.0.2)
       jasmine-core (~> 2.0.0)
@@ -320,7 +323,7 @@ GEM
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    org-ruby (0.9.6)
+    org-ruby (0.9.1)
       rubypants (>= 0.2.0)
     orm_adapter (0.5.0)
     pg (0.15.1)
@@ -331,7 +334,7 @@ GEM
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     polyglot (0.3.4)
-    posix-spawn (0.3.8)
+    posix-spawn (0.3.9)
     pry (0.9.12.4)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -413,6 +416,7 @@ GEM
     require_all (1.3.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rinku (1.7.3)
     rouge (1.3.3)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
@@ -432,7 +436,7 @@ GEM
     ruby-progressbar (1.2.0)
     rubyntlm (0.1.1)
     rubypants (0.2.0)
-    rugged (0.19.0)
+    rugged (0.21.0)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
@@ -536,7 +540,7 @@ GEM
       eventmachine (>= 0.12.8)
       http_parser.rb (~> 0.5.1)
       simple_oauth (~> 0.1.4)
-    tzinfo (1.2.1)
+    tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.3.2)
       execjs (>= 0.3.0)
@@ -563,6 +567,10 @@ GEM
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
     websocket-driver (0.3.3)
+    wikicloth (0.8.1)
+      builder
+      expression_parser
+      rinku
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -570,10 +578,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth
   ace-rails-ap
   acts-as-taggable-on
   annotate (~> 2.6.0.beta2)
-  asciidoctor
+  asciidoctor (= 0.1.4)
   awesome_print
   better_errors
   binding_of_caller
@@ -583,6 +592,7 @@ DEPENDENCIES
   coffee-rails
   colored
   coveralls
+  creole (~> 0.3.6)
   d3_rails (~> 3.1.4)
   database_cleaner
   default_value_for (~> 3.0.0)
@@ -633,7 +643,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter
-  org-ruby
+  org-ruby (= 0.9.1)
   pg
   poltergeist (~> 1.5.1)
   pry
@@ -647,6 +657,7 @@ DEPENDENCIES
   raphael-rails (~> 2.1.2)
   rb-fsevent
   rb-inotify
+  rdoc (~> 3.6)
   redcarpet (~> 2.2.2)
   redis-rails
   request_store
@@ -682,4 +693,6 @@ DEPENDENCIES
   unicorn (~> 4.6.3)
   unicorn-worker-killer
   version_sorter
+  virtus
   webmock
+  wikicloth (= 0.8.1)

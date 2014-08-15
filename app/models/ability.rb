@@ -142,6 +142,7 @@ class Ability
         :write_wiki,
         :modify_issue,
         :admin_issue,
+        :admin_label,
         :push_code
       ]
     end

@@ -9,10 +9,16 @@
 .search_results
   - if params[:search_code].present?
     .blob-results
-      = render partial: "search/results/blob", collection: @search_results[:blobs]
-      = paginate @search_results[:blobs], theme: 'gitlab'
+      - if !@search_results[:blobs].empty?
+        = render partial: "search/results/blob", collection: @search_results[:blobs]
+        = paginate @search_results[:blobs], theme: 'gitlab'
+      - else
+        = render partial: "search/results/empty", :locals => { message: "We couldn't find any matching code" }
   - else
-    %ul.bordered-list
-      = render partial: "search/results/merge_request", collection: @search_results[:merge_requests]
-      = render partial: "search/results/issue", collection: @search_results[:issues]
-      = render partial: "search/results/note", collection: @search_results[:notes]
+    - if @search_results[:merge_requests].present? || @search_results[:issues].present? || @search_results[:notes].present?
+      %ul.bordered-list
+        = render partial: "search/results/merge_request", collection: @search_results[:merge_requests]
+        = render partial: "search/results/issue", collection: @search_results[:issues]
+        = render partial: "search/results/note", collection: @search_results[:notes]
+    - else
+      = render partial: "search/results/empty", locals: { message: "We couldn't find any issues, merge requests or notes" }

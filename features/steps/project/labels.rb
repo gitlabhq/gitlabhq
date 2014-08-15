@@ -3,22 +3,89 @@ class ProjectLabels < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  Then 'I should see label "bug"' do
-    within ".labels-table" do
+  step 'I should see label "bug"' do
+    within ".manage-labels-list" do
       page.should have_content "bug"
     end
   end
 
-  And 'I should see label "feature"' do
-    within ".labels-table" do
+  step 'I should see label "feature"' do
+    within ".manage-labels-list" do
       page.should have_content "feature"
     end
   end
 
-  And 'project "Shop" have issues tags: "bug", "feature"' do
-    project = Project.find_by(name: "Shop")
-    ['bug', 'feature'].each do |label|
-      create(:issue, project: project, label_list: label)
+  step 'I visit \'bug\' label edit page' do
+    visit edit_project_label_path(project, bug_label)
+  end
+
+  step 'I remove label \'bug\'' do
+    within "#label_#{bug_label.id}" do
+      click_link 'Remove'
     end
+  end
+
+  step 'I submit new label \'support\'' do
+    fill_in 'Title', with: 'support'
+    fill_in 'Background Color', with: '#F95610'
+    click_button 'Save'
+  end
+
+  step 'I submit new label \'bug\'' do
+    fill_in 'Title', with: 'bug'
+    fill_in 'Background Color', with: '#F95610'
+    click_button 'Save'
+  end
+
+  step 'I submit new label with invalid color' do
+    fill_in 'Title', with: 'support'
+    fill_in 'Background Color', with: '#12'
+    click_button 'Save'
+  end
+
+  step 'I should see label label exist error message' do
+    within '.label-form' do
+      page.should have_content 'Title has already been taken'
+    end
+  end
+
+  step 'I should see label color error message' do
+    within '.label-form' do
+      page.should have_content 'Color is invalid'
+    end
+  end
+
+  step 'I should see label \'bug\'' do
+    within '.manage-labels-list' do
+      page.should have_content 'bug'
+    end
+  end
+
+  step 'I should not see label \'bug\'' do
+    within '.manage-labels-list' do
+      page.should_not have_content 'bug'
+    end
+  end
+
+  step 'I should see label \'support\'' do
+    within '.manage-labels-list' do
+      page.should have_content 'support'
+    end
+  end
+
+  step 'I change label \'bug\' to \'fix\'' do
+    fill_in 'Title', with: 'fix'
+    fill_in 'Background Color', with: '#F15610'
+    click_button 'Save'
+  end
+
+  step 'I should see label \'fix\'' do
+    within '.manage-labels-list' do
+      page.should have_content 'fix'
+    end
+  end
+
+  def bug_label
+    project.labels.find_or_create_by(title: 'bug')
   end
 end

@@ -1,19 +1,31 @@
 Gitlab::Seeder.quiet do
-  Issue.all.limit(10).each_with_index do |issue, i|
-    5.times do
-      user = issue.project.team.users.sample
+  Issue.all.each do |issue|
+    project = issue.project
 
-      Gitlab::Seeder.by_user(user) do
-        Note.seed(:id, [{
-          project_id: issue.project.id,
-          author_id: user.id,
-          note: Faker::Lorem.sentence,
-          noteable_id: issue.id,
-          noteable_type: 'Issue'
-        }])
+    project.team.users.each do |user|
+      note_params = {
+        noteable_type: 'Issue',
+        noteable_id: issue.id,
+        note: Faker::Lorem.sentence,
+      }
 
-        print '.'
-      end
+      Notes::CreateService.new(project, user, note_params).execute
+      print '.'
+    end
+  end
+
+  MergeRequest.all.each do |mr|
+    project = mr.project
+
+    project.team.users.each do |user|
+      note_params = {
+        noteable_type: 'MergeRequest',
+        noteable_id: mr.id,
+        note: Faker::Lorem.sentence,
+      }
+
+      Notes::CreateService.new(project, user, note_params).execute
+      print '.'
     end
   end
 end

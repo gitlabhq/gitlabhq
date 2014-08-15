@@ -115,21 +115,13 @@ module API
       #   GET /projects/:id/repository/archive
       get ":id/repository/archive", requirements: { format: Gitlab::Regex.archive_formats_regex } do
         authorize! :download_code, user_project
-        repo = user_project.repository
-        ref = params[:sha]
-        format = params[:format]
-        storage_path = Gitlab.config.gitlab.repository_downloads_path
+        file_path = ArchiveRepositoryService.new.execute(user_project, params[:sha], params[:format])
 
-        file_path = repo.archive_repo(ref, storage_path, format)
         if file_path && File.exists?(file_path)
           data = File.open(file_path, 'rb').read
-
           header["Content-Disposition"] = "attachment; filename=\"#{File.basename(file_path)}\""
-
           content_type MIME::Types.type_for(file_path).first.content_type
-
           env['api.format'] = :binary
-
           present data
         else
           not_found!
@@ -147,7 +139,7 @@ module API
       get ':id/repository/compare' do
         authorize! :download_code, user_project
         required_attributes! [:from, :to]
-        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to], MergeRequestDiff::COMMITS_SAFE_SIZE)
+        compare = Gitlab::Git::Compare.new(user_project.repository.raw_repository, params[:from], params[:to])
         present compare, with: Entities::Compare
       end
 

@@ -24,7 +24,7 @@
                'data-original-title' => 'Help'  do
               %i.icon-question-sign
           %li
-            = link_to public_root_path, title: "Public area", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
+            = link_to explore_root_path, title: "Explore", class: 'has_bottom_tooltip', 'data-original-title' => 'Public area' do
               %i.icon-globe
           %li
             = link_to user_snippets_path(current_user), title: "My snippets", class: 'has_bottom_tooltip', 'data-original-title' => 'My snippets' do

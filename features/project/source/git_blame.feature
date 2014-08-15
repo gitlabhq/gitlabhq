@@ -5,6 +5,6 @@ Feature: Project Browse git repo
     Given I visit project source page
 
   Scenario: I blame file
-    Given I click on "Gemfile.lock" file in repo
+    Given I click on ".gitignore" file in repo
     And I click blame button
     Then I should see git file blame

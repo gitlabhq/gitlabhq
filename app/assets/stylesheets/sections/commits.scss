@@ -244,6 +244,7 @@ li.commit {
     font-family: inherit;
     padding-left: $left;
     position: relative;
+    resize: vertical;
     z-index: 2;
   }
 }

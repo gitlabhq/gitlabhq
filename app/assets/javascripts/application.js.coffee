@@ -53,15 +53,40 @@ window.split = (val) ->
 window.extractLast = (term) ->
   return split( term ).pop()
 
+window.rstrip = (val) ->
+  return val.replace(/\s+$/, '')
+
 # Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
   field = $(field_selector)
-  closest_submit = field.closest("form").find(button_selector)
+  closest_submit = field.closest('form').find(button_selector)
 
-  closest_submit.disable() if field.val() is ""
+  closest_submit.disable() if rstrip(field.val()) is ""
 
-  field.on "input", ->
-    if $(@).val() is ""
+  field.on 'input', ->
+    if rstrip($(@).val()) is ""
+      closest_submit.disable()
+    else
+      closest_submit.enable()
+
+# Disable button if any input field with given selector is empty
+window.disableButtonIfAnyEmptyField = (form, form_selector, button_selector) ->
+  closest_submit = form.find(button_selector)
+  empty = false
+  form.find('input').filter(form_selector).each ->
+    empty = true if rstrip($(this).val()) is ""
+
+  if empty
+    closest_submit.disable()
+  else
+    closest_submit.enable()
+
+  form.keyup ->
+    empty = false
+    form.find('input').filter(form_selector).each ->
+      empty = true if rstrip($(this).val()) is ""
+
+    if empty
       closest_submit.disable()
     else
       closest_submit.enable()

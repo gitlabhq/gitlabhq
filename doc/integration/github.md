@@ -37,7 +37,7 @@ To enable the GitHub OmniAuth provider you must register your application with G
           args: { scope: 'user:email' } }
     ```
 
-1.  Change 'YOUR APP ID' to the client ID from the GitHub application page from step 7. 
+1.  Change 'YOUR APP ID' to the client ID from the GitHub application page from step 7.
 
 1.  Change 'YOUR APP SECRET' to the client secret from the GitHub application page  from step 7.
 

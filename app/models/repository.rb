@@ -10,8 +10,11 @@ class Repository
     nil
   end
 
+  # Return absolute path to repository
   def path_to_repo
-    @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+    @path_to_repo ||= File.expand_path(
+      File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+    )
   end
 
   def exists?
@@ -134,7 +137,7 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      stats = Gitlab::Git::GitStats.new(raw, root_ref)
+      stats = Gitlab::Git::GitStats.new(raw, root_ref, Gitlab.config.git.timeout)
       stats.parsed_log
     end
   end
@@ -261,6 +264,22 @@ class Repository
       end
 
       contributor
+    end
+  end
+
+  def blob_for_diff(commit, diff)
+    file = blob_at(commit.id, diff.new_path)
+
+    unless file
+      file = prev_blob_for_diff(commit, diff)
+    end
+
+    file
+  end
+
+  def prev_blob_for_diff(commit, diff)
+    if commit.parent_id
+      blob_at(commit.parent_id, diff.old_path)
     end
   end
 end

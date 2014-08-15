@@ -139,6 +139,7 @@ Settings.git['timeout']   ||= 10
 
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
+Settings.satellites['timeout'] ||= 30
 
 #
 # Extra customization

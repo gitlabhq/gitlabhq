@@ -15,24 +15,37 @@
             Archived project!
           %p Repository is read-only
 
-
       - if @project.forked_from_project
         .alert.alert-success
           %i.icon-code-fork.project-fork-icon
           Forked from:
           %br
           = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
-      - unless @project.empty_repo?
-        - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
-          - if current_user.already_forked?(@project)
-            = link_to project_path(current_user.fork_of(@project)), class: 'btn btn-block' do
-              %i.icon-compass
-              Go to fork
-          - else
-            = link_to fork_project_path(@project), title: "Fork", class: "btn btn-block", method: "POST" do
-              %i.icon-code-fork
-              Fork repository
 
+      .star-buttons
+        %span.star.js-toggler-container{class: @show_star ? 'on' : ''}
+          - if current_user
+            = link_to_toggle_star('Star this project.', false, true)
+            = link_to_toggle_star('Unstar this project.', true, true)
+          - else
+            = link_to_toggle_star('You must sign in to star a project.', false, false)
+
+      - unless @project.empty_repo?
+        .fork-buttons
+          - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
+            - if current_user.already_forked?(@project)
+              = link_to project_path(current_user.fork_of(@project)), class: 'btn btn-block' do
+                %i.icon-compass
+                Go to fork
+                %span.count
+                  = @project.forks_count
+            - else
+              = link_to fork_project_path(@project), title: "Fork", class: "btn btn-block", method: "POST" do
+                %i.icon-code-fork
+                Fork repository
+                %span.count
+                  = @project.forks_count
+      - unless @project.empty_repo?
         - if can? current_user, :download_code, @project
           = render 'projects/repositories/download_archive', btn_class: 'btn-block btn-group-justified', split_button: true
 
@@ -48,7 +61,8 @@
           - version = @repository.version
           = link_to project_blob_path(@project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
             Version:
-            = @repository.blob_by_oid(version.id).data
+            %span.count
+              = @repository.blob_by_oid(version.id).data
 
     .prepend-top-10
       %p

@@ -6,7 +6,7 @@
   vertical-align: middle;
   cursor: pointer;
   background-image: none;
-  border: 1px solid transparent;
+  border: $btn-border;
   white-space: nowrap;
   padding: 6px 12px;
   font-size: 13px;
@@ -19,7 +19,6 @@
   user-select: none;
   color: #444444;
   background-color: #fff;
-  border-color: #ccc;
   text-shadow: none;
 
   &.hover,
