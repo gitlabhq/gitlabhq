@@ -85,7 +85,7 @@ Parameters:
 ## Protect repository branch
 
 Protects a single project repository branch. This is an idempotent function, protecting an already
-protected repository branch still returns a `200 Ok` status code.
+protected repository branch still returns a `200 OK` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/protect
@@ -126,7 +126,7 @@ Parameters:
 ## Unprotect repository branch
 
 Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
-unprotected repository branch still returns a `200 Ok` status code.
+unprotected repository branch still returns a `200 OK` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/unprotect
