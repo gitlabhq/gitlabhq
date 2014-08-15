@@ -23,11 +23,6 @@ class Group < Namespace
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :ldap_group_links, foreign_key: 'group_id'
 
-  validates :ldap_access,
-    inclusion: { in: UsersGroup.group_access_roles.values },
-    presence: true,
-    if: ->(group) { group.ldap_cn.present? }
-
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
 

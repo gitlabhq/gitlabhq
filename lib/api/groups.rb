@@ -44,6 +44,7 @@ module API
         authenticated_as_admin!
         required_attributes! [:name, :path]
 
+        # TODO: Refactor to support multi-ldap
         attrs = attributes_for_keys [:name, :path, :ldap_cn, :ldap_access]
         @group = Group.new(attrs)
         @group.owner = current_user

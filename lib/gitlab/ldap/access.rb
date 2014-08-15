@@ -85,14 +85,6 @@ module Gitlab
         end
       end
 
-      # Remove user from GitLab group
-      def remove_user_from_groups(user_id, group_cn)
-        groups = ::Group.where(ldap_cn: group_cn)
-        groups.each do |group|
-          group.users_groups.where(user_id: user_id).destroy_all
-        end
-      end
-
       def update_admin_status(user)
         admin_group = Gitlab::LDAP::Group.find_by_cn(Gitlab.config.ldap['admin_group'], adapter)
         if admin_group.has_member?(Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter))

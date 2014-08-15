@@ -1,6 +1,7 @@
 require 'spec_helper'
 
 describe LdapGroupResetService do
+  # TODO: refactor to multi-ldap setup
   let(:group) { create(:group, ldap_cn: 'developers', ldap_access: Gitlab::Access::DEVELOPER) }
   let(:user) { create(:user) }
   let(:ldap_user) { create(:user, extern_uid: 'john', provider: 'ldap') }
