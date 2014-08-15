@@ -7,12 +7,6 @@ class AddLdapGroupsTable < ActiveRecord::Migration
 
       t.timestamps
     end
-
-    Group.where.not(ldap_cn: nil).each do |group|
-      group.ldap_groups.where(cn: group.ldap_cn).first_or_create do |ldap_group|
-        ldap_group.group_access = group.ldap_access
-      end
-    end
   end
 
   def down

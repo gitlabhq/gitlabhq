@@ -80,4 +80,21 @@ class Group < Namespace
   def public_profile?
     projects.public_only.any?
   end
+
+  # NOTE: Backwards compatibility with old ldap situation
+  def ldap_cn
+    ldap_group_links.first.try(:cn)
+  end
+
+  def ldap_access
+    ldap_group_links.first.try(:group_access)
+  end
+
+  def old_ldap_cn
+    read_attribute(:ldap_cn)
+  end
+
+  def old_ldap_access
+    read_attribute(:ldap_access)
+  end
 end
