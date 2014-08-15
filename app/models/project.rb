@@ -338,6 +338,10 @@ class Project < ActiveRecord::Base
     self.issues_tracker == "jira"
   end
 
+  def redmine_tracker?
+    self.issues_tracker == "redmine"
+  end
+
   # For compatibility with old code
   def code
     path
