@@ -113,7 +113,10 @@ describe Project do
     describe 'last_activity_date' do
       it 'returns the creation date of the project\'s last event if present' do
         last_activity_event = create(:event, project: project)
-        project.last_activity_at.to_i.should == last_event.created_at.to_i
+        # Give it 1 second tolerance so that this test passes on slow systems
+        # like Travis CI.
+        diff = (project.last_activity_date - last_event.created_at).to_i.abs
+        expect(diff).to be_between(0, 2)
       end
 
       it 'returns the project\'s last update date if it has no events' do
