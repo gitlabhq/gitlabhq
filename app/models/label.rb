@@ -18,9 +18,7 @@ class Label < ActiveRecord::Base
 
   scope :order_by_name, -> { reorder("labels.title ASC") }
 
-  def name
-    title
-  end
+  alias_attribute :name, :title
 
   def open_issues_count
     issues.opened.count

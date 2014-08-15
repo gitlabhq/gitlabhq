@@ -12,6 +12,7 @@
 - [Branches](branches.md)
 - [Merge Requests](merge_requests.md)
 - [Issues](issues.md)
+- [Labels](labels.md)
 - [Milestones](milestones.md)
 - [Notes](notes.md) (comments)
 - [Deploy Keys](deploy_keys.md)

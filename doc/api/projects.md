@@ -632,29 +632,3 @@ Parameters:
 +   query (required) - A string contained in the project name
 +   per_page (optional) - number of projects to return per page
 +   page (optional) - the page to retrieve
-
-
-## Labels
-
-### List project labels
-
-Get a list of project labels.
-
-```
-GET /projects/:id/labels
-```
-
-Parameters:
-
-+ `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
-
-```json
-[
-  {
-    "name": "feature"
-  },
-  {
-    "name": "bug"
-  }
-]
-```
