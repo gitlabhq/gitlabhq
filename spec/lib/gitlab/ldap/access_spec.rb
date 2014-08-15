@@ -195,7 +195,7 @@ objectclass: posixGroup
 })
     end
     it "returns an interator of LDAP Groups" do
-      ::LdapGroupLink.create cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: Group.first.id
+      ::LdapGroupLink.create cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: 42
       Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(ldap_group_1) }
       expect(access.ldap_groups.first).to be_a Gitlab::LDAP::Group
     end
