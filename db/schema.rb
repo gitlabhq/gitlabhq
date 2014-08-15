@@ -145,6 +145,8 @@ ActiveRecord::Schema.define(version: 20140813133925) do
     t.datetime "updated_at"
   end
 
+  add_index "merge_request_diffs", ["merge_request_id"], name: "index_merge_request_diffs_on_merge_request_id", unique: true, using: :btree
+
   create_table "merge_requests", force: true do |t|
     t.string   "target_branch",                 null: false
     t.string   "source_branch",                 null: false
