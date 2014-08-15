@@ -27,6 +27,8 @@ class UsersGroup < ActiveRecord::Base
   scope :developers, -> { where(group_access: DEVELOPER) }
   scope :masters,  -> { where(group_access: MASTER) }
   scope :owners,  -> { where(group_access: OWNER) }
+  scope :with_ldap_dn, -> { references(:user).includes(:user).
+    where(users: { provider: 'ldap' }) }
 
   scope :with_group, ->(group) { where(group_id: group.id) }
   scope :with_user, ->(user) { where(user_id: user.id) }
