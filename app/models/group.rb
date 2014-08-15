@@ -89,12 +89,4 @@ class Group < Namespace
   def ldap_access
     ldap_group_links.first.try(:group_access)
   end
-
-  def old_ldap_cn
-    read_attribute(:ldap_cn)
-  end
-
-  def old_ldap_access
-    read_attribute(:ldap_access)
-  end
 end
