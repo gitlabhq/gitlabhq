@@ -3,11 +3,7 @@ require 'spec_helper'
 describe Gitlab::LDAP::Access do
   let(:access) { Gitlab::LDAP::Access.new }
   let(:user) { create(:user) }
-  let(:group) { create(:group, ldap_cn: 'oss', ldap_access: Gitlab::Access::DEVELOPER) }
-
-  before do
-    group
-  end
+  let!(:group) { create(:group, ldap_cn: 'oss', ldap_access: Gitlab::Access::DEVELOPER) }
 
   describe :update_user_email do
     let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
