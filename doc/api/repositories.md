@@ -10,7 +10,7 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-+ `id` (required) - The ID of a project
+- `id` (required) - The ID of a project
 
 ```json
 [
@@ -47,9 +47,9 @@ POST /projects/:id/repository/tags
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `tag_name` (required) - The name of a tag
-+ `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
+- `id` (required) - The ID of a project
+- `tag_name` (required) - The name of a tag
+- `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
 
 ```json
 [
@@ -81,9 +81,9 @@ GET /projects/:id/repository/tree
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `path` (optional) - The path inside repository. Used to get contend of subdirectories
-+ `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `id` (required) - The ID of a project
+- `path` (optional) - The path inside repository. Used to get contend of subdirectories
+- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
 
 ```json
 [
@@ -126,7 +126,6 @@ Parameters:
 ]
 ```
 
-
 ## Raw file content
 
 Get the raw file contents for a file by commit SHA and path.
@@ -137,10 +136,9 @@ GET /projects/:id/repository/blobs/:sha
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `sha` (required) - The commit or branch name
-+ `filepath` (required) - The path the file
-
+- `id` (required) - The ID of a project
+- `sha` (required) - The commit or branch name
+- `filepath` (required) - The path the file
 
 ## Raw blob content
 
@@ -152,9 +150,8 @@ GET /projects/:id/repository/raw_blobs/:sha
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `sha` (required) - The blob SHA
-
+- `id` (required) - The ID of a project
+- `sha` (required) - The blob SHA
 
 ## Get file archive
 
@@ -165,9 +162,9 @@ GET /projects/:id/repository/archive
 ```
 
 Parameters:
-+ `id` (required) - The ID of a project
-+ `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
 
+- `id` (required) - The ID of a project
+- `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
 
 ## Compare branches, tags or commits
 
@@ -176,10 +173,9 @@ GET /projects/:id/repository/compare
 ```
 
 Parameters:
-+ `id` (required) - The ID of a project
-+ `from` (required) - the commit SHA or branch name
-+ `to` (required) - the commit SHA or branch name
-
+- `id` (required) - The ID of a project
+- `from` (required) - the commit SHA or branch name
+- `to` (required) - the commit SHA or branch name
 
 ```
 GET /projects/:id/repository/compare?from=master&to=feature
@@ -230,7 +226,8 @@ GET /projects/:id/repository/contributors
 ```
 
 Parameters:
-+ `id` (required) - The ID of a project
+
+- `id` (required) - The ID of a project
 
 Response:
 
