@@ -14,13 +14,13 @@ module LabelsHelper
 
   def suggested_colors
     [
-      '#d9534f',
-      '#f0ad4e',
-      '#428bca',
-      '#5cb85c',
-      '#34495e',
-      '#7f8c8d',
-      '#8e44ad',
+      '#D9534F',
+      '#F0AD4E',
+      '#428BCA',
+      '#5CB85C',
+      '#34495E',
+      '#7F8C8D',
+      '#8E44AD',
       '#FFECDB'
     ]
   end
