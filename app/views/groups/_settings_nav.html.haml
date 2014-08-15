@@ -7,7 +7,7 @@
     = link_to projects_group_path(@group) do
       %i.icon-folder-close
       Projects
-  = nav_link(controller: [:groups, :ldap_group_links]) do
+  = nav_link(controller: :ldap_group_links) do
     = link_to group_ldap_group_links_path(@group) do
       %i.icon-exchange
       LDAP Sync
