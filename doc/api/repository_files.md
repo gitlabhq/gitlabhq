@@ -1,10 +1,8 @@
 # Repository files
 
-## CRUD for repository files
+**CRUD for repository files**
 
-## Create, read, update and delete repository files using this API
-
----
+**Create, read, update and delete repository files using this API**
 
 ## Get file from repository
 
