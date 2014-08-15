@@ -32,8 +32,7 @@
             = @group.created_at.stamp("March 1, 1999")
 
     .panel.panel-default
-      .panel-heading
-        LDAP Synchronizations
+      .panel-heading Linked LDAP groups
       %ul.well-list
         - if @group.ldap_group_links.any?
           - @group.ldap_group_links.each do |ldap_group_link|
