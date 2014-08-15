@@ -78,7 +78,7 @@ Parameters:
 ## Delete snippet
 
 Deletes an existing project snippet. This is an idempotent function and deleting a non-existent
-snippet still returns a `200 Ok` status code.
+snippet still returns a `200 OK` status code.
 
 ```
 DELETE /projects/:id/snippets/:snippet_id

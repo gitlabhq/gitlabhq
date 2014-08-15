@@ -202,7 +202,7 @@ e.g. when renaming the email address to some existing one.
 
 Deletes a user. Available only for administrators.
 This is an idempotent function, calling this function for a non-existent user id
-still returns a status code `200 Ok`.
+still returns a status code `200 OK`.
 The JSON response differs if the user was actually deleted or not.
 In the former the user is returned and in the latter not.
 
@@ -336,7 +336,7 @@ Will return created key with status `201 Created` on success, or `404 Not found`
 
 Deletes key owned by currently authenticated user.
 This is an idempotent function and calling it on a key that is already deleted
-or not available results in `200 Ok`.
+or not available results in `200 OK`.
 
 ```
 DELETE /user/keys/:id
@@ -359,4 +359,4 @@ Parameters:
 - `uid` (required) - id of specified user
 - `id` (required)  - SSH key ID
 
-Will return `200 Ok` on success, or `404 Not found` if either user or key cannot be found.
+Will return `200 OK` on success, or `404 Not found` if either user or key cannot be found.
