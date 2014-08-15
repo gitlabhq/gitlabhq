@@ -60,6 +60,11 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :owner_id, :ldap_cn, :ldap_access
+      expose :ldap_group_links, if: ->(group, _) { group.ldap_group_links.any? } do |group, _|
+        group.ldap_group_links.map do |group_link|
+          group_link.slice(:cn, :group_access)
+        end
+      end
     end
 
     class GroupDetail < Group
