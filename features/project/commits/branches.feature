@@ -17,3 +17,9 @@ Feature: Project Browse branches
     And I click new branch link
     When I submit new branch form
     Then I should see new branch created
+
+  @javascript
+  Scenario: I delete a branch
+    Given I visit project branches page
+    And I click branch 'improve/awesome' delete link
+    Then I should not see branch 'improve/awesome'
