@@ -45,7 +45,7 @@ Parameters:
 
 It returns 200 and the newly created label, if the operation succeeds.
 If the label already exists, 409 and an error message is returned.
-If label parameters are invalid, 405 and an explaining error message is returned.
+If label parameters are invalid, 400 and an explaining error message is returned.
 
 ## Delete a label
 
@@ -58,8 +58,8 @@ DELETE /projects/:id/labels
 - `id` (required) - The ID of a project
 - `name` (required) - The name of the label to be deleted
 
-It returns 200 if the label successfully was deleted, 404 for wrong parameters
-and 400 if the label does not exist.
+It returns 200 if the label successfully was deleted, 400 for wrong parameters
+and 404 if the label does not exist.
 In case of an error, additionally an error message is returned.
 
 ## Edit an existing label
@@ -79,7 +79,6 @@ Parameters:
 - `color` (optional) -  New color of the label given in 6-digit hex notation with leading '#' sign (e.g. #FFAABB)
 
 On success, this method returns 200 with the updated label.
-If required parameters are missing, 400 is returned.
+If required parameters are missing or parameters are invalid, 400 is returned.
 If the label to be updated is missing, 404 is returned.
-If parameters are invalid, 405 is returned. In case of an error,
-additionally an error message is returned.
+In case of an error, additionally an error message is returned.

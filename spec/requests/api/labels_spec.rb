@@ -42,19 +42,19 @@ describe API::API, api: true  do
       response.status.should == 400
     end
 
-    it 'should return 405 for invalid color' do
+    it 'should return 400 for invalid color' do
       post api("/projects/#{project.id}/labels", user),
            name: 'Foo',
            color: '#FFAA'
-      response.status.should == 405
+      response.status.should == 400
       json_response['message'].should == 'Color is invalid'
     end
 
-    it 'should return 405 for invalid name' do
+    it 'should return 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
            name: '?',
            color: '#FFAABB'
-      response.status.should == 405
+      response.status.should == 400
       json_response['message'].should == 'Title is invalid'
     end
 
@@ -131,20 +131,20 @@ describe API::API, api: true  do
       response.status.should == 400
     end
 
-    it 'should return 405 for invalid name' do
+    it 'should return 400 for invalid name' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           new_name: '?',
           color: '#FFFFFF'
-      response.status.should == 405
+      response.status.should == 400
       json_response['message'].should == 'Title is invalid'
     end
 
-    it 'should return 405 for invalid name' do
+    it 'should return 400 for invalid name' do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FF'
-      response.status.should == 405
+      response.status.should == 400
       json_response['message'].should == 'Color is invalid'
     end
   end
