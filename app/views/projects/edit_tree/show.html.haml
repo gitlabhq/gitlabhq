@@ -40,7 +40,6 @@
       = link_to "Cancel", @after_edit_path, class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
-  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
   ace.config.loadModule("ace/ext/searchbox");
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");

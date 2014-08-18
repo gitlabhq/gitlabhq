@@ -9,7 +9,7 @@
         .input-group
           %span.input-group-addon
             = @path[-1] == "/" ? @path : @path + "/"
-          = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control'
+          = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control file-name'
           %span.input-group-addon
             on
             %span= @ref
@@ -43,10 +43,9 @@
       = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
-  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
-  var editor = ace.edit("editor");
-
-  disableButtonIfEmptyField("#commit_message", ".js-commit-button");
+  var editor = ace.edit("editor")
+  updateAceModeOnFilenameChange('.file-name')
+  disableButtonIfEmptyField("#commit_message", ".js-commit-button")
 
   $(".js-commit-button").click(function(){
     $("#file-content").val(editor.getValue());

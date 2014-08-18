@@ -27,6 +27,7 @@
 #= require highlight.pack
 #= require ace/ace
 #= require ace/ext-searchbox
+#= require ace/ext-modelist
 #= require ace/mode-abap
 #= require ace/mode-actionscript
 #= require ace/mode-ada
@@ -145,6 +146,22 @@
 #= require shortcuts_issueable
 #= require shortcuts_network
 #= require_tree .
+
+# Updates syntax highlighting of editor on current page depending on filename
+# Filename is given with selector
+window.updateAceModeOnFilenameChange = (selector) ->
+  window.updateAceMode = (val) =>
+    modelist = ace.require('ace/ext/modelist')
+    ace_mode = modelist.getModeForPath(val).mode
+    editor.session.setMode(ace_mode)
+
+  updateAceMode($.trim($(selector).val()))
+
+  $(selector).on 'input', ->
+    val = $.trim($(@).val())
+    if $(@).data('lastval') != val
+      $(@).data('lastval', val)
+      updateAceMode(val)
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
