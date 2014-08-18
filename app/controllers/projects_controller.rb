@@ -34,10 +34,12 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+    result = Projects::Update.perform(proejct: project,
+                                      user: current_user,
+                                      params: project_params)
 
     respond_to do |format|
-      if status
+      if result.success?
         flash[:notice] = 'Project was successfully updated.'
         format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
