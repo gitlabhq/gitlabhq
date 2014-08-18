@@ -7,7 +7,7 @@
 sudo gitlab-rake gitlab:import:user_to_projects[username@domain.tld]
 
 # installation from source or cookbook
-RAILS_ENV=production bundle exec rake gitlab:import:user_to_projects[username@domain.tld]
+bundle exec rake gitlab:import:user_to_projects[username@domain.tld] RAILS_ENV=production
 ```
 
 ## Add all users to all projects
@@ -21,7 +21,7 @@ Notes:
 sudo gitlab-rake gitlab:import:all_users_to_all_projects
 
 # installation from source or cookbook
-RAILS_ENV=production bundle exec rake gitlab:import:all_users_to_all_projects
+bundle exec rake gitlab:import:all_users_to_all_projects RAILS_ENV=production
 ```
 
 ## Add user as a developer to all groups
@@ -31,7 +31,7 @@ RAILS_ENV=production bundle exec rake gitlab:import:all_users_to_all_projects
 sudo gitlab-rake gitlab:import:user_to_groups[username@domain.tld]
 
 # installation from source or cookbook
-RAILS_ENV=production bundle exec rake gitlab:import:user_to_groups[username@domain.tld]
+bundle exec rake gitlab:import:user_to_groups[username@domain.tld] RAILS_ENV=production
 ```
 
 ## Add all users to all groups
@@ -45,5 +45,5 @@ Notes:
 sudo gitlab-rake gitlab:import:all_users_to_all_groups
 
 # installation from source or cookbook
-RAILS_ENV=production bundle exec rake gitlab:import:all_users_to_all_groups
+bundle exec rake gitlab:import:all_users_to_all_groups RAILS_ENV=production
 ```
