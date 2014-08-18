@@ -104,8 +104,11 @@ module API
                                      :visibility_level,
                                      :import_url]
         attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateService.new(current_user, attrs).execute
-        if @project.saved?
+        result = Projects::Create.perform(user: current_user, params: attrs)
+
+        @project = result[:project]
+
+        if result.success?
           present @project, with: Entities::Project
         else
           if @project.errors[:limit_reached].present?
@@ -145,9 +148,9 @@ module API
                                      :visibility_level,
                                      :import_url]
         attrs = map_public_to_visibility_level(attrs)
-        @project = ::Projects::CreateService.new(user, attrs).execute
-        if @project.saved?
-          present @project, with: Entities::Project
+        result = Projects::Create.perform(user: user, params: attrs)
+        if result.success?
+          present result[:project], with: Entities::Project
         else
           not_found!
         end

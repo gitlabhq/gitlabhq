@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::CreateService do
+describe Projects::Create do
   describe :create_by_user do
     before do
       @user = create :user
@@ -58,6 +58,7 @@ describe Projects::CreateService do
   end
 
   def create_project(user, opts)
-    Projects::CreateService.new(user, opts).execute
+    result = Projects::Create.perform(user: user, params: opts)
+    return result[:project]
   end
 end

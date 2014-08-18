@@ -66,12 +66,12 @@ namespace :gitlab do
             project_params[:namespace_id] = group.id
           end
 
-          project = Projects::CreateService.new(user, project_params).execute
+          result = Projects::Create.perform(user: user, params: project_params)
 
-          if project.valid?
-            puts " * Created #{project.name} (#{repo_path})".green
+          if result.success?
+            puts " * Created #{project_params[:name]} (#{repo_path})".green
           else
-            puts " * Failed trying to create #{project.name} (#{repo_path})".red
+            puts " * Failed trying to create #{project_params[:name]} (#{repo_path})".red
           end
         end
       end
