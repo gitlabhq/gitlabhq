@@ -44,6 +44,8 @@ gem 'gollum-lib', '~> 3.0.0'
 # Language detection
 gem "gitlab-linguist", "~> 3.0.0", require: "linguist"
 
+gem "interactor-rails", "~> 1.0"
+
 # API
 gem "grape", "~> 0.6.1"
 gem "grape-entity", "~> 0.4.2"

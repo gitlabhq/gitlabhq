@@ -246,6 +246,10 @@ GEM
     httpauth (0.2.1)
     i18n (0.6.11)
     ice_nine (0.10.0)
+    interactor (2.1.0)
+    interactor-rails (1.0.1)
+      interactor (< 3)
+      rails (>= 3, < 5)
     jasmine (2.0.2)
       jasmine-core (~> 2.0.0)
       phantomjs
@@ -626,6 +630,7 @@ DEPENDENCIES
   haml-rails
   hipchat (~> 0.14.0)
   httparty
+  interactor-rails (~> 1.0)
   jasmine (= 2.0.2)
   jquery-atwho-rails (~> 0.3.3)
   jquery-rails
