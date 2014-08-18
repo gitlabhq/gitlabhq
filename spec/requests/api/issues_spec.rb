@@ -169,6 +169,15 @@ describe API::API, api: true  do
       response.status.should == 400
       json_response['message']['labels']['?']['title'].should == ['is invalid']
     end
+
+    it 'should return 400 if title is too long' do
+      post api("/projects/#{project.id}/issues", user),
+           title: 'g' * 256
+      response.status.should == 400
+      json_response['message']['title'].should == [
+        'is too long (maximum is 255 characters)'
+      ]
+    end
   end
 
   describe "PUT /projects/:id/issues/:issue_id to update only title" do
@@ -236,6 +245,15 @@ describe API::API, api: true  do
       json_response['labels'].should include 'label-bar'
       json_response['labels'].should include 'label_bar'
       json_response['labels'].should include 'label/bar'
+    end
+
+    it 'should return 400 if title is too long' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'g' * 256
+      response.status.should == 400
+      json_response['message']['title'].should == [
+        'is too long (maximum is 255 characters)'
+      ]
     end
   end
 

@@ -58,7 +58,7 @@ module API
         if key.valid? && user_project.deploy_keys << key
           present key, with: Entities::SSHKey
         else
-          not_found!
+          render_validation_error!(key)
         end
       end
 

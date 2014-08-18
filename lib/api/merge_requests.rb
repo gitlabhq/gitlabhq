@@ -10,8 +10,13 @@ module API
             error!(errors[:project_access], 422)
           elsif errors[:branch_conflict].any?
             error!(errors[:branch_conflict], 422)
+          elsif errors[:validate_fork].any?
+            error!(errors[:validate_fork], 422)
+          elsif errors[:validate_branches].any?
+            conflict!(errors[:validate_branches])
           end
-          not_found!
+
+          render_api_error!(errors, 400)
         end
       end
 
@@ -214,7 +219,7 @@ module API
         if note.save
           present note, with: Entities::MRNote
         else
-          not_found!
+          render_validation_error!(note)
         end
       end
     end
