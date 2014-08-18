@@ -60,6 +60,8 @@ class ProjectsController < ApplicationController
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
 
+    @show_star = !(current_user && current_user.starred?(@project))
+
     respond_to do |format|
       format.html do
         if @project.empty_repo?
@@ -167,6 +169,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def toggle_star
+    current_user.toggle_star(@project)
+    @project.reload
+    render json: { star_count: @project.star_count }
+  end
+
   private
 
   def upload_path
@@ -188,7 +196,7 @@ class ProjectsController < ApplicationController
 
   def project_params
     params.require(:project).permit(
-      :name, :path, :description, :issues_tracker, :label_list,
+      :name, :path, :description, :issues_tracker, :tag_list,
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id, :merge_requests_template
     )

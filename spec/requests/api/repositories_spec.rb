@@ -3,6 +3,8 @@ require 'mime/types'
 
 describe API::API, api: true  do
   include ApiHelpers
+  include RepoHelpers
+
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
@@ -29,6 +31,7 @@ describe API::API, api: true  do
       response.status.should == 201
       json_response['name'].should == 'v1.0.0'
     end
+
     it 'should deny for user without push access' do
       post api("/projects/#{project.id}/repository/tags", user2),
            tag_name: 'v1.0.0',
@@ -47,7 +50,7 @@ describe API::API, api: true  do
         response.status.should == 200
 
         json_response.should be_an Array
-        json_response.first['name'].should == 'app'
+        json_response.first['name'].should == 'encoding'
         json_response.first['type'].should == 'tree'
         json_response.first['mode'].should == '040000'
       end
@@ -92,7 +95,7 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/repository/raw_blobs/:sha" do
     it "should get the raw file contents" do
-      get api("/projects/#{project.id}/repository/raw_blobs/d1aff2896d99d7acc4d9780fbb716b113c45ecf7", user)
+      get api("/projects/#{project.id}/repository/raw_blobs/#{sample_blob.oid}", user)
       response.status.should == 200
     end
   end
@@ -130,21 +133,21 @@ describe API::API, api: true  do
 
   describe 'GET /projects/:id/repository/compare' do
     it "should compare branches" do
-      get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'simple_merge_request'
+      get api("/projects/#{project.id}/repository/compare", user), from: 'master', to: 'feature'
       response.status.should == 200
       json_response['commits'].should be_present
       json_response['diffs'].should be_present
     end
 
     it "should compare tags" do
-      get api("/projects/#{project.id}/repository/compare", user), from: 'v1.0.1', to: 'v1.0.2'
+      get api("/projects/#{project.id}/repository/compare", user), from: 'v1.0.0', to: 'v1.1.0'
       response.status.should == 200
       json_response['commits'].should be_present
       json_response['diffs'].should be_present
     end
 
     it "should compare commits" do
-      get api("/projects/#{project.id}/repository/compare", user), from: 'b1e6a9dbf1c85', to: '1e689bfba395'
+      get api("/projects/#{project.id}/repository/compare", user), from: sample_commit.id, to: sample_commit.parent_id
       response.status.should == 200
       json_response['commits'].should be_empty
       json_response['diffs'].should be_empty
@@ -152,7 +155,7 @@ describe API::API, api: true  do
     end
 
     it "should compare commits in reverse order" do
-      get api("/projects/#{project.id}/repository/compare", user), from: '1e689bfba395', to: 'b1e6a9dbf1c85'
+      get api("/projects/#{project.id}/repository/compare", user), from: sample_commit.parent_id, to: sample_commit.id
       response.status.should == 200
       json_response['commits'].should be_present
       json_response['diffs'].should be_present
@@ -175,9 +178,9 @@ describe API::API, api: true  do
       contributor = json_response.first
       contributor['email'].should == 'dmitriy.zaporozhets@gmail.com'
       contributor['name'].should == 'Dmitriy Zaporozhets'
-      contributor['commits'].should == 185
-      contributor['additions'].should == 66072
-      contributor['deletions'].should == 63013
+      contributor['commits'].should == 13
+      contributor['additions'].should == 4081
+      contributor['deletions'].should == 29
     end
   end
 end

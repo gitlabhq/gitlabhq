@@ -1,3 +1,23 @@
+v 7.2.0
+  - Explore page
+  - Add project stars (Ciro Santilli)
+  - Log Sidekiq arguments
+  - Fix cpu usage issue in Firefox
+  - Better labels: colors, ability to rename and remove
+  - Improve the way merge request collects diffs
+  - Improve compare page for large diffs  
+  - Expose the full commit message via API
+  - Fix 500 error on repository rename
+  - Fix bug when MR download patch return invalid diff
+  - Test gitlab-shell integration
+  - Repository import timeout increased from 2 to 4 minutes allowing larger repos to be imported
+  - API for labels (Robert Schilling)
+
+v 7.1.1
+  - Fix cpu usage issue in Firefox
+  - Fix redirect loop when changing password by new user
+  - Fix 500 error on new merge request page
+
 v 7.1.0
   - Remove observers
   - Improve MR discussions
@@ -8,7 +28,7 @@ v 7.1.0
   - Dont show reply button if user is not signed in
   - Expose more information for issues with webhook
   - Add a mention of the merge request into the default merge request commit message
-  - Imrpove code highlight, introduce support for more languages like Go, Clojure, Erlang etc
+  - Improve code highlight, introduce support for more languages like Go, Clojure, Erlang etc
   - Fix concurrency issue in repository download
   - Dont allow repository name start with ?
   - Improve email threading (Pierre de La Morinerie)

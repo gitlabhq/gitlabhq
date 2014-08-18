@@ -54,10 +54,10 @@
                 %span.label
                   %i.icon-archive
                   Archived
-              - project.labels.each do |label|
+              - project.tags.each do |tag|
                 %span.label.label-info
                   %i.icon-tag
-                  = label.name
+                  = tag.name
             - if project.description.present?
               %p= truncate project.description, length: 100
             .last-activity

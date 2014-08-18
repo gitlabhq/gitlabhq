@@ -22,6 +22,7 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
+#  star_count             :integer
 #
 
 class Project < ActiveRecord::Base
@@ -40,8 +41,7 @@ class Project < ActiveRecord::Base
   default_value_for :snippets_enabled, gitlab_config_features.snippets
 
   ActsAsTaggableOn.strict_case_match = true
-
-  acts_as_taggable_on :labels, :issues_default_labels
+  acts_as_taggable_on :tags
 
   attr_accessor :new_default_branch
 
@@ -74,6 +74,7 @@ class Project < ActiveRecord::Base
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
   has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
+  has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
@@ -85,6 +86,8 @@ class Project < ActiveRecord::Base
   has_many :users, through: :users_projects
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starrers, through: :users_star_projects, source: :user
 
   has_many :project_group_links, dependent: :destroy
   has_many :invited_groups, through: :project_group_links, source: :group
@@ -114,6 +117,7 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
+  validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
 
   # Scopes
@@ -283,13 +287,6 @@ class Project < ActiveRecord::Base
 
   def project_id
     self.id
-  end
-
-  # Tags are shared by issues and merge requests
-  def issues_labels
-    @issues_labels ||= (issues_default_labels +
-                        merge_requests.tags_on(:labels) +
-                        issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)
@@ -512,6 +509,7 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo
+    path_was = previous_changes['path'].first
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 
@@ -589,5 +587,13 @@ class Project < ActiveRecord::Base
 
   def update_repository_size
     update_attribute(:repository_size, repository.size)
+  end
+
+  def forks_count
+    ForkedProjectLink.where(forked_from_project_id: self.id).count
+  end
+
+  def find_label(name)
+    labels.find_by(name: name)
   end
 end

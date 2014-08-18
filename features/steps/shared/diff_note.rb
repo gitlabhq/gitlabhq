@@ -1,5 +1,6 @@
 module SharedDiffNote
   include Spinach::DSL
+  include RepoHelpers
 
   Given 'I cancel the diff comment' do
     within(diff_file_selector) do
@@ -19,8 +20,8 @@ module SharedDiffNote
   end
 
   Given 'I leave a diff comment like "Typo, please fix"' do
-    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_29_14"]').click
-    within("#{diff_file_selector} form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
+    click_diff_line(sample_commit.line_code)
+    within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "Typo, please fix"
       find(".js-comment-button").trigger("click")
       sleep 0.05
@@ -28,28 +29,28 @@ module SharedDiffNote
   end
 
   Given 'I preview a diff comment text like "Should fix it :smile:"' do
-    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_29_14"]').click
-    within("#{diff_file_selector} form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_29_14']") do
+    click_diff_line(sample_commit.line_code)
+    within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "Should fix it :smile:"
       find(".js-note-preview-button").trigger("click")
     end
   end
 
   Given 'I preview another diff comment text like "DRY this up"' do
-    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_57_41"]').click
+    click_diff_line(sample_commit.del_line_code)
 
-    within("#{diff_file_selector} form[rel$='586fb7c4e1add2d4d24e27566ed7064680098646_57_41']") do
+    within("#{diff_file_selector} form[rel$='#{sample_commit.del_line_code}']") do
       fill_in "note[note]", with: "DRY this up"
       find(".js-note-preview-button").trigger("click")
     end
   end
 
   Given 'I open a diff comment form' do
-    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_29_14"]').click
+    click_diff_line(sample_commit.line_code)
   end
 
   Given 'I open another diff comment form' do
-    find('a[data-line-code="586fb7c4e1add2d4d24e27566ed7064680098646_57_41"]').click
+    click_diff_line(sample_commit.del_line_code)
   end
 
   Given 'I write a diff comment like ":-1: I don\'t like this"' do
@@ -155,6 +156,10 @@ module SharedDiffNote
   end
 
   def diff_file_selector
-    ".diff-file"
+    ".diff-file:nth-of-type(1)"
+  end
+
+  def click_diff_line(code)
+    find("a[data-line-code='#{code}']").click
   end
 end

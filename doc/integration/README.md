@@ -7,7 +7,14 @@ See the documentation below for details on how to configure these services.
 - [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, and Google via OAuth.
-- [Slack](slack.md) Integrate with the Slack chat service
 - [Jenkins](jenkins.md) Integrate with the Jenkins CI
-- [Jira](jira.md) Integrate with the JIRA issue tracker
 - [Slack](slack.md) Integrate with the Slack chat service
+
+## Project services
+
+Integration with services such as Campfire, Flowdock, Gemnasium, HipChat, PivotalTracker and Slack are available in the from of a Project Service.
+You can find these within GitLab in the Services page under Project Settings if you are at least a master on the project.
+Project Services are a bit like plugins in that they allow a lot of freedom in adding functionality to GitLab, for example there is also a service that can send an email every time someone pushes new commits.
+Because GitLab is open source we can ship with the code and tests for all plugins.
+This allows the community to keep the plugins up to date so that they always work in newer GitLab versions.
+For an overview of what projects services are available without logging in please see the [project_services directory](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/app/models/project_services).

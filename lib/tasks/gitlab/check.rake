@@ -27,6 +27,7 @@ namespace :gitlab do
       check_projects_have_namespace
       check_satellites_exist
       check_redis_version
+      check_ruby_version
       check_git_version
 
       finished_checking "GitLab"
@@ -317,7 +318,8 @@ namespace :gitlab do
 
       options = {
         "user.name"  => "GitLab",
-        "user.email" => Gitlab.config.gitlab.email_from
+        "user.email" => Gitlab.config.gitlab.email_from,
+        "core.autocrlf" => "input"
       }
       correct_options = options.map do |name, value|
         run(%W(git config --global --get #{name})).try(:squish) == value
@@ -329,7 +331,8 @@ namespace :gitlab do
         puts "no".red
         try_fixing_it(
           sudo_gitlab("git config --global user.name  \"#{options["user.name"]}\""),
-          sudo_gitlab("git config --global user.email \"#{options["user.email"]}\"")
+          sudo_gitlab("git config --global user.email \"#{options["user.email"]}\""),
+          sudo_gitlab("git config --global core.autocrlf \"#{options["core.autocrlf"]}\"")
         )
         for_more_information(
           see_installation_guide_section "GitLab"
@@ -813,6 +816,23 @@ namespace :gitlab do
       puts "OK (#{current_version})".green
     else
       puts "FAIL. Please update gitlab-shell to #{required_version} from #{current_version}".red
+    end
+  end
+
+  def check_ruby_version
+    required_version = Gitlab::VersionInfo.new(2, 0, 0)
+    current_version = Gitlab::VersionInfo.parse(run(%W(ruby --version)))
+
+    print "Ruby version >= #{required_version} ? ... "
+
+    if current_version.valid? && required_version <= current_version
+        puts "yes (#{current_version})".green
+    else
+      puts "no".red
+      try_fixing_it(
+        "Update your ruby to a version >= #{required_version} from #{current_version}"
+      )
+      fix_and_rerun
     end
   end
 

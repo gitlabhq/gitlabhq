@@ -67,6 +67,7 @@ production: &base
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
+    # Tip: you can test your closing pattern at http://rubular.com
     # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) (#\d+|([A-Z\-]+-)\d+)'
 
     ## Default project features settings
@@ -215,6 +216,7 @@ production: &base
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
     path: /home/git/gitlab-satellites/
+    timeout: 30
 
   ## Backup settings
   backup:
@@ -275,6 +277,17 @@ test:
   gitlab:
     host: localhost
     port: 80
+
+    # When you run tests we clone and setup gitlab-shell
+    # In order to setup it correctly you need to specify 
+    # your system username you use to run GitLab
+    # user: YOUR_USERNAME 
+  satellites:
+    path: tmp/tests/gitlab-satellites/
+  gitlab_shell:
+    path: tmp/tests/gitlab-shell/
+    repos_path: tmp/tests/repositories/
+    hooks_path: tmp/tests/gitlab-shell/hooks/
   issues_tracker:
     redmine:
       title: "Redmine"

@@ -50,10 +50,21 @@ module API
       post ":id/issues" do
         required_attributes! [:title]
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
-        attrs[:label_list] = params[:labels] if params[:labels].present?
+
+        # Validate label names in advance
+        if validate_label_params(params)
+          return render_api_error!('Label names invalid', 405)
+        end
+
         issue = ::Issues::CreateService.new(user_project, current_user, attrs).execute
 
         if issue.valid?
+          # Find or create labels and attach to issue. Labels are valid because
+          # we already checked its name, so there can't be an error here
+          if params[:labels].present?
+            issue.add_labels_by_names(params[:labels].split(','))
+          end
+
           present issue, with: Entities::Issue
         else
           not_found!
@@ -76,13 +87,23 @@ module API
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :modify_issue, issue
-
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
-        attrs[:label_list] = params[:labels] if params[:labels].present?
+
+        # Validate label names in advance
+        if validate_label_params(params)
+          return render_api_error!('Label names invalid', 405)
+        end
 
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 
         if issue.valid?
+          # Find or create labels and attach to issue. Labels are valid because
+          # we already checked its name, so there can't be an error here
+          if params[:labels].present?
+            # Create and add labels to the new created issue
+            issue.add_labels_by_names(params[:labels].split(','))
+          end
+
           present issue, with: Entities::Issue
         else
           not_found!

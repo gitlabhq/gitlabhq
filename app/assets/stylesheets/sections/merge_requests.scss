@@ -1,6 +1,6 @@
 
-/**
- * MR -> show: Automerge widget
+  /**
+   * MR -> show: Automerge widget
  *
  */
 .automerge_widget {
@@ -48,10 +48,10 @@
 
 .label-branch {
   @include border-radius(4px);
-  padding: 2px 4px;
+  padding: 3px 4px;
   border: none;
-  background: #555;
-  color: #fff;
+  background: $hover;
+  color: #333;
   font-family: $monospace_font;
   font-weight: normal;
   overflow: hidden;
