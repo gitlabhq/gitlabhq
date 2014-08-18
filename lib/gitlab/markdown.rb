@@ -231,7 +231,7 @@ module Gitlab
     end
 
     def reference_external_issue(identifier, issue_tracker, project = @project)
-      url = url_for_issue(identifier)
+      url = url_for_issue(identifier, project)
       title = issue_tracker['title']
 
       options = html_options.merge(
