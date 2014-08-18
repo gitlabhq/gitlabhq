@@ -33,7 +33,7 @@ Parameters:
 
 ## New group
 
-Creates a new project group. Available only for admin.
+Creates a new project group. Available only for users who can create groups.
 
 ```
 POST /groups
