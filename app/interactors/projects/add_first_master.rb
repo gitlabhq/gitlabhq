@@ -3,7 +3,7 @@ module Projects
     def setup
       super
 
-      context.fail!(message: "User not exist") if context[:user].blank?
+      context.fail!(message: 'User not exist') if context[:user].blank?
     end
 
     # If project created not in group

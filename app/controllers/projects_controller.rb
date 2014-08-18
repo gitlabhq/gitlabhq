@@ -20,8 +20,8 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    result = Projects::Create.perform(user: current_user,
-                                        params: project_params).execute
+    result = Projects::Create.perform(user: current_user, params: project_params)
+
     if result.success?
       @project = result[:project]
 
@@ -107,7 +107,7 @@ class ProjectsController < ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    result = Projects::Destroy.perform(user: current_user, project: @project)
+    Projects::Destroy.perform(user: current_user, project: @project)
 
     respond_to do |format|
       format.html { redirect_to root_path }

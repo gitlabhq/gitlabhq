@@ -59,6 +59,6 @@ describe Projects::Create do
 
   def create_project(user, opts)
     result = Projects::Create.perform(user: user, params: opts)
-    return result[:project]
+    result[:project]
   end
 end

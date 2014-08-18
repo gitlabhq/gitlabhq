@@ -1,12 +1,5 @@
 module Projects
   class DestroyProject < Projects::Base
-
-    def setup
-      unless can?(context[:user], :remove_project, context[:project])
-        context.fail!(message: "User has not permissions to destroy project")
-      end
-    end
-
     def perform
       project = context[:project]
 

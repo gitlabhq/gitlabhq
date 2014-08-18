@@ -24,7 +24,7 @@ class Interactor::Base
     end
   end
 
-  def log_info message
+  def log_info(message)
     Gitlab::AppLogger.info message
   end
 
@@ -35,7 +35,7 @@ class Interactor::Base
     }
   end
 
-  def success(message = "")
+  def success(message = '')
     {
       message: message,
       status: :success

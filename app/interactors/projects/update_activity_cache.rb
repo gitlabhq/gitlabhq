@@ -13,6 +13,7 @@ module Projects
     def rollback
       project = context[:project]
       project.update_column(:last_activity_at, context[:last_activity_at_was])
+      context.delete(:last_activity_at_was)
     end
   end
 end

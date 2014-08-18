@@ -1,12 +1,11 @@
 module Projects
   class CreateProject < Iteractor::Base
-
     def setup
-      context.fail!(message: "Invalid user") if context[:user].blank?
-      context.fail!(message: "Invalid params") if context[:params].blank?
+      context.fail!(message: 'Invalid user') if context[:user].blank?
+      context.fail!(message: 'Invalid params') if context[:params].blank?
 
       unless allowed_namespace?(context[:user], context[:params][:namespace_id])
-        context.fail!(message: "Namespace invalid")
+        context.fail!(message: 'Namespace invalid')
       end
     end
 
@@ -24,7 +23,7 @@ module Projects
       # Parametrize path for project
       #
       # Ex.
-      #  'GitLab HQ'.parameterize => "gitlab-hq"
+      #  'GitLab HQ'.parameterize => 'gitlab-hq'
       #
       if @project.path.blank?
         @project.path = @project.name.dup.parameterize
@@ -44,15 +43,15 @@ module Projects
         context[:entity] = @project
         context[:event] = :create
 
-        log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
+        log_info("#{@project.owner.name} created a new project \'#{@project.name_with_namespace}\'")
       else
-        context.fail!(message: "Unable save project")
+        context.fail!(message: 'Unable save project')
       end
     end
 
     def rollback
       if context[:project].persisted?
-        log_info("Project \"#{@project.name_with_namespace}\" was removed in rallback action")
+        log_info("Project \'#{@project.name_with_namespace}\' was removed in rallback action")
         context[:project].destroy
       else
         # Project not persisted. No DB changes

@@ -10,6 +10,5 @@ module Projects
       Projects::UpdateActivityCache,
       ExecuteSystemHooks
     ]
-
   end
 end

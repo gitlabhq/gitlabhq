@@ -26,7 +26,7 @@ module Projects
     def rollback
       project = context[:project]
 
-      stop_async_job("gitlab_shell", context[:create_repo_job_id])
+      stop_async_job('gitlab_shell', context[:create_repo_job_id])
 
       GitlabShellWorker.perform_async(
         :remove_repository,
