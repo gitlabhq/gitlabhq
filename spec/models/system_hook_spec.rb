@@ -32,7 +32,7 @@ describe SystemHook do
     it "project_destroy hook" do
       user = create(:user)
       project = create(:empty_project, namespace: user.namespace)
-      Projects::DestroyService.new(project, user, {}).execute
+      Projects::Destroy.perform(project: project, user: user)
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_destroy/).once
     end
 

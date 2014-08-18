@@ -105,7 +105,7 @@ class ProjectsController < ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    ::Projects::DestroyService.new(@project, current_user, {}).execute
+    result = Projects::Destroy.perform(user: current_user, project: @project)
 
     respond_to do |format|
       format.html { redirect_to root_path }
