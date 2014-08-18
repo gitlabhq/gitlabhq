@@ -24,6 +24,7 @@ module API
       # Example Request:
       #   POST /projects/:id/labels
       post ':id/labels' do
+        authorize! :admin_label, user_project
         required_attributes! [:name, :color]
 
         attrs = attributes_for_keys [:name, :color]
@@ -51,6 +52,7 @@ module API
       # Example Request:
       #   DELETE /projects/:id/labels
       delete ':id/labels' do
+        authorize! :admin_label, user_project
         required_attributes! [:name]
 
         label = user_project.find_label(params[:name])
@@ -71,6 +73,7 @@ module API
       # Example Request:
       #   PUT /projects/:id/labels
       put ':id/labels' do
+        authorize! :admin_label, user_project
         required_attributes! [:name]
 
         label = user_project.find_label(params[:name])
