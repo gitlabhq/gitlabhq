@@ -39,7 +39,7 @@ module API
         if label.valid?
           present label, with: Entities::Label
         else
-          render_api_error!(label.errors.full_messages.join(', '), 405)
+          render_api_error!(label.errors.full_messages.join(', '), 400)
         end
       end
 
@@ -95,7 +95,7 @@ module API
         if label.update(attrs)
           present label, with: Entities::Label
         else
-          render_api_error!(label.errors.full_messages.join(', '), 405)
+          render_api_error!(label.errors.full_messages.join(', '), 400)
         end
       end
     end
