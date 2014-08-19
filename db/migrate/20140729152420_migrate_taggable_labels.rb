@@ -15,10 +15,10 @@ class MigrateTaggableLabels < ActiveRecord::Migration
 
   def create_label_from_tagging(tagging)
     target = tagging.taggable
-    label_name = tagging.tag.name
-    label = target.project.labels.find_or_create_by(title: label_name)
+    label_name = tagging.tag.name.tr('?&,', '')
+    label = target.project.labels.find_or_create_by(title: label_name, color: Label::DEFAULT_COLOR)
 
-    if LabelLink.create(label: label, target: target)
+    if label.valid? && LabelLink.create(label: label, target: target)
       print '.'
     else
       print 'F'
