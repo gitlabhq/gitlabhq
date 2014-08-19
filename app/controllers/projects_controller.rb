@@ -170,11 +170,12 @@ class ProjectsController < ApplicationController
   end
 
   def upload_image
-    link_to_image = ::Projects::ImageService.new(repository, params, root_url).execute
-
+    result = Projects::UploadImage.perform(repository: repository,
+                                                  params: params,
+                                                  root_url: root_url)
     respond_to do |format|
-      if link_to_image
-        format.json { render json: { link: link_to_image } }
+      if result.success?
+        format.json { render json: { link: result[:link] } }
       else
         format.json { render json: "Invalid file.", status: :unprocessable_entity }
       end

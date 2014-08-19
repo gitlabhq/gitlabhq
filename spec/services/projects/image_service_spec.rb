@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::ImageService do
+describe Projects::UploadImage do
   describe 'Image service' do
     before do
       @user = create :user
@@ -57,6 +57,9 @@ describe Projects::ImageService do
   end
 
   def upload_image(repository, params, root_url)
-    Projects::ImageService.new(repository, params, root_url).execute
+    result = Projects::UploadImage.perform(repository: repository,
+                                           params: params,
+                                           root_url: root_url)
+    result[:link]
   end
 end
