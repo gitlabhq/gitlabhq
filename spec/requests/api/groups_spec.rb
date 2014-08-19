@@ -147,7 +147,7 @@ describe API::API, api: true  do
   describe "POST /groups/:id/projects/:project_id" do
     let(:project) { create(:project) }
     before(:each) do
-      Projects::TransferService.any_instance.stub(execute: true)
+      Projects::Transfer.any_instance.stub(perform: true)
       Project.stub(:find).and_return(project)
     end
 
