@@ -18,7 +18,7 @@ class MigrateTaggableLabels < ActiveRecord::Migration
     label_name = tagging.tag.name
     label = target.project.labels.find_or_create_by(title: label_name)
 
-    if LabelLink.create(label: label, target: target)
+    if label.valid? && LabelLink.create(label: label, target: target)
       print '.'
     else
       print 'F'
