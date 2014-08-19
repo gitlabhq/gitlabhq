@@ -238,7 +238,7 @@ module Gitlab
         title: "Issue in #{title}",
         class: "gfm gfm-issue #{html_options[:class]}"
       )
-      link_to("#{identifier}", url, options)
+      link_to("##{identifier}", url, options)
     end
   end
 end
