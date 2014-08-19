@@ -3,15 +3,19 @@
   %hr
   - if @repository.exists? && !@repository.empty? && @repository.contribution_guide && !@issue.persisted?
     - contribution_guide_url = project_blob_path(@project, tree_join(@repository.root_ref, @repository.contribution_guide.name))
-    .alert.alert-info.col-sm-10.col-sm-offset-2
-      ="Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
+    .row
+      .col-sm-10.col-sm-offset-2
+        .alert.alert-info
+          = "Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
 
   = form_for [@project, @issue], html: { class: 'form-horizontal issue-form' } do |f|
     -if @issue.errors.any?
-      .alert.alert-danger
-        - @issue.errors.full_messages.each do |msg|
-          %span= msg
-          %br
+      .row
+        .col-sm-10.col-sm-offset-2
+          .alert.alert-danger
+            - @issue.errors.full_messages.each do |msg|
+              %span= msg
+              %br
     .form-group
       = f.label :title, class: 'control-label' do
         %strong= 'Title *'
@@ -44,14 +48,11 @@
         .col-sm-10= f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'select2'})
 
     .form-group
-      = f.label :label_list, class: 'control-label' do
+      = f.label :label_ids, class: 'control-label' do
         %i.icon-tag
         Labels
       .col-sm-10
-        = f.text_field :label_list, maxlength: 2000, class: "form-control"
-        %p.hint Separate labels with commas.
-
-
+        = f.collection_select :label_ids, @project.labels.all, :id, :name, { selected: @issue.label_ids }, multiple: true, class: 'select2'
 
     .form-actions
       - if @issue.new_record?
@@ -63,35 +64,6 @@
       = link_to "Cancel", cancel_path, class: 'btn btn-cancel'
 
 :javascript
-  $("#issue_label_list")
-    .bind( "keydown", function( event ) {
-      if ( event.keyCode === $.ui.keyCode.TAB &&
-        $( this ).data( "autocomplete" ).menu.active ) {
-        event.preventDefault();
-      }
-    })
-    .bind("click", function(event) {
-      $(this).autocomplete("search", "");
-    })
-    .autocomplete({
-      minLength: 0,
-      source: function( request, response ) {
-        response( $.ui.autocomplete.filter(
-          #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
-      },
-      focus: function() {
-        return false;
-      },
-      select: function(event, ui) {
-        var terms = split( this.value );
-        terms.pop();
-        terms.push( ui.item.value );
-        terms.push( "" );
-        this.value = terms.join( ", " );
-        return false;
-      }
-    });
-
   $('.assign-to-me-link').on('click', function(e){
     $('#issue_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();

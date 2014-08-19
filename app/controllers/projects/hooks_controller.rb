@@ -24,7 +24,17 @@ class Projects::HooksController < Projects::ApplicationController
   end
 
   def test
-    TestHookService.new.execute(hook, current_user)
+    if !@project.empty_repo?
+      status = TestHookService.new.execute(hook, current_user)
+      if status
+        flash[:notice] = 'Hook successfully executed.'
+      else
+        flash[:alert] = 'Hook execution failed. '\
+                        'Ensure hook URL is correct and service is up.'
+      end
+    else
+      flash[:alert] = 'Hook execution failed. Ensure the project has commits.'
+    end
 
     redirect_to :back
   end

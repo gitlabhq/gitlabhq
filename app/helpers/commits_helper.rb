@@ -1,3 +1,4 @@
+# encoding: utf-8
 module CommitsHelper
   # Returns a link to the commit author. If the author has a matching user and
   # is a member of the current @project it will link to the team member page.
@@ -180,6 +181,17 @@ module CommitsHelper
     return old_lines, new_lines
   end
 
+  def link_to_browse_code(project, commit)
+    if current_controller?(:projects, :commits)
+      if @repo.blob_at(commit.id, @path)
+        return link_to "Browse File »", project_blob_path(project, tree_join(commit.id, @path)), class: "pull-right"
+      elsif @path.present?
+        return link_to "Browse Dir »", project_tree_path(project, tree_join(commit.id, @path)), class: "pull-right"
+      end
+    end
+    link_to "Browse Code »", project_tree_path(project, commit), class: "pull-right"
+  end
+
   protected
 
   # Private: Returns a link to a person. If the person has a matching user and
@@ -219,5 +231,17 @@ module CommitsHelper
 
   def diff_file_mode_changed?(diff)
     diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+  end
+
+  def unfold_bottom_class(bottom)
+    (bottom) ? 'js-unfold-bottom' : ''
+  end
+
+  def view_file_btn(commit_sha, diff, project)
+    link_to project_blob_path(project, tree_join(commit_sha, diff.new_path)),
+            class: 'btn btn-small view-file js-view-file' do
+      raw('View file @') + content_tag(:span, commit_sha[0..6],
+                                       class: 'commit-short-id')
+    end
   end
 end

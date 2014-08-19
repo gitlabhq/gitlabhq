@@ -49,6 +49,16 @@ production: &base
     ##   COLOR  = 5
     # default_theme: 2 # default: 2
 
+    ## Users can create accounts
+    # This also allows normal users to sign up for accounts themselves
+    # default: false - By default GitLab administrators must create all new accounts
+    # signup_enabled: true
+
+    ## Standard login settings
+    # The standard login can be disabled to force login via LDAP
+    # default: true - If set to false the standard login form won't be shown on the sign-in page
+    # signin_enabled: false
+
     # Restrict setting visibility levels for non-admin users.
     # The default is to allow all levels.
     #restricted_visibility_levels: [ "public" ]
@@ -57,6 +67,7 @@ production: &base
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
+    # Tip: you can test your closing pattern at http://rubular.com
     # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)'
 
     ## Default project features settings
@@ -111,16 +122,6 @@ production: &base
   #
   # 2. Auth settings
   # ==========================
-
-  ## Users can create accounts
-  # This also allows normal users to sign up for accounts themselves
-  # default: false - By default GitLab administrators must create all new accounts
-  # signup_enabled: true
-
-  ## Standard login settings
-  # The standard login can be disabled to force login via LDAP
-  # default: true - If set to false the standard login form won't be shown on the sign-in page
-  # signin_enabled: false
 
   ## LDAP settings
   # You can inspect a sample of the LDAP users with login access by running:
@@ -197,6 +198,7 @@ production: &base
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
     path: /home/git/gitlab-satellites/
+    timeout: 30
 
   ## Backup settings
   backup:
@@ -226,7 +228,7 @@ production: &base
     # The next value is the maximum memory size grit can use
     # Given in number of bytes per git object (e.g. a commit)
     # This value can be increased if you have very large commits
-    max_size: 5242880 # 5.megabytes
+    max_size: 20971520 # 20.megabytes
     # Git timeout to read a commit, in seconds
     timeout: 10
 
@@ -257,6 +259,17 @@ test:
   gitlab:
     host: localhost
     port: 80
+
+    # When you run tests we clone and setup gitlab-shell
+    # In order to setup it correctly you need to specify 
+    # your system username you use to run GitLab
+    # user: YOUR_USERNAME 
+  satellites:
+    path: tmp/tests/gitlab-satellites/
+  gitlab_shell:
+    path: tmp/tests/gitlab-shell/
+    repos_path: tmp/tests/repositories/
+    hooks_path: tmp/tests/gitlab-shell/hooks/
   issues_tracker:
     redmine:
       title: "Redmine"

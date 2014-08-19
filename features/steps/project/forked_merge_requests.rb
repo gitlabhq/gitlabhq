@@ -9,18 +9,11 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     @project = Project.find_by(name: "Shop")
     @project ||= create(:project, name: "Shop")
     @project.team << [@user, :reporter]
+    @project.ensure_satellite_exists
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
-    @forking_user = @user
-    forked_project_link = build(:forked_project_link)
-    @forked_project = Project.find_by(name: "Forked Shop")
-    @forked_project ||= create(:project, name: "Forked Shop", forked_project_link: forked_project_link, creator_id: @forking_user.id , namespace: @forking_user.namespace)
-
-    forked_project_link.forked_from_project = @project
-    forked_project_link.forked_to_project = @forked_project
-    @forked_project.team << [@forking_user , :master]
-    forked_project_link.save!
+    @forked_project = Projects::ForkService.new(@project, @user).execute
   end
 
   step 'I click link "New Merge Request"' do
@@ -33,8 +26,8 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     current_path.should == project_merge_request_path(@project, @merge_request)
     @merge_request.title.should == "Merge Request On Forked Project"
     @merge_request.source_project.should == @forked_project
-    @merge_request.source_branch.should == "master"
-    @merge_request.target_branch.should == "stable"
+    @merge_request.source_branch.should == "fix"
+    @merge_request.target_branch.should == "master"
     page.should have_content @forked_project.path_with_namespace
     page.should have_content @project.path_with_namespace
     page.should have_content @merge_request.source_branch
@@ -42,17 +35,11 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I fill out a "Merge Request On Forked Project" merge request' do
-    select2 @forked_project.id, from: "#merge_request_source_project_id"
-    select2 @project.id, from: "#merge_request_target_project_id"
+    select @forked_project.path_with_namespace, from: "merge_request_source_project_id"
+    select @project.path_with_namespace, from: "merge_request_target_project_id"
+    select "fix", from: "merge_request_source_branch"
+    select "master", from: "merge_request_target_branch"
 
-    find(:select, "merge_request_source_project_id", {}).value.should == @forked_project.id.to_s
-    find(:select, "merge_request_target_project_id", {}).value.should == @project.id.to_s
-
-    select2 "master", from: "#merge_request_source_branch"
-    select2 "stable", from: "#merge_request_target_branch"
-
-    find(:select, "merge_request_source_branch", {}).value.should == 'master'
-    find(:select, "merge_request_target_branch", {}).value.should == 'stable'
     click_button "Compare branches"
 
     fill_in "merge_request_title", with: "Merge Request On Forked Project"
@@ -101,8 +88,8 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     @merge_request = @project.merge_requests.last
     current_path.should == project_merge_request_path(@project, @merge_request)
     @merge_request.source_project.should == @forked_project
-    @merge_request.source_branch.should == "master"
-    @merge_request.target_branch.should == "stable"
+    @merge_request.source_branch.should == "fix"
+    @merge_request.target_branch.should == "master"
     page.should have_content @forked_project.path_with_namespace
     page.should have_content @project.path_with_namespace
     page.should have_content @merge_request.source_branch
@@ -113,33 +100,6 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_content "You pushed to new_design"
     page.should have_link "Create Merge Request"
   end
-
-  step 'project "Forked Shop" has push event' do
-    @forked_project = Project.find_by(name: "Forked Shop")
-
-    data = {
-      before: "0000000000000000000000000000000000000000",
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/new_design",
-      user_id: @user.id,
-      user_name: @user.name,
-      repository: {
-        name: @forked_project.name,
-        url: "localhost/rubinius",
-        description: "",
-        homepage: "localhost/rubinius",
-        private: true
-      }
-    }
-
-    @event = Event.create(
-      project: @forked_project,
-      action: Event::PUSHED,
-      data: data,
-      author_id: @user.id
-    )
-  end
-
 
   step 'I click link edit "Merge Request On Forked Project"' do
     find("#edit_merge_request").click

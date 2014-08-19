@@ -187,6 +187,11 @@ class Groups < Spinach::FeatureSteps
     click_link 'GL-113'
   end
 
+  step 'I should see group milestone with descriptions and expiry date' do
+    page.should have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
+    page.should have_content('expires at Aug 20, 2014')
+  end
+
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
     page.should have_content('Milestone GL-113')
     page.should have_content('Progress: 0 closed – 4 open')
@@ -232,7 +237,9 @@ class Groups < Spinach::FeatureSteps
                             project: project2
     milestone2_project3 = create :milestone,
                             title: "GL-113",
-                            project: @project3
+                            project: @project3,
+                            due_date: '2014-08-20',
+                            description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry'
     @issue1 = create :issue,
                project: @project1,
                assignee: current_user,

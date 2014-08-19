@@ -12,6 +12,7 @@
 - [Branches](branches.md)
 - [Merge Requests](merge_requests.md)
 - [Issues](issues.md)
+- [Labels](labels.md)
 - [Milestones](milestones.md)
 - [Notes](notes.md) (comments)
 - [Deploy Keys](deploy_keys.md)
@@ -30,7 +31,7 @@
 
 ## Introduction
 
-All API requests require authentication. You need to pass a `private_token` parameter by url or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
+All API requests require authentication. You need to pass a `private_token` parameter by URL or header. If passed as header, the header name must be "PRIVATE-TOKEN" (capital and with dash instead of underscore). You can find or reset your private token in your profile.
 
 If no, or an invalid, `private_token` is provided then an error message will be returned with status code 401:
 
@@ -64,14 +65,14 @@ API request types:
 
 - `GET` requests access one or more resources and return the result as JSON
 - `POST` requests return `201 Created` if the resource is successfully created and return the newly created resource as JSON
-- `GET`, `PUT` and `DELETE` return `200 Ok` if the resource is accessed, modified or deleted successfully, the (modified) result is returned as JSON
-- `DELETE` requests are designed to be idempotent, meaning a request a resource still returns `200 Ok` even it was deleted before or is not available. The reasoning behind it is the user is not really interested if the resource existed before or not.
+- `GET`, `PUT` and `DELETE` return `200 OK` if the resource is accessed, modified or deleted successfully, the (modified) result is returned as JSON
+- `DELETE` requests are designed to be idempotent, meaning a request a resource still returns `200 OK` even it was deleted before or is not available. The reasoning behind it is the user is not really interested if the resource existed before or not.
 
 The following list shows the possible return codes for API requests.
 
 Return values:
 
-- `200 Ok` - The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON
+- `200 OK` - The `GET`, `PUT` or `DELETE` request was successful, the resource(s) itself is returned as JSON
 - `201 Created` - The `POST` request was successful and the resource is returned as JSON
 - `400 Bad Request` - A required attribute of the API request is missing, e.g. the title of an issue is not given
 - `401 Unauthorized` - The user is not authenticated, a valid user token is necessary, see above
@@ -132,14 +133,14 @@ When listing resources you can pass the following parameters:
 
 ## id vs iid
 
-When you work with API you may notice two similar fields in api entites: id and iid. The main difference between them is scope. Example: 
+When you work with API you may notice two similar fields in api entities: id and iid. The main difference between them is scope. Example:
 
 Issue:
 
     id: 46
     iid: 5
 
-- id - is uniq across all Issues table. It used for any api calls. 
-- iid - is uniq only in scope of single project. When you browse issues or merge requests with Web UI - you see iid. 
+- id - is unique across all issues. It's used for any api call.
+- iid - is unique only in scope of a single project. When you browse issues or merge requests with Web UI, you see iid.
 
 So if you want to get issue with api you use `http://host/api/v3/.../issues/:id.json`. But when you want to create a link to web page - use  `http:://host/project/issues/:iid.json`

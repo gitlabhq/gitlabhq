@@ -3,15 +3,18 @@ class ProjectSearchCode < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  When 'I search for term "Welcome to GitLab"' do
-    fill_in "search", with: "Welcome to GitLab"
+  step 'I search for term "coffee"' do
+    fill_in "search", with: "coffee"
     click_button "Go"
     click_link 'Repository Code'
   end
 
-  Then 'I should see files from repository containing "Welcome to GitLab"' do
-    page.should have_content "Welcome to GitLab"
-    page.should have_content "GitLab is a free project and repository management application"
+  step 'I should see files from repository containing "coffee"' do
+    page.should have_content 'coffee'
+    page.should have_content 'CONTRIBUTING.md'
   end
 
+  step 'I should see empty result' do
+    page.should have_content "We couldn't find any matching code"
+  end
 end

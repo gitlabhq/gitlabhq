@@ -7,7 +7,7 @@ module API
       helpers do
         def map_public_to_visibility_level(attrs)
           publik = attrs.delete(:public)
-          publik = [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(publik)
+          publik = parse_boolean(publik)
           attrs[:visibility_level] = Gitlab::VisibilityLevel::PUBLIC if !attrs[:visibility_level].present? && publik == true
           attrs
         end
@@ -15,10 +15,20 @@ module API
 
       # Get a projects list for authenticated user
       #
+      # Parameters:
+      #   archived (optional) - if passed, limit by archived status
+      #
       # Example Request:
       #   GET /projects
       get do
-        @projects = paginate current_user.authorized_projects
+        @projects = current_user.authorized_projects
+
+        # If the archived parameter is passed, limit results accordingly
+        if params[:archived].present?
+          @projects = @projects.where(archived: parse_boolean(params[:archived]))
+        end
+
+        @projects = paginate @projects
         present @projects, with: Entities::Project
       end
 
@@ -77,6 +87,7 @@ module API
       #   namespace_id (optional) - defaults to user namespace
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional) - 0 by default
+      #   import_url (optional)
       # Example Request
       #   POST /projects
       post do
@@ -117,6 +128,7 @@ module API
       #   snippets_enabled (optional)
       #   public (optional) - if true same as setting visibility_level = 20
       #   visibility_level (optional)
+      #   import_url (optional)
       # Example Request
       #   POST /projects/user/:user_id
       post "user/:user_id" do
@@ -130,7 +142,8 @@ module API
                                      :wiki_enabled,
                                      :snippets_enabled,
                                      :public,
-                                     :visibility_level]
+                                     :visibility_level,
+                                     :import_url]
         attrs = map_public_to_visibility_level(attrs)
         @project = ::Projects::CreateService.new(user, attrs).execute
         if @project.saved?
@@ -210,17 +223,6 @@ module API
         @users = @users.search(params[:search]) if params[:search].present?
         @users = paginate @users
         present @users, with: Entities::UserBasic
-      end
-
-      # Get a project labels
-      #
-      # Parameters:
-      #   id (required) - The ID of a project
-      # Example Request:
-      #   GET /projects/:id/labels
-      get ':id/labels' do
-        @labels = user_project.issues_labels
-        present @labels, with: Entities::Label
       end
     end
   end

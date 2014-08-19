@@ -46,3 +46,8 @@ $ ->
     $.cookie('hide_no_ssh_message', 'false', { path: path })
     $(@).parents('.no-ssh-key-message').hide()
     e.preventDefault()
+
+  $('.project-side .star').on 'ajax:success', (e, data, status, xhr) ->
+    $(@).toggleClass('on').find('.count').html(data.star_count)
+  .on 'ajax:error', (e, xhr, status, error) ->
+    new Flash('Star toggle failed. Try again later.', 'alert')

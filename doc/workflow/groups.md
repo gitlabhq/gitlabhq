@@ -21,7 +21,7 @@ When your group has been created you are presented with the group dashboard feed
 
 You can use the 'New project' button to add a project to the new group.
 
-## Transfering an existing project into a group
+## Transferring an existing project into a group
 
 You can transfer an existing project into a group you own from the project settings page.
 First scroll down to the 'Dangerous settings' and click 'Show them to me'.
@@ -59,7 +59,7 @@ See [the GitLab Enterprise Edition documentation](http://doc.gitlab.com/ee/integ
 ## Allowing only admins to create groups
 
 By default, any GitLab user can create new groups.
-This ability can be disabled for individual users from the admin panel. 
+This ability can be disabled for individual users from the admin panel.
 It is also possible to configure GitLab so that new users default to not being able to create groups:
 
 ```

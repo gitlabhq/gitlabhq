@@ -63,26 +63,10 @@
 @media (min-width: 800px)  { .issues_bulk_update .select2-container { min-width: 120px; }  }
 @media (min-width: 1200px) { .issues_bulk_update .select2-container { min-width: 160px; }  }
 
-.issues-holder {
-  .issues_filters {
-  }
-
-  .issues_bulk_update {
-    margin: 0;
-    form {
-      float:left;
-    }
-
-    .update_selected_issues {
-      margin-left: 4px;
-    }
-
-    .select2-container .select2-choice {
-      height: 32px;
-      line-height: 28px;
-      color: #444 !important;
-      font-weight: 500;
-    }
+.issues_bulk_update {
+  .select2-container .select2-choice {
+    color: #444 !important;
+    font-weight: 500;
   }
 }
 
@@ -110,7 +94,7 @@
   }
 }
 
-.issue-show-labels .label {
+.issue-show-labels .color-label {
   padding: 6px 10px;
 }
 

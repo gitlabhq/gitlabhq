@@ -68,9 +68,6 @@
 
   .issue-show-labels.pull-right
     - @issue.labels.each do |label|
-      %span{class: "label #{label_css_class(label.name)}"}
-        %i.icon-tag
-        = label.name
-      &nbsp;
+      = render_colored_label(label)
 
 .voting_notes#notes= render "projects/notes/notes_with_form"

@@ -21,8 +21,8 @@ gem "mysql2", group: :mysql
 gem "pg", group: :postgres
 
 # Auth
-gem "devise", '3.0.4'
-gem "devise-async", '0.8.0'
+gem "devise", '3.2.4'
+gem "devise-async", '0.9.0'
 gem 'omniauth', "~> 1.1.3"
 gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
@@ -79,15 +79,19 @@ gem "six"
 gem "seed-fu"
 
 # Markdown to HTML
-gem "redcarpet",     "~> 2.2.2"
 gem "github-markup"
-gem "org-ruby" # For rendering .org files
+
+# Required markup gems by github-markdown
+gem 'redcarpet', '~> 2.2.2'
+gem 'RedCloth'
+gem 'rdoc', '~>3.6'
+gem 'org-ruby'
+gem 'creole', '~>0.3.6'
+gem 'wikicloth', '=0.8.1'
+gem 'asciidoctor', '= 0.1.4'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
-
-# Asciidoc to HTML
-gem  "asciidoctor"
 
 # Application server
 group :unicorn do
@@ -173,6 +177,8 @@ gem "font-awesome-rails", '~> 3.2'
 gem "gitlab_emoji", "~> 0.0.1.1"
 gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
+gem 'request_store'
+gem "virtus"
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"

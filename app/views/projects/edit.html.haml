@@ -33,12 +33,12 @@
 
           %fieldset.features
             %legend
-              Labels:
+              Tags:
             .form-group
-              = f.label :label_list, "Labels", class: 'control-label'
+              = f.label :tag_list, "Tags", class: 'control-label'
               .col-sm-10
-                = f.text_field :label_list, maxlength: 2000, class: "form-control"
-                %p.hint Separate labels with commas.
+                = f.text_field :tag_list, maxlength: 2000, class: "form-control"
+                %p.hint Separate tags with commas.
 
           %fieldset.features
             %legend
@@ -114,7 +114,7 @@
                   %br
                   %strong Once active this project shows up in the search and on the dashboard.
                 = link_to 'Unarchive', unarchive_project_path(@project),
-                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be comitted to again." },
+                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
                     method: :post, class: "btn btn-remove"
               - else
                 %p

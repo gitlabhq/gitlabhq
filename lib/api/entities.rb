@@ -103,6 +103,7 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+      expose :safe_message, as: :message
     end
 
     class RepoCommitDetail < RepoCommit
@@ -127,7 +128,7 @@ module API
     end
 
     class Issue < ProjectEntity
-      expose :label_list, as: :labels
+      expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
     end
@@ -136,7 +137,9 @@ module API
       expose :target_branch, :source_branch, :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
-      expose :label_list, as: :labels
+      expose :label_names, as: :labels
+      expose :description
+      expose :milestone, using: Entities::Milestone
     end
 
     class SSHKey < Grape::Entity
@@ -192,7 +195,7 @@ module API
     end
 
     class Label < Grape::Entity
-      expose :name
+      expose :name, :color
     end
 
     class RepoDiff < Grape::Entity
@@ -202,13 +205,13 @@ module API
 
     class Compare < Grape::Entity
       expose :commit, using: Entities::RepoCommit do |compare, options|
-        if compare.commit
-          Commit.new compare.commit
-        end
+        Commit.decorate(compare.commits).last
       end
+
       expose :commits, using: Entities::RepoCommit do |compare, options|
-        Commit.decorate compare.commits
+        Commit.decorate(compare.commits)
       end
+
       expose :diffs, using: Entities::RepoDiff do |compare, options|
         compare.diffs
       end

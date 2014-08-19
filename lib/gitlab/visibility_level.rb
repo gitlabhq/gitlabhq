@@ -5,9 +5,9 @@
 #
 module Gitlab
   module VisibilityLevel
-    PRIVATE  = 0
-    INTERNAL = 10
-    PUBLIC   = 20
+    PRIVATE  = 0 unless const_defined?(:PRIVATE)
+    INTERNAL = 10 unless const_defined?(:INTERNAL)
+    PUBLIC   = 20 unless const_defined?(:PUBLIC)
 
     class << self
       def values
@@ -21,7 +21,7 @@ module Gitlab
           'Public'   => PUBLIC
         }
       end
-      
+
       def allowed_for?(user, level)
         user.is_admin? || !Gitlab.config.gitlab.restricted_visibility_levels.include?(level)
       end

@@ -1,0 +1,38 @@
+.clearfix
+  .pull-left
+    = form_tag explore_projects_path, method: :get, class: 'form-inline form-tiny' do |f|
+      .form-group
+        = search_field_tag :search, params[:search], placeholder: "Filter by name", class: "form-control search-text-input input-mn-300", id: "projects_search"
+      .form-group
+        = submit_tag 'Search', class: "btn btn-primary wide"
+
+  .pull-right
+    .dropdown.inline
+      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+        %span.light sort:
+        - if @sort.present?
+          = @sort.humanize
+        - else
+          Name
+        %b.caret
+      %ul.dropdown-menu
+        %li
+          = link_to explore_projects_path(sort: nil) do
+            Name
+          = link_to explore_projects_path(sort: 'newest') do
+            Newest
+          = link_to explore_projects_path(sort: 'oldest') do
+            Oldest
+          = link_to explore_projects_path(sort: 'recently_updated') do
+            Recently updated
+          = link_to explore_projects_path(sort: 'last_updated') do
+            Last updated
+
+%hr
+.public-projects
+  %ul.bordered-list.top-list
+    = render @projects
+    - unless @projects.present?
+      .nothing-here-block No public projects
+
+  = paginate @projects, theme: "gitlab"

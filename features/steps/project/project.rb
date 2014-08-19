@@ -33,7 +33,16 @@ class ProjectFeature < Spinach::FeatureSteps
 
   step 'I should see project "Shop" version' do
     within '.project-side' do
-      page.should have_content "Version: 2.2.0"
+      page.should have_content "Version: 6.7.0.pre"
     end
+  end
+
+  step 'change project default branch' do
+    select 'fix', from: 'project_default_branch'
+    click_button 'Save changes'
+  end
+
+  step 'I should see project default branch changed' do
+    find(:css, 'select#project_default_branch').value.should == 'fix'
   end
 end

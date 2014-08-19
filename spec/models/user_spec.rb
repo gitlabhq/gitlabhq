@@ -312,6 +312,40 @@ describe User do
     end
   end
 
+  describe :requires_ldap_check? do
+    let(:user) { User.new }
+
+    it 'is false when LDAP is disabled' do
+      # Create a condition which would otherwise cause 'true' to be returned
+      user.stub(ldap_user?: true)
+      user.last_credential_check_at = nil
+      expect(user.requires_ldap_check?).to be_false
+    end
+
+    context 'when LDAP is enabled' do
+      before { Gitlab.config.ldap.stub(enabled: true) }
+
+      it 'is false for non-LDAP users' do
+        user.stub(ldap_user?: false)
+        expect(user.requires_ldap_check?).to be_false
+      end
+
+      context 'and when the user is an LDAP user' do
+        before { user.stub(ldap_user?: true) }
+
+        it 'is true when the user has never had an LDAP check before' do
+          user.last_credential_check_at = nil
+          expect(user.requires_ldap_check?).to be_true
+        end
+
+        it 'is true when the last LDAP check happened over 1 hour ago' do
+          user.last_credential_check_at = 2.hours.ago
+          expect(user.requires_ldap_check?).to be_true
+        end
+      end
+    end
+  end
+
   describe '#full_website_url' do
     let(:user) { create(:user) }
 
@@ -353,6 +387,46 @@ describe User do
       user.website_url = 'https://test.com'
 
       expect(user.short_website_url).to eq 'test.com'
+    end
+  end
+
+  describe "#starred?" do
+    it "determines if user starred a project" do
+      user = create :user
+      project1 = create :project, :public
+      project2 = create :project, :public
+
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_false
+
+      star1 = UsersStarProject.create!(project: project1, user: user)
+      expect(user.starred?(project1)).to be_true
+      expect(user.starred?(project2)).to be_false
+
+      star2 = UsersStarProject.create!(project: project2, user: user)
+      expect(user.starred?(project1)).to be_true
+      expect(user.starred?(project2)).to be_true
+
+      star1.destroy
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_true
+
+      star2.destroy
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_false
+    end
+  end
+
+  describe "#toggle_star" do
+    it "toggles stars" do
+      user = create :user
+      project = create :project, :public
+
+      expect(user.starred?(project)).to be_false
+      user.toggle_star(project)
+      expect(user.starred?(project)).to be_true
+      user.toggle_star(project)
+      expect(user.starred?(project)).to be_false
     end
   end
 end

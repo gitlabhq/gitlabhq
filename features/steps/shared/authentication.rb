@@ -24,6 +24,10 @@ module SharedAuthentication
     current_path.should == new_user_session_path
   end
 
+  step "I logout" do
+    logout
+  end
+
   def current_user
     @user || User.first
   end

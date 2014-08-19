@@ -2,11 +2,9 @@
   New merge request
 %p.slead
   From
-  %strong.monospace
-    #{@merge_request.source_project_namespace}:#{@merge_request.source_branch}
-  into
-  %strong.monospace
-    #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
+  %strong.label-branch #{@merge_request.source_project_namespace}:#{@merge_request.source_branch}
+  %span into
+  %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
 
   %span.pull-right
     = link_to 'Change branches', new_project_merge_request_path(@project)
@@ -43,12 +41,18 @@
             %i.icon-time
             Milestone
           %div= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2'})
+      .form-group
+        = f.label :label_ids do
+          %i.icon-tag
+          Labels
+        %div
+          = f.collection_select :label_ids, @merge_request.target_project.labels.all, :id, :name, { selected: @merge_request.label_ids }, multiple: true, class: 'select2'
+
     .panel-footer
-      - if @target_repo.contribution_guide
-        - contribution_guide_url = project_blob_path(@target_project, tree_join(@target_repo.root_ref, @target_repo.contribution_guide.name))
+      - if contribution_guide_url(@target_project)
         %p
           Please review the
-          %strong #{link_to "guidelines for contribution", contribution_guide_url}
+          %strong #{link_to "guidelines for contribution", contribution_guide_url(@target_project)}
           to this repository.
       = f.hidden_field :source_project_id
       = f.hidden_field :target_project_id
@@ -75,6 +79,10 @@
   - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
     .bs-callout.bs-callout-danger
       %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.
+      %p To preserve performance the line changes are not shown.
+  - else
+    .bs-callout.bs-callout-danger
+      %h4 This comparison includes huge diff.
       %p To preserve performance the line changes are not shown.
 
 

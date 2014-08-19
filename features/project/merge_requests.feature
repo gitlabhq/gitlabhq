@@ -52,27 +52,27 @@ Feature: Project Merge Requests
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
     And I switch to the diff tab
-    And I leave a comment like "Line is wrong" on line 185 of the first file
+    And I leave a comment like "Line is wrong" on diff
     And I switch to the merge request's comments tab
-    Then I should see a discussion has started on line 185
+    Then I should see a discussion has started on diff
 
   @javascript
   Scenario: I comment on a line of a commit in merge request
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I click on the first commit in the merge request
-    And I leave a comment like "Line is wrong" on line 185 of the first file in commit
+    And I click on the commit in the merge request
+    And I leave a comment like "Line is wrong" on diff in commit
     And I switch to the merge request's comments tab
-    Then I should see a discussion has started on commit b1e6a9dbf1:L185
+    Then I should see a discussion has started on commit diff
 
   @javascript
   Scenario: I comment on a commit in merge request
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside
     And I visit merge request page "Bug NS-05"
-    And I click on the first commit in the merge request
+    And I click on the commit in the merge request
     And I leave a comment on the diff page in commit
     And I switch to the merge request's comments tab
-    Then I should see a discussion has started on commit b1e6a9dbf1
+    Then I should see a discussion has started on commit
 
   @javascript
   Scenario: I accept merge request with custom commit message
@@ -139,3 +139,11 @@ Feature: Project Merge Requests
     And I click link "Show inline discussion" of the second file
     Then I should see a comment like "Line is wrong" in the second file
     And I should still see a comment like "Line is correct" in the first file
+
+  @javascript
+  Scenario: I unfold diff
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I switch to the diff tab
+    And I unfold diff
+    Then I should see additional file lines
