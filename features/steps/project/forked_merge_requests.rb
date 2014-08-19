@@ -13,7 +13,8 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I have a project forked off of "Shop" called "Forked Shop"' do
-    @forked_project = Projects::ForkService.new(@project, @user).execute
+    result = Projects::Fork.perform(from_project: @project, user: @user)
+    @forked_project = result[:project]
   end
 
   step 'I click link "New Merge Request"' do

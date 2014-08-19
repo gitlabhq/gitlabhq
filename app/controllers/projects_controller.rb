@@ -118,11 +118,13 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    @forked_project = ::Projects::ForkService.new(project, current_user).execute
+    result = Projects::Fork.perform(from_project: project, user: current_user)
 
     respond_to do |format|
       format.html do
-        if @forked_project.saved? && @forked_project.forked?
+        if result.success?
+          @forked_project = result[:project]
+
           redirect_to(@forked_project, notice: 'Project was successfully forked.')
         else
           @title = 'Fork project'
