@@ -331,6 +331,8 @@ Gitlab::Application.routes.draw do
           post :preview
         end
       end
+
+      resource :avatar, only: [:show, :destroy]
     end
   end
 

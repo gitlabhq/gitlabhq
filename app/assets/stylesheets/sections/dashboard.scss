@@ -88,26 +88,33 @@
     }
   }
 }
-
-.project-access-icon {
-  margin-left: 10px;
+.project-avatar {
   float: left;
-  margin-right: 15px;
+}
+.project-access-icon {
+  float: left;
   font-size: 20px;
   margin-bottom: 15px;
   border: 1px solid #EEE;
   padding: 8px 12px;
-  border-radius: 50px;
+  border-radius: 20px;
   background: #f5f5f5;
   text-align: center;
+  position: relative;
+  left: -32px;
+  top: 38px;
 
   i {
     color: #BBB;
   }
 }
 
+.dash-project-avatar {
+  float: left;
+}
 .dash-project-access-icon {
   float: left;
   margin-right: 3px;
+  color: #999;
   width: 16px;
 }

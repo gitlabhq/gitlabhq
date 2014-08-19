@@ -49,6 +49,31 @@ module ApplicationHelper
     args.any? { |v| v.to_s.downcase == action_name }
   end
 
+  def project_icon(project_id, options = {})
+    project = Project.find_with_namespace(project_id)
+    if project.avatar.present?
+      image_tag project.avatar.url, options
+    elsif options[:only_uploaded]
+      image_tag '/assets/no_project_icon.png', options
+    elsif project.avatar_in_git
+      image_tag project_avatar_path(project), options
+    else # generated icon
+      project_identicon(project, options)
+    end
+  end
+
+  def project_identicon(project, options = {})
+    options[:class] ||= ''
+    options[:class] << ' identicon'
+    bg_color = Digest::MD5.hexdigest(project.name)[0, 6]
+    brightness = bg_color[0, 2].hex + bg_color[2, 2].hex + bg_color[4, 2].hex
+    text_color = (brightness > 375) ? '#000' : '#fff'
+    content_tag(:div, class: options[:class],
+      style: "background-color: ##{ bg_color }; color: #{ text_color }") do
+        project.name[0, 1].upcase
+    end
+  end
+
   def group_icon(group_path)
     group = Group.find_by(path: group_path)
     if group && group.avatar.present?

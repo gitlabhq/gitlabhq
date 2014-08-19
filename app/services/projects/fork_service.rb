@@ -12,6 +12,9 @@ module Projects
       project.path = @from_project.path
       project.namespace = current_user.namespace
       project.creator = current_user
+      if @from_project.avatar && @from_project.avatar.image?
+        project.avatar = @from_project.avatar
+      end
 
       # If the project cannot save, we do not want to trigger the project destroy
       # as this can have the side effect of deleting a repo attached to an existing
