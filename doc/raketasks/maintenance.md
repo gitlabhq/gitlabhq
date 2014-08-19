@@ -118,5 +118,9 @@ This will create satellite repositories for all your projects.
 If necessary, remove the `tmp/repo_satellites` directory and rerun the command below.
 
 ```
+# omnibus-gitlab
+sudo gitlab-rake gitlab:satellites:create
+
+# installation from source or cookbook
 bundle exec rake gitlab:satellites:create RAILS_ENV=production
 ```
