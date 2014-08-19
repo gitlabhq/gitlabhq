@@ -24,9 +24,10 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
-    data = GitPushService.new.sample_data(project, current_user)
+    interactor = Projects::Repository::SamplePush
+    result = interactor.perform(project: project, user: current_user)
 
-    @service.execute(data)
+    @service.execute(result[:push_data])
 
     redirect_to :back
   end

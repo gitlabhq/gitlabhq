@@ -13,7 +13,7 @@ module Projects
 
     organize [
       # Order by smaller consequences
-      Projects::ExpireRepositoryCache,
+      Projects::Repositories::ExpireCache,
       Projects::RemoveSatellite,
       Projects::RemoveRepository,
       Projects::RemoveWiki,

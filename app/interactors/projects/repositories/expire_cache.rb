@@ -1,5 +1,5 @@
-module Projects
-  class ExpireRepositoryCache < Projects::Base
+module Projects::Repositories
+  class ExpireCache < Projects::Base
     def perform
       project = context[:project]
 
