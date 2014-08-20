@@ -81,7 +81,7 @@ server {
   ssl_prefer_server_ciphers   on;
 
   add_header Strict-Transport-Security max-age=63072000;
-  add_header X-Frame-Options DENY;
+  add_header X-Frame-Options SAMEORIGIN;
   add_header X-Content-Type-Options nosniff;
 
   ## Individual nginx logs for this GitLab vhost
