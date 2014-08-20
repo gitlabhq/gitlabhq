@@ -2,3 +2,4 @@
 - [Project Features](project_features.md)
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Groups](groups.md)
+- [Labels](labels.md)
