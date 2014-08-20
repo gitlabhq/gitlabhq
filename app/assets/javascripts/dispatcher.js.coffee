@@ -50,7 +50,7 @@ class Dispatcher
         new TreeView()
       when 'projects:blob:show'
         new BlobView()
-      when 'projects:labels:new'
+      when 'projects:labels:new', 'projects:labels:edit'
         new Labels()
 
     switch path.first()
