@@ -112,15 +112,16 @@ describe API::API, api: true  do
         response.status.should == 400
       end
 
-      it 'should return 405 on invalid label names' do
+      it 'should return 400 on invalid label names' do
         post api("/projects/#{project.id}/merge_requests", user),
              title: 'Test merge_request',
              source_branch: 'stable',
              target_branch: 'master',
              author: user,
              labels: 'label, ?'
-        response.status.should == 405
-        json_response['message'].should == 'Label names invalid'
+        response.status.should == 400
+        json_response['message']['labels']['?']['title'].should ==
+          ['is invalid']
       end
     end
 
@@ -252,13 +253,13 @@ describe API::API, api: true  do
       json_response['target_branch'].should == 'wiki'
     end
 
-    it 'should return 405 on invalid label names' do
+    it 'should return 400 on invalid label names' do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}",
               user),
           title: 'new issue',
           labels: 'label, ?'
-      response.status.should == 405
-      json_response['message'].should == 'Label names invalid'
+      response.status.should == 400
+      json_response['message']['labels']['?']['title'].should == ['is invalid']
     end
   end
 
