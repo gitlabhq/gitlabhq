@@ -1,6 +1,6 @@
 # Labels
 
-In GitLab, you can easily tag issues and merge requests. To create a label, go to a project and then to `Issues` and then `Labels`.
+In GitLab, you can easily tag issues and merge requests. If you have permission level `Developer` or higher, you can manage labels. To create, edit or delete a label, go to a project and then to `Issues` and then `Labels`.
 
 Here you can create a new label.
 
