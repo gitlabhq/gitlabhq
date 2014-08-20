@@ -54,7 +54,7 @@ describe ProjectsFinder do
     it { should include(project4) }
   end
 
-  context 'authenticated, group memeber with project shared with group' do
+  context 'authenticated, group member with project shared with group' do
     before {
       group.add_user(user, Gitlab::Access::DEVELOPER)
       project5.project_group_links.create group_access: Gitlab::Access::MASTER, group: group
