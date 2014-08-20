@@ -138,6 +138,10 @@ module Issuable
     labels.order('title ASC').pluck(:title)
   end
 
+  def remove_labels
+    labels.delete_all
+  end
+
   def add_labels_by_names(label_names)
     label_names.each do |label_name|
       label = project.labels.create_with(

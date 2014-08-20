@@ -114,17 +114,21 @@ module API
 
     # Helper method for validating all labels against its names
     def validate_label_params(params)
+      errors = {}
+
       if params[:labels].present?
         params[:labels].split(',').each do |label_name|
           label = user_project.labels.create_with(
             color: Label::DEFAULT_COLOR).find_or_initialize_by(
               title: label_name.strip)
+
           if label.invalid?
-            return true
+            errors[label.title] = label.errors
           end
         end
       end
-      false
+
+      errors
     end
 
     # error helpers
