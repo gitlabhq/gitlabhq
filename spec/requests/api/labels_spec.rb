@@ -50,6 +50,14 @@ describe API::API, api: true  do
       json_response['message'].should == 'Color is invalid'
     end
 
+    it 'should return 400 for too long color code' do
+      post api("/projects/#{project.id}/labels", user),
+           name: 'Foo',
+           color: '#FFAAFFFF'
+      response.status.should == 400
+      json_response['message'].should == 'Color is invalid'
+    end
+
     it 'should return 400 for invalid name' do
       post api("/projects/#{project.id}/labels", user),
            name: '?',
@@ -144,6 +152,14 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/labels", user),
           name: 'label1',
           color: '#FF'
+      response.status.should == 400
+      json_response['message'].should == 'Color is invalid'
+    end
+
+    it 'should return 400 for too long color code' do
+      post api("/projects/#{project.id}/labels", user),
+           name: 'Foo',
+           color: '#FFAAFFFF'
       response.status.should == 400
       json_response['message'].should == 'Color is invalid'
     end
