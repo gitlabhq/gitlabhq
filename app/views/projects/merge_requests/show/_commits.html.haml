@@ -17,7 +17,7 @@
             - @commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE).each do |commit|
               = render "projects/commits/inline_commit", commit: commit, project: @merge_request.source_project
             %li
-              other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden top prevent performance issues.
+              other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden to prevent performance issues.
         - else
           %ul.all-commits.hide.well-list
             - @commits.each do |commit|
