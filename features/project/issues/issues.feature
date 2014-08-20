@@ -64,30 +64,30 @@ Feature: Project Issues
     And I should not see "Release 0.4" in issues
 
   @javascript
-  Scenario: Test to search project issues when the entered search string exactly matches an existing issue description
-    Given project "Shop" has issue "Bugfix1" with description: "Description for issue1"
-    And I fill in issue search with "Description for issue1"
-    Then I should see "Bugfix1" in issues
+  Scenario: Search issues when search string exactly matches issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And I fill in issue search with 'Description for issue1'
+    Then I should see 'Bugfix1' in issues
     And I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
     And I should not see "Tweet control" in issues
 
   @javascript
-  Scenario: Test to search project issues when the entered search string partially matches an existing issue description
-    Given project "Shop" has issue "Bugfix1" with description: "Description for issue1"
-    And project "Shop" has issue "Feature1" with description: "Feature submitted for issue1"
-    And I fill in issue search with "issue1"
-    Then I should see "Feature1" in issues
-    Then I should see "Bugfix1" in issues
+  Scenario: Search issues when search string partially matches issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And project 'Shop' has issue 'Feature1' with description: 'Feature submitted for issue1'
+    And I fill in issue search with 'issue1'
+    Then I should see 'Feature1' in issues
+    Then I should see 'Bugfix1' in issues
     And I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
     And I should not see "Tweet control" in issues
 
   @javascript
-  Scenario: Test to search project when the entered search string matches no existing issue description
-    Given project "Shop" has issue "Bugfix1" with description: "Description for issue1"
-    And I fill in issue search with "Rock and roll"
-    Then I should not see "Bugfix1" in issues
+  Scenario: Search issues when search string matches no issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And I fill in issue search with 'Rock and roll'
+    Then I should not see 'Bugfix1' in issues
     And I should not see "Release 0.4" in issues
     And I should not see "Release 0.3" in issues
     And I should not see "Tweet control" in issues

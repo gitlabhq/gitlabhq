@@ -188,38 +188,37 @@ class ProjectIssues < Spinach::FeatureSteps
     page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
   end
 
-  step 'project "Shop" has issue "Bugfix1" with description: "Description for issue1"' do
-    project = Project.find_by(name: "Shop")
-    issue = create(:issue, title: "Bugfix1", description: "Description for issue1", project: project)
+  step 'project \'Shop\' has issue \'Bugfix1\' with description: \'Description for issue1\'' do
+    project = Project.find_by(name: 'Shop')
+    issue = create(:issue, title: 'Bugfix1', description: 'Description for issue1', project: project)
   end
 
-  step 'project "Shop" has issue "Feature1" with description: "Feature submitted for issue1"' do
-    project = Project.find_by(name: "Shop")
-    issue = create(:issue, title: "Feature1", description: "Feature submitted for issue1", project: project)
+  step 'project \'Shop\' has issue \'Feature1\' with description: \'Feature submitted for issue1\'' do
+    project = Project.find_by(name: 'Shop')
+    issue = create(:issue, title: 'Feature1', description: 'Feature submitted for issue1', project: project)
   end
 
-  step 'I fill in issue search with "Description for issue1"' do
-    fill_in 'issue_search', with: "Description for issue"
+  step 'I fill in issue search with \'Description for issue1\'' do
+    fill_in 'issue_search', with: 'Description for issue'
   end
 
-  step 'I fill in issue search with "issue1"' do
-    fill_in 'issue_search', with: "issue1"
+  step 'I fill in issue search with \'issue1\'' do
+    fill_in 'issue_search', with: 'issue1'
   end
 
-  step 'I fill in issue search with "Rock and roll"' do
-    fill_in 'issue_search', with: "Description for issue"
+  step 'I fill in issue search with \'Rock and roll\'' do
+    fill_in 'issue_search', with: 'Description for issue'
   end
 
-  step 'I should see "Bugfix1" in issues' do
-    page.should have_content "Bugfix1"
+  step 'I should see \'Bugfix1\' in issues' do
+    page.should have_content 'Bugfix1'
   end
 
-  step 'I should see "Feature1" in issues' do
-    page.should have_content "Feature1"
+  step 'I should see \'Feature1\' in issues' do
+    page.should have_content 'Feature1'
   end
 
-
-  step 'I should not see "Bugfix1" in issues' do
-    page.should_not have_content "Bugfix1"
+  step 'I should not see \'Bugfix1\' in issues' do
+    page.should_not have_content 'Bugfix1'
   end
 end
