@@ -189,7 +189,7 @@ class Groups < Spinach::FeatureSteps
 
   step 'I should see group milestone with descriptions and expiry date' do
     page.should have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
-    page.should have_content('expires at Aug 20, 2014')
+    page.should have_content('expires at Aug 20, 2114')
   end
 
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
@@ -238,7 +238,7 @@ class Groups < Spinach::FeatureSteps
     milestone2_project3 = create :milestone,
                             title: "GL-113",
                             project: @project3,
-                            due_date: '2014-08-20',
+                            due_date: '2114-08-20',
                             description: 'Lorem Ipsum is simply dummy text of the printing and typesetting industry'
     @issue1 = create :issue,
                project: @project1,
