@@ -16,7 +16,7 @@ env:
     - TASK=spec:other DB=postgresql
     - TASK=jasmine:ci DB=postgresql
 before_install:
-  - sudo apt-get install libicu-dev -y
+  - sudo apt-get install cmake libicu-dev -y
 install:
   - "travis_retry bundle install --deployment --without production --retry 5"
 branches:
