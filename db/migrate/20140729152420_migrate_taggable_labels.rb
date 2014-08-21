@@ -15,7 +15,9 @@ class MigrateTaggableLabels < ActiveRecord::Migration
 
   def create_label_from_tagging(tagging)
     target = tagging.taggable
-    label_name = tagging.tag.name.tr('?&,', '')
+    label_name = tagging.tag.name
+    # '?', '&' and ',' are no longer allowed in label names so we remove them
+    label_name.tr!('?&,', '')
     label = target.project.labels.find_or_create_by(title: label_name, color: Label::DEFAULT_COLOR)
 
     if label.valid? && LabelLink.create(label: label, target: target)
