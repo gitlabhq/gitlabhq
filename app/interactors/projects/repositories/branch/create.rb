@@ -1,5 +1,5 @@
 module Projects::Repository::Branch
-  class Create < Projects::Repository::Base
+  class Create < Projects::Repository::PushBase
     def perform
       branch_name = context[:branch_name]
       ref = context[:ref]
