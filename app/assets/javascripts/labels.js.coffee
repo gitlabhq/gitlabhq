@@ -4,7 +4,7 @@ class Labels
     @setupLabelForm(form)
     @cleanBinding()
     @addBinding()
-    @updateColorPreview
+    @updateColorPreview()
 
   addBinding: ->
     $(document).on 'click', '.suggest-colors a', @setSuggestedColor
