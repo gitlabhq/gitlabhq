@@ -2,6 +2,8 @@ v 7.2.0
   - Improve Redmine integration
   - Better logging for the JIRA issue closing service
   - Administrators can now send email to all users through the admin interface
+  - JIRA issue transition ID is now customizable
+  - LDAP group settings are now visible in admin group show page and group members page
 
 v 7.1.0
   - Synchronize LDAP-enabled GitLab administrators with an LDAP group (Marvin Frick, sponsored by SinnerSchrader)
@@ -9,7 +11,7 @@ v 7.1.0
   - Support Jenkins jobs with multiple modules (Marvin Frick, sponsored by SinnerSchrader)
 
 v 7.0.0
-  - Fix: empty brand images are displayed as empty image_tag on login page (Marvin Frick, sponsored by SinnerSchrader) 
+  - Fix: empty brand images are displayed as empty image_tag on login page (Marvin Frick, sponsored by SinnerSchrader)
 
 v 6.9.4
   - Fix bug in JIRA Issue closing triggered by commit messages
