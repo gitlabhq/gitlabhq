@@ -68,6 +68,7 @@ test -e /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled || sudo /
 ```
 
 ## Converting a GitLab backup file from MySQL to Postgres
+**Note:** Please make sure to have Python 2.7.x (or higher) installed.
 
 GitLab backup files (<timestamp>_gitlab_backup.tar) contain a SQL dump. Using the lanyrd database converter we can replace a MySQL database dump inside the tar file with a Postgres database dump. This can be useful if you are moving to another server.
 
