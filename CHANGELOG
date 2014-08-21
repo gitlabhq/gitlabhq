@@ -10,6 +10,7 @@ v 7.3.0
   - Support Unix domain sockets for Redis
   - Store session Redis keys in 'session:gitlab:' namespace
   - Deprecate LDAP account takeover based on partial LDAP email / GitLab username match
+  - Keyboard shortcuts for productivity (Robert Schilling)
 
 v 7.2.0
   - Explore page

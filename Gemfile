@@ -156,6 +156,9 @@ gem "rack-attack"
 # Ace editor
 gem 'ace-rails-ap'
 
+# Keyboard shortcuts 
+gem 'mousetrap-rails'
+
 # Semantic UI Sass for Sidebar
 gem 'semantic-ui-sass', '~> 0.16.1.0'
 
