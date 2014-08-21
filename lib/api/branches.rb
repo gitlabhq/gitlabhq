@@ -80,7 +80,13 @@ module API
       #   POST /projects/:id/repository/branches
       post ":id/repository/branches" do
         authorize_push_project
-        @branch = CreateBranchService.new.execute(user_project, params[:branch_name], params[:ref], current_user)
+
+        interactor = Projects::Repositories::CreateBranch
+        result = interactor.perform(proejct: user_project,
+                                    branch_name: params[:branch_name],
+                                    ref: params[:ref],
+                                    user: current_user)
+        @branch = result[:branch]
 
         present @branch, with: Entities::RepoObject, project: user_project
       end
@@ -94,9 +100,13 @@ module API
       #   DELETE /projects/:id/repository/branches/:branch
       delete ":id/repository/branches/:branch" do
         authorize_push_project
-        result = DeleteBranchService.new.execute(user_project, params[:branch], current_user)
 
-        if result[:state] == :success
+        interactor = Projects::Repositories::DeleteBranch
+        result = interactor.perform(proejct: user_project,
+                                    branch_name: params[:branch],
+                                    user: current_user)
+
+        if result.success?
           true
         else
           render_api_error!(result[:message], 405)
