@@ -18,7 +18,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
                                                      ref: params[:ref],
                                                      format: params[:format])
 
-
     if result.success?
       file_path = result[:file_path]
       # Send file to user

@@ -20,7 +20,8 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    result = Projects::Create.perform(user: current_user, params: project_params)
+    result = Projects::Create.perform(user: current_user,
+                                      params: project_params)
 
     if result.success?
       @project = result[:project]
@@ -171,8 +172,8 @@ class ProjectsController < ApplicationController
 
   def upload_image
     result = Projects::UploadImage.perform(repository: repository,
-                                                  params: params,
-                                                  root_url: root_url)
+                                           params: params,
+                                           root_url: root_url)
     respond_to do |format|
       if result.success?
         format.json { render json: { link: result[:link] } }

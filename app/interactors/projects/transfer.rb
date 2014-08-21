@@ -29,7 +29,9 @@ module Projects
       end
 
       # No project with same 'path' in target namespace
-      if Project.where(path: context[:project].path, namespace_id: namespace_id).present?
+      projects = Project.where(path: context[:project].path,
+                               namespace_id: namespace_id)
+      if projects.any?
         context.fail!('Project with same path in target namespace already exists')
       end
     end

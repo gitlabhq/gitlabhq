@@ -5,7 +5,7 @@ module Projects
 
       context[:remove_wiki_job_id] = GitlabShellWorker.perform_async(
         :remove_repository,
-        project.path_with_namespace + ".wiki"
+        project.path_with_namespace + '.wiki'
       )
     end
 

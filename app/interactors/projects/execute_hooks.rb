@@ -1,8 +1,8 @@
 module Projects
   class ExecuteHooks < Projects::Base
     def setup
-      context.fail!(message: "Invalid push data") if context[:push_data].blank?
-      context.fail!(message: "Invalid hooks type") if context[:hooks_type].blank?
+      context.fail!(message: 'Invalid push data') if context[:push_data].blank?
+      context.fail!(message: 'Invalid hooks type') if context[:hooks_type].blank?
     end
 
     def perform

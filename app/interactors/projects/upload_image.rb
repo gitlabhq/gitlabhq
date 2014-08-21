@@ -4,7 +4,10 @@ module Projects
     include Rails.application.routes.url_helpers
 
     def setup
-      context.fail!(message: 'Invalid repository') if context[:repository].blank?
+      if context[:repository].blank?
+        context.fail!(message: 'Invalid repository')
+      end
+
       context.fail!(message: 'Invalid root url') if context[:root_url].blank?
       context.fail!(message: 'Invalid params') if context[:params].blank?
 
@@ -22,7 +25,9 @@ module Projects
       repository = context[:repository]
       image = params[:markdown_img]
 
-      uploader = FileUploader.new('uploads', upload_path(repository), accepted_images)
+      uploader = FileUploader.new('uploads',
+                                  upload_path(repository),
+                                  accepted_images)
 
       alt = image.original_filename
       uploader.store!(image)
@@ -40,7 +45,7 @@ module Projects
       context.delete(:link)
     end
 
-  protected
+    protected
 
     def upload_path(repository)
       base_dir = FileUploader.generate_dir
@@ -52,7 +57,7 @@ module Projects
     end
 
     def correct_mime_type?(image)
-      accepted_images.map{ |format| image.content_type.include? format }.any?
+      accepted_images.map { |format| image.content_type.include? format }.any?
     end
   end
 end

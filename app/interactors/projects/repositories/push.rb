@@ -46,10 +46,9 @@ module Projects::Repositories
     end
 
     def push_to_existing_branch?(ref, oldrev)
-      ref_parts = ref.split('/')
-
       # Return if this is not a push to a branch (e.g. new commits)
-      ref_parts[1] =~ /heads/ && oldrev != "0000000000000000000000000000000000000000"
+      push_to_branch?(ref) &&
+        oldrev != '0000000000000000000000000000000000000000'
     end
   end
 end

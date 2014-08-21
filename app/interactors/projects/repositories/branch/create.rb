@@ -12,7 +12,7 @@ module Projects::Repository::Branch
       context[:branch] = new_branch if new_branch
 
       # Prepare data for push
-      context[:oldrev] = "0000000000000000000000000000000000000000"
+      context[:oldrev] = '0000000000000000000000000000000000000000'
       context[:newrev] = new_branch.target
       context[:ref] = "refs/heads/" << new_branch.name
     end

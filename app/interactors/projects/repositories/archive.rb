@@ -1,7 +1,7 @@
 module Projects::Repositories
   class Archive < Projects::Base
     def setup
-      context.fail!(message: "Invalid ref") if context[:ref].blank?
+      context.fail!(message: 'Invalid ref') if context[:ref].blank?
     end
 
     def perform

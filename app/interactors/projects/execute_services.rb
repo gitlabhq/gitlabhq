@@ -1,7 +1,7 @@
 module Projects
   class ExecuteServices < Projects::Base
     def setup
-      context.fail!(message: "Invalid push data") if context[:push_data].blank?
+      context.fail!(message: 'Invalid push data') if context[:push_data].blank?
     end
 
     def perform
