@@ -31,8 +31,9 @@ class UsersGroup < ActiveRecord::Base
   scope :with_group, ->(group) { where(group_id: group.id) }
   scope :with_user, ->(user) { where(user_id: user.id) }
 
-  after_create :notify_create
+  after_create :post_create_hook
   after_update :notify_update
+  after_destroy :post_destroy_hook
 
   validates :group_access, inclusion: { in: UsersGroup.group_access_roles.values }, presence: true
   validates :user_id, presence: true
@@ -45,14 +46,23 @@ class UsersGroup < ActiveRecord::Base
     group_access
   end
 
-  def notify_create
+  def post_create_hook
     notification_service.new_group_member(self)
+    system_hook_service.execute_hooks_for(self, :create)
   end
 
   def notify_update
     if group_access_changed?
       notification_service.update_group_member(self)
     end
+  end
+
+  def post_destroy_hook
+    system_hook_service.execute_hooks_for(self, :destroy)
+  end
+
+  def system_hook_service
+    SystemHooksService.new
   end
 
   def notification_service

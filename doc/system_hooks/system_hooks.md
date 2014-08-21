@@ -1,6 +1,6 @@
 # System hooks
 
-Your GitLab instance can perform HTTP POST requests on the following events: `create_project`, `delete_project`, `create_user`, `delete_user` and `change_team_member`.
+Your GitLab instance can perform HTTP POST requests on the following events: `create_project`, `delete_project`, `create_user`, `delete_user`, `create_group`, `delete_group`, `change_group_member` and `change_team_member`.
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -50,6 +50,7 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
        "project_path": "storecloud",
          "user_email": "johnsmith@gmail.com",
           "user_name": "John Smith",
+            "user_id": 41,
  "project_visibility": "private",
 }
 ```
@@ -66,6 +67,7 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
        "project_path": "storecloud",
          "user_email": "johnsmith@gmail.com",
           "user_name": "John Smith",
+            "user_id": 41,
  "project_visibility": "private",
 }
 ```
@@ -91,5 +93,64 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
    "event_name": "user_destroy",
          "name": "John Smith",
       "user_id": 41
+}
+```
+
+**Group created:**
+
+```json
+{
+   "created_at": "2012-07-21T07:30:54Z",
+   "event_name": "group_create",
+         "name": "StormCloud",
+  "owner_email": "johnsmith@gmail.com",
+   "owner_name": "John Smith",
+         "path": "stormcloud",
+     "group_id": 78
+}
+```
+
+**Group removed:**
+
+```json
+{
+   "created_at": "2012-07-21T07:30:54Z",
+   "event_name": "group_destroy",
+         "name": "StoreCloud",
+  "owner_email": "johnsmith@gmail.com",
+   "owner_name": "John Smith",
+         "path": "storecloud",
+     "group_id": 78
+}
+```
+
+**New Group Member:**
+
+```json
+{
+    "created_at": "2012-07-21T07:30:56Z",
+    "event_name": "user_add_to_group",
+  "group_access": "Master",
+      "group_id": 78,
+    "group_name": "StoreCloud",
+    "group_path": "storecloud",
+    "user_email": "johnsmith@gmail.com",
+     "user_name": "John Smith",
+       "user_id": 41
+}
+```
+**Group Member Removed:**
+
+```json
+{
+    "created_at": "2012-07-21T07:30:56Z",
+    "event_name": "user_remove_from_group",
+  "group_access": "Master",
+      "group_id": 78,
+    "group_name": "StoreCloud",
+    "group_path": "storecloud",
+    "user_email": "johnsmith@gmail.com",
+     "user_name": "John Smith",
+       "user_id": 41
 }
 ```
