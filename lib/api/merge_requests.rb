@@ -78,8 +78,8 @@ module API
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
 
         # Validate label names in advance
-        if validate_label_params(params)
-          return render_api_error!('Label names invalid', 405)
+        if (errors = validate_label_params(params)).any?
+          render_api_error!({ labels: errors }, 400)
         end
 
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, attrs).execute
@@ -117,15 +117,16 @@ module API
         authorize! :modify_merge_request, merge_request
 
         # Validate label names in advance
-        if validate_label_params(params)
-          return render_api_error!('Label names invalid', 405)
+        if (errors = validate_label_params(params)).any?
+          render_api_error!({ labels: errors }, 400)
         end
 
         merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)
 
         if merge_request.valid?
           # Find or create labels and attach to issue
-          if params[:labels].present?
+          unless params[:labels].nil?
+            merge_request.remove_labels
             merge_request.add_labels_by_names(params[:labels].split(","))
           end
 
