@@ -1,5 +1,6 @@
 v 7.3.0
   - Always set the 'origin' remote in satellite actions
+  - Write authorized_keys in tmp/ during tests
 
 v 7.2.0
   - Explore page

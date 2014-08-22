@@ -8,7 +8,7 @@ namespace :gitlab do
       args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
 
       user = Settings.gitlab.user
-      home_dir = Settings.gitlab.user_home
+      home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Settings.gitlab.user_home
       gitlab_url = Settings.gitlab.url
       # gitlab-shell requires a / at the end of the url
       gitlab_url += "/" unless gitlab_url.match(/\/$/)
