@@ -9,7 +9,8 @@ class Spinach::Features::User < Spinach::FeatureSteps
   end
 
   step 'I visit unsubscribe link' do
-    visit "/unsubscribes/joh@doe.org"
+    email = Base64.urlsafe_encode64("joh@doe.org")
+    visit "/unsubscribes/#{email}"
   end
 
   step 'I should see unsubscribe text and button' do

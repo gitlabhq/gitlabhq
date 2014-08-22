@@ -644,7 +644,7 @@ describe Notify do
     end
 
     it 'includes unsubscribe link' do
-      unsubscribe_link = "http://localhost/unsubscribes/#{CGI.escape(user.email)}"
+      unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
       should have_body_text(unsubscribe_link)
     end
   end
