@@ -282,7 +282,7 @@ Proposed email text:
 
 ### **10. Update installation.md**
 
-Update [installation.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) to the newest version.
+Update [installation.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) to the newest version in master and cherry-pick that commit into the stable branch.
 
 # **23rd - Optional Patch Release**
 
