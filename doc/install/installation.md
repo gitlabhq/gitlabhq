@@ -141,12 +141,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-1-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-2-stable gitlab
 
     # Go to gitlab dir
     cd /home/git/gitlab
 
-**Note:** You can change `7-1-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure it
 
