@@ -21,6 +21,8 @@ If you have local changes to your GitLab repository the script will stash them a
 
 ## 2. Run GitLab upgrade tool
 
+Note: GitLab 7.2 adds cmake as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
+
     # Starting with GitLab version 7.0 upgrader script has been moved to bin directory
     cd /home/git/gitlab
     if [ -f bin/upgrade.rb ]; then sudo -u git -H ruby bin/upgrade.rb; else sudo -u git -H ruby script/upgrade.rb; fi
