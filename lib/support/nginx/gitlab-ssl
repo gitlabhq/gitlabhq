@@ -6,8 +6,7 @@
 ## Modified from https://raymii.org/s/tutorials/Strong_SSL_Security_On_nginx.html
 ##
 ## Lines starting with two hashes (##) are comments with information.
-## Lines starting with one hash (#) are configuration parameters.
-## The last category can be commented/uncommented to your liking.
+## Lines starting with one hash (#) are configuration parameters that can be uncommented.
 ##
 ##################################
 ##        CHUNKED TRANSFER      ##
