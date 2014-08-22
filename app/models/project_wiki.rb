@@ -2,8 +2,9 @@ class ProjectWiki
   include Gitlab::ShellAdapter
 
   MARKUPS = {
-    "Markdown" => :markdown,
-    "RDoc"     => :rdoc
+    'Markdown' => :markdown,
+    'RDoc'     => :rdoc,
+    'AsciiDoc' => :asciidoc
   }
 
   class CouldNotCreateWikiError < StandardError; end
