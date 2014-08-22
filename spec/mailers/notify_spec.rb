@@ -622,4 +622,30 @@ describe Notify do
       should have_body_text /#{diff_path}/
     end
   end
+
+  describe 'admin notification' do
+    let(:example_site_path) { root_path }
+    let(:user) { create(:user) }
+
+    subject { @email = Notify.send_admin_notification(user.id, 'Admin announcement','Text') }
+
+    it 'is sent as the author' do
+      sender = subject.header[:from].addrs[0]
+      sender.display_name.should eq("GitLab")
+      sender.address.should eq(gitlab_sender)
+    end
+
+    it 'is sent to recipient' do
+      should deliver_to user.email
+    end
+
+    it 'has the correct subject' do
+      should have_subject 'Admin announcement'
+    end
+
+    it 'includes unsubscribe link' do
+      unsubscribe_link = "http://localhost/unsubscribes/#{Base64.urlsafe_encode64(user.email)}"
+      should have_body_text(unsubscribe_link)
+    end
+  end
 end
