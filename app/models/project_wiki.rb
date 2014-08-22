@@ -3,7 +3,8 @@ class ProjectWiki
 
   MARKUPS = {
     "Markdown" => :markdown,
-    "RDoc"     => :rdoc
+    "RDoc"     => :rdoc,
+    "AsciiDoc" => :asciidoc
   }
 
   class CouldNotCreateWikiError < StandardError; end
