@@ -25,6 +25,7 @@ module Gitlab
         repository
         hooks
         notes
+        unsubscribes
       )
     end
   end
