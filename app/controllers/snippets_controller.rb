@@ -86,7 +86,7 @@ class SnippetsController < ApplicationController
   def raw
     send_data(
       @snippet.content,
-      type: "text/plain",
+      type: 'text/plain; charset=utf-8',
       disposition: 'inline',
       filename: @snippet.file_name
     )
