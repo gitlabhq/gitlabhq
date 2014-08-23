@@ -19,8 +19,8 @@
 ## - installing an old version of Nginx with the chunkin module [2] compiled in, or
 ## - using a newer version of Nginx.
 ##
-## At the time of writing we do not know if either of these theoretical solutions works. As a workaround
-## users can use Git over SSH to push large files.
+## At the time of writing we do not know if either of these theoretical solutions works. 
+## As a workaround users can use Git over SSH to push large files.
 ##
 ## [0] https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/http-protocol.txt#n99
 ## [1] https://github.com/agentzh/chunkin-nginx-module#status
@@ -48,15 +48,18 @@ upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
 }
 
-## This is a normal HTTP host which redirects all traffic to the HTTPS host.
+## Normal HTTP host
 server {
   listen *:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
+  
+  ## Redirects all traffic to the HTTPS host
   root /nowhere; ## root doesn't have to be a valid path since we are redirecting
   rewrite ^ https://$server_name$request_uri permanent;
 }
 
+## HTTPS host
 server {
   listen 443 ssl;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
@@ -95,10 +98,9 @@ server {
   }
 
   ## If a file, which is not found in the root folder is requested,
-  ## then the proxy pass the request to the upsteam (gitlab unicorn).
+  ## then the proxy passes the request to the upsteam (gitlab unicorn).
   location @gitlab {
-
-    ## If you use https make sure you disable gzip compression
+    ## If you use HTTPS make sure you disable gzip compression
     ## to be safe against BREACH attack.
     gzip off;
 
@@ -120,7 +122,7 @@ server {
 
   ## Enable gzip compression as per rails guide:
   ## http://guides.rubyonrails.org/asset_pipeline.html#gzip-compression
-  ## WARNING: If you are using relative urls do remove the block below
+  ## WARNING: If you are using relative urls remove the block below
   ## See config/application.rb under "Relative url support" for the list of
   ## other files that need to be changed for relative url support
   location ~ ^/(assets)/ {
