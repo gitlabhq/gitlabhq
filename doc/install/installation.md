@@ -4,11 +4,11 @@
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases this should be the highest numbered stable branch (example shown below).
 
-![capture](http://i.imgur.com/d2AlIVj.png)
+![Select latest branch](https://i.imgur.com/Lrdxk1k.png)
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
 
-## Important notes
+## Important Notes
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
@@ -275,7 +275,7 @@ Make GitLab start on boot:
 
     sudo update-rc.d gitlab defaults 21
 
-### Set up logrotate
+### Setup Logrotate
 
     sudo cp lib/support/logrotate/gitlab /etc/logrotate.d/gitlab
 
@@ -285,7 +285,7 @@ Check if GitLab and its environment are configured correctly:
 
     sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production
 
-### Compile assets
+### Compile Assets
 
     sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
 
@@ -300,6 +300,7 @@ Check if GitLab and its environment are configured correctly:
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
 ### Installation
+
     sudo apt-get install -y nginx
 
 ### Site Configuration
@@ -315,7 +316,7 @@ Make sure to edit the config file to match your setup:
     # domain name of your host serving GitLab.
     sudo editor /etc/nginx/sites-available/gitlab
 
-**Note:** If you want to use https, replace the `gitlab` nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for all necessary details.
+**Note:** If you want to use HTTPS, replace the `gitlab` nginx config with `gitlab-ssl`. See [Using HTTPS](#using-https) for all necessary details.
 
 ### Restart
 
@@ -354,7 +355,7 @@ To recapitulate what is needed to use GitLab with HTTPS:
 1. In the `config.yml` of gitlab-shell set the relevant options (see the [install GitLab Shell section](#install-gitlab-shell) of this document).
 1. Use the `gitlab-ssl` nginx example config instead of the `gitlab` config.
 
-### Additional markup styles
+### Additional Markup Styles
 
 Apart from the always supported markdown style there are other rich text files that GitLab can display. But you might have to install a dependency to do so. Please see the [github-markup gem readme](https://github.com/gitlabhq/markup#markups) for more information.
 
@@ -382,7 +383,7 @@ If you are running SSH on a non-standard port, you must change the GitLab user's
 
 You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
-### LDAP authentication
+### LDAP Authentication
 
 You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
 
@@ -414,7 +415,7 @@ These steps are fairly general and you will need to figure out the exact details
 
 -   Start GitLab:
 
-        `sudo service gitlab start`
+        sudo service gitlab start
 
 #### Examples
 
