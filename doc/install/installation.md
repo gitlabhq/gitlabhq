@@ -143,13 +143,11 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Clone GitLab repository
     sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-2-stable gitlab
 
-    # Go to gitlab dir
-    cd /home/git/gitlab
-
 **Note:** You can change `7-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
+    # Go to GitLab installation folder
     cd /home/git/gitlab
 
     # Copy the example GitLab config
@@ -222,8 +220,6 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 **Note:** As of bundler 1.5.2, you can invoke `bundle install -jN` (where `N` the number of your processor cores) and enjoy the parallel gems installation with measurable difference in completion time (~60% faster). Check the number of your cores with `nproc`. For more information check this [post](http://robots.thoughtbot.com/parallel-gem-installing-using-bundler). First make sure you have bundler >= 1.5.2 (run `bundle -v`) as it addresses some [issues](https://devcenter.heroku.com/changelog-items/411) that were [fixed](https://github.com/bundler/bundler/pull/2817) in 1.5.2.
 
-    cd /home/git/gitlab
-
     # For PostgreSQL (note, the option says "without ... mysql")
     sudo -u git -H bundle install --deployment --without development test mysql aws
 
@@ -233,9 +229,6 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Install GitLab Shell
 
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
-
-    # Go to the GitLab installation folder:
-    cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
     sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.7] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
