@@ -148,7 +148,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 **Note:** You can change `7-2-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
-### Configure it
+### Configure It
 
     cd /home/git/gitlab
 
@@ -198,7 +198,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 **Important Note:** Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
-### Configure GitLab DB settings
+### Configure GitLab DB Settings
 
     # PostgreSQL only:
     sudo -u git cp config/database.yml.postgresql config/database.yml
@@ -230,7 +230,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Or if you use MySQL (note, the option says "without ... postgres")
     sudo -u git -H bundle install --deployment --without development test postgres aws
 
-### Install GitLab shell
+### Install GitLab Shell
 
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
@@ -261,7 +261,7 @@ GitLab Shell is an SSH access and repository management software developed speci
 
 ### Install Init Script
 
-Download the init script (will be /etc/init.d/gitlab):
+Download the init script (will be `/etc/init.d/gitlab`):
 
     sudo cp lib/support/init.d/gitlab /etc/init.d/gitlab
 
@@ -269,7 +269,7 @@ And if you are installing with a non-default folder or user copy and edit the de
 
     sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 
-If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab as it will be changed on upgrade.
+If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab` as it will be changed on upgrade.
 
 Make GitLab start on boot:
 
