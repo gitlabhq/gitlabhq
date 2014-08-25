@@ -3,7 +3,7 @@
 # Table name: merge_request_diffs
 #
 #  id               :integer          not null, primary key
-#  state            :string(255)      default("collected"), not null
+#  state            :string(255)
 #  st_commits       :text
 #  st_diffs         :text
 #  merge_request_id :integer          not null

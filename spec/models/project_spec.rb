@@ -22,6 +22,8 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
+#  repository_size        :float            default(0.0)
+#  star_count             :integer          default(0), not null
 #
 
 require 'spec_helper'

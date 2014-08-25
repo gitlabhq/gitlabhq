@@ -22,7 +22,8 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
-#  star_count             :integer
+#  repository_size        :float            default(0.0)
+#  star_count             :integer          default(0), not null
 #
 
 class Project < ActiveRecord::Base
