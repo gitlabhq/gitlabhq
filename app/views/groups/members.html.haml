@@ -34,7 +34,7 @@
     %code #{@group.ldap_cn}
     \. They are given
     %code #{@group.human_ldap_access}
-    access. Depending on LDAP group size it can take time for LDAP user to get shown on the page.
+    access. Because LDAP permissions in GitLab get updated one user at a time and because GitLab caches LDAP check results, changes on your LDAP server or in this group's LDAP sync settings may take up to #{Gitlab.config.ldap['sync_time']}s to show in the list below.
 
 .panel.panel-default.prepend-top-20
   .panel-heading
