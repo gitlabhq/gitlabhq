@@ -57,6 +57,7 @@ end
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
+Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 
 
 Settings['omniauth'] ||= Settingslogic.new({})
