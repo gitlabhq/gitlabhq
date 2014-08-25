@@ -7,7 +7,12 @@ module Projects
     end
 
     def execute
-      project = @from_project.dup
+      project_params = {
+        visibility_level: @from_project.visibility_level,
+        description: @from_project.description,
+      }
+
+      project = Project.new(project_params)
       project.name = @from_project.name
       project.path = @from_project.path
       project.namespace = current_user.namespace
