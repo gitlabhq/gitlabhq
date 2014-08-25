@@ -5,6 +5,7 @@
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "group: #{@group.name}"
     = render "layouts/flash"
+    = render "layouts/outdated_browser" unless browser.modern?
     %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/nav/group'
 

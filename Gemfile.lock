@@ -49,6 +49,7 @@ GEM
       debug_inspector (>= 0.0.1)
     bootstrap-sass (3.0.3.0)
       sass (~> 3.2)
+    browser (0.6.0)
     builder (3.2.2)
     capybara (2.2.1)
       mime-types (>= 1.16)
@@ -587,6 +588,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (~> 3.0)
+  browser
   capybara (~> 2.2.1)
   carrierwave
   coffee-rails
