@@ -19,7 +19,7 @@ describe Projects::Transfer do
   context 'namespace -> namespace' do
     before do
       group.add_owner(user)
-      @result = Projects::Transfer.perform(proejct: project,
+      @result = Projects::Transfer.perform(project: project,
                                            user: user,
                                            params: { namespace_id: group.id })
     end

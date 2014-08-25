@@ -35,7 +35,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    result = Projects::Update.perform(proejct: project,
+    result = Projects::Update.perform(project: project,
                                       user: current_user,
                                       params: project_params)
 

@@ -13,7 +13,7 @@ module Projects
 
     def setup
       context.fail!(message: 'Invalid user') if context[:user].blank?
-      context.fail!(message: 'Invalid proejct') if context[:project].blank?
+      context.fail!(message: 'Invalid project') if context[:project].blank?
       context.fail!(message: 'Invalid params') if context[:params].blank?
 
       namespace_id = context[:params][:namespace]

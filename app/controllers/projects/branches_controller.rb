@@ -18,7 +18,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def create
     interactor = Projects::Repositories::CreateBranch
-    result = interactor.perform(proejct: project,
+    result = interactor.perform(project: project,
                                 branch_name: params[:branch_name],
                                 ref: params[:ref],
                                 user: current_user)
@@ -29,7 +29,7 @@ class Projects::BranchesController < Projects::ApplicationController
 
   def destroy
     interactor = Projects::Repositories::DeleteBranch
-    interactor.perform(proejct: project,
+    interactor.perform(project: project,
                        branch_name: params[:id],
                        user: current_user)
 

@@ -82,7 +82,7 @@ module API
         authorize_push_project
 
         interactor = Projects::Repositories::CreateBranch
-        result = interactor.perform(proejct: user_project,
+        result = interactor.perform(project: user_project,
                                     branch_name: params[:branch_name],
                                     ref: params[:ref],
                                     user: current_user)
@@ -102,7 +102,7 @@ module API
         authorize_push_project
 
         interactor = Projects::Repositories::DeleteBranch
-        result = interactor.perform(proejct: user_project,
+        result = interactor.perform(project: user_project,
                                     branch_name: params[:branch],
                                     user: current_user)
 
