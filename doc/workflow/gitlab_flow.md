@@ -29,7 +29,7 @@ Git flow was one of the first proposals to use git branches and it has gotten a 
 It advocates a master branch and a separate develop branch as well as supporting branches for features, releases and hotfixes.
 The development happens on the develop branch, moves to a release branch and is finally merged into the master branch.
 Git flow is a well defined standard but its complexity introduces two problems.
-The first one problem is that developers must use the develop branch and not master, master is reserved for code that is released to production.
+The first problem is that developers must use the develop branch and not master, master is reserved for code that is released to production.
 It is a convention to call your default branch master and to mostly branch from and merge to this.
 Since most tools automatically make the master branch the default one and display that one by default it is annoying to have to switch to another one.
 The second problem of git flow is the complexity introduced by the hotfix and release branches.
@@ -37,7 +37,7 @@ These branches can be good idea for some organizations but are overkill for the 
 Nowadays most organizations practice continuous delivery which means that your default branch can be deployed.
 This means that hotfixed and release branches can be prevented including all the ceremony they introduce.
 An example of this ceremony is the merging back of release branches.
-Even tough special tools exist to do this still requires documentation.
+Though specialized tools do exist to solve this, they require documentation and add complexity.
 Frequently developers make a mistake and for example changes are only merged into master and not into the develop branch.
 The root cause of these errors is that git flow is too complex for most of the use cases.
 And doing releases doesn't automatically mean also doing hotfixes.
@@ -48,7 +48,7 @@ In reaction to git flow a simpler alternative was detailed, [GitHub flow](http:/
 This flow has only feature branches and a master branch.
 This is very simple and clean, many organizations have adopted it with great success.
 Atlassian recommends [a similar strategy](http://blogs.atlassian.com/2014/01/simple-git-workflow-simple/) although they rebase feature branches.
-Merging everything into the master branch and deploying often means you minimize the amount of code in 'inventory' which rhymes with the lean and continuous delivery best practices.
+Merging everything into the master branch and deploying often means you minimize the amount of code in 'inventory' which is in line with the lean and continuous delivery best practices.
 But this flow still leaves a lot of questions unanswered regarding deployments, environments, releases and integrations with issues.
 With GitLab flow we offer additional guidance for these questions.
 
