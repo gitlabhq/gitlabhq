@@ -39,12 +39,12 @@ Sidekiq::Testing.inline! do
         visibility_level: Gitlab::VisibilityLevel.values.sample
       }
 
-      project = Projects::CreateService.new(User.first, params).execute
+      result = Projects::Create.perform(user: User.first, params: params)
 
-      if project.valid?
+      if result.success?
         print '.'
       else
-        puts project.errors.full_messages
+        puts result[:project].errors.full_messages
         print 'F'
       end
     end

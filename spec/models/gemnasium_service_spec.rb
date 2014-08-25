@@ -38,7 +38,10 @@ describe GemnasiumService do
         token: 'verySecret',
         api_key: 'GemnasiumUserApiKey'
       )
-      @sample_data = GitPushService.new.sample_data(project, user)
+      interactor = Projects::Repository::SamplePush
+      result = interactor.perform(project: project, user: current_user)
+
+      @sample_data = result[:push_data]
     end
     it "should call Gemnasium service" do
       Gemnasium::GitlabService.should_receive(:execute).with(an_instance_of(Hash)).once

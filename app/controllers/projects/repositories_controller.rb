@@ -14,9 +14,12 @@ class Projects::RepositoriesController < Projects::ApplicationController
       render_404 and return
     end
 
-    file_path = ArchiveRepositoryService.new.execute(@project, params[:ref], params[:format])
+    result = Projects::Repositories::Archive.perform(project: @project,
+                                                     ref: params[:ref],
+                                                     format: params[:format])
 
-    if file_path
+    if result.success?
+      file_path = result[:file_path]
       # Send file to user
       response.headers["Content-Length"] = File.open(file_path).size.to_s
       send_file file_path

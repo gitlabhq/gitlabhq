@@ -25,14 +25,14 @@ describe SystemHook do
     end
 
     it "project_create hook" do
-      Projects::CreateService.new(create(:user), name: 'empty').execute
+      Projects::Create.perform(user: create(:user), params: { name: 'empty' })
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_create/).once
     end
 
     it "project_destroy hook" do
       user = create(:user)
       project = create(:empty_project, namespace: user.namespace)
-      Projects::DestroyService.new(project, user, {}).execute
+      Projects::Destroy.perform(project: project, user: user)
       WebMock.should have_requested(:post, @system_hook.url).with(body: /project_destroy/).once
     end
 

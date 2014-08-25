@@ -41,7 +41,11 @@ describe SlackService do
     let(:slack) { SlackService.new }
     let(:user) { create(:user) }
     let(:project) { create(:project) }
-    let(:sample_data) { GitPushService.new.sample_data(project, user) }
+    let(:sample_data) do
+      interactor = Projects::Repository::SamplePush
+      result = interactor.perform(project: project, user: current_user)
+      result[:push_data]
+    end
     let(:subdomain) { 'gitlab' }
     let(:token) { 'verySecret' }
     let(:api_url) {

@@ -20,8 +20,14 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateService.new(current_user, project_params).execute
-    flash[:notice] = 'Project was successfully created.' if @project.saved?
+    result = Projects::Create.perform(user: current_user,
+                                      params: project_params)
+
+    if result.success?
+      @project = result[:project]
+
+      flash[:notice] = 'Project was successfully created.'
+    end
 
     respond_to do |format|
       format.js
@@ -29,10 +35,12 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
+    result = Projects::Update.perform(proejct: project,
+                                      user: current_user,
+                                      params: project_params)
 
     respond_to do |format|
-      if status
+      if result.success?
         flash[:notice] = 'Project was successfully updated.'
         format.html { redirect_to edit_project_path(@project), notice: 'Project was successfully updated.' }
         format.js
@@ -44,7 +52,10 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(project, current_user, project_params).execute
+    result = Projects::Transfer.perform(project: project,
+                                        user: current_user,
+                                        params: project_params)
+    result.success?
   end
 
   def show
@@ -100,7 +111,7 @@ class ProjectsController < ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    ::Projects::DestroyService.new(@project, current_user, {}).execute
+    Projects::Destroy.perform(user: current_user, project: @project)
 
     respond_to do |format|
       format.html { redirect_to root_path }
@@ -108,11 +119,13 @@ class ProjectsController < ApplicationController
   end
 
   def fork
-    @forked_project = ::Projects::ForkService.new(project, current_user).execute
+    result = Projects::Fork.perform(from_project: project, user: current_user)
 
     respond_to do |format|
       format.html do
-        if @forked_project.saved? && @forked_project.forked?
+        if result.success?
+          @forked_project = result[:project]
+
           redirect_to(@forked_project, notice: 'Project was successfully forked.')
         else
           @title = 'Fork project'
@@ -158,11 +171,12 @@ class ProjectsController < ApplicationController
   end
 
   def upload_image
-    link_to_image = ::Projects::ImageService.new(repository, params, root_url).execute
-
+    result = Projects::UploadImage.perform(repository: repository,
+                                           params: params,
+                                           root_url: root_url)
     respond_to do |format|
-      if link_to_image
-        format.json { render json: { link: link_to_image } }
+      if result.success?
+        format.json { render json: { link: result[:link] } }
       else
         format.json { render json: "Invalid file.", status: :unprocessable_entity }
       end

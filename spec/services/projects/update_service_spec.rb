@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Projects::UpdateService do
+describe Projects::Update do
   describe :update_by_user do
     before do
       @user = create :user
@@ -103,6 +103,6 @@ describe Projects::UpdateService do
   end
 
   def update_project(project, user, opts)
-    Projects::UpdateService.new(project, user, opts).execute
+    Projects::Update.perform(project: project, user: user, params: opts)
   end
 end

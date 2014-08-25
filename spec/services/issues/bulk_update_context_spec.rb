@@ -11,7 +11,8 @@ describe Issues::BulkUpdateService do
       name: "GitLab",
       namespace: @user.namespace
     }
-    @project = Projects::CreateService.new(@user, opts).execute
+    result = Projects::Create.perform(user: @user, params: opts)
+    @project = result[:project]
   end
 
   describe :close_issue do

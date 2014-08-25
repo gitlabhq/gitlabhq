@@ -150,7 +150,6 @@ class Project < ActiveRecord::Base
     state :finished
     state :failed
 
-    after_transition any => :started, :do => :add_import_job
   end
 
   class << self
@@ -220,10 +219,6 @@ class Project < ActiveRecord::Base
 
   def saved?
     id && persisted?
-  end
-
-  def add_import_job
-    RepositoryImportWorker.perform_in(2.seconds, id)
   end
 
   def import?

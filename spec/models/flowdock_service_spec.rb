@@ -37,7 +37,10 @@ describe FlowdockService do
         service_hook: true,
         token: 'verySecret'
       )
-      @sample_data = GitPushService.new.sample_data(project, user)
+      interactor = Projects::Repository::SamplePush
+      result = interactor.perform(project: project, user: current_user)
+
+      @sample_data = result[:push_data]
       @api_url = 'https://api.flowdock.com/v1/git/verySecret'
       WebMock.stub_request(:post, @api_url)
     end

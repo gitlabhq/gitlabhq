@@ -23,7 +23,9 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(@project, current_user, params.dup).execute
+    Projects::Transfer.perform(project: @project,
+                               user: current_user,
+                               params: params.dup)
 
     redirect_to [:admin, @project.reload]
   end

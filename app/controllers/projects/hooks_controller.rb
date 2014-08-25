@@ -25,8 +25,8 @@ class Projects::HooksController < Projects::ApplicationController
 
   def test
     if !@project.empty_repo?
-      status = TestHookService.new.execute(hook, current_user)
-      if status
+      result = Hooks::Test.perform(hook: hook, user: current_user)
+      if result.success?
         flash[:notice] = 'Hook successfully executed.'
       else
         flash[:alert] = 'Hook execution failed. '\

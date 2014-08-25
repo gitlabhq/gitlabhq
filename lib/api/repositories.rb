@@ -115,9 +115,13 @@ module API
       #   GET /projects/:id/repository/archive
       get ":id/repository/archive", requirements: { format: Gitlab::Regex.archive_formats_regex } do
         authorize! :download_code, user_project
-        file_path = ArchiveRepositoryService.new.execute(user_project, params[:sha], params[:format])
+        result = Projects::Repositories::Archive.perform(project: user_project,
+                                                         ref: params[:sha],
+                                                         format: params[:format])
 
-        if file_path && File.exists?(file_path)
+        file_path = result[:file_path]
+
+        if result.success? && file_path && File.exists?(file_path)
           data = File.open(file_path, 'rb').read
           header["Content-Disposition"] = "attachment; filename=\"#{File.basename(file_path)}\""
           content_type MIME::Types.type_for(file_path).first.content_type

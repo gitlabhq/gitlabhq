@@ -89,9 +89,11 @@ module API
         authenticated_as_admin!
         group = Group.find(params[:id])
         project = Project.find(params[:project_id])
-        result = ::Projects::TransferService.new(project, current_user, namespace_id: group.id).execute
+        result = Projects::Transfer.perform(project: project,
+                                            user: current_user,
+                                            params: { namespace_id: group.id })
 
-        if result
+        if result.success?
           present group
         else
           not_found!

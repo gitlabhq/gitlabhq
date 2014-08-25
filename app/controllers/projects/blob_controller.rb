@@ -14,9 +14,13 @@ class Projects::BlobController < Projects::ApplicationController
   end
 
   def destroy
-    result = Files::DeleteService.new(@project, current_user, params, @ref, @path).execute
+    result = Projects::Repositories::DeleteFile.perform(project: @project,
+                                                        user: current_user,
+                                                        params: params,
+                                                        ref: @ref,
+                                                        path: @path)
 
-    if result[:status] == :success
+    if result.success?
       flash[:notice] = "Your changes have been successfully committed"
       redirect_to project_tree_path(@project, @ref)
     else

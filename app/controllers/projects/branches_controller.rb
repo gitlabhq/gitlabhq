@@ -17,13 +17,22 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
-    @branch = CreateBranchService.new.execute(project, params[:branch_name], params[:ref], current_user)
+    interactor = Projects::Repositories::CreateBranch
+    result = interactor.perform(proejct: project,
+                                branch_name: params[:branch_name],
+                                ref: params[:ref],
+                                user: current_user)
+    @branch = result[:branch]
 
     redirect_to project_tree_path(@project, @branch.name)
   end
 
   def destroy
-    DeleteBranchService.new.execute(project, params[:id], current_user)
+    interactor = Projects::Repositories::DeleteBranch
+    interactor.perform(proejct: project,
+                       branch_name: params[:id],
+                       user: current_user)
+
     @branch_name = params[:id]
 
     respond_to do |format|
