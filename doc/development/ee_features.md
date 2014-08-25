@@ -1,12 +1,10 @@
 # Guidelines for implementing Enterprise Edition feature
 
-## Write the code
+## Write the code and the tests
 
 Implement the wanted feature.
-
-## Write the tests
-
-Implemented feature needs to have the full test coverage. For now, exception is the code that needs to query a LDAP server.
+Implemented feature needs to have the full test coverage.
+For now, exception is the code that needs to query a LDAP server.
 
 ## Write the documentation
 
