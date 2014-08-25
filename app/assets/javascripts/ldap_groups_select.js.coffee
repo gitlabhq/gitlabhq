@@ -24,3 +24,5 @@ $ ->
       formatResult: ldapGroupResult
       formatSelection: groupFormatSelection
       dropdownCssClass: "ajax-groups-dropdown"
+      formatNoMatches: (nomatch) ->
+        "Match not found; try refining your search query."
