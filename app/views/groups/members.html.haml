@@ -19,7 +19,7 @@
     .pull-right
       - if ldap_enabled? && @group.ldap_cn.present?
         = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Reset the access level of all other LDAP group team members to '#{@group.human_ldap_access}'?" }, method: :put do
-          Reset access
+          Reset access to #{@group.human_ldap_access}
 
       = link_to '#', class: 'btn btn-new js-toggle-button' do
         Add members
@@ -30,12 +30,12 @@
 
 - if ldap_enabled? && @group.ldap_cn.present?
   .bs-callout.bs-callout-info
-    The members of this group are synced with the LDAP group with cn 
+    The members of this group are synced with the LDAP group with cn
     %code #{@group.ldap_cn}
-    \. They are given 
+    \. They are given
     %code #{@group.human_ldap_access}
-    access.
-    
+    access. Depending on LDAP group size it can take time for LDAP user to get shown on the page.
+
 .panel.panel-default.prepend-top-20
   .panel-heading
     %strong #{@group.name}
