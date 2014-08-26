@@ -2,19 +2,13 @@ module Gitlab
   class ProjectSearchResults < SearchResults
     attr_reader :project, :repository_ref
 
-    def initialize(project_id, query, scope = nil, page = nil, repository_ref = nil)
+    def initialize(project_id, query, repository_ref = nil)
       @project = Project.find(project_id)
       @repository_ref = repository_ref
-      @page = page
       @query = Shellwords.shellescape(query) if query.present?
-      @scope = scope
-
-      unless %w(blobs notes issues merge_requests).include?(@scope)
-        @scope = default_scope
-      end
     end
 
-    def objects
+    def objects(scope, page)
       case scope
       when 'notes'
         notes.page(page).per(per_page)
@@ -49,10 +43,6 @@ module Gitlab
 
     def notes
       Note.where(project_id: limit_project_ids).search(query).order('updated_at DESC')
-    end
-
-    def default_scope
-      'blobs'
     end
 
     def limit_project_ids

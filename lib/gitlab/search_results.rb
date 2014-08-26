@@ -1,23 +1,17 @@
 module Gitlab
   class SearchResults
-    attr_reader :scope, :objects, :query, :page
+    attr_reader :query
 
     # Limit search results by passed project ids
     # It allows us to search only for projects user has access to
     attr_reader :limit_project_ids
 
-    def initialize(limit_project_ids, query, scope = nil, page = nil)
+    def initialize(limit_project_ids, query)
       @limit_project_ids = limit_project_ids || Project.all
-      @page = page
       @query = Shellwords.shellescape(query) if query.present?
-      @scope = scope
-
-      unless %w(projects issues merge_requests).include?(@scope)
-        @scope = default_scope
-      end
     end
 
-    def objects
+    def objects(scope, page)
       case scope
       when 'projects'
         projects.page(page).per(per_page)
