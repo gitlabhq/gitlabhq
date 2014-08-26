@@ -210,9 +210,16 @@ For GitLab EE, append `-ee` to the branches and tags.
 
 `v.x.x.0-ee`
 
-Merge CE into EE if needed.
+Note: Merge CE into EE if needed.
 
-### **1. Create x-x-stable branch and push to the repositories**
+### **1. Set VERSION to x.x.x and push**
+
+- Change the GITLAB_SHELL_VERSION file in `master` of the CE repository if the version changed.
+- Change the GITLAB_SHELL_VERSION file in `master` of the EE repository if the version changed.
+- Change the VERSION file in `master` branch of the CE repository and commit and push.
+- Change the VERSION file in `master` branch of the EE repository and commit and push.
+
+### **2. Create x-x-stable branch and push to the repositories**
 
 ```
 git checkout master
@@ -221,20 +228,10 @@ git checkout -b x-x-stable
 git push <remote> x-x-stable
 ```
 
-### **2. Build the Omnibus packages**
+### **3. Build the Omnibus packages**
 
 Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md).
 This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
-
-### **3. Set VERSION to x.x.x and push**
-
-Change the GITLAB_SHELL_VERSION file in `master` of the CE repository if the version changed.
-
-Change the GITLAB_SHELL_VERSION file in `master` of the EE repository if the version changed.
-
-Change the VERSION file in `master` branch of the CE repository and commit. Cherry-pick into the `x-x-stable` branch of CE.
-
-Change the VERSION file in `master` branch of the EE repository and commit. Cherry-pick into the `x-x-stable-ee` branch of EE.
 
 ### **4. Create annotated tag vx.x.x**
 
