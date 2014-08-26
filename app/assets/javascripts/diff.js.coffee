@@ -34,7 +34,8 @@ class Diff
       $.get(link, params, (response) =>
         target.parent().replaceWith(response)
       )
-    )
+    ).ready =>
+      $(".diff-header").sticky {responsiveWidth:true, getWidthFrom: ".diff-file"}
 
   lineNumbers: (line) ->
     return ([0, 0]) unless line.children().length
