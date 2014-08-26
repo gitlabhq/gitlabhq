@@ -10,7 +10,7 @@
     content: " ";
     width: 3px;
     background-color: #eeeeee;
-    margin-left: 25px;
+    margin-left: 29px;
   }
 
   .timeline-entry {
@@ -42,11 +42,13 @@
         background: #fff;
         color: #737881;
         float: left;
-        @include border-radius(4px);
+        @include border-radius(40px);
         @include box-shadow(0 0 0 3px #EEE);
+        overflow: hidden;
 
         .avatar {
           margin: 0;
+          padding: 0;
         }
       }
 
