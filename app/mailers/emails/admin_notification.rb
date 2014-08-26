@@ -6,5 +6,10 @@ module Emails
       @body = body
       mail to: email, subject: subject
     end
+
+    def send_unsubscribed_notification(user_id)
+      email = recipient(user_id)
+      mail to: email, subject: "Unsubscribed from GitLab administrator notifications"
+    end
   end
 end
