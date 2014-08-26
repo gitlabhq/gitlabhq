@@ -6,5 +6,6 @@ Gitlab::Application.config.session_store(
   key: '_gitlab_session',
   secure: Gitlab.config.gitlab.https,
   httponly: true,
+  expire_after: 1.week,
   path: (Rails.application.config.relative_url_root.nil?) ? '/' : Rails.application.config.relative_url_root
 )
