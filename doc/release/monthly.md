@@ -153,6 +153,7 @@ git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 
 Merge the RC1 EE code into GitLab.com.
 Once the build is green, create a package.
+If there are big database migrations consider testing them with the production db on a VM.
 Try to deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
