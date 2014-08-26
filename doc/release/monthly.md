@@ -221,12 +221,7 @@ git checkout -b x-x-stable
 git push <remote> x-x-stable
 ```
 
-### **2. Build the Omnibus packages**
-
-Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md).
-This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
-
-### **3. Set VERSION to x.x.x and push**
+### **2. Set VERSION to x.x.x and push**
 
 Change the GITLAB_SHELL_VERSION file in `master` of the CE repository if the version changed.
 
@@ -236,7 +231,7 @@ Change the VERSION file in `master` branch of the CE repository and commit. Cher
 
 Change the VERSION file in `master` branch of the EE repository and commit. Cherry-pick into the `x-x-stable-ee` branch of EE.
 
-### **4. Create annotated tag vx.x.x**
+### **3. Create annotated tag vx.x.x**
 
 In `x-x-stable` branch check for the SHA-1 of the commit with VERSION file changed. Tag that commit,
 
@@ -246,11 +241,16 @@ git tag -a vx.x.0 -m 'Version x.x.0' xxxxx
 
 where `xxxxx` is SHA-1.
 
-### **5. Push the tag**
+### **4. Push the tag**
 
 ```
 git push origin vx.x.0
 ```
+
+### **5. Build the Omnibus packages**
+
+Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md).
+This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
 
 ### **6. Push to remotes**
 
@@ -259,8 +259,6 @@ For GitLab CE, push to dev, GitLab.com and GitHub.
 For GitLab EE, push to the subscribers repo.
 
 Make sure the branch is marked 'protected' on each of the remotes you pushed to.
-
-NOTE: You might not have the rights to push to master on dev. Ask Dmitriy.
 
 ### **7. Publish blog for new release**
 
@@ -281,6 +279,10 @@ Include a link to the blog post and keep it short.
 
 Proposed email text:
 "We have released a new version of GitLab. See our blog post(<link>) for more information."
+
+### **10. Update installation.md**
+
+Update [installation.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) to the newest version in master and cherry-pick that commit into the stable branch.
 
 # **23rd - Optional Patch Release**
 
