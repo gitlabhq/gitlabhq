@@ -1,4 +1,9 @@
 .files
+  %p.help-block
+    %span
+    %span
+    %span
+    %span
   = form_tag [:resolve_conflict_merge, @project, @merge_request],
       method: :post do |f|
     - @conflicts.each_with_index do |file_conflicts, file_id|
@@ -11,29 +16,27 @@
               - case line.type
               - when :match
                 %tr.line_holder
-                  -# TODO dry this constant with diff view
-                  %td.old_line= '...'
+                  %td.old_line= hidden_lines_placeholder
                   %td.line_content
               - when :context
                 %tr.line_holder
                   %td.old_line= line.number.to_s
                   %td.line_content= line.content
               - else
-                - radio_name = "#{file_id}-#{line.id}"
-                %tbody.radio_holder
+                %tbody.actions
                   %tr.line_holder.new
-                    %td.old_line
+                    %td.old_line.button-holder
                       %i.icon-plus-sign-alt
                     %td.line_content.new
                       -# TODO remove raw, set html_safe elsewhere considering inserted idiff spans.
                       %pre>= raw line.ours
                   %tr.line_holder.old
-                    %td.old_line
+                    %td.old_line.button-holder
                       %i.icon-plus-sign-alt
                     %td.line_content.old
                       %pre>= raw line.base
                   %tr.line_holder.theirs
-                    %td.old_line
+                    %td.old_line.button-holder
                       %i.icon-plus-sign-alt
                     %td.line_content
                       %pre>= raw line.theirs

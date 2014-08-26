@@ -73,13 +73,22 @@ class MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
+  bindTabEvents: (action) ->
+    tab = this.tabFromAction(action)
+    switch action
+      when "conflicts"
+        tab.find(".actions .button-holder").on "click", ->
+          textarea = $(this).closest('tbody').find('textarea')
+          textarea.val(textarea.val() + '\n' + $(this).next().text())
+
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
     if action == 'diffs' or action == 'conflicts'
       this.$(".merge-request-tabs .#{action}-tab").addClass 'active'
       this.loadTab(action) unless @tabs_loaded[action]
-      this.$(".#{action}").show()
+      this.bindTabEvents(action)
+      this.tabFromAction(action).show()
     else
       this.$('.merge-request-tabs .notes-tab').addClass 'active'
       this.$('.notes').show()
@@ -114,7 +123,9 @@ class MergeRequest
         @tabs_loaded[action] = true
         this.$(".mr-loading-status .loading").hide()
       success: (data) =>
-        this.$(".#{action}").html(data.html)
+        tab_content = this.tabFromAction(action)
+        tab_content.html(data.html)
+        this.bindTabEvents(action)
       dataType: "json"
 
   showAllCommits: ->
@@ -125,5 +136,8 @@ class MergeRequest
     this.$('.automerge_widget').hide()
     this.$('.merge-in-progress').hide()
     this.$('.automerge_widget.already_cannot_be_merged').show()
+
+  tabFromAction: (action) ->
+    this.$(".#{action}")
 
 this.MergeRequest = MergeRequest

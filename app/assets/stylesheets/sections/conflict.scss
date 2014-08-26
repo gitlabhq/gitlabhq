@@ -1,5 +1,5 @@
 .diff-file {
-  tbody.radio_holder {
+  tbody.actions {
     border: 2px solid #666;
     tr.line_holder {
       &.theirs {
@@ -37,10 +37,13 @@
       td.old_line {
         padding: 0px;
         text-align: center;
+        &.button-holder {
+          cursor:pointer;
+        }
       }
       td.line_content {
-        /* TODO same padding as context to align things */
         height: initial;
+        /* TODO DRY this out with same padding as context to align things. */
         padding-left: 0.5em;
         pre {
           background: transparent;
