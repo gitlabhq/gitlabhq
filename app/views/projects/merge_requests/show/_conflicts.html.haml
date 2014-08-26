@@ -1,9 +1,17 @@
 .files
   %p.help-block
-    %span
-    %span
-    %span
-    %span
+    %span.legend-item
+      %span.color.ours
+      Ours
+    %span.legend-item
+      %span.color.base
+      Base
+    %span.legend-item
+      %span.color.theirs
+      Theirs
+    %span.legend-item
+      %span.color.resolution
+      Resolution
   = form_tag [:resolve_conflict_merge, @project, @merge_request],
       method: :post do |f|
     - @conflicts.each_with_index do |file_conflicts, file_id|
@@ -40,7 +48,7 @@
                       %i.icon-plus-sign-alt
                     %td.line_content
                       %pre>= raw line.theirs
-                  %tr.line_holder.custom
+                  %tr.line_holder.resolution
                     %td.old_line
                     %td.line_content
                       = text_area_tag "#{file_id}-#{line.id}", line.custom[0..-2],

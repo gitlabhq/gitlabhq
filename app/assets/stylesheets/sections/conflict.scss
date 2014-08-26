@@ -1,57 +1,87 @@
-.diff-file {
-  tbody.actions {
-    border: 2px solid #666;
-    tr.line_holder {
+.conflicts {
+  $resolution_bg_color: #FFA;
+  $theirs_bg_color: #CCF;
+  $line_content_diff: (17/16);
+  .legend-item {
+    &:not(:last-child) {
+      margin-right: 1.5em;
+    }
+    span.color {
+      // TODO harmonize and DRY out with other borders.
+      border: 1px solid black;
+      display: inline-block;
+      height: 1em;
+      width: 1em;
+      vertical-align: middle;
+      &.ours {
+        background: $diff_new_line;
+      }
+      &.base {
+        background: $diff_old_line;
+      }
       &.theirs {
+        background: $theirs_bg_color;
+      }
+      &.resolution {
+        background: $resolution_bg_color;
+      }
+    }
+  }
+  .diff-file {
+    tbody.actions {
+      border: 2px solid #666;
+      tr.line_holder {
         td.old_line {
-          background: #CCF;
-        }
-        td.line_content {
-          background: #DDF;
-          span.idiff {
-            background: #AAF;
+          padding: 0px;
+          text-align: center;
+          &.button-holder {
+            cursor:pointer;
           }
         }
-      }
-      &.custom {
-        td.old_line {
-          background: #FFA;
-        }
         td.line_content {
-          background: #FFA;
-          padding: 1px;
-          textarea {
-            font: inherit;
-            /* TODO determine exact of lines to show */
-            height: 4em;
-            /* TODO DRY 4px to match context lines (6px = 1 td padding + 1 border + 4 textarea padding) */
-            padding: 1px 4px;
-            resize: vertical;
+          height: initial;
+          /* TODO DRY this out with same padding as context to align things. */
+          padding-left: 0.5em;
+          pre {
+            background: transparent;
+            border-style: none;
+            margin: 0;
+            padding: 0;
+          }
+          white-space: initial;
+        }
+        &:not(:last-child) {
+          /* TODO factor out with other colors */
+          border-bottom: 1px solid #666;
+        }
+        &.theirs {
+          td.old_line {
+            background: $theirs_bg_color;
+          }
+          td.line_content {
+            background: $theirs_bg_color * $line_content_diff;
+            span.idiff {
+              background: #AAF;
+            }
           }
         }
-      }
-      &:not(:last-child) {
-        /* TODO factor out with other colors */
-        border-bottom: 1px solid #666;
-      }
-      td.old_line {
-        padding: 0px;
-        text-align: center;
-        &.button-holder {
-          cursor:pointer;
+        &.resolution {
+          td.old_line {
+            background: $resolution_bg_color;
+          }
+          td.line_content {
+            background: $resolution_bg_color * $line_content_diff;
+            padding: 1px;
+            textarea {
+              font: inherit;
+              /* TODO determine exact of lines to show */
+              height: 4em;
+              /* TODO DRY 4px to match context lines (6px = 1 td padding + 1 border + 4 textarea padding) */
+              padding: 1px 4px;
+              resize: vertical;
+            }
+          }
         }
-      }
-      td.line_content {
-        height: initial;
-        /* TODO DRY this out with same padding as context to align things. */
-        padding-left: 0.5em;
-        pre {
-          background: transparent;
-          border-style: none;
-          margin: 0;
-          padding: 0;
-        }
-        white-space: initial;
       }
     }
   }

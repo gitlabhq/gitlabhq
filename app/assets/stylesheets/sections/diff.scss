@@ -114,12 +114,12 @@
     .line_holder {
       &.old .old_line,
       &.old .new_line {
-        background: #FCC;
+        background: $diff_old_line;
         border-color: #E7BABA;
       }
       &.new .old_line,
       &.new .new_line {
-        background: #CFC;
+        background: $diff_new_line;
         border-color: #B9ECB9;
       }
     }
