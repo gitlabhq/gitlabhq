@@ -35,3 +35,8 @@ Feature: Project Team management
     And I click link "Import team from another project"
     And I submit "Website" project for import team
     Then I should see "Mike" in team list as "Reporter"
+
+  Scenario: See all members of projects shared group
+    Given I share project with group "OpenSource"
+    And I visit project "Shop" team page
+    Then I should see "Opensource" group user listing
