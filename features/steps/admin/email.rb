@@ -29,4 +29,23 @@ class Spinach::Features::AdminEmail < Spinach::FeatureSteps
     mail = ActionMailer::Base.deliveries.last
     expect(mail.text_part.body.decoded).to include @email_text
   end
+
+  step 'I visit unsubscribe from admin notification page' do
+    @user = create(:user)
+    urlsafe_email = Base64.urlsafe_encode64(@user.email)
+    visit unsubscribe_path(urlsafe_email)
+  end
+
+  step 'I click unsubscribe' do
+    click_button 'Unsubscribe'
+  end
+
+  step 'I get redirected to the sign in path' do
+    current_path.should == root_path
+  end
+
+  step 'unsubscribed email is sent' do
+    mail = ActionMailer::Base.deliveries.last
+    expect(mail.text_part.body.decoded).to include "You have been unsubscribed from receiving GitLab administrator notifications."
+  end
 end
