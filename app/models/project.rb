@@ -177,11 +177,11 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end
 
-    def search query
+    def search(query)
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
-    def search_by_title query
+    def search_by_title(query)
       where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
     end
 

@@ -146,6 +146,10 @@ class Note < ActiveRecord::Base
     def cross_reference_exists?(noteable, mentioner)
       where(noteable_id: noteable.id, system: true, note: "_mentioned in #{mentioner.gfm_reference}_").any?
     end
+
+    def search(query)
+      where("note like :query", query: "%#{query}%")
+    end
   end
 
   def commit_author

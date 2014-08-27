@@ -13,7 +13,7 @@
         = render 'filter', f: f
       = hidden_field_tag :project_id, params[:project_id]
       = hidden_field_tag :group_id, params[:group_id]
-      = hidden_field_tag :search_code, params[:search_code]
+      = hidden_field_tag :scope, params[:scope]
 
   .results.prepend-top-10
     - if params[:search].present?
