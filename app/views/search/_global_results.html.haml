@@ -1,5 +1,27 @@
-.search_results
-  %ul.bordered-list
-    = render partial: "search/results/project", collection: @search_results[:projects]
-    = render partial: "search/results/merge_request", collection: @search_results[:merge_requests]
-    = render partial: "search/results/issue", collection: @search_results[:issues]
+.row
+  .col-sm-3
+    %ul.nav.nav-pills.nav-stacked
+      %li{class: ("active" if @scope == 'projects')}
+        = link_to search_filter_path(scope: 'projects') do
+          Projects
+          .pull-right
+            = @search_results.projects_count
+      %li{class: ("active" if @scope == 'issues')}
+        = link_to search_filter_path(scope: 'issues') do
+          Issues
+          .pull-right
+            = @search_results.issues_count
+      %li{class: ("active" if @scope == 'merge_requests')}
+        = link_to search_filter_path(scope: 'merge_requests') do
+          Merge requests
+          .pull-right
+            = @search_results.merge_requests_count
+
+  .col-sm-9
+    .search_results
+      - if @search_results.empty?
+        = render partial: "search/results/empty", locals: { message: "We couldn't find any matchind results" }
+
+      %ul.bordered-list
+        = render partial: "search/results/#{@scope.singularize}", collection: @objects
+      = paginate @objects, theme: 'gitlab'

@@ -1,5 +1,5 @@
 %h4
-  #{@search_results[:total_results]} results found
+  #{@search_results.total_count} results found
   - if @project
     for #{link_to @project.name_with_namespace, @project}
   - elsif @group
@@ -14,4 +14,3 @@
 
 :javascript
   $(".search_results .term").highlight("#{escape_javascript(params[:search])}");
-

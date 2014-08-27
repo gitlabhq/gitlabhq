@@ -91,4 +91,19 @@ module SearchHelper
   def search_result_sanitize(str)
     Sanitize.clean(str)
   end
+
+  def search_filter_path(options={})
+    exist_opts = {
+      search: params[:search],
+      project_id: params[:project_id],
+      group_id: params[:group_id],
+      scope: params[:scope]
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
 end
