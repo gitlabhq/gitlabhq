@@ -103,4 +103,9 @@ module SearchHelper
     options = exist_opts.merge(options)
     search_path(options)
   end
+
+  # Sanitize html generated after parsing markdown from issue description or comment
+  def search_md_sanitize(html)
+    sanitize(html, tags: %w(a p ul li pre code))
+  end
 end

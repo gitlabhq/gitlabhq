@@ -31,6 +31,6 @@
       - if @search_results.empty?
         = render partial: "search/results/empty", locals: { message: "We couldn't find any matching results" }
 
-      %ul.bordered-list
+      %ul.bordered-list.top-list
         = render partial: "search/results/#{@scope.singularize}", collection: @objects
       = paginate @objects, theme: 'gitlab'
