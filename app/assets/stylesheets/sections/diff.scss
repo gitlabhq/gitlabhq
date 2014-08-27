@@ -125,8 +125,7 @@
     }
     .line_content {
       display: block;
-      white-space: pre;
-      height: 18px;
+      white-space: pre-wrap;
       margin: 0px;
       padding: 0px 0.5em;
       border: none;
