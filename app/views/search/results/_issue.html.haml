@@ -3,9 +3,10 @@
     = link_to [issue.project, issue] do
       %span.term.str-truncated= issue.title
     .pull-right ##{issue.iid}
-  .description.term
-    = preserve do
-      = search_md_sanitize(markdown(issue.description))
+  - if issue.description.present?
+    .description.term
+      = preserve do
+        = search_md_sanitize(markdown(issue.description))
   %span.light
     #{issue.project.name_with_namespace}
   - if issue.closed?
