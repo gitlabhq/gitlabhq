@@ -1,14 +1,12 @@
 .conflicts {
   $resolution_bg_color: #FFA;
   $theirs_bg_color: #CCF;
-  $line_content_diff: (17/16);
   .legend-item {
     &:not(:last-child) {
       margin-right: 1.5em;
     }
     span.color {
-      // TODO harmonize and DRY out with other borders.
-      border: 1px solid black;
+      border: 1px solid $diff_file_border;
       display: inline-block;
       height: 1em;
       width: 1em;
@@ -29,8 +27,11 @@
   }
   .diff-file {
     tbody.actions {
-      border: 2px solid #666;
+      border-color: $diff_file_border;
+      border-style: solid none;
+      border-width: 1px;
       tr.line_holder {
+        $line_content_diff: (17/16);
         td.old_line {
           padding: 0px;
           text-align: center;
@@ -40,8 +41,7 @@
         }
         td.line_content {
           height: initial;
-          /* TODO DRY this out with same padding as context to align things. */
-          padding-left: 0.5em;
+          padding-left: $line_content_padding_left;
           pre {
             background: transparent;
             border-style: none;
@@ -51,8 +51,7 @@
           white-space: initial;
         }
         &:not(:last-child) {
-          /* TODO factor out with other colors */
-          border-bottom: 1px solid #666;
+          border-bottom: 1px solid $diff_file_border;
         }
         &.theirs {
           td.old_line {
@@ -70,14 +69,14 @@
             background: $resolution_bg_color;
           }
           td.line_content {
+            $textarea_inner_padding_left: 0.25em;
             background: $resolution_bg_color * $line_content_diff;
-            padding: 1px;
+            padding: $line_content_padding_left - $textarea_inner_padding_left;
             textarea {
               font: inherit;
-              /* TODO determine exact of lines to show */
+              /* TODO Make this automatically grow as necessary with Javascript + resizable on bottom border (not just corner). */
               height: 4em;
-              /* TODO DRY 4px to match context lines (6px = 1 td padding + 1 border + 4 textarea padding) */
-              padding: 1px 4px;
+              padding: 1px $textarea_inner_padding_left;
               resize: vertical;
             }
           }
