@@ -1,5 +1,7 @@
 language: ruby
-cache: bundler
+cache:
+  directories:
+  - vendor/bundle
 env:
   global:
     - TRAVIS=true
