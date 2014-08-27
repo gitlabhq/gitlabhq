@@ -101,9 +101,6 @@ module SearchHelper
     }
 
     options = exist_opts.merge(options)
-
-    path = request.path
-    path << "?#{options.to_param}"
-    path
+    search_path(options)
   end
 end

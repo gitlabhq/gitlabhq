@@ -24,6 +24,23 @@ Feature: Search
     And I should not see "Bar" link
 
   Scenario: I should see project code I am looking for
-    When I search for "rspec"
-    And I click project "Shop" link
+    When I click project "Shop" link
+    And I search for "rspec"
     Then I should see code results for project "Shop"
+
+  Scenario: I should see project issues
+    And project has issues
+    When I click project "Shop" link
+    And I search for "Foo"
+    And I click "Issues" link
+    Then I should see "Foo" link
+    And I should not see "Bar" link
+
+  Scenario: I should see project merge requests
+    And project has merge requests
+    When I click project "Shop" link
+    And I search for "Foo"
+    And I click "Merge requests" link
+    Then I should see "Foo" link
+    And I should not see "Bar" link
+
