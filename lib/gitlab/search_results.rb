@@ -11,7 +11,7 @@ module Gitlab
       @query = Shellwords.shellescape(query) if query.present?
     end
 
-    def objects(scope, page)
+    def objects(scope, page = nil)
       case scope
       when 'projects'
         projects.page(page).per(per_page)
