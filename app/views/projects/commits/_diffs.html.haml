@@ -4,9 +4,12 @@
   .col-md-4
     %ul.nav.nav-tabs
       %li.pull-right{class: params[:view] == 'parallel' ? 'active' : ''}
-        = link_to "Side-by-side Diff", url_for(view: 'parallel'), {id: "commit-diff-viewtype"}
+        - params_copy = params.dup
+        - params_copy[:view] = 'parallel'
+        = link_to "Side-by-side Diff", url_for(params_copy), {id: "commit-diff-viewtype"}
       %li.pull-right{class: params[:view] != 'parallel' ? 'active' : ''}
-        = link_to "Inline Diff", url_for(view: 'inline'), {id: "commit-diff-viewtype"}
+        - params_copy[:view] = 'inline'
+        = link_to "Inline Diff", url_for(params_copy), {id: "commit-diff-viewtype"}
 
 - if show_diff_size_warninig?(diffs)
   = render 'projects/commits/diff_warning', diffs: diffs
