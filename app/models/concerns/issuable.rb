@@ -49,6 +49,10 @@ module Issuable
       where("LOWER(title) like :query", query: "%#{query.downcase}%")
     end
 
+    def full_search(query)
+      where("LOWER(title) like :query OR LOWER(description) like :query", query: "%#{query.downcase}%")
+    end
+
     def sort(method)
       case method.to_s
       when 'newest' then reorder("#{table_name}.created_at DESC")

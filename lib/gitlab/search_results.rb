@@ -51,11 +51,11 @@ module Gitlab
     end
 
     def issues
-      Issue.where(project_id: limit_project_ids).search(query).order('updated_at DESC')
+      Issue.where(project_id: limit_project_ids).full_search(query).order('updated_at DESC')
     end
 
     def merge_requests
-      MergeRequest.in_projects(limit_project_ids).search(query).order('updated_at DESC')
+      MergeRequest.in_projects(limit_project_ids).full_search(query).order('updated_at DESC')
     end
 
     def default_scope
