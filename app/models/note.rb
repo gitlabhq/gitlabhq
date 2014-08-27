@@ -251,8 +251,8 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-      project.users.find_by(email: noteable.author_email) ||
-      project.users.find_by(name: noteable.author_name)
+      project.team.users.find_by(email: noteable.author_email) ||
+      project.team.users.find_by(name: noteable.author_name)
   rescue
     nil
   end
