@@ -1,0 +1,17 @@
+%ul.nav.nav-tabs
+  %li{class: ("active" if params[:search_code].blank?)}
+    = link_to search_path(params.merge(search_code: nil, snippets: true, page: 1)) do
+      Filenames and Titles
+  %li{class: ("active" if params[:search_code].present?)}
+    = link_to search_path(params.merge(search_code: true, snippets: true, page: 1)) do
+      Snippet Code
+     
+.search_results
+  %ul.bordered-list
+  - if params[:search_code].present?
+    .code-results
+      = render partial: "search/results/snippet_code", collection: @search_results[:snippets]
+  - else
+    %ul.bordered-list
+      = render partial: "search/results/snippet", collection: @search_results[:snippets]
+  = paginate @search_results[:snippets], theme: 'gitlab'
