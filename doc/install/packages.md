@@ -20,6 +20,9 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 - 7.2.0-ee - Enterprise Linux 6 64-bit [gitlab-7.2.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/2f0192626cfa99c6c86eeb9d340a7a5969d7943a/centos-6.5/gitlab-7.2.0_ee.omnibus-1.el6.x86_64.rpm)
     + MD5: e2db09cfc46542fd4c53a669d4159b68
 
+- 7.2.0-ee - Enterprise Linux 7 64-bit [gitlab-7.2.0_ee.omnibus.1-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/74a4d7a4e9406253f7ba7fff1e83c67122d7f12d/centos-7.0.1406/gitlab-7.2.0_ee.omnibus.1-1.el7.x86_64.rpm)
+    + MD5: 77b343220a36d39a1c167355ccb7c8fc
+
 ## Previous versions
 
 ### Ubuntu 14.04 64-bit
