@@ -1,6 +1,5 @@
 module Search
   class SnippetService
-
     attr_accessor :current_user, :params
 
     def initialize(user, params)

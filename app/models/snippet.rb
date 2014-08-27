@@ -67,11 +67,11 @@ class Snippet < ActiveRecord::Base
   end
 
   class << self
-    def search (query)
+    def search(query)
       where('(title LIKE :query OR file_name LIKE :query)', query: "%#{query}%")
     end 
 
-    def search_code (query)
+    def search_code(query)
       where('(content LIKE :query)', query: "%#{query}%")
     end 
 
