@@ -25,6 +25,7 @@ v 7.3.0
   - Process git push --all much faster
   - Don't allow edit of system notes
   - Project wiki search (Ralf Seidler)
+  - Shibboleth authentication support
 
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)
