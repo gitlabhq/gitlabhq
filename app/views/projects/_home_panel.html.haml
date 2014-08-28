@@ -17,13 +17,13 @@
         .fork-buttons
           - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
             - if current_user.already_forked?(@project)
-              = link_to project_path(current_user.fork_of(@project)) do
+              = link_to project_path(current_user.fork_of(@project)), title: 'Got to my fork' do
                 %i.icon-code-fork
                 Fork
                 %span.count
                   = @project.forks_count
             - else
-              = link_to fork_project_path(@project), title: "Fork", class: "btn btn-block", method: "POST" do
+              = link_to fork_project_path(@project), title: "Fork project", method: "POST" do
                 %i.icon-code-fork
                 Fork
                 %span.count
