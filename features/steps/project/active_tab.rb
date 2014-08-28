@@ -7,7 +7,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   # Main Tabs
 
   Then 'the active main tab should be Home' do
-    ensure_active_main_tab('Activity')
+    ensure_active_main_tab('Project')
   end
 
   Then 'the active main tab should be Settings' do
