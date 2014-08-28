@@ -56,7 +56,7 @@ server {
   
   ## Redirects all traffic to the HTTPS host
   root /nowhere; ## root doesn't have to be a valid path since we are redirecting
-  rewrite ^ https://$server_name$request_uri permanent;
+  rewrite ^ https://$server_name$request_uri? permanent;
 }
 
 ## HTTPS host
