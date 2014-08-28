@@ -34,9 +34,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   end
 
   step 'I click on "Sign In"' do
-    within '.pull-right' do
-      click_link "Sign in"
-    end
+    first(:link, "Sign in").click
   end
 
   step 'Authenticate' do
