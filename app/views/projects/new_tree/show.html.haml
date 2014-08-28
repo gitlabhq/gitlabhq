@@ -43,7 +43,8 @@
       = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
 
 :javascript
-  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
+  ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
+  ace.config.set("workerPath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
   var editor = ace.edit("editor");
 
   disableButtonIfEmptyField("#commit_message", ".js-commit-button");
