@@ -17,6 +17,10 @@ v 7.3.0
   - Add blob permalink link (Ciro Santilli)
   - Create annotated tags through UI and API (Sean Edge)
 
+v 7.2.1
+  - Delete orphaned labels during label migration (James Brooks)
+  - Security: prevent XSS with stricter MIME types for raw repo files
+
 v 7.2.0
   - Explore page
   - Add project stars (Ciro Santilli)
