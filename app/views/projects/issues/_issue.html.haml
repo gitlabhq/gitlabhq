@@ -9,7 +9,7 @@
       = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
     - if issue.closed?
       %small.pull-right
-        = "CLOSED"
+        CLOSED
 
   .issue-info
     - if issue.assignee
