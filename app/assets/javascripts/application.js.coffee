@@ -26,6 +26,7 @@
 #= require branch-graph
 #= require highlight.pack
 #= require ace/ace
+#= require ace/ext-searchbox
 #= require d3
 #= require underscore
 #= require nprogress
