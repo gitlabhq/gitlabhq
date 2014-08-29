@@ -337,4 +337,8 @@ class Note < ActiveRecord::Base
   def set_references
     notice_added_references(project, author)
   end
+
+  def editable?
+    !system
+  end
 end
