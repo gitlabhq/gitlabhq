@@ -5,7 +5,7 @@ class CompareService
     # Try to compare branches to get commits list and diffs
     #
     # Note: Use satellite only when need to compare between two repos
-    # because satellites are slower then operations on bare repo
+    # because satellites are slower than operations on bare repo
     if target_project == source_project
       Gitlab::CompareResult.new(
         Gitlab::Git::Compare.new(
