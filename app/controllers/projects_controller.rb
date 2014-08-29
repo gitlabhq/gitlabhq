@@ -103,7 +103,10 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
 
     respond_to do |format|
-      format.html { redirect_to root_path }
+      format.html do
+        flash[:alert] = "Project deleted."
+        redirect_to admin_projects_path
+      end
     end
   end
 
