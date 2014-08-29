@@ -18,8 +18,8 @@
   - if current_user && current_user.can?(:manage_group, @group)
     .pull-right
       - if ldap_enabled? && @group.ldap_group_links.any?
-        = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Reset the access level of all other LDAP group team members to '#{@group.human_ldap_access}'?" }, method: :put do
-          Reset access to #{@group.human_ldap_access}
+        = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Force GitLab to do LDAP permission checks for all group members? All members besides yourself will be reduced to 'Guest' access until their next interaction with GitLab." }, method: :put do
+          Clear LDAP permission cache
 
       = link_to '#', class: 'btn btn-new js-toggle-button' do
         Add members
