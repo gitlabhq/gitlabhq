@@ -1,35 +1,36 @@
-.dropdown.inline
-  %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-    %i.icon-tags
-    %span.light Group:
-    - if @group.present?
-      %strong= @group.name
-    - else
-      Any
-    %b.caret
-  %ul.dropdown-menu
-    %li
-      = link_to search_filter_path(group_id: nil) do
+- unless params[:snippets]
+  .dropdown.inline
+    %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+      %i.icon-tags
+      %span.light Group:
+      - if @group.present?
+        %strong= @group.name
+      - else
         Any
-    - current_user.authorized_groups.sort_by(&:name).each do |group|
+      %b.caret
+    %ul.dropdown-menu
       %li
-        = link_to search_filter_path(group_id: group.id, project_id: nil) do
-          = group.name
+        = link_to search_filter_path(group_id: nil) do
+          Any
+      - current_user.authorized_groups.sort_by(&:name).each do |group|
+        %li
+          = link_to search_filter_path(group_id: group.id, project_id: nil) do
+            = group.name
 
-.dropdown.inline.prepend-left-10.project-filter
-  %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-    %i.icon-tags
-    %span.light Project:
-    - if @project.present?
-      %strong= @project.name_with_namespace
-    - else
-      Any
-    %b.caret
-  %ul.dropdown-menu
-    %li
-      = link_to search_filter_path(project_id: nil) do
+  .dropdown.inline.prepend-left-10.project-filter
+    %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
+      %i.icon-tags
+      %span.light Project:
+      - if @project.present?
+        %strong= @project.name_with_namespace
+      - else
         Any
-    - current_user.authorized_projects.sort_by(&:name_with_namespace).each do |project|
+      %b.caret
+    %ul.dropdown-menu
       %li
-        = link_to search_filter_path(project_id: project.id, group_id: nil) do
-          = project.name_with_namespace
+        = link_to search_filter_path(project_id: nil) do
+          Any
+      - current_user.authorized_projects.sort_by(&:name_with_namespace).each do |project|
+        %li
+          = link_to search_filter_path(project_id: project.id, group_id: nil) do
+            = project.name_with_namespace

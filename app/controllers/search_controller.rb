@@ -14,6 +14,12 @@ class SearchController < ApplicationController
                         end
 
                         Search::ProjectService.new(@project, current_user, params).execute
+                      elsif params[:snippets].eql? 'true'
+                        unless %w(snippet_blobs snippet_titles).include?(@scope)
+                          @scope = 'snippet_blobs'
+                        end
+
+                        Search::SnippetService.new(current_user, params).execute
                       else
                         unless %w(projects issues merge_requests).include?(@scope)
                           @scope = 'projects'

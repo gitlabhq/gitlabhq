@@ -1,0 +1,13 @@
+%ul.nav.nav-pills.nav-stacked.search-filter
+  %li{class: ("active" if @scope == 'snippet_blobs')}
+    = link_to search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil) do
+      %i.icon-code
+      Code
+      .pull-right
+        = @search_results.snippet_blobs_count
+  %li{class: ("active" if @scope == 'snippet_titles')}
+    = link_to search_filter_path(scope: 'snippet_titles', snippets: true, group_id: nil, project_id: nil) do
+      %i.icon-book
+      Titles and Filenames
+      .pull-right
+        = @search_results.snippet_titles_count
