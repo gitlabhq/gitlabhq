@@ -30,6 +30,13 @@ Feature: Project Issues
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
 
+  Scenario: I submit new unassigned issue with labels
+    Given project "Shop" has labels: "bug", "feature", "enhancement"
+    And I click link "New Issue"
+    And I submit new issue "500 error on profile" with label 'bug'
+    Then I should see issue "500 error on profile"
+    And I should see label 'bug' with issue
+
   @javascript
   Scenario: I comment issue
     Given I visit issue page "Release 0.4"

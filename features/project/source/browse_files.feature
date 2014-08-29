@@ -8,11 +8,11 @@ Feature: Project Browse files
     Then I should see files from repository
 
   Scenario: I browse files for specific ref
-    Given I visit project source page for "8470d70"
-    Then I should see files from repository for "8470d70"
+    Given I visit project source page for "6d39438"
+    Then I should see files from repository for "6d39438"
 
   Scenario: I browse file content
-    Given I click on "Gemfile.lock" file in repo
+    Given I click on ".gitignore" file in repo
     Then I should see it content
 
   Scenario: I browse raw file
@@ -26,20 +26,20 @@ Feature: Project Browse files
 
   @javascript
   Scenario: I can edit file
-    Given I click on "Gemfile.lock" file in repo
+    Given I click on ".gitignore" file in repo
     And I click button "edit"
     Then I can edit code
 
   @javascript
   Scenario: I can see editing preview
-    Given I click on "Gemfile.lock" file in repo
+    Given I click on ".gitignore" file in repo
     And I click button "edit"
     And I edit code
     And I click link "Diff"
     Then I see diff
 
   Scenario: I can browse directory with Browse Dir
-    Given I click on app directory
+    Given I click on files directory
     And I click on history link
     Then I see Browse dir link
 

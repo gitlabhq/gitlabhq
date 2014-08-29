@@ -2,26 +2,26 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include RepoHelpers
 
   step 'I should see files from repository' do
-    page.should have_content "app"
-    page.should have_content "history"
-    page.should have_content "Gemfile"
+    page.should have_content "VERSION"
+    page.should have_content ".gitignore"
+    page.should have_content "LICENSE"
   end
 
-  step 'I should see files from repository for "8470d70"' do
-    current_path.should == project_tree_path(@project, "8470d70")
-    page.should have_content "app"
-    page.should have_content "history"
-    page.should have_content "Gemfile"
+  step 'I should see files from repository for "6d39438"' do
+    current_path.should == project_tree_path(@project, "6d39438")
+    page.should have_content ".gitignore"
+    page.should have_content "LICENSE"
   end
 
-  step 'I click on "Gemfile.lock" file in repo' do
-    click_link "Gemfile.lock"
+  step 'I click on ".gitignore" file in repo' do
+    click_link ".gitignore"
   end
 
   step 'I should see it content' do
-    page.should have_content "DEPENDENCIES"
+    page.should have_content "*.rbc"
   end
 
   step 'I click link "raw"' do
@@ -29,7 +29,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see raw file content' do
-    page.source.should == ValidCommit::BLOB_FILE
+    page.source.should == sample_blob.data
   end
 
   step 'I click button "edit"' do
@@ -63,8 +63,8 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_content "Commit message"
   end
 
-  step 'I click on app directory' do
-    click_link 'app'
+  step 'I click on files directory' do
+    click_link 'files'
   end
 
   step 'I click on history link' do

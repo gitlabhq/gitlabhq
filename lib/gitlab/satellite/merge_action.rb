@@ -45,27 +45,30 @@ module Gitlab
         handle_exception(ex)
       end
 
-      # Get a raw diff of the source to the target
       def diff_in_satellite
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
-          diff = merge_repo.git.native(:diff, default_options, "origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
+
+          # Only show what is new in the source branch compared to the target branch, not the other way around.
+          # The line below with merge_base is equivalent to diff with three dots (git diff branch1...branch2)
+          # From the git documentation: "git diff A...B" is equivalent to "git diff $(git-merge-base A B) B"
+          common_commit = merge_repo.git.native(:merge_base, default_options, ["origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}"]).strip
+          merge_repo.git.native(:diff, default_options, common_commit, "source/#{merge_request.source_branch}")
         end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
 
-      # Only show what is new in the source branch compared to the target branch, not the other way around.
-      # The line below with merge_base is equivalent to diff with three dots (git diff branch1...branch2)
-      # From the git documentation: "git diff A...B" is equivalent to "git diff $(git-merge-base A B) B"
       def diffs_between_satellite
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
           if merge_request.for_fork?
+            # Only show what is new in the source branch compared to the target branch, not the other way around.
+            # The line below with merge_base is equivalent to diff with three dots (git diff branch1...branch2)
+            # From the git documentation: "git diff A...B" is equivalent to "git diff $(git-merge-base A B) B"
             common_commit = merge_repo.git.native(:merge_base, default_options, ["origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}"]).strip
-            #this method doesn't take default options
             diffs = merge_repo.diff(common_commit, "source/#{merge_request.source_branch}")
           else
             raise "Attempt to determine diffs between for a non forked merge request in satellite MergeRequest.id:[#{merge_request.id}]"

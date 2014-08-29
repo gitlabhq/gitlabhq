@@ -16,7 +16,7 @@ They integrate deeply into GitLab and are easily referenced from anywhere by usi
 
 Using a merge request, you can review and discuss code before it is merged in the branch of your code.
 
-As with issues, it can be assigned; people, issues, etc. can be refereced; milestones attached.
+As with issues, it can be assigned; people, issues, etc. can be referenced; milestones attached.
 
 We see it as an integral part of working together on code and couldn't work without it.
 

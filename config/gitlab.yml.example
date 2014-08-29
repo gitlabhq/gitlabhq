@@ -67,6 +67,7 @@ production: &base
     # If a commit message matches this regular expression, all issues referenced from the matched text will be closed.
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
+    # Tip: you can test your closing pattern at http://rubular.com
     # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) (#\d+|([A-Z\-]+-)\d+)'
 
     ## Default project features settings
@@ -133,6 +134,15 @@ production: &base
     method: 'ssl' # "tls" or "ssl" or "plain"
     bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
     password: '_the_password_of_the_bind_user'
+
+    # This setting controls the amount of time between LDAP permission checks for each user.
+    # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
+    # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
+    # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
+    #
+    # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
+    # sync_time: 3600
+
     # If allow_username_or_email_login is enabled, GitLab will ignore everything
     # after the first '@' in the LDAP username submitted by the user on login.
     #
@@ -215,6 +225,7 @@ production: &base
   satellites:
     # Relative paths are relative to Rails.root (default: tmp/repo_satellites/)
     path: /home/git/gitlab-satellites/
+    timeout: 30
 
   ## Backup settings
   backup:
@@ -275,6 +286,17 @@ test:
   gitlab:
     host: localhost
     port: 80
+
+    # When you run tests we clone and setup gitlab-shell
+    # In order to setup it correctly you need to specify
+    # your system username you use to run GitLab
+    # user: YOUR_USERNAME
+  satellites:
+    path: tmp/tests/gitlab-satellites/
+  gitlab_shell:
+    path: tmp/tests/gitlab-shell/
+    repos_path: tmp/tests/repositories/
+    hooks_path: tmp/tests/gitlab-shell/hooks/
   issues_tracker:
     redmine:
       title: "Redmine"

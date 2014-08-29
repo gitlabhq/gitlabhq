@@ -52,7 +52,7 @@ class ProjectMultiselectBlob < Spinach::FeatureSteps
     page.evaluate_script("window.history.forward()")
   end
 
-  step 'I click on "Gemfile.lock" file in repo' do
-    click_link "Gemfile.lock"
+  step 'I click on ".gitignore" file in repo' do
+    click_link ".gitignore"
   end
 end

@@ -31,9 +31,7 @@
 
     .issue-labels
       - issue.labels.each do |label|
-        %span{class: "label #{label_css_class(label.name)}"}
-          %i.icon-tag
-          = label.name
+        = render_colored_label(label)
 
   .issue-actions
     - if can? current_user, :modify_issue, issue

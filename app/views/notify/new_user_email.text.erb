@@ -4,10 +4,5 @@ The Administrator created an account for you. Now you are a member of the compan
 
 login.................. <%= @user.email %>
 <% if @user.created_by_id %>
-  password............... <%= @password %>
-
-  You will be forced to change this password immediately after login.
+  <%= link_to "Click here to set your password", edit_password_url(@user, :reset_password_token => @token) %>
 <% end %>
-
-
-Click here to login: <%= url_for(root_url) %>

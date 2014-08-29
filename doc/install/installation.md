@@ -49,7 +49,7 @@ up-to-date and install it.
 
 Install the required packages (needed to compile Ruby and native extensions to Ruby gems):
 
-    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils
+    sudo apt-get install -y build-essential zlib1g-dev libyaml-dev libssl-dev libgdbm-dev libreadline-dev libncurses5-dev libffi-dev curl openssh-server redis-server checkinstall libxml2-dev libxslt-dev libcurl4-openssl-dev libicu-dev logrotate python-docutils cmake
 
 Make sure you have the right version of Git installed
 
@@ -69,7 +69,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl --progress https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz | tar xz
+    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz | tar xz
     cd git-2.0.0/
     make prefix=/usr/local all
 
@@ -78,7 +78,7 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # When editing config/gitlab.yml (Step 5), change the git bin_path to /usr/local/bin/git
 
-**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 whereas Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
+**Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://github.com/gitlabhq/gitlabhq/issues/4866#issuecomment-32726573) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
     sudo apt-get install -y postfix
 
@@ -86,7 +86,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we stronly advise everyone to follow the instructions below to use a system ruby.
+The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system ruby.
 
 Remove the old Ruby 1.8 if present
 
@@ -95,7 +95,7 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl --progress ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
+    curl -L --progress ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
     cd ruby-2.1.2
     ./configure --disable-install-rdoc
     make
@@ -107,7 +107,7 @@ Install the Bundler Gem:
 
 ## 3. System Users
 
-Create a `git` user for Gitlab:
+Create a `git` user for GitLab:
 
     sudo adduser --disabled-login --gecos 'GitLab' git
 
@@ -232,9 +232,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
 ### Install GitLab shell
 
-GitLab Shell is an ssh access and repository management software developed specially for GitLab.
+GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
-    # Go to the Gitlab installation folder:
+    # Go to the GitLab installation folder:
     cd /home/git/gitlab
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
@@ -269,7 +269,7 @@ And if you are installing with a non-default folder or user copy and edit the de
 
     sudo cp lib/support/init.d/gitlab.default.example /etc/default/gitlab
 
-If you installed gitlab in another directory or as a user other than the default you should change these settings in /etc/default/gitlab. Do not edit /etc/init.d/gitlab as it will be changed on upgrade.
+If you installed GitLab in another directory or as a user other than the default you should change these settings in `/etc/default/gitlab`. Do not edit `/etc/init.d/gitlab as it will be changed on upgrade.
 
 Make GitLab start on boot:
 
@@ -372,7 +372,7 @@ If you want to connect the Redis server via socket, then use the "unix:" URL sch
 
 ### Custom SSH Connection
 
-If you are running SSH on a non-standard port, you must change the gitlab user's SSH config.
+If you are running SSH on a non-standard port, you must change the GitLab user's SSH config.
 
     # Add to /home/git/.ssh/config
     host localhost          # Give your setup a name (here: override localhost)
@@ -380,11 +380,11 @@ If you are running SSH on a non-standard port, you must change the gitlab user's
         port 2222           # Your port number
         hostname 127.0.0.1; # Your server name or IP
 
-You also need to change the corresponding options (e.g. ssh_user, ssh_host, admin_uri) in the `config\gitlab.yml` file.
+You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, `admin_uri`) in the `config\gitlab.yml` file.
 
 ### LDAP authentication
 
-You can configure LDAP authentication in config/gitlab.yml. Please restart GitLab after editing this file.
+You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
 
 ### Using Custom Omniauth Providers
 
@@ -422,4 +422,4 @@ If you have successfully set up a provider that is not shipped with GitLab itsel
 
 You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
 
-While we can't officially support every possible auth mechanism out there, we'd like to at least help those with special needs.
+While we can't officially support every possible authentication mechanism out there, we'd like to at least help those with special needs.

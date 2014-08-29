@@ -91,6 +91,8 @@ class User < ActiveRecord::Base
   has_many :personal_projects,        through: :namespace, source: :projects
   has_many :projects,                 through: :users_projects
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
   has_many :users_projects,           dependent: :destroy
@@ -175,6 +177,7 @@ class User < ActiveRecord::Base
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
   scope :ldap, -> { where(provider:  'ldap') }
+  scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
@@ -238,6 +241,15 @@ class User < ActiveRecord::Base
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
+  end
+
+  def generate_reset_token
+    @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
+
+    self.reset_password_token   = enc
+    self.reset_password_sent_at = Time.now.utc
+
+    @reset_token
   end
 
   def namespace_uniq
@@ -404,8 +416,10 @@ class User < ActiveRecord::Base
   end
 
   def requires_ldap_check?
-    if ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+    if !Gitlab.config.ldap.enabled
+      false
+    elsif ldap_user?
+      !last_credential_check_at || (last_credential_check_at + Gitlab.config.ldap['sync_time']) < Time.now
     else
       false
     end
@@ -489,7 +503,7 @@ class User < ActiveRecord::Base
 
   def post_create_hook
     log_info("User \"#{self.name}\" (#{self.email}) was created")
-    notification_service.new_user(self)
+    notification_service.new_user(self, @reset_token)
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -508,5 +522,23 @@ class User < ActiveRecord::Base
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def admin_unsubscribe!
+    update_column :admin_email_unsubscribed_at, Time.now
+  end
+
+  def starred?(project)
+    starred_projects.exists?(project)
+  end
+
+  def toggle_star(project)
+    user_star_project = users_star_projects.
+      where(project: project, user: self).take
+    if user_star_project
+      user_star_project.destroy
+    else
+      UsersStarProject.create!(project: project, user: self)
+    end
   end
 end

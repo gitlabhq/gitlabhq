@@ -190,28 +190,40 @@ ul.nav.nav-projects-tabs {
 .project-side {
   .btn-block {
     background-image: none;
-    .btn,
-    &.btn,
-    &.btn-group ul.dropdown-menu {
+
+    .btn, &.btn {
+      white-space: normal;
+      text-align: left;
+      padding: 10px 15px;
       background-color: #F1f1f1;
       border-color: #EEE;
+
       &:hover {
         background-color: #eee;
         border-color: #DDD;
       }
     }
-    &.btn-group-justified {
-        .btn {
-            width: 100%;
-        }
-        .dropdown-toggle {
-            width: 26px;
-        }
+
+    .count {
+      float: right;
+      font-weight: 500;
+      text-shadow: 0 1px #FFF;
     }
-    ul {
+
+    &.btn-group-justified {
+      .btn {
         width: 100%;
+      }
+      .dropdown-toggle {
+        width: 30px;
+        padding: 10px;
+      }
+      ul {
+        width: 100%;
+      }
     }
   }
+
   .project-fork-icon {
     float: left;
     font-size: 26px;

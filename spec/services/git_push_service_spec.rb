@@ -1,14 +1,16 @@
 require 'spec_helper'
 
 describe GitPushService do
+  include RepoHelpers
+
   let (:user)          { create :user }
   let (:project)       { create :project }
   let (:service) { GitPushService.new }
 
   before do
     @blankrev = '0000000000000000000000000000000000000000'
-    @oldrev = 'b98a310def241a6fd9c9a9a3e7934c48e498fe81'
-    @newrev = 'b19a04f53caeebf4fe5ec2327cb83e9253dc91bb'
+    @oldrev = sample_commit.parent_id
+    @newrev = sample_commit.id
     @ref = 'refs/heads/master'
   end
 

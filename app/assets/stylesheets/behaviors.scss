@@ -4,3 +4,9 @@
 .js-details-container .content.hide { display: block; }
 .js-details-container.open .content { display: block; }
 .js-details-container.open .content.hide { display: none; }
+
+// Toggle between two states.
+.js-toggler-container .turn-on  { display: block; }
+.js-toggler-container .turn-off { display: none; }
+.js-toggler-container.on .turn-on  { display: none; }
+.js-toggler-container.on .turn-off { display: block; }

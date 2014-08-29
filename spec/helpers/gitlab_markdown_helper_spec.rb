@@ -17,6 +17,7 @@ describe GitlabMarkdownHelper do
   before do
     # Helper expects a @project instance variable
     @project = project
+    @ref = 'markdown'
     @repository = project.repository
   end
 
@@ -221,6 +222,52 @@ describe GitlabMarkdownHelper do
 
       it "should include a title attribute" do
         title = "Issue in JIRA tracker"
+        gfm(actual).should match(/title="#{title}"/)
+      end
+
+      it "should include standard gfm classes" do
+        gfm(actual).should match(/class="\s?gfm gfm-issue\s?"/)
+      end
+    end
+
+    describe "referencing a Redmine issue" do
+      let(:actual)   { "Reference to Redmine ##{issue.iid}" }
+      let(:expected) { "http://redmine.example/issues/#{issue.iid}" }
+      let(:reference) { "##{issue.iid}" }
+
+      before do
+        issue_tracker_config = { "redmine" => { "title" => "Redmine tracker", "issues_url" => "http://redmine.example/issues/:id" } }
+        Gitlab.config.stub(:issues_tracker).and_return(issue_tracker_config)
+        @project.stub(:issues_tracker).and_return("redmine")
+        @project.stub(:issues_tracker_id).and_return("REDMINE")
+      end
+
+      it "should link using a valid id" do
+        gfm(actual).should match(expected)
+      end
+
+      it "should link with adjacent text" do
+        # Wrap the reference in parenthesis
+        gfm(actual.gsub(reference, "(#{reference})")).should match(expected)
+
+        # Append some text to the end of the reference
+        gfm(actual.gsub(reference, "#{reference}, right?")).should match(expected)
+      end
+
+      it "should keep whitespace intact" do
+        actual   = "Referenced #{reference} already."
+        expected = /Referenced <a.+>[^\s]+<\/a> already/
+        gfm(actual).should match(expected)
+      end
+
+      it "should not link with an invalid id" do
+        # Modify the reference string so it's still parsed, but is invalid
+        invalid_reference = actual.gsub(/(\d+)$/, "r45")
+        gfm(invalid_reference).should == invalid_reference
+      end
+
+      it "should include a title attribute" do
+        title = "Issue in Redmine tracker"
         gfm(actual).should match(/title="#{title}"/)
       end
 
@@ -472,13 +519,13 @@ describe GitlabMarkdownHelper do
 
     it "should handle relative urls for a file in master" do
       actual = "[GitLab API doc](doc/api/README.md)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
 
     it "should handle relative urls for a directory in master" do
       actual = "[GitLab API doc](doc/api)\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api\">GitLab API doc</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
 
@@ -490,13 +537,13 @@ describe GitlabMarkdownHelper do
 
     it "should handle relative urls in reference links for a file in master" do
       actual = "[GitLab API doc][GitLab readme]\n [GitLab readme]: doc/api/README.md\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/master/doc/api/README.md\">GitLab API doc</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/blob/#{@ref}/doc/api/README.md\">GitLab API doc</a></p>\n"
       markdown(actual).should match(expected)
     end
 
     it "should handle relative urls in reference links for a directory in master" do
       actual = "[GitLab API doc directory][GitLab readmes]\n [GitLab readmes]: doc/api/\n"
-      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/master/doc/api\">GitLab API doc directory</a></p>\n"
+      expected = "<p><a href=\"/#{project.path_with_namespace}/tree/#{@ref}/doc/api\">GitLab API doc directory</a></p>\n"
       markdown(actual).should match(expected)
     end
 

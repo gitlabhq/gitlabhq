@@ -1,9 +1,15 @@
 Feature: Project Search code
   Background:
     Given I sign in as a user
-    And I own project "Shop"
-    Given I visit project source page
 
-  Scenario: Search for term "Welcome to GitLab"
-    When I search for term "Welcome to GitLab"
-    Then I should see files from repository containing "Welcome to GitLab" 
+  Scenario: Search for term "coffee"
+    Given I own project "Shop"
+    And I visit project source page
+    When I search for term "coffee"
+    Then I should see files from repository containing "coffee"
+
+  Scenario: Search on empty project
+    Given I own an empty project
+    And I visit my project's home page
+    When I search for term "coffee"
+    Then I should see empty result

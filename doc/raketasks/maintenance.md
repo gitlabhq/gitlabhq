@@ -111,9 +111,9 @@ Redis version >= 2.0.0? ... yes
 Checking GitLab ... Finished
 ```
 
-## (Re-)Create satellite repos
+## (Re-)Create satellite repositories
 
-This will create satellite repos for all your projects.
+This will create satellite repositories for all your projects.
 
 If necessary, remove the `tmp/repo_satellites` directory and rerun the command below.
 

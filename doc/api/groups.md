@@ -19,7 +19,6 @@ GET /groups
 ]
 ```
 
-
 ## Details of a group
 
 Get all details of a group.
@@ -30,8 +29,7 @@ GET /groups/:id
 
 Parameters:
 
-+ `id` (required) - The ID of a group
-
+- `id` (required) - The ID of a group
 
 ## New group
 
@@ -43,8 +41,8 @@ POST /groups
 
 Parameters:
 
-+ `name` (required) - The name of the group
-+ `path` (required) - The path of the group
+- `name` (required) - The name of the group
+- `path` (required) - The path of the group
 
 ## Transfer project to group
 
@@ -55,9 +53,9 @@ POST  /groups/:id/projects/:project_id
 ```
 
 Parameters:
-+ `id` (required) - The ID of a group
-+ `project_id` (required) - The ID of a project
 
+- `id` (required) - The ID of a group
+- `project_id` (required) - The ID of a project
 
 ## Remove group
 
@@ -69,22 +67,20 @@ DELETE /groups/:id
 
 Parameters:
 
-+ `id` (required) - The ID of a user group
-
+- `id` (required) - The ID of a user group
 
 ## Group members
-
 
 **Group access levels**
 
 The group access levels are defined in the `Gitlab::Access` module. Currently, these levels are recognized:
 
 ```
-  GUEST     = 10
-  REPORTER  = 20
-  DEVELOPER = 30
-  MASTER    = 40
-  OWNER     = 50
+GUEST     = 10
+REPORTER  = 20
+DEVELOPER = 30
+MASTER    = 40
+OWNER     = 50
 ```
 
 ### List group members
@@ -128,10 +124,9 @@ POST /groups/:id/members
 
 Parameters:
 
-+ `id` (required) - The ID of a group
-+ `user_id` (required) - The ID of a user to add
-+ `access_level` (required) - Project access level
-
+- `id` (required) - The ID of a group
+- `user_id` (required) - The ID of a user to add
+- `access_level` (required) - Project access level
 
 ### Remove user team member
 
@@ -143,5 +138,5 @@ DELETE /groups/:id/members/:user_id
 
 Parameters:
 
-+ `id` (required) - The ID of a user group
-+ `user_id` (required) - The ID of a group member
+- `id` (required) - The ID of a user group
+- `user_id` (required) - The ID of a group member

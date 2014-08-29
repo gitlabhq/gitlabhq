@@ -32,20 +32,29 @@ class ProjectsFinder
           #   internal projects
           #   joined projects
           #
-          group.projects.where(
-            "projects.id IN (?) OR projects.visibility_level IN (?)",
-            projects_members.pluck(:project_id),
-            Project.public_and_internal_levels
-          )
+          projects_ids = projects_members.pluck(:project_id)
         else
           # User has no access to group or group projects
+          # or has access through shared project
           #
           # Return only:
           #   public projects
           #   internal projects
-          #
-          group.projects.public_and_internal_only
+          #   shared projects
+
+          projects_ids = []
+          ProjectGroupLink.where(project_id: group.projects).each do |shared_project|
+            if shared_project.group.users.include?(current_user) || shared_project.project.users.include?(current_user)
+              projects_ids << shared_project.project.id
+            end
+          end
         end
+
+        group.projects.where(
+          "projects.id IN (?) OR projects.visibility_level IN (?)",
+          projects_ids,
+          Project.public_and_internal_levels
+        )
       end
     else
       # Not authenticated

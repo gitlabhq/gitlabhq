@@ -70,7 +70,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @target_project = merge_request.target_project
     @source_project = merge_request.source_project
     @commits = @merge_request.compare_commits
-    @commit = @merge_request.compare_base_commit
+    @commit = @merge_request.compare_commits.last
     @diffs = @merge_request.compare_diffs
     @note_counts = Note.where(commit_id: @commits.map(&:id)).
       group(:commit_id).count
@@ -242,7 +242,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, :label_list
+      :state_event, :description, label_ids: []
     )
   end
 end

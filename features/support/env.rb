@@ -15,7 +15,7 @@ require 'spinach/capybara'
 require 'sidekiq/testing/inline'
 
 
-%w(valid_commit valid_commit_with_alt_email big_commits select2_helper test_env).each do |f|
+%w(select2_helper test_env repo_helpers).each do |f|
   require Rails.root.join('spec', 'support', f)
 end
 
@@ -39,7 +39,6 @@ Capybara.ignore_hidden_elements = false
 DatabaseCleaner.strategy = :truncation
 
 Spinach.hooks.before_scenario do
-  TestEnv.setup_stubs
   DatabaseCleaner.start
 end
 
@@ -48,7 +47,7 @@ Spinach.hooks.after_scenario do
 end
 
 Spinach.hooks.before_run do
-  TestEnv.init(mailer: false, init_repos: true, repos: false)
+  TestEnv.init(mailer: false)
   RSpec::Mocks::setup self
 
   include FactoryGirl::Syntax::Methods

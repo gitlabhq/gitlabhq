@@ -18,6 +18,8 @@
 #
 
 class HipchatService < Service
+  MAX_COMMITS = 3
+
   validates :token, presence: true, if: :activated?
 
   def title
@@ -57,15 +59,24 @@ class HipchatService < Service
     message = ""
     message << "#{push[:user_name]} "
     if before =~ /000000/
-      message << "pushed new branch <a href=\"#{project.web_url}/commits/#{ref}\">#{ref}</a> to <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a>\n"
+      message << "pushed new branch <a href=\""\
+                 "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a>"\
+                 " to <a href=\"#{project.web_url}\">"\
+                 "#{project.name_with_namespace.gsub!(/\s/, "")}</a>\n"
     elsif after =~ /000000/
       message << "removed branch #{ref} from <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> \n"
     else
-      message << "pushed to branch <a href=\"#{project.web_url}/commits/#{ref}\">#{ref}</a> "
+      message << "pushed to branch <a href=\""\
+                  "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a> "
       message << "of <a href=\"#{project.web_url}\">#{project.name_with_namespace.gsub!(/\s/,'')}</a> "
       message << "(<a href=\"#{project.web_url}/compare/#{before}...#{after}\">Compare changes</a>)"
-      for commit in push[:commits] do
-        message << "<br /> - #{commit[:message]} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
+
+      push[:commits].take(MAX_COMMITS).each do |commit|
+        message << "<br /> - #{commit[:message].lines.first} (<a href=\"#{commit[:url]}\">#{commit[:id][0..5]}</a>)"
+      end
+
+      if push[:commits].count > MAX_COMMITS
+        message << "<br />... #{push[:commits].count - MAX_COMMITS} more commits"
       end
     end
 

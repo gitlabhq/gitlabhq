@@ -70,6 +70,12 @@ class Event < ActiveRecord::Base
         author_id: user.id
       )
     end
+
+    def reset_event_cache_for(target)
+      Event.where(target_id: target.id, target_type: target.class.to_s).
+        order('id DESC').limit(100).
+        update_all(updated_at: Time.now)
+    end
   end
 
   def proper?

@@ -1,3 +1,23 @@
+v 7.2.0
+  - Explore page
+  - Add project stars (Ciro Santilli)
+  - Log Sidekiq arguments
+  - Better labels: colors, ability to rename and remove
+  - Improve the way merge request collects diffs
+  - Improve compare page for large diffs
+  - Expose the full commit message via API
+  - Fix 500 error on repository rename
+  - Fix bug when MR download patch return invalid diff
+  - Test gitlab-shell integration
+  - Repository import timeout increased from 2 to 4 minutes allowing larger repos to be imported
+  - API for labels (Robert Schilling)
+  - API: ability to set an import url when creating project for specific user
+
+v 7.1.1
+  - Fix cpu usage issue in Firefox
+  - Fix redirect loop when changing password by new user
+  - Fix 500 error on new merge request page
+
 v 7.1.0
   - Remove observers
   - Improve MR discussions
@@ -8,7 +28,7 @@ v 7.1.0
   - Dont show reply button if user is not signed in
   - Expose more information for issues with webhook
   - Add a mention of the merge request into the default merge request commit message
-  - Imrpove code highlight, introduce support for more languages like Go, Clojure, Erlang etc
+  - Improve code highlight, introduce support for more languages like Go, Clojure, Erlang etc
   - Fix concurrency issue in repository download
   - Dont allow repository name start with ?
   - Improve email threading (Pierre de La Morinerie)
@@ -53,7 +73,7 @@ v 7.0.0
   - Show notice if your profile is public
   - UI improvements for mobile devices
   - Improve diff rendering performance
-  - Drag-n-drop for issues and merge requests between states at milestone page 
+  - Drag-n-drop for issues and merge requests between states at milestone page
   - Fix '0 commits' message for huge repositories on project home page
   - Prevent 500 error page when visit commit page from large repo
   - Add notice about huge push over http to unicorn config
@@ -63,7 +83,7 @@ v 7.0.0
   - Be more selective when killing stray Sidekiqs
   - Check LDAP user filter during sign-in
   - Remove wall feature (no data loss - you can take it from database)
-  - Dont expose user emails via API unless you are admin 
+  - Dont expose user emails via API unless you are admin
   - Detect issues closed by Merge Request description
   - Better email subject lines from email on push service (Alex Elman)
   - Enable identicon for gravatar be default
@@ -141,7 +161,7 @@ v 6.7.0
   - Blob and tree gfm links to anchors work
   - Piwik Integration (Sebastian Winkler)
   - Show contribution guide link for new issue form (Jeroen van Baarsen)
-  - Fix CI status for merge requests from fork 
+  - Fix CI status for merge requests from fork
   - Added option to remove issue assignee on project issue page and issue edit page (Jason Blanchard)
   - New page load indicator that includes a spinner that scrolls with the page
   - Converted all the help sections into markdown
@@ -332,7 +352,7 @@ v 6.2.0
   - Store the sessions in Redis instead of the cookie store
   - Fixed relative links in markdown
   - User must confirm their email if signup enabled
-  - User must confirm changed email 
+  - User must confirm changed email
 
 v 6.1.0
   - Project specific IDs for issues, mr, milestones

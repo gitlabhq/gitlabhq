@@ -1,16 +1,15 @@
-- file = project.repository.blob_at(@commit.id, diff.new_path)
-- file = project.repository.blob_at(@commit.parent_id, diff.old_path) unless file
+- file = project.repository.blob_for_diff(@commit, diff)
 - return unless file
-.diff-file{id: "diff-#{i}"}
+- blob_diff_path = diff_project_blob_path(project,
+  tree_join(@commit.id, diff.new_path))
+.diff-file{id: "diff-#{i}", data: {blob_diff_path: blob_diff_path }}
   .diff-header{id: "file-path-#{hexdigest(diff.new_path || diff.old_path)}"}
     - if diff.deleted_file
       %span= diff.old_path
 
       .diff-btn-group
         - if @commit.parent_ids.present?
-          = link_to project_blob_path(project, tree_join(@commit.parent_id, diff.new_path)), { class: 'btn btn-small view-file' } do
-            View file @
-            %span.commit-short-id= @commit.short_id(6)
+          = view_file_btn(@commit.parent_id, diff, project)
     - else
       %span= diff.new_path
       - if diff_file_mode_changed?(diff)
@@ -27,10 +26,7 @@
             Edit
           &nbsp;
 
-        = link_to project_blob_path(project, tree_join(@commit.id, diff.new_path)), { class: 'btn btn-small view-file' } do
-          View file @
-          %span.commit-short-id= @commit.short_id(6)
-
+        = view_file_btn(@commit.id, diff, project)
 
   .diff-content
     -# Skipp all non non-supported blobs
@@ -41,7 +37,7 @@
       - else
         = render "projects/commits/text_file", diff: diff, index: i
     - elsif file.image?
-      - old_file = project.repository.blob_at(@commit.parent_id, diff.old_path) if @commit.parent_id
+      - old_file = project.repository.prev_blob_for_diff(@commit, diff)
       = render "projects/commits/image", diff: diff, old_file: old_file, file: file, index: i
     - else
       .nothing-here-block No preview for this file type

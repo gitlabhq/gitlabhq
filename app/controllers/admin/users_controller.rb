@@ -39,12 +39,13 @@ class Admin::UsersController < Admin::ApplicationController
   def create
     opts = {
       force_random_password: true,
-      password_expires_at: Time.now
+      password_expires_at: nil
     }
 
     @user = User.new(user_params.merge(opts))
     @user.created_by_id = current_user.id
     @user.generate_password
+    @user.generate_reset_token
     @user.skip_confirmation!
 
     respond_to do |format|

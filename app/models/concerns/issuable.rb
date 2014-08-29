@@ -13,6 +13,8 @@ module Issuable
     belongs_to :assignee, class_name: "User"
     belongs_to :milestone
     has_many :notes, as: :noteable, dependent: :destroy
+    has_many :label_links, as: :target, dependent: :destroy
+    has_many :labels, through: :label_links
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
@@ -130,5 +132,21 @@ module Issuable
       object_kind: self.class.name.underscore,
       object_attributes: self.attributes
     }
+  end
+
+  def label_names
+    labels.order('title ASC').pluck(:title)
+  end
+
+  def remove_labels
+    labels.delete_all
+  end
+
+  def add_labels_by_names(label_names)
+    label_names.each do |label_name|
+      label = project.labels.create_with(
+        color: Label::DEFAULT_COLOR).find_or_create_by(title: label_name.strip)
+      self.labels << label
+    end
   end
 end

@@ -125,7 +125,13 @@ class BaseFinder
 
   def by_label(items)
     if params[:label_name].present?
-      items = items.tagged_with(params[:label_name])
+      label_names = params[:label_name].split(",")
+
+      item_ids = LabelLink.joins(:label).
+        where('labels.title in (?)', label_names).
+        where(target_type: klass.name).pluck(:target_id)
+
+      items = items.where(id: item_ids)
     end
 
     items

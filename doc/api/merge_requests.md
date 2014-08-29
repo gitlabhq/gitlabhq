@@ -42,7 +42,8 @@ Parameters:
       "name": "Administrator",
       "state": "active",
       "created_at": "2012-04-29T08:46:00Z"
-    }
+    },
+    "description":"fixed login page css paddings"
   }
 ]
 ```
@@ -86,7 +87,8 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "description":"fixed login page css paddings"
 }
 ```
 
@@ -132,9 +134,13 @@ Parameters:
     "name": "Administrator",
     "state": "active",
     "created_at": "2012-04-29T08:46:00Z"
-  }
+  },
+  "description":"fixed login page css paddings"
 }
 ```
+
+If the operation is successful, 200 and the newly created merge request is returned.
+If an error occurs, an error number and a message explaining the reason is returned.
 
 ## Update MR
 
@@ -183,17 +189,20 @@ Parameters:
 }
 ```
 
+If the operation is successful, 200 and the updated merge request is returned.
+If an error occurs, an error number and a message explaining the reason is returned.
+
 ## Accept MR
 
-Merge changes submitted with MR usign this API.
+Merge changes submitted with MR using this API.
 
-If merge success you get 200 OK.
+If merge success you get `200 OK`.
 
 If it has some conflicts and can not be merged - you get 405 and error message 'Branch cannot be merged'
 
-If merge request is already merged or closed - you get 405 and error message 'Method Not Allowed' 
+If merge request is already merged or closed - you get 405 and error message 'Method Not Allowed'
 
-If you dont have permissions to accept this merge request - you get 401
+If you don't have permissions to accept this merge request - you'll get a 401
 
 ```
 PUT /projects/:id/merge_request/:merge_request_id/merge

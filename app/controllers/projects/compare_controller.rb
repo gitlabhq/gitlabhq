@@ -8,14 +8,21 @@ class Projects::CompareController < Projects::ApplicationController
   end
 
   def show
-    compare = Gitlab::Git::Compare.new(@repository.raw_repository, params[:from], params[:to], MergeRequestDiff::COMMITS_SAFE_SIZE)
+    base_ref = params[:from]
+    head_ref = params[:to]
 
-    @commits       = compare.commits
-    @commit        = compare.commit
-    @diffs         = compare.diffs
-    @refs_are_same = compare.same
-    @line_notes    = []
-    @diff_timeout  = compare.timeout
+    compare_result = CompareService.new.execute(
+      current_user,
+      @project,
+      head_ref,
+      @project,
+      base_ref
+    )
+
+    @commits = compare_result.commits
+    @diffs = compare_result.diffs
+    @commit = @commits.last
+    @line_notes = []
   end
 
   def create

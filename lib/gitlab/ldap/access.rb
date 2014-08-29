@@ -9,6 +9,20 @@ module Gitlab
         end
       end
 
+      def self.allowed?(user)
+        self.open do |access|
+          if access.allowed?(user)
+            access.update_permissions(user)
+            access.update_email(user)
+            user.last_credential_check_at = Time.now
+            user.save
+            true
+          else
+            false
+          end
+        end
+      end
+
       def initialize(adapter=nil)
         @adapter = adapter
       end

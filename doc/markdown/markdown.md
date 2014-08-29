@@ -139,37 +139,38 @@ But let's throw in a <b>tag</b>.
 
 ## Emoji
 
-	Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
+	Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
 
-	:exclamation: You can use emoji anywhere GFM is supported. :sunglasses:
+	:high_voltage_sign: You can use emoji anywhere GFM is supported. :victory_hand:
 
-	You can use it to point out a :bug: or warn about :monkey:patches. And if someone improves your really :snail: code, send them a :bouquet: or some :candy:. People will :heart: you for that.
+	You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches. And if someone improves your really :snail: code, send them some :cake:. People will :heart: you for that.
 
-	If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
+	If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-	Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup:
+	Consult the [Emoji Cheat Sheet](https://www.dropbox.com/s/b9xaqb977s6d8w1/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
 
-Sometimes you want to be :cool: and add some :sparkles: to your :speech_balloon:. Well we have a :gift: for you:
+Sometimes you want to be a :ninja: and add some :glowing_star: to your :speech_balloon:. Well we have a gift for you:
 
-:exclamation: You can use emoji anywhere GFM is supported. :sunglasses:
+:high_voltage_sign: You can use emoji anywhere GFM is supported. :victory_hand:
 
-You can use it to point out a :bug: or warn about :monkey:patches. And if someone improves your really :snail: code, send them a :bouquet: or some :candy:. People will :heart: you for that.
+You can use it to point out a :bug: or warn about :speak_no_evil_monkey: patches. And if someone improves your really :snail: code, send them some :cake:. People will :heart: you for that.
 
-If you are :new: to this, don't be :fearful:. You can easily join the emoji :circus_tent:. All you need to do is to :book: up on the supported codes.
+If you are new to this, don't be :fearful_face:. You can easily join the emoji :family:. All you need to do is to look up on the supported codes.
 
-Consult the [Emoji Cheat Sheet](http://www.emoji-cheat-sheet.com/) for a list of all supported emoji codes. :thumbsup:
+Consult the [Emoji Cheat Sheet](https://www.dropbox.com/s/b9xaqb977s6d8w1/cheat_sheet.pdf) for a list of all supported emoji codes. :thumbsup:
 
 ## Special GitLab References
 
 GFM recognized special references.
 
-You can easily reference e.g. a team member, an issue, or a commit within a project.
+You can easily reference e.g. an issue, a commit, a team member or even the whole team within a project.
 
 GFM will turn that reference into a link so you can navigate between them easily.
 
 GFM will recognize the following:
 
 - @foo : for team members
+- @all : for the whole team
 - #123 : for issues
 - !123 : for merge requests
 - $123 : for snippets

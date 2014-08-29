@@ -18,7 +18,7 @@
               .brand_text
                 = brand_text
             - else
-              .brand-image.hidden-sm.hidden-xs
+              .brand-image.default-brand-image.hidden-sm.hidden-xs
                 = image_tag 'brand_logo.png'
               .brand_text.hidden-xs
                 %h2 Open source software to collaborate on code
@@ -33,6 +33,6 @@
     %hr
     .container
       .footer-links
-        = link_to "Explore public projects", public_projects_path
+        = link_to "Explore", explore_root_path
         = link_to "Documentation", "http://doc.gitlab.com/"
         = link_to "About GitLab", "https://about.gitlab.com/"

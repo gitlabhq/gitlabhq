@@ -50,8 +50,20 @@ class ProjectIssues < Spinach::FeatureSteps
     click_button "Submit new issue"
   end
 
+  step 'I submit new issue "500 error on profile" with label \'bug\'' do
+    fill_in "issue_title", with: "500 error on profile"
+    select 'bug', from: "Labels"
+    click_button "Submit new issue"
+  end
+
   Given 'I click link "500 error on profile"' do
     click_link "500 error on profile"
+  end
+
+  step 'I should see label \'bug\' with issue' do
+    within '.issue-show-labels' do
+      page.should have_content 'bug'
+    end
   end
 
   Then 'I should see issue "500 error on profile"' do

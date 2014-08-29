@@ -4,7 +4,8 @@
 
 ## Create a backup of the GitLab system
 
-Creates a backup archive of the database and all repositories. This archive will be saved in backup_path (see `config/gitlab.yml`).
+A backup creates an archive file that contains the database, all repositories and all attachments.
+This archive will be saved in backup_path (see `config/gitlab.yml`).
 
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
 
@@ -44,6 +45,13 @@ Creating backup archive: $TIMESTAMP_gitlab_backup.tar [DONE]
 Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
+
+## Storing configuration files
+
+Please be informed that a backup does not store your configuration files.
+If you use Omnibus-GitLab please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
+If you have a cookbook installation there should be a copy of your configuration in Chef.
+If you have a manual installation please consider backing up your gitlab.yml file and any SSL keys and certificates.
 
 ## Restore a previously created backup
 

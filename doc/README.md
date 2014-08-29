@@ -20,6 +20,7 @@
 - [Update](update/README.md) Update guides to upgrade your installation.
 - [Branded login page](customization/branded_login_page.md) Change the login page appearance for your GitLab instance.
 - [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
+- [Email](tools/email.md) Email GitLab users from GitLab
 
 ## Contributor documentation
 

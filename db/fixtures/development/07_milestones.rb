@@ -1,18 +1,16 @@
-Milestone.seed(:id, [
-  { id: 1,  project_id: 1, title: 'v' + Faker::Address.zip_code },
-  { id: 2,  project_id: 1, title: 'v' + Faker::Address.zip_code },
-  { id: 3,  project_id: 1, title: 'v' + Faker::Address.zip_code },
-  { id: 4,  project_id: 2, title: 'v' + Faker::Address.zip_code },
-  { id: 5,  project_id: 2, title: 'v' + Faker::Address.zip_code },
+Gitlab::Seeder.quiet do
+  Project.all.each do |project|
+    (1..5).each  do |i|
+      milestone_params = {
+        title: "v#{i}.0",
+        description: Faker::Lorem.sentence,
+        state: ['opened', 'closed'].sample,
+      }
 
-  { id: 6,  project_id: 2, title: 'v' + Faker::Address.zip_code },
-  { id: 7,  project_id: 2, title: 'v' + Faker::Address.zip_code },
-  { id: 8,  project_id: 3, title: 'v' + Faker::Address.zip_code },
-  { id: 9,  project_id: 3, title: 'v' + Faker::Address.zip_code },
-  { id: 11, project_id: 3, title: 'v' + Faker::Address.zip_code },
-])
+      milestone = Milestones::CreateService.new(
+        project, project.team.users.sample, milestone_params).execute
 
-Milestone.all.map do |ml|
-  ml.set_iid
-  ml.save
+      print '.'
+    end
+  end
 end

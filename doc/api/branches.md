@@ -41,7 +41,6 @@ Parameters:
 ]
 ```
 
-
 ## Get single repository branch
 
 Get a single project repository branch.
@@ -85,7 +84,7 @@ Parameters:
 ## Protect repository branch
 
 Protects a single project repository branch. This is an idempotent function, protecting an already
-protected repository branch still returns a `200 Ok` status code.
+protected repository branch still returns a `200 OK` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/protect
@@ -126,7 +125,7 @@ Parameters:
 ## Unprotect repository branch
 
 Unprotects a single project repository branch. This is an idempotent function, unprotecting an already
-unprotected repository branch still returns a `200 Ok` status code.
+unprotected repository branch still returns a `200 OK` status code.
 
 ```
 PUT /projects/:id/repository/branches/:branch/unprotect
@@ -174,7 +173,7 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `branch_name` (required) - The name of the branch
-- `ref` (required) - Create branch from commit sha or existing branch
+- `ref` (required) - Create branch from commit SHA or existing branch
 
 ```json
 {
@@ -199,14 +198,13 @@ Parameters:
 
 ## Delete repository branch
 
-
 ```
 DELETE /projects/:id/repository/branches/:branch
 ```
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `branch` (required) - The name of the branch
+- `id` (required) - The ID of a project
+- `branch` (required) - The name of the branch
 
 It return 200 if succeed or 405 if failed with error message explaining reason.

@@ -9,6 +9,8 @@ describe API::API, api: true  do
   let!(:project) { create(:project, creator_id: user.id) }
   let!(:master) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
   let!(:guest) { create(:users_project, user: user2, project: project, project_access: UsersProject::GUEST) }
+  let!(:branch_name) { 'feature' }
+  let!(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
   describe "GET /projects/:id/repository/branches" do
     it "should return an array of project branches" do
@@ -21,11 +23,11 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id/repository/branches/:branch" do
     it "should return the branch information for a single branch" do
-      get api("/projects/#{project.id}/repository/branches/new_design", user)
+      get api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       response.status.should == 200
 
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['name'].should == branch_name
+      json_response['commit']['id'].should == branch_sha
       json_response['protected'].should == false
     end
 
@@ -42,11 +44,11 @@ describe API::API, api: true  do
 
   describe "PUT /projects/:id/repository/branches/:branch/protect" do
     it "should protect a single branch" do
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
       response.status.should == 200
 
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['name'].should == branch_name
+      json_response['commit']['id'].should == branch_sha
       json_response['protected'].should == true
     end
 
@@ -56,24 +58,24 @@ describe API::API, api: true  do
     end
 
     it "should return a 403 error if guest" do
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user2)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user2)
       response.status.should == 403
     end
 
     it "should return success when protect branch again" do
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
-      put api("/projects/#{project.id}/repository/branches/new_design/protect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/protect", user)
       response.status.should == 200
     end
   end
 
   describe "PUT /projects/:id/repository/branches/:branch/unprotect" do
     it "should unprotect a single branch" do
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/unprotect", user)
       response.status.should == 200
 
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['name'].should == branch_name
+      json_response['commit']['id'].should == branch_sha
       json_response['protected'].should == false
     end
 
@@ -83,8 +85,8 @@ describe API::API, api: true  do
     end
 
     it "should return success when unprotect branch again" do
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
-      put api("/projects/#{project.id}/repository/branches/new_design/unprotect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/unprotect", user)
+      put api("/projects/#{project.id}/repository/branches/#{branch_name}/unprotect", user)
       response.status.should == 200
     end
   end
@@ -92,19 +94,19 @@ describe API::API, api: true  do
   describe "POST /projects/:id/repository/branches" do
     it "should create a new branch" do
       post api("/projects/#{project.id}/repository/branches", user),
-        branch_name: 'new_design',
-        ref: '621491c677087aa243f165eab467bfdfbee00be1'
+        branch_name: branch_name,
+        ref: branch_sha
 
       response.status.should == 201
 
-      json_response['name'].should == 'new_design'
-      json_response['commit']['id'].should == '621491c677087aa243f165eab467bfdfbee00be1'
+      json_response['name'].should == branch_name
+      json_response['commit']['id'].should == branch_sha
     end
 
     it "should deny for user without push access" do
       post api("/projects/#{project.id}/repository/branches", user2),
-        branch_name: 'new_design',
-        ref: '621491c677087aa243f165eab467bfdfbee00be1'
+        branch_name: branch_name,
+        ref: branch_sha
 
       response.status.should == 403
     end
@@ -114,13 +116,13 @@ describe API::API, api: true  do
     before { Repository.any_instance.stub(rm_branch: true) }
 
     it "should remove branch" do
-      delete api("/projects/#{project.id}/repository/branches/new_design", user)
+      delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       response.status.should == 200
     end
 
     it "should remove protected branch" do
-      project.protected_branches.create(name: 'new_design')
-      delete api("/projects/#{project.id}/repository/branches/new_design", user)
+      project.protected_branches.create(name: branch_name)
+      delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       response.status.should == 405
       json_response['message'].should == 'Protected branch cant be removed'
     end
