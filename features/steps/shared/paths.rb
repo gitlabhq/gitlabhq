@@ -42,6 +42,10 @@ module SharedPaths
     visit edit_group_path(Group.find_by(name:"Owned"))
   end
 
+  step 'I visit group "Owned" LDAP settings page' do
+    visit group_ldap_group_links_path(Group.find_by(name:"Owned"))
+  end
+
   step 'I visit group "Guest" page' do
     visit group_path(Group.find_by(name:"Guest"))
   end

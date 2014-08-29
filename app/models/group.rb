@@ -21,11 +21,7 @@ class Group < Namespace
   has_many :users, through: :users_groups
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
-
-  validates :ldap_access,
-    inclusion: { in: UsersGroup.group_access_roles.values },
-    presence: true,
-    if: ->(group) { group.ldap_cn.present? }
+  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
@@ -83,6 +79,15 @@ class Group < Namespace
 
   def public_profile?
     projects.public_only.any?
+  end
+
+  # NOTE: Backwards compatibility with old ldap situation
+  def ldap_cn
+    ldap_group_links.first.try(:cn)
+  end
+
+  def ldap_access
+    ldap_group_links.first.try(:group_access)
   end
 
   class << self

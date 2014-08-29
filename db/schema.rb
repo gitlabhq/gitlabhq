@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140811155127) do
+ActiveRecord::Schema.define(version: 20140813133925) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -149,6 +149,14 @@ ActiveRecord::Schema.define(version: 20140811155127) do
 
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
 
+  create_table "ldap_group_links", force: true do |t|
+    t.string   "cn",           null: false
+    t.integer  "group_access", null: false
+    t.integer  "group_id",     null: false
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
+
   create_table "merge_request_diffs", force: true do |t|
     t.string   "state"
     t.text     "st_commits"
@@ -275,7 +283,7 @@ ActiveRecord::Schema.define(version: 20140811155127) do
     t.string   "import_status"
     t.float    "repository_size",         default: 0.0
     t.text     "merge_requests_template"
-    t.integer  "star_count",             default: 0,        null: false
+    t.integer  "star_count",              default: 0,        null: false
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree

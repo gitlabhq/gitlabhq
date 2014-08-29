@@ -285,4 +285,18 @@ class Groups < Spinach::FeatureSteps
             author: current_user,
             milestone: milestone2_project3
   end
+
+  step 'I add a new LDAP synchronization' do
+    within('form#new_ldap_group_link') do
+      find('#ldap_group_link_cn', visible: false).set('my-group-cn')
+      # fill_in('LDAP Group cn', with: 'my-group-cn', visible: false)
+      select 'Developer', from: "ldap_group_link_group_access"
+      click_button 'Add synchronization'
+    end
+  end
+
+  step 'I see a new LDAP synchronization listed' do
+    expect(page).not_to have_content('No synchronizations yet')
+    expect(page).to have_content('my-group-cn as Developer')
+  end
 end

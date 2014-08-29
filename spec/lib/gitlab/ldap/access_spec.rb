@@ -3,34 +3,6 @@ require 'spec_helper'
 describe Gitlab::LDAP::Access do
   let(:access) { Gitlab::LDAP::Access.new }
   let(:user) { create(:user) }
-  let(:group) { create(:group, ldap_cn: 'oss', ldap_access: Gitlab::Access::DEVELOPER) }
-
-  before do
-    group
-  end
-
-  describe :add_user_to_groups do
-    it "should add user to group" do
-      access.add_user_to_groups(user.id, "oss")
-      member = group.members.first
-      member.user.should == user
-      member.group_access.should == Gitlab::Access::DEVELOPER
-    end
-
-    it "should respect higher permissions" do
-      group.add_owner(user)
-      access.add_user_to_groups(user.id, "oss")
-      group.owners.should include(user)
-    end
-
-    it "should update lower permissions" do
-      group.add_user(user, Gitlab::Access::REPORTER)
-      access.add_user_to_groups(user.id, "oss")
-      member = group.members.first
-      member.user.should == user
-      member.group_access.should == Gitlab::Access::DEVELOPER
-    end
-  end
 
   describe :update_user_email do
     let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
@@ -208,4 +180,134 @@ objectclass: posixGroup
       expect(gitlab_admin.admin?).to be false
     end
   end
+
+  describe 'ldap_groups' do
+    let(:ldap_group_1) do
+      Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
+cn: #{Gitlab.config.ldap['admin_group']}
+description: GitLab group 1
+gidnumber: 42
+memberuid: user1
+memberuid: user2
+objectclass: top
+objectclass: posixGroup
+})
+    end
+
+    it "returns an interator of LDAP Groups" do
+      ::LdapGroupLink.create cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: 42
+      Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(ldap_group_1) }
+
+      expect(access.ldap_groups.first).to be_a Gitlab::LDAP::Group
+    end
+
+    it "only returns found ldap groups" do
+      ::LdapGroupLink.create cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: 42
+      Gitlab::LDAP::Group.stub(find_by_cn: nil) # group not found
+
+      expect(access.ldap_groups).to be_empty
+    end
+  end
+
+  describe :cns_with_access do
+    let(:ldap_group_response_1) do
+      Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=group1,ou=groups,dc=bar,dc=com
+cn: group1
+description: GitLab group 1
+gidnumber: 21
+memberuid: #{ldap_user.uid}
+memberuid: user2
+objectclass: top
+objectclass: posixGroup
+})
+    end
+    let(:ldap_group_response_2) do
+      Net::LDAP::Entry.from_single_ldif_string(
+%Q{dn: cn=group2,ou=groups,dc=bar,dc=com
+cn: group2
+description: GitLab group 2
+gidnumber: 42
+memberuid: user3
+memberuid: user4
+objectclass: top
+objectclass: posixGroup
+})
+    end
+    let(:ldap_groups) do
+      [
+        Gitlab::LDAP::Group.new(ldap_group_response_1),
+        Gitlab::LDAP::Group.new(ldap_group_response_2)
+      ]
+    end
+    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new) }
+
+    before { ldap_user.stub(:uid) { 'user42' } }
+
+    it "only returns ldap cns to which the user has access" do
+      access.stub(ldap_groups: ldap_groups)
+      expect(access.cns_with_access(ldap_user)).to eql ['group1']
+    end
+  end
+
+  describe :update_ldap_group_links do
+    let(:cns_with_access) { %w(ldap-group1 ldap-group2) }
+    let(:gitlab_group_1) { create :group }
+    let(:gitlab_group_2) { create :group }
+
+    before do
+      access.stub(:get_ldap_user)
+      access.stub(cns_with_access: cns_with_access)
+    end
+
+    context "non existing access for group-1, allowed via ldap-group1 as MASTER" do
+      before do
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+      end
+
+      it "gives the user master access for group 1" do
+        access.update_ldap_group_links(user)
+        expect( gitlab_group_1.has_master?(user) ).to be_true
+      end
+    end
+
+    context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
+      before do
+        gitlab_group_1.users_groups.guests.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+      end
+
+      it "upgrades the users access to master for group 1" do
+        expect { access.update_ldap_group_links(user) }.to \
+          change{ gitlab_group_1.has_master?(user) }.from(false).to(true)
+      end
+    end
+
+    context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
+      before do
+        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER
+      end
+
+      it "keeps the users master access for group 1" do
+        expect { access.update_ldap_group_links(user) }.not_to \
+          change{ gitlab_group_1.has_master?(user) }
+      end
+    end
+
+    context "existing access as master for group-1, not allowed" do
+      before do
+        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+        access.stub(cns_with_access: ['ldap-group2'])
+      end
+
+      it "removes user from gitlab_group_1" do
+        expect { access.update_ldap_group_links(user) }.to \
+          change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
+      end
+    end
+  end
 end
+
