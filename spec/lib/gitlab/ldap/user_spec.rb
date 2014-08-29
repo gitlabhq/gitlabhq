@@ -1,6 +1,6 @@
 require 'spec_helper'
 
-describe Gitlab::LDAP do
+describe Gitlab::LDAP::User do
   let(:gl_auth) { Gitlab::LDAP::User }
 
   before do
