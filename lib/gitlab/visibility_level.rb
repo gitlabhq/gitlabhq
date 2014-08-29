@@ -23,7 +23,21 @@ module Gitlab
       end
 
       def allowed_for?(user, level)
-        user.is_admin? || !Gitlab.config.gitlab.restricted_visibility_levels.include?(level)
+        user.is_admin? || allowed_level?(level)
+      end
+
+      # Level can be a string `"public"` or a value `20`, first check if valid,
+      # then check if the corresponding string appears in the config
+      def allowed_level?(level)
+        if options.has_key?(level.to_s)
+          non_restricted_level?(level)
+        elsif options.has_value?(level.to_i)
+          non_restricted_level?(options.key(level.to_i).downcase)
+        end
+      end
+
+      def non_restricted_level?(level)
+        ! Gitlab.config.gitlab.restricted_visibility_levels.include?(level)
       end
     end
 
