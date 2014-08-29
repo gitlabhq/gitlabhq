@@ -8,23 +8,14 @@
       = render "layouts/head_panel", title: page_title
     - else
       = render "layouts/public_head_panel", title: page_title
-    .container.navless-container
+    %nav.main-nav.navbar-collapse.collapse
+      .container= render 'layouts/nav/explore'
+
+    .container
       .content
-        .explore-title
-          %h3
-            Explore GitLab
-          %p.lead
-            Discover projects and groups. Share your projects with others
-
-
-        %ul.nav.nav-tabs
-          = nav_link(path: 'projects#trending') do
-            = link_to 'Trending Projects', explore_root_path
-          = nav_link(path: 'projects#starred') do
-            = link_to 'Most Starred Projects', starred_explore_projects_path
-          = nav_link(path: 'projects#index') do
-            = link_to 'All Projects', explore_projects_path
-          = nav_link(controller: :groups) do
-            = link_to 'All Groups', explore_groups_path
-
+        %h3.page-title
+          Explore GitLab
+        %p.light
+          Discover projects and groups. Share your projects with others.
+        %hr
         = yield
