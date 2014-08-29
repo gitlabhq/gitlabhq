@@ -2,3 +2,6 @@
 StringLiterals:
   EnforcedStyle: single_quotes
   Enabled: true
+
+InlineComment:
+  Enabled: false
