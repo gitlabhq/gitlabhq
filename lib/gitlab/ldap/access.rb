@@ -103,7 +103,7 @@ module Gitlab
       def ldap_groups
         @ldap_groups ||= ::LdapGroupLink.distinct(:cn).pluck(:cn).map do |cn|
           Gitlab::LDAP::Group.find_by_cn(cn, adapter)
-        end
+        end.compact
       end
 
       # returns a collection of cn strings to which the user has access
