@@ -9,6 +9,7 @@ v 7.3.0
   - Prevent project stars duplication when fork project
   - Support Unix domain sockets for Redis
   - Store session Redis keys in 'session:gitlab:' namespace
+  - Deprecate LDAP account takeover based on partial LDAP email / GitLab username match
 
 v 7.2.0
   - Explore page
