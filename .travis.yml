@@ -21,6 +21,7 @@ env:
 before_install:
   - sudo apt-get install libicu-dev -y
 install:
+  - "travis_retry bundle config build.nokogiri --use-system-libraries"
   - "travis_retry bundle install --deployment --without production --retry 5"
 branches:
   only:
@@ -37,3 +38,5 @@ before_script:
 script: "bundle exec rake $TASK --trace"
 notifications:
   email: false
+git:
+  depth: 10
