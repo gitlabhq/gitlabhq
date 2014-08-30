@@ -121,7 +121,7 @@ GitLab flow is a way to make the relation between the code and the issue tracker
 
 Any significant change to the code should start with an issue where the goal is described.
 Having a reason for every code change is important to inform everyone on the team and to help people keep the scope of a feature branch small.
-In GItLab each change to the codebase start with an issue in the issue tracking system.
+In GitLab each change to the codebase start with an issue in the issue tracking system.
 If there is not issue yet it should be created first if there is significant work involved (more than 1 hour).
 For many organizations this will be natural since the issue will have to be estimated for the sprint.
 Issue titles should describe the desired state of the system, e.g. "As an administrator I want to remove users without receiving an error" instead of "Admin can't remove users.".
@@ -238,7 +238,7 @@ The commit message should reflect your intention, not the contents of the commit
 The contents of the commit can be easily seen anyway, the question is why you did it.
 An example of a good commit message is: "Reducing duplication by using a shared template."
 Some words that indicate a bad commit message are: change, improve, rename, refactor TODO lookup list 
-The word fix or fixes is also a red flag, unless it comes after the commit sentence an references an issue number.
+The word fix or fixes is also a red flag, unless it comes after the commit sentence and references an issue number.
 
 # Testing before merging
 
