@@ -18,6 +18,7 @@
 #  iid               :integer
 #  description       :text
 #  position          :integer          default(0)
+#  conflicts         :text
 #
 
 require Rails.root.join("app/models/commit")
@@ -93,6 +94,8 @@ class MergeRequest < ActiveRecord::Base
     state :can_be_merged
     state :cannot_be_merged
   end
+
+  serialize :conflicts
 
   validates :source_project, presence: true, unless: :allow_broken
   validates :source_branch, presence: true
