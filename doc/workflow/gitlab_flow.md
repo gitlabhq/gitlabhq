@@ -5,22 +5,22 @@ This allows a wide variety of branching strategies and workflows.
 Almost all of these are an improvement over the methods used before git.
 But many organizations end up with a workflow that is not clearly defined, overly complex or not integrated with issue tracking systems.
 Therefore we propose the GitLab flow as clearly defined set of best practices.
-It combines [feature driven development](http://en.m.wikipedia.org/wiki/Feature-driven_development) and [feature branches](http://martinfowler.com/bliki/FeatureBranch.html) with issue tracking.
+It combines [feature driven development](http://en.wikipedia.org/wiki/Feature-driven_development) and [feature branches](http://martinfowler.com/bliki/FeatureBranch.html) with issue tracking.
 
 Organizations coming to git from other version control systems frequently find it hard to develop an effective workflow.
 This article describes the GitLab flow that integrates the git workflow with an issue tracking system.
 It offers a simple, transparent and effective way to work with git.
 
-When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleges.
+When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
 Most version control systems have only step, committing from the working copy to a shared server.
 In git you add files from the working copy to the staging area. After that you commit them to the local repo.
 The third step is pushing to a shared remote repository.
 After getting used to these three steps the branching model becomes the challenge.
 
-Since many organizations new to get have no conventions how to work with git it can quickly becomes a mess.
+Since many organizations new to git have no conventions how to work with it, it can quickly become a mess.
 The biggest problem they run into is that many long running branches that each contain part of the changes are around.
 People have a hard time figuring out which branch they should develop on or deploy to production.
-Frequently the reaction to this problem is to adopt a standardized patters such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow]()
+Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow]()
 We think there is still room for improvement and will detail a set of practices we call GitLab flow.
 
 # Git flow and its problems
@@ -33,7 +33,7 @@ The first problem is that developers must use the develop branch and not master,
 It is a convention to call your default branch master and to mostly branch from and merge to this.
 Since most tools automatically make the master branch the default one and display that one by default it is annoying to have to switch to another one.
 The second problem of git flow is the complexity introduced by the hotfix and release branches.
-These branches can be good idea for some organizations but are overkill for the vast majority them.
+These branches can be good idea for some organizations but are overkill for the vast majority of them.
 Nowadays most organizations practice continuous delivery which means that your default branch can be deployed.
 This means that hotfixed and release branches can be prevented including all the ceremony they introduce.
 An example of this ceremony is the merging back of release branches.
@@ -252,8 +252,8 @@ What one can do to improve this is to test the merged result itself.
 The problem is that the merge result changes every time something is merged into master.
 Retesting on every commit to master is computationally expensive and means you are more frequently waiting for test results.
 If there are no merge conflicts and the feature branches are short lived the risk is acceptable.
-If there are merge conflicts you need to merge the master branch into the feature branch and the rests will be rerun.
-If you have long lived feature branches that last for more than a few days you should make make you issues smaller.
+If there are merge conflicts you merge the master branch into the feature branch and the CI server will rerun the tests.
+If you have long lived feature branches that last for more than a few days you should make your issues smaller.
 
 # Merging in other code
 
