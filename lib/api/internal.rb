@@ -34,10 +34,7 @@ module API
           actor,
           params[:action],
           project,
-          params[:ref],
-          params[:oldrev],
-          params[:newrev],
-          params[:forced_push]
+          params[:changes]
         )
       end
 
