@@ -3,44 +3,7 @@ class ProjectActiveTab < Spinach::FeatureSteps
   include SharedPaths
   include SharedProject
   include SharedActiveTab
-
-  # Main Tabs
-
-  Then 'the active main tab should be Home' do
-    ensure_active_main_tab('Project')
-  end
-
-  Then 'the active main tab should be Settings' do
-    ensure_active_main_tab('Settings')
-  end
-
-  Then 'the active main tab should be Files' do
-    ensure_active_main_tab('Files')
-  end
-
-  Then 'the active main tab should be Commits' do
-    ensure_active_main_tab('Commits')
-  end
-
-  Then 'the active main tab should be Network' do
-    ensure_active_main_tab('Network')
-  end
-
-  Then 'the active main tab should be Issues' do
-    ensure_active_main_tab('Issues')
-  end
-
-  Then 'the active main tab should be Merge Requests' do
-    ensure_active_main_tab('Merge Requests')
-  end
-
-  Then 'the active main tab should be Wall' do
-    ensure_active_main_tab('Wall')
-  end
-
-  Then 'the active main tab should be Wiki' do
-    ensure_active_main_tab('Wiki')
-  end
+  include SharedProjectTab
 
   # Sub Tabs: Home
 

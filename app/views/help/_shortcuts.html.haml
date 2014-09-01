@@ -3,30 +3,207 @@
     .modal-content
       .modal-header
         %a.close{href: "#", "data-dismiss" => "modal"} ×
-        %h3 Keyboard Shortcuts
-      .modal-body
-        %h5 Global Shortcuts
-        %p
-          %span.label.label-inverse s
-          &ndash;
-          Focus Search
-        %p
-          %span.label.label-inverse ?
-          &ndash;
-          Show this dialog
+        %h4 
+          Keyboard Shortcuts
+          %small 
+            = link_to '(Show all)', '#', class: 'js-more-help-button'
+      .modal-body.shortcuts-cheatsheet
+        .col-lg-4
+          %table.shortcut-mappings
+            %tbody
+              %tr
+                %th
+                %th Global Shortcuts
+              %tr
+                %td.shortcut 
+                  .key s
+                %td Focus Search
+              %tr
+                %td.shortcut 
+                  .key ?
+                %td Show this dialog
+            %tbody
+              %tr
+                %th
+                %th Project Files browsing
+              %tr
+                %td.shortcut
+                  .key
+                    %i.icon-arrow-up
+                %td Move selection up
+              %tr
+                %td.shortcut
+                  .key
+                    %i.icon-arrow-down
+                %td Move selection down
+              %tr
+                %td.shortcut 
+                  .key enter
+                %td Open Selection
 
-        %h5 Project Files browsing
-        %p
-          %span.label.label-inverse
-            %i.icon-arrow-up
-          &ndash;
-          Move selection up
-        %p
-          %span.label.label-inverse
-            %i.icon-arrow-down
-          &ndash;
-          Move selection down
-        %p
-          %span.label.label-inverse Enter
-          &ndash;
-          Open selection
+        .col-lg-4
+          %table.shortcut-mappings
+            %tbody{ class: 'hidden-shortcut project', style: 'display:none' }
+              %tr
+                %th
+                %th Global Dashboard
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key a
+                %td
+                  Go to the activity feed
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key p
+                %td
+                  Go to projects
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key i
+                %td
+                  Go to issues
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key m
+                %td
+                  Go to merge requests
+            %tbody
+              %tr
+                %th
+                %th Project
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key a
+                %td
+                  Go to the activity feed
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key f
+                %td
+                  Go to files
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key c
+                %td
+                  Go to commits
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key n
+                %td
+                  Go to network graph
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key g
+                %td
+                  Go to graphs
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key i
+                %td
+                  Go to issues
+              %tr
+                %td.shortcut 
+                  .key g
+                  .key m
+                %td
+                  Go to merge requests
+              %tr
+                %td.shortcut
+                  .key g
+                  .key s
+                %td
+                  Go to snippets
+        .col-lg-4
+          %table.shortcut-mappings
+            %tbody{ class: 'hidden-shortcut network', style: 'display:none' }
+              %tr
+                %th
+                %th Network Graph
+              %tr
+                %td.shortcut
+                  .key
+                    %i.icon-arrow-left
+                  \/
+                  .key h
+                %td Scroll left
+              %tr
+                %td.shortcut
+                  .key
+                    %i.icon-arrow-right
+                  \/
+                  .key l
+                %td Scroll right
+              %tr
+                %td.shortcut
+                  .key
+                    %i.icon-arrow-up
+                  \/
+                  .key k
+                %td Scroll up
+              %tr
+                %td.shortcut
+                  .key
+                    %i.icon-arrow-down
+                  \/
+                  .key j
+                %td Scroll down
+              %tr
+                %td.shortcut
+                  .key
+                    shift
+                    %i.icon-arrow-up
+                  \/
+                  .key
+                    shift k
+                %td Scroll to top
+              %tr
+                %td.shortcut
+                  .key
+                    shift
+                    %i.icon-arrow-down
+                  \/
+                  .key
+                    shift j
+                %td Scroll to bottom
+            %tbody{ class: 'hidden-shortcut issues', style: 'display:none' }
+              %tr
+                %th
+                %th Issues
+              %tr
+                %td.shortcut 
+                  .key a
+                %td Change assignee
+              %tr
+                %td.shortcut 
+                  .key m
+                %td Change milestone
+            %tbody{ class: 'hidden-shortcut merge_reuests', style: 'display:none' }
+              %tr
+                %th
+                %th Merge Requests
+              %tr
+                %td.shortcut 
+                  .key a
+                %td Change assignee
+              %tr
+                %td.shortcut 
+                  .key m
+                %td Change milestone
+
+
+:javascript
+  $('.js-more-help-button').click(function(e){
+      $(this).remove()
+      $('.hidden-shortcut').show()
+      e.preventDefault()
+  });

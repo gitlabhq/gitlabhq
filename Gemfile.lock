@@ -287,6 +287,7 @@ GEM
     mime-types (1.25.1)
     mini_portile (0.6.0)
     minitest (5.3.5)
+    mousetrap-rails (1.4.6)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
@@ -636,6 +637,7 @@ DEPENDENCIES
   launchy
   letter_opener
   minitest (~> 5.3.0)
+  mousetrap-rails
   mysql2
   nprogress-rails
   omniauth (~> 1.1.3)

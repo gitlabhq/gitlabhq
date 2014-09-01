@@ -15,9 +15,10 @@
     = spinner nil, true
 
 :javascript
-  new Network({
+  network_graph = new Network({
     url: '#{project_network_path(@project, @ref, @options.merge(format: :json))}',
     commit_url: '#{project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")}',
     ref: '#{@ref}',
     commit_id: '#{@commit.id}'
   })
+  new ShortcutsNetwork(network_graph.branch_graph)
