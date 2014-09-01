@@ -2,10 +2,9 @@
   .panel-heading.clearfix
     = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_group?
-      %span.pull-right
-        = link_to new_group_path, class: "btn btn-new" do
-          %i.icon-plus
-          New group
+      = link_to new_group_path, class: "btn btn-new pull-right" do
+        %i.icon-plus
+        New group
   %ul.well-list.dash-list
     - groups.each do |group|
       %li.group-row

@@ -2,10 +2,9 @@
   .panel-heading.clearfix
     = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_project?
-      %span.pull-right
-        = link_to new_project_path, class: "btn btn-new" do
-          %i.icon-plus
-          New project
+      = link_to new_project_path, class: "btn btn-new pull-right" do
+        %i.icon-plus
+        New project
 
   %ul.well-list.dash-list
     - projects.each do |project|
