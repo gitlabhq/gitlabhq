@@ -68,5 +68,17 @@ describe Gitlab::OAuth::User do
       user = gl_auth.create(auth)
       expect(user.email).to_not be_empty
     end
+
+    it 'generates a username if non provided (google)' do
+      info = double(
+        uid: 'my-uid',
+        name: 'John',
+        email: 'john@example.com'
+      )
+      auth = double(info: info, provider: 'my-provider')
+
+      user = gl_auth.create(auth)
+      expect(user.username).to eql 'john'
+    end
   end
 end
