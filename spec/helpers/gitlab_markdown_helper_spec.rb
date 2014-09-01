@@ -14,6 +14,10 @@ describe GitlabMarkdownHelper do
   let(:snippet)       { create(:project_snippet, project: project) }
   let(:member)        { project.project_members.where(user_id: user).first }
 
+  def url_helper(image_name)
+    File.join(root_url, 'assets', image_name)
+  end
+
   before do
     # Helper expects a @project instance variable
     @project = project
@@ -38,8 +42,8 @@ describe GitlabMarkdownHelper do
 
     it "should not touch HTML entities" do
       @project.issues.stub(:where).with(id: '39').and_return([issue])
-      actual = expected = "We&#39;ll accept good pull requests."
-      gfm(actual).should == expected
+      actual = 'We&#39;ll accept good pull requests.'
+      gfm(actual).should == "We'll accept good pull requests."
     end
 
     it "should forward HTML options to links" do
@@ -330,7 +334,8 @@ describe GitlabMarkdownHelper do
       end
 
       it "keeps whitespace intact" do
-        gfm("This deserves a :+1: big time.").should match(/deserves a <img.+\/> big time/)
+        gfm('This deserves a :+1: big time.').
+          should match(/deserves a <img.+> big time/)
       end
 
       it "ignores invalid emoji" do
@@ -448,7 +453,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave inline code untouched" do
-      markdown("\nDon't use `$#{snippet.id}` here.\n").should == "<p>Don&#39;t use <code>$#{snippet.id}</code> here.</p>\n"
+      markdown("\nDon't use `$#{snippet.id}` here.\n").should ==
+        "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
     end
 
     it "should leave ref-like autolinks untouched" do
@@ -468,7 +474,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should generate absolute urls for emoji" do
-      markdown(":smile:").should include("src=\"#{url_to_image("emoji/smile")}")
+      markdown(":smile:").should include("src=\"#{url_helper('emoji/smile')}")
     end
 
     it "should handle relative urls for a file in master" do

@@ -1,3 +1,6 @@
+require 'html/pipeline'
+require 'html/pipeline/gitlab'
+
 module Gitlab
   # Custom parser for GitLab-flavored Markdown
   #
@@ -62,6 +65,16 @@ module Gitlab
         insert_piece($1)
       end
 
+      # Context passed to the markdoqwn pipeline
+      markdown_context = {
+        asset_root: File.join(root_url,
+                              Gitlab::Application.config.assets.prefix)
+      }
+
+      result = HTML::Pipeline::Gitlab::MarkdownPipeline.call(text,
+                                                             markdown_context)
+      text = result[:output].to_html(save_with: 0)
+
       allowed_attributes = ActionView::Base.sanitized_allowed_attributes
       allowed_tags = ActionView::Base.sanitized_allowed_tags
 
@@ -91,7 +104,6 @@ module Gitlab
     # Returns parsed text
     def parse(text, project = @project)
       parse_references(text, project) if project
-      parse_emoji(text)
 
       text
     end
@@ -134,28 +146,6 @@ module Gitlab
           match
         end
       end
-    end
-
-    EMOJI_PATTERN = %r{(:(\S+):)}.freeze
-
-    def parse_emoji(text)
-      # parse emoji
-      text.gsub!(EMOJI_PATTERN) do |match|
-        if valid_emoji?($2)
-          image_tag(url_to_image("emoji/#{$2}.png"), class: 'emoji', title: $1, alt: $1, size: "20x20")
-        else
-          match
-        end
-      end
-    end
-
-    # Private: Checks if an emoji icon exists in the image asset directory
-    #
-    # emoji - Identifier of the emoji as a string (e.g., "+1", "heart")
-    #
-    # Returns boolean
-    def valid_emoji?(emoji)
-      Emoji.find_by_name(emoji)
     end
 
     # Private: Dispatches to a dedicated processing method based on reference

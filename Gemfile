@@ -79,6 +79,9 @@ gem "six"
 # Seed data
 gem "seed-fu"
 
+# Markup pipeline for GitLab
+gem 'html-pipeline-gitlab', '~> 0.1.0'
+
 # Markdown to HTML
 gem "github-markup"
 
@@ -157,7 +160,7 @@ gem "rack-attack"
 # Ace editor
 gem 'ace-rails-ap'
 
-# Keyboard shortcuts 
+# Keyboard shortcuts
 gem 'mousetrap-rails'
 
 # Semantic UI Sass for Sidebar
