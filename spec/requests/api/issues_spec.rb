@@ -4,6 +4,7 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
+  let!(:closed_issue) { create(:closed_issue, author: user, assignee: user, project: project, state: :closed) }
   let!(:issue) { create(:issue, author: user, assignee: user, project: project) }
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
@@ -31,6 +32,31 @@ describe API::API, api: true  do
         get api("/issues?per_page=3", user)
         response.headers['Link'].should ==
           '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+      end
+
+      it 'should return an array of closed issues' do
+        get api('/issues?state=closed', user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['id'].should == closed_issue.id
+      end
+
+      it 'should return an array of opened issues' do
+        get api('/issues?state=opened', user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['id'].should == issue.id
+      end
+
+      it 'should return an array of all issues' do
+        get api('/issues?state=all', user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 2
+        json_response.first['id'].should == issue.id
+        json_response.second['id'].should == closed_issue.id
       end
     end
   end
