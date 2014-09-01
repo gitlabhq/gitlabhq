@@ -41,7 +41,7 @@ As an admin you can also go to the group edit page in the admin area.
 
 ![LDAP group settings filled in](ldap/select_group_cn_engineering.png)
 
-4. Save your changes to the group settings.
+4. Click 'Add synchronization' to add the new LDAP group link.
 
 Now every time a member of the 'Engineering' LDAP group signs in, they automatically become a Developer-level member of the 'example group' GitLab group. Users who are already signed in will see the change in membership after up to one hour.
 
