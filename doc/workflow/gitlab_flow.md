@@ -83,8 +83,8 @@ An 'extreme' version of environment branches are setting up an environment for e
 
 Only in case you need to release software to the outside world you work with release branches.
 In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
-The branches start from master as late as possible.
-By not branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
+The stable branch uses master as a starting point and is created as late as possible.
+By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
 After a release branch is announced, only serious bug fixes are included in the release branch.
 If possible these bug fixes are first merged into master and then cherry-picked into the release branch.
 Merging them in master first ensures you do not forget to merge them into master and encounter the same bug on the next release.
