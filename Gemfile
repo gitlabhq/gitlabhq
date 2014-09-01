@@ -82,7 +82,7 @@ gem "seed-fu"
 gem "github-markup"
 
 # Required markup gems by github-markdown
-gem 'redcarpet', '~> 2.2.2'
+gem 'redcarpet', '~> 3.1.2'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
 gem 'org-ruby'
