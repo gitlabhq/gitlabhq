@@ -56,5 +56,17 @@ describe Gitlab::OAuth::User do
       user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
       user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
     end
+
+    it "Set a temp email address if not provided (like twitter does)" do
+      info = double(
+        uid: 'my-uid',
+        nickname: 'john',
+        name: 'John'
+      )
+      auth = double(info: info, provider: 'my-provider')
+
+      user = gl_auth.create(auth)
+      expect(user.email).to_not be_empty
+    end
   end
 end

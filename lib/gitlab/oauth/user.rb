@@ -73,6 +73,7 @@ module Gitlab
         end
 
         def email
+          return unless auth.info.respond_to?(:email)
           auth.info.email.downcase unless auth.info.email.nil?
         end
 
