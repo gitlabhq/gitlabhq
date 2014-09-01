@@ -21,7 +21,7 @@ If multiple LDAP email attributes are present, e.g. `mail: foo@bar.com` and `ema
 
 ## LDAP group synchronization (GitLab Enterprise Edition)
 
-LDAP group synchronization in GitLab Enterprise Edition allows you to synchronize the members of a GitLab group with a given LDAP group.
+LDAP group synchronization in GitLab Enterprise Edition allows you to synchronize the members of a GitLab group with one or more LDAP groups.
 
 ### Setting up LDAP group synchronization
 
