@@ -2,6 +2,8 @@ class Groups::LdapGroupLinksController < ApplicationController
   before_action :group
   before_action :authorize_admin_group!
 
+  layout 'group'
+
   def index
   end
 
