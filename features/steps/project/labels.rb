@@ -25,6 +25,22 @@ class ProjectLabels < Spinach::FeatureSteps
     end
   end
 
+  step 'I delete all labels' do
+    within '.labels' do
+      all('.btn-remove').each do |remove|
+        remove.click
+        sleep 0.05
+      end
+    end
+  end
+
+  step 'I should see labels help message' do
+    within '.labels' do
+      page.should have_content 'Create first label or generate default set of '\
+                               'labels'
+    end
+  end
+
   step 'I submit new label \'support\'' do
     fill_in 'Title', with: 'support'
     fill_in 'Background Color', with: '#F95610'
