@@ -63,6 +63,36 @@ Feature: Project Issues
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
 
+  @javascript
+  Scenario: Search issues when search string exactly matches issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And I fill in issue search with 'Description for issue1'
+    Then I should see 'Bugfix1' in issues
+    And I should not see "Release 0.4" in issues
+    And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
+
+  @javascript
+  Scenario: Search issues when search string partially matches issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And project 'Shop' has issue 'Feature1' with description: 'Feature submitted for issue1'
+    And I fill in issue search with 'issue1'
+    Then I should see 'Feature1' in issues
+    Then I should see 'Bugfix1' in issues
+    And I should not see "Release 0.4" in issues
+    And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
+
+  @javascript
+  Scenario: Search issues when search string matches no issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And I fill in issue search with 'Rock and roll'
+    Then I should not see 'Bugfix1' in issues
+    And I should not see "Release 0.4" in issues
+    And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
+
+
   # Markdown
 
   Scenario: Headers inside the description should have ids generated for them.
