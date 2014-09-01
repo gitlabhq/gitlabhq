@@ -4,7 +4,6 @@ describe Gitlab::OAuth::User do
   let(:gl_auth) { Gitlab::OAuth::User }
   let(:info) do
     double(
-      uid: 'my-uid',
       nickname: 'john',
       name: 'John',
       email: 'john@mail.com'
@@ -24,32 +23,32 @@ describe Gitlab::OAuth::User do
     end
 
     it "finds an existing user based on nested uid and provider" do
-      auth = double(info: info, provider: 'my-provider')
+      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
       assert gl_auth.find(auth)
     end
   end
 
   describe :create do
     it "should create user from LDAP" do
-      auth = double(info: info, provider: 'ldap')
+      auth = double(info: info, uid: 'my-uid', provider: 'ldap')
       user = gl_auth.create(auth)
 
       user.should be_valid
-      user.extern_uid.should == info.uid
+      user.extern_uid.should == auth.uid
       user.provider.should == 'ldap'
     end
 
     it "should create user from Omniauth" do
-      auth = double(info: info, provider: 'twitter')
+      auth = double(info: info, uid: 'my-uid', provider: 'twitter')
       user = gl_auth.create(auth)
 
       user.should be_valid
-      user.extern_uid.should == info.uid
+      user.extern_uid.should == auth.uid
       user.provider.should == 'twitter'
     end
 
     it "should apply defaults to user" do
-      auth = double(info: info, provider: 'ldap')
+      auth = double(info: info, uid: 'my-uid', provider: 'ldap')
       user = gl_auth.create(auth)
 
       user.should be_valid
@@ -63,7 +62,7 @@ describe Gitlab::OAuth::User do
         nickname: 'john',
         name: 'John'
       )
-      auth = double(info: info, provider: 'my-provider')
+      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
 
       user = gl_auth.create(auth)
       expect(user.email).to_not be_empty
@@ -75,7 +74,7 @@ describe Gitlab::OAuth::User do
         name: 'John',
         email: 'john@example.com'
       )
-      auth = double(info: info, provider: 'my-provider')
+      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
 
       user = gl_auth.create(auth)
       expect(user.username).to eql 'john'

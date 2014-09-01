@@ -67,9 +67,7 @@ module Gitlab
         end
 
         def uid
-          uid = auth.info.try(:uid) || auth.uid
-          uid = uid.to_s unless uid.nil?
-          uid
+          auth.uid.to_s
         end
 
         def email
