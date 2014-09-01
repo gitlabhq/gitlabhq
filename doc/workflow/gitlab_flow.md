@@ -33,7 +33,7 @@ The first problem is that developers must use the develop branch and not master,
 It is a convention to call your default branch master and to mostly branch from and merge to this.
 Since most tools automatically make the master branch the default one and display that one by default it is annoying to have to switch to another one.
 The second problem of git flow is the complexity introduced by the hotfix and release branches.
-These branches can be good idea for some organizations but are overkill for the vast majority of them.
+These branches can be a good idea for some organizations but are overkill for the vast majority of them.
 Nowadays most organizations practice continuous delivery which means that your default branch can be deployed.
 This means that hotfixed and release branches can be prevented including all the ceremony they introduce.
 An example of this ceremony is the merging back of release branches.
@@ -68,8 +68,8 @@ This flow prevents the overhead of releasing, tagging and merging that is common
 
 # Environment branches with GitLab flow
 
-It might be good idea to have an environment that is automatically updated to the master branch.
-Only in this case the name of this environment might differ from the branch name.
+It might be a good idea to have an environment that is automatically updated to the master branch.
+Only in this case, the name of this environment might differ from the branch name.
 Suppose you have a staging environment, a pre-production environment and a production environment.
 In this case the master branch is deployed on staging. When someone wants to deploy to pre-production they create a merge request from the master branch to the pre-production branch.
 And going live with code happens by merging the pre-production branch into the production branch.
@@ -82,9 +82,10 @@ An 'extreme' version of environment branches are setting up an environment for e
 # Release branches with GitLab flow
 
 Only in case you need to release software to the outside world you work with release branches.
-In this case the each branch contains a minor version (2.3-stable, 2.4-stable, etc.).
-The branches start from master as late as possible (to having to apply bugfixes to multiple branches)
-After release only serious bug fixes are included in a release branch.
+In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
+The branches start from master as late as possible.
+By not branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
+After a release branch is announced, only serious bug fixes are included in the release branch.
 If possible these bug fixes are first merged into master and then cherry-picked into the release branch.
 Merging them in master first ensures you do not forget to merge them into master and encounter the same bug on the next release.
 This is called an 'upstream first' policy that is also practiced by [Google](http://www.chromium.org/chromium-os/chromiumos-design-docs/upstream-first) and [Red Hat](http://www.redhat.com/about/news/archive/2013/5/a-community-for-using-openstack-with-red-hat-rdo).
