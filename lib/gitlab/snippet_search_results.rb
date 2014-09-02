@@ -37,10 +37,10 @@ module Gitlab
     end
 
     def snippet_blobs
-      matching_snippets = Snippet.where(id: limit_snippet_ids).search_code(query).order('updated_at DESC')
-      matching_snippets = matching_snippets.to_a
+      search = Snippet.where(id: limit_snippet_ids).search_code(query)
+      search = search.order('updated_at DESC').to_a
       snippets = []
-      matching_snippets.each { |e| snippets << chunk_snippet(e) }
+      search.each { |e| snippets << chunk_snippet(e) }
       snippets
     end
 
@@ -58,14 +58,14 @@ module Gitlab
       surrounding_lines = 3
       used_lines = []
       lined_content = snippet.content.split("\n")
-      lined_content.each_with_index { |line, line_number|
+      lined_content.each_with_index do |line, line_number|
         used_lines.concat bounded_line_numbers(
           line_number,
           0,
           lined_content.size,
           surrounding_lines
         ) if line.include?(query)
-      }
+      end
 
       used_lines = used_lines.uniq.sort
 
@@ -73,7 +73,7 @@ module Gitlab
       snippet_chunks = []
       snippet_start_line = 0
       last_line = -1
-      used_lines.each { |line_number|
+      used_lines.each do |line_number|
         if last_line < 0
           snippet_start_line = line_number
           snippet_chunk << lined_content[line_number]
@@ -88,7 +88,7 @@ module Gitlab
           snippet_start_line = line_number
         end
         last_line = line_number
-      }
+      end
       snippet_chunks << {
         data: snippet_chunk.join("\n"),
         start_line: snippet_start_line + 1

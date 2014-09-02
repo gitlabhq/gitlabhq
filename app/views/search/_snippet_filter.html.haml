@@ -2,7 +2,7 @@
   %li{class: ("active" if @scope == 'snippet_blobs')}
     = link_to search_filter_path(scope: 'snippet_blobs', snippets: true, group_id: nil, project_id: nil) do
       %i.icon-code
-      Code
+      Snippet Contents
       .pull-right
         = @search_results.snippet_blobs_count
   %li{class: ("active" if @scope == 'snippet_titles')}
