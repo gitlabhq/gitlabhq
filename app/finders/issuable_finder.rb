@@ -1,4 +1,4 @@
-# BaseFinder
+# IssuableFinder
 #
 # Used to filter Issues and MergeRequests collections by set of params
 #
@@ -16,7 +16,9 @@
 #     label_name: string
 #     sort: string
 #
-class BaseFinder
+require_relative 'projects_finder'
+
+class IssuableFinder
   attr_accessor :current_user, :params
 
   def execute(current_user, params)

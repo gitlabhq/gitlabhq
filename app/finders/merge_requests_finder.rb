@@ -15,7 +15,7 @@
 #     label_name: string
 #     sort: string
 #
-class MergeRequestsFinder < BaseFinder
+class MergeRequestsFinder < IssuableFinder
   def klass
     MergeRequest
   end

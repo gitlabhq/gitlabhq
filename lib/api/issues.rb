@@ -6,9 +6,9 @@ module API
     helpers do
       def filter_issues_state(issues, state = nil)
         case state
-          when 'opened' then issues.opened
-          when 'closed' then issues.closed
-          else issues
+        when 'opened' then issues.opened
+        when 'closed' then issues.closed
+        else issues
         end
       end
     end
