@@ -11,13 +11,13 @@ Organizations coming to git from other version control systems frequently find i
 This article describes the GitLab flow that integrates the git workflow with an issue tracking system.
 It offers a simple, transparent and effective way to work with git.
 
-When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
+![Three stages and three steps between them]() When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
 Most version control systems have only step, committing from the working copy to a shared server.
 In git you add files from the working copy to the staging area. After that you commit them to the local repo.
 The third step is pushing to a shared remote repository.
 After getting used to these three steps the branching model becomes the challenge.
 
-Since many organizations new to git have no conventions how to work with it, it can quickly become a mess.
+![Multiple long running branches and merging in all directions]() Since many organizations new to git have no conventions how to work with it, it can quickly become a mess.
 The biggest problem they run into is that many long running branches that each contain part of the changes are around.
 People have a hard time figuring out which branch they should develop on or deploy to production.
 Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow]()
@@ -25,7 +25,7 @@ We think there is still room for improvement and will detail a set of practices 
 
 # Git flow and its problems
 
-Git flow was one of the first proposals to use git branches and it has gotten a lot of attention.
+[![Git Flow timeline by Vincent Driessen, used with persmission](http://nvie.com/img/2009/12/Screen-shot-2009-12-24-at-11.32.03.png)](http://nvie.com/posts/a-successful-git-branching-model/) Git flow was one of the first proposals to use git branches and it has gotten a lot of attention.
 It advocates a master branch and a separate develop branch as well as supporting branches for features, releases and hotfixes.
 The development happens on the develop branch, moves to a release branch and is finally merged into the master branch.
 Git flow is a well defined standard but its complexity introduces two problems.
@@ -44,7 +44,7 @@ And doing releases doesn't automatically mean also doing hotfixes.
 
 # GitHub flow as a simpler alternative
 
-In reaction to git flow a simpler alternative was detailed, [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html).
+![Master branch with feature branches merged in]() In reaction to git flow a simpler alternative was detailed, [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html).
 This flow has only feature branches and a master branch.
 This is very simple and clean, many organizations have adopted it with great success.
 Atlassian recommends [a similar strategy](http://blogs.atlassian.com/2014/01/simple-git-workflow-simple/) although they rebase feature branches.
@@ -54,7 +54,7 @@ With GitLab flow we offer additional guidance for these questions.
 
 # Production branch with GitLab flow
 
-GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
+![Master branch and production branch with arrow that indicate deployments]() GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
 This is possible for SaaS applications but are many cases where this is not possible.
 One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass AppStore validation.
 Another example is when you have deployment windows (workdays from 10am to 4pm when the operations team is at full capacity) but you also merge code at other times.
@@ -68,7 +68,7 @@ This flow prevents the overhead of releasing, tagging and merging that is common
 
 # Environment branches with GitLab flow
 
-It might be a good idea to have an environment that is automatically updated to the master branch.
+![Multiple branches with the code cascading from one to another]() It might be a good idea to have an environment that is automatically updated to the master branch.
 Only in this case, the name of this environment might differ from the branch name.
 Suppose you have a staging environment, a pre-production environment and a production environment.
 In this case the master branch is deployed on staging. When someone wants to deploy to pre-production they create a merge request from the master branch to the pre-production branch.
@@ -81,7 +81,7 @@ An 'extreme' version of environment branches are setting up an environment for e
 
 # Release branches with GitLab flow
 
-Only in case you need to release software to the outside world you work with release branches.
+![Master and multiple release branches that vary in length with cherrypicks from master]() Only in case you need to release software to the outside world you work with release branches.
 In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
 The stable branch uses master as a starting point and is created as late as possible.
 By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
@@ -95,7 +95,7 @@ In this flow it is not common to have a production branch (or git flow master br
 
 # Merge/pull requests with GitLab flow
 
-Merge or pull requests are created in a git management application and ask an assigned person to merge two branches.
+![Merge request with line comments]() Merge or pull requests are created in a git management application and ask an assigned person to merge two branches.
 Tools such as GitHub and Bitbucket choose the name pull request since the first manual action would be to pull the feature branch.
 Tools such as GitLab and Gitorious choose the name merge request since that is the final action that is requested of the assignee.
 In this article we'll refer to them as merge requests.
@@ -118,7 +118,7 @@ So if you want to merge it into a protected branch you assign it to someone with
 
 # Issues with GitLab flow
 
-GitLab flow is a way to make the relation between the code and the issue tracker more transparent.
+![Merge request with the branch name 15-require-a-password-to-change-it and assignee field shown]() GitLab flow is a way to make the relation between the code and the issue tracker more transparent.
 
 Any significant change to the code should start with an issue where the goal is described.
 Having a reason for every code change is important to inform everyone on the team and to help people keep the scope of a feature branch small.
@@ -146,17 +146,22 @@ After the merge the feature branch is deleted since it is no longer needed.
 Suppose that a branch is merged but a problem occurs and the issue is reopened.
 In this case it is no problem to reuse the same branch name since it was deleted when the branch was merged.
 At any time there is at most one branch for every issue.
-It is possible that one feature branch solves more than one issue. 
+It is possible that one feature branch solves more than one issue.
 
-Linking to the issue can happen by mentioning them from commit messages (fixes #14, closes #67, etc.).
+# Linking and closing issues from merge requests
+
+![Merge request showing the linked issues that will be closed]() Linking to the issue can happen by mentioning them from commit messages (fixes #14, closes #67, etc.) or from the merge request description.
 In GitLab this creates a comment in the issue that the merge requests mentions the issue.
-And the merge request shows the linked issues, when you merge the merge request into the default branch the issue is closed automatically.
+And the merge request shows the linked issues.
+These issues are closed the code is merged into the default branch.
+
+If you only want to make the reference without closing the issue you can also just mention it: "Ducktyping is preferred. #12".
 
 If you have an issue that spans multiple repo's the best thing is to create an issue for each and link all issues to one parent issue.
 
 # Squashing commits with rebase
 
-With git you can rebase your commits to squash multiple commits into one.
+![Vim screen showing the rebase view]() With git you can rebase your commits to squash multiple commits into one.
 This functionality is useful if you had a couple of commits for small changes during development.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
@@ -174,7 +179,7 @@ Git management software will always create a merge commit when you accept a merg
 
 # Do not order commits with rebase
 
-With git you can also rebase your feature branch commits to order them after the commits on the master branch.
+![List of sequencial merge commits]() With git you can also rebase your feature branch commits to order them after the commits on the master branch.
 This prevents creating a merge commit when merging master into your feature branch and creates a nice linear history.
 However, just like with squashing you should never rebase commits you have pushed to a remote server.
 This makes it impossible to rebase work in progress that you already shared with your team which is something we recommend.
@@ -203,22 +208,13 @@ You can use tools to view the network graphs of commits and understand the messy
 
 # Voting on merge requests
 
-It is common to voice approval or disapproval by using +1 or -1 emoticons.
+![Voting slider in GitLab]() It is common to voice approval or disapproval by using +1 or -1 emoticons.
 In GitLab the +1 and -1 are aggregated and shown at the top of the merge request.
 As a rule of thumb anything doesn't have two times more +1's than -1's is suspect and should not be merged yet.
 
-# Closing issues
-
-When the feature branch of an issue is closed the issue itself commonly can be closed as well.
-In tools like GitHub and GitLab it is possible to closed an issue from a commit message: "Indentation should be 2 spaces. Fixes #14".
-The issues are closed when the issues with these numbers are merged into the master branch.
-In GitLab the merge requests lists the issues that will be closed when merging.
-Making references in this way also adds a link from the merge request to the issue and vice-versa.
-If you want to make the reference without closing the issue you can also just mention it: "Ducktyping is preferred. #12".
-
 # Pushing and removing branches
 
-We recommend that people push their feature branches frequently, even when they are not ready for review yet.
+![Remove checkbox for branch in merge requests]() We recommend that people push their feature branches frequently, even when they are not ready for review yet.
 By doing this you prevent team members from accidentally starting to work on the same issue.
 Of course this situation should already be prevented by assigning someone to the issue in the issue tracking software.
 But sometimes one of the two parties forgets to assign someone in the issue tracking software.
@@ -230,7 +226,7 @@ When you reopen an issue you need to create a new merge request.
 
 # Committing often and with the right message
 
-We recommend to commit early and often.
+![Good and bad commit message]() We recommend to commit early and often.
 Each time you have a functioning set of tests and code a commit can be made.
 The advantage is that when an extension or refactor goes wrong it is easy to revert to a working version.
 This is quite a change for programmers that used SVN before, they used to commit when their work was ready to share.
@@ -243,7 +239,7 @@ The word fix or fixes is also a red flag, unless it comes after the commit sente
 
 # Testing before merging
 
-In old workflows the Continues Integration (CI) server commonly ran tests on the master branch only.
+![Merge requests showing the test states, red, yellow and green]() In old workflows the Continues Integration (CI) server commonly ran tests on the master branch only.
 Developers had to ensure their code did not break the master branch.
 When using GitLab flow developers create their branches from this branch so it is essential it is green.
 Therefore each merge request must be tested before it is accepted.
@@ -258,7 +254,7 @@ If you have long lived feature branches that last for more than a few days you s
 
 # Merging in other code
 
-When branching of a feature branch always start with an up to date master to branch of from.
+![vim screen showing git pull output]() When branching of a feature branch always start with an up to date master to branch of from.
 If you know beforehand that you work absolutely depends on another branch you can also branch from there.
 If you need to merge in another branch after starting explain the reason in the merge commit. 
 If you have not pushed your commits to a shared location yet you can also rebase on master or another feature branch.
