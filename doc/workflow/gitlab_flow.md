@@ -254,7 +254,7 @@ If you have long lived feature branches that last for more than a few days you s
 
 # Merging in other code
 
-![vim screen showing git pull output]() When branching of a feature branch always start with an up to date master to branch of from.
+![Shell output showing git pull output]() When branching of a feature branch always start with an up to date master to branch of from.
 If you know beforehand that you work absolutely depends on another branch you can also branch from there.
 If you need to merge in another branch after starting explain the reason in the merge commit. 
 If you have not pushed your commits to a shared location yet you can also rebase on master or another feature branch.
