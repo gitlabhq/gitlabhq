@@ -3,13 +3,28 @@ module API
   class Issues < Grape::API
     before { authenticate! }
 
+    helpers do
+      def filter_issues_state(issues, state = nil)
+        case state
+          when 'opened' then issues.opened
+          when 'closed' then issues.closed
+          else issues
+        end
+      end
+    end
+
     resource :issues do
       # Get currently authenticated user's issues
       #
-      # Example Request:
+      # Parameters:
+      #   state (optional) - Return "opened" or "closed" issues
+      #
+      # Example Requests:
       #   GET /issues
+      #   GET /issues?state=opened
+      #   GET /issues?state=closed
       get do
-        present paginate(current_user.issues), with: Entities::Issue
+        present paginate(filter_issues_state(current_user.issues, params['state'])), with: Entities::Issue
       end
     end
 
@@ -18,10 +33,14 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      # Example Request:
+      #   state (optional) - Return "opened" or "closed" issues
+      #
+      # Example Requests:
       #   GET /projects/:id/issues
+      #   GET /projects/:id/issues?state=opened
+      #   GET /projects/:id/issues?state=closed
       get ":id/issues" do
-        present paginate(user_project.issues), with: Entities::Issue
+        present paginate(filter_issues_state(user_project.issues, params['state'])), with: Entities::Issue
       end
 
       # Get a single project issue

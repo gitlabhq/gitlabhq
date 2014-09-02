@@ -7,7 +7,13 @@ Get all issues created by authenticated user. This function takes pagination par
 
 ```
 GET /issues
+GET /issues?state=opened
+GET /issues?state=closed
 ```
+
+Parameters:
+
+- `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
 
 ```json
 [
@@ -80,11 +86,14 @@ to return the list of project issues.
 
 ```
 GET /projects/:id/issues
+GET /projects/:id/issues?state=opened
+GET /projects/:id/issues?state=closed
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
+- `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
 
 ## Single issue
 
