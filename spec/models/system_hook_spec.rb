@@ -61,5 +61,32 @@ describe SystemHook do
       project.users_projects.destroy_all
       WebMock.should have_requested(:post, @system_hook.url).with(body: /user_remove_from_team/).once
     end
+
+    it "group create hook" do
+      group = create(:group)
+      WebMock.should have_requested(:post, @system_hook.url).with(body: /group_create/).once
+    end
+
+    it "group destroy hook" do
+      group = create(:group)
+      group.destroy
+      WebMock.should have_requested(:post, @system_hook.url).with(body: /group_destroy/).once
+    end
+
+    it "users_group create hook" do
+      group = create(:group)
+      user = create(:user)
+      group.add_user(user, UsersProject::MASTER)
+      WebMock.should have_requested(:post, @system_hook.url).with(body: /user_add_to_group/).once
+    end
+
+    it "users_group destroy hook" do
+      group = create(:group)
+      user = create(:user)
+      group.add_user(user, UsersProject::MASTER)
+      group.users_groups.destroy_all
+      WebMock.should have_requested(:post, @system_hook.url).with(body: /user_remove_from_group/).once
+    end
+
   end
 end
