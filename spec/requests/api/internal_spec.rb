@@ -157,7 +157,6 @@ describe API::API, api: true  do
   def pull(key, project)
     get(
       api("/internal/allowed"),
-      ref: 'master',
       key_id: key.id,
       project: project.path_with_namespace,
       action: 'git-upload-pack'
@@ -167,7 +166,7 @@ describe API::API, api: true  do
   def push(key, project)
     get(
       api("/internal/allowed"),
-      ref: 'master',
+      changes: 'd14d6c0abdd253381df51a723d58691b2ee1ab08 570e7b2abdd848b95f2f578043fc23bd6f6fd24d refs/heads/master',
       key_id: key.id,
       project: project.path_with_namespace,
       action: 'git-receive-pack'
