@@ -11,7 +11,7 @@ Organizations coming to git from other version control systems frequently find i
 This article describes the GitLab flow that integrates the git workflow with an issue tracking system.
 It offers a simple, transparent and effective way to work with git.
 
-![Three stages and three steps between them]() When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
+![Four stages (working copy, index, local repo, remote repo) and three steps between them]() When converting to git you have to get used to the fact that there are three steps before a commit is shared with colleagues.
 Most version control systems have only step, committing from the working copy to a shared server.
 In git you add files from the working copy to the staging area. After that you commit them to the local repo.
 The third step is pushing to a shared remote repository.
