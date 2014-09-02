@@ -50,6 +50,8 @@ Now every time a member of the 'Engineering' LDAP group signs in, they automatic
 If you want to add the members of LDAP group to your GitLab group you can add an additional LDAP group link.
 If you have two LDAP group links, e.g. 'cn=Engineering' at level 'Developer' and 'cn=QA' at level 'Reporter', and user Jane belongs to both the 'Engineering' and 'QA' LDAP groups, she will get the _highest_ access level of the two, namely 'Developer'.
 
+![Two linked LDAP groups](ldap/two_linked_ldap_groups.png)
+
 ### Locking yourself out of your own group
 
 As an LDAP-enabled GitLab user, if you create a group and then set it to synchronize with an LDAP group you do not belong to, you will be removed from the grop as soon as the synchronization takes effect for you.
