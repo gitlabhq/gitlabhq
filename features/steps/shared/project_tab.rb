@@ -3,7 +3,7 @@ module SharedProjectTab
   include SharedActiveTab
 
   step 'the active main tab should be Home' do
-    ensure_active_main_tab('Activity')
+    ensure_active_main_tab('Project')
   end
 
   step 'the active main tab should be Files' do
