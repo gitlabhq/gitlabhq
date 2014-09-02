@@ -1,10 +1,10 @@
 module Gitlab
   class Theme
-    BASIC  = 1
-    MARS   = 2
-    MODERN = 3
-    GRAY   = 4
-    COLOR  = 5
+    BASIC  = 1 unless const_defined?(:BASIC)
+    MARS   = 2 unless const_defined?(:MARS)
+    MODERN = 3 unless const_defined?(:MODERN)
+    GRAY   = 4 unless const_defined?(:GRAY)
+    COLOR  = 5 unless const_defined?(:COLOR)
 
     def self.css_class_by_id(id)
       themes = {

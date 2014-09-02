@@ -7,6 +7,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   def index
     @group = @project.group
     @users_projects = @project.users_projects.order('project_access DESC')
+    @project_group_links = @project.project_group_links
   end
 
   def new

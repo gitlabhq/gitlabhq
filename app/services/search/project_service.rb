@@ -12,7 +12,13 @@ module Search
       return result unless query.present?
 
       if params[:search_code].present?
-        blobs = project.repository.search_files(query, params[:repository_ref]) unless project.empty_repo?
+        if !@project.empty_repo?
+          blobs = project.repository.search_files(query,
+                                                  params[:repository_ref])
+        else
+          blobs = Array.new
+        end
+
         blobs = Kaminari.paginate_array(blobs).page(params[:page]).per(20)
         result[:blobs] = blobs
         result[:total_results] = blobs.total_count

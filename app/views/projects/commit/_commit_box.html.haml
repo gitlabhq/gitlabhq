@@ -55,4 +55,4 @@
     = gfm escape_once(@commit.title)
   - if @commit.description.present?
     %pre.commit-description
-      = gfm escape_once(@commit.description)
+      = preserve(gfm(escape_once(@commit.description)))

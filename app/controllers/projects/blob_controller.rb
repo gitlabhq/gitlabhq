@@ -25,6 +25,21 @@ class Projects::BlobController < Projects::ApplicationController
     end
   end
 
+  def diff
+    @form = UnfoldForm.new(params)
+    @lines = @blob.data.lines[@form.since - 1..@form.to - 1]
+
+    if @form.bottom?
+      @match_line = ''
+    else
+      lines_length = @lines.length - 1
+      line = [@form.since, lines_length].join(',')
+      @match_line = "@@ -#{line}+#{line} @@"
+    end
+
+    render layout: false
+  end
+
   private
 
   def blob

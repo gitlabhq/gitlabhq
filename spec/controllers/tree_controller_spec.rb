@@ -26,7 +26,7 @@ describe Projects::TreeController do
     end
 
     context "valid branch, valid path" do
-      let(:id) { 'master/app/' }
+      let(:id) { 'master/encoding/' }
       it { should respond_with(:success) }
     end
 
@@ -36,7 +36,7 @@ describe Projects::TreeController do
     end
 
     context "invalid branch, valid path" do
-      let(:id) { 'invalid-branch/app/' }
+      let(:id) { 'invalid-branch/encoding/' }
       it { should respond_with(:not_found) }
     end
   end

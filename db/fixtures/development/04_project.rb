@@ -1,56 +1,52 @@
-Gitlab::Seeder.quiet do
-  project_urls = [
-    'https://github.com/documentcloud/underscore.git',
-    'https://github.com/diaspora/diaspora.git',
-    'https://github.com/diaspora/diaspora-project-site.git',
-    'https://github.com/diaspora/diaspora-client.git',
-    'https://github.com/brightbox/brightbox-cli.git',
-    'https://github.com/brightbox/puppet.git',
-    'https://github.com/gitlabhq/gitlabhq.git',
-    'https://github.com/gitlabhq/gitlab-ci.git',
-    'https://github.com/gitlabhq/gitlab-recipes.git',
-    'https://github.com/gitlabhq/gitlab-shell.git',
-    'https://github.com/gitlabhq/grack.git',
-    'https://github.com/gitlabhq/testme.git',
-    'https://github.com/twitter/flight.git',
-    'https://github.com/twitter/typeahead.js.git',
-    'https://github.com/h5bp/html5-boilerplate.git',
-    'https://github.com/h5bp/mobile-boilerplate.git',
-  ]
+require 'sidekiq/testing'
 
-  project_urls.each_with_index do |url, i|
-    group_path, project_path = url.split('/')[-2..-1]
+Sidekiq::Testing.inline! do
+  Gitlab::Seeder.quiet do
+    project_urls = [
+      'https://github.com/documentcloud/underscore.git',
+      'https://github.com/gitlabhq/gitlabhq.git',
+      'https://github.com/gitlabhq/gitlab-ci.git',
+      'https://github.com/gitlabhq/gitlab-shell.git',
+      'https://github.com/gitlabhq/testme.git',
+      'https://github.com/twitter/flight.git',
+      'https://github.com/twitter/typeahead.js.git',
+      'https://github.com/h5bp/html5-boilerplate.git',
+    ]
 
-    group = Group.find_by(path: group_path)
+    project_urls.each_with_index do |url, i|
+      group_path, project_path = url.split('/')[-2..-1]
 
-    unless group
-      group = Group.new(
-        name: group_path.titleize,
-        path: group_path
-      )
-      group.description = Faker::Lorem.sentence
-      group.save
+      group = Group.find_by(path: group_path)
 
-      group.add_owner(User.first)
-    end
+      unless group
+        group = Group.new(
+          name: group_path.titleize,
+          path: group_path
+        )
+        group.description = Faker::Lorem.sentence
+        group.save
 
-    project_path.gsub!(".git", "")
+        group.add_owner(User.first)
+      end
 
-    params = {
-      import_url: url,
-      namespace_id: group.id,
-      name: project_path.titleize,
-      description: Faker::Lorem.sentence,
-      visibility_level: Gitlab::VisibilityLevel.values.sample
-    }
+      project_path.gsub!(".git", "")
 
-    project = Projects::CreateService.new(User.first, params).execute
+      params = {
+        import_url: url,
+        namespace_id: group.id,
+        name: project_path.titleize,
+        description: Faker::Lorem.sentence,
+        visibility_level: Gitlab::VisibilityLevel.values.sample
+      }
 
-    if project.valid?
-      print '.'
-    else
-      puts project.errors.full_messages
-      print 'F'
+      project = Projects::CreateService.new(User.first, params).execute
+
+      if project.valid?
+        print '.'
+      else
+        puts project.errors.full_messages
+        print 'F'
+      end
     end
   end
 end

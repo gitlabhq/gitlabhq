@@ -2,11 +2,12 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include RepoHelpers
 
   Then 'I see project commits' do
     commit = @project.repository.commit
     page.should have_content(@project.name)
-    page.should have_content(commit.message)
+    page.should have_content(commit.message[0..20])
     page.should have_content(commit.id.to_s[0..5])
   end
 
@@ -19,21 +20,21 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
     page.response_headers['Content-Type'].should have_content("application/atom+xml")
     page.body.should have_selector("title", text: "Recent commits to #{@project.name}")
     page.body.should have_selector("author email", text: commit.author_email)
-    page.body.should have_selector("entry summary", text: commit.description)
+    page.body.should have_selector("entry summary", text: commit.description[0..10])
   end
 
   Given 'I click on commit link' do
-    visit project_commit_path(@project, ValidCommit::ID)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   Then 'I see commit info' do
-    page.should have_content ValidCommit::MESSAGE
-    page.should have_content "Showing 1 changed file"
+    page.should have_content sample_commit.message
+    page.should have_content "Showing #{sample_commit.files_changed_count} changed files"
   end
 
   And 'I fill compare fields with refs' do
-    fill_in "from", with: "8716fc78f3c65bbf7bcf7b574febd583bc5d2812"
-    fill_in "to",   with: "bcf03b5de6c33f3869ef70d68cf06e679d1d7f9a"
+    fill_in "from", with: sample_commit.parent_id
+    fill_in "to",   with: sample_commit.id
     click_button "Compare"
   end
 
@@ -56,30 +57,24 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   Given 'I visit big commit page' do
-    visit project_commit_path(@project, BigCommits::BIG_COMMIT_ID)
+    Commit::DIFF_SAFE_FILES = 20
+    visit project_commit_path(@project, sample_big_commit.id)
   end
 
   Then 'I see big commit warning' do
-    page.should have_content BigCommits::BIG_COMMIT_MESSAGE
+    page.should have_content sample_big_commit.message
     page.should have_content "Too many changes"
-  end
-
-  Given 'I visit huge commit page' do
-    visit project_commit_path(@project, BigCommits::HUGE_COMMIT_ID)
-  end
-
-  Then 'I see huge commit message' do
-    page.should have_content BigCommits::HUGE_COMMIT_MESSAGE
+    Commit::DIFF_SAFE_FILES = 100
   end
 
   Given 'I visit a commit with an image that changed' do
-    visit project_commit_path(@project, 'cc1ba255d6c5ffdce87a357ba7ccc397a4f4026b')
+    visit project_commit_path(@project, sample_image_commit.id)
   end
 
   Then 'The diff links to both the previous and current image' do
     links = page.all('.two-up span div a')
-    links[0]['href'].should =~ %r{blob/bc3735004cb45cec5e0e4fa92710897a910a5957}
-    links[1]['href'].should =~ %r{blob/cc1ba255d6c5ffdce87a357ba7ccc397a4f4026b}
+    links[0]['href'].should =~ %r{blob/#{sample_image_commit.old_blob_id}}
+    links[1]['href'].should =~ %r{blob/#{sample_image_commit.new_blob_id}}
   end
 
   Given 'I click side-by-side diff button' do
@@ -93,5 +88,4 @@ class ProjectBrowseCommits < Spinach::FeatureSteps
   Then 'I see inline diff button' do
     page.should have_content "Inline Diff"
   end
-
 end

@@ -226,7 +226,7 @@ describe "Issues", feature: true do
         issue.save
       end
 
-      it 'shows assignee text' do
+      it "shows assignee text", js: true do
         logout
         login_with guest
 
@@ -262,7 +262,7 @@ describe "Issues", feature: true do
         issue.save
       end
 
-      it 'shows milestone text' do
+      it "shows milestone text", js: true do
         logout
         login_with guest
 

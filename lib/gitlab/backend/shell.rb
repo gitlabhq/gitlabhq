@@ -27,7 +27,7 @@ module Gitlab
     #   import_repository("gitlab/gitlab-ci", "https://github.com/randx/six.git")
     #
     def import_repository(name, url)
-      system "#{gitlab_shell_path}/bin/gitlab-projects", "import-project", "#{name}.git", url
+      system "#{gitlab_shell_path}/bin/gitlab-projects", "import-project", "#{name}.git", url, '240'
     end
 
     # Move repository

@@ -78,9 +78,14 @@ describe API::API, api: true  do
     context 'between branches projects' do
       it "should return merge_request" do
         post api("/projects/#{project.id}/merge_requests", user),
-        title: 'Test merge_request', source_branch: "stable", target_branch: "master", author: user
+             title: 'Test merge_request',
+             source_branch: 'stable',
+             target_branch: 'master',
+             author: user,
+             labels: 'label, label2'
         response.status.should == 201
         json_response['title'].should == 'Test merge_request'
+        json_response['labels'].should == ['label', 'label2']
       end
 
       it "should return 422 when source_branch equals target_branch" do
@@ -105,6 +110,18 @@ describe API::API, api: true  do
         post api("/projects/#{project.id}/merge_requests", user),
         target_branch: 'master', source_branch: 'stable'
         response.status.should == 400
+      end
+
+      it 'should return 400 on invalid label names' do
+        post api("/projects/#{project.id}/merge_requests", user),
+             title: 'Test merge_request',
+             source_branch: 'stable',
+             target_branch: 'master',
+             author: user,
+             labels: 'label, ?'
+        response.status.should == 400
+        json_response['message']['labels']['?']['title'].should ==
+          ['is invalid']
       end
     end
 
@@ -234,6 +251,15 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/merge_request/#{merge_request.id}", user), target_branch: "wiki"
       response.status.should == 200
       json_response['target_branch'].should == 'wiki'
+    end
+
+    it 'should return 400 on invalid label names' do
+      put api("/projects/#{project.id}/merge_request/#{merge_request.id}",
+              user),
+          title: 'new issue',
+          labels: 'label, ?'
+      response.status.should == 400
+      json_response['message']['labels']['?']['title'].should == ['is invalid']
     end
   end
 

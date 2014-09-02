@@ -22,7 +22,7 @@ To serve repositories over SSH there's an add-on application called gitlab-shell
 
 ![GitLab Diagram Overview](gitlab_diagram_overview.png)
 
-A typical install of GitLab will be on Ubuntu Linux or RHEL/CentOS. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incomming jobs.
+A typical install of GitLab will be on Ubuntu Linux or RHEL/CentOS. It uses Nginx or Apache as a web front end to proxypass the Unicorn web server. By default, communication between Unicorn and the front end is via a Unix domain socket but forwarding requests via TCP is also supported. The web front end accesses `/home/git/gitlab/public` bypassing the Unicorn server to serve static pages, uploads (e.g. avatar images or attachments), and precompiled assets. GitLab serves web pages and a [GitLab API](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/api) using the Unicorn web server. It uses Sidekiq as a job queue which, in turn, uses redis as a non-persistent database backend for job information, meta data, and incoming jobs.
 
 The GitLab web app uses MySQL or PostgreSQL for persistent database information (e.g. users, permissions, issues, other meta data). GitLab stores the bare git repositories it serves in `/home/git/repositories` by default. It also keeps default branch and hook information with the bare repository. `/home/git/gitlab-satellites` keeps checked out repositories when performing actions such as a merge request, editing files in the web interface, etc.
 
@@ -38,7 +38,7 @@ To summarize here's the [directory structure of the `git` user home directory](.
 
     ps aux | grep '^git'
 
-GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the gitlab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
+GitLab has several components to operate. As a system user (i.e. any user that is not the `git` user) it requires a persistent database (MySQL/PostreSQL) and redis database. It also uses Apache httpd or nginx to proxypass Unicorn. As the `git` user it starts Sidekiq and Unicorn (a simple ruby HTTP server running on port `8080` by default). Under the GitLab user there are normally 4 processes: `unicorn_rails master` (1 process), `unicorn_rails worker` (2 processes), `sidekiq` (1 process).
 
 ### Repository access
 
@@ -53,28 +53,28 @@ See the README for more information.
 The GitLab init script starts and stops Unicorn and Sidekiq.
 
 ```
-/etc/init.d/gitlab 
+/etc/init.d/gitlab
 Usage: service gitlab {start|stop|restart|reload|status}
 ```
 
 Redis (key-value store/non-persistent database)
 
 ```
-/etc/init.d/redis 
+/etc/init.d/redis
 Usage: /etc/init.d/redis {start|stop|status|restart|condrestart|try-restart}
 ```
 
 SSH daemon
 
 ```
-/etc/init.d/sshd 
+/etc/init.d/sshd
 Usage: /etc/init.d/sshd {start|stop|restart|reload|force-reload|condrestart|try-restart|status}
 ```
 
 Web server (one of the following)
 
 ```
-/etc/init.d/httpd 
+/etc/init.d/httpd
 Usage: httpd {start|stop|restart|condrestart|try-restart|force-reload|reload|status|fullstatus|graceful|help|configtest}
 
 $ /etc/init.d/nginx
@@ -84,7 +84,7 @@ Usage: nginx {start|stop|restart|reload|force-reload|status|configtest}
 Persistent database (one of the following)
 
 ```
-/etc/init.d/mysqld 
+/etc/init.d/mysqld
 Usage: /etc/init.d/mysqld {start|stop|status|restart|condrestart|try-restart|reload|force-reload}
 
 $ /etc/init.d/postgresql

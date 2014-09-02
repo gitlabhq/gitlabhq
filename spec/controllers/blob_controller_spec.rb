@@ -44,8 +44,8 @@ describe Projects::BlobController do
     end
 
     context 'redirect to tree' do
-      let(:id) { 'master/doc' }
-      it { should redirect_to("/#{project.path_with_namespace}/tree/master/doc") }
+      let(:id) { 'markdown/doc' }
+      it { should redirect_to("/#{project.path_with_namespace}/tree/markdown/doc") }
     end
   end
 end

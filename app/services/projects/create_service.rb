@@ -57,7 +57,6 @@ module Projects
             :add_repository,
             @project.path_with_namespace
           )
-
         end
 
         if @project.wiki_enabled?

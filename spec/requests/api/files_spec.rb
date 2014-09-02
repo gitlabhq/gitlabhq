@@ -4,20 +4,22 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
+  let(:file_path) { 'files/ruby/popen.rb' }
+
   before { project.team << [user, :developer] }
 
   describe "GET /projects/:id/repository/files" do
     it "should return file info" do
       params = {
-        file_path: 'app/models/key.rb',
+        file_path: file_path,
         ref: 'master',
       }
 
       get api("/projects/#{project.id}/repository/files", user), params
       response.status.should == 200
-      json_response['file_path'].should == 'app/models/key.rb'
-      json_response['file_name'].should == 'key.rb'
-      Base64.decode64(json_response['content']).lines.first.should == "class Key < ActiveRecord::Base\n"
+      json_response['file_path'].should == file_path
+      json_response['file_name'].should == 'popen.rb'
+      Base64.decode64(json_response['content']).lines.first.should == "require 'fileutils'\n"
     end
 
     it "should return a 400 bad request if no params given" do
@@ -74,7 +76,7 @@ describe API::API, api: true  do
   describe "PUT /projects/:id/repository/files" do
     let(:valid_params) {
       {
-        file_path: 'spec/spec_helper.rb',
+        file_path: file_path,
         branch_name: 'master',
         content: 'puts 8',
         commit_message: 'Changed file'
@@ -88,7 +90,7 @@ describe API::API, api: true  do
 
       put api("/projects/#{project.id}/repository/files", user), valid_params
       response.status.should == 200
-      json_response['file_path'].should == 'spec/spec_helper.rb'
+      json_response['file_path'].should == file_path
     end
 
     it "should return a 400 bad request if no params given" do
@@ -109,7 +111,7 @@ describe API::API, api: true  do
   describe "DELETE /projects/:id/repository/files" do
     let(:valid_params) {
       {
-        file_path: 'spec/spec_helper.rb',
+        file_path: file_path,
         branch_name: 'master',
         commit_message: 'Changed file'
       }
@@ -122,7 +124,7 @@ describe API::API, api: true  do
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
       response.status.should == 200
-      json_response['file_path'].should == 'spec/spec_helper.rb'
+      json_response['file_path'].should == file_path
     end
 
     it "should return a 400 bad request if no params given" do

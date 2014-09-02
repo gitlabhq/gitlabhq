@@ -21,6 +21,16 @@ module TreeHelper
     tree.html_safe
   end
 
+  def render_readme(readme)
+    if gitlab_markdown?(readme.name)
+      preserve(markdown(readme.data))
+    elsif markup?(readme.name)
+      render_markup(readme.name, readme.data)
+    else
+      simple_format(readme.data)
+    end
+  end
+
   # Return an image icon depending on the file type
   #
   # type - String type of the tree item; either 'folder' or 'file'
@@ -36,24 +46,6 @@ module TreeHelper
 
   def tree_hex_class(content)
     "file_#{hexdigest(content.name)}"
-  end
-
-  # Public: Determines if a given filename is compatible with GitHub::Markup.
-  #
-  # filename - Filename string to check
-  #
-  # Returns boolean
-  def markup?(filename)
-    filename.downcase.end_with?(*%w(.textile .rdoc .org .creole
-                                    .mediawiki .rst .adoc .asciidoc .pod))
-  end
-
-  def gitlab_markdown?(filename)
-    filename.downcase.end_with?(*%w(.mdown .md .markdown))
-  end
-
-  def plain_text_readme? filename
-    filename =~ /^README(.txt)?$/i
   end
 
   # Simple shortcut to File.join

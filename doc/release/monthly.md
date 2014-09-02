@@ -20,10 +20,12 @@ Any changes not yet added to the changelog are added by lead developer and in th
 15th:
 
 * Update the changelog (#LINK)
+* Triage the omnibus-gitlab milestone
 
 16th:
 
 * Merge CE in to EE (#LINK)
+* Close the omnibus-gitlab milestone
 
 17th:
 
@@ -43,7 +45,7 @@ Any changes not yet added to the changelog are added by lead developer and in th
 
 * Release CE and EE (#LINK)
 
-23th:
+23rd:
 
 * Prepare package for GitLab.com release (#LINK)
 
@@ -71,9 +73,9 @@ The RC1 release comes with the task to update the installation and upgrade docs.
 
 1. Create: CE update guide from previous version. Like `from-6-8-to-6.9`
 1. Create: CE to EE update guide in EE repository for latest version.
-1. Update: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/6.0-to-6.x.md to latest version. 
+1. Update: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/6.0-to-6.x.md to latest version.
 
-It's best to copy paste the previous guide and make changes where necessary. 
+It's best to copy paste the previous guide and make changes where necessary.
 The typical steps are listed below with any points you should specifically look at.
 
 #### 0. Any major changes?
@@ -156,11 +158,14 @@ It is important to do this as soon as possible, so we can catch any errors befor
 
 ### **2. Prepare the blog post**
 
-- Check the changelog of CE and EE for important changes. Based on [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) fill in the important information.
-- Create a WIP MR for the blog post and cc the team so everyone can give feedback.
+- Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
+- Check the changelog of CE and EE for important changes.
+- Create a WIP MR for the blog post
 - Ask Dmitriy to add screenshots to the WIP MR.
 - Decide with team who will be the MVP user.
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+- Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
+- After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
 
 ### **3. Create a regressions issue**
 
@@ -181,7 +186,11 @@ Tweet about the RC release:
 
 # **21st - Preparation**
 
-### **1. Q&A**
+### **1. Pre QA merge**
+
+Merge CE into EE before doing the QA.
+
+### **2. QA**
 
 Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X release" in order to keep track of the progress.
 
@@ -189,7 +198,7 @@ Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gi
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
 
-### **2. Fix anything coming out of the QA**
+### **3. Fix anything coming out of the QA**
 
 Create an issue with description of a problem, if it is quick fix fix yourself otherwise contact the team for advice.
 
@@ -200,6 +209,8 @@ For GitLab EE, append `-ee` to the branches and tags.
 `x-x-stable-ee`
 
 `v.x.x.0-ee`
+
+Merge CE into EE if needed.
 
 ### **1. Create x-x-stable branch and push to the repositories**
 
@@ -212,7 +223,8 @@ git push <remote> x-x-stable
 
 ### **2. Build the Omnibus packages**
 
-[Follow this guide](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
+Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md).
+This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
 
 ### **3. Set VERSION to x.x.x and push**
 
@@ -256,11 +268,10 @@ Merge the [blog merge request](#1-prepare-the-blog-post) in `www-gitlab-com` rep
 
 ### **8. Tweet to blog**
 
-Send out a tweet to share the good news with the world. List the features in short and link to the blog post.
+Send out a tweet to share the good news with the world.
+List the most important features and link to the blog post.
 
-Proposed tweet for CE "GitLab X.X.X CE is released! It brings *** <link-to-blogpost>"
-
-Proposed tweet for EE "GitLab X.X.X EE is released! It brings *** <link-to-blogpost>"
+Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 
 ### **9. Send out the newsletter**
 

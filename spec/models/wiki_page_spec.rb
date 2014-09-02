@@ -1,34 +1,11 @@
 require "spec_helper"
 
 describe WikiPage do
-
-  def remove_temp_repo(path)
-    FileUtils.rm_rf path
-  end
-
-  def commit_details
-    commit = {name: user.name, email: user.email, message: "test commit"}
-  end
-
-  def create_page(name, content)
-    wiki.wiki.write_page(name, :markdown, content, commit_details)
-  end
-
-  def destroy_page(title)
-    page = wiki.wiki.paged(title)
-    wiki.wiki.delete_page(page, commit_details)
-  end
-
-  let(:project) { create(:project) }
-  let(:repository) { project.repository }
+  let(:project) { create(:empty_project) }
   let(:user) { project.owner }
   let(:wiki) { ProjectWiki.new(project, user) }
 
   subject { WikiPage.new(wiki) }
-
-  before do
-    create_temp_repo(wiki.send(:path_to_repo))
-  end
 
   describe "#initialize" do
     context "when initialized with an existing gollum page" do
@@ -171,4 +148,22 @@ describe WikiPage do
     end
   end
 
+  private
+
+  def remove_temp_repo(path)
+    FileUtils.rm_rf path
+  end
+
+  def commit_details
+    commit = {name: user.name, email: user.email, message: "test commit"}
+  end
+
+  def create_page(name, content)
+    wiki.wiki.write_page(name, :markdown, content, commit_details)
+  end
+
+  def destroy_page(title)
+    page = wiki.wiki.paged(title)
+    wiki.wiki.delete_page(page, commit_details)
+  end
 end

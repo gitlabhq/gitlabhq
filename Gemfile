@@ -80,15 +80,19 @@ gem "six"
 gem "seed-fu"
 
 # Markdown to HTML
-gem "redcarpet",     "~> 2.2.2"
 gem "github-markup"
-gem "org-ruby" # For rendering .org files
+
+# Required markup gems by github-markdown
+gem 'redcarpet', '~> 2.2.2'
+gem 'RedCloth'
+gem 'rdoc', '~>3.6'
+gem 'org-ruby'
+gem 'creole', '~>0.3.6'
+gem 'wikicloth', '=0.8.1'
+gem 'asciidoctor', '= 0.1.4'
 
 # Diffs
 gem 'diffy', '~> 3.0.3'
-
-# Asciidoc to HTML
-gem  "asciidoctor"
 
 # Application server
 group :unicorn do
@@ -175,6 +179,7 @@ gem "gitlab_emoji", "~> 0.0.1.1"
 gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
 gem 'request_store'
+gem "virtus"
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"

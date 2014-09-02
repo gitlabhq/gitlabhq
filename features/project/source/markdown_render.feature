@@ -2,7 +2,7 @@ Feature: Project markdown render
   Background:
     Given I sign in as a user
     And I own project "Delta"
-    Given I visit project source page
+    And I visit markdown branch
 
   # Tree README
 
@@ -11,26 +11,26 @@ Feature: Project markdown render
     And I click on a relative link in README
     Then I should see the correct markdown
 
-  Scenario: I browse files from master branch
-    Then I should see files from repository in master
+  Scenario: I browse files from markdown branch
+    Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
     And I click on Gitlab API in README
     Then I should see correct document rendered
 
-  Scenario: I view README in master branch
-    Then I should see files from repository in master
+  Scenario: I view README in markdown branch
+    Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
     And I click on Rake tasks in README
     Then I should see correct directory rendered
 
-  Scenario: I view README in master branch to see reference links to directory
-    Then I should see files from repository in master
+  Scenario: I view README in markdown branch to see reference links to directory
+    Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
     And I click on GitLab API doc directory in README
     Then I should see correct doc/api directory rendered
 
-  Scenario: I view README in master branch to see reference links to file
-    Then I should see files from repository in master
+  Scenario: I view README in markdown branch to see reference links to file
+    Then I should see files from repository in markdown
     And I should see rendered README which contains correct links
     And I click on Maintenance in README
     Then I should see correct maintenance file rendered
@@ -41,19 +41,19 @@ Feature: Project markdown render
 
   # Blob
 
-  Scenario: I navigate to doc directory to view documentation in master
+  Scenario: I navigate to doc directory to view documentation in markdown
     And I navigate to the doc/api/README
     And I see correct file rendered
     And I click on users in doc/api/README
     Then I should see the correct document file
 
-  Scenario: I navigate to doc directory to view user doc in master
+  Scenario: I navigate to doc directory to view user doc in markdown
     And I navigate to the doc/api/README
     And I see correct file rendered
     And I click on raketasks in doc/api/README
     Then I should see correct directory rendered
 
-  Scenario: I navigate to doc directory to view user doc in master
+  Scenario: I navigate to doc directory to view user doc in markdown
     And I navigate to the doc/api/README
     And Header "GitLab API" should have correct id and link
 

@@ -11,6 +11,11 @@ class Profiles::PasswordsController < ApplicationController
   end
 
   def create
+    unless @user.valid_password?(user_params[:current_password])
+      redirect_to new_profile_password_path, alert: 'You must provide a valid current password'
+      return
+    end
+
     new_password = user_params[:password]
     new_password_confirmation = user_params[:password_confirmation]
 

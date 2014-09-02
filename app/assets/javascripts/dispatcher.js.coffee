@@ -23,13 +23,21 @@ class Dispatcher
         new Issue()
       when 'projects:milestones:show'
         new Milestone()
-      when 'projects:issues:new', 'projects:merge_requests:new'
+      when 'projects:issues:new'
         GitLab.GfmAutoComplete.setup()
+      when 'projects:merge_requests:new'
+        GitLab.GfmAutoComplete.setup()
+        new Diff()
+      when 'projects:merge_requests:show'
+        new Diff()
+      when "projects:merge_requests:diffs"
+        new Diff()
       when 'dashboard:show'
         new Dashboard()
         new Activities()
       when 'projects:commit:show'
         new Commit()
+        new Diff()
       when 'groups:show', 'projects:show'
         new Activities()
       when 'projects:new', 'projects:edit'
@@ -42,6 +50,8 @@ class Dispatcher
         new TreeView()
       when 'projects:blob:show'
         new BlobView()
+      when 'projects:labels:new', 'projects:labels:edit'
+        new Labels()
 
     switch path.first()
       when 'admin' then new Admin()

@@ -1,0 +1,26 @@
+%li
+  .project-access-icon
+    = visibility_level_icon(project.visibility_level)
+
+  .project-description
+    %h4.project-title
+      = link_to project.name_with_namespace, project
+
+      - if current_page?(starred_explore_projects_path)
+        %strong.pull-right
+          = pluralize project.star_count, 'star'
+
+    - if project.description.present?
+      %p.project-description.str-truncated
+        = project.description
+
+    .repo-info
+      - unless project.empty_repo?
+        = link_to pluralize(project.repository.round_commit_count, 'commit'), project_commits_path(project, project.default_branch)
+        &middot;
+        = link_to pluralize(project.repository.branch_names.count, 'branch'), project_branches_path(project)
+        &middot;
+        = link_to pluralize(project.repository.tag_names.count, 'tag'), project_tags_path(project)
+      - else
+        %i.icon-warning-sign
+        Empty repository

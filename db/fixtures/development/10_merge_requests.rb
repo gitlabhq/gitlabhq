@@ -7,27 +7,17 @@ Gitlab::Seeder.quiet do
       source_branch = branches.pop
       target_branch = branches.pop
 
-      # Random user
-      user = project.team.users.sample
-      next unless user
-
       params = {
         source_branch: source_branch,
         target_branch: target_branch,
         title: Faker::Lorem.sentence(6),
-        description: Faker::Lorem.sentences(3).join(" ")
+        description: Faker::Lorem.sentences(3).join(" "),
+        milestone: project.milestones.sample,
+        assignee: project.team.users.sample
       }
 
-      merge_request = MergeRequests::CreateService.new(project, user, params).execute
-
-      if merge_request.valid?
-        merge_request.assignee = user
-        merge_request.milestone = project.milestones.sample
-        merge_request.save
-        print '.'
-      else
-        print 'F'
-      end
+      MergeRequests::CreateService.new(project, project.team.users.sample, params).execute
+      print '.'
     end
   end
 end

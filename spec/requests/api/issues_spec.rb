@@ -5,6 +5,10 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
   let!(:issue) { create(:issue, author: user, assignee: user, project: project) }
+  let!(:label) do
+    create(:label, title: 'label', color: '#FFAABB', project: project)
+  end
+
   before { project.team << [user, :reporter] }
 
   describe "GET /issues" do
@@ -68,6 +72,14 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
       response.status.should == 400
     end
+
+    it 'should return 400 on invalid label names' do
+      post api("/projects/#{project.id}/issues", user),
+           title: 'new issue',
+           labels: 'label, ?'
+      response.status.should == 400
+      json_response['message']['labels']['?']['title'].should == ['is invalid']
+    end
   end
 
   describe "PUT /projects/:id/issues/:issue_id to update only title" do
@@ -83,6 +95,58 @@ describe API::API, api: true  do
       put api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
       response.status.should == 404
+    end
+
+    it 'should return 400 on invalid label names' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'updated title',
+          labels: 'label, ?'
+      response.status.should == 400
+      json_response['message']['labels']['?']['title'].should == ['is invalid']
+    end
+  end
+
+  describe 'PUT /projects/:id/issues/:issue_id to update labels' do
+    let!(:label) { create(:label, title: 'dummy', project: project) }
+    let!(:label_link) { create(:label_link, label: label, target: issue) }
+
+    it 'should not update labels if not present' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'updated title'
+      response.status.should == 200
+      json_response['labels'].should == [label.title]
+    end
+
+    it 'should remove all labels' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          labels: ''
+      response.status.should == 200
+      json_response['labels'].should == []
+    end
+
+    it 'should update labels' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          labels: 'foo,bar'
+      response.status.should == 200
+      json_response['labels'].should include 'foo'
+      json_response['labels'].should include 'bar'
+    end
+
+    it 'should return 400 on invalid label names' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          labels: 'label, ?'
+      response.status.should == 400
+      json_response['message']['labels']['?']['title'].should == ['is invalid']
+    end
+
+    it 'should allow special label names' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          labels: 'label:foo, label-bar,label_bar,label/bar'
+      response.status.should == 200
+      json_response['labels'].should include 'label:foo'
+      json_response['labels'].should include 'label-bar'
+      json_response['labels'].should include 'label_bar'
+      json_response['labels'].should include 'label/bar'
     end
   end
 

@@ -40,7 +40,7 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 
 ### CPU
 
-- 1 core works supports up to 100 users but the application will not be responsive
+- 1 core works supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
 - **2 cores** is the **recommended** number of cores and supports up to 500 users
 - 4 cores supports up to 2,000 users
 - 8 cores supports up to 5,000 users
@@ -51,17 +51,19 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab
 ### Memory
 
 - 512MB is the absolute minimum but we do not recommend this amount of memory.
-You will either need to configure a minimum swap of 256MB and this will only allow you to run one slow unicorn worker.
-One unicorn worker will cause only git ssh access to work because the git http access requires two running workers.
-It requires one worker to receive the user request and one worker for the authorization check.
-Or if you use SSD you can configure 2GB of swap to use two Unicorn workers and have slow operation with http access.
-- 1GB supports up to 100 users (with individual repositories under 250MB, otherwise git memory usage necessitates configuring swap space)
-- **2GB** is the **recommended** memory size and supports up to 500 users
-- 4GB supports up to 2,000 users
-- 8GB supports up to 5,000 users
-- 16GB supports up to 10,000 users
-- 32GB supports up to 20,000 users
-- 64GB supports up to 40,000 users
+You will either need to configure 512MB or 1.5GB of swap space.
+With 512MB of swap space you must configure only one unicorn worker.
+With one unicorn worker only git over ssh access will work because the git over http access requires two running workers (one worker to receive the user request and one worker for the authorization check).
+If you use SSD storage and configure 1.5GB of swap space you can use two Unicorn workers, this will allow http access but it will still be slow.
+- 1GB RAM + 1GB swap supports up to 100 users
+- **2GB RAM** is the **recommended** memory size and supports up to 500 users
+- 4GB RAM supports up to 2,000 users
+- 8GB RAM supports up to 5,000 users
+- 16GB RAM supports up to 10,000 users
+- 32GB RAM supports up to 20,000 users
+- 64GB RAM supports up to 40,000 users
+
+Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application.
 
 ### Storage
 

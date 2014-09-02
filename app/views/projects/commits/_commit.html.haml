@@ -23,7 +23,7 @@
   - if commit.description?
     .commit-row-description.js-toggle-content
       %pre
-        = commit.description
+        = preserve(gfm(escape_once(commit.description)))
 
   .commit-row-info
     = commit_author_link(commit, avatar: true, size: 16)

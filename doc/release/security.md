@@ -59,7 +59,7 @@ XXX
 
 ### Credit
 
-We want to thank XXX of XXX for the reponsible disclosure of this vulnerability.
+We want to thank XXX of XXX for the responsible disclosure of this vulnerability.
 
 ## Email template
 

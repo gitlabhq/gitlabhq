@@ -40,13 +40,16 @@
     font-size: 12px;
     .old {
       span.idiff {
-        background-color: #FAA;
+        background-color: #F99;
       }
     }
     .new {
       span.idiff {
-        background-color: #AFA;
+        background-color: #8F8;
       }
+    }
+    .unfold {
+      cursor: pointer;
     }
 
     .file-mode-changed {

@@ -59,7 +59,7 @@ Parameters:
 
 ## Delete system hook
 
-Deletes a system hook. This is an idempotent API function and returns `200 Ok` even if the hook is not available. If the hook is deleted it is also returned as JSON.
+Deletes a system hook. This is an idempotent API function and returns `200 OK` even if the hook is not available. If the hook is deleted it is also returned as JSON.
 
 ```
 DELETE /hooks/:id

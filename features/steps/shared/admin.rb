@@ -8,5 +8,12 @@ module SharedAdmin
   And 'system has users' do
     2.times { create(:user) }
   end
+
+  And 'there are groups with projects' do
+    2.times do
+      group = create :group
+      create :project, group: group
+    end
+  end
 end
 

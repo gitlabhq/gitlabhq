@@ -1,0 +1,21 @@
+.suggest-colors {
+  margin-top: 5px;
+  a {
+    @include border-radius(4px);
+    width: 30px;
+    height: 30px;
+    display: inline-block;
+    margin-right: 10px;
+  }
+}
+
+.manage-labels-list {
+  .label {
+    padding: 9px;
+    font-size: 14px;
+  }
+}
+
+.color-label {
+  padding: 3px 4px;
+}

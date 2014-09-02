@@ -11,7 +11,7 @@ describe Commit do
     end
 
     it "truncates a message without a newline at 80 characters" do
-      message = commit.safe_message * 10
+      message = 'Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit. Vivamus egestas lacinia lacus, sed rutrum mauris.'
 
       commit.stub(:safe_message).and_return(message)
       commit.title.should == "#{message[0..79]}&hellip;"
@@ -24,11 +24,14 @@ describe Commit do
       commit.title.should == message
     end
 
-    it "truncates a message with a newline after 80 characters at 70 characters" do
-      message = (commit.safe_message * 10) + "\n"
+    it "does not truncates a message with a newline after 80 but less 100 characters" do
+      message =<<eos
+Lorem ipsum dolor sit amet, consectetur adipiscing elit. Donec sodales id felis id blandit.
+Vivamus egestas lacinia lacus, sed rutrum mauris.
+eos
 
       commit.stub(:safe_message).and_return(message)
-      commit.title.should == "#{message[0..79]}&hellip;"
+      commit.title.should == message.split("\n").first
     end
   end
 

@@ -30,7 +30,7 @@ module Gitlab
           line_new = line.match(/\+[0-9]*/)[0].to_i.abs rescue 0
 
           next if line_old == 1 && line_new == 1 #top of file
-          yield(full_line, type, nil, nil, nil)
+          yield(full_line, type, nil, line_new, line_old)
           next
         else
           type = identification_type(line)

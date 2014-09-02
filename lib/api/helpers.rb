@@ -5,6 +5,10 @@ module API
     SUDO_HEADER ="HTTP_SUDO"
     SUDO_PARAM = :sudo
 
+    def parse_boolean(value)
+      [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
+    end
+
     def current_user
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
       @current_user ||= User.find_by(authentication_token: private_token)
@@ -106,6 +110,25 @@ module API
       end
 
       ActionController::Parameters.new(attrs).permit!
+    end
+
+    # Helper method for validating all labels against its names
+    def validate_label_params(params)
+      errors = {}
+
+      if params[:labels].present?
+        params[:labels].split(',').each do |label_name|
+          label = user_project.labels.create_with(
+            color: Label::DEFAULT_COLOR).find_or_initialize_by(
+              title: label_name.strip)
+
+          if label.invalid?
+            errors[label.title] = label.errors
+          end
+        end
+      end
+
+      errors
     end
 
     # error helpers
