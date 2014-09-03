@@ -4,39 +4,35 @@ describe Gitlab::LDAP::Access do
   let(:access) { Gitlab::LDAP::Access.new }
   let(:user) { create(:user) }
 
-  describe :update_user_email do
-    let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
 
-    it "should not update email if email attribute is not set" do
-      entry = Net::LDAP::Entry.new
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+  describe :allowed? do
+    subject { access.allowed?(user) }
+
+    context 'when the user cannot be found' do
+      before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
+
+      it { should be_false }
     end
 
-    it "should not update the email if the user has the same email in GitLab and in LDAP" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = [user_ldap.email]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
-    end
+    context 'when the user is found' do
+      before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
 
-    it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = [user_ldap.email.upcase]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
-    end
+      context 'and the user is diabled via active directory' do
+        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: true) }
 
-    it "should update the email if the user email is different" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = ["new_email@example.com"]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == true
+        it { should be_false }
+      end
+
+      context 'and has no disabled flag in active diretory' do
+        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false) }
+
+        it { should be_true }
+      end
     end
+  end
+
+  describe :update_permissions do
+
   end
 
   describe :update_ssh_keys do
@@ -105,34 +101,43 @@ describe Gitlab::LDAP::Access do
         expect(user_ldap.keys.size).to be(0)
       end
     end
-
   end
 
-  describe :allowed? do
-    subject { access.allowed?(user) }
+  describe :update_user_email do
+    let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
 
-    context 'when the user cannot be found' do
-      before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
-
-      it { should be_false }
+    it "should not update email if email attribute is not set" do
+      entry = Net::LDAP::Entry.new
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
     end
 
-    context 'when the user is found' do
-      before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
+    it "should not update the email if the user has the same email in GitLab and in LDAP" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = [user_ldap.email]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
+    end
 
-      context 'and the user is diabled via active directory' do
-        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: true) }
+    it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = [user_ldap.email.upcase]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
+    end
 
-        it { should be_false }
-      end
-
-      context 'and has no disabled flag in active diretory' do
-        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false) }
-
-        it { should be_true }
-      end
+    it "should update the email if the user email is different" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = ["new_email@example.com"]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == true
     end
   end
+
 
   describe :update_admin_status do
     let(:gitlab_user) { create(:user, provider: 'ldap', extern_uid: "admin2")}
