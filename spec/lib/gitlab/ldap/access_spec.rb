@@ -32,7 +32,37 @@ describe Gitlab::LDAP::Access do
   end
 
   describe :update_permissions do
+    subject { access.update_permissions(user) }
 
+    before do
+      Gitlab.config.ldap['enabled'] = true
+      Gitlab.config.ldap['sync_ssh_keys'] = false
+      Gitlab.config.ldap['group_base'] = 'something'
+      Gitlab.config.ldap['admin_group'] = ''
+    end
+
+    it "syncs ssh keys if enabled by configuration" do
+      Gitlab.config.ldap['sync_ssh_keys'] = true
+      expect(access).to receive(:update_ssh_keys).with(user).once
+
+      subject
+    end
+
+    it "does not update group permissions without a group base configured" do
+      Gitlab.config.ldap['group_base'] = ''
+      expect(access).not_to receive(:update_ldap_group_links).with(user)
+
+      subject
+    end
+
+    it "does update admin group permissions if admin group is configured" do
+      Gitlab.config.ldap['admin_group'] = 'NSA'
+
+      access.stub(:update_ldap_group_links)
+      expect(access).to receive(:update_admin_status).with(user)
+
+      subject
+    end
   end
 
   describe :update_ssh_keys do
@@ -79,7 +109,6 @@ describe Gitlab::LDAP::Access do
     end
 
     context 'user has at least one LDAPKey' do
-
       it "should remove a SSH key if it is no longer in LDAP" do
         entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{Gitlab.config.ldap['sync_ssh_keys']}:\n")
         Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
