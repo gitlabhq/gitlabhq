@@ -2,8 +2,8 @@
 .project-network
   .controls
     = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
-      = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: "search-input form-control input-mx-250"
-      = button_tag type: 'submit', class: 'btn btn-success' do
+      = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: 'search-input form-control input-mx-250 search-sha'
+      = button_tag type: 'submit', class: 'btn btn-success btn-search-sha' do
         %i.icon-search
       .inline.prepend-left-20
         .checkbox.light
@@ -15,6 +15,8 @@
     = spinner nil, true
 
 :javascript
+  disableButtonIfEmptyField('#extended_sha1', '.btn-search-sha')
+
   network_graph = new Network({
     url: '#{project_network_path(@project, @ref, @options.merge(format: :json))}',
     commit_url: '#{project_commit_path(@project, 'ae45ca32').gsub("ae45ca32", "%s")}',
