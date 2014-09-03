@@ -43,25 +43,31 @@
 
     $(".selected_issue").bind "change", Issues.checkChanged
 
-
+  # Make sure we trigger ajax request only after user stop typing
   initSearch: ->
-    form = $("#issue_search_form")
-    last_terms = ""
+    @timer = null
     $("#issue_search").keyup ->
-      terms = $(this).val()
-      unless terms is last_terms
-        last_terms = terms
-        if terms.length >= 2 or terms.length is 0
-          $.ajax
-            type: "GET"
-            url: location.href
-            data: "issue_search=" + terms
-            complete: ->
-              $(".loading").hide()
-            success: (data) ->
-              $('.issues-holder').html(data.html)
-              Issues.reload()
-            dataType: "json"
+      clearTimeout(@timer);
+      @timer = setTimeout(Issues.filterResults, 500)
+
+  filterResults: =>
+    form = $("#issue_search_form")
+    search = $("#issue_search").val()
+    $('.issues-holder').css("opacity", '0.5')
+    issues_url = form.attr('action') + '? '+ form.serialize()
+
+    $.ajax
+      type: "GET"
+      url: form.attr('action')
+      data: form.serialize()
+      complete: ->
+        $('.issues-holder').css("opacity", '1.0')
+      success: (data) ->
+        $('.issues-holder').html(data.html)
+        # Change url so if user reload a page - search results are saved
+        History.replaceState {page: issues_url}, document.title, issues_url
+        Issues.reload()
+      dataType: "json"
 
   checkChanged: ->
     checked_issues = $(".selected_issue:checked")
