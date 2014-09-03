@@ -127,7 +127,6 @@ module Gitlab
         end
       end
 
-      private
       def ldap_groups
         @ldap_groups ||= ::LdapGroupLink.distinct(:cn).pluck(:cn).map do |cn|
           Gitlab::LDAP::Group.find_by_cn(cn, adapter)
@@ -141,6 +140,7 @@ module Gitlab
         end.map(&:cn)
       end
 
+      private
       def gitlab_groups_with_ldap_link
         ::Group.includes(:ldap_group_links).references(:ldap_group_links).
           where.not(ldap_group_links: { id: nil })
