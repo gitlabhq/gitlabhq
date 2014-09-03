@@ -12,7 +12,7 @@ module API
       #   ref - branch name
       #   forced_push - forced_push
       #
-      get "/allowed" do
+      post "/allowed" do
         # Check for *.wiki repositories.
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
