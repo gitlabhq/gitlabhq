@@ -2,45 +2,37 @@ require 'spec_helper'
 
 describe Gitlab::LDAP::User do
   let(:gl_auth) { Gitlab::LDAP::User }
-
-  before do
-    Gitlab.config.stub(omniauth: {})
-
-    @info = double(
-      uid: '12djsak321',
+  let(:info) do
+    double(
       name: 'John',
-      email: 'john@mail.com',
+      email: 'john@example.com',
       nickname: 'john'
     )
   end
+  before { Gitlab.config.stub(omniauth: {}) }
 
-  describe :find_for_ldap_auth do
-    before do
-      @auth = double(
-        uid: '12djsak321',
-        info: @info,
-        provider: 'ldap'
-      )
+  describe :find_or_create do
+    let(:auth) do
+      double(info: info, provider: 'ldap', uid: 'my-uid')
     end
 
-    it "should update credentials by email if missing uid" do
-      user = double('User')
-      User.stub find_by_extern_uid_and_provider: nil
-      User.stub(:find_by).with(hash_including(email: anything())) { user }
-      user.should_receive :update_attributes
-      gl_auth.find_or_create(@auth)
+    it "finds the user if already existing" do
+      existing_user = create(:user, extern_uid: 'my-uid', provider: 'ldap')
+
+      expect{ gl_auth.find_or_create(auth) }.to_not change{ User.count }
     end
 
-    it "should not update credentials by username if missing uid and Gitlab.config.ldap.allow_username_or_email_login is false" do
-      user = double('User')
-      value = Gitlab.config.ldap.allow_username_or_email_login
-      Gitlab.config.ldap['allow_username_or_email_login'] = false
-      User.stub find_by_extern_uid_and_provider: nil
-      User.stub(:find_by).with(hash_including(email: anything())) { nil }
-      User.stub(:find_by).with(hash_including(username: anything())) { user }
-      user.should_not_receive :update_attributes
-      gl_auth.find_or_create(@auth)
-      Gitlab.config.ldap['allow_username_or_email_login'] = value
+    it "connects to existing non-ldap user if the email matches" do
+      existing_user = create(:user, email: 'john@example.com')
+      expect{ gl_auth.find_or_create(auth) }.to_not change{ User.count }
+
+      existing_user.reload
+      expect(existing_user.extern_uid).to eql 'my-uid'
+      expect(existing_user.provider).to eql 'ldap'
+    end
+
+    it "creates a new user if not found" do
+      expect{ gl_auth.find_or_create(auth) }.to change{ User.count }.by(1)
     end
   end
 end

@@ -120,14 +120,14 @@ describe Gitlab::LDAP::Access do
     context 'when the user is found' do
       before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
 
-      context 'and the Active Directory disabled flag is set' do
-        before { Gitlab::LDAP::Person.stub(active_directory_disabled?: true) }
+      context 'and the user is diabled via active directory' do
+        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: true) }
 
         it { should be_false }
       end
 
-      context 'and the Active Directory disabled flag is not set' do
-        before { Gitlab::LDAP::Person.stub(active_directory_disabled?: false) }
+      context 'and has no disabled flag in active diretory' do
+        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false) }
 
         it { should be_true }
       end

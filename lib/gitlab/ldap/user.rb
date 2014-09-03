@@ -92,10 +92,6 @@ module Gitlab
           model.where("provider = ? and lower(extern_uid) = ?", provider, uid.downcase).last
         end
 
-        def username
-          auth.info.nickname.to_s.force_encoding("utf-8")
-        end
-
         def provider
           'ldap'
         end
