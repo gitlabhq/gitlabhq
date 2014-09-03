@@ -13,6 +13,8 @@ module API
       #   forced_push - forced_push
       #
       post "/allowed" do
+        status 200
+
         # Check for *.wiki repositories.
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
