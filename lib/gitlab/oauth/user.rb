@@ -67,9 +67,7 @@ module Gitlab
         end
 
         def uid
-          uid = auth.info.uid || auth.uid
-          uid = uid.to_s unless uid.nil?
-          uid
+          auth.uid.to_s
         end
 
         def email
@@ -86,6 +84,7 @@ module Gitlab
         end
 
         def username
+          return unless auth.info.respond_to?(:nickname)
           auth.info.nickname.to_s.force_encoding("utf-8")
         end
 
