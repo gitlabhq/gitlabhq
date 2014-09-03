@@ -58,6 +58,7 @@ module Gitlab
           data[:commits] << commit.hook_attrs(project)
         end
 
+        data[:commits] = "" if data[:commits].count == 0
         data
       end
 
