@@ -43,4 +43,15 @@ class ProjectBrowseBranches < Spinach::FeatureSteps
       page.should have_content 'deploy_keys'
     end
   end
+
+  step "I click branch 'improve/awesome' delete link" do
+    within '.js-branch-improve\/awesome' do
+      find('.btn-remove').click
+      sleep 0.05
+    end
+  end
+
+  step "I should not see branch 'improve/awesome'" do
+    page.all(visible: true).should_not have_content 'improve/awesome'
+  end
 end
