@@ -11,36 +11,25 @@ module Gitlab
     class User < Gitlab::OAuth::User
       class << self
         def find_or_create(auth)
-          @auth = auth
+          self.auth = auth
+          find(auth) || create(auth)
+        end
 
-          if uid.blank? || email.blank? || username.blank?
-            raise_error("Account must provide a dn, uid and email address")
+        # overloaded from Gitlab::Oauth::User
+        # TODO: it's messy, needs cleanup, less complexity
+        def create(auth)
+          ldap_user = new(auth)
+          # first try to find the user based on the returned email address
+          user = ldap_user.find_gitlab_user_by_email
+
+          if user
+            user.update_attributes(extern_uid: ldap_user.uid, provider: ldap_user.provider)
+            Gitlab::AppLogger.info("(LDAP) Updating legacy LDAP user #{ldap_user.email} with extern_uid => #{ldap_user.uid}")
+            return user
           end
 
-          user = find(auth)
-
-          unless user
-            # Look for user with same emails
-            #
-            # Possible cases:
-            # * When user already has account and need to link their LDAP account.
-            # * LDAP uid changed for user with same email and we need to update their uid
-            #
-            user = model.find_by(email: email)
-
-            if user
-              user.update_attributes(extern_uid: uid, provider: provider)
-              log.info("(LDAP) Updating legacy LDAP user #{email} with extern_uid => #{uid}")
-            else
-              # Create a new user inside GitLab database
-              # based on LDAP credentials
-              #
-              #
-              user = create(auth)
-            end
-          end
-
-          user
+          # if the user isn't found by an exact email match, use oauth methods
+          ldap_user.save_and_trigger_callbacks
         end
 
         def authenticate(login, password)
@@ -66,11 +55,7 @@ module Gitlab
           find_by_uid(ldap_user.dn) if ldap_user
         end
 
-        private
-
-        def needs_blocking?
-          false
-        end
+        protected
 
         def find_by_uid_and_provider
           find_by_uid(uid)
@@ -92,6 +77,14 @@ module Gitlab
         def ldap_conf
           Gitlab.config.ldap
         end
+      end
+
+      def find_gitlab_user_by_email
+        self.class.model.find_by(email: email)
+      end
+
+      def needs_blocking?
+        false
       end
     end
   end

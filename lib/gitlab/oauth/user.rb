@@ -7,31 +7,25 @@ module Gitlab
   module OAuth
     class User
       class << self
-        attr_reader :auth
+        attr_accessor :auth
 
         def find(auth)
-          @auth = auth
+          self.auth = auth
           find_by_uid_and_provider
         end
 
         def create(auth)
-          @auth = auth
-          user = new(auth).user
-
-          user.save!
-          log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
-          user.block if needs_blocking?
-
-          user
-        rescue ActiveRecord::RecordInvalid => e
-          log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
-          return nil, e.record.errors
+          user = new(auth)
+          user.save_and_trigger_callbacks
         end
 
-        private
+        def model
+          ::User
+        end
 
+        protected
         def find_by_uid_and_provider
-          ::User.where(provider: provider, extern_uid: uid).last
+          model.where(provider: provider, extern_uid: uid).last
         end
 
         def provider
@@ -41,18 +35,25 @@ module Gitlab
         def uid
           auth.uid.to_s
         end
-
-        def needs_blocking?
-          Gitlab.config.omniauth['block_auto_created_users']
-        end
       end
 
       attr_accessor :auth, :user
 
       def initialize(auth)
         self.auth = auth
-        self.user = ::User.new(user_attributes)
+        self.user = self.class.model.new(user_attributes)
         user.skip_confirmation!
+      end
+
+      def save_and_trigger_callbacks
+        user.save!
+        log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
+        user.block if needs_blocking?
+
+        user
+      rescue ActiveRecord::RecordInvalid => e
+        log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
+        return nil, e.record.errors
       end
 
       def user_attributes
@@ -115,6 +116,10 @@ module Gitlab
 
       def generate_temporarily_email
         "temp-email-for-oauth-#{username}@gitlab.localhost"
+      end
+
+      def needs_blocking?
+        Gitlab.config.omniauth['block_auto_created_users']
       end
     end
   end
