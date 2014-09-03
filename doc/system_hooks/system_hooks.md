@@ -1,6 +1,6 @@
 # System hooks
 
-Your GitLab instance can perform HTTP POST requests on the following events: `create_project`, `delete_project`, `create_user`, `delete_user` and `change_team_member`.
+Your GitLab instance can perform HTTP POST requests on the following events: `project_create`, `project_destroy`, `user_add_to_team`, `user_remove_from_team`, `user_create`, `user_destroy`, `key_create` and `key_destroy`.
 
 System hooks can be used, e.g. for logging or changing information in a LDAP server.
 
@@ -91,5 +91,29 @@ System hooks can be used, e.g. for logging or changing information in a LDAP ser
    "event_name": "user_destroy",
          "name": "John Smith",
       "user_id": 41
+}
+```
+
+**Key added**
+
+```json
+{
+    "event_name": "key_create",
+    "created_at": "2014-08-18 18:45:16 UTC",
+      "username": "root",
+           "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC58FwqHUbebw2SdT7SP4FxZ0w+lAO/erhy2ylhlcW/tZ3GY3mBu9VeeiSGoGz8hCx80Zrz+aQv28xfFfKlC8XQFpCWwsnWnQqO2Lv9bS8V1fIHgMxOHIt5Vs+9CAWGCCvUOAurjsUDoE2ALIXLDMKnJxcxD13XjWdK54j6ZXDB4syLF0C2PnAQSVY9X7MfCYwtuFmhQhKaBussAXpaVMRHltie3UYSBUUuZaB3J4cg/7TxlmxcNd+ppPRIpSZAB0NI6aOnqoBCpimscO/VpQRJMVLr3XiSYeT6HBiDXWHnIVPfQc03OGcaFqOit6p8lYKMaP/iUQLm+pgpZqrXZ9vB john@localhost",
+           "id": 4
+}
+```
+
+**Key removed**
+
+```json
+{
+    "event_name": "key_destroy",
+    "created_at": "2014-08-18 18:45:16 UTC",
+      "username": "root",
+           "key": "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQC58FwqHUbebw2SdT7SP4FxZ0w+lAO/erhy2ylhlcW/tZ3GY3mBu9VeeiSGoGz8hCx80Zrz+aQv28xfFfKlC8XQFpCWwsnWnQqO2Lv9bS8V1fIHgMxOHIt5Vs+9CAWGCCvUOAurjsUDoE2ALIXLDMKnJxcxD13XjWdK54j6ZXDB4syLF0C2PnAQSVY9X7MfCYwtuFmhQhKaBussAXpaVMRHltie3UYSBUUuZaB3J4cg/7TxlmxcNd+ppPRIpSZAB0NI6aOnqoBCpimscO/VpQRJMVLr3XiSYeT6HBiDXWHnIVPfQc03OGcaFqOit6p8lYKMaP/iUQLm+pgpZqrXZ9vB john@localhost",
+            "id": 4
 }
 ```
