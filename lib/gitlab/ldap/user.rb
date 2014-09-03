@@ -68,6 +68,10 @@ module Gitlab
 
         private
 
+        def needs_blocking?
+          false
+        end
+
         def find_by_uid_and_provider
           find_by_uid(uid)
         end

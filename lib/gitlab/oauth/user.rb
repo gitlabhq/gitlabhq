@@ -16,97 +16,105 @@ module Gitlab
 
         def create(auth)
           @auth = auth
-          password = Devise.friendly_token[0, 8].downcase
-          opts = {
-            extern_uid: uid,
-            provider: provider,
-            name: name,
-            username: username,
-            email: email,
-            password: password,
-            password_confirmation: password,
-          }
+          user = new(auth).user
 
-          user = model.build_user(opts)
-          user.skip_confirmation!
-
-          # Services like twitter and github does not return email via oauth
-          # In this case we generate temporary email and force user to fill it later
-          if user.email.blank?
-            user.generate_tmp_oauth_email
-          elsif provider != "ldap"
-            # Google oauth returns email but dont return nickname
-            # So we use part of email as username for new user
-            # For LDAP, username is already set to the user's
-            # uid/userid/sAMAccountName.
-            email_username = email.match(/^[^@]*/)[0]
-            # Strip apostrophes since they are disallowed as part of username
-            user.username = email_username.gsub("'", "")
-          end
-
-          begin
-            user.save!
-          rescue ActiveRecord::RecordInvalid => e
-            log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
-            return nil, e.record.errors
-          end
-
+          user.save!
           log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
-
-          if Gitlab.config.omniauth['block_auto_created_users'] && !ldap?
-            user.block
-          end
+          user.block if needs_blocking?
 
           user
+        rescue ActiveRecord::RecordInvalid => e
+          log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
+          return nil, e.record.errors
         end
 
         private
 
         def find_by_uid_and_provider
-          model.where(provider: provider, extern_uid: uid).last
-        end
-
-        def uid
-          auth.uid.to_s
-        end
-
-        def email
-          return unless auth.info.respond_to?(:email)
-          auth.info.email.downcase unless auth.info.email.nil?
-        end
-
-        def name
-          if auth.info.name.nil?
-            "#{auth.info.first_name} #{auth.info.last_name}".force_encoding('utf-8')
-          else
-            auth.info.name.to_s.force_encoding('utf-8')
-          end
-        end
-
-        def username
-          return unless auth.info.respond_to?(:nickname)
-          auth.info.nickname.to_s.force_encoding("utf-8")
+          ::User.where(provider: provider, extern_uid: uid).last
         end
 
         def provider
           auth.provider
         end
 
-        def log
-          Gitlab::AppLogger
+        def uid
+          auth.uid.to_s
         end
 
-        def model
-          ::User
+        def needs_blocking?
+          Gitlab.config.omniauth['block_auto_created_users']
         end
+      end
 
-        def raise_error(message)
-          raise OmniAuth::Error, "(OAuth) " + message
-        end
+      attr_accessor :auth, :user
 
-        def ldap?
-          provider == 'ldap'
-        end
+      def initialize(auth)
+        self.auth = auth
+        self.user = ::User.new(user_attributes)
+        user.skip_confirmation!
+      end
+
+      def user_attributes
+        {
+          extern_uid: uid,
+          provider: provider,
+          name: name,
+          username: username,
+          email: email,
+          password: password,
+          password_confirmation: password,
+        }
+      end
+
+      def uid
+        auth.uid.to_s
+      end
+
+      def provider
+        auth.provider
+      end
+
+      def info
+        auth.info
+      end
+
+      def name
+        (info.name || full_name).to_s.force_encoding('utf-8')
+      end
+
+      def full_name
+        "#{info.first_name} #{info.last_name}"
+      end
+
+      def username
+        (info.try(:nickname) || generate_username).to_s.force_encoding('utf-8')
+      end
+
+      def email
+        (info.try(:email) || generate_temporarily_email).downcase
+      end
+
+      def password
+        @password ||= Devise.friendly_token[0, 8].downcase
+      end
+
+      def log
+        Gitlab::AppLogger
+      end
+
+      def raise_error(message)
+        raise OmniAuth::Error, "(OAuth) " + message
+      end
+
+      # Get the first part of the email address (before @)
+      # In addtion in removes illegal characters
+      def generate_username
+        email.match(/^[^@]*/)[0].parameterize
+      end
+
+      def generate_temporarily_email
+        "temp-email-for-oauth-#{username}@gitlab.localhost"
       end
     end
   end
