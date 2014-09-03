@@ -17,10 +17,10 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 - 7.2.1-ee - Debian 7 64-bit [gitlab_7.2.1-ee.omnibus.1-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/1e34b6f9f4bc80614e533f0278f6a2bc41e46921/debian-7.6/gitlab_7.2.1-ee.omnibus.1-1_amd64.deb)
     + MD5: e88385de8ff212e9b53a92411251b63e
 
-- 7.2.1-ee - Enterprise Linux 6 64-bit [gitlab-7.2.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/bfecfa9854037cf7c8d3d17c9fadebe06a30c908/centos-6.5/gitlab-7.2.1_ee.omnibus.1-1.el6.x86_64.rpm)
+- 7.2.1-ee - CentOS 6 64-bit [gitlab-7.2.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/bfecfa9854037cf7c8d3d17c9fadebe06a30c908/centos-6.5/gitlab-7.2.1_ee.omnibus.1-1.el6.x86_64.rpm)
     + MD5: 6242e0715620d34e2f5329ba9bd74e23
 
-- 7.2.1-ee - Enterprise Linux 7 64-bit [gitlab-7.2.1_ee.omnibus.1-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/3769df612d984a89472ddd55a1c7edd76ba5d245/centos-7.0.1406/gitlab-7.2.1_ee.omnibus.1-1.el7.x86_64.rpm)
+- 7.2.1-ee - CentOS 7 64-bit [gitlab-7.2.1_ee.omnibus.1-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/3769df612d984a89472ddd55a1c7edd76ba5d245/centos-7.0.1406/gitlab-7.2.1_ee.omnibus.1-1.el7.x86_64.rpm)
     + MD5: 1d3cee97374e1b4e9eda9afad7e75057
 
 ## Previous versions
@@ -102,68 +102,68 @@ Please contact <subscribers@gitlab.com> if you have any questions.
     - MD5: de0a2cf1b9876b9c07256aa7f5692677
 
 
-### Enterprise Linux 6 64-bit
+### CentOS 6 64-bit
 
-- 7.2.0-ee - Enterprise Linux 6 64-bit [gitlab-7.2.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/2f0192626cfa99c6c86eeb9d340a7a5969d7943a/centos-6.5/gitlab-7.2.0_ee.omnibus-1.el6.x86_64.rpm)
+- 7.2.0-ee - CentOS 6 64-bit [gitlab-7.2.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/2f0192626cfa99c6c86eeb9d340a7a5969d7943a/centos-6.5/gitlab-7.2.0_ee.omnibus-1.el6.x86_64.rpm)
     + MD5: e2db09cfc46542fd4c53a669d4159b68
 
-- 7.1.1-ee - Enterprise Linux 6 64-bit [gitlab-7.1.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/ba1aa90ff5662e790fd3eecfd6653e4377cada95/centos-6.5/gitlab-7.1.1_ee.omnibus-1.el6.x86_64.rpm)
+- 7.1.1-ee - CentOS 6 64-bit [gitlab-7.1.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/ba1aa90ff5662e790fd3eecfd6653e4377cada95/centos-6.5/gitlab-7.1.1_ee.omnibus-1.el6.x86_64.rpm)
     + MD5: cee4f447c7ae99afd2bd6634a8a48000
 
-- 7.1.0-ee - Enterprise Linux 6 64-bit [gitlab-7.1.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/de9f52c1c4cf611db78ad0548275c574d85cb220/centos-6.5/gitlab-7.1.0_ee.omnibus-1.el6.x86_64.rpm)
+- 7.1.0-ee - CentOS 6 64-bit [gitlab-7.1.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/de9f52c1c4cf611db78ad0548275c574d85cb220/centos-6.5/gitlab-7.1.0_ee.omnibus-1.el6.x86_64.rpm)
     + MD5: 35311bc3ae636b370c142aa10217d702
 
-- 7.0.1-ee - Enterprise Linux 6 64-bit [gitlab-7.0.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/09a89ba7f0fe28ba9c4b52a492d02135e5a39a9c/centos-6.5/gitlab-7.0.1_ee.omnibus.1-1.el6.x86_64.rpm)
+- 7.0.1-ee - CentOS 6 64-bit [gitlab-7.0.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/09a89ba7f0fe28ba9c4b52a492d02135e5a39a9c/centos-6.5/gitlab-7.0.1_ee.omnibus.1-1.el6.x86_64.rpm)
     + MD5: d9b518df79b2abd63ce70f1d028f5c30
 
-- 7.0.0-ee - Enterprise Linux 6 64-bit [gitlab-7.0.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/6232e9f5ee819537011a57d3f8eb40c149795052/centos-6.5/gitlab-7.0.0_ee.omnibus-1.el6.x86_64.rpm)
+- 7.0.0-ee - CentOS 6 64-bit [gitlab-7.0.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/6232e9f5ee819537011a57d3f8eb40c149795052/centos-6.5/gitlab-7.0.0_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 49a9eb63daba98bec85d3dbc175bac9d
 
-- 6.9.4-ee - Enterprise Linux 6 64-bit [gitlab-6.9.4_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/60dc935248ddfdc182703f770ac8b55718b7bf94/centos-6.5/gitlab-6.9.4_ee.omnibus.1-1.el6.x86_64.rpm)
+- 6.9.4-ee - CentOS 6 64-bit [gitlab-6.9.4_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/60dc935248ddfdc182703f770ac8b55718b7bf94/centos-6.5/gitlab-6.9.4_ee.omnibus.1-1.el6.x86_64.rpm)
     - MD5: 17c358ff5edf868ccf3f07158b0ef382
 
-- 6.9.3-ee - Enterprise Linux 6 64-bit [gitlab-6.9.3_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/2309ffd68483e2d74ef1b96566e7b68934abd99f/centos-6.5/gitlab-6.9.3_ee.omnibus.1-1.el6.x86_64.rpm)
+- 6.9.3-ee - CentOS 6 64-bit [gitlab-6.9.3_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/2309ffd68483e2d74ef1b96566e7b68934abd99f/centos-6.5/gitlab-6.9.3_ee.omnibus.1-1.el6.x86_64.rpm)
     - MD5: 2e716a56643b93f0ee8d8c6cb5457952
 
-- 6.9.2-ee - Enterprise Linux 6 64-bit [gitlab-6.9.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/8f0bde82158c3d542357f5ae5658bc4939f9d006/centos-6.5/gitlab-6.9.2_ee.omnibus-1.el6.x86_64.rpm)
+- 6.9.2-ee - CentOS 6 64-bit [gitlab-6.9.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/8f0bde82158c3d542357f5ae5658bc4939f9d006/centos-6.5/gitlab-6.9.2_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 696c861da0a8a71d7df22c431ddb9619
 
-- 6.9.1-ee - Enterprise Linux 6 64-bit [gitlab-6.9.1_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/c5bddcb7e781a16eca3bd5d6418f200cdfcdd311/centos-6.5/gitlab-6.9.1_ee.omnibus-1.el6.x86_64.rpm)
+- 6.9.1-ee - CentOS 6 64-bit [gitlab-6.9.1_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/c5bddcb7e781a16eca3bd5d6418f200cdfcdd311/centos-6.5/gitlab-6.9.1_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 4728394d750f28827c445ddc01f53580
 
-- 6.9.0-ee - Enterprise Linux 6 64-bit [gitlab-6.9.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/f86f29bac6fa3e7cd96315550c362816fc04cdb4/centos-6.5/gitlab-6.9.0_ee.omnibus-1.el6.x86_64.rpm)
+- 6.9.0-ee - CentOS 6 64-bit [gitlab-6.9.0_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/f86f29bac6fa3e7cd96315550c362816fc04cdb4/centos-6.5/gitlab-6.9.0_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 18bd1bea069b968935eea489e4a24b50
 
-- 6.8.1-ee - Enterprise Linux 6 64-bit [gitlab-6.8.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e8f63c2a21cae7e9842c16b20d76b9de25d3130b/centos-6.5/gitlab-6.8.1_ee.omnibus.1-1.el6.x86_64.rpm)
+- 6.8.1-ee - CentOS 6 64-bit [gitlab-6.8.1_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e8f63c2a21cae7e9842c16b20d76b9de25d3130b/centos-6.5/gitlab-6.8.1_ee.omnibus.1-1.el6.x86_64.rpm)
     - MD5: 31895155f8f694ded61a04976a06baeb
 
-- 6.8.0-ee - Enterprise Linux 6 64-bit [gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0a6d0e42b82d64a4c4ec6bbe448ffc0a5cfb70ab/centos-6.5/gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm)
+- 6.8.0-ee - CentOS 6 64-bit [gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0a6d0e42b82d64a4c4ec6bbe448ffc0a5cfb70ab/centos-6.5/gitlab-6.8.0_ee.omnibus.4-1.el6.x86_64.rpm)
     - MD5: 6648d41b02712c1d701d8361490126e7
 
-- 6.7.4-ee - Enterprise Linux 6 64-bit [gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e9394ffe2dd9cba518ab6d43510fb0fb6acc4ff6/gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm)
+- 6.7.4-ee - CentOS 6 64-bit [gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e9394ffe2dd9cba518ab6d43510fb0fb6acc4ff6/gitlab-6.7.4_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 5004af120eb457fe7eefbaa5f47429dc
 
-- 6.7.3-ee - Enterprise Linux 6 64-bit [gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/4a83046ae506fe84158c1bc433d8fa85a886abba/gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm)
+- 6.7.3-ee - CentOS 6 64-bit [gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/4a83046ae506fe84158c1bc433d8fa85a886abba/gitlab-6.7.3_ee.omnibus.1-1.el6.x86_64.rpm)
     - MD5: 6335719321acc8edc2f718570960c832
 
-- 6.7.2-ee Enterprise Linux 6 64-bit [gitlab-6.7.2_ee.omnibus.2-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e13ccafca35955ad754ea501798875d99e0cce4c/gitlab-6.7.2_ee.omnibus.2-1.el6.x86_64.rpm)
+- 6.7.2-ee CentOS 6 64-bit [gitlab-6.7.2_ee.omnibus.2-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/e13ccafca35955ad754ea501798875d99e0cce4c/gitlab-6.7.2_ee.omnibus.2-1.el6.x86_64.rpm)
     - MD5: 36347c81013c4215226a3cb30f6ac1b4
 
-- 6.7.2-ee - Enterprise Linux 6 64-bit [gitlab-6.7.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/d8fd3ffca4c88ec2cd056cf0abb76fa5fc2c9236/gitlab-6.7.2_ee.omnibus-1.el6.x86_64.rpm)
+- 6.7.2-ee - CentOS 6 64-bit [gitlab-6.7.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/d8fd3ffca4c88ec2cd056cf0abb76fa5fc2c9236/gitlab-6.7.2_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 783db81d088e1fa679e8608672e83adb
 
-- 6.7.1-ee - Enterprise Linux 6 64-bit [gitlab-6.7.1_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/bc91ee44fe1d23d9816e2497ff2fb23ad5efbbd4/gitlab-6.7.1_ee.omnibus-1.el6.x86_64.rpm)
+- 6.7.1-ee - CentOS 6 64-bit [gitlab-6.7.1_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/bc91ee44fe1d23d9816e2497ff2fb23ad5efbbd4/gitlab-6.7.1_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: 5271918a5610f972b6c10225b151ad81
 
-- 6.6.3-ee - Enterprise Linux 6 64-bit [gitlab-6.6.3_ee.omnibus.2-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/9fdbc4650df67d3a55c94fe7dced4fb9161aa056/gitlab-6.6.3_ee.omnibus.2-1.el6.x86_64.rpm)
+- 6.6.3-ee - CentOS 6 64-bit [gitlab-6.6.3_ee.omnibus.2-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/9fdbc4650df67d3a55c94fe7dced4fb9161aa056/gitlab-6.6.3_ee.omnibus.2-1.el6.x86_64.rpm)
     - MD5: e7f8e1bfe3f6f8173fce204e3903672c
 
-- 6.6.2-ee - Enterprise Linux 6 64-bit [gitlab-6.6.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/32f814ce19709276846c281cac23b934f91beb06/gitlab-6.6.2_ee.omnibus-1.el6.x86_64.rpm)
+- 6.6.2-ee - CentOS 6 64-bit [gitlab-6.6.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/32f814ce19709276846c281cac23b934f91beb06/gitlab-6.6.2_ee.omnibus-1.el6.x86_64.rpm)
     - MD5: e4414bf4c4b13e30a35c8578943bb7a1
 
-### Enterprise Linux 7 64-bit
+### CentOS 7 64-bit
 
-- 7.2.0-ee - Enterprise Linux 7 64-bit [gitlab-7.2.0_ee.omnibus.1-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/74a4d7a4e9406253f7ba7fff1e83c67122d7f12d/centos-7.0.1406/gitlab-7.2.0_ee.omnibus.1-1.el7.x86_64.rpm)
+- 7.2.0-ee - CentOS 7 64-bit [gitlab-7.2.0_ee.omnibus.1-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/74a4d7a4e9406253f7ba7fff1e83c67122d7f12d/centos-7.0.1406/gitlab-7.2.0_ee.omnibus.1-1.el7.x86_64.rpm)
     + MD5: 77b343220a36d39a1c167355ccb7c8fc
 
 
