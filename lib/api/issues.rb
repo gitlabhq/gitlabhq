@@ -8,7 +8,7 @@ module API
         case state
         when 'opened' then issues.opened
         when 'closed' then issues.closed
-        else issues
+        else issues.order('id DESC')
         end
       end
     end
