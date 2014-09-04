@@ -9,6 +9,7 @@ describe API::API, api: true  do
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
+  let!(:label_link) { create(:label_link, label: label, target: issue) }
 
   before { project.team << [user, :reporter] }
 
@@ -58,6 +59,45 @@ describe API::API, api: true  do
         json_response.first['id'].should == issue.id
         json_response.second['id'].should == closed_issue.id
       end
+
+      it 'should return an array of labeled issues' do
+        get api("/issues?labels=#{label.title}", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['labels'].should == [label.title]
+      end
+
+      it 'should return an array of labeled issues when at least one label matches' do
+        get api("/issues?labels=#{label.title},foo,bar", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['labels'].should == [label.title]
+      end
+
+      it 'should return an empty array if no issue matches labels' do
+        get api('/issues?labels=foo,bar', user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 0
+      end
+
+      it 'should return an array of labeled issues matching given state' do
+        get api("/issues?labels=#{label.title}&state=opened", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 1
+        json_response.first['labels'].should == [label.title]
+        json_response.first['state'].should == 'opened'
+      end
+
+      it 'should return an empty array if no issue matches labels and state filters' do
+        get api("/issues?labels=#{label.title}&state=closed", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 0
+      end
     end
   end
 
@@ -67,6 +107,29 @@ describe API::API, api: true  do
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == issue.title
+    end
+
+    it 'should return an array of labeled project issues' do
+      get api("/projects/#{project.id}/issues?labels=#{label.title}", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 1
+      json_response.first['labels'].should == [label.title]
+    end
+
+    it 'should return an array of labeled project issues when at least one label matches' do
+      get api("/projects/#{project.id}/issues?labels=#{label.title},foo,bar", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 1
+      json_response.first['labels'].should == [label.title]
+    end
+
+    it 'should return an empty array if no project issue matches labels' do
+      get api("/projects/#{project.id}/issues?labels=foo,bar", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 0
     end
   end
 
@@ -182,7 +245,7 @@ describe API::API, api: true  do
         labels: 'label2', state_event: "close"
       response.status.should == 200
 
-      json_response['labels'].should == ['label2']
+      json_response['labels'].should include 'label2'
       json_response['state'].should eq "closed"
     end
   end
