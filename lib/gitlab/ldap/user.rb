@@ -10,23 +10,27 @@ module Gitlab
   module LDAP
     class User < Gitlab::OAuth::User
       class << self
-        def find_or_create(auth)
-          self.auth = auth
-          find(auth) || create(auth)
+        def find_or_create(auth_hash)
+          self.auth_hash = auth_hash
+          find(auth_hash) || find_and_connect_by_email(auth_hash) || create(auth_hash)
+        end
+
+        def find_and_connect_by_email(auth_hash)
+          self.auth_hash = auth_hash
+          user = model.find_by(email: self.auth_hash.email)
+
+          if user
+            user.update_attributes(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+            Gitlab::AppLogger.info("(LDAP) Updating legacy LDAP user #{self.auth_hash.email} with extern_uid => #{auth_hash.uid}")
+            return user
+          end
         end
 
         # overloaded from Gitlab::Oauth::User
         # TODO: it's messy, needs cleanup, less complexity
-        def create(auth)
-          ldap_user = new(auth)
+        def create(auth_hash)
+          ldap_user = new(auth_hash)
           # first try to find the user based on the returned email address
-          user = ldap_user.find_gitlab_user_by_email
-
-          if user
-            user.update_attributes(extern_uid: ldap_user.uid, provider: ldap_user.provider)
-            Gitlab::AppLogger.info("(LDAP) Updating legacy LDAP user #{ldap_user.email} with extern_uid => #{ldap_user.uid}")
-            return user
-          end
 
           # if the user isn't found by an exact email match, use oauth methods
           ldap_user.save_and_trigger_callbacks
@@ -58,7 +62,7 @@ module Gitlab
         protected
 
         def find_by_uid_and_provider
-          find_by_uid(uid)
+          find_by_uid(auth_hash.uid)
         end
 
         def find_by_uid(uid)
@@ -77,10 +81,6 @@ module Gitlab
         def ldap_conf
           Gitlab.config.ldap
         end
-      end
-
-      def find_gitlab_user_by_email
-        self.class.model.find_by(email: email)
       end
 
       def needs_blocking?

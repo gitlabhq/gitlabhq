@@ -7,15 +7,15 @@ module Gitlab
   module OAuth
     class User
       class << self
-        attr_accessor :auth
+        attr_reader :auth_hash
 
-        def find(auth)
-          self.auth = auth
+        def find(auth_hash)
+          self.auth_hash = auth_hash
           find_by_uid_and_provider
         end
 
-        def create(auth)
-          user = new(auth)
+        def create(auth_hash)
+          user = new(auth_hash)
           user.save_and_trigger_callbacks
         end
 
@@ -23,31 +23,32 @@ module Gitlab
           ::User
         end
 
+        def auth_hash=(auth_hash)
+          @auth_hash = AuthHash.new(auth_hash)
+        end
+
         protected
         def find_by_uid_and_provider
-          model.where(provider: provider, extern_uid: uid).last
-        end
-
-        def provider
-          auth.provider
-        end
-
-        def uid
-          auth.uid.to_s
+          model.where(provider: auth_hash.provider, extern_uid: auth_hash.uid).last
         end
       end
 
-      attr_accessor :auth, :user
+      # Instance methods
+      attr_accessor :auth_hash, :user
 
-      def initialize(auth)
-        self.auth = auth
+      def initialize(auth_hash)
+        self.auth_hash = auth_hash
         self.user = self.class.model.new(user_attributes)
         user.skip_confirmation!
       end
 
+      def auth_hash=(auth_hash)
+        @auth_hash = AuthHash.new(auth_hash)
+      end
+
       def save_and_trigger_callbacks
         user.save!
-        log.info "(OAuth) Creating user #{email} from login with extern_uid => #{uid}"
+        log.info "(OAuth) Creating user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         user.block if needs_blocking?
 
         user
@@ -58,46 +59,14 @@ module Gitlab
 
       def user_attributes
         {
-          extern_uid: uid,
-          provider: provider,
-          name: name,
-          username: username,
-          email: email,
-          password: password,
-          password_confirmation: password,
+          extern_uid: auth_hash.uid,
+          provider: auth_hash.provider,
+          name: auth_hash.name,
+          username: auth_hash.username,
+          email: auth_hash.email,
+          password: auth_hash.password,
+          password_confirmation: auth_hash.password,
         }
-      end
-
-      def uid
-        auth.uid.to_s
-      end
-
-      def provider
-        auth.provider
-      end
-
-      def info
-        auth.info
-      end
-
-      def name
-        (info.name || full_name).to_s.force_encoding('utf-8')
-      end
-
-      def full_name
-        "#{info.first_name} #{info.last_name}"
-      end
-
-      def username
-        (info.try(:nickname) || generate_username).to_s.force_encoding('utf-8')
-      end
-
-      def email
-        (info.try(:email) || generate_temporarily_email).downcase
-      end
-
-      def password
-        @password ||= Devise.friendly_token[0, 8].downcase
       end
 
       def log
@@ -106,16 +75,6 @@ module Gitlab
 
       def raise_error(message)
         raise OmniAuth::Error, "(OAuth) " + message
-      end
-
-      # Get the first part of the email address (before @)
-      # In addtion in removes illegal characters
-      def generate_username
-        email.match(/^[^@]*/)[0].parameterize
-      end
-
-      def generate_temporarily_email
-        "temp-email-for-oauth-#{username}@gitlab.localhost"
       end
 
       def needs_blocking?
