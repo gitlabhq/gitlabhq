@@ -13,10 +13,15 @@ class Projects::TagsController < Projects::ApplicationController
   end
 
   def create
-    @tag = CreateTagService.new.execute(@project, params[:tag_name],
-                                        params[:ref], current_user)
-
-    redirect_to project_tags_path(@project)
+    result = CreateTagService.new.execute(@project, params[:tag_name],
+                                          params[:ref], current_user)
+    if result[:status] == :success
+      @tag = result[:tag]
+      redirect_to project_tags_path(@project)
+    else
+      @error = result[:message]
+      render action: 'new'
+    end
   end
 
   def destroy

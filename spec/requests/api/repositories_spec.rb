@@ -25,19 +25,45 @@ describe API::API, api: true  do
   describe 'POST /projects/:id/repository/tags' do
     it 'should create a new tag' do
       post api("/projects/#{project.id}/repository/tags", user),
-           tag_name: 'v1.0.0',
+           tag_name: 'v2.0.0',
            ref: 'master'
-
       response.status.should == 201
-      json_response['name'].should == 'v1.0.0'
+      json_response['name'].should == 'v2.0.0'
     end
 
     it 'should deny for user without push access' do
       post api("/projects/#{project.id}/repository/tags", user2),
            tag_name: 'v1.0.0',
            ref: '621491c677087aa243f165eab467bfdfbee00be1'
-
       response.status.should == 403
+    end
+
+    it 'should return 400 if tag name is invalid' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v 1.0.0',
+           ref: 'master'
+      response.status.should == 400
+      json_response['message'].should == 'Tag name invalid'
+    end
+
+    it 'should return 400 if tag already exists' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v8.0.0',
+           ref: 'master'
+      response.status.should == 201
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v8.0.0',
+           ref: 'master'
+      response.status.should == 400
+      json_response['message'].should == 'Tag already exists'
+    end
+
+    it 'should return 400 if ref name is invalid' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'mytag',
+           ref: 'foo'
+      response.status.should == 400
+      json_response['message'].should == 'Invalid reference name'
     end
   end
 
