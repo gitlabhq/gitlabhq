@@ -38,8 +38,9 @@ module Gitlab
           next
         else
           type = identification_type(line)
+          next_type = identification_type(next_line)
           line_code = generate_line_code(new_path, line_new, line_old)
-          yield(full_line, type, line_code, line_new, line_old, raw_line, next_line)
+          yield(full_line, type, line_code, line_new, line_old, raw_line, next_type, next_line)
         end
 
 
