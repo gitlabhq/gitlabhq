@@ -1,3 +1,5 @@
+require_relative 'active_tab'
+
 module SharedProjectTab
   include Spinach::DSL
   include SharedActiveTab
