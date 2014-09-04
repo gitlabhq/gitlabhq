@@ -13,10 +13,14 @@
             - if type == 'old'
               %td.line_content{class: "parallel noteable_line old #{line_code}", "line_code" => line_code}= raw line
             - else
-              %td.line_content.parallel= line
+              %td.line_content.parallel= raw line
           %td.new_line{data: {linenumber: line_new}}
             = link_to raw(line_new) , "##{line_code}", id: line_code
             - if type == 'old'
               %td.line_content.parallel{class: "noteable_line new #{line_code}", "line_code" => line_code}= raw next_line
             - else
-              %td.line_content.parallel= line
+              %td.line_content.parallel= raw line
+
+- if diff.diff.blank? && diff_file_mode_changed?(diff)
+  .file-mode-changed
+    File mode changed
