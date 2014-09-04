@@ -12,8 +12,15 @@ module Gitlab
       # Checks if a merge request can be executed without user interaction
       def can_be_merged?
         in_locked_and_timed_satellite do |merge_repo|
-          prepare_satellite!(merge_repo)
-          merge_in_satellite!(merge_repo)
+          prepare_and_merge!(merge_repo)
+        end
+      end
+
+      # Return a Rugged::Index object from after `git merge` was done.
+      def index_after_merge
+        in_locked_and_timed_satellite do |merge_repo|
+          prepare_and_merge!(merge_repo)
+          Gitlab::Git::Repository.new(merge_repo.path).rugged.index
         end
       end
 
@@ -134,6 +141,11 @@ module Gitlab
         repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
+      end
+
+      def prepare_and_merge!(merge_repo)
+        prepare_satellite!(merge_repo)
+        merge_in_satellite!(merge_repo)
       end
     end
   end

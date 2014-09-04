@@ -162,9 +162,17 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def check_if_can_be_merged
-    if Gitlab::Satellite::MergeAction.new(self.author, self).can_be_merged?
+    index = Gitlab::Satellite::MergeAction.new(self.author, self).index_after_merge
+    conflicts = index.conflicts
+    # TODO parse and store conflicts on DB
+    unless conflicts
       mark_as_mergeable
     else
+      p index.diff(include_untracked: true, recurse_untracked_dirs: true).patch
+      conflicts.each do |conflict|
+        require 'pp'
+        #pp index.merge_file(conflict[:ours][:path], style: :diff3)
+      end
       mark_as_unmergeable
     end
   end
@@ -323,7 +331,8 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def conflicts
-    # TODO stub
+    # TODO stub. This method will eithr be removed and become a serialized DB field,
+    # or be renamed and do post processing on the DB field.
     [
       # Context don't touch each other nor file borders.
       OpenStruct.new(
