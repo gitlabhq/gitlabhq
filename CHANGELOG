@@ -13,6 +13,7 @@ v 7.3.0
   - Keyboard shortcuts for productivity (Robert Schilling)
   - API: filter issues by state (Julien Bianchi)
   - Add system hook for ssh key changes
+  - Add blob permalink link (Ciro Santilli)
 
 v 7.2.0
   - Explore page
