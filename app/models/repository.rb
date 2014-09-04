@@ -64,10 +64,10 @@ class Repository
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
-  def add_tag(tag_name, ref)
+  def add_tag(tag_name, ref, message = nil)
     Rails.cache.delete(cache_key(:tag_names))
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref)
+    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
