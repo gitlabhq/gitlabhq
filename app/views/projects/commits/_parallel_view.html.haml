@@ -1,10 +1,13 @@
 / Side-by-side diff view
 %div.text-file
   %table
-    - side_diff_line(diff, index) do |line, type, line_code, line_new, line_old, next_line|
+    - side_diff_line(diff, index) do |line, type, line_code, line_new, line_old, raw_line, next_line|
       - next if type == 'new'
       %tr.line_holder.parallel{ id: line_code, class: "#{type}" }
-        - if type != 'match'
+        - if type == "match"
+          = render "projects/commits/diffs/match_line_parallel", {line: line,
+          line_old: line_old, line_new: line_new, bottom: false}
+        - else
           %td.old_line
             = link_to raw(line_old), "##{line_code}", id: line_code
             - if type == 'old'

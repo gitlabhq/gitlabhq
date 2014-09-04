@@ -25,8 +25,8 @@ module CommitsHelper
 
   def side_diff_line(diff, index)
     Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
-      .each_for_parallel do |full_line, type, line_code, line_new, line_old, next_line|
-        yield(full_line, type, line_code, line_new, line_old, next_line)
+      .each do |full_line, type, line_code, line_new, line_old, raw_line, next_line|
+        yield(full_line, type, line_code, line_new, line_old, raw_line, next_line)
       end
   end
 
