@@ -2,13 +2,19 @@ class Groups::LdapGroupLinksController < ApplicationController
   before_action :group
   before_action :authorize_admin_group!
 
+  layout 'group'
+
   def index
   end
 
   def create
     ldap_group_link = @group.ldap_group_links.build(ldap_group_link_params)
     if ldap_group_link.save
-      redirect_to :back, notice: 'New LDAP link saved'
+      if request.referer && request.referer.include?('admin')
+        redirect_to [:admin, @group], notice: 'New LDAP link saved'
+      else
+        redirect_to :back, notice: 'New LDAP link saved'
+      end
     else
       redirect_to :back, alert: 'Could not create new LDAP link'
     end

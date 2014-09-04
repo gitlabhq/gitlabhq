@@ -8,4 +8,5 @@
     %ul.well-list
       = render collection: group.ldap_group_links, partial: 'ldap_group_links/ldap_group_link', locals: { group: group }
   - else
-    %p No linked LDAP groups
+    .panel-body
+      No linked LDAP groups
