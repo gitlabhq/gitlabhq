@@ -23,6 +23,13 @@ module CommitsHelper
       end
   end
 
+  def side_diff_line(diff, index)
+    Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
+      .each_for_parallel do |full_line, type, line_code, line_new, line_old, next_line|
+        yield(full_line, type, line_code, line_new, line_old, next_line)
+      end
+  end
+
   def each_diff_line_near(diff, index, expected_line_code)
     max_number_of_lines = 16
 
