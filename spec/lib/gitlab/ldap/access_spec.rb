@@ -41,6 +41,10 @@ describe Gitlab::LDAP::Access do
       Gitlab.config.ldap['admin_group'] = ''
     end
 
+    after do
+      Gitlab.config.ldap['enabled'] = false
+    end
+
     it "syncs ssh keys if enabled by configuration" do
       Gitlab.config.ldap['sync_ssh_keys'] = true
       expect(access).to receive(:update_ssh_keys).with(user).once
