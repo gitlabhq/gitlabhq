@@ -18,4 +18,12 @@ module SharedSnippet
            private: true,
            author: current_user)
   end
+  And 'I have a public many lined snippet' do
+    create(:personal_snippet,
+           title: "Many lined snippet",
+           content: "line one\nline two\nline three\nline four\nline five\nline six\nline seven\nline eight\nline nine\nline ten\nline eleven\nline twelve\nline thirteen\nline fourteen",
+           file_name: "many_lined_snippet.rb",
+           private: true,
+           author: current_user)
+  end
 end

@@ -1,6 +1,6 @@
 %h4
   #{@search_results.total_count} results found
-  - unless params[:snippets].eql? 'true'
+  - unless @show_snippets
     - if @project
       for #{link_to @project.name_with_namespace, @project}
     - elsif @group
@@ -12,7 +12,7 @@
   .col-sm-3
     - if @project
       = render "project_filter"
-    - elsif params[:snippets].eql? 'true'
+    - elsif @show_snippets
       = render 'snippet_filter'
     - else
       = render "global_filter"
