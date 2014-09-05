@@ -118,7 +118,8 @@ class Note < ActiveRecord::Base
     end
 
     def create_new_commits_note(noteable, project, author, commits)
-      body = "Pushed new commits:\n\n"
+      commits_text = ActionController::Base.helpers.pluralize(commits.size, 'new commit')
+      body = "Added #{commits_text}:\n\n"
 
       commits.each do |commit|
         message = "* #{commit.short_id} - #{commit.title}"
