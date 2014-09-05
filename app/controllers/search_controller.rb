@@ -9,7 +9,7 @@ class SearchController < ApplicationController
     @search_results = if @project
                         return access_denied! unless can?(current_user, :download_code, @project)
 
-                        unless %w(blobs notes issues merge_requests).include?(@scope)
+                        unless %w(blobs notes issues merge_requests wiki_blobs).include?(@scope)
                           @scope = 'blobs'
                         end
 

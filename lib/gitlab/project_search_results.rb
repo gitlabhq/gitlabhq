@@ -14,13 +14,15 @@ module Gitlab
         notes.page(page).per(per_page)
       when 'blobs'
         Kaminari.paginate_array(blobs).page(page).per(per_page)
+      when 'wiki_blobs'
+        Kaminari.paginate_array(wiki_blobs).page(page).per(per_page)
       else
         super
       end
     end
 
     def total_count
-      @total_count ||= issues_count + merge_requests_count + blobs_count + notes_count
+      @total_count ||= issues_count + merge_requests_count + blobs_count + notes_count + wiki_blobs_count
     end
 
     def blobs_count
@@ -31,6 +33,10 @@ module Gitlab
       @notes_count ||= notes.count
     end
 
+    def wiki_blobs_count
+      @wiki_blobs_count ||= wiki_blobs.count
+    end
+
     private
 
     def blobs
@@ -38,6 +44,14 @@ module Gitlab
         []
       else
         project.repository.search_files(query, repository_ref)
+      end
+    end
+
+    def wiki_blobs
+      if !project.wiki_enabled?
+        []
+      else
+        Repository.new(ProjectWiki.new(project).path_with_namespace).search_files(query)
       end
     end
 
