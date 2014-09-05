@@ -6,51 +6,51 @@ class Spinach::Features::SnippetSearch < Spinach::FeatureSteps
   include SharedSearch
 
   step 'I search for "snippet" in snippet titles' do
-    search_snippet_titles "snippet"
+    search_snippet_titles 'snippet'
   end
 
   step 'I search for "snippet private" in snippet titles' do
-    search_snippet_titles "snippet private"
+    search_snippet_titles 'snippet private'
   end
 
   step 'I search for "line seven" in snippet contents' do
-    search_snippet_contents "line seven"
+    search_snippet_contents 'line seven'
   end
 
   step 'I should see "line seven" in results' do
-    page.should have_content "line seven"
+    page.should have_content 'line seven'
   end
 
   step 'I should see "line four" in results' do
-    page.should have_content "line four"
+    page.should have_content 'line four'
   end
 
   step 'I should see "line ten" in results' do
-    page.should have_content "line ten"
+    page.should have_content 'line ten'
   end
 
   step 'I should not see "line eleven" in results' do
-    page.should_not have_content "line eleven"
+    page.should_not have_content 'line eleven'
   end
 
   step 'I should not see "line three" in results' do
-    page.should_not have_content "line three"
+    page.should_not have_content 'line three'
   end
 
   Then 'I should see "Personal snippet one" in results' do
-    page.should have_content "Personal snippet one"
+    page.should have_content 'Personal snippet one'
   end
 
   And 'I should see "Personal snippet private" in results' do
-    page.should have_content "Personal snippet private"
+    page.should have_content 'Personal snippet private'
   end
 
   Then 'I should not see "Personal snippet one" in results' do
-    page.should_not have_content "Personal snippet one"
+    page.should_not have_content 'Personal snippet one'
   end
 
   And 'I should not see "Personal snippet private" in results' do
-    page.should_not have_content "Personal snippet private"
+    page.should_not have_content 'Personal snippet private'
   end
 
 end
