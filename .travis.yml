@@ -4,6 +4,7 @@ before_install:
   - "echo 'gem: --no-ri --no-rdoc' > ~/.gemrc"
   - sudo apt-get install libicu-dev -y
   - "bundle config build.nokogiri --use-system-libraries"
+  - gem install nokogiri -- --use-system-libraries
   - gem install bundler bundle_cache
   - bundle_cache_install
 after_script:
