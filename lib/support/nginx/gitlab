@@ -62,12 +62,7 @@ server {
   if ($http_user_agent ~* "Go") {
     return 200 "
       <!DOCTYPE html>
-      <html lang='en'>
-      <head>
-      <meta charset='utf-8'>
-      <meta content='$host$uri git $scheme://$host$uri.git' name='go-import'>
-      </head>
-      <body></body>
+      <head><meta content='$host$uri git $scheme://$host$uri.git' name='go-import'></head>
       </html>";
   }
 
