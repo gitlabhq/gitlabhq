@@ -41,6 +41,7 @@ module API
         result = CreateTagService.new.execute(user_project, params[:tag_name],
                                               params[:ref], message,
                                               current_user)
+
         if result[:status] == :success
           present result[:tag],
                   with: Entities::RepoObject,

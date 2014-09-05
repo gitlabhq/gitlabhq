@@ -33,10 +33,11 @@ describe API::API, api: true  do
         json_response['name'].should == 'v1.0.0'
       end
     end
+
     context 'annotated tag' do
       it 'should create a new annotated tag' do
         post api("/projects/#{project.id}/repository/tags", user),
-             tag_name: 'v1.0.0',
+             tag_name: 'v1.1.0',
              ref: 'master',
              message: 'tag message'
 
@@ -50,7 +51,7 @@ describe API::API, api: true  do
 
     it 'should deny for user without push access' do
       post api("/projects/#{project.id}/repository/tags", user2),
-           tag_name: 'v1.0.0',
+           tag_name: 'v1.2.0',
            ref: '621491c677087aa243f165eab467bfdfbee00be1'
       response.status.should == 403
     end
