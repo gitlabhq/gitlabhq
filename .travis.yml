@@ -18,12 +18,6 @@ env:
     - RAILS_ENV=test
     - TRAVIS=true
   matrix:
-    - TASK=spinach_project DB=mysql
-    - TASK=spinach_other DB=mysql
-    - TASK=spec:api DB=mysql
-    - TASK=spec:feature DB=mysql
-    - TASK=spec:other DB=mysql
-    - TASK=jasmine:ci DB=mysql
     - TASK=spinach_project DB=postgresql
     - TASK=spinach_other DB=postgresql
     - TASK=spec:api DB=postgresql
