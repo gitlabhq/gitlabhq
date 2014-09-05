@@ -8,8 +8,8 @@
           line_old: line_old, line_new: line_new, bottom: false}
         - else
           - if diff.new_file
-            %td.old_line{ class: "old" }
-            %td.line_content.parallel= " "
+            %td.old_line
+            %td.line_content.parallel= raw "&nbsp;"
           - else
             - next if type == 'new'
             %td.old_line{ class: "#{type}" }
@@ -19,18 +19,20 @@
               - else
                 %td.line_content.parallel= raw line
           - if diff.deleted_file
-            %td.new_line{class: "new", data: {linenumber: line_new}}
-            %td.line_content.parallel= " "
+            %td.new_line{ data: {linenumber: line_new}}
+            %td.line_content.parallel= raw "&nbsp;"
           - else
-            %td.new_line{class: "#{type}", data: {linenumber: line_new}}
-              - if type == 'old'
+            - if type == 'old'
+              %td.new_line{class: "#{next_type == 'new' ? 'new' : nil}", data: {linenumber: line_new}}
                 - if next_type == 'new'
                   - content = next_line
                   = link_to raw(line_new) , "##{line_code}", id: line_code
+                  %td.line_content.parallel{class: "noteable_line new #{line_code}", "line_code" => line_code}= raw content
                 - else
                   - content = "&nbsp;"
-                %td.line_content.parallel{class: "noteable_line new #{line_code}", "line_code" => line_code}= raw content
-              - else
+                  %td.line_content.parallel{class: "noteable_line #{line_code}", "line_code" => line_code}= raw content
+            - else
+              %td.new_line{class: "#{type}", data: {linenumber: line_new}}
                 = link_to raw(line_new) , "##{line_code}", id: line_code
                 %td.line_content.parallel{class: "#{type}"}= raw line
 
