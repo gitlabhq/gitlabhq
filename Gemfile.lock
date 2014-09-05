@@ -38,6 +38,11 @@ GEM
     arel (5.0.1.20140414130214)
     asciidoctor (0.1.4)
     awesome_print (1.2.0)
+    aws-sdk (1.52.0)
+      aws-sdk-v1 (= 1.52.0)
+    aws-sdk-v1 (1.52.0)
+      json (~> 1.4)
+      nokogiri (>= 1.4.4)
     axiom-types (0.0.5)
       descendants_tracker (~> 0.0.1)
       ice_nine (~> 0.9)
@@ -50,6 +55,9 @@ GEM
     bootstrap-sass (3.0.3.0)
       sass (~> 3.2)
     builder (3.2.2)
+    bundle_cache (0.2.2)
+      aws-sdk (>= 1.0.0)
+      bundler (~> 1.3)
     capybara (2.2.1)
       mime-types (>= 1.16)
       nokogiri (>= 1.3.3)
@@ -588,6 +596,7 @@ DEPENDENCIES
   better_errors
   binding_of_caller
   bootstrap-sass (~> 3.0)
+  bundle_cache
   capybara (~> 2.2.1)
   carrierwave
   coffee-rails

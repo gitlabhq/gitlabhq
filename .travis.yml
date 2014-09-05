@@ -1,7 +1,20 @@
 language: ruby
-cache: bundler
+bundler_args: --without development --path=~/.bundle
+before_install:
+  - "echo 'gem: --no-ri --no-rdoc' > ~/.gemrc"
+  - sudo apt-get install libicu-dev -y
+  - "bundle config build.nokogiri --use-system-libraries"
+  - gem install bundler bundle_cache
+  - bundle_cache_install
+after_script:
+- bundle_cache
 env:
   global:
+    - BUNDLE_ARCHIVE="gitlab-ci-bundler-archive"
+    - AWS_S3_BUCKET="gitlab_com_bundle_cache_travis_ci"
+    - AWS_ACCESS_KEY_ID="AKIAISHUQBQQINXNMA5Q"
+    - AWS_SECRET_ACCESS_KEY="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"
+    - RAILS_ENV=test
     - TRAVIS=true
   matrix:
     - TASK=spinach_project DB=mysql
@@ -16,8 +29,6 @@ env:
     - TASK=spec:feature DB=postgresql
     - TASK=spec:other DB=postgresql
     - TASK=jasmine:ci DB=postgresql
-before_install:
-  - sudo apt-get install libicu-dev -y
 rvm:
   - 2.1.2
 services:
