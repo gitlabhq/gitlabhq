@@ -117,6 +117,24 @@ class Note < ActiveRecord::Base
       })
     end
 
+    def create_new_commits_note(noteable, project, author, commits)
+      body = "Pushed new commits:\n\n"
+
+      commits.each do |commit|
+        message = "* #{commit.short_id} - #{commit.title}"
+        body << message
+        body << "\n"
+      end
+
+      create(
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      )
+    end
+
     def discussions_from_notes(notes)
       discussion_ids = []
       discussions = []
