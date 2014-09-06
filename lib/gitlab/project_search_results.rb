@@ -22,7 +22,7 @@ module Gitlab
     end
 
     def total_count
-      @total_count ||= issues_count + merge_requests_count + blobs_count + 
+      @total_count ||= issues_count + merge_requests_count + blobs_count +
                        notes_count + wiki_blobs_count
     end
 
