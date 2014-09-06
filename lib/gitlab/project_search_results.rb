@@ -22,7 +22,8 @@ module Gitlab
     end
 
     def total_count
-      @total_count ||= issues_count + merge_requests_count + blobs_count + notes_count + wiki_blobs_count
+      @total_count ||= issues_count + merge_requests_count + blobs_count + 
+                       notes_count + wiki_blobs_count
     end
 
     def blobs_count
@@ -51,7 +52,8 @@ module Gitlab
       if !project.wiki_enabled?
         []
       else
-        Repository.new(ProjectWiki.new(project).path_with_namespace).search_files(query)
+        Repository.new(ProjectWiki.new(project).path_with_namespace).
+           search_files(query)
       end
     end
 
