@@ -192,7 +192,11 @@ The way to prevent creating many merge commits is to not frequently merge master
 We'll discuss the three reasons to merge in master: leveraging code, solving merge conflicts and long running branches.
 If you need to leverage some code that was introduced in master after you created the feature branch you can sometimes solve this by just cherry-picking a commit.
 If your feature branch has a merge conflict, creating a merge commit is a normal way of solving this.
-The last reason is having long lived branches that you want to keep up to date with the latest state of the project.
+You should aim to prevent merge conflicts where they are likely to occur.
+One example is the CHANGELOG file where each significant change in the codebase is documented under a version header.
+Instead of everyone adding their change at the bottom of the list for the current version it is better to randomly insert it in the current list for that version.
+This it is likely that multiple feature branches that add to the CHANGELOG can be merged before a conflict occurs.
+The last reason for creating merge commits is having long lived branches that you want to keep up to date with the latest state of the project.
 Martin Fowler, in [his article about feature branches](http://martinfowler.com/bliki/FeatureBranch.html) talks about this Continuous Integration (CI).
 At GitLab we are guilty of confusing CI with branch testing. Quoting Martin Fowler: "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.
 That's continuous building, and a Good Thing, but there's no integration, so it's not CI.".
