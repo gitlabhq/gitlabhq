@@ -10,54 +10,12 @@ To enable the Shibboleth OmniAuth provider you must:
 1. Configure Apache shibboleth module. Installation and configuration of module it self is out of scope of this document. 
 Check https://wiki.shibboleth.net/ for more info.
 
-1. Here is my Apache config for gitlab with shibboleth, I have used gitlab-ssl.conf from gitlab-reciepes
+1. You can find Apache config in gitlab-reciepes (https://github.com/gitlabhq/gitlab-recipes/blob/master/web-server/apache/gitlab-ssl.conf)
+
+Following changes are needed to enable shibboleth:
+
+protect omniauth-shibboleth callback url:
 ```
-#This configuration has been tested on GitLab 6.0.0 and GitLab 6.0.1
-#Note this config assumes unicorn is listening on default port 8080.
-#Module dependencies
-#  mod_rewrite
-#  mod_ssl
-#  mod_proxy
-#  mod_proxy_http
-#  mod_headers
-
-# This section is only needed if you want to redirect http traffic to https.
-# You can live without it but clients will have to type in https:// to reach gitlab.
-
-<VirtualHost *:80>
-  ServerName gitlab.example.com
-  ServerSignature Off
-
-  RewriteEngine on
-  RewriteCond %{HTTPS} !=on
-  RewriteRule .* https://%{SERVER_NAME}%{REQUEST_URI} [NE,R,L]
-</VirtualHost>
-
-<VirtualHost *:443>
-  SSLEngine on
-  #strong encryption ciphers only
-  #see ciphers(1) http://www.openssl.org/docs/apps/ciphers.html
-  SSLCipherSuite SSLv3:TLSv1:+HIGH:!SSLv2:!MD5:!MEDIUM:!LOW:!EXP:!ADH:!eNULL:!aNULL
-
-  SSLCertificateFile	/etc/gitlab/ssl/gitlab.example.com.crt
-  SSLCertificateKeyFile	/etc/gitlab/ssl/gitlab.example.com.key
-  SSLCACertificateFile  /etc/gitlab/ssl/your-ca.crt
-
-  ServerName gitlab.example.com
-  ServerSignature Off
-
-  ProxyPreserveHost On
-
-  AllowEncodedSlashes NoDecode
-
-  <Location />
-    Order deny,allow
-    Allow from all
-
-    ProxyPassReverse http://127.0.0.1:8080
-    ProxyPassReverse http://gitlab.example.com/
-  </Location>
-
   <Location /users/auth/shibboleth/callback>
     AuthType shibboleth
     ShibRequestSetting requireSession 1
@@ -73,7 +31,9 @@ Check https://wiki.shibboleth.net/ for more info.
   <Location /Shibboleth.sso>
     SetHandler shib
   </Location>
-
+```
+exclude shibboleth urls from rewriting, add "RewriteCond %{REQUEST_URI} !/Shibboleth.sso" and "RewriteCond %{REQUEST_URI} !/shibboleth-sp", config should look like this:
+```
   #apache equivalent of nginx try files
   RewriteEngine on
   RewriteCond %{DOCUMENT_ROOT}/%{REQUEST_FILENAME} !-f
@@ -81,24 +41,6 @@ Check https://wiki.shibboleth.net/ for more info.
   RewriteCond %{REQUEST_URI} !/shibboleth-sp 
   RewriteRule .* http://127.0.0.1:8080%{REQUEST_URI} [P,QSA]
   RequestHeader set X_FORWARDED_PROTO 'https'
-
-  # needed for downloading attachments
-  DocumentRoot /opt/gitlab/embedded/service/gitlab-rails/public
-
-  #Set up apache error documents, if back end goes down (i.e. 503 error) then a maintenance/deploy page is thrown up.
-  ErrorDocument 404 /404.html
-  ErrorDocument 422 /422.html
-  ErrorDocument 500 /500.html
-  ErrorDocument 503 /deploy.html
-
-  LogFormat "%{X-Forwarded-For}i %l %u %t \"%r\" %>s %b" common_forwarded
-  ErrorLog  /var/log/apache2/gitlab.example.com_error.log
-  CustomLog /var/log/apache2/gitlab.example.com_forwarded.log common_forwarded
-  CustomLog /var/log/apache2/gitlab.example.com_access.log combined env=!dontlog
-  CustomLog /var/log/apache2/gitlab.example.com.log combined
-
-</VirtualHost>
-
 ```
 
 1.  Edit /etc/gitlab/gitlab.rb configuration file, your shibboleth attributes should be in form of "HTTP_ATTRIBUTE" and you should addjust them to your need and environment. Add any other configuration you need. 
