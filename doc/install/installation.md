@@ -398,3 +398,7 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 ### LDAP Authentication
 
 You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
+
+### Using Custom Omniauth Providers
+
+See the [omniauth integration document](doc/integration/omniauth.md)
