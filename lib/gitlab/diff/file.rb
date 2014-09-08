@@ -21,7 +21,7 @@ module Gitlab
       end
 
       def mode_changed?
-        diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
+        !!(diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode)
       end
 
       def parser
