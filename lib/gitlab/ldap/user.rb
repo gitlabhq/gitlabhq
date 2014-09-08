@@ -26,16 +26,6 @@ module Gitlab
           end
         end
 
-        # overloaded from Gitlab::Oauth::User
-        # TODO: it's messy, needs cleanup, less complexity
-        def create(auth_hash)
-          ldap_user = new(auth_hash)
-          # first try to find the user based on the returned email address
-
-          # if the user isn't found by an exact email match, use oauth methods
-          ldap_user.save_and_trigger_callbacks
-        end
-
         def authenticate(login, password)
           # Check user against LDAP backend if user is not authenticated
           # Only check with valid login and password to prevent anonymous bind results
