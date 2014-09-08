@@ -4,25 +4,27 @@ describe Gitlab::Auth do
   let(:gl_auth) { Gitlab::Auth.new }
 
   describe :find do
-    before do
-      @user = create(
-        :user,
-        username: 'john',
-        password: '88877711',
-        password_confirmation: '88877711'
-      )
+    let!(:user) do
+      create(:user,
+        username: username,
+        password: password,
+        password_confirmation: password)
     end
+    let(:username) { 'john' }
+    let(:password) { 'my-secret' }
 
     it "should find user by valid login/password" do
-      gl_auth.find('john', '88877711').should == @user
+      expect( gl_auth.find(username, password) ).to eql user
     end
 
     it "should not find user with invalid password" do
-      gl_auth.find('john', 'invalid11').should_not == @user
+      password = 'wrong'
+      expect( gl_auth.find(username, password) ).to_not eql user
     end
 
-    it "should not find user with invalid login and password" do
-      gl_auth.find('jon', 'invalid11').should_not == @user
+    it "should not find user with invalid login" do
+      user = 'wrong'
+      expect( gl_auth.find(username, password) ).to_not eql user
     end
   end
 end
