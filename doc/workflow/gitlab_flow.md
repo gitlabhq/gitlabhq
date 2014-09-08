@@ -87,9 +87,9 @@ The stable branch uses master as a starting point and is created as late as poss
 By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
 After a release branch is announced, only serious bug fixes are included in the release branch.
 If possible these bug fixes are first merged into master and then cherry-picked into the release branch.
-Merging them in master first ensures you do not forget to merge them into master and encounter the same bug on the next release.
+This way you can't forget to cherry-pick them into master and encounter the same bug on subsequent releases.
 This is called an 'upstream first' policy that is also practiced by [Google](http://www.chromium.org/chromium-os/chromiumos-design-docs/upstream-first) and [Red Hat](http://www.redhat.com/about/news/archive/2013/5/a-community-for-using-openstack-with-red-hat-rdo).
-Every time a bug-fix is included in a release branch the patch version is raised by setting a new tag.
+Every time a bug-fix is included in a release branch the patch version is raised (to comply with [Semantic Versioning](http://semver.org/)) by setting a new tag.
 Some projects also have a stable branch that points to the same commit as the latest released branch.
 In this flow it is not common to have a production branch (or git flow master branch).
 
@@ -101,7 +101,7 @@ Tools such as GitLab and Gitorious choose the name merge request since that is t
 In this article we'll refer to them as merge requests.
 
 If you work on a feature branch for more than a few hours it is good to share the intermediate result with the rest of the team.
-This can be done by creating a merge request but not assigning it to anyone, but mentioning people in the description or a comment (/cc @mark @susan).
+This can be done by creating a merge request without assigning it to anyone, instead you mention people in the description or a comment (/cc @mark @susan).
 This means it is not ready to be merged but feedback is welcome.
 Your team members can comment on the merge request in general or on specific lines with line comments.
 The merge requests serves as a code review tool and no separate tools such as Gerrit and reviewboard should be needed.
@@ -113,7 +113,7 @@ When you feel comfortable with it to be merged you assign it to the person that 
 There is room for more feedback and after the assigned person feels comfortable with the result the branch is merged.
 If the assigned person does not feel comfortable they can close the merge request without merging.
 
-In GitLab it is common to protect the long-lived branches (e.g. master) so that normal develops can't modify them but masters can.
+In GitLab it is common to protect the long-lived branches (e.g. the master branch) so that normal developers [can't modify these protected branches](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/permissions/permissions.md).
 So if you want to merge it into a protected branch you assign it to someone with master authorizations.
 
 # Issues with GitLab flow
@@ -122,8 +122,8 @@ So if you want to merge it into a protected branch you assign it to someone with
 
 Any significant change to the code should start with an issue where the goal is described.
 Having a reason for every code change is important to inform everyone on the team and to help people keep the scope of a feature branch small.
-In GitLab each change to the codebase start with an issue in the issue tracking system.
-If there is not issue yet it should be created first if there is significant work involved (more than 1 hour).
+In GitLab each change to the codebase starts with an issue in the issue tracking system.
+If there is no issue yet it should be created first provided there is significant work involved (more than 1 hour).
 For many organizations this will be natural since the issue will have to be estimated for the sprint.
 Issue titles should describe the desired state of the system, e.g. "As an administrator I want to remove users without receiving an error" instead of "Admin can't remove users.".
 
@@ -141,7 +141,7 @@ The reviewer presses the merge button when they think the code is ready for incl
 In this case the code is merged and a merge commit is generated that makes this event easily visible later on.
 Merge requests always create a merge commit even when the commit could be added without one.
 This merge strategy is called 'no fast-forward' in git.
-After the merge the feature branch is deleted since it is no longer needed.
+After the merge the feature branch is deleted since it is no longer needed, in GitLab this deletion is an option when merging.
 
 Suppose that a branch is merged but a problem occurs and the issue is reopened.
 In this case it is no problem to reuse the same branch name since it was deleted when the branch was merged.
@@ -153,28 +153,29 @@ It is possible that one feature branch solves more than one issue.
 ![Merge request showing the linked issues that will be closed]() Linking to the issue can happen by mentioning them from commit messages (fixes #14, closes #67, etc.) or from the merge request description.
 In GitLab this creates a comment in the issue that the merge requests mentions the issue.
 And the merge request shows the linked issues.
-These issues are closed the code is merged into the default branch.
+These issues are closed once code is merged into the default branch.
 
 If you only want to make the reference without closing the issue you can also just mention it: "Ducktyping is preferred. #12".
 
-If you have an issue that spans multiple repo's the best thing is to create an issue for each and link all issues to one parent issue.
+If you have an issue that spans across multiple repositories, the best thing is to create an issue for each repository and link all issues to a parent issue.
 
 # Squashing commits with rebase
 
 ![Vim screen showing the rebase view]() With git you can rebase your commits to squash multiple commits into one.
-This functionality is useful if you had a couple of commits for small changes during development.
+This functionality is useful if you have a couple of commits for small changes during development and want to replace them with a single commit.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
 When you rebase you change the identifier (SHA1) of the commit and this is confusing.
 If you do that the same change will be known under multiple identifiers and this can cause much confusion.
-People are encouraged commit often and to frequently push to the remote repository so other people are aware what everyone is working on.
-The disadvantage of creating many commits are acceptable, a overview of the entire change will be visible in the merge (requests).
+People are encouraged to commit often and to frequently push to the remote repository so other people are aware what everyone is working on.
+This will lead to many commits per change which makes the history harder to understand. But the advantages of having stable identifiers outweight this drawback.
+And to understand a change in context one can always look at the merge commit that groups all the commits together when the code is merged into the master branch.
 
 After you merge multiple commits from a feature branch into the master branch this is harder to undo.
 If you would have squashed all the commits into one you could have just reverted this commit but as we indicated you should not rebase commits after they are pushed.
-But [reverting a merge made some time ago](http://git-scm.com/blog/2010/03/02/undoing-merges.html) can be done with git.
-But this does require having a specific merge commits for the commits your want to revert.
-This is a good reason always to create a merge commit when you merge manually with the --no-ff option.
+Fortunately [reverting a merge made some time ago](http://git-scm.com/blog/2010/03/02/undoing-merges.html) can be done with git.
+This however, requires having specific merge commits for the commits your want to revert.
+This is a good reason always to create a merge commit when you merge manually with the `--no-ff` option.
 Git management software will always create a merge commit when you accept a merge request.
 
 # Do not order commits with rebase
@@ -183,25 +184,26 @@ Git management software will always create a merge commit when you accept a merg
 This prevents creating a merge commit when merging master into your feature branch and creates a nice linear history.
 However, just like with squashing you should never rebase commits you have pushed to a remote server.
 This makes it impossible to rebase work in progress that you already shared with your team which is something we recommend.
-When using rebase to keep your feature branch updated you [need resolve similar conflicts again and again](http://blogs.atlassian.com/2013/10/git-team-workflows-merge-or-rebase/).
-You can reuse recorded resolutions (rerere) sometimes, but with without rebasing you only have solve the conflicts one time and you’re set.
+When using rebase to keep your feature branch updated you [need to resolve similar conflicts again and again](http://blogs.atlassian.com/2013/10/git-team-workflows-merge-or-rebase/).
+You can reuse recorded resolutions (rerere) sometimes, but with without rebasing you only have to solve the conflicts one time and you’re set.
 There has to be a better way to avoid many merge commits.
 
 The way to prevent creating many merge commits is to not frequently merge master into the feature branch.
 We'll discuss the three reasons to merge in master: leveraging code, solving merge conflicts and long running branches.
 If you need to leverage some code that was introduced in master after you created the feature branch you can sometimes solve this by just cherry-picking a commit.
-If you feature branch has a merge conflict creating merge commit is a normal way of solving this.
-The last reason is having long lives branches that you want to keep up to date with the latest state of the project.
-In [Martin Fowler his article about feature branches](http://martinfowler.com/bliki/FeatureBranch.html) he talks about this Continuous Integration (CI).
-At GitLab we are guilty of confusing CI with testing branches, in Martin Fowler his words: "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit. That's continuous building, and a Good Thing, but there's no integration, so it's not CI.".
-The solution to prevent many merge commits is to keep our feature branches shortlived, the vast majority should take less than one day of work.
-If your feature branches commenly take more than a day of work look into ways to create smaller units of work and/or use [feature toggles](http://martinfowler.com/bliki/FeatureToggle.html).
-As for the long running branches that take more than one day there two strategies.
+If your feature branch has a merge conflict, creating a merge commit is a normal way of solving this.
+The last reason is having long lived branches that you want to keep up to date with the latest state of the project.
+Martin Fowler, in [his article about feature branches](http://martinfowler.com/bliki/FeatureBranch.html) talks about this Continuous Integration (CI).
+At GitLab we are guilty of confusing CI with branch testing. Quoting Martin Fowler: "I've heard people say they are doing CI because they are running builds, perhaps using a CI server, on every branch with every commit.
+That's continuous building, and a Good Thing, but there's no integration, so it's not CI.".
+The solution to prevent many merge commits is to keep your feature branches shortlived, the vast majority should take less than one day of work.
+If your feature branches commenly take more than a day of work, look into ways to create smaller units of work and/or use [feature toggles](http://martinfowler.com/bliki/FeatureToggle.html).
+As for the long running branches that take more than one day there are two strategies.
 In a CI strategy you can merge in master at the start of the day to prevent painful merges at a later time.
 In a synchronization point strategy you only merge in from well defined points in time, for example a tagged release.
-This strategy is [advocated by Linus Torvalds](https://www.mail-archive.com/dri-devel@lists.sourceforge.net/msg39091.html) because the state of the code at these points is better know.
+This strategy is [advocated by Linus Torvalds](https://www.mail-archive.com/dri-devel@lists.sourceforge.net/msg39091.html) because the state of the code at these points is better known.
 
-In conclusion we can say that we should try to prevent merge commit but you should not try to eliminate them.
+In conclusion, we can say that you should try to prevent merge commits, but not eliminate them.
 Your codebase should be clean but your history should represent what actually happened.
 Developing software happen in small messy steps and it is OK to have your history reflect this.
 You can use tools to view the network graphs of commits and understand the messy history that created your code.
@@ -210,14 +212,14 @@ You can use tools to view the network graphs of commits and understand the messy
 
 ![Voting slider in GitLab]() It is common to voice approval or disapproval by using +1 or -1 emoticons.
 In GitLab the +1 and -1 are aggregated and shown at the top of the merge request.
-As a rule of thumb anything doesn't have two times more +1's than -1's is suspect and should not be merged yet.
+As a rule of thumb anything that doesn't have two times more +1's than -1's is suspect and should not be merged yet.
 
 # Pushing and removing branches
 
 ![Remove checkbox for branch in merge requests]() We recommend that people push their feature branches frequently, even when they are not ready for review yet.
 By doing this you prevent team members from accidentally starting to work on the same issue.
 Of course this situation should already be prevented by assigning someone to the issue in the issue tracking software.
-But sometimes one of the two parties forgets to assign someone in the issue tracking software.
+However sometimes one of the two parties forgets to assign someone in the issue tracking software.
 After a branch is merged it should be removed from the source control software.
 In GitLab and similar systems this is an option when merging.
 This ensures that the branch overview in the repository management software shows only work in progress.
@@ -233,15 +235,16 @@ This is quite a change for programmers that used SVN before, they used to commit
 The trick is to use the merge/pull request with multiple commits when your work is ready to share.
 The commit message should reflect your intention, not the contents of the commit.
 The contents of the commit can be easily seen anyway, the question is why you did it.
-An example of a good commit message is: "Reducing duplication by using a shared template."
-Some words that indicate a bad commit message are: change, improve, rename, refactor TODO lookup list 
+An example of a good commit message is: "Combine templates to dry up the user views.".
+Some words that are bad commit messages because they don't contain munch information are: change, improve and refactor.
 The word fix or fixes is also a red flag, unless it comes after the commit sentence and references an issue number.
+To see more information about the formatting of commit messages please see this great [blog post by Tim Pope](http://tbaggery.com/2008/04/19/a-note-about-git-commit-messages.html).
 
 # Testing before merging
 
-![Merge requests showing the test states, red, yellow and green]() In old workflows the Continues Integration (CI) server commonly ran tests on the master branch only.
+![Merge requests showing the test states, red, yellow and green]() In old workflows the Continuous Integration (CI) server commonly ran tests on the master branch only.
 Developers had to ensure their code did not break the master branch.
-When using GitLab flow developers create their branches from this branch so it is essential it is green.
+When using GitLab flow developers create their branches from this master branch so it is essential it is green.
 Therefore each merge request must be tested before it is accepted.
 CI software like Travis and GitLab CI show the build results right in the merge request itself to make this easy.
 One drawback is that they are testing the feature branch itself and not the merged result.
@@ -254,9 +257,9 @@ If you have long lived feature branches that last for more than a few days you s
 
 # Merging in other code
 
-![Shell output showing git pull output]() When branching of a feature branch always start with an up to date master to branch of from.
-If you know beforehand that you work absolutely depends on another branch you can also branch from there.
+![Shell output showing git pull output]() When initiating a feature branch, always start with an up to date master to branch off from.
+If you know beforehand that your work absolutely depends on another branch you can also branch from there.
 If you need to merge in another branch after starting explain the reason in the merge commit. 
 If you have not pushed your commits to a shared location yet you can also rebase on master or another feature branch.
-Do not merge in upstream if your code will work and merge cleanly without doing so (TODO reference to Linus email)
+Do not merge in upstream if your code will work and merge cleanly without doing so, Linus even says that [you should never merge in upstream at random points, only at major releases](http://lwn.net/Articles/328438/).
 Merging only when needed prevents creating merge commits in your feature branch that later end up littering the master history.
