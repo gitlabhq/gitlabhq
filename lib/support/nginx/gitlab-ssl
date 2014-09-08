@@ -87,6 +87,23 @@ server {
   add_header X-Frame-Options SAMEORIGIN;
   add_header X-Content-Type-Options nosniff;
 
+  ## [Optional] If your certficate has OCSP, enable OCSP stapling to reduce the overhead and latency of running SSL.
+  ## Replace with your ssl_trusted_certificate. For more info see:
+  ## - https://medium.com/devops-programming/4445f4862461
+  ## - https://www.ruby-forum.com/topic/4419319
+  ## - https://www.digitalocean.com/community/tutorials/how-to-configure-ocsp-stapling-on-apache-and-nginx
+  # ssl_stapling on;
+  # ssl_stapling_verify on;
+  # ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
+  # resolver 208.67.222.222 208.67.222.220 valid=300s; # Can change to your DNS resolver if desired
+  # resolver_timeout 10s;
+
+  ## [Optional] Generate a stronger DHE parameter:
+  ##   cd /etc/ssl/certs
+  ##   sudo openssl dhparam -out dhparam.pem 4096
+  ##
+  # ssl_dhparam /etc/ssl/certs/dhparam.pem;
+
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;
   error_log   /var/log/nginx/gitlab_error.log;
