@@ -26,5 +26,22 @@ describe Gitlab::Auth do
       user = 'wrong'
       expect( gl_auth.find(username, password) ).to_not eql user
     end
+
+    context "with ldap enabled" do
+      before { Gitlab.config.ldap['enabled'] = true }
+      after  { Gitlab.config.ldap['enabled'] = false }
+
+      it "tries to autheticate with db before ldap" do
+        expect(Gitlab::LDAP::User).not_to receive(:authenticate)
+
+        gl_auth.find(username, password)
+      end
+
+      it "uses ldap as fallback to for authentication" do
+        expect(Gitlab::LDAP::User).to receive(:authenticate)
+
+        gl_auth.find('ldap_user', 'password')
+      end
+    end
   end
 end
