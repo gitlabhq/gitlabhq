@@ -6,8 +6,7 @@
 # 1. Copy file as gitlab.yml
 # 2. Update gitlab -> host with your fully qualified domain name
 # 3. Update gitlab -> email_from
-# 4. If you installed Git from source, change git -> bin_path to /usr/local/bin/git
-# 5. Review this configuration file for other settings you may want to adjust
+# 4. Review this configuration file for other settings you may want to adjust
 
 production: &base
   #
