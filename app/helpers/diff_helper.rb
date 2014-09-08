@@ -1,16 +1,20 @@
 module DiffHelper
-  def safe_diff_files(diffs)
+  def allowed_diff_size
     if diff_hard_limit_enabled?
-      diffs.first(Commit::DIFF_HARD_LIMIT_FILES)
+      Commit::DIFF_HARD_LIMIT_FILES
     else
-      diffs.first(Commit::DIFF_SAFE_FILES)
-    end.map do |diff|
+      Commit::DIFF_SAFE_FILES
+    end
+  end
+
+  def safe_diff_files(diffs)
+    diffs.first(allowed_diff_size).map do |diff|
       Gitlab::Diff::File.new(diff)
     end
   end
 
   def show_diff_size_warninig?(diffs)
-    safe_diff_files(diffs).size < diffs.size
+    diffs.size > allowed_diff_size
   end
 
   def diff_hard_limit_enabled?

@@ -14,6 +14,6 @@
           = link_to "Email patch", project_merge_request_path(@project, @merge_request, format: :patch), class: "btn btn-warning btn-small"
   %p
     To preserve performance only
-    %strong #{safe_diff_files(@project, diffs).size} of #{diffs.size}
+    %strong #{allowed_diff_size} of #{diffs.size}
     files displayed.
 

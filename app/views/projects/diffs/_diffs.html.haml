@@ -11,6 +11,7 @@
         - params_copy[:view] = 'inline'
         = link_to "Inline Diff", url_for(params_copy), {id: "commit-diff-viewtype"}
 
+
 - if show_diff_size_warninig?(diffs)
   = render 'projects/diffs/warning', diffs: diffs
 
