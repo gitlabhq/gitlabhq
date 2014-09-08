@@ -11,16 +11,16 @@
       %br/
     .diff-content
       %table
-        - each_diff_line_near(diff, note.diff_file_index, note.line_code) do |line, type, line_code, line_new, line_old|
-          %tr.line_holder{ id: line_code }
-            - if type == "match"
+        - note.truncated_diff_lines.each do |line|
+          %tr.line_holder{ id: line.code }
+            - if line.type == "match"
               %td.old_line= "..."
               %td.new_line= "..."
-              %td.line_content.matched= line
+              %td.line_content.matched= line.text
             - else
-              %td.old_line= raw(type == "new" ? "&nbsp;" : line_old)
-              %td.new_line= raw(type == "old" ? "&nbsp;" : line_new)
-              %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw "#{line} &nbsp;"
+              %td.old_line= raw(line.type == "new" ? "&nbsp;" : line.old_pos)
+              %td.new_line= raw(line.type == "old" ? "&nbsp;" : line.new_pos)
+              %td.line_content{class: "noteable_line #{line.type} #{line.code}", "line_code" => line.code}= raw "#{line.text} &nbsp;"
 
-              - if line_code == note.line_code
+              - if line.code == note.line_code
                 = render "projects/notes/diff_notes_with_reply", notes: discussion_notes

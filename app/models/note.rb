@@ -209,9 +209,10 @@ class Note < ActiveRecord::Base
     noteable.diffs.each do |mr_diff|
       next unless mr_diff.new_path == self.diff.new_path
 
-      Gitlab::DiffParser.new(mr_diff.diff.lines.to_a, mr_diff.new_path).
-        each do |full_line, type, line_code, line_new, line_old|
-        if full_line == diff_line
+      lines = Gitlab::Diff::Parser.new.parse(mr_diff.diff.lines.to_a, mr_diff.old_path, mr_diff.new_path)
+
+      lines.each do |line|
+        if line.text == diff_line
           return true
         end
       end
@@ -244,13 +245,37 @@ class Note < ActiveRecord::Base
     return @diff_line if @diff_line
 
     if diff
-      Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
-        .each do |full_line, type, line_code, line_new, line_old|
-          @diff_line = full_line if line_code == self.line_code
-        end
+      diff_lines.each do |line|
+        @diff_line = line.text if line.code == self.line_code
+      end
     end
 
     @diff_line
+  end
+
+  def truncated_diff_lines
+    max_number_of_lines = 16
+    prev_match_line = nil
+    prev_lines = []
+
+    diff_lines.each do |line|
+      if line.code != self.line_code
+        if line.type == "match"
+          prev_lines.clear
+          prev_match_line = line
+        else
+          prev_lines.push(line)
+          prev_lines.shift if prev_lines.length >= max_number_of_lines
+        end
+      else
+        prev_lines << line
+        return prev_lines
+      end
+    end
+  end
+
+  def diff_lines
+    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a, diff.old_path, diff.new_path)
   end
 
   def discussion_id
