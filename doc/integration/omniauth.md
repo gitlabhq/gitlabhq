@@ -82,3 +82,41 @@ Existing users can enable OmniAuth for specific providers after the account is c
 1. The user will be redirected to the provider. Once the user authorized GitLab they will be redirected back to GitLab.
 
 The chosen OmniAuth provider is now active and can be used to sign in to GitLab from then on.
+
+## Using Custom Omniauth Providers
+
+GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships with a few providers preinstalled (e.g. LDAP, GitHub, Twitter). But sometimes that is not enough and you need to integrate with other authentication solutions. For these cases you can use the Omniauth provider.
+
+### Steps
+
+These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
+
+-   Stop GitLab:
+
+        sudo service gitlab stop
+
+-   Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile):
+
+        gem "omniauth-your-auth-provider"
+
+-   If you're using MySQL, install the new Omniauth provider gem by running the following command:
+
+        sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment
+
+-   If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
+
+        sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
+
+    > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
+
+-   Start GitLab:
+
+        sudo service gitlab start
+
+### Examples
+
+If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
+
+You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
+
+While we can't officially support every possible authentication mechanism out there, we'd like to at least help those with specific needs.
