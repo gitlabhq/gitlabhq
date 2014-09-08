@@ -11,20 +11,13 @@
 
       %tr.line_holder.parallel
         - if type_left == 'match'
-          = render "projects/commits/diffs/match_line_parallel", {line: line_content_left,
-          line_old: line_number_left, line_new: line_number_right, bottom: false}
-        - elsif type_left ==  'old'
-          %td.old_line{ class: "old" }
+          = render "projects/commits/diffs/match_line_parallel", { line: line_content_left,
+          line_old: line_number_left, line_new: line_number_right }
+        - elsif type_left ==  'old' || type_left.nil?
+          %td.old_line{class: "#{type_left}"}
             = link_to raw(line_number_left)
-            %td.line_content{class: "parallel noteable_line old"}= raw line_content_left
-          %td.new_line{class: "#{type_right == 'new' ? 'new' : nil}", data: {linenumber: line_number_right}}
-            = link_to raw(line_number_right)
-            %td.line_content.parallel{class: "noteable_line #{type_right == 'new' ? 'new' : nil}"}= raw line_content_right
-        - elsif type_left.nil?
-          %td.old_line
-            = link_to raw(line_number_left)
-            %td.line_content{class: "parallel noteable_line"}= raw line_content_left
-          %td.new_line{class: "#{type_right == 'new' ? 'new' : nil}", data: {linenumber: line_number_right}}
+            %td.line_content{class: "parallel noteable_line #{type_left}" }= raw line_content_left
+          %td.new_line{ class: "#{type_right == 'new' ? 'new' : nil}", data: { linenumber: line_number_right }}
             = link_to raw(line_number_right)
             %td.line_content.parallel{class: "noteable_line #{type_right == 'new' ? 'new' : nil}"}= raw line_content_right
 
