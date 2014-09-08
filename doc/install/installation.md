@@ -233,7 +233,7 @@ GitLab Shell is an SSH access and repository management software developed speci
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
     sudo -u git -H editor /home/git/gitlab-shell/config.yml
-    
+
 **Note:** If you want to use HTTPS, see [Using HTTPS](#using-https) for the additional steps.
 
 ### Initialize Database and Activate Advanced Features
@@ -308,7 +308,7 @@ Make sure to edit the config file to match your setup:
 Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following command:
 
     sudo nginx -t
-    
+
 You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indiciated in the error message given.
 
 ### Restart
@@ -364,7 +364,7 @@ Using a self-signed certificate is discouraged but if you must use it follow the
         sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
         sudo chmod o-r gitlab.key
         ```
- 
+
     1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
 
 ### Additional Markup Styles
@@ -398,41 +398,3 @@ You also need to change the corresponding options (e.g. `ssh_user`, `ssh_host`, 
 ### LDAP Authentication
 
 You can configure LDAP authentication in `config/gitlab.yml`. Please restart GitLab after editing this file.
-
-### Using Custom Omniauth Providers
-
-GitLab uses [Omniauth](http://www.omniauth.org/) for authentication and already ships with a few providers preinstalled (e.g. LDAP, GitHub, Twitter). But sometimes that is not enough and you need to integrate with other authentication solutions. For these cases you can use the Omniauth provider.
-
-#### Steps
-
-These steps are fairly general and you will need to figure out the exact details from the Omniauth provider's documentation.
-
--   Stop GitLab:
-
-        sudo service gitlab stop
-
--   Add the gem to your [Gemfile](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/Gemfile):
-
-        gem "omniauth-your-auth-provider"
-
--   If you're using MySQL, install the new Omniauth provider gem by running the following command:
-
-        sudo -u git -H bundle install --without development test postgres --path vendor/bundle --no-deployment
-
--   If you're using PostgreSQL, install the new Omniauth provider gem by running the following command:
-
-        sudo -u git -H bundle install --without development test mysql --path vendor/bundle --no-deployment
-
-    > These are the same commands you used in the [Install Gems section](#install-gems) with `--path vendor/bundle --no-deployment` instead of `--deployment`.
-
--   Start GitLab:
-
-        sudo service gitlab start
-
-#### Examples
-
-If you have successfully set up a provider that is not shipped with GitLab itself, please let us know.
-
-You can help others by reporting successful configurations and probably share a few insights or provide warnings for common errors or pitfalls by sharing your experience [in the public Wiki](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Custom-omniauth-provider-configurations).
-
-While we can't officially support every possible authentication mechanism out there, we'd like to at least help those with special needs.
