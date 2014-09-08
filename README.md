@@ -87,7 +87,8 @@ Please login with `root` / `5iveL!fe`
 
 ## Install a development environment
 
-We recommend setting up your development environment with [the cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md#installation). If you do not use the cookbook you might need to copy the example development unicorn configuration file
+We recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
+If you do not use the development kit you might need to copy the example development unicorn configuration file
 
     cp config/unicorn.rb.example.development config/unicorn.rb
 
