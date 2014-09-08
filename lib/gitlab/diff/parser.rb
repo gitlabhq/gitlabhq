@@ -3,7 +3,7 @@ module Gitlab
     class Parser
       include Enumerable
 
-      def parse(lines, old_path, new_path)
+      def parse(lines)
         @lines = lines,
         lines_obj = []
         line_obj_index = 0
@@ -33,8 +33,7 @@ module Gitlab
             next
           else
             type = identification_type(line)
-            line_code = generate_line_code(new_path, line_new, line_old)
-            lines_obj << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new, line_code)
+            lines_obj << Gitlab::Diff::Line.new(full_line, type, line_obj_index, line_old, line_new)
             line_obj_index += 1
           end
 
@@ -71,10 +70,6 @@ module Gitlab
         else
           nil
         end
-      end
-
-      def generate_line_code(path, line_new, line_old)
-        "#{Digest::SHA1.hexdigest(path)}_#{line_old}_#{line_new}"
       end
 
       def html_escape str

@@ -12,7 +12,8 @@
     .diff-content
       %table
         - note.truncated_diff_lines.each do |line|
-          %tr.line_holder{ id: line.code }
+          - line_code = generate_line_code(note.file_path, line)
+          %tr.line_holder{ id: line_code }
             - if line.type == "match"
               %td.old_line= "..."
               %td.new_line= "..."
@@ -20,7 +21,7 @@
             - else
               %td.old_line= raw(line.type == "new" ? "&nbsp;" : line.old_pos)
               %td.new_line= raw(line.type == "old" ? "&nbsp;" : line.new_pos)
-              %td.line_content{class: "noteable_line #{line.type} #{line.code}", "line_code" => line.code}= raw "#{line.text} &nbsp;"
+              %td.line_content{class: "noteable_line #{line.type} #{line_code}", "line_code" => line_code}= raw "#{line.text} &nbsp;"
 
-              - if line.code == note.line_code
+              - if line_code == note.line_code
                 = render "projects/notes/diff_notes_with_reply", notes: discussion_notes

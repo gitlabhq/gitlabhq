@@ -209,7 +209,7 @@ class Note < ActiveRecord::Base
     noteable.diffs.each do |mr_diff|
       next unless mr_diff.new_path == self.diff.new_path
 
-      lines = Gitlab::Diff::Parser.new.parse(mr_diff.diff.lines.to_a, mr_diff.old_path, mr_diff.new_path)
+      lines = Gitlab::Diff::Parser.new.parse(mr_diff.diff.lines.to_a)
 
       lines.each do |line|
         if line.text == diff_line
@@ -233,6 +233,14 @@ class Note < ActiveRecord::Base
     diff.new_path if diff
   end
 
+  def file_path
+    if diff.new_path.present?
+      diff.new_path
+    elsif diff.old_path.present?
+      diff.old_path
+    end
+  end
+
   def diff_old_line
     line_code.split('_')[1].to_i
   end
@@ -241,12 +249,18 @@ class Note < ActiveRecord::Base
     line_code.split('_')[2].to_i
   end
 
+  def generate_line_code(line)
+    Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+  end
+
   def diff_line
     return @diff_line if @diff_line
 
     if diff
       diff_lines.each do |line|
-        @diff_line = line.text if line.code == self.line_code
+        if generate_line_code(line) == self.line_code
+          @diff_line = line.text
+        end
       end
     end
 
@@ -259,7 +273,7 @@ class Note < ActiveRecord::Base
     prev_lines = []
 
     diff_lines.each do |line|
-      if line.code != self.line_code
+      if generate_line_code(line) != self.line_code
         if line.type == "match"
           prev_lines.clear
           prev_match_line = line
@@ -275,7 +289,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_lines
-    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a, diff.old_path, diff.new_path)
+    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a)
   end
 
   def discussion_id

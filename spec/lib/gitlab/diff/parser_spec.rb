@@ -46,10 +46,8 @@ describe Gitlab::Diff::Parser do
 eos
     end
 
-    let(:path) { 'files/ruby/popen.rb' }
-
     before do
-      @lines = parser.parse(diff.lines, path, path)
+      @lines = parser.parse(diff.lines)
     end
 
     it { @lines.size.should == 30 }

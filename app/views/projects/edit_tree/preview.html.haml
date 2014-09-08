@@ -12,15 +12,14 @@
         - unless @diff_lines.empty?
           %table.text-file
             - @diff_lines.each do |line|
-              %tr.line_holder{ id: line.code, class: "#{line.type}" }
+              %tr.line_holder{ class: "#{line.type}" }
                 - if line.type == "match"
                   %td.old_line= "..."
                   %td.new_line= "..."
                   %td.line_content.matched= line.text
                 - else
                   %td.old_line
-                    = link_to raw(line.type == "new" ? "&nbsp;" : line.old_pos), "##{line.code}", id: line.code
-                  %td.new_line= link_to raw(line.type == "old" ? "&nbsp;" : line.new_pos) , "##{line.code}", id: line.code
-                  %td.line_content{class: "noteable_line #{line.type} #{line.code}", "line.code" => line.code}= raw diff_line_content(line.text)
+                  %td.new_line
+                  %td.line_content{class: "#{line.type}"}= raw diff_line_content(line.text)
         - else
           .nothing-here-block No changes.

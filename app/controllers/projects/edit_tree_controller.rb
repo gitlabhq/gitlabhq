@@ -31,7 +31,7 @@ class Projects::EditTreeController < Projects::BaseTreeController
 
     diffy = Diffy::Diff.new(@blob.data, @content, diff: '-U 3',
                             include_diff_info: true)
-    @diff_lines = Gitlab::Diff::Parser.new.parse(diffy.diff.scan(/.*\n/), @path, @path)
+    @diff_lines = Gitlab::Diff::Parser.new.parse(diffy.diff.scan(/.*\n/))
 
     render layout: false
   end

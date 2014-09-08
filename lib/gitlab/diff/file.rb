@@ -1,23 +1,18 @@
 module Gitlab
   module Diff
     class File
-      attr_reader :diff, :blob
+      attr_reader :diff
 
       delegate :new_file, :deleted_file, :renamed_file,
         :old_path, :new_path, to: :diff, prefix: false
 
-      def initialize(project, commit, diff)
+      def initialize(diff)
         @diff = diff
-        @blob = project.repository.blob_for_diff(commit, diff)
       end
 
       # Array of Gitlab::DIff::Line objects
       def diff_lines
-        @lines ||= parser.parse(diff.diff.lines, old_path, new_path)
-      end
-
-      def blob_exists?
-        !@blob.nil?
+        @lines ||= parser.parse(raw_diff.lines)
       end
 
       def mode_changed?
@@ -28,6 +23,10 @@ module Gitlab
         Gitlab::Diff::Parser.new
       end
 
+      def raw_diff
+        diff.diff
+      end
+
       def next_line(index)
         diff_lines[index + 1]
       end
@@ -35,6 +34,14 @@ module Gitlab
       def prev_line(index)
         if index > 0
           diff_lines[index - 1]
+        end
+      end
+
+      def file_path
+        if diff.new_path.present?
+          diff.new_path
+        elsif diff.old_path.present?
+          diff.old_path
         end
       end
     end

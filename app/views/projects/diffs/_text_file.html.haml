@@ -7,7 +7,7 @@
   - diff_file.diff_lines.each_with_index do |line, index|
     - type = line.type
     - last_line = line.new_pos
-    - line_code = line.code
+    - line_code = generate_line_code(diff_file.file_path, line)
     - line_old = line.old_pos
     %tr.line_holder{ id: line_code, class: "#{type}" }
       - if type == "match"
