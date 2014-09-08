@@ -69,7 +69,7 @@ module Backup
       end
 
       print 'Put GitLab hooks in repositories dirs'.yellow
-      if system("#{Gitlab.config.gitlab_shell.path}/support/rewrite-hooks.sh", Gitlab.config.gitlab_shell.repos_path)
+      if system("#{Gitlab.config.gitlab_shell.path}/bin/create-hooks")
         puts " [DONE]".green
       else
         puts " [FAILED]".red
