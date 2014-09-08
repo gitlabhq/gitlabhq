@@ -76,7 +76,8 @@ Is the system packaged Git too old? Remove it and compile from source.
     # Install into /usr/local/bin
     sudo make prefix=/usr/local install
 
-    # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
+    # Ensure that /usr/bin/git links to the binary
+    ln -s /usr/local/bin/git /usr/bin/git
 
 **Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://github.com/gitlabhq/gitlabhq/issues/4866#issuecomment-32726573) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
