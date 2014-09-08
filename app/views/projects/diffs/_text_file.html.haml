@@ -31,6 +31,6 @@
     = render "projects/diffs/match_line", {line: "",
       line_old: last_line, line_new: last_line, bottom: true}
 
-- if diff_file.diff.blank? && diff_file_mode_changed?(diff)
+- if diff_file.diff.blank? && diff_file.mode_changed?
   .file-mode-changed
     File mode changed
