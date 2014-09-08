@@ -1,0 +1,47 @@
+- return unless diff_file.blob_exists?
+- blob = diff_file.blob
+- blob_diff_path = diff_project_blob_path(project, tree_join(@commit.id, diff_file.new_path))
+.diff-file{id: "diff-#{i}", data: {blob_diff_path: blob_diff_path }}
+  .diff-header{id: "file-path-#{hexdigest(diff_file.new_path || diff_file.old_path)}"}
+    - if diff_file.deleted_file
+      %span= diff_file.old_path
+
+      .diff-btn-group
+        - if @commit.parent_ids.present?
+          = view_file_btn(@commit.parent_id, diff_file, project)
+    - else
+      %span= diff_file.new_path
+      - if diff_file.mode_changed?
+        %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+
+      .diff-btn-group
+        %label
+          = check_box_tag nil, 1, false, class: "js-toggle-diff-line-wrap"
+          Wrap text
+        &nbsp;
+        = link_to "#", class: "js-toggle-diff-comments btn btn-small" do
+          %i.icon-chevron-down
+          Diff comments
+        &nbsp;
+
+        - if @merge_request && @merge_request.source_project
+          = link_to project_edit_tree_path(@merge_request.source_project, tree_join(@merge_request.source_branch, diff_file.new_path), from_merge_request_id: @merge_request.id), { class: 'btn btn-small' } do
+            Edit
+          &nbsp;
+
+        = view_file_btn(@commit.id, diff_file, project)
+
+  .diff-content
+    -# Skipp all non non-supported blobs
+    - return unless blob.respond_to?('text?')
+    - if blob.text?
+      - if params[:view] == 'parallel'
+        = render "projects/diffs/parallel_view", diff_file: diff_file, project: project, blob: blob, index: i
+      - else
+        = render "projects/diffs/text_file", diff_file: diff_file, index: i
+    - elsif blob.image?
+      - old_file = project.repository.prev_blob_for_diff(@commit, diff_file)
+      = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, blob: blob, index: i
+    - else
+      .nothing-here-block No preview for this file type
+

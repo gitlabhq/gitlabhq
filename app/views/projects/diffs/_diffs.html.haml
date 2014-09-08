@@ -1,6 +1,6 @@
 .row
   .col-md-8
-    = render 'projects/commits/diff_stats', diffs: diffs
+    = render 'projects/diffs/diff_stats', diffs: diffs
   .col-md-4
     %ul.nav.nav-tabs
       %li.pull-right{class: params[:view] == 'parallel' ? 'active' : ''}
@@ -11,12 +11,12 @@
         - params_copy[:view] = 'inline'
         = link_to "Inline Diff", url_for(params_copy), {id: "commit-diff-viewtype"}
 
-- if show_diff_size_warninig?(diffs)
+- if show_diff_size_warninig?(project, diffs)
   = render 'projects/diffs/diff_warning', diffs: diffs
 
 .files
-  - safe_diff_files(diffs).each_with_index do |diff, i|
-    = render 'projects/diffs/diff_file', diff: diff_file, i: i, project: project
+  - safe_diff_files(project, diffs).each_with_index do |diff_file, i|
+    = render 'projects/diffs/diff_file', diff_file: diff_file, i: i, project: project
 
 - if @diff_timeout
   .alert.alert-danger
