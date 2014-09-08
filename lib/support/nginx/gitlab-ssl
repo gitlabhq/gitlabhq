@@ -26,23 +26,12 @@
 ## [1] https://github.com/agentzh/chunkin-nginx-module#status
 ## [2] https://github.com/agentzh/chunkin-nginx-module
 ##
-###################################
-##        SSL file editing       ##
-###################################
-##
-## Edit `gitlab-shell/config.yml`:
-##  1) Set "gitlab_url" param in `gitlab-shell/config.yml` to `https://git.example.com`
-##  2) Set "ca_file" to `/etc/nginx/ssl/gitlab.crt`
-##  3) Set "self_signed_cert" to `true`
-## Edit `gitlab/config/gitlab.yml`:
-##  1) Define port for http "port: 443"
-##  2) Enable https "https: true"
-##  3) Update ssl for gravatar "ssl_url: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm"
 ##
 ###################################
 ##        SSL configuration      ##
 ###################################
 ##
+## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
