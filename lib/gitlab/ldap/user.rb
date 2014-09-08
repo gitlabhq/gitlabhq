@@ -41,22 +41,17 @@ module Gitlab
           # Only check with valid login and password to prevent anonymous bind results
           return nil unless ldap_conf.enabled && login.present? && password.present?
 
-          ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
-          filter = Net::LDAP::Filter.eq(ldap.uid, login)
-
-          # Apply LDAP user filter if present
-          if ldap_conf['user_filter'].present?
-            user_filter = Net::LDAP::Filter.construct(ldap_conf['user_filter'])
-            filter = Net::LDAP::Filter.join(filter, user_filter)
-          end
-
-          ldap_user = ldap.bind_as(
-            filter: filter,
+          ldap_user = adapter.bind_as(
+            filter: user_filter(login),
             size: 1,
             password: password
           )
 
           find_by_uid(ldap_user.dn) if ldap_user
+        end
+
+        def adapter
+          @adapter ||= OmniAuth::LDAP::Adaptor.new(ldap_conf)
         end
 
         protected
@@ -80,6 +75,16 @@ module Gitlab
 
         def ldap_conf
           Gitlab.config.ldap
+        end
+
+        def user_filter(login)
+          filter = Net::LDAP::Filter.eq(adapter.uid, login)
+          # Apply LDAP user filter if present
+          if ldap_conf['user_filter'].present?
+            user_filter = Net::LDAP::Filter.construct(ldap_conf['user_filter'])
+            filter = Net::LDAP::Filter.join(filter, user_filter)
+          end
+          filter
         end
       end
 

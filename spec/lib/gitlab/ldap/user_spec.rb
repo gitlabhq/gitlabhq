@@ -35,4 +35,20 @@ describe Gitlab::LDAP::User do
       expect{ gl_user.find_or_create(auth) }.to change{ User.count }.by(1)
     end
   end
+
+  describe "authenticate" do
+    let(:login) { 'john' }
+    let(:password) { 'my-secret' }
+
+    before {
+      Gitlab.config.ldap['enabled'] = true
+      Gitlab.config.ldap['user_filter'] = 'employeeType=developer'
+    }
+    after  { Gitlab.config.ldap['enabled'] = false }
+
+    it "send an authentication request to ldap" do
+      expect( Gitlab::LDAP::User.adapter ).to receive(:bind_as)
+      Gitlab::LDAP::User.authenticate(login, password)
+    end
+  end
 end
