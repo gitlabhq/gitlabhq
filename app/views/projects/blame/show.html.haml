@@ -8,7 +8,7 @@
         = @path
         %small= number_to_human_size @blob.size
       %span.options= render "projects/blob/actions"
-    .file-content.blame
+    .file-content.blame.highlight
       %table
         - current_line = 1
         - @blame.each do |commit, lines|
@@ -33,7 +33,8 @@
                     - current_line += 1
             %td.lines
               %pre
-                :erb
-                  <% lines.each do |line| %>
-                    <%= line %>
-                  <% end %>
+                %code{ class: highlightjs_class(@blob.name) }
+                  :erb
+                    <% lines.each do |line| %>
+                      <%= line %>
+                    <% end %>

@@ -24,7 +24,7 @@
           %i.icon.icon-list
         = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'pull-left issue-search-form'  do
           .append-right-10.hidden-xs.hidden-sm
-            = search_field_tag :issue_search, nil, { placeholder: 'Filter by title or description', class: 'form-control issue_search search-text-input input-mn-300' }
+            = search_field_tag :issue_search, params[:issue_search], { placeholder: 'Filter by title or description', class: 'form-control issue_search search-text-input input-mn-300' }
             = hidden_field_tag :state, params['state']
             = hidden_field_tag :scope, params['scope']
             = hidden_field_tag :assignee_id, params['assignee_id']

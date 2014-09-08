@@ -24,6 +24,11 @@ Feature: Project Labels
     When I remove label 'bug'
     Then I should not see label 'bug'
 
+  @javascript
+  Scenario: I remove all labels
+    When I delete all labels
+    Then I should see labels help message
+
   Scenario: I create a label with invalid color
     Given I visit project "Shop" new label page
     When I submit new label with invalid color

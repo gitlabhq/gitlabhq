@@ -117,6 +117,25 @@ class Note < ActiveRecord::Base
       })
     end
 
+    def create_new_commits_note(noteable, project, author, commits)
+      commits_text = ActionController::Base.helpers.pluralize(commits.size, 'new commit')
+      body = "Added #{commits_text}:\n\n"
+
+      commits.each do |commit|
+        message = "* #{commit.short_id} - #{commit.title}"
+        body << message
+        body << "\n"
+      end
+
+      create(
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      )
+    end
+
     def discussions_from_notes(notes)
       discussion_ids = []
       discussions = []
@@ -336,5 +355,9 @@ class Note < ActiveRecord::Base
 
   def set_references
     notice_added_references(project, author)
+  end
+
+  def editable?
+    !system
   end
 end

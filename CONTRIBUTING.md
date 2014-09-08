@@ -62,6 +62,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Create a feature branch
 1. Write [tests](README.md#run-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
+1. If you are changing the README, some documentation or other things which have no effect on the tests, add `[ci skip]` somewhere in the commit message
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a merge request (MR) to the master branch

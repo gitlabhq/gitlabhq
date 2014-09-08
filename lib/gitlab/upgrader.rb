@@ -43,7 +43,7 @@ module Gitlab
     end
 
     def latest_version_raw
-      remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags origin))
+      remote_tags, _ = Gitlab::Popen.popen(%W(git ls-remote --tags https://gitlab.com/gitlab-org/gitlab-ce.git))
       git_tags = remote_tags.split("\n").grep(/tags\/v#{current_version.major}/)
       git_tags = git_tags.select { |version| version =~ /v\d\.\d\.\d\Z/ }
       last_tag = git_tags.last.match(/v\d\.\d\.\d/).to_s

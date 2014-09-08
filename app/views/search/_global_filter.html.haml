@@ -1,0 +1,16 @@
+%ul.nav.nav-pills.nav-stacked.search-filter
+  %li{class: ("active" if @scope == 'projects')}
+    = link_to search_filter_path(scope: 'projects') do
+      Projects
+      .pull-right
+        = @search_results.projects_count
+  %li{class: ("active" if @scope == 'issues')}
+    = link_to search_filter_path(scope: 'issues') do
+      Issues
+      .pull-right
+        = @search_results.issues_count
+  %li{class: ("active" if @scope == 'merge_requests')}
+    = link_to search_filter_path(scope: 'merge_requests') do
+      Merge requests
+      .pull-right
+        = @search_results.merge_requests_count

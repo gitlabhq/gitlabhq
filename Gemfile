@@ -83,7 +83,7 @@ gem "seed-fu"
 gem "github-markup"
 
 # Required markup gems by github-markdown
-gem 'redcarpet', '~> 2.2.2'
+gem 'redcarpet', '~> 3.1.2'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
 gem 'org-ruby'
@@ -156,6 +156,9 @@ gem "rack-attack"
 
 # Ace editor
 gem 'ace-rails-ap'
+
+# Keyboard shortcuts 
+gem 'mousetrap-rails'
 
 # Semantic UI Sass for Sidebar
 gem 'semantic-ui-sass', '~> 0.16.1.0'
@@ -232,7 +235,7 @@ group :development, :test do
 
   gem 'jasmine', '2.0.2'
 
-  gem "spring", '1.1.1'
+  gem "spring", '1.1.3'
   gem "spring-commands-rspec", '1.0.1'
   gem "spring-commands-spinach", '1.0.0'
 end

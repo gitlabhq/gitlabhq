@@ -22,6 +22,16 @@ class SystemHooksService
     }
 
     case model
+    when Key
+      data.merge!(
+        key: model.key,
+        id: model.id
+      )
+      if model.user
+        data.merge!(
+          username: model.user.username
+        )
+      end
     when Project
       owner = model.owner
 

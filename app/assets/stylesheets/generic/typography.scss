@@ -40,7 +40,7 @@ a {
   outline: none;
   color: $link_color;
   &:hover {
-    text-decoration: none;
+    text-decoration: underline;
     color: $link_hover_color;
   }
 

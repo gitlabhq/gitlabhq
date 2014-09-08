@@ -52,6 +52,8 @@ module EventsHelper
       "#{event.author_name} #{event.push_action_name} #{event.ref_type} #{event.ref_name} at #{event.project_name}"
     elsif event.membership_changed?
       "#{event.author_name} #{event.action_name} #{event.project_name}"
+    elsif event.note? && event.note_commit?
+      "#{event.author_name} commented on #{event.note_target_type} #{event.note_short_commit_id} at #{event.project_name}"
     elsif event.note?
       "#{event.author_name} commented on #{event.note_target_type} ##{truncate event.note_target_iid} at #{event.project_name}"
     else
@@ -64,6 +66,8 @@ module EventsHelper
       project_issue_url(event.project, event.issue)
     elsif event.merge_request?
       project_merge_request_url(event.project, event.merge_request)
+    elsif event.note? && event.note_commit?
+      project_commit_url(event.project, event.note_target)
     elsif event.note?
       if event.note_target
         if event.note_commit?
@@ -94,6 +98,8 @@ module EventsHelper
       render "events/event_push", event: event
     elsif event.merge_request?
       render "events/event_merge_request", merge_request: event.merge_request
+    elsif event.push?
+      render "events/event_push", event: event
     elsif event.note?
       render "events/event_note", note: event.note
     end

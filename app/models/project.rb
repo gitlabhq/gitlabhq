@@ -70,7 +70,7 @@ class Project < ActiveRecord::Base
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
-  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
+  has_many :issues, -> { order 'issues.state DESC, issues.created_at DESC' }, dependent: :destroy
   has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
@@ -400,18 +400,35 @@ class Project < ActiveRecord::Base
   def update_merge_requests(oldrev, newrev, ref, user)
     return true unless ref =~ /heads/
     branch_name = ref.gsub("refs/heads/", "")
-    c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
+    commits = self.repository.commits_between(oldrev, newrev)
+    c_ids = commits.map(&:id)
 
     # Close merge requests
     mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
-    mrs.each { |merge_request| MergeRequests::MergeService.new.execute(merge_request, user, nil) }
+
+    mrs.uniq.each do |merge_request|
+      MergeRequests::MergeService.new.execute(merge_request, user, nil)
+    end
 
     # Update code for merge requests into project between project branches
     mrs = self.merge_requests.opened.by_branch(branch_name).to_a
     # Update code for merge requests between project and project fork
     mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
-    mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
+
+    mrs.uniq.each do |merge_request|
+      merge_request.reload_code
+      merge_request.mark_as_unchecked
+    end
+
+    # Add comment about pushing new commits to merge requests
+    mrs = self.merge_requests.opened.where(source_branch: branch_name).to_a
+    mrs += self.fork_merge_requests.opened.where(source_branch: branch_name).to_a
+
+    mrs.uniq.each do |merge_request|
+      Note.create_new_commits_note(merge_request, merge_request.project,
+                                   user, commits)
+    end
 
     true
   end

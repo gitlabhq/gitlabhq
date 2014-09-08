@@ -5,21 +5,21 @@ class DeleteBranchService
 
     # No such branch
     unless branch
-      return error('No such branch')
+      return error('No such branch', 404)
     end
 
     if branch_name == repository.root_ref
-      return error('Cannot remove HEAD branch')
+      return error('Cannot remove HEAD branch', 405)
     end
 
     # Dont allow remove of protected branch
     if project.protected_branch?(branch_name)
-      return error('Protected branch cant be removed')
+      return error('Protected branch cant be removed', 405)
     end
 
     # Dont allow user to remove branch if he is not allowed to push
     unless current_user.can?(:push_code, project)
-      return error('You dont have push access to repo')
+      return error('You dont have push access to repo', 405)
     end
 
     if repository.rm_branch(branch_name)
@@ -30,9 +30,10 @@ class DeleteBranchService
     end
   end
 
-  def error(message)
+  def error(message, return_code = 400)
     {
       message: message,
+      return_code: return_code,
       state: :error
     }
   end

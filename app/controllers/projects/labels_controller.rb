@@ -52,7 +52,7 @@ class Projects::LabelsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to project_labels_path(@project), notice: 'Label was removed' }
-      format.js { render nothing: true }
+      format.js
     end
   end
 
