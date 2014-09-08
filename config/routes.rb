@@ -105,7 +105,7 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resource :appearances do
+    resource :appearances, path: 'appearance' do
       member do
         get :preview
       end
