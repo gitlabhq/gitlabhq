@@ -50,6 +50,13 @@ Before configuring individual OmniAuth providers there are a few global settings
         # - { name: 'github', app_id: 'YOUR APP ID',
         #     app_secret: 'YOUR APP SECRET',
         #     args: { scope: 'user:email' } }
+	# - {"name": 'shibboleth', 
+	#     args: { shib_session_id_field: "HTTP_SHIB_SESSION_ID",
+	#	      shib_application_id_field: "HTTP_SHIB_APPLICATION_ID",
+	#	      uid_field: "HTTP_EPPN",
+	#	      name_field: "HTTP_CN",
+	#	      info_fields: {"email": "HTTP_MAIL" } } }
+
     ```
 
 1.  Change `enabled` to `true`.
@@ -69,6 +76,7 @@ Before configuring individual OmniAuth providers there are a few global settings
 
 - [GitHub](github.md)
 - [Google](google.md)
+- [Shibboleth](shibboleth.md)
 - [Twitter](twitter.md)
 
 ## Enable OmniAuth for an Existing User
