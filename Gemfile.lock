@@ -321,6 +321,8 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    omniauth-shibboleth (1.1.1)
+      omniauth (>= 1.0.0)
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
@@ -644,6 +646,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter
+  omniauth-shibboleth
   org-ruby
   pg
   poltergeist (~> 1.5.1)
