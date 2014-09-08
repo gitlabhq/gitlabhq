@@ -41,7 +41,7 @@
         = render "projects/diffs/text_file", diff_file: diff_file, index: i
     - elsif blob.image?
       - old_file = project.repository.prev_blob_for_diff(@commit, diff_file)
-      = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, blob: blob, index: i
+      = render "projects/diffs/image", diff_file: diff_file, old_file: old_file, file: blob, index: i
     - else
       .nothing-here-block No preview for this file type
 
