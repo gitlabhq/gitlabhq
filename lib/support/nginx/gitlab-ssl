@@ -26,23 +26,12 @@
 ## [1] https://github.com/agentzh/chunkin-nginx-module#status
 ## [2] https://github.com/agentzh/chunkin-nginx-module
 ##
-###################################
-##        SSL file editing       ##
-###################################
-##
-## Edit `gitlab-shell/config.yml`:
-##  1) Set "gitlab_url" param in `gitlab-shell/config.yml` to `https://git.example.com`
-##  2) Set "ca_file" to `/etc/nginx/ssl/gitlab.crt`
-##  3) Set "self_signed_cert" to `true`
-## Edit `gitlab/config/gitlab.yml`:
-##  1) Define port for http "port: 443"
-##  2) Enable https "https: true"
-##  3) Update ssl for gravatar "ssl_url: https://secure.gravatar.com/avatar/%{hash}?s=%{size}&d=mm"
 ##
 ###################################
 ##        SSL configuration      ##
 ###################################
 ##
+## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
@@ -86,6 +75,23 @@ server {
   add_header Strict-Transport-Security max-age=63072000;
   add_header X-Frame-Options SAMEORIGIN;
   add_header X-Content-Type-Options nosniff;
+
+  ## [Optional] If your certficate has OCSP, enable OCSP stapling to reduce the overhead and latency of running SSL.
+  ## Replace with your ssl_trusted_certificate. For more info see:
+  ## - https://medium.com/devops-programming/4445f4862461
+  ## - https://www.ruby-forum.com/topic/4419319
+  ## - https://www.digitalocean.com/community/tutorials/how-to-configure-ocsp-stapling-on-apache-and-nginx
+  # ssl_stapling on;
+  # ssl_stapling_verify on;
+  # ssl_trusted_certificate /etc/nginx/ssl/stapling.trusted.crt;
+  # resolver 208.67.222.222 208.67.222.220 valid=300s; # Can change to your DNS resolver if desired
+  # resolver_timeout 10s;
+
+  ## [Optional] Generate a stronger DHE parameter:
+  ##   cd /etc/ssl/certs
+  ##   sudo openssl dhparam -out dhparam.pem 4096
+  ##
+  # ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;
