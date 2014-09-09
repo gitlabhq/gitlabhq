@@ -49,11 +49,16 @@ module Gitlab
     end
 
     def wiki_blobs
-      if !project.wiki_enabled?
-        []
+      if project.wiki_enabled?
+        wiki_repo = Repository.new(ProjectWiki.new(project).path_with_namespace)
+
+        if wiki_repo.exists?
+          wiki_repo.search_files(query)
+        else
+          []
+        end
       else
-        Repository.new(ProjectWiki.new(project).path_with_namespace).
-           search_files(query)
+        []
       end
     end
 
