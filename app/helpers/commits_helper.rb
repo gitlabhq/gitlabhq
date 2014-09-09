@@ -16,87 +16,6 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
-  def each_diff_line(diff, index)
-    Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
-      .each do |full_line, type, line_code, line_new, line_old|
-        yield(full_line, type, line_code, line_new, line_old)
-      end
-  end
-
-  def parallel_diff_line(diff, index)
-    Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
-      .each do |full_line, type, line_code, line_new, line_old, raw_line, next_type, next_line|
-        yield(full_line, type, line_code, line_new, line_old, raw_line, next_type, next_line)
-      end
-  end
-
-  def parallel_diff(diff, index)
-    lines = []
-    skip_next = false
-
-    # Building array of lines
-    #
-    # [left_type, left_line_number, left_line_content, right_line_type, right_line_number, right_line_content]
-    #
-    parallel_diff_line(diff, index) do |full_line, type, line_code, line_new, line_old, raw_line, next_type, next_line|
-      line = [type, line_old, full_line, next_type, line_new]
-      if type == 'match' || type.nil?
-        # line in the right panel is the same as in the left one
-        line = [type, line_old, full_line, type, line_new, full_line]
-        lines.push(line)
-      elsif type == 'old'
-        if next_type == 'new'
-          # Left side has text removed, right side has text added
-          line.push(next_line)
-          lines.push(line)
-          skip_next = true
-        elsif next_type == 'old' || next_type.nil?
-          # Left side has text removed, right side doesn't have any change
-          line.pop # remove the newline
-          line.push(nil) # no line number on the right panel
-          line.push("&nbsp;") # empty line on the right panel
-          lines.push(line)
-        end
-      elsif type == 'new'
-        if skip_next
-          # Change has been already included in previous line so no need to do it again
-          skip_next = false
-          next
-        else
-          # Change is only on the right side, left side has no change
-          line = [nil, nil, "&nbsp;", type, line_new, full_line]
-          lines.push(line)
-        end
-      end
-    end
-    lines
-  end
-
-  def each_diff_line_near(diff, index, expected_line_code)
-    max_number_of_lines = 16
-
-    prev_match_line = nil
-    prev_lines = []
-
-    each_diff_line(diff, index) do |full_line, type, line_code, line_new, line_old|
-      line = [full_line, type, line_code, line_new, line_old]
-      if line_code != expected_line_code
-        if type == "match"
-          prev_lines.clear
-          prev_match_line = line
-        else
-          prev_lines.push(line)
-          prev_lines.shift if prev_lines.length >= max_number_of_lines
-        end
-      else
-        yield(prev_match_line) if !prev_match_line.nil?
-        prev_lines.each { |ln| yield(ln) }
-        yield(line)
-        break
-      end
-    end
-  end
-
   def image_diff_class(diff)
     if diff.deleted_file
       "deleted"
@@ -200,10 +119,6 @@ module CommitsHelper
     else
       link_to(text.html_safe, user_path(user), options)
     end
-  end
-
-  def diff_file_mode_changed?(diff)
-    diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
   end
 
   def unfold_bottom_class(bottom)
