@@ -36,7 +36,7 @@ module DiffHelper
 
     # Building array of lines
     #
-    # [left_type, left_line_number, left_line_content, right_line_type, right_line_number, right_line_content]
+    # [left_type, left_line_number, left_line_content, line_code, right_line_type, right_line_number, right_line_content]
     #
     diff_file.diff_lines.each do |line|
 
@@ -53,10 +53,10 @@ module DiffHelper
         next_line = next_line.text
       end
 
-      line = [type, line_old, full_line, next_type, line_new]
+      line = [type, line_old, full_line, line_code, next_type, line_new]
       if type == 'match' || type.nil?
         # line in the right panel is the same as in the left one
-        line = [type, line_old, full_line, type, line_new, full_line]
+        line = [type, line_old, full_line, line_code, type, line_new, full_line]
         lines.push(line)
       elsif type == 'old'
         if next_type == 'new'
@@ -78,7 +78,7 @@ module DiffHelper
           next
         else
           # Change is only on the right side, left side has no change
-          line = [nil, nil, "&nbsp;", type, line_new, full_line]
+          line = [nil, nil, "&nbsp;", line_code, type, line_new, full_line]
           lines.push(line)
         end
       end
