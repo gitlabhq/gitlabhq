@@ -57,6 +57,38 @@ describe API::API, api: true  do
         json_response.length.should == 1
         json_response.first['title'].should == merge_request_merged.title
       end
+      it "should return an array of merge_requests in ascending order" do
+        get api("/projects/#{project.id}/merge_requests?sort=asc", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 3
+        json_response.first['id'].should == merge_request.id
+        json_response.last['id'].should == merge_request_merged.id
+      end
+      it "should return an array of merge_requests in descending order" do
+        get api("/projects/#{project.id}/merge_requests?sort=desc", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 3
+        json_response.first['id'].should == merge_request_merged.id
+        json_response.last['id'].should == merge_request.id
+      end
+      it "should return an array of merge_requests ordered by updated_at" do
+        get api("/projects/#{project.id}/merge_requests?order_by=updated_at", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 3
+        json_response.first['id'].should == merge_request.id
+        json_response.last['id'].should == merge_request_merged.id
+      end
+      it "should return an array of merge_requests ordered by created_at" do
+        get api("/projects/#{project.id}/merge_requests?sort=created_at", user)
+        response.status.should == 200
+        json_response.should be_an Array
+        json_response.length.should == 3
+        json_response.first['id'].should == merge_request.id
+        json_response.last['id'].should == merge_request_merged.id
+      end
     end
   end
 

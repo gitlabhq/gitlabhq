@@ -25,6 +25,10 @@ module API
       #   GET /projects/:id/merge_requests
       #   GET /projects/:id/merge_requests?state=opened
       #   GET /projects/:id/merge_requests?state=closed
+      #   GET /projects/:id/merge_requests?order_by=created_at
+      #   GET /projects/:id/merge_requests?order_by=created_at
+      #   GET /projects/:id/merge_requests?sort=desc
+      #   GET /projects/:id/merge_requests?sort=asc
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
@@ -34,6 +38,16 @@ module API
               when "closed" then user_project.merge_requests.closed
               when "merged" then user_project.merge_requests.merged
               else user_project.merge_requests
+              end
+
+        sort = case params["sort"]
+               when 'desc' then 'DESC'
+               else 'ASC'
+               end
+
+        mrs = case params["order_by"]
+              when 'updated_at' then mrs.order("updated_at #{sort}")
+              else  mrs.order("created_at #{sort}")
               end
 
         present paginate(mrs), with: Entities::MergeRequest
