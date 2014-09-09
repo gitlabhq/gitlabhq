@@ -356,16 +356,16 @@ To use GitLab with HTTPS:
     1. Review the configuration file and consider applying other security and performance enhancing features.
 
 Using a self-signed certificate is discouraged but if you must use it follow the normal directions then:
-    1. Generate a self-signed SSL certificate:
 
-        ```
-        mkdir -p /etc/nginx/ssl/
-        cd /etc/nginx/ssl/
-        sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
-        sudo chmod o-r gitlab.key
-        ```
+1. Generate a self-signed SSL certificate:
 
-    1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
+    ```
+    mkdir -p /etc/nginx/ssl/
+    cd /etc/nginx/ssl/
+    sudo openssl req -newkey rsa:2048 -x509 -nodes -days 3560 -out gitlab.crt -keyout gitlab.key
+    sudo chmod o-r gitlab.key
+    ```
+1. In the `config.yml` of gitlab-shell set `self_signed_cert` to `true`.
 
 ### Additional Markup Styles
 
