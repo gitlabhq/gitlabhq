@@ -10,12 +10,25 @@ v 7.3.0
   - Support Unix domain sockets for Redis
   - Store session Redis keys in 'session:gitlab:' namespace
   - Deprecate LDAP account takeover based on partial LDAP email / GitLab username match
+  - Use /bin/sh instead of Bash in bin/web, bin/background_jobs (Pavel Novitskiy)
   - Keyboard shortcuts for productivity (Robert Schilling)
   - API: filter issues by state (Julien Bianchi)
   - API: filter issues by labels (Julien Bianchi)
   - Add system hook for ssh key changes
   - Add blob permalink link (Ciro Santilli)
   - Create annotated tags through UI and API (Sean Edge)
+  - Snippets search (Charles Bushong)
+  - Comment new push to existing MR
+  - Add 'ci' to the blacklist of forbidden names
+  - Improve text filtering on issues page
+  - Comment & Close button
+  - Process git push --all much faster
+  - Don't allow edit of system notes
+  - Project wiki search (Ralf Seidler)
+
+v 7.2.1
+  - Delete orphaned labels during label migration (James Brooks)
+  - Security: prevent XSS with stricter MIME types for raw repo files
 
 v 7.2.0
   - Explore page
