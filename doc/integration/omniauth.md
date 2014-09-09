@@ -52,10 +52,10 @@ Before configuring individual OmniAuth providers there are a few global settings
         #     args: { scope: 'user:email' } }
 	# - {"name": 'shibboleth', 
 	#     args: { shib_session_id_field: "HTTP_SHIB_SESSION_ID",
-	#	      shib_application_id_field: "HTTP_SHIB_APPLICATION_ID",
-	#	      uid_field: "HTTP_EPPN",
-	#	      name_field: "HTTP_CN",
-	#	      info_fields: {"email": "HTTP_MAIL" } } }
+	#     shib_application_id_field: "HTTP_SHIB_APPLICATION_ID",
+	#     uid_field: "HTTP_EPPN",
+	#     name_field: "HTTP_CN",
+	#     info_fields: {"email": "HTTP_MAIL" } } }
 
     ```
 
