@@ -31,14 +31,6 @@ module CommitsHelper
     escape_javascript(render "projects/commits/#{template}", commit: commit, project: project) unless commit.nil?
   end
 
-  def diff_line_content(line)
-    if line.blank?
-      " &nbsp;"
-    else
-      line
-    end
-  end
-
   # Breadcrumb links for a Project and, if applicable, a tree path
   def commits_breadcrumbs
     return unless @project && @ref
@@ -119,10 +111,6 @@ module CommitsHelper
     else
       link_to(text.html_safe, user_path(user), options)
     end
-  end
-
-  def unfold_bottom_class(bottom)
-    (bottom) ? 'js-unfold-bottom' : ''
   end
 
   def view_file_btn(commit_sha, diff, project)
