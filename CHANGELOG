@@ -16,6 +16,12 @@ v 7.3.0
   - Add system hook for ssh key changes
   - Add blob permalink link (Ciro Santilli)
   - Create annotated tags through UI and API (Sean Edge)
+  - Snippets search (Charles Bushong)
+  - Comment new push to existing MR
+  - Improve text filtering on issues page
+  - Comment & Close button
+  - Process git push --all much faster
+  - Don't allow edit of system notes
 
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)
