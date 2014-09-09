@@ -21,7 +21,7 @@ module Gitlab
             extern_uid: uid,
             provider: provider,
             name: name,
-            username: username,
+            username: username.gsub( /[^\w\d\.-]/, "." ),
             email: email,
             password: password,
             password_confirmation: password,
