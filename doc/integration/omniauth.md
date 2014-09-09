@@ -50,7 +50,7 @@ Before configuring individual OmniAuth providers there are a few global settings
         # - { name: 'github', app_id: 'YOUR APP ID',
         #     app_secret: 'YOUR APP SECRET',
         #     args: { scope: 'user:email' } }
-	# - {"name": 'shibboleth',
+        # - {"name": 'shibboleth',
         #     args: { shib_session_id_field: "HTTP_SHIB_SESSION_ID",
         #     shib_application_id_field: "HTTP_SHIB_APPLICATION_ID",
         #     uid_field: "HTTP_EPPN",
