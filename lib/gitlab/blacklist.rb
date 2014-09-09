@@ -27,6 +27,7 @@ module Gitlab
         notes
         unsubscribes
         all
+        ci
       )
     end
   end
