@@ -1,0 +1,36 @@
+- too_big = diff_file.diff_lines.count > Commit::DIFF_SAFE_LINES
+- if too_big
+  %a.supp_diff_link Changes suppressed. Click to show
+
+%table.text-file{class: "#{'hide' if too_big}"}
+  - last_line = 0
+  - diff_file.diff_lines.each_with_index do |line, index|
+    - type = line.type
+    - last_line = line.new_pos
+    - line_code = generate_line_code(diff_file.file_path, line)
+    - line_old = line.old_pos
+    %tr.line_holder{ id: line_code, class: "#{type}" }
+      - if type == "match"
+        = render "projects/diffs/match_line", {line: line.text,
+          line_old: line_old, line_new: line.new_pos, bottom: false}
+      - else
+        %td.old_line
+          = link_to raw(type == "new" ? "&nbsp;" : line_old), "##{line_code}", id: line_code
+          - if @comments_allowed
+            = link_to_new_diff_note(line_code)
+        %td.new_line{data: {linenumber: line.new_pos}}
+          = link_to raw(type == "old" ? "&nbsp;" : line.new_pos) , "##{line_code}", id: line_code
+        %td.line_content{class: "noteable_line #{type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line.text)
+
+    - if @reply_allowed
+      - comments = @line_notes.select { |n| n.line_code == line_code }.sort_by(&:created_at)
+      - unless comments.empty?
+        = render "projects/notes/diff_notes_with_reply", notes: comments, line: line.text
+
+  - if last_line > 0
+    = render "projects/diffs/match_line", {line: "",
+      line_old: last_line, line_new: last_line, bottom: true}
+
+- if diff_file.diff.blank? && diff_file.mode_changed?
+  .file-mode-changed
+    File mode changed

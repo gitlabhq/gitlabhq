@@ -16,38 +16,6 @@ module CommitsHelper
     commit_person_link(commit, options.merge(source: :committer))
   end
 
-  def each_diff_line(diff, index)
-    Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
-      .each do |full_line, type, line_code, line_new, line_old|
-        yield(full_line, type, line_code, line_new, line_old)
-      end
-  end
-
-  def each_diff_line_near(diff, index, expected_line_code)
-    max_number_of_lines = 16
-
-    prev_match_line = nil
-    prev_lines = []
-
-    each_diff_line(diff, index) do |full_line, type, line_code, line_new, line_old|
-      line = [full_line, type, line_code, line_new, line_old]
-      if line_code != expected_line_code
-        if type == "match"
-          prev_lines.clear
-          prev_match_line = line
-        else
-          prev_lines.push(line)
-          prev_lines.shift if prev_lines.length >= max_number_of_lines
-        end
-      else
-        yield(prev_match_line) if !prev_match_line.nil?
-        prev_lines.each { |ln| yield(ln) }
-        yield(line)
-        break
-      end
-    end
-  end
-
   def image_diff_class(diff)
     if diff.deleted_file
       "deleted"
@@ -61,14 +29,6 @@ module CommitsHelper
   def commit_to_html(commit, project, inline = true)
     template = inline ? "inline_commit" : "commit"
     escape_javascript(render "projects/commits/#{template}", commit: commit, project: project) unless commit.nil?
-  end
-
-  def diff_line_content(line)
-    if line.blank?
-      " &nbsp;"
-    else
-      line
-    end
   end
 
   # Breadcrumb links for a Project and, if applicable, a tree path
@@ -103,82 +63,6 @@ module CommitsHelper
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
     branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
-  end
-
-  def parallel_diff_lines(project, commit, diff, file)
-    old_file = project.repository.blob_at(commit.parent_id, diff.old_path) if commit.parent_id
-    deleted_lines = {}
-    added_lines = {}
-    each_diff_line(diff, 0) do |line, type, line_code, line_new, line_old|
-      if type == "old"
-        deleted_lines[line_old] = { line_code: line_code, type: type, line: line }
-      elsif type == "new"
-        added_lines[line_new]   = { line_code: line_code, type: type, line: line }
-      end
-    end
-    max_length = old_file ? [old_file.loc, file.loc].max : file.loc
-
-    offset1 = 0
-    offset2 = 0
-    old_lines = []
-    new_lines = []
-
-    max_length.times do |line_index|
-      line_index1 = line_index - offset1
-      line_index2 = line_index - offset2
-      deleted_line = deleted_lines[line_index1 + 1]
-      added_line = added_lines[line_index2 + 1]
-      old_line = old_file.lines[line_index1] if old_file
-      new_line = file.lines[line_index2]
-
-      if deleted_line && added_line
-      elsif deleted_line
-        new_line = nil
-        offset2 += 1
-      elsif added_line
-        old_line = nil
-        offset1 += 1
-      end
-
-      old_lines[line_index] = DiffLine.new
-      new_lines[line_index] = DiffLine.new
-
-      # old
-      if line_index == 0 && diff.new_file
-        old_lines[line_index].type = :file_created
-        old_lines[line_index].content = 'File was created'
-      elsif deleted_line
-        old_lines[line_index].type = :deleted
-        old_lines[line_index].content = old_line
-        old_lines[line_index].num = line_index1 + 1
-        old_lines[line_index].code = deleted_line[:line_code]
-      elsif old_line
-        old_lines[line_index].type = :no_change
-        old_lines[line_index].content = old_line
-        old_lines[line_index].num = line_index1 + 1
-      else
-        old_lines[line_index].type = :added
-      end
-
-      # new
-      if line_index == 0 && diff.deleted_file
-        new_lines[line_index].type = :file_deleted
-        new_lines[line_index].content = "File was deleted"
-      elsif added_line
-        new_lines[line_index].type = :added
-        new_lines[line_index].num = line_index2 + 1
-        new_lines[line_index].content = new_line
-        new_lines[line_index].code = added_line[:line_code]
-      elsif new_line
-        new_lines[line_index].type = :no_change
-        new_lines[line_index].num = line_index2 + 1
-        new_lines[line_index].content = new_line
-      else
-        new_lines[line_index].type = :deleted
-      end
-    end
-
-    return old_lines, new_lines
   end
 
   def link_to_browse_code(project, commit)
@@ -227,14 +111,6 @@ module CommitsHelper
     else
       link_to(text.html_safe, user_path(user), options)
     end
-  end
-
-  def diff_file_mode_changed?(diff)
-    diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode
-  end
-
-  def unfold_bottom_class(bottom)
-    (bottom) ? 'js-unfold-bottom' : ''
   end
 
   def view_file_btn(commit_sha, diff, project)

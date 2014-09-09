@@ -1,0 +1,27 @@
+/ Side-by-side diff view
+%div.text-file
+  %table
+    - parallel_diff(diff_file, index).each do |line|
+      - type_left = line[0]
+      - line_number_left = line[1]
+      - line_content_left = line[2]
+      - line_code = line[3]
+      - type_right = line[4]
+      - line_number_right = line[5]
+      - line_content_right = line[6]
+
+      %tr.line_holder.parallel{id: line_code}
+        - if type_left == 'match'
+          = render "projects/diffs/match_line_parallel", { line: line_content_left,
+          line_old: line_number_left, line_new: line_number_right }
+        - elsif type_left ==  'old' || type_left.nil?
+          %td.old_line{class: "#{type_left}"}
+            = link_to raw(line_number_left), "##{line_code}", id: line_code
+            %td.line_content{class: "parallel noteable_line #{type_left} #{line_code}", "line_code" => line_code }= raw line_content_left
+          %td.new_line{ class: "#{type_right == 'new' ? 'new' : nil}", data: { linenumber: line_number_right }}
+            = link_to raw(line_number_right), "##{line_code}", id: line_code
+            %td.line_content.parallel{class: "noteable_line #{type_right == 'new' ? 'new' : nil} #{line_code}", "line_code" => line_code}= raw line_content_right
+
+- if diff_file.diff.diff.blank? && diff_file.mode_changed?
+  .file-mode-changed
+    File mode changed
