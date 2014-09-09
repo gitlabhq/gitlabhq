@@ -13,7 +13,7 @@ module DiffHelper
     end
   end
 
-  def show_diff_size_warninig?(diffs)
+  def show_diff_size_warning?(diffs)
     diffs.size > allowed_diff_size
   end
 
