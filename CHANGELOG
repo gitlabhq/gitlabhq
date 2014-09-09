@@ -18,6 +18,7 @@ v 7.3.0
   - Create annotated tags through UI and API (Sean Edge)
   - Snippets search (Charles Bushong)
   - Comment new push to existing MR
+  - Add 'ci' to the blacklist of forbidden names
   - Improve text filtering on issues page
   - Comment & Close button
   - Process git push --all much faster
