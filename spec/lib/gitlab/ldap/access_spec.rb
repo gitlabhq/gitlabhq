@@ -4,38 +4,68 @@ describe Gitlab::LDAP::Access do
   let(:access) { Gitlab::LDAP::Access.new }
   let(:user) { create(:user) }
 
-  describe :update_user_email do
-    let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
 
-    it "should not update email if email attribute is not set" do
-      entry = Net::LDAP::Entry.new
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+  describe :allowed? do
+    subject { access.allowed?(user) }
+
+    context 'when the user cannot be found' do
+      before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
+
+      it { should be_false }
     end
 
-    it "should not update the email if the user has the same email in GitLab and in LDAP" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = [user_ldap.email]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+    context 'when the user is found' do
+      before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
+
+      context 'and the user is diabled via active directory' do
+        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: true) }
+
+        it { should be_false }
+      end
+
+      context 'and has no disabled flag in active diretory' do
+        before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false) }
+
+        it { should be_true }
+      end
+    end
+  end
+
+  describe :update_permissions do
+    subject { access.update_permissions(user) }
+
+    before do
+      Gitlab.config.ldap['enabled'] = true
+      Gitlab.config.ldap['sync_ssh_keys'] = false
+      Gitlab.config.ldap['group_base'] = 'something'
+      Gitlab.config.ldap['admin_group'] = ''
     end
 
-    it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = [user_ldap.email.upcase]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+    after do
+      Gitlab.config.ldap['enabled'] = false
     end
 
-    it "should update the email if the user email is different" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = ["new_email@example.com"]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == true
+    it "syncs ssh keys if enabled by configuration" do
+      Gitlab.config.ldap['sync_ssh_keys'] = true
+      expect(access).to receive(:update_ssh_keys).with(user).once
+
+      subject
+    end
+
+    it "does not update group permissions without a group base configured" do
+      Gitlab.config.ldap['group_base'] = ''
+      expect(access).not_to receive(:update_ldap_group_links).with(user)
+
+      subject
+    end
+
+    it "does update admin group permissions if admin group is configured" do
+      Gitlab.config.ldap['admin_group'] = 'NSA'
+
+      access.stub(:update_ldap_group_links)
+      expect(access).to receive(:update_admin_status).with(user)
+
+      subject
     end
   end
 
@@ -83,7 +113,6 @@ describe Gitlab::LDAP::Access do
     end
 
     context 'user has at least one LDAPKey' do
-
       it "should remove a SSH key if it is no longer in LDAP" do
         entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{Gitlab.config.ldap['sync_ssh_keys']}:\n")
         Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
@@ -105,34 +134,43 @@ describe Gitlab::LDAP::Access do
         expect(user_ldap.keys.size).to be(0)
       end
     end
-
   end
 
-  describe :allowed? do
-    subject { access.allowed?(user) }
+  describe :update_user_email do
+    let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
 
-    context 'when the user cannot be found' do
-      before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
-
-      it { should be_false }
+    it "should not update email if email attribute is not set" do
+      entry = Net::LDAP::Entry.new
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
     end
 
-    context 'when the user is found' do
-      before { Gitlab::LDAP::Person.stub(find_by_dn: :ldap_user) }
+    it "should not update the email if the user has the same email in GitLab and in LDAP" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = [user_ldap.email]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
+    end
 
-      context 'and the Active Directory disabled flag is set' do
-        before { Gitlab::LDAP::Person.stub(active_directory_disabled?: true) }
+    it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = [user_ldap.email.upcase]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == false
+    end
 
-        it { should be_false }
-      end
-
-      context 'and the Active Directory disabled flag is not set' do
-        before { Gitlab::LDAP::Person.stub(active_directory_disabled?: false) }
-
-        it { should be_true }
-      end
+    it "should update the email if the user email is different" do
+      entry = Net::LDAP::Entry.new
+      entry['mail'] = ["new_email@example.com"]
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      updated = access.update_email(user_ldap)
+      updated.should == true
     end
   end
+
 
   describe :update_admin_status do
     let(:gitlab_user) { create(:user, provider: 'ldap', extern_uid: "admin2")}
@@ -178,6 +216,66 @@ objectclass: posixGroup
       expect(gitlab_admin.admin?).to be true
       access.update_admin_status(gitlab_admin)
       expect(gitlab_admin.admin?).to be false
+    end
+  end
+
+
+  describe :update_ldap_group_links do
+    let(:cns_with_access) { %w(ldap-group1 ldap-group2) }
+    let(:gitlab_group_1) { create :group }
+    let(:gitlab_group_2) { create :group }
+
+    before do
+      access.stub(:get_ldap_user)
+      access.stub(cns_with_access: cns_with_access)
+    end
+
+    context "non existing access for group-1, allowed via ldap-group1 as MASTER" do
+      before do
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+      end
+
+      it "gives the user master access for group 1" do
+        access.update_ldap_group_links(user)
+        expect( gitlab_group_1.has_master?(user) ).to be_true
+      end
+    end
+
+    context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
+      before do
+        gitlab_group_1.users_groups.guests.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+      end
+
+      it "upgrades the users access to master for group 1" do
+        expect { access.update_ldap_group_links(user) }.to \
+          change{ gitlab_group_1.has_master?(user) }.from(false).to(true)
+      end
+    end
+
+    context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
+      before do
+        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER
+      end
+
+      it "keeps the users master access for group 1" do
+        expect { access.update_ldap_group_links(user) }.not_to \
+          change{ gitlab_group_1.has_master?(user) }
+      end
+    end
+
+    context "existing access as master for group-1, not allowed" do
+      before do
+        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+        access.stub(cns_with_access: ['ldap-group2'])
+      end
+
+      it "removes user from gitlab_group_1" do
+        expect { access.update_ldap_group_links(user) }.to \
+          change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
+      end
     end
   end
 
@@ -248,65 +346,6 @@ objectclass: posixGroup
     it "only returns ldap cns to which the user has access" do
       access.stub(ldap_groups: ldap_groups)
       expect(access.cns_with_access(ldap_user)).to eql ['group1']
-    end
-  end
-
-  describe :update_ldap_group_links do
-    let(:cns_with_access) { %w(ldap-group1 ldap-group2) }
-    let(:gitlab_group_1) { create :group }
-    let(:gitlab_group_2) { create :group }
-
-    before do
-      access.stub(:get_ldap_user)
-      access.stub(cns_with_access: cns_with_access)
-    end
-
-    context "non existing access for group-1, allowed via ldap-group1 as MASTER" do
-      before do
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
-      end
-
-      it "gives the user master access for group 1" do
-        access.update_ldap_group_links(user)
-        expect( gitlab_group_1.has_master?(user) ).to be_true
-      end
-    end
-
-    context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
-      before do
-        gitlab_group_1.users_groups.guests.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
-      end
-
-      it "upgrades the users access to master for group 1" do
-        expect { access.update_ldap_group_links(user) }.to \
-          change{ gitlab_group_1.has_master?(user) }.from(false).to(true)
-      end
-    end
-
-    context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
-      before do
-        gitlab_group_1.users_groups.masters.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER
-      end
-
-      it "keeps the users master access for group 1" do
-        expect { access.update_ldap_group_links(user) }.not_to \
-          change{ gitlab_group_1.has_master?(user) }
-      end
-    end
-
-    context "existing access as master for group-1, not allowed" do
-      before do
-        gitlab_group_1.users_groups.masters.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
-        access.stub(cns_with_access: ['ldap-group2'])
-      end
-
-      it "removes user from gitlab_group_1" do
-        expect { access.update_ldap_group_links(user) }.to \
-          change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
-      end
     end
   end
 end

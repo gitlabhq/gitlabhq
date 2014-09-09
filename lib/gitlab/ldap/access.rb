@@ -29,7 +29,7 @@ module Gitlab
 
       def allowed?(user)
         if Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
-          !Gitlab::LDAP::Person.active_directory_disabled?(user.extern_uid, adapter)
+          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
         else
           false
         end
@@ -114,6 +114,19 @@ module Gitlab
         end
       end
 
+      # Loop throug all ldap conneted groups, and update the users link with it
+      def update_ldap_group_links(user)
+        gitlab_groups_with_ldap_link.each do |group|
+          active_group_links = group.ldap_group_links.where(cn: cns_with_access(get_ldap_user(user)))
+
+          if active_group_links.any?
+            group.add_users([user.id], fetch_group_access(group, user, active_group_links))
+          else
+            group.users.delete(user)
+          end
+        end
+      end
+
       def ldap_groups
         @ldap_groups ||= ::LdapGroupLink.distinct(:cn).pluck(:cn).map do |cn|
           Gitlab::LDAP::Group.find_by_cn(cn, adapter)
@@ -127,22 +140,10 @@ module Gitlab
         end.map(&:cn)
       end
 
+      private
       def gitlab_groups_with_ldap_link
         ::Group.includes(:ldap_group_links).references(:ldap_group_links).
           where.not(ldap_group_links: { id: nil })
-      end
-
-      # Loop throug all ldap conneted groups, and update the users link with it
-      def update_ldap_group_links(user)
-        gitlab_groups_with_ldap_link.each do |group|
-          active_group_links = group.ldap_group_links.where(cn: cns_with_access(get_ldap_user(user)))
-
-          if active_group_links.any?
-            group.add_users([user.id], fetch_group_access(group, user, active_group_links))
-          else
-            group.users.delete(user)
-          end
-        end
       end
 
       # Get the group_access for a give user.
