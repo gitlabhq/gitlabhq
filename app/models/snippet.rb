@@ -65,4 +65,18 @@ class Snippet < ActiveRecord::Base
   def expired?
     expires_at && expires_at < Time.current
   end
+
+  class << self
+    def search(query)
+      where('(title LIKE :query OR file_name LIKE :query)', query: "%#{query}%")
+    end
+
+    def search_code(query)
+      where('(content LIKE :query)', query: "%#{query}%")
+    end
+
+    def accessible_to(user)
+      where('private = ? OR author_id = ?', false, user)
+    end
+  end
 end
