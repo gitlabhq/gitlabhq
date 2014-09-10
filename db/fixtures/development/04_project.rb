@@ -4,9 +4,9 @@ Sidekiq::Testing.inline! do
   Gitlab::Seeder.quiet do
     project_urls = [
       'https://github.com/documentcloud/underscore.git',
-      'https://github.com/gitlabhq/gitlabhq.git',
-      'https://github.com/gitlabhq/gitlab-ci.git',
-      'https://github.com/gitlabhq/gitlab-shell.git',
+      'https://gitlab.com/gitlab-org/gitlab-ce.git',
+      'https://gitlab.com/gitlab-org/gitlab-ci.git',
+      'https://gitlab.com/gitlab-org/gitlab-shell.git',
       'https://gitlab.com/gitlab-org/testme.git',
       'https://github.com/twitter/flight.git',
       'https://github.com/twitter/typeahead.js.git',
