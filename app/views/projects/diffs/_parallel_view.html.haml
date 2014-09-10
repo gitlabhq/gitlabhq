@@ -1,5 +1,5 @@
 / Side-by-side diff view
-%div.text-file
+%div.text-file.diff-wrap-lines
   %table
     - parallel_diff(diff_file, index).each do |line|
       - type_left = line[0]
