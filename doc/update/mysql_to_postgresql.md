@@ -21,6 +21,9 @@ sudo -u git psql -f databasename.psql -d gitlabhq_production
 
 # Rebuild indexes (see below)
 
+# Install gems for PostgreSQL (note: the line below states '--without ... mysql')
+sudo -u git -H bundle install --without development test mysql --deployment
+
 sudo service gitlab start
 ```
 
