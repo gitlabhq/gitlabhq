@@ -204,6 +204,11 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
+  OpenID.fetcher.ca_file = Gitlab.config.omniauth.openid_ca_file
+
+  config.omniauth :open_id,
+     name: 'openid'
+
   if Gitlab.config.ldap.enabled
     if Gitlab.config.ldap.allow_username_or_email_login
       email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
