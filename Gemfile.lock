@@ -168,7 +168,7 @@ GEM
       multi_json
     gitlab-grack (2.0.0.pre)
       rack (~> 1.5.1)
-    gitlab-grit (2.6.10)
+    gitlab-grit (2.6.11)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
@@ -186,8 +186,8 @@ GEM
       gitlab-linguist (~> 3.0)
       rugged (~> 0.21.0)
     gitlab_meta (7.0)
-    gitlab_omniauth-ldap (1.0.4)
-      net-ldap (~> 0.3.1)
+    gitlab_omniauth-ldap (1.1.0)
+      net-ldap (~> 0.7.0)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
@@ -292,7 +292,7 @@ GEM
     multi_xml (0.5.5)
     multipart-post (1.2.0)
     mysql2 (0.3.16)
-    net-ldap (0.3.1)
+    net-ldap (0.7.0)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.8.0)
@@ -321,6 +321,8 @@ GEM
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    omniauth-shibboleth (1.1.1)
+      omniauth (>= 1.0.0)
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
@@ -616,7 +618,7 @@ DEPENDENCIES
   gitlab_emoji (~> 0.0.1.1)
   gitlab_git (~> 6.0)
   gitlab_meta (= 7.0)
-  gitlab_omniauth-ldap (= 1.0.4)
+  gitlab_omniauth-ldap (= 1.1.0)
   gollum-lib (~> 3.0.0)
   gon (~> 5.0.0)
   grape (~> 0.6.1)
@@ -644,6 +646,7 @@ DEPENDENCIES
   omniauth-github
   omniauth-google-oauth2
   omniauth-twitter
+  omniauth-shibboleth
   org-ruby
   pg
   poltergeist (~> 1.5.1)

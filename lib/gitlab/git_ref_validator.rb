@@ -1,0 +1,11 @@
+module Gitlab
+  module GitRefValidator
+    extend self
+    # Validates a given name against the git reference specification
+    #
+    # Returns true for a valid reference name, false otherwise
+    def validate(ref_name)
+      system *%W(git check-ref-format refs/#{ref_name})
+    end
+  end
+end

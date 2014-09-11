@@ -1,10 +1,8 @@
-# GitLab
+# ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
 ## Open source software to collaborate on code
 
-![logo](https://gitlab.com/gitlab-org/gitlab-ce/raw/master/public/gitlab_logo.png)
-
-![animated-screenshots](https://gist.github.com/fnkr/2f9badd56bfe0ed04ee7/raw/4f48806fbae97f556c2f78d8c2d299c04500cb0d/compiled.gif)
+![Animated screenshots](https://about.gitlab.com/images/animated/compiled.gif)
 
 - Manage Git repositories with fine grained access controls that keep your code secure
 - Perform code reviews and enhance collaboration with merge requests
@@ -21,6 +19,8 @@
 
 - [![build status](https://ci.gitlab.org/projects/1/status.png?ref=master)](https://ci.gitlab.org/projects/1?ref=master) on ci.gitlab.org (master branch)
 
+- [![Build Status](https://semaphoreapp.com/api/v1/projects/2f1a5809-418b-4cc2-a1f4-819607579fe7/243338/badge.png)](https://semaphoreapp.com/gitlabhq/gitlabhq)
+
 - [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 
 - [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
@@ -29,14 +29,14 @@
 
 ## Website
 
-On [www.gitlab.com](https://www.gitlab.com/) you can find more information about:
+On [about.gitlab.com](https://about.gitlab.com/) you can find more information about:
 
-- [Subscriptions](https://www.gitlab.com/subscription/)
-- [Consultancy](https://www.gitlab.com/consultancy/)
-- [Community](https://www.gitlab.com/community/)
-- [Hosted GitLab.com](https://www.gitlab.com/gitlab-com/) use GitLab as a free service
-- [GitLab Enterprise Edition](https://www.gitlab.com/gitlab-ee/) with additional features aimed at larger organizations.
-- [GitLab CI](https://www.gitlab.com/gitlab-ci/) a continuous integration (CI) server that is easy to integrate with GitLab.
+- [Subscriptions](https://about.gitlab.com/subscription/)
+- [Consultancy](https://about.gitlab.com/consultancy/)
+- [Community](https://about.gitlab.com/community/)
+- [Hosted GitLab.com](https://about.gitlab.com/gitlab-com/) use GitLab as a free service
+- [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/) with additional features aimed at larger organizations.
+- [GitLab CI](https://about.gitlab.com/gitlab-ci/) a continuous integration (CI) server that is easy to integrate with GitLab.
 
 ## Third-party applications
 
@@ -61,11 +61,11 @@ These applications are maintained by contributors, GitLab B.V. does not offer su
 
 ## Installation
 
-Please see [the installation page on the GitLab website](https://www.gitlab.com/installation/).
+Please see [the installation page on the GitLab website](https://about.gitlab.com/installation/).
 
 ### New versions
 
-Since 2011 a minor or major version of GitLab is released on the 22nd of every month. Patch and security releases come out when needed.  New features are detailed on the [blog](https://www.gitlab.com/blog/) and in the [changelog](CHANGELOG). For more information about the release process see the release [documentation](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/release). Features that will likely be in the next releases can be found on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
+Since 2011 a minor or major version of GitLab is released on the 22nd of every month. Patch and security releases come out when needed.  New features are detailed on the [blog](https://about.gitlab.com/blog/) and in the [changelog](CHANGELOG). For more information about the release process see the release [documentation](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/release). Features that will likely be in the next releases can be found on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
 ### Upgrading
 
@@ -85,7 +85,8 @@ Please login with `root` / `5iveL!fe`
 
 ## Install a development environment
 
-We recommend setting up your development environment with [the cookbook](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/README.md#installation). If you do not use the cookbook you might need to copy the example development unicorn configuration file
+We recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
+If you do not use the development kit you might need to copy the example development unicorn configuration file
 
     cp config/unicorn.rb.example.development config/unicorn.rb
 
@@ -126,7 +127,7 @@ All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/
 
 ## Getting help
 
-Please see [Getting help for GitLab](https://www.gitlab.com/getting-help/) on our website for the many options to get help.
+Please see [Getting help for GitLab](https://about.gitlab.com/getting-help/) on our website for the many options to get help.
 
 ## Is it any good?
 

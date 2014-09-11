@@ -1,7 +1,7 @@
 - if @lines.present?
   - if @form.unfold? && @form.since != 1 && !@form.bottom?
     %tr.line_holder{ id: @form.since }
-      = render "projects/commits/diffs/match_line", {line: @match_line,
+      = render "projects/diffs/match_line", {line: @match_line,
         line_old: @form.since, line_new: @form.since, bottom: false}
 
   - @lines.each_with_index do |line, index|
@@ -15,5 +15,5 @@
 
   - if @form.unfold? && @form.bottom? && @form.to < @blob.loc
     %tr.line_holder{ id: @form.to }
-      = render "projects/commits/diffs/match_line", {line: @match_line,
+      = render "projects/diffs/match_line", {line: @match_line,
         line_old: @form.to, line_new: @form.to, bottom: true}

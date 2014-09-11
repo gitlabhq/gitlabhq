@@ -75,7 +75,7 @@
 
   %h4 Changes
   - if @diffs.present?
-    = render "projects/commits/diffs", diffs: @diffs, project: @project
+    = render "projects/diffs/diffs", diffs: @diffs, project: @project
   - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
     .bs-callout.bs-callout-danger
       %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.

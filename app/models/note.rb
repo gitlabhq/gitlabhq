@@ -117,6 +117,25 @@ class Note < ActiveRecord::Base
       })
     end
 
+    def create_new_commits_note(noteable, project, author, commits)
+      commits_text = ActionController::Base.helpers.pluralize(commits.size, 'new commit')
+      body = "Added #{commits_text}:\n\n"
+
+      commits.each do |commit|
+        message = "* #{commit.short_id} - #{commit.title}"
+        body << message
+        body << "\n"
+      end
+
+      create(
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      )
+    end
+
     def discussions_from_notes(notes)
       discussion_ids = []
       discussions = []
@@ -190,9 +209,10 @@ class Note < ActiveRecord::Base
     noteable.diffs.each do |mr_diff|
       next unless mr_diff.new_path == self.diff.new_path
 
-      Gitlab::DiffParser.new(mr_diff.diff.lines.to_a, mr_diff.new_path).
-        each do |full_line, type, line_code, line_new, line_old|
-        if full_line == diff_line
+      lines = Gitlab::Diff::Parser.new.parse(mr_diff.diff.lines.to_a)
+
+      lines.each do |line|
+        if line.text == diff_line
           return true
         end
       end
@@ -213,6 +233,14 @@ class Note < ActiveRecord::Base
     diff.new_path if diff
   end
 
+  def file_path
+    if diff.new_path.present?
+      diff.new_path
+    elsif diff.old_path.present?
+      diff.old_path
+    end
+  end
+
   def diff_old_line
     line_code.split('_')[1].to_i
   end
@@ -221,17 +249,47 @@ class Note < ActiveRecord::Base
     line_code.split('_')[2].to_i
   end
 
+  def generate_line_code(line)
+    Gitlab::Diff::LineCode.generate(file_path, line.new_pos, line.old_pos)
+  end
+
   def diff_line
     return @diff_line if @diff_line
 
     if diff
-      Gitlab::DiffParser.new(diff.diff.lines.to_a, diff.new_path)
-        .each do |full_line, type, line_code, line_new, line_old|
-          @diff_line = full_line if line_code == self.line_code
+      diff_lines.each do |line|
+        if generate_line_code(line) == self.line_code
+          @diff_line = line.text
         end
+      end
     end
 
     @diff_line
+  end
+
+  def truncated_diff_lines
+    max_number_of_lines = 16
+    prev_match_line = nil
+    prev_lines = []
+
+    diff_lines.each do |line|
+      if generate_line_code(line) != self.line_code
+        if line.type == "match"
+          prev_lines.clear
+          prev_match_line = line
+        else
+          prev_lines.push(line)
+          prev_lines.shift if prev_lines.length >= max_number_of_lines
+        end
+      else
+        prev_lines << line
+        return prev_lines
+      end
+    end
+  end
+
+  def diff_lines
+    @diff_lines ||= Gitlab::Diff::Parser.new.parse(diff.diff.lines.to_a)
   end
 
   def discussion_id
