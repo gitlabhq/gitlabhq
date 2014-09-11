@@ -45,4 +45,3 @@ Feature: Project Labels
     And I visit project "Forum" new label page
     When I submit new label 'bug'
     Then I should see label 'bug'
-
