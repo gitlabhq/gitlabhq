@@ -645,8 +645,8 @@ DEPENDENCIES
   omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
-  omniauth-twitter
   omniauth-shibboleth
+  omniauth-twitter
   org-ruby
   pg
   poltergeist (~> 1.5.1)
