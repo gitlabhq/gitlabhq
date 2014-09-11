@@ -211,15 +211,17 @@ Devise.setup do |config|
       email_stripping_proc = ->(name) {name}
     end
 
-    config.omniauth :ldap,
-      host:     Gitlab.config.ldap['host'],
-      base:     Gitlab.config.ldap['base'],
-      uid:      Gitlab.config.ldap['uid'],
-      port:     Gitlab.config.ldap['port'],
-      method:   Gitlab.config.ldap['method'],
-      bind_dn:  Gitlab.config.ldap['bind_dn'],
-      password: Gitlab.config.ldap['password'],
-      name_proc: email_stripping_proc
+    Gitlab.config.ldap.servers.each_with_index do |server, i|
+      config.omniauth :"ldap#{i}",
+        host:     server['host'],
+        base:     server['base'],
+        uid:      server['uid'],
+        port:     server['port'],
+        method:   server['method'],
+        bind_dn:  server['bind_dn'],
+        password: server['password'],
+        name_proc: email_stripping_proc
+    end
   end
 
   Gitlab.config.omniauth.providers.each do |provider|
