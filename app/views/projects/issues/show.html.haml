@@ -68,6 +68,7 @@
 
   .issue-show-labels.pull-right
     - @issue.labels.each do |label|
-      = render_colored_label(label)
+      = link_to project_issues_path(@project, label_name: label.name) do
+        = render_colored_label(label)
 
 .voting_notes#notes= render "projects/notes/notes_with_form"
