@@ -1,4 +1,4 @@
-# Database Mysql
+# Database MySQL
 
 ## Note
 
@@ -12,16 +12,16 @@ We do not recommend using MySQL due to various issues. For example, case [(in)se
     # Ensure you have MySQL version 5.5.14 or later
     mysql --version
 
-    # Pick a database root password (can be anything), type it and press enter
-    # Retype the database root password and press enter
+    # Pick a MySQL root password (can be anything), type it and press enter
+    # Retype the MySQL root password and press enter
 
-    # Secure your installation.
+    # Secure your installation
     sudo mysql_secure_installation
 
     # Login to MySQL
     mysql -u root -p
 
-    # Type the database root password
+    # Type the MySQL root password
 
     # Create a user for GitLab
     # do not type the 'mysql>', this is part of the prompt
