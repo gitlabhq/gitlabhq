@@ -4,20 +4,22 @@
   .panel-body
     - if ldap_enabled? && gitlab_config.signin_enabled
       %ul.nav.nav-tabs
-        %li.active
-          = link_to 'LDAP', '#tab-ldap', 'data-toggle' => 'tab'
+        - @ldap_servers.each_with_index do |server, i|
+          %li{class: (:active if server['primary'])}
+            = link_to server['name'], "#tab-ldap#{i}", 'data-toggle' => 'tab'
         %li
           = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
-        %div#tab-ldap.tab-pane.active
-          = render partial: 'devise/sessions/new_ldap'
+        - @ldap_servers.each_with_index do |server, i|
+          %div.tab-pane{id: "tab-ldap#{i}", class: (:active if server['primary'])}
+            = render 'devise/sessions/new_ldap', provider: "ldap#{i}"
         %div#tab-signin.tab-pane
-          = render partial: 'devise/sessions/new_base'
+          = render 'devise/sessions/new_base'
 
     - elsif ldap_enabled?
-      = render partial: 'devise/sessions/new_ldap'
+      = render 'devise/sessions/new_ldap', ldap_servers: @ldap_servers
     - elsif gitlab_config.signin_enabled
-      = render partial: 'devise/sessions/new_base'
+      = render 'devise/sessions/new_base'
     - else
       %div
         No authentication methods configured.

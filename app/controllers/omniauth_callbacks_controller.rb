@@ -30,6 +30,13 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     end
   end
 
+  alias_method :ldap0, :ldap
+  alias_method :ldap1, :ldap
+  alias_method :ldap2, :ldap
+  alias_method :ldap3, :ldap
+  alias_method :ldap4, :ldap
+  alias_method :ldap5, :ldap
+
   def omniauth_error
     @provider = params[:provider]
     @error = params[:error]

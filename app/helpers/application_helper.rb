@@ -244,10 +244,6 @@ module ApplicationHelper
     end
   end
 
-  def ldap_enabled?
-    Gitlab.config.ldap.enabled
-  end
-
   def link_to(name = nil, options = nil, html_options = nil, &block)
     begin
       uri = URI(options)
