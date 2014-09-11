@@ -10,37 +10,20 @@ module Gitlab
   module LDAP
     class User < Gitlab::OAuth::User
       class << self
-        def find_or_create(auth)
-          @auth = auth
+        def find_or_create(auth_hash)
+          self.auth_hash = auth_hash
+          find(auth_hash) || find_and_connect_by_email(auth_hash) || create(auth_hash)
+        end
 
-          if uid.blank? || email.blank? || username.blank?
-            raise_error("Account must provide a dn, uid and email address")
+        def find_and_connect_by_email(auth_hash)
+          self.auth_hash = auth_hash
+          user = model.find_by(email: self.auth_hash.email)
+
+          if user
+            user.update_attributes(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+            Gitlab::AppLogger.info("(LDAP) Updating legacy LDAP user #{self.auth_hash.email} with extern_uid => #{auth_hash.uid}")
+            return user
           end
-
-          user = find(auth)
-
-          unless user
-            # Look for user with same emails
-            #
-            # Possible cases:
-            # * When user already has account and need to link their LDAP account.
-            # * LDAP uid changed for user with same email and we need to update their uid
-            #
-            user = model.find_by(email: email)
-
-            if user
-              user.update_attributes(extern_uid: uid, provider: provider)
-              log.info("(LDAP) Updating legacy LDAP user #{email} with extern_uid => #{uid}")
-            else
-              # Create a new user inside GitLab database
-              # based on LDAP credentials
-              #
-              #
-              user = create(auth)
-            end
-          end
-
-          user
         end
 
         def authenticate(login, password)
@@ -48,17 +31,8 @@ module Gitlab
           # Only check with valid login and password to prevent anonymous bind results
           return nil unless ldap_conf.enabled && login.present? && password.present?
 
-          ldap = OmniAuth::LDAP::Adaptor.new(ldap_conf)
-          filter = Net::LDAP::Filter.eq(ldap.uid, login)
-
-          # Apply LDAP user filter if present
-          if ldap_conf['user_filter'].present?
-            user_filter = Net::LDAP::Filter.construct(ldap_conf['user_filter'])
-            filter = Net::LDAP::Filter.join(filter, user_filter)
-          end
-
-          ldap_user = ldap.bind_as(
-            filter: filter,
+          ldap_user = adapter.bind_as(
+            filter: user_filter(login),
             size: 1,
             password: password
           )
@@ -66,10 +40,14 @@ module Gitlab
           find_by_uid(ldap_user.dn) if ldap_user
         end
 
-        private
+        def adapter
+          @adapter ||= OmniAuth::LDAP::Adaptor.new(ldap_conf)
+        end
+
+        protected
 
         def find_by_uid_and_provider
-          find_by_uid(uid)
+          find_by_uid(auth_hash.uid)
         end
 
         def find_by_uid(uid)
@@ -88,6 +66,20 @@ module Gitlab
         def ldap_conf
           Gitlab.config.ldap
         end
+
+        def user_filter(login)
+          filter = Net::LDAP::Filter.eq(adapter.uid, login)
+          # Apply LDAP user filter if present
+          if ldap_conf['user_filter'].present?
+            user_filter = Net::LDAP::Filter.construct(ldap_conf['user_filter'])
+            filter = Net::LDAP::Filter.join(filter, user_filter)
+          end
+          filter
+        end
+      end
+
+      def needs_blocking?
+        false
       end
     end
   end
