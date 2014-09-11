@@ -24,7 +24,7 @@
         .zennable
           %input#zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
           .zen-backdrop
-            = f.text_area :description, class: 'form-control js-gfm-input markdown-area mousetrap', rows: 10, placeholder: 'Leave a comment'
+            = f.text_area :description, class: 'form-control js-gfm-input markdown-area', rows: 10, placeholder: 'Leave a comment'
             %label{ for: 'zen-toggle-comment', class: 'expand' } Edit in fullscreen
             %label{ for: 'zen-toggle-comment', class: 'collapse' }
         .clearfix.hint
