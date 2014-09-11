@@ -21,7 +21,12 @@
       .form-group
         .light
           = f.label :description, "Description"
-        = f.text_area :description, class: "form-control js-gfm-input markdown-area", rows: 10
+        .zennable
+          %input#zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
+          .zen-backdrop
+            = f.text_area :description, class: 'form-control js-gfm-input markdown-area mousetrap', rows: 10, placeholder: 'Leave a comment'
+            %label{ for: 'zen-toggle-comment', class: 'expand' } Edit in fullscreen
+            %label{ for: 'zen-toggle-comment', class: 'collapse' }
         .clearfix.hint
           .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
           .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
