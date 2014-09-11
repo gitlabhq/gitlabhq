@@ -119,3 +119,10 @@ Feature: Project Issues
     Given I click link "New Issue"
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
+
+  Scenario: Clickable labels
+    Given issue 'Release 0.4' has label 'bug'
+    And I visit project "Shop" issues page
+    When I click label 'bug'
+    And I should see "Release 0.4" in issues
+    And I should not see "Tweet control" in issues

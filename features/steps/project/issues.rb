@@ -218,6 +218,18 @@ class ProjectIssues < Spinach::FeatureSteps
     page.should_not have_content 'Bugfix1'
   end
 
+  step 'issue \'Release 0.4\' has label \'bug\'' do
+    label = project.labels.create!(name: 'bug', color: '#990000')
+    issue = Issue.find_by!(title: 'Release 0.4')
+    issue.labels << label
+  end
+
+  step 'I click label \'bug\'' do
+    within ".issues-list" do
+      click_link 'bug'
+    end
+  end
+
   def filter_issue(text)
     fill_in 'issue_search', with: text
 
