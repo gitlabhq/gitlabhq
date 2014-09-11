@@ -17,7 +17,8 @@ class Service < ActiveRecord::Base
   serialize :properties, JSON
 
   default_value_for :active, false
-  default_value_for :properties, {}
+
+  after_initialize :initialize_properties
 
   belongs_to :project
   has_one :service_hook
@@ -30,6 +31,10 @@ class Service < ActiveRecord::Base
 
   def category
     :common
+  end
+
+  def initialize_properties
+    self.properties = {} if properties.nil?
   end
 
   def title

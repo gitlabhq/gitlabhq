@@ -1,6 +1,7 @@
 class SerializeServiceProperties < ActiveRecord::Migration
   def change
     add_column :services, :properties, :text
+    Service.reset_column_information
 
     associations =
     {
@@ -13,7 +14,7 @@ class SerializeServiceProperties < ActiveRecord::Migration
       HipchatService:         [:token, :room],
       PivotaltrackerService:  [:token],
       SlackService:           [:subdomain, :token, :room],
-      JenkinsService:         [:token, :subdomain],
+      JenkinsService:         [:project_url],
       JiraService:            [:project_url, :username, :password,
                                :api_version, :jira_issue_transition_id],
     }
