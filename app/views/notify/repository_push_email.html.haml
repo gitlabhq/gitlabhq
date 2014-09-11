@@ -20,8 +20,11 @@
       - else
         = diff.new_path || diff.old_path
     %hr
-    %pre
-      = diff.diff
+    :ruby
+      require 'rouge'
+      formatter = Rouge::Formatters::HTML.new(:css_class => 'highlight')
+      lexer = Rouge::Lexers::Diff.new
+      haml_io.puts formatter.format(lexer.lex(diff.diff))
     %br
 
 - if @compare.timeout
