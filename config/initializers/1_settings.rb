@@ -59,6 +59,14 @@ Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
 Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 
+# backwards compatibility, we only have one host
+if Settings.ldap['enabled'] && Settings.ldap['host'].present?
+  per_server_keys = %w(host port uid method base user_filter group_base admin_group)
+  server = Settings.ldap.slice(per_server_keys)
+  server['primary'] = true
+  server['name'] = 'LDAP'
+  Settings.ldap['servers'] = [server]
+end
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
