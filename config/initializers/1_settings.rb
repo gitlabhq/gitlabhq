@@ -61,8 +61,8 @@ Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] && Settings.ldap['host'].present?
-  per_server_keys = %w(host port uid method base user_filter group_base admin_group)
-  server = Settings.ldap.slice(per_server_keys)
+  excluded_per_server_settings = %w(sync_time allow_username_or_email_login)
+  server = Settings.ldap.except(excluded_per_server_settings)
   server['primary'] = true
   server['name'] = 'LDAP'
   Settings.ldap['servers'] = [server]
