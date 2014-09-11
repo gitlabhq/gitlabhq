@@ -6,8 +6,8 @@ Feature: Project Labels
     Given I visit project "Shop" labels page
 
   Scenario: I should see labels list
-    Then I should see label "bug"
-    And I should see label "feature"
+    Then I should see label 'bug'
+    And I should see label 'feature'
 
   Scenario: I create new label
     Given I visit project "Shop" new label page
