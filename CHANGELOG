@@ -27,6 +27,7 @@ v 7.3.0
   - Project wiki search (Ralf Seidler)
   - Enabled Shibboleth authentication support (Matus Banas)
   - Zen mode (fullscreen) for issues/MR/notes (Robert Schilling)
+  - Add ability to configure webhook timeout via gitlab.yml (Wes Gurney)
 
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)
