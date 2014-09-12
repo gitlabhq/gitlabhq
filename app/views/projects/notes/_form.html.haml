@@ -14,7 +14,12 @@
         Preview
   %div
     .note-write-holder
-      = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input markdown-area'
+      .zennable
+        %input#zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
+        .zen-backdrop
+          = f.text_area :note, size: 255, class: 'note_text js-note-text js-gfm-input markdown-area', placeholder: 'Leave a comment'
+          %label{ for: 'zen-toggle-comment', class: 'expand' } Edit in fullscreen
+          %label{ for: 'zen-toggle-comment', class: 'collapse' }
 
       .light.clearfix
         .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}

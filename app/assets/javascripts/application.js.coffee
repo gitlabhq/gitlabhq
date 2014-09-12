@@ -34,6 +34,7 @@
 #= require dropzone
 #= require semantic-ui/sidebar
 #= require mousetrap
+#= require mousetrap/pause
 #= require shortcuts
 #= require shortcuts_navigation
 #= require shortcuts_dashboard_navigation

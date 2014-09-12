@@ -26,6 +26,7 @@ v 7.3.0
   - Don't allow edit of system notes
   - Project wiki search (Ralf Seidler)
   - Enabled Shibboleth authentication support (Matus Banas)
+  - Zen mode (fullscreen) for issues/MR/notes (Robert Schilling)
 
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)
