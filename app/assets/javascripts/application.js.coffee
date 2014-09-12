@@ -27,6 +27,112 @@
 #= require highlight.pack
 #= require ace/ace
 #= require ace/ext-searchbox
+#= require ace/ext-modelist
+#= require ace/mode-abap
+#= require ace/mode-actionscript
+#= require ace/mode-ada
+#= require ace/mode-asciidoc
+#= require ace/mode-assembly_x86
+#= require ace/mode-autohotkey
+#= require ace/mode-batchfile
+#= require ace/mode-c9search
+#= require ace/mode-c_cpp
+#= require ace/mode-clojure
+#= require ace/mode-cobol
+#= require ace/mode-coffee
+#= require ace/mode-coldfusion
+#= require ace/mode-csharp
+#= require ace/mode-css
+#= require ace/mode-curly
+#= require ace/mode-d
+#= require ace/mode-dart
+#= require ace/mode-diff
+#= require ace/mode-django
+#= require ace/mode-dot
+#= require ace/mode-ejs
+#= require ace/mode-erlang
+#= require ace/mode-forth
+#= require ace/mode-ftl
+#= require ace/mode-glsl
+#= require ace/mode-golang
+#= require ace/mode-groovy
+#= require ace/mode-haml
+#= require ace/mode-handlebars
+#= require ace/mode-haskell
+#= require ace/mode-haxe
+#= require ace/mode-html
+#= require ace/mode-html_completions
+#= require ace/mode-html_ruby
+#= require ace/mode-ini
+#= require ace/mode-jack
+#= require ace/mode-jade
+#= require ace/mode-java
+#= require ace/mode-javascript
+#= require ace/mode-json
+#= require ace/mode-jsp
+#= require ace/mode-jsx
+#= require ace/mode-julia
+#= require ace/mode-latex
+#= require ace/mode-less
+#= require ace/mode-liquid
+#= require ace/mode-lisp
+#= require ace/mode-livescript
+#= require ace/mode-logiql
+#= require ace/mode-lsl
+#= require ace/mode-lua
+#= require ace/mode-luahtml
+#= require ace/mode-luapage
+#= require ace/mode-lucene
+#= require ace/mode-makefile
+#= require ace/mode-markdown
+#= require ace/mode-matlab
+#= require ace/mode-mushcode
+#= require ace/mode-mushcode_high_rules
+#= require ace/mode-mysql
+#= require ace/mode-nix
+#= require ace/mode-objectivec
+#= require ace/mode-ocaml
+#= require ace/mode-pascal
+#= require ace/mode-perl
+#= require ace/mode-pgsql
+#= require ace/mode-plain_text
+#= require ace/mode-powershell
+#= require ace/mode-prolog
+#= require ace/mode-properties
+#= require ace/mode-protobuf
+#= require ace/mode-python
+#= require ace/mode-r
+#= require ace/mode-rdoc
+#= require ace/mode-rhtml
+#= require ace/mode-ruby
+#= require ace/mode-rust
+#= require ace/mode-sass
+#= require ace/mode-scad
+#= require ace/mode-scala
+#= require ace/mode-scheme
+#= require ace/mode-scss
+#= require ace/mode-sh
+#= require ace/mode-sjs
+#= require ace/mode-snippets
+#= require ace/mode-soy_template
+#= require ace/mode-space
+#= require ace/mode-sql
+#= require ace/mode-stylus
+#= require ace/mode-svg
+#= require ace/mode-tcl
+#= require ace/mode-tex
+#= require ace/mode-text
+#= require ace/mode-textile
+#= require ace/mode-tmsnippet
+#= require ace/mode-toml
+#= require ace/mode-twig
+#= require ace/mode-typescript
+#= require ace/mode-vbscript
+#= require ace/mode-velocity
+#= require ace/mode-verilog
+#= require ace/mode-vhdl
+#= require ace/mode-xml
+#= require ace/mode-yaml
 #= require d3
 #= require underscore
 #= require nprogress
@@ -41,6 +147,22 @@
 #= require shortcuts_issueable
 #= require shortcuts_network
 #= require_tree .
+
+# Updates syntax highlighting of editor on current page depending on filename
+# Filename is given with selector
+window.updateAceModeOnFilenameChange = (selector) ->
+  window.updateAceMode = (val) =>
+    modelist = ace.require('ace/ext/modelist')
+    ace_mode = modelist.getModeForPath(val).mode
+    editor.session.setMode(ace_mode)
+
+  updateAceMode($.trim($(selector).val()))
+
+  $(selector).on 'input', ->
+    val = $.trim($(@).val())
+    if $(@).data('lastval') != val
+      $(@).data('lastval', val)
+      updateAceMode(val)
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()

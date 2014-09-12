@@ -49,7 +49,9 @@
         = link_to "Cancel", snippets_path(@project), class: "btn btn-cancel"
 
 :javascript
-  var editor = ace.edit("editor");
+  var editor = ace.edit("editor")
+  updateAceModeOnFilenameChange('.snippet-file-name')
+
   $(".snippet-form-holder form").submit(function(){
     $(".snippet-file-content").val(editor.getValue());
   });
