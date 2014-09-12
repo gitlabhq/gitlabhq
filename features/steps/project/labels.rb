@@ -3,18 +3,6 @@ class ProjectLabels < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  step 'I should see label "bug"' do
-    within ".manage-labels-list" do
-      page.should have_content "bug"
-    end
-  end
-
-  step 'I should see label "feature"' do
-    within ".manage-labels-list" do
-      page.should have_content "feature"
-    end
-  end
-
   step 'I visit \'bug\' label edit page' do
     visit edit_project_label_path(project, bug_label)
   end
@@ -68,6 +56,12 @@ class ProjectLabels < Spinach::FeatureSteps
   step 'I should see label color error message' do
     within '.label-form' do
       page.should have_content 'Color is invalid'
+    end
+  end
+
+  step 'I should see label \'feature\'' do
+    within '.manage-labels-list' do
+      page.should have_content 'feature'
     end
   end
 
