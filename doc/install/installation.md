@@ -176,8 +176,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Copy the example Unicorn config
     sudo -u git -H cp config/unicorn.rb.example config/unicorn.rb
 
+    # Find number of cores
+    nproc
+    
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
+    # Set the number of workers to at least the number of cores
     sudo -u git -H editor config/unicorn.rb
 
     # Copy the example Rack attack config
