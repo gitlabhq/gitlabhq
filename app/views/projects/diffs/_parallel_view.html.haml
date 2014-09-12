@@ -6,10 +6,10 @@
       - line_number_left = line[1]
       - line_content_left = line[2]
       - line_code = line[3]
-      - line_code_next = line[4]
-      - type_right = line[5]
-      - line_number_right = line[6]
-      - line_content_right = line[7]
+      - type_right = line[4]
+      - line_number_right = line[5]
+      - line_content_right = line[6]
+      - line_code_right = line[7]
 
       %tr.line_holder.parallel
         - if type_left == 'match'
@@ -22,7 +22,7 @@
 
           - if type_right == 'new'
             - new_line_class = 'new'
-            - new_line_code = line_code_next
+            - new_line_code = line_code_right
           - else
             - new_line_class = nil
             - new_line_code = line_code
@@ -37,7 +37,7 @@
         - else
           - comments1 = line_comments[line_code]
         - unless type_left.nil? && type_right.nil?
-          - comments2 = line_comments[line_code_next]
+          - comments2 = line_comments[line_code_right]
 
         - if comments1.present? || comments2.present?
           = render "projects/notes/diff_notes_with_reply_parallel", notes1: comments1, notes2: comments2
