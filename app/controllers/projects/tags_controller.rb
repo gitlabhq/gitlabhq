@@ -34,7 +34,7 @@ class Projects::TagsController < Projects::ApplicationController
 
     respond_to do |format|
       format.html { redirect_to project_tags_path }
-      format.js { render nothing: true }
+      format.js
     end
   end
 end
