@@ -49,14 +49,16 @@ module DiffHelper
       next_line = diff_file.next_line(line.index)
 
       if next_line
+        next_line_code = generate_line_code(diff_file.file_path, next_line)
         next_type = next_line.type
         next_line = next_line.text
       end
 
-      line = [type, line_old, full_line, line_code, next_type, line_new]
+      line = [type, line_old, full_line, line_code, next_line_code, next_type, line_new]
+
       if type == 'match' || type.nil?
         # line in the right panel is the same as in the left one
-        line = [type, line_old, full_line, line_code, type, line_new, full_line]
+        line = [type, line_old, full_line, line_code, line_code, type, line_new, full_line]
         lines.push(line)
       elsif type == 'old'
         if next_type == 'new'
@@ -78,7 +80,7 @@ module DiffHelper
           next
         else
           # Change is only on the right side, left side has no change
-          line = [nil, nil, "&nbsp;", line_code, type, line_new, full_line]
+          line = [nil, nil, "&nbsp;", line_code, line_code, type, line_new, full_line]
           lines.push(line)
         end
       end
@@ -96,5 +98,9 @@ module DiffHelper
     else
       line
     end
+  end
+
+  def line_comments
+    @line_comments ||= @line_notes.group_by(&:line_code)
   end
 end

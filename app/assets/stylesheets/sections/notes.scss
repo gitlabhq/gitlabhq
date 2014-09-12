@@ -90,6 +90,9 @@ ul.notes {
       border-width: 1px 0;
       padding-top: 0;
       vertical-align: top;
+      &.parallel{
+        border-width: 1px;
+      }
     }
   }
 }
