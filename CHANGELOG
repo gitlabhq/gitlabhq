@@ -7,6 +7,7 @@ v 7.3.0
   - Better search with filtering, pagination etc
   - Added a checkbox to toggle line wrapping in diff (Yuriy Glukhov)
   - Prevent project stars duplication when fork project
+  - Use the default Unicorn socket backlog value of 1024
   - Support Unix domain sockets for Redis
   - Store session Redis keys in 'session:gitlab:' namespace
   - Deprecate LDAP account takeover based on partial LDAP email / GitLab username match
