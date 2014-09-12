@@ -103,4 +103,18 @@ module DiffHelper
   def line_comments
     @line_comments ||= @line_notes.group_by(&:line_code)
   end
+
+  def organize_comments(type_left, type_right, line_code_left, line_code_right)
+    comments_left = comments_right = nil
+
+    unless type_left.nil? && type_right == 'new'
+      comments_left = line_comments[line_code_left]
+    end
+
+    unless type_left.nil? && type_right.nil?
+      comments_right = line_comments[line_code_right]
+    end
+
+    [comments_left, comments_right]
+  end
 end
