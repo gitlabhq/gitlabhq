@@ -80,6 +80,10 @@ production: &base
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
 
+    ## Webhook settings
+    # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
+    # webhook_timeout: 10
+
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
     # The default is 'tmp/repositories' relative to the root of the Rails app.
@@ -263,9 +267,9 @@ test:
     port: 80
 
     # When you run tests we clone and setup gitlab-shell
-    # In order to setup it correctly you need to specify 
+    # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
-    # user: YOUR_USERNAME 
+    # user: YOUR_USERNAME
   satellites:
     path: tmp/tests/gitlab-satellites/
   gitlab_shell:
