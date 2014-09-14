@@ -6,8 +6,8 @@ describe API::API, api: true  do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
+  let(:users_project) { create(:users_project, user: user, project: project, project_access: ProjectMember::MASTER) }
+  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: ProjectMember::DEVELOPER) }
 
   describe "GET /projects/:id/members" do
     before { users_project }
@@ -42,7 +42,7 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/members/#{user.id}", user)
       response.status.should == 200
       json_response['username'].should == user.username
-      json_response['access_level'].should == UsersProject::MASTER
+      json_response['access_level'].should == ProjectMember::MASTER
     end
 
     it "should return a 404 error if user id not found" do
@@ -55,29 +55,29 @@ describe API::API, api: true  do
     it "should add user to project team" do
       expect {
         post api("/projects/#{project.id}/members", user), user_id: user2.id,
-          access_level: UsersProject::DEVELOPER
-      }.to change { UsersProject.count }.by(1)
+          access_level: ProjectMember::DEVELOPER
+      }.to change { ProjectMember.count }.by(1)
 
       response.status.should == 201
       json_response['username'].should == user2.username
-      json_response['access_level'].should == UsersProject::DEVELOPER
+      json_response['access_level'].should == ProjectMember::DEVELOPER
     end
 
     it "should return a 201 status if user is already project member" do
       post api("/projects/#{project.id}/members", user), user_id: user2.id,
-        access_level: UsersProject::DEVELOPER
+        access_level: ProjectMember::DEVELOPER
       expect {
         post api("/projects/#{project.id}/members", user), user_id: user2.id,
-          access_level: UsersProject::DEVELOPER
-      }.not_to change { UsersProject.count }.by(1)
+          access_level: ProjectMember::DEVELOPER
+      }.not_to change { ProjectMember.count }.by(1)
 
       response.status.should == 201
       json_response['username'].should == user2.username
-      json_response['access_level'].should == UsersProject::DEVELOPER
+      json_response['access_level'].should == ProjectMember::DEVELOPER
     end
 
     it "should return a 400 error when user id is not given" do
-      post api("/projects/#{project.id}/members", user), access_level: UsersProject::MASTER
+      post api("/projects/#{project.id}/members", user), access_level: ProjectMember::MASTER
       response.status.should == 400
     end
 
@@ -96,14 +96,14 @@ describe API::API, api: true  do
     before { users_project2 }
 
     it "should update project team member" do
-      put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: UsersProject::MASTER
+      put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: ProjectMember::MASTER
       response.status.should == 200
       json_response['username'].should == user3.username
-      json_response['access_level'].should == UsersProject::MASTER
+      json_response['access_level'].should == ProjectMember::MASTER
     end
 
     it "should return a 404 error if user_id is not found" do
-      put api("/projects/#{project.id}/members/1234", user), access_level: UsersProject::MASTER
+      put api("/projects/#{project.id}/members/1234", user), access_level: ProjectMember::MASTER
       response.status.should == 404
     end
 
@@ -125,14 +125,14 @@ describe API::API, api: true  do
     it "should remove user from project team" do
       expect {
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      }.to change { UsersProject.count }.by(-1)
+      }.to change { ProjectMember.count }.by(-1)
     end
 
     it "should return 200 if team member is not part of a project" do
       delete api("/projects/#{project.id}/members/#{user3.id}", user)
       expect {
         delete api("/projects/#{project.id}/members/#{user3.id}", user)
-      }.to_not change { UsersProject.count }.by(1)
+      }.to_not change { ProjectMember.count }.by(1)
     end
 
     it "should return 200 if team member already removed" do
@@ -144,7 +144,7 @@ describe API::API, api: true  do
     it "should return 200 OK when the user was not member" do
       expect {
         delete api("/projects/#{project.id}/members/1000000", user)
-      }.to change { UsersProject.count }.by(0)
+      }.to change { ProjectMember.count }.by(0)
       response.status.should == 200
       json_response['message'].should == "Access revoked"
       json_response['id'].should == 1000000

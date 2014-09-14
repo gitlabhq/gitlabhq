@@ -8,8 +8,8 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
+  let(:users_project) { create(:users_project, user: user, project: project, project_access: ProjectMember::MASTER) }
+  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: ProjectMember::DEVELOPER) }
 
   describe "GET /projects" do
     before { project }

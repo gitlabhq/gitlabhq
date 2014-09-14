@@ -195,12 +195,12 @@ namespace :gitlab do
     end
 
     def check_orphaned_users_groups
-      print "Database contains orphaned UsersGroups? ... "
-      if UsersGroup.where("user_id not in (select id from users)").count > 0
+      print "Database contains orphaned GroupMembers? ... "
+      if GroupMember.where("user_id not in (select id from users)").count > 0
         puts "yes".red
         try_fixing_it(
           "You can delete the orphaned records using something along the lines of:",
-          sudo_gitlab("bundle exec rails runner -e production 'UsersGroup.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
+          sudo_gitlab("bundle exec rails runner -e production 'GroupMember.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
         )
       else
         puts "no".green

@@ -42,7 +42,7 @@ FactoryGirl.define do
   factory :users_project do
     user
     project
-    project_access { UsersProject::MASTER }
+    project_access { ProjectMember::MASTER }
   end
 
   factory :issue do

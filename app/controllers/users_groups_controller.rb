@@ -1,4 +1,4 @@
-class UsersGroupsController < ApplicationController
+class GroupMembersController < ApplicationController
   before_filter :group
 
   # Authorize
@@ -7,18 +7,18 @@ class UsersGroupsController < ApplicationController
   layout 'group'
 
   def create
-    @group.add_users(params[:user_ids].split(','), params[:group_access])
+    @group.add_users(params[:user_ids].split(','), params[:access_level])
 
     redirect_to members_group_path(@group), notice: 'Users were successfully added.'
   end
 
   def update
-    @member = @group.users_groups.find(params[:id])
+    @member = @group.group_members.find(params[:id])
     @member.update_attributes(member_params)
   end
 
   def destroy
-    @users_group = @group.users_groups.find(params[:id])
+    @users_group = @group.group_members.find(params[:id])
     if can?(current_user, :destroy, @users_group)  # May fail if last owner.
       @users_group.destroy
       respond_to do |format|
@@ -43,6 +43,6 @@ class UsersGroupsController < ApplicationController
   end
 
   def member_params
-    params.require(:users_group).permit(:group_access, :user_id)
+    params.require(:users_group).permit(:access_level, :user_id)
   end
 end

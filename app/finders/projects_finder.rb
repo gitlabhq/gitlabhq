@@ -19,10 +19,8 @@ class ProjectsFinder
         # Return ALL group projects
         group.projects
       else
-        projects_members = UsersProject.where(
-          project_id: group.projects,
-          user_id: current_user
-        )
+        projects_members = ProjectMember.in_projects(group.projects).
+          with_user(current_user)
 
         if projects_members.any?
           # User is a project member

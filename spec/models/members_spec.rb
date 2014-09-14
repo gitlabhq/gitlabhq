@@ -12,4 +12,9 @@ describe Member do
     it { should validate_presence_of(:source) }
     it { should ensure_inclusion_of(:access_level).in_array(Gitlab::Access.values) }
   end
+
+  describe "Delegate methods" do
+    it { should respond_to(:user_name) }
+    it { should respond_to(:user_email) }
+  end
 end

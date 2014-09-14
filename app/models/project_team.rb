@@ -32,12 +32,12 @@ class ProjectTeam
   end
 
   def find_tm(user_id)
-    tm = project.users_projects.find_by(user_id: user_id)
+    tm = project.project_members.find_by(user_id: user_id)
 
     # If user is not in project members
     # we should check for group membership
     if group && !tm
-      tm = group.users_groups.find_by(user_id: user_id)
+      tm = group.group_members.find_by(user_id: user_id)
     end
 
     tm
@@ -52,7 +52,7 @@ class ProjectTeam
   end
 
   def add_users_ids(user_ids, access)
-    UsersProject.add_users_into_projects(
+    ProjectMember.add_users_into_projects(
       [project.id],
       user_ids,
       access
@@ -61,7 +61,7 @@ class ProjectTeam
 
   # Remove all users from project team
   def truncate
-    UsersProject.truncate_team(project)
+    ProjectMember.truncate_team(project)
   end
 
   def users
@@ -91,8 +91,8 @@ class ProjectTeam
   def import(source_project)
     target_project = project
 
-    source_team = source_project.users_projects.to_a
-    target_user_ids = target_project.users_projects.pluck(:user_id)
+    source_team = source_project.project_members.to_a
+    target_user_ids = target_project.project_members.pluck(:user_id)
 
     source_team.reject! do |tm|
       # Skip if user already present in team
@@ -106,7 +106,7 @@ class ProjectTeam
       new_tm
     end
 
-    UsersProject.transaction do
+    ProjectMember.transaction do
       source_team.each do |tm|
         tm.save
       end
@@ -135,10 +135,10 @@ class ProjectTeam
 
   def max_tm_access(user_id)
     access = []
-    access << project.users_projects.find_by(user_id: user_id).try(:access_field)
+    access << project.project_members.find_by(user_id: user_id).try(:access_field)
 
     if group
-      access << group.users_groups.find_by(user_id: user_id).try(:access_field)
+      access << group.group_members.find_by(user_id: user_id).try(:access_field)
     end
 
     access.compact.max
@@ -147,8 +147,8 @@ class ProjectTeam
   private
 
   def fetch_members(level = nil)
-    project_members = project.users_projects
-    group_members = group ? group.users_groups : []
+    project_members = project.project_members
+    group_members = group ? group.group_members : []
 
     if level
       project_members = project_members.send(level)

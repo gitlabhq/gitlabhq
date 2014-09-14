@@ -54,7 +54,7 @@ module API
 
     class ProjectMember < UserBasic
       expose :project_access, as: :access_level do |user, options|
-        options[:project].users_projects.find_by(user_id: user.id).project_access
+        options[:project].project_members.find_by(user_id: user.id).project_access
       end
     end
 
@@ -68,7 +68,7 @@ module API
 
     class GroupMember < UserBasic
       expose :group_access, as: :access_level do |user, options|
-        options[:group].users_groups.find_by(user_id: user.id).group_access
+        options[:group].group_members.find_by(user_id: user.id).group_access
       end
     end
 
@@ -182,12 +182,12 @@ module API
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.users_projects.find_by(user_id: options[:user].id)
+          project.project_members.find_by(user_id: options[:user].id)
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            project.group.users_groups.find_by(user_id: options[:user].id)
+            project.group.group_members.find_by(user_id: options[:user].id)
           end
         end
       end

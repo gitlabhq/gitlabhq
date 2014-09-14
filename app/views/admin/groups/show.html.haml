@@ -62,7 +62,7 @@
           %div
             = users_select_tag(:user_ids, multiple: true)
           %div.prepend-top-10
-            = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select select2"
+            = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
           %hr
           = submit_tag 'Add users into group', class: "btn btn-create"
     .panel.panel-default
@@ -70,7 +70,7 @@
         %h3.panel-title
           Members
           %span.badge
-            #{@group.users_groups.count}
+            #{@group.group_members.count}
       %ul.well-list.group-users-list
         - @members.each do |member|
           - user = member.user

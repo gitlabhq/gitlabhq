@@ -1,7 +1,7 @@
 module Emails
   module Projects
-    def project_access_granted_email(user_project_id)
-      @users_project = UsersProject.find user_project_id
+    def access_level_granted_email(user_project_id)
+      @users_project = ProjectMember.find user_project_id
       @project = @users_project.project
       @target_url = project_url(@project)
       mail(to: @users_project.user.email,

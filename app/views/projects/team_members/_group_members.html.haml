@@ -1,4 +1,4 @@
-- group_users_count = @group.users_groups.count
+- group_users_count = @group.group_members.count
 .panel.panel-default
   .panel-heading
     %strong #{@group.name}
@@ -7,7 +7,7 @@
       = link_to members_group_path(@group), class: 'btn btn-small' do
         %i.icon-edit
   %ul.well-list
-    - @group.users_groups.order('group_access DESC').limit(20).each do |member|
+    - @group.group_members.order('access_level DESC').limit(20).each do |member|
       = render 'users_groups/users_group', member: member, show_controls: false
     - if group_users_count > 20
       %li

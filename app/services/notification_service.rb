@@ -158,19 +158,19 @@ class NotificationService
   end
 
   def new_team_member(users_project)
-    mailer.project_access_granted_email(users_project.id)
+    mailer.access_level_granted_email(users_project.id)
   end
 
   def update_team_member(users_project)
-    mailer.project_access_granted_email(users_project.id)
+    mailer.access_level_granted_email(users_project.id)
   end
 
   def new_group_member(users_group)
-    mailer.group_access_granted_email(users_group.id)
+    mailer.access_level_granted_email(users_group.id)
   end
 
   def update_group_member(users_group)
-    mailer.group_access_granted_email(users_group.id)
+    mailer.access_level_granted_email(users_group.id)
   end
 
   def project_was_moved(project)
@@ -199,7 +199,7 @@ class NotificationService
   end
 
   def users_project_notification(project, notification_level=nil)
-    project_members = project.users_projects
+    project_members = project.project_members
 
     if notification_level
       project_members.where(notification_level: notification_level).pluck(:user_id)
@@ -210,7 +210,7 @@ class NotificationService
 
   def users_group_notification(project, notification_level)
     if project.group
-      project.group.users_groups.where(notification_level: notification_level).pluck(:user_id)
+      project.group.group_members.where(notification_level: notification_level).pluck(:user_id)
     else
       []
     end
@@ -267,10 +267,10 @@ class NotificationService
     users.reject do |user|
       next user.notification.disabled? unless project
 
-      tm = project.users_projects.find_by(user_id: user.id)
+      tm = project.project_members.find_by(user_id: user.id)
 
       if !tm && project.group
-        tm = project.group.users_groups.find_by(user_id: user.id)
+        tm = project.group.group_members.find_by(user_id: user.id)
       end
 
       # reject users who globally disabled notification and has no membership

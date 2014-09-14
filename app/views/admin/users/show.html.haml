@@ -159,13 +159,13 @@
         = render 'users/profile', user: @user
 
   #groups.tab-pane
-    - if @user.users_groups.present?
+    - if @user.group_members.present?
       .panel.panel-default
         .panel-heading Groups:
         %ul.well-list
-          - @user.users_groups.each do |user_group|
+          - @user.group_members.each do |user_group|
             - group = user_group.group
-            %li.users_group
+            %li.group_member
               %span{class: ("list-item-name" unless user_group.owner?)}
                 %strong= link_to group.name, admin_group_path(group)
               .pull-right
@@ -197,7 +197,7 @@
           %ul.well-list
             - @joined_projects.sort_by(&:name_with_namespace).each do |project|
               - tm = project.team.find_tm(@user.id)
-              %li.users_project
+              %li.project_member
                 .list-item-name
                   = link_to admin_project_path(project), class: dom_class(project) do
                     = project.name_with_namespace

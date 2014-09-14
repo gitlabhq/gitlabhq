@@ -321,8 +321,8 @@ describe Note do
 
     describe :read do
       before do
-        @p1.users_projects.create(user: @u2, project_access: UsersProject::GUEST)
-        @p2.users_projects.create(user: @u3, project_access: UsersProject::GUEST)
+        @p1.project_members.create(user: @u2, project_access: ProjectMember::GUEST)
+        @p2.project_members.create(user: @u3, project_access: ProjectMember::GUEST)
       end
 
       it { @abilities.allowed?(@u1, :read_note, @p1).should be_false }
@@ -332,8 +332,8 @@ describe Note do
 
     describe :write do
       before do
-        @p1.users_projects.create(user: @u2, project_access: UsersProject::DEVELOPER)
-        @p2.users_projects.create(user: @u3, project_access: UsersProject::DEVELOPER)
+        @p1.project_members.create(user: @u2, project_access: ProjectMember::DEVELOPER)
+        @p2.project_members.create(user: @u3, project_access: ProjectMember::DEVELOPER)
       end
 
       it { @abilities.allowed?(@u1, :write_note, @p1).should be_false }
@@ -343,9 +343,9 @@ describe Note do
 
     describe :admin do
       before do
-        @p1.users_projects.create(user: @u1, project_access: UsersProject::REPORTER)
-        @p1.users_projects.create(user: @u2, project_access: UsersProject::MASTER)
-        @p2.users_projects.create(user: @u3, project_access: UsersProject::MASTER)
+        @p1.project_members.create(user: @u1, project_access: ProjectMember::REPORTER)
+        @p1.project_members.create(user: @u2, project_access: ProjectMember::MASTER)
+        @p2.project_members.create(user: @u3, project_access: ProjectMember::MASTER)
       end
 
       it { @abilities.allowed?(@u1, :admin_note, @p1).should be_false }

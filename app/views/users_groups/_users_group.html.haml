@@ -27,5 +27,5 @@
     .edit-member.hide.js-toggle-content
       = form_for [@group, member], remote: true do |f|
         .alert.prepend-top-20
-          = f.select :group_access, options_for_select(UsersGroup.group_access_roles, member.group_access)
+          = f.select :access_level, options_for_select(GroupMember.access_level_roles, member.access_level)
           = f.submit 'Save', class: 'btn btn-save btn-small'

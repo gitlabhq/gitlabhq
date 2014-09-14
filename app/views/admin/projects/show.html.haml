@@ -95,7 +95,7 @@
       .panel.panel-default
         .panel-heading
           %strong #{@group.name}
-          group members (#{@group.users_groups.count})
+          group members (#{@group.group_members.count})
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-small' do
               %i.icon-edit
@@ -117,7 +117,7 @@
       %ul.well-list.team_members
         - @project_members.each do |users_project|
           - user = users_project.user
-          %li.users_project
+          %li.project_member
             .list-item-name
               %strong
                 = link_to user.name, admin_user_path(user)

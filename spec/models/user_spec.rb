@@ -182,7 +182,7 @@ describe User do
       @group = create :group
       @group.add_owner(@user)
 
-      @group.add_user(@user2, UsersGroup::OWNER)
+      @group.add_user(@user2, GroupMember::OWNER)
     end
 
     it { @user2.several_namespaces?.should be_true }
