@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140907220153) do
+ActiveRecord::Schema.define(version: 20140914113604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -129,6 +129,17 @@ ActiveRecord::Schema.define(version: 20140907220153) do
   end
 
   add_index "labels", ["project_id"], name: "index_labels_on_project_id", using: :btree
+
+  create_table "members", force: true do |t|
+    t.integer  "access_level",       null: false
+    t.integer  "source_id",          null: false
+    t.string   "source_type",        null: false
+    t.integer  "user_id",            null: false
+    t.integer  "notification_level", null: false
+    t.string   "type"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "merge_request_diffs", force: true do |t|
     t.string   "state"
