@@ -85,8 +85,8 @@ class User < ActiveRecord::Base
   has_many :project_members, source: 'ProjectMember'
   has_many :group_members, source: 'GroupMember'
   has_many :groups, through: :group_members
-  has_many :owned_groups, -> { where group_members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
-  has_many :masters_groups, -> { where group_members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
+  has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
+  has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
 
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
@@ -97,7 +97,7 @@ class User < ActiveRecord::Base
   has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
-  has_many :project_members,           dependent: :destroy
+  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id

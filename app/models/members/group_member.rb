@@ -1,6 +1,8 @@
 class GroupMember < Member
   SOURCE_TYPE = 'Group'
 
+  belongs_to :group, class_name: 'Group', foreign_key: 'source_id'
+
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
   validates_format_of :source_type, with: /\AGroup\z/

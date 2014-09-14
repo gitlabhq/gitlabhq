@@ -54,7 +54,7 @@ class SystemHooksService
       data.merge!({
         project_name: model.project.name,
         project_path: model.project.path,
-        project_id: model.project_id,
+        project_id: model.project.id,
         user_name: model.user.name,
         user_email: model.user.email,
         access_level: model.human_access,
