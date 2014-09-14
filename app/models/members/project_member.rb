@@ -5,8 +5,10 @@ class ProjectMember < Member
 
   belongs_to :project, class_name: 'Project', foreign_key: 'source_id'
 
+
   # Make sure project member points only to project as it source
   default_value_for :source_type, SOURCE_TYPE
+  default_value_for :notification_level, Notification::N_GLOBAL
   validates_format_of :source_type, with: /\AProject\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 

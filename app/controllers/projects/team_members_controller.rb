@@ -69,6 +69,6 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def member_params
-    params.require(:team_member).permit(:user_id, :access_level)
+    params.require(:project_member).permit(:user_id, :access_level)
   end
 end

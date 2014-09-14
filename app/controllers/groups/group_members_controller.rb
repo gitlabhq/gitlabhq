@@ -1,4 +1,4 @@
-class GroupMembersController < ApplicationController
+class Groups::GroupMembersController < ApplicationController
   before_filter :group
 
   # Authorize
@@ -43,6 +43,6 @@ class GroupMembersController < ApplicationController
   end
 
   def member_params
-    params.require(:users_group).permit(:access_level, :user_id)
+    params.require(:group_member).permit(:access_level, :user_id)
   end
 end

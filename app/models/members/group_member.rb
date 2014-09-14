@@ -1,11 +1,12 @@
 class GroupMember < Member
-  SOURCE_TYPE = 'Group'
+  SOURCE_TYPE = 'Namespace'
 
   belongs_to :group, class_name: 'Group', foreign_key: 'source_id'
 
   # Make sure group member points only to group as it source
   default_value_for :source_type, SOURCE_TYPE
-  validates_format_of :source_type, with: /\AGroup\z/
+  default_value_for :notification_level, Notification::N_GLOBAL
+  validates_format_of :source_type, with: /\ANamespace\z/
   default_scope { where(source_type: SOURCE_TYPE) }
 
   scope :with_group, ->(group) { where(source_id: group.id) }
