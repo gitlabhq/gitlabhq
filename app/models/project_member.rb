@@ -1,0 +1,2 @@
+class ProjectMember < Member
+end

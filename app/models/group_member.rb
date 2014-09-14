@@ -1,0 +1,2 @@
+class GroupMember < Member
+end
