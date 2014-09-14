@@ -52,7 +52,7 @@ describe User do
   describe "Associations" do
     it { should have_one(:namespace) }
     it { should have_many(:snippets).class_name('Snippet').dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:project_members).dependent(:destroy) }
     it { should have_many(:groups) }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }

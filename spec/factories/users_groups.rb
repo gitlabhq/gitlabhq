@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: users_groups
+# Table name: group_members
 #
 #  id                 :integer          not null, primary key
 #  group_access       :integer          not null

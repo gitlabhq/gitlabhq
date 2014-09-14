@@ -8,7 +8,7 @@
         %i.icon-edit
   %ul.well-list
     - @group.group_members.order('access_level DESC').limit(20).each do |member|
-      = render 'users_groups/users_group', member: member, show_controls: false
+      = render 'group_members/users_group', member: member, show_controls: false
     - if group_users_count > 20
       %li
         and #{group_users_count - 20} more. For full list visit #{link_to 'group members page', members_group_path(@group)}

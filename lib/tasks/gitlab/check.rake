@@ -17,7 +17,7 @@ namespace :gitlab do
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
-      check_orphaned_users_groups
+      check_orphaned_group_members
       check_gitlab_config_exists
       check_gitlab_config_not_outdated
       check_log_writable
@@ -194,7 +194,7 @@ namespace :gitlab do
       end
     end
 
-    def check_orphaned_users_groups
+    def check_orphaned_group_members
       print "Database contains orphaned GroupMembers? ... "
       if GroupMember.where("user_id not in (select id from users)").count > 0
         puts "yes".red

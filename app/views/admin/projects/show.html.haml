@@ -101,7 +101,7 @@
               %i.icon-edit
         %ul.well-list
           - @group_members.each do |member|
-            = render 'users_groups/users_group', member: member, show_controls: false
+            = render 'group_members/users_group', member: member, show_controls: false
         .panel-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 

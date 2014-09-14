@@ -20,7 +20,7 @@ describe Group do
 
   describe "Associations" do
     it { should have_many :projects }
-    it { should have_many :users_groups }
+    it { should have_many :group_members }
   end
 
   it { should validate_presence_of :name }

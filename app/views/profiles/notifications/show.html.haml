@@ -39,13 +39,13 @@
   .col-md-6
     %h4 Groups:
     %ul.bordered-list
-      - @users_groups.each do |users_group|
+      - @group_members.each do |users_group|
         - notification = Notification.new(users_group)
         = render 'settings', type: 'group', membership: users_group, notification: notification
 
   .col-md-6
     %h4 Projects:
     %ul.bordered-list
-      - @users_projects.each do |users_project|
+      - @project_members.each do |users_project|
         - notification = Notification.new(users_project)
         = render 'settings', type: 'project', membership: users_project, notification: notification
