@@ -80,7 +80,7 @@
                 = link_to user.name, admin_user_path(user)
             %span.pull-right.light
               = member.human_access
-              = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+              = link_to group_group_members_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                 %i.icon-minus.icon-white
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'

@@ -1,6 +1,6 @@
 module Emails
   module Groups
-    def access_level_granted_email(user_group_id)
+    def group_access_granted_email(user_group_id)
       @membership = GroupMember.find(user_group_id)
       @group = @membership.group
       @target_url = group_url(@group)

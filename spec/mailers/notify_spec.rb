@@ -402,10 +402,10 @@ describe Notify do
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      let(:users_project) { create(:users_project,
+      let(:project_member) { create(:project_member,
                                    project: project,
                                    user: user) }
-      subject { Notify.project_access_granted_email(users_project.id) }
+      subject { Notify.project_access_granted_email(project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
 
@@ -416,7 +416,7 @@ describe Notify do
         should have_body_text /#{project.name}/
       end
       it 'contains new user role' do
-        should have_body_text /#{users_project.human_access}/
+        should have_body_text /#{project_member.human_access}/
       end
     end
 

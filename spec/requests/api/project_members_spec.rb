@@ -6,12 +6,12 @@ describe API::API, api: true  do
   let(:user2) { create(:user) }
   let(:user3) { create(:user) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
-  let(:users_project) { create(:users_project, user: user, project: project, project_access: ProjectMember::MASTER) }
-  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: ProjectMember::DEVELOPER) }
+  let(:project_member) { create(:project_member, user: user, project: project, project_access: ProjectMember::MASTER) }
+  let(:project_member2) { create(:project_member, user: user3, project: project, project_access: ProjectMember::DEVELOPER) }
 
   describe "GET /projects/:id/members" do
-    before { users_project }
-    before { users_project2 }
+    before { project_member }
+    before { project_member2 }
 
     it "should return project team members" do
       get api("/projects/#{project.id}/members", user)
@@ -36,7 +36,7 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/members/:user_id" do
-    before { users_project }
+    before { project_member }
 
     it "should return project team member" do
       get api("/projects/#{project.id}/members/#{user.id}", user)
@@ -93,7 +93,7 @@ describe API::API, api: true  do
   end
 
   describe "PUT /projects/:id/members/:user_id" do
-    before { users_project2 }
+    before { project_member2 }
 
     it "should update project team member" do
       put api("/projects/#{project.id}/members/#{user3.id}", user), access_level: ProjectMember::MASTER
@@ -119,8 +119,8 @@ describe API::API, api: true  do
   end
 
   describe "DELETE /projects/:id/members/:user_id" do
-    before { users_project }
-    before { users_project2 }
+    before { project_member }
+    before { project_member2 }
 
     it "should remove user from project team" do
       expect {

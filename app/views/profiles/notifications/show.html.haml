@@ -46,6 +46,6 @@
   .col-md-6
     %h4 Projects:
     %ul.bordered-list
-      - @project_members.each do |users_project|
-        - notification = Notification.new(users_project)
-        = render 'settings', type: 'project', membership: users_project, notification: notification
+      - @project_members.each do |project_member|
+        - notification = Notification.new(project_member)
+        = render 'settings', type: 'project', membership: project_member, notification: notification

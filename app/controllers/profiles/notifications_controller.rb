@@ -18,9 +18,9 @@ class Profiles::NotificationsController < ApplicationController
                users_group.notification_level = params[:notification_level]
                users_group.save
              else
-               users_project = current_user.project_members.find(params[:notification_id])
-               users_project.notification_level = params[:notification_level]
-               users_project.save
+               project_member = current_user.project_members.find(params[:notification_id])
+               project_member.notification_level = params[:notification_level]
+               project_member.save
              end
   end
 end

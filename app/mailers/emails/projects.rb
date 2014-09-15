@@ -1,10 +1,10 @@
 module Emails
   module Projects
-    def access_level_granted_email(user_project_id)
-      @users_project = ProjectMember.find user_project_id
-      @project = @users_project.project
+    def project_access_granted_email(user_project_id)
+      @project_member = ProjectMember.find user_project_id
+      @project = @project_member.project
       @target_url = project_url(@project)
-      mail(to: @users_project.user.email,
+      mail(to: @project_member.user.email,
            subject: subject("Access to project was granted"))
     end
 
