@@ -2,7 +2,7 @@
 
 ## List merge requests
 
-Get all merge requests for this project. The `state` parameter can be used to get only merge requests with a given state (`opened`, `closed`, or `merged`) or all of them (`all`). The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
+Get all merge requests for this project. The `state` parameter can be used to get only merge requests with a given state (`opened`, `reopened`, `closed`, `merged`, or `locked`) or all of them (`all`). The pagination parameters `page` and `per_page` can be used to restrict the list of merge requests.
 
 ```
 GET /projects/:id/merge_requests
@@ -13,7 +13,7 @@ GET /projects/:id/merge_requests?state=all
 Parameters:
 
 - `id` (required) - The ID of a project
-- `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
+- `state` (optional) - Return `all` requests or just those that are `opened`, `reopened`, `closed`, `merged`, or `locked`
 
 ```json
 [
@@ -158,7 +158,7 @@ Parameters:
 - `target_branch`               - The target branch
 - `assignee_id`                 - Assignee user ID
 - `title`                       - Title of MR
-- `state_event`                 - New state (close|reopen|merge)
+- `state_event`                 - New state (close|reopen|merge|lock_mr|unlock_mr)
 
 ```json
 {
