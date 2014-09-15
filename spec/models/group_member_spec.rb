@@ -3,7 +3,7 @@
 # Table name: group_members
 #
 #  id                 :integer          not null, primary key
-#  group_access       :integer          not null
+#  access_level       :integer          not null
 #  group_id           :integer          not null
 #  user_id            :integer          not null
 #  created_at         :datetime
@@ -17,7 +17,7 @@ describe GroupMember do
   context 'notification' do
     describe "#after_create" do
       it "should send email to user" do
-        membership = build(:users_group)
+        membership = build(:group_member)
         membership.stub(notification_service: double('NotificationService').as_null_object)
         membership.should_receive(:notification_service)
         membership.save
@@ -26,18 +26,18 @@ describe GroupMember do
 
     describe "#after_update" do
       before do
-        @membership = create :users_group
+        @membership = create :group_member
         @membership.stub(notification_service: double('NotificationService').as_null_object)
       end
 
       it "should send email to user" do
         @membership.should_receive(:notification_service)
-        @membership.update_attribute(:group_access, GroupMember::MASTER)
+        @membership.update_attribute(:access_level, GroupMember::MASTER)
       end
 
       it "does not send an email when the access level has not changed" do
         @membership.should_not_receive(:notification_service)
-        @membership.update_attribute(:group_access, GroupMember::OWNER)
+        @membership.update_attribute(:access_level, GroupMember::OWNER)
       end
     end
   end

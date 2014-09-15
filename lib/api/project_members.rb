@@ -58,7 +58,7 @@ module API
         if team_member.nil?
           team_member = user_project.project_members.new(
             user_id: params[:user_id],
-            project_access: params[:access_level]
+            access_level: params[:access_level]
           )
         end
 
@@ -85,7 +85,7 @@ module API
         team_member = user_project.project_members.find_by(user_id: params[:user_id])
         not_found!("User can not be found") if team_member.nil?
 
-        if team_member.update_attributes(project_access: params[:access_level])
+        if team_member.update_attributes(access_level: params[:access_level])
           @member = team_member.user
           present @member, with: Entities::ProjectMember, project: user_project
         else
