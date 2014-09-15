@@ -303,25 +303,14 @@ ActiveRecord::Schema.define(version: 20140907220153) do
   create_table "services", force: true do |t|
     t.string   "type"
     t.string   "title"
-    # This is a mess, will fix in a commit after the merge commit -- JV
-    t.string   "token"
     t.integer  "project_id",                               null: false
     t.datetime "created_at"
     t.datetime "updated_at"
     t.boolean  "active",                   default: false, null: false
-    t.string   "project_url"
-    t.string   "subdomain"
-    t.string   "room"
-    t.text     "recipients"
-    t.string   "api_key"
     t.string   "username"
     t.string   "password"
     t.string   "api_version"
     t.string   "jira_issue_transition_id", default: "2"
-    t.integer  "project_id",                 null: false
-    t.datetime "created_at"
-    t.datetime "updated_at"
-    t.boolean  "active",     default: false, null: false
     t.text     "properties"
   end
 
