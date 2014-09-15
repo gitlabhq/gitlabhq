@@ -74,34 +74,34 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   Given 'I fill in issue search with "Re"' do
-    fill_in 'issue_search', with: "Re"
+    filter_issue "Re"
   end
 
   Given 'I fill in issue search with "Bu"' do
-    fill_in 'issue_search', with: "Bu"
+    filter_issue "Bu"
   end
 
   And 'I fill in issue search with ".3"' do
-    fill_in 'issue_search', with: ".3"
+    filter_issue ".3"
   end
 
   And 'I fill in issue search with "Something"' do
-    fill_in 'issue_search', with: "Something"
+    filter_issue "Something"
   end
 
   And 'I fill in issue search with ""' do
-    fill_in 'issue_search', with: ""
+    filter_issue ""
   end
 
   Given 'project "Shop" has milestone "v2.2"' do
-    project = Project.find_by(name: "Shop")
+
     milestone = create(:milestone, title: "v2.2", project: project)
 
     3.times { create(:issue, project: project, milestone: milestone) }
   end
 
   And 'project "Shop" has milestone "v3.0"' do
-    project = Project.find_by(name: "Shop")
+
     milestone = create(:milestone, title: "v3.0", project: project)
 
     3.times { create(:issue, project: project, milestone: milestone) }
@@ -117,20 +117,20 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   When 'I select first assignee from "Shop" project' do
-    project = Project.find_by(name: "Shop")
+
     first_assignee = project.users.first
     select first_assignee.name, from: "assignee_id"
   end
 
   Then 'I should see first assignee from "Shop" as selected assignee' do
     issues_assignee_selector = "#issue_assignee_id_chzn > a"
-    project = Project.find_by(name: "Shop")
+
     assignee_name = project.users.first.name
     page.find(issues_assignee_selector).should have_content(assignee_name)
   end
 
   And 'project "Shop" have "Release 0.4" open issue' do
-    project = Project.find_by(name: "Shop")
+
     create(:issue,
            title: "Release 0.4",
            project: project,
@@ -140,7 +140,6 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'project "Shop" have "Tweet control" open issue' do
-    project = Project.find_by(name: "Shop")
     create(:issue,
            title: "Tweet control",
            project: project,
@@ -148,7 +147,6 @@ class ProjectIssues < Spinach::FeatureSteps
   end
 
   And 'project "Shop" have "Release 0.3" closed issue' do
-    project = Project.find_by(name: "Shop")
     create(:closed_issue,
            title: "Release 0.3",
            project: project,
@@ -186,5 +184,60 @@ class ProjectIssues < Spinach::FeatureSteps
 
   step 'The code block should be unchanged' do
     page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
+  end
+
+  step 'project \'Shop\' has issue \'Bugfix1\' with description: \'Description for issue1\'' do
+    issue = create(:issue, title: 'Bugfix1', description: 'Description for issue1', project: project)
+  end
+
+  step 'project \'Shop\' has issue \'Feature1\' with description: \'Feature submitted for issue1\'' do
+    issue = create(:issue, title: 'Feature1', description: 'Feature submitted for issue1', project: project)
+  end
+
+  step 'I fill in issue search with \'Description for issue1\'' do
+    filter_issue 'Description for issue'
+  end
+
+  step 'I fill in issue search with \'issue1\'' do
+    filter_issue 'issue1'
+  end
+
+  step 'I fill in issue search with \'Rock and roll\'' do
+    filter_issue 'Description for issue'
+  end
+
+  step 'I should see \'Bugfix1\' in issues' do
+    page.should have_content 'Bugfix1'
+  end
+
+  step 'I should see \'Feature1\' in issues' do
+    page.should have_content 'Feature1'
+  end
+
+  step 'I should not see \'Bugfix1\' in issues' do
+    page.should_not have_content 'Bugfix1'
+  end
+
+  step 'issue \'Release 0.4\' has label \'bug\'' do
+    label = project.labels.create!(name: 'bug', color: '#990000')
+    issue = Issue.find_by!(title: 'Release 0.4')
+    issue.labels << label
+  end
+
+  step 'I click label \'bug\'' do
+    within ".issues-list" do
+      click_link 'bug'
+    end
+  end
+
+  def filter_issue(text)
+    fill_in 'issue_search', with: text
+
+    # make sure AJAX request finished
+    URI.parse(current_url).request_uri == project_issues_path(project, issue_search: text)
+  end
+
+  def project
+    @project ||= Project.find_by(name: 'Shop')
   end
 end

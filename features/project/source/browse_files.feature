@@ -51,3 +51,15 @@ Feature: Project Browse files
   Scenario: I can browse code with Browse Code
     Given I click on history link
     Then I see Browse code link
+
+  # Permalink
+
+  Scenario: I click on the permalink link from a branch ref
+    Given I click on ".gitignore" file in repo
+    And I click on permalink
+    Then I am redirected to the permalink URL
+
+  Scenario: I don't see the permalink link from a SHA ref
+    Given I visit project source page for "6d394385cf567f80a8fd85055db1ab4c5295806f"
+    And I click on ".gitignore" file in repo
+    Then I don't see the permalink link

@@ -1,0 +1,27 @@
+.row
+  .col-md-8
+    = render 'projects/diffs/stats', diffs: diffs
+  .col-md-4
+    %ul.nav.nav-tabs
+      %li.pull-right{class: params[:view] == 'parallel' ? 'active' : ''}
+        - params_copy = params.dup
+        - params_copy[:view] = 'parallel'
+        = link_to "Side-by-side Diff", url_for(params_copy), {id: "commit-diff-viewtype"}
+      %li.pull-right{class: params[:view] != 'parallel' ? 'active' : ''}
+        - params_copy[:view] = 'inline'
+        = link_to "Inline Diff", url_for(params_copy), {id: "commit-diff-viewtype"}
+
+
+- if show_diff_size_warning?(diffs)
+  = render 'projects/diffs/warning', diffs: diffs
+
+.files
+  - safe_diff_files(diffs).each_with_index do |diff_file, index|
+    = render 'projects/diffs/file', diff_file: diff_file, i: index, project: project
+
+- if @diff_timeout
+  .alert.alert-danger
+    %h4
+      Failed to collect changes
+    %p
+      Maybe diff is really big and operation failed with timeout. Try to get diff locally

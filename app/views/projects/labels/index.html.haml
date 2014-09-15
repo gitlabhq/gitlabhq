@@ -7,11 +7,11 @@
   Labels
 %hr
 
-- if @labels.present?
-  %ul.bordered-list.manage-labels-list
-    = render @labels
-  = paginate @labels, theme: 'gitlab'
-
-- else
-  .light-well
-    .nothing-here-block Create first label or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels
+.labels
+  - if @labels.present?
+    %ul.bordered-list.manage-labels-list
+      = render @labels
+    = paginate @labels, theme: 'gitlab'
+  - else
+    .light-well
+      .nothing-here-block Create first label or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels

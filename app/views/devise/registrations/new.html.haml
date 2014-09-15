@@ -1,7 +1,7 @@
-.login-box.panel.panel-success
-  .panel-heading
-    %h3.panel-title Sign up
-  .panel-body
+.login-box
+  .login-heading
+    %h3 Sign up
+  .login-body
     = form_for(resource, as: resource_name, url: registration_path(resource_name)) do |f|
       .devise-errors
         = devise_error_messages!
@@ -17,7 +17,7 @@
         = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm password", required: true
       %div
         = f.submit "Sign up", class: "btn-create btn"
-  .panel-footer
+  .login-footer
     %p
       %span.light
         Have an account?

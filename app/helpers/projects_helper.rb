@@ -123,7 +123,7 @@ module ProjectsHelper
   end
 
   def link_to_toggle_star(title, starred, signed_in)
-    cls = 'btn btn-block'
+    cls = 'star-btn'
     cls += ' disabled' unless signed_in
 
     toggle_html = content_tag('span', class: 'toggle') do
@@ -151,7 +151,7 @@ module ProjectsHelper
 
     content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
       link_to toggle_star_project_path(@project), link_opts do
-        toggle_html + count_html
+        toggle_html + ' ' + count_html
       end
     end
   end
@@ -260,5 +260,11 @@ module ProjectsHelper
     if project && project.repository.contribution_guide
       project_blob_path(project, tree_join(project.default_branch, project.repository.contribution_guide.name))
     end
+  end
+
+  def hidden_pass_url(original_url)
+    result = URI(original_url)
+    result.password = '*****' if result.password.present?
+    result
   end
 end

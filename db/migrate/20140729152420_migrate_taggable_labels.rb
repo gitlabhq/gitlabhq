@@ -2,6 +2,12 @@ class MigrateTaggableLabels < ActiveRecord::Migration
   def up
     taggings = ActsAsTaggableOn::Tagging.where(taggable_type: ['Issue', 'MergeRequest'], context: 'labels')
     taggings.find_each(batch_size: 500) do |tagging|
+      # Clean up orphaned taggings while we are here
+      if tagging.taggable.blank? || tagging.tag.nil?
+        tagging.destroy
+        print 'D'
+        next
+      end
       create_label_from_tagging(tagging)
     end
   end

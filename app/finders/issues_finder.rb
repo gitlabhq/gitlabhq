@@ -15,7 +15,7 @@
 #     label_name: string
 #     sort: string
 #
-class IssuesFinder < BaseFinder
+class IssuesFinder < IssuableFinder
   def klass
     Issue
   end

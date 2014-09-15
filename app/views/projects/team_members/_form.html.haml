@@ -1,5 +1,5 @@
 %h3.page-title
-  = "New project member(s)"
+  New project member(s)
 
 = form_for @user_project_relation, as: :team_member, url: project_team_members_path(@project), html: { class: "form-horizontal users-project-form" } do |f|
   -if @user_project_relation.errors.any?

@@ -6,6 +6,21 @@
   }
 
   .login-box{
+    padding: 0 15px;
+
+    .login-heading h3 {
+      font-weight: 300;
+      line-height: 2;
+    }
+
+    .login-footer {
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 12px !important;
+      @extend .btn-block;
+    }
   }
 
   .brand-image {
@@ -19,7 +34,7 @@
     }
   }
 
-  .login-logo{
+  .login-logo {
     margin: 10px 0 30px 0;
     display: block;
   }
@@ -63,5 +78,9 @@
       font-size: 14px;
       color: #a00;
     }
+  }
+
+  .brand-holder {
+    border-right: 1px solid #EEE;
   }
 }

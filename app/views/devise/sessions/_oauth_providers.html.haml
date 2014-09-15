@@ -1,7 +1,6 @@
 - providers = (enabled_oauth_providers - [:ldap])
 - if providers.present?
-  %hr
-  %div{:'data-no-turbolink' => 'data-no-turbolink'}
+  .bs-callout.bs-callout-info{:'data-no-turbolink' => 'data-no-turbolink'}
     %span Sign in with: &nbsp;
     - providers.each do |provider|
       %span

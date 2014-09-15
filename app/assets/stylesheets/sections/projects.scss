@@ -15,59 +15,61 @@
 }
 
 .project-home-panel {
-  border-bottom: 1px solid #DDD;
-  padding-bottom: 15px;
-  margin-bottom: 30px;
+  margin-bottom: 15px;
 
   &.empty-project {
-      border-bottom: 0px;
-      padding-bottom: 15px;
-      margin-bottom: 0px;
+    border-bottom: 0px;
+    padding-bottom: 15px;
+    margin-bottom: 0px;
   }
 
-  .project-home-title {
-    font-size: 18px;
-    color: #444;
-    margin: 0;
-    line-height: 32px;
-  }
   .project-home-dropdown {
     margin-left: 10px;
     float: right;
   }
-  .project-home-extra {
-    margin-top: 15px;
+
+  .project-home-row {
+    @extend .clearfix;
+    margin-bottom: 15px;
 
     .project-home-desc {
       float: left;
-      color: #777;
-      margin-bottom: 10px;
+      color: #666;
+      font-size: 16px;
     }
 
-    .project-home-links {
+    .star-fork-buttons {
       float: right;
-      a {
-        margin-left: 10px;
-        font-weight: 500;
+      width: 200px;
+      font-size: 14px;
+      font-weight: bold;
+
+      .star-buttons, .fork-buttons {
+        float: right;
+        margin-left: 20px;
+
+        .count {
+          margin-left: 5px;
+        }
       }
     }
   }
 
   .visibility-level-label {
-    font-size: 17px;
-    background: #f1f1f1;
-    border-radius: 4px;
-    color: #444;
-    position: absolute;
-    margin-left: -55px;
-    text-shadow: 0 1px 1px #FFF;
-    width: 40px;
-    text-align: center;
-    padding: 6px;
-
+    color: #555;
+    font-weight: bold;
     i {
       color: inherit;
     }
+  }
+}
+
+.project-home-links {
+  padding: 10px 0px;
+  float: right;
+  a {
+    margin-left: 10px;
+    font-weight: 500;
   }
 }
 
@@ -159,6 +161,7 @@ ul.nav.nav-projects-tabs {
   li {
     .project-info {
       margin-bottom: 10px;
+      overflow: hidden;
     }
 
     .access-icon {
@@ -195,8 +198,8 @@ ul.nav.nav-projects-tabs {
       white-space: normal;
       text-align: left;
       padding: 10px 15px;
-      background-color: #F1f1f1;
-      border-color: #EEE;
+      background-color: #F9F9F9;
+      border-color: #DDD;
 
       &:hover {
         background-color: #eee;

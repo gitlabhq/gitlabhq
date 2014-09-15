@@ -152,3 +152,13 @@ Feature: Project Merge Requests
     And I switch to the diff tab
     And I unfold diff
     Then I should see additional file lines
+
+  @javascript
+  Scenario: I show comments on a merge request side-by-side diff with comments in multiple files
+    Given project "Shop" have "Bug NS-05" open merge request with diffs inside
+    And I visit merge request page "Bug NS-05"
+    And I switch to the diff tab
+    And I leave a comment like "Line is correct" on line 12 of the first file
+    And I leave a comment like "Line is wrong" on line 39 of the second file
+    And I click Side-by-side Diff tab
+    Then I should see comments on the side-by-side diff page

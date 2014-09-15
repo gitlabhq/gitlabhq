@@ -16,12 +16,18 @@ class Notes
     $(document).on "ajax:success", ".js-main-target-form", @addNote
     $(document).on "ajax:success", ".js-discussion-note-form", @addDiscussionNote
 
-        # change note in UI after update
+    # change note in UI after update
     $(document).on "ajax:success", "form.edit_note", @updateNote
 
     # Edit note link
     $(document).on "click", ".js-note-edit", @showEditForm
     $(document).on "click", ".note-edit-cancel", @cancelEdit
+
+    # Reopen and close actions for Issue/MR combined with note form submit
+    $(document).on "click", ".js-note-target-reopen", @targetReopen
+    $(document).on "click", ".js-note-target-close", @targetClose
+    $(document).on "click", ".js-comment-button", @updateCloseButton
+    $(document).on "keyup", ".js-note-text", @updateTargetButtons
 
     # remove a note (in general)
     $(document).on "click", ".js-note-delete", @removeNote
@@ -78,7 +84,9 @@ class Notes
     $(document).off "click", ".js-add-diff-note-button"
     $(document).off "visibilitychange"
     $(document).off "keypress", @notes_forms
-
+    $(document).off "keyup", ".js-note-text"
+    $(document).off "click", ".js-note-target-reopen"
+    $(document).off "click", ".js-note-target-close"
 
   initRefresh: ->
     clearInterval(Notes.interval)
@@ -407,30 +415,6 @@ class Notes
     form.addClass "js-discussion-note-form"
 
   ###
-  General note form setup.
-
-  deactivates the submit button when text is empty
-  hides the preview button when text is empty
-  setup GFM auto complete
-  show the form
-  ###
-  setupNoteForm: (form) =>
-    disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
-    form.removeClass "js-new-note-form"
-    form.removeClass "js-new-note-form"
-    GitLab.GfmAutoComplete.setup()
-
-    # setup preview buttons
-    previewButton = form.find(".js-note-preview-button")
-    form.find(".js-note-text").on "input", ->
-      if $(this).val().trim() isnt ""
-        previewButton.removeClass("turn-off").addClass "turn-on"
-      else
-        previewButton.removeClass("turn-on").addClass "turn-off"
-
-    form.show()
-
-  ###
   Called when clicking on the "add a comment" button on the side of a diff line.
 
   Inserts a temporary row for the form below the line.
@@ -501,5 +485,34 @@ class Notes
   ###
   visibilityChange: =>
     @refresh()
+
+  targetReopen: (e) =>
+    @submitNoteForm($(e.target).parents('form'))
+
+  targetClose: (e) =>
+    @submitNoteForm($(e.target).parents('form'))
+
+  submitNoteForm: (form) =>
+    noteText = form.find(".js-note-text").val()
+    if noteText.trim().length > 0
+      form.submit()
+
+  updateCloseButton: (e) =>
+    textarea = $(e.target)
+    form = textarea.parents('form')
+    form.find('.js-note-target-close').text('Close')
+
+  updateTargetButtons: (e) =>
+    textarea = $(e.target)
+    form = textarea.parents('form')
+
+    if textarea.val().trim().length > 0
+      form.find('.js-note-target-reopen').text('Comment & reopen')
+      form.find('.js-note-target-close').text('Comment & close')
+    else
+      form.find('.js-note-target-reopen').text('Reopen')
+      form.find('.js-note-target-close').text('Close')
+
+
 
 @Notes = Notes

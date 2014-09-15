@@ -1,11 +1,1 @@
-%p
-  Assignee changed
-  - if @previous_assignee
-    from
-    %strong #{@previous_assignee.name}
-  to
-  - if @issue.assignee_id
-    %strong #{@issue.assignee_name}
-  - else
-    %strong Unassigned
-
+= render 'reassigned_issuable_email', issuable: @issue

@@ -1,0 +1,9 @@
+.blob-result
+  .file-holder
+    .file-title
+      = link_to project_wiki_path(@project, wiki_blob.filename) do
+        %i.icon-file
+        %strong
+          = wiki_blob.filename
+    .file-content.code.term
+      = render 'shared/file_hljs', blob: wiki_blob, first_line_number: wiki_blob.startline

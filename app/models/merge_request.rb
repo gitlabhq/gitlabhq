@@ -17,6 +17,7 @@
 #  target_project_id :integer          not null
 #  iid               :integer
 #  description       :text
+#  position          :integer          default(0)
 #
 
 require Rails.root.join("app/models/commit")

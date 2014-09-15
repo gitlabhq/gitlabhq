@@ -18,7 +18,7 @@
     - else
       %ul.well-list= render Commit.decorate(@commits), project: @project
 
-  = render "projects/commits/diffs", diffs: @diffs, project: @project
+  = render "projects/diffs/diffs", diffs: @diffs, project: @project
 
 - else
   .light-well

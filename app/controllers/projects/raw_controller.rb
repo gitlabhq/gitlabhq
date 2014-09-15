@@ -29,12 +29,10 @@ class Projects::RawController < Projects::ApplicationController
   private
 
   def get_blob_type
-    if @blob.mime_type =~ /html|javascript/
+    if @blob.text?
       'text/plain; charset=utf-8'
-    elsif @blob.name =~ /(?:msi|exe|rar|r0\d|7z|7zip|zip)$/
-      'application/octet-stream'
     else
-      @blob.mime_type
+      'application/octet-stream'
     end
   end
 end
