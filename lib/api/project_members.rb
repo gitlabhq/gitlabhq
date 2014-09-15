@@ -6,8 +6,8 @@ module API
     resource :projects do
       helpers do
         def handle_project_member_errors(errors)
-          if errors[:project_access].any?
-            error!(errors[:project_access], 422)
+          if errors[:access_level].any?
+            error!(errors[:access_level], 422)
           end
           not_found!
         end
