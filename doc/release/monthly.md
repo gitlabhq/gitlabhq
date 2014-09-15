@@ -10,11 +10,8 @@ NOTE: This is a guide for GitLab developers.
 
 A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
 
-### **3. Update Changelog**
-
-Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
-
-### **4. Create an overall issue**
+### **3. Create an overall issue**
+Name it "Release x.x.x" for easier searching.
 
 ```
 15th:
@@ -53,6 +50,10 @@ Any changes not yet added to the changelog are added by lead developer and in th
 
 * Deploy to GitLab.com (#LINK)
 ```
+
+### **4. Update Changelog**
+
+Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
 
 # **16th - Merge the CE into EE**
 
