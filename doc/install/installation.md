@@ -133,7 +133,21 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
 
-## 5. GitLab
+## 5. Redis
+
+    sudo apt-get install redis-server
+
+    # Configure redis to use sockets
+    sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
+    sed -e 's/^# unixsocket /unixsocket /' -e 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+
+    # Activate the changes to redis.conf
+    sudo service redis-server restart
+
+    # Add git to the redis group
+    sudo usermod -aG redis git
+
+## 6. GitLab
 
     # We'll install GitLab into home directory of the user "git"
     cd /home/git
@@ -192,6 +206,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo -u git -H git config --global user.name "GitLab"
     sudo -u git -H git config --global user.email "example@example.com"
     sudo -u git -H git config --global core.autocrlf input
+
+    # Configure Redis connection settings
+    sudo -u git -H cp config/resque.yml.example config/resque.yml
+
+    # Change the Redis socket path if necessary
+    sudo -u git -H editor config/resque.yml
 
 **Important Note:** Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
 
@@ -288,7 +308,7 @@ Check if GitLab and its environment are configured correctly:
     # or
     sudo /etc/init.d/gitlab restart
 
-## 6. Nginx
+## 7. Nginx
 
 **Note:** Nginx is the officially supported web server for GitLab. If you cannot or do not want to use Nginx as your web server, have a look at the [GitLab recipes](https://gitlab.com/gitlab-org/gitlab-recipes/).
 
