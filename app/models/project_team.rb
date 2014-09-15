@@ -102,7 +102,7 @@ class ProjectTeam
     source_team.map! do |tm|
       new_tm = tm.dup
       new_tm.id = nil
-      new_tm.project_id = target_project.id
+      new_tm.source = target_project
       new_tm
     end
 
