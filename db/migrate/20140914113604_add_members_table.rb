@@ -10,5 +10,10 @@ class AddMembersTable < ActiveRecord::Migration
 
       t.timestamps
     end
+
+    add_index :members, :type
+    add_index :members, :user_id
+    add_index :members, :access_level
+    add_index :members, [:source_id, :source_type]
   end
 end

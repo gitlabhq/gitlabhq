@@ -32,7 +32,7 @@ class Groups < Spinach::FeatureSteps
     click_link 'Add members'
     within ".users-group-form" do
       select2(user.id, from: "#user_ids", multiple: true)
-      select "Reporter", from: "group_access"
+      select "Reporter", from: "access_level"
     end
     click_button "Add users into group"
   end
