@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20140907220153) do
+ActiveRecord::Schema.define(version: 20140907223153) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -303,14 +303,10 @@ ActiveRecord::Schema.define(version: 20140907220153) do
   create_table "services", force: true do |t|
     t.string   "type"
     t.string   "title"
-    t.integer  "project_id",                               null: false
+    t.integer  "project_id",                 null: false
     t.datetime "created_at"
     t.datetime "updated_at"
-    t.boolean  "active",                   default: false, null: false
-    t.string   "username"
-    t.string   "password"
-    t.string   "api_version"
-    t.string   "jira_issue_transition_id", default: "2"
+    t.boolean  "active",     default: false, null: false
     t.text     "properties"
   end
 
