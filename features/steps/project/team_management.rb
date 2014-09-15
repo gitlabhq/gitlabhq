@@ -24,7 +24,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
 
     select2(user.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select "Reporter", from: "project_access"
+      select "Reporter", from: "access_level"
     end
     click_button "Add users"
   end
@@ -44,7 +44,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
   And 'I change "Sam" role to "Reporter"' do
     user = User.find_by(name: "Sam")
     within "#user_#{user.id}" do
-      select "Reporter", from: "team_member_project_access"
+      select "Reporter", from: "project_member_access_level"
     end
   end
 

@@ -283,7 +283,10 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'personal project' do
-        before { get api("/projects/#{project.id}", user) }
+        before do
+          project.team << [user, :master]
+          get api("/projects/#{project.id}", user)
+        end
 
         it { response.status.should == 200 }
         it { json_response['permissions']["project_access"]["access_level"].should == Gitlab::Access::MASTER }

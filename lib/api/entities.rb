@@ -53,8 +53,8 @@ module API
     end
 
     class ProjectMember < UserBasic
-      expose :project_access, as: :access_level do |user, options|
-        options[:project].project_members.find_by(user_id: user.id).project_access
+      expose :access_level do |user, options|
+        options[:project].project_members.find_by(user_id: user.id).access_level
       end
     end
 
@@ -67,7 +67,7 @@ module API
     end
 
     class GroupMember < UserBasic
-      expose :group_access, as: :access_level do |user, options|
+      expose :access_level do |user, options|
         options[:group].group_members.find_by(user_id: user.id).group_access
       end
     end
@@ -170,12 +170,12 @@ module API
     end
 
     class ProjectAccess < Grape::Entity
-      expose :project_access, as: :access_level
+      expose :access_level
       expose :notification_level
     end
 
     class GroupAccess < Grape::Entity
-      expose :group_access, as: :access_level
+      expose :access_level
       expose :notification_level
     end
 
