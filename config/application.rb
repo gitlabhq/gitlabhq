@@ -14,6 +14,7 @@ module Gitlab
     # Custom directories with classes and modules you want to be autoloadable.
     config.autoload_paths += %W(#{config.root}/lib
                                 #{config.root}/app/finders
+                                #{config.root}/app/models/hooks
                                 #{config.root}/app/models/concerns
                                 #{config.root}/app/models/project_services
                                 #{config.root}/app/models/members)
