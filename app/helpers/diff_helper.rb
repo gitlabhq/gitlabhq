@@ -36,7 +36,10 @@ module DiffHelper
 
     # Building array of lines
     #
-    # [left_type, left_line_number, left_line_content, line_code, right_line_type, right_line_number, right_line_content]
+    # [
+    # left_type, left_line_number, left_line_content, left_line_code,
+    # right_line_type, right_line_number, right_line_content, right_line_code
+    # ]
     #
     diff_file.diff_lines.each do |line|
 
@@ -49,26 +52,25 @@ module DiffHelper
       next_line = diff_file.next_line(line.index)
 
       if next_line
+        next_line_code = generate_line_code(diff_file.file_path, next_line)
         next_type = next_line.type
         next_line = next_line.text
       end
 
-      line = [type, line_old, full_line, line_code, next_type, line_new]
       if type == 'match' || type.nil?
         # line in the right panel is the same as in the left one
-        line = [type, line_old, full_line, line_code, type, line_new, full_line]
+        line = [type, line_old, full_line, line_code, type, line_new, full_line, line_code]
         lines.push(line)
       elsif type == 'old'
         if next_type == 'new'
           # Left side has text removed, right side has text added
-          line.push(next_line)
+          line = [type, line_old, full_line, line_code, next_type, line_new, next_line, next_line_code]
           lines.push(line)
           skip_next = true
         elsif next_type == 'old' || next_type.nil?
           # Left side has text removed, right side doesn't have any change
-          line.pop # remove the newline
-          line.push(nil) # no line number on the right panel
-          line.push("&nbsp;") # empty line on the right panel
+          # No next line code, no new line number, no new line text
+          line = [type, line_old, full_line, line_code, next_type, nil, "&nbsp;", nil]
           lines.push(line)
         end
       elsif type == 'new'
@@ -78,7 +80,7 @@ module DiffHelper
           next
         else
           # Change is only on the right side, left side has no change
-          line = [nil, nil, "&nbsp;", line_code, type, line_new, full_line]
+          line = [nil, nil, "&nbsp;", line_code, type, line_new, full_line, line_code]
           lines.push(line)
         end
       end
@@ -96,5 +98,23 @@ module DiffHelper
     else
       line
     end
+  end
+
+  def line_comments
+    @line_comments ||= @line_notes.group_by(&:line_code)
+  end
+
+  def organize_comments(type_left, type_right, line_code_left, line_code_right)
+    comments_left = comments_right = nil
+
+    unless type_left.nil? && type_right == 'new'
+      comments_left = line_comments[line_code_left]
+    end
+
+    unless type_left.nil? && type_right.nil?
+      comments_right = line_comments[line_code_right]
+    end
+
+    [comments_left, comments_right]
   end
 end
