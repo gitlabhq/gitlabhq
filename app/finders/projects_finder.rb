@@ -32,7 +32,7 @@ class ProjectsFinder
           #
           group.projects.where(
             "projects.id IN (?) OR projects.visibility_level IN (?)",
-            projects_members.pluck(:project_id),
+            projects_members.pluck(:source_id),
             Project.public_and_internal_levels
           )
         else

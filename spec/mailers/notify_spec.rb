@@ -506,7 +506,7 @@ describe Notify do
   describe 'group access changed' do
     let(:group) { create(:group) }
     let(:user) { create(:user) }
-    let(:membership) { create(:users_group, group: group, user: user) }
+    let(:membership) { create(:group_member, group: group, user: user) }
 
     subject { Notify.group_access_granted_email(membership.id) }
 

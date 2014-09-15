@@ -68,7 +68,7 @@ module API
 
     class GroupMember < UserBasic
       expose :access_level do |user, options|
-        options[:group].group_members.find_by(user_id: user.id).group_access
+        options[:group].group_members.find_by(user_id: user.id).access_level
       end
     end
 

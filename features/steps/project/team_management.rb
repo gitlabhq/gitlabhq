@@ -23,7 +23,7 @@ class ProjectTeamManagement < Spinach::FeatureSteps
     user = User.find_by(name: "Mike")
 
     select2(user.id, from: "#user_ids", multiple: true)
-    within "#new_team_member" do
+    within "#new_project_member" do
       select "Reporter", from: "access_level"
     end
     click_button "Add users"
