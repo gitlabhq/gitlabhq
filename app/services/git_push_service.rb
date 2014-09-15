@@ -150,16 +150,7 @@ class GitPushService
     # will be passed as post receive hook data.
     #
     push_commits_limited.each do |commit|
-      data[:commits] << {
-        id: commit.id,
-        message: commit.safe_message,
-        timestamp: commit.committed_date.xmlschema,
-        url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{commit.id}",
-        author: {
-          name: commit.author_name,
-          email: commit.author_email
-        }
-      }
+      data[:commits] << commit.hook_attrs(project)
     end
 
     data
