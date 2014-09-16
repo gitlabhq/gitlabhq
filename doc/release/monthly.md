@@ -27,10 +27,11 @@ Name it "Release x.x.x" for easier searching.
 17th:
 
 * Create x.x.0.rc1 (#LINK)
+* Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
 18th:
 
-* Update GitLab.com with rc1 (#LINK)
+* Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 * Regression issue and tweet about rc1 (#LINK)
 * Start blog post (#LINK)
 
