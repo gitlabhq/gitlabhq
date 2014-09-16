@@ -2,6 +2,7 @@ v 7.3.0
   - Always set the 'origin' remote in satellite actions
   - Write authorized_keys in tmp/ during tests
   - Use sockets to connect to Redis
+  - Add dormant New Relic gem (can be enabled via environment variables)
   - Expire Rack sessions after 1 week
   - Cleaner signin/signup pages
   - Improved comments UI

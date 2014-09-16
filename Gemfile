@@ -251,3 +251,5 @@ end
 group :production do
   gem "gitlab_meta", '7.0'
 end
+
+gem "newrelic_rpm"
