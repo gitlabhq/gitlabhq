@@ -1,6 +1,7 @@
 v 7.3.0
   - Always set the 'origin' remote in satellite actions
   - Write authorized_keys in tmp/ during tests
+  - Use sockets to connect to Redis
   - Expire Rack sessions after 1 week
   - Cleaner signin/signup pages
   - Improved comments UI
@@ -29,6 +30,7 @@ v 7.3.0
   - Enabled Shibboleth authentication support (Matus Banas)
   - Zen mode (fullscreen) for issues/MR/notes (Robert Schilling)
   - Add ability to configure webhook timeout via gitlab.yml (Wes Gurney)
+  - Sort project merge requests in asc or desc order for updated_at or created_at field (sponsored by O'Reilly Media)
 
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)

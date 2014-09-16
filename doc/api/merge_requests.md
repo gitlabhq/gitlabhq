@@ -14,6 +14,8 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `state` (optional) - Return `all` requests or just those that are `merged`, `opened` or `closed`
+- `order_by` (optional) - Return requests ordered by `created_at` or `updated_at` fields
+- `sort` (optional) - Return requests sorted in `asc` or `desc` order
 
 ```json
 [
