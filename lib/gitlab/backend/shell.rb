@@ -107,12 +107,17 @@ module Gitlab
     # path - project path with namespace
     # tag_name - new tag name
     # ref - HEAD for new tag
+    # message - optional message for tag (annotated tag)
     #
     # Ex.
     #   add_tag("gitlab/gitlab-ci", "v4.0", "master")
+    #   add_tag("gitlab/gitlab-ci", "v4.0", "master", "message")
     #
-    def add_tag(path, tag_name, ref)
-      system "#{gitlab_shell_path}/bin/gitlab-projects", "create-tag", "#{path}.git", tag_name, ref
+    def add_tag(path, tag_name, ref, message = nil)
+      cmd = %W(#{gitlab_shell_path}/bin/gitlab-projects create-tag #{path}.git
+               #{tag_name} #{ref})
+      cmd << message unless message.nil? || message.empty?
+      system *cmd
     end
 
     # Remove repository tag

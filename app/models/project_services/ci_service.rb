@@ -1,3 +1,17 @@
+# == Schema Information
+#
+# Table name: services
+#
+#  id          :integer          not null, primary key
+#  type        :string(255)
+#  title       :string(255)
+#  project_id  :integer          not null
+#  created_at  :datetime
+#  updated_at  :datetime
+#  active      :boolean          default(FALSE), not null
+#  properties  :text
+#
+
 # Base class for CI services
 # List methods you need to implement to get your CI service
 # working with GitLab Merge Requests

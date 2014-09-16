@@ -15,6 +15,7 @@
 #= require jquery.atwho
 #= require jquery.scrollTo
 #= require jquery.blockUI
+#= require jquery.sticky
 #= require turbolinks
 #= require jquery.turbolinks
 #= require bootstrap
@@ -25,12 +26,20 @@
 #= require branch-graph
 #= require highlight.pack
 #= require ace/ace
+#= require ace/ext-searchbox
 #= require d3
 #= require underscore
 #= require nprogress
 #= require nprogress-turbolinks
 #= require dropzone
 #= require semantic-ui/sidebar
+#= require mousetrap
+#= require mousetrap/pause
+#= require shortcuts
+#= require shortcuts_navigation
+#= require shortcuts_dashboard_navigation
+#= require shortcuts_issueable
+#= require shortcuts_network
 #= require_tree .
 
 window.slugify = (text) ->
@@ -117,6 +126,13 @@ $ ->
   # Initialize select2 selects
   $('select.select2').select2(width: 'resolve', dropdownAutoWidth: true)
 
+  # Close select2 on escape
+  $('.js-select2').bind 'select2-close', ->
+    setTimeout ( ->
+      $('.select2-container-active').removeClass('select2-container-active')
+      $(':focus').blur()
+    ), 1
+
   # Initialize tooltips
   $('.has_tooltip').tooltip()
 
@@ -148,20 +164,6 @@ $ ->
 
   # Show/Hide the profile menu when hovering the account box
   $('.account-box').hover -> $(@).toggleClass('hover')
-
-  # Focus search field by pressing 's' key
-  $(document).keypress (e) ->
-    # Don't do anything if typing in an input
-    return if $(e.target).is(":input")
-
-    switch e.which
-      when 115
-        $("#search").focus()
-        e.preventDefault()
-      when 63
-        new Shortcuts()
-        e.preventDefault()
-
 
   # Commit show suppressed diff
   $(".diff-content").on "click", ".supp_diff_link", ->

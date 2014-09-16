@@ -1,9 +1,9 @@
 %h3.page-title New file
 %hr
 .file-editor
-  = form_tag(project_new_tree_path(@project, @id), method: :put, class: "form-horizontal") do
+  = form_tag(project_new_tree_path(@project, @id), method: :put, class: 'form-horizontal form-new-file') do
     .form-group.commit_message-group
-      = label_tag 'file_name', class: "control-label" do
+      = label_tag 'file_name', class: 'control-label' do
         File name
       .col-sm-10
         .input-group
@@ -24,7 +24,7 @@
       = label_tag 'commit_message', class: "control-label" do
         Commit message
       .col-sm-10
-        = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message',
+        = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message form-control',
             params[:commit_message], placeholder: "Added new file", required: true, rows: 3, class: 'form-control')}
 
     .file-holder
@@ -46,7 +46,7 @@
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")
   var editor = ace.edit("editor");
 
-  disableButtonIfEmptyField("#commit_message", ".js-commit-button");
+  disableButtonIfAnyEmptyField($('.form-new-file'), '.form-control', '.btn-create')
 
   $(".js-commit-button").click(function(){
     $("#file-content").val(editor.getValue());

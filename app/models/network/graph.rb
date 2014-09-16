@@ -178,12 +178,6 @@ module Network
       space = find_free_space(time_range, 2, space_base)
       leaves.each do |l|
         l.spaces << space
-        # Also add space to parent
-        l.parents(@map).each do |parent|
-          if 0 < parent.space && parent.space < space
-            parent.spaces << space
-          end
-        end
       end
 
       # and mark it as reserved

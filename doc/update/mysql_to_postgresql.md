@@ -15,9 +15,14 @@ git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 cd mysql-postgresql-converter
 mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production
 python db_converter.py databasename.mysql databasename.psql
-psql -f databasename.psql -d gitlabhq_production
+
+# Import the database dump as the application database user
+sudo -u git psql -f databasename.psql -d gitlabhq_production
 
 # Rebuild indexes (see below)
+
+# Install gems for PostgreSQL (note: the line below states '--without ... mysql')
+sudo -u git -H bundle install --without development test mysql --deployment
 
 sudo service gitlab start
 ```

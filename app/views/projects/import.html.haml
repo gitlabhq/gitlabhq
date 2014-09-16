@@ -4,7 +4,7 @@
       %h2
         %i.icon-spinner.icon-spin
         Import in progress.
-      %p.monospace git clone --bare #{@project.import_url}
+      %p.monospace git clone --bare #{hidden_pass_url(@project.import_url)}
       %p Please wait while we import the repository for you. Refresh at will.
       :javascript
         new ProjectImport();
@@ -23,7 +23,7 @@
         .col-sm-10
           = f.text_field :import_url, class: 'form-control', placeholder: 'https://github.com/randx/six.git'
           .bs-callout.bs-callout-info
-            This url must be publicly accessible or you can add a username and password like this: https://username:password@gitlab.com/company/project.git.
+            This URL must be publicly accessible or you can add a username and password like this: https://username:password@gitlab.com/company/project.git.
             %br
             The import will time out after 4 minutes. For big repositories, use a clone/push combination.
       .form-actions

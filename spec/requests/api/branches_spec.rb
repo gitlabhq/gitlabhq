@@ -94,21 +94,49 @@ describe API::API, api: true  do
   describe "POST /projects/:id/repository/branches" do
     it "should create a new branch" do
       post api("/projects/#{project.id}/repository/branches", user),
-        branch_name: branch_name,
-        ref: branch_sha
+           branch_name: 'feature1',
+           ref: branch_sha
 
       response.status.should == 201
 
-      json_response['name'].should == branch_name
+      json_response['name'].should == 'feature1'
       json_response['commit']['id'].should == branch_sha
     end
 
     it "should deny for user without push access" do
       post api("/projects/#{project.id}/repository/branches", user2),
-        branch_name: branch_name,
-        ref: branch_sha
-
+           branch_name: branch_name,
+           ref: branch_sha
       response.status.should == 403
+    end
+
+    it 'should return 400 if branch name is invalid' do
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new design',
+           ref: branch_sha
+      response.status.should == 400
+      json_response['message'].should == 'Branch name invalid'
+    end
+
+    it 'should return 400 if branch already exists' do
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design1',
+           ref: branch_sha
+      response.status.should == 201
+
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design1',
+           ref: branch_sha
+      response.status.should == 400
+      json_response['message'].should == 'Branch already exists'
+    end
+
+    it 'should return 400 if ref name is invalid' do
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design3',
+           ref: 'foo'
+      response.status.should == 400
+      json_response['message'].should == 'Invalid reference name'
     end
   end
 
@@ -118,6 +146,11 @@ describe API::API, api: true  do
     it "should remove branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       response.status.should == 200
+    end
+
+    it 'should return 404 if branch not exists' do
+      delete api("/projects/#{project.id}/repository/branches/foobar", user)
+      response.status.should == 404
     end
 
     it "should remove protected branch" do

@@ -50,6 +50,7 @@ Parameters:
 - `id` (required) - The ID of a project
 - `tag_name` (required) - The name of a tag
 - `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
+- `message` (optional) - Creates annotated tag.
 
 ```json
 [
@@ -70,6 +71,9 @@ Parameters:
   }
 ]
 ```
+
+It returns 200 if the operation succeed. In case of an error,
+405 with an explaining error message is returned.
 
 ## List repository tree
 

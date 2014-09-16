@@ -18,4 +18,27 @@ module SharedSnippet
            private: true,
            author: current_user)
   end
+  And 'I have a public many lined snippet' do
+    create(:personal_snippet,
+           title: 'Many lined snippet',
+           content: <<-END.gsub(/^\s+\|/, ''),
+             |line one
+             |line two
+             |line three
+             |line four
+             |line five
+             |line six
+             |line seven
+             |line eight
+             |line nine
+             |line ten
+             |line eleven
+             |line twelve
+             |line thirteen
+             |line fourteen
+           END
+           file_name: 'many_lined_snippet.rb',
+           private: true,
+           author: current_user)
+  end
 end

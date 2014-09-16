@@ -26,21 +26,6 @@ module Gitlab
           end
         end
 
-        def find_user(email)
-          user = model.find_by(email: email)
-
-          # If no user found and allow_username_or_email_login is true
-          # we look for user by extracting part of their email
-          if !user && email && ldap_conf['allow_username_or_email_login']
-            uname = email.partition('@').first
-            # Strip apostrophes since they are disallowed as part of username
-            username = uname.gsub("'", "")
-            user = model.find_by(username: username)
-          end
-
-          user
-        end
-
         def authenticate(login, password)
           # Check user against LDAP backend if user is not authenticated
           # Only check with valid login and password to prevent anonymous bind results

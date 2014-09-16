@@ -5,6 +5,8 @@ targets:
   debian-7: &wheezy
     build_dependencies:
       - libicu-dev
+      - cmake
+      - pkg-config
     dependencies:
       - libicu48
       - libpcre3
@@ -13,6 +15,8 @@ targets:
   ubuntu-14.04:
     build_dependencies:
       - libicu-dev
+      - cmake
+      - pkg-config
     dependencies:
       - libicu52
       - libpcre3
@@ -20,6 +24,8 @@ targets:
   centos-6:
     build_dependencies:
       - libicu-devel
+      - cmake
+      - pkgconfig
     dependencies:
       - libicu
       - pcre

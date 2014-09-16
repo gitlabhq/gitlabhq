@@ -7,9 +7,9 @@
 - Ubuntu
 - Debian
 - CentOS
-- RedHat Enterprise Linux
-- Scientific Linux
-- Oracle Linux
+- RedHat Enterprise Linux (please use the CentOS packages and instructions)
+- Scientific Linux (please use the CentOS packages and instructions)
+- Oracle Linux (please use the CentOS packages and instructions)
 
 For the installations options please see [the installation page on the GitLab website](https://about.gitlab.com/installation/).
 

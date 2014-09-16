@@ -12,7 +12,9 @@ module API
       #   ref - branch name
       #   forced_push - forced_push
       #
-      get "/allowed" do
+      post "/allowed" do
+        status 200
+
         # Check for *.wiki repositories.
         # Strip out the .wiki from the pathname before finding the
         # project. This applies the correct project permissions to
@@ -34,10 +36,7 @@ module API
           actor,
           params[:action],
           project,
-          params[:ref],
-          params[:oldrev],
-          params[:newrev],
-          params[:forced_push]
+          params[:changes]
         )
       end
 
