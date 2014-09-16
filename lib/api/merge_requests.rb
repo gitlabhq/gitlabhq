@@ -26,7 +26,7 @@ module API
       #   GET /projects/:id/merge_requests?state=opened
       #   GET /projects/:id/merge_requests?state=closed
       #   GET /projects/:id/merge_requests?order_by=created_at
-      #   GET /projects/:id/merge_requests?order_by=created_at
+      #   GET /projects/:id/merge_requests?order_by=updated_at
       #   GET /projects/:id/merge_requests?sort=desc
       #   GET /projects/:id/merge_requests?sort=asc
       #
