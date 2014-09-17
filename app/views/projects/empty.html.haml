@@ -1,6 +1,8 @@
 = render "home_panel"
 
 %div.git-empty
+  %p.slead
+    We recommend every repository include #{link_to "README", project_path(@project)/new/master?file_name=README.md}, #{link_to "LICENSE", project_path(@project)/new/master?file_name=LICENSE.md}, and #{link_to ".gitignore", project_path(@project)/new/master?file_name=.gitignore} files. You may also be interested in including #{link_to ".gitattributes", project_path(@project)/new/master?file_name=.gitattributes}, #{link_to "CONTRIBUTING", project_path(@project)/new/master?file_name=CONTRIBUTING.md}, and #{link_to "VERSION", project_path(@project)/new/master?file_name=VERSION} files.
   %fieldset
     %legend Git global setup:
     %pre.dark
