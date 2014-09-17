@@ -51,6 +51,14 @@ module GitlabMarkdownHelper
     @markdown.render(text).html_safe
   end
 
+  def first_line_in_markdown(text)
+    line = text.split("\n").detect do |i|
+      i.present? && markdown(i).present?
+    end
+    line += '...' unless line.nil?
+    line
+  end
+
   def render_wiki_content(wiki_page)
     if wiki_page.format == :markdown
       markdown(wiki_page.content)
