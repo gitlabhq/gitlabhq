@@ -157,8 +157,6 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Clone GitLab repository
     sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git -b 7-3-stable-ee gitlab
 
-    # Go to gitlab dir
-    cd /home/git/gitlab
 
 **Note:** You can change `7-3-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
@@ -195,7 +193,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Find number of cores
     nproc
-    
+
     # Enable cluster mode if you expect to have a high load instance
     # Ex. change amount of workers to 3 for 2GB RAM server
     # Set the number of workers to at least the number of cores
