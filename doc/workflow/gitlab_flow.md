@@ -81,7 +81,7 @@ An 'extreme' version of environment branches are setting up an environment for e
 
 # Release branches with GitLab flow
 
-![Master and multiple release branches that vary in length with cherrypicks from master]() Only in case you need to release software to the outside world you work with release branches.
+![Master and multiple release branches that vary in length with cherrypicks from master]() Only in case you need to release software to the outside world you need to work with release branches.
 In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
 The stable branch uses master as a starting point and is created as late as possible.
 By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
@@ -161,14 +161,17 @@ If you have an issue that spans across multiple repositories, the best thing is 
 
 # Squashing commits with rebase
 
-![Vim screen showing the rebase view]() With git you can rebase your commits to squash multiple commits into one.
-This functionality is useful if you have a couple of commits for small changes during development and want to replace them with a single commit.
+![Vim screen showing the rebase view]() With git you can use an interactive rebase (rebase -i) to squash multiple commits into one and reorder them.
+This functionality is useful if you made a couple of commits for small changes during development and want to replace them with a single commit or if you want to make the order more logical.
 However you should never rebase commits you have pushed to a remote server.
 Somebody can have referred to the commits or cherry-picked them.
 When you rebase you change the identifier (SHA1) of the commit and this is confusing.
 If you do that the same change will be known under multiple identifiers and this can cause much confusion.
+If people already reviewed your code it will be hard for them to review only the improvements you made since then if you have rebased everything into one commit.
+
 People are encouraged to commit often and to frequently push to the remote repository so other people are aware what everyone is working on.
-This will lead to many commits per change which makes the history harder to understand. But the advantages of having stable identifiers outweight this drawback.
+This will lead to many commits per change which makes the history harder to understand.
+But the advantages of having stable identifiers outweigh this drawback.
 And to understand a change in context one can always look at the merge commit that groups all the commits together when the code is merged into the master branch.
 
 After you merge multiple commits from a feature branch into the master branch this is harder to undo.
