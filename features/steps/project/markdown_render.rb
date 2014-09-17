@@ -79,9 +79,17 @@ class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
   end
 
   And 'I navigate to the doc/api/README' do
-    click_link "doc"
-    click_link "api"
-    click_link "README.md"
+    within '.tree-table' do
+      click_link "doc"
+    end
+
+    within '.tree-table' do
+      click_link "api"
+    end
+
+    within '.tree-table' do
+      click_link "README.md"
+    end
   end
 
   And 'I see correct file rendered' do

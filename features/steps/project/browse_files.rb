@@ -77,7 +77,9 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on readme file' do
-    click_link 'README.md'
+    within '.tree-table' do
+      click_link 'README.md'
+    end
   end
 
   step 'I see Browse file link' do
