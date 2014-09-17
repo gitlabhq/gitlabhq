@@ -356,8 +356,7 @@ namespace :gitlab do
       check_repo_base_user_and_group
       check_repo_base_permissions
       check_satellites_permissions
-      check_update_hook_is_up_to_date
-      check_repos_update_hooks_is_link
+      check_repos_hooks_directory_is_link
       check_gitlab_shell_self_test
 
       finished_checking "GitLab Shell"
@@ -366,29 +365,6 @@ namespace :gitlab do
 
     # Checks
     ########################
-
-
-    def check_update_hook_is_up_to_date
-      print "update hook up-to-date? ... "
-
-      hook_file = "update"
-      gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
-      gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
-
-      if File.exists?(gitlab_shell_hook_file)
-        puts "yes".green
-      else
-        puts "no".red
-        puts "Could not find #{gitlab_shell_hook_file}"
-        try_fixing_it(
-          'Check the hooks_path in config/gitlab.yml',
-          'Check your gitlab-shell installation'
-        )
-        for_more_information(
-          see_installation_guide_section "GitLab Shell"
-        )
-      end
-    end
 
     def check_repo_base_exists
       print "Repo base directory exists? ... "
@@ -508,18 +484,10 @@ namespace :gitlab do
       end
     end
 
-    def check_repos_update_hooks_is_link
-      print "update hooks in repos are links: ... "
+    def check_repos_hooks_directory_is_link
+      print "hooks directories in repos are links: ... "
 
-      hook_file = "update"
       gitlab_shell_hooks_path = Gitlab.config.gitlab_shell.hooks_path
-      gitlab_shell_hook_file  = File.join(gitlab_shell_hooks_path, hook_file)
-      gitlab_shell_ssh_user = Gitlab.config.gitlab_shell.ssh_user
-
-      unless File.exists?(gitlab_shell_hook_file)
-        puts "can't check because of previous errors".magenta
-        return
-      end
 
       unless Project.count > 0
         puts "can't check, you have no projects".magenta
@@ -529,38 +497,25 @@ namespace :gitlab do
 
       Project.find_each(batch_size: 100) do |project|
         print sanitized_message(project)
+        project_hook_directory = File.join(project.repository.path_to_repo, "hooks")
 
         if project.empty_repo?
           puts "repository is empty".magenta
+        elsif File.realpath(project_hook_directory) == File.realpath(gitlab_shell_hooks_path)
+          puts 'ok'.green
         else
-          project_hook_file = File.join(project.repository.path_to_repo, "hooks", hook_file)
-
-          unless File.exists?(project_hook_file)
-            puts "missing".red
-            try_fixing_it(
-              "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
-            )
-            for_more_information(
-              "#{gitlab_shell_path}/bin/create-hooks"
-            )
-            fix_and_rerun
-            next
-          end
-
-          if File.lstat(project_hook_file).symlink? &&
-              File.realpath(project_hook_file) == File.realpath(gitlab_shell_hook_file)
-            puts "ok".green
-          else
-            puts "not a link to GitLab Shell's hook".red
-            try_fixing_it(
-              "sudo -u #{gitlab_shell_ssh_user} ln -sf #{gitlab_shell_hook_file} #{project_hook_file}"
-            )
-            for_more_information(
-              "#{gitlab_shell_path}/bin/create-hooks"
-            )
-            fix_and_rerun
-          end
+          puts "wrong or missing hooks".red
+          try_fixing_it(
+            sudo_gitlab("#{gitlab_shell_path}/bin/create-hooks"),
+            'Check the hooks_path in config/gitlab.yml',
+            'Check your gitlab-shell installation'
+          )
+          for_more_information(
+            see_installation_guide_section "GitLab Shell"
+          )
+          fix_and_rerun
         end
+
       end
     end
 
