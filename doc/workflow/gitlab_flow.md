@@ -214,6 +214,7 @@ In conclusion, we can say that you should try to prevent merge commits, but not 
 Your codebase should be clean but your history should represent what actually happened.
 Developing software happen in small messy steps and it is OK to have your history reflect this.
 You can use tools to view the network graphs of commits and understand the messy history that created your code.
+If you rebase code the history is incorrect, and there is no way for tools to remedy this because they can't deal with changing commit identifiers.
 
 # Voting on merge requests
 
