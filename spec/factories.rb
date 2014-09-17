@@ -39,10 +39,10 @@ FactoryGirl.define do
     owner
   end
 
-  factory :users_project do
+  factory :project_member do
     user
     project
-    project_access { UsersProject::MASTER }
+    access_level { ProjectMember::MASTER }
   end
 
   factory :issue do

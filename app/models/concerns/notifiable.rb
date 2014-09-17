@@ -1,6 +1,6 @@
 # == Notifiable concern
 #
-# Contains notification functionality shared between UsersProject and UsersGroup
+# Contains notification functionality
 #
 module Notifiable
   extend ActiveSupport::Concern

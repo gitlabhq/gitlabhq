@@ -95,13 +95,13 @@
       .panel.panel-default
         .panel-heading
           %strong #{@group.name}
-          group members (#{@group.users_groups.count})
+          group members (#{@group.group_members.count})
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-small' do
               %i.icon-edit
         %ul.well-list
           - @group_members.each do |member|
-            = render 'users_groups/users_group', member: member, show_controls: false
+            = render 'groups/group_members/group_member', member: member, show_controls: false
         .panel-footer
           = paginate @group_members, param_name: 'group_members_page', theme: 'gitlab'
 
@@ -115,17 +115,17 @@
             %i.icon-edit
             Manage Access
       %ul.well-list.team_members
-        - @project_members.each do |users_project|
-          - user = users_project.user
-          %li.users_project
+        - @project_members.each do |project_member|
+          - user = project_member.user
+          %li.project_member
             .list-item-name
               %strong
                 = link_to user.name, admin_user_path(user)
             .pull-right
-              - if users_project.owner?
+              - if project_member.owner?
                 %span.light Owner
               - else
-                %span.light= users_project.human_access
+                %span.light= project_member.human_access
                 = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, remote: true, class: "btn btn-small btn-remove" do
                   %i.icon-remove
       .panel-footer

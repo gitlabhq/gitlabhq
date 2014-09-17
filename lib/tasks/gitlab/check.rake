@@ -17,7 +17,7 @@ namespace :gitlab do
       check_database_config_exists
       check_database_is_not_sqlite
       check_migrations_are_up
-      check_orphaned_users_groups
+      check_orphaned_group_members
       check_gitlab_config_exists
       check_gitlab_config_not_outdated
       check_log_writable
@@ -194,13 +194,13 @@ namespace :gitlab do
       end
     end
 
-    def check_orphaned_users_groups
-      print "Database contains orphaned UsersGroups? ... "
-      if UsersGroup.where("user_id not in (select id from users)").count > 0
+    def check_orphaned_group_members
+      print "Database contains orphaned GroupMembers? ... "
+      if GroupMember.where("user_id not in (select id from users)").count > 0
         puts "yes".red
         try_fixing_it(
           "You can delete the orphaned records using something along the lines of:",
-          sudo_gitlab("bundle exec rails runner -e production 'UsersGroup.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
+          sudo_gitlab("bundle exec rails runner -e production 'GroupMember.where(\"user_id NOT IN (SELECT id FROM users)\").delete_all'")
         )
       else
         puts "no".green

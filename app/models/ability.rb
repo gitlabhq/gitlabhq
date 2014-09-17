@@ -14,7 +14,7 @@ class Ability
       when "MergeRequest" then merge_request_abilities(user, subject)
       when "Group" then group_abilities(user, subject)
       when "Namespace" then namespace_abilities(user, subject)
-      when "UsersGroup" then users_group_abilities(user, subject)
+      when "GroupMember" then users_group_abilities(user, subject)
       else []
       end.concat(global_abilities(user))
     end
