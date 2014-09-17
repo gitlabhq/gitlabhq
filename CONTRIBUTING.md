@@ -93,7 +93,7 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. The change is as small as possible (see the above paragraph for details)
 1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
 1. Initially contains a single commit (please use `git rebase -i` to squash commits)
-1. Can merge without problems (if not please merge master, never rebase commits pushed to the remote server)
+1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality
 1. Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
 1. Keeps the GitLab code base clean and well structured
