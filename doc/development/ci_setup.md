@@ -6,7 +6,8 @@ What services we currently use for testing GitLab:
 
 ### GitLab CI at ci.gitlab.org
 
-We use it for testing software from private server at dev.gitlab.org
+We use it for testing software from private server at dev.gitlab.org. 
+We use [this build script](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/build_script_gitlab_ce.md) for testing GitLab CE on ci.gitlab.org
 
 ### Semaphore at semaphoreapp.com
 
