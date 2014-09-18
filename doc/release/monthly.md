@@ -113,7 +113,7 @@ Check if any of these changed since last release:
 - <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example>
 - <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql>
 - <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql>
-- <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/rack_attack.rb.example>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/initializers/rack_attack.rb.example>
 
 #### 8. Need to update init script?
 
