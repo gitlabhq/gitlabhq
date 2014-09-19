@@ -6,7 +6,7 @@ require 'simplecov' unless ENV['CI']
 
 if ENV['TRAVIS']
   require 'coveralls'
-  Coveralls.wear!
+  Coveralls.wear_merged!
 end
 
 require 'rspec/rails'

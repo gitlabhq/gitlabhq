@@ -2,7 +2,7 @@ require 'simplecov' unless ENV['CI']
 
 if ENV['TRAVIS']
   require 'coveralls'
-  Coveralls.wear!
+  Coveralls.wear_merged!
 end
 
 ENV['RAILS_ENV'] = 'test'
