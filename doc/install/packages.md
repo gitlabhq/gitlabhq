@@ -21,7 +21,7 @@ Please contact <subscribers@gitlab.com> if you have any questions.
     + MD5: aac87719e12b89a8b7fbb8e76d08cf10
 
 - 7.2.2-ee - CentOS 7 64-bit [gitlab-7.2.2_ee.omnibus.1-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/8ec5d93f4c7b6884a85fe3a0b4f6e4f1ab561de4/centos-7.0.1406/gitlab-7.2.2_ee.omnibus-1.el7.x86_64.rpm)
-    + MD5: 1d3cee97374e1b4e9eda9afad7e75057
+    + MD5: d9122c6afb70f059c8c9d63691db6bb7
 
 ## Previous versions
 
