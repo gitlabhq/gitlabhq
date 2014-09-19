@@ -25,28 +25,28 @@
           = f.label :push_events, class: 'list-label' do
             %strong Push events
           %p.light
-            This url will be triggered by a push to the repository
+            This URL will be triggered by a push to the repository
       %div
         = f.check_box :tag_push_events, class: 'pull-left'
         .prepend-left-20
           = f.label :tag_push_events, class: 'list-label' do
             %strong Tag push events
           %p.light
-            This url will be triggered when a new tag is pushed to the repository
+            This URL will be triggered when a new tag is pushed to the repository
       %div
         = f.check_box :issues_events, class: 'pull-left'
         .prepend-left-20
           = f.label :issues_events, class: 'list-label' do
             %strong Issues events
           %p.light
-            This url will be triggered when an issue is created
+            This URL will be triggered when an issue is created
       %div
         = f.check_box :merge_requests_events, class: 'pull-left'
         .prepend-left-20
           = f.label :merge_requests_events, class: 'list-label' do
             %strong Merge Request events
           %p.light
-            This url will be triggered when a merge request is created
+            This URL will be triggered when a merge request is created
   .form-actions
     = f.submit "Add Web Hook", class: "btn btn-create"
 
