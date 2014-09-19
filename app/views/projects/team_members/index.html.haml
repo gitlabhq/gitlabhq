@@ -1,5 +1,5 @@
 %h3.page-title
-  Users with access to this project
+  Project members
 
   - if can? current_user, :admin_team_member, @project
     %span.pull-right
@@ -9,8 +9,7 @@
         Import members
 
 %p.light
-  Read more about project permissions
-  %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
+  Manage project members and #{link_to "permissions", help_page_path("permissions", "permissions"), class: "vlink"}
 = render "team", members: @users_projects
 - if @group
   = render "group_members"
