@@ -4,9 +4,9 @@
   - if can? current_user, :admin_team_member, @project
     %span.pull-right
       = link_to new_project_team_member_path(@project), class: "btn btn-new btn-grouped", title: "New project member" do
-        New project member
+        New Project Member
       = link_to import_project_team_members_path(@project), class: "btn btn-grouped", title: "Import members from another project" do
-        Import members
+        Import Members
 
 %p.light
   Manage project members and #{link_to "permissions", help_page_path("permissions", "permissions"), class: "vlink"}
