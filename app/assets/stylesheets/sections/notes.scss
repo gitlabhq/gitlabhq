@@ -145,6 +145,7 @@ ul.notes {
 .diff-file tr.line_holder {
   .add-diff-note {
     background: image-url("diff_note_add.png") no-repeat left 0;
+    border: none;
     height: 22px;
     margin-left: -65px;
     position: absolute;

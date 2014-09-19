@@ -103,7 +103,7 @@ module SharedDiffNote
 
   step 'I should see a discussion reply button' do
     within(diff_file_selector) do
-      page.should have_link("Reply")
+      page.should have_button('Reply')
     end
   end
 
@@ -160,6 +160,6 @@ module SharedDiffNote
   end
 
   def click_diff_line(code)
-    find("a[data-line-code='#{code}']").click
+    find("button[data-line-code='#{code}']").click
   end
 end
