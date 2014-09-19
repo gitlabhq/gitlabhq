@@ -1,27 +1,14 @@
 # CI setup
 
-This document describes what services we use for testing GitLab and GitLab CI. 
+This document describes what services we use for testing GitLab and GitLab CI.
 
-What services we currently use for testing GitLab: 
+We currently use three CI services to test GitLab:
 
-### GitLab CI at ci.gitlab.org
+1. GitLab CI on [GitHost.io](https://gitlab-ce.githost.io/projects/2/) for the [GitLab.com repo](https://gitlab.com/gitlab-org/gitlab-ce)
+2. GitLab CI at ci.gitlab.org to test the private GitLab B.V. repo at dev.gitlab.org
+3. [Semephore](https://semaphoreapp.com/gitlabhq/gitlabhq/) for [GitHub.com repo](https://github.com/gitlabhq/gitlabhq)
 
-We use it for testing software from private server at dev.gitlab.org. 
-We use [this build script](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/build_script_gitlab_ce.md) for testing GitLab CE on ci.gitlab.org
-
-### Semaphore at semaphoreapp.com
-
-We use for testing Pull requests and builds from our mirror on github.com
-
-### GitLab CI at gitlab-ce.githost.io
-
-We use it for testing our repository at gitlab.com
-
-
-## Table of CI usage 
-
-
-| Software                              | GitLab CI (ci.gitlab.org) | GitLab CI (githost.io) | Semaphore |
+| Software @ configuration being tested | GitLab CI (ci.gitlab.org) | GitLab CI (GitHost.io) | Semaphore |
 |---------------------------------------|---------------------------|------------------------|-----------|
 | GitLab CE @ MySQL                     | ✓                         | ✓                      |           |
 | GitLab CE @ PostgreSQL                |                           |                        | ✓         |
@@ -31,3 +18,24 @@ We use it for testing our repository at gitlab.com
 | GitLab CI Runner                      | ✓                         |                        | ✓         |
 | GitLab Shell                          | ✓                         |                        | ✓         |
 | GitLab Shell                          | ✓                         |                        | ✓         |
+
+We use [these build scripts](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/build_script_gitlab_ce.md) for testing with GitLab CI.
+
+# Build configuration on [Semaphore](https://semaphoreapp.com/gitlabhq/gitlabhq/) for testing the [GitHub.com repo](https://github.com/gitlabhq/gitlabhq)
+
+Language: Ruby
+Ruby verion: 2.1.2
+database.yml: pg
+
+Build commands
+
+```bash
+sudo apt-get install cmake libicu-dev -y (Setup)
+bundle install --deployment --path vendor/bundle (Setup)
+cp config/gitlab.yml.example config/gitlab.yml (Setup)
+bundle exec rake db:create (Setup)
+bundle exec rake spinach (Thread #1)
+bundle exec rake spec (Thread #2)
+```
+
+Use rubygems mirror.
