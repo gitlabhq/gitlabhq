@@ -215,7 +215,7 @@ Merge CE into EE before doing the QA.
 
 ### **2. QA**
 
-Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X release" in order to keep track of the progress.
+Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X QA" in order to keep track of the progress.
 
 Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
 
