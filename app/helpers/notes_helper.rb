@@ -69,9 +69,8 @@ module NotesHelper
 
     link_to "javascript:;", class: "btn reply-btn js-discussion-reply-button",
       data: data, title: "Add a reply" do
-      link_text = ""
-      link_text < content_tag(:i, nil, class: 'icon-comment')
-      link_text << "Reply"
-      end
+      link_text = content_tag(:i, nil, class: 'icon-comment')
+      link_text << ' Reply'
+    end
   end
 end
