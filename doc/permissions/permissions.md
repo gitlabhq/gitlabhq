@@ -27,11 +27,11 @@ If a user is a GitLab administrator they receive all permissions.
 | Create new milestones                 |         |            |             | ✓        | ✓      |
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
-| Enable/Disable branch protection      |         |            |             | ✓        | ✓      |
+| Enable/disable branch protection      |         |            |             | ✓        | ✓      |
 | Rewrite/remove git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
-| Add Deploy Keys to project            |         |            |             | ✓        | ✓      |
-| Configure Project Hooks               |         |            |             | ✓        | ✓      |
+| Add deploy keys to project            |         |            |             | ✓        | ✓      |
+| Configure project hooks               |         |            |             | ✓        | ✓      |
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |

@@ -7,12 +7,8 @@
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10
-    .zennable
-      %input#zen-toggle-comment{ tabindex: '-1', type: 'checkbox' }
-      .zen-backdrop
-        = f.text_area :description, rows: 14, class: 'form-control js-gfm-input markdown-area', placeholder: 'Leave a comment'
-        %label{ for: 'zen-toggle-comment', class: 'expand' } Edit in fullscreen
-        %label{ for: 'zen-toggle-comment', class: 'collapse' }
+    = render 'projects/zen', f: f, attr: :description,
+                             classes: 'description form-control'
     .col-sm-12.hint
       .pull-left
         Parsed with

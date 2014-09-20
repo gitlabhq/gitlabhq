@@ -1,13 +1,12 @@
 class @ZenMode
   @fullscreen_prefix = 'fullscreen_'
-  @ESC = 27
 
   constructor: ->
     @active_zen_area = null
     @active_checkbox = null
 
     $('body').on 'change', '.zennable input[type=checkbox]', (e) =>
-      checkbox = e.currentTarget;
+      checkbox = e.currentTarget
       if checkbox.checked
         Mousetrap.pause()
         @udpateActiveZenArea(checkbox)
@@ -15,9 +14,9 @@ class @ZenMode
         @exitZenMode()
 
     $(document).on 'keydown', (e) =>
-      console.log("esc")
-      if e.keyCode is ZenMode.ESC
+      if e.keyCode is $.ui.keyCode.ESCAPE
         @exitZenMode()
+        e.preventDefault()
 
     $(window).on 'hashchange', @updateZenModeFromLocationHash
 
@@ -27,7 +26,7 @@ class @ZenMode
     @active_zen_area = @active_checkbox.parent().find('textarea')
     @active_zen_area.focus()
     window.location.hash = ZenMode.fullscreen_prefix + @active_checkbox.prop('id')
-  
+
   exitZenMode: =>
     if @active_zen_area isnt null
       Mousetrap.unpause()
@@ -48,4 +47,4 @@ class @ZenMode
     if checkbox
       @udpateActiveZenArea(checkbox)
     else
-      @exitZenMode()      
+      @exitZenMode()
