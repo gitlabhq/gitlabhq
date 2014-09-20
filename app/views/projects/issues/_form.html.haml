@@ -10,21 +10,6 @@
 
   = form_for [@project, @issue], html: { class: 'form-horizontal issue-form' } do |f|
     = render 'projects/issuable_form', f: f, issuable: @issue
-    .form-group
-      = f.label :label_ids, class: 'control-label' do
-        %i.icon-tag
-        Labels
-      .col-sm-10
-        = f.collection_select :label_ids, @project.labels.all, :id, :name, { selected: @issue.label_ids }, multiple: true, class: 'select2'
-
-    .form-actions
-      - if @issue.new_record?
-        = f.submit 'Submit new issue', class: "btn btn-create"
-      -else
-        = f.submit 'Save changes', class: "btn-save btn"
-
-      - cancel_path = @issue.new_record? ? project_issues_path(@project) : project_issue_path(@project, @issue)
-      = link_to "Cancel", cancel_path, class: 'btn btn-cancel'
 
 :javascript
   $('.assign-to-me-link').on('click', function(e){
