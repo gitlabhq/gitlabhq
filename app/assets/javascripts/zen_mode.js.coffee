@@ -16,6 +16,7 @@ class @ZenMode
     $(document).on 'keydown', (e) =>
       if e.keyCode is $.ui.keyCode.ESCAPE
         @exitZenMode()
+        e.preventDefault()
 
     $(window).on 'hashchange', @updateZenModeFromLocationHash
 
