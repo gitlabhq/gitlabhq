@@ -1,2 +1,3 @@
 %div{xmlns: "http://www.w3.org/1999/xhtml"}
-  = markdown issue.description
+  - if issue.description.present?
+    = markdown issue.description
