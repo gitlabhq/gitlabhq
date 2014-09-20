@@ -1,3 +1,10 @@
+- if issuable.errors.any?
+  .row
+    .col-sm-10.col-sm-offset-2
+      .alert.alert-danger
+        - issuable.errors.full_messages.each do |msg|
+          %span= msg
+          %br
 .form-group
   = f.label :title, class: 'control-label' do
     %strong= 'Title *'
