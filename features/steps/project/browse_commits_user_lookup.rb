@@ -3,11 +3,11 @@ class ProjectBrowseCommitsUserLookup < Spinach::FeatureSteps
   include SharedProject
   include SharedPaths
 
-  Given 'I click on commit link' do
+  step 'I click on commit link' do
     visit project_commit_path(@project, sample_commit.id)
   end
 
-  Given 'I click on another commit link' do
+  step 'I click on another commit link' do
     visit project_commit_path(@project, sample_commit.parent_id)
   end
 

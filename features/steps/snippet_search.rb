@@ -37,19 +37,19 @@ class Spinach::Features::SnippetSearch < Spinach::FeatureSteps
     page.should_not have_content 'line three'
   end
 
-  Then 'I should see "Personal snippet one" in results' do
+  step 'I should see "Personal snippet one" in results' do
     page.should have_content 'Personal snippet one'
   end
 
-  And 'I should see "Personal snippet private" in results' do
+  step 'I should see "Personal snippet private" in results' do
     page.should have_content 'Personal snippet private'
   end
 
-  Then 'I should not see "Personal snippet one" in results' do
+  step 'I should not see "Personal snippet one" in results' do
     page.should_not have_content 'Personal snippet one'
   end
 
-  And 'I should not see "Personal snippet private" in results' do
+  step 'I should not see "Personal snippet private" in results' do
     page.should_not have_content 'Personal snippet private'
   end
 

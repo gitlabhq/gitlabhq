@@ -3,35 +3,35 @@ class AdminActiveTab < Spinach::FeatureSteps
   include SharedPaths
   include SharedActiveTab
 
-  Then 'the active main tab should be Home' do
+  step 'the active main tab should be Home' do
     ensure_active_main_tab('Overview')
   end
 
-  Then 'the active main tab should be Projects' do
+  step 'the active main tab should be Projects' do
     ensure_active_main_tab('Projects')
   end
 
-  Then 'the active main tab should be Groups' do
+  step 'the active main tab should be Groups' do
     ensure_active_main_tab('Groups')
   end
 
-  Then 'the active main tab should be Users' do
+  step 'the active main tab should be Users' do
     ensure_active_main_tab('Users')
   end
 
-  Then 'the active main tab should be Logs' do
+  step 'the active main tab should be Logs' do
     ensure_active_main_tab('Logs')
   end
 
-  Then 'the active main tab should be Hooks' do
+  step 'the active main tab should be Hooks' do
     ensure_active_main_tab('Hooks')
   end
 
-  Then 'the active main tab should be Resque' do
+  step 'the active main tab should be Resque' do
     ensure_active_main_tab('Background Jobs')
   end
 
-  Then 'the active main tab should be Messages' do
+  step 'the active main tab should be Messages' do
     ensure_active_main_tab('Messages')
   end
 end

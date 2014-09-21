@@ -1,7 +1,7 @@
 module SharedSnippet
   include Spinach::DSL
 
-  And 'I have public "Personal snippet one" snippet' do
+  step 'I have public "Personal snippet one" snippet' do
     create(:personal_snippet,
            title: "Personal snippet one",
            content: "Test content",
@@ -10,7 +10,7 @@ module SharedSnippet
            author: current_user)
   end
 
-  And 'I have private "Personal snippet private" snippet' do
+  step 'I have private "Personal snippet private" snippet' do
     create(:personal_snippet,
            title: "Personal snippet private",
            content: "Provate content",
@@ -18,7 +18,7 @@ module SharedSnippet
            private: true,
            author: current_user)
   end
-  And 'I have a public many lined snippet' do
+  step 'I have a public many lined snippet' do
     create(:personal_snippet,
            title: 'Many lined snippet',
            content: <<-END.gsub(/^\s+\|/, ''),
