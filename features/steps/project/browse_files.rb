@@ -20,7 +20,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     click_link ".gitignore"
   end
 
-  step 'I should see it content' do
+  step 'I should see its content' do
     page.should have_content "*.rbc"
   end
 
