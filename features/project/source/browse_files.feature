@@ -13,7 +13,7 @@ Feature: Project Browse files
 
   Scenario: I browse file content
     Given I click on ".gitignore" file in repo
-    Then I should see it content
+    Then I should see its content
 
   Scenario: I browse raw file
     Given I visit blob file from repo
