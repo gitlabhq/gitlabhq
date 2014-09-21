@@ -139,7 +139,12 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Configure redis to use sockets
     sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
-    sed -e 's/^# unixsocket /unixsocket /' -e 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+    
+    # Disable Redis listening on TCP by setting 'port' to 0
+    sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
+
+    # Enable Redis socket for default Debian / Ubuntu path
+    echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
 
     # Activate the changes to redis.conf
     sudo service redis-server restart
@@ -210,7 +215,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Configure Redis connection settings
     sudo -u git -H cp config/resque.yml.example config/resque.yml
 
-    # Change the Redis socket path if necessary
+    # Change the Redis socket path if you are not using the default Debian / Ubuntu configuration
     sudo -u git -H editor config/resque.yml
 
 **Important Note:** Make sure to edit both `gitlab.yml` and `unicorn.rb` to match your setup.
