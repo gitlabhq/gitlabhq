@@ -38,9 +38,8 @@ module API
       post ':id/repository/tags' do
         authorize_push_project
         message = params[:message] || nil
-        result = CreateTagService.new.execute(user_project, params[:tag_name],
-                                              params[:ref], message,
-                                              current_user)
+        result = CreateTagService.new(user_project, current_user).
+          execute(params[:tag_name], params[:ref], message)
 
         if result[:status] == :success
           present result[:tag],

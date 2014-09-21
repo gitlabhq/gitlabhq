@@ -1,5 +1,7 @@
-class DeleteBranchService
-  def execute(project, branch_name, current_user)
+require_relative 'base_service'
+
+class DeleteBranchService < BaseService
+  def execute(branch_name)
     repository = project.repository
     branch = repository.find_branch(branch_name)
 
@@ -31,17 +33,14 @@ class DeleteBranchService
   end
 
   def error(message, return_code = 400)
-    {
-      message: message,
-      return_code: return_code,
-      state: :error
-    }
+    out = super(message)
+    out[:return_code] = return_code
+    out
   end
 
   def success(message)
-    {
-      message: message,
-      state: :success
-    }
+    out = super()
+    out[:message] = message
+    out
   end
 end

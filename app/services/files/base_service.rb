@@ -10,18 +10,10 @@ module Files
 
     private
 
-    def error(message)
-      {
-        error: message,
-        status: :error
-      }
-    end
-
     def success
-      {
-        error: '',
-        status: :success
-      }
+      out = super()
+      out[:error] = ''
+      out
     end
 
     def repository
