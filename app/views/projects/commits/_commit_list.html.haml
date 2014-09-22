@@ -1,0 +1,11 @@
+%div.panel.panel-default
+  .panel-heading
+    Commits (#{@commits.count})
+  - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
+    %ul.well-list
+      - Commit.decorate(@commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE)).each do |commit|
+        = render "projects/commits/inline_commit", commit: commit, project: @project
+      %li.warning-row.unstyled
+        other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden to prevent performance issues.
+  - else
+    %ul.well-list= render Commit.decorate(@commits), project: @project
