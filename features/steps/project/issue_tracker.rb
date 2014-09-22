@@ -1,4 +1,4 @@
-class ProjectIssueTracker < Spinach::FeatureSteps
+class Spinach::Features::ProjectIssueTracker < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

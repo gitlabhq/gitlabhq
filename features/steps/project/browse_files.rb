@@ -1,4 +1,4 @@
-class ProjectBrowseFiles < Spinach::FeatureSteps
+class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

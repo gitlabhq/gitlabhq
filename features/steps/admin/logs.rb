@@ -1,4 +1,4 @@
-class AdminLogs < Spinach::FeatureSteps
+class Spinach::Features::AdminLogs < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedAdmin

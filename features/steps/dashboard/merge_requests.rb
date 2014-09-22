@@ -1,4 +1,4 @@
-class DashboardMergeRequests < Spinach::FeatureSteps
+class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
 

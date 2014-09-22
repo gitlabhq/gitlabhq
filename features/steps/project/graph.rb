@@ -1,4 +1,4 @@
-class ProjectGraph < Spinach::FeatureSteps
+class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
 

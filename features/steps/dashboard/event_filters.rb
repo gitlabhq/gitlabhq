@@ -1,4 +1,4 @@
-class EventFilters < Spinach::FeatureSteps
+class Spinach::Features::EventFilters < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject

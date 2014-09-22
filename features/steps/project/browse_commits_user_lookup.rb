@@ -1,4 +1,4 @@
-class ProjectBrowseCommitsUserLookup < Spinach::FeatureSteps
+class Spinach::Features::ProjectBrowseCommitsUserLookup < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

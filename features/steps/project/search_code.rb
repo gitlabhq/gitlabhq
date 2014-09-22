@@ -1,4 +1,4 @@
-class ProjectSearchCode < Spinach::FeatureSteps
+class Spinach::Features::ProjectSearchCode < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
