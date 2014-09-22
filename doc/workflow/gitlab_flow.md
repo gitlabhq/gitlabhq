@@ -178,7 +178,9 @@ After you merge multiple commits from a feature branch into the master branch th
 If you would have squashed all the commits into one you could have just reverted this commit but as we indicated you should not rebase commits after they are pushed.
 Fortunately [reverting a merge made some time ago](http://git-scm.com/blog/2010/03/02/undoing-merges.html) can be done with git.
 This however, requires having specific merge commits for the commits your want to revert.
-This is a good reason always to create a merge commit when you merge manually with the `--no-ff` option.
+If you revert a merge and you change your mind, revert the revert instead of merging again since git will not allow you to merge the code again otherwise.
+
+Being able to revert a merge is a good reason always to create a merge commit when you merge manually with the `--no-ff` option.
 Git management software will always create a merge commit when you accept a merge request.
 
 # Do not order commits with rebase
