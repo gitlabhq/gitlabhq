@@ -15,6 +15,12 @@ module Gitlab
         @lines ||= parser.parse(raw_diff.lines)
       end
 
+      def line_by(line_type, line)
+        diff_lines.detect do |d|
+          d.type == line_type && line == d.send("#{line_type}_pos").to_s
+        end
+      end
+
       def mode_changed?
         !!(diff.a_mode && diff.b_mode && diff.a_mode != diff.b_mode)
       end

@@ -52,6 +52,21 @@ class MergeRequestDiff < ActiveRecord::Base
     @commits ||= load_commits(st_commits || [])
   end
 
+  def line_code_by(file_path, line_type, line)
+    diff = diffs.detect { |d| d.new_path == file_path }
+    return unless diff
+
+    diff_file = Gitlab::Diff::File.new(diff)
+    diff_line = diff_file.line_by(line_type, line)
+    return unless diff_line
+
+    Gitlab::Diff::LineCode.generate(
+      diff_file.new_path,
+      diff_line.new_pos,
+      diff_line.old_pos
+    )
+  end
+
   def last_commit
     commits.first
   end

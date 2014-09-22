@@ -192,6 +192,8 @@ module API
 
     class MRNote < Grape::Entity
       expose :note
+      expose(:file_path) { |note| note.diff_file_name }
+      expose(:line) { |note| note.diff_new_line }
       expose :author, using: Entities::UserBasic
     end
 
