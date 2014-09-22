@@ -47,12 +47,12 @@ If all items are green, then congratulations upgrade is complete!
 
 If the `gitlab:check` task reports an outdated version of `gitlab-shell` you should upgrade it.
 
-Upgrade it by running the commands below after replacing 1.9.4 with the correct version number:
+Upgrade it by running the commands below after replacing 2.0.0 with the correct version number:
 
 ```
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
-sudo -u git -H git checkout v1.9.4
+sudo -u git -H git checkout v2.0.0
 ```
 
 ## One line upgrade command
