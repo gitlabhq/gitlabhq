@@ -139,7 +139,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Configure redis to use sockets
     sudo cp /etc/redis/redis.conf /etc/redis/redis.conf.orig
-    
+
     # Disable Redis listening on TCP by setting 'port' to 0
     sed 's/^port .*/port 0/' /etc/redis/redis.conf.orig | sudo tee /etc/redis/redis.conf
 
@@ -257,7 +257,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v1.9.7] REDIS_URL=redis://localhost:6379 RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v2.0.0] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:
