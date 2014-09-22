@@ -394,15 +394,15 @@ module SharedPaths
   # Snippets
   # ----------------------------------------
 
-  Given 'I visit project "Shop" snippets page' do
+  step 'I visit project "Shop" snippets page' do
     visit project_snippets_path(project)
   end
 
-  Given 'I visit snippets page' do
+  step 'I visit snippets page' do
     visit snippets_path
   end
 
-  Given 'I visit new snippet page' do
+  step 'I visit new snippet page' do
     visit new_snippet_path
   end
 
@@ -418,7 +418,7 @@ module SharedPaths
   # Errors
   # ----------------------------------------
 
-  Then 'page status code should be 404' do
+  step 'page status code should be 404' do
     page.status_code.should == 404
   end
 end

@@ -5,29 +5,29 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   include SharedUser
   include Select2Helper
 
-  Then 'I should see group "Owned" projects list' do
+  step 'I should see group "Owned" projects list' do
     Group.find_by(name: "Owned").projects.each do |project|
       page.should have_link project.name
     end
   end
 
-  And 'I should see projects activity feed' do
+  step 'I should see projects activity feed' do
     page.should have_content 'closed issue'
   end
 
-  Then 'I should see issues from group "Owned" assigned to me' do
+  step 'I should see issues from group "Owned" assigned to me' do
     assigned_to_me(:issues).each do |issue|
       page.should have_content issue.title
     end
   end
 
-  Then 'I should see merge requests from group "Owned" assigned to me' do
+  step 'I should see merge requests from group "Owned" assigned to me' do
     assigned_to_me(:merge_requests).each do |issue|
       page.should have_content issue.title[0..80]
     end
   end
 
-  And 'I select user "Mary Jane" from list with role "Reporter"' do
+  step 'I select user "Mary Jane" from list with role "Reporter"' do
     user = User.find_by(name: "Mary Jane") || create(:user, name: "Mary Jane")
     click_link 'Add members'
     within ".users-group-form" do
@@ -37,34 +37,34 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     click_button "Add users into group"
   end
 
-  Then 'I should see user "John Doe" in team list' do
+  step 'I should see user "John Doe" in team list' do
     projects_with_access = find(".panel .well-list")
     projects_with_access.should have_content("John Doe")
   end
 
-  Then 'I should not see user "John Doe" in team list' do
+  step 'I should not see user "John Doe" in team list' do
     projects_with_access = find(".panel .well-list")
     projects_with_access.should_not have_content("John Doe")
   end
 
-  Then 'I should see user "Mary Jane" in team list' do
+  step 'I should see user "Mary Jane" in team list' do
     projects_with_access = find(".panel .well-list")
     projects_with_access.should have_content("Mary Jane")
   end
 
-  Then 'I should not see user "Mary Jane" in team list' do
+  step 'I should not see user "Mary Jane" in team list' do
     projects_with_access = find(".panel .well-list")
     projects_with_access.should_not have_content("Mary Jane")
   end
 
-  Given 'project from group "Owned" has issues assigned to me' do
+  step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,
       assignee: current_user,
       author: current_user
   end
 
-  Given 'project from group "Owned" has merge requests assigned to me' do
+  step 'project from group "Owned" has merge requests assigned to me' do
     create :merge_request,
       source_project: project,
       target_project: project,
@@ -76,28 +76,28 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     click_link "New group"
   end
 
-  And 'submit form with new group "Samurai" info' do
+  step 'submit form with new group "Samurai" info' do
     fill_in 'group_name', with: 'Samurai'
     fill_in 'group_description', with: 'Tokugawa Shogunate'
     click_button "Create group"
   end
 
-  Then 'I should be redirected to group "Samurai" page' do
+  step 'I should be redirected to group "Samurai" page' do
     current_path.should == group_path(Group.last)
   end
 
-  Then 'I should see newly created group "Samurai"' do
+  step 'I should see newly created group "Samurai"' do
     page.should have_content "Samurai"
     page.should have_content "Tokugawa Shogunate"
     page.should have_content "Currently you are only seeing events from the"
   end
 
-  And 'I change group "Owned" name to "new-name"' do
+  step 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
     click_button "Save group"
   end
 
-  Then 'I should see new group "Owned" name' do
+  step 'I should see new group "Owned" name' do
     within ".navbar-gitlab" do
       page.should have_content "group: new-name"
     end

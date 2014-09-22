@@ -8,15 +8,15 @@ class Spinach::Features::DashboardWithArchivedProjects < Spinach::FeatureSteps
     project.update_attribute(:archived, true)
   end
 
-  Then 'I should see "Shop" project link' do
+  step 'I should see "Shop" project link' do
     page.should have_link "Shop"
   end
 
-  Then 'I should not see "Forum" project link' do
+  step 'I should not see "Forum" project link' do
     page.should_not have_link "Forum"
   end
 
-  Then 'I should see "Forum" project link' do
+  step 'I should see "Forum" project link' do
     page.should have_link "Forum"
   end
 end

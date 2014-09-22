@@ -2,33 +2,33 @@ module SharedProject
   include Spinach::DSL
 
   # Create a project without caring about what it's called
-  And "I own a project" do
+  step "I own a project" do
     @project = create(:project, namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
   # Create a specific project called "Shop"
-  And 'I own project "Shop"' do
+  step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
     @project ||= create(:project, name: "Shop", namespace: @user.namespace, snippets_enabled: true)
     @project.team << [@user, :master]
   end
 
   # Create another specific project called "Forum"
-  And 'I own project "Forum"' do
+  step 'I own project "Forum"' do
     @project = Project.find_by(name: "Forum")
     @project ||= create(:project, name: "Forum", namespace: @user.namespace, path: 'forum_project')
     @project.team << [@user, :master]
   end
 
   # Create an empty project without caring about the name
-  And 'I own an empty project' do
+  step 'I own an empty project' do
     @project = create(:empty_project,
                       name: 'Empty Project', namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
-  And 'project "Shop" has push event' do
+  step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 
     data = {
@@ -54,12 +54,12 @@ module SharedProject
     )
   end
 
-  Then 'I should see project "Shop" activity feed' do
+  step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
     page.should have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
   end
 
-  Then 'I should see project settings' do
+  step 'I should see project settings' do
     current_path.should == edit_project_path(@project)
     page.should have_content("Project name")
     page.should have_content("Features:")
