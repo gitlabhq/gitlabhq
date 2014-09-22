@@ -32,6 +32,7 @@ v 7.3.0
   - Zen mode (fullscreen) for issues/MR/notes (Robert Schilling)
   - Add ability to configure webhook timeout via gitlab.yml (Wes Gurney)
   - Sort project merge requests in asc or desc order for updated_at or created_at field (sponsored by O'Reilly Media)
+  - Add Redis socket support to 'rake gitlab:shell:install'
 
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)
