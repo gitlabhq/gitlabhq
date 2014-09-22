@@ -1,23 +1,28 @@
 class @ZenMode
   @fullscreen_prefix = 'fullscreen_'
-  @ESC = 27
 
   constructor: ->
     @active_zen_area = null
     @active_checkbox = null
+    @scroll_position = 0
+
+    $(window).scroll =>
+      if not @active_checkbox
+        @scroll_position = window.pageYOffset
 
     $('body').on 'change', '.zennable input[type=checkbox]', (e) =>
-      checkbox = e.currentTarget;
+      checkbox = e.currentTarget
       if checkbox.checked
+        # Disable other keyboard shortcuts in ZEN mode
         Mousetrap.pause()
         @udpateActiveZenArea(checkbox)
       else
         @exitZenMode()
 
     $(document).on 'keydown', (e) =>
-      console.log("esc")
-      if e.keyCode is ZenMode.ESC
+      if e.keyCode is $.ui.keyCode.ESCAPE
         @exitZenMode()
+        e.preventDefault()
 
     $(window).on 'hashchange', @updateZenModeFromLocationHash
 
@@ -27,7 +32,7 @@ class @ZenMode
     @active_zen_area = @active_checkbox.parent().find('textarea')
     @active_zen_area.focus()
     window.location.hash = ZenMode.fullscreen_prefix + @active_checkbox.prop('id')
-  
+
   exitZenMode: =>
     if @active_zen_area isnt null
       Mousetrap.unpause()
@@ -35,6 +40,7 @@ class @ZenMode
       @active_zen_area = null
       @active_checkbox = null
       window.location.hash = ''
+      window.scrollTo(window.pageXOffset, @scroll_position)
 
   checkboxFromLocationHash: (e) ->
     id = $.trim(window.location.hash.replace('#' + ZenMode.fullscreen_prefix, ''))
@@ -48,4 +54,4 @@ class @ZenMode
     if checkbox
       @udpateActiveZenArea(checkbox)
     else
-      @exitZenMode()      
+      @exitZenMode()

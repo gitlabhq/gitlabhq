@@ -113,7 +113,8 @@ Check if any of these changed since last release:
 - <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example>
 - <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql>
 - <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql>
-- <https://gitlab.com/gitlab-org/gitlab-ce/blob/master/config/initializers/rack_attack.rb.example>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/initializers/rack_attack.rb.example>
+- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/resque.yml.example>
 
 #### 8. Need to update init script?
 
@@ -148,6 +149,23 @@ Create an annotated tag that points to the version change commit:
 ```
 git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 ```
+
+### **6. Create stable branches**
+
+For GitLab EE, append `-ee` to the branch.
+
+`x-x-stable-ee`
+
+```
+git checkout master
+git pull
+git checkout -b x-x-stable
+git push <remote> x-x-stable
+```
+
+Now developers can use master for merging new features. 
+So you should use stable branch for future code chages related to release.
+
 
 # **18th - Release RC1**
 
@@ -222,11 +240,9 @@ Note: Merge CE into EE if needed.
 - Change the VERSION file in `master` branch of the CE repository and commit and push.
 - Change the VERSION file in `master` branch of the EE repository and commit and push.
 
-### **2. Create x-x-stable branch and push to the repositories**
+### **2. Push latest changes from x-x-stable branch to the repositories**
 
 ```
-git checkout master
-git pull
 git checkout -b x-x-stable
 git push <remote> x-x-stable
 ```
