@@ -22,7 +22,10 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
-        sh "git fetch origin && git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
+        # First try to checkout without fetching
+        # to avoid stalling tests if the Internet is down.
+        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
+        sh "#{reset} || git fetch origin && #{reset}"
 
         redis_url = URI.parse(ENV['REDIS_URL'] || "redis://localhost:6379")
 
