@@ -1,4 +1,4 @@
-class ProfileActiveTab < Spinach::FeatureSteps
+class Spinach::Features::ProfileActiveTab < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedActiveTab

@@ -1,4 +1,4 @@
-class AdminProjects < Spinach::FeatureSteps
+class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedAdmin

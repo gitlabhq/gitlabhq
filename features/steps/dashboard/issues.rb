@@ -1,4 +1,4 @@
-class DashboardIssues < Spinach::FeatureSteps
+class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
 

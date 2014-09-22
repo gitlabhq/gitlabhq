@@ -1,4 +1,4 @@
-class ProjectIssues < Spinach::FeatureSteps
+class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedNote

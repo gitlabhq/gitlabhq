@@ -1,4 +1,4 @@
-class ProfileEmails < Spinach::FeatureSteps
+class Spinach::Features::ProfileEmails < Spinach::FeatureSteps
   include SharedAuthentication
 
   Then 'I visit profile emails page' do

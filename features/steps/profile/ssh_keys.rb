@@ -1,4 +1,4 @@
-class ProfileSshKeys < Spinach::FeatureSteps
+class Spinach::Features::ProfileSshKeys < Spinach::FeatureSteps
   include SharedAuthentication
 
   Then 'I should see my ssh keys' do

@@ -1,4 +1,4 @@
-class ProjectBrowseGitRepo < Spinach::FeatureSteps
+class Spinach::Features::ProjectBrowseGitRepo < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

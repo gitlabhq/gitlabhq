@@ -1,6 +1,6 @@
 require 'webmock'
 
-class ProjectHooks < Spinach::FeatureSteps
+class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
