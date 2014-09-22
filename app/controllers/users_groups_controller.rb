@@ -7,14 +7,23 @@ class UsersGroupsController < ApplicationController
   layout 'group'
 
   def create
-    @group.add_users(params[:user_ids].split(','), params[:group_access])
+    @current_users_group_roles = UsersGroup.where(user: current_user, group: group).first.access_roles
 
-    redirect_to members_group_path(@group), notice: 'Users were successfully added.'
+    if @current_users_group_roles.has_value?(params[:group_access].to_i)
+      @group.add_users(params[:user_ids].split(','), params[:group_access])
+      redirect_to members_group_path(@group), notice: 'Users were successfully added.'
+    else
+      redirect_to members_group_path(@group)
+    end
   end
 
   def update
+    @current_users_group_roles = UsersGroup.where(user: current_user, group: group).first.access_roles
     @member = @group.users_groups.find(params[:id])
-    @member.update_attributes(member_params)
+
+    if @current_users_group_roles.has_value?(params[:users_group]["group_access"].to_i)
+      @member.update_attributes(member_params)
+    end
   end
 
   def destroy

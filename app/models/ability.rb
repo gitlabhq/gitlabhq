@@ -194,6 +194,7 @@ class Ability
       # Only group masters and group owners can create new projects in group
       if group.has_master?(user) || group.has_owner?(user) || user.admin?
         rules += [
+          :manage_group,
           :create_projects,
         ]
       end

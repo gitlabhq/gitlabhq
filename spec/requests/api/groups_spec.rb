@@ -113,9 +113,9 @@ describe API::API, api: true  do
         response.status.should == 200
       end
 
-      it "should not remove a group if not an owner" do
+      it "should not remove a group if a developer" do
         user3 = create(:user)
-        group1.add_user(user3, Gitlab::Access::MASTER)
+        group1.add_user(user3, Gitlab::Access::DEVELOPER)
         delete api("/groups/#{group1.id}", user3)
         response.status.should == 403
       end

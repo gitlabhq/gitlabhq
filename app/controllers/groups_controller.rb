@@ -74,6 +74,16 @@ class GroupsController < ApplicationController
 
     @members = @members.order('group_access DESC').page(params[:page]).per(50)
     @users_group = UsersGroup.new
+
+    if current_user.nil?
+      return
+    end
+
+    current_users_group = group.users_groups.where(user_id: current_user.id).first
+    @current_users_group_roles = {}
+    unless current_users_group.nil?
+      @current_users_group_roles = current_users_group.access_roles
+    end
   end
 
   def edit

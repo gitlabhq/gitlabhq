@@ -38,6 +38,7 @@ v 7.2.1
   - Security: prevent XSS with stricter MIME types for raw repo files
 
 v 7.2.0
+  - Group masters can manage group members
   - Explore page
   - Add project stars (Ciro Santilli)
   - Log Sidekiq arguments
