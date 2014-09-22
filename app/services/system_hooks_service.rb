@@ -50,14 +50,14 @@ class SystemHooksService
         email: model.email,
         user_id: model.id
       })
-    when UsersProject
+    when ProjectMember
       data.merge!({
         project_name: model.project.name,
         project_path: model.project.path,
-        project_id: model.project_id,
+        project_id: model.project.id,
         user_name: model.user.name,
         user_email: model.user.email,
-        project_access: model.human_access,
+        access_level: model.human_access,
         project_visibility: Project.visibility_levels.key(model.project.visibility_level_field).downcase
       })
     end
@@ -65,7 +65,7 @@ class SystemHooksService
 
   def build_event_name(model, event)
     case model
-    when UsersProject
+    when ProjectMember
       return "user_add_to_team"      if event == :create
       return "user_remove_from_team" if event == :destroy
     else

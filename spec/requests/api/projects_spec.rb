@@ -8,8 +8,8 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
+  let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
 
   describe "GET /projects" do
     before { project }
@@ -254,7 +254,7 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id" do
     before { project }
-    before { users_project }
+    before { project_member }
 
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
@@ -283,7 +283,10 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'personal project' do
-        before { get api("/projects/#{project.id}", user) }
+        before do
+          project.team << [user, :master]
+          get api("/projects/#{project.id}", user)
+        end
 
         it { response.status.should == 200 }
         it { json_response['permissions']["project_access"]["access_level"].should == Gitlab::Access::MASTER }
@@ -305,7 +308,7 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/events" do
-    before { users_project }
+    before { project_member }
 
     it "should return a project events" do
       get api("/projects/#{project.id}/events", user)

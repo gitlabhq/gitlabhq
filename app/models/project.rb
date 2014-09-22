@@ -79,8 +79,8 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :users, through: :users_projects
+  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :users, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -353,12 +353,12 @@ class Project < ActiveRecord::Base
 
   def team_member_by_name_or_email(name = nil, email = nil)
     user = users.where("name like ? or email like ?", name, email).first
-    users_projects.where(user: user) if user
+    project_members.where(user: user) if user
   end
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by(user_id: user_id)
+    project_members.find_by(user_id: user_id)
   end
 
   def name_with_namespace
@@ -555,7 +555,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    users_projects.where(user_id: user).first
+    project_members.where(user_id: user).first
   end
 
   def default_branch

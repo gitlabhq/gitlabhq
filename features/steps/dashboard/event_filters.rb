@@ -82,6 +82,4 @@ class EventFilters < Spinach::FeatureSteps
   When 'I click "merge" event filter' do
     click_link("merged_event_filter")
   end
-
 end
-
