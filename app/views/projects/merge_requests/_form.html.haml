@@ -9,11 +9,6 @@
           %strong #{link_to "guidelines for contribution", contribution_guide_url}
           to this repository.
 
-      -if @merge_request.errors.any?
-        .alert.alert-danger
-          - @merge_request.errors.full_messages.each do |msg|
-            %div= msg
-
   .merge-request-form-info
     = render 'projects/issuable_form', f: f, issuable: @merge_request
     .form-group
