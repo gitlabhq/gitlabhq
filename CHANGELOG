@@ -1,5 +1,8 @@
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
+  - Fix error 500 when viewing diff on a file with changed permissions
+  - Fix adding comments to MR when source branch is master
+  - Fix error 500 when searching description contains relative link
 
 v 7.3.0
   - Always set the 'origin' remote in satellite actions
