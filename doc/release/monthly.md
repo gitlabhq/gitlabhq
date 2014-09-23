@@ -223,7 +223,10 @@ Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gi
 
 ### **3. Fix anything coming out of the QA**
 
-Create an issue with description of a problem, if it is quick fix fix yourself otherwise contact the team for advice.
+Create an issue with description of a problem, if it is quick fix fix it yourself otherwise contact the team for advice.
+
+**NOTE** If there is a problem that cannot be fixed in a timely manner, reverting the feature is an option! If the feature is reverted,
+create an issue about it in order to discuss the next steps after the release.
 
 # **22nd - Release CE and EE**
 
