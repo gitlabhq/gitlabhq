@@ -59,7 +59,7 @@ describe 'Gitlab::Satellite::Action' do
       called = false
 
       #set assumptions
-      File.rm(project.satellite.lock_file) unless !File.exists? project.satellite.lock_file
+      FileUtils.rm_f(project.satellite.lock_file)
 
       File.exists?(project.satellite.lock_file).should be_false
 
