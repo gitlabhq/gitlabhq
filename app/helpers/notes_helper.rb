@@ -52,8 +52,8 @@ module NotesHelper
       discussion_id: discussion_id
     }
 
-    link_to "", "javascript:;", class: "add-diff-note js-add-diff-note-button",
-      data: data, title: "Add a comment to this line"
+    button_tag '', class: 'btn add-diff-note js-add-diff-note-button',
+               data: data, title: 'Add a comment to this line'
   end
 
   def link_to_reply_diff(note)
@@ -67,8 +67,8 @@ module NotesHelper
       discussion_id: note.discussion_id
     }
 
-    link_to "javascript:;", class: "btn reply-btn js-discussion-reply-button",
-      data: data, title: "Add a reply" do
+    button_tag class: 'btn reply-btn js-discussion-reply-button',
+               data: data, title: 'Add a reply' do
       link_text = content_tag(:i, nil, class: 'icon-comment')
       link_text << ' Reply'
     end

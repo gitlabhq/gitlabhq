@@ -133,7 +133,7 @@ describe 'Comments' do
 
     describe "when adding a note" do
       before do
-        find("a[data-line-code=\"#{line_code}\"]").click
+        click_diff_line
       end
 
       describe "the notes holder" do
@@ -144,7 +144,7 @@ describe 'Comments' do
 
       describe "the note form" do
         it "shouldn't add a second form for same row" do
-          find("a[data-line-code=\"#{line_code}\"]").click
+          click_diff_line
 
           should have_css("tr[id='#{line_code}'] + .js-temp-notes-holder form", count: 1)
         end
@@ -161,8 +161,8 @@ describe 'Comments' do
 
     describe "with muliple note forms" do
       before do
-        find("a[data-line-code=\"#{line_code}\"]").click
-        find("a[data-line-code=\"#{line_code_2}\"]").click
+        click_diff_line
+        click_diff_line(line_code_2)
       end
 
       it { should have_css(".js-temp-notes-holder", count: 2) }
@@ -193,7 +193,7 @@ describe 'Comments' do
           should have_content("Another comment on line 10")
           should have_css(".notes_holder")
           should have_css(".notes_holder .note", count: 1)
-          should have_link("Reply")
+          should have_button('Reply')
         end
       end
     end
@@ -205,5 +205,10 @@ describe 'Comments' do
 
   def line_code_2
     sample_compare.changes.last[:line_code]
+  end
+
+  def click_diff_line(data = nil)
+    data ||= line_code
+    find("button[data-line-code=\"#{data}\"]").click
   end
 end
