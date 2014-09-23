@@ -12,7 +12,7 @@
     - else
       %span= diff_file.new_path
       - if diff_file.mode_changed?
-        %span.file-mode= "#{diff.a_mode} → #{diff.b_mode}"
+        %span.file-mode= "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-btn-group
         - unless params[:view] == 'parallel'
