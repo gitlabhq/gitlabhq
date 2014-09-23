@@ -1,3 +1,6 @@
+v 7.3.1
+  - Fix ref parsing in Gitlab::GitAccess
+
 v 7.3.0
   - Always set the 'origin' remote in satellite actions
   - Write authorized_keys in tmp/ during tests
