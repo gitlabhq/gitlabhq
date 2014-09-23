@@ -1,11 +1,11 @@
 .diff-file {
-  border: 1px solid #CCC;
+  border: 1px solid $diff_file_border;
   margin-bottom: 1em;
 
   .diff-header {
     @extend .clearfix;
     background: #EEE;
-    border-bottom: 1px solid #CCC;
+    border-bottom: 1px solid $diff_file_border;
     padding: 5px 5px 5px 10px;
     color: #555;
 
@@ -114,19 +114,19 @@
     .line_holder {
       &.old .old_line,
       &.old .new_line {
-        background: #FCC;
+        background: $diff_old_line;
         border-color: #E7BABA;
       }
       &.new .old_line,
       &.new .new_line {
-        background: #CFC;
+        background: $diff_new_line;
         border-color: #B9ECB9;
       }
     }
     .line_content {
       display: block;
       margin: 0px;
-      padding: 0px 0.5em;
+      padding: 0px $line_content_padding_left;
       border: none;
       &.new {
         background: #CFD;

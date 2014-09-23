@@ -1,0 +1,87 @@
+.conflicts {
+  $resolution_bg_color: #FFA;
+  $theirs_bg_color: #CCF;
+  .legend-item {
+    &:not(:last-child) {
+      margin-right: 1.5em;
+    }
+    span.color {
+      border: 1px solid $diff_file_border;
+      display: inline-block;
+      height: 1em;
+      width: 1em;
+      vertical-align: middle;
+      &.ours {
+        background: $diff_new_line;
+      }
+      &.base {
+        background: $diff_old_line;
+      }
+      &.theirs {
+        background: $theirs_bg_color;
+      }
+      &.resolution {
+        background: $resolution_bg_color;
+      }
+    }
+  }
+  .diff-file {
+    tbody.actions {
+      border-color: $diff_file_border;
+      border-style: solid none;
+      border-width: 1px;
+      tr.line_holder {
+        $line_content_diff: (17/16);
+        td.old_line {
+          padding: 0px;
+          text-align: center;
+          &.button-holder {
+            cursor:pointer;
+          }
+        }
+        td.line_content {
+          height: initial;
+          padding-left: $line_content_padding_left;
+          pre {
+            background: transparent;
+            border-style: none;
+            margin: 0;
+            padding: 0;
+          }
+          white-space: initial;
+        }
+        &:not(:last-child) {
+          border-bottom: 1px solid $diff_file_border;
+        }
+        &.theirs {
+          td.old_line {
+            background: $theirs_bg_color;
+          }
+          td.line_content {
+            background: $theirs_bg_color * $line_content_diff;
+            span.idiff {
+              background: #AAF;
+            }
+          }
+        }
+        &.resolution {
+          td.old_line {
+            background: $resolution_bg_color;
+          }
+          td.line_content {
+            $textarea_inner_padding_left: 0.25em;
+            background: $resolution_bg_color * $line_content_diff;
+            padding: $line_content_padding_left - $textarea_inner_padding_left;
+            textarea {
+              font: inherit;
+              /* TODO Make this automatically grow as necessary with Javascript + resizable on bottom border (not just corner). */
+              height: 4em;
+              padding: 1px $textarea_inner_padding_left;
+              resize: vertical;
+            }
+          }
+        }
+      }
+    }
+  }
+}

@@ -15,8 +15,8 @@
           - line_code = generate_line_code(note.file_path, line)
           %tr.line_holder{ id: line_code }
             - if line.type == "match"
-              %td.old_line= "..."
-              %td.new_line= "..."
+              %td.old_line= hidden_lines_placeholder
+              %td.new_line= hidden_lines_placeholder
               %td.line_content.matched= line.text
             - else
               %td.old_line= raw(line.type == "new" ? "&nbsp;" : line.old_pos)

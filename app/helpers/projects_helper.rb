@@ -267,4 +267,8 @@ module ProjectsHelper
     result.password = '*****' if result.password.present?
     result
   end
+
+  def hidden_lines_placeholder
+    '...'
+  end
 end

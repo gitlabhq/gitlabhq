@@ -2,7 +2,10 @@ class MergeRequest
   constructor: (@opts) ->
     @initContextWidget()
     this.$el = $('.merge-request')
-    @diffs_loaded = if @opts.action == 'diffs' then true else false
+    @tabs_loaded =
+      diffs: false
+      conflicts: false
+    @tabs_loaded[@opts.action] = true
     @commits_loaded = false
 
     this.activateTab(@opts.action)
@@ -70,17 +73,25 @@ class MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
+  bindTabEvents: (action) ->
+    tab = this.tabFromAction(action)
+    switch action
+      when "conflicts"
+        tab.find(".actions .button-holder").on "click", ->
+          textarea = $(this).closest('tbody').find('textarea')
+          textarea.val(textarea.val() + '\n' + $(this).next().text())
+
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
-    switch action
-      when 'diffs'
-        this.$('.merge-request-tabs .diffs-tab').addClass 'active'
-        this.loadDiff() unless @diffs_loaded
-        this.$('.diffs').show()
-      else
-        this.$('.merge-request-tabs .notes-tab').addClass 'active'
-        this.$('.notes').show()
+    if action == 'diffs' or action == 'conflicts'
+      this.$(".merge-request-tabs .#{action}-tab").addClass 'active'
+      this.loadTab(action) unless @tabs_loaded[action]
+      this.bindTabEvents(action)
+      this.tabFromAction(action).show()
+    else
+      this.$('.merge-request-tabs .notes-tab').addClass 'active'
+      this.$('.notes').show()
 
   showState: (state) ->
     $('.automerge_widget').hide()
@@ -102,20 +113,20 @@ class MergeRequest
       when "running", "pending"
         $('.mr-state-widget').addClass("panel-warning")
 
-
-
-  loadDiff: (event) ->
+  loadTab: (action) ->
     $.ajax
       type: 'GET'
-      url: this.$('.merge-request-tabs .diffs-tab a').attr('href')
+      url: this.$(".merge-request-tabs .#{action}-tab a").attr("href")
       beforeSend: =>
-        this.$('.mr-loading-status .loading').show()
+        this.$(".mr-loading-status .loading").show()
       complete: =>
-        @diffs_loaded = true
-        this.$('.mr-loading-status .loading').hide()
+        @tabs_loaded[action] = true
+        this.$(".mr-loading-status .loading").hide()
       success: (data) =>
-        this.$(".diffs").html(data.html)
-      dataType: 'json'
+        tab_content = this.tabFromAction(action)
+        tab_content.html(data.html)
+        this.bindTabEvents(action)
+      dataType: "json"
 
   showAllCommits: ->
     this.$('.first-commits').remove()
@@ -125,5 +136,8 @@ class MergeRequest
     this.$('.automerge_widget').hide()
     this.$('.merge-in-progress').hide()
     this.$('.automerge_widget.already_cannot_be_merged').show()
+
+  tabFromAction: (action) ->
+    this.$(".#{action}")
 
 this.MergeRequest = MergeRequest
