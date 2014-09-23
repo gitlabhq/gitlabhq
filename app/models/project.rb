@@ -422,15 +422,19 @@ class Project < ActiveRecord::Base
     end
 
     # Add comment about pushing new commits to merge requests
-    mrs = self.merge_requests.opened.where(source_branch: branch_name).to_a
+    comment_mr_with_commits(branch_name, commits, user)
+
+    true
+  end
+
+  def comment_mr_with_commits(branch_name, commits, user)
+    mrs = self.origin_merge_requests.opened.where(source_branch: branch_name).to_a
     mrs += self.fork_merge_requests.opened.where(source_branch: branch_name).to_a
 
     mrs.uniq.each do |merge_request|
       Note.create_new_commits_note(merge_request, merge_request.project,
                                    user, commits)
     end
-
-    true
   end
 
   def valid_repo?
@@ -598,5 +602,9 @@ class Project < ActiveRecord::Base
 
   def find_label(name)
     labels.find_by(name: name)
+  end
+
+  def origin_merge_requests
+    merge_requests.where(source_project_id: self.id)
   end
 end
