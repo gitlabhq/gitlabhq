@@ -111,7 +111,7 @@ module API
           if @project.errors[:limit_reached].present?
             error!(@project.errors[:limit_reached], 403)
           end
-          not_found!
+          render_validation_error!(@project)
         end
       end
 
@@ -149,7 +149,7 @@ module API
         if @project.saved?
           present @project, with: Entities::Project
         else
-          not_found!
+          render_validation_error!(@project)
         end
       end
 
