@@ -31,7 +31,7 @@ gem 'omniauth-shibboleth'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 6.0'
+gem "gitlab_git", '~> 6.0', git: 'https://gitlab.com/gitlab-org/gitlab_git.git', ref: 'c405e4cf147fc5f7b9eae8aabaf3bee695eb2832'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -157,7 +157,7 @@ gem "rack-attack"
 # Ace editor
 gem 'ace-rails-ap'
 
-# Keyboard shortcuts 
+# Keyboard shortcuts
 gem 'mousetrap-rails'
 
 # Semantic UI Sass for Sidebar

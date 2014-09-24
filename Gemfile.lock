@@ -1,3 +1,15 @@
+GIT
+  remote: https://gitlab.com/gitlab-org/gitlab_git.git
+  revision: c405e4cf147fc5f7b9eae8aabaf3bee695eb2832
+  ref: c405e4cf147fc5f7b9eae8aabaf3bee695eb2832
+  specs:
+    gitlab_git (6.3.0)
+      activesupport (~> 4.0)
+      charlock_holmes (~> 0.6)
+      gitlab-grit (~> 2.6)
+      gitlab-linguist (~> 3.0)
+      rugged (~> 0.21.0)
+
 GEM
   remote: https://rubygems.org/
   specs:
@@ -179,12 +191,6 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.0.1.1)
       emoji (~> 1.0.1)
-    gitlab_git (6.3.0)
-      activesupport (~> 4.0)
-      charlock_holmes (~> 0.6)
-      gitlab-grit (~> 2.6)
-      gitlab-linguist (~> 3.0)
-      rugged (~> 0.21.0)
     gitlab_meta (7.0)
     gitlab_omniauth-ldap (1.1.0)
       net-ldap (~> 0.7.0)
@@ -617,7 +623,7 @@ DEPENDENCIES
   gitlab-grack (~> 2.0.0.pre)
   gitlab-linguist (~> 3.0.0)
   gitlab_emoji (~> 0.0.1.1)
-  gitlab_git (~> 6.0)
+  gitlab_git (~> 6.0)!
   gitlab_meta (= 7.0)
   gitlab_omniauth-ldap (= 1.1.0)
   gollum-lib (~> 3.0.0)
