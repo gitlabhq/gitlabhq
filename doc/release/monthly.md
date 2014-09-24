@@ -56,6 +56,10 @@ Name it "Release x.x.x" for easier searching.
 
 Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
 
+### **5. Take weekend and vacations into account**
+
+Ensure that there is enough time to incorporate the findings of the release candidate, etc.
+
 # **16th - Merge the CE into EE**
 
 Do this via a merge request.
