@@ -11,8 +11,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should be redirected back to the Edit Home Wiki page' do
-    url = URI.parse(current_url)
-    url.path.should == project_wiki_path(project, :home)
+    current_path.should == project_wiki_path(project, :home)
   end
 
   step 'I create the Wiki Home page' do
@@ -51,8 +50,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should be redirected back to that Wiki page' do
-    url = URI.parse(current_url)
-    url.path.should == project_wiki_path(project, @page)
+    current_path.should == project_wiki_path(project, @page)
   end
 
   step 'That page has two revisions' do
@@ -104,8 +102,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the image from wiki repo' do
-    url = URI.parse(current_url)
-    url.path.should match("wikis/image.jpg")
+    current_path.should match('wikis/image.jpg')
     page.should_not have_xpath('/html') # Page should render the image which means there is no html involved
     Gollum::Wiki.any_instance.unstub(:file)
     Gollum::File.any_instance.unstub(:mime_type)
@@ -121,8 +118,7 @@ class Spinach::Features::ProjectWiki < Spinach::FeatureSteps
   end
 
   step 'I should see the new wiki page form' do
-    url = URI.parse(current_url)
-    url.path.should match("wikis/image.jpg")
+    current_path.should match('wikis/image.jpg')
     page.should have_content('New Wiki Page')
     page.should have_content('Editing - image.jpg')
   end
