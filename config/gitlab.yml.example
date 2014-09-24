@@ -159,8 +159,10 @@ production: &base
 
     # Filter LDAP users
     #
-    #   Format: RFC 4515
+    #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
     #   Ex. (employeeType=developer)
+    #
+    #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
     #
     user_filter: ''
 
