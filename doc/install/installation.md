@@ -28,6 +28,7 @@ The GitLab installation consists of setting up the following components:
 1. Ruby
 1. System Users
 1. Database
+1. Redis
 1. GitLab
 1. Nginx
 
