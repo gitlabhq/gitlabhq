@@ -49,132 +49,79 @@ describe Gitlab::GitAccess do
   end
 
   describe 'push_allowed?' do
-    describe 'master permissions' do
-      before { project.team << [user, :master] }
-
-      context 'push to new branch' do
-        subject { access.push_allowed?(user, project, new_branch_changes) }
-
-        it { should be_true }
-      end
-
-      context 'push to master branch' do
-        subject { access.push_allowed?(user, project, master_changes) }
-
-        it { should be_true }
-      end
-
-      context 'push to protected branch' do
-        before { protect_master }
-        subject { access.push_allowed?(user, project, master_changes) }
-
-        it { should be_true }
-      end
-
-      context 'remove protected branch' do
-        before { protect_master }
-        subject { access.push_allowed?(user, project, remove_master_changes) }
-
-        it { should be_false }
-      end
-
-      context 'push to existing tag' do
-        subject { access.push_allowed?(user, project, tag_changes) }
-
-        it { should be_true }
-      end
-
-      context 'push new tag' do
-        subject { access.push_allowed?(user, project, new_tag_changes) }
-
-        it { should be_true }
-      end
-
-      context 'push new tag and protected branch' do
-        before { protect_master }
-        subject { access.push_allowed?(user, project, [new_tag_changes, master_changes]) }
-
-        it { should be_true }
-      end
+    def protect_feature_branch
+      create(:protected_branch, name: 'feature', project: project)
     end
 
-    describe 'developer permissions' do
-      before { project.team << [user, :developer] }
+    def changes
+      {
+        push_new_branch: '000000000 570e7b2ab refs/heads/wow',
+        push_master: '6f6d7e7ed 570e7b2ab refs/heads/master',
+        push_protected_branch: '6f6d7e7ed 570e7b2ab refs/heads/feature',
+        push_remove_protected_branch: '570e7b2ab 000000000 refs/heads/feature',
+        push_tag: '6f6d7e7ed 570e7b2ab refs/tags/v1.0.0',
+        push_new_tag: '000000000 570e7b2ab refs/tags/v7.8.9',
+        push_all: ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature']
+      }
+    end
 
-      context 'push to new branch' do
-        subject { access.push_allowed?(user, project, new_branch_changes) }
+    def self.permissions_matrix
+      {
+        master: {
+          push_new_branch: true,
+          push_master: true,
+          push_protected_branch: true,
+          push_remove_protected_branch: false,
+          push_tag: true,
+          push_new_tag: true,
+          push_all: true,
+        },
 
-        it { should be_true }
-      end
+        developer: {
+          push_new_branch: true,
+          push_master: true,
+          push_protected_branch: false,
+          push_remove_protected_branch: false,
+          push_tag: false,
+          push_new_tag: true,
+          push_all: false,
+        },
 
-      context 'push to master branch' do
-        subject { access.push_allowed?(user, project, master_changes) }
+        reporter: {
+          push_new_branch: false,
+          push_master: false,
+          push_protected_branch: false,
+          push_remove_protected_branch: false,
+          push_tag: false,
+          push_new_tag: false,
+          push_all: false,
+        },
 
-        it { should be_true }
-      end
+        guest: {
+          push_new_branch: false,
+          push_master: false,
+          push_protected_branch: false,
+          push_remove_protected_branch: false,
+          push_tag: false,
+          push_new_tag: false,
+          push_all: false,
+        }
+      }
+    end
 
-      context 'push to protected branch' do
-        before { protect_master }
-        subject { access.push_allowed?(user, project, master_changes) }
+    permissions_matrix.keys.each do |role|
+      describe "#{role} access" do
+        before { protect_feature_branch }
+        before { project.team << [user, role] }
 
-        it { should be_false }
-      end
+        permissions_matrix[role].each do |action, allowed|
+          context action do
+            subject { access.push_allowed?(user, project, changes[action]) }
 
-      context 'remove protected branch' do
-        before { protect_master }
-        subject { access.push_allowed?(user, project, remove_master_changes) }
-
-        it { should be_false }
-      end
-
-      context 'push to existing tag' do
-        subject { access.push_allowed?(user, project, tag_changes) }
-
-        it { should be_false }
-      end
-
-      context 'push new tag' do
-        subject { access.push_allowed?(user, project, new_tag_changes) }
-
-        it { should be_true }
-      end
-
-      context 'push new tag and protected branch' do
-        before { protect_master }
-        subject { access.push_allowed?(user, project, [new_tag_changes, master_changes]) }
-
-        it { should be_false }
+            it { should allowed ? be_true : be_false }
+          end
+        end
       end
     end
-  end
-
-  describe 'forced_push?' do
-    subject { access.forced_push?(project, '111111', '222222') }
-
-    it { should be_false }
-  end
-
-  def new_branch_changes
-    '000000000 570e7b2ab refs/heads/wow'
-  end
-
-  def master_changes
-    '6f6d7e7ed 570e7b2ab refs/heads/master'
-  end
-
-  def remove_master_changes
-    '570e7b2ab 000000000 refs/heads/master'
-  end
-
-  def tag_changes
-    '6f6d7e7ed 570e7b2ab refs/tags/v1.0.0'
-  end
-
-  def new_tag_changes
-    '000000000 570e7b2ab refs/tags/v7.8.9'
-  end
-
-  def protect_master
-    create(:protected_branch, name: 'master', project: project)
   end
 end
