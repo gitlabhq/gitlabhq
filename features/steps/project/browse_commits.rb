@@ -17,10 +17,10 @@ class Spinach::Features::ProjectBrowseCommits < Spinach::FeatureSteps
 
   step 'I see commits atom feed' do
     commit = @project.repository.commit
-    page.response_headers['Content-Type'].should have_content("application/atom+xml")
-    page.body.should have_selector("title", text: "Recent commits to #{@project.name}")
-    page.body.should have_selector("author email", text: commit.author_email)
-    page.body.should have_selector("entry summary", text: commit.description[0..10])
+    response_headers['Content-Type'].should have_content("application/atom+xml")
+    body.should have_selector("title", text: "Recent commits to #{@project.name}")
+    body.should have_selector("author email", text: commit.author_email)
+    body.should have_selector("entry summary", text: commit.description[0..10])
   end
 
   step 'I click on commit link' do
@@ -72,7 +72,7 @@ class Spinach::Features::ProjectBrowseCommits < Spinach::FeatureSteps
   end
 
   step 'The diff links to both the previous and current image' do
-    links = page.all('.two-up span div a')
+    links = all('.two-up span div a')
     links[0]['href'].should =~ %r{blob/#{sample_image_commit.old_blob_id}}
     links[1]['href'].should =~ %r{blob/#{sample_image_commit.new_blob_id}}
   end

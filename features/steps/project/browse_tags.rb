@@ -61,7 +61,7 @@ class Spinach::Features::ProjectBrowseTags < Spinach::FeatureSteps
 
   step "I should not see tag 'v1.1.0'" do
     within '.tags' do
-      page.all(visible: true).should_not have_content 'v1.1.0'
+      all(visible: true).should_not have_content 'v1.1.0'
     end
   end
 
