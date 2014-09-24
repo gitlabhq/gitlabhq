@@ -12,7 +12,7 @@ class Spinach::Features::ProjectMultiselectBlob < Spinach::FeatureSteps
 
         step "I shift-click line #{line_number} in file" do
           script = "$('#L#{line_number}').trigger($.Event('click', { shiftKey: true }));"
-          page.evaluate_script(script)
+          execute_script(script)
         end
       end
     end
