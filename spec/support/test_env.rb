@@ -17,7 +17,11 @@ module TestEnv
     tmp_test_path = Rails.root.join('tmp', 'tests')
 
     if File.directory?(tmp_test_path)
-      FileUtils.rm_r(tmp_test_path)
+      Dir.entries(tmp_test_path).each do |entry|
+        unless ['.', '..', 'gitlab-shell'].include?(entry)
+          FileUtils.rm_r(File.join(tmp_test_path, entry))
+        end
+      end
     end
 
     FileUtils.mkdir_p(tmp_test_path)
@@ -38,9 +42,7 @@ module TestEnv
   end
 
   def setup_gitlab_shell
-    unless File.directory?(Gitlab.config.gitlab_shell.path)
-      %x[rake gitlab:shell:install]
-    end
+    `rake gitlab:shell:install`
   end
 
   def setup_factory_repo
