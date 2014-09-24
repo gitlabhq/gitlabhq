@@ -188,9 +188,24 @@ describe API::API, api: true  do
       response.status.should == 201
     end
 
-    it "should respond with 404 on failure" do
+    it 'should respond with 400 on failure' do
       post api("/projects/user/#{user.id}", admin)
-      response.status.should == 404
+      response.status.should == 400
+      json_response['message']['creator'].should == ['can\'t be blank']
+      json_response['message']['namespace'].should == ['can\'t be blank']
+      json_response['message']['name'].should == [
+        'can\'t be blank',
+        'is too short (minimum is 0 characters)',
+        'can contain only letters, digits, \'_\', \'-\' and \'.\' and '\
+        'space. It must start with letter, digit or \'_\'.'
+      ]
+      json_response['message']['path'].should == [
+        'can\'t be blank',
+        'is too short (minimum is 0 characters)',
+        'can contain only letters, digits, \'_\', \'-\' and \'.\'. It must '\
+        'start with letter, digit or \'_\', optionally preceeded by \'.\'. '\
+        'It must not end in \'.git\'.'
+      ]
     end
 
     it "should assign attributes to project" do
@@ -410,9 +425,9 @@ describe API::API, api: true  do
       response.status.should == 200
     end
 
-    it "should return success when deleting unknown snippet id" do
+    it 'should return 404 when deleting unknown snippet id' do
       delete api("/projects/#{project.id}/snippets/1234", user)
-      response.status.should == 200
+      response.status.should == 404
     end
   end
 
@@ -459,7 +474,21 @@ describe API::API, api: true  do
     describe "POST /projects/:id/keys" do
       it "should not create an invalid ssh key" do
         post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
-        response.status.should == 404
+        response.status.should == 400
+        json_response['message']['key'].should == [
+          'can\'t be blank',
+          'is too short (minimum is 0 characters)',
+          'is invalid'
+        ]
+      end
+
+      it 'should not create a key without title' do
+        post api("/projects/#{project.id}/keys", user), key: 'some key'
+        response.status.should == 400
+        json_response['message']['title'].should == [
+          'can\'t be blank',
+          'is too short (minimum is 0 characters)'
+        ]
       end
 
       it "should create new ssh key" do
