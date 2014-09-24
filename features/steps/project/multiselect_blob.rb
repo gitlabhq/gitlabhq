@@ -45,11 +45,11 @@ class Spinach::Features::ProjectMultiselectBlob < Spinach::FeatureSteps
   check_state_steps *Array(1..5), Array(1..2), Array(1..3), Array(1..4), Array(1..5), Array(3..5)
 
   step 'I go back in history' do
-    page.evaluate_script("window.history.back()")
+    go_back
   end
 
   step 'I go forward in history' do
-    page.evaluate_script("window.history.forward()")
+    go_forward
   end
 
   step 'I click on ".gitignore" file in repo' do
