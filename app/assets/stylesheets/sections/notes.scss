@@ -19,6 +19,10 @@ ul.notes {
     @extend .cgray;
     padding-bottom: 15px;
 
+    a:hover {
+      text-decoration: none;
+    }
+
     .avatar {
       float: left;
       margin-right: 10px;
