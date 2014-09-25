@@ -35,6 +35,16 @@ Feature: Project Source Browse Files
     And I should see its new content
 
   @javascript
+  Scenario: If I enter an illegal file name I see an error message
+    Given I click on "new file" link in repo
+    And I fill the new file name with an illegal name
+    And I edit code
+    And I fill the commit message
+    And I click on "Commit changes"
+    Then I am on the new file page
+    And I see a commit error message
+
+  @javascript
   Scenario: I can edit file
     Given I click on ".gitignore" file in repo
     And I click button "Edit"
@@ -49,6 +59,16 @@ Feature: Project Source Browse Files
     And I click on "Commit Changes"
     Then I am redirected to the ".gitignore"
     And I should see its new content
+
+  @javascript  @wip
+  Scenario: If I don't change the content of the file I see an error message
+    Given I click on ".gitignore" file in repo
+    And I click button "edit"
+    And I fill the commit message
+    And I click on "Commit changes"
+    # Test fails because carriage returns are added to the file.
+    Then I am on the ".gitignore" edit file page
+    And I see a commit error message
 
   @javascript
   Scenario: I can see editing preview

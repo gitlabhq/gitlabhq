@@ -22,7 +22,7 @@ class Projects::EditTreeController < Projects::BaseTreeController
 
       redirect_to after_edit_path
     else
-      flash[:alert] = result[:error]
+      flash[:alert] = result[:message]
       render :show
     end
   end
