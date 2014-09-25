@@ -19,13 +19,7 @@ class Projects::CommitController < Projects::ApplicationController
                   []
                 end
 
-    begin
-      @diffs = @commit.diffs
-    rescue Grit::Git::GitTimeout
-      @diffs = []
-      @diff_timeout = true
-    end
-
+    @diffs = @commit.diffs
     @note = project.build_commit_note(commit)
     @notes_count = project.notes.for_commit_id(commit.id).count
     @notes = project.notes.for_commit_id(@commit.id).not_inline.fresh

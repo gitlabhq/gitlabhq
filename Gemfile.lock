@@ -1,7 +1,7 @@
 GIT
   remote: https://gitlab.com/gitlab-org/gitlab_git.git
-  revision: 187ff05aef6fc5390a2d666f35f84de0db9777b7
-  ref: 187ff05aef6fc5390a2d666f35f84de0db9777b7
+  revision: b53b948a9248ea3a4b7f2bd6c7f9938fbd5e952b
+  ref: b53b948a9248ea3a4b7f2bd6c7f9938fbd5e952b
   specs:
     gitlab_git (7.0.0.pre)
       activesupport (~> 4.0)
