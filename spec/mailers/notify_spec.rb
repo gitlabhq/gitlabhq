@@ -265,7 +265,15 @@ describe Notify do
           it_behaves_like 'an assignee email'
           it_behaves_like 'an email starting a new thread', 'merge_request'
 
-          it 'has the correct subject' do
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \|/
+          end
+
+          it 'contains merge request info in its subject' do
             should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
@@ -306,7 +314,15 @@ describe Notify do
             sender.address.should eq(gitlab_sender)
           end
 
-          it 'has the correct subject' do
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \|/
+          end
+
+          it 'contains merge request info in its subject' do
             should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
@@ -335,8 +351,16 @@ describe Notify do
             sender.address.should eq(gitlab_sender)
           end
 
-          it 'has the correct subject' do
-            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/i
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \|/
+          end
+
+          it 'contains merge request info in its subject' do
+            should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
           it 'contains the new status' do
@@ -364,7 +388,15 @@ describe Notify do
             sender.address.should eq(gitlab_sender)
           end
 
-          it 'has the correct subject' do
+          it "contains the project's owner info in its subject" do
+            should have_subject /\[#{project.owner.name}\]/
+          end
+
+          it 'contains project info in its subject' do
+            should have_subject /#{project.name} \| /
+          end
+
+          it 'contains merge request info in its subject' do
             should have_subject /#{merge_request.title} \(##{merge_request.iid}\)/
           end
 
