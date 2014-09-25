@@ -53,8 +53,8 @@ module API
     end
 
     class ProjectMember < UserBasic
-      expose :access_level do |user, options|
-        options[:project].project_members.find_by(user_id: user.id).access_level
+      expose :project_access, as: :access_level do |user, options|
+        options[:project].users_projects.find_by(user_id: user.id).project_access
       end
     end
 
@@ -67,9 +67,29 @@ module API
     end
 
     class GroupMember < UserBasic
-      expose :access_level do |user, options|
-        options[:group].group_members.find_by(user_id: user.id).access_level
+      expose :group_access, as: :access_level do |user, options|
+        options[:group].users_groups.find_by(user_id: user.id).group_access
       end
+    end
+
+    class RepoTag < Grape::Entity
+      expose :name
+      expose :message do |repo_obj, options|
+        if repo_obj.respond_to?(:message)
+          repo_obj.message
+        else
+          nil
+        end
+      end
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
+      end
+
     end
 
     class RepoObject < Grape::Entity
@@ -170,24 +190,24 @@ module API
     end
 
     class ProjectAccess < Grape::Entity
-      expose :access_level
+      expose :project_access, as: :access_level
       expose :notification_level
     end
 
     class GroupAccess < Grape::Entity
-      expose :access_level
+      expose :group_access, as: :access_level
       expose :notification_level
     end
 
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.project_members.find_by(user_id: options[:user].id)
+          project.users_projects.find_by(user_id: options[:user].id)
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            project.group.group_members.find_by(user_id: options[:user].id)
+            project.group.users_groups.find_by(user_id: options[:user].id)
           end
         end
       end

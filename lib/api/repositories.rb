@@ -23,7 +23,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject, project: user_project
+        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoTag, project: user_project
       end
 
       # Create tag
@@ -38,12 +38,13 @@ module API
       post ':id/repository/tags' do
         authorize_push_project
         message = params[:message] || nil
-        result = CreateTagService.new(user_project, current_user).
-          execute(params[:tag_name], params[:ref], message)
+        result = CreateTagService.new.execute(user_project, params[:tag_name],
+                                              params[:ref], message,
+                                              current_user)
 
         if result[:status] == :success
           present result[:tag],
-                  with: Entities::RepoObject,
+                  with: Entities::RepoTag,
                   project: user_project
         else
           render_api_error!(result[:message], 400)
