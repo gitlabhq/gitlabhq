@@ -25,7 +25,7 @@ class Repository
     raw_repository.empty?
   end
 
-  def commit(id = nil)
+  def commit(id = 'HEAD')
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
@@ -137,7 +137,7 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      stats = Gitlab::Git::GitStats.new(raw, root_ref, Gitlab.config.git.timeout)
+      stats = Gitlab::Git::GitStats.new(raw_repository, root_ref, Gitlab.config.git.timeout)
       stats.parsed_log
     end
   end

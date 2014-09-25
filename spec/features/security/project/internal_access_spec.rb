@@ -90,7 +90,7 @@ describe "Internal Project Access", feature: true  do
   describe "GET /:project_path/blob" do
     before do
       commit = project.repository.commit
-      path = commit.tree.contents.select { |i| i.is_a?(Grit::Blob) }.first.name
+      path = '.gitignore'
       @blob_path = project_blob_path(project, File.join(commit.id, path))
     end
 

@@ -17,4 +17,4 @@
 %hr
 
 .wiki-last-edit-by
-  Last edited by #{commit_author_link(@page.commit, avatar: true, size: 16)} #{time_ago_with_tooltip(@page.commit.created_at)}
+  Last edited by #{@page.commit.author.name} #{time_ago_with_tooltip(@page.commit.authored_date)}

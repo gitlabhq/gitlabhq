@@ -14,7 +14,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
-        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject, project: user_project
+        present user_project.repository.branches.sort_by(&:name), with: Entities::RepoObject, project: user_project
       end
 
       # Get a single branch
@@ -25,7 +25,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/branches/:branch
       get ':id/repository/branches/:branch', requirements: { branch: /.*/ } do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        @branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
         not_found!("Branch does not exist") if @branch.nil?
         present @branch, with: Entities::RepoObject, project: user_project
       end
