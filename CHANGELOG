@@ -4,6 +4,7 @@ v 7.5.0
   - Fix LDAP authentication for Git HTTP access
   - Fix LDAP config lookup for provider 'ldap'
   - Add Atlassian Bamboo CI service (Drew Blessing)
+  - Tie up loose ends with annotated tags: API & UI (Sean Edge)
 
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users
