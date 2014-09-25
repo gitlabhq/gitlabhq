@@ -13,7 +13,7 @@ module Gitlab
 
         lines_arr = ::Gitlab::InlineDiff.processing lines
 
-        lines_arr.drop(4).each do |line|
+        lines_arr.each do |line|
           raw_line = line.dup
 
           next if filename?(line)
