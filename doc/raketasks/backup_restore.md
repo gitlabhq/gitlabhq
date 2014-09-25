@@ -115,6 +115,6 @@ sudo -u git crontab -e # Edit the crontab for the git user
 Add the following lines at the bottom:
 
 ```
-# Create a full backup of the GitLab repositories and SQL database every day at 2am
-0 2 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+# Create a full backup of the GitLab repositories and SQL database every day at 4am
+0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
