@@ -63,6 +63,8 @@ sudo gitlab-rake gitlab:check
 bundle exec rake gitlab:check RAILS_ENV=production
 ```
 
+NOTE: Use SANITIZE=true for gitlab:check if you want to omit project names from the output.
+
 Example output:
 
 ```
@@ -109,12 +111,14 @@ Redis version >= 2.0.0? ... yes
 Checking GitLab ... Finished
 ```
 
-## (Re-)Create satellite repos
+## (Re-)Create satellite repositories
 
-This will create satellite repos for all your projects.
+This will create satellite repositories for all your projects.
 
-If necessary, remove the `tmp/repo_satellites` directory and rerun the command below.
+If necessary, remove the `repo_satellites` directory and rerun the commands below.
 
 ```
-bundle exec rake gitlab:satellites:create RAILS_ENV=production
+sudo -u git -H mkdir -p /home/git/gitlab-satellites
+sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
+sudo chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
 ```

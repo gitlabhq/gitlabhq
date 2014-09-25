@@ -1,0 +1,10 @@
+%li{ id: dom_id(issue, 'sortable'), class: 'issue-row', 'data-iid' => issue.iid }
+  %span.milestone-row
+    - project = issue.project
+    %strong #{project.name} &middot;
+    = link_to [project, issue] do
+      %span.cgray ##{issue.iid}
+    = link_to_gfm issue.title, [project, issue], title: issue.title
+  .pull-right.assignee-icon
+    - if issue.assignee
+      = image_tag avatar_icon(issue.assignee.email, 16), class: "avatar s16"

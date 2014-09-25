@@ -10,8 +10,13 @@ module API
             error!(errors[:project_access], 422)
           elsif errors[:branch_conflict].any?
             error!(errors[:branch_conflict], 422)
+          elsif errors[:validate_fork].any?
+            error!(errors[:validate_fork], 422)
+          elsif errors[:validate_branches].any?
+            conflict!(errors[:validate_branches])
           end
-          not_found!
+
+          render_api_error!(errors, 400)
         end
       end
 
@@ -25,6 +30,10 @@ module API
       #   GET /projects/:id/merge_requests
       #   GET /projects/:id/merge_requests?state=opened
       #   GET /projects/:id/merge_requests?state=closed
+      #   GET /projects/:id/merge_requests?order_by=created_at
+      #   GET /projects/:id/merge_requests?order_by=updated_at
+      #   GET /projects/:id/merge_requests?sort=desc
+      #   GET /projects/:id/merge_requests?sort=asc
       #
       get ":id/merge_requests" do
         authorize! :read_merge_request, user_project
@@ -34,6 +43,16 @@ module API
               when "closed" then user_project.merge_requests.closed
               when "merged" then user_project.merge_requests.merged
               else user_project.merge_requests
+              end
+
+        sort = case params["sort"]
+               when 'desc' then 'DESC'
+               else 'ASC'
+               end
+
+        mrs = case params["order_by"]
+              when 'updated_at' then mrs.order("updated_at #{sort}")
+              else  mrs.order("created_at #{sort}")
               end
 
         present paginate(mrs), with: Entities::MergeRequest
@@ -76,10 +95,20 @@ module API
         authorize! :write_merge_request, user_project
         required_attributes! [:source_branch, :target_branch, :title]
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :target_project_id, :description]
-        attrs[:label_list] = params[:labels] if params[:labels].present?
+
+        # Validate label names in advance
+        if (errors = validate_label_params(params)).any?
+          render_api_error!({ labels: errors }, 400)
+        end
+
         merge_request = ::MergeRequests::CreateService.new(user_project, current_user, attrs).execute
 
         if merge_request.valid?
+          # Find or create labels and attach to issue
+          if params[:labels].present?
+            merge_request.add_labels_by_names(params[:labels].split(","))
+          end
+
           present merge_request, with: Entities::MergeRequest
         else
           handle_merge_request_errors! merge_request.errors
@@ -103,12 +132,23 @@ module API
       #
       put ":id/merge_request/:merge_request_id" do
         attrs = attributes_for_keys [:source_branch, :target_branch, :assignee_id, :title, :state_event, :description]
-        attrs[:label_list] = params[:labels] if params[:labels].present?
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
         authorize! :modify_merge_request, merge_request
+
+        # Validate label names in advance
+        if (errors = validate_label_params(params)).any?
+          render_api_error!({ labels: errors }, 400)
+        end
+
         merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)
 
         if merge_request.valid?
+          # Find or create labels and attach to issue
+          unless params[:labels].nil?
+            merge_request.remove_labels
+            merge_request.add_labels_by_names(params[:labels].split(","))
+          end
+
           present merge_request, with: Entities::MergeRequest
         else
           handle_merge_request_errors! merge_request.errors
@@ -193,7 +233,7 @@ module API
         if note.save
           present note, with: Entities::MRNote
         else
-          not_found!
+          render_validation_error!(note)
         end
       end
     end

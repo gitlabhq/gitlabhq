@@ -22,29 +22,27 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
+#  repository_size        :float            default(0.0)
+#  star_count             :integer          default(0), not null
 #
 
 class Project < ActiveRecord::Base
   include Gitlab::ShellAdapter
   include Gitlab::VisibilityLevel
+  include Gitlab::ConfigHelper
+  extend Gitlab::ConfigHelper
   extend Enumerize
 
   default_value_for :archived, false
-  default_value_for :issues_enabled, true
-  default_value_for :merge_requests_enabled, true
-  default_value_for :wiki_enabled, true
+  default_value_for :visibility_level, gitlab_config_features.visibility_level
+  default_value_for :issues_enabled, gitlab_config_features.issues
+  default_value_for :merge_requests_enabled, gitlab_config_features.merge_requests
+  default_value_for :wiki_enabled, gitlab_config_features.wiki
   default_value_for :wall_enabled, false
-  default_value_for :snippets_enabled, true
+  default_value_for :snippets_enabled, gitlab_config_features.snippets
 
   ActsAsTaggableOn.strict_case_match = true
-
-  attr_accessible :name, :path, :description, :issues_tracker, :label_list,
-    :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id,
-    :wiki_enabled, :visibility_level, :import_url, :last_activity_at, as: [:default, :admin]
-
-  attr_accessible :namespace_id, :creator_id, as: :admin
-
-  acts_as_taggable_on :labels, :issues_default_labels
+  acts_as_taggable_on :tags
 
   attr_accessor :new_default_branch
 
@@ -72,7 +70,8 @@ class Project < ActiveRecord::Base
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
-  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
+  has_many :issues, -> { order 'issues.state DESC, issues.created_at DESC' }, dependent: :destroy
+  has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
   has_many :milestones,         dependent: :destroy
@@ -80,10 +79,12 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :users, through: :users_projects
+  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :users, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starrers, through: :users_star_projects, source: :user
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -93,13 +94,16 @@ class Project < ActiveRecord::Base
   validates :description, length: { maximum: 2000 }, allow_blank: true
   validates :name, presence: true, length: { within: 0..255 },
             format: { with: Gitlab::Regex.project_name_regex,
-                      message: "only letters, digits, spaces & '_' '-' '.' allowed. Letter or digit should be first" }
+                      message: Gitlab::Regex.project_regex_message }
   validates :path, presence: true, length: { within: 0..255 },
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
-                      message: "only letters, digits & '_' '-' '.' allowed. Letter or digit should be first" }
+                      message: Gitlab::Regex.path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,
             :wiki_enabled, inclusion: { in: [true, false] }
+  validates :visibility_level,
+    exclusion: { in: gitlab_config.restricted_visibility_levels },
+    if: -> { gitlab_config.restricted_visibility_levels.any? }
   validates :issues_tracker_id, length: { maximum: 255 }, allow_blank: true
   validates :namespace, presence: true
   validates_uniqueness_of :name, scope: :namespace_id
@@ -107,6 +111,7 @@ class Project < ActiveRecord::Base
   validates :import_url,
     format: { with: URI::regexp(%w(git http https)), message: "should be a valid url" },
     if: :import?
+  validates :star_count, numericality: { greater_than_or_equal_to: 0 }
   validate :check_limit, on: :create
 
   # Scopes
@@ -172,11 +177,11 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end
 
-    def search query
+    def search(query)
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
-    def search_by_title query
+    def search_by_title(query)
       where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
     end
 
@@ -243,7 +248,7 @@ class Project < ActiveRecord::Base
   end
 
   def check_limit
-    unless creator.can_create_project?
+    unless creator.can_create_project? or namespace.kind == 'group'
       errors[:limit_reached] << ("Your project limit is #{creator.projects_limit} projects! Please contact your administrator to increase it")
     end
   rescue
@@ -255,7 +260,7 @@ class Project < ActiveRecord::Base
   end
 
   def web_url
-    [Gitlab.config.gitlab.url, path_with_namespace].join("/")
+    [gitlab_config.url, path_with_namespace].join("/")
   end
 
   def web_url_without_protocol
@@ -276,13 +281,6 @@ class Project < ActiveRecord::Base
 
   def project_id
     self.id
-  end
-
-  # Tags are shared by issues and merge requests
-  def issues_labels
-    @issues_labels ||= (issues_default_labels +
-                        merge_requests.tags_on(:labels) +
-                        issues.tags_on(:labels)).uniq.sort_by(&:name)
   end
 
   def issue_exists?(issue_id)
@@ -355,12 +353,12 @@ class Project < ActiveRecord::Base
 
   def team_member_by_name_or_email(name = nil, email = nil)
     user = users.where("name like ? or email like ?", name, email).first
-    users_projects.where(user: user) if user
+    project_members.where(user: user) if user
   end
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by(user_id: user_id)
+    project_members.find_by(user_id: user_id)
   end
 
   def name_with_namespace
@@ -391,27 +389,52 @@ class Project < ActiveRecord::Base
     services.each do |service|
 
       # Call service hook only if it is active
-      service.execute(data) if service.active
+      begin
+        service.execute(data) if service.active
+      rescue => e
+        logger.error(e)
+      end
     end
   end
 
   def update_merge_requests(oldrev, newrev, ref, user)
     return true unless ref =~ /heads/
     branch_name = ref.gsub("refs/heads/", "")
-    c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
+    commits = self.repository.commits_between(oldrev, newrev)
+    c_ids = commits.map(&:id)
 
     # Close merge requests
     mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
-    mrs.each { |merge_request| MergeRequests::MergeService.new.execute(merge_request, user, nil) }
+
+    mrs.uniq.each do |merge_request|
+      MergeRequests::MergeService.new.execute(merge_request, user, nil)
+    end
 
     # Update code for merge requests into project between project branches
     mrs = self.merge_requests.opened.by_branch(branch_name).to_a
     # Update code for merge requests between project and project fork
     mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
-    mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
+
+    mrs.uniq.each do |merge_request|
+      merge_request.reload_code
+      merge_request.mark_as_unchecked
+    end
+
+    # Add comment about pushing new commits to merge requests
+    comment_mr_with_commits(branch_name, commits, user)
 
     true
+  end
+
+  def comment_mr_with_commits(branch_name, commits, user)
+    mrs = self.origin_merge_requests.opened.where(source_branch: branch_name).to_a
+    mrs += self.fork_merge_requests.opened.where(source_branch: branch_name).to_a
+
+    mrs.uniq.each do |merge_request|
+      Note.create_new_commits_note(merge_request, merge_request.project,
+                                   user, commits)
+    end
   end
 
   def valid_repo?
@@ -476,7 +499,7 @@ class Project < ActiveRecord::Base
   end
 
   def http_url_to_repo
-    [Gitlab.config.gitlab.url, "/", path_with_namespace, ".git"].join('')
+    [gitlab_config.url, "/", path_with_namespace, ".git"].join('')
   end
 
   # Check if current branch name is marked as protected in the system
@@ -493,6 +516,7 @@ class Project < ActiveRecord::Base
   end
 
   def rename_repo
+    path_was = previous_changes['path'].first
     old_path_with_namespace = File.join(namespace_dir, path_was)
     new_path_with_namespace = File.join(namespace_dir, path)
 
@@ -535,7 +559,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    users_projects.where(user_id: user).first
+    project_members.where(user_id: user).first
   end
 
   def default_branch
@@ -570,5 +594,17 @@ class Project < ActiveRecord::Base
 
   def update_repository_size
     update_attribute(:repository_size, repository.size)
+  end
+
+  def forks_count
+    ForkedProjectLink.where(forked_from_project_id: self.id).count
+  end
+
+  def find_label(name)
+    labels.find_by(name: name)
+  end
+
+  def origin_merge_requests
+    merge_requests.where(source_project_id: self.id)
   end
 end

@@ -1,0 +1,10 @@
+.explore-trending-block
+  %p.lead
+    %i.icon-comments-alt
+    See most starred projects
+  %hr
+  .public-projects
+    %ul.bordered-list
+      = render @starred_projects
+
+  = paginate @starred_projects, theme: 'gitlab'

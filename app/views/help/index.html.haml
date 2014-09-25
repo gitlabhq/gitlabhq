@@ -1,5 +1,5 @@
-.jumbotron
-  %h2
+%div
+  %h1
     GitLab
     %span= Gitlab::VERSION
     %small= Gitlab::REVISION
@@ -16,7 +16,17 @@
     %br
     Read more about GitLab at #{link_to "www.gitlab.com", "https://www.gitlab.com/", target: "_blank"}.
 
+%hr
+
 .row
+  .col-md-8
+    .documentation-index
+      = preserve do
+        - readme_text = File.read(Rails.root.join("doc", "README.md"))
+        - text = readme_text.dup
+        - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
+        = markdown text
+
   .col-md-4
     .panel.panel-default
       .panel-heading
@@ -27,18 +37,8 @@
           = link_to "getting help", "https://www.gitlab.com/getting-help/"
         %li
           Use the
-          = link_to "search bar", '#', onclick: "$('#search').focus();"
+          = link_to 'search bar', '#', onclick: 'Shortcuts.focusSearch(event)'
           on the top of this page
         %li
           Use
-          = link_to "shortcuts", '#', onclick: "new Shortcuts()"
-
-  .col-md-8
-    .panel.panel-default.documentation-index
-      .panel-heading Documentation
-      .panel-body
-        = preserve do
-          - readme_text = File.read(Rails.root.join("doc", "README.md"))
-          - text = readme_text.dup
-          - readme_text.scan(/\]\(([^(]+)\)/) { |match| text.gsub!(match.first, "help/#{match.first}") }
-          = markdown text
+          = link_to 'shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'

@@ -3,7 +3,7 @@
 # Table name: merge_request_diffs
 #
 #  id               :integer          not null, primary key
-#  state            :string(255)      default("collected"), not null
+#  state            :string(255)
 #  st_commits       :text
 #  st_diffs         :text
 #  merge_request_id :integer          not null
@@ -21,8 +21,6 @@ class MergeRequestDiff < ActiveRecord::Base
   attr_reader :commits, :diffs
 
   belongs_to :merge_request
-
-  attr_accessible :state, :st_commits, :st_diffs
 
   delegate :target_branch, :source_branch, to: :merge_request, prefix: nil
 
@@ -85,11 +83,7 @@ class MergeRequestDiff < ActiveRecord::Base
   # Collect array of Git::Commit objects
   # between target and source branches
   def unmerged_commits
-    commits = if merge_request.for_fork?
-                compare_action.commits
-              else
-                repository.commits_between(target_branch, source_branch)
-              end
+    commits = compare_result.commits
 
     if commits.present?
       commits = Commit.decorate(commits).
@@ -149,12 +143,7 @@ class MergeRequestDiff < ActiveRecord::Base
   # Collect array of Git::Diff objects
   # between target and source branches
   def unmerged_diffs
-    diffs = if merge_request.for_fork?
-              compare_action.diffs
-            else
-              Gitlab::Git::Diff.between(repository, source_branch, target_branch)
-            end
-
+    diffs = compare_result.diffs
     diffs ||= []
     diffs
   rescue Gitlab::Git::Diff::TimeoutError => ex
@@ -168,13 +157,13 @@ class MergeRequestDiff < ActiveRecord::Base
 
   private
 
-  def compare_action
-    Gitlab::Satellite::CompareAction.new(
+  def compare_result
+    @compare_result ||= CompareService.new.execute(
       merge_request.author,
+      merge_request.source_project,
+      merge_request.source_branch,
       merge_request.target_project,
       merge_request.target_branch,
-      merge_request.source_project,
-      merge_request.source_branch
     )
   end
 end

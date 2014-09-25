@@ -1,5 +1,6 @@
 module SharedPaths
   include Spinach::DSL
+  include RepoHelpers
 
   step 'I visit new project page' do
     visit new_project_path
@@ -257,15 +258,21 @@ module SharedPaths
   end
 
   step 'I visit blob file from repo' do
-    visit project_blob_path(@project, File.join(ValidCommit::ID, ValidCommit::BLOB_FILE_PATH))
+    visit project_blob_path(@project, File.join(sample_commit.id, sample_blob.path))
   end
 
-  step 'I visit "Gemfile.lock" file in repo' do
-    visit project_blob_path(@project, File.join(root_ref, 'Gemfile.lock'))
+  step 'I visit ".gitignore" file in repo' do
+    visit project_blob_path(@project, File.join(root_ref, '.gitignore'))
   end
 
-  step 'I visit project source page for "8470d70"' do
-    visit project_tree_path(@project, "8470d70")
+  step 'I visit project source page for "6d39438"' do
+    visit project_tree_path(@project, "6d39438")
+  end
+
+  step 'I visit project source page for' \
+       ' "6d394385cf567f80a8fd85055db1ab4c5295806f"' do
+    visit project_tree_path(@project,
+                            '6d394385cf567f80a8fd85055db1ab4c5295806f')
   end
 
   step 'I visit project tags page' do
@@ -273,7 +280,7 @@ module SharedPaths
   end
 
   step 'I visit project commit page' do
-    visit project_commit_path(@project, ValidCommit::ID)
+    visit project_commit_path(@project, sample_commit.id)
   end
 
   step 'I visit project "Shop" issues page' do
@@ -286,7 +293,23 @@ module SharedPaths
   end
 
   step 'I visit project "Shop" labels page' do
+    project = Project.find_by(name: 'Shop')
     visit project_labels_path(project)
+  end
+
+  step 'I visit project "Forum" labels page' do
+    project = Project.find_by(name: 'Forum')
+    visit project_labels_path(project)
+  end
+
+  step 'I visit project "Shop" new label page' do
+    project = Project.find_by(name: 'Shop')
+    visit new_project_label_path(project)
+  end
+
+  step 'I visit project "Forum" new label page' do
+    project = Project.find_by(name: 'Forum')
+    visit new_project_label_path(project)
   end
 
   step 'I visit merge request page "Bug NS-04"' do
@@ -320,30 +343,66 @@ module SharedPaths
   end
 
   # ----------------------------------------
+  # Visibility Projects
+  # ----------------------------------------
+
+  step 'I visit project "Community" page' do
+    project = Project.find_by(name: "Community")
+    visit project_path(project)
+  end
+
+  step 'I visit project "Internal" page' do
+    project = Project.find_by(name: "Internal")
+    visit project_path(project)
+  end
+
+  step 'I visit project "Enterprise" page' do
+    project = Project.find_by(name: "Enterprise")
+    visit project_path(project)
+  end
+
+  # ----------------------------------------
+  # Empty Projects
+  # ----------------------------------------
+
+  step "I visit empty project page" do
+    project = Project.find_by(name: "Empty Public Project")
+    visit project_path(project)
+  end
+
+  # ----------------------------------------
   # Public Projects
   # ----------------------------------------
 
   step 'I visit the public projects area' do
-    visit public_root_path
+    visit explore_projects_path
   end
 
-  step 'I visit public page for "Community" project' do
-    visit public_project_path(Project.find_by(name: "Community"))
+   step 'I visit the explore trending projects' do
+     visit trending_explore_projects_path
+   end
+
+   step 'I visit the explore starred projects' do
+     visit starred_explore_projects_path
+   end
+
+  step 'I visit the public groups area' do
+    visit explore_groups_path
   end
 
   # ----------------------------------------
   # Snippets
   # ----------------------------------------
 
-  Given 'I visit project "Shop" snippets page' do
+  step 'I visit project "Shop" snippets page' do
     visit project_snippets_path(project)
   end
 
-  Given 'I visit snippets page' do
+  step 'I visit snippets page' do
     visit snippets_path
   end
 
-  Given 'I visit new snippet page' do
+  step 'I visit new snippet page' do
     visit new_snippet_path
   end
 
@@ -359,7 +418,7 @@ module SharedPaths
   # Errors
   # ----------------------------------------
 
-  Then 'page status code should be 404' do
+  step 'page status code should be 404' do
     page.status_code.should == 404
   end
 end

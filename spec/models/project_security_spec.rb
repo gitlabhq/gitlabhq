@@ -30,7 +30,7 @@ describe Project do
 
     describe "Guest Rules" do
       before do
-        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::GUEST)
+        @p1.project_members.create(project: @p1, user: @u2, access_level: ProjectMember::GUEST)
       end
 
       it "should allow for project user any guest actions" do
@@ -42,7 +42,7 @@ describe Project do
 
     describe "Report Rules" do
       before do
-        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::REPORTER)
+        @p1.project_members.create(project: @p1, user: @u2, access_level: ProjectMember::REPORTER)
       end
 
       it "should allow for project user any report actions" do
@@ -54,8 +54,8 @@ describe Project do
 
     describe "Developer Rules" do
       before do
-        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::REPORTER)
-        @p1.users_projects.create(project: @p1, user: @u3, project_access: UsersProject::DEVELOPER)
+        @p1.project_members.create(project: @p1, user: @u2, access_level: ProjectMember::REPORTER)
+        @p1.project_members.create(project: @p1, user: @u3, access_level: ProjectMember::DEVELOPER)
       end
 
       it "should deny for developer master-specific actions" do
@@ -73,8 +73,8 @@ describe Project do
 
     describe "Master Rules" do
       before do
-        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::DEVELOPER)
-        @p1.users_projects.create(project: @p1, user: @u3, project_access: UsersProject::MASTER)
+        @p1.project_members.create(project: @p1, user: @u2, access_level: ProjectMember::DEVELOPER)
+        @p1.project_members.create(project: @p1, user: @u3, access_level: ProjectMember::MASTER)
       end
 
       it "should deny for developer master-specific actions" do
@@ -92,8 +92,8 @@ describe Project do
 
     describe "Admin Rules" do
       before do
-        @p1.users_projects.create(project: @p1, user: @u2, project_access: UsersProject::DEVELOPER)
-        @p1.users_projects.create(project: @p1, user: @u3, project_access: UsersProject::MASTER)
+        @p1.project_members.create(project: @p1, user: @u2, access_level: ProjectMember::DEVELOPER)
+        @p1.project_members.create(project: @p1, user: @u3, access_level: ProjectMember::MASTER)
       end
 
       it "should deny for masters admin-specific actions" do

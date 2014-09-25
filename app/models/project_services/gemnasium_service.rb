@@ -5,21 +5,17 @@
 #  id          :integer          not null, primary key
 #  type        :string(255)
 #  title       :string(255)
-#  token       :string(255)
 #  project_id  :integer          not null
 #  created_at  :datetime
 #  updated_at  :datetime
 #  active      :boolean          default(FALSE), not null
-#  project_url :string(255)
-#  subdomain   :string(255)
-#  room        :string(255)
-#  recipients  :text
-#  api_key     :string(255)
+#  properties  :text
 #
 
 require "gemnasium/gitlab_service"
 
 class GemnasiumService < Service
+  prop_accessor :token, :api_key
   validates :token, :api_key, presence: true, if: :activated?
 
   def title

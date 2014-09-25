@@ -1,21 +1,21 @@
 - if @commits.any?
   .ci_widget.ci-success{style: "display:none"}
     %i.icon-ok
-    %strong CI build passed
+    %span CI build passed
     for #{@merge_request.last_commit_short_sha}.
     = link_to "Build page", ci_build_details_path(@merge_request)
 
 
   .ci_widget.ci-failed{style: "display:none"}
     %i.icon-remove
-    %strong CI build failed
+    %span CI build failed
     for #{@merge_request.last_commit_short_sha}.
     = link_to "Build page", ci_build_details_path(@merge_request)
 
   - [:running, :pending].each do |status|
     .ci_widget{class: "ci-#{status}", style: "display:none"}
       %i.icon-time
-      %strong CI build #{status}
+      %span CI build #{status}
       for #{@merge_request.last_commit_short_sha}.
       = link_to "Build page", ci_build_details_path(@merge_request)
 
@@ -26,4 +26,4 @@
 
   .ci_widget.ci-error{style: "display:none"}
     %i.icon-remove
-    %strong Cannot connect to the CI server. Please check your settings and try again.
+    %span Cannot connect to the CI server. Please check your settings and try again.

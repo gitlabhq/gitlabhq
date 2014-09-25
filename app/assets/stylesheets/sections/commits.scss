@@ -112,7 +112,9 @@
 
 .commit-stat-summary {
   color: #666;
-  line-height: 2;
+  font-size: 14px;
+  font-weight: normal;
+  padding: 10px 0;
 }
 
 .commit-info-row {
@@ -177,10 +179,18 @@ li.commit {
 
   .commit-row-description {
     font-size: 14px;
-    border-left: 1px solid #e5e5e5;
-    padding: 0 15px 0 7px;
+    border-left: 1px solid #EEE;
+    padding: 10px 15px;
     margin: 5px 0 10px 5px;
+    background: #f9f9f9;
     display: none;
+
+    pre {
+      border: none;
+      background: inherit;
+      padding: 0;
+      margin: 0;
+    }
   }
 
   .commit-row-info {

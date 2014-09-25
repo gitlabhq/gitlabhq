@@ -20,8 +20,6 @@ describe Key do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:project_id) }
-    it { should_not allow_mass_assignment_of(:user_id) }
   end
 
   describe "Validation" do

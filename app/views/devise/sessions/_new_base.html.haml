@@ -6,9 +6,7 @@
       %label.checkbox.remember_me{for: "user_remember_me"}
         = f.check_box :remember_me
         %span Remember me
+        .pull-right
+          = link_to "Forgot your password?", new_password_path(resource_name)
   %div
-    = hidden_field_tag 'return_to', params[:return_to]
-    = f.submit "Sign in", class: "btn-create btn"
-
-    .pull-right
-      = link_to "Forgot your password?", new_password_path(resource_name), class: "btn"
+    = f.submit "Sign in", class: "btn btn-save"

@@ -11,11 +11,4 @@
 
 - if @user.created_by_id
   %p
-    password..................................
-    %code= @password
-
-  %p
-    You will be forced to change this password immediately after login.
-
-%p
-  = link_to "Click here to login", root_url
+    = link_to "Click here to set your password", edit_password_url(@user, :reset_password_token => @token)

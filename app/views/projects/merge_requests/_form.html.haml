@@ -9,51 +9,14 @@
           %strong #{link_to "guidelines for contribution", contribution_guide_url}
           to this repository.
 
-      -if @merge_request.errors.any?
-        .alert.alert-danger
-          - @merge_request.errors.full_messages.each do |msg|
-            %div= msg
-
   .merge-request-form-info
+    = render 'projects/issuable_form', f: f, issuable: @merge_request
     .form-group
-      = f.label :title, class: 'control-label' do
-        %strong= "Title *"
-      .col-sm-10= f.text_field :title, class: "form-control pad js-gfm-input", maxlength: 255, rows: 5, required: true
-    .form-group
-      = f.label :description, "Description", class: 'control-label'
+      = f.label :label_ids, class: 'control-label' do
+        %i.icon-tag
+        Labels
       .col-sm-10
-        = f.text_area :description, class: "form-control js-gfm-input markdown-area", rows: 14
-        .col-sm-12.hint
-          .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
-          .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
-        .clearfix
-        .error-alert
-    %hr
-    .form-group
-      .issue-assignee
-        = f.label :assignee_id, class: 'control-label' do
-          %i.icon-user
-          Assign to
-        .col-sm-10
-          = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id)
-          &nbsp;
-          = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
-    .form-group
-      .issue-milestone
-        = f.label :milestone_id, class: 'control-label' do
-          %i.icon-time
-          Milestone
-        .col-sm-10= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2'})
-
-
-    - if @merge_request.persisted? # Only allow labels on edit to avoid fork vs upstream repo labels issue
-      .form-group
-        = f.label :label_list, class: 'control-label' do
-          %i.icon-tag
-          Labels
-        .col-sm-10
-          = f.text_field :label_list, maxlength: 2000, class: "form-control"
-          %p.hint Separate labels with commas.
+        = f.collection_select :label_ids, @merge_request.target_project.labels.all, :id, :name, { selected: @merge_request.label_ids }, multiple: true, class: 'select2'
 
   .form-actions
     - if @merge_request.new_record?
@@ -73,34 +36,5 @@
     $('#merge_request_assignee_id').val("#{current_user.id}").trigger("change");
     e.preventDefault();
   });
-
-  $("#merge_request_label_list")
-    .bind( "keydown", function( event ) {
-      if ( event.keyCode === $.ui.keyCode.TAB &&
-        $( this ).data( "autocomplete" ).menu.active ) {
-        event.preventDefault();
-      }
-    })
-    .bind("click", function(event) {
-      $(this).autocomplete("search", "");
-    })
-    .autocomplete({
-      minLength: 0,
-      source: function( request, response ) {
-        response( $.ui.autocomplete.filter(
-          #{raw labels_autocomplete_source}, extractLast( request.term ) ) );
-      },
-      focus: function() {
-        return false;
-      },
-      select: function(event, ui) {
-        var terms = split( this.value );
-        terms.pop();
-        terms.push( ui.item.value );
-        terms.push( "" );
-        this.value = terms.join( ", " );
-        return false;
-      }
-    });
 
   window.project_image_path_upload = "#{upload_image_project_path @project}";

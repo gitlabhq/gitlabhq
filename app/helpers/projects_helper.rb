@@ -122,6 +122,48 @@ module ProjectsHelper
     options_for_select(values, current_tracker)
   end
 
+  def link_to_toggle_star(title, starred, signed_in)
+    cls = 'star-btn'
+    cls += ' disabled' unless signed_in
+
+    toggle_html = content_tag('span', class: 'toggle') do
+      toggle_text = if starred
+                      'Unstar'
+                    else
+                      'Star'
+                    end
+
+      content_tag('i', ' ', class: 'icon-star') + toggle_text
+    end
+
+    count_html = content_tag('span', class: 'count') do
+      @project.star_count.to_s
+    end
+
+    link_opts = {
+      title: title,
+      class: cls,
+      method: :post,
+      remote: true,
+      data: {type: 'json'}
+    }
+
+
+    content_tag 'span', class: starred ? 'turn-on' : 'turn-off' do
+      link_to toggle_star_project_path(@project), link_opts do
+        toggle_html + ' ' + count_html
+      end
+    end
+  end
+
+  def link_to_toggle_fork
+    out = content_tag(:i, '', class: 'icon-code-fork')
+    out << ' Fork'
+    out << content_tag(:span, class: 'count') do
+      @project.forks_count.to_s
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)
@@ -220,5 +262,17 @@ module ProjectsHelper
     else
       "Never"
     end
+  end
+
+  def contribution_guide_url(project)
+    if project && project.repository.contribution_guide
+      project_blob_path(project, tree_join(project.default_branch, project.repository.contribution_guide.name))
+    end
+  end
+
+  def hidden_pass_url(original_url)
+    result = URI(original_url)
+    result.password = '*****' if result.password.present?
+    result
   end
 end

@@ -1,0 +1,11 @@
+.explore-trending-block
+  %p.lead
+    %i.icon-comments-alt
+    See most discussed projects for last month
+  %hr
+  .public-projects
+    %ul.bordered-list
+      = render @trending_projects
+
+  .center
+    = link_to 'Show all projects', explore_projects_path, class: 'btn btn-primary'

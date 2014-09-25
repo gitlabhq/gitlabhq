@@ -7,9 +7,9 @@
         %i.icon-edit
         Edit
       - if @milestone.active?
-        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-remove btn-grouped"
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
       - else
-        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-grouped"
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
 
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success
@@ -47,6 +47,8 @@
       #{@milestone.closed_items_count} closed
       &ndash;
       #{@milestone.open_items_count} open
+      &nbsp;
+      %span.light #{@milestone.percent_complete}% complete
       %span.pull-right= @milestone.expires_at
     .progress.progress-info
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}

@@ -76,7 +76,9 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
     "description": "Create new API for manipulations with repository",
     "milestone_id": null,
     "state": "opened",
-    "iid": 23
+    "iid": 23,
+    "url": "http://example.com/diaspora/issues/23",
+    "action": "open"
   }
 }
 ```
@@ -122,12 +124,14 @@ Save the following file as `print_http_body.rb`.
 ```ruby
 require 'webrick'
 
-server = WEBrick::HTTPServer.new(Port: ARGV.first)
+server = WEBrick::HTTPServer.new(:Port => ARGV.first)
 server.mount_proc '/' do |req, res|
   puts req.body
 end
 
-trap 'INT' do server.shutdown end
+trap 'INT' do 
+  server.shutdown 
+end
 server.start
 ```
 

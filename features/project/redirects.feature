@@ -31,3 +31,8 @@ Feature: Project Redirects
     And I click on "Sign In"
     And Authenticate
     Then I should be redirected to "Community" page
+
+  Scenario: I visit private project page without signing in
+    When I visit project "Enterprise" page
+    And I get redirected to signin page where I sign in
+    Then I should be redirected to "Enterprise" page

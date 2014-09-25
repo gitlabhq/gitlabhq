@@ -6,16 +6,33 @@ module Gitlab
       default_regex
     end
 
+    def username_regex_message
+      default_regex_message
+    end
+
     def project_name_regex
       /\A[a-zA-Z0-9_][a-zA-Z0-9_\-\. ]*\z/
+    end
+
+    def project_regex_message
+      "can contain only letters, digits, '_', '-' and '.' and space. " \
+      "It must start with letter, digit or '_'."
     end
 
     def name_regex
       /\A[a-zA-Z0-9_\-\. ]*\z/
     end
 
+    def name_regex_message
+      "can contain only letters, digits, '_', '-' and '.' and space."
+    end
+
     def path_regex
       default_regex
+    end
+
+    def path_regex_message
+      default_regex_message
     end
 
     def archive_formats_regex
@@ -48,8 +65,14 @@ module Gitlab
 
     protected
 
+    def default_regex_message
+      "can contain only letters, digits, '_', '-' and '.'. " \
+      "It must start with letter, digit or '_', optionally preceeded by '.'. " \
+      "It must not end in '.git'."
+    end
+
     def default_regex
-      /\A[.?]?[a-zA-Z0-9_][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
+      /\A[a-zA-Z0-9_.][a-zA-Z0-9_\-\.]*(?<!\.git)\z/
     end
   end
 end

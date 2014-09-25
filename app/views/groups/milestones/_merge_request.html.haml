@@ -1,0 +1,10 @@
+%li{ id: dom_id(merge_request, 'sortable'),  class: 'mr-row', 'data-iid' => merge_request.iid }
+  %span.milestone-row
+    - project = merge_request.project
+    %strong #{project.name} &middot;
+    = link_to [project, merge_request] do
+      %span.cgray ##{merge_request.iid}
+    = link_to_gfm merge_request.title, [project, merge_request], title: merge_request.title
+  .pull-right.assignee-icon
+    - if merge_request.assignee
+      = image_tag avatar_icon(merge_request.assignee.email, 16), class: "avatar s16"

@@ -15,9 +15,6 @@
 #
 
 class Event < ActiveRecord::Base
-  attr_accessible :project, :action, :data, :author_id, :project_id,
-                  :target_id, :target_type
-
   default_scope { where.not(author_id: nil) }
 
   CREATED   = 1
@@ -33,6 +30,7 @@ class Event < ActiveRecord::Base
   delegate :name, :email, to: :author, prefix: true, allow_nil: true
   delegate :title, to: :issue, prefix: true, allow_nil: true
   delegate :title, to: :merge_request, prefix: true, allow_nil: true
+  delegate :title, to: :note, prefix: true, allow_nil: true
 
   belongs_to :author, class_name: "User"
   belongs_to :project
@@ -71,6 +69,12 @@ class Event < ActiveRecord::Base
         },
         author_id: user.id
       )
+    end
+
+    def reset_event_cache_for(target)
+      Event.where(target_id: target.id, target_type: target.class.to_s).
+        order('id DESC').limit(100).
+        update_all(updated_at: Time.now)
     end
   end
 
@@ -148,6 +152,10 @@ class Event < ActiveRecord::Base
 
   def merge_request
     target if target_type == "MergeRequest"
+  end
+
+  def note
+    target if target_type == "Note"
   end
 
   def action_name

@@ -10,8 +10,11 @@ class Repository
     nil
   end
 
+  # Return absolute path to repository
   def path_to_repo
-    @path_to_repo ||= File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+    @path_to_repo ||= File.expand_path(
+      File.join(Gitlab.config.gitlab_shell.repos_path, path_with_namespace + ".git")
+    )
   end
 
   def exists?
@@ -61,10 +64,10 @@ class Repository
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
-  def add_tag(tag_name, ref)
+  def add_tag(tag_name, ref, message = nil)
     Rails.cache.delete(cache_key(:tag_names))
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref)
+    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
@@ -134,7 +137,7 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      stats = Gitlab::Git::GitStats.new(raw, root_ref)
+      stats = Gitlab::Git::GitStats.new(raw, root_ref, Gitlab.config.git.timeout)
       stats.parsed_log
     end
   end
@@ -240,6 +243,43 @@ class Repository
       end
     else
       branches
+    end
+  end
+
+  def contributors
+    log = graph_log.group_by { |i| i[:author_email] }
+
+    log.map do |email, contributions|
+      contributor = Gitlab::Contributor.new
+      contributor.email = email
+
+      contributions.each do |contribution|
+        if contributor.name.blank?
+          contributor.name = contribution[:author_name]
+        end
+
+        contributor.commits += 1
+        contributor.additions += contribution[:additions] || 0
+        contributor.deletions += contribution[:deletions] || 0
+      end
+
+      contributor
+    end
+  end
+
+  def blob_for_diff(commit, diff)
+    file = blob_at(commit.id, diff.new_path)
+
+    unless file
+      file = prev_blob_for_diff(commit, diff)
+    end
+
+    file
+  end
+
+  def prev_blob_for_diff(commit, diff)
+    if commit.parent_id
+      blob_at(commit.parent_id, diff.old_path)
     end
   end
 end

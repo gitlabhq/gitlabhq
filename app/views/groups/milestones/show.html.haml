@@ -1,0 +1,88 @@
+%h3.page-title
+  Milestone #{@group_milestone.title}
+  .pull-right
+    - if can?(current_user, :manage_group, @group)
+      - if @group_milestone.active?
+        = link_to 'Close Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-close"
+      - else
+        = link_to 'Reopen Milestone', group_milestone_path(@group, @group_milestone.safe_title, title: @group_milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped btn-reopen"
+
+- if (@group_milestone.total_items_count == @group_milestone.closed_items_count) && @group_milestone.active?
+  .alert.alert-success
+    %span All issues for this milestone are closed. You may close the milestone now.
+
+.back-link
+  = link_to group_milestones_path(@group) do
+    &larr; To milestones list
+
+.issue-box{ class: "issue-box-#{@group_milestone.closed? ? 'closed' : 'open'}" }
+  .state.clearfix
+    .state-label
+      - if @group_milestone.closed?
+        Closed
+      - else
+        Open
+
+  %h4.title
+    = gfm escape_once(@group_milestone.title)
+
+  .description
+    - @group_milestone.milestones.each do |milestone|
+      %hr
+      %h4
+        = link_to "#{milestone.project.name} - #{milestone.title}", project_milestone_path(milestone.project, milestone)
+        %span.pull-right= milestone.expires_at
+        - if milestone.closed?
+          %span.label.label-danger #{milestone.state}
+      = preserve do
+        - if milestone.description.present?
+          = milestone.description
+
+  .context
+    %p
+      Progress:
+      #{@group_milestone.closed_items_count} closed
+      &ndash;
+      #{@group_milestone.open_items_count} open
+
+    .progress.progress-info
+      .progress-bar{style: "width: #{@group_milestone.percent_complete}%;"}
+
+%ul.nav.nav-tabs
+  %li.active
+    = link_to '#tab-issues', 'data-toggle' => 'tab' do
+      Issues
+      %span.badge= @group_milestone.issue_count
+  %li
+    = link_to '#tab-merge-requests', 'data-toggle' => 'tab' do
+      Merge Requests
+      %span.badge= @group_milestone.merge_requests_count
+  %li
+    = link_to '#tab-participants', 'data-toggle' => 'tab' do
+      Participants
+      %span.badge= @group_milestone.participants.count
+
+.tab-content
+  .tab-pane.active#tab-issues
+    .row
+      .col-md-6
+        = render 'issues', title: "Open", issues: @group_milestone.opened_issues
+      .col-md-6
+        = render 'issues', title: "Closed", issues: @group_milestone.closed_issues
+
+  .tab-pane#tab-merge-requests
+    .row
+      .col-md-6
+        = render 'merge_requests', title: "Open", merge_requests: @group_milestone.opened_merge_requests
+      .col-md-6
+        = render 'merge_requests', title: "Closed", merge_requests: @group_milestone.closed_merge_requests
+
+  .tab-pane#tab-participants
+    %ul.bordered-list
+      - @group_milestone.participants.each do |user|
+        %li
+          = link_to user, title: user.name, class: "darken" do
+            = image_tag avatar_icon(user.email, 32), class: "avatar s32"
+            %strong= truncate(user.name, lenght: 40)
+            %br
+            %small.cgray= user.username

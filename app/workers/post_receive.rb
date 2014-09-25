@@ -4,15 +4,14 @@ class PostReceive
 
   sidekiq_options queue: :post_receive
 
-  def perform(repo_path, oldrev, newrev, ref, identifier)
-
+  def perform(repo_path, identifier, changes)
     if repo_path.start_with?(Gitlab.config.gitlab_shell.repos_path.to_s)
       repo_path.gsub!(Gitlab.config.gitlab_shell.repos_path.to_s, "")
     else
       log("Check gitlab.yml config for correct gitlab_shell.repos_path variable. \"#{Gitlab.config.gitlab_shell.repos_path}\" does not match \"#{repo_path}\"")
     end
 
-    repo_path.gsub!(/.git$/, "")
+    repo_path.gsub!(/\.git$/, "")
     repo_path.gsub!(/^\//, "")
 
     project = Project.find_with_namespace(repo_path)
@@ -22,17 +21,23 @@ class PostReceive
       return false
     end
 
-    user = identify(identifier, project, newrev)
+    changes = changes.lines if changes.kind_of?(String)
 
-    unless user
-      log("Triggered hook for non-existing user \"#{identifier} \"")
-      return false
-    end
+    changes.each do |change|
+      oldrev, newrev, ref = change.strip.split(' ')
 
-    if tag?(ref)
-      GitTagPushService.new.execute(project, user, oldrev, newrev, ref)
-    else
-      GitPushService.new.execute(project, user, oldrev, newrev, ref)
+      @user ||= identify(identifier, project, newrev)
+
+      unless @user
+        log("Triggered hook for non-existing user \"#{identifier} \"")
+        return false
+      end
+
+      if tag?(ref)
+        GitTagPushService.new.execute(project, @user, oldrev, newrev, ref)
+      else
+        GitPushService.new.execute(project, @user, oldrev, newrev, ref)
+      end
     end
   end
 

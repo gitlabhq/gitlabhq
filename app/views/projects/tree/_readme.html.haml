@@ -1,13 +1,7 @@
 %article.readme-holder#README
-  %h4.readme-file-title
-    %i.icon-file
-    = readme.name
+  = link_to '#README' do
+    %h4.readme-file-title
+      %i.icon-file
+      = readme.name
   .wiki
-    - if gitlab_markdown?(readme.name)
-      = preserve do
-        = markdown(readme.data)
-    - elsif plain_text_readme?(readme.name)
-      %pre.clean
-        = readme.data
-    - elsif markup?(readme.name)
-      = render_markup(readme.name, readme.data)
+    = render_readme(readme)

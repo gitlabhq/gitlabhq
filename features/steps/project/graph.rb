@@ -1,8 +1,8 @@
-class ProjectGraph < Spinach::FeatureSteps
+class Spinach::Features::ProjectGraph < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
 
-  Then 'page should have graphs' do
+  step 'page should have graphs' do
     page.should have_selector ".stat-graph"
   end
 

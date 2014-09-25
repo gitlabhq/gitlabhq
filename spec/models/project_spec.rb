@@ -22,6 +22,8 @@
 #  visibility_level       :integer          default(0), not null
 #  archived               :boolean          default(FALSE), not null
 #  import_status          :string(255)
+#  repository_size        :float            default(0.0)
+#  star_count             :integer          default(0), not null
 #
 
 require 'spec_helper'
@@ -36,7 +38,7 @@ describe Project do
     it { should have_many(:merge_requests).dependent(:destroy) }
     it { should have_many(:issues).dependent(:destroy) }
     it { should have_many(:milestones).dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:project_members).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
     it { should have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { should have_many(:deploy_keys_projects).dependent(:destroy) }
@@ -48,8 +50,6 @@ describe Project do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:namespace_id) }
-    it { should_not allow_mass_assignment_of(:creator_id) }
   end
 
   describe "Validation" do
@@ -126,27 +126,80 @@ describe Project do
 
   describe :update_merge_requests do
     let(:project) { create(:project) }
-
-    before do
-      @merge_request = create(:merge_request, source_project: project, target_project: project)
-      @key = create(:key, user_id: project.owner.id)
-    end
+    let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
+    let(:key) { create(:key, user_id: project.owner.id) }
+    let(:prev_commit_id) { merge_request.commits.last.id }
+    let(:commit_id) { merge_request.commits.first.id }
 
     it "should close merge request if last commit from source branch was pushed to target branch" do
-      @merge_request.reload_code
-      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
-      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/stable", @key.user)
-      @merge_request.reload
-      @merge_request.merged?.should be_true
+      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.target_branch}", key.user)
+      merge_request.reload
+      merge_request.merged?.should be_true
     end
 
     it "should update merge request commits with new one if pushed to source branch" do
-      project.update_merge_requests("8716fc78f3c65bbf7bcf7b574febd583bc5d2812", "69b34b7e9ad9f496f0ad10250be37d6265a03bba", "refs/heads/master", @key.user)
-      @merge_request.reload
-      @merge_request.last_commit.id.should == "69b34b7e9ad9f496f0ad10250be37d6265a03bba"
+      project.update_merge_requests(prev_commit_id, commit_id, "refs/heads/#{merge_request.source_branch}", key.user)
+      merge_request.reload
+      merge_request.last_commit.id.should == commit_id
     end
   end
 
+  describe 'comment merge requests with commits' do
+    before do
+      @user = create(:user)
+      group = create(:group)
+      group.add_owner(@user)
+
+      @project = create(:project, namespace: group)
+      @fork_project = Projects::ForkService.new(@project, @user).execute
+      @merge_request = create(:merge_request, source_project: @project,
+                              source_branch: 'master',
+                              target_branch: 'feature',
+                              target_project: @project)
+      @fork_merge_request = create(:merge_request, source_project: @fork_project,
+                                   source_branch: 'master',
+                                   target_branch: 'feature',
+                                   target_project: @project)
+
+      @commits = @merge_request.commits
+    end
+
+    context 'push to origin repo source branch' do
+      before do
+        @project.comment_mr_with_commits('master', @commits, @user)
+      end
+
+      it { @merge_request.notes.should_not be_empty }
+      it { @fork_merge_request.notes.should be_empty }
+    end
+
+    context 'push to origin repo target branch' do
+      before do
+        @project.comment_mr_with_commits('feature', @commits, @user)
+      end
+
+      it { @merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.should be_empty }
+    end
+
+    context 'push to fork repo source branch' do
+      before do
+        @fork_project.comment_mr_with_commits('master', @commits, @user)
+      end
+
+      it { @merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.should_not be_empty }
+    end
+
+    context 'push to fork repo target branch' do
+      before do
+        @fork_project.comment_mr_with_commits('feature', @commits, @user)
+      end
+
+      it { @merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.should be_empty }
+    end
+  end
 
   describe :find_with_namespace do
     context 'with namespace' do
@@ -239,7 +292,76 @@ describe Project do
       project.protected_branches.create(name: 'master')
     end
 
-    it { project.open_branches.map(&:name).should include('bootstrap') }
+    it { project.open_branches.map(&:name).should include('feature') }
     it { project.open_branches.map(&:name).should_not include('master') }
+  end
+
+  describe '#star_count' do
+    it 'counts stars from multiple users' do
+      user1 = create :user
+      user2 = create :user
+      project = create :project, :public
+
+      expect(project.star_count).to eq(0)
+
+      user1.toggle_star(project)
+      expect(project.reload.star_count).to eq(1)
+
+      user2.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(2)
+
+      user1.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(1)
+
+      user2.toggle_star(project)
+      project.reload
+      expect(project.reload.star_count).to eq(0)
+    end
+
+    it 'counts stars on the right project' do
+      user = create :user
+      project1 = create :project, :public
+      project2 = create :project, :public
+
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(0)
+
+      user.toggle_star(project1)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(1)
+      expect(project2.star_count).to eq(0)
+
+      user.toggle_star(project1)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(0)
+
+      user.toggle_star(project2)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(1)
+
+      user.toggle_star(project2)
+      project1.reload
+      project2.reload
+      expect(project1.star_count).to eq(0)
+      expect(project2.star_count).to eq(0)
+    end
+
+    it 'is decremented when an upvoter account is deleted' do
+      user = create :user
+      project = create :project, :public
+      user.toggle_star(project)
+      project.reload
+      expect(project.star_count).to eq(1)
+      user.destroy
+      project.reload
+      expect(project.star_count).to eq(0)
+    end
   end
 end

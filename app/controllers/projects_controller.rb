@@ -20,7 +20,7 @@ class ProjectsController < ApplicationController
   end
 
   def create
-    @project = ::Projects::CreateService.new(current_user, params[:project]).execute
+    @project = ::Projects::CreateService.new(current_user, project_params).execute
     flash[:notice] = 'Project was successfully created.' if @project.saved?
 
     respond_to do |format|
@@ -29,7 +29,7 @@ class ProjectsController < ApplicationController
   end
 
   def update
-    status = ::Projects::UpdateService.new(@project, current_user, params).execute
+    status = ::Projects::UpdateService.new(@project, current_user, project_params).execute
 
     respond_to do |format|
       if status
@@ -44,7 +44,7 @@ class ProjectsController < ApplicationController
   end
 
   def transfer
-    ::Projects::TransferService.new(project, current_user, params[:project]).execute
+    ::Projects::TransferService.new(project, current_user, project_params).execute
   end
 
   def show
@@ -59,6 +59,8 @@ class ProjectsController < ApplicationController
     @events = @project.events.recent
     @events = event_filter.apply_filter(@events)
     @events = @events.limit(limit).offset(params[:offset] || 0)
+
+    @show_star = !(current_user && current_user.starred?(@project))
 
     respond_to do |format|
       format.html do
@@ -85,7 +87,7 @@ class ProjectsController < ApplicationController
       redirect_to import_project_path(@project)
     end
 
-    @project.import_url = params[:project][:import_url]
+    @project.import_url = project_params[:import_url]
 
     if @project.save
       @project.reload
@@ -101,7 +103,15 @@ class ProjectsController < ApplicationController
     ::Projects::DestroyService.new(@project, current_user, {}).execute
 
     respond_to do |format|
-      format.html { redirect_to root_path }
+      format.html do
+        flash[:alert] = "Project deleted."
+
+        if request.referer.include?("/admin")
+          redirect_to admin_projects_path
+        else
+          redirect_to projects_dashboard_path
+        end
+      end
     end
   end
 
@@ -167,6 +177,12 @@ class ProjectsController < ApplicationController
     end
   end
 
+  def toggle_star
+    current_user.toggle_star(@project)
+    @project.reload
+    render json: { star_count: @project.star_count }
+  end
+
   private
 
   def upload_path
@@ -184,5 +200,13 @@ class ProjectsController < ApplicationController
 
   def user_layout
     current_user ? "projects" : "public_projects"
+  end
+
+  def project_params
+    params.require(:project).permit(
+      :name, :path, :description, :issues_tracker, :tag_list,
+      :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
+      :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id
+    )
   end
 end

@@ -92,6 +92,7 @@ Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
 Settings.gitlab['issue_closing_pattern'] = '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)' if Settings.gitlab['issue_closing_pattern'].nil?
 Settings.gitlab['default_projects_features'] ||= {}
+Settings.gitlab['webhook_timeout'] ||= 10
 Settings.gitlab.default_projects_features['issues']         = true if Settings.gitlab.default_projects_features['issues'].nil?
 Settings.gitlab.default_projects_features['merge_requests'] = true if Settings.gitlab.default_projects_features['merge_requests'].nil?
 Settings.gitlab.default_projects_features['wiki']           = true if Settings.gitlab.default_projects_features['wiki'].nil?
@@ -133,12 +134,13 @@ Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "t
 # Git
 #
 Settings['git'] ||= Settingslogic.new({})
-Settings.git['max_size']  ||= 5242880 # 5.megabytes
+Settings.git['max_size']  ||= 20971520 # 20.megabytes
 Settings.git['bin_path']  ||= '/usr/bin/git'
 Settings.git['timeout']   ||= 10
 
 Settings['satellites'] ||= Settingslogic.new({})
 Settings.satellites['path'] = File.expand_path(Settings.satellites['path'] || "tmp/repo_satellites/", Rails.root)
+Settings.satellites['timeout'] ||= 30
 
 #
 # Extra customization
@@ -150,6 +152,6 @@ Settings['extra'] ||= Settingslogic.new({})
 #
 if Rails.env.test?
   Settings.gitlab['default_projects_limit']   = 42
-  Settings.gitlab['default_can_create_group'] = false
+  Settings.gitlab['default_can_create_group'] = true
   Settings.gitlab['default_can_create_team']  = false
 end

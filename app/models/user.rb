@@ -50,30 +50,24 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class User < ActiveRecord::Base
+  include Gitlab::ConfigHelper
+  extend Gitlab::ConfigHelper
+  include TokenAuthenticatable
+
   default_value_for :admin, false
-  default_value_for :can_create_group, true
+  default_value_for :can_create_group, gitlab_config.default_can_create_group
   default_value_for :can_create_team, false
   default_value_for :hide_no_ssh_key, false
+  default_value_for :projects_limit, gitlab_config.default_projects_limit
+  default_value_for :theme_id, gitlab_config.default_theme
 
-  devise :database_authenticatable, :token_authenticatable, :lockable, :async,
+  devise :database_authenticatable, :lockable, :async,
          :recoverable, :rememberable, :trackable, :validatable, :omniauthable, :confirmable, :registerable
-
-  attr_accessible :email, :password, :password_confirmation, :remember_me, :bio, :name, :username,
-                  :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
-                  :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-                  as: [:default, :admin]
-
-  attr_accessible :projects_limit, :can_create_group,
-                  as: :admin
 
   attr_accessor :force_random_password
 
   # Virtual attribute for authenticating by either username or email
   attr_accessor :login
-
-  # Add login to attr_accessible
-  attr_accessible :login
-
 
   #
   # Relations
@@ -87,19 +81,23 @@ class User < ActiveRecord::Base
   has_many :emails, dependent: :destroy
 
   # Groups
-  has_many :users_groups, dependent: :destroy
-  has_many :groups, through: :users_groups
-  has_many :owned_groups, -> { where users_groups: { group_access: UsersGroup::OWNER } }, through: :users_groups, source: :group
-  has_many :masters_groups, -> { where users_groups: { group_access: UsersGroup::MASTER } }, through: :users_groups, source: :group
+  has_many :members, dependent: :destroy
+  has_many :project_members, source: 'ProjectMember'
+  has_many :group_members, source: 'GroupMember'
+  has_many :groups, through: :group_members
+  has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
+  has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
 
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :projects,                 through: :users_projects
+  has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
+  has_many :users_star_projects, dependent: :destroy
+  has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
-  has_many :users_projects,           dependent: :destroy
+  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
@@ -120,7 +118,7 @@ class User < ActiveRecord::Base
   validates :username, presence: true, uniqueness: { case_sensitive: false },
             exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.username_regex,
-                      message: "only letters, digits & '_' '-' '.' allowed. Letter should be first" }
+                      message: Gitlab::Regex.username_regex_message }
 
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
@@ -144,7 +142,7 @@ class User < ActiveRecord::Base
   state_machine :state, initial: :active do
     after_transition any => :blocked do |user, transition|
       # Remove user from all projects and
-      user.users_projects.find_each do |membership|
+      user.project_members.find_each do |membership|
         # skip owned resources
         next if membership.project.owner == user
 
@@ -152,7 +150,7 @@ class User < ActiveRecord::Base
       end
 
       # Remove user from all groups
-      user.users_groups.find_each do |membership|
+      user.group_members.find_each do |membership|
         # skip owned resources
         next if membership.group.last_owner?(user)
 
@@ -179,7 +177,7 @@ class User < ActiveRecord::Base
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
-  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
+  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
   scope :ldap, -> { where(provider:  'ldap') }
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
@@ -223,20 +221,8 @@ class User < ActiveRecord::Base
       where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
     end
 
-    def build_user(attrs = {}, options= {})
-      if options[:as] == :admin
-        User.new(defaults.merge(attrs.symbolize_keys), options)
-      else
-        User.new(attrs, options).with_defaults
-      end
-    end
-
-    def defaults
-      {
-        projects_limit: Gitlab.config.gitlab.default_projects_limit,
-        can_create_group: Gitlab.config.gitlab.default_can_create_group,
-        theme_id: Gitlab.config.gitlab.default_theme
-      }
+    def build_user(attrs = {})
+      User.new(attrs)
     end
   end
 
@@ -256,6 +242,15 @@ class User < ActiveRecord::Base
     if self.force_random_password
       self.password = self.password_confirmation = Devise.friendly_token.first(8)
     end
+  end
+
+  def generate_reset_token
+    @reset_token, enc = Devise.token_generator.generate(self.class, :reset_password_token)
+
+    self.reset_password_token   = enc
+    self.reset_password_sent_at = Time.now.utc
+
+    @reset_token
   end
 
   def namespace_uniq
@@ -302,7 +297,7 @@ class User < ActiveRecord::Base
 
   # Team membership in authorized projects
   def tm_in_authorized_projects
-    UsersProject.where(project_id: authorized_projects.map(&:id), user_id: self.id)
+    ProjectMember.where(source_id: authorized_projects.map(&:id), user_id: self.id)
   end
 
   def is_admin?
@@ -314,7 +309,7 @@ class User < ActiveRecord::Base
   end
 
   def can_change_username?
-    Gitlab.config.gitlab.username_changing_enabled
+    gitlab_config.username_changing_enabled
   end
 
   def can_create_project?
@@ -421,7 +416,9 @@ class User < ActiveRecord::Base
   end
 
   def requires_ldap_check?
-    if ldap_user?
+    if !Gitlab.config.ldap.enabled
+      false
+    elsif ldap_user?
       !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
     else
       false
@@ -479,17 +476,13 @@ class User < ActiveRecord::Base
     email =~ /\Atemp-email-for-oauth/
   end
 
-  def generate_tmp_oauth_email
-    self.email = "temp-email-for-oauth-#{username}@gitlab.localhost"
-  end
-
   def public_profile?
     authorized_projects.public_only.any?
   end
 
   def avatar_url(size = nil)
     if avatar.present?
-      URI::join(Gitlab.config.gitlab.url, avatar.url).to_s
+      [gitlab_config.url, avatar.url].join("/")
     else
       GravatarService.new.execute(email, size)
     end
@@ -506,7 +499,7 @@ class User < ActiveRecord::Base
 
   def post_create_hook
     log_info("User \"#{self.name}\" (#{self.email}) was created")
-    notification_service.new_user(self)
+    notification_service.new_user(self, @reset_token)
     system_hook_service.execute_hooks_for(self, :create)
   end
 
@@ -525,5 +518,19 @@ class User < ActiveRecord::Base
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def starred?(project)
+    starred_projects.exists?(project)
+  end
+
+  def toggle_star(project)
+    user_star_project = users_star_projects.
+      where(project: project, user: self).take
+    if user_star_project
+      user_star_project.destroy
+    else
+      UsersStarProject.create!(project: project, user: self)
+    end
   end
 end

@@ -1,10 +1,17 @@
 = render "projects/issues/head"
 
-- if @labels.present?
-  %ul.bordered-list.labels-table
-    - @labels.each do |label|
-      = render 'label', label: label
+- if can? current_user, :admin_label, @project
+  = link_to new_project_label_path(@project), class: "pull-right btn btn-new" do
+    New label
+%h3.page-title
+  Labels
+%hr
 
-- else
-  .light-well
-    .nothing-here-block Add first label to your issues or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels
+.labels
+  - if @labels.present?
+    %ul.bordered-list.manage-labels-list
+      = render @labels
+    = paginate @labels, theme: 'gitlab'
+  - else
+    .light-well
+      .nothing-here-block Create first label or #{link_to 'generate', generate_project_labels_path(@project), method: :post} default set of labels

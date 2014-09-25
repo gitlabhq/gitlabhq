@@ -47,12 +47,23 @@ Gitlab::Application.routes.draw do
   get "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
 
   #
-  # Public namespace
+  # Explroe area
   #
-  namespace :public do
-    resources :projects, only: [:index]
-    root to: "projects#index"
+  namespace :explore do
+    resources :projects, only: [:index] do
+      collection do
+        get :trending
+        get :starred
+      end
+    end
+
+    resources :groups, only: [:index]
+    root to: "projects#trending"
   end
+
+  # Compatibility with old routing
+  get 'public' => "explore/projects#index"
+  get 'public/projects' => "explore/projects#index"
 
   #
   # Attachments serving
@@ -150,15 +161,16 @@ Gitlab::Application.routes.draw do
       get :projects
     end
 
-    resources :users_groups, only: [:create, :update, :destroy]
     scope module: :groups do
+      resources :group_members, only: [:create, :update, :destroy]
       resource :avatar, only: [:destroy]
+      resources :milestones
     end
   end
 
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :users_sessions }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions }
 
   devise_scope :user do
     get "/users/auth/:provider/omniauth_error" => "omniauth_callbacks#omniauth_error", as: :omniauth_error
@@ -173,13 +185,16 @@ Gitlab::Application.routes.draw do
       post :archive
       post :unarchive
       post :upload_image
+      post :toggle_star
       get :autocomplete_sources
       get :import
       put :retry_import
     end
 
     scope module: :projects do
-      resources :blob,      only: [:show, :destroy], constraints: {id: /.+/}
+      resources :blob, only: [:show, :destroy], constraints: { id: /.+/ } do
+        get :diff, on: :member
+      end
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
       resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
@@ -283,7 +298,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :labels, only: [:index] do
+      resources :labels, constraints: {id: /\d+/} do
         collection do
           post :generate
         end

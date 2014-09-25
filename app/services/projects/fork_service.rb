@@ -7,7 +7,12 @@ module Projects
     end
 
     def execute
-      project = @from_project.dup
+      project_params = {
+        visibility_level: @from_project.visibility_level,
+        description: @from_project.description,
+      }
+
+      project = Project.new(project_params)
       project.name = @from_project.name
       project.path = @from_project.path
       project.namespace = current_user.namespace
@@ -22,7 +27,7 @@ module Projects
             #First save the DB entries as they can be rolled back if the repo fork fails
             project.build_forked_project_link(forked_to_project_id: project.id, forked_from_project_id: @from_project.id)
             if project.save
-              project.users_projects.create(project_access: UsersProject::MASTER, user: current_user)
+              project.team << [current_user, :master]
             end
             #Now fork the repo
             unless gitlab_shell.fork_repository(@from_project.path_with_namespace, project.namespace.path)

@@ -10,7 +10,7 @@ GET /projects/:id/repository/tags
 
 Parameters:
 
-+ `id` (required) - The ID of a project
+- `id` (required) - The ID of a project
 
 ```json
 [
@@ -47,9 +47,10 @@ POST /projects/:id/repository/tags
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `tag_name` (required) - The name of a tag
-+ `ref` (required) - Create tag using commit sha, another tag name, or branch name.
+- `id` (required) - The ID of a project
+- `tag_name` (required) - The name of a tag
+- `ref` (required) - Create tag using commit SHA, another tag name, or branch name.
+- `message` (optional) - Creates annotated tag.
 
 ```json
 [
@@ -71,6 +72,9 @@ Parameters:
 ]
 ```
 
+It returns 200 if the operation succeed. In case of an error,
+405 with an explaining error message is returned.
+
 ## List repository tree
 
 Get a list of repository files and directories in a project.
@@ -81,9 +85,9 @@ GET /projects/:id/repository/tree
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `path` (optional) - The path inside repository. Used to get contend of subdirectories
-+ `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
+- `id` (required) - The ID of a project
+- `path` (optional) - The path inside repository. Used to get contend of subdirectories
+- `ref_name` (optional) - The name of a repository branch or tag or if not given the default branch
 
 ```json
 [
@@ -126,10 +130,9 @@ Parameters:
 ]
 ```
 
-
 ## Raw file content
 
-Get the raw file contents for a file by commit sha and path.
+Get the raw file contents for a file by commit SHA and path.
 
 ```
 GET /projects/:id/repository/blobs/:sha
@@ -137,14 +140,13 @@ GET /projects/:id/repository/blobs/:sha
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `sha` (required) - The commit or branch name
-+ `filepath` (required) - The path the file
-
+- `id` (required) - The ID of a project
+- `sha` (required) - The commit or branch name
+- `filepath` (required) - The path the file
 
 ## Raw blob content
 
-Get the raw file contents for a blob by blob sha.
+Get the raw file contents for a blob by blob SHA.
 
 ```
 GET /projects/:id/repository/raw_blobs/:sha
@@ -152,22 +154,21 @@ GET /projects/:id/repository/raw_blobs/:sha
 
 Parameters:
 
-+ `id` (required) - The ID of a project
-+ `sha` (required) - The blob sha
-
+- `id` (required) - The ID of a project
+- `sha` (required) - The blob SHA
 
 ## Get file archive
 
-Get a an archive of the repository
+Get an archive of the repository
 
 ```
 GET /projects/:id/repository/archive
 ```
 
 Parameters:
-+ `id` (required) - The ID of a project
-+ `sha` (optional) - The commit sha to download defaults to the tip of the default branch
 
+- `id` (required) - The ID of a project
+- `sha` (optional) - The commit SHA to download defaults to the tip of the default branch
 
 ## Compare branches, tags or commits
 
@@ -176,16 +177,16 @@ GET /projects/:id/repository/compare
 ```
 
 Parameters:
-+ `id` (required) - The ID of a project
-+ `from` (required) - the commit sha or branch name
-+ `to` (required) - the commit sha or branch name
 
+- `id` (required) - The ID of a project
+- `from` (required) - the commit SHA or branch name
+- `to` (required) - the commit SHA or branch name
 
 ```
 GET /projects/:id/repository/compare?from=master&to=feature
 ```
 
-Response: 
+Response:
 
 ```json
 
@@ -219,4 +220,34 @@ Response:
   "compare_timeout": false,
   "compare_same_ref": false
 }
+```
+
+## Contributors
+
+Get repository contributors list
+
+```
+GET /projects/:id/repository/contributors
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+
+Response:
+
+```
+[{
+  "name": "Dmitriy Zaporozhets",
+  "email": "dmitriy.zaporozhets@gmail.com",
+  "commits": 117,
+  "additions": 2097,
+  "deletions": 517
+}, {
+  "name": "Jacob Vosmaer",
+  "email": "contact@jacobvosmaer.nl",
+  "commits": 33,
+  "additions": 338,
+  "deletions": 244
+}]
 ```

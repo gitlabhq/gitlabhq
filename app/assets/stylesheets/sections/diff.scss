@@ -40,13 +40,16 @@
     font-size: 12px;
     .old {
       span.idiff {
-        background-color: #FAA;
+        background-color: #F99;
       }
     }
     .new {
       span.idiff {
-        background-color: #AFA;
+        background-color: #8F8;
       }
+    }
+    .unfold {
+      cursor: pointer;
     }
 
     .file-mode-changed {
@@ -122,8 +125,6 @@
     }
     .line_content {
       display: block;
-      white-space: pre;
-      height: 18px;
       margin: 0px;
       padding: 0px 0.5em;
       border: none;
@@ -338,3 +339,12 @@
   margin: 0;
   border: none;
 }
+
+.diff-file .line_content {
+  white-space: pre;
+}
+
+.diff-wrap-lines .line_content {
+  white-space: pre-wrap;
+}
+

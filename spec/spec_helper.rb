@@ -1,14 +1,14 @@
-# This file is copied to spec/ when you run 'rails generate rspec:install'
-ENV["RAILS_ENV"] ||= 'test'
-require File.expand_path("../../config/environment", __FILE__)
-
-require 'simplecov' unless ENV['CI']
-
-if ENV['TRAVIS']
-  require 'coveralls'
-  Coveralls.wear!
+if ENV['SIMPLECOV']
+  require 'simplecov'
 end
 
+if ENV['COVERALLS']
+  require 'coveralls'
+  Coveralls.wear_merged!('rails')
+end
+
+ENV["RAILS_ENV"] ||= 'test'
+require File.expand_path("../../config/environment", __FILE__)
 require 'rspec/rails'
 require 'capybara/rails'
 require 'capybara/rspec'
@@ -38,14 +38,7 @@ RSpec.configure do |config|
 
   config.include TestEnv
 
-  # If you're not using ActiveRecord, or you'd prefer not to run each of your
-  # examples within a transaction, remove the following line or assign false
-  # instead of true.
-
   config.before(:suite) do
-    TestEnv.init(init_repos: true, repos: false)
-  end
-  config.before(:each) do
-    TestEnv.setup_stubs
+    TestEnv.init
   end
 end

@@ -53,8 +53,8 @@ module API
     end
 
     class ProjectMember < UserBasic
-      expose :project_access, as: :access_level do |user, options|
-        options[:project].users_projects.find_by(user_id: user.id).project_access
+      expose :access_level do |user, options|
+        options[:project].project_members.find_by(user_id: user.id).access_level
       end
     end
 
@@ -67,8 +67,8 @@ module API
     end
 
     class GroupMember < UserBasic
-      expose :group_access, as: :access_level do |user, options|
-        options[:group].users_groups.find_by(user_id: user.id).group_access
+      expose :access_level do |user, options|
+        options[:group].group_members.find_by(user_id: user.id).access_level
       end
     end
 
@@ -102,6 +102,7 @@ module API
 
     class RepoCommit < Grape::Entity
       expose :id, :short_id, :title, :author_name, :author_email, :created_at
+      expose :safe_message, as: :message
     end
 
     class RepoCommitDetail < RepoCommit
@@ -126,7 +127,7 @@ module API
     end
 
     class Issue < ProjectEntity
-      expose :label_list, as: :labels
+      expose :label_names, as: :labels
       expose :milestone, using: Entities::Milestone
       expose :assignee, :author, using: Entities::UserBasic
       expose :metadata
@@ -136,7 +137,9 @@ module API
       expose :target_branch, :source_branch, :upvotes, :downvotes
       expose :author, :assignee, using: Entities::UserBasic
       expose :source_project_id, :target_project_id
-      expose :label_list, as: :labels
+      expose :label_names, as: :labels
+      expose :description
+      expose :milestone, using: Entities::Milestone
     end
 
     class SSHKey < Grape::Entity
@@ -168,31 +171,31 @@ module API
     end
 
     class ProjectAccess < Grape::Entity
-      expose :project_access, as: :access_level
+      expose :access_level
       expose :notification_level
     end
 
     class GroupAccess < Grape::Entity
-      expose :group_access, as: :access_level
+      expose :access_level
       expose :notification_level
     end
 
     class ProjectWithAccess < Project
       expose :permissions do
         expose :project_access, using: Entities::ProjectAccess do |project, options|
-          project.users_projects.find_by(user_id: options[:user].id)
+          project.project_members.find_by(user_id: options[:user].id)
         end
 
         expose :group_access, using: Entities::GroupAccess do |project, options|
           if project.group
-            project.group.users_groups.find_by(user_id: options[:user].id)
+            project.group.group_members.find_by(user_id: options[:user].id)
           end
         end
       end
     end
 
     class Label < Grape::Entity
-      expose :name
+      expose :name, :color
     end
 
     class RepoDiff < Grape::Entity
@@ -202,13 +205,13 @@ module API
 
     class Compare < Grape::Entity
       expose :commit, using: Entities::RepoCommit do |compare, options|
-        if compare.commit
-          Commit.new compare.commit
-        end
+        Commit.decorate(compare.commits).last
       end
+
       expose :commits, using: Entities::RepoCommit do |compare, options|
-        Commit.decorate compare.commits
+        Commit.decorate(compare.commits)
       end
+
       expose :diffs, using: Entities::RepoDiff do |compare, options|
         compare.diffs
       end
@@ -218,6 +221,10 @@ module API
       end
 
       expose :same, as: :compare_same_ref
+    end
+
+    class Contributor < Grape::Entity
+      expose :name, :email, :commits, :additions, :deletions
     end
   end
 end

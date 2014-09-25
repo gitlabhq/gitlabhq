@@ -5,7 +5,6 @@
       = link_to "#", class: "js-toggle-button" do
         %i.icon-chevron-down
         Show/hide discussion
-    = image_tag avatar_icon(note.author_email), class: "avatar s32"
     %div
       = link_to_member(@project, note.author, avatar: false)
       started a discussion on the

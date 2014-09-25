@@ -51,7 +51,7 @@ class SnippetsController < ApplicationController
   end
 
   def create
-    @snippet = PersonalSnippet.new(params[:personal_snippet])
+    @snippet = PersonalSnippet.new(snippet_params)
     @snippet.author = current_user
 
     if @snippet.save
@@ -65,7 +65,7 @@ class SnippetsController < ApplicationController
   end
 
   def update
-    if @snippet.update_attributes(params[:personal_snippet])
+    if @snippet.update_attributes(snippet_params)
       redirect_to snippet_path(@snippet)
     else
       respond_with @snippet
@@ -86,7 +86,7 @@ class SnippetsController < ApplicationController
   def raw
     send_data(
       @snippet.content,
-      type: "text/plain",
+      type: 'text/plain; charset=utf-8',
       disposition: 'inline',
       filename: @snippet.file_name
     )
@@ -108,5 +108,9 @@ class SnippetsController < ApplicationController
 
   def set_title
     @title = 'Snippets'
+  end
+
+  def snippet_params
+    params.require(:personal_snippet).permit(:title, :content, :file_name, :private)
   end
 end

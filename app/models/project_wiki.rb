@@ -2,8 +2,9 @@ class ProjectWiki
   include Gitlab::ShellAdapter
 
   MARKUPS = {
-    "Markdown" => :markdown,
-    "RDoc"     => :rdoc
+    'Markdown' => :markdown,
+    'RDoc'     => :rdoc,
+    'AsciiDoc' => :asciidoc
   }
 
   class CouldNotCreateWikiError < StandardError; end
@@ -67,6 +68,15 @@ class ProjectWiki
     page_title, page_dir = page_title_and_dir(title)
     if page = wiki.page(page_title, version, page_dir)
       WikiPage.new(self, page, true)
+    else
+      nil
+    end
+  end
+
+  def find_file(name, version = nil, try_on_disk = true)
+    version = wiki.ref if version.nil? # Gollum::Wiki#file ?
+    if wiki_file = wiki.file(name, version, try_on_disk)
+      wiki_file
     else
       nil
     end

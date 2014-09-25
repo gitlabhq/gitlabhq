@@ -5,6 +5,10 @@ module API
     SUDO_HEADER ="HTTP_SUDO"
     SUDO_PARAM = :sudo
 
+    def parse_boolean(value)
+      [ true, 1, '1', 't', 'T', 'true', 'TRUE', 'on', 'ON' ].include?(value)
+    end
+
     def current_user
       private_token = (params[PRIVATE_TOKEN_PARAM] || env[PRIVATE_TOKEN_HEADER]).to_s
       @current_user ||= User.find_by(authentication_token: private_token)
@@ -98,10 +102,33 @@ module API
 
     def attributes_for_keys(keys)
       attrs = {}
+
       keys.each do |key|
-        attrs[key] = params[key] if params[key].present? or (params.has_key?(key) and params[key] == false)
+        if params[key].present? or (params.has_key?(key) and params[key] == false)
+          attrs[key] = params[key]
+        end
       end
-      attrs
+
+      ActionController::Parameters.new(attrs).permit!
+    end
+
+    # Helper method for validating all labels against its names
+    def validate_label_params(params)
+      errors = {}
+
+      if params[:labels].present?
+        params[:labels].split(',').each do |label_name|
+          label = user_project.labels.create_with(
+            color: Label::DEFAULT_COLOR).find_or_initialize_by(
+              title: label_name.strip)
+
+          if label.invalid?
+            errors[label.title] = label.errors
+          end
+        end
+      end
+
+      errors
     end
 
     # error helpers
@@ -128,7 +155,17 @@ module API
     end
 
     def not_allowed!
-      render_api_error!('Method Not Allowed', 405)
+      render_api_error!('405 Method Not Allowed', 405)
+    end
+
+    def conflict!(message = nil)
+      render_api_error!(message || '409 Conflict', 409)
+    end
+
+    def render_validation_error!(model)
+      unless model.valid?
+        render_api_error!(model.errors.messages || '400 Bad Request', 400)
+      end
     end
 
     def render_api_error!(message, status)

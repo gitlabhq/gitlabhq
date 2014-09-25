@@ -2,13 +2,15 @@
  * General Colors
  */
 $style_color: #474D57;
-$hover: #D9EDF7;
+$hover: #FFECDB;
 
 /*
  * Link colors
  */
 $link_color: #446e9b;
-$link_hover_color: #2FA0BB;
+$link_hover_color: darken($link-color, 10%);
+
+$btn-border: 1px solid #ccc;
 
 /*
  * Success colors (green)

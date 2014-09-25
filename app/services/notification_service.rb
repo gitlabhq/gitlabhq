@@ -80,6 +80,10 @@ class NotificationService
     close_resource_email(merge_request, merge_request.target_project, current_user, 'closed_merge_request_email')
   end
 
+  def reopen_issue(issue, current_user)
+    reopen_resource_email(issue, issue.project, current_user, 'issue_status_changed_email', 'reopened')
+  end
+
   # When we merge a merge request we should send next emails:
   #
   #  * merge_request author if their notification level is not Disabled
@@ -89,16 +93,21 @@ class NotificationService
   def merge_mr(merge_request, current_user)
     recipients = reject_muted_users([merge_request.author, merge_request.assignee], merge_request.target_project)
     recipients = recipients.concat(project_watchers(merge_request.target_project)).uniq
+    recipients.delete(current_user)
 
     recipients.each do |recipient|
       mailer.merged_merge_request_email(recipient.id, merge_request.id, current_user.id)
     end
   end
 
+  def reopen_mr(merge_request, current_user)
+    reopen_resource_email(merge_request, merge_request.target_project, current_user, 'merge_request_status_email', 'reopened')
+  end
+
   # Notify new user with email after creation
-  def new_user(user)
+  def new_user(user, token = nil)
     # Don't email omniauth created users
-    mailer.new_user_email(user.id, user.password) unless user.extern_uid?
+    mailer.new_user_email(user.id, user.password, token) unless user.extern_uid?
   end
 
   # Notify users on new note in system
@@ -148,12 +157,12 @@ class NotificationService
     end
   end
 
-  def new_team_member(users_project)
-    mailer.project_access_granted_email(users_project.id)
+  def new_team_member(project_member)
+    mailer.project_access_granted_email(project_member.id)
   end
 
-  def update_team_member(users_project)
-    mailer.project_access_granted_email(users_project.id)
+  def update_team_member(project_member)
+    mailer.project_access_granted_email(project_member.id)
   end
 
   def new_group_member(users_group)
@@ -177,20 +186,20 @@ class NotificationService
 
   # Get project users with WATCH notification level
   def project_watchers(project)
-    project_members = users_project_notification(project)
+    project_members = project_member_notification(project)
 
-    users_with_project_level_global = users_project_notification(project, Notification::N_GLOBAL)
+    users_with_project_level_global = project_member_notification(project, Notification::N_GLOBAL)
     users_with_group_level_global = users_group_notification(project, Notification::N_GLOBAL)
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
-    users_with_project_setting = select_users_project_setting(project, users_with_project_level_global, users)
+    users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
     users_with_group_setting = select_users_group_setting(project, project_members, users_with_group_level_global, users)
 
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
 
-  def users_project_notification(project, notification_level=nil)
-    project_members = project.users_projects
+  def project_member_notification(project, notification_level=nil)
+    project_members = project.project_members
 
     if notification_level
       project_members.where(notification_level: notification_level).pluck(:user_id)
@@ -201,7 +210,7 @@ class NotificationService
 
   def users_group_notification(project, notification_level)
     if project.group
-      project.group.users_groups.where(notification_level: notification_level).pluck(:user_id)
+      project.group.group_members.where(notification_level: notification_level).pluck(:user_id)
     else
       []
     end
@@ -215,8 +224,8 @@ class NotificationService
   end
 
   # Build a list of users based on project notifcation settings
-  def select_users_project_setting(project, global_setting, users_global_level_watch)
-    users = users_project_notification(project, Notification::N_WATCH)
+  def select_project_member_setting(project, global_setting, users_global_level_watch)
+    users = project_member_notification(project, Notification::N_WATCH)
 
     # If project setting is global, add to watch list if global setting is watch
     global_setting.each do |user_id|
@@ -258,10 +267,10 @@ class NotificationService
     users.reject do |user|
       next user.notification.disabled? unless project
 
-      tm = project.users_projects.find_by(user_id: user.id)
+      tm = project.project_members.find_by(user_id: user.id)
 
       if !tm && project.group
-        tm = project.group.users_groups.find_by(user_id: user.id)
+        tm = project.group.group_members.find_by(user_id: user.id)
       end
 
       # reject users who globally disabled notification and has no membership
@@ -301,7 +310,9 @@ class NotificationService
   end
 
   def reassign_resource_email(target, project, current_user, method)
-    recipients = User.where(id: [target.assignee_id, target.assignee_id_was])
+    assignee_id_was = previous_record(target, "assignee_id")
+
+    recipients = User.where(id: [target.assignee_id, assignee_id_was])
 
     # Add watchers to email list
     recipients = recipients.concat(project_watchers(project))
@@ -313,11 +324,29 @@ class NotificationService
     recipients.delete(current_user)
 
     recipients.each do |recipient|
-      mailer.send(method, recipient.id, target.id, target.assignee_id_was, current_user.id)
+      mailer.send(method, recipient.id, target.id, assignee_id_was, current_user.id)
+    end
+  end
+
+  def reopen_resource_email(target, project, current_user, method, status)
+    recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = recipients.concat(project_watchers(project)).uniq
+    recipients.delete(current_user)
+
+    recipients.each do |recipient|
+      mailer.send(method, recipient.id, target.id, status, current_user.id)
     end
   end
 
   def mailer
     Notify.delay
+  end
+
+  def previous_record(object, attribute)
+    if object && attribute
+      if object.previous_changes.include?(attribute)
+        object.previous_changes[attribute].first
+      end
+    end
   end
 end

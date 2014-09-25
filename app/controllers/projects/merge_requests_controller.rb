@@ -34,6 +34,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   def show
     @note_counts = Note.where(commit_id: @merge_request.commits.map(&:id)).
         group(:commit_id).count
+
     respond_to do |format|
       format.html
       format.diff { render text: @merge_request.to_diff(current_user) }
@@ -43,15 +44,12 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def diffs
     @commit = @merge_request.last_commit
-
     @comments_allowed = @reply_allowed = true
-    @comments_target = {noteable_type: 'MergeRequest',
-                        noteable_id: @merge_request.id}
+    @comments_target = {
+      noteable_type: 'MergeRequest',
+      noteable_id: @merge_request.id
+    }
     @line_notes = @merge_request.notes.where("line_code is not null")
-
-    diff_line_count = Commit::diff_line_count(@merge_request.diffs)
-    @suppress_diff = Commit::diff_suppress?(@merge_request.diffs, diff_line_count) && !params[:force_show_diff]
-    @force_suppress_diff = Commit::diff_force_suppress?(@merge_request.diffs, diff_line_count)
 
     respond_to do |format|
       format.html
@@ -60,46 +58,22 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def new
-    @merge_request = MergeRequest.new(params[:merge_request])
-    @merge_request.source_project = @project unless @merge_request.source_project
-    @merge_request.target_project ||= (@project.forked_from_project || @project)
-    @target_branches = @merge_request.target_project.nil? ? [] : @merge_request.target_project.repository.branch_names
-    @merge_request.target_branch ||= @merge_request.target_project.default_branch
-    @source_project = @merge_request.source_project
+    params[:merge_request] ||= ActionController::Parameters.new(source_project: @project)
+    @merge_request = MergeRequests::BuildService.new(project, current_user, merge_request_params).execute
 
-    if @merge_request.target_branch && @merge_request.source_branch
-      compare_action = Gitlab::Satellite::CompareAction.new(
-        current_user,
-        @merge_request.target_project,
-        @merge_request.target_branch,
-        @merge_request.source_project,
-        @merge_request.source_branch
-      )
+    @target_branches = if @merge_request.target_project
+                         @merge_request.target_project.repository.branch_names
+                       else
+                         []
+                       end
 
-      @compare_failed = false
-      @commits = compare_action.commits
-
-      if @commits
-        @commits.map! { |commit| Commit.new(commit) }
-        @commit = @commits.first
-      else
-        # false value because failed to get commits from satellite
-        @commits = []
-        @compare_failed = true
-      end
-
-      @note_counts = Note.where(commit_id: @commits.map(&:id)).
-          group(:commit_id).count
-
-      @diffs = compare_action.diffs
-      @merge_request.title = @merge_request.source_branch.titleize.humanize
-      @target_project = @merge_request.target_project
-      @target_repo = @target_project.repository
-
-      diff_line_count = Commit::diff_line_count(@diffs)
-      @suppress_diff = Commit::diff_suppress?(@diffs, diff_line_count)
-      @force_suppress_diff = @suppress_diff
-    end
+    @target_project = merge_request.target_project
+    @source_project = merge_request.source_project
+    @commits = @merge_request.compare_commits
+    @commit = @merge_request.compare_commits.last
+    @diffs = @merge_request.compare_diffs
+    @note_counts = Note.where(commit_id: @commits.map(&:id)).
+      group(:commit_id).count
   end
 
   def edit
@@ -110,7 +84,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
   def create
     @target_branches ||= []
-    @merge_request = MergeRequests::CreateService.new(project, current_user, params[:merge_request]).execute
+    @merge_request = MergeRequests::CreateService.new(project, current_user, merge_request_params).execute
 
     if @merge_request.valid?
       redirect_to project_merge_request_path(@merge_request.target_project, @merge_request), notice: 'Merge request was successfully created.'
@@ -122,7 +96,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   end
 
   def update
-    @merge_request = MergeRequests::UpdateService.new(project, current_user, params[:merge_request]).execute(@merge_request)
+    @merge_request = MergeRequests::UpdateService.new(project, current_user, merge_request_params).execute(@merge_request)
 
     if @merge_request.valid?
       respond_to do |format|
@@ -262,5 +236,13 @@ class Projects::MergeRequestsController < Projects::ApplicationController
              end
 
     can?(current_user, action, project)
+  end
+
+  def merge_request_params
+    params.require(:merge_request).permit(
+      :title, :assignee_id, :source_project_id, :source_branch,
+      :target_project_id, :target_branch, :milestone_id,
+      :state_event, :description, label_ids: []
+    )
   end
 end

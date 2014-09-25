@@ -8,7 +8,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def show
-    @members = @group.members.order("group_access DESC").page(params[:members_page]).per(30)
+    @members = @group.members.order("access_level DESC").page(params[:members_page]).per(30)
     @projects = @group.projects.page(params[:projects_page]).per(30)
   end
 
@@ -20,7 +20,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def create
-    @group = Group.new(params[:group])
+    @group = Group.new(group_params)
     @group.path = @group.name.dup.parameterize if @group.name
 
     if @group.save
@@ -32,7 +32,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def update
-    if @group.update_attributes(params[:group])
+    if @group.update_attributes(group_params)
       redirect_to [:admin, @group], notice: 'Group was successfully updated.'
     else
       render "edit"
@@ -40,7 +40,7 @@ class Admin::GroupsController < Admin::ApplicationController
   end
 
   def project_teams_update
-    @group.add_users(params[:user_ids].split(','), params[:group_access])
+    @group.add_users(params[:user_ids].split(','), params[:access_level])
 
     redirect_to [:admin, @group], notice: 'Users were successfully added.'
   end
@@ -55,5 +55,9 @@ class Admin::GroupsController < Admin::ApplicationController
 
   def group
     @group = Group.find_by(path: params[:id])
+  end
+
+  def group_params
+    params.require(:group).permit(:name, :description, :path, :avatar)
   end
 end

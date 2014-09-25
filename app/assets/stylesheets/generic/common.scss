@@ -128,7 +128,7 @@ p.time {
 }
 
 .highlight_word {
-  border-bottom: 2px solid #F90;
+  background: #fafe3d;
 }
 
 .thin_area{
@@ -337,3 +337,22 @@ table {
 .wiki .highlight, .note-body .highlight {
   margin-bottom: 9px;
 }
+
+.footer-links a {
+  margin-right: 15px;
+}
+
+.search_box {
+  position: relative;
+  padding: 30px;
+  text-align: center;
+  background-color: #F9F9F9;
+  border: 1px solid #DDDDDD;
+  border-radius: 0px;
+}
+
+.search_glyph {
+  color: #555;
+  font-size: 42px;
+}
+

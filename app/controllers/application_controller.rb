@@ -1,6 +1,7 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
@@ -28,6 +29,25 @@ class ApplicationController < ActionController::Base
 
   protected
 
+  # From https://github.com/plataformatec/devise/wiki/How-To:-Simple-Token-Authentication-Example
+  # https://gist.github.com/josevalim/fb706b1e933ef01e4fb6
+  def authenticate_user_from_token!
+    user_token = if params[:authenticity_token].presence
+                   params[:authenticity_token].presence
+                 elsif params[:private_token].presence
+                   params[:private_token].presence
+                 end
+    user = user_token && User.find_by_authentication_token(user_token.to_s)
+
+    if user
+      # Notice we are passing store false, so the user is not
+      # actually stored in the session and a token is needed
+      # for every request. If you want the token to work as a
+      # sign in token, you can simply remove store: false.
+      sign_in user, store: false
+    end
+  end
+
   def log_exception(exception)
     application_trace = ActionDispatch::ExceptionWrapper.new(env, exception).application_trace
     application_trace.map!{ |t| "  #{t}\n" }
@@ -48,7 +68,7 @@ class ApplicationController < ActionController::Base
       flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."
       new_user_session_path
     else
-      @return_to || root_path
+      stored_location_for(:redirect) || stored_location_for(resource) || root_path
     end
   end
 
@@ -181,15 +201,10 @@ class ApplicationController < ActionController::Base
 
   def ldap_security_check
     if current_user && current_user.requires_ldap_check?
-      gitlab_ldap_access do |access|
-        if access.allowed?(current_user)
-          current_user.last_credential_check_at = Time.now
-          current_user.save
-        else
-          sign_out current_user
-          flash[:alert] = "Access denied for your LDAP account."
-          redirect_to new_user_session_path
-        end
+      unless Gitlab::LDAP::Access.allowed?(current_user)
+        sign_out current_user
+        flash[:alert] = "Access denied for your LDAP account."
+        redirect_to new_user_session_path
       end
     end
   end
@@ -226,8 +241,7 @@ class ApplicationController < ActionController::Base
   end
 
   def configure_permitted_parameters
-    devise_parameter_sanitizer.for(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me) }
-    devise_parameter_sanitizer.for(:sign_up) { |u| u.permit(:username, :email, :name, :password, :password_confirmation) }
+    devise_parameter_sanitizer.sanitize(:sign_in) { |u| u.permit(:username, :email, :password, :login, :remember_me) }
   end
 
   def hexdigest(string)

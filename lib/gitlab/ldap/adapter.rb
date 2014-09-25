@@ -14,7 +14,15 @@ module Gitlab
       end
 
       def self.adapter_options
-        encryption = config['method'].to_s == 'ssl' ? :simple_tls : nil
+        encryption =
+          case config['method'].to_s
+          when 'ssl'
+            :simple_tls
+          when 'tls'
+            :start_tls
+          else
+            nil
+          end
 
         options = {
           host: config['host'],
@@ -78,7 +86,8 @@ module Gitlab
       end
 
       def dn_matches_filter?(dn, filter)
-        ldap_search(base: dn, filter: filter, scope: Net::LDAP::SearchScope_BaseObject, attributes: %w{dn}).any?
+        ldap_search(base: dn, filter: filter,
+          scope: Net::LDAP::SearchScope_BaseObject, attributes: %w{dn}).any?
       end
 
       def ldap_search(*args)

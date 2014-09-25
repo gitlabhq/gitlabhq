@@ -6,17 +6,17 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def index
     @group = @project.group
-    @users_projects = @project.users_projects.order('project_access DESC')
+    @project_members = @project.project_members.order('access_level DESC')
   end
 
   def new
-    @user_project_relation = project.users_projects.new
+    @user_project_relation = project.project_members.new
   end
 
   def create
     users = User.where(id: params[:user_ids].split(','))
 
-    @project.team << [users, params[:project_access]]
+    @project.team << [users, params[:access_level]]
 
     if params[:redirect_to]
       redirect_to params[:redirect_to]
@@ -26,8 +26,8 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def update
-    @user_project_relation = project.users_projects.find_by(user_id: member)
-    @user_project_relation.update_attributes(params[:team_member])
+    @user_project_relation = project.project_members.find_by(user_id: member)
+    @user_project_relation.update_attributes(member_params)
 
     unless @user_project_relation.valid?
       flash[:alert] = "User should have at least one role"
@@ -36,7 +36,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def destroy
-    @user_project_relation = project.users_projects.find_by(user_id: member)
+    @user_project_relation = project.project_members.find_by(user_id: member)
     @user_project_relation.destroy
 
     respond_to do |format|
@@ -46,7 +46,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def leave
-    project.users_projects.find_by(user_id: current_user).destroy
+    project.project_members.find_by(user_id: current_user).destroy
 
     respond_to do |format|
       format.html { redirect_to :back }
@@ -66,5 +66,9 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def member
     @member ||= User.find_by(username: params[:id])
+  end
+
+  def member_params
+    params.require(:project_member).permit(:user_id, :access_level)
   end
 end

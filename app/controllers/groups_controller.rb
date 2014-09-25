@@ -22,7 +22,7 @@ class GroupsController < ApplicationController
   end
 
   def create
-    @group = Group.new(params[:group])
+    @group = Group.new(group_params)
     @group.path = @group.name.dup.parameterize if @group.name
 
     if @group.save
@@ -65,15 +65,15 @@ class GroupsController < ApplicationController
 
   def members
     @project = group.projects.find(params[:project_id]) if params[:project_id]
-    @members = group.users_groups
+    @members = group.group_members
 
     if params[:search].present?
       users = group.users.search(params[:search]).to_a
       @members = @members.where(user_id: users)
     end
 
-    @members = @members.order('group_access DESC').page(params[:page]).per(50)
-    @users_group = UsersGroup.new
+    @members = @members.order('access_level DESC').page(params[:page]).per(50)
+    @users_group = GroupMember.new
   end
 
   def edit
@@ -84,7 +84,7 @@ class GroupsController < ApplicationController
   end
 
   def update
-    if @group.update_attributes(params[:group])
+    if @group.update_attributes(group_params)
       redirect_to edit_group_path(@group), notice: 'Group was successfully updated.'
     else
       render action: "edit"
@@ -158,5 +158,9 @@ class GroupsController < ApplicationController
     end
     params[:state] = 'opened' if params[:state].blank?
     params[:group_id] = @group.id
+  end
+
+  def group_params
+    params.require(:group).permit(:name, :description, :path, :avatar)
   end
 end

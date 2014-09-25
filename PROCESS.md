@@ -34,7 +34,7 @@ The most important thing is making sure valid issues receive feedback from the d
 
 ## Workflow labels
 
-Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to reevaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
+Workflow labels are purposely not very detailed since that would be hard to keep updated as you would need to re-evaluate them after every comment. We optionally use functional labels on demand when want to group related issues to get an overview (for example all issues related to RVM, to tackle them in one go) and to add details to the issue. 
 
 -   *Awaiting feedback*: Feedback pending from the reporter
 -   *Awaiting confirmation of fix*: The issue should already be solved in **master** (generally you can avoid this workflow item and just close the issue right away)
@@ -61,7 +61,7 @@ If an issue is complex and needs the attention of a specific person, assignment 
 
 ## Be kind
 
-Be kind to people trying to contribute. Be aware that people can be a non-native or a native English speaker, they might not understand thing or they might be very sensitive to how your word things. Use emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to merge requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
+Be kind to people trying to contribute. Be aware that people may be a non-native English speaker, they might not understand things or they might be very sensitive as to how you word things. Use Emoji to express your feelings (heart, star, smile, etc.). Some good tips about giving feedback to merge requests is in the [Thoughtbot code review guide](https://github.com/thoughtbot/guides/tree/master/code-review).
 
 ## Copy & paste responses
 
@@ -87,7 +87,7 @@ Please use ``` to format console output, logs, and code as it's very hard to rea
 
 ### Issue fixed in newer version
 
-Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please \[upgrade\]\(https://github.com/gitlabhq/gitlabhq/tree/master/doc/update). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
+Thanks for the issue report. This issue has already been fixed in newer versions of GitLab. Due to the size of this project and our limited resources we are only able to support the latest stable release as outlined in our \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker). In order to get this bug fix and enjoy many new features please \[upgrade\]\(https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/update). If you still experience issues at that time please open a new issue following our issue tracker guidelines found in the \[contributing guidelines\]\(https://gitlab.com/gitlab-org/gitlab-ce/blob/master/CONTRIBUTING.md#issue-tracker-guidelines).
 
 ### Improperly formatted merge request
 

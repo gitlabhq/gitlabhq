@@ -7,7 +7,17 @@ Get all issues created by authenticated user. This function takes pagination par
 
 ```
 GET /issues
+GET /issues?state=opened
+GET /issues?state=closed
+GET /issues?labels=foo
+GET /issues?labels=foo,bar
+GET /issues?labels=foo,bar&state=opened
 ```
+
+Parameters:
+
+- `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
+- `labels` (optional) - Comma-separated list of label names
 
 ```json
 [
@@ -80,11 +90,18 @@ to return the list of project issues.
 
 ```
 GET /projects/:id/issues
+GET /projects/:id/issues?state=opened
+GET /projects/:id/issues?state=closed
+GET /projects/:id/issues?labels=foo
+GET /projects/:id/issues?labels=foo,bar
+GET /projects/:id/issues?labels=foo,bar&state=opened
 ```
 
 Parameters:
 
 - `id` (required) - The ID of a project
+- `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
+- `labels` (optional) - Comma-separated list of label names
 
 ## Single issue
 
@@ -157,6 +174,9 @@ Parameters:
 - `milestone_id` (optional) - The ID of a milestone to assign issue
 - `labels` (optional) - Comma-separated label names for an issue
 
+If the operation is successful, 200 and the newly created issue is returned.
+If an error occurs, an error number and a message explaining the reason is returned.
+
 ## Edit issue
 
 Updates an existing project issue. This function is also used to mark an issue as closed.
@@ -175,6 +195,9 @@ Parameters:
 - `milestone_id` (optional) - The ID of a milestone to assign issue
 - `labels` (optional) - Comma-separated label names for an issue
 - `state_event` (optional) - The state event of an issue ('close' to close issue and 'reopen' to reopen it)
+
+If the operation is successful, 200 and the updated issue is returned.
+If an error occurs, an error number and a message explaining the reason is returned.
 
 ## Delete existing issue (**Deprecated**)
 

@@ -42,9 +42,9 @@ Please send a merge request with a tested solution or a merge request with a fai
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
 1. **Output of checks**
-    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production`); we will only investigate if the tests are passing
+    * Results of GitLab [Application Check](doc/install/installation.md#check-application-status) (`sudo -u git -H bundle exec rake gitlab:check RAILS_ENV=production SANITIZE=true`); we will only investigate if the tests are passing
     * Version of GitLab you are running; we will only investigate issues in the latest stable and development releases as per the [maintenance policy](MAINTENANCE.md)
-    * Add the last commit sha1 of the GitLab version you used to replicate the issue (obtainable from the help page)
+    * Add the last commit SHA-1 of the GitLab version you used to replicate the issue (obtainable from the help page)
     * Describe your setup (use relevant parts from `sudo -u git -H bundle exec rake gitlab:env:info RAILS_ENV=production`)
 1. **Possible fixes**: If you can, link to the line of code that might be responsible for the problem
 
@@ -62,20 +62,21 @@ If you can, please submit a merge request with the fix or improvements including
 1. Create a feature branch
 1. Write [tests](README.md#run-the-tests) and code
 1. Add your changes to the [CHANGELOG](CHANGELOG)
+1. If you are changing the README, some documentation or other things which have no effect on the tests, add `[ci skip]` somewhere in the commit message
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
 1. Submit a merge request (MR) to the master branch
-1. The MR title should describes the change you want to make
+1. The MR title should describe the change you want to make
 1. The MR description should give a motive for your change and the method you used to achieve it
 1. If the MR changes the UI it should include before and after screenshots
 1. If the MR changes CSS classes please include the list of affected pages `grep css-class ./app -R`
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feature requests](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
-1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submittion
+1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submission
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
 
 The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab B.V. team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version. This means there is less time to fix the issues created by merging large new features.
 
-Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? Can you do part of the refactor? The increased reviewability of small MR's that leads to higher code quality is more important to us than having a mimimal commit log. The smaller a MR is the more likely it is it will be merged (quickly), after that you can send more MR's to enhance it.
+Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? Can you do part of the refactor? The increased reviewability of small MR's that leads to higher code quality is more important to us than having a minimal commit log. The smaller a MR is the more likely it is it will be merged (quickly), after that you can send more MR's to enhance it.
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the following contribution acceptance criteria.
 
@@ -85,20 +86,20 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. Are there points in the code the reviewer needs to double check?
 1. Why was this MR needed?
 1. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
-1. Screenshots (If appropiate)
+1. Screenshots (If appropriate)
 
 ## Contribution acceptance criteria
 
 1. The change is as small as possible (see the above paragraph for details)
 1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
-1. Can merge without problems (if not please use: `git rebase master`)
+1. Initially contains a single commit (please use `git rebase -i` to squash commits)
+1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality
 1. Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
 1. Keeps the GitLab code base clean and well structured
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options since they complicate future changes
-1. Initially contains a single commit (please use `git rebase -i` to squash commits)
-1. Changes after submitting the merge request should be in separate commits (no squashing)
+1. Changes after submitting the merge request should be in separate commits (no squashing). You will be asked to squash when the review is over, before merging.
 1. It conforms to the following style guides
 
 ## Style guides
@@ -114,4 +115,4 @@ For examples of feedback on merge requests please look at already [closed merge 
 1.  [Shell commands](doc/development/shell_commands.md) created by GitLab contributors to enhance security
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 
-This is also the style used by linting tools such as [Rubocop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
+This is also the style used by linting tools such as [RuboCop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).

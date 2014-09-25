@@ -52,7 +52,7 @@ describe User do
   describe "Associations" do
     it { should have_one(:namespace) }
     it { should have_many(:snippets).class_name('Snippet').dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:project_members).dependent(:destroy) }
     it { should have_many(:groups) }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }
@@ -65,8 +65,6 @@ describe User do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:projects_limit) }
-    it { should allow_mass_assignment_of(:projects_limit).as(:admin) }
   end
 
   describe 'validations' do
@@ -184,7 +182,7 @@ describe User do
       @group = create :group
       @group.add_owner(@user)
 
-      @group.add_user(@user2, UsersGroup::OWNER)
+      @group.add_user(@user2, GroupMember::OWNER)
     end
 
     it { @user2.several_namespaces?.should be_true }
@@ -243,59 +241,23 @@ describe User do
       it { user.first_name.should == 'John' }
     end
 
-    describe 'without defaults' do
+    describe 'with defaults' do
       let(:user) { User.new }
 
-      it "should not apply defaults to user" do
-        user.projects_limit.should == 10
-        user.can_create_group.should be_true
+      it "should apply defaults to user" do
+        user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
+        user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
+        user.theme_id.should == Gitlab.config.gitlab.default_theme
+      end
+    end
+
+    describe 'with default overrides' do
+      let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: Gitlab::Theme::BASIC) }
+
+      it "should apply defaults to user" do
+        user.projects_limit.should == 123
+        user.can_create_group.should be_false
         user.theme_id.should == Gitlab::Theme::BASIC
-      end
-    end
-    context 'as admin' do
-      describe 'with defaults' do
-        let(:user) { User.build_user({}, as: :admin) }
-
-        it "should apply defaults to user" do
-          user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-          user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-          user.theme_id.should == Gitlab.config.gitlab.default_theme
-        end
-      end
-
-      describe 'with default overrides' do
-        let(:user) { User.build_user({projects_limit: 123, can_create_group: true, can_create_team: true, theme_id: Gitlab::Theme::BASIC}, as: :admin) }
-
-        it "should apply defaults to user" do
-          Gitlab.config.gitlab.default_projects_limit.should_not == 123
-          Gitlab.config.gitlab.default_can_create_group.should_not be_true
-          Gitlab.config.gitlab.default_theme.should_not == Gitlab::Theme::BASIC
-          user.projects_limit.should == 123
-          user.can_create_group.should be_true
-          user.theme_id.should == Gitlab::Theme::BASIC
-        end
-      end
-    end
-
-    context 'as user' do
-      describe 'with defaults' do
-        let(:user) { User.build_user }
-
-        it "should apply defaults to user" do
-          user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-          user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-          user.theme_id.should == Gitlab.config.gitlab.default_theme
-        end
-      end
-
-      describe 'with default overrides' do
-        let(:user) { User.build_user(projects_limit: 123, can_create_group: true, theme_id: Gitlab::Theme::BASIC) }
-
-        it "should apply defaults to user" do
-          user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-          user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-          user.theme_id.should == Gitlab.config.gitlab.default_theme
-        end
       end
     end
   end
@@ -350,6 +312,40 @@ describe User do
     end
   end
 
+  describe :requires_ldap_check? do
+    let(:user) { User.new }
+
+    it 'is false when LDAP is disabled' do
+      # Create a condition which would otherwise cause 'true' to be returned
+      user.stub(ldap_user?: true)
+      user.last_credential_check_at = nil
+      expect(user.requires_ldap_check?).to be_false
+    end
+
+    context 'when LDAP is enabled' do
+      before { Gitlab.config.ldap.stub(enabled: true) }
+
+      it 'is false for non-LDAP users' do
+        user.stub(ldap_user?: false)
+        expect(user.requires_ldap_check?).to be_false
+      end
+
+      context 'and when the user is an LDAP user' do
+        before { user.stub(ldap_user?: true) }
+
+        it 'is true when the user has never had an LDAP check before' do
+          user.last_credential_check_at = nil
+          expect(user.requires_ldap_check?).to be_true
+        end
+
+        it 'is true when the last LDAP check happened over 1 hour ago' do
+          user.last_credential_check_at = 2.hours.ago
+          expect(user.requires_ldap_check?).to be_true
+        end
+      end
+    end
+  end
+
   describe '#full_website_url' do
     let(:user) { create(:user) }
 
@@ -391,6 +387,46 @@ describe User do
       user.website_url = 'https://test.com'
 
       expect(user.short_website_url).to eq 'test.com'
+    end
+  end
+
+  describe "#starred?" do
+    it "determines if user starred a project" do
+      user = create :user
+      project1 = create :project, :public
+      project2 = create :project, :public
+
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_false
+
+      star1 = UsersStarProject.create!(project: project1, user: user)
+      expect(user.starred?(project1)).to be_true
+      expect(user.starred?(project2)).to be_false
+
+      star2 = UsersStarProject.create!(project: project2, user: user)
+      expect(user.starred?(project1)).to be_true
+      expect(user.starred?(project2)).to be_true
+
+      star1.destroy
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_true
+
+      star2.destroy
+      expect(user.starred?(project1)).to be_false
+      expect(user.starred?(project2)).to be_false
+    end
+  end
+
+  describe "#toggle_star" do
+    it "toggles stars" do
+      user = create :user
+      project = create :project, :public
+
+      expect(user.starred?(project)).to be_false
+      user.toggle_star(project)
+      expect(user.starred?(project)).to be_true
+      user.toggle_star(project)
+      expect(user.starred?(project)).to be_false
     end
   end
 end

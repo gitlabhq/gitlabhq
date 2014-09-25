@@ -2,32 +2,39 @@ module SharedProject
   include Spinach::DSL
 
   # Create a project without caring about what it's called
-  And "I own a project" do
+  step "I own a project" do
     @project = create(:project, namespace: @user.namespace)
     @project.team << [@user, :master]
   end
 
   # Create a specific project called "Shop"
-  And 'I own project "Shop"' do
+  step 'I own project "Shop"' do
     @project = Project.find_by(name: "Shop")
-    @project ||= create(:project, name: "Shop", namespace: @user.namespace)
+    @project ||= create(:project, name: "Shop", namespace: @user.namespace, snippets_enabled: true)
     @project.team << [@user, :master]
   end
 
   # Create another specific project called "Forum"
-  And 'I own project "Forum"' do
+  step 'I own project "Forum"' do
     @project = Project.find_by(name: "Forum")
     @project ||= create(:project, name: "Forum", namespace: @user.namespace, path: 'forum_project')
     @project.team << [@user, :master]
   end
 
-  And 'project "Shop" has push event' do
+  # Create an empty project without caring about the name
+  step 'I own an empty project' do
+    @project = create(:empty_project,
+                      name: 'Empty Project', namespace: @user.namespace)
+    @project.team << [@user, :master]
+  end
+
+  step 'project "Shop" has push event' do
     @project = Project.find_by(name: "Shop")
 
     data = {
       before: "0000000000000000000000000000000000000000",
-      after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
-      ref: "refs/heads/new_design",
+      after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
+      ref: "refs/heads/fix",
       user_id: @user.id,
       user_name: @user.name,
       repository: {
@@ -47,12 +54,12 @@ module SharedProject
     )
   end
 
-  Then 'I should see project "Shop" activity feed' do
+  step 'I should see project "Shop" activity feed' do
     project = Project.find_by(name: "Shop")
-    page.should have_content "#{@user.name} pushed new branch new_design at #{project.name_with_namespace}"
+    page.should have_content "#{@user.name} pushed new branch fix at #{project.name_with_namespace}"
   end
 
-  Then 'I should see project settings' do
+  step 'I should see project settings' do
     current_path.should == edit_project_path(@project)
     page.should have_content("Project name")
     page.should have_content("Features:")
@@ -121,5 +128,21 @@ module SharedProject
     project = Project.find_by(name: "Community")
     project ||= create :empty_project, :public, name: 'Community', namespace: user.namespace
     project.team << [user, :master]
+  end
+
+  step 'public empty project "Empty Public Project"' do
+    create :empty_project, :public, name: "Empty Public Project"
+  end
+
+  step 'project "Community" has comments' do
+    project = Project.find_by(name: "Community")
+    2.times { create(:note_on_issue, project: project) }
+  end
+
+  step 'project "Shop" has labels: "bug", "feature", "enhancement"' do
+    project = Project.find_by(name: "Shop")
+    create(:label, project: project, title: 'bug')
+    create(:label, project: project, title: 'feature')
+    create(:label, project: project, title: 'enhancement')
   end
 end

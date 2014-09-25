@@ -5,7 +5,5 @@
 
   .merge-request-show-labels.pull-right
     - @merge_request.labels.each do |label|
-      %span{class: "label #{label_css_class(label.name)}"}
-        %i.icon-tag
-        = label.name
-      &nbsp;
+      = link_to project_merge_requests_path(@project, label_name: label.name) do
+        = render_colored_label(label)

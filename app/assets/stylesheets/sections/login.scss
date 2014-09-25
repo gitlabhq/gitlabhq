@@ -6,20 +6,41 @@
   }
 
   .login-box{
-    max-width: 304px;
-    position: relative;
-    @include border-radius(5px);
-    margin: auto;
-    background: white;
+    padding: 0 15px;
+
+    .login-heading h3 {
+      font-weight: 300;
+      line-height: 2;
+    }
+
+    .login-footer {
+      margin-top: 10px;
+    }
+
+    .btn {
+      padding: 12px !important;
+      @extend .btn-block;
+    }
   }
 
-  .login-logo{
+  .brand-image {
+    img {
+      max-width: 100%;
+      margin-bottom:  20px;
+    }
+
+    &.default-brand-image {
+      margin: 0 80px;
+    }
+  }
+
+  .login-logo {
     margin: 10px 0 30px 0;
     display: block;
   }
 
   .form-control {
-    background-color: #f1f1f1;
+    background-color: #F5F5F5;
     font-size: 16px;
     padding: 14px 10px;
     width: 100%;
@@ -41,6 +62,10 @@
       margin-bottom:0px;
       @include border-radius(0);
     }
+
+    &:active, &:focus {
+      background-color: #FFF;
+    }
   }
 
   .login-box a.forgot {
@@ -53,5 +78,9 @@
       font-size: 14px;
       color: #a00;
     }
+  }
+
+  .brand-holder {
+    border-right: 1px solid #EEE;
   }
 }

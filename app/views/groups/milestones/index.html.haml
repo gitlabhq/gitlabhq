@@ -1,0 +1,50 @@
+%h3.page-title
+  Milestones
+  %span.pull-right #{@group_milestones.count} milestones
+
+%p.light
+  Only milestones from
+  %strong #{@group.name}
+  group are listed here.
+
+%hr
+
+.row
+  .fixed.sidebar-expand-button.hidden-lg.hidden-md
+    %i.icon-list.icon-2x
+  .col-md-3.responsive-side
+    = render 'groups/filter', entity: 'milestone'
+  .col-md-9
+    .panel.panel-default
+      %ul.well-list
+        - if @group_milestones.blank?
+          %li
+            .nothing-here-block No milestones to show
+        - else
+          - @group_milestones.each do |milestone|
+            %li{class: "milestone milestone-#{milestone.closed? ? 'closed' : 'open'}", id: dom_id(milestone.milestones.first) }
+              .pull-right
+                - if can?(current_user, :manage_group, @group)
+                  - if milestone.closed?
+                    = link_to 'Reopen Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :activate }), method: :put, class: "btn btn-small btn-grouped btn-reopen"
+                  - else
+                    = link_to 'Close Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-close"
+              %h4
+                = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title, title: milestone.title)
+              %div
+                %div
+                  = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do
+                    = pluralize milestone.issue_count, 'Issue'
+                  &nbsp;
+                  = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do
+                    = pluralize milestone.merge_requests_count, 'Merge Request'
+                  &nbsp;
+                  %span.light #{milestone.percent_complete}% complete
+                .progress.progress-info
+                  .progress-bar{style: "width: #{milestone.percent_complete}%;"}
+                %div
+                  %br
+                  - milestone.projects.each do |project|
+                    %span.label.label-default
+                      = project.name
+    = paginate @group_milestones, theme: "gitlab"

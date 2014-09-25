@@ -1,2 +1,3 @@
-%div{:xmlns => "http://www.w3.org/1999/xhtml"}
-  %p= simple_format issue.description
+%div{xmlns: "http://www.w3.org/1999/xhtml"}
+  - if issue.description.present?
+    = markdown issue.description

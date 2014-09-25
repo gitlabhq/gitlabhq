@@ -3,8 +3,8 @@ class Profiles::NotificationsController < ApplicationController
 
   def show
     @notification = current_user.notification
-    @users_projects = current_user.users_projects
-    @users_groups = current_user.users_groups
+    @project_members = current_user.project_members
+    @group_members = current_user.group_members
   end
 
   def update
@@ -14,13 +14,13 @@ class Profiles::NotificationsController < ApplicationController
                current_user.notification_level = params[:notification_level]
                current_user.save
              elsif type == 'group'
-               users_group = current_user.users_groups.find(params[:notification_id])
+               users_group = current_user.group_members.find(params[:notification_id])
                users_group.notification_level = params[:notification_level]
                users_group.save
              else
-               users_project = current_user.users_projects.find(params[:notification_id])
-               users_project.notification_level = params[:notification_level]
-               users_project.save
+               project_member = current_user.project_members.find(params[:notification_id])
+               project_member.notification_level = params[:notification_level]
+               project_member.save
              end
   end
 end

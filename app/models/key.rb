@@ -19,8 +19,6 @@ class Key < ActiveRecord::Base
 
   belongs_to :user
 
-  attr_accessible :key, :title
-
   before_validation :strip_white_space, :generate_fingerpint
 
   validates :title, presence: true, length: { within: 0..255 }
@@ -31,7 +29,9 @@ class Key < ActiveRecord::Base
 
   after_create :add_to_shell
   after_create :notify_user
+  after_create :post_create_hook
   after_destroy :remove_from_shell
+  after_destroy :post_destroy_hook
 
   def strip_white_space
     self.key = key.strip unless key.blank?
@@ -58,12 +58,20 @@ class Key < ActiveRecord::Base
     NotificationService.new.new_key(self)
   end
 
+  def post_create_hook
+    SystemHooksService.new.execute_hooks_for(self, :create)
+  end
+
   def remove_from_shell
     GitlabShellWorker.perform_async(
       :remove_key,
       shell_id,
       key,
     )
+  end
+
+  def post_destroy_hook
+    SystemHooksService.new.execute_hooks_for(self, :destroy)
   end
 
   private

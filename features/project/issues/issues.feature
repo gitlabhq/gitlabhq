@@ -30,6 +30,13 @@ Feature: Project Issues
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
 
+  Scenario: I submit new unassigned issue with labels
+    Given project "Shop" has labels: "bug", "feature", "enhancement"
+    And I click link "New Issue"
+    And I submit new issue "500 error on profile" with label 'bug'
+    Then I should see issue "500 error on profile"
+    And I should see label 'bug' with issue
+
   @javascript
   Scenario: I comment issue
     Given I visit issue page "Release 0.4"
@@ -55,6 +62,36 @@ Feature: Project Issues
     And I fill in issue search with ".3"
     Then I should see "Release 0.3" in issues
     And I should not see "Release 0.4" in issues
+
+  @javascript
+  Scenario: Search issues when search string exactly matches issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And I fill in issue search with 'Description for issue1'
+    Then I should see 'Bugfix1' in issues
+    And I should not see "Release 0.4" in issues
+    And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
+
+  @javascript
+  Scenario: Search issues when search string partially matches issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And project 'Shop' has issue 'Feature1' with description: 'Feature submitted for issue1'
+    And I fill in issue search with 'issue1'
+    Then I should see 'Feature1' in issues
+    Then I should see 'Bugfix1' in issues
+    And I should not see "Release 0.4" in issues
+    And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
+
+  @javascript
+  Scenario: Search issues when search string matches no issue description
+    Given project 'Shop' has issue 'Bugfix1' with description: 'Description for issue1'
+    And I fill in issue search with 'Rock and roll'
+    Then I should not see 'Bugfix1' in issues
+    And I should not see "Release 0.4" in issues
+    And I should not see "Release 0.3" in issues
+    And I should not see "Tweet control" in issues
+
 
   # Markdown
 
@@ -82,3 +119,10 @@ Feature: Project Issues
     Given I click link "New Issue"
     And I submit new issue "500 error on profile"
     Then I should see issue "500 error on profile"
+
+  Scenario: Clickable labels
+    Given issue 'Release 0.4' has label 'bug'
+    And I visit project "Shop" issues page
+    When I click label 'bug'
+    And I should see "Release 0.4" in issues
+    And I should not see "Tweet control" in issues

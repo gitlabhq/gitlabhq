@@ -8,15 +8,8 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
-  let(:issue_with_labels) { create(:issue, author: user, assignee: user, project: project, :label_list => "label1, label2") }
-  let(:merge_request_with_labels) do
-    create(:merge_request, :simple, author: user, assignee: user,
-           source_project: project, target_project: project, title: 'Test',
-           label_list: 'label3, label4')
-  end
-
+  let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
 
   describe "GET /projects" do
     before { project }
@@ -121,6 +114,7 @@ describe API::API, api: true  do
 
     it "should assign attributes to project" do
       project = attributes_for(:project, {
+        path: 'camelCasePath',
         description: Faker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
@@ -130,7 +124,6 @@ describe API::API, api: true  do
       post api("/projects", user), project
 
       project.each_pair do |k,v|
-        next if k == :path
         json_response[k.to_s].should == v
       end
     end
@@ -195,9 +188,24 @@ describe API::API, api: true  do
       response.status.should == 201
     end
 
-    it "should respond with 404 on failure" do
+    it 'should respond with 400 on failure' do
       post api("/projects/user/#{user.id}", admin)
-      response.status.should == 404
+      response.status.should == 400
+      json_response['message']['creator'].should == ['can\'t be blank']
+      json_response['message']['namespace'].should == ['can\'t be blank']
+      json_response['message']['name'].should == [
+        'can\'t be blank',
+        'is too short (minimum is 0 characters)',
+        'can contain only letters, digits, \'_\', \'-\' and \'.\' and '\
+        'space. It must start with letter, digit or \'_\'.'
+      ]
+      json_response['message']['path'].should == [
+        'can\'t be blank',
+        'is too short (minimum is 0 characters)',
+        'can contain only letters, digits, \'_\', \'-\' and \'.\'. It must '\
+        'start with letter, digit or \'_\', optionally preceeded by \'.\'. '\
+        'It must not end in \'.git\'.'
+      ]
     end
 
     it "should assign attributes to project" do
@@ -261,7 +269,7 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id" do
     before { project }
-    before { users_project }
+    before { project_member }
 
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
@@ -290,7 +298,10 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'personal project' do
-        before { get api("/projects/#{project.id}", user) }
+        before do
+          project.team << [user, :master]
+          get api("/projects/#{project.id}", user)
+        end
 
         it { response.status.should == 200 }
         it { json_response['permissions']["project_access"]["access_level"].should == Gitlab::Access::MASTER }
@@ -312,7 +323,7 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/events" do
-    before { users_project }
+    before { project_member }
 
     it "should return a project events" do
       get api("/projects/#{project.id}/events", user)
@@ -414,9 +425,9 @@ describe API::API, api: true  do
       response.status.should == 200
     end
 
-    it "should return success when deleting unknown snippet id" do
+    it 'should return 404 when deleting unknown snippet id' do
       delete api("/projects/#{project.id}/snippets/1234", user)
-      response.status.should == 200
+      response.status.should == 404
     end
   end
 
@@ -463,7 +474,21 @@ describe API::API, api: true  do
     describe "POST /projects/:id/keys" do
       it "should not create an invalid ssh key" do
         post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
-        response.status.should == 404
+        response.status.should == 400
+        json_response['message']['key'].should == [
+          'can\'t be blank',
+          'is too short (minimum is 0 characters)',
+          'is invalid'
+        ]
+      end
+
+      it 'should not create a key without title' do
+        post api("/projects/#{project.id}/keys", user), key: 'some key'
+        response.status.should == 400
+        json_response['message']['title'].should == [
+          'can\'t be blank',
+          'is too short (minimum is 0 characters)'
+        ]
       end
 
       it "should create new ssh key" do
@@ -631,48 +656,6 @@ describe API::API, api: true  do
       it "should not remove a non existing project" do
         delete api("/projects/1328", admin)
         response.status.should == 404
-      end
-    end
-  end
-
-  describe 'GET /projects/:id/labels' do
-    context 'with an issue' do
-      before { issue_with_labels }
-
-      it 'should return project labels' do
-        get api("/projects/#{project.id}/labels", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['name'].should == issue_with_labels.labels.first.name
-        json_response.last['name'].should == issue_with_labels.labels.last.name
-      end
-    end
-
-    context 'with a merge request' do
-      before { merge_request_with_labels }
-
-      it 'should return project labels' do
-        get api("/projects/#{project.id}/labels", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['name'].should == merge_request_with_labels.labels.first.name
-        json_response.last['name'].should == merge_request_with_labels.labels.last.name
-      end
-    end
-
-    context 'with an issue and a merge request' do
-      before do
-        issue_with_labels
-        merge_request_with_labels
-      end
-
-      it 'should return project labels from both' do
-        get api("/projects/#{project.id}/labels", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        all_labels = issue_with_labels.labels.map(&:name).to_a
-                       .concat(merge_request_with_labels.labels.map(&:name).to_a)
-        json_response.map { |e| e['name'] }.should =~ all_labels
       end
     end
   end

@@ -1,9 +1,14 @@
-%li
-  issue:
-  = link_to [issue.project, issue] do
-    %span ##{issue.iid}
-    %strong.term
-      = truncate issue.title, length: 50
-  %span.light (#{issue.project.name_with_namespace})
+.search-result-row
+  %h4
+    = link_to [issue.project, issue] do
+      %span.term.str-truncated= issue.title
+    .pull-right ##{issue.iid}
+  - if issue.description.present?
+    .description.term
+      = preserve do
+        = search_md_sanitize(markdown(issue.description))
+  %span.light
+    #{issue.project.name_with_namespace}
   - if issue.closed?
-    %span.label Closed
+    .pull-right
+      %span.label.label-danger Closed

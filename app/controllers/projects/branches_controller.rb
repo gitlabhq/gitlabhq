@@ -17,13 +17,19 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
-    @branch = CreateBranchService.new.execute(project, params[:branch_name], params[:ref], current_user)
-
-    redirect_to project_tree_path(@project, @branch.name)
+    result = CreateBranchService.new(project, current_user).
+        execute(params[:branch_name], params[:ref])
+    if result[:status] == :success
+      @branch = result[:branch]
+      redirect_to project_tree_path(@project, @branch.name)
+    else
+      @error = result[:message]
+      render action: 'new'
+    end
   end
 
   def destroy
-    DeleteBranchService.new.execute(project, params[:id], current_user)
+    DeleteBranchService.new(project, current_user).execute(params[:id])
     @branch_name = params[:id]
 
     respond_to do |format|

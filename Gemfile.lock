@@ -1,6 +1,7 @@
 GEM
   remote: https://rubygems.org/
   specs:
+    RedCloth (4.2.9)
     ace-rails-ap (2.0.1)
     actionmailer (4.1.1)
       actionpack (= 4.1.1)
@@ -40,7 +41,7 @@ GEM
     axiom-types (0.0.5)
       descendants_tracker (~> 0.0.1)
       ice_nine (~> 0.9)
-    bcrypt-ruby (3.1.2)
+    bcrypt (3.1.7)
     better_errors (1.0.1)
       coderay (>= 1.0.0)
       erubis (>= 2.6.6)
@@ -86,6 +87,7 @@ GEM
       thor
     crack (0.4.1)
       safe_yaml (~> 0.9.0)
+    creole (0.3.8)
     d3_rails (3.1.10)
       railties (>= 3.1.0)
     daemons (1.1.9)
@@ -94,16 +96,17 @@ GEM
     default_value_for (3.0.0)
       activerecord (>= 3.2.0, < 5.0)
     descendants_tracker (0.0.3)
-    devise (3.0.4)
-      bcrypt-ruby (~> 3.0)
+    devise (3.2.4)
+      bcrypt (~> 3.0)
       orm_adapter (~> 0.1)
       railties (>= 3.2.6, < 5)
+      thread_safe (~> 0.1)
       warden (~> 1.2.3)
-    devise-async (0.8.0)
-      devise (>= 2.2, < 3.2)
+    devise-async (0.9.0)
+      devise (~> 3.2)
     diff-lcs (1.2.5)
     diffy (3.0.3)
-    docile (1.1.1)
+    docile (1.1.5)
     dotenv (0.9.0)
     dropzonejs-rails (0.4.14)
       rails (> 3.1)
@@ -120,12 +123,13 @@ GEM
     eventmachine (1.0.3)
     excon (0.32.1)
     execjs (2.0.2)
+    expression_parser (0.9.0)
     factory_girl (4.3.0)
       activesupport (>= 3.0.0)
     factory_girl_rails (4.3.0)
       factory_girl (~> 4.3.0)
       railties (>= 3.0.0)
-    faraday (0.8.8)
+    faraday (0.8.9)
       multipart-post (~> 1.2.0)
     faraday_middleware (0.9.0)
       faraday (>= 0.7.4, < 0.9)
@@ -154,7 +158,7 @@ GEM
       dotenv (>= 0.7)
       thor (>= 0.13.6)
     formatador (0.2.4)
-    gemnasium-gitlab-service (0.2.1)
+    gemnasium-gitlab-service (0.2.2)
       rugged (~> 0.19)
     gherkin-ruby (0.3.1)
       racc
@@ -164,7 +168,7 @@ GEM
       multi_json
     gitlab-grack (2.0.0.pre)
       rack (~> 1.5.1)
-    gitlab-grit (2.6.9)
+    gitlab-grit (2.6.11)
       charlock_holmes (~> 0.6)
       diff-lcs (~> 1.1)
       mime-types (~> 1.15)
@@ -175,15 +179,15 @@ GEM
       mime-types (~> 1.19)
     gitlab_emoji (0.0.1.1)
       emoji (~> 1.0.1)
-    gitlab_git (6.0.0)
+    gitlab_git (6.3.0)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
       gitlab-grit (~> 2.6)
       gitlab-linguist (~> 3.0)
-      rugged (~> 0.19.0)
+      rugged (~> 0.21.0)
     gitlab_meta (7.0)
-    gitlab_omniauth-ldap (1.0.4)
-      net-ldap (~> 0.3.1)
+    gitlab_omniauth-ldap (1.1.0)
+      net-ldap (~> 0.7.0)
       omniauth (~> 1.0)
       pyu-ruby-sasl (~> 0.0.3.1)
       rubyntlm (~> 0.1.1)
@@ -230,7 +234,7 @@ GEM
       activesupport (>= 4.0.1)
       haml (>= 3.1, < 5.0)
       railties (>= 4.0.1)
-    hashie (2.0.5)
+    hashie (2.1.2)
     hike (1.2.3)
     hipchat (0.14.0)
       httparty
@@ -239,8 +243,8 @@ GEM
     httparty (0.13.0)
       json (~> 1.8)
       multi_xml (>= 0.5.2)
-    httpauth (0.2.0)
-    i18n (0.6.9)
+    httpauth (0.2.1)
+    i18n (0.6.11)
     ice_nine (0.10.0)
     jasmine (2.0.2)
       jasmine-core (~> 2.0.0)
@@ -260,7 +264,7 @@ GEM
     jquery-ui-rails (4.2.1)
       railties (>= 3.2.16)
     json (1.8.1)
-    jwt (0.1.8)
+    jwt (0.1.13)
       multi_json (>= 1.5)
     kaminari (0.15.1)
       actionpack (>= 3.0.0)
@@ -282,15 +286,17 @@ GEM
     method_source (0.8.2)
     mime-types (1.25.1)
     mini_portile (0.6.0)
-    minitest (5.3.4)
+    minitest (5.3.5)
+    mousetrap-rails (1.4.6)
     multi_json (1.10.1)
     multi_xml (0.5.5)
     multipart-post (1.2.0)
     mysql2 (0.3.16)
-    net-ldap (0.3.1)
+    net-ldap (0.7.0)
     net-scp (1.1.2)
       net-ssh (>= 2.6.5)
     net-ssh (2.8.0)
+    newrelic_rpm (3.9.4.245)
     nokogiri (1.6.2.1)
       mini_portile (= 0.6.0)
     nprogress-rails (0.1.2.3)
@@ -307,20 +313,22 @@ GEM
     omniauth-github (1.1.1)
       omniauth (~> 1.0)
       omniauth-oauth2 (~> 1.1)
-    omniauth-google-oauth2 (0.2.1)
-      omniauth (~> 1.0)
-      omniauth-oauth2
+    omniauth-google-oauth2 (0.2.5)
+      omniauth (> 1.0)
+      omniauth-oauth2 (~> 1.1)
     omniauth-oauth (1.0.1)
       oauth
       omniauth (~> 1.0)
     omniauth-oauth2 (1.1.1)
       oauth2 (~> 0.8.0)
       omniauth (~> 1.0)
+    omniauth-shibboleth (1.1.1)
+      omniauth (>= 1.0.0)
     omniauth-twitter (1.0.1)
       multi_json (~> 1.3)
       omniauth-oauth (~> 1.0)
-    org-ruby (0.9.6)
-      rubypants (>= 0.2.0)
+    org-ruby (0.9.8)
+      rubypants (~> 0.2)
     orm_adapter (0.5.0)
     pg (0.15.1)
     phantomjs (1.9.2.0)
@@ -330,9 +338,7 @@ GEM
       multi_json (~> 1.0)
       websocket-driver (>= 0.2.0)
     polyglot (0.3.4)
-    posix-spawn (0.3.8)
-    protected_attributes (1.0.5)
-      activemodel (>= 4.0.1, < 5.0)
+    posix-spawn (0.3.9)
     pry (0.9.12.4)
       coderay (~> 1.0)
       method_source (~> 0.8)
@@ -389,7 +395,7 @@ GEM
       ffi (>= 0.5.0)
     rdoc (3.12.2)
       json (~> 1.4)
-    redcarpet (2.2.2)
+    redcarpet (3.1.2)
     redis (3.0.6)
     redis-actionpack (4.0.0)
       actionpack (~> 4)
@@ -410,9 +416,11 @@ GEM
     redis-store (1.1.4)
       redis (>= 2.2)
     ref (1.0.5)
+    request_store (1.0.5)
     require_all (1.3.2)
     rest-client (1.6.7)
       mime-types (>= 1.16)
+    rinku (1.7.3)
     rouge (1.3.3)
     rspec (2.14.1)
       rspec-core (~> 2.14.0)
@@ -432,7 +440,7 @@ GEM
     ruby-progressbar (1.2.0)
     rubyntlm (0.1.1)
     rubypants (0.2.0)
-    rugged (0.19.0)
+    rugged (0.21.0)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
@@ -463,7 +471,7 @@ GEM
       redis (>= 3.0.4)
       redis-namespace (>= 1.3.1)
     simple_oauth (0.1.9)
-    simplecov (0.8.2)
+    simplecov (0.9.0)
       docile (~> 1.1.0)
       multi_json
       simplecov-html (~> 0.8.0)
@@ -485,7 +493,7 @@ GEM
       capybara (>= 2.0.0)
       railties (>= 3)
       spinach (>= 0.4)
-    spring (1.1.1)
+    spring (1.1.3)
     spring-commands-rspec (1.0.1)
       spring (>= 0.9.1)
     spring-commands-spinach (1.0.0)
@@ -536,7 +544,7 @@ GEM
       eventmachine (>= 0.12.8)
       http_parser.rb (~> 0.5.1)
       simple_oauth (~> 0.1.4)
-    tzinfo (1.2.1)
+    tzinfo (1.2.2)
       thread_safe (~> 0.1)
     uglifier (2.3.2)
       execjs (>= 0.3.0)
@@ -563,6 +571,10 @@ GEM
       addressable (>= 2.2.7)
       crack (>= 0.3.2)
     websocket-driver (0.3.3)
+    wikicloth (0.8.1)
+      builder
+      expression_parser
+      rinku
     xpath (2.0.0)
       nokogiri (~> 1.3)
 
@@ -570,10 +582,11 @@ PLATFORMS
   ruby
 
 DEPENDENCIES
+  RedCloth
   ace-rails-ap
   acts-as-taggable-on
   annotate (~> 2.6.0.beta2)
-  asciidoctor
+  asciidoctor (= 0.1.4)
   awesome_print
   better_errors
   binding_of_caller
@@ -583,11 +596,12 @@ DEPENDENCIES
   coffee-rails
   colored
   coveralls
+  creole (~> 0.3.6)
   d3_rails (~> 3.1.4)
   database_cleaner
   default_value_for (~> 3.0.0)
-  devise (= 3.0.4)
-  devise-async (= 0.8.0)
+  devise (= 3.2.4)
+  devise-async (= 0.9.0)
   diffy (~> 3.0.3)
   dropzonejs-rails
   email_spec
@@ -605,7 +619,7 @@ DEPENDENCIES
   gitlab_emoji (~> 0.0.1.1)
   gitlab_git (~> 6.0)
   gitlab_meta (= 7.0)
-  gitlab_omniauth-ldap (= 1.0.4)
+  gitlab_omniauth-ldap (= 1.1.0)
   gollum-lib (~> 3.0.0)
   gon (~> 5.0.0)
   grape (~> 0.6.1)
@@ -626,16 +640,18 @@ DEPENDENCIES
   launchy
   letter_opener
   minitest (~> 5.3.0)
+  mousetrap-rails
   mysql2
+  newrelic_rpm
   nprogress-rails
   omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
+  omniauth-shibboleth
   omniauth-twitter
   org-ruby
   pg
   poltergeist (~> 1.5.1)
-  protected_attributes
   pry
   quiet_assets (~> 1.0.1)
   rack-attack
@@ -647,8 +663,10 @@ DEPENDENCIES
   raphael-rails (~> 2.1.2)
   rb-fsevent
   rb-inotify
-  redcarpet (~> 2.2.2)
+  rdoc (~> 3.6)
+  redcarpet (~> 3.1.2)
   redis-rails
+  request_store
   rspec-rails
   sanitize (~> 2.0)
   sass-rails (~> 4.0.2)
@@ -665,7 +683,7 @@ DEPENDENCIES
   slack-notifier (~> 0.3.2)
   slim
   spinach-rails
-  spring (= 1.1.1)
+  spring (= 1.1.3)
   spring-commands-rspec (= 1.0.1)
   spring-commands-spinach (= 1.0.0)
   stamp
@@ -681,4 +699,6 @@ DEPENDENCIES
   unicorn (~> 4.6.3)
   unicorn-worker-killer
   version_sorter
+  virtus
   webmock
+  wikicloth (= 0.8.1)

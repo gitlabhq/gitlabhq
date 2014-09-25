@@ -64,12 +64,12 @@ describe NotificationService do
 
         before do
           note.project.namespace_id = group.id
-          note.project.group.add_user(@u_watcher, UsersGroup::MASTER)
+          note.project.group.add_user(@u_watcher, GroupMember::MASTER)
           note.project.save
-          user_project = note.project.users_projects.find_by_user_id(@u_watcher.id)
+          user_project = note.project.project_members.find_by_user_id(@u_watcher.id)
           user_project.notification_level = Notification::N_PARTICIPATING
           user_project.save
-          user_group = note.project.group.users_groups.find_by_user_id(@u_watcher.id)
+          user_group = note.project.group.group_members.find_by_user_id(@u_watcher.id)
           user_group.notification_level = Notification::N_GLOBAL
           user_group.save
         end
@@ -215,7 +215,7 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:reassigned_issue_email).with(user_id, issue.id, issue.assignee_id, @u_disabled.id)
+        Notify.should_receive(:reassigned_issue_email).with(user_id, issue.id, nil, @u_disabled.id)
       end
 
       def should_not_email(user_id)
@@ -240,6 +240,26 @@ describe NotificationService do
 
       def should_not_email(user_id)
         Notify.should_not_receive(:closed_issue_email).with(user_id, issue.id, @u_disabled.id)
+      end
+    end
+
+    describe :reopen_issue do
+      it 'should send email to issue assignee and issue author' do
+        should_email(issue.assignee_id)
+        should_email(issue.author_id)
+        should_email(@u_watcher.id)
+        should_not_email(@u_participating.id)
+        should_not_email(@u_disabled.id)
+
+        notification.reopen_issue(issue, @u_disabled)
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:issue_status_changed_email).with(user_id, issue.id, 'reopened', @u_disabled.id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:issue_status_changed_email).with(user_id, issue.id, 'reopened', @u_disabled.id)
       end
     end
   end
@@ -279,7 +299,7 @@ describe NotificationService do
       end
 
       def should_email(user_id)
-        Notify.should_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, merge_request.assignee_id, merge_request.author_id)
+        Notify.should_receive(:reassigned_merge_request_email).with(user_id, merge_request.id, nil, merge_request.author_id)
       end
 
       def should_not_email(user_id)
@@ -320,6 +340,24 @@ describe NotificationService do
 
       def should_not_email(user_id)
         Notify.should_not_receive(:merged_merge_request_email).with(user_id, merge_request.id, @u_disabled.id)
+      end
+    end
+
+    describe :reopen_merge_request do
+      it do
+        should_email(merge_request.assignee_id)
+        should_email(@u_watcher.id)
+        should_not_email(@u_participating.id)
+        should_not_email(@u_disabled.id)
+        notification.reopen_mr(merge_request, @u_disabled)
+      end
+
+      def should_email(user_id)
+        Notify.should_receive(:merge_request_status_email).with(user_id, merge_request.id, 'reopened', @u_disabled.id)
+      end
+
+      def should_not_email(user_id)
+        Notify.should_not_receive(:merge_request_status_email).with(user_id, merge_request.id, 'reopened', @u_disabled.id)
       end
     end
   end

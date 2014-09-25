@@ -5,16 +5,11 @@
 #  id          :integer          not null, primary key
 #  type        :string(255)
 #  title       :string(255)
-#  token       :string(255)
 #  project_id  :integer          not null
 #  created_at  :datetime
 #  updated_at  :datetime
 #  active      :boolean          default(FALSE), not null
-#  project_url :string(255)
-#  subdomain   :string(255)
-#  room        :string(255)
-#  recipients  :text
-#  api_key     :string(255)
+#  properties  :text
 #
 
 require 'spec_helper'
@@ -26,7 +21,6 @@ describe GitlabCiService do
   end
 
   describe "Mass assignment" do
-    it { should_not allow_mass_assignment_of(:project_id) }
   end
 
   describe 'commits methods' do

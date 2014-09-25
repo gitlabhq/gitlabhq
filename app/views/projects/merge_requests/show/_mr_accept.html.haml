@@ -15,34 +15,35 @@
       = form_for [:automerge, @project, @merge_request], remote: true, method: :post do |f|
         %h4
           You can accept this request automatically.
-        %div
-          If you still want to do it manually -
+        .accept-merge-holder.clearfix
+          .js-toggle-container
+            %p
+              You can
+              %strong= link_to "modify merge commit message", "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message"
+              before accepting merge request
+            .js-toggle-content.hide
+              .form-group
+                = label_tag :merge_commit_message, "Commit message", class: 'control-label'
+                .col-sm-10
+                  = render 'shared/commit_message_container', {textarea: text_area_tag(:merge_commit_message,
+                      @merge_request.merge_commit_message, class: "form-control js-gfm-input", rows: 14, required: true)}
+                  %p.hint
+                    The recommended maximum line length is 52 characters for the first line and 72 characters for all following lines.
+
+          .accept-group
+            .pull-left
+              = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
+            - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch) && !@merge_request.for_fork?
+              .remove_branch_holder.pull-left
+                = label_tag :should_remove_source_branch, class: "checkbox" do
+                  = check_box_tag :should_remove_source_branch
+                  Remove source-branch
+
+        %hr
+        .light
+          If you still want to merge this request manually - use
           %strong
-            = link_to "click here", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
-          for instructions.
-
-        .js-toggle-container
-          %p
-            If you want to modify merge commit message -
-            %strong
-              = link_to "click here", "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message"
-          .js-toggle-content.hide
-            .form-group
-              = label_tag :merge_commit_message, "Commit message", class: 'control-label'
-              .col-sm-10
-                = render 'shared/commit_message_container', {textarea: text_area_tag(:merge_commit_message,
-                    @merge_request.merge_commit_message, class: "form-control js-gfm-input", rows: 14, required: true)}
-                %p.hint
-                  The recommended maximum line length is 52 characters for the first line and 72 characters for all following lines.
-
-        .accept-group
-          .pull-left
-            = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
-          - if can_remove_branch?(@merge_request.source_project, @merge_request.source_branch)
-            .remove_branch_holder.pull-left
-              = label_tag :should_remove_source_branch, class: "checkbox" do
-                = check_box_tag :should_remove_source_branch
-                Remove source-branch
+            = link_to "command line", "#modal_merge_info", class: "how_to_merge_link vlink", title: "How To Merge", "data-toggle" => "modal"
 
 
   .automerge_widget.no_satellite.hide

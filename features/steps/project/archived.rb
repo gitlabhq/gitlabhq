@@ -1,4 +1,4 @@
-class ProjectArchived < Spinach::FeatureSteps
+class Spinach::Features::ProjectArchived < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -18,11 +18,11 @@ class ProjectArchived < Spinach::FeatureSteps
     visit project_path(project)
   end
 
-  Then 'I should not see "Archived"' do
+  step 'I should not see "Archived"' do
     page.should_not have_content "Archived"
   end
 
-  Then 'I should see "Archived"' do
+  step 'I should see "Archived"' do
     page.should have_content "Archived"
   end
 

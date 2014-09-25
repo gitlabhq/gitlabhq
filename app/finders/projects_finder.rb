@@ -19,10 +19,8 @@ class ProjectsFinder
         # Return ALL group projects
         group.projects
       else
-        projects_members = UsersProject.where(
-          project_id: group.projects,
-          user_id: current_user
-        )
+        projects_members = ProjectMember.in_projects(group.projects).
+          with_user(current_user)
 
         if projects_members.any?
           # User is a project member
@@ -34,7 +32,7 @@ class ProjectsFinder
           #
           group.projects.where(
             "projects.id IN (?) OR projects.visibility_level IN (?)",
-            projects_members.pluck(:project_id),
+            projects_members.pluck(:source_id),
             Project.public_and_internal_levels
           )
         else

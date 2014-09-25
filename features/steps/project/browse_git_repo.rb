@@ -1,19 +1,19 @@
-class ProjectBrowseGitRepo < Spinach::FeatureSteps
+class Spinach::Features::ProjectBrowseGitRepo < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
 
-  Given 'I click on "Gemfile.lock" file in repo' do
-    click_link "Gemfile.lock"
+  step 'I click on ".gitignore" file in repo' do
+    click_link ".gitignore"
   end
 
-  And 'I click blame button' do
+  step 'I click blame button' do
     click_link "blame"
   end
 
-  Then 'I should see git file blame' do
-    page.should have_content "DEPENDENCIES"
+  step 'I should see git file blame' do
+    page.should have_content "*.rb"
     page.should have_content "Dmitriy Zaporozhets"
-    page.should have_content "Moving to rails 3.2"
+    page.should have_content "Initial commit"
   end
 end

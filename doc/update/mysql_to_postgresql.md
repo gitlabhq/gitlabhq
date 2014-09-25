@@ -15,9 +15,14 @@ git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 cd mysql-postgresql-converter
 mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production
 python db_converter.py databasename.mysql databasename.psql
-psql -f databasename.psql -d gitlabhq_production
+
+# Import the database dump as the application database user
+sudo -u git psql -f databasename.psql -d gitlabhq_production
 
 # Rebuild indexes (see below)
+
+# Install gems for PostgreSQL (note: the line below states '--without ... mysql')
+sudo -u git -H bundle install --without development test mysql --deployment
 
 sudo service gitlab start
 ```
@@ -68,6 +73,7 @@ test -e /opt/gitlab/embedded/service/gitlab-rails/db/schema.rb.bundled || sudo /
 ```
 
 ## Converting a GitLab backup file from MySQL to Postgres
+**Note:** Please make sure to have Python 2.7.x (or higher) installed.
 
 GitLab backup files (<timestamp>_gitlab_backup.tar) contain a SQL dump. Using the lanyrd database converter we can replace a MySQL database dump inside the tar file with a Postgres database dump. This can be useful if you are moving to another server.
 
@@ -91,7 +97,7 @@ cd tmp/backups/postgresql
 sudo -u git -H mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production
 
 # Clone the database converter
-sudo -u git -H git clone https://github.com/lanyrd/mysql-postgresql-converter.git
+sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 
 # Convert gitlabhq_production.mysql
 sudo -u git -H mkdir db

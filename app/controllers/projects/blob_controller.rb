@@ -25,13 +25,32 @@ class Projects::BlobController < Projects::ApplicationController
     end
   end
 
+  def diff
+    @form = UnfoldForm.new(params)
+    @lines = @blob.data.lines[@form.since - 1..@form.to - 1]
+
+    if @form.bottom?
+      @match_line = ''
+    else
+      lines_length = @lines.length - 1
+      line = [@form.since, lines_length].join(',')
+      @match_line = "@@ -#{line}+#{line} @@"
+    end
+
+    render layout: false
+  end
+
   private
 
   def blob
     @blob ||= @repository.blob_at(@commit.id, @path)
 
-    return not_found! unless @blob
-
-    @blob
+    if @blob
+      @blob
+    elsif tree.entries.any?
+      redirect_to project_tree_path(@project, File.join(@ref, @path)) and return
+    else
+      return not_found!
+    end
   end
 end

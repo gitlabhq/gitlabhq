@@ -6,12 +6,18 @@
           %li{class: ("active" if params[:scope] == 'assigned-to-me')}
             = link_to filter_path(entity, scope: 'assigned-to-me') do
               Assigned to me
+              %span.pull-right
+                = assigned_entities_count(current_user, entity, @group)
           %li{class: ("active" if params[:scope] == 'authored')}
             = link_to filter_path(entity, scope: 'authored') do
               Created by me
+              %span.pull-right
+                = authored_entities_count(current_user, entity, @group)
           %li{class: ("active" if params[:scope] == 'all')}
             = link_to filter_path(entity, scope: 'all') do
               Everyone's
+              %span.pull-right
+                = authorized_entities_count(current_user, entity, @group)
 
     %fieldset.status-filter
       %legend State
