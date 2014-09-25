@@ -5,6 +5,7 @@
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "Search"
     = render "layouts/flash"
+    = render "layouts/outdated_browser" unless browser.modern?
 
     .container.navless-container
       .content

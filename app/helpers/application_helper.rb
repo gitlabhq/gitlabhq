@@ -265,4 +265,12 @@ module ApplicationHelper
 
     super
   end
+
+  def supported_browser?
+    browser.safari? ||
+      browser.opera? ||
+      browser.firefox? ||
+      browser.chrome? ||
+      browser.ie?
+  end
 end

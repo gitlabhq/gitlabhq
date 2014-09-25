@@ -29,6 +29,9 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
 
+# Browser detection
+gem "browser"
+
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
 gem "gitlab_git", '7.0.0.rc1'

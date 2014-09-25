@@ -4,6 +4,7 @@
   %body{class: "#{app_theme} application"}
     = render "layouts/head_panel", title: "" if current_user
     = render "layouts/flash"
+    = render "layouts/outdated_browser" unless browser.modern?
     .container.navless-container
       .error-page
         = yield

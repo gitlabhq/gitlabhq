@@ -3,6 +3,7 @@
   = render "layouts/head"
   %body.ui_basic.login-page
     = render "layouts/flash"
+    = render "layouts/outdated_browser" unless browser.modern?
     .container
       .content
         .login-title

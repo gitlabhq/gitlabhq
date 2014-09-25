@@ -1,0 +1,12 @@
+.browser-alert
+  .alert-container
+    .flash-alert
+      Gitlab may not work properly, because you are using
+      - if supported_browser?
+        outdated version of browser. Please, update your browser.
+      - else
+        unsupported browser. Please, use browser from supported browsers list.
+      %br
+      The list of supported browsers:
+      %a{ href: "https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/requirements.md#supported-webbrowsers"}
+        supported webbrowsers
