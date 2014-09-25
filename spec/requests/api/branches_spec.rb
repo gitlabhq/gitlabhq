@@ -17,7 +17,7 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/repository/branches", user)
       response.status.should == 200
       json_response.should be_an Array
-      json_response.first['name'].should == project.repo.heads.sort_by(&:name).first.name
+      json_response.first['name'].should == project.repository.branch_names.first
     end
   end
 

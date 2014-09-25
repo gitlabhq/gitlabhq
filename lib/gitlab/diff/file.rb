@@ -24,7 +24,7 @@ module Gitlab
       end
 
       def raw_diff
-        diff.diff
+        diff.diff.to_s
       end
 
       def next_line(index)

@@ -5,7 +5,7 @@ class Projects::RepositoriesController < Projects::ApplicationController
   before_filter :require_non_empty_project
 
   def stats
-    @stats = Gitlab::Git::Stats.new(@repository.raw, @repository.root_ref)
+    @stats = Gitlab::Git::Stats.new(@repository.raw_repository, @repository.root_ref)
     @graph = @stats.graph
   end
 

@@ -4,7 +4,11 @@ module Gitlab
 
     def initialize(project_id, query, repository_ref = nil)
       @project = Project.find(project_id)
-      @repository_ref = repository_ref
+      @repository_ref = if repository_ref.present?
+                          repository_ref
+                        else
+                          nil
+                        end
       @query = Shellwords.shellescape(query) if query.present?
     end
 
@@ -41,7 +45,7 @@ module Gitlab
     private
 
     def blobs
-      if project.empty_repo?
+      if project.empty_repo? || query.blank?
         []
       else
         project.repository.search_files(query, repository_ref)
@@ -49,11 +53,11 @@ module Gitlab
     end
 
     def wiki_blobs
-      if project.wiki_enabled?
-        wiki_repo = Repository.new(ProjectWiki.new(project).path_with_namespace)
+      if project.wiki_enabled? && query.present?
+        project_wiki = ProjectWiki.new(project)
 
-        if wiki_repo.exists?
-          wiki_repo.search_files(query)
+        unless project_wiki.empty?
+          project_wiki.search_files(query)
         else
           []
         end
