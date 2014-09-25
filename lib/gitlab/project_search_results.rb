@@ -45,7 +45,7 @@ module Gitlab
     private
 
     def blobs
-      if project.empty_repo?
+      if project.empty_repo? || query.blank?
         []
       else
         project.repository.search_files(query, repository_ref)
@@ -53,7 +53,7 @@ module Gitlab
     end
 
     def wiki_blobs
-      if project.wiki_enabled?
+      if project.wiki_enabled? && query.present?
         project_wiki = ProjectWiki.new(project)
 
         unless project_wiki.empty?
