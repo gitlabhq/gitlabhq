@@ -34,21 +34,18 @@ describe API::API, api: true  do
       end
     end
 
-    # TODO: fix this test for CI
-    #context 'annotated tag' do
-      #it 'should create a new annotated tag' do
-        #post api("/projects/#{project.id}/repository/tags", user),
-             #tag_name: 'v7.1.0',
-             #ref: 'master',
-             #message: 'tag message'
+    context 'annotated tag' do
+      it 'should create a new annotated tag' do
+        post api("/projects/#{project.id}/repository/tags", user),
+             tag_name: 'v7.1.0',
+             ref: 'master',
+             message: 'Release 7.1.0'
 
-        #response.status.should == 201
-        #json_response['name'].should == 'v7.1.0'
-        # The message is not part of the JSON response.
-        # Additional changes to the gitlab_git gem may be required.
-        # json_response['message'].should == 'tag message'
-      #end
-    #end
+        response.status.should == 201
+        json_response['name'].should == 'v7.1.0'
+        json_response['message'].should == 'Release 7.1.0'
+      end
+    end
 
     it 'should deny for user without push access' do
       post api("/projects/#{project.id}/repository/tags", user2),
