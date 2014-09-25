@@ -72,7 +72,7 @@ module Gitlab
         end
       end
 
-      def html_escape str
+      def html_escape(str)
         replacements = { '&' => '&amp;', '>' => '&gt;', '<' => '&lt;', '"' => '&quot;', "'" => '&#39;' }
           str.gsub(/[&"'><]/, replacements)
       end

@@ -201,7 +201,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   protected
 
-  def assigned_to_me key
+  def assigned_to_me(key)
     project.send(key).where(assignee_id: current_user.id)
   end
 

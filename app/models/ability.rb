@@ -184,7 +184,7 @@ class Ability
       ]
     end
 
-    def group_abilities user, group
+    def group_abilities(user, group)
       rules = []
 
       if user.admin? || group.users.include?(user) || ProjectsFinder.new.execute(user, group: group).any?
@@ -209,7 +209,7 @@ class Ability
       rules.flatten
     end
 
-    def namespace_abilities user, namespace
+    def namespace_abilities(user, namespace)
       rules = []
 
       # Only namespace owner and administrators can manage it

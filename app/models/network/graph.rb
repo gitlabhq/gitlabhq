@@ -6,7 +6,7 @@ module Network
       @max_count ||= 650
     end
 
-    def initialize project, ref, commit, filter_ref
+    def initialize(project, ref, commit, filter_ref)
       @project = project
       @ref = ref
       @commit = commit

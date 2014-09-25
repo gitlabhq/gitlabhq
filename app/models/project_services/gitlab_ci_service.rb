@@ -27,7 +27,7 @@ class GitlabCiService < CiService
     hook.save
   end
 
-  def commit_status_path sha
+  def commit_status_path(sha)
     project_url + "/builds/#{sha}/status.json?token=#{token}"
   end
 
@@ -54,7 +54,7 @@ class GitlabCiService < CiService
     end
   end
 
-  def build_page sha
+  def build_page(sha)
     project_url + "/builds/#{sha}"
   end
 

@@ -75,7 +75,7 @@ class GitPushService
 
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
   # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.
-  def process_commit_messages ref
+  def process_commit_messages(ref)
     is_default_branch = is_default_branch?(ref)
 
     @push_commits.each do |commit|
@@ -165,34 +165,34 @@ class GitPushService
     data
   end
 
-  def push_to_existing_branch? ref, oldrev
+  def push_to_existing_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
     ref_parts[1] =~ /heads/ && oldrev != "0000000000000000000000000000000000000000"
   end
 
-  def push_to_new_branch? ref, oldrev
+  def push_to_new_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
     ref_parts[1] =~ /heads/ && oldrev == "0000000000000000000000000000000000000000"
   end
 
-  def push_remove_branch? ref, newrev
+  def push_remove_branch?(ref, newrev)
     ref_parts = ref.split('/')
 
     ref_parts[1] =~ /heads/ && newrev == "0000000000000000000000000000000000000000"
   end
 
-  def push_to_branch? ref
+  def push_to_branch?(ref)
     ref =~ /refs\/heads/
   end
 
-  def is_default_branch? ref
+  def is_default_branch?(ref)
     ref == "refs/heads/#{project.default_branch}"
   end
 
-  def commit_user commit
+  def commit_user(commit)
     User.find_for_commit(commit.author_email, commit.author_name) || user
   end
 end
