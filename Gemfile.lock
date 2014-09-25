@@ -1,13 +1,13 @@
 GIT
   remote: https://gitlab.com/gitlab-org/gitlab_git.git
-  revision: fab781735c1ab2a8f1dc2fda33b169af99ec7e2e
-  ref: fab781735c1ab2a8f1dc2fda33b169af99ec7e2e
+  revision: 97c160e0cbc54d9b5803030e5cc49157440bbe2a
+  ref: 97c160e0cbc54d9b5803030e5cc49157440bbe2a
   specs:
     gitlab_git (6.3.0)
       activesupport (~> 4.0)
       charlock_holmes (~> 0.6)
-      gitlab-grit (~> 2.6)
       gitlab-linguist (~> 3.0)
+      rubyzip (~> 1.1)
       rugged (~> 0.21.0)
 
 GEM
@@ -446,6 +446,7 @@ GEM
     ruby-progressbar (1.2.0)
     rubyntlm (0.1.1)
     rubypants (0.2.0)
+    rubyzip (1.1.6)
     rugged (0.21.0)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
