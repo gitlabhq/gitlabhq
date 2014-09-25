@@ -4,6 +4,9 @@
     = link_to project_commits_path(@project, tag.name), class: "" do
       %i.icon-tag
       = tag.name
+      - if not tag.message.nil?
+        &nbsp;
+        = tag.message
     .pull-right
       - if can? current_user, :download_code, @project
         = render 'projects/repositories/download_archive', ref: tag.name, btn_class: 'btn-grouped btn-group-small'
