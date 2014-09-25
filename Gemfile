@@ -31,8 +31,8 @@ gem 'omniauth-shibboleth'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-# gem "gitlab_git", '~> 6.0', path: '../../gitlab_git'
-gem "gitlab_git", '~> 6.0', git: 'https://gitlab.com/gitlab-org/gitlab_git.git', ref: '97c160e0cbc54d9b5803030e5cc49157440bbe2a'
+# gem "gitlab_git", path: '../../gitlab_git'
+gem "gitlab_git", git: 'https://gitlab.com/gitlab-org/gitlab_git.git', ref: '187ff05aef6fc5390a2d666f35f84de0db9777b7'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
