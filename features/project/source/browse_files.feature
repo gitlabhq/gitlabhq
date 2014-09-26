@@ -25,10 +25,30 @@ Feature: Project Browse files
     Then I can see new file page
 
   @javascript
+  Scenario: I can create and commit file
+    Given I click on "new file" link in repo
+    And I edit code
+    And I fill the new file name
+    And I fill the commit message
+    And I click on "Commit changes"
+    Then I am redirected to the new file
+    And I should see its new content
+
+  @javascript
   Scenario: I can edit file
     Given I click on ".gitignore" file in repo
     And I click button "edit"
     Then I can edit code
+
+  @javascript
+  Scenario: I can edit and commit file
+    Given I click on ".gitignore" file in repo
+    And I click button "edit"
+    And I edit code
+    And I fill the commit message
+    And I click on "Commit changes"
+    Then I am redirected to the ".gitignore"
+    And I should see its new content
 
   @javascript
   Scenario: I can see editing preview
@@ -37,6 +57,16 @@ Feature: Project Browse files
     And I edit code
     And I click link "Diff"
     Then I see diff
+
+  @javascript
+  Scenario: I can remove file and commit
+    Given I click on ".gitignore" file in repo
+    And I see the ".gitignore"
+    And I click on "remove"
+    And I fill the commit message
+    And I click on "Remove file"
+    Then I am redirected to the files URL
+    And I don't see the ".gitignore"
 
   Scenario: I can browse directory with Browse Dir
     Given I click on files directory
