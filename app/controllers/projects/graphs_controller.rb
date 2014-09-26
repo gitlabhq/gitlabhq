@@ -7,7 +7,7 @@ class Projects::GraphsController < Projects::ApplicationController
   def show
     respond_to do |format|
       format.html
-      format.js do
+      format.json do
         fetch_graph
       end
     end
@@ -16,10 +16,17 @@ class Projects::GraphsController < Projects::ApplicationController
   private
 
   def fetch_graph
-    @log = @project.repository.graph_log.to_json
-    @success = true
-  rescue => ex
+    @commits = @project.repository.commits(nil, nil, 6000, 0, true)
     @log = []
-    @success = false
+
+    @commits.each do |commit|
+      @log << {
+        author_name: commit.author_name.force_encoding('UTF-8'),
+        author_email: commit.author_email.force_encoding('UTF-8'),
+        date: commit.committed_date.strftime("%Y-%m-%d")
+      }
+    end
+
+    render json: @log.to_json
   end
 end
