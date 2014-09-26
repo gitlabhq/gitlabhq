@@ -48,8 +48,8 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Community" page' do
     project = Project.find_by(name: 'Community')
-    page.current_path.should == "/#{project.path_with_namespace}"
-    page.status_code.should == 200
+    current_path.should == "/#{project.path_with_namespace}"
+    status_code.should == 200
   end
 
   step 'I get redirected to signin page where I sign in' do
@@ -63,7 +63,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Enterprise" page' do
     project = Project.find_by(name: 'Enterprise')
-    page.current_path.should == "/#{project.path_with_namespace}"
-    page.status_code.should == 200
+    current_path.should == "/#{project.path_with_namespace}"
+    status_code.should == 200
   end
 end

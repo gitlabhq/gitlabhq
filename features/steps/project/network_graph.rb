@@ -30,12 +30,12 @@ class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   end
 
   When 'I switch ref to "feature"' do
-    page.select 'feature', from: 'ref'
+    select 'feature', from: 'ref'
     sleep 2
   end
 
   When 'I switch ref to "v1.0.0"' do
-    page.select 'v1.0.0', from: 'ref'
+    select 'v1.0.0', from: 'ref'
     sleep 2
   end
 

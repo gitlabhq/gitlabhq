@@ -63,7 +63,7 @@ class Spinach::Features::ExploreGroupsFeature < Spinach::FeatureSteps
   end
 
   step 'I should not see member roles' do
-    page.body.should_not match(%r{owner|developer|reporter|guest}i)
+    body.should_not match(%r{owner|developer|reporter|guest}i)
   end
 
   protected
