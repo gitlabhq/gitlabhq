@@ -22,7 +22,7 @@ class GitPushService
     project.update_repository_size
 
     if push_to_branch?(ref)
-      if push_remove_branch_branch?(ref, newrev)
+      if push_remove_branch?(ref, newrev)
         @push_commits = []
       elsif push_to_new_branch?(ref, oldrev)
         # Re-find the pushed commits.
