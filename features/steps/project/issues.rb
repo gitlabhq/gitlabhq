@@ -113,7 +113,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I should see selected milestone with title "v3.0"' do
     issues_milestone_selector = "#issue_milestone_id_chzn > a"
-    page.find(issues_milestone_selector).should have_content("v3.0")
+    find(issues_milestone_selector).should have_content("v3.0")
   end
 
   When 'I select first assignee from "Shop" project' do
@@ -126,7 +126,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     issues_assignee_selector = "#issue_assignee_id_chzn > a"
 
     assignee_name = project.users.first.name
-    page.find(issues_assignee_selector).should have_content(assignee_name)
+    find(issues_assignee_selector).should have_content(assignee_name)
   end
 
   step 'project "Shop" have "Release 0.4" open issue' do
@@ -164,7 +164,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I see empty project details with ssh clone info' do
     project = Project.find_by(name: 'Empty Project')
-    page.all(:css, '.git-empty .clone').each do |element|
+    all(:css, '.git-empty .clone').each do |element|
       element.text.should include(project.url_to_repo)
     end
   end

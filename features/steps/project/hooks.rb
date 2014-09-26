@@ -29,7 +29,7 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   end
 
   step 'I should see newly created hook' do
-    page.current_path.should == project_hooks_path(current_project)
+    current_path.should == project_hooks_path(current_project)
     page.should have_content(@url)
   end
 
@@ -44,7 +44,7 @@ class Spinach::Features::ProjectHooks < Spinach::FeatureSteps
   end
 
   step 'hook should be triggered' do
-    page.current_path.should == project_hooks_path(current_project)
+    current_path.should == project_hooks_path(current_project)
     page.should have_selector '.flash-notice',
                               text: 'Hook successfully executed.'
   end

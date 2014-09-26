@@ -29,7 +29,7 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see raw file content' do
-    page.source.should == sample_blob.data
+    source.should == sample_blob.data
   end
 
   step 'I click button "edit"' do
@@ -37,12 +37,12 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can edit code' do
-    page.execute_script('editor.setValue("GitlabFileEditor")')
-    page.evaluate_script('editor.getValue()').should == "GitlabFileEditor"
+    execute_script('editor.setValue("GitlabFileEditor")')
+    evaluate_script('editor.getValue()').should == "GitlabFileEditor"
   end
 
   step 'I edit code' do
-    page.execute_script('editor.setValue("GitlabFileEditor")')
+    execute_script('editor.setValue("GitlabFileEditor")')
   end
 
   step 'I click link "Diff"' do

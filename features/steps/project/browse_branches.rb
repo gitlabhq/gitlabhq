@@ -80,6 +80,6 @@ class Spinach::Features::ProjectBrowseBranches < Spinach::FeatureSteps
   end
 
   step "I should not see branch 'improve/awesome'" do
-    page.all(visible: true).should_not have_content 'improve/awesome'
+    all(visible: true).should_not have_content 'improve/awesome'
   end
 end
