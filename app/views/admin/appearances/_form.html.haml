@@ -19,6 +19,9 @@
     .col-sm-10
       - if @appearance.logo?
         = image_tag @appearance.logo, class: 'appearance-logo-preview'
+        %br
+        = link_to 'Remove logo', logo_admin_appearances_path, data: { confirm: "Logo will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+        %hr
       = f.file_field :logo, class: ""
       .hint
         Maximum logo size is 1MB, page optimized for logo size 640x360px

@@ -32,6 +32,23 @@ class Spinach::Features::AdminAppearance < Spinach::FeatureSteps
     page.should have_content appearance.description
   end
 
+  step 'I attach a logo' do
+    attach_file(:appearance_logo, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    click_button 'Save'
+  end
+
+  step 'I should see a logo' do
+    page.should have_xpath('//img[@src="/uploads/appearance/logo/1/gitlab_logo.png"]')
+  end
+
+  step 'I remove the logo' do
+    click_link 'Remove logo'
+  end
+
+  step 'I should see logo removed' do
+    page.should_not have_xpath('//img[@src="/uploads/appearance/logo/1/gitlab_logo.png"]')
+  end
+
   def appearance
     Appearance.last
   end

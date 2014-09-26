@@ -108,6 +108,7 @@ Gitlab::Application.routes.draw do
     resource :appearances, path: 'appearance' do
       member do
         get :preview
+        delete :logo
       end
     end
 
