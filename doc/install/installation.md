@@ -79,6 +79,12 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # When editing config/gitlab.yml (Step 5), change the git -> bin_path to /usr/local/bin/git
 
+To allow non-ascii characters in filenames, need to change git config.
+
+    git config --global core.quotepath false
+    git config --global core.precomposeunicode true
+
+
 **Note:** In order to receive mail notifications, make sure to install a mail server. By default, Debian is shipped with exim4 but this [has problems](https://github.com/gitlabhq/gitlabhq/issues/4866#issuecomment-32726573) while Ubuntu does not ship with one. The recommended mail server is postfix and you can install it with:
 
     sudo apt-get install -y postfix
@@ -169,6 +175,10 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Go to GitLab installation folder
     cd /home/git/gitlab
+    
+    # Don't escape non-ascii characters in filenames
+    git config core.quotepath false
+    git config core.precomposeunicode true
 
     # Copy the example GitLab config
     sudo -u git -H cp config/gitlab.yml.example config/gitlab.yml
