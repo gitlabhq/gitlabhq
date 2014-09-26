@@ -32,7 +32,7 @@ class Repository
     commit
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil)
+  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
     commits = Gitlab::Git::Commit.where(
       repo: raw_repository,
       ref: ref,
