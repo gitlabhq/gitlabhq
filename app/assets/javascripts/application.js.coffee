@@ -15,8 +15,8 @@
 #= require jquery.atwho
 #= require jquery.scrollTo
 #= require jquery.blockUI
-#= require turbolinks
 #= require jquery.turbolinks
+#= require turbolinks
 #= require bootstrap
 #= require select2
 #= require raphael
