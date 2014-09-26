@@ -15,7 +15,7 @@ class MergeRequest
 
     modal = $('#modal_merge_info').modal(show: false)
 
-    disableButtonIfEmptyField '#merge_commit_message', '.accept_merge_request'
+    disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
 
 
   # Local jQuery finder
