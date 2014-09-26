@@ -14,6 +14,32 @@ describe GitPushService do
     @ref = 'refs/heads/master'
   end
 
+  describe 'Push branches' do
+    context 'new branch' do
+      subject do
+        service.execute(project, user, @blankrev, @newrev, @ref)
+      end
+
+      it { should be_true }
+    end
+
+    context 'existing branch' do
+      subject do
+        service.execute(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it { should be_true }
+    end
+
+    context 'rm branch' do
+      subject do
+        service.execute(project, user, @oldrev, @blankrev, @ref)
+      end
+
+      it { should be_true }
+    end
+  end
+
   describe "Git Push Data" do
     before do
       service.execute(project, user, @oldrev, @newrev, @ref)

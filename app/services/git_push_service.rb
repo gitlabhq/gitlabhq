@@ -22,11 +22,8 @@ class GitPushService
     project.update_repository_size
 
     if push_to_branch?(ref)
-      if push_to_existing_branch?(ref, oldrev)
-        # Collect data for this git push
-        @push_commits = project.repository.commits_between(oldrev, newrev)
-        project.update_merge_requests(oldrev, newrev, ref, @user)
-        process_commit_messages(ref)
+      if push_remove_branch?(ref, newrev)
+        @push_commits = []
       elsif push_to_new_branch?(ref, oldrev)
         # Re-find the pushed commits.
         if is_default_branch?(ref)
@@ -38,11 +35,12 @@ class GitPushService
           # that shouldn't matter because we check for existing cross-references later.
           @push_commits = project.repository.commits_between(project.default_branch, newrev)
         end
-
         process_commit_messages(ref)
-
-      elsif push_remove_branch_branch?(ref, newrev)
-        @push_commits = []
+      elsif push_to_existing_branch?(ref, oldrev)
+        # Collect data for this git push
+        @push_commits = project.repository.commits_between(oldrev, newrev)
+        project.update_merge_requests(oldrev, newrev, ref, @user)
+        process_commit_messages(ref)
       end
 
       @push_data = post_receive_data(oldrev, newrev, ref)
