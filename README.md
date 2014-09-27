@@ -81,7 +81,7 @@ or by directly calling the script:
 
      sudo /etc/init.d/gitlab start
 
-Please login with `root` / `5iveL!fe`
+Please login with `root` / `12345678`
 
 ## Install a development environment
 
@@ -101,7 +101,7 @@ or start each component separately:
     bundle exec rails s
     bin/background_jobs start
 
-And surf to [localhost:3000](http://localhost:3000/) and login with `root` / `5iveL!fe`.
+And surf to [localhost:3000](http://localhost:3000/) and login with `root` / `12345678`.
 
 ## Run the tests
 

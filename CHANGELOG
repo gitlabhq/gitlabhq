@@ -11,6 +11,7 @@ v 7.4.0
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
   - API: filter project issues by milestone (Julien Bianchi)
+  - Simplify default admin password to 12345678
 
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
