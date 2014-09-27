@@ -20,7 +20,6 @@ FactoryGirl.define do
     name
     sequence(:username) { |n| "#{Faker::Internet.user_name}#{n}" }
     password "12345678"
-    password_confirmation { password }
     confirmed_at { Time.now }
     confirmation_token { nil }
 
