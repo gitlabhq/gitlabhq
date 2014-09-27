@@ -39,6 +39,11 @@ class Projects::BlobController < Projects::ApplicationController
     render layout: false
   end
 
+  def blame
+    @blame = Gitlab::Git::Blame.new(project.repository, @commit.id, @path)
+    render :show
+  end
+
   private
 
   def blob

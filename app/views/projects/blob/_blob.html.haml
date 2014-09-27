@@ -27,9 +27,12 @@
         = blob.name
         %small= number_to_human_size blob.size
       %span.options.hidden-xs= render "actions"
-    - if blob.text?
-      = render "text", blob: blob
-    - elsif blob.image?
-      = render "image", blob: blob
+    - if @blame
+      = render 'blame'
     - else
-      = render "download", blob: blob
+      - if blob.text?
+        = render "text", blob: blob
+      - elsif blob.image?
+        = render "image", blob: blob
+      - else
+        = render "download", blob: blob

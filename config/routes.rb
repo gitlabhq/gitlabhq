@@ -200,6 +200,7 @@ Gitlab::Application.routes.draw do
       resources :blob, only: [:show, :destroy], constraints: { id: /.+/, format: false } do
         get :diff, on: :member
       end
+      get 'blame/:id' => 'blob#blame', constraints: { id: /.+/ }, as: :blame
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
       resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
@@ -210,7 +211,6 @@ Gitlab::Application.routes.draw do
       resources :commit,    only: [:show], constraints: {id: /[[:alnum:]]{6,40}/}
       resources :commits,   only: [:show], constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
       resources :compare,   only: [:index, :create]
-      resources :blame,     only: [:show], constraints: {id: /.+/}
       resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
       resources :graphs,    only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/} do
         member do

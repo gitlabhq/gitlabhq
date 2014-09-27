@@ -404,14 +404,6 @@ describe Projects::NotesController, "routing" do
   end
 end
 
-# project_blame GET    /:project_id/blame/:id(.:format) blame#show {id: /.+/, project_id: /[^\/]+/}
-describe Projects::BlameController, "routing" do
-  it "to #show" do
-    get("/gitlab/gitlabhq/blame/master/app/models/project.rb").should route_to('projects/blame#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/project.rb')
-    get("/gitlab/gitlabhq/blame/master/files.scss").should route_to('projects/blame#show', project_id: 'gitlab/gitlabhq', id: 'master/files.scss')
-  end
-end
-
 # project_blob GET    /:project_id/blob/:id(.:format) blob#show {id: /.+/, project_id: /[^\/]+/}
 describe Projects::BlobController, "routing" do
   it "to #show" do
@@ -419,6 +411,12 @@ describe Projects::BlobController, "routing" do
     get("/gitlab/gitlabhq/blob/master/app/models/compare.rb").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/compare.rb')
     get("/gitlab/gitlabhq/blob/master/app/models/diff.js").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/diff.js')
     get("/gitlab/gitlabhq/blob/master/files.scss").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/files.scss')
+    get('/gitlab/gitlabhq/blame/master/app/models/project.rb').
+      should route_to('projects/blob#blame', project_id: 'gitlab/gitlabhq',
+                                             id: 'master/app/models/project.rb')
+    get('/gitlab/gitlabhq/blame/master/files.scss').
+      should route_to('projects/blob#blame', project_id: 'gitlab/gitlabhq',
+                                             id: 'master/files.scss')
   end
 end
 
