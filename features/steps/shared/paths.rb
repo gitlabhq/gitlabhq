@@ -178,6 +178,11 @@ module SharedPaths
     visit project_tree_path(@project, root_ref)
   end
 
+  step 'I visit a binary file in the repo' do
+    visit project_blob_path(@project, File.join(
+      root_ref, 'files/images/logo-black.png'))
+  end
+
   step "I visit my project's commits page" do
     visit project_commits_path(@project, root_ref, {limit: 5})
   end
@@ -378,6 +383,11 @@ module SharedPaths
   step 'I visit project "Community" page' do
     project = Project.find_by(name: "Community")
     visit project_path(project)
+  end
+
+  step 'I visit project "Community" source page' do
+    project = Project.find_by(name: 'Community')
+    visit project_tree_path(project, root_ref)
   end
 
   step 'I visit project "Internal" page' do
