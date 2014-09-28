@@ -128,10 +128,6 @@ class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
     page.should have_select("merge_request_target_project_id", selected: project.path_with_namespace)
   end
 
-  def project
-    @project ||= Project.find_by!(name: "Shop")
-  end
-
   # Verify a link is generated against the correct project
   def verify_commit_link(container_div, container_project)
     # This should force a wait for the javascript to execute

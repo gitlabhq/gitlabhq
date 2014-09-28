@@ -89,10 +89,6 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
     visit project_snippet_path(project, project_snippet)
   end
 
-  def project
-    @project ||= Project.find_by!(name: "Shop")
-  end
-
   def project_snippet
     @project_snippet ||= ProjectSnippet.find_by!(title: "Snippet one")
   end

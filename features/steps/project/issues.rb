@@ -236,8 +236,4 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     # make sure AJAX request finished
     URI.parse(current_url).request_uri == project_issues_path(project, issue_search: text)
   end
-
-  def project
-    @project ||= Project.find_by(name: 'Shop')
-  end
 end

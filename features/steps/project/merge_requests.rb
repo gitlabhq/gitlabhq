@@ -261,10 +261,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  def project
-    @project ||= Project.find_by!(name: "Shop")
-  end
-
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
