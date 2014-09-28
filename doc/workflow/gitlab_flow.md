@@ -44,7 +44,7 @@ And doing releases doesn't automatically mean also doing hotfixes.
 
 # GitHub flow as a simpler alternative
 
-![Master branch with feature branches merged in]() In reaction to git flow a simpler alternative was detailed, [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html).
+![Master branch with feature branches merged in](github_flow.png) In reaction to git flow a simpler alternative was detailed, [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html).
 This flow has only feature branches and a master branch.
 This is very simple and clean, many organizations have adopted it with great success.
 Atlassian recommends [a similar strategy](http://blogs.atlassian.com/2014/01/simple-git-workflow-simple/) although they rebase feature branches.
@@ -54,7 +54,7 @@ With GitLab flow we offer additional guidance for these questions.
 
 # Production branch with GitLab flow
 
-![Master branch and production branch with arrow that indicate deployments]() GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
+![Master branch and production branch with arrow that indicate deployments](production_branch.png) GitHub flow does assume you are able to deploy to production every time you merge a feature branch.
 This is possible for SaaS applications but are many cases where this is not possible.
 One would be a situation where you are not in control of the exact release moment, for example an iOS application that needs to pass AppStore validation.
 Another example is when you have deployment windows (workdays from 10am to 4pm when the operations team is at full capacity) but you also merge code at other times.
@@ -68,7 +68,7 @@ This flow prevents the overhead of releasing, tagging and merging that is common
 
 # Environment branches with GitLab flow
 
-![Multiple branches with the code cascading from one to another]() It might be a good idea to have an environment that is automatically updated to the master branch.
+![Multiple branches with the code cascading from one to another](environment_branches.png) It might be a good idea to have an environment that is automatically updated to the master branch.
 Only in this case, the name of this environment might differ from the branch name.
 Suppose you have a staging environment, a pre-production environment and a production environment.
 In this case the master branch is deployed on staging. When someone wants to deploy to pre-production they create a merge request from the master branch to the pre-production branch.
@@ -81,7 +81,7 @@ An 'extreme' version of environment branches are setting up an environment for e
 
 # Release branches with GitLab flow
 
-![Master and multiple release branches that vary in length with cherrypicks from master]() Only in case you need to release software to the outside world you need to work with release branches.
+![Master and multiple release branches that vary in length with cherrypicks from master](release_branches.png) Only in case you need to release software to the outside world you need to work with release branches.
 In this case, each branch contains a minor version (2-3-stable, 2-4-stable, etc.).
 The stable branch uses master as a starting point and is created as late as possible.
 By branching as late as possible you minimize the time you have to apply bugfixes to multiple branches.
@@ -269,7 +269,7 @@ If you have long lived feature branches that last for more than a few days you s
 
 ![Shell output showing git pull output]() When initiating a feature branch, always start with an up to date master to branch off from.
 If you know beforehand that your work absolutely depends on another branch you can also branch from there.
-If you need to merge in another branch after starting explain the reason in the merge commit. 
+If you need to merge in another branch after starting explain the reason in the merge commit.
 If you have not pushed your commits to a shared location yet you can also rebase on master or another feature branch.
 Do not merge in upstream if your code will work and merge cleanly without doing so, Linus even says that [you should never merge in upstream at random points, only at major releases](http://lwn.net/Articles/328438/).
 Merging only when needed prevents creating merge commits in your feature branch that later end up littering the master history.
