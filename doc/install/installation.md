@@ -343,7 +343,7 @@ Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following comm
 
     sudo nginx -t
 
-You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indiciated in the error message given.
+You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 
 ### Restart
 
