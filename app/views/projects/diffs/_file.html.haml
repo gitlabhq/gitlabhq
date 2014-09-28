@@ -27,9 +27,9 @@
           &nbsp;
 
         - if @merge_request && @merge_request.source_project
-          = link_to project_edit_tree_path(@merge_request.source_project, tree_join(@merge_request.source_branch, diff_file.new_path), from_merge_request_id: @merge_request.id), { class: 'btn btn-small' } do
-            Edit
-          &nbsp;
+          = edit_blob_link(@merge_request.source_project,
+              @merge_request.source_branch, diff_file.new_path,
+              after: '&nbsp;', from_merge_request_id: @merge_request.id)
 
         = view_file_btn(@commit.id, diff_file, project)
 
