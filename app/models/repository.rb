@@ -230,7 +230,8 @@ class Repository
 
   # Remove archives older than 2 hours
   def clean_old_archives
-    Gitlab::Popen.popen(%W(find #{Gitlab.config.gitlab.repository_downloads_path} -mmin +120 -delete))
+    repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
+    Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
   end
 
   def branches_sorted_by(value)
