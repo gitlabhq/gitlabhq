@@ -22,6 +22,7 @@
 #= require raphael
 #= require g.raphael-min
 #= require g.bar-min
+#= require chart-lib.min
 #= require branch-graph
 #= require highlight.pack
 #= require ace/ace
