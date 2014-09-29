@@ -223,7 +223,9 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    commits(sha, path, 1).last
+    args = %W(git rev-list --max-count 1 #{sha} -- #{path})
+    sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
+    commit(sha)
   end
 
   # Remove archives older than 2 hours
