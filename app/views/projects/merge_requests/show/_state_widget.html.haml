@@ -13,7 +13,7 @@
       %h4
         Closed by #{link_to_member(@project, @merge_request.closed_event.author, avatar: false)}
         #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
-      %p Changes was not merged into target branch
+      %p Changes were not merged into target branch
 
     - if @merge_request.merged?
       %h4

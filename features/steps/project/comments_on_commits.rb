@@ -1,4 +1,4 @@
-class CommentsOnCommits < Spinach::FeatureSteps
+class Spinach::Features::CommentsOnCommits < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedNote
   include SharedPaths

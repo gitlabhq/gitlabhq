@@ -157,12 +157,12 @@ class NotificationService
     end
   end
 
-  def new_team_member(users_project)
-    mailer.project_access_granted_email(users_project.id)
+  def new_team_member(project_member)
+    mailer.project_access_granted_email(project_member.id)
   end
 
-  def update_team_member(users_project)
-    mailer.project_access_granted_email(users_project.id)
+  def update_team_member(project_member)
+    mailer.project_access_granted_email(project_member.id)
   end
 
   def new_group_member(users_group)
@@ -186,20 +186,20 @@ class NotificationService
 
   # Get project users with WATCH notification level
   def project_watchers(project)
-    project_members = users_project_notification(project)
+    project_members = project_member_notification(project)
 
-    users_with_project_level_global = users_project_notification(project, Notification::N_GLOBAL)
+    users_with_project_level_global = project_member_notification(project, Notification::N_GLOBAL)
     users_with_group_level_global = users_group_notification(project, Notification::N_GLOBAL)
     users = users_with_global_level_watch([users_with_project_level_global, users_with_group_level_global].flatten.uniq)
 
-    users_with_project_setting = select_users_project_setting(project, users_with_project_level_global, users)
+    users_with_project_setting = select_project_member_setting(project, users_with_project_level_global, users)
     users_with_group_setting = select_users_group_setting(project, project_members, users_with_group_level_global, users)
 
     User.where(id: users_with_project_setting.concat(users_with_group_setting).uniq).to_a
   end
 
-  def users_project_notification(project, notification_level=nil)
-    project_members = project.users_projects
+  def project_member_notification(project, notification_level=nil)
+    project_members = project.project_members
 
     if notification_level
       project_members.where(notification_level: notification_level).pluck(:user_id)
@@ -210,7 +210,7 @@ class NotificationService
 
   def users_group_notification(project, notification_level)
     if project.group
-      project.group.users_groups.where(notification_level: notification_level).pluck(:user_id)
+      project.group.group_members.where(notification_level: notification_level).pluck(:user_id)
     else
       []
     end
@@ -224,8 +224,8 @@ class NotificationService
   end
 
   # Build a list of users based on project notifcation settings
-  def select_users_project_setting(project, global_setting, users_global_level_watch)
-    users = users_project_notification(project, Notification::N_WATCH)
+  def select_project_member_setting(project, global_setting, users_global_level_watch)
+    users = project_member_notification(project, Notification::N_WATCH)
 
     # If project setting is global, add to watch list if global setting is watch
     global_setting.each do |user_id|
@@ -267,10 +267,10 @@ class NotificationService
     users.reject do |user|
       next user.notification.disabled? unless project
 
-      tm = project.users_projects.find_by(user_id: user.id)
+      tm = project.project_members.find_by(user_id: user.id)
 
       if !tm && project.group
-        tm = project.group.users_groups.find_by(user_id: user.id)
+        tm = project.group.group_members.find_by(user_id: user.id)
       end
 
       # reject users who globally disabled notification and has no membership

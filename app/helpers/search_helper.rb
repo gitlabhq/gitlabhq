@@ -80,7 +80,8 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    ProjectsFinder.new.execute(current_user).search_by_title(term).non_archived.limit(limit).map do |p|
+    ProjectsFinder.new.execute(current_user).search_by_title(term).
+      sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         label: "project: #{search_result_sanitize(p.name_with_namespace)}",
         url: project_path(p)
@@ -90,5 +91,22 @@ module SearchHelper
 
   def search_result_sanitize(str)
     Sanitize.clean(str)
+  end
+
+  def search_filter_path(options={})
+    exist_opts = {
+      search: params[:search],
+      project_id: params[:project_id],
+      group_id: params[:group_id],
+      scope: params[:scope]
+    }
+
+    options = exist_opts.merge(options)
+    search_path(options)
+  end
+
+  # Sanitize html generated after parsing markdown from issue description or comment
+  def search_md_sanitize(html)
+    sanitize(html, tags: %w(a p ol ul li pre code))
   end
 end

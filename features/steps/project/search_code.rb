@@ -1,4 +1,4 @@
-class ProjectSearchCode < Spinach::FeatureSteps
+class Spinach::Features::ProjectSearchCode < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -6,7 +6,6 @@ class ProjectSearchCode < Spinach::FeatureSteps
   step 'I search for term "coffee"' do
     fill_in "search", with: "coffee"
     click_button "Go"
-    click_link 'Repository Code'
   end
 
   step 'I should see files from repository containing "coffee"' do
@@ -15,6 +14,6 @@ class ProjectSearchCode < Spinach::FeatureSteps
   end
 
   step 'I should see empty result' do
-    page.should have_content "We couldn't find any matching code"
+    page.should have_content "We couldn't find any matching"
   end
 end

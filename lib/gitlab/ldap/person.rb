@@ -16,7 +16,7 @@ module Gitlab
         adapter.user('dn', dn)
       end
 
-      def self.active_directory_disabled?(dn, adapter=nil)
+      def self.disabled_via_active_directory?(dn, adapter=nil)
         adapter ||= Gitlab::LDAP::Adapter.new
         adapter.dn_matches_filter?(dn, AD_USER_DISABLED)
       end

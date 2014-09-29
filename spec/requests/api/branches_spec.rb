@@ -7,8 +7,8 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
-  let!(:master) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let!(:guest) { create(:users_project, user: user2, project: project, project_access: UsersProject::GUEST) }
+  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
   let!(:branch_name) { 'feature' }
   let!(:branch_sha) { '0b4bc9a49b562e85de7cc9e834518ea6828729b9' }
 
@@ -17,7 +17,7 @@ describe API::API, api: true  do
       get api("/projects/#{project.id}/repository/branches", user)
       response.status.should == 200
       json_response.should be_an Array
-      json_response.first['name'].should == project.repo.heads.sort_by(&:name).first.name
+      json_response.first['name'].should == project.repository.branch_names.first
     end
   end
 
@@ -94,21 +94,49 @@ describe API::API, api: true  do
   describe "POST /projects/:id/repository/branches" do
     it "should create a new branch" do
       post api("/projects/#{project.id}/repository/branches", user),
-        branch_name: branch_name,
-        ref: branch_sha
+           branch_name: 'feature1',
+           ref: branch_sha
 
       response.status.should == 201
 
-      json_response['name'].should == branch_name
+      json_response['name'].should == 'feature1'
       json_response['commit']['id'].should == branch_sha
     end
 
     it "should deny for user without push access" do
       post api("/projects/#{project.id}/repository/branches", user2),
-        branch_name: branch_name,
-        ref: branch_sha
-
+           branch_name: branch_name,
+           ref: branch_sha
       response.status.should == 403
+    end
+
+    it 'should return 400 if branch name is invalid' do
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new design',
+           ref: branch_sha
+      response.status.should == 400
+      json_response['message'].should == 'Branch name invalid'
+    end
+
+    it 'should return 400 if branch already exists' do
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design1',
+           ref: branch_sha
+      response.status.should == 201
+
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design1',
+           ref: branch_sha
+      response.status.should == 400
+      json_response['message'].should == 'Branch already exists'
+    end
+
+    it 'should return 400 if ref name is invalid' do
+      post api("/projects/#{project.id}/repository/branches", user),
+           branch_name: 'new_design3',
+           ref: 'foo'
+      response.status.should == 400
+      json_response['message'].should == 'Invalid reference name'
     end
   end
 
@@ -118,6 +146,11 @@ describe API::API, api: true  do
     it "should remove branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       response.status.should == 200
+    end
+
+    it 'should return 404 if branch not exists' do
+      delete api("/projects/#{project.id}/repository/branches/foobar", user)
+      response.status.should == 404
     end
 
     it "should remove protected branch" do

@@ -9,7 +9,7 @@
       = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
     - if issue.closed?
       %small.pull-right
-        = "CLOSED"
+        CLOSED
 
   .issue-info
     - if issue.assignee
@@ -31,7 +31,8 @@
 
     .issue-labels
       - issue.labels.each do |label|
-        = render_colored_label(label)
+        = link_to project_issues_path(issue.project, label_name: label.name) do
+          = render_colored_label(label)
 
   .issue-actions
     - if can? current_user, :modify_issue, issue

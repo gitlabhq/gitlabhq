@@ -6,14 +6,14 @@
 
 A backup creates an archive file that contains the database, all repositories and all attachments.
 This archive will be saved in backup_path (see `config/gitlab.yml`).
-
 The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used to restore an specific backup.
+You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
 
 ```
-# omnibus-gitlab
+# use this command if you've installed GitLab with the Omnibus package
 sudo gitlab-rake gitlab:backup:create
 
-# installation from source or cookbook
+# if you've installed GitLab from source or using the cookbook
 bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
@@ -49,14 +49,16 @@ Deleting old backups... [SKIPPING]
 ## Storing configuration files
 
 Please be informed that a backup does not store your configuration files.
-If you use Omnibus-GitLab please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
+If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
 If you have a manual installation please consider backing up your gitlab.yml file and any SSL keys and certificates.
 
 ## Restore a previously created backup
 
+You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
+
 ```
-# omnibus-gitlab
+# Omnibus package installation
 sudo gitlab-rake gitlab:backup:restore
 
 # installation from source or cookbook
@@ -102,8 +104,9 @@ Deleting tmp directories...[DONE]
 
 ## Configure cron to make daily backups
 
-For omnibus-gitlab, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
+For Omnibus package installations, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
 
+For installation from source or cookbook:
 ```
 cd /home/git/gitlab
 sudo -u git -H editor config/gitlab.yml # Enable keep_time in the backup section to automatically delete old backups
@@ -113,6 +116,6 @@ sudo -u git crontab -e # Edit the crontab for the git user
 Add the following lines at the bottom:
 
 ```
-# Create a full backup of the GitLab repositories and SQL database every day at 2am
-0 2 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+# Create a full backup of the GitLab repositories and SQL database every day at 4am
+0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```

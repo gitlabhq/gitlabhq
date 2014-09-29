@@ -32,14 +32,22 @@ module API
       #   id (required) - The ID of a project
       #   tag_name (required) - The name of the tag
       #   ref (required) - Create tag from commit sha or branch
+      #   message (optional) - Specifying a message creates an annotated tag.
       # Example Request:
       #   POST /projects/:id/repository/tags
       post ':id/repository/tags' do
         authorize_push_project
-        @tag = CreateTagService.new.execute(user_project, params[:tag_name],
-                                            params[:ref], current_user)
+        message = params[:message] || nil
+        result = CreateTagService.new(user_project, current_user).
+          execute(params[:tag_name], params[:ref], message)
 
-        present @tag, with: Entities::RepoObject, project: user_project
+        if result[:status] == :success
+          present result[:tag],
+                  with: Entities::RepoObject,
+                  project: user_project
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       # Get a project repository tree

@@ -25,14 +25,14 @@ class Repository
     raw_repository.empty?
   end
 
-  def commit(id = nil)
+  def commit(id = 'HEAD')
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
     commit
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil)
+  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
     commits = Gitlab::Git::Commit.where(
       repo: raw_repository,
       ref: ref,
@@ -64,10 +64,10 @@ class Repository
     gitlab_shell.add_branch(path_with_namespace, branch_name, ref)
   end
 
-  def add_tag(tag_name, ref)
+  def add_tag(tag_name, ref, message = nil)
     Rails.cache.delete(cache_key(:tag_names))
 
-    gitlab_shell.add_tag(path_with_namespace, tag_name, ref)
+    gitlab_shell.add_tag(path_with_namespace, tag_name, ref, message)
   end
 
   def rm_branch(branch_name)
@@ -137,7 +137,7 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      stats = Gitlab::Git::GitStats.new(raw, root_ref, Gitlab.config.git.timeout)
+      stats = Gitlab::Git::GitStats.new(raw_repository, root_ref, Gitlab.config.git.timeout)
       stats.parsed_log
     end
   end
@@ -223,7 +223,9 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    commits(sha, path, 1).last
+    args = %W(git rev-list --max-count 1 #{sha} -- #{path})
+    sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
+    commit(sha)
   end
 
   # Remove archives older than 2 hours

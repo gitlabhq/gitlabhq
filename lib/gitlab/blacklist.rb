@@ -26,6 +26,8 @@ module Gitlab
         hooks
         notes
         unsubscribes
+        all
+        ci
       )
     end
   end

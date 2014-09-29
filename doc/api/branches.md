@@ -196,6 +196,8 @@ Parameters:
 }
 ```
 
+It return 200 if succeed or 400 if failed with error message explaining reason.
+
 ## Delete repository branch
 
 ```
@@ -207,4 +209,5 @@ Parameters:
 - `id` (required) - The ID of a project
 - `branch` (required) - The name of the branch
 
-It return 200 if succeed or 405 if failed with error message explaining reason.
+It return 200 if succeed, 404 if the branch to be deleted does not exist
+or 400 for other reasons. In case of an error, an explaining message is provided.

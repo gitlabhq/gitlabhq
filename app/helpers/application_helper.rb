@@ -178,18 +178,13 @@ module ApplicationHelper
   def search_placeholder
     if @project && @project.persisted?
       "Search in this project"
+    elsif @snippet || @snippets || @show_snippets
+      'Search snippets'
     elsif @group && @group.persisted?
       "Search in this group"
     else
       "Search"
     end
-  end
-
-  def first_line(str)
-    lines = str.split("\n")
-    line = lines.first
-    line += "..." if lines.size > 1
-    line
   end
 
   def broadcast_message

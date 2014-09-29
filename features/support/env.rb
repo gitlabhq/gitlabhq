@@ -1,19 +1,19 @@
-require 'simplecov' unless ENV['CI']
+if ENV['SIMPLECOV']
+  require 'simplecov'
+end
 
-if ENV['TRAVIS']
+if ENV['COVERALLS']
   require 'coveralls'
-  Coveralls.wear!
+  Coveralls.wear_merged!('rails')
 end
 
 ENV['RAILS_ENV'] = 'test'
 require './config/environment'
-
 require 'rspec'
 require 'rspec/expectations'
 require 'database_cleaner'
 require 'spinach/capybara'
 require 'sidekiq/testing/inline'
-
 
 %w(select2_helper test_env repo_helpers).each do |f|
   require Rails.root.join('spec', 'support', f)

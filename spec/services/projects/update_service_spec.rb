@@ -48,7 +48,7 @@ describe Projects::UpdateService do
     context 'respect configured visibility restrictions setting' do
       before(:each) do
         @restrictions = double("restrictions")
-        @restrictions.stub(:restricted_visibility_levels) { [ Gitlab::VisibilityLevel::PUBLIC ] }
+        @restrictions.stub(:restricted_visibility_levels) { [ "public" ] }
         Settings.stub_chain(:gitlab).and_return(@restrictions)
       end
 

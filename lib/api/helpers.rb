@@ -155,7 +155,17 @@ module API
     end
 
     def not_allowed!
-      render_api_error!('Method Not Allowed', 405)
+      render_api_error!('405 Method Not Allowed', 405)
+    end
+
+    def conflict!(message = nil)
+      render_api_error!(message || '409 Conflict', 409)
+    end
+
+    def render_validation_error!(model)
+      unless model.valid?
+        render_api_error!(model.errors.messages || '400 Bad Request', 400)
+      end
     end
 
     def render_api_error!(message, status)

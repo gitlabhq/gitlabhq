@@ -6,8 +6,8 @@ Feature: Project Labels
     Given I visit project "Shop" labels page
 
   Scenario: I should see labels list
-    Then I should see label "bug"
-    And I should see label "feature"
+    Then I should see label 'bug'
+    And I should see label 'feature'
 
   Scenario: I create new label
     Given I visit project "Shop" new label page
@@ -23,6 +23,11 @@ Feature: Project Labels
   Scenario: I remove label
     When I remove label 'bug'
     Then I should not see label 'bug'
+
+  @javascript
+  Scenario: I remove all labels
+    When I delete all labels
+    Then I should see labels help message
 
   Scenario: I create a label with invalid color
     Given I visit project "Shop" new label page
@@ -40,4 +45,3 @@ Feature: Project Labels
     And I visit project "Forum" new label page
     When I submit new label 'bug'
     Then I should see label 'bug'
-

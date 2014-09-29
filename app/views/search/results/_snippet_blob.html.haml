@@ -1,0 +1,65 @@
+.search-result-row
+  %span
+    = snippet_blob[:snippet_object].title
+    by
+    = link_to user_snippets_path(snippet_blob[:snippet_object].author) do
+      = image_tag avatar_icon(snippet_blob[:snippet_object].author_email), class: "avatar avatar-inline s16", alt: ''
+      = snippet_blob[:snippet_object].author_name
+    %span.light #{time_ago_with_tooltip(snippet_blob[:snippet_object].created_at)}
+  %h4.snippet-title
+  - snippet_path = reliable_snippet_path(snippet_blob[:snippet_object])
+  = link_to snippet_path do
+    .file-holder
+      .file-title
+        %i.icon-file
+        %strong= snippet_blob[:snippet_object].file_name
+        %span.options
+          .btn-group.tree-btn-group.pull-right
+            - if snippet_blob[:snippet_object].author == current_user
+              = link_to "Edit", edit_snippet_path(snippet_blob[:snippet_object]), class: "btn btn-tiny", title: 'Edit Snippet'
+              = link_to "Delete", snippet_path(snippet_blob[:snippet_object]), method: :delete, data: { confirm: "Are you sure?" }, class: "btn btn-tiny", title: 'Delete Snippet'
+            = link_to "Raw", raw_snippet_path(snippet_blob[:snippet_object]), class: "btn btn-tiny", target: "_blank"
+      - if gitlab_markdown?(snippet_blob[:snippet_object].file_name)
+        .file-content.wiki
+          - snippet_blob[:snippet_chunks].each do |snippet|
+            - unless snippet[:data].empty?
+              = preserve do
+                = markdown(snippet[:data])
+            - else
+              .file-content.code
+                .nothing-here-block Empty file
+      - elsif markup?(snippet_blob[:snippet_object].file_name)
+        .file-content.wiki
+          - snippet_blob[:snippet_chunks].each do |snippet|
+            - unless snippet[:data].empty?
+              = render_markup(snippet_blob[:snippet_object].file_name, snippet[:data])
+            - else
+              .file-content.code
+                .nothing-here-block Empty file
+      - else
+        .file-content.code
+          %div.highlighted-data{class: user_color_scheme_class}
+            .line-numbers
+              - snippet_blob[:snippet_chunks].each do |snippet|
+                - unless snippet[:data].empty?
+                  - snippet[:data].lines.to_a.size.times do |index|
+                    - offset = defined?(snippet[:start_line]) ? snippet[:start_line] : 1
+                    - i = index + offset
+                    = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}" do
+                      %i.icon-link
+                      = i
+                  - unless snippet == snippet_blob[:snippet_chunks].last
+                    %a
+                      = "."
+            .highlight.term
+              %pre
+                %code
+                  - snippet_blob[:snippet_chunks].each do |snippet|
+                    - unless snippet[:data].empty?
+                      = snippet[:data]
+                      - unless snippet == snippet_blob[:snippet_chunks].last
+                        %a
+                          = "..."
+                    - else
+                      .file-content.code
+                        .nothing-here-block Empty file

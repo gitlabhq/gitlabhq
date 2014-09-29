@@ -8,8 +8,8 @@ describe API::API, api: true  do
   let(:user) { create(:user) }
   let(:user2) { create(:user) }
   let!(:project) { create(:project, creator_id: user.id) }
-  let!(:master) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let!(:guest) { create(:users_project, user: user2, project: project, project_access: UsersProject::GUEST) }
+  let!(:master) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let!(:guest) { create(:project_member, user: user2, project: project, access_level: ProjectMember::GUEST) }
 
   before { project.team << [user, :reporter] }
 
@@ -23,21 +23,66 @@ describe API::API, api: true  do
   end
 
   describe 'POST /projects/:id/repository/tags' do
-    it 'should create a new tag' do
-      post api("/projects/#{project.id}/repository/tags", user),
-           tag_name: 'v1.0.0',
-           ref: 'master'
+    context 'lightweight tags' do
+      it 'should create a new tag' do
+        post api("/projects/#{project.id}/repository/tags", user),
+             tag_name: 'v7.0.1',
+             ref: 'master'
 
-      response.status.should == 201
-      json_response['name'].should == 'v1.0.0'
+        response.status.should == 201
+        json_response['name'].should == 'v7.0.1'
+      end
     end
+
+    # TODO: fix this test for CI
+    #context 'annotated tag' do
+      #it 'should create a new annotated tag' do
+        #post api("/projects/#{project.id}/repository/tags", user),
+             #tag_name: 'v7.1.0',
+             #ref: 'master',
+             #message: 'tag message'
+
+        #response.status.should == 201
+        #json_response['name'].should == 'v7.1.0'
+        # The message is not part of the JSON response.
+        # Additional changes to the gitlab_git gem may be required.
+        # json_response['message'].should == 'tag message'
+      #end
+    #end
 
     it 'should deny for user without push access' do
       post api("/projects/#{project.id}/repository/tags", user2),
-           tag_name: 'v1.0.0',
+           tag_name: 'v1.9.0',
            ref: '621491c677087aa243f165eab467bfdfbee00be1'
-
       response.status.should == 403
+    end
+
+    it 'should return 400 if tag name is invalid' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v 1.0.0',
+           ref: 'master'
+      response.status.should == 400
+      json_response['message'].should == 'Tag name invalid'
+    end
+
+    it 'should return 400 if tag already exists' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v8.0.0',
+           ref: 'master'
+      response.status.should == 201
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'v8.0.0',
+           ref: 'master'
+      response.status.should == 400
+      json_response['message'].should == 'Tag already exists'
+    end
+
+    it 'should return 400 if ref name is invalid' do
+      post api("/projects/#{project.id}/repository/tags", user),
+           tag_name: 'mytag',
+           ref: 'foo'
+      response.status.should == 400
+      json_response['message'].should == 'Invalid reference name'
     end
   end
 

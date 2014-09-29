@@ -1,7 +1,6 @@
-%li
-  project:
-  = link_to project do
-    %strong.term= project.name_with_namespace
+.search-result-row
+  %h4
+    = link_to project do
+      %span.term= project.name_with_namespace
   - if project.description.present?
-    &ndash;
     %span.light.term= project.description

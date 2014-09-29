@@ -37,8 +37,8 @@
           = link_to "getting help", "https://www.gitlab.com/getting-help/"
         %li
           Use the
-          = link_to "search bar", '#', onclick: "$('#search').focus();"
+          = link_to 'search bar', '#', onclick: 'Shortcuts.focusSearch(event)'
           on the top of this page
         %li
           Use
-          = link_to "shortcuts", '#', onclick: "new Shortcuts()"
+          = link_to 'shortcuts', '#', onclick: 'Shortcuts.showHelp(event)'

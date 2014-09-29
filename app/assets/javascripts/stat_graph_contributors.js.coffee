@@ -24,22 +24,7 @@ class window.ContributorsStatGraph
       class: 'graph-author-commits-count'
     })
     commits.text(author.commits + " commits")
-
-    additions = $('<span/>', {
-      class: 'graph-additions'
-    })
-    additions.text(author.additions + " ++")
-
-    deletions = $('<span/>', {
-      class: 'graph-deletions'
-    })
-    deletions.text(author.deletions + " --")
-
     $('<span/>').append(commits)
-      .append(" / ")
-      .append(additions)
-      .append(" / ")
-      .append(deletions)
 
   create_author_header: (author) ->
     list_item = $('<li/>', {

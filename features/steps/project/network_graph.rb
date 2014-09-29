@@ -1,9 +1,9 @@
-class ProjectNetworkGraph < Spinach::FeatureSteps
+class Spinach::Features::ProjectNetworkGraph < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
 
-  Then 'page should have network graph' do
+  step 'page should have network graph' do
     page.should have_selector ".network-graph"
   end
 
@@ -15,27 +15,27 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     visit project_network_path(project, "master")
   end
 
-  And 'page should select "master" in select box' do
+  step 'page should select "master" in select box' do
     page.should have_selector '.select2-chosen', text: "master"
   end
 
-  And 'page should select "v1.0.0" in select box' do
+  step 'page should select "v1.0.0" in select box' do
     page.should have_selector '.select2-chosen', text: "v1.0.0"
   end
 
-  And 'page should have "master" on graph' do
+  step 'page should have "master" on graph' do
     within '.network-graph' do
       page.should have_content 'master'
     end
   end
 
   When 'I switch ref to "feature"' do
-    page.select 'feature', from: 'ref'
+    select 'feature', from: 'ref'
     sleep 2
   end
 
   When 'I switch ref to "v1.0.0"' do
-    page.select 'v1.0.0', from: 'ref'
+    select 'v1.0.0', from: 'ref'
     sleep 2
   end
 
@@ -44,27 +44,27 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
-  Then 'page should have content not containing "v1.0.0"' do
+  step 'page should have content not containing "v1.0.0"' do
     within '.network-graph' do
       page.should have_content 'Change some files'
     end
   end
 
-  Then 'page should not have content not containing "v1.0.0"' do
+  step 'page should not have content not containing "v1.0.0"' do
     within '.network-graph' do
       page.should_not have_content 'Change some files'
     end
   end
 
-  And 'page should select "feature" in select box' do
+  step 'page should select "feature" in select box' do
     page.should have_selector '.select2-chosen', text: "feature"
   end
 
-  And 'page should select "v1.0.0" in select box' do
+  step 'page should select "v1.0.0" in select box' do
     page.should have_selector '.select2-chosen', text: "v1.0.0"
   end
 
-  And 'page should have "feature" on graph' do
+  step 'page should have "feature" on graph' do
     within '.network-graph' do
       page.should have_content 'feature'
     end
@@ -78,7 +78,7 @@ class ProjectNetworkGraph < Spinach::FeatureSteps
     sleep 2
   end
 
-  And 'page should have "v1.0.0" on graph' do
+  step 'page should have "v1.0.0" on graph' do
     within '.network-graph' do
       page.should have_content 'v1.0.0'
     end

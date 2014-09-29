@@ -12,7 +12,7 @@ describe GitlabMarkdownHelper do
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
-  let(:member)        { project.users_projects.where(user_id: user).first }
+  let(:member)        { project.project_members.where(user_id: user).first }
 
   before do
     # Helper expects a @project instance variable

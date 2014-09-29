@@ -1,4 +1,4 @@
-class ProjectBrowseFiles < Spinach::FeatureSteps
+class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -20,7 +20,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     click_link ".gitignore"
   end
 
-  step 'I should see it content' do
+  step 'I should see its content' do
     page.should have_content "*.rbc"
   end
 
@@ -29,7 +29,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see raw file content' do
-    page.source.should == sample_blob.data
+    source.should == sample_blob.data
   end
 
   step 'I click button "edit"' do
@@ -37,12 +37,12 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can edit code' do
-    page.execute_script('editor.setValue("GitlabFileEditor")')
-    page.evaluate_script('editor.getValue()').should == "GitlabFileEditor"
+    execute_script('editor.setValue("GitlabFileEditor")')
+    evaluate_script('editor.getValue()').should == "GitlabFileEditor"
   end
 
   step 'I edit code' do
-    page.execute_script('editor.setValue("GitlabFileEditor")')
+    execute_script('editor.setValue("GitlabFileEditor")')
   end
 
   step 'I click link "Diff"' do
@@ -77,7 +77,9 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on readme file' do
-    click_link 'README.md'
+    within '.tree-table' do
+      click_link 'README.md'
+    end
   end
 
   step 'I see Browse file link' do
@@ -89,5 +91,18 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_link 'Browse Code »'
     page.should_not have_link 'Browse File »'
     page.should_not have_link 'Browse Dir »'
+  end
+
+  step 'I click on permalink' do
+    click_link 'permalink'
+  end
+
+  step 'I am redirected to the permalink URL' do
+    expect(current_path).to eq(project_blob_path(
+      @project, @project.repository.commit.sha + '/.gitignore'))
+  end
+
+  step "I don't see the permalink link" do
+    expect(page).not_to have_link('permalink')
   end
 end

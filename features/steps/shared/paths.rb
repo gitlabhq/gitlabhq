@@ -269,6 +269,12 @@ module SharedPaths
     visit project_tree_path(@project, "6d39438")
   end
 
+  step 'I visit project source page for' \
+       ' "6d394385cf567f80a8fd85055db1ab4c5295806f"' do
+    visit project_tree_path(@project,
+                            '6d394385cf567f80a8fd85055db1ab4c5295806f')
+  end
+
   step 'I visit project tags page' do
     visit project_tags_path(@project)
   end
@@ -388,15 +394,15 @@ module SharedPaths
   # Snippets
   # ----------------------------------------
 
-  Given 'I visit project "Shop" snippets page' do
+  step 'I visit project "Shop" snippets page' do
     visit project_snippets_path(project)
   end
 
-  Given 'I visit snippets page' do
+  step 'I visit snippets page' do
     visit snippets_path
   end
 
-  Given 'I visit new snippet page' do
+  step 'I visit new snippet page' do
     visit new_snippet_path
   end
 
@@ -412,7 +418,7 @@ module SharedPaths
   # Errors
   # ----------------------------------------
 
-  Then 'page status code should be 404' do
-    page.status_code.should == 404
+  step 'page status code should be 404' do
+    status_code.should == 404
   end
 end

@@ -3,9 +3,11 @@
 # # # # # # # # # # # # # # # # # #
 #
 # How to use:
-# 1. copy file as gitlab.yml
-# 2. Replace gitlab -> host with your domain
-# 3. Replace gitlab -> email_from
+# 1. Copy file as gitlab.yml
+# 2. Update gitlab -> host with your fully qualified domain name
+# 3. Update gitlab -> email_from
+# 4. If you installed Git from source, change git -> bin_path to /usr/local/bin/git
+# 5. Review this configuration file for other settings you may want to adjust
 
 production: &base
   #
@@ -16,8 +18,8 @@ production: &base
   gitlab:
     ## Web server settings (note: host is the FQDN, do not include http://)
     host: localhost
-    port: 80
-    https: false
+    port: 80 # Set to 443 if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
+    https: false # Set to true if using HTTPS, see installation.md#using-https for additional HTTPS configuration details
 
     # Uncommment this line below if your ssh host is different from HTTP/HTTPS one
     # (you'd obviously need to replace ssh.host_example.com with your own host).
@@ -77,6 +79,10 @@ production: &base
       wiki: true
       snippets: false
       visibility_level: "private"  # can be "private" | "internal" | "public"
+
+    ## Webhook settings
+    # Number of seconds to wait for HTTP response after sending webhook HTTP POST request (default: 10)
+    # webhook_timeout: 10
 
     ## Repository downloads directory
     # When a user clicks e.g. 'Download zip' on a project, a temporary zip file is created in the following directory.
@@ -143,7 +149,7 @@ production: &base
     #
     # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
     # disable this setting, because the userPrincipalName contains an '@'.
-    allow_username_or_email_login: true
+    allow_username_or_email_login: false
 
     # Base where we can search for users
     #
@@ -153,8 +159,10 @@ production: &base
 
     # Filter LDAP users
     #
-    #   Format: RFC 4515
+    #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
     #   Ex. (employeeType=developer)
+    #
+    #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
     #
     user_filter: ''
 
@@ -261,9 +269,9 @@ test:
     port: 80
 
     # When you run tests we clone and setup gitlab-shell
-    # In order to setup it correctly you need to specify 
+    # In order to setup it correctly you need to specify
     # your system username you use to run GitLab
-    # user: YOUR_USERNAME 
+    # user: YOUR_USERNAME
   satellites:
     path: tmp/tests/gitlab-satellites/
   gitlab_shell:

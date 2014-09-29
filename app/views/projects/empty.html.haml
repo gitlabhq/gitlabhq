@@ -2,27 +2,27 @@
 
 %div.git-empty
   %fieldset
-    %legend Git global setup:
+    %legend Git global setup
     %pre.dark
       :preserve
         git config --global user.name "#{git_user_name}"
         git config --global user.email "#{git_user_email}"
 
   %fieldset
-    %legend Create Repository
+    %legend Create a new repository
     %pre.dark
       :preserve
         mkdir #{@project.path}
         cd #{@project.path}
         git init
-        touch README
-        git add README
-        git commit -m 'first commit'
+        touch README.md
+        git add README.md
+        git commit -m "first commit"
         git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
         git push -u origin master
 
   %fieldset
-    %legend Existing Git Repo?
+    %legend Push an existing Git repository
     %pre.dark
       :preserve
         cd existing_git_repo

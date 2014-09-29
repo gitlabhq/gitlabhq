@@ -18,7 +18,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should see project "Community" home page' do
     Gitlab.config.gitlab.stub(:host).and_return("www.example.com")
-    within '.project-home-title' do
+    within '.navbar-gitlab .title' do
       page.should have_content 'Community'
     end
   end
@@ -34,9 +34,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
   end
 
   step 'I click on "Sign In"' do
-    within '.pull-right' do
-      click_link "Sign in"
-    end
+    first(:link, "Sign in").click
   end
 
   step 'Authenticate' do
@@ -50,8 +48,8 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Community" page' do
     project = Project.find_by(name: 'Community')
-    page.current_path.should == "/#{project.path_with_namespace}"
-    page.status_code.should == 200
+    current_path.should == "/#{project.path_with_namespace}"
+    status_code.should == 200
   end
 
   step 'I get redirected to signin page where I sign in' do
@@ -65,7 +63,7 @@ class Spinach::Features::ProjectRedirects < Spinach::FeatureSteps
 
   step 'I should be redirected to "Enterprise" page' do
     project = Project.find_by(name: 'Enterprise')
-    page.current_path.should == "/#{project.path_with_namespace}"
-    page.status_code.should == 200
+    current_path.should == "/#{project.path_with_namespace}"
+    status_code.should == 200
   end
 end

@@ -28,7 +28,7 @@
 ##
 
 upstream gitlab {
-  server unix:/home/git/gitlab/tmp/sockets/gitlab.socket;
+  server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
 }
 
 ## Normal HTTP host

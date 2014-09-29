@@ -8,10 +8,9 @@
         = @path
         %small= number_to_human_size @blob.size
       %span.options= render "projects/blob/actions"
-    .file-content.blame
+    .file-content.blame.highlight
       %table
-        - current_line = 1
-        - @blame.each do |commit, lines|
+        - @blame.each do |commit, lines, since|
           - commit = Commit.new(commit)
           %tr
             %td.blame-commit
@@ -23,17 +22,13 @@
                 = link_to_gfm truncate(commit.title, length: 20), project_commit_path(@project, commit.id), class: "row_title"
             %td.lines.blame-numbers
               %pre
-                - if lines.empty?
-                  = current_line
-                  - current_line += 1
-                - else
-                  - lines.each do |line|
-                    = current_line
-                    \
-                    - current_line += 1
+                - (since...(since + lines.count)).each do |i|
+                  = i
+                  \
             %td.lines
               %pre
-                :erb
-                  <% lines.each do |line| %>
-                    <%= line %>
-                  <% end %>
+                %code{ class: highlightjs_class(@blob.name) }
+                  :erb
+                    <% lines.each do |line| %>
+                      <%= line %>
+                    <% end %>

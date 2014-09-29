@@ -1,9 +1,15 @@
+password = if ENV['GITLAB_ROOT_PASSWORD'].blank?
+             "5iveL!fe"
+           else
+             ENV['GITLAB_ROOT_PASSWORD']
+           end
+
 admin = User.create(
   email: "admin@example.com",
   name: "Administrator",
   username: 'root',
-  password: "5iveL!fe",
-  password_confirmation: "5iveL!fe",
+  password: password,
+  password_confirmation: password,
   password_expires_at: Time.now,
   theme_id: Gitlab::Theme::MARS
 
@@ -19,6 +25,6 @@ puts %q[
 Administrator account created:
 
 login.........root
-password......5iveL!fe
+password......#{password}
 ]
 end

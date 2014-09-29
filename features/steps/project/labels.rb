@@ -1,19 +1,7 @@
-class ProjectLabels < Spinach::FeatureSteps
+class Spinach::Features::ProjectLabels < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
-
-  step 'I should see label "bug"' do
-    within ".manage-labels-list" do
-      page.should have_content "bug"
-    end
-  end
-
-  step 'I should see label "feature"' do
-    within ".manage-labels-list" do
-      page.should have_content "feature"
-    end
-  end
 
   step 'I visit \'bug\' label edit page' do
     visit edit_project_label_path(project, bug_label)
@@ -22,6 +10,22 @@ class ProjectLabels < Spinach::FeatureSteps
   step 'I remove label \'bug\'' do
     within "#label_#{bug_label.id}" do
       click_link 'Remove'
+    end
+  end
+
+  step 'I delete all labels' do
+    within '.labels' do
+      all('.btn-remove').each do |remove|
+        remove.click
+        sleep 0.05
+      end
+    end
+  end
+
+  step 'I should see labels help message' do
+    within '.labels' do
+      page.should have_content 'Create first label or generate default set of '\
+                               'labels'
     end
   end
 
@@ -52,6 +56,12 @@ class ProjectLabels < Spinach::FeatureSteps
   step 'I should see label color error message' do
     within '.label-form' do
       page.should have_content 'Color is invalid'
+    end
+  end
+
+  step 'I should see label \'feature\'' do
+    within '.manage-labels-list' do
+      page.should have_content 'feature'
     end
   end
 

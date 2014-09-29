@@ -35,39 +35,31 @@
       width: 1%;
       &.active {
         a {
-          color: #333;
+          color: $link_color;
           font-weight: bold;
           &:after {
             content: '';
             display: block;
             position: relative;
-            bottom: 8px;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-color: transparent transparent #333 transparent;
+            bottom: -1px;
+            border-color: $link_color;
             border-style: solid;
-            border-width: 6px;
-            margin-left: -6px;
+            border-width: 2px;
           }
         }
       }
 
       &:hover {
         a {
-          color: $link_color;
+          color: $link_hover_color;
           &:after {
             content: '';
             display: block;
             position: relative;
-            bottom: 8px;
-            left: 50%;
-            width: 0;
-            height: 0;
-            border-color: transparent transparent $link_color transparent;
+            bottom: -1px;
+            border-color: $link_hover_color;
             border-style: solid;
-            border-width: 6px;
-            margin-left: -6px;
+            border-width: 2px;
           }
         }
       }
@@ -90,7 +82,6 @@
       line-height: 34px;
       color: #777;
       text-shadow: 0 1px 1px white;
-      padding: 0 10px;
       text-decoration: none;
       padding-top: 2px;
     }

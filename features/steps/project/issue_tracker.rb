@@ -1,4 +1,4 @@
-class ProjectIssueTracker < Spinach::FeatureSteps
+class Spinach::Features::ProjectIssueTracker < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -25,7 +25,7 @@ class ProjectIssueTracker < Spinach::FeatureSteps
     find_field('project_issues_tracker').value.should == 'redmine'
   end
 
-  And 'I save project' do
+  step 'I save project' do
     click_button 'Save changes'
   end
 end

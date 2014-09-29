@@ -5,7 +5,7 @@ module Gitlab
 
     attr_reader :params, :project, :git_cmd, :user
 
-    def allowed?(actor, cmd, project, ref = nil, oldrev = nil, newrev = nil, forced_push = false)
+    def allowed?(actor, cmd, project, changes = nil)
       case cmd
       when *DOWNLOAD_COMMANDS
         if actor.is_a? User
@@ -19,12 +19,12 @@ module Gitlab
         end
       when *PUSH_COMMANDS
         if actor.is_a? User
-          push_allowed?(actor, project, ref, oldrev, newrev, forced_push)
+          push_allowed?(actor, project, changes)
         elsif actor.is_a? DeployKey
           # Deploy key not allowed to push
           return false
         elsif actor.is_a? Key
-          push_allowed?(actor.user, project, ref, oldrev, newrev, forced_push)
+          push_allowed?(actor.user, project, changes)
         else
           raise 'Wrong actor'
         end
@@ -41,25 +41,48 @@ module Gitlab
       end
     end
 
-    def push_allowed?(user, project, ref, oldrev, newrev, forced_push)
-      if user && user_allowed?(user)
-        action = if project.protected_branch?(ref)
+    def push_allowed?(user, project, changes)
+      return false unless user && user_allowed?(user)
+      return true if changes.blank?
+
+      changes = changes.lines if changes.kind_of?(String)
+
+      # Iterate over all changes to find if user allowed all of them to be applied
+      changes.each do |change|
+        oldrev, newrev, ref = change.split(' ')
+
+        action = if project.protected_branch?(branch_name(ref))
                    # we dont allow force push to protected branch
-                   if forced_push.to_s == 'true'
+                   if forced_push?(project, oldrev, newrev)
                      :force_push_code_to_protected_branches
-                   # and we dont allow remove of protected branch
+                     # and we dont allow remove of protected branch
                    elsif newrev =~ /0000000/
                      :remove_protected_branches
                    else
                      :push_code_to_protected_branches
                    end
-                 elsif project.repository && project.repository.tag_names.include?(ref)
+                 elsif project.repository && project.repository.tag_names.include?(tag_name(ref))
                    # Prevent any changes to existing git tag unless user has permissions
                    :admin_project
                  else
                    :push_code
                  end
-        user.can?(action, project)
+        unless user.can?(action, project)
+          # If user does not have access to make at least one change - cancel all push
+          return false
+        end
+      end
+
+      # If user has access to make all changes
+      true
+    end
+
+    def forced_push?(project, oldrev, newrev)
+      return false if project.empty_repo?
+
+      if oldrev !~ /00000000/ && newrev !~ /00000000/
+        missed_refs = IO.popen(%W(git --git-dir=#{project.repository.path_to_repo} rev-list #{oldrev} ^#{newrev})).read
+        missed_refs.split("\n").size > 0
       else
         false
       end
@@ -69,6 +92,24 @@ module Gitlab
 
     def user_allowed?(user)
       Gitlab::UserAccess.allowed?(user)
+    end
+
+    def branch_name(ref)
+      ref = ref.to_s
+      if ref.start_with?('refs/heads')
+        ref.sub(%r{\Arefs/heads/}, '')
+      else
+        nil
+      end
+    end
+
+    def tag_name(ref)
+      ref = ref.to_s
+      if ref.start_with?('refs/tags')
+        ref.sub(%r{\Arefs/tags/}, '')
+      else
+        nil
+      end
     end
   end
 end

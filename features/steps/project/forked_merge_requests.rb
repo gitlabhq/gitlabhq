@@ -1,4 +1,4 @@
-class ProjectForkedMergeRequests < Spinach::FeatureSteps
+class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedNote

@@ -70,7 +70,7 @@ class Project < ActiveRecord::Base
   has_many :merge_requests,     dependent: :destroy, foreign_key: "target_project_id"
   # Merge requests from source project should be kept when source project was removed
   has_many :fork_merge_requests, foreign_key: "source_project_id", class_name: MergeRequest
-  has_many :issues, -> { order "state DESC, created_at DESC" }, dependent: :destroy
+  has_many :issues, -> { order 'issues.state DESC, issues.created_at DESC' }, dependent: :destroy
   has_many :labels,             dependent: :destroy
   has_many :services,           dependent: :destroy
   has_many :events,             dependent: :destroy
@@ -79,8 +79,8 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :users, through: :users_projects
+  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :users, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -122,6 +122,7 @@ class Project < ActiveRecord::Base
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :in_group_namespace, -> { joins(:group) }
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
+  scope :sorted_by_stars, -> { reorder("projects.star_count DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
@@ -177,11 +178,11 @@ class Project < ActiveRecord::Base
       joins(:issues, :notes, :merge_requests).order("issues.created_at, notes.created_at, merge_requests.created_at DESC")
     end
 
-    def search query
+    def search(query)
       joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
     end
 
-    def search_by_title query
+    def search_by_title(query)
       where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query", query: "%#{query.downcase}%")
     end
 
@@ -353,12 +354,12 @@ class Project < ActiveRecord::Base
 
   def team_member_by_name_or_email(name = nil, email = nil)
     user = users.where("name like ? or email like ?", name, email).first
-    users_projects.where(user: user) if user
+    project_members.where(user: user) if user
   end
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by(user_id: user_id)
+    project_members.find_by(user_id: user_id)
   end
 
   def name_with_namespace
@@ -400,20 +401,41 @@ class Project < ActiveRecord::Base
   def update_merge_requests(oldrev, newrev, ref, user)
     return true unless ref =~ /heads/
     branch_name = ref.gsub("refs/heads/", "")
-    c_ids = self.repository.commits_between(oldrev, newrev).map(&:id)
+    commits = self.repository.commits_between(oldrev, newrev)
+    c_ids = commits.map(&:id)
 
     # Close merge requests
     mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
-    mrs.each { |merge_request| MergeRequests::MergeService.new.execute(merge_request, user, nil) }
+
+    mrs.uniq.each do |merge_request|
+      MergeRequests::MergeService.new.execute(merge_request, user, nil)
+    end
 
     # Update code for merge requests into project between project branches
     mrs = self.merge_requests.opened.by_branch(branch_name).to_a
     # Update code for merge requests between project and project fork
     mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
-    mrs.each { |merge_request| merge_request.reload_code; merge_request.mark_as_unchecked }
+
+    mrs.uniq.each do |merge_request|
+      merge_request.reload_code
+      merge_request.mark_as_unchecked
+    end
+
+    # Add comment about pushing new commits to merge requests
+    comment_mr_with_commits(branch_name, commits, user)
 
     true
+  end
+
+  def comment_mr_with_commits(branch_name, commits, user)
+    mrs = self.origin_merge_requests.opened.where(source_branch: branch_name).to_a
+    mrs += self.fork_merge_requests.opened.where(source_branch: branch_name).to_a
+
+    mrs.uniq.each do |merge_request|
+      Note.create_new_commits_note(merge_request, merge_request.project,
+                                   user, commits)
+    end
   end
 
   def valid_repo?
@@ -538,7 +560,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    users_projects.where(user_id: user).first
+    project_members.where(user_id: user).first
   end
 
   def default_branch
@@ -581,5 +603,9 @@ class Project < ActiveRecord::Base
 
   def find_label(name)
     labels.find_by(name: name)
+  end
+
+  def origin_merge_requests
+    merge_requests.where(source_project_id: self.id)
   end
 end

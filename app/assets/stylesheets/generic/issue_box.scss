@@ -8,43 +8,51 @@
  */
 
 .issue-box {
-  color: #666;
+  color: #555;
   margin:20px 0;
-  background: #FFF;
-  border: 1px solid #EEE;
-  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.05));
+  background: #f9f9f9;
+  border-top-left-radius: 5px;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 
   &.issue-box-closed {
-    border-color: $border_danger;
     .state {
+      background-color: #F3CECE;
+      border-color: $border_danger;
+    }
+    .state-label {
       background-color: $bg_danger;
       color: #FFF;
-      border-color: $border_danger;
     }
   }
 
   &.issue-box-merged {
-    border-color: $border_primary;
     .state {
+      background-color: #B7CEE7;
+      border-color: $border_primary;
+    }
+    .state-label {
       background-color: $bg_primary;
       color: #FFF;
-      border-color: $border_primary;
     }
   }
 
   &.issue-box-open {
-    border-color: $border_success;
     .state {
-      border-color: $border_success;
+      background-color: #D6F1D7;
+      border-color: $bg_success;
+    }
+    .state-label {
       background-color: $bg_success;
       color: #FFF;
     }
   }
 
   &.issue-box-expired {
-    border-color: #cea61b;
     .state {
+      background-color: #EEE9B3;
       border-color: #faebcc;
+    }
+    .state-label {
       background: #cea61b;
       color: #FFF;
     }
@@ -55,8 +63,7 @@
   }
 
   .state {
-    border-bottom: 1px solid #DDD;
-    padding: 10px 15px;
+    background-color: #f9f9f9;
   }
 
   .title {
@@ -88,6 +95,10 @@
 
   .description {
     padding: 0 15px 10px 15px;
+
+    code {
+      white-space: pre-wrap;
+    }
   }
 
   .title, .context, .description {
@@ -100,12 +111,14 @@
     font-size: 14px;
     float: left;
     font-weight: bold;
+    padding: 10px 15px;
+    border-top-left-radius: 5px;
   }
 
   .creator {
     float: right;
+    padding: 10px 15px;
     a {
-      color: #FFF;
       text-decoration: underline;
     }
   }

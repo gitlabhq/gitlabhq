@@ -16,12 +16,13 @@
       .form-group
         .light
           = f.label :title do
-            = "Title *"
+            Title *
         = f.text_field :title, class: "form-control input-lg js-gfm-input", maxlength: 255, rows: 5, required: true
       .form-group
         .light
           = f.label :description, "Description"
-        = f.text_area :description, class: "form-control js-gfm-input markdown-area", rows: 10
+        = render 'projects/zen', f: f, attr: :description,
+                                 classes: 'description form-control'
         .clearfix.hint
           .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
           .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
@@ -61,21 +62,11 @@
       = f.submit 'Submit merge request', class: "btn btn-create"
 
 .mr-compare
-  %div.panel.panel-default
-    .panel-heading
-      Commits (#{@commits.count})
-    - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-      %ul.well-list
-        - Commit.decorate(@commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE)).each do |commit|
-          = render "projects/commits/inline_commit", commit: commit, project: @project
-        %li.warning-row.unstyled
-          other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden to prevent performance issues.
-    - else
-      %ul.well-list= render Commit.decorate(@commits), project: @project
+  = render "projects/commits/commit_list"
 
   %h4 Changes
   - if @diffs.present?
-    = render "projects/commits/diffs", diffs: @diffs, project: @project
+    = render "projects/diffs/diffs", diffs: @diffs, project: @project
   - elsif @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
     .bs-callout.bs-callout-danger
       %h4 This comparison includes more than #{MergeRequestDiff::COMMITS_SAFE_SIZE} commits.

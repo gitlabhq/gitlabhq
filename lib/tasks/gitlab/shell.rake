@@ -8,7 +8,7 @@ namespace :gitlab do
       args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
 
       user = Settings.gitlab.user
-      home_dir = Settings.gitlab.user_home
+      home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Settings.gitlab.user_home
       gitlab_url = Settings.gitlab.url
       # gitlab-shell requires a / at the end of the url
       gitlab_url += "/" unless gitlab_url.match(/\/$/)
@@ -22,9 +22,10 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
-        sh "git fetch origin && git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
-
-        redis_url = URI.parse(ENV['REDIS_URL'] || "redis://localhost:6379")
+        # First try to checkout without fetching
+        # to avoid stalling tests if the Internet is down.
+        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
+        sh "#{reset} || git fetch origin && #{reset}"
 
         config = {
           user: user,
@@ -34,13 +35,20 @@ namespace :gitlab do
           auth_file: File.join(home_dir, ".ssh", "authorized_keys"),
           redis: {
             bin: %x{which redis-cli}.chomp,
-            host: redis_url.host,
-            port: redis_url.port,
             namespace: "resque:gitlab"
           }.stringify_keys,
           log_level: "INFO",
           audit_usernames: false
         }.stringify_keys
+
+        redis_url = URI.parse(ENV['REDIS_URL'] || "redis://localhost:6379")
+
+        if redis_url.scheme == 'unix'
+          config['redis']['socket'] = redis_url.path
+        else
+          config['redis']['host'] = redis_url.host
+          config['redis']['port'] = redis_url.port
+        end
 
         # Generate config.yml based on existing gitlab settings
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}

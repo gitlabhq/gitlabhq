@@ -124,12 +124,14 @@ Save the following file as `print_http_body.rb`.
 ```ruby
 require 'webrick'
 
-server = WEBrick::HTTPServer.new(Port: ARGV.first)
+server = WEBrick::HTTPServer.new(:Port => ARGV.first)
 server.mount_proc '/' do |req, res|
   puts req.body
 end
 
-trap 'INT' do server.shutdown end
+trap 'INT' do 
+  server.shutdown 
+end
 server.start
 ```
 

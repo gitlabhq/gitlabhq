@@ -20,7 +20,7 @@ class Projects::IssuesController < Projects::ApplicationController
     terms = params['issue_search']
 
     @issues = issues_filtered
-    @issues = @issues.where("title LIKE ? OR description LIKE ?", "%#{terms}%", "%#{terms}%") if terms.present?
+    @issues = @issues.full_search(terms) if terms.present?
     @issues = @issues.page(params[:page]).per(20)
 
     assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
@@ -28,7 +28,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
     sort_param = params[:sort] || 'newest'
     @sort = sort_param.humanize unless sort_param.empty?
-    @assignees = User.where(id: @project.issues.pluck(:assignee_id))
+    @assignees = User.where(id: @project.issues.pluck(:assignee_id)).active
 
     respond_to do |format|
       format.html

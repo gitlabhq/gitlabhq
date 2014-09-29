@@ -1,4 +1,4 @@
-class ProjectFeature < Spinach::FeatureSteps
+class Spinach::Features::ProjectFeature < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

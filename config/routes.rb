@@ -161,9 +161,8 @@ Gitlab::Application.routes.draw do
       get :projects
     end
 
-    resources :users_groups, only: [:create, :update, :destroy]
-
     scope module: :groups do
+      resources :group_members, only: [:create, :update, :destroy]
       resource :avatar, only: [:destroy]
       resources :milestones
     end
@@ -207,7 +206,11 @@ Gitlab::Application.routes.draw do
       resources :compare,   only: [:index, :create]
       resources :blame,     only: [:show], constraints: {id: /.+/}
       resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
-      resources :graphs,    only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+      resources :graphs,    only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/} do
+        member do
+          get :commits
+        end
+      end
 
       match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
@@ -231,7 +234,6 @@ Gitlab::Application.routes.draw do
 
       resource :repository, only: [:show] do
         member do
-          get "stats"
           get "archive", constraints: { format: Gitlab::Regex.archive_formats_regex }
         end
       end

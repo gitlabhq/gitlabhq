@@ -4,11 +4,6 @@ class Projects::RepositoriesController < Projects::ApplicationController
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
 
-  def stats
-    @stats = Gitlab::Git::Stats.new(@repository.raw, @repository.root_ref)
-    @graph = @stats.graph
-  end
-
   def archive
     unless can?(current_user, :download_code, @project)
       render_404 and return
