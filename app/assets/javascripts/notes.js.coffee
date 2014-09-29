@@ -6,6 +6,7 @@ class Notes
     @notes_url = gon.relative_url_root + @notes_url if gon.relative_url_root?
     @note_ids = note_ids
     @last_fetched_at = last_fetched_at
+    @noteable_url = document.URL
     @initRefresh()
     @setupMainTargetNoteForm()
     @cleanBinding()
@@ -95,7 +96,8 @@ class Notes
     , 15000
 
   refresh: ->
-    @getContent() unless document.hidden
+    unless document.hidden or (@noteable_url != document.URL)
+      @getContent()
 
   getContent: ->
     $.ajax
