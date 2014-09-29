@@ -12,7 +12,7 @@
   .form-group
     = f.label :user_ids, "People", class: 'control-label'
     .col-sm-10
-      = users_select_tag(:user_ids, multiple: true)
+      = users_select_tag(:user_ids, { multiple: true, skip_ldap: true })
 
   %p 2. Set access level for them
   .form-group
