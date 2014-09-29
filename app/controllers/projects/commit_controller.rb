@@ -12,13 +12,7 @@ class Projects::CommitController < Projects::ApplicationController
     return git_not_found! unless @commit
 
     @line_notes = project.notes.for_commit_id(commit.id).inline
-
-    @branches = begin
-                  project.repository.branch_names_contains(commit.id)
-                rescue Grit::Git::GitTimeout
-                  []
-                end
-
+    @branches = project.repository.branch_names_contains(commit.id)
     @diffs = @commit.diffs
     @note = project.build_commit_note(commit)
     @notes_count = project.notes.for_commit_id(commit.id).count
