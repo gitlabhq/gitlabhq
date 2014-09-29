@@ -9,6 +9,7 @@ module Backup
       s[:backup_created_at]  = Time.now
       s[:gitlab_version]     = Gitlab::VERSION
       s[:tar_version]        = tar_version
+      tar_file = "#{s[:backup_created_at].to_i}_gitlab_backup.tar"
 
       Dir.chdir(Gitlab.config.backup.path)
 
@@ -17,8 +18,29 @@ module Backup
       end
 
       # create archive
-      print "Creating backup archive: #{s[:backup_created_at].to_i}_gitlab_backup.tar ... "
-      if Kernel.system('tar', '-cf', "#{s[:backup_created_at].to_i}_gitlab_backup.tar", *BACKUP_CONTENTS)
+      print "Creating backup archive: #{tar_file} ... "
+      if Kernel.system('tar', '-cf', tar_file, *BACKUP_CONTENTS)
+        puts "done".green
+      else
+        puts "failed".red
+      end
+
+      upload(tar_file)
+    end
+
+    def upload(tar_file)
+      remote_directory = Gitlab.config.backup.upload.remote_directory
+      print "Uploading backup archive to remote storage #{remote_directory} ... "
+
+      connection_settings = Gitlab.config.backup.upload.connection
+      if connection_settings.blank?
+        puts "skipped".yellow
+        return
+      end
+
+      connection = ::Fog::Storage.new(connection_settings)
+      directory = connection.directories.get(remote_directory)
+      if directory.files.create(key: tar_file, body: File.open(tar_file), public: false)
         puts "done".green
       else
         puts "failed".red

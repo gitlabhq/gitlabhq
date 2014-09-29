@@ -46,6 +46,105 @@ Deleting tmp directories...[DONE]
 Deleting old backups... [SKIPPING]
 ```
 
+## Upload backups to remote (cloud) storage
+
+Starting with GitLab 7.4 you can let the backup script upload the '.tar' file
+it creates to cloud storage using [Fog](http://fog.io/storage/). In the example
+below we use Amazon S3 for storage, but Fog also lets you use other storage
+backends; see http://fog.io/storage/ .
+
+For omnibus packages:
+
+```ruby
+gitlab_rails['backup_upload_connection'] = {
+  'provider' => 'AWS',
+  'aws_access_key_id' => 'AKIAKIAKI',
+  'aws_secret_access_key' => 'secret123'
+}
+gitlab_rails['backup_upload_remote_directory'] = 'my.s3.bucket'
+```
+
+For installations from source:
+
+```yaml
+  backup:
+    # snip
+    upload:
+      # Fog storage connection settings, see http://fog.io/storage/ .
+      connection:
+        provider: AWS
+        aws_access_key_id: AKIAKIAKI
+        aws_secret_access_key: 'secret123'
+      # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+      remote_directory: 'my.s3.bucket'
+```
+
+If you are uploading your backups to S3 you will probably want to create a new
+IAM user with restricted access rights. To give the upload user access only for
+uploading backups create the following three profiles, replacing `my.s3.bucket`
+with the name of your bucket:
+
+```json
+{
+  "Version": "2014-09-29",
+  "Statement": [
+    {
+      "Sid": "Stmt1411994999",
+      "Effect": "Allow",
+      "Action": [
+        "s3:AbortMultipartUpload",
+        "s3:GetBucketAcl",
+        "s3:GetBucketLocation",
+        "s3:GetObject",
+        "s3:GetObjectAcl",
+        "s3:ListMultipartUploadParts",
+        "s3:PutObject",
+        "s3:PutObjectAcl"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my.s3.bucket/*"
+      ]
+    }
+  ]
+}
+```
+
+```json
+{
+  "Version": "2014-09-29",
+  "Statement": [
+    {
+      "Sid": "Stmt1411995081",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListAllMyBuckets", "s3:GetBucketLocation"
+      ],
+      "Resource": [
+        "*"
+      ]
+    }
+  ]
+}
+```
+
+```json
+{
+  "Version": "2014-09-29",
+  "Statement": [
+    {
+      "Sid": "Stmt1411995608",
+      "Effect": "Allow",
+      "Action": [
+        "s3:ListBucket"
+      ],
+      "Resource": [
+        "arn:aws:s3:::my.s3.bucket"
+      ]
+    }
+  ]
+}
+```
+
 ## Storing configuration files
 
 Please be informed that a backup does not store your configuration files.

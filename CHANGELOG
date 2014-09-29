@@ -7,6 +7,7 @@ v 7.4.0
   - Increase unicorn timeout to 60 seconds
   - Sort search autocomplete projects by stars count so most popular go first
   - Do not delete tmp/repositories itself during clean-up, only its contents
+  - Support for backup uploads to remote storage
 
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
