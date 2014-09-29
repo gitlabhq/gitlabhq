@@ -36,16 +36,16 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_content new_gitignore_content
   end
 
-  step 'I click link "raw"' do
-    click_link "raw"
+  step 'I click link "Raw"' do
+    click_link 'Raw'
   end
 
   step 'I should see raw file content' do
     source.should == sample_blob.data
   end
 
-  step 'I click button "edit"' do
-    click_link 'edit'
+  step 'I click button "Edit"' do
+    click_link 'Edit'
   end
 
   step 'I can edit code' do
@@ -73,8 +73,8 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
     click_button 'Commit changes'
   end
 
-  step 'I click on "remove"' do
-    click_link 'remove'
+  step 'I click on "Remove"' do
+    click_link 'Remove'
   end
 
   step 'I click on "Remove file"' do
@@ -99,8 +99,8 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
     click_link 'files'
   end
 
-  step 'I click on history link' do
-    click_link 'history'
+  step 'I click on History link' do
+    click_link 'History'
   end
 
   step 'I see Browse dir link' do
@@ -125,8 +125,8 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
     page.should_not have_link 'Browse Dir »'
   end
 
-  step 'I click on permalink' do
-    click_link 'permalink'
+  step 'I click on Permalink' do
+    click_link 'Permalink'
   end
 
   step 'I am redirected to the files URL' do

@@ -7,8 +7,8 @@ class Spinach::Features::ProjectBrowseGitRepo < Spinach::FeatureSteps
     click_link ".gitignore"
   end
 
-  step 'I click blame button' do
-    click_link "blame"
+  step 'I click Blame button' do
+    click_link 'Blame'
   end
 
   step 'I should see git file blame' do
