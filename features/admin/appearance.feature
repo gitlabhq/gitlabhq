@@ -17,3 +17,12 @@ Feature: Admin Appearance
     Given application has custom appearance
     When I visit login page
     Then I should see a customized appearance
+
+  Scenario: Appearance logo
+    Given application has custom appearance
+    And I sign in as an admin
+    And I visit admin appearance page
+    When I attach a logo
+    Then I should see a logo
+    And I remove the logo
+    Then I should see logo removed
