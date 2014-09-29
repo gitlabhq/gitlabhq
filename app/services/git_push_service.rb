@@ -29,6 +29,8 @@ class GitPushService
         if is_default_branch?(ref)
           # Initial push to the default branch. Take the full history of that branch as "newly pushed".
           @push_commits = project.repository.commits(newrev)
+          # Default branch is protected by default
+          project.protected_branches.create({ name: project.default_branch })
         else
           # Use the pushed commits that aren't reachable by the default branch
           # as a heuristic. This may include more commits than are actually pushed, but
