@@ -3,3 +3,4 @@
 - [Authorization for merge requests](authorization_for_merge_requests.md)
 - [Groups](groups.md)
 - [Labels](labels.md)
+- [GitLab Flow](gitlab_flow.md)
