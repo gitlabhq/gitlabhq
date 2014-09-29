@@ -5,6 +5,7 @@ v 7.4.0
   - Refactor test coverage tools usage. Use SIMPLECOV=true to generate it locally
   - Increase unicorn timeout to 60 seconds
   - Sort search autocomplete projects by stars count so most popular go first
+  - Do not delete tmp/repositories itself during clean-up, only its contents
 
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
