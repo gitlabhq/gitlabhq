@@ -10,7 +10,7 @@ The filename will be `[TIMESTAMP]_gitlab_backup.tar`. This timestamp can be used
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
 
 ```
-# use this command if you've installed GitLab with the omnibus package
+# use this command if you've installed GitLab with the Omnibus package
 sudo gitlab-rake gitlab:backup:create
 
 # if you've installed GitLab from source or using the cookbook
@@ -58,7 +58,7 @@ If you have a manual installation please consider backing up your gitlab.yml fil
 You can only restore a backup to exactly the same version of GitLab that you created it on, for example 7.2.1.
 
 ```
-# omnibus package installation
+# Omnibus package installation
 sudo gitlab-rake gitlab:backup:restore
 
 # installation from source or cookbook
@@ -104,7 +104,7 @@ Deleting tmp directories...[DONE]
 
 ## Configure cron to make daily backups
 
-For omnibus package installations, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
+For Omnibus package installations, see https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#scheduling-a-backup .
 
 For installation from source or cookbook:
 ```
