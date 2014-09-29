@@ -212,6 +212,14 @@ production: &base
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
+    # upload:
+    #   # Fog storage connection settings, see http://fog.io/storage/ .
+    #   connection:
+    #     provider: AWS
+    #     aws_access_key_id: AKIAKIAKI
+    #     aws_secret_access_key: 'secret123'
+    #   # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+    #   remote_directory: 'my.s3.bucket'
 
   ## GitLab Shell settings
   gitlab_shell:
