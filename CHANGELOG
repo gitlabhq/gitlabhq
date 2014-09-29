@@ -3,6 +3,7 @@ v 7.4.0
   - Fix creating new files with web editor
   - Improve error reporting on users API (Julien Bianchi)
   - Refactor test coverage tools usage. Use SIMPLECOV=true to generate it locally
+  - Default branch is protected by default
   - Increase unicorn timeout to 60 seconds
   - Sort search autocomplete projects by stars count so most popular go first
   - Do not delete tmp/repositories itself during clean-up, only its contents

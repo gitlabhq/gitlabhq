@@ -105,6 +105,8 @@ describe GitPushService do
     context "execute web hooks" do
       it "when pushing a branch for the first time" do
         project.should_receive(:execute_hooks)
+        project.default_branch.should == "master"
+        project.protected_branches.should_receive(:create).with({ name: "master" })
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
