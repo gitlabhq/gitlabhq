@@ -44,7 +44,9 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:new_user) { create(:user, email: 'newguy@example.com', created_by_id: 1) }
 
-    subject { Notify.new_user_email(new_user.id, new_user.password, 'kETLwRaayvigPq_x3SNM') }
+    token = 'kETLwRaayvigPq_x3SNM'
+
+    subject { Notify.new_user_email(new_user.id, new_user.password, token) }
 
     it_behaves_like 'an email sent from GitLab'
 
@@ -65,7 +67,10 @@ describe Notify do
     end
 
     it 'includes a link for user to set password' do
-      should have_body_text 'http://localhost/users/password/edit?reset_password_token=kETLwRaayvigPq_x3SNM'
+      params = "reset_password_token=#{token}"
+      should have_body_text(
+        %r{http://localhost(:\d+)?/users/password/edit\?#{params}}
+      )
     end
 
     it 'includes a link to the site' do
