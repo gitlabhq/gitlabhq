@@ -12,10 +12,6 @@ module Gitlab
         self.auth_hash = auth_hash
       end
 
-      def auth_hash=(auth_hash)
-        @auth_hash = AuthHash.new(auth_hash)
-      end
-
       def persisted?
         gl_user.persisted?
       end
@@ -41,6 +37,11 @@ module Gitlab
 
       def gl_user
         @user ||= find_by_uid_and_provider || build_new_user
+      end
+
+      protected
+      def auth_hash=(auth_hash)
+        @auth_hash = AuthHash.new(auth_hash)
       end
 
       def find_by_uid_and_provider
