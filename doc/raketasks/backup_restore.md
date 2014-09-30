@@ -83,15 +83,15 @@ For installations from source:
 
 If you are uploading your backups to S3 you will probably want to create a new
 IAM user with restricted access rights. To give the upload user access only for
-uploading backups create the following three profiles, replacing `my.s3.bucket`
+uploading backups create the following IAM profile, replacing `my.s3.bucket`
 with the name of your bucket:
 
 ```json
 {
-  "Version": "2014-09-29",
+  "Version": "2012-10-17",
   "Statement": [
     {
-      "Sid": "Stmt1411994999",
+      "Sid": "Stmt1412062044000",
       "Effect": "Allow",
       "Action": [
         "s3:AbortMultipartUpload",
@@ -99,42 +99,27 @@ with the name of your bucket:
         "s3:GetBucketLocation",
         "s3:GetObject",
         "s3:GetObjectAcl",
-        "s3:ListMultipartUploadParts",
+        "s3:ListBucketMultipartUploads",
         "s3:PutObject",
         "s3:PutObjectAcl"
       ],
       "Resource": [
         "arn:aws:s3:::my.s3.bucket/*"
       ]
-    }
-  ]
-}
-```
-
-```json
-{
-  "Version": "2014-09-29",
-  "Statement": [
+    },
     {
-      "Sid": "Stmt1411995081",
+      "Sid": "Stmt1412062097000",
       "Effect": "Allow",
       "Action": [
-        "s3:ListAllMyBuckets", "s3:GetBucketLocation"
+        "s3:GetBucketLocation",
+        "s3:ListAllMyBuckets"
       ],
       "Resource": [
         "*"
       ]
-    }
-  ]
-}
-```
-
-```json
-{
-  "Version": "2014-09-29",
-  "Statement": [
+    },
     {
-      "Sid": "Stmt1411995608",
+      "Sid": "Stmt1412062128000",
       "Effect": "Allow",
       "Action": [
         "s3:ListBucket"
