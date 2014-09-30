@@ -48,10 +48,10 @@ Deleting old backups... [SKIPPING]
 
 ## Upload backups to remote (cloud) storage
 
-Starting with GitLab 7.4 you can let the backup script upload the '.tar' file
-it creates to cloud storage using [Fog](http://fog.io/storage/). In the example
-below we use Amazon S3 for storage, but Fog also lets you use other storage
-backends; see http://fog.io/storage/ .
+Starting with GitLab 7.4 you can let the backup script upload the '.tar' file it creates.
+It uses the [Fog library](http://fog.io/) to perform the upload.
+In the example below we use Amazon S3 for storage.
+But Fog also lets you use [other storage providers](http://fog.io/storage/).
 
 For omnibus packages:
 
