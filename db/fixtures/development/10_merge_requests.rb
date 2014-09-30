@@ -21,7 +21,7 @@ Gitlab::Seeder.quiet do
     end
   end
 
-  project = Project.find_with_namespace('gitlab-org/testme')
+  project = Project.find_with_namespace('gitlab-org/gitlab-test')
 
   params = {
     source_branch: 'feature',
