@@ -4,7 +4,7 @@ module API
     before { authenticate! }
 
     helpers do
-      def filter_issues_state(issues, state = nil)
+      def filter_issues_state(issues, state)
         case state
         when 'opened' then issues.opened
         when 'closed' then issues.closed
@@ -13,7 +13,11 @@ module API
       end
 
       def filter_issues_labels(issues, labels)
-        issues.includes(:labels).where("labels.title" => labels.split(','))
+        issues.includes(:labels).where('labels.title' => labels.split(','))
+      end
+
+      def filter_issues_milestone(issues, milestone)
+        issues.includes(:milestone).where('milestones.title' => milestone)
       end
     end
 
@@ -48,19 +52,24 @@ module API
       #   id (required) - The ID of a project
       #   state (optional) - Return "opened" or "closed" issues
       #   labels (optional) - Comma-separated list of label names
+      #   milestone (optional) - Milestone title
       #
       # Example Requests:
       #   GET /projects/:id/issues
       #   GET /projects/:id/issues?state=opened
       #   GET /projects/:id/issues?state=closed
-      #   GET /projects/:id/issues
       #   GET /projects/:id/issues?labels=foo
       #   GET /projects/:id/issues?labels=foo,bar
       #   GET /projects/:id/issues?labels=foo,bar&state=opened
+      #   GET /projects/:id/issues?milestone=1.0.0
+      #   GET /projects/:id/issues?milestone=1.0.0&state=closed
       get ":id/issues" do
         issues = user_project.issues
         issues = filter_issues_state(issues, params[:state]) unless params[:state].nil?
         issues = filter_issues_labels(issues, params[:labels]) unless params[:labels].nil?
+        unless params[:milestone].nil?
+          issues = filter_issues_milestone(issues, params[:milestone])
+        end
         issues = issues.order('issues.id DESC')
 
         present paginate(issues), with: Entities::Issue
