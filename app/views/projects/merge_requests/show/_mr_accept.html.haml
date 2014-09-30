@@ -28,7 +28,8 @@
                   = render 'shared/commit_message_container', {textarea: text_area_tag(:merge_commit_message,
                       @merge_request.merge_commit_message, class: "form-control js-gfm-input", rows: 14, required: true)}
                   %p.hint
-                    The recommended maximum line length is 52 characters for the first line and 72 characters for all following lines.
+                    Try to keep the first line under 52 characters
+                    and the others under 72.
 
           .accept-group
             .pull-left
