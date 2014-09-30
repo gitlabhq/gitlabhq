@@ -82,8 +82,4 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   step 'I should see 1 project at group list' do
     find('span.last_activity/span').should have_content('1')
   end
-
-  def project
-    @project ||= Project.find_by(name: "Shop")
-  end
 end
