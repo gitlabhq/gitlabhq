@@ -137,8 +137,18 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      stats = Gitlab::Git::GitStats.new(raw_repository, root_ref, Gitlab.config.git.timeout)
-      stats.parsed_log
+      commits = raw_repository.log(limit: 6000, skip_merges: true,
+                                   ref: root_ref)
+      commits.map do |rugged_commit|
+        commit = Gitlab::Git::Commit.new(rugged_commit)
+
+        {
+          author_name: commit.author_name.force_encoding('UTF-8'),
+          author_email: commit.author_email.force_encoding('UTF-8'),
+          additions: commit.stats.additions,
+          deletions: commit.stats.deletions
+        }
+      end
     end
   end
 
