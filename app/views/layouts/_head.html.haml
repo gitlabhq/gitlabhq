@@ -10,7 +10,7 @@
   %meta{content: "GitLab Community Edition", name: "description"}
 
   %title
-    = "#{title} | " if defined?(title)
+    = "#{local_assigns[:title]} | " if local_assigns[:title]
     GitLab
   = favicon_link_tag 'favicon.ico'
   = stylesheet_link_tag    "application", :media => "all"
