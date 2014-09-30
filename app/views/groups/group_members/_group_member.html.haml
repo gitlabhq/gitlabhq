@@ -14,7 +14,8 @@
       %strong= member.human_access
       - if show_controls
         - if can?(current_user, :modify, member)
-          = link_to '#', class: "btn-tiny btn js-toggle-button", title: 'Edit access level' do
+          = button_tag class: "btn-tiny btn js-toggle-button",
+                       title: 'Edit access level', type: 'button' do
             %i.fa.fa-pencil-square-o
         - if can?(current_user, :destroy, member)
           - if current_user == member.user

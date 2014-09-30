@@ -8,7 +8,7 @@
 
   .pull-right
     .dropdown.inline
-      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
         %span.light sort:
         - if @sort.present?
           = @sort.humanize

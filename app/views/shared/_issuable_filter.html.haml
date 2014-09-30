@@ -15,7 +15,7 @@
           All
 
   .dropdown.inline.assignee-filter
-    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+    %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
       %i.fa.fa-user
       %span.light assignee:
       - if @assignee.present?
@@ -38,7 +38,7 @@
             = user.name
 
   .dropdown.inline.prepend-left-10.author-filter
-    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+    %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
       %i.fa.fa-user
       %span.light author:
       - if @author.present?
@@ -61,7 +61,7 @@
             = user.name
 
   .dropdown.inline.prepend-left-10.milestone-filter
-    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+    %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
       %i.fa.fa-clock-o
       %span.light milestone:
       - if @milestone.present?
@@ -85,7 +85,7 @@
 
   - if @project
     .dropdown.inline.prepend-left-10.labels-filter
-      %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %button.dropdown-toggle.btn{type: 'button', 'data-toggle' => 'dropdown'}
         %i.fa.fa-tags
         %span.light label:
         - if params[:label_name].present?
