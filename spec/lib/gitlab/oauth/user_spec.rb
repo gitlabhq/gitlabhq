@@ -14,10 +14,6 @@ describe Gitlab::OAuth::User do
     }
   end
 
-  before do
-    Gitlab.config.stub(omniauth: {})
-  end
-
   describe :persisted? do
     let!(:existing_user) { create(:user, extern_uid: 'my-uid', provider: 'my-provider') }
 
