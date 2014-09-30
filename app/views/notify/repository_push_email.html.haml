@@ -1,11 +1,11 @@
-%h3 #{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
+%h3 #{@author.name} pushed to #{@branch} at #{link_to @project.name_with_namespace, project_url(@project)}
 
 %h4 Commits:
 
 %ul
   - @commits.each do |commit|
     %li
-      %strong #{commit.short_id}
+      %strong #{link_to commit.short_id, project_commit_url(@project, commit)}
       %span by #{commit.author_name}
       %pre #{commit.safe_message}
 
