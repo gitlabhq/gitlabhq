@@ -8,6 +8,7 @@ v 7.4.0
   - Sort search autocomplete projects by stars count so most popular go first
   - Do not delete tmp/repositories itself during clean-up, only its contents
   - Support for backup uploads to remote storage
+  - Prevent notes polling when there are not notes
 
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
