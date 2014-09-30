@@ -250,20 +250,18 @@ class Repository
   end
 
   def contributors
-    log = graph_log.group_by { |i| i[:author_email] }
+    commits = self.commits(nil, nil, 2000, 0, true)
 
-    log.map do |email, contributions|
+    commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
       contributor.email = email
 
-      contributions.each do |contribution|
+      commits.each do |commit|
         if contributor.name.blank?
-          contributor.name = contribution[:author_name]
+          contributor.name = commit.author_name
         end
 
         contributor.commits += 1
-        contributor.additions += contribution[:additions] || 0
-        contributor.deletions += contribution[:deletions] || 0
       end
 
       contributor

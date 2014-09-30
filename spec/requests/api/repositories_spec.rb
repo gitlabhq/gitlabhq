@@ -224,8 +224,8 @@ describe API::API, api: true  do
       contributor['email'].should == 'dmitriy.zaporozhets@gmail.com'
       contributor['name'].should == 'Dmitriy Zaporozhets'
       contributor['commits'].should == 13
-      contributor['additions'].should == 4081
-      contributor['deletions'].should == 29
+      contributor['additions'].should == 0
+      contributor['deletions'].should == 0
     end
   end
 end
