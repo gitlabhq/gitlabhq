@@ -9,15 +9,25 @@
         git config --global user.email "#{git_user_email}"
 
   %fieldset
-    %legend Create a new repository
+    %legend Create a new folder and initialize Git repository
     %pre.dark
       :preserve
-        mkdir #{@project.path}
+        git clone #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        cd #{@project.path}
+        touch README.md
+        git add README.md
+        git commit -m "add README"
+        git push -u origin master
+
+  %fieldset
+    %legend Make an existing folder a Git repository
+    %pre.dark
+      :preserve
         cd #{@project.path}
         git init
         touch README.md
         git add README.md
-        git commit -m "first commit"
+        git commit -m "add README"
         git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
         git push -u origin master
 
