@@ -1,7 +1,7 @@
-.login-box.panel.panel-primary
-  .panel-heading
-    %h3.panel-title Sign in
-  .panel-body
+.login-box
+  .login-heading
+    %h3 Sign in
+  .login-body
     - if ldap_enabled? && gitlab_config.signin_enabled
       %ul.nav.nav-tabs
         - @ldap_servers.each_with_index do |server, i|
@@ -26,7 +26,7 @@
 
     = render 'devise/sessions/oauth_providers' if Gitlab.config.omniauth.enabled && devise_mapping.omniauthable?
 
-  .panel-footer
+  .login-footer
     - if gitlab_config.signup_enabled
       %p
         %span.light

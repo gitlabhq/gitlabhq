@@ -6,55 +6,52 @@
 module Gitlab
   module OAuth
     class User
-      class << self
-        attr_reader :auth_hash
-
-        def find(auth_hash)
-          self.auth_hash = auth_hash
-          find_by_uid_and_provider
-        end
-
-        def create(auth_hash)
-          user = new(auth_hash)
-          user.save_and_trigger_callbacks
-        end
-
-        def model
-          ::User
-        end
-
-        def auth_hash=(auth_hash)
-          @auth_hash = AuthHash.new(auth_hash)
-        end
-
-        protected
-        def find_by_uid_and_provider
-          model.where(provider: auth_hash.provider, extern_uid: auth_hash.uid).last
-        end
-      end
-
-      # Instance methods
-      attr_accessor :auth_hash, :user
+      attr_accessor :auth_hash, :gl_user
 
       def initialize(auth_hash)
         self.auth_hash = auth_hash
-        self.user = self.class.model.new(user_attributes)
-        user.skip_confirmation!
       end
 
+      def persisted?
+        gl_user.persisted?
+      end
+
+      def new?
+        !gl_user.persisted?
+      end
+
+      def valid?
+        gl_user.valid?
+      end
+
+      def save
+        gl_user.save!
+        log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
+        gl_user.block if needs_blocking?
+
+        gl_user
+      rescue ActiveRecord::RecordInvalid => e
+        log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
+        return self, e.record.errors
+      end
+
+      def gl_user
+        @user ||= find_by_uid_and_provider || build_new_user
+      end
+
+      protected
       def auth_hash=(auth_hash)
         @auth_hash = AuthHash.new(auth_hash)
       end
 
-      def save_and_trigger_callbacks
-        user.save!
-        log.info "(OAuth) Creating user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
-        user.block if needs_blocking?
+      def find_by_uid_and_provider
+        model.where(provider: auth_hash.provider, extern_uid: auth_hash.uid).last
+      end
 
-        user
-      rescue ActiveRecord::RecordInvalid => e
-        log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
-        return nil, e.record.errors
+      def build_new_user
+        model.new(user_attributes).tap do |user|
+          user.skip_confirmation!
+        end
       end
 
       def user_attributes
@@ -79,6 +76,10 @@ module Gitlab
 
       def needs_blocking?
         Gitlab.config.omniauth['block_auto_created_users']
+      end
+
+      def model
+        ::User
       end
     end
   end

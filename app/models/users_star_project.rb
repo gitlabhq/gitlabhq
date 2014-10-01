@@ -2,11 +2,11 @@
 #
 # Table name: users_star_projects
 #
-#  id                 :integer          not null, primary key
-#  starrer_id         :integer          not null
-#  project_id         :integer          not null
-#  created_at         :datetime
-#  updated_at         :datetime
+#  id         :integer          not null, primary key
+#  project_id :integer          not null
+#  user_id    :integer          not null
+#  created_at :datetime
+#  updated_at :datetime
 #
 
 class UsersStarProject < ActiveRecord::Base

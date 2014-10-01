@@ -1,3 +1,7 @@
+- if @error
+  .alert.alert-danger
+    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+    = @error
 %h3.page-title
   %i.icon-code-fork
   New branch
@@ -5,11 +9,11 @@
   .form-group
     = label_tag :branch_name, 'Name for new branch', class: 'control-label'
     .col-sm-10
-      = text_field_tag :branch_name, nil, placeholder: 'enter new branch name', required: true, tabindex: 1, class: 'form-control'
+      = text_field_tag :branch_name, params[:branch_name], placeholder: 'enter new branch name', required: true, tabindex: 1, class: 'form-control'
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10
-      = text_field_tag :ref, nil, placeholder: 'existing branch name, tag or commit SHA', required: true, tabindex: 2, class: 'form-control'
+      = text_field_tag :ref, params[:ref], placeholder: 'existing branch name, tag or commit SHA', required: true, tabindex: 2, class: 'form-control'
   .form-actions
     = submit_tag 'Create branch', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_branches_path(@project), class: 'btn btn-cancel'

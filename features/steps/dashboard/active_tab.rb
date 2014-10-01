@@ -3,19 +3,7 @@ class DashboardActiveTab < Spinach::FeatureSteps
   include SharedPaths
   include SharedActiveTab
 
-  Then 'the active main tab should be Home' do
-    ensure_active_main_tab('Activity')
-  end
-
-  Then 'the active main tab should be Issues' do
-    ensure_active_main_tab('Issues')
-  end
-
-  Then 'the active main tab should be Merge Requests' do
-    ensure_active_main_tab('Merge Requests')
-  end
-
-  Then 'the active main tab should be Help' do
+  step 'the active main tab should be Help' do
     ensure_active_main_tab('Help')
   end
 end

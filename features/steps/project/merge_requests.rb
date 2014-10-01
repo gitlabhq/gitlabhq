@@ -260,6 +260,16 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     expect(first('.text-file')).to have_content('.bundle')
   end
 
+  step 'I click Side-by-side Diff tab' do
+    click_link 'Side-by-side Diff'
+  end
+
+  step 'I should see comments on the side-by-side diff page' do
+    within '.files [id^=diff]:nth-child(1) .note-text' do
+      page.should have_visible_content "Line is correct"
+    end
+  end
+
   def project
     @project ||= Project.find_by!(name: "Shop")
   end

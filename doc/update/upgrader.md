@@ -21,6 +21,8 @@ If you have local changes to your GitLab repository the script will stash them a
 
 ## 2. Run GitLab upgrade tool
 
+Note: GitLab 7.2 adds `pkg-config` and `cmake` as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
+
     # Starting with GitLab version 7.0 upgrader script has been moved to bin directory
     cd /home/git/gitlab
     if [ -f bin/upgrade.rb ]; then sudo -u git -H ruby bin/upgrade.rb; else sudo -u git -H ruby script/upgrade.rb; fi
@@ -45,12 +47,12 @@ If all items are green, then congratulations upgrade is complete!
 
 If the `gitlab:check` task reports an outdated version of `gitlab-shell` you should upgrade it.
 
-Upgrade it by running the commands below after replacing 1.9.4 with the correct version number:
+Upgrade it by running the commands below after replacing 2.0.0 with the correct version number:
 
 ```
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
-sudo -u git -H git checkout v1.9.4
+sudo -u git -H git checkout v2.0.0
 ```
 
 ## One line upgrade command

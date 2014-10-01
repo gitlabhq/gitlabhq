@@ -1,3 +1,7 @@
+- if @error
+  .alert.alert-danger
+    %button{ type: "button", class: "close", "data-dismiss" => "alert"} &times;
+    = @error
 %h3.page-title
   %i.icon-code-fork
   New tag
@@ -5,12 +9,17 @@
   .form-group
     = label_tag :tag_name, 'Name for new tag', class: 'control-label'
     .col-sm-10
-      = text_field_tag :tag_name, nil, placeholder: 'v3.0.1', required: true, tabindex: 1, class: 'form-control'
+      = text_field_tag :tag_name, params[:tag_name], placeholder: 'v3.0.1', required: true, tabindex: 1, class: 'form-control'
   .form-group
     = label_tag :ref, 'Create from', class: 'control-label'
     .col-sm-10
-      = text_field_tag :ref, nil, placeholder: 'master', required: true, tabindex: 2, class: 'form-control'
+      = text_field_tag :ref, params[:ref], placeholder: 'master', required: true, tabindex: 2, class: 'form-control'
       .light Branch name or commit SHA
+  .form-group
+    = label_tag :message, 'Message', class: 'control-label'
+    .col-sm-10
+      = text_field_tag :message, nil, placeholder: 'Enter message.', required: false, tabindex: 3, class: 'form-control'
+      .light (Optional) Entering a message will create an annotated tag.
   .form-actions
     = submit_tag 'Create tag', class: 'btn btn-create', tabindex: 3
     = link_to 'Cancel', project_tags_path(@project), class: 'btn btn-cancel'

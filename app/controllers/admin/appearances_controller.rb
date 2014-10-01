@@ -25,6 +25,15 @@ class Admin::AppearancesController < Admin::ApplicationController
     end
   end
 
+  def logo
+    appearance = Appearance.last
+    appearance.remove_logo!
+
+    appearance.save
+
+    redirect_to admin_appearances_path, notice: 'Logo was succesfully removed.'
+  end
+
   private
 
   # Use callbacks to share common setup or constraints between actions.

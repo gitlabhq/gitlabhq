@@ -47,6 +47,8 @@
       #{@milestone.closed_items_count} closed
       &ndash;
       #{@milestone.open_items_count} open
+      &nbsp;
+      %span.light #{@milestone.percent_complete}% complete
       %span.pull-right= @milestone.expires_at
     .progress.progress-info
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}

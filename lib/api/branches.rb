@@ -80,9 +80,17 @@ module API
       #   POST /projects/:id/repository/branches
       post ":id/repository/branches" do
         authorize_push_project
-        @branch = CreateBranchService.new.execute(user_project, params[:branch_name], params[:ref], current_user)
-
-        present @branch, with: Entities::RepoObject, project: user_project
+        result = CreateBranchService.new.execute(user_project,
+                                                 params[:branch_name],
+                                                 params[:ref],
+                                                 current_user)
+        if result[:status] == :success
+          present result[:branch],
+                  with: Entities::RepoObject,
+                  project: user_project
+        else
+          render_api_error!(result[:message], 400)
+        end
       end
 
       # Delete branch
@@ -99,7 +107,7 @@ module API
         if result[:state] == :success
           true
         else
-          render_api_error!(result[:message], 405)
+          render_api_error!(result[:message], result[:return_code])
         end
       end
     end

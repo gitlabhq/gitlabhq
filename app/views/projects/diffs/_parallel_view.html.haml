@@ -1,0 +1,41 @@
+/ Side-by-side diff view
+%div.text-file.diff-wrap-lines
+  %table
+    - parallel_diff(diff_file, index).each do |line|
+      - type_left = line[0]
+      - line_number_left = line[1]
+      - line_content_left = line[2]
+      - line_code_left = line[3]
+      - type_right = line[4]
+      - line_number_right = line[5]
+      - line_content_right = line[6]
+      - line_code_right = line[7]
+
+      %tr.line_holder.parallel
+        - if type_left == 'match'
+          = render "projects/diffs/match_line_parallel", { line: line_content_left,
+          line_old: line_number_left, line_new: line_number_right }
+        - elsif type_left ==  'old' || type_left.nil?
+          %td.old_line{id: line_code_left, class: "#{type_left}"}
+            = link_to raw(line_number_left), "##{line_code_left}", id: line_code_left
+            %td.line_content{class: "parallel noteable_line #{type_left} #{line_code_left}", "line_code" => line_code_left }= raw line_content_left
+
+          - if type_right == 'new'
+            - new_line_class = 'new'
+            - new_line_code = line_code_right
+          - else
+            - new_line_class = nil
+            - new_line_code = line_code_left
+
+          %td.new_line{id: new_line_code, class: "#{new_line_class}", data: { linenumber: line_number_right }}
+            = link_to raw(line_number_right), "##{new_line_code}", id: new_line_code
+            %td.line_content.parallel{class: "noteable_line #{new_line_class} #{new_line_code}", "line_code" => new_line_code}= raw line_content_right
+
+      - if @reply_allowed
+        - comments_left, comments_right = organize_comments(type_left, type_right, line_code_left, line_code_right)
+        - if comments_left.present? || comments_right.present?
+          = render "projects/notes/diff_notes_with_reply_parallel", notes1: comments_left, notes2: comments_right
+
+- if diff_file.diff.diff.blank? && diff_file.mode_changed?
+  .file-mode-changed
+    File mode changed

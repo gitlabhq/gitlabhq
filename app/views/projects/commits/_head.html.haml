@@ -12,7 +12,7 @@
   = nav_link(controller: :tags) do
     = link_to project_tags_path(@project) do
       Tags
-      %span.badge= @repository.tags.length
+      %span.badge.js-totaltags-count= @repository.tags.length
 
   = nav_link(controller: :repositories, action: :stats) do
     = link_to stats_project_repository_path(@project) do

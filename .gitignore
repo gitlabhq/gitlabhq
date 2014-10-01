@@ -38,3 +38,4 @@ public/uploads.*
 public/assets/
 .envrc
 dump.rdb
+tags

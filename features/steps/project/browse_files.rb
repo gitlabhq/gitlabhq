@@ -20,7 +20,7 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     click_link ".gitignore"
   end
 
-  step 'I should see it content' do
+  step 'I should see its content' do
     page.should have_content "*.rbc"
   end
 
@@ -89,5 +89,18 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_link 'Browse Code »'
     page.should_not have_link 'Browse File »'
     page.should_not have_link 'Browse Dir »'
+  end
+
+  step 'I click on permalink' do
+    click_link 'permalink'
+  end
+
+  step 'I am redirected to the permalink URL' do
+    expect(current_path).to eq(project_blob_path(
+      @project, @project.repository.commit.sha + '/.gitignore'))
+  end
+
+  step "I don't see the permalink link" do
+    expect(page).not_to have_link('permalink')
   end
 end

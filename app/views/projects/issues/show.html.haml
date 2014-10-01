@@ -57,9 +57,9 @@
 - content_for :note_actions do
   - if can?(current_user, :modify_issue, @issue)
     - if @issue.closed?
-      = link_to 'Reopen Issue', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put,  class: "btn btn-grouped btn-reopen"
+      = link_to 'Reopen Issue', project_issue_path(@project, @issue, issue: {state_event: :reopen }, status_only: true), method: :put, class: "btn btn-grouped btn-reopen js-note-target-reopen", title: 'Reopen Issue'
     - else
-      = link_to 'Close Issue', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close", title: "Close Issue"
+      = link_to 'Close Issue', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close js-note-target-close", title: "Close Issue"
 
 .participants
   %cite.cgray #{@issue.participants.count} participants
@@ -68,6 +68,7 @@
 
   .issue-show-labels.pull-right
     - @issue.labels.each do |label|
-      = render_colored_label(label)
+      = link_to project_issues_path(@project, label_name: label.name) do
+        = render_colored_label(label)
 
 .voting_notes#notes= render "projects/notes/notes_with_form"

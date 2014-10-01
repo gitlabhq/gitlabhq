@@ -41,6 +41,7 @@
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")
+  ace.config.loadModule("ace/ext/searchbox");
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
   editor.setValue("#{escape_javascript(@blob.data)}");

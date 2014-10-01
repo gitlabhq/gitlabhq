@@ -7,9 +7,9 @@
 - Ubuntu
 - Debian
 - CentOS
-- RedHat Enterprise Linux
-- Scientific Linux
-- Oracle Linux
+- RedHat Enterprise Linux (please use the CentOS packages and instructions)
+- Scientific Linux (please use the CentOS packages and instructions)
+- Oracle Linux (please use the CentOS packages and instructions)
 
 For the installations options please see [the installation page on the GitLab website](https://about.gitlab.com/installation/).
 
@@ -34,7 +34,7 @@ Please consider using a virtual machine to run GitLab.
 
 GitLab requires Ruby (MRI) 2.0 or 2.1
 You will have to use the standard MRI implementation of Ruby.
-We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/)) but GitLab needs several Gems that have native extensions.
+We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab needs several Gems that have native extensions.
 
 ## Hardware requirements
 

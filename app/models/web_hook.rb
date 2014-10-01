@@ -23,7 +23,7 @@ class WebHook < ActiveRecord::Base
   default_value_for :merge_requests_events, false
 
   # HTTParty timeout
-  default_timeout 10
+  default_timeout Gitlab.config.gitlab.webhook_timeout
 
   validates :url, presence: true,
                   format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }

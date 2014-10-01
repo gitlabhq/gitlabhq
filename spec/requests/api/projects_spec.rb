@@ -114,6 +114,7 @@ describe API::API, api: true  do
 
     it "should assign attributes to project" do
       project = attributes_for(:project, {
+        path: 'camelCasePath',
         description: Faker::Lorem.sentence,
         issues_enabled: false,
         merge_requests_enabled: false,
@@ -123,7 +124,6 @@ describe API::API, api: true  do
       post api("/projects", user), project
 
       project.each_pair do |k,v|
-        next if k == :path
         json_response[k.to_s].should == v
       end
     end

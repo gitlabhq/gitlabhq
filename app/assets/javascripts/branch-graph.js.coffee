@@ -1,4 +1,4 @@
-class BranchGraph
+class @BranchGraph
   constructor: (@element, @options) ->
     @preparedCommits = {}
     @mtime = 0
@@ -120,23 +120,32 @@ class BranchGraph
       @top.toFront()
 
   bindEvents: ->
-    drag = {}
     element = @element
 
     $(element).scroll (event) =>
       @renderPartialGraph()
 
-    $(window).on
-      keydown: (event) =>
-        # left
-        element.scrollLeft element.scrollLeft() - 50  if event.keyCode is 37
-        # top
-        element.scrollTop element.scrollTop() - 50  if event.keyCode is 38
-        # right
-        element.scrollLeft element.scrollLeft() + 50  if event.keyCode is 39
-        # bottom
-        element.scrollTop element.scrollTop() + 50  if event.keyCode is 40
-        @renderPartialGraph()
+  scrollDown: =>
+    @element.scrollTop @element.scrollTop() + 50
+    @renderPartialGraph()
+
+  scrollUp: =>
+    @element.scrollTop @element.scrollTop() - 50
+    @renderPartialGraph()
+
+  scrollLeft: =>
+    @element.scrollLeft @element.scrollLeft() - 50
+    @renderPartialGraph()
+
+  scrollRight: =>
+    @element.scrollLeft @element.scrollLeft() + 50
+    @renderPartialGraph()
+
+  scrollBottom: =>
+    @element.scrollTop @element.find('svg').height()
+
+  scrollTop: =>
+    @element.scrollTop 0
 
   appendLabel: (x, y, commit) ->
     return unless commit.refs
@@ -325,5 +334,3 @@ Raphael::textWrap = (t, width) ->
   b = t.getBBox()
   h = Math.abs(b.y2) - Math.abs(b.y) + 1
   t.attr y: b.y + h
-
-@BranchGraph = BranchGraph

@@ -19,7 +19,7 @@ describe 'Search::GlobalService' do
       it 'should return public projects only' do
         context = Search::GlobalService.new(nil, search: "searchable")
         results = context.execute
-        results[:projects].should match_array [public_project]
+        results.objects('projects').should match_array [public_project]
       end
     end
 
@@ -27,19 +27,19 @@ describe 'Search::GlobalService' do
       it 'should return public, internal and private projects' do
         context = Search::GlobalService.new(user, search: "searchable")
         results = context.execute
-        results[:projects].should match_array [public_project, found_project, internal_project]
+        results.objects('projects').should match_array [public_project, found_project, internal_project]
       end
 
       it 'should return only public & internal projects' do
         context = Search::GlobalService.new(internal_user, search: "searchable")
         results = context.execute
-        results[:projects].should match_array [internal_project, public_project]
+        results.objects('projects').should match_array [internal_project, public_project]
       end
 
       it 'namespace name should be searchable' do
         context = Search::GlobalService.new(user, search: found_project.namespace.path)
         results = context.execute
-        results[:projects].should match_array [found_project]
+        results.objects('projects').should match_array [found_project]
       end
     end
   end

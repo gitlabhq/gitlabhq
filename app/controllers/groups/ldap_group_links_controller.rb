@@ -16,7 +16,7 @@ class Groups::LdapGroupLinksController < ApplicationController
         redirect_to :back, notice: 'New LDAP link saved'
       end
     else
-      redirect_to :back, alert: "Could not create new LDAP link: #{ldap_group_link.error.full_messages * ', '}"
+      redirect_to :back, alert: "Could not create new LDAP link: #{ldap_group_link.errors.full_messages * ', '}"
     end
   end
 
