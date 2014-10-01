@@ -51,7 +51,7 @@ module Gitlab
 
     private
 
-    def reference_link(type, identifier, project)
+    def reference_link(type, identifier, _, _)
       # Append identifier to the appropriate collection.
       send("#{type}s") << identifier
     end

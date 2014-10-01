@@ -146,13 +146,15 @@ module Gitlab
     end
 
     # Called from #parse_references.  Attempts to build a gitlab reference
-    # link.  Returns nil if either +type+ or +project+ are nil, if the match
-    # string is an HTML entity, or if the reference is invalid.
+    # link.  Returns nil if +type+ is nil, if the match string is an HTML
+    # entity, if the reference is invalid, or if the matched text includes an
+    # invalid project path.
     def parse_result(match_info, type, project, project_prefix)
       prefix = match_info[:prefix]
       suffix = match_info[:suffix]
 
-      return nil if html_entity?(prefix, suffix) || project.nil? || type.nil?
+      return nil if html_entity?(prefix, suffix) || type.nil?
+      return nil if project.nil? && !project_prefix.nil?
 
       identifier = match_info[type]
       ref_link = reference_link(type, identifier, project, project_prefix)
