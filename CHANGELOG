@@ -6,6 +6,7 @@ v 7.4.0
   - Default branch is protected by default
   - Increase unicorn timeout to 60 seconds
   - Sort search autocomplete projects by stars count so most popular go first
+  - Add README to tab on project show page
   - Do not delete tmp/repositories itself during clean-up, only its contents
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
