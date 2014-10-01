@@ -37,4 +37,4 @@
     .merge-request-labels
       - merge_request.labels.each do |label|
         = link_to project_merge_requests_path(merge_request.project, label_name: label.name) do
-          = render_colored_label(label)
+          = render partial: 'shared/colored_label', locals: {label: label}

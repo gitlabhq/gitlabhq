@@ -3,13 +3,12 @@ module LabelsHelper
     @project.labels.pluck(:title)
   end
 
-  def render_colored_label(label)
-    label_color = label.color || Label::DEFAULT_COLOR
-    text_color = text_color_for_bg(label_color)
+  def label_color(label)
+    label.color || Label::DEFAULT_COLOR
+  end
 
-    content_tag :span, class: 'label color-label', style: "background:#{label_color};color:#{text_color}" do
-      label.name
-    end
+  def text_color(label_color)
+    text_color_for_bg(label_color)
   end
 
   def suggested_colors

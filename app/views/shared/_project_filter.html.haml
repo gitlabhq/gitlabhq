@@ -43,7 +43,7 @@
           - @project.labels.order_by_name.each do |label|
             %li{class: label_filter_class(label.name)}
               = link_to labels_filter_path(label.name) do
-                = render_colored_label(label)
+                = render partial: 'shared/colored_label', locals: {label: label}
                 - if selected_label?(label.name)
                   .pull-right
                     %i.fa.fa-times
