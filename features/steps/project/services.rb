@@ -13,6 +13,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Hipchat'
     page.should have_content 'GitLab CI'
     page.should have_content 'Assembla'
+    page.should have_content 'Pushover'
   end
 
   step 'I click gitlab-ci service link' do
@@ -117,5 +118,27 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Subdomain').value.should == 'gitlab'
     find_field('Room').value.should == '#gitlab'
     find_field('Token').value.should == 'verySecret'
+  end
+
+  step 'I click Pushover service link' do
+    click_link 'Pushover'
+  end
+
+  step 'I fill Pushover settings' do
+    check 'Active'
+    fill_in 'Api key', with: 'verySecret'
+    fill_in 'User key', with: 'verySecret'
+    fill_in 'Device', with: 'myDevice'
+    select 'High Priority', from: 'Priority'
+    select 'Bike', from: 'Sound'
+    click_button 'Save'
+  end
+
+  step 'I should see Pushover service settings saved' do
+    find_field('Api key').value.should == 'verySecret'
+    find_field('User key').value.should == 'verySecret'
+    find_field('Device').value.should == 'myDevice'
+    find_field('Priority').find('option[selected]').value.should == '1'
+    find_field('Sound').find('option[selected]').value.should == 'bike'
   end
 end
