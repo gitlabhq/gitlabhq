@@ -10,6 +10,7 @@ v 7.4.0
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
   - API: filter project issues by milestone (Julien Bianchi)
+  - Fail harder in the backup script
 
 v 7.3.2
   - Fix creating new file via web editor
