@@ -1,3 +1,7 @@
+v 7.3.2
+  - Fix creating new file via web editor
+  - Use gitlab-shell v2.0.1
+
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
   - Fix error 500 when viewing diff on a file with changed permissions
