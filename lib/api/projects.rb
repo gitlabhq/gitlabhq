@@ -153,6 +153,23 @@ module API
         end
       end
 
+      # Fork new project for the current user.
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      # Example Request
+      #   POST /projects/fork/:id
+      post 'fork/:id' do
+        @forked_project =
+          ::Projects::ForkService.new(user_project,
+                                      current_user).execute
+        if @forked_project.errors.any?
+          conflict!(@forked_project.errors.messages)
+        else
+          present @forked_project, with: Entities::Project
+        end
+      end
+
       # Remove project
       #
       # Parameters:
