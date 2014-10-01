@@ -1,0 +1,20 @@
+/**
+ * Styles that apply to all GFM related forms.
+ */
+.issue-form, .merge-request-form, .wiki-form {
+  .description {
+    height: 20em;
+  }
+}
+
+.wiki-form {
+  .description {
+    height: 26em;
+  }
+}
+
+.milestone-form {
+  .description {
+    height: 14em;
+  }
+}
