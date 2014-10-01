@@ -5,7 +5,7 @@
 
 %hr
 
-= form_for [@project, @milestone], html: {class: "new_milestone form-horizontal"}  do |f|
+= form_for [@project, @milestone], html: {class: "new_milestone form-horizontal gfm-form"}  do |f|
   -if @milestone.errors.any?
     .alert.alert-danger
       %ul

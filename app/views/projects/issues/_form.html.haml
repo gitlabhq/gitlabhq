@@ -8,7 +8,7 @@
         .alert.alert-info
           = "Please review the <strong>#{link_to "guidelines for contribution", contribution_guide_url}</strong> to this repository.".html_safe
 
-  = form_for [@project, @issue], html: { class: 'form-horizontal issue-form' } do |f|
+  = form_for [@project, @issue], html: { class: 'form-horizontal issue-form gfm-form' } do |f|
     = render 'projects/issuable_form', f: f, issuable: @issue
     .form-group
       = f.label :label_ids, class: 'control-label' do

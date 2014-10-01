@@ -190,7 +190,7 @@ $(document).ready ->
 
   $(".markdown-selector").click (e) ->
     e.preventDefault()
-    $(@).closest(".note-write-holder").find(".div-dropzone").click()
+    $(@).closest('.gfm-form').find('.div-dropzone').click()
     return
 
   return
