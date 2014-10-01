@@ -1,6 +1,5 @@
 v 7.4.0
   - Refactored membership logic
-  - Fix creating new files with web editor
   - Improve error reporting on users API (Julien Bianchi)
   - Refactor test coverage tools usage. Use SIMPLECOV=true to generate it locally
   - Default branch is protected by default
@@ -11,6 +10,10 @@ v 7.4.0
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
   - API: filter project issues by milestone (Julien Bianchi)
+
+v 7.3.2
+  - Fix creating new file via web editor
+  - Use gitlab-shell v2.0.1
 
 v 7.3.1
   - Fix ref parsing in Gitlab::GitAccess
