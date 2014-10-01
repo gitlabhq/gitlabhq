@@ -8,7 +8,7 @@
   = form_tag(project_edit_tree_path(@project, @id), method: :put, class: "form-horizontal") do
     .file-holder.file
       .file-title
-        %i.icon-file
+        %i.fa.fa-file
         %span.file_name
           %span.monospace.light #{@ref}:
           = @path
@@ -20,7 +20,7 @@
         .js-edit-mode-pane#preview.hide
           .center
             %h2
-              %i.icon-spinner.icon-spin
+              %i.fa.fa-spinner.fa-spin
 
     .form-group.commit_message-group
       = label_tag 'commit_message', class: "control-label" do

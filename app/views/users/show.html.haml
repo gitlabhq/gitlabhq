@@ -6,7 +6,7 @@
       - if @user == current_user
         .pull-right
           = link_to profile_path, class: 'btn' do
-            %i.icon-edit
+            %i.fa.fa-pencil-square-o
             Edit Profile settings
       %br
       %span.user-show-username #{@user.username}

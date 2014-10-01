@@ -1,6 +1,6 @@
 %ul.breadcrumb.repo-breadcrumb
   %li
-    %i.icon-angle-right
+    %i.fa.fa-angle-right
     = link_to project_tree_path(@project, @ref) do
       = @project.path
   - tree_breadcrumbs(@tree, 6) do |title, path|
@@ -22,7 +22,7 @@
 %div#tree-content-holder.tree-content-holder
   %article.file-holder
     .file-title.clearfix
-      %i.icon-file
+      %i.fa.fa-file
       %span.file_name
         = blob.name
         %small= number_to_human_size blob.size

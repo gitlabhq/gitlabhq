@@ -4,7 +4,7 @@
   .pull-right
     - if can? current_user, :push_code, @project
       = link_to new_project_branch_path(@project), class: 'btn btn-create' do
-        %i.icon-add-sign
+        %i.fa.fa-add-sign
         New branch
       &nbsp;
     .dropdown.inline

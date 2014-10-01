@@ -36,10 +36,10 @@ module EventsHelper
 
   def icon_for_event
     {
-      EventFilter.push     => "icon-upload-alt",
-      EventFilter.merged   => "icon-check",
-      EventFilter.comments => "icon-comments",
-      EventFilter.team     => "icon-user",
+      EventFilter.push     => 'fa fa-upload',
+      EventFilter.merged   => 'fa fa-check-square-o',
+      EventFilter.comments => 'fa fa-comments',
+      EventFilter.team     => 'fa fa-user',
     }
   end
 

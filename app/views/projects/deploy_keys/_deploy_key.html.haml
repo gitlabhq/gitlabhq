@@ -2,19 +2,19 @@
   .pull-right
     - if @available_keys.include?(deploy_key)
       = link_to enable_project_deploy_key_path(@project, deploy_key), class: 'btn btn-small', method: :put do
-        %i.icon-plus
+        %i.fa.fa-plus
         Enable
     - else
       - if deploy_key.projects.count > 1
         = link_to disable_project_deploy_key_path(@project, deploy_key), class: 'btn btn-small', method: :put do
-          %i.icon-off
+          %i.fa.fa-power-off
           Disable
       - else
         = link_to 'Remove', project_deploy_key_path(@project, deploy_key), data: { confirm: 'You are going to remove deploy key. Are you sure?'}, method: :delete, class: "btn btn-remove delete-key btn-small pull-right"
 
 
   = link_to project_deploy_key_path(deploy_key.projects.include?(@project) ? @project : deploy_key.projects.first, deploy_key) do
-    %i.icon-key
+    %i.fa.fa-key
     %strong= deploy_key.title
 
   %p.light.prepend-top-10
