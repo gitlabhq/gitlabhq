@@ -4,7 +4,7 @@ end
 
 if ENV['COVERALLS']
   require 'coveralls'
-  Coveralls.wear_merged!('rails')
+  Coveralls.wear_merged!
 end
 
 ENV["RAILS_ENV"] ||= 'test'
