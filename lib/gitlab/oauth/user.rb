@@ -26,7 +26,7 @@ module Gitlab
 
       def save
         gl_user.save!
-        log.info "(OAuth) Creating user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
+        log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user.block if needs_blocking?
 
         gl_user
