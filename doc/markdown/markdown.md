@@ -177,6 +177,12 @@ GFM will recognize the following:
 - 1234567 : for commits
 - \[file\](path/to/file) : for file references
 
+GFM also recognizes references to commits, issues, and merge requests in other projects:
+
+- namespace/project#123 : for issues
+- namespace/project!123 : for merge requests
+- namespace/project@1234567 : for commits
+
 # Standard Markdown
 
 ## Headers
