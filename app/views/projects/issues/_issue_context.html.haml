@@ -20,6 +20,6 @@
         = f.submit class: 'btn'
       - elsif issue.milestone
         = link_to project_milestone_path(@project, @issue.milestone) do
-         = @issue.milestone.title
+          = @issue.milestone.title
       - else
         None
