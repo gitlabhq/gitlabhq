@@ -1,3 +1,5 @@
+![GitLab Flow](gitlab_flow.png)
+
 # Introduction
 
 Version management with git makes branching and merging much easier than older versioning systems such as SVN.
