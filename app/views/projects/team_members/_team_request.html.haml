@@ -1,0 +1,34 @@
+-# TODO implement. Mock only.
+.team-table
+  - can_admin_project = (can? current_user, :admin_project, @project)
+  .panel.panel-default
+    .panel-heading
+      %strong #{@project.name}
+      pending access requests (#{members.count})
+    %ul.well-list
+      - members.each do |team_member|
+        -#= render 'team_request', member: team_member, current_user_can_admin_project: can_admin_project
+        - member = team_member
+        - current_user_can_admin_project = can_admin_project
+        - user = member.user
+        %li{id: dom_id(user), class: "team_member_row access-#{member.human_access.downcase}"}
+          .pull-right
+            - if current_user_can_admin_project
+              - unless @project.personal? && user == current_user
+                .pull-left
+                  = form_for(member, as: :team_member, url: project_team_member_path(@project, member.user)) do |f|
+                    = f.select :project_access, options_for_select(UsersProject.access_roles, member.project_access), {}, class: "medium project-access-select span2 trigger-submit"
+                  &nbsp;
+                = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, class: "btn-tiny btn btn-new", title: 'Remove user from team' do
+                  %i.icon-plus.icon-white
+                = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from team' do
+                  %i.icon-minus.icon-white
+          = image_tag avatar_icon(user.email, 32), class: "avatar s32"
+          %p
+            %strong= user.name
+          %span.cgray= user.username
+    -# TODO find best way to add form to a panel at bottom (e.g. footer or some type of separator).
+    .panel-footer{style: 'text-align:right;'}
+      = button_to 'TODO', class: 'btn btn-new', title: 'Accept all requests' do
+        %i.icon-plus.icon-white
+        Accept all requests
