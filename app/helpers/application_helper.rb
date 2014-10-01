@@ -305,4 +305,10 @@ module ApplicationHelper
       profile_key_path(key)
     end
   end
+
+  # Generate a path to the current URL with given url_for options.
+  # Existing whitelisted params are used as defaults if missing.
+  def merge_params_path(options, whitelist)
+    url_for(params.slice(*whitelist).merge(options))
+  end
 end

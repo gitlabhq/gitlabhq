@@ -34,15 +34,7 @@ module GroupsHelper
   end
 
   def group_filter_path(entity, options={})
-    exist_opts = {
-      status: params[:status]
-    }
-
-    options = exist_opts.merge(options)
-
-    path = request.path
-    path << "?#{options.to_param}"
-    path
+    merge_params_path(options, [:status])
   end
 
   def group_settings_page?
