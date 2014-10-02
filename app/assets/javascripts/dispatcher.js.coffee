@@ -27,6 +27,8 @@ class Dispatcher
         new ZenMode()
       when 'projects:milestones:show'
         new Milestone()
+      when 'projects:milestones:new'
+        new ZenMode()
       when 'projects:issues:new','projects:issues:edit'
         GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
@@ -87,6 +89,7 @@ class Dispatcher
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
+            new ZenMode()
           when 'snippets', 'labels', 'graphs'
             shortcut_handler = new ShortcutsNavigation()
           when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'

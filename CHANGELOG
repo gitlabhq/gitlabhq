@@ -12,6 +12,7 @@ v 7.4.0
   - API: Add support for forking a project via the API (Bernhard Kaindl)
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script
+  - Zen mode for wiki and milestones (Robert Schilling)
 
 v 7.3.2
   - Fix creating new file via web editor
