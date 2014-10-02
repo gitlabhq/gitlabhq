@@ -40,6 +40,8 @@ class MergeRequest
     if @opts.ci_enable
       $.get @opts.url_to_ci_check, (data) =>
         this.showCiState data.status
+        if data.coverage
+          this.showCiCoverage data.coverage
       , 'json'
 
   bindEvents: ->
@@ -102,7 +104,11 @@ class MergeRequest
       when "running", "pending"
         $('.mr-state-widget').addClass("panel-warning")
 
-
+  showCiCoverage: (coverage) ->
+    cov_html = $('<span>')
+    cov_html.addClass('ci-coverage')
+    cov_html.text('Coverage ' + coverage + '%')
+    $('.ci_widget:visible').append(cov_html)
 
   loadDiff: (event) ->
     $.ajax
