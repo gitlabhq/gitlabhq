@@ -23,6 +23,7 @@ module Backup
         puts "done".green
       else
         puts "failed".red
+        abort 'Backup failed'
       end
 
       upload(tar_file)
@@ -44,6 +45,7 @@ module Backup
         puts "done".green
       else
         puts "failed".red
+        abort 'Backup failed'
       end
     end
 
@@ -53,6 +55,7 @@ module Backup
         puts "done".green
       else
         puts "failed".red
+        abort 'Backup failed'
       end
     end
 
