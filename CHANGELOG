@@ -13,6 +13,7 @@ v 7.4.0
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script
   - Zen mode for wiki and milestones (Robert Schilling)
+  - Added Asana service integration (Jeremy Benoist)
 
 v 7.3.2
   - Fix creating new file via web editor
