@@ -9,7 +9,7 @@
   %span.pull-right
     = link_to 'Change branches', new_project_merge_request_path(@project)
 
-= form_for [@project, @merge_request], html: { class: "merge-request-form" } do |f|
+= form_for [@project, @merge_request], html: { class: "merge-request-form gfm-form" } do |f|
   .panel.panel-default
 
     .panel-body
