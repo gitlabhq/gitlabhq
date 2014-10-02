@@ -15,7 +15,7 @@
 require 'asana'
 
 class AsanaService < Service
-  prop_accessor :api_key
+  prop_accessor :api_key, :restrict_to_branch
   validates :api_key, presence: true, if: :activated?
 
   def title
@@ -42,7 +42,8 @@ You can find your Api Keys here: http://developer.asana.com/documentation/#api_k
 
   def fields
     [
-      { type: 'text', name: 'api_key', placeholder: 'User API token. User must have access to task, all comments will be attributed to this user.' }
+      { type: 'text', name: 'api_key', placeholder: 'User API token. User must have access to task, all comments will be attributed to this user.' },
+      { type: 'text', name: 'restrict_to_branch', placeholder: 'Comma-separated list of branches which will be automatically inspected. Leave blank to include all branches.' }
     ]
   end
 
@@ -53,6 +54,14 @@ You can find your Api Keys here: http://developer.asana.com/documentation/#api_k
 
     user = push[:user_name]
     branch = push[:ref].gsub('refs/heads/', '')
+
+    branch_restriction = restrict_to_branch.to_s
+
+    # check the branch restriction is poplulated and branch is not included
+    if branch_restriction.length > 0 && branch_restriction.index(branch) == nil
+      return
+    end
+
     project_name = project.name_with_namespace
     push_msg = user + ' pushed to branch ' + branch + ' of ' + project_name
 
