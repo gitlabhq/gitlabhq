@@ -69,8 +69,8 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Diff'
   end
 
-  step 'I click on "Commit changes"' do
-    click_button 'Commit changes'
+  step 'I click on "Commit Changes"' do
+    click_button 'Commit Changes'
   end
 
   step 'I click on "Remove"' do
