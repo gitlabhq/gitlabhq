@@ -52,7 +52,7 @@ module Gitlab
 
         def find_by_uid(uid)
           # LDAP distinguished name is case-insensitive
-          model.where("provider = ? and lower(extern_uid) = ?", provider, uid.downcase).last
+          model.where("provider = ? and lower(extern_uid) = ?", provider, uid.mb_chars.downcase).last
         end
 
         def provider
