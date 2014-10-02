@@ -87,7 +87,7 @@
 
         = form_tag project_teams_update_admin_group_path(@group), id: "new_team_member", class: "bulk_import", method: :put  do
           %div
-            = users_select_tag(:user_ids, { multiple: true, skip_ldap: @group.ldap_cn.present? })
+            = users_select_tag(:user_ids, { multiple: true, skip_ldap: @group.ldap_synced? })
           %div.prepend-top-10
             = select_tag :group_access, options_for_select(UsersGroup.group_access_roles), class: "project-access-select select2"
           %hr
