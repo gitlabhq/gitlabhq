@@ -1,4 +1,4 @@
-= form_for [@project, @merge_request], html: { class: "merge-request-form form-horizontal" } do |f|
+= form_for [@project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
   .merge-request-form-info
     = render 'projects/issuable_form', f: f, issuable: @merge_request
     .form-group
