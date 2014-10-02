@@ -1,5 +1,5 @@
 password = if ENV['GITLAB_ROOT_PASSWORD'].blank?
-             "5iveL!fe"
+             '12345678'
            else
              ENV['GITLAB_ROOT_PASSWORD']
            end
