@@ -1,8 +1,6 @@
 module OmniAuth::Strategies
-  class Ldap0 < LDAP; end
-  class Ldap1 < LDAP; end
-  class Ldap2 < LDAP; end
-  class Ldap3 < LDAP; end
-  class Ldap4 < LDAP; end
-  class Ldap5 < LDAP; end
+  Gitlab.config.ldap.servers.each do |server|
+    class_name = "Ldap#{server.index}"
+    const_set(class_name, Class.new(LDAP))
+  end
 end

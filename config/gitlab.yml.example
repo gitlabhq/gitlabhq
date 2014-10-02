@@ -134,63 +134,69 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
-    host: '_your_ldap_server'
-    port: 636
-    uid: 'sAMAccountName'
-    method: 'ssl' # "tls" or "ssl" or "plain"
-    bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
-    password: '_the_password_of_the_bind_user'
+    servers:
+      -
+        host: '_your_ldap_server'
+        port: 636
+        uid: 'sAMAccountName'
+        method: 'ssl' # "tls" or "ssl" or "plain"
+        bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+        password: '_the_password_of_the_bind_user'
 
-    # This setting controls the amount of time between LDAP permission checks for each user.
-    # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
-    # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
-    # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
-    #
-    # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
-    # sync_time: 3600
+        # When authenticating against an ldap server, this will provide a unique identifier
+        # Only use uniq numbers here
+        index: 1
 
-    # If allow_username_or_email_login is enabled, GitLab will ignore everything
-    # after the first '@' in the LDAP username submitted by the user on login.
-    #
-    # Example:
-    # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
-    # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
-    #
-    # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
-    # disable this setting, because the userPrincipalName contains an '@'.
-    allow_username_or_email_login: false
+        # This setting controls the amount of time between LDAP permission checks for each user.
+        # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
+        # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
+        # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
+        #
+        # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
+        # sync_time: 3600
 
-    # Base where we can search for users
-    #
-    #   Ex. ou=People,dc=gitlab,dc=example
-    #
-    base: ''
+        # If allow_username_or_email_login is enabled, GitLab will ignore everything
+        # after the first '@' in the LDAP username submitted by the user on login.
+        #
+        # Example:
+        # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
+        # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
+        #
+        # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+        # disable this setting, because the userPrincipalName contains an '@'.
+        allow_username_or_email_login: false
 
-    # Filter LDAP users
-    #
-    #   Format: RFC 4515
-    #   Ex. (employeeType=developer)
-    #
-    user_filter: ''
+        # Base where we can search for users
+        #
+        #   Ex. ou=People,dc=gitlab,dc=example
+        #
+        base: ''
 
-    # Base where we can search for groups
-    #
-    #   Ex. ou=Groups,dc=gitlab,dc=example
-    #
-    group_base: ''
+        # Filter LDAP users
+        #
+        #   Format: RFC 4515
+        #   Ex. (employeeType=developer)
+        #
+        user_filter: ''
 
-    # LDAP group of users who should be admins in GitLab
-    #
-    #   Ex. GLAdmins
-    #
-    admin_group: ''
+        # Base where we can search for groups
+        #
+        #   Ex. ou=Groups,dc=gitlab,dc=example
+        #
+        group_base: ''
 
-    # Name of attribute which holds a ssh public key of the user object.
-    # If false or nil, SSH key syncronisation will be disabled.
-    #
-    #   Ex. sshpublickey
-    #
-    sync_ssh_keys: false
+        # LDAP group of users who should be admins in GitLab
+        #
+        #   Ex. GLAdmins
+        #
+        admin_group: ''
+
+        # Name of attribute which holds a ssh public key of the user object.
+        # If false or nil, SSH key syncronisation will be disabled.
+        #
+        #   Ex. sshpublickey
+        #
+        sync_ssh_keys: false
 
   ## OmniAuth settings
   omniauth:

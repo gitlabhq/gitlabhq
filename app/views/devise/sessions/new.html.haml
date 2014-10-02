@@ -4,15 +4,15 @@
   .login-body
     - if ldap_enabled? && gitlab_config.signin_enabled
       %ul.nav.nav-tabs
-        - @ldap_servers.each_with_index do |server, i|
+        - @ldap_servers.each do |server|
           %li{class: (:active if server['primary'])}
-            = link_to server['name'], "#tab-ldap#{i}", 'data-toggle' => 'tab'
+            = link_to server['label'], "#tab-ldap#{server.index}", 'data-toggle' => 'tab'
         %li
           = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
-        - @ldap_servers.each_with_index do |server, i|
-          %div.tab-pane{id: "tab-ldap#{i}", class: (:active if server['primary'])}
-            = render 'devise/sessions/new_ldap', provider: "ldap#{i}"
+        - @ldap_servers.each do |server|
+          %div.tab-pane{id: "tab-ldap#{server.index}", class: (:active if server['primary'])}
+            = render 'devise/sessions/new_ldap', provider: "ldap#{server.index}"
         %div#tab-signin.tab-pane
           = render 'devise/sessions/new_base'
 
@@ -37,7 +37,6 @@
     %p
       %span.light Did not receive confirmation email?
       = link_to "Send again", new_confirmation_path(resource_name)
-
 
     - if extra_config.has_key?('sign_in_text')
       %hr

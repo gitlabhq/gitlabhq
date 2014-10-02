@@ -64,7 +64,7 @@ if Settings.ldap['enabled'] && Settings.ldap['host'].present?
   excluded_per_server_settings = %w(sync_time allow_username_or_email_login)
   server = Settings.ldap.except(excluded_per_server_settings)
   server['primary'] = true
-  server['name'] = 'LDAP'
+  server['label'] = 'LDAP'
   Settings.ldap['servers'] = [server]
 end
 
