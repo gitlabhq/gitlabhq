@@ -152,7 +152,7 @@ class ProjectTeam
   def max_invited_level(user_id)
     project.project_group_links.map do |group_link|
       invited_group = group_link.group
-      access = invited_group.users_groups.find_by(user_id: user_id).try(:access_field)
+      access = invited_group.group_members.find_by(user_id: user_id).try(:access_field)
 
       # If group member has higher access level we should restrict it
       # to max allowed access level
@@ -174,10 +174,10 @@ class ProjectTeam
     if project.invited_groups.any?
       project.project_group_links.each do |group_link|
         invited_group = group_link.group
-        im = invited_group.users_groups
+        im = invited_group.group_members
 
         if level
-          int_level = UsersGroup.group_access_roles[level.to_s.singularize.titleize]
+          int_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
 
           # Skip group members if we ask for masters
           # but max group access is developers
