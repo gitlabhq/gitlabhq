@@ -171,7 +171,7 @@
               .pull-right
                 %span.light= user_group.human_access
                 - unless user_group.owner?
-                  = link_to group_users_group_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+                  = link_to group_group_member_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                     %i.icon-remove.icon-white
     - else
       .nothing-here-block This user has no groups.
