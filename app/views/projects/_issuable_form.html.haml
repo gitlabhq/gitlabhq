@@ -42,8 +42,14 @@
     = f.label :milestone_id, class: 'control-label' do
       %i.icon-time
       Milestone
-    .col-sm-10= f.select(:milestone_id, milestone_options(issuable),
-        { include_blank: 'Select milestone' }, { class: 'select2' })
+    .col-sm-10
+      - if milestone_options(issuable).present?
+        = f.select(:milestone_id, milestone_options(issuable),
+          { include_blank: 'Select milestone' }, { class: 'select2' })
+      - else
+        %span.light No open milestones available.
+      &nbsp;
+      = link_to 'Create new milestone', new_project_milestone_path
 .form-group
   = f.label :label_ids, class: 'control-label' do
     %i.icon-tag
