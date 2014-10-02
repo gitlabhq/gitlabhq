@@ -62,6 +62,7 @@ class Project < ActiveRecord::Base
   has_one :hipchat_service, dependent: :destroy
   has_one :flowdock_service, dependent: :destroy
   has_one :assembla_service, dependent: :destroy
+  has_one :asana_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
@@ -311,7 +312,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla asana emails_on_push gemnasium slack)
   end
 
   def gitlab_ci?

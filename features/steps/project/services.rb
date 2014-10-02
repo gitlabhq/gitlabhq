@@ -13,6 +13,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Hipchat'
     page.should have_content 'GitLab CI'
     page.should have_content 'Assembla'
+    page.should have_content 'Asana'
   end
 
   step 'I click gitlab-ci service link' do
@@ -86,6 +87,20 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I should see Assembla service settings saved' do
     find_field('Token').value.should == 'verySecret'
+  end
+
+  step 'I click Asana service link' do
+    click_link 'Asana'
+  end
+
+  step 'I fill Asana settings' do
+    check 'Active'
+    fill_in 'Api key', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see Asana service settings saved' do
+    find_field('Api key').value.should == 'verySecret'
   end
 
   step 'I click email on push service link' do
