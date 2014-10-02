@@ -6,7 +6,7 @@
 #   klass - actual class like Issue or MergeRequest
 #   current_user - which user use
 #   params:
-#     scope: 'created-by-me' or 'assigned-to-me' or 'all'
+#     scope: 'authored' or 'assigned-to-me' or 'all'
 #     state: 'open' or 'closed' or 'all'
 #     group_id: integer
 #     project_id: integer
@@ -58,7 +58,7 @@ class IssuableFinder
 
   def by_scope(items)
     case params[:scope]
-    when 'created-by-me', 'authored' then
+    when 'authored' then
       items.where(author_id: current_user.id)
     when 'all' then
       items

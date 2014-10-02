@@ -1,0 +1,18 @@
+- if current_user
+  %fieldset
+    %ul.nav.nav-pills.nav-stacked
+      - [['all',            "Everyone's",     :authorized_entities_count],
+         ['assigned-to-me', 'Assigned to me', :assigned_entities_count],
+         ['authored',       'Created by me', :authored_entities_count]].each do |key, label, count|
+        %li{class: ('active' if params[:scope] == key)}
+          = link_to send(:filter_path, scope: key) do
+            = label
+            %span.pull-right
+              = send(count, current_user, entity, scope)
+%fieldset
+  %legend State
+  %ul.nav.nav-pills
+    - [['opened', 'Open'], ['closed', 'Closed'], ['all', 'All']].each do |key, label|
+      %li{class: ('active' if params[:state] == key)}
+        = link_to send(filter_path, state: key) do
+          = label

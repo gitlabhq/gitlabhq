@@ -1,5 +1,6 @@
 class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedDashboard
   include SharedPaths
 
   step 'I should see issues assigned to me' do
@@ -32,24 +33,6 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
 
   step 'I have other issues' do
     other_issue
-  end
-
-  step 'I click "Authored by me" link' do
-    within ".assignee-filter" do
-      click_link "Any"
-    end
-    within ".author-filter" do
-      click_link current_user.name
-    end
-  end
-
-  step 'I click "All" link' do
-    within ".author-filter" do
-      click_link "Any"
-    end
-    within ".assignee-filter" do
-      click_link "Any"
-    end
   end
 
   def should_see(issue)

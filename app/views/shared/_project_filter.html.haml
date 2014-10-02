@@ -1,0 +1,35 @@
+.side-filters
+  = form_tag project_entities_path, method: 'get' do
+    = render 'shared/state_filter', filter_path: :project_filter_path,
+        entity: entity, scope: @project
+
+    - if defined?(labels)
+      %fieldset
+        %legend
+          Labels
+          %small.pull-right
+            = link_to project_labels_path(@project), class: 'light' do
+              %i.icon-edit
+        %ul.nav.nav-pills.nav-stacked.nav-small.labels-filter
+          - @project.labels.order_by_name.each do |label|
+            %li{class: label_filter_class(label.name)}
+              = link_to labels_filter_path(label.name) do
+                = render_colored_label(label)
+                - if selected_label?(label.name)
+                  .pull-right
+                    %i.icon-remove
+
+        - if @project.labels.empty?
+          .light-well
+            Create first label at
+            = link_to 'labels page', project_labels_path(@project)
+            %br
+            or #{link_to 'generate', generate_project_labels_path(@project, redirect: redirect), method: :post} default set of labels
+
+    %fieldset
+      - if %w(state scope milestone_id assignee_id label_name).select { |k| params[k].present? }.any?
+        = link_to project_entities_path, class: 'cgray pull-right' do
+          %i.icon-remove
+          %strong Clear filter
+
+
