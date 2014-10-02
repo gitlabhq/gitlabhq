@@ -63,4 +63,23 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   step 'I should not see secondary email anymore' do
     page.should_not have_content "Secondary email:"
   end
+
+  step 'user "Mike" with groups and projects' do
+    user = create(:user, name: 'Mike')
+
+    project = create(:empty_project)
+    project.team << [user, :developer]
+
+    group = create(:group)
+    group.add_user(user, Gitlab::Access::DEVELOPER)
+  end
+
+  step 'click on "Mike" link' do
+    click_link "Mike"
+  end
+
+  step 'I should see user "Mike" details' do
+    page.should have_content 'Account'
+    page.should have_content 'Personal projects limit'
+  end
 end
