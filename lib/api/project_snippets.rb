@@ -56,7 +56,7 @@ module API
         if @snippet.save
           present @snippet, with: Entities::ProjectSnippet
         else
-          not_found!
+          render_validation_error!(@snippet)
         end
       end
 
@@ -80,7 +80,7 @@ module API
         if @snippet.update_attributes attrs
           present @snippet, with: Entities::ProjectSnippet
         else
-          not_found!
+          render_validation_error!(@snippet)
         end
       end
 
@@ -97,6 +97,7 @@ module API
           authorize! :modify_project_snippet, @snippet
           @snippet.destroy
         rescue
+          not_found!('Snippet')
         end
       end
 

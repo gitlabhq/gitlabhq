@@ -21,11 +21,11 @@
             = link_to leave_profile_group_path(@group), data: { confirm: leave_group_message(@group.name)}, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
               %i.icon-minus.icon-white
           - else
-            = link_to group_users_group_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+            = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
               %i.icon-minus.icon-white
 
     .edit-member.hide.js-toggle-content
       = form_for [@group, member], remote: true do |f|
         .alert.prepend-top-20
-          = f.select :group_access, options_for_select(UsersGroup.group_access_roles, member.group_access)
+          = f.select :access_level, options_for_select(GroupMember.access_level_roles, member.access_level)
           = f.submit 'Save', class: 'btn btn-save btn-small'

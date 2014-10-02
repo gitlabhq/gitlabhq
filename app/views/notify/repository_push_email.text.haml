@@ -1,9 +1,9 @@
-#{@author.name} pushed to #{@branch} at #{@project.name_with_namespace}
+#{@author.name} pushed to #{@branch} at #{link_to @project.name_with_namespace, project_url(@project)}
 
 \
 Commits:
 - @commits.each do |commit|
-  #{commit.short_id} by #{commit.author_name}
+  #{link_to commit.short_id, project_commit_url(@project, commit)} by #{commit.author_name}
   #{commit.safe_message}
   \- - - - -
 \

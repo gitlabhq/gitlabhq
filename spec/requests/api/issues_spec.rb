@@ -4,12 +4,29 @@ describe API::API, api: true  do
   include ApiHelpers
   let(:user) { create(:user) }
   let!(:project) { create(:project, namespace: user.namespace ) }
-  let!(:closed_issue) { create(:closed_issue, author: user, assignee: user, project: project, state: :closed) }
-  let!(:issue) { create(:issue, author: user, assignee: user, project: project) }
+  let!(:closed_issue) do
+    create :closed_issue,
+           author: user,
+           assignee: user,
+           project: project,
+           state: :closed,
+           milestone: milestone
+  end
+  let!(:issue) do
+    create :issue,
+           author: user,
+           assignee: user,
+           project: project,
+           milestone: milestone
+  end
   let!(:label) do
     create(:label, title: 'label', color: '#FFAABB', project: project)
   end
   let!(:label_link) { create(:label_link, label: label, target: issue) }
+  let!(:milestone) { create(:milestone, title: '1.0.0', project: project) }
+  let!(:empty_milestone) do
+    create(:milestone, title: '2.0.0', project: project)
+  end
 
   before { project.team << [user, :reporter] }
 
@@ -102,15 +119,18 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/issues" do
+    let(:base_url) { "/projects/#{project.id}" }
+    let(:title) { milestone.title }
+
     it "should return project issues" do
-      get api("/projects/#{project.id}/issues", user)
+      get api("#{base_url}/issues", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.first['title'].should == issue.title
     end
 
     it 'should return an array of labeled project issues' do
-      get api("/projects/#{project.id}/issues?labels=#{label.title}", user)
+      get api("#{base_url}/issues?labels=#{label.title}", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.length.should == 1
@@ -118,7 +138,7 @@ describe API::API, api: true  do
     end
 
     it 'should return an array of labeled project issues when at least one label matches' do
-      get api("/projects/#{project.id}/issues?labels=#{label.title},foo,bar", user)
+      get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.length.should == 1
@@ -126,10 +146,42 @@ describe API::API, api: true  do
     end
 
     it 'should return an empty array if no project issue matches labels' do
-      get api("/projects/#{project.id}/issues?labels=foo,bar", user)
+      get api("#{base_url}/issues?labels=foo,bar", user)
       response.status.should == 200
       json_response.should be_an Array
       json_response.length.should == 0
+    end
+
+    it 'should return an empty array if no issue matches milestone' do
+      get api("#{base_url}/issues?milestone=#{empty_milestone.title}", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 0
+    end
+
+    it 'should return an empty array if milestone does not exist' do
+      get api("#{base_url}/issues?milestone=foo", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 0
+    end
+
+    it 'should return an array of issues in given milestone' do
+      get api("#{base_url}/issues?milestone=#{title}", user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 2
+      json_response.first['id'].should == issue.id
+      json_response.second['id'].should == closed_issue.id
+    end
+
+    it 'should return an array of issues matching state in milestone' do
+      get api("#{base_url}/issues?milestone=#{milestone.title}"\
+              '&state=closed', user)
+      response.status.should == 200
+      json_response.should be_an Array
+      json_response.length.should == 1
+      json_response.first['id'].should == closed_issue.id
     end
   end
 
@@ -168,6 +220,15 @@ describe API::API, api: true  do
            labels: 'label, ?'
       response.status.should == 400
       json_response['message']['labels']['?']['title'].should == ['is invalid']
+    end
+
+    it 'should return 400 if title is too long' do
+      post api("/projects/#{project.id}/issues", user),
+           title: 'g' * 256
+      response.status.should == 400
+      json_response['message']['title'].should == [
+        'is too long (maximum is 255 characters)'
+      ]
     end
   end
 
@@ -236,6 +297,15 @@ describe API::API, api: true  do
       json_response['labels'].should include 'label-bar'
       json_response['labels'].should include 'label_bar'
       json_response['labels'].should include 'label/bar'
+    end
+
+    it 'should return 400 if title is too long' do
+      put api("/projects/#{project.id}/issues/#{issue.id}", user),
+          title: 'g' * 256
+      response.status.should == 400
+      json_response['message']['title'].should == [
+        'is too long (maximum is 255 characters)'
+      ]
     end
   end
 

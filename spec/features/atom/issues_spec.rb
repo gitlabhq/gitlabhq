@@ -13,10 +13,10 @@ describe "Issues Feed", feature: true  do
         login_with user
         visit project_issues_path(project, :atom)
 
-        page.response_headers['Content-Type'].should have_content("application/atom+xml")
-        page.body.should have_selector("title", text: "#{project.name} issues")
-        page.body.should have_selector("author email", text: issue.author_email)
-        page.body.should have_selector("entry summary", text: issue.title)
+        response_headers['Content-Type'].should have_content("application/atom+xml")
+        body.should have_selector("title", text: "#{project.name} issues")
+        body.should have_selector("author email", text: issue.author_email)
+        body.should have_selector("entry summary", text: issue.title)
       end
     end
 
@@ -24,10 +24,10 @@ describe "Issues Feed", feature: true  do
       it "should render atom feed" do
         visit project_issues_path(project, :atom, private_token: user.private_token)
 
-        page.response_headers['Content-Type'].should have_content("application/atom+xml")
-        page.body.should have_selector("title", text: "#{project.name} issues")
-        page.body.should have_selector("author email", text: issue.author_email)
-        page.body.should have_selector("entry summary", text: issue.title)
+        response_headers['Content-Type'].should have_content("application/atom+xml")
+        body.should have_selector("title", text: "#{project.name} issues")
+        body.should have_selector("author email", text: issue.author_email)
+        body.should have_selector("entry summary", text: issue.title)
       end
     end
   end

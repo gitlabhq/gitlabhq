@@ -156,6 +156,14 @@ module ProjectsHelper
     end
   end
 
+  def link_to_toggle_fork
+    out = content_tag(:i, '', class: 'icon-code-fork')
+    out << ' Fork'
+    out << content_tag(:span, class: 'count') do
+      @project.forks_count.to_s
+    end
+  end
+
   private
 
   def get_project_nav_tabs(project, current_user)

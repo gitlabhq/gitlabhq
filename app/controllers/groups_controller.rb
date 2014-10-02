@@ -67,15 +67,15 @@ class GroupsController < ApplicationController
 
   def members
     @project = group.projects.find(params[:project_id]) if params[:project_id]
-    @members = group.users_groups
+    @members = group.group_members
 
     if params[:search].present?
       users = group.users.search(params[:search]).to_a
       @members = @members.where(user_id: users)
     end
 
-    @members = @members.order('group_access DESC').page(params[:page]).per(50)
-    @users_group = UsersGroup.new
+    @members = @members.order('access_level DESC').page(params[:page]).per(50)
+    @users_group = GroupMember.new
   end
 
   def edit

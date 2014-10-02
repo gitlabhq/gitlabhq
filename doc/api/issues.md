@@ -95,6 +95,8 @@ GET /projects/:id/issues?state=closed
 GET /projects/:id/issues?labels=foo
 GET /projects/:id/issues?labels=foo,bar
 GET /projects/:id/issues?labels=foo,bar&state=opened
+GET /projects/:id/issues?milestone=1.0.0
+GET /projects/:id/issues?milestone=1.0.0&state=opened
 ```
 
 Parameters:
@@ -102,6 +104,7 @@ Parameters:
 - `id` (required) - The ID of a project
 - `state` (optional) - Return `all` issues or just those that are `opened` or `closed`
 - `labels` (optional) - Comma-separated list of label names
+- `milestone` (optional) - Milestone title
 
 ## Single issue
 

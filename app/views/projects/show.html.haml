@@ -1,9 +1,14 @@
 = render "home_panel"
 
+- readme = @repository.readme
 %ul.nav.nav-tabs
   %li.active
-    = link_to project_path(@project) do
+    = link_to '#tab-activity', 'data-toggle' => 'tab' do
       Activity
+  - if readme
+    %li
+      = link_to '#tab-readme', 'data-toggle' => 'tab' do
+        Readme
   .project-home-links
     - unless @project.empty_repo?
       = link_to pluralize(number_with_delimiter(@repository.commit_count), 'commit'), project_commits_path(@project, @ref || @repository.root_ref)
@@ -11,57 +16,65 @@
       = link_to pluralize(number_with_delimiter(@repository.tag_names.count), 'tag'), project_tags_path(@project)
       %span.light.prepend-left-20= repository_size
 
-.row
-  %section.col-md-9
-    = render "events/event_last_push", event: @last_push
-    = render 'shared/event_filter'
-    .content_list
-    = spinner
-  %aside.col-md-3.project-side.hidden-sm.hidden-xs
-    .clearfix
-      - if @project.archived?
-        .alert.alert-warning
-          %h4
-            %i.icon-warning-sign
-            Archived project!
-          %p Repository is read-only
+.tab-content
+  .tab-pane.active#tab-activity
+    .row
+      %section.col-md-9
+        = render "events/event_last_push", event: @last_push
+        = render 'shared/event_filter'
+        .content_list
+        = spinner
+      %aside.col-md-3.project-side.hidden-sm.hidden-xs
+        .clearfix
+          - if @project.archived?
+            .alert.alert-warning
+              %h4
+                %i.icon-warning-sign
+                Archived project!
+              %p Repository is read-only
 
-      - if @project.forked_from_project
-        .alert.alert-success
-          %i.icon-code-fork.project-fork-icon
-          Forked from:
-          %br
-          = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
+          - if @project.forked_from_project
+            .alert.alert-success
+              %i.icon-code-fork.project-fork-icon
+              Forked from:
+              %br
+              = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
 
-      - unless @project.empty_repo?
-        = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
-          Compare code
+          - unless @project.empty_repo?
+            = link_to project_compare_index_path(@project, from: @repository.root_ref, to: @ref || @repository.root_ref), class: 'btn btn-block' do
+              Compare code
 
-        - if @repository.readme
-          - readme = @repository.readme
-          = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)), class: 'btn btn-block' do
+            - if @repository.version
+              - version = @repository.version
+              = link_to project_blob_path(@project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
+                Version:
+                %span.count
+                  = @repository.blob_by_oid(version.id).data
+
+        .prepend-top-10
+          %p
+            %span.light Created on
+            #{@project.created_at.stamp('Aug 22, 2013')}
+          %p
+            %span.light Owned by
+            - if @project.group
+              #{link_to @project.group.name, @project.group} group
+            - else
+              #{link_to @project.owner_name, @project.owner}
+
+
+          - if @project.gitlab_ci?
+            %hr
+            = link_to @project.gitlab_ci_service.builds_path do
+              = image_tag @project.gitlab_ci_service.status_img_path, alt: "build status"
+
+  - if readme
+    .tab-pane#tab-readme
+      %article.readme-holder#README
+        = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
+          %h4.readme-file-title
+            %i.icon-file
             = readme.name
+        .wiki
+          = render_readme(readme)
 
-        - if @repository.version
-          - version = @repository.version
-          = link_to project_blob_path(@project, tree_join(@repository.root_ref, version.name)), class: 'btn btn-block' do
-            Version:
-            %span.count
-              = @repository.blob_by_oid(version.id).data
-
-    .prepend-top-10
-      %p
-        %span.light Created on
-        #{@project.created_at.stamp('Aug 22, 2013')}
-      %p
-        %span.light Owned by
-        - if @project.group
-          #{link_to @project.group.name, @project.group} group
-        - else
-          #{link_to @project.owner_name, @project.owner}
-
-
-      - if @project.gitlab_ci?
-        %hr
-        = link_to @project.gitlab_ci_service.builds_path do
-          = image_tag @project.gitlab_ci_service.status_img_path, alt: "build status"

@@ -90,4 +90,4 @@ window.ContributorsStatGraphUtil =
       true
     else
       false
-  
+

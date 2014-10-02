@@ -122,9 +122,11 @@ class MergeRequest < ActiveRecord::Base
     if opened? || reopened?
       similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.id).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
-
       if similar_mrs.any?
-        errors.add :base, "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
+        errors.add :validate_branches,
+                   "Cannot Create: This merge request already exists: #{
+                   similar_mrs.pluck(:title)
+                   }"
       end
     end
   end
@@ -140,7 +142,8 @@ class MergeRequest < ActiveRecord::Base
       if source_project.forked_from?(target_project)
         true
       else
-        errors.add :base, "Source project is not a fork of target project"
+        errors.add :validate_fork,
+                   'Source project is not a fork of target project'
       end
     end
   end

@@ -65,15 +65,16 @@ module Gitlab
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
           if merge_request.for_fork?
-            # Only show what is new in the source branch compared to the target branch, not the other way around.
-            # The line below with merge_base is equivalent to diff with three dots (git diff branch1...branch2)
-            # From the git documentation: "git diff A...B" is equivalent to "git diff $(git-merge-base A B) B"
-            common_commit = merge_repo.git.native(:merge_base, default_options, ["origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}"]).strip
-            diffs = merge_repo.diff(common_commit, "source/#{merge_request.source_branch}")
+            repository = Gitlab::Git::Repository.new(merge_repo.path)
+            diffs = Gitlab::Git::Diff.between(
+              repository,
+              "source/#{merge_request.source_branch}",
+              "origin/#{merge_request.target_branch}"
+            )
           else
             raise "Attempt to determine diffs between for a non forked merge request in satellite MergeRequest.id:[#{merge_request.id}]"
           end
-          diffs = diffs.map { |diff| Gitlab::Git::Diff.new(diff) }
+
           return diffs
         end
       rescue Grit::Git::CommandFailed => ex
@@ -97,11 +98,16 @@ module Gitlab
           prepare_satellite!(merge_repo)
           update_satellite_source_and_target!(merge_repo)
           if (merge_request.for_fork?)
-            commits = merge_repo.commits_between("origin/#{merge_request.target_branch}", "source/#{merge_request.source_branch}")
+            repository = Gitlab::Git::Repository.new(merge_repo.path)
+            commits = Gitlab::Git::Commit.between(
+              repository,
+              "origin/#{merge_request.target_branch}",
+              "source/#{merge_request.source_branch}"
+            )
           else
             raise "Attempt to determine commits between for a non forked merge request in satellite MergeRequest.id:[#{merge_request.id}]"
           end
-          commits = commits.map { |commit| Gitlab::Git::Commit.new(commit, nil) }
+
           return commits
         end
       rescue Grit::Git::CommandFailed => ex

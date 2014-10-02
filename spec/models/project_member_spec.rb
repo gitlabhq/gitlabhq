@@ -1,6 +1,6 @@
 # == Schema Information
 #
-# Table name: users_projects
+# Table name: project_members
 #
 #  id                 :integer          not null, primary key
 #  user_id            :integer          not null
@@ -13,30 +13,7 @@
 
 require 'spec_helper'
 
-describe UsersProject do
-  describe "Associations" do
-    it { should belong_to(:project) }
-    it { should belong_to(:user) }
-  end
-
-  describe "Mass assignment" do
-  end
-
-  describe "Validation" do
-    let!(:users_project) { create(:users_project) }
-
-    it { should validate_presence_of(:user) }
-    it { should validate_uniqueness_of(:user_id).scoped_to(:project_id).with_message(/already exists/) }
-
-    it { should validate_presence_of(:project) }
-    it { should ensure_inclusion_of(:project_access).in_array(UsersProject.access_roles.values) }
-  end
-
-  describe "Delegate methods" do
-    it { should respond_to(:user_name) }
-    it { should respond_to(:user_email) }
-  end
-
+describe ProjectMember do
   describe :import_team do
     before do
       @abilities = Six.new
@@ -78,10 +55,10 @@ describe UsersProject do
       @user_1 = create :user
       @user_2 = create :user
 
-      UsersProject.add_users_into_projects(
+      ProjectMember.add_users_into_projects(
         [@project_1.id, @project_2.id],
         [@user_1.id, @user_2.id],
-        UsersProject::MASTER
+        ProjectMember::MASTER
       )
     end
 
@@ -104,7 +81,7 @@ describe UsersProject do
       @project_1.team << [ @user_1, :developer]
       @project_2.team << [ @user_2, :reporter]
 
-      UsersProject.truncate_teams([@project_1.id, @project_2.id])
+      ProjectMember.truncate_teams([@project_1.id, @project_2.id])
     end
 
     it { @project_1.users.should be_empty }

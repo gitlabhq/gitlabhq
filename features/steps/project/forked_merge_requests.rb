@@ -1,4 +1,4 @@
-class ProjectForkedMergeRequests < Spinach::FeatureSteps
+class Spinach::Features::ProjectForkedMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedNote
@@ -126,10 +126,6 @@ class ProjectForkedMergeRequests < Spinach::FeatureSteps
 
   step 'the target repository should be the original repository' do
     page.should have_select("merge_request_target_project_id", selected: project.path_with_namespace)
-  end
-
-  def project
-    @project ||= Project.find_by!(name: "Shop")
   end
 
   # Verify a link is generated against the correct project

@@ -1,3 +1,10 @@
+- if issuable.errors.any?
+  .row
+    .col-sm-10.col-sm-offset-2
+      .alert.alert-danger
+        - issuable.errors.full_messages.each do |msg|
+          %span= msg
+          %br
 .form-group
   = f.label :title, class: 'control-label' do
     %strong= 'Title *'
@@ -37,3 +44,20 @@
       Milestone
     .col-sm-10= f.select(:milestone_id, milestone_options(issuable),
         { include_blank: 'Select milestone' }, { class: 'select2' })
+.form-group
+  = f.label :label_ids, class: 'control-label' do
+    %i.icon-tag
+    Labels
+  .col-sm-10
+    = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+        { selected: issuable.label_ids }, multiple: true, class: 'select2'
+.form-actions
+  - if issuable.new_record?
+    = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
+  - else
+    = f.submit 'Save changes', class: 'btn btn-save'
+  - if issuable.new_record?
+    - cancel_project = issuable.source_project
+  - else
+    - cancel_project = issuable.project
+  = link_to 'Cancel', [cancel_project, issuable], class: 'btn btn-cancel'

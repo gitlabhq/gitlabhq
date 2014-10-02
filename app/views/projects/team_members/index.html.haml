@@ -11,7 +11,7 @@
 %p.light
   Read more about project permissions
   %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
-= render "team", members: @users_projects
+= render "team", members: @project_members
 - if @group
   = render "group_members"
 - if @project_group_links.any?

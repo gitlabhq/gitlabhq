@@ -38,7 +38,7 @@ describe Project do
     it { should have_many(:merge_requests).dependent(:destroy) }
     it { should have_many(:issues).dependent(:destroy) }
     it { should have_many(:milestones).dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:project_members).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
     it { should have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { should have_many(:deploy_keys_projects).dependent(:destroy) }
@@ -144,6 +144,62 @@ describe Project do
     end
   end
 
+  describe 'comment merge requests with commits' do
+    before do
+      @user = create(:user)
+      group = create(:group)
+      group.add_owner(@user)
+
+      @project = create(:project, namespace: group)
+      @fork_project = Projects::ForkService.new(@project, @user).execute
+      @merge_request = create(:merge_request, source_project: @project,
+                              source_branch: 'master',
+                              target_branch: 'feature',
+                              target_project: @project)
+      @fork_merge_request = create(:merge_request, source_project: @fork_project,
+                                   source_branch: 'master',
+                                   target_branch: 'feature',
+                                   target_project: @project)
+
+      @commits = @merge_request.commits
+    end
+
+    context 'push to origin repo source branch' do
+      before do
+        @project.comment_mr_with_commits('master', @commits, @user)
+      end
+
+      it { @merge_request.notes.should_not be_empty }
+      it { @fork_merge_request.notes.should be_empty }
+    end
+
+    context 'push to origin repo target branch' do
+      before do
+        @project.comment_mr_with_commits('feature', @commits, @user)
+      end
+
+      it { @merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.should be_empty }
+    end
+
+    context 'push to fork repo source branch' do
+      before do
+        @fork_project.comment_mr_with_commits('master', @commits, @user)
+      end
+
+      it { @merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.should_not be_empty }
+    end
+
+    context 'push to fork repo target branch' do
+      before do
+        @fork_project.comment_mr_with_commits('feature', @commits, @user)
+      end
+
+      it { @merge_request.notes.should be_empty }
+      it { @fork_merge_request.notes.should be_empty }
+    end
+  end
 
   describe :find_with_namespace do
     context 'with namespace' do

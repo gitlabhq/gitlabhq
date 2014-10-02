@@ -1,17 +1,13 @@
+= render 'head'
 .loading-graph
   .center
     %h3.page-title
       %i.icon-spinner.icon-spin
       Building repository graph.
-    %p Please wait a moment, this page will automatically refresh when ready.
+    %p.slead Please wait a moment, this page will automatically refresh when ready.
 
-.stat-graph
+.stat-graph.hide
   .header.clearfix
-    .pull-right
-      %select
-        %option{:value => "commits"} Commits
-        %option{:value => "additions"} Additions
-        %option{:value => "deletions"} Deletions
     %h3#date_header.page-title
     %p.light
       Commits to #{@project.default_branch}, excluding merge commits. Limited by 6,000 commits
@@ -21,15 +17,21 @@
     #contributors.clearfix
       %ol.contributors-list.clearfix
 
-:javascript
-  $(".stat-graph").hide();
 
-  $.ajax({
+
+:coffeescript
+  $.ajax
     type: "GET",
     url: location.href,
-    complete: function() {
+    success: (data) ->
+      graph = new ContributorsStatGraph()
+      graph.init(data)
+
+      $("#brush_change").change ->
+        graph.change_date_header()
+        graph.redraw_authors()
+
       $(".stat-graph").fadeIn();
       $(".loading-graph").hide();
-    },
-    dataType: "script"
-  });
+    dataType: "json"
+

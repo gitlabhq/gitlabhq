@@ -14,7 +14,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/branches
       get ":id/repository/branches" do
-        present user_project.repo.heads.sort_by(&:name), with: Entities::RepoObject, project: user_project
+        present user_project.repository.branches.sort_by(&:name), with: Entities::RepoObject, project: user_project
       end
 
       # Get a single branch
@@ -25,7 +25,7 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/branches/:branch
       get ':id/repository/branches/:branch', requirements: { branch: /.*/ } do
-        @branch = user_project.repo.heads.find { |item| item.name == params[:branch] }
+        @branch = user_project.repository.branches.find { |item| item.name == params[:branch] }
         not_found!("Branch does not exist") if @branch.nil?
         present @branch, with: Entities::RepoObject, project: user_project
       end
@@ -80,10 +80,8 @@ module API
       #   POST /projects/:id/repository/branches
       post ":id/repository/branches" do
         authorize_push_project
-        result = CreateBranchService.new.execute(user_project,
-                                                 params[:branch_name],
-                                                 params[:ref],
-                                                 current_user)
+        result = CreateBranchService.new(user_project, current_user).
+          execute(params[:branch_name], params[:ref])
         if result[:status] == :success
           present result[:branch],
                   with: Entities::RepoObject,
@@ -102,9 +100,10 @@ module API
       #   DELETE /projects/:id/repository/branches/:branch
       delete ":id/repository/branches/:branch" do
         authorize_push_project
-        result = DeleteBranchService.new.execute(user_project, params[:branch], current_user)
+        result = DeleteBranchService.new(user_project, current_user).
+          execute(params[:branch])
 
-        if result[:state] == :success
+        if result[:status] == :success
           true
         else
           render_api_error!(result[:message], result[:return_code])
