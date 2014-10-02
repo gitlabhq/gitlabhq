@@ -1,24 +1,6 @@
 = form_for [@project, @merge_request], html: { class: 'merge-request-form form-horizontal gfm-form' } do |f|
   .merge-request-form-info
     = render 'projects/issuable_form', f: f, issuable: @merge_request
-    .form-group
-      = f.label :label_ids, class: 'control-label' do
-        %i.icon-tag
-        Labels
-      .col-sm-10
-        = f.collection_select :label_ids, @merge_request.target_project.labels.all, :id, :name, { selected: @merge_request.label_ids }, multiple: true, class: 'select2'
-
-  .form-actions
-    - if @merge_request.new_record?
-      = f.submit 'Submit merge request', class: "btn btn-create"
-    -else
-      = f.submit 'Save changes', class: "btn btn-save"
-    - if @merge_request.new_record?
-      = link_to project_merge_requests_path(@source_project), class: "btn btn-cancel" do
-        Cancel
-    - else
-      = link_to project_merge_request_path(@target_project, @merge_request), class: "btn btn-cancel" do
-        Cancel
 
 :javascript
   disableButtonIfEmptyField("#merge_request_title", ".btn-save");
