@@ -1,4 +1,4 @@
-Feature: Project Search code
+Feature: Project Source Search Code
   Background:
     Given I sign in as a user
 

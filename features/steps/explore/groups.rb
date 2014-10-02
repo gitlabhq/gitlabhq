@@ -1,4 +1,4 @@
-class Spinach::Features::ExploreGroupsFeature < Spinach::FeatureSteps
+class Spinach::Features::ExploreGroups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedGroup

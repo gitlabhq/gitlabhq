@@ -1,4 +1,4 @@
-Feature: Project Browse files
+Feature: Project Source Browse files
   Background:
     Given I sign in as a user
     And I own project "Shop"

@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectMultiselectBlob < Spinach::FeatureSteps
+class Spinach::Features::ProjectSourceMultiselectBlob < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
