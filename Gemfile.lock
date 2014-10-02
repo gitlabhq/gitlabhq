@@ -239,6 +239,12 @@ GEM
     hipchat (0.14.0)
       httparty
       httparty
+    html-pipeline (1.11.0)
+      activesupport (>= 2)
+      nokogiri (~> 1.4)
+    html-pipeline-gitlab (0.1.0)
+      gitlab_emoji (~> 0.0.1.1)
+      html-pipeline (~> 1.11.0)
     http_parser.rb (0.5.3)
     httparty (0.13.0)
       json (~> 1.8)
@@ -630,6 +636,7 @@ DEPENDENCIES
   guard-spinach
   haml-rails
   hipchat (~> 0.14.0)
+  html-pipeline-gitlab (~> 0.1.0)
   httparty
   jasmine (= 2.0.2)
   jquery-atwho-rails (~> 0.3.3)

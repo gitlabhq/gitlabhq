@@ -79,6 +79,9 @@ gem "six"
 # Seed data
 gem "seed-fu"
 
+# Markup pipeline for GitLab
+gem 'html-pipeline-gitlab', '~> 0.1.0'
+
 # Markdown to HTML
 gem "github-markup"
 
