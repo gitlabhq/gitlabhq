@@ -5,13 +5,13 @@
   .remove_source_branch_widget
     %p Changes merged into #{@merge_request.target_branch}. You can remove source branch now
     = link_to project_branch_path(@merge_request.source_project, @source_branch), remote: true, method: :delete, class: "btn btn-primary btn-small remove_source_branch" do
-      %i.icon-remove
+      %i.fa.fa-times
       Remove Source Branch
 
   .remove_source_branch_widget.failed.hide
     Failed to remove source branch '#{@merge_request.source_branch}'
 
   .remove_source_branch_in_progress.hide
-    %i.icon-refresh.icon-spin
+    %i.fa.fa-refresh.fa-spin
     &nbsp;
     Removing source branch '#{@merge_request.source_branch}'. Please wait. Page will be automatically reloaded. &nbsp;

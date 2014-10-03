@@ -23,7 +23,7 @@
           .col-sm-2
           .col-sm-10
             = link_to "#", class: 'js-toggle-button' do
-              %i.icon-edit
+              %i.fa.fa-pencil-square-o
               %span Customize repository name?
         .js-toggle-content.hide
           .form-group
@@ -39,7 +39,7 @@
           .col-sm-2
           .col-sm-10
             = link_to "#", class: 'js-toggle-button' do
-              %i.icon-upload-alt
+              %i.fa.fa-upload
               %span Import existing repository?
         .js-toggle-content.hide
           .form-group.import-url-data
@@ -74,6 +74,6 @@
 .save-project-loader.hide
   .center
     %h2
-      %i.icon-spinner.icon-spin
+      %i.fa.fa-spinner.fa-spin
       Creating project &amp; repository.
     %p Please wait a moment, this page will automatically refresh when ready.

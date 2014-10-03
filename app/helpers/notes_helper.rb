@@ -69,7 +69,7 @@ module NotesHelper
 
     button_tag class: 'btn reply-btn js-discussion-reply-button',
                data: data, title: 'Add a reply' do
-      link_text = content_tag(:i, nil, class: 'icon-comment')
+      link_text = content_tag(:i, nil, class: 'fa fa-comment')
       link_text << ' Reply'
     end
   end
