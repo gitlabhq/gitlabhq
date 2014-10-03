@@ -30,7 +30,8 @@ module API
     end
 
     class ProjectHook < Hook
-      expose :project_id, :push_events, :issues_events, :merge_requests_events
+      expose :project_id, :push_events
+      expose :issues_events, :merge_requests_events, :tag_push_events
     end
 
     class ForkedFromProject < Grape::Entity
