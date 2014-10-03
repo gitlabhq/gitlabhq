@@ -90,6 +90,10 @@ class Group < Namespace
     ldap_group_links.first.try(:group_access)
   end
 
+  def ldap_synced?
+    ldap_cn.present?
+  end
+
   class << self
     def search(query)
       where("LOWER(namespaces.name) LIKE :query", query: "%#{query.downcase}%")
