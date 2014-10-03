@@ -15,6 +15,8 @@ v 7.4.0
   - Zen mode for wiki and milestones (Robert Schilling)
   - Move Emoji parsing to html-pipeline-gitlab (Robert Schilling)
   - Font Awesome 4.2 integration (Sullivan Senechal)
+  - Add Pushover service integration (Sullivan Senechal)
+  - Add select field type for services options (Sullivan Senechal)
 
 v 7.3.2
   - Fix creating new file via web editor
