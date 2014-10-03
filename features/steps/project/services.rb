@@ -108,16 +108,12 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I fill Slack settings' do
     check 'Active'
-    fill_in 'Subdomain', with: 'gitlab'
-    fill_in 'Room', with: '#gitlab'
-    fill_in 'Token', with: 'verySecret'
+    fill_in 'Webhook', with: 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
     click_button 'Save'
   end
 
   step 'I should see Slack service settings saved' do
-    find_field('Subdomain').value.should == 'gitlab'
-    find_field('Room').value.should == '#gitlab'
-    find_field('Token').value.should == 'verySecret'
+    find_field('Webhook').value.should == 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
   end
 
   step 'I click Pushover service link' do
