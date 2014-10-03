@@ -148,6 +148,14 @@ class MergeRequest < ActiveRecord::Base
     end
   end
 
+  # Assignee check overwrite
+
+  def can_be_assigned?
+    unless target_project.team_members.include? assignee
+      errors.add(:assignee, 'cannot assign an user without permission')
+    end
+  end
+
   def update_merge_request_diff
     if source_branch_changed? || target_branch_changed?
       reload_code

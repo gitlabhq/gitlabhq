@@ -48,6 +48,14 @@ class Issue < ActiveRecord::Base
     state :closed
   end
 
+  # Assignee check overwrite
+
+  def can_be_assigned?
+    unless project.team_members.include? assignee
+      errors.add(:assignee, 'cannot assign an user without permission')
+    end
+  end
+
   # Mentionable overrides.
 
   def gfm_reference

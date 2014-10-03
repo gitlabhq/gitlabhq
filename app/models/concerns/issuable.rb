@@ -18,6 +18,7 @@ module Issuable
 
     validates :author, presence: true
     validates :title, presence: true, length: { within: 0..255 }
+    validate :can_be_assigned?, if: 'assignee'
 
     scope :authored, ->(user) { where(author_id: user) }
     scope :assigned_to, ->(u) { where(assignee_id: u.id)}

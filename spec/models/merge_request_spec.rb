@@ -58,13 +58,33 @@ describe MergeRequest do
 
   subject { create(:merge_request) }
 
-  describe '#is_being_reassigned?' do
-    it 'returns true if the merge_request assignee has changed' do
-      subject.assignee = create(:user)
-      subject.is_being_reassigned?.should be_true
+  describe 'assignment' do
+
+    context 'without an assignee' do
+      it 'can be created' do
+        subject.assignee = nil
+        expect(subject.valid?).to be_true
+      end
     end
-    it 'returns false if the merge request assignee has not changed' do
-      subject.is_being_reassigned?.should be_false
+
+    context 'with an assignee without permissions on the target_project' do
+      it 'cannot assign the issue' do
+        subject.target_project = create(:project)
+        subject.assignee = create(:user)
+        expect(subject.valid?).to be_false
+      end
+    end
+
+    context 'with an assignee with permissions on the target_project' do
+      describe '#is_being_reassigned?' do
+        it 'returns true if the merge_request assignee has changed' do
+          subject.assignee = create(:user)
+          expect(subject.is_being_reassigned?).to be_true
+        end
+        it 'returns false if the merge request assignee has not changed' do
+          expect(subject.is_being_reassigned?).to be_false
+        end
+      end
     end
   end
 
