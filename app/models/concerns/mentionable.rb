@@ -68,7 +68,9 @@ module Mentionable
     return [] if text.blank?
     ext = Gitlab::ReferenceExtractor.new
     ext.analyze(text, p)
-    (ext.issues_for(p) + ext.merge_requests_for(p) + ext.commits_for(p)).uniq - [local_reference]
+    (ext.issues_for +
+     ext.merge_requests_for +
+     ext.commits_for).uniq - [local_reference]
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
