@@ -151,7 +151,7 @@ module Gitlab
       # Get the group_access for a give user.
       # Always respect the current level, never downgrade it.
       def fetch_group_access(group, user, active_group_links)
-        current_access_level = group.users_groups.where(user_id: user).maximum(:group_access)
+        current_access_level = group.group_members.where(user_id: user).maximum(:access_level)
         max_group_access_level = active_group_links.maximum(:group_access)
 
         # TODO: Test if nil value of current_access_level in handled properly
