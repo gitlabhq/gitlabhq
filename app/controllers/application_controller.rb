@@ -62,7 +62,7 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def after_sign_in_path_for resource
+  def after_sign_in_path_for(resource)
     if resource.is_a?(User) && resource.respond_to?(:blocked?) && resource.blocked?
       sign_out resource
       flash[:alert] = "Your account is blocked. Retry when an admin has unblocked it."

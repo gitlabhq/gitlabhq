@@ -9,38 +9,38 @@ module Gitlab
       @users, @issues, @merge_requests, @snippets, @commits = [], [], [], [], []
     end
 
-    def analyze string
+    def analyze(string)
       parse_references(string.dup)
     end
 
     # Given a valid project, resolve the extracted identifiers of the requested type to
     # model objects.
 
-    def users_for project
+    def users_for(project)
       users.map do |identifier|
         project.users.where(username: identifier).first
       end.reject(&:nil?)
     end
 
-    def issues_for project
+    def issues_for(project)
       issues.map do |identifier|
         project.issues.where(iid: identifier).first
       end.reject(&:nil?)
     end
 
-    def merge_requests_for project
+    def merge_requests_for(project)
       merge_requests.map do |identifier|
         project.merge_requests.where(iid: identifier).first
       end.reject(&:nil?)
     end
 
-    def snippets_for project
+    def snippets_for(project)
       snippets.map do |identifier|
         project.snippets.where(id: identifier).first
       end.reject(&:nil?)
     end
 
-    def commits_for project
+    def commits_for(project)
       repo = project.repository
       return [] if repo.nil?
 

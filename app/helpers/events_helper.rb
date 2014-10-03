@@ -19,7 +19,7 @@ module EventsHelper
     [event.action_name, target].join(" ")
   end
 
-  def event_filter_link key, tooltip
+  def event_filter_link(key, tooltip)
     key = key.to_s
     inactive = if @event_filter.active? key
                  nil

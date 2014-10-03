@@ -97,7 +97,7 @@ describe 'Gitlab::Satellite::Action' do
     end
 
     class FileLockStatusChecker < File
-      def flocked? &block
+      def flocked?(&block)
         status = flock LOCK_EX|LOCK_NB
         case status
           when false

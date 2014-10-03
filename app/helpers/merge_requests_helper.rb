@@ -24,14 +24,14 @@ module MergeRequestsHelper
     }
   end
 
-  def mr_css_classes mr
+  def mr_css_classes(mr)
     classes = "merge-request"
     classes << " closed" if mr.closed?
     classes << " merged" if mr.merged?
     classes
   end
 
-  def ci_build_details_path merge_request
+  def ci_build_details_path(merge_request)
     merge_request.source_project.ci_service.build_page(merge_request.last_commit.sha)
   end
 
