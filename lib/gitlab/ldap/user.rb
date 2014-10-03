@@ -89,6 +89,10 @@ module Gitlab
       def needs_blocking?
         false
       end
+
+      def allowed?
+        Gitlab::LDAP::Access.allowed?(gl_user)
+      end
     end
   end
 end
