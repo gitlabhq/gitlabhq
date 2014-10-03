@@ -31,7 +31,7 @@ gem 'omniauth-shibboleth'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '~> 6.0'
+gem "gitlab_git", '7.0.0.rc8'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -71,14 +71,17 @@ gem "carrierwave"
 gem 'dropzonejs-rails'
 
 # for aws storage
-gem "fog", "~> 1.14", group: :aws
-gem "unf", group: :aws
+gem "fog", "~> 1.14"
+gem "unf"
 
 # Authorization
 gem "six"
 
 # Seed data
 gem "seed-fu"
+
+# Markup pipeline for GitLab
+gem 'html-pipeline-gitlab', '~> 0.1.0'
 
 # Markdown to HTML
 gem "github-markup"
@@ -158,7 +161,7 @@ gem "rack-attack"
 # Ace editor
 gem 'ace-rails-ap'
 
-# Keyboard shortcuts 
+# Keyboard shortcuts
 gem 'mousetrap-rails'
 
 # Semantic UI Sass for Sidebar

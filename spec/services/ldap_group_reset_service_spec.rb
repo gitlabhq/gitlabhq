@@ -37,6 +37,6 @@ describe LdapGroupResetService do
   end
 
   def member_access(user)
-    group.members.find_by(user_id: user).group_access
+    group.members.find_by(user_id: user).access_level
   end
 end

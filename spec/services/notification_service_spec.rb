@@ -64,12 +64,12 @@ describe NotificationService do
 
         before do
           note.project.namespace_id = group.id
-          note.project.group.add_user(@u_watcher, UsersGroup::MASTER)
+          note.project.group.add_user(@u_watcher, GroupMember::MASTER)
           note.project.save
-          user_project = note.project.users_projects.find_by_user_id(@u_watcher.id)
+          user_project = note.project.project_members.find_by_user_id(@u_watcher.id)
           user_project.notification_level = Notification::N_PARTICIPATING
           user_project.save
-          user_group = note.project.group.users_groups.find_by_user_id(@u_watcher.id)
+          user_group = note.project.group.group_members.find_by_user_id(@u_watcher.id)
           user_group.notification_level = Notification::N_GLOBAL
           user_group.save
         end

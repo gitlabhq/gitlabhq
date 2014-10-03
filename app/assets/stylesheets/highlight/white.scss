@@ -1,12 +1,6 @@
 .white {
-  background-color: #fff;
-
   .line.hll {
     background: #FFA;
-  }
-
-  .highlight{
-    border-left: 1px solid #eee;
   }
 
   pre {
@@ -179,8 +173,16 @@
   @include box-shadow(0 5px 15px #000);
 }
 
-.wiki, .note-body {
-  .highlight {
-    border: 1px solid #DDD;
+.file-content {
+  &.code .white {
+    .highlight {
+      border-left: 1px solid #eee;
+    }
+  }
+
+  &.wiki .white {
+    .highlight, pre, .hljs {
+      background: #F9F9F9;
+    }
   }
 }

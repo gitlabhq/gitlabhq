@@ -51,6 +51,14 @@ module GitlabMarkdownHelper
     @markdown.render(text).html_safe
   end
 
+  def first_line_in_markdown(text)
+    line = text.split("\n").detect do |i|
+      i.present? && markdown(i).present?
+    end
+    line += '...' unless line.nil?
+    line
+  end
+
   def render_wiki_content(wiki_page)
     if wiki_page.format == :markdown
       markdown(wiki_page.content)
@@ -65,7 +73,12 @@ module GitlabMarkdownHelper
     paths.uniq.each do |file_path|
       # If project does not have repository
       # its nothing to rebuild
-      if @repository.exists? && !@repository.empty?
+      #
+      # TODO: pass project variable to markdown helper instead of using
+      # instance variable. Right now it generates invalid path for pages out
+      # of project scope. Example: search results where can be rendered markdown
+      # from different projects
+      if @repository && @repository.exists? && !@repository.empty?
         new_path = rebuild_path(file_path)
         # Finds quoted path so we don't replace other mentions of the string
         # eg. "doc/api" will be replaced and "/home/doc/api/text" won't

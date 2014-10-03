@@ -1,4 +1,4 @@
-class DashboardShortcuts < Spinach::FeatureSteps
+class Spinach::Features::DashboardShortcuts < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject

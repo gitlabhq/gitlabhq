@@ -1,5 +1,7 @@
-class CreateTagService
-  def execute(project, tag_name, ref, message, current_user)
+require_relative 'base_service'
+
+class CreateTagService < BaseService
+  def execute(tag_name, ref, message)
     valid_tag = Gitlab::GitRefValidator.validate(tag_name)
     if valid_tag == false
       return error('Tag name invalid')
@@ -26,17 +28,9 @@ class CreateTagService
     end
   end
 
-  def error(message)
-    {
-      message: message,
-      status: :error
-    }
-  end
-
   def success(branch)
-    {
-      tag: branch,
-      status: :success
-    }
+    out = super()
+    out[:tag] = branch
+    out
   end
 end

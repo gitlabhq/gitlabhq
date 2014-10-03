@@ -17,7 +17,7 @@
           = f.label :group_access, class: 'control-label' do
             LDAP Access
           .col-sm-10
-            = f.select :group_access, options_for_select(UsersGroup.group_access_roles)
+            = f.select :group_access, options_for_select(GroupMember.access_level_roles)
             .help-block
               Default, minimum permission level for LDAP group members of #{group.name}.
               %br

@@ -32,12 +32,12 @@ class ProjectTeam
   end
 
   def find_tm(user_id)
-    tm = project.users_projects.find_by(user_id: user_id)
+    tm = project.project_members.find_by(user_id: user_id)
 
     # If user is not in project members
     # we should check for group membership
     if group && !tm
-      tm = group.users_groups.find_by(user_id: user_id)
+      tm = group.group_members.find_by(user_id: user_id)
     end
 
     tm
@@ -52,7 +52,7 @@ class ProjectTeam
   end
 
   def add_users_ids(user_ids, access)
-    UsersProject.add_users_into_projects(
+    ProjectMember.add_users_into_projects(
       [project.id],
       user_ids,
       access
@@ -61,7 +61,7 @@ class ProjectTeam
 
   # Remove all users from project team
   def truncate
-    UsersProject.truncate_team(project)
+    ProjectMember.truncate_team(project)
   end
 
   def users
@@ -91,8 +91,8 @@ class ProjectTeam
   def import(source_project)
     target_project = project
 
-    source_team = source_project.users_projects.to_a
-    target_user_ids = target_project.users_projects.pluck(:user_id)
+    source_team = source_project.project_members.to_a
+    target_user_ids = target_project.project_members.pluck(:user_id)
 
     source_team.reject! do |tm|
       # Skip if user already present in team
@@ -102,11 +102,11 @@ class ProjectTeam
     source_team.map! do |tm|
       new_tm = tm.dup
       new_tm.id = nil
-      new_tm.project_id = target_project.id
+      new_tm.source = target_project
       new_tm
     end
 
-    UsersProject.transaction do
+    ProjectMember.transaction do
       source_team.each do |tm|
         tm.save
       end
@@ -135,10 +135,10 @@ class ProjectTeam
 
   def max_tm_access(user_id)
     access = []
-    access << project.users_projects.find_by(user_id: user_id).try(:access_field)
+    access << project.project_members.find_by(user_id: user_id).try(:access_field)
 
     if group
-      access << group.users_groups.find_by(user_id: user_id).try(:access_field)
+      access << group.group_members.find_by(user_id: user_id).try(:access_field)
     end
 
     if project.invited_groups.any?
@@ -152,7 +152,7 @@ class ProjectTeam
   def max_invited_level(user_id)
     project.project_group_links.map do |group_link|
       invited_group = group_link.group
-      access = invited_group.users_groups.find_by(user_id: user_id).try(:access_field)
+      access = invited_group.group_members.find_by(user_id: user_id).try(:access_field)
 
       # If group member has higher access level we should restrict it
       # to max allowed access level
@@ -167,17 +167,17 @@ class ProjectTeam
   private
 
   def fetch_members(level = nil)
-    project_members = project.users_projects
-    group_members = group ? group.users_groups : []
+    project_members = project.project_members
+    group_members = group ? group.group_members : []
     invited_members = []
 
     if project.invited_groups.any?
       project.project_group_links.each do |group_link|
         invited_group = group_link.group
-        im = invited_group.users_groups
+        im = invited_group.group_members
 
         if level
-          int_level = UsersGroup.group_access_roles[level.to_s.singularize.titleize]
+          int_level = GroupMember.access_level_roles[level.to_s.singularize.titleize]
 
           # Skip group members if we ask for masters
           # but max group access is developers
@@ -187,7 +187,7 @@ class ProjectTeam
           # group access is developers we need to provide
           # both group master, developers as devs
           if int_level == group_link.group_access
-            im.where("group_access >= ?)", group_link.group_access)
+            im.where("access_level >= ?)", group_link.group_access)
           else
             im.send(level)
           end

@@ -65,4 +65,9 @@ class Issue < ActiveRecord::Base
   def reset_events_cache
     Event.reset_event_cache_for(self)
   end
+
+  # To allow polymorphism with MergeRequest.
+  def source_project
+    project
+  end
 end

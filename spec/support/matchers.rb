@@ -42,19 +42,19 @@ module UrlAccess
   def url_allowed?(user, url)
     emulate_user(user)
     visit url
-    (page.status_code != 404 && current_path != new_user_session_path)
+    (status_code != 404 && current_path != new_user_session_path)
   end
 
   def url_denied?(user, url)
     emulate_user(user)
     visit url
-    (page.status_code == 404 || current_path == new_user_session_path)
+    (status_code == 404 || current_path == new_user_session_path)
   end
 
   def url_404?(user, url)
     emulate_user(user)
     visit url
-    page.status_code == 404
+    status_code == 404
   end
 
   def emulate_user(user)

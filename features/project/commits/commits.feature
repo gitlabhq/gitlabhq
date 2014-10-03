@@ -30,9 +30,10 @@ Feature: Project Browse commits
     Given I visit my project's commits page for a specific path
     Then I see breadcrumb links
 
-  Scenario: I browse commits stats
-    Given I visit my project's commits stats page
-    Then I see commits stats
+  # TODO: Implement feature in graphs
+  #Scenario: I browse commits stats
+    #Given I visit my project's commits stats page
+    #Then I see commits stats
 
   Scenario: I browse big commit
     Given I visit big commit page

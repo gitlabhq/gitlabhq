@@ -151,12 +151,6 @@ module ApplicationHelper
     sanitize(str, tags: %w(a span))
   end
 
-  def image_url(source)
-    # prevent relative_root_path being added twice (it's part of root_url and path_to_image)
-    root_url.sub(/#{root_path}$/, path_to_image(source))
-  end
-
-  alias_method :url_to_image, :image_url
 
   def body_data_page
     path = controller.controller_path.split('/')
@@ -185,13 +179,6 @@ module ApplicationHelper
     else
       "Search"
     end
-  end
-
-  def first_line(str)
-    lines = str.split("\n")
-    line = lines.first
-    line += "..." if lines.size > 1
-    line
   end
 
   def broadcast_message

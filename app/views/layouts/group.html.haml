@@ -4,9 +4,9 @@
   %body{class: "#{app_theme} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "group: #{@group.name}"
-    = render "layouts/flash"
     %nav.main-nav.navbar-collapse.collapse
       .container= render 'layouts/nav/group'
-
     .container
-      .content= yield
+      .content
+        = render "layouts/flash"
+        = yield

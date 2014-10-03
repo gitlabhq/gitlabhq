@@ -25,14 +25,14 @@ class Repository
     raw_repository.empty?
   end
 
-  def commit(id = nil)
+  def commit(id = 'HEAD')
     return nil unless raw_repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
     commit
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil)
+  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
     commits = Gitlab::Git::Commit.where(
       repo: raw_repository,
       ref: ref,
@@ -137,8 +137,18 @@ class Repository
 
   def graph_log
     Rails.cache.fetch(cache_key(:graph_log)) do
-      stats = Gitlab::Git::GitStats.new(raw, root_ref, Gitlab.config.git.timeout)
-      stats.parsed_log
+      commits = raw_repository.log(limit: 6000, skip_merges: true,
+                                   ref: root_ref)
+      commits.map do |rugged_commit|
+        commit = Gitlab::Git::Commit.new(rugged_commit)
+
+        {
+          author_name: commit.author_name.force_encoding('UTF-8'),
+          author_email: commit.author_email.force_encoding('UTF-8'),
+          additions: commit.stats.additions,
+          deletions: commit.stats.deletions
+        }
+      end
     end
   end
 
@@ -223,12 +233,15 @@ class Repository
   end
 
   def last_commit_for_path(sha, path)
-    commits(sha, path, 1).last
+    args = %W(git rev-list --max-count 1 #{sha} -- #{path})
+    sha = Gitlab::Popen.popen(args, path_to_repo).first.strip
+    commit(sha)
   end
 
   # Remove archives older than 2 hours
   def clean_old_archives
-    Gitlab::Popen.popen(%W(find #{Gitlab.config.gitlab.repository_downloads_path} -mmin +120 -delete))
+    repository_downloads_path = Gitlab.config.gitlab.repository_downloads_path
+    Gitlab::Popen.popen(%W(find #{repository_downloads_path} -not -path #{repository_downloads_path} -mmin +120 -delete))
   end
 
   def branches_sorted_by(value)
@@ -247,20 +260,18 @@ class Repository
   end
 
   def contributors
-    log = graph_log.group_by { |i| i[:author_email] }
+    commits = self.commits(nil, nil, 2000, 0, true)
 
-    log.map do |email, contributions|
+    commits.group_by(&:author_email).map do |email, commits|
       contributor = Gitlab::Contributor.new
       contributor.email = email
 
-      contributions.each do |contribution|
+      commits.each do |commit|
         if contributor.name.blank?
-          contributor.name = contribution[:author_name]
+          contributor.name = commit.author_name
         end
 
         contributor.commits += 1
-        contributor.additions += contribution[:additions] || 0
-        contributor.deletions += contribution[:deletions] || 0
       end
 
       contributor
@@ -280,6 +291,23 @@ class Repository
   def prev_blob_for_diff(commit, diff)
     if commit.parent_id
       blob_at(commit.parent_id, diff.old_path)
+    end
+  end
+
+  def branch_names_contains(sha)
+    args = %W(git branch --contains #{sha})
+    names = Gitlab::Popen.popen(args, path_to_repo).first
+
+    if names.respond_to?(:split)
+      names = names.split("\n").map(&:strip)
+
+      names.each do |name|
+        name.slice! '* '
+      end
+
+      names
+    else
+      []
     end
   end
 end

@@ -1,6 +1,6 @@
 - ref = ref || nil
 - btn_class = btn_class || ''
-- split_button = split_button || false 
+- split_button = split_button || false
 - if split_button == true
   %span.btn-group{class: btn_class}
     = link_to archive_project_repository_path(@project, ref: ref, format: 'zip'), class: 'btn', rel: 'nofollow' do

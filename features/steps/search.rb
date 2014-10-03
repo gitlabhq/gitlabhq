@@ -66,8 +66,4 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   step 'I should not see "Bar" link' do
     page.should_not have_link "Bar"
   end
-
-  def project
-    @project ||= Project.find_by(name: "Shop")
-  end
 end

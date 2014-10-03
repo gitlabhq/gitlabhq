@@ -149,6 +149,11 @@ production: &base
     # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
     # sync_time: 3600
 
+    # This setting specifies if LDAP server is Active Directory LDAP server.
+    # For non AD servers it skips the AD specific queries.
+    # If your LDAP server is not AD, set this to false.
+    active_directory: true
+
     # If allow_username_or_email_login is enabled, GitLab will ignore everything
     # after the first '@' in the LDAP username submitted by the user on login.
     #
@@ -168,8 +173,10 @@ production: &base
 
     # Filter LDAP users
     #
-    #   Format: RFC 4515
+    #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
     #   Ex. (employeeType=developer)
+    #
+    #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
     #
     user_filter: ''
 
@@ -237,6 +244,15 @@ production: &base
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
+    # upload:
+    #   # Fog storage connection settings, see http://fog.io/storage/ .
+    #   connection:
+    #     provider: AWS
+    #     region: eu-west-1
+    #     aws_access_key_id: AKIAKIAKI
+    #     aws_secret_access_key: 'secret123'
+    #   # The remote 'directory' to store your backups. For S3, this would be the bucket name.
+    #   remote_directory: 'my.s3.bucket'
 
   ## GitLab Shell settings
   gitlab_shell:

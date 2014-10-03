@@ -281,6 +281,18 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 
+### Fork project
+
+Forks a project into the user namespace of the authenticated user.
+
+```
+POST /projects/fork/:id
+```
+
+Parameters:
+
+- `id` (required) - The ID of the project to be forked
+
 ### Remove project
 
 Removes a project including all associated resources (issues, merge requests etc.)

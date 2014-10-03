@@ -21,6 +21,7 @@ module Backup
         system('pg_dump', config['database'], out: db_file_name)
       end
       report_success(success)
+      abort 'Backup failed' unless success
     end
 
     def restore
@@ -37,6 +38,7 @@ module Backup
         system('psql', config['database'], '-f', db_file_name)
       end
       report_success(success)
+      abort 'Restore failed' unless success
     end
 
     protected

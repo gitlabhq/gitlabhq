@@ -36,7 +36,7 @@
               = f.text_field :email, class: "form-control", required: true
             - if @user.unconfirmed_email.present?
               %span.help-block
-                Please click the link in the confirmation email before continuing, it was send to
+                Please click the link in the confirmation email before continuing, it was sent to
                 %strong #{@user.unconfirmed_email}
 
             - else

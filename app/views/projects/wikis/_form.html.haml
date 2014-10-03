@@ -1,4 +1,4 @@
-= form_for [@project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal' } do |f|
+= form_for [@project, @page], method: @page.persisted? ? :put : :post, html: { class: 'form-horizontal gfm-form' } do |f|
   -if @page.errors.any?
     #error_explanation
       .alert.alert-danger

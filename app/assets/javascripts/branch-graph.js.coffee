@@ -90,11 +90,15 @@ class @BranchGraph
 
   renderPartialGraph: ->
     start = Math.floor((@element.scrollTop() - @offsetY) / @unitTime) - 10
-    start = 0 if start < 0
+    if start < 0
+      isGraphEdge = true
+      start = 0
     end = start + 40
-    end = @commits.length if @commits.length < end
+    if @commits.length < end
+      isGraphEdge = true
+      end = @commits.length
 
-    if @prev_start == -1 or Math.abs(@prev_start - start) > 10
+    if @prev_start == -1 or Math.abs(@prev_start - start) > 10 or isGraphEdge
       i = start
 
       @prev_start = start

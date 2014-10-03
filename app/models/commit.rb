@@ -108,4 +108,8 @@ class Commit
 
     super
   end
+
+  def parents
+    @parents ||= Commit.decorate(super)
+  end
 end

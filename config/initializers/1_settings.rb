@@ -58,6 +58,7 @@ Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
 Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
+Settings.ldap['active_directory'] = true if Settings.ldap['active_directory'].nil?
 
 
 Settings['omniauth'] ||= Settingslogic.new({})
@@ -130,6 +131,11 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
+Settings.backup['upload'] ||= Settingslogic.new({'remote_directory' => nil, 'connection' => nil})
+# Convert upload connection settings to use symbol keys, to make Fog happy
+if Settings.backup['upload']['connection']
+  Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
+end
 
 #
 # Git

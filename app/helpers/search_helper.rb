@@ -80,7 +80,8 @@ module SearchHelper
 
   # Autocomplete results for the current user's projects
   def projects_autocomplete(term, limit = 5)
-    ProjectsFinder.new.execute(current_user).search_by_title(term).non_archived.limit(limit).map do |p|
+    ProjectsFinder.new.execute(current_user).search_by_title(term).
+      sorted_by_stars.non_archived.limit(limit).map do |p|
       {
         label: "project: #{search_result_sanitize(p.name_with_namespace)}",
         url: project_path(p)
