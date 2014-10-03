@@ -212,7 +212,7 @@ Devise.setup do |config|
     end
 
     Gitlab.config.ldap.servers.each do |server|
-      config.omniauth :"ldap#{server.index}",
+      config.omniauth server.provider_name,
         host:     server['host'],
         base:     server['base'],
         uid:      server['uid'],

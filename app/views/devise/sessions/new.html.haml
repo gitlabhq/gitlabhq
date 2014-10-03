@@ -6,13 +6,13 @@
       %ul.nav.nav-tabs
         - @ldap_servers.each do |server|
           %li{class: (:active if server['primary'])}
-            = link_to server['label'], "#tab-ldap#{server.index}", 'data-toggle' => 'tab'
+            = link_to server['label'], "#tab-#{server.provider_name}", 'data-toggle' => 'tab'
         %li
           = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
         - @ldap_servers.each do |server|
-          %div.tab-pane{id: "tab-ldap#{server.index}", class: (:active if server['primary'])}
-            = render 'devise/sessions/new_ldap', provider: "ldap#{server.index}"
+          %div.tab-pane{id: "tab-#{server.provider_name}", class: (:active if server['primary'])}
+            = render 'devise/sessions/new_ldap', provider: server.provider_name
         %div#tab-signin.tab-pane
           = render 'devise/sessions/new_base'
 

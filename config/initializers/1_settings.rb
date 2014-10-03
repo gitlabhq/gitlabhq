@@ -52,7 +52,6 @@ class Settings < Settingslogic
   end
 end
 
-
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
@@ -60,14 +59,21 @@ Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_u
 Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 
 # backwards compatibility, we only have one host
-if Settings.ldap['enabled'] && Settings.ldap['host'].present?
-  excluded_per_server_settings = %w(sync_time allow_username_or_email_login)
-  server = Settings.ldap.except(excluded_per_server_settings)
-  server['primary'] = true
-  server['label'] = 'LDAP'
-  Settings.ldap['servers'] = [server]
-end
+if Settings.ldap['enabled']
+  if Settings.ldap['host'].present?
+    excluded_per_server_settings = %w(sync_time allow_username_or_email_login)
+    server = Settings.ldap.except(excluded_per_server_settings)
+    server['primary'] = true
+    server['label'] = 'LDAP'
+    server['provider_index'] = '' #providername will be ldap
+    Settings.ldap['servers'] = [server]
+  end
 
+  Settings.ldap['servers'].each do |server|
+    server['provider_name'] = "ldap#{server['provider_id']}".downcase
+    server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+  end
+end
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
 Settings.omniauth['providers']  ||= []

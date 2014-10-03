@@ -1,6 +1,5 @@
 module OmniAuth::Strategies
-  Gitlab.config.ldap.servers.each do |server|
-    class_name = "Ldap#{server.index}"
-    const_set(class_name, Class.new(LDAP))
+  Gitlab.config.ldap.servers.each_with_index do |server|
+    const_set(server.provider_class, Class.new(LDAP))
   end
 end

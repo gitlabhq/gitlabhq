@@ -33,7 +33,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
   end
 
   Gitlab.config.ldap.servers.each do |server|
-    alias_method "ldap#{server.index}", :ldap
+    alias_method server.provider_name, :ldap
   end
 
   def omniauth_error
