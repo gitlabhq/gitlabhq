@@ -331,7 +331,7 @@ class Project < ActiveRecord::Base
     path
   end
 
-  def items_for entity
+  def items_for(entity)
     case entity
     when 'issue' then
       issues
@@ -504,7 +504,7 @@ class Project < ActiveRecord::Base
   end
 
   # Check if current branch name is marked as protected in the system
-  def protected_branch? branch_name
+  def protected_branch?(branch_name)
     protected_branches_names.include?(branch_name)
   end
 

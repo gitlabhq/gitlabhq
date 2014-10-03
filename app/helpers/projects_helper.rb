@@ -3,7 +3,7 @@ module ProjectsHelper
     "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
 
-  def link_to_project project
+  def link_to_project(project)
     link_to project do
       title = content_tag(:span, project.name, class: 'project-name')
 
@@ -39,7 +39,7 @@ module ProjectsHelper
     end
   end
 
-  def project_title project
+  def project_title(project)
     if project.group
       content_tag :span do
         link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name

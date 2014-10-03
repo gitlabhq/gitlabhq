@@ -90,7 +90,7 @@ class Commit
 
   # Discover issues should be closed when this commit is pushed to a project's
   # default branch.
-  def closes_issues project
+  def closes_issues(project)
     Gitlab::ClosingIssueExtractor.closed_by_message_in_project(safe_message, project)
   end
 

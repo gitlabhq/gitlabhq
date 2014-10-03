@@ -80,7 +80,7 @@ module TreeHelper
     end
   end
 
-  def up_dir_path tree
+  def up_dir_path(tree)
     file = File.join(@path, "..")
     tree_join(@ref, file)
   end

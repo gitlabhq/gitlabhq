@@ -71,7 +71,7 @@ module API
       forbidden! unless current_user.is_admin?
     end
 
-    def authorize! action, subject
+    def authorize!(action, subject)
       unless abilities.allowed?(current_user, action, subject)
         forbidden!
       end
