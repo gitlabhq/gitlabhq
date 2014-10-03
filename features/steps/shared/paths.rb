@@ -411,7 +411,7 @@ module SharedPaths
   end
 
   def project
-    project = Project.find_by!(name: "Shop")
+    Project.find_by!(name: 'Shop')
   end
 
   # ----------------------------------------
