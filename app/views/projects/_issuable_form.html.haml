@@ -42,15 +42,27 @@
     = f.label :milestone_id, class: 'control-label' do
       %i.fa.fa-clock-o
       Milestone
-    .col-sm-10= f.select(:milestone_id, milestone_options(issuable),
-        { include_blank: 'Select milestone' }, { class: 'select2' })
+    .col-sm-10
+      - if milestone_options(issuable).present?
+        = f.select(:milestone_id, milestone_options(issuable),
+          { include_blank: 'Select milestone' }, { class: 'select2' })
+      - else
+        %span.light No open milestones available.
+      &nbsp;
+      = link_to 'Create new milestone', new_project_milestone_path(issuable.project)
 .form-group
   = f.label :label_ids, class: 'control-label' do
     %i.icon-tag
     Labels
   .col-sm-10
-    = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
+    - if issuable.project.labels.any?
+      = f.collection_select :label_ids, issuable.project.labels.all, :id, :name,
         { selected: issuable.label_ids }, multiple: true, class: 'select2'
+    - else
+      %span.light No labels yet.
+    &nbsp;
+    = link_to 'Create new label', new_project_label_path(issuable.project)
+
 .form-actions
   - if issuable.new_record?
     = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
