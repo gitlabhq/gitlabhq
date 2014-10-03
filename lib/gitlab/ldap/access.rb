@@ -42,17 +42,17 @@ module Gitlab
       end
 
       def update_permissions(user)
-        if Gitlab.config.ldap['sync_ssh_keys']
+        if ldap_config['sync_ssh_keys']
           update_ssh_keys(user)
         end
 
         # Skip updating group permissions
         # if instance does not use group_base setting
-        return true unless Gitlab.config.ldap['group_base'].present?
+        return true unless ldap_config['group_base'].present?
 
         update_ldap_group_links(user)
 
-        if Gitlab.config.ldap['admin_group'].present?
+        if ldap_config['admin_group'].present?
           update_admin_status(user)
         end
       end
@@ -71,7 +71,7 @@ module Gitlab
 
         (ldap_user.ssh_keys - user.keys.ldap.pluck(:key)).each do |key|
           Rails.logger.info "#{self.class.name}: adding LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})"
-          new_key = LDAPKey.new(title: "LDAP - #{Gitlab.config.ldap['sync_ssh_keys']}", key: key)
+          new_key = LDAPKey.new(title: "LDAP - #{ldap_config['sync_ssh_keys']}", key: key)
           new_key.user = user
           unless new_key.save
             Rails.logger.error "#{self.class.name}: failed to add LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})\n"\
@@ -100,7 +100,7 @@ module Gitlab
       end
 
       def update_admin_status(user)
-        admin_group = Gitlab::LDAP::Group.find_by_cn(Gitlab.config.ldap['admin_group'], adapter)
+        admin_group = Gitlab::LDAP::Group.find_by_cn(ldap_config['admin_group'], adapter)
         if admin_group.has_member?(Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter))
           unless user.admin?
             user.admin = true
@@ -138,6 +138,10 @@ module Gitlab
         @ldap_groups_with_access ||= ldap_groups.select do |ldap_group|
           ldap_group.has_member?(ldap_user)
         end.map(&:cn)
+      end
+
+      def ldap_config
+        Gitlab::LDAP::Adapter.config_for(provider)
       end
 
       private
