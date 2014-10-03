@@ -10,6 +10,7 @@ module Gitlab
   module LDAP
     class User < Gitlab::OAuth::User
       class << self
+        # TODO: Look through LDAP servers until valid credentials are found?
         def authenticate(login, password)
           # Check user against LDAP backend if user is not authenticated
           # Only check with valid login and password to prevent anonymous bind results
