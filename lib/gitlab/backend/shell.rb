@@ -213,7 +213,7 @@ module Gitlab
       FileUtils.rm_r(satellites_path, force: true)
     end
 
-    def url_to_repo path
+    def url_to_repo(path)
       Gitlab.config.gitlab_shell.ssh_path_prefix + "#{path}.git"
     end
 

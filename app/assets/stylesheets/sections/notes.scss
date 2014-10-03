@@ -119,8 +119,7 @@ ul.notes {
     display: none;
     float: right;
 
-    [class^="icon-"],
-    [class*="icon-"] {
+    [class~="fa"] {
       font-size: 16px;
       line-height: 16px;
       vertical-align: middle;

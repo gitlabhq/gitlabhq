@@ -45,6 +45,6 @@
     %fieldset
       - if params[:state].present? || params[:project_id].present?
         = link_to filter_path(entity, state: nil, project_id: nil), class: 'pull-right cgray' do
-          %i.icon-remove
+          %i.fa.fa-times
           %strong Clear filter
 

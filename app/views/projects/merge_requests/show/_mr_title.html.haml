@@ -6,7 +6,7 @@
       - if @merge_request.open?
         .btn-group.pull-left
           %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
-            %i.icon-download-alt
+            %i.fa.fa-arrow-circle-o-down-alt
             Download as
             %span.caret
           %ul.dropdown-menu
@@ -16,7 +16,7 @@
         = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: { state_event: :close }), method: :put, class: "btn btn-grouped btn-close", title: "Close merge request"
 
         = link_to edit_project_merge_request_path(@project, @merge_request), class: "btn btn-grouped", id:"edit_merge_request" do
-          %i.icon-edit
+          %i.fa.fa-pencil-square-o
           Edit
       - if @merge_request.closed?
         = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
@@ -31,7 +31,12 @@
   %span.prepend-left-20
     %span From
     - if @merge_request.for_fork?
-      %strong.label-branch #{@merge_request.source_project_namespace}:#{@merge_request.source_branch}
+      %strong.label-branch<
+        - if @merge_request.source_project
+          = link_to @merge_request.source_project_namespace, project_path(@merge_request.source_project)
+        - else
+          \ #{@merge_request.source_project_namespace}
+        \:#{@merge_request.source_branch}
       %span into
       %strong.label-branch #{@merge_request.target_project_namespace}:#{@merge_request.target_branch}
     - else

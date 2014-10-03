@@ -154,7 +154,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I modify merge commit message' do
     find('.modify-merge-commit-link').click
-    fill_in 'merge_commit_message', with: "wow such merge"
+    fill_in 'commit_message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do

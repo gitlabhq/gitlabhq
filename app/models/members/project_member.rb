@@ -77,7 +77,7 @@ class ProjectMember < Member
       false
     end
 
-    def truncate_team project
+    def truncate_team(project)
       truncate_teams [project.id]
     end
 

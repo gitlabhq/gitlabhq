@@ -204,7 +204,7 @@ class User < ActiveRecord::Base
         User.where(name: name).first
     end
 
-    def filter filter_name
+    def filter(filter_name)
       case filter_name
       when "admins"; self.admins
       when "blocked"; self.blocked
@@ -214,7 +214,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def search query
+    def search(query)
       where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
 
@@ -334,7 +334,7 @@ class User < ActiveRecord::Base
     several_namespaces? || admin
   end
 
-  def can? action, subject
+  def can?(action, subject)
     abilities.allowed?(self, action, subject)
   end
 
@@ -355,7 +355,7 @@ class User < ActiveRecord::Base
     (personal_projects.count.to_f / projects_limit) * 100
   end
 
-  def recent_push project_id = nil
+  def recent_push(project_id = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
     events = events.where(project_id: project_id) if project_id
@@ -384,11 +384,11 @@ class User < ActiveRecord::Base
     project.team_member_by_id(self.id)
   end
 
-  def already_forked? project
+  def already_forked?(project)
     !!fork_of(project)
   end
 
-  def fork_of project
+  def fork_of(project)
     links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
 
     if links.any?
@@ -514,7 +514,7 @@ class User < ActiveRecord::Base
     NotificationService.new
   end
 
-  def log_info message
+  def log_info(message)
     Gitlab::AppLogger.info message
   end
 

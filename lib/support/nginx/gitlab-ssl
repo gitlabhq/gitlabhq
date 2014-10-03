@@ -72,6 +72,8 @@ server {
 
   ssl_prefer_server_ciphers   on;
 
+  ## [WARNING] The following header states that the browser should only communicate 
+  ## with your server over a secure connection for the next 24 months.
   add_header Strict-Transport-Security max-age=63072000;
   add_header X-Frame-Options SAMEORIGIN;
   add_header X-Content-Type-Options nosniff;

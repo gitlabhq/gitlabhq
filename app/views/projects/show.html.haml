@@ -29,13 +29,13 @@
           - if @project.archived?
             .alert.alert-warning
               %h4
-                %i.icon-warning-sign
+                %i.fa.fa-exclamation-triangle
                 Archived project!
               %p Repository is read-only
 
           - if @project.forked_from_project
             .alert.alert-success
-              %i.icon-code-fork.project-fork-icon
+              %i.fa.fa-code-fork.project-fork-icon
               Forked from:
               %br
               = link_to @project.forked_from_project.name_with_namespace, project_path(@project.forked_from_project)
@@ -73,7 +73,7 @@
       %article.readme-holder#README
         = link_to project_blob_path(@project, tree_join(@repository.root_ref, readme.name)) do
           %h4.readme-file-title
-            %i.icon-file
+            %i.fa.fa-file
             = readme.name
         .wiki
           = render_readme(readme)

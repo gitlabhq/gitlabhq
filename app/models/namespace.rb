@@ -38,7 +38,7 @@ class Namespace < ActiveRecord::Base
 
   scope :root, -> { where('type IS NULL') }
 
-  def self.search query
+  def self.search(query)
     where("name LIKE :query OR path LIKE :query", query: "%#{query}%")
   end
 

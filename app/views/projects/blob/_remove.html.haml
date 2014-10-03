@@ -10,12 +10,8 @@
 
       .modal-body
         = form_tag project_blob_path(@project, @id), method: :delete, class: 'form-horizontal' do
-          .form-group.commit_message-group
-            = label_tag 'commit_message', class: "control-label" do
-              Commit message
-            .col-sm-10
-              = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message',
-                  params[:commit_message], placeholder: "Removed this file because...", required: true, rows: 3, class: 'form-control')}
+          = render 'shared/commit_message_container', params: params,
+                   placeholder: 'Removed this file because...'
           .form-group
             .col-sm-2
             .col-sm-10

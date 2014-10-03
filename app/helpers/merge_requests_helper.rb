@@ -24,7 +24,7 @@ module MergeRequestsHelper
     }
   end
 
-  def mr_css_classes mr
+  def mr_css_classes(mr)
     classes = "merge-request"
     classes << " closed" if mr.closed?
     classes << " merged" if mr.merged?

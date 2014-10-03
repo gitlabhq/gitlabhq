@@ -90,7 +90,7 @@ gem "github-markup"
 gem 'redcarpet', '~> 3.1.2'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
-gem 'org-ruby'
+gem 'org-ruby', '= 0.9.9'
 gem 'creole', '~>0.3.6'
 gem 'wikicloth', '=0.8.1'
 gem 'asciidoctor', '= 0.1.4'
@@ -181,7 +181,7 @@ gem "jquery-ui-rails"
 gem "jquery-scrollto-rails"
 gem "raphael-rails", "~> 2.1.2"
 gem 'bootstrap-sass', '~> 3.0'
-gem "font-awesome-rails", '~> 3.2'
+gem "font-awesome-rails", '~> 4.2'
 gem "gitlab_emoji", "~> 0.0.1.1"
 gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'

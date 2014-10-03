@@ -8,7 +8,7 @@
 
   .pull-right
     = link_to edit_admin_user_path(@user), class: "btn btn-grouped" do
-      %i.icon-edit
+      %i.fa.fa-pencil-square-o
       Edit
 %hr
 %ul.nav.nav-tabs
@@ -45,7 +45,7 @@
                 %span.light Secondary email:
                 %strong= email.email
                 = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-tiny btn btn-remove pull-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
-                  %i.icon-remove
+                  %i.fa.fa-times
 
             %li
               %span.light Can create groups:
@@ -85,6 +85,11 @@
                   = @user.last_sign_in_at.stamp("Nov 12, 2031")
                 - else
                   never
+
+            %li
+              %span.light Sign-in count:
+              %strong
+                = @user.sign_in_count
 
             - if @user.ldap_user?
               %li
@@ -171,8 +176,8 @@
               .pull-right
                 %span.light= user_group.human_access
                 - unless user_group.owner?
-                  = link_to group_users_group_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
-                    %i.icon-remove.icon-white
+                  = link_to group_group_member_path(group, user_group), data: { confirm: remove_user_from_group_message(group, @user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+                    %i.fa.fa-times.fa-inverse
     - else
       .nothing-here-block This user has no groups.
 
@@ -211,4 +216,4 @@
 
                       - if tm.respond_to? :project
                         = link_to project_team_member_path(project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
-                          %i.icon-remove
+                          %i.fa.fa-times
