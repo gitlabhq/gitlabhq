@@ -105,7 +105,7 @@ namespace :gitlab do
       end
 
       # omniauth or ldap could have been deleted from the file
-      unless Gitlab.config['git_host']
+      if Settings.satellites['timeout']
         puts "no".green
       else
         puts "yes".red
