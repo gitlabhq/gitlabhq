@@ -38,7 +38,7 @@ module Gitlab
       end
 
       def get_ldap_user(user)
-        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
+        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
       end
 
       def update_permissions(user)
