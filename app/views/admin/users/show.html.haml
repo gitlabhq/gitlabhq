@@ -86,6 +86,11 @@
                 - else
                   never
 
+            %li
+              %span.light Sign-in count:
+              %strong
+                = @user.sign_in_count
+
             - if @user.ldap_user?
               %li
                 %span.light LDAP uid:
