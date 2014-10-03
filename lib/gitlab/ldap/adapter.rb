@@ -1,11 +1,11 @@
 module Gitlab
   module LDAP
     class Adapter
-      attr_reader :ldap
+      attr_reader :provider, :ldap
 
-      def self.open(&block)
-        Net::LDAP.open(adapter_options) do |ldap|
-          block.call(self.new(ldap))
+      def self.open(provider, &block)
+        Net::LDAP.open(adapter_options(provider)) do |ldap|
+          block.call(self.new(provider, ldap))
         end
       end
 
@@ -13,7 +13,12 @@ module Gitlab
         Gitlab.config.ldap
       end
 
-      def self.adapter_options
+      def self.config_for(provider)
+        config.servers.find { |server| server.provider_name == provider }
+      end
+
+      def self.adapter_options(provider)
+        config = config_for(provider)
         encryption =
           case config['method'].to_s
           when 'ssl'
@@ -45,7 +50,8 @@ module Gitlab
       end
 
 
-      def initialize(ldap=nil)
+      def initialize(provider, ldap=nil)
+        @provider = provider
         @ldap = ldap || Net::LDAP.new(self.class.adapter_options)
       end
 
@@ -133,7 +139,7 @@ module Gitlab
       private
 
       def config
-        @config ||= self.class.config
+        @config ||= self.class.config_for(provider)
       end
     end
   end
