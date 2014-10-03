@@ -66,7 +66,7 @@ module Gitlab
       def find_by_uid_and_provider
         # LDAP distinguished name is case-insensitive
         model.
-          where(provider: auth_hash.provider).
+          where(provider: [auth_hash.provider, :ldap]).
           where('lower(extern_uid) = ?', auth_hash.uid.downcase).last
       end
 

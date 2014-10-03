@@ -1,16 +1,21 @@
+# LDAP authorization model
+#
+# * Check if we are allowed access (not blocked)
+# * Update authorizations and associations
+#
 module Gitlab
   module LDAP
     class Access
-      attr_reader :adapter
+      attr_reader :adapter, :provider
 
-      def self.open(&block)
-        Gitlab::LDAP::Adapter.open do |adapter|
-          block.call(self.new(adapter))
+      def self.open(provider, &block)
+        Gitlab::LDAP::Adapter.open(provider) do |adapter|
+          block.call(self.new(provider, adapter))
         end
       end
 
       def self.allowed?(user)
-        self.open do |access|
+        self.open(user.provider) do |access|
           if access.allowed?(user)
             access.update_permissions(user)
             access.update_email(user)
@@ -23,7 +28,8 @@ module Gitlab
         end
       end
 
-      def initialize(adapter=nil)
+      def initialize(provider, adapter=nil)
+        @provider = provider
         @adapter = adapter
       end
 
