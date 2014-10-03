@@ -35,7 +35,7 @@
             - if @project.root_ref?(branch.name)
               %span.label.label-info default
             %span.label.label-success
-              %i.icon-lock
+              %i.fa.fa-lock
           .pull-right
             - if can? current_user, :admin_project, @project
               = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"

@@ -25,7 +25,7 @@ class BaseService
     EventCreateService.new
   end
 
-  def log_info message
+  def log_info(message)
     Gitlab::AppLogger.info message
   end
 

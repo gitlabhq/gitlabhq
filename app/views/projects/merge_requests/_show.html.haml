@@ -10,12 +10,12 @@
     %ul.nav.nav-pills.merge-request-tabs
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
-          %i.icon-comment
+          %i.fa.fa-comment
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.count
       %li.diffs-tab{data: {action: 'diffs'}}
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
-          %i.icon-list-alt
+          %i.fa.fa-list-alt
           Changes
           %span.badge= @merge_request.diffs.size
 

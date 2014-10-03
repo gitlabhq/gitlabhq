@@ -109,7 +109,31 @@ Triggered when a new merge request is created or an existing merge request was u
     "merge_status": "unchecked",
     "target_project_id": 14,
     "iid": 1,
-    "description": ""
+    "description": "",
+    "source": {
+      "name": "awesome_project",
+      "ssh_url": "ssh://git@example.com/awesome_space/awesome_project.git",
+      "http_url": "http://example.com/awesome_space/awesome_project.git",
+      "visibility_level": 20,
+      "namespace": "awesome_space"
+    },
+    "target": {
+      "name": "awesome_project",
+      "ssh_url": "ssh://git@example.com/awesome_space/awesome_project.git",
+      "http_url": "http://example.com/awesome_space/awesome_project.git",
+      "visibility_level": 20,
+      "namespace": "awesome_space"
+    },
+    "last_commit": {
+      "id": "da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+      "message": "fixed readme",
+      "timestamp": "2012-01-03T23:36:29+02:00",
+      "url": "http://example.com/awesome_space/awesome_project/commits/da1560886d4f094c3e6c9ef40349f7d38b5d27d7",
+      "author": {
+        "name": "GitLab dev user",
+        "email": "gitlabdev@dv6700.(none)"
+      }
+    }
   }
 }
 ```

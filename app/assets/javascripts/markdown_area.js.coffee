@@ -7,8 +7,8 @@ $(document).ready ->
   divHover = "<div class=\"div-dropzone-hover\"></div>"
   divSpinner = "<div class=\"div-dropzone-spinner\"></div>"
   divAlert = "<div class=\"" + alertClass + "\"></div>"
-  iconPicture = "<i class=\"icon-picture div-dropzone-icon\"></i>"
-  iconSpinner = "<i class=\"icon-spinner icon-spin div-dropzone-icon\"></i>"
+  iconPicture = "<i class=\"fa fa-picture-o div-dropzone-icon\"></i>"
+  iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>"
   btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
   project_image_path_upload = window.project_image_path_upload or null
 

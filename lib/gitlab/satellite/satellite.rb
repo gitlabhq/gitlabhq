@@ -11,7 +11,7 @@ module Gitlab
         @project = project
       end
 
-      def log message
+      def log(message)
         Gitlab::Satellite::Logger.error(message)
       end
 

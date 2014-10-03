@@ -26,7 +26,7 @@ After getting used to these three steps the branching model becomes the challeng
 Since many organizations new to git have no conventions how to work with it, it can quickly become a mess.
 The biggest problem they run into is that many long running branches that each contain part of the changes are around.
 People have a hard time figuring out which branch they should develop on or deploy to production.
-Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow]()
+Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](https://guides.github.com/introduction/flow/index.html)
 We think there is still room for improvement and will detail a set of practices we call GitLab flow.
 
 # Git flow and its problems
@@ -54,7 +54,7 @@ And doing releases doesn't automatically mean also doing hotfixes.
 
 ![Master branch with feature branches merged in](github_flow.png)
 
- In reaction to git flow a simpler alternative was detailed, [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html).
+ In reaction to git flow a simpler alternative was detailed, [GitHub flow](https://guides.github.com/introduction/flow/index.html).
 This flow has only feature branches and a master branch.
 This is very simple and clean, many organizations have adopted it with great success.
 Atlassian recommends [a similar strategy](http://blogs.atlassian.com/2014/01/simple-git-workflow-simple/) although they rebase feature branches.

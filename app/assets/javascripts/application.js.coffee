@@ -172,8 +172,8 @@ $ ->
   # Show/hide comments on diff
   $("body").on "click", ".js-toggle-diff-comments", (e) ->
     $(@).find('i').
-      toggleClass('icon-chevron-down').
-      toggleClass('icon-chevron-up')
+      toggleClass('fa fa-chevron-down').
+      toggleClass('fa fa-chevron-up')
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
 

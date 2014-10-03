@@ -10,7 +10,7 @@ module Mentionable
 
   module ClassMethods
     # Indicate which attributes of the Mentionable to search for GFM references.
-    def attr_mentionable *attrs
+    def attr_mentionable(*attrs)
       mentionable_attrs.concat(attrs.map(&:to_s))
     end
 
@@ -38,7 +38,7 @@ module Mentionable
 
   # Determine whether or not a cross-reference Note has already been created between this Mentionable and
   # the specified target.
-  def has_mentioned? target
+  def has_mentioned?(target)
     Note.cross_reference_exists?(target, local_reference)
   end
 
@@ -64,7 +64,7 @@ module Mentionable
   end
 
   # Extract GFM references to other Mentionables from this Mentionable. Always excludes its #local_reference.
-  def references p = project, text = mentionable_text
+  def references(p = project, text = mentionable_text)
     return [] if text.blank?
     ext = Gitlab::ReferenceExtractor.new
     ext.analyze(text)
@@ -73,7 +73,7 @@ module Mentionable
   end
 
   # Create a cross-reference Note for each GFM reference to another Mentionable found in +mentionable_text+.
-  def create_cross_references! p = project, a = author, without = []
+  def create_cross_references!(p = project, a = author, without = [])
     refs = references(p) - without
     refs.each do |ref|
       Note.create_cross_reference_note(ref, local_reference, a, p)
@@ -82,7 +82,7 @@ module Mentionable
 
   # If the mentionable_text field is about to change, locate any *added* references and create cross references for
   # them. Invoke from an observer's #before_save implementation.
-  def notice_added_references p = project, a = author
+  def notice_added_references(p = project, a = author)
     ch = changed_attributes
     original, mentionable_changed = "", false
     self.class.mentionable_attrs.each do |attr|

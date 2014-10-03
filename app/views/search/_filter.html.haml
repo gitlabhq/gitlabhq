@@ -1,6 +1,6 @@
 .dropdown.inline
   %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-    %i.icon-tags
+    %i.fa.fa-tags
     %span.light Group:
     - if @group.present?
       %strong= @group.name
@@ -18,7 +18,7 @@
 
 .dropdown.inline.prepend-left-10.project-filter
   %a.dropdown-toggle.btn.btn-small{href: '#', "data-toggle" => "dropdown"}
-    %i.icon-tags
+    %i.fa.fa-tags
     %span.light Project:
     - if @project.present?
       %strong= @project.name_with_namespace

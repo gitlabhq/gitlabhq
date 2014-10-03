@@ -36,9 +36,9 @@ module TreeHelper
   # type - String type of the tree item; either 'folder' or 'file'
   def tree_icon(type)
     icon_class = if type == 'folder'
-                   'icon-folder-close'
+                   'fa fa-folder'
                  else
-                   'icon-file-alt'
+                   'fa fa-file-o'
                  end
 
     content_tag :i, nil, class: icon_class
@@ -80,7 +80,7 @@ module TreeHelper
     end
   end
 
-  def up_dir_path tree
+  def up_dir_path(tree)
     file = File.join(@path, "..")
     tree_join(@ref, file)
   end

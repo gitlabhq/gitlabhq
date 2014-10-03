@@ -11,7 +11,7 @@ class ProjectTeam
   #   @team << [@user, :master]
   #   @team << [@users, :master]
   #
-  def << args
+  def <<(args)
     users = args.first
 
     if users.respond_to?(:each)

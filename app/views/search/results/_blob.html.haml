@@ -2,7 +2,7 @@
   .file-holder
     .file-title
       = link_to project_blob_path(@project, tree_join(blob.ref, blob.filename), :anchor => "L" + blob.startline.to_s) do
-        %i.icon-file
+        %i.fa.fa-file
         %strong
           = blob.filename
     .file-content.code.term

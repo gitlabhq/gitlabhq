@@ -5,7 +5,7 @@ module Gitlab
       START  = "#!idiff-start!#"
       FINISH = "#!idiff-finish!#"
 
-      def processing diff_arr
+      def processing(diff_arr)
         indexes = _indexes_of_changed_lines diff_arr
 
         indexes.each do |index|
@@ -52,7 +52,7 @@ module Gitlab
         diff_arr
       end
 
-      def _indexes_of_changed_lines diff_arr
+      def _indexes_of_changed_lines(diff_arr)
         chain_of_first_symbols = ""
         diff_arr.each_with_index do |line, i|
           chain_of_first_symbols += line[0]
@@ -68,7 +68,7 @@ module Gitlab
         indexes
       end
 
-      def replace_markers line
+      def replace_markers(line)
         line.gsub!(START, "<span class='idiff'>")
         line.gsub!(FINISH, "</span>")
         line
