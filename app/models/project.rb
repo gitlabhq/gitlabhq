@@ -633,4 +633,12 @@ class Project < ActiveRecord::Base
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
   end
+
+  def group_ldap_synced?
+    if group
+      group.ldap_synced?
+    else
+      false
+    end
+  end
 end
