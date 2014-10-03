@@ -544,6 +544,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def hook_attrs
+    {
+      name: name,
+      ssh_url: ssh_url_to_repo,
+      http_url: http_url_to_repo,
+      namespace: namespace.name,
+      visibility_level: visibility_level
+    }
+  end
+
   # Reset events cache related to this project
   #
   # Since we do cache @event we need to reset cache in special cases:

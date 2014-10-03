@@ -134,7 +134,7 @@ module Issuable
   def to_hook_data
     {
       object_kind: self.class.name.underscore,
-      object_attributes: self.attributes
+      object_attributes: hook_attrs
     }
   end
 

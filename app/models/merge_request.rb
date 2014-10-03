@@ -211,6 +211,20 @@ class MergeRequest < ActiveRecord::Base
     Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
   end
 
+  def hook_attrs
+    attrs = {
+      source: source_project.hook_attrs,
+      target: target_project.hook_attrs,
+      last_commit: nil
+    }
+
+    unless last_commit.nil?
+      attrs.merge!(last_commit: last_commit.hook_attrs(source_project))
+    end
+
+    attributes.merge!(attrs)
+  end
+
   def for_fork?
     target_project != source_project
   end
