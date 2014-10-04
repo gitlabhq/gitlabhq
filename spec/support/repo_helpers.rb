@@ -96,4 +96,22 @@ eos
       commits: commits
     )
   end
+
+  def set_editor_content(content)
+    execute_script("editor.setValue('#{content}')")
+  end
+
+  def set_editor_new_markdown_content
+    set_editor_content("**#{editor_new_markdown_inner_content}**")
+  end
+
+  def rendered_editor_new_markdown_content_matcher
+    ['strong', editor_new_markdown_inner_content]
+  end
+
+  private
+
+  def editor_new_markdown_inner_content
+    'New markdown content'
+  end
 end

@@ -71,12 +71,27 @@ Feature: Project Source Browse Files
     And I see a commit error message
 
   @javascript
-  Scenario: I can see editing preview
+  Scenario: I can see the diff
     Given I click on ".gitignore" file in repo
     And I click button "Edit"
     And I edit code
     And I click link "Diff"
     Then I see diff
+
+  @javascript
+  Scenario: I don't see the preview button for a file type that has no preview
+    Given I click on ".gitignore" file in repo
+    And I click button "Edit"
+    And I edit code
+    Then I don't see the "Preview" button
+
+  @javascript
+  Scenario: I can see the preview for a file type that has preview
+    Given I click on readme file
+    And I click button "Edit"
+    And I enter new markdown content
+    And I click on "Preview"
+    Then I see the preview
 
   @javascript
   Scenario: I can remove file and commit

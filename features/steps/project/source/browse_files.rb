@@ -57,6 +57,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     set_new_content
   end
 
+  step 'I enter new markdown content' do
+    set_editor_new_markdown_content
+  end
+
   step 'I fill the new file name' do
     fill_in :file_name, with: new_file_name
   end
@@ -87,6 +91,18 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step 'I see diff' do
     page.should have_css '.line_holder.new'
+  end
+
+  step 'I see the preview' do
+    expect(page).to have_css(*rendered_editor_new_markdown_content_matcher)
+  end
+
+  step 'I don\'t see the "Preview" button' do
+    expect(page).not_to have_selector(:link_or_button, 'Preview')
+  end
+
+  step 'I click on "Preview"' do
+    click_link 'Preview'
   end
 
   step 'I click on "new file" link in repo' do
@@ -162,7 +178,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   private
 
   def set_new_content
-    execute_script("editor.setValue('#{new_gitignore_content}')")
+    set_editor_content(new_gitignore_content)
   end
 
   # Content of the gitignore file on the seed repository.

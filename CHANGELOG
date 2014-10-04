@@ -6,7 +6,7 @@ v 7.7.0
   -
   - Mention notification level
   -
-  -
+  - Show both preview and diff on markdown blob edit (Ciro Santilli)
   - OAuth applications feature
   -
   -
