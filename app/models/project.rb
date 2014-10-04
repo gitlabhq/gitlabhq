@@ -326,11 +326,6 @@ class Project < ActiveRecord::Base
     @ci_service ||= ci_services.select(&:activated?).first
   end
 
-  # For compatibility with old code
-  def code
-    path
-  end
-
   def items_for(entity)
     case entity
     when 'issue' then
