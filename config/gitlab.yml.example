@@ -218,6 +218,9 @@ production: &base
   backup:
     path: "tmp/backups"   # Relative paths are relative to Rails.root (default: tmp/backups/)
     # keep_time: 604800   # default: 0 (forever) (in seconds)
+    # compression:
+    #   command: gzip     # Working commands: [gzip, bzip2, xz]. Be sure to have associated compress utility installed.
+    #   level: 6          # 0..9. Level 0 only available for xz command. Default level will be used if not specified.
     # upload:
     #   # Fog storage connection settings, see http://fog.io/storage/ .
     #   connection:
