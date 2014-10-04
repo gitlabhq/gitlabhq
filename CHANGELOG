@@ -47,6 +47,7 @@ v 7.10.0 (unreleased)
   - AJAX selectbox for issue assignee and author filters
   - Fix issue with missing options in issue filtering dropdown if selected one
   - Prevent holding Control-Enter or Command-Enter from posting comment multiple times.
+  - Improve file icons rendering on tree (Sullivan Sénéchal)
 
 v 7.9.0
   - Send EmailsOnPush email when branch or tag is created or deleted.

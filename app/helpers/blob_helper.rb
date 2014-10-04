@@ -61,4 +61,12 @@ module BlobHelper
       'Preview changes'
     end
   end
+
+  # Return an image icon depending on the file mode and extension
+  #
+  # mode - File unix mode
+  # mode - File name
+  def blob_icon(mode, name)
+    icon("#{file_type_icon_class('file', mode, name)} fw")
+  end
 end
