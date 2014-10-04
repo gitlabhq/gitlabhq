@@ -15,7 +15,7 @@ class Tree
       # by markup renderer.
       if available_readmes.length > 1
         supported_readmes = available_readmes.select do |readme|
-          gitlab_markdown?(readme.name) || markup?(readme.name)
+          previewable?(readme.name)
         end
 
         # Take the first supported readme, or the first available readme, if we
