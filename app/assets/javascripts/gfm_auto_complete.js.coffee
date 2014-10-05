@@ -1,9 +1,4 @@
-# Creates the variables for setting up GFM auto-completion
-
-window.GitLab ?= {}
-GitLab.GfmAutoComplete =
-  # private_token: ''
-  dataSource: ''
+class GfmAutoComplete
   # Emoji
   Emoji:
     template: '<li data-value="${insert}">${name} <img alt="${name}" height="20" src="${image}" width="20" /></li>'
@@ -17,7 +12,7 @@ GitLab.GfmAutoComplete =
     template: '<li data-value="${id}"><small>${id}</small> ${title} </li>'
 
   # Add GFM auto-completion to all input fields, that accept GFM input.
-  setup: ->
+  constructor: (@dataSource = '')->
     input = $('.js-gfm-input')
 
     # Emoji
@@ -65,3 +60,5 @@ GitLab.GfmAutoComplete =
         input.atwho 'load', "mergerequests", data.mergerequests
         # load emojis
         input.atwho 'load', ":", data.emojis
+
+@GfmAutoComplete = GfmAutoComplete

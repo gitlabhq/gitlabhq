@@ -3,102 +3,76 @@ $ ->
 
 class Dispatcher
   constructor: () ->
+    @handlers =
+      'projects:issues:index': [Issues.init, ShortcutsNavigation, @shortcatsEnabled]
+      'projects:issues:show': [Issue, ShortcutsIssueable, ZenMode]
+      'projects:issues:new': [GfmAutoComplete,
+                              ShortcutsNavigation, @shortcatsEnabled, ZenMode]
+      'projects:issues:edit': [GfmAutoComplete,
+                               ShortcutsNavigation, @shortcatsEnabled, ZenMode]
+      'projects:milestones:show': [Milestone]
+      'projects:milestones:new': [ZenMode]
+      'projects:merge_requests:new': [GfmAutoComplete, Diff,
+                                      ShortcutsIssueable, @shortcatsEnabled]
+      'projects:merge_requests:edit': [GfmAutoComplete, Diff,
+                                      ShortcutsIssueable, @shortcatsEnabled]
+      'projects:merge_requests:show': [Diff, ShortcutsIssueable,
+                                       @shortcatsEnabled, ZenMode]
+      'projects:merge_requests:diffs': [Diff]
+      'projects:merge_requests:index': [ShortcutsNavigation, @shortcatsEnabled]
+      'projects:commit:show': [Commit, Diff, ShortcutsNavigation, @shortcatsEnabled]
+      'projects:commits:show': [ShortcutsNavigation, @shortcatsEnabled]
+      'projects:tree:show': [TreeView, ShortcutsNavigation, @shortcatsEnabled]
+      'projects:blob:show': [BlobView, ShortcutsNavigation, @shortcatsEnabled]
+      'projects:labels:new': [Labels]
+      'projects:labels:show': [Labels]
+      'projects:network:show': [@shortcatsEnabled]
+      'projects:teams:members:index': [TeamMembers]
+      'projects:new': [Project]
+      'projects:edit': [Project]
+      'projects:show': [Activities, ShortcutsNavigation, @shortcatsEnabled]
+      'dashboard:show': [Dashboard, Activities]
+      'groups:members': [GroupMembers]
+      'groups:show': [Activities, ShortcutsNavigation, @shortcatsEnabled]
+
+    @shortcutHandler = false
     @initSearch()
     @initHighlight()
     @initPageScripts()
 
   initPageScripts: ->
     page = $('body').attr('data-page')
-    project_id = $('body').attr('data-project-id')
 
     unless page
       return false
 
     path = page.split(':')
-    shortcut_handler = null
 
-    switch page
-      when 'projects:issues:index'
-        Issues.init()
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:issues:show'
-        new Issue()
-        shortcut_handler = new ShortcutsIssueable()
-        new ZenMode()
-      when 'projects:milestones:show'
-        new Milestone()
-      when 'projects:milestones:new'
-        new ZenMode()
-      when 'projects:issues:new','projects:issues:edit'
-        GitLab.GfmAutoComplete.setup()
-        shortcut_handler = new ShortcutsNavigation()
-        new ZenMode()
-      when 'projects:merge_requests:new', 'projects:merge_requests:edit'
-        GitLab.GfmAutoComplete.setup()
-        new Diff()
-        shortcut_handler = new ShortcutsNavigation()
-        new ZenMode()
-      when 'projects:merge_requests:show'
-        new Diff()
-        shortcut_handler = new ShortcutsIssueable()
-        new ZenMode()
-      when "projects:merge_requests:diffs"
-        new Diff()
-      when 'projects:merge_requests:index'
-        shortcut_handler = new ShortcutsNavigation()
-      when 'dashboard:show'
-        new Dashboard()
-        new Activities()
-      when 'projects:commit:show'
-        new Commit()
-        new Diff()
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:commits:show'
-        shortcut_handler = new ShortcutsNavigation()
-      when 'groups:show', 'projects:show'
-        new Activities()
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:new'
-        new Project()
-      when 'projects:edit'
-        new Project()
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:teams:members:index'
-        new TeamMembers()
-      when 'groups:members'
-        new GroupMembers()
-      when 'projects:tree:show'
-        new TreeView()
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:blob:show'
-        new BlobView()
-        shortcut_handler = new ShortcutsNavigation()
-      when 'projects:labels:new', 'projects:labels:edit'
-        new Labels()
-      when 'projects:network:show'
-        # Ensure we don't create a particular shortcut handler here. This is
-        # already created, where the network graph is created.
-        shortcut_handler = true
+    handlers = @handlers[page] || []
+    for handler in handlers
+      new handler()
 
     switch path.first()
       when 'admin' then new Admin()
       when 'dashboard'
-        shortcut_handler = new ShortcutsDashboardNavigation()
+        new ShortcutsDashboardNavigation()
+        @shortcatsEnabled()
       when 'projects'
         switch path[1]
           when 'wikis'
             new Wikis()
-            shortcut_handler = new ShortcutsNavigation()
+            new ShortcutsNavigation()
+            @shortcatsEnabled()
             new ZenMode()
           when 'snippets', 'labels', 'graphs'
-            shortcut_handler = new ShortcutsNavigation()
+            new ShortcutsNavigation()
+            @shortcatsEnabled()
           when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
-            shortcut_handler = new ShortcutsNavigation()
-
+            new ShortcutsNavigation()
+            @shortcatsEnabled()
 
     # If we haven't installed a custom shortcut handler, install the default one
-    if not shortcut_handler
-      new Shortcuts()
+    new Shortcuts() if not @shortcutHandler
 
   initSearch: ->
     opts = $('.search-autocomplete-opts')
@@ -107,6 +81,8 @@ class Dispatcher
     project_ref = opts.data('autocomplete-project-ref')
 
     new SearchAutocomplete(path, project_id, project_ref)
+
+  shortcatsEnabled: => @shortcutHandler = true
 
   initHighlight: ->
     $('.highlight pre code').each (i, e) ->
