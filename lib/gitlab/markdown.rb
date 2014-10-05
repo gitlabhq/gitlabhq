@@ -245,6 +245,7 @@ module Gitlab
           title: commit.link_title,
           class: "gfm gfm-commit #{html_options[:class]}"
         )
+        prefix_text = "#{prefix_text}@" if prefix_text
         link_to(
           "#{prefix_text}#{identifier}",
           project_commit_url(project, commit),
