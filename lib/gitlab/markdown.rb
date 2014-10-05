@@ -210,7 +210,8 @@ module Gitlab
         config = Gitlab.config
         external_issue_tracker = config.issues_tracker[project.issues_tracker]
         if external_issue_tracker.present?
-          reference_external_issue(identifier, external_issue_tracker, project)
+          reference_external_issue(identifier, external_issue_tracker, project,
+                                   prefix_text)
         end
       end
     end
@@ -253,7 +254,7 @@ module Gitlab
     end
 
     def reference_external_issue(identifier, issue_tracker, project = @project,
-                                 _ = nil)
+                                 prefix_text = nil)
       url = url_for_issue(identifier, project)
       title = issue_tracker['title']
 
@@ -261,7 +262,7 @@ module Gitlab
         title: "Issue in #{title}",
         class: "gfm gfm-issue #{html_options[:class]}"
       )
-      link_to("##{identifier}", url, options)
+      link_to("#{prefix_text}##{identifier}", url, options)
     end
   end
 end
