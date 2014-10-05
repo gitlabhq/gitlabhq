@@ -13,7 +13,8 @@ module MergeRequests
 
     def execute_hooks(merge_request)
       if merge_request.project
-        merge_request.project.execute_hooks(merge_request.to_hook_data, :merge_request_hooks)
+        hook_data = merge_request.to_hook_data(current_user)
+        merge_request.project.execute_hooks(hook_data, :merge_request_hooks)
       end
     end
 

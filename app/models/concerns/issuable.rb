@@ -131,9 +131,10 @@ module Issuable
     users.concat(mentions.reduce([], :|)).uniq
   end
 
-  def to_hook_data
+  def to_hook_data(user)
     {
       object_kind: self.class.name.underscore,
+      user: user.hook_attrs,
       object_attributes: hook_attrs
     }
   end

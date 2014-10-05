@@ -488,6 +488,14 @@ class User < ActiveRecord::Base
     end
   end
 
+  def hook_attrs
+    {
+      name: name,
+      username: username,
+      avatar_url: avatar_url
+    }
+  end
+
   def ensure_namespace_correct
     # Ensure user has namespace
     self.create_namespace!(path: self.username, name: self.username) unless self.namespace
