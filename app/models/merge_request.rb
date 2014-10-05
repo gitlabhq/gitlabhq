@@ -25,6 +25,7 @@ require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
   include Issuable
+  include Taskable
   include InternalId
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"

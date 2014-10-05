@@ -48,7 +48,7 @@
     .description
       .wiki
         = preserve do
-          = markdown @issue.description
+          = markdown(@issue.description, parse_tasks: true)
   .context
     %cite.cgray
       = render partial: 'issue_context', locals: { issue: @issue }

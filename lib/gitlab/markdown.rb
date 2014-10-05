@@ -33,6 +33,11 @@ module Gitlab
 
     attr_reader :html_options
 
+    def gfm_with_tasks(text, project = @project, html_options = {})
+      text = gfm(text, project, html_options)
+      parse_tasks(text)
+    end
+
     # Public: Parse the provided text with GitLab-Flavored Markdown
     #
     # text         - the source text
@@ -264,6 +269,25 @@ module Gitlab
         class: "gfm gfm-issue #{html_options[:class]}"
       )
       link_to("#{prefix_text}##{identifier}", url, options)
+    end
+
+    # Turn list items that start with "[ ]" into HTML checkbox inputs.
+    def parse_tasks(text)
+      li_tag = '<li class="task-list-item">'
+      unchecked_box = '<input type="checkbox" value="on" disabled />'
+      checked_box = unchecked_box.sub(/\/>$/, 'checked="checked" />')
+
+      # Regexp captures don't seem to work when +text+ is an
+      # ActiveSupport::SafeBuffer, hence the `String.new`
+      String.new(text).gsub(Taskable::TASK_PATTERN_HTML) do
+        checked = $LAST_MATCH_INFO[:checked].downcase == 'x'
+
+        if checked
+          "#{li_tag}#{checked_box}"
+        else
+          "#{li_tag}#{unchecked_box}"
+        end
+      end
     end
   end
 end

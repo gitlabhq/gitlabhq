@@ -250,7 +250,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, label_ids: []
+      :state_event, :description, :task_num, label_ids: []
     )
   end
 end
