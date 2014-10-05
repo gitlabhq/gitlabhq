@@ -1,5 +1,5 @@
 @dashboard
-Feature: Dashboard shortcuts
+Feature: Dashboard Shortcuts
   Background:
     Given I sign in as a user
     And I visit dashboard page

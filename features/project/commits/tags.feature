@@ -1,4 +1,4 @@
-Feature: Project Browse tags
+Feature: Project Commits Tags
   Background:
     Given I sign in as a user
     And I own project "Shop"

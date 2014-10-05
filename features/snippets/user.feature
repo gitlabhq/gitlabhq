@@ -1,5 +1,5 @@
 @snippets
-Feature: User Snippets
+Feature: Snippets User
   Background:
     Given I sign in as a user
     And I have public "Personal snippet one" snippet

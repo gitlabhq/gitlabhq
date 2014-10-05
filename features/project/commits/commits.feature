@@ -1,4 +1,4 @@
-Feature: Project Browse commits
+Feature: Project Commits
   Background:
     Given I sign in as a user
     And I own a project
