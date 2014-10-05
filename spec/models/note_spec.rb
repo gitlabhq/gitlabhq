@@ -264,8 +264,8 @@ describe Note do
     let(:project) { create :project }
     let(:author) { create :user }
     let(:issue) { create :issue }
-    let(:commit0) { double 'commit0', gfm_reference: 'commit 123456' }
-    let(:commit1) { double 'commit1', gfm_reference: 'commit 654321' }
+    let(:commit0) { project.repository.commit }
+    let(:commit1) { project.repository.commit('HEAD~2') }
 
     before do
       Note.create_cross_reference_note(issue, commit0, author, project)

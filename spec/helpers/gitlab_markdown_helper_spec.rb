@@ -181,11 +181,113 @@ describe GitlabMarkdownHelper do
       end
     end
 
+    # Shared examples for referencing an object in a different project
+    #
+    # Expects the following attributes to be available in the example group:
+    #
+    # - object    - The object itself
+    # - reference - The object reference string (e.g., #1234, $1234, !1234)
+    # - other_project - The project that owns the target object
+    #
+    # Currently limited to Snippets, Issues and MergeRequests
+    shared_examples 'cross-project referenced object' do
+      let(:project_path) { @other_project.path_with_namespace }
+      let(:full_reference) { "#{project_path}#{reference}" }
+      let(:actual)   { "Reference to #{full_reference}" }
+      let(:expected) do
+        if object.is_a?(Commit)
+          project_commit_path(@other_project, object)
+        else
+          polymorphic_path([@other_project, object])
+        end
+      end
+
+      it 'should link using a valid id' do
+        gfm(actual).should match(
+          /#{expected}.*#{Regexp.escape(full_reference)}/
+        )
+      end
+
+      it 'should link with adjacent text' do
+        # Wrap the reference in parenthesis
+        gfm(actual.gsub(full_reference, "(#{full_reference})")).should(
+          match(expected)
+        )
+
+        # Append some text to the end of the reference
+        gfm(actual.gsub(full_reference, "#{full_reference}, right?")).should(
+          match(expected)
+        )
+      end
+
+      it 'should keep whitespace intact' do
+        actual   = "Referenced #{full_reference} already."
+        expected = /Referenced <a.+>[^\s]+<\/a> already/
+        gfm(actual).should match(expected)
+      end
+
+      it 'should not link with an invalid id' do
+        # Modify the reference string so it's still parsed, but is invalid
+        if object.is_a?(Commit)
+          reference.gsub!(/^(.).+$/, '\1' + '12345abcd')
+        else
+          reference.gsub!(/^(.)(\d+)$/, '\1' + ('\2' * 2))
+        end
+        gfm(actual).should == actual
+      end
+
+      it 'should include a title attribute' do
+        if object.is_a?(Commit)
+          title = object.link_title
+        else
+          title = "#{object.class.to_s.titlecase}: #{object.title}"
+        end
+        gfm(actual).should match(/title="#{title}"/)
+      end
+
+      it 'should include standard gfm classes' do
+        css = object.class.to_s.underscore
+        gfm(actual).should match(/class="\s?gfm gfm-#{css}\s?"/)
+      end
+    end
+
     describe "referencing an issue" do
       let(:object)    { issue }
       let(:reference) { "##{issue.iid}" }
 
       include_examples 'referenced object'
+    end
+
+    context 'cross-repo references' do
+      before(:all) do
+        @other_project = create(:project, :public)
+        @commit2 = @other_project.repository.commit
+        @issue2 = create(:issue, project: @other_project)
+        @merge_request2 = create(:merge_request,
+                                 source_project: @other_project,
+                                 target_project: @other_project)
+      end
+
+      describe 'referencing an issue in another project' do
+        let(:object)    { @issue2 }
+        let(:reference) { "##{@issue2.iid}" }
+
+        include_examples 'cross-project referenced object'
+      end
+
+      describe 'referencing an merge request in another project' do
+        let(:object)    { @merge_request2 }
+        let(:reference) { "!#{@merge_request2.iid}" }
+
+        include_examples 'cross-project referenced object'
+      end
+
+      describe 'referencing a commit in another project' do
+        let(:object)    { @commit2 }
+        let(:reference) { "@#{@commit2.id}" }
+
+        include_examples 'cross-project referenced object'
+      end
     end
 
     describe "referencing a Jira issue" do
