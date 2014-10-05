@@ -203,7 +203,9 @@ describe GitlabMarkdownHelper do
       end
 
       it 'should link using a valid id' do
-        gfm(actual).should match(expected)
+        gfm(actual).should match(
+          /#{expected}.*#{Regexp.escape(full_reference)}/
+        )
       end
 
       it 'should link with adjacent text' do
