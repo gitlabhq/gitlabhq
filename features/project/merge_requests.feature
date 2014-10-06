@@ -96,6 +96,16 @@ Feature: Project Merge Requests
     And I leave a comment with a header containing "Comment with a header"
     Then The comment with the header should not have an ID
 
+  Scenario: Merge request description should render task checkboxes
+    Given project "Shop" has "MR-task-open" open MR with task markdown
+    When I visit merge request page "MR-task-open"
+    Then I should see task checkboxes in the description
+
+  Scenario: Merge request notes should not render task checkboxes
+    Given project "Shop" has "MR-task-open" open MR with task markdown
+    When I visit merge request page "MR-task-open"
+    Then I should not see task checkboxes in the comment
+
   # Toggling inline comments
 
   @javascript
@@ -157,3 +167,26 @@ Feature: Project Merge Requests
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click Side-by-side Diff tab
     Then I should see comments on the side-by-side diff page
+
+  # Task status in issues list
+
+  @now
+  Scenario: Merge requests list should display task status
+    Given project "Shop" has "MR-task-open" open MR with task markdown
+    When I visit project "Shop" merge requests page
+    Then I should see the task status for merge request "MR-task-open"
+
+  # Toggling task items
+
+  @javascript
+  Scenario: Task checkboxes should be enabled for an open merge request
+    Given project "Shop" has "MR-task-open" open MR with task markdown
+    When I visit merge request page "MR-task-open"
+    Then Task checkboxes should be enabled
+
+  @javascript
+  Scenario: Task checkboxes should be disabled for a closed merge request
+    Given project "Shop" has "MR-task-open" open MR with task markdown
+    And I visit merge request page "MR-task-open"
+    And I click link "Close"
+    Then Task checkboxes should be disabled
