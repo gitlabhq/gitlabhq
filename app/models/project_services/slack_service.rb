@@ -40,11 +40,13 @@ class SlackService < Service
       project_name: project_name
     ))
 
-    credentials = webhook.match(/(\w*).slack.com.*token=(\w*)/)
-    subdomain =  credentials[1]
-    token = credentials[2]
-    notifier = Slack::Notifier.new(subdomain, token)
-    notifier.ping(message.pretext, attachments: message.attachments)
+    credentials = webhook.match(/(\w*).slack.com.*services\/(.*)/)
+    if credentials.present?
+      subdomain =  credentials[1]
+      token = credentials[2].split("token=").last
+      notifier = Slack::Notifier.new(subdomain, token)
+      notifier.ping(message.pretext, attachments: message.attachments)
+    end
   end
 
   private
