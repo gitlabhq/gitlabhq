@@ -259,4 +259,8 @@ module ApplicationHelper
 
     super
   end
+
+  def escaped_autolink(text)
+    auto_link ERB::Util.html_escape(text), link: :urls
+  end
 end
