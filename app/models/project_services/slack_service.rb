@@ -13,10 +13,8 @@
 #
 
 class SlackService < Service
-  prop_accessor :room, :subdomain, :token
-  validates :room, presence: true, if: :activated?
-  validates :subdomain, presence: true, if: :activated?
-  validates :token, presence: true, if: :activated?
+  prop_accessor :webhook
+  validates :webhook, presence: true, if: :activated?
 
   def title
     'Slack'
@@ -32,9 +30,7 @@ class SlackService < Service
 
   def fields
     [
-      { type: 'text', name: 'subdomain', placeholder: '' },
-      { type: 'text', name: 'token',     placeholder: '' },
-      { type: 'text', name: 'room',      placeholder: 'Ex. #general' },
+      { type: 'text', name: 'webhook', placeholder: '' }
     ]
   end
 
@@ -44,10 +40,13 @@ class SlackService < Service
       project_name: project_name
     ))
 
-    notifier = Slack::Notifier.new(subdomain, token)
-    notifier.channel = room
-    notifier.username = 'GitLab'
-    notifier.ping(message.pretext, attachments: message.attachments)
+    credentials = webhook.match(/(\w*).slack.com.*services\/(.*)/)
+    if credentials.present?
+      subdomain =  credentials[1]
+      token = credentials[2].split("token=").last
+      notifier = Slack::Notifier.new(subdomain, token)
+      notifier.ping(message.pretext, attachments: message.attachments)
+    end
   end
 
   private

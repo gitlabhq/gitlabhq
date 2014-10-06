@@ -12,6 +12,7 @@ v 7.4.0
   - API: Add support for forking a project via the API (Bernhard Kaindl)
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script
+  - Changes to Slack service structure, only webhook url needed
   - Zen mode for wiki and milestones (Robert Schilling)
   - Move Emoji parsing to html-pipeline-gitlab (Robert Schilling)
   - Font Awesome 4.2 integration (Sullivan Senechal)
