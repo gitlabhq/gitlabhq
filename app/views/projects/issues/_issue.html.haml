@@ -26,6 +26,10 @@
       %span
         %i.fa.fa-clock-o
         = issue.milestone.title
+    - if issue.tasks?
+      %span.task-status
+        = issue.task_status
+
     .pull-right
       %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
 

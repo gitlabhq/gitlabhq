@@ -18,6 +18,7 @@ v 7.4.0
   - Add Pushover service integration (Sullivan Senechal)
   - Add select field type for services options (Sullivan Senechal)
   - Add cross-project references to the Markdown parser (Vinnie Okada)
+  - Add task lists to issue and merge request descriptions (Vinnie Okada)
 
 v 7.3.2
   - Fix creating new file via web editor

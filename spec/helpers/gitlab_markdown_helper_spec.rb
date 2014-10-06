@@ -616,7 +616,7 @@ describe GitlabMarkdownHelper do
     end
   end
 
-  describe "markdwon for empty repository" do
+  describe 'markdown for empty repository' do
     before do
       @project = empty_project
       @repository = empty_project.repository
@@ -650,6 +650,105 @@ describe GitlabMarkdownHelper do
       @wiki.stub(:formatted_content).and_return(formatted_content_stub)
 
       helper.render_wiki_content(@wiki)
+    end
+  end
+
+  describe '#gfm_with_tasks' do
+    before(:all) do
+      @source_text_asterisk = <<EOT.gsub(/^\s{8}/, '')
+        * [ ] valid unchecked task
+        * [x] valid lowercase checked task
+        * [X] valid uppercase checked task
+            * [ ] valid unchecked nested task
+            * [x] valid checked nested task
+
+        [ ] not an unchecked task - no list item
+        [x] not a checked task - no list item
+
+        * [  ] not an unchecked task - too many spaces
+        * [x ] not a checked task - too many spaces
+        * [] not an unchecked task - no spaces
+        * Not a task [ ] - not at beginning
+EOT
+
+      @source_text_dash = <<EOT.gsub(/^\s{8}/, '')
+        - [ ] valid unchecked task
+        - [x] valid lowercase checked task
+        - [X] valid uppercase checked task
+            - [ ] valid unchecked nested task
+            - [x] valid checked nested task
+EOT
+    end
+
+    it 'should render checkboxes at beginning of asterisk list items' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).to match(/<input.*checkbox.*valid unchecked task/)
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid lowercase checked task/
+      )
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid uppercase checked task/
+      )
+    end
+
+    it 'should render checkboxes at beginning of dash list items' do
+      rendered_text = markdown(@source_text_dash, parse_tasks: true)
+
+      expect(rendered_text).to match(/<input.*checkbox.*valid unchecked task/)
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid lowercase checked task/
+      )
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid uppercase checked task/
+      )
+    end
+
+    it 'should not be confused by whitespace before bullets' do
+      rendered_text_asterisk = markdown(@source_text_asterisk,
+                                        parse_tasks: true)
+      rendered_text_dash = markdown(@source_text_dash, parse_tasks: true)
+
+      expect(rendered_text_asterisk).to match(
+        /<input.*checkbox.*valid unchecked nested task/
+      )
+      expect(rendered_text_asterisk).to match(
+        /<input.*checkbox.*valid checked nested task/
+      )
+      expect(rendered_text_dash).to match(
+        /<input.*checkbox.*valid unchecked nested task/
+      )
+      expect(rendered_text_dash).to match(
+        /<input.*checkbox.*valid checked nested task/
+      )
+    end
+
+    it 'should not render checkboxes outside of list items' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not an unchecked task - no list item/
+      )
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not a checked task - no list item/
+      )
+    end
+
+    it 'should not render checkboxes with invalid formatting' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not an unchecked task - too many spaces/
+      )
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not a checked task - too many spaces/
+      )
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not an unchecked task - no spaces/
+      )
+      expect(rendered_text).not_to match(
+        /Not a task.*<input.*checkbox.*not at beginning/
+      )
     end
   end
 end
