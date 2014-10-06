@@ -258,6 +258,17 @@ describe Note do
       its(:commit_id) { should == commit.id }
       its(:note) { should == "_mentioned in issue ##{issue.iid}_" }
     end
+
+    context 'commit from commit' do
+      let(:parent_commit) { commit.parents.first }
+      subject { Note.create_cross_reference_note(commit, parent_commit, author, project) }
+
+      it { should be_valid }
+      its(:noteable_type) { should == "Commit" }
+      its(:noteable_id) { should be_nil }
+      its(:commit_id) { should == commit.id }
+      its(:note) { should == "_mentioned in commit #{parent_commit.id[0...6]}_" }
+    end
   end
 
   describe '#cross_reference_exists?' do
@@ -277,6 +288,15 @@ describe Note do
 
     it 'detects if a mentionable has not already been mentioned' do
       Note.cross_reference_exists?(issue, commit1).should be_false
+    end
+
+    context 'commit on commit' do
+      before do
+        Note.create_cross_reference_note(commit0, commit1, author, project)
+      end
+
+      it { Note.cross_reference_exists?(commit0, commit1).should be_true }
+      it { Note.cross_reference_exists?(commit1, commit0).should be_false }
     end
   end
 
