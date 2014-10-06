@@ -47,7 +47,7 @@ class Note < ActiveRecord::Base
   scope :for_commit_id, ->(commit_id) { where(noteable_type: "Commit", commit_id: commit_id) }
   scope :inline, ->{ where("line_code IS NOT NULL") }
   scope :not_inline, ->{ where(line_code: [nil, '']) }
-
+  scope :system, ->{ where(system: true) }
   scope :common, ->{ where(noteable_type: ["", nil]) }
   scope :fresh, ->{ order("created_at ASC, id ASC") }
   scope :inc_author_project, ->{ includes(:project, :author) }
@@ -168,9 +168,14 @@ class Note < ActiveRecord::Base
     # Determine whether or not a cross-reference note already exists.
     def cross_reference_exists?(noteable, mentioner)
       gfm_reference = mentioner_gfm_ref(noteable, mentioner)
+      notes = if noteable.is_a?(Commit)
+                where(commit_id: noteable.id)
+              else
+                where(noteable_id: noteable.id)
+              end
 
-      where(['noteable_id = ? and system = ? and note like ?',
-             noteable.id, true, "_mentioned in #{gfm_reference}_"]).any?
+      notes.where('note like ?', "_mentioned in #{gfm_reference}_").
+        system.any?
     end
 
     def search(query)
