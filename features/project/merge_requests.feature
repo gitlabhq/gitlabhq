@@ -105,7 +105,7 @@ Feature: Project Merge Requests
     And I switch to the diff tab
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click link "Hide inline discussion" of the second file
-    Then I should not see a comment like "Line is wrong" in the second file
+    Then I should not see a comment like "Line is wrong here" in the second file
 
   @javascript
   Scenario: I show comments on a merge request diff with comments in a single file
@@ -113,8 +113,6 @@ Feature: Project Merge Requests
     And I visit merge request page "Bug NS-05"
     And I switch to the diff tab
     And I leave a comment like "Line is wrong" on line 39 of the second file
-    And I click link "Hide inline discussion" of the second file
-    And I click link "Show inline discussion" of the second file
     Then I should see a comment like "Line is wrong" in the second file
 
   @javascript
@@ -125,7 +123,7 @@ Feature: Project Merge Requests
     And I leave a comment like "Line is correct" on line 12 of the first file
     And I leave a comment like "Line is wrong" on line 39 of the second file
     And I click link "Hide inline discussion" of the second file
-    Then I should not see a comment like "Line is wrong" in the second file
+    Then I should not see a comment like "Line is wrong here" in the second file
     And I should still see a comment like "Line is correct" in the first file
 
   @javascript

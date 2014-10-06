@@ -211,6 +211,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should not see a comment like "Line is wrong here" in the second file' do
+    within '.files [id^=diff]:nth-child(2)' do
+      page.should_not have_visible_content "Line is wrong here"
+    end
+  end
+
+  step 'I should see a comment like "Line is wrong here" in the second file' do
+    within '.files [id^=diff]:nth-child(2) .note-text' do
+      page.should have_visible_content "Line is wrong here"
+    end
+  end
+
   step 'I leave a comment like "Line is correct" on line 12 of the first file' do
     init_diff_note_first_file
 
@@ -228,12 +240,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     init_diff_note_second_file
 
     within(".js-discussion-note-form") do
-      fill_in "note_note", with: "Line is wrong"
+      fill_in "note_note", with: "Line is wrong on here"
       click_button "Add Comment"
-    end
-
-    within ".files [id^=diff]:nth-child(2) .note-text" do
-      page.should have_content "Line is wrong"
     end
   end
 
