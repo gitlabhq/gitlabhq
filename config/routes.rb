@@ -199,7 +199,8 @@ Gitlab::Application.routes.draw do
 
     scope module: :projects do
       resources :blob, only: [:show, :destroy], constraints: { id: /.+/, format: false } do
-        get :diff, on: :member
+        # Cannot be GET to differentiate from GET paths that end in diff.
+        post :diff, on: :member
       end
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }

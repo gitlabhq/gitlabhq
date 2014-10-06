@@ -31,7 +31,7 @@ class @Diff
         offset: offset
         unfold: unfold
 
-      $.get(link, params, (response) =>
+      $.post(link, params, (response) =>
         target.parent().replaceWith(response)
       )
     )

@@ -450,6 +450,23 @@ describe Projects::EditTreeController, 'routing' do
   end
 end
 
+describe Projects::BlobController, 'routing' do
+  it 'to #show' do
+    get('/gitlab/gitlabhq/blob/master/app/models/project.rb').should(
+      route_to('projects/blob#show', project_id: 'gitlab/gitlabhq',
+                                     id: 'master/app/models/project.rb'))
+    get('/gitlab/gitlabhq/blob/master/app/models/project.rb/diff').should(
+      route_to('projects/blob#show', project_id: 'gitlab/gitlabhq',
+                                     id: 'master/app/models/project.rb/diff'))
+  end
+
+  it 'to #diff' do
+    post('/gitlab/gitlabhq/blob/master/app/models/project.rb/diff').should(
+      route_to('projects/blob#diff', project_id: 'gitlab/gitlabhq',
+                                     id: 'master/app/models/project.rb'))
+  end
+end
+
 # project_compare_index GET    /:project_id/compare(.:format)             compare#index {id: /[^\/]+/, project_id: /[^\/]+/}
 #                       POST   /:project_id/compare(.:format)             compare#create {id: /[^\/]+/, project_id: /[^\/]+/}
 #       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {from: /.+/, to: /.+/, id: /[^\/]+/, project_id: /[^\/]+/}
