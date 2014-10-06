@@ -67,7 +67,7 @@
 
     if (paneId == '#preview') {
       currentPane.fadeIn(200);
-      $.post(currentLink.data('preview-url'), { content: editor.getValue() }, function(response) {
+      $.get(currentLink.data('preview-url'), { content: editor.getValue() }, function(response) {
         currentPane.empty().append(response);
       })
     } else {
