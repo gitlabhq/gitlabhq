@@ -8,7 +8,7 @@ Do a security release when there is a critical issue that needs to be addresses 
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to <support@gitlab.com>, also see the [disclosure section on the GitLab.com website](http://www.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to <support@gitlab.com>, also see the [disclosure section on the GitLab.com website](http://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Release Procedure
 
@@ -21,7 +21,7 @@ Please report suspected security vulnerabilities in private to <support@gitlab.c
 1. Send out an email to the 'GitLab Newsletter' mailing list on MailChimp (or the 'Subscribers' list if the security fix is for EE only)
 1. Send out an email to [the community google mailing list](https://groups.google.com/forum/#!forum/gitlabhq)
 1. Post a signed copy of our complete announcement to [oss-security](http://www.openwall.com/lists/oss-security/) and request a CVE number
-1. Add the security researcher to the [Security Researcher Acknowledgments list](http://www.gitlab.com/vulnerability-acknowledgements/)
+1. Add the security researcher to the [Security Researcher Acknowledgments list](http://about.gitlab.com/vulnerability-acknowledgements/)
 1. Thank the security researcher in an email for their cooperation
 1. Update the blog post and the CHANGELOG when we receive the CVE number
 
