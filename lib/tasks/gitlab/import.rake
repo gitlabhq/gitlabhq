@@ -27,7 +27,10 @@ namespace :gitlab do
         group_name = nil if group_name == '.'
 
         # Skip if group or user
-        next if namespaces.include?(name)
+        if namespaces.include?(name)
+          puts "Skipping #{project.name} due to namespace conflict with group or user".yellow
+          next
+        end
 
         puts "Processing #{repo_path}".yellow
 
