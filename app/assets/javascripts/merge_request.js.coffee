@@ -119,14 +119,6 @@ class MergeRequest
     else
       $('.ci_widget.ci-error').show()
 
-    switch state
-      when "success"
-        $('.mr-state-widget').addClass("panel-success")
-      when "failed"
-        $('.mr-state-widget').addClass("panel-danger")
-      when "running", "pending"
-        $('.mr-state-widget').addClass("panel-warning")
-
   showCiCoverage: (coverage) ->
     cov_html = $('<span>')
     cov_html.addClass('ci-coverage')

@@ -20,9 +20,8 @@
       = link_to "Build page", ci_build_details_path(@merge_request)
 
   .ci_widget
-    %strong
-      %i.fa.fa-spinner
-      Checking for CI status for #{@merge_request.last_commit_short_sha}
+    %i.fa.fa-spinner
+    Checking for CI status for #{@merge_request.last_commit_short_sha}
 
   .ci_widget.ci-error{style: "display:none"}
     %i.fa.fa-times
