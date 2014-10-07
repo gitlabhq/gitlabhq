@@ -10,7 +10,12 @@ describe "Projects", feature: true  do
       visit edit_project_path(@project)
     end
 
-    it "should be correct path" do
+    it 'should delete the project from the database and disk' do
+      expect(GitlabShellWorker).to(
+        receive(:perform_async).with(:remove_repository,
+                                     /#{@project.path_with_namespace}/)
+      ).twice
+
       expect { click_link "Remove project" }.to change {Project.count}.by(-1)
     end
   end
