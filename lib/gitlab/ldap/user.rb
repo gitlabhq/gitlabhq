@@ -26,21 +26,21 @@ module Gitlab
         end
 
         def adapter
-          @adapter ||= OmniAuth::LDAP::Adaptor.new(ldap_conf)
+          @adapter ||= OmniAuth::LDAP::Adaptor.new(ldap_conf.options)
         end
 
         def user_filter(login)
           filter = Net::LDAP::Filter.eq(adapter.uid, login)
           # Apply LDAP user filter if present
-          if ldap_conf['user_filter'].present?
-            user_filter = Net::LDAP::Filter.construct(ldap_conf['user_filter'])
+          if ldap_conf.user_filter.present?
+            user_filter = Net::LDAP::Filter.construct(ldap_conf.user_filter)
             filter = Net::LDAP::Filter.join(filter, user_filter)
           end
           filter
         end
 
         def ldap_conf
-          Gitlab.config.ldap
+          Gitlab::LDAP::Config.new(provider)
         end
 
         def find_by_uid(uid)

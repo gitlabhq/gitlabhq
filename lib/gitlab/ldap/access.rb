@@ -43,22 +43,26 @@ module Gitlab
         false
       end
 
+      def adapter
+        @adapter ||= Gitlab::LDAP::Adapter.new(provider)
+      end
+
       def get_ldap_user(user)
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
       end
 
       def update_permissions(user)
-        if ldap_config['sync_ssh_keys']
+        if sync_ssh_keys?
           update_ssh_keys(user)
         end
 
         # Skip updating group permissions
         # if instance does not use group_base setting
-        return true unless ldap_config['group_base'].present?
+        return true unless group_base.present?
 
         update_ldap_group_links(user)
 
-        if ldap_config['admin_group'].present?
+        if admin_group.present?
           update_admin_status(user)
         end
       end
@@ -147,7 +151,19 @@ module Gitlab
       end
 
       def ldap_config
-        Gitlab::LDAP::Adapter.config_for(provider)
+        Gitlab::LDAP::Config.new(provider)
+      end
+
+      def sync_ssh_keys?
+        ldap_config.sync_ssh_keys?
+      end
+
+      def group_base
+        ldap_config.group_base
+      end
+
+      def admin_group
+        ldap_config.admin_group
       end
 
       private

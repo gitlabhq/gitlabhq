@@ -59,13 +59,13 @@ Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_u
 Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 
 # backwards compatibility, we only have one host
-if Settings.ldap['enabled']
+if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     excluded_per_server_settings = %w(sync_time allow_username_or_email_login)
     server = Settings.ldap.except(excluded_per_server_settings)
     server['primary'] = true
     server['label'] = 'LDAP'
-    server['provider_index'] = '' #providername will be ldap
+    server['provider_id'] = '' #providername will be ldap
     Settings.ldap['servers'] = [server]
   end
 

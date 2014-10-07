@@ -1,9 +1,8 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
-  let(:access) { Gitlab::LDAP::Access.new }
+  let(:access) { Gitlab::LDAP::Access.new 'ldapmain' }
   let(:user) { create(:user) }
-
 
   describe :allowed? do
     subject { access.allowed?(user) }

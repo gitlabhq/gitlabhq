@@ -4,55 +4,22 @@ module Gitlab
       attr_reader :provider, :ldap
 
       def self.open(provider, &block)
-        Net::LDAP.open(adapter_options(provider)) do |ldap|
+        Net::LDAP.open(config(provider).adapter_options) do |ldap|
           block.call(self.new(provider, ldap))
         end
       end
 
-      def self.config
-        Gitlab.config.ldap
+      def self.config(provider)
+        Gitlab::LDAP::Config.new(provider)
       end
-
-      def self.config_for(provider)
-        config.servers.find { |server| server.provider_name == provider }
-      end
-
-      def self.adapter_options(provider)
-        config = config_for(provider)
-        encryption =
-          case config['method'].to_s
-          when 'ssl'
-            :simple_tls
-          when 'tls'
-            :start_tls
-          else
-            nil
-          end
-
-        options = {
-          host: config['host'],
-          port: config['port'],
-          encryption: encryption
-        }
-
-        auth_options = {
-          auth: {
-            method: :simple,
-            username: config['bind_dn'],
-            password: config['password']
-          }
-        }
-
-        if config['password'] || config['bind_dn']
-          options.merge!(auth_options)
-        end
-        options
-      end
-
 
       def initialize(provider, ldap=nil)
         @provider = provider
-        @ldap = ldap || Net::LDAP.new(self.class.adapter_options)
+        @ldap = ldap || Net::LDAP.new(config.adapter_options)
+      end
+
+      def config
+        Gitlab::LDAP::Config.new(provider)
       end
 
       # Get LDAP groups from ou=Groups
@@ -107,7 +74,7 @@ module Gitlab
         end
 
         entries.map do |entry|
-          Gitlab::LDAP::Person.new(entry)
+          Gitlab::LDAP::Person.new(entry, provider)
         end
       end
 
@@ -134,12 +101,6 @@ module Gitlab
         else
           results
         end
-      end
-
-      private
-
-      def config
-        @config ||= self.class.config_for(provider)
       end
     end
   end
