@@ -14,7 +14,7 @@ class SnippetsController < ApplicationController
   layout 'navless'
 
   def index
-    @snippets = Snippet.are_public.fresh.non_expired.page(params[:page]).per(20)
+    @snippets = Snippet.are_internal.fresh.non_expired.page(params[:page]).per(20)
   end
 
   def user_index
@@ -26,15 +26,15 @@ class SnippetsController < ApplicationController
 
     if @user == current_user
       @snippets = case params[:scope]
-                  when 'are_public' then
-                    @snippets.are_public
+                  when 'are_internal' then
+                    @snippets.are_internal
                   when 'are_private' then
                     @snippets.are_private
                   else
                     @snippets
                   end
     else
-      @snippets = @snippets.are_public
+      @snippets = @snippets.are_internal
     end
 
     @snippets = @snippets.page(params[:page]).per(20)

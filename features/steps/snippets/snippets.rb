@@ -46,7 +46,7 @@ class Spinach::Features::Snippets < Spinach::FeatureSteps
   end
 
   step 'I uncheck "Private" checkbox' do
-    choose "Public"
+    choose "Internal"
     click_button "Save"
   end
 

@@ -18,6 +18,6 @@ Feature: Snippets User
 
   Scenario: I can see only my public snippets
     Given I visit my snippets page
-    And I click "Public" filter
+    And I click "Internal" filter
     Then I should see "Personal snippet one" in snippets
     And I should not see "Personal snippet private" in snippets
