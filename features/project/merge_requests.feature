@@ -170,11 +170,10 @@ Feature: Project Merge Requests
 
   # Task status in issues list
 
-  @now
   Scenario: Merge requests list should display task status
     Given project "Shop" has "MR-task-open" open MR with task markdown
     When I visit project "Shop" merge requests page
-    Then I should see the task status for merge request "MR-task-open"
+    Then I should see the task status for the Taskable
 
   # Toggling task items
 
