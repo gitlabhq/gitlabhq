@@ -212,7 +212,8 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
+      get '/compare/:from...:to' => 'compare#show', :as => 'compare',
+          :constraints => {from: /.+/, to: /.+/}
 
         resources :snippets, constraints: {id: /\d+/} do
           member do
