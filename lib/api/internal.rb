@@ -22,7 +22,7 @@ module API
         # the wiki repository as well.
         access =
           if project_path =~ /\.wiki\Z/
-            project_path = project_path[0..-6]
+            project_path.sub!(/\.wiki\Z/, '')
             Gitlab::GitAccessWiki.new
           else
             Gitlab::GitAccess.new
