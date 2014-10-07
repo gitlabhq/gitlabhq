@@ -24,6 +24,11 @@ FactoryGirl.define do
       admin true
     end
 
+    trait :ldap do
+      provider 'ldapmain'
+      extern_uid 'my-ldap-id'
+    end
+
     factory :admin, traits: [:admin]
   end
 
