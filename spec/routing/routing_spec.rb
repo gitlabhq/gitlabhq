@@ -73,41 +73,41 @@ end
 #     help_markdown GET    /help/markdown(.:format)     help#markdown
 #          help_ssh GET    /help/ssh(.:format)          help#ssh
 #    help_raketasks GET    /help/raketasks(.:format)    help#raketasks
-describe HelpController, "routing" do
-  it "to #index" do
-    expect(get("/help")).to route_to('help#index')
+describe HelpController, 'routing' do
+  it 'to #index' do
+    expect(get('/help')).to route_to('help#index')
   end
 
-  it "to #permissions" do
-    expect(get("/help/permissions/permissions")).to route_to('help#show', category: "permissions", file: "permissions")
+  it 'to #permissions' do
+    expect(get('/help/permissions/permissions')).to route_to('help#show', filepath: 'permissions/permissions')
   end
 
-  it "to #workflow" do
-    expect(get("/help/workflow/README")).to route_to('help#show', category: "workflow", file: "README")
+  it 'to #workflow' do
+    expect(get('/help/workflow/README')).to route_to('help#show', filepath: 'workflow/README')
   end
 
-  it "to #api" do
-    expect(get("/help/api/README")).to route_to('help#show', category: "api", file: "README")
+  it 'to #api' do
+    expect(get('/help/api/README')).to route_to('help#show', filepath: 'api/README')
   end
 
-  it "to #web_hooks" do
-    expect(get("/help/web_hooks/web_hooks")).to route_to('help#show', category: "web_hooks", file: "web_hooks")
+  it 'to #web_hooks' do
+    expect(get('/help/web_hooks/web_hooks')).to route_to('help#show', filepath: 'web_hooks/web_hooks')
   end
 
-  it "to #system_hooks" do
-    expect(get("/help/system_hooks/system_hooks")).to route_to('help#show', category: "system_hooks", file: "system_hooks")
+  it 'to #system_hooks' do
+    expect(get('/help/system_hooks/system_hooks')).to route_to('help#show', filepath: 'system_hooks/system_hooks')
   end
 
-  it "to #markdown" do
-    expect(get("/help/markdown/markdown")).to route_to('help#show',category: "markdown", file: "markdown")
+  it 'to #markdown' do
+    expect(get('/help/markdown/markdown')).to route_to('help#show',filepath: 'markdown/markdown')
   end
 
-  it "to #ssh" do
-    expect(get("/help/ssh/README")).to route_to('help#show', category: "ssh", file: "README")
+  it 'to #ssh' do
+    expect(get('/help/ssh/README')).to route_to('help#show', filepath: 'ssh/README')
   end
 
-  it "to #raketasks" do
-    expect(get("/help/raketasks/README")).to route_to('help#show', category: "raketasks", file: "README")
+  it 'to #raketasks' do
+    expect(get('/help/raketasks/README')).to route_to('help#show', filepath: 'raketasks/README')
   end
 end
 
