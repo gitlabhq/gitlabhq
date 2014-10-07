@@ -128,9 +128,9 @@ module ProjectsHelper
 
     toggle_html = content_tag('span', class: 'toggle') do
       toggle_text = if starred
-                      'Unstar'
+                      ' Unstar'
                     else
-                      'Star'
+                      ' Star'
                     end
 
       content_tag('i', ' ', class: 'fa fa-star') + toggle_text
