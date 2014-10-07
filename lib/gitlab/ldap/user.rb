@@ -16,7 +16,6 @@ module Gitlab
           # Only check with valid login and password to prevent anonymous bind results
           return nil unless ldap_conf.enabled? && login.present? && password.present?
 
-          binding.pry
           ldap_user = adapter.bind_as(
             filter: user_filter(login),
             size: 1,
