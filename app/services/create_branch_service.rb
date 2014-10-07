@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class CreateBranchService < BaseService
   def execute(branch_name, ref)
     valid_branch = Gitlab::GitRefValidator.validate(branch_name)

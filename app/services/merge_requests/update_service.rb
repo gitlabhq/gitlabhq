@@ -1,9 +1,5 @@
-require_relative 'base_service'
-require_relative 'reopen_service'
-require_relative 'close_service'
-
 module MergeRequests
-  class UpdateService < MergeRequests::BaseService
+  class UpdateService < BaseService
     def execute(merge_request)
       # We dont allow change of source/target projects
       # after merge request was created
@@ -14,9 +10,9 @@ module MergeRequests
 
       case state
       when 'reopen'
-        MergeRequests::ReopenService.new(project, current_user, {}).execute(merge_request)
+        ReopenService.new(project, current_user, {}).execute(merge_request)
       when 'close'
-        MergeRequests::CloseService.new(project, current_user, {}).execute(merge_request)
+        CloseService.new(project, current_user, {}).execute(merge_request)
       when 'task_check'
         merge_request.update_nth_task(params[:task_num].to_i, true)
       when 'task_uncheck'
