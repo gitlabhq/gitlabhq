@@ -1,7 +1,7 @@
 # Finders
 
-This type of classes responsible for collectiong items based on different conditions.
-To prevent lookup methods in models like this: 
+This type of classes responsible for collection items based on different conditions.
+To prevent lookup methods in models like this:
 
 ```ruby
 class Project
@@ -13,10 +13,10 @@ end
 issues = project.issues_for_user_filtered_by(user, params)
 ```
 
-Better use this: 
+Better use this:
 
 ```ruby
 issues = IssuesFinder.new.execute(project, user, filter)
 ```
 
-It will help keep models thiner
+It will help keep models thiner.
