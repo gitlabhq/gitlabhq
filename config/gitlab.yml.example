@@ -315,6 +315,21 @@ test:
       project_url: "http://redmine/projects/:issues_tracker_id"
       issues_url: "http://redmine/:project_id/:issues_tracker_id/:id"
       new_issue_url: "http://redmine/projects/:issues_tracker_id/issues/new"
-
+  ldap:
+    enabled: false
+    servers:
+      -
+        provider_id: main
+        label: ldap
+        primary: true
+        host: 127.0.0.1
+        port: 3890
+        uid: 'uid'
+        method: 'plain' # "tls" or "ssl" or "plain"
+        base: 'dc=example,dc=com'
+        user_filter: ''
+        group_base: 'ou=groups,dc=example,dc=com'
+        admin_group: ''
+        sync_ssh_keys
 staging:
   <<: *base
