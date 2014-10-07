@@ -1,8 +1,8 @@
-.panel.mr-state-widget.panel-default
+.mr-state-widget
   - if @merge_request.source_project.ci_service && @commits.any?
-    .panel-heading
+    .mr-widget-heading
       = render "projects/merge_requests/show/mr_ci"
-  .panel-body
+  .mr-widget-body
     - if @merge_request.open?
       - if @merge_request.source_branch_exists? && @merge_request.target_branch_exists?
         = render "projects/merge_requests/show/mr_accept"
@@ -31,8 +31,8 @@
         %br
         Try to use different branches or push new code.
 
-  - if !@closes_issues.empty? && @merge_request.open?
-    .panel-footer
+  - if @closes_issues.present? && @merge_request.open?
+    .mr-widget-footer
       %span
         %i.fa.fa-check
         Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
