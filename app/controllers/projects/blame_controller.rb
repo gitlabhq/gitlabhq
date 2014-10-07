@@ -6,9 +6,9 @@ class Projects::BlameController < Projects::ApplicationController
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :blob
 
   def show
-    @blob = @repository.blob_at(@commit.id, @path)
     @blame = Gitlab::Git::Blame.new(project.repository, @commit.id, @path)
   end
 end

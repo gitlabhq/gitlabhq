@@ -6,24 +6,19 @@ class Projects::RawController < Projects::ApplicationController
   before_filter :authorize_read_project!
   before_filter :authorize_code_access!
   before_filter :require_non_empty_project
+  before_filter :blob
 
   def show
-    @blob = @repository.blob_at(@commit.id, @path)
+    type = get_blob_type
 
-    if @blob
-      type = get_blob_type
+    headers['X-Content-Type-Options'] = 'nosniff'
 
-      headers['X-Content-Type-Options'] = 'nosniff'
-
-      send_data(
-        @blob.data,
-        type: type,
-        disposition: 'inline',
-        filename: @blob.name
-      )
-    else
-      not_found!
-    end
+    send_data(
+      @blob.data,
+      type: type,
+      disposition: 'inline',
+      filename: @blob.name
+    )
   end
 
   private
