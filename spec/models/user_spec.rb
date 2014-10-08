@@ -346,6 +346,25 @@ describe User do
     end
   end
 
+  describe :ldap_user? do
+    let(:user) { build(:user, :ldap) }
+
+    it "is true if provider name starts with ldap" do
+      user.provider = 'ldapmain'
+      expect( user.ldap_user? ).to be_true
+    end
+
+    it "is false for other providers" do
+      user.provider = 'other-provider'
+      expect( user.ldap_user? ).to be_false
+    end
+
+    it "is false if no extern_uid is provided" do
+      user.extern_uid = nil
+      expect( user.ldap_user? ).to be_false
+    end
+  end
+
   describe '#full_website_url' do
     let(:user) { create(:user) }
 

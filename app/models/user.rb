@@ -176,7 +176,7 @@ class User < ActiveRecord::Base
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
-  scope :ldap, -> { where(provider:  'ldap') }
+  scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
   scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
 
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
@@ -397,7 +397,7 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    extern_uid && provider == 'ldap'
+    extern_uid && provider.start_with?('ldap')
   end
 
   def accessible_deploy_keys
