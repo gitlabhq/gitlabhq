@@ -263,4 +263,12 @@ module ApplicationHelper
   def escaped_autolink(text)
     auto_link ERB::Util.html_escape(text), link: :urls
   end
+
+  def promo_host
+    'about.gitlab.com'
+  end
+
+  def promo_url
+    'https://' + promo_host
+  end
 end
