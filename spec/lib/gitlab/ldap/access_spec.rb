@@ -34,7 +34,7 @@ describe Gitlab::LDAP::Access do
     subject { access.update_permissions }
 
     it "syncs ssh keys if enabled by configuration" do
-      access.stub sync_ssh_keys?: true
+      access.stub sync_ssh_keys?: 'sshpublickey'
       expect(access).to receive(:update_ssh_keys).once
 
       subject

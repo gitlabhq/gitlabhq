@@ -31,7 +31,7 @@ module Gitlab
       #
       def groups(cn = "*", size = nil)
         options = {
-          base: config['group_base'],
+          base: config.group_base,
           filter: Net::LDAP::Filter.eq("cn", cn)
         }
 
@@ -54,13 +54,13 @@ module Gitlab
           }
         else
           options = {
-            base: config['base'],
+            base: config.base,
             filter: Net::LDAP::Filter.eq(field, value)
           }
         end
 
-        if config['user_filter'].present?
-          user_filter = Net::LDAP::Filter.construct(config['user_filter'])
+        if config.user_filter.present?
+          user_filter = Net::LDAP::Filter.construct(config.user_filter)
 
           options[:filter] = if options[:filter]
                                Net::LDAP::Filter.join(options[:filter], user_filter)

@@ -23,6 +23,14 @@ module Gitlab
         end
       end
 
+      def base
+        options['base']
+      end
+
+      def uid
+        options['uid']
+      end
+
       def sync_ssh_keys?
         sync_ssh_keys.present?
       end
