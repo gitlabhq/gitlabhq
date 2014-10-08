@@ -3,9 +3,11 @@ module Gitlab
     def find(login, password)
       user = User.find_by(email: login) || User.find_by(username: login)
 
+      # If no user is found, or it's an LDAP server, try LDAP.
+      #   LDAP users are only authenticated via LDAP
       if user.nil? || user.ldap_user?
         # Second chance - try LDAP authentication
-        return nil unless ldap_conf.enabled
+        return nil unless Gitlab::LDAP::Config.enabled?
 
         Gitlab::LDAP::User.authenticate(login, password)
       else
