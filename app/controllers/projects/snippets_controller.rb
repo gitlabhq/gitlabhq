@@ -17,7 +17,10 @@ class Projects::SnippetsController < Projects::ApplicationController
   respond_to :html
 
   def index
-    @snippets = @project.snippets.fresh.non_expired
+    @snippets = SnippetsFinder.new.execute(current_user, {
+      filter: :by_project,
+      project: @project
+    })
   end
 
   def new
@@ -88,6 +91,6 @@ class Projects::SnippetsController < Projects::ApplicationController
   end
 
   def snippet_params
-    params.require(:project_snippet).permit(:title, :content, :file_name, :private)
+    params.require(:project_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
   end
 end

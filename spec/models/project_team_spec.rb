@@ -27,6 +27,8 @@ describe ProjectTeam do
       it { project.team.master?(guest).should be_false }
       it { project.team.master?(reporter).should be_false }
       it { project.team.master?(nonmember).should be_false }
+      it { project.team.member?(nonmember).should be_false }
+      it { project.team.member?(guest).should be_true }
     end
   end
 
@@ -60,6 +62,8 @@ describe ProjectTeam do
       it { project.team.master?(guest).should be_true }
       it { project.team.master?(reporter).should be_false }
       it { project.team.master?(nonmember).should be_false }
+      it { project.team.member?(nonmember).should be_false }
+      it { project.team.member?(guest).should be_true }
     end
   end
 end
