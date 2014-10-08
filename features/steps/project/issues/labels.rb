@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectLabels < Spinach::FeatureSteps
+class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

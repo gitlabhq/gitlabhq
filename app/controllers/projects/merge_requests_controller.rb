@@ -122,7 +122,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.open? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.automerge!(current_user, params[:merge_commit_message])
+      @merge_request.automerge!(current_user, params[:commit_message])
       @status = true
     else
       @status = false
@@ -250,7 +250,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     params.require(:merge_request).permit(
       :title, :assignee_id, :source_project_id, :source_branch,
       :target_project_id, :target_branch, :milestone_id,
-      :state_event, :description, label_ids: []
+      :state_event, :description, :task_num, label_ids: []
     )
   end
 end

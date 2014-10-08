@@ -1,4 +1,4 @@
-class Spinach::Features::DiscoverSnippets < Spinach::FeatureSteps
+class Spinach::Features::SnippetsDiscover < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedSnippet

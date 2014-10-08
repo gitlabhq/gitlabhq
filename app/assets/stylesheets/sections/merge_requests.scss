@@ -104,7 +104,44 @@
 }
 
 .mr-state-widget {
-  .panel-body {
+  background: #f9f9f9;
+  margin-bottom: 20px;
+  @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
+
+  .ci_widget {
+    padding: 10px 15px;
+    font-size: 15px;
+    border-bottom: 1px dashed #AAA;
+
+    &.ci-success {
+      color: $bg_success;
+      border-color: $border_success;
+    }
+
+    &.ci-pending {
+      color: #548;
+      border-color: #548;
+    }
+
+    &.ci-running {
+      color: $bg_warning;
+      border-color: $border_warning;
+    }
+
+    &.ci-failed {
+      color: $bg_danger;
+      border-color: $border_danger;
+    }
+
+    &.ci-error {
+      color: $bg_danger;
+      border-color: $border_danger;
+    }
+  }
+
+  .mr-widget-body {
+    padding: 10px 15px;
+
     h4 {
       margin-top: 0px;
     }
@@ -112,6 +149,11 @@
     p:last-child {
       margin-bottom: 0;
     }
+  }
+
+  .mr-widget-footer {
+    padding: 10px 15px;
+    border-top: 1px solid #EEE;
   }
 
   .ci-coverage {

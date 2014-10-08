@@ -60,4 +60,8 @@ describe Issue do
     let(:backref_text) { "issue ##{subject.iid}" }
     let(:set_mentionable_text) { ->(txt){ subject.description = txt } }
   end
+
+  it_behaves_like 'a Taskable' do
+    let(:subject) { create :issue }
+  end
 end

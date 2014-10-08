@@ -1,4 +1,4 @@
-class Spinach::Features::DashboardWithArchivedProjects < Spinach::FeatureSteps
+class Spinach::Features::DashboardArchivedProjects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject

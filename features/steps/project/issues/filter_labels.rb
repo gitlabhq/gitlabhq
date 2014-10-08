@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectFilterLabels < Spinach::FeatureSteps
+class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

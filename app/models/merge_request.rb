@@ -25,6 +25,7 @@ require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
   include Issuable
+  include Taskable
   include InternalId
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
@@ -209,6 +210,20 @@ class MergeRequest < ActiveRecord::Base
   # see "git format-patch"
   def to_patch(current_user)
     Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
+  end
+
+  def hook_attrs
+    attrs = {
+      source: source_project.hook_attrs,
+      target: target_project.hook_attrs,
+      last_commit: nil
+    }
+
+    unless last_commit.nil?
+      attrs.merge!(last_commit: last_commit.hook_attrs(source_project))
+    end
+
+    attributes.merge!(attrs)
   end
 
   def for_fork?

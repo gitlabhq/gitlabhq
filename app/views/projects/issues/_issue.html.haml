@@ -20,12 +20,16 @@
       = render 'votes/votes_inline', votable: issue
     - if issue.notes.any?
       %span
-        %i.icon-comments
+        %i.fa.fa-comments
         = issue.notes.count
     - if issue.milestone
       %span
-        %i.icon-time
+        %i.fa.fa-clock-o
         = issue.milestone.title
+    - if issue.tasks?
+      %span.task-status
+        = issue.task_status
+
     .pull-right
       %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
 
@@ -41,7 +45,7 @@
       - else
         = link_to 'Close', project_issue_path(issue.project, issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-small btn-grouped close_issue btn-close", remote: true
       = link_to edit_project_issue_path(issue.project, issue), class: "btn btn-small edit-issue-link btn-grouped" do
-        %i.icon-edit
+        %i.fa.fa-pencil-square-o
         Edit
 
 

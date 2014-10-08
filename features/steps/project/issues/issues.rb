@@ -153,6 +153,32 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'project "Shop" has "Tasks-open" open issue with task markdown' do
+    desc_text = <<EOT.gsub(/^ {6}/, '')
+      * [ ] Task 1
+      * [x] Task 2
+EOT
+    create(:issue,
+           title: 'Tasks-open',
+           project: project,
+           author: project.users.first,
+           description: desc_text
+          )
+  end
+
+  step 'project "Shop" has "Tasks-closed" closed issue with task markdown' do
+    desc_text = <<EOT.gsub(/^ {6}/, '')
+      * [ ] Task 1
+      * [x] Task 2
+EOT
+    create(:closed_issue,
+           title: 'Tasks-closed',
+           project: project,
+           author: project.users.first,
+           description: desc_text
+          )
+  end
+
   step 'empty project "Empty Project"' do
     create :empty_project, name: 'Empty Project', namespace: @user.namespace
   end
@@ -232,8 +258,5 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   def filter_issue(text)
     fill_in 'issue_search', with: text
-
-    # make sure AJAX request finished
-    URI.parse(current_url).request_uri == project_issues_path(project, issue_search: text)
   end
 end

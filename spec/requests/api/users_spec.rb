@@ -20,7 +20,10 @@ describe API::API, api: true  do
         get api("/users", user)
         response.status.should == 200
         json_response.should be_an Array
-        json_response.first['username'].should == user.username
+        username = user.username
+        json_response.detect {
+          |user| user['username'] == username
+          }['username'].should == username
       end
     end
 

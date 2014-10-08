@@ -2,7 +2,7 @@
 
 ## Software delivery
 
-There are two editions of GitLab: [Enterprise Edition](https://www.gitlab.com/gitlab-ee/) (EE) and [Community Edition](https://www.gitlab.com/gitlab-ce/) (CE). GitLab CE is delivered via git from the [gitlabhq repository](https://gitlab.com/gitlab-org/gitlab-ce/tree/master). New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
+There are two editions of GitLab: [Enterprise Edition](https://about.gitlab.com/gitlab-ee/) (EE) and [Community Edition](https://about.gitlab.com/gitlab-ce/) (CE). GitLab CE is delivered via git from the [gitlabhq repository](https://gitlab.com/gitlab-org/gitlab-ce/tree/master). New versions of GitLab are released in stable branches and the master branch is for bleeding edge development.
 
 EE releases are available not long after CE releases. To obtain the GitLab EE there is a [repository at gitlab.com](https://gitlab.com/subscribers/gitlab-ee). For more information about the release process see the section 'New versions and upgrading' in the readme.
 

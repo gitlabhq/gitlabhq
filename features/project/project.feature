@@ -1,4 +1,4 @@
-Feature: Project Feature
+Feature: Project
   Background:
     Given I sign in as a user
     And I own project "Shop"

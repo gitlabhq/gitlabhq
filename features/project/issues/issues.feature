@@ -126,3 +126,36 @@ Feature: Project Issues
     When I click label 'bug'
     And I should see "Release 0.4" in issues
     And I should not see "Tweet control" in issues
+
+  Scenario: Issue description should render task checkboxes
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    Then I should see task checkboxes in the description
+
+  @javascript
+  Scenario: Issue notes should not render task checkboxes
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    And I leave a comment with task markdown
+    Then I should not see task checkboxes in the comment
+
+  # Task status in issues list
+
+  Scenario: Issues list should display task status
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit project "Shop" issues page
+    Then I should see the task status for issue "Tasks-open"
+
+  # Toggling task items
+
+  @javascript
+  Scenario: Task checkboxes should be enabled for an open issue
+    Given project "Shop" has "Tasks-open" open issue with task markdown
+    When I visit issue page "Tasks-open"
+    Then Task checkboxes should be enabled
+
+  @javascript
+  Scenario: Task checkboxes should be disabled for a closed issue
+    Given project "Shop" has "Tasks-closed" closed issue with task markdown
+    When I visit issue page "Tasks-closed"
+    Then Task checkboxes should be disabled

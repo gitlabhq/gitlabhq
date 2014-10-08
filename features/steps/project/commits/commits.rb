@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectBrowseCommits < Spinach::FeatureSteps
+class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

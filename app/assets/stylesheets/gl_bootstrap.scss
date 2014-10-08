@@ -124,7 +124,7 @@ $list-group-active-bg: $bg_primary;
         color: #888;
         text-shadow: 0 1px 1px #fff;
       }
-      i[class^="icon-"] {
+      i[class~="fa"] {
         line-height: 14px;
       }
     }

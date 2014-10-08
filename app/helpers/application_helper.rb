@@ -229,7 +229,7 @@ module ApplicationHelper
     css_class << " hide" unless visible
 
     content_tag :div, class: css_class do
-      content_tag(:i, nil, class: 'icon-spinner icon-spin') + text
+      content_tag(:i, nil, class: 'fa fa-spinner fa-spin') + text
     end
   end
 
@@ -258,5 +258,17 @@ module ApplicationHelper
     end
 
     super
+  end
+
+  def escaped_autolink(text)
+    auto_link ERB::Util.html_escape(text), link: :urls
+  end
+
+  def promo_host
+    'about.gitlab.com'
+  end
+
+  def promo_url
+    'https://' + promo_host
   end
 end

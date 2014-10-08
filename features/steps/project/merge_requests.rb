@@ -97,6 +97,20 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'project "Shop" has "MR-task-open" open MR with task markdown' do
+    desc_text = <<EOT.gsub(/^ {6}/, '')
+      * [ ] Task 1
+      * [x] Task 2
+EOT
+    create(:merge_request,
+           title: 'MR-task-open',
+           source_project: project,
+           target_project: project,
+           author: project.users.first,
+           description: desc_text
+          )
+  end
+
   step 'I switch to the diff tab' do
     visit diffs_project_merge_request_path(project, merge_request)
   end
@@ -154,7 +168,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I modify merge commit message' do
     find('.modify-merge-commit-link').click
-    fill_in 'merge_commit_message', with: "wow such merge"
+    fill_in 'commit_message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -211,6 +225,18 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should not see a comment like "Line is wrong here" in the second file' do
+    within '.files [id^=diff]:nth-child(2)' do
+      page.should_not have_visible_content "Line is wrong here"
+    end
+  end
+
+  step 'I should see a comment like "Line is wrong here" in the second file' do
+    within '.files [id^=diff]:nth-child(2) .note-text' do
+      page.should have_visible_content "Line is wrong here"
+    end
+  end
+
   step 'I leave a comment like "Line is correct" on line 12 of the first file' do
     init_diff_note_first_file
 
@@ -228,12 +254,8 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     init_diff_note_second_file
 
     within(".js-discussion-note-form") do
-      fill_in "note_note", with: "Line is wrong"
+      fill_in "note_note", with: "Line is wrong on here"
       click_button "Add Comment"
-    end
-
-    within ".files [id^=diff]:nth-child(2) .note-text" do
-      page.should have_content "Line is wrong"
     end
   end
 

@@ -1,4 +1,4 @@
-Feature: Project Browse git repo
+Feature: Project Source Git Blame
   Background:
     Given I sign in as a user
     And I own project "Shop"

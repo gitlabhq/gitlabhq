@@ -1,5 +1,5 @@
 @dashboard
-Feature: Project shortcuts
+Feature: Project Shortcuts
   Background:
     Given I sign in as a user
     And I own a project

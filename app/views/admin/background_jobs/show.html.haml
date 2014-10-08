@@ -8,7 +8,7 @@
   .panel-body
     - if @sidekiq_processes.empty?
       %h4.cred
-        %i.icon-warning-sign
+        %i.fa.fa-exclamation-triangle
         There are no running sidekiq processes. Please restart GitLab
     - else
       %table.table
@@ -32,10 +32,10 @@
 
       .clearfix
         %p
-          %i.icon-exclamation-sign
+          %i.fa.fa-exclamation-circle
           If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
         %p
-          %i.icon-exclamation-sign
+          %i.fa.fa-exclamation-circle
           If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{Settings.gitlab.user} -f sidekiq) and restart GitLab.
 
 

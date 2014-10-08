@@ -1,25 +1,25 @@
 %ul.nav.nav-pills.nav-stacked.nav-stacked-menu.append-bottom-20.project-settings-nav
   = nav_link(path: 'projects#edit') do
     = link_to edit_project_path(@project), class: "stat-tab tab " do
-      %i.icon-edit
+      %i.fa.fa-pencil-square-o
       Project
   = nav_link(controller: [:team_members, :teams]) do
     = link_to project_team_index_path(@project), class: "team-tab tab" do
-      %i.icon-group
+      %i.fa.fa-users
       Members
   = nav_link(controller: :deploy_keys) do
     = link_to project_deploy_keys_path(@project) do
-      %i.icon-key
+      %i.fa.fa-key
       Deploy Keys
   = nav_link(controller: :hooks) do
     = link_to project_hooks_path(@project) do
-      %i.icon-link
+      %i.fa.fa-link
       Web Hooks
   = nav_link(controller: :services) do
     = link_to project_services_path(@project) do
-      %i.icon-cogs
+      %i.fa.fa-cogs
       Services
   = nav_link(controller: :protected_branches) do
     = link_to project_protected_branches_path(@project) do
-      %i.icon-lock
+      %i.fa.fa-lock
       Protected branches

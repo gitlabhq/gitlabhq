@@ -1,4 +1,4 @@
-Feature: Comments on commit diffs
+Feature: Project Commits Diff Comments
   Background:
     Given I sign in as a user
     And I own project "Shop"

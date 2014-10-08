@@ -309,3 +309,8 @@ If you need to merge in another branch after starting explain the reason in the 
 If you have not pushed your commits to a shared location yet you can also rebase on master or another feature branch.
 Do not merge in upstream if your code will work and merge cleanly without doing so, Linus even says that [you should never merge in upstream at random points, only at major releases](http://lwn.net/Articles/328438/).
 Merging only when needed prevents creating merge commits in your feature branch that later end up littering the master history.
+
+### References
+
+- [Sketch file](https://www.dropbox.com/s/58dvsj5votbwrzv/git_flows.sketch?dl=0) with vectors of images in this article
+- [Git Flow by Vincent Driessen](http://nvie.com/posts/a-successful-git-branching-model/)

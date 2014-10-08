@@ -1,4 +1,4 @@
-Feature: Project Browse Commits User Lookup
+Feature: Project Commits User Lookup
   Background:
     Given I sign in as a user
     And I own a project

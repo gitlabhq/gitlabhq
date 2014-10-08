@@ -89,13 +89,13 @@
     .danger-settings.js-toggle-container
       .centered-light-block
         %h3
-          %i.icon-warning-sign
+          %i.fa.fa-exclamation-triangle
           Dangerous settings
 
         %p Project settings below may result in data loss!
         = link_to '#', class: 'btn js-toggle-button' do
           Show them to me
-          %i.icon-chevron-down
+          %i.fa.fa-chevron-down
 
       .js-toggle-content.hide
         - if can? current_user, :archive_project, @project
@@ -185,6 +185,6 @@
 .save-project-loader.hide
   .center
     %h2
-      %i.icon-spinner.icon-spin
+      %i.fa.fa-spinner.fa-spin
       Saving project.
     %p Please wait a moment, this page will automatically refresh when ready.

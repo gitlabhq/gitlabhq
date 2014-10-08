@@ -65,6 +65,7 @@ class Project < ActiveRecord::Base
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
   has_one :buildbox_service, dependent: :destroy
+  has_one :pushover_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
@@ -312,8 +313,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla
-       emails_on_push gemnasium slack buildbox)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack pushover buildbox)
   end
 
   def gitlab_ci?
@@ -333,7 +333,7 @@ class Project < ActiveRecord::Base
     path
   end
 
-  def items_for entity
+  def items_for(entity)
     case entity
     when 'issue' then
       issues
@@ -506,7 +506,7 @@ class Project < ActiveRecord::Base
   end
 
   # Check if current branch name is marked as protected in the system
-  def protected_branch? branch_name
+  def protected_branch?(branch_name)
     protected_branches_names.include?(branch_name)
   end
 
@@ -544,6 +544,16 @@ class Project < ActiveRecord::Base
       # db changes in order to prevent out of sync between db and fs
       raise Exception.new('repository cannot be renamed')
     end
+  end
+
+  def hook_attrs
+    {
+      name: name,
+      ssh_url: ssh_url_to_repo,
+      http_url: http_url_to_repo,
+      namespace: namespace.name,
+      visibility_level: visibility_level
+    }
   end
 
   # Reset events cache related to this project

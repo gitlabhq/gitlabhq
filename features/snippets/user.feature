@@ -1,5 +1,5 @@
 @snippets
-Feature: User Snippets
+Feature: Snippets User
   Background:
     Given I sign in as a user
     And I have public "Personal snippet one" snippet
@@ -18,6 +18,6 @@ Feature: User Snippets
 
   Scenario: I can see only my public snippets
     Given I visit my snippets page
-    And I click "Public" filter
+    And I click "Internal" filter
     Then I should see "Personal snippet one" in snippets
     And I should not see "Personal snippet private" in snippets

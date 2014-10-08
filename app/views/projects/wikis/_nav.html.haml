@@ -7,13 +7,13 @@
 
   = nav_link(path: 'wikis#git_access') do
     = link_to git_access_project_wikis_path(@project) do
-      %i.icon-download-alt
+      %i.fa.fa-download
       Git Access
 
   - if can?(current_user, :write_wiki, @project)
     .pull-right
       = link_to '#modal-new-wiki', class: "add-new-wiki btn btn-new", "data-toggle" => "modal" do
-        %i.icon-plus
+        %i.fa.fa-plus
         New Page
 
 = render 'projects/wikis/new'
