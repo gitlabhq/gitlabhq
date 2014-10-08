@@ -154,29 +154,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'project "Shop" has "Tasks-open" open issue with task markdown' do
-    desc_text = <<EOT.gsub(/^ {6}/, '')
-      * [ ] Task 1
-      * [x] Task 2
-EOT
-    create(:issue,
-           title: 'Tasks-open',
-           project: project,
-           author: project.users.first,
-           description: desc_text
-          )
+    create_taskable(:issue, 'Tasks-open')
   end
 
   step 'project "Shop" has "Tasks-closed" closed issue with task markdown' do
-    desc_text = <<EOT.gsub(/^ {6}/, '')
-      * [ ] Task 1
-      * [x] Task 2
-EOT
-    create(:closed_issue,
-           title: 'Tasks-closed',
-           project: project,
-           author: project.users.first,
-           description: desc_text
-          )
+    create_taskable(:closed_issue, 'Tasks-closed')
   end
 
   step 'empty project "Empty Project"' do

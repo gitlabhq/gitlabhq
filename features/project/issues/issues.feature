@@ -144,7 +144,7 @@ Feature: Project Issues
   Scenario: Issues list should display task status
     Given project "Shop" has "Tasks-open" open issue with task markdown
     When I visit project "Shop" issues page
-    Then I should see the task status for issue "Tasks-open"
+    Then I should see the task status for the Taskable
 
   # Toggling task items
 

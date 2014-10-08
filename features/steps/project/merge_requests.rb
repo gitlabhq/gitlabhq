@@ -98,17 +98,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'project "Shop" has "MR-task-open" open MR with task markdown' do
-    desc_text = <<EOT.gsub(/^ {6}/, '')
-      * [ ] Task 1
-      * [x] Task 2
-EOT
-    create(:merge_request,
-           title: 'MR-task-open',
-           source_project: project,
-           target_project: project,
-           author: project.users.first,
-           description: desc_text
-          )
+    create_taskable(:merge_request, 'MR-task-open')
   end
 
   step 'I switch to the diff tab' do
