@@ -88,14 +88,11 @@
 
     .danger-settings
       - if can? current_user, :archive_project, @project
-        .panel.panel-default.panel.panel-warning
-          .panel-heading
-            - if @project.archived?
+        - if @project.archived?
+          .panel.panel-success
+            .panel-heading
               Unarchive project
-            - else
-              Archive project
-          .panel-body
-            - if @project.archived?
+            .panel-body
               %p
                 Unarchiving the project will mark its repository as active.
                 %br
@@ -105,7 +102,11 @@
               = link_to 'Unarchive', unarchive_project_path(@project),
                   data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
                   method: :post, class: "btn btn-success"
-            - else
+        - else
+          .panel.panel-warning
+            .panel-heading
+              Archive project
+            .panel-body
               %p
                 Archiving the project will mark its repository as read-only.
                 %br

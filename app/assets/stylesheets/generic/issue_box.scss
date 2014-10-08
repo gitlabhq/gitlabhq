@@ -10,7 +10,7 @@
 .issue-box {
   color: #555;
   margin:20px 0;
-  background: #f9f9f9;
+  background: $box_bg;
   border-top-left-radius: 5px;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 
