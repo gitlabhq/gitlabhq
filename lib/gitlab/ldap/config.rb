@@ -4,6 +4,14 @@ module Gitlab
     class Config
       attr_accessor :provider, :options
 
+      def self.enabled?
+        Gitlab.config.ldap.enabled
+      end
+
+      def servers
+        Gitlab.config.ldap.servers
+      end
+
       def initialize(provider)
         @provider = provider
         @options = config_for(provider)
