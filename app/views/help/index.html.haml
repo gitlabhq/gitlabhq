@@ -14,7 +14,7 @@
     %br
     Used by more than 100,000 organizations, GitLab is the most popular solution to manage git repositories on-premises.
     %br
-    Read more about GitLab at #{link_to "www.gitlab.com", "https://www.gitlab.com/", target: "_blank"}.
+    Read more about GitLab at #{link_to promo_host, promo_url, target: '_blank'}.
 
 %hr
 
@@ -34,7 +34,7 @@
       %ul.well-list
         %li
           See our website for
-          = link_to "getting help", "https://www.gitlab.com/getting-help/"
+          = link_to 'getting help', promo_url + '/getting-help/'
         %li
           Use the
           = link_to 'search bar', '#', onclick: 'Shortcuts.focusSearch(event)'
