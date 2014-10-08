@@ -62,11 +62,14 @@
             - else
               #{link_to @project.owner_name, @project.owner}
 
-
-          - if @project.gitlab_ci?
-            %hr
-            = link_to @project.gitlab_ci_service.builds_path do
-              = image_tag @project.gitlab_ci_service.status_img_path, alt: "build status"
+          - @project.ci_services.each do |ci_service|
+            - if ci_service.active? && ci_service.respond_to?(:builds_path)
+              - if ci_service.respond_to?(:status_img_path)
+                = link_to ci_service.builds_path do
+                  = image_tag ci_service.status_img_path, alt: "build status"
+              - else
+                %span.light CI provided by
+                = link_to ci_service.title, ci_service.builds_path
 
   - if readme
     .tab-pane#tab-readme
