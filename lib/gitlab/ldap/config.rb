@@ -24,10 +24,11 @@ module Gitlab
       end
 
       def sync_ssh_keys?
-        ssh_sync_key.present?
+        sync_ssh_keys.present?
       end
 
-      def ssh_sync_key
+      # The LDAP attribute in which the ssh keys are stored
+      def sync_ssh_keys
         options['sync_ssh_keys']
       end
 

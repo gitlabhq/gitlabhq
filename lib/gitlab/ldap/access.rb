@@ -79,7 +79,7 @@ module Gitlab
 
         (ldap_user.ssh_keys - user.keys.ldap.pluck(:key)).each do |key|
           Rails.logger.info "#{self.class.name}: adding LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})"
-          new_key = LDAPKey.new(title: "LDAP - #{ldap_config.ssh_sync_key}", key: key)
+          new_key = LDAPKey.new(title: "LDAP - #{ldap_config.sync_ssh_keys}", key: key)
           new_key.user = user
           unless new_key.save
             Rails.logger.error "#{self.class.name}: failed to add LDAP SSH key #{key.inspect} to #{user.name} (#{user.id})\n"\

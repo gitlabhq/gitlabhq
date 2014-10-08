@@ -70,7 +70,7 @@ describe Gitlab::LDAP::Access do
       Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: #{ssh_key}") }
 
     before do
-      Gitlab::LDAP::Config.any_instance.stub(ssh_sync_key: ssh_key_attribute_name)
+      Gitlab::LDAP::Config.any_instance.stub(sync_ssh_keys: ssh_key_attribute_name)
       access.stub sync_ssh_keys?: true
     end
 
@@ -87,7 +87,7 @@ describe Gitlab::LDAP::Access do
 
       access.update_ssh_keys
       expect(user.keys.last.title).to match(/LDAP/)
-      expect(user.keys.last.title).to match(/#{access.ldap_config.ssh_sync_key}/)
+      expect(user.keys.last.title).to match(/#{access.ldap_config.sync_ssh_keys}/)
     end
 
     it "should not add a SSH key if it is invalid" do
