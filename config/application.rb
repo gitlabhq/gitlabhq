@@ -12,11 +12,11 @@ module Gitlab
     # -- all .rb files in that directory are automatically loaded.
 
     # Custom directories with classes and modules you want to be autoloadable.
-    config.autoload_paths += %W(#{config.root}/lib
-                                #{config.root}/app/models/hooks
-                                #{config.root}/app/models/concerns
-                                #{config.root}/app/models/project_services
-                                #{config.root}/app/models/members)
+    config.autoload_paths.push(*%W(#{config.root}/lib
+                                   #{config.root}/app/models/hooks
+                                   #{config.root}/app/models/concerns
+                                   #{config.root}/app/models/project_services
+                                   #{config.root}/app/models/members))
 
     # Only load the plugins named here, in the order given (default is alphabetical).
     # :all can be used as a placeholder for all plugins not explicitly named.
@@ -31,7 +31,7 @@ module Gitlab
     config.encoding = "utf-8"
 
     # Configure sensitive parameters which will be filtered from the log file.
-    config.filter_parameters += [:password]
+    config.filter_parameters.push(*[:password])
 
     # Enable escaping HTML in JSON.
     config.active_support.escape_html_entities_in_json = true

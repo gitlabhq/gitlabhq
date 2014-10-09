@@ -226,7 +226,7 @@ module Network
 
       reserved = []
       for day in time_range
-        reserved += @reserved[day]
+        reserved.push(*@reserved[day])
       end
       reserved.uniq!
 

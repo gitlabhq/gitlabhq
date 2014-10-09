@@ -297,8 +297,8 @@ class User < ActiveRecord::Base
   def authorized_projects
     @authorized_projects ||= begin
                                project_ids = personal_projects.pluck(:id)
-                               project_ids += groups_projects.pluck(:id)
-                               project_ids += projects.pluck(:id).uniq
+                               project_ids.push(*groups_projects.pluck(:id))
+                               project_ids.push(*projects.pluck(:id).uniq)
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
