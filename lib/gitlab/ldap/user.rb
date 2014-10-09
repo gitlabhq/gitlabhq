@@ -45,11 +45,16 @@ module Gitlab
 
         def find_by_uid(uid)
           # LDAP distinguished name is case-insensitive
-          model.where("provider = ? and lower(extern_uid) = ?", provider, uid.downcase).last
+          model.
+            where(provider: [provider, :ldap]).
+            where('lower(extern_uid) = ?', uid.downcase).last
         end
 
         def provider
-          'ldap'
+          # Note: for backwards compatibility we just get the first provider
+          # Later on, we should loop through all servers until a successful
+          # authentication
+          Gitlab::LDAP::Config.servers.first.provider_name
         end
       end
 
