@@ -144,8 +144,11 @@ production: &base
         password: '_the_password_of_the_bind_user'
 
         # When authenticating against an ldap server, this will provide a unique identifier
-        # Only use uniq numbers here
-        index: 1
+        # Use one uniq word, no non-word charcters are allowed
+        provider_id: main
+
+        # The UI use this to make a distinction between your LDAP servers
+        label: 'LDAP'
 
         # This setting controls the amount of time between LDAP permission checks for each user.
         # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
@@ -321,7 +324,6 @@ test:
       -
         provider_id: main
         label: ldap
-        primary: true
         host: 127.0.0.1
         port: 3890
         uid: 'uid'
