@@ -88,9 +88,24 @@ class Commit
     description.present?
   end
 
+  def hook_attrs(project)
+    path_with_namespace = project.path_with_namespace
+
+    {
+      id: id,
+      message: safe_message,
+      timestamp: committed_date.xmlschema,
+      url: "#{Gitlab.config.gitlab.url}/#{path_with_namespace}/commit/#{id}",
+      author: {
+        name: author_name,
+        email: author_email
+      }
+    }
+  end
+
   # Discover issues should be closed when this commit is pushed to a project's
   # default branch.
-  def closes_issues project
+  def closes_issues(project)
     Gitlab::ClosingIssueExtractor.closed_by_message_in_project(safe_message, project)
   end
 
@@ -107,5 +122,9 @@ class Commit
     return true if @raw.respond_to?(method)
 
     super
+  end
+
+  def parents
+    @parents ||= Commit.decorate(super)
   end
 end

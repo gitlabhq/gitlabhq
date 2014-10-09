@@ -110,3 +110,28 @@ For installations from source, add the following setting in the 'ldap' section o
 ```yaml
     sync_ssh_keys: 'sshpublickey'
 ```
+
+## Using an LDAP filter to limit access to your GitLab server
+
+If you want to limit all GitLab access to a subset of the LDAP users on your LDAP server you can set up an LDAP user filter.
+The filter must comply with [RFC 4515](http://tools.ietf.org/search/rfc4515).
+
+```ruby
+# For omnibus-gitlab
+gitlab_rails['ldap_user_filter'] = '(employeeType=developer)'
+```
+
+```yaml
+# For installations from source
+production:
+  ldap:
+     user_filter: '(employeeType=developer)'
+```
+
+Tip: if you want to limit access to the nested members of an Active Directory group you can use the following syntax:
+
+```
+(memberOf:1.2.840.113556.1.4.1941:=CN=My Group,DC=Example,DC=com)
+```
+
+Please note that GitLab does not support the custom filter syntax used by omniauth-ldap.

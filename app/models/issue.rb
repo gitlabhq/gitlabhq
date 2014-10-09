@@ -48,6 +48,10 @@ class Issue < ActiveRecord::Base
     state :closed
   end
 
+  def hook_attrs
+    attributes
+  end
+
   # Mentionable overrides.
 
   def gfm_reference
@@ -64,5 +68,10 @@ class Issue < ActiveRecord::Base
   # when the event is updated because the key changes.
   def reset_events_cache
     Event.reset_event_cache_for(self)
+  end
+
+  # To allow polymorphism with MergeRequest.
+  def source_project
+    project
   end
 end

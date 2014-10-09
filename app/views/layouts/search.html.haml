@@ -4,8 +4,7 @@
   %body{class: "#{app_theme} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "Search"
-    = render "layouts/flash"
-
     .container.navless-container
       .content
+        = render "layouts/flash"
         = yield

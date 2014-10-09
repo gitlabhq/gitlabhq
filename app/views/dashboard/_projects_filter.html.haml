@@ -37,7 +37,7 @@
       - @groups.each do |group|
         %li{ class: (group.name == params[:group]) ? 'active' : 'light' }
           = link_to projects_dashboard_filter_path(group: group.name) do
-            %i.icon-folder-close-alt
+            %i.fa.fa-folder-o
             = group.name
             %small.pull-right
               = group.projects.count
@@ -51,5 +51,5 @@
       - @tags.each do |tag|
         %li{ class: (tag.name == params[:tag]) ? 'active' : 'light' }
           = link_to projects_dashboard_filter_path(scope: params[:scope], tag: tag.name) do
-            %i.icon-tag
+            %i.fa.fa-tag
             = tag.name

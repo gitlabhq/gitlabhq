@@ -107,6 +107,18 @@ class ProjectWiki
     [title.gsub(/\.[^.]*$/, ""), title_array.join("/")]
   end
 
+  def search_files(query)
+    repository.search_files(query, default_branch)
+  end
+
+  def repository
+    Repository.new(path_with_namespace, default_branch)
+  end
+
+  def default_branch
+    wiki.class.default_ref
+  end
+
   private
 
   def create_repo!

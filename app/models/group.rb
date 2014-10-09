@@ -17,8 +17,8 @@ require 'carrierwave/orm/activerecord'
 require 'file_size_validator'
 
 class Group < Namespace
-  has_many :users_groups, dependent: :destroy
-  has_many :users, through: :users_groups
+  has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
+  has_many :users, through: :group_members
   has_many :project_group_links, dependent: :destroy
   has_many :shared_projects, through: :project_group_links, source: :project
   has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
@@ -33,22 +33,22 @@ class Group < Namespace
   end
 
   def owners
-    @owners ||= users_groups.owners.map(&:user)
+    @owners ||= group_members.owners.map(&:user)
   end
 
-  def add_users(user_ids, group_access)
+  def add_users(user_ids, access_level)
     user_ids.compact.each do |user_id|
-      user = self.users_groups.find_or_initialize_by(user_id: user_id)
-      user.update_attributes(group_access: group_access)
+      user = self.group_members.find_or_initialize_by(user_id: user_id)
+      user.update_attributes(access_level: access_level)
     end
   end
 
-  def add_user(user, group_access)
-    self.users_groups.create(user_id: user.id, group_access: group_access)
+  def add_user(user, access_level)
+    self.group_members.create(user_id: user.id, access_level: access_level)
   end
 
   def add_owner(user)
-    self.add_user(user, UsersGroup::OWNER)
+    self.add_user(user, Gitlab::Access::OWNER)
   end
 
   def has_owner?(user)
@@ -64,7 +64,7 @@ class Group < Namespace
   end
 
   def members
-    users_groups
+    group_members
   end
 
   def avatar_type
@@ -88,6 +88,10 @@ class Group < Namespace
 
   def ldap_access
     ldap_group_links.first.try(:group_access)
+  end
+
+  def ldap_synced?
+    ldap_cn.present?
   end
 
   class << self

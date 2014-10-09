@@ -8,7 +8,7 @@ class LdapGroupResetService
     a = group.members.with_ldap_dn.map do |member|
       # don't unauthorize the current user
       next if current_user == member.user
-      member.update_attribute :group_access, Gitlab::Access::GUEST
+      member.update_attribute :access_level, Gitlab::Access::GUEST
     end
 
     group.users.ldap.update_all last_credential_check_at: nil

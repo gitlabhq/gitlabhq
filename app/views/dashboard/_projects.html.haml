@@ -3,7 +3,7 @@
     = search_field_tag :filter_projects, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
     - if current_user.can_create_project?
       = link_to new_project_path, class: "btn btn-new pull-right" do
-        %i.icon-plus
+        %i.fa.fa-plus
         New project
 
   %ul.well-list.dash-list
@@ -21,4 +21,4 @@
         .pull-right
           = link_to projects_dashboard_path do
             Show all
-            %i.icon-angle-right
+            %i.fa.fa-angle-right

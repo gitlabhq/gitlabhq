@@ -3,8 +3,8 @@
   .controls
     = form_tag project_network_path(@project, @id), method: :get, class: 'form-inline network-form' do |f|
       = text_field_tag :extended_sha1, @options[:extended_sha1], placeholder: "Input an extended SHA1 syntax", class: 'search-input form-control input-mx-250 search-sha'
-      = button_tag type: 'submit', class: 'btn btn-success btn-search-sha' do
-        %i.icon-search
+      = button_tag class: 'btn btn-success btn-search-sha' do
+        %i.fa.fa-search
       .inline.prepend-left-20
         .checkbox.light
           = label_tag :filter_ref do

@@ -7,7 +7,7 @@ Sidekiq::Testing.inline! do
       'https://gitlab.com/gitlab-org/gitlab-ce.git',
       'https://gitlab.com/gitlab-org/gitlab-ci.git',
       'https://gitlab.com/gitlab-org/gitlab-shell.git',
-      'https://gitlab.com/gitlab-org/testme.git',
+      'https://gitlab.com/gitlab-org/gitlab-test.git',
       'https://github.com/twitter/flight.git',
       'https://github.com/twitter/typeahead.js.git',
       'https://github.com/h5bp/html5-boilerplate.git',

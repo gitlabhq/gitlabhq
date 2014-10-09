@@ -4,11 +4,11 @@ module SharedAuthentication
   include Spinach::DSL
   include LoginHelpers
 
-  Given 'I sign in as a user' do
+  step 'I sign in as a user' do
     login_as :user
   end
 
-  Given 'I sign in as an admin' do
+  step 'I sign in as an admin' do
     login_as :admin
   end
 

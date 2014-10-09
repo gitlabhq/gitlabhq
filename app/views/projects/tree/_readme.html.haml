@@ -1,6 +1,7 @@
 %article.readme-holder#README
-  %h4.readme-file-title
-    %i.icon-file
-    = readme.name
+  = link_to '#README' do
+    %h4.readme-file-title
+      %i.fa.fa-file
+      = readme.name
   .wiki
     = render_readme(readme)

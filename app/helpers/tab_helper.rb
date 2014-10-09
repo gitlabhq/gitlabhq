@@ -89,7 +89,7 @@ module TabHelper
   end
 
   # Use nav_tab for save controller/action  but different params
-  def nav_tab key, value, &block
+  def nav_tab(key, value, &block)
     o = {}
     o[:class] = ""
 

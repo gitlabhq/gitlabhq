@@ -32,6 +32,8 @@ class @ZenMode
     @active_zen_area = @active_checkbox.parent().find('textarea')
     @active_zen_area.focus()
     window.location.hash = ZenMode.fullscreen_prefix + @active_checkbox.prop('id')
+    # Disable dropzone in ZEN mode
+    Dropzone.forElement('.div-dropzone').disable()
 
   exitZenMode: =>
     if @active_zen_area isnt null
@@ -41,6 +43,8 @@ class @ZenMode
       @active_checkbox = null
       window.location.hash = ''
       window.scrollTo(window.pageXOffset, @scroll_position)
+      # Enable dropzone when leaving ZEN mode
+      Dropzone.forElement('.div-dropzone').enable()
 
   checkboxFromLocationHash: (e) ->
     id = $.trim(window.location.hash.replace('#' + ZenMode.fullscreen_prefix, ''))

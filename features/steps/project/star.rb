@@ -22,7 +22,7 @@ class Spinach::Features::ProjectStar < Spinach::FeatureSteps
 
   # Requires @javascript
   step "I click on the star toggle button" do
-    page.find(".star .toggle", visible: true).click
+    find(".star .toggle", visible: true).click
   end
 
   protected

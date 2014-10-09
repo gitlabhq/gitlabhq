@@ -1,4 +1,4 @@
-class ProjectBrowseFiles < Spinach::FeatureSteps
+class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -16,37 +16,69 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should have_content "LICENSE"
   end
 
+  step 'I see the ".gitignore"' do
+    page.should have_content '.gitignore'
+  end
+
+  step 'I don\'t see the ".gitignore"' do
+    page.should_not have_content '.gitignore'
+  end
+
   step 'I click on ".gitignore" file in repo' do
     click_link ".gitignore"
   end
 
   step 'I should see its content' do
-    page.should have_content "*.rbc"
+    page.should have_content old_gitignore_content
   end
 
-  step 'I click link "raw"' do
-    click_link "raw"
+  step 'I should see its new content' do
+    page.should have_content new_gitignore_content
+  end
+
+  step 'I click link "Raw"' do
+    click_link 'Raw'
   end
 
   step 'I should see raw file content' do
-    page.source.should == sample_blob.data
+    source.should == sample_blob.data
   end
 
-  step 'I click button "edit"' do
-    click_link 'edit'
+  step 'I click button "Edit"' do
+    click_link 'Edit'
   end
 
   step 'I can edit code' do
-    page.execute_script('editor.setValue("GitlabFileEditor")')
-    page.evaluate_script('editor.getValue()').should == "GitlabFileEditor"
+    set_new_content
+    evaluate_script('editor.getValue()').should == new_gitignore_content
   end
 
   step 'I edit code' do
-    page.execute_script('editor.setValue("GitlabFileEditor")')
+    set_new_content
+  end
+
+  step 'I fill the new file name' do
+    fill_in :file_name, with: new_file_name
+  end
+
+  step 'I fill the commit message' do
+    fill_in :commit_message, with: 'Not yet a commit message.'
   end
 
   step 'I click link "Diff"' do
     click_link 'Diff'
+  end
+
+  step 'I click on "Commit changes"' do
+    click_button 'Commit changes'
+  end
+
+  step 'I click on "Remove"' do
+    click_link 'Remove'
+  end
+
+  step 'I click on "Remove file"' do
+    click_button 'Remove file'
   end
 
   step 'I see diff' do
@@ -67,8 +99,8 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     click_link 'files'
   end
 
-  step 'I click on history link' do
-    click_link 'history'
+  step 'I click on History link' do
+    click_link 'History'
   end
 
   step 'I see Browse dir link' do
@@ -77,7 +109,9 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on readme file' do
-    click_link 'README.md'
+    within '.tree-table' do
+      click_link 'README.md'
+    end
   end
 
   step 'I see Browse file link' do
@@ -91,8 +125,16 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
     page.should_not have_link 'Browse Dir »'
   end
 
-  step 'I click on permalink' do
-    click_link 'permalink'
+  step 'I click on Permalink' do
+    click_link 'Permalink'
+  end
+
+  step 'I am redirected to the files URL' do
+    current_path.should == project_tree_path(@project, 'master')
+  end
+
+  step 'I am redirected to the ".gitignore"' do
+    expect(current_path).to eq(project_blob_path(@project, 'master/.gitignore'))
   end
 
   step 'I am redirected to the permalink URL' do
@@ -100,7 +142,35 @@ class ProjectBrowseFiles < Spinach::FeatureSteps
       @project, @project.repository.commit.sha + '/.gitignore'))
   end
 
+  step 'I am redirected to the new file' do
+    expect(current_path).to eq(project_blob_path(
+      @project, 'master/' + new_file_name))
+  end
+
   step "I don't see the permalink link" do
     expect(page).not_to have_link('permalink')
+  end
+
+  private
+
+  def set_new_content
+    execute_script("editor.setValue('#{new_gitignore_content}')")
+  end
+
+  # Content of the gitignore file on the seed repository.
+  def old_gitignore_content
+    '*.rbc'
+  end
+
+  # Constant value that differs from the content
+  # of the gitignore of the seed repository.
+  def new_gitignore_content
+    old_gitignore_content + 'a'
+  end
+
+  # Constant value that is a valid filename and
+  # not a filename present at root of the seed repository.
+  def new_file_name
+    'not_a_file.md'
   end
 end

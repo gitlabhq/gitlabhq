@@ -1,9 +1,10 @@
-class ProjectMergeRequests < Spinach::FeatureSteps
+class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedNote
   include SharedPaths
   include SharedMarkdown
+  include SharedDiffNote
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -153,7 +154,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I modify merge commit message' do
     find('.modify-merge-commit-link').click
-    fill_in 'merge_commit_message', with: "wow such merge"
+    fill_in 'commit_message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -270,10 +271,6 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
-  def project
-    @project ||= Project.find_by!(name: "Shop")
-  end
-
   def merge_request
     @merge_request ||= MergeRequest.find_by!(title: "Bug NS-05")
   end
@@ -301,9 +298,5 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   def have_visible_content (text)
     have_css("*", text: text, visible: true)
-  end
-
-  def click_diff_line(code)
-    find("a[data-line-code='#{code}']").click
   end
 end

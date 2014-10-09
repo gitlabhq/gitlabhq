@@ -1,7 +1,7 @@
 - if current_user
   .dropdown.pull-right
     %a.dropdown-toggle.btn.btn-new{href: '#', "data-toggle" => "dropdown"}
-      %i.icon-reorder
+      %i.fa.fa-bars
     %ul.dropdown-menu
       - if @project.issues_enabled && can?(current_user, :write_issue, @project)
         %li
@@ -23,11 +23,11 @@
         %li.divider
         %li
           = link_to new_project_branch_path(@project) do
-            %i.icon-code-fork
+            %i.fa.fa-code-fork
             Git branch
         %li
           = link_to new_project_tag_path(@project) do
-            %i.icon-tag
+            %i.fa.fa-tag
             Git tag
 
 

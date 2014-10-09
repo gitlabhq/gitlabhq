@@ -17,9 +17,9 @@ module Select2Helper
     selector = options[:from]
 
     if options[:multiple]
-      page.execute_script("$('#{selector}').select2('val', ['#{value}']);")
+      execute_script("$('#{selector}').select2('val', ['#{value}']);")
     else
-      page.execute_script("$('#{selector}').select2('val', '#{value}');")
+      execute_script("$('#{selector}').select2('val', '#{value}');")
     end
   end
 end

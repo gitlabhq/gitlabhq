@@ -8,7 +8,7 @@ $ ->
   #
   $("body").on "click", ".js-toggle-button", (e) ->
     $(@).find('i').
-      toggleClass('icon-chevron-down').
-      toggleClass('icon-chevron-up')
+      toggleClass('fa fa-chevron-down').
+      toggleClass('fa fa-chevron-up')
     $(@).closest(".js-toggle-container").find(".js-toggle-content").toggle()
     e.preventDefault()

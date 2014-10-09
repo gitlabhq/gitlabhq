@@ -1,4 +1,4 @@
-class Profile < Spinach::FeatureSteps
+class Spinach::Features::Profile < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
 

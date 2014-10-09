@@ -4,7 +4,7 @@
     - if can? current_user, :create_projects, @group
       .panel-head-actions
         = link_to new_project_path(namespace_id: @group.id), class: "btn btn-new" do
-          %i.icon-plus
+          %i.fa.fa-plus
           New project
   %ul.well-list
     - if projects.blank?
@@ -18,4 +18,4 @@
             %span.project-name
               = project.name
           %span.arrow
-            %i.icon-angle-right
+            %i.fa.fa-angle-right

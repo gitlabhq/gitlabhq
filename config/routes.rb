@@ -178,9 +178,9 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resources :users_groups, only: [:create, :update, :destroy]
     scope module: :groups do
       resources :ldap_group_links, only: [:index, :create, :destroy]
+      resources :group_members, only: [:create, :update, :destroy]
       resource :avatar, only: [:destroy]
       resources :milestones
     end
@@ -190,7 +190,7 @@ Gitlab::Application.routes.draw do
   post 'unsubscribes/:email', to: 'unsubscribes#create'
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
-  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions }
+  devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
 
   devise_scope :user do
     get "/users/auth/:provider/omniauth_error" => "omniauth_callbacks#omniauth_error", as: :omniauth_error
@@ -226,7 +226,11 @@ Gitlab::Application.routes.draw do
       resources :compare,   only: [:index, :create]
       resources :blame,     only: [:show], constraints: {id: /.+/}
       resources :network,   only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
-      resources :graphs,    only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/}
+      resources :graphs,    only: [:show], constraints: {id: /(?:[^.]|\.(?!json$))+/, format: /json/} do
+        member do
+          get :commits
+        end
+      end
 
       match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
@@ -250,7 +254,6 @@ Gitlab::Application.routes.draw do
 
       resource :repository, only: [:show] do
         member do
-          get "stats"
           get "archive", constraints: { format: Gitlab::Regex.archive_formats_regex }
         end
       end

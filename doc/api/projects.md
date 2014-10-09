@@ -281,6 +281,18 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 
+### Fork project
+
+Forks a project into the user namespace of the authenticated user.
+
+```
+POST /projects/fork/:id
+```
+
+Parameters:
+
+- `id` (required) - The ID of the project to be forked
+
 ### Remove project
 
 Removes a project including all associated resources (issues, merge requests etc.)
@@ -435,6 +447,7 @@ Parameters:
 - `push_events` - Trigger hook on push events
 - `issues_events` - Trigger hook on issues events
 - `merge_requests_events` - Trigger hook on merge_requests events
+- `tag_push_events` - Trigger hook on push_tag events
 
 ### Edit project hook
 
@@ -452,6 +465,7 @@ Parameters:
 - `push_events` - Trigger hook on push events
 - `issues_events` - Trigger hook on issues events
 - `merge_requests_events` - Trigger hook on merge_requests events
+- `tag_push_events` - Trigger hook on push_tag events
 
 ### Delete project hook
 

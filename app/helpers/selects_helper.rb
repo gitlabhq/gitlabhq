@@ -2,6 +2,7 @@ module SelectsHelper
   def users_select_tag(id, opts = {})
     css_class = "ajax-users-select "
     css_class << "multiselect " if opts[:multiple]
+    css_class << "skip_ldap " if opts[:skip_ldap]
     css_class << (opts[:class] || '')
     value = opts[:selected] || ''
 

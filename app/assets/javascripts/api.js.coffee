@@ -38,7 +38,7 @@
 
   # Return users list. Filtered by query
   # Only active users retrieved
-  users: (query, callback) ->
+  users: (query, skip_ldap, callback) ->
     url = Api.buildUrl(Api.users_path)
 
     $.ajax(
@@ -48,6 +48,7 @@
         search: query
         per_page: 20
         active: true
+        skip_ldap: skip_ldap
       dataType: "json"
     ).done (users) ->
       callback(users)

@@ -10,6 +10,5 @@ class Flash
 
     flash.click -> $(@).fadeOut()
     flash.show()
-    setTimeout (-> flash.fadeOut()), 5000
 
 @Flash = Flash

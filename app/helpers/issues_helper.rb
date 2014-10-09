@@ -1,5 +1,5 @@
 module IssuesHelper
-  def issue_css_classes issue
+  def issue_css_classes(issue)
     classes = "issue"
     classes << " closed" if issue.closed?
     classes << " today" if issue.today?
@@ -84,7 +84,7 @@ module IssuesHelper
                                        'id', 'name', object.assignee_id)
   end
 
-  def milestone_options object
+  def milestone_options(object)
     options_from_collection_for_select(object.project.milestones.active,
                                        'id', 'title', object.milestone_id)
   end

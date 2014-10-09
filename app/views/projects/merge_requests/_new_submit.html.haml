@@ -9,7 +9,7 @@
   %span.pull-right
     = link_to 'Change branches', new_project_merge_request_path(@project)
 
-= form_for [@project, @merge_request], html: { class: "merge-request-form" } do |f|
+= form_for [@project, @merge_request], html: { class: "merge-request-form gfm-form" } do |f|
   .panel.panel-default
 
     .panel-body
@@ -30,7 +30,7 @@
       .form-group
         .issue-assignee
           = f.label :assignee_id do
-            %i.icon-user
+            %i.fa.fa-user
             Assign to
           %div
             = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
@@ -39,12 +39,12 @@
       .form-group
         .issue-milestone
           = f.label :milestone_id do
-            %i.icon-time
+            %i.fa.fa-clock-o
             Milestone
           %div= f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2'})
       .form-group
         = f.label :label_ids do
-          %i.icon-tag
+          %i.fa.fa-tag
           Labels
         %div
           = f.collection_select :label_ids, @merge_request.target_project.labels.all, :id, :name, { selected: @merge_request.label_ids }, multiple: true, class: 'select2'
@@ -62,17 +62,7 @@
       = f.submit 'Submit merge request', class: "btn btn-create"
 
 .mr-compare
-  %div.panel.panel-default
-    .panel-heading
-      Commits (#{@commits.count})
-    - if @commits.size > MergeRequestDiff::COMMITS_SAFE_SIZE
-      %ul.well-list
-        - Commit.decorate(@commits.first(MergeRequestDiff::COMMITS_SAFE_SIZE)).each do |commit|
-          = render "projects/commits/inline_commit", commit: commit, project: @project
-        %li.warning-row.unstyled
-          other #{@commits.size - MergeRequestDiff::COMMITS_SAFE_SIZE} commits hidden to prevent performance issues.
-    - else
-      %ul.well-list= render Commit.decorate(@commits), project: @project
+  = render "projects/commits/commit_list"
 
   %h4 Changes
   - if @diffs.present?

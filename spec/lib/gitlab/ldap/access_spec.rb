@@ -27,6 +27,21 @@ describe Gitlab::LDAP::Access do
 
         it { should be_true }
       end
+
+      context 'and has no disabled flag in active diretory' do
+        before {
+          Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false)
+          Gitlab.config.ldap['enabled'] = true
+          Gitlab.config.ldap['active_directory'] = false
+        }
+
+        after {
+          Gitlab.config.ldap['enabled'] = false
+          Gitlab.config.ldap['active_directory'] = true
+        }
+
+        it { should be_false }
+      end
     end
   end
 
@@ -210,9 +225,8 @@ objectclass: posixGroup
 
     context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
       before do
-        gitlab_group_1.users_groups.guests.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create({
-          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER })
+        gitlab_group_1.group_members.guests.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
       end
 
       it "upgrades the users access to master for group 1" do
@@ -223,9 +237,8 @@ objectclass: posixGroup
 
     context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
       before do
-        gitlab_group_1.users_groups.masters.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create({
-          cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER })
+        gitlab_group_1.group_members.masters.create(user_id: user.id)
+        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER
       end
 
       it "keeps the users master access for group 1" do
@@ -236,7 +249,7 @@ objectclass: posixGroup
 
     context "existing access as master for group-1, not allowed" do
       before do
-        gitlab_group_1.users_groups.masters.create(user_id: user.id)
+        gitlab_group_1.group_members.masters.create(user_id: user.id)
         gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
         access.stub(cns_with_access: ['ldap-group2'])
       end

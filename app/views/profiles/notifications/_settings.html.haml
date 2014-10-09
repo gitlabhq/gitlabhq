@@ -1,12 +1,12 @@
 %li
-  %span.notification-icon-holder
+  %span.notification.fa.fa-holder
     - if notification.global?
       = notification_icon(@notification)
     - else
       = notification_icon(notification)
 
   %span.str-truncated
-    - if membership.kind_of? UsersGroup
+    - if membership.kind_of? GroupMember
       = link_to membership.group.name, membership.group
     - else
       = link_to_project(membership.project)

@@ -1,6 +1,6 @@
 - @project_group_links.each do |group_links|
   - shared_group = group_links.group
-  - shared_group_users_count = group_links.group.users_groups.count
+  - shared_group_users_count = group_links.group.group_members.count
   .panel.panel-default
     .panel-heading
       Shared with
@@ -12,8 +12,8 @@
         = link_to members_group_path(shared_group), class: 'btn btn-small' do
           %i.icon-edit
     %ul.well-list
-      - shared_group.users_groups.order('group_access DESC').limit(20).each do |member|
-        = render 'users_groups/users_group', member: member, show_controls: false, show_roles: false
+      - shared_group.group_members.order('access_level DESC').limit(20).each do |member|
+        = render 'groups/group_members/group_member', member: member, show_controls: false, show_roles: false
       - if shared_group_users_count > 20
         %li
           and #{shared_group_users_count - 20} more. For full list visit #{link_to 'group members page', members_group_path(shared_group)}

@@ -11,7 +11,7 @@
   = link_to snippet_path do
     .file-holder
       .file-title
-        %i.icon-file
+        %i.fa.fa-file
         %strong= snippet_blob[:snippet_object].file_name
         %span.options
           .btn-group.tree-btn-group.pull-right
@@ -46,7 +46,7 @@
                     - offset = defined?(snippet[:start_line]) ? snippet[:start_line] : 1
                     - i = index + offset
                     = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}" do
-                      %i.icon-link
+                      %i.fa.fa-link
                       = i
                   - unless snippet == snippet_blob[:snippet_chunks].last
                     %a

@@ -15,7 +15,7 @@ module Gitlab
       tail_output.split("\n")
     end
 
-    def self.read_latest_for filename
+    def self.read_latest_for(filename)
       path = Rails.root.join("log", filename)
       tail_output, _ = Gitlab::Popen.popen(%W(tail -n 2000 #{path}))
       tail_output.split("\n")

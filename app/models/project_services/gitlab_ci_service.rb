@@ -27,12 +27,17 @@ class GitlabCiService < CiService
     hook.save
   end
 
-  def commit_status_path sha
+  def commit_status_path(sha)
     project_url + "/builds/#{sha}/status.json?token=#{token}"
   end
 
-  def commit_status sha
-    response = HTTParty.get(commit_status_path(sha), verify: false)
+  def get_ci_build(sha)
+    @ci_builds ||= {}
+    @ci_builds[sha] ||= HTTParty.get(commit_status_path(sha), verify: false)
+  end
+
+  def commit_status(sha)
+    response = get_ci_build(sha)
 
     if response.code == 200 and response["status"]
       response["status"]
@@ -41,7 +46,15 @@ class GitlabCiService < CiService
     end
   end
 
-  def build_page sha
+  def commit_coverage(sha)
+    response = get_ci_build(sha)
+
+    if response.code == 200 and response["coverage"]
+      response["coverage"]
+    end
+  end
+
+  def build_page(sha)
     project_url + "/builds/#{sha}"
   end
 

@@ -1,5 +1,7 @@
-class CreateBranchService
-  def execute(project, branch_name, ref, current_user)
+require_relative 'base_service'
+
+class CreateBranchService < BaseService
+  def execute(branch_name, ref)
     valid_branch = Gitlab::GitRefValidator.validate(branch_name)
     if valid_branch == false
       return error('Branch name invalid')
@@ -22,17 +24,9 @@ class CreateBranchService
     end
   end
 
-  def error(message)
-    {
-      message: message,
-      status: :error
-    }
-  end
-
   def success(branch)
-    {
-      branch: branch,
-      status: :success
-    }
+    out = super()
+    out[:branch] = branch
+    out
   end
 end

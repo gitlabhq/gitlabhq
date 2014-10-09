@@ -17,17 +17,11 @@
         .fork-buttons
           - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
             - if current_user.already_forked?(@project)
-              = link_to project_path(current_user.fork_of(@project)), title: 'Got to my fork' do
-                %i.icon-code-fork
-                Fork
-                %span.count
-                  = @project.forks_count
+              = link_to project_path(current_user.fork_of(@project)), title: 'Go to my fork' do
+                = link_to_toggle_fork
             - else
               = link_to fork_project_path(@project), title: "Fork project", method: "POST" do
-                %i.icon-code-fork
-                Fork
-                %span.count
-                  = @project.forks_count
+                = link_to_toggle_fork
 
       .star-buttons
         %span.star.js-toggler-container{class: @show_star ? 'on' : ''}

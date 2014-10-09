@@ -18,8 +18,7 @@
   = javascript_include_tag "application"
   = csrf_meta_tags
   = include_gon
-  :erb
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  %meta{name: 'viewport', content: 'width=device-width, initial-scale=1.0'}
 
   = render 'layouts/google_analytics' if extra_config.has_key?('google_analytics_id')
   = render 'layouts/piwik' if extra_config.has_key?('piwik_url') && extra_config.has_key?('piwik_site_id')

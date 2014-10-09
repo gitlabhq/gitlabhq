@@ -22,14 +22,9 @@
               %strong= link_to "modify merge commit message", "#", class: "modify-merge-commit-link js-toggle-button", title: "Modify merge commit message"
               before accepting merge request
             .js-toggle-content.hide
-              .form-group
-                = label_tag :merge_commit_message, "Commit message", class: 'control-label'
-                .col-sm-10
-                  = render 'shared/commit_message_container', {textarea: text_area_tag(:merge_commit_message,
-                      @merge_request.merge_commit_message, class: "form-control js-gfm-input", rows: 14, required: true)}
-                  %p.hint
-                    The recommended maximum line length is 52 characters for the first line and 72 characters for all following lines.
-
+              = render 'shared/commit_message_container', params: params,
+                  text: @merge_request.merge_commit_message,
+                  rows: 14, hint: true
           .accept-group
             .pull-left
               = f.submit "Accept Merge Request", class: "btn btn-create accept_merge_request"
@@ -62,7 +57,7 @@
   .automerge_widget.unchecked
     %p
       %strong
-        %i.icon-spinner.icon-spin
+        %i.fa.fa-spinner.fa-spin
         Checking for ability to automatically merge…
 
   .automerge_widget.already_cannot_be_merged.hide
@@ -71,6 +66,6 @@
 
   .merge-in-progress.hide
     %p
-      %i.icon-spinner.icon-spin
+      %i.fa.fa-spinner.fa-spin
       &nbsp;
       Merge is in progress. Please wait. Page will be automatically reloaded. &nbsp;

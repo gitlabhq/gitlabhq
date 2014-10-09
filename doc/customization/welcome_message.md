@@ -1,3 +1,7 @@
+# Customize the complete sign-in page (GitLab Enterprise Edition only)
+
+Please see [Branded login page](http://doc.gitlab.com/ee/customization/branded_login_page.html)
+
 # Add a welcome message to the sign-in page (GitLab Community Edition)
 
 It is possible to add a markdown-formatted welcome message to your GitLab

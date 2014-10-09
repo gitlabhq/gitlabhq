@@ -19,7 +19,7 @@ module EventsHelper
     [event.action_name, target].join(" ")
   end
 
-  def event_filter_link key, tooltip
+  def event_filter_link(key, tooltip)
     key = key.to_s
     inactive = if @event_filter.active? key
                  nil
@@ -36,10 +36,10 @@ module EventsHelper
 
   def icon_for_event
     {
-      EventFilter.push     => "icon-upload-alt",
-      EventFilter.merged   => "icon-check",
-      EventFilter.comments => "icon-comments",
-      EventFilter.team     => "icon-user",
+      EventFilter.push     => 'fa fa-upload',
+      EventFilter.merged   => 'fa fa-check-square-o',
+      EventFilter.comments => 'fa fa-comments',
+      EventFilter.team     => 'fa fa-user',
     }
   end
 
@@ -136,7 +136,7 @@ module EventsHelper
   end
 
   def event_note(text)
-    text = first_line(text)
+    text = first_line_in_markdown(text)
     text = truncate(text, length: 150)
     sanitize(markdown(text), tags: %w(a img b pre p))
   end

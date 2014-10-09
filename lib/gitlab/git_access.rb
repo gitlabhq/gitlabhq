@@ -49,11 +49,11 @@ module Gitlab
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes.each do |change|
-        oldrev, newrev, ref = changes.split('')
+        oldrev, newrev, ref = change.split(' ')
 
-        action = if project.protected_branch?(ref)
+        action = if project.protected_branch?(branch_name(ref))
                    # we dont allow force push to protected branch
-                   if forced_push?(oldrev, newrev)
+                   if forced_push?(project, oldrev, newrev)
                      :force_push_code_to_protected_branches
                      # and we dont allow remove of protected branch
                    elsif newrev =~ /0000000/
@@ -61,7 +61,7 @@ module Gitlab
                    else
                      :push_code_to_protected_branches
                    end
-                 elsif project.repository && project.repository.tag_names.include?(ref)
+                 elsif project.repository && project.repository.tag_names.include?(tag_name(ref))
                    # Prevent any changes to existing git tag unless user has permissions
                    :admin_project
                  else
@@ -78,7 +78,7 @@ module Gitlab
       true
     end
 
-    def forced_push?(oldrev, newrev)
+    def forced_push?(project, oldrev, newrev)
       return false if project.empty_repo?
 
       if oldrev !~ /00000000/ && newrev !~ /00000000/
@@ -120,6 +120,24 @@ module Gitlab
 
     def user_allowed?(user)
       Gitlab::UserAccess.allowed?(user)
+    end
+
+    def branch_name(ref)
+      ref = ref.to_s
+      if ref.start_with?('refs/heads')
+        ref.sub(%r{\Arefs/heads/}, '')
+      else
+        nil
+      end
+    end
+
+    def tag_name(ref)
+      ref = ref.to_s
+      if ref.start_with?('refs/tags')
+        ref.sub(%r{\Arefs/tags/}, '')
+      else
+        nil
+      end
     end
   end
 end

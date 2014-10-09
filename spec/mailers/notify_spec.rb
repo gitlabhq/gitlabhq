@@ -44,7 +44,9 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:new_user) { create(:user, email: 'newguy@example.com', created_by_id: 1) }
 
-    subject { Notify.new_user_email(new_user.id, new_user.password, 'kETLwRaayvigPq_x3SNM') }
+    token = 'kETLwRaayvigPq_x3SNM'
+
+    subject { Notify.new_user_email(new_user.id, new_user.password, token) }
 
     it_behaves_like 'an email sent from GitLab'
 
@@ -65,7 +67,10 @@ describe Notify do
     end
 
     it 'includes a link for user to set password' do
-      should have_body_text 'http://localhost/users/password/edit?reset_password_token=kETLwRaayvigPq_x3SNM'
+      params = "reset_password_token=#{token}"
+      should have_body_text(
+        %r{http://localhost(:\d+)?/users/password/edit\?#{params}}
+      )
     end
 
     it 'includes a link to the site' do
@@ -402,10 +407,10 @@ describe Notify do
     describe 'project access changed' do
       let(:project) { create(:project) }
       let(:user) { create(:user) }
-      let(:users_project) { create(:users_project,
+      let(:project_member) { create(:project_member,
                                    project: project,
                                    user: user) }
-      subject { Notify.project_access_granted_email(users_project.id) }
+      subject { Notify.project_access_granted_email(project_member.id) }
 
       it_behaves_like 'an email sent from GitLab'
 
@@ -416,7 +421,7 @@ describe Notify do
         should have_body_text /#{project.name}/
       end
       it 'contains new user role' do
-        should have_body_text /#{users_project.human_access}/
+        should have_body_text /#{project_member.human_access}/
       end
     end
 
@@ -506,7 +511,7 @@ describe Notify do
   describe 'group access changed' do
     let(:group) { create(:group) }
     let(:user) { create(:user) }
-    let(:membership) { create(:users_group, group: group, user: user) }
+    let(:membership) { create(:group_member, group: group, user: user) }
 
     subject { Notify.group_access_granted_email(membership.id) }
 
