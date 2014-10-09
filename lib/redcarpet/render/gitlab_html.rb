@@ -10,6 +10,11 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     super options
   end
 
+  def normal_text(text)
+    return text unless text.present?
+    text.gsub("'", "&rsquo;")
+  end
+
   def block_code(code, language)
     # New lines are placed to fix an rendering issue
     # with code wrapped inside <h1> tag for next case:

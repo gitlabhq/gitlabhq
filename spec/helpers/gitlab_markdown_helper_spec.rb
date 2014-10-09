@@ -535,7 +535,7 @@ describe GitlabMarkdownHelper do
       project.issues.stub(:where).with(iid: '39').and_return([issue])
 
       actual   = "Yes, it is @#{member.user.username}'s task."
-      expected = /Yes, it is <a.+>@#{member.user.username}<\/a>'s task/
+      expected = /Yes, it is <a.+>@#{member.user.username}<\/a>’s task/
       markdown(actual).should match(expected)
     end
 
@@ -566,7 +566,7 @@ describe GitlabMarkdownHelper do
 
     it "should leave inline code untouched" do
       markdown("\nDon't use `$#{snippet.id}` here.\n").should ==
-        "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
+        "<p>Don’t use <code>$#{snippet.id}</code> here.</p>\n"
     end
 
     it "should leave ref-like autolinks untouched" do
