@@ -9,12 +9,14 @@ class SnippetsController < ApplicationController
 
   before_filter :set_title
 
+  skip_before_filter :authenticate_user!, only: [:index, :user_index]
+
   respond_to :html
 
-  layout 'navless'
+  layout :determine_layout
 
   def index
-    @snippets = Snippet.are_internal.fresh.non_expired.page(params[:page]).per(20)
+    @snippets = SnippetsFinder.new.execute(current_user, filter: :all).page(params[:page]).per(20)
   end
 
   def user_index
@@ -22,22 +24,11 @@ class SnippetsController < ApplicationController
 
     render_404 and return unless @user
 
-    @snippets = @user.snippets.fresh.non_expired
-
-    if @user == current_user
-      @snippets = case params[:scope]
-                  when 'are_internal' then
-                    @snippets.are_internal
-                  when 'are_private' then
-                    @snippets.are_private
-                  else
-                    @snippets
-                  end
-    else
-      @snippets = @snippets.are_internal
-    end
-
-    @snippets = @snippets.page(params[:page]).per(20)
+    @snippets = SnippetsFinder.new.execute(current_user, {
+      filter: :by_user,
+      user: @user,
+      scope: params[:scope]}).
+    page(params[:page]).per(20)
 
     if @user == current_user
       render 'current_user_index'
@@ -95,7 +86,14 @@ class SnippetsController < ApplicationController
   protected
 
   def snippet
-    @snippet ||= PersonalSnippet.where('author_id = :user_id or private is false', user_id: current_user.id).find(params[:id])
+    @snippet ||= if current_user
+                   PersonalSnippet.where("author_id = ? OR visibility_level IN (?)",
+                     current_user.id,
+                     [Snippet::PUBLIC, Snippet::INTERNAL]).
+                     find(params[:id])
+                 else
+                   PersonalSnippet.are_public.find(params[:id])
+                 end
   end
 
   def authorize_modify_snippet!
@@ -111,6 +109,10 @@ class SnippetsController < ApplicationController
   end
 
   def snippet_params
-    params.require(:personal_snippet).permit(:title, :content, :file_name, :private)
+    params.require(:personal_snippet).permit(:title, :content, :file_name, :private, :visibility_level)
+  end
+
+  def determine_layout
+    current_user ? 'navless' : 'public_users'
   end
 end

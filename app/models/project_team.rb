@@ -133,6 +133,10 @@ class ProjectTeam
     max_tm_access(user.id) == Gitlab::Access::MASTER
   end
 
+  def member?(user_id)
+    !!find_tm(user_id)
+  end
+
   def max_tm_access(user_id)
     access = []
     access << project.project_members.find_by(user_id: user_id).try(:access_field)
