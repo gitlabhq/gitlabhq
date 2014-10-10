@@ -78,9 +78,14 @@ module Gitlab
         HTML::Pipeline::Gitlab::GitlabEmojiFilter
       ]
 
+      markdown_context = {
+              asset_root: Gitlab.config.gitlab.url,
+              asset_host: Gitlab::Application.config.asset_host
+      }
+
       markdown_pipeline = HTML::Pipeline::Gitlab.new(filters).pipeline
 
-      result = markdown_pipeline.call(text)
+      result = markdown_pipeline.call(text, markdown_context)
       text = result[:output].to_html(save_with: 0)
 
       allowed_attributes = ActionView::Base.sanitized_allowed_attributes

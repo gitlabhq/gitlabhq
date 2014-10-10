@@ -241,7 +241,7 @@ GEM
     html-pipeline (1.11.0)
       activesupport (>= 2)
       nokogiri (~> 1.4)
-    html-pipeline-gitlab (0.1.4)
+    html-pipeline-gitlab (0.1.5)
       actionpack (~> 4)
       gitlab_emoji (~> 0.0.1)
       html-pipeline (~> 1.11.0)
