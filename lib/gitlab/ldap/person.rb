@@ -60,10 +60,6 @@ module Gitlab
         @entry
       end
 
-      # def adapter
-      #   @adapter ||= Gitlab::LDAP::Adapter.new
-      # end
-
       def config
         @config ||= Gitlab::LDAP::Config.new(provider)
       end
