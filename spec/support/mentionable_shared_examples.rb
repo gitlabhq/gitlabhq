@@ -30,15 +30,15 @@ def common_mentionable_setup
     "!#{mentioned_mr.iid}, " +
     "#{ext_proj.path_with_namespace}##{ext_issue.iid}, " +
     "#{ext_proj.path_with_namespace}!#{ext_mr.iid}, " +
-    "#{ext_proj.path_with_namespace}@#{ext_commit.id[0..5]}, " +
-    "#{mentioned_commit.sha[0..5]} and itself as #{backref_text}"
+    "#{ext_proj.path_with_namespace}@#{ext_commit.short_id}, " +
+    "#{mentioned_commit.sha[0..10]} and itself as #{backref_text}"
   end
 
   before do
     # Wire the project's repository to return the mentioned commit, and +nil+ for any
     # unrecognized commits.
-    commitmap = { '123456' => mentioned_commit }
-    extra_commits.each { |c| commitmap[c.sha[0..5]] = c }
+    commitmap = { '1234567890a' => mentioned_commit }
+    extra_commits.each { |c| commitmap[c.short_id] = c }
     mproject.repository.stub(:commit) { |sha| commitmap[sha] }
     set_mentionable_text.call(ref_string)
   end
@@ -54,7 +54,6 @@ shared_examples 'a mentionable' do
   it "extracts references from its reference property" do
     # De-duplicate and omit itself
     refs = subject.references(mproject)
-
     refs.should have(6).items
     refs.should include(mentioned_issue)
     refs.should include(mentioned_mr)
@@ -90,7 +89,7 @@ shared_examples 'an editable mentionable' do
 
   it 'creates new cross-reference notes when the mentionable text is edited' do
     new_text = "still mentions ##{mentioned_issue.iid}, " +
-      "#{mentioned_commit.sha[0..5]}, " +
+      "#{mentioned_commit.sha[0..10]}, " +
       "#{ext_issue.iid}, " +
       "new refs: ##{other_issue.iid}, " +
       "#{ext_proj.path_with_namespace}##{other_ext_issue.iid}"

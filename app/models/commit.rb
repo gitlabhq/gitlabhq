@@ -26,6 +26,10 @@ class Commit
     def diff_line_count(diffs)
       diffs.reduce(0) { |sum, d| sum + d.diff.lines.count }
     end
+
+    def truncate_sha(sha)
+      sha[0..10]
+    end
   end
 
   attr_accessor :raw
@@ -111,7 +115,7 @@ class Commit
 
   # Mentionable override.
   def gfm_reference
-    "commit #{sha[0..5]}"
+    "commit #{short_id}"
   end
 
   def method_missing(m, *args, &block)
