@@ -64,7 +64,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     excluded_per_server_settings = %w(sync_time allow_username_or_email_login)
     server = Settings.ldap.except(excluded_per_server_settings)
-    server['primary'] = true
     server['label'] = 'LDAP'
     server['provider_id'] = '' #providername will be ldap
     Settings.ldap['servers'] = [server]

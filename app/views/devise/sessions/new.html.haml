@@ -4,14 +4,14 @@
   .login-body
     - if ldap_enabled? && gitlab_config.signin_enabled
       %ul.nav.nav-tabs
-        - @ldap_servers.each do |server|
-          %li{class: (:active if server['primary'])}
+        - @ldap_servers.each_with_index do |server, i|
+          %li{class: (:active if i==0)}
             = link_to server['label'], "#tab-#{server.provider_name}", 'data-toggle' => 'tab'
         %li
           = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
-        - @ldap_servers.each do |server|
-          %div.tab-pane{id: "tab-#{server.provider_name}", class: (:active if server['primary'])}
+        - @ldap_servers.each_with_index do |server,i|
+          %div.tab-pane{id: "tab-#{server.provider_name}", class: (:active if i==0)}
             = render 'devise/sessions/new_ldap', provider: server.provider_name
         %div#tab-signin.tab-pane
           = render 'devise/sessions/new_base'
