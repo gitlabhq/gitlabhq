@@ -182,4 +182,10 @@ FactoryGirl.define do
     deploy_key
     project
   end
+
+  factory :ldap_group_link do
+    cn 'group1'
+    group_access Gitlab::Access::GUEST
+    provider 'ldapmain'
+  end
 end

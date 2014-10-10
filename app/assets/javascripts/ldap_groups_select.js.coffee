@@ -12,7 +12,8 @@ $ ->
       placeholder: "Search for a LDAP group"
       minimumInputLength: 1
       query: (query) ->
-        Api.ldap_groups query.term, (groups) ->
+        provider = $('#ldap_group_link_provider').val();
+        Api.ldap_groups query.term, provider, (groups) ->
           data = { results: groups }
           query.callback(data)
 
@@ -26,3 +27,5 @@ $ ->
       dropdownCssClass: "ajax-groups-dropdown"
       formatNoMatches: (nomatch) ->
         "Match not found; try refining your search query."
+  $('#ldap_group_link_provider').on 'change', ->
+    $('.ajax-ldap-groups-select').select2('data', null)

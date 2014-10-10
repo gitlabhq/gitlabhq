@@ -3,7 +3,7 @@ class LdapGroupLink < ActiveRecord::Base
   belongs_to :group
 
   validates :cn, :group_access, :group_id, presence: true
-  validates :cn, uniqueness: { scope: :group_id }
+  validates :cn, uniqueness: { scope: [:group_id, :provider] }
   validates :group_access, inclusion: { in: Gitlab::Access.all_values }
 
   def access_field

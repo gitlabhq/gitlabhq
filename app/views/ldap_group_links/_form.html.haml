@@ -7,11 +7,7 @@
           = f.label :cn, class: 'control-label' do
             LDAP Server
           .col-sm-10
-            - Gitlab::LDAP::Config.servers.each do |server|
-              .radio-inline
-                = f.radio_button :provider, server.provider_name
-                = server.label
-
+            = f.select :provider, ldap_server_select_options
         .form-group.clearfix
           = f.label :cn, class: 'control-label' do
             LDAP Group cn

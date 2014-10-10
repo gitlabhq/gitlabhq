@@ -18,4 +18,12 @@ module SelectsHelper
     project_id = opts[:project_id] || @project.id
     hidden_field_tag(id, value, class: css_class, 'data-placeholder' => placeholder, 'data-project-id' => project_id)
   end
+
+  def ldap_server_select_options
+    options_from_collection_for_select(
+      Gitlab::LDAP::Config.servers,
+      'provider_name',
+      'label'
+    )
+  end
 end

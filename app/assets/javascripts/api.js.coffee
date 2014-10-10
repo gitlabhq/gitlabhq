@@ -2,7 +2,7 @@
   users_path: "/api/:version/users.json"
   user_path: "/api/:version/users/:id.json"
   notes_path: "/api/:version/projects/:id/notes.json"
-  ldap_groups_path: "/api/:version/ldap/groups.json"
+  ldap_groups_path: "/api/:version/ldap/:provider/groups.json"
   namespaces_path: "/api/:version/namespaces.json"
   project_users_path: "/api/:version/projects/:id/users.json"
 
@@ -89,8 +89,9 @@
     return url.replace(':version', gon.api_version)
 
   # Return LDAP groups list. Filtered by query
-  ldap_groups: (query, callback) ->
+  ldap_groups: (query, provider, callback) ->
     url = Api.buildUrl(Api.ldap_groups_path)
+    url = url.replace(':provider', provider);
 
     $.ajax(
       url: url
