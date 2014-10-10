@@ -17,8 +17,8 @@ module Gitlab
       end
 
       def initialize(provider)
-        raise "Unknown provider (#{provider}). Available providers: #{self.class.providers}"
         @provider = provider
+        invalid_provider unless valid_provider?
         @options = config_for(provider)
       end
 
@@ -87,6 +87,14 @@ module Gitlab
         else
           nil
         end
+      end
+
+      def valid_provider?
+        self.class.providers.include?(provider)
+      end
+
+      def invalid_provider
+        raise "Unknown provider (#{provider}). Available providers: #{self.class.providers}"
       end
 
       def auth_options
