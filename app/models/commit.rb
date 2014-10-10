@@ -19,7 +19,13 @@ class Commit
 
   class << self
     def decorate(commits)
-      commits.map { |c| self.new(c) }
+      commits.map do |commit|
+        if commit.kind_of?(Commit)
+          commit
+        else
+          self.new(commit)
+        end
+      end
     end
 
     # Calculate number of lines to render for diffs
