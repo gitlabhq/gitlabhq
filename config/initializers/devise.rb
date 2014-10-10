@@ -205,6 +205,7 @@ Devise.setup do |config|
   # end
 
   if Gitlab.config.ldap.enabled
+    # TODO: make server specific
     if Gitlab.config.ldap.allow_username_or_email_login
       email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
     else
