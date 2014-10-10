@@ -62,7 +62,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     server = Settings.ldap.except('sync_time')
     server['label'] = 'LDAP'
-    server['provider_id'] = '' #providername will be ldap
+    server['provider_id'] = 'main'
     Settings.ldap['servers'] = [server]
   end
 
