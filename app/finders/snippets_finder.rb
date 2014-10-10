@@ -30,18 +30,18 @@ class SnippetsFinder
     snippets = user.snippets.fresh.non_expired
 
     if user == current_user
-      snippets = case scope
-                 when 'are_internal' then
-                   snippets.are_internal
-                 when 'are_private' then
-                   snippets.are_private
-                 when 'are_public' then
-                   snippets.are_public
-                 else
-                   snippets
-                 end
+      case scope
+      when 'are_internal' then
+        snippets.are_internal
+      when 'are_private' then
+        snippets.are_private
+      when 'are_public' then
+        snippets.are_public
+      else
+       snippets
+      end
     else
-      snippets = snippets.public_and_internal
+      snippets.public_and_internal
     end
   end
 
