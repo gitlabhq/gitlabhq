@@ -33,12 +33,5 @@ module Issues
 
       issue
     end
-
-    private
-
-    def update_task(issue, params, checked)
-      issue.update_nth_task(params[:task_num].to_i, checked)
-      params.except!(:task_num)
-    end
   end
 end
