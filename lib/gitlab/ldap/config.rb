@@ -8,11 +8,16 @@ module Gitlab
         Gitlab.config.ldap.enabled
       end
 
-      def servers
+      def self.servers
         Gitlab.config.ldap.servers
       end
 
+      def self.providers
+        servers.map &:provider_name
+      end
+
       def initialize(provider)
+        raise "Unknown provider (#{provider}). Available providers: #{self.class.providers}"
         @provider = provider
         @options = config_for(provider)
       end
