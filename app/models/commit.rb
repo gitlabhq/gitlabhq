@@ -115,7 +115,7 @@ class Commit
 
   # Mentionable override.
   def gfm_reference
-    "commit #{short_id}"
+    "commit #{id}"
   end
 
   def method_missing(m, *args, &block)
