@@ -5,6 +5,15 @@
       %div.form-holder
         .form-group.clearfix
           = f.label :cn, class: 'control-label' do
+            LDAP Server
+          .col-sm-10
+            - Gitlab::LDAP::Config.servers.each do |server|
+              .radio-inline
+                = f.radio_button :provider, server.provider_name
+                = server.label
+
+        .form-group.clearfix
+          = f.label :cn, class: 'control-label' do
             LDAP Group cn
           .col-sm-10
             = f.hidden_field :cn, placeholder: "Ex. QA group", class: "xxlarge ajax-ldap-groups-select input-mn-300"

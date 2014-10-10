@@ -9,4 +9,17 @@ class LdapGroupLink < ActiveRecord::Base
   def access_field
     group_access
   end
+
+  def config
+    Gitlab::LDAP::Config.new(provider)
+  end
+
+  # default to the first LDAP server
+  def provider
+    read_attribute(:provider) || Gitlab::LDAP::Config.providers.first
+  end
+
+  def provider_label
+    config.label
+  end
 end
