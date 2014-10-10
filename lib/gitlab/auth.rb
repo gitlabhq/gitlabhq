@@ -9,7 +9,7 @@ module Gitlab
         # Second chance - try LDAP authentication
         return nil unless Gitlab::LDAP::Config.enabled?
 
-        Gitlab::LDAP::User.authenticate(login, password)
+        Gitlab::LDAP::Authentication.login(login, password)
       else
         user if user.valid_password?(password)
       end
