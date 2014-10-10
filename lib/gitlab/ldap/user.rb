@@ -54,7 +54,7 @@ module Gitlab
 
       def initialize(auth_hash)
         super
-        update_attributes
+        update_user_attributes
       end
 
       # instance methods
@@ -73,7 +73,7 @@ module Gitlab
         model.find_by(email: auth_hash.email)
       end
 
-      def update_attributes
+      def update_user_attributes
         gl_user.attributes = {
           extern_uid: auth_hash.uid,
           provider: auth_hash.provider,
