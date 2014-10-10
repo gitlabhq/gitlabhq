@@ -27,8 +27,9 @@ class Commit
       diffs.reduce(0) { |sum, d| sum + d.diff.lines.count }
     end
 
+    # Truncate sha to 8 characters
     def truncate_sha(sha)
-      sha[0..10]
+      sha[0..7]
     end
   end
 
@@ -126,6 +127,11 @@ class Commit
     return true if @raw.respond_to?(method)
 
     super
+  end
+
+  # Truncate sha to 8 characters
+  def short_id
+    @raw.short_id(7)
   end
 
   def parents

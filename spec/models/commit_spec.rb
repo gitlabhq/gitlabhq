@@ -75,7 +75,7 @@ eos
   it_behaves_like 'a mentionable' do
     let(:subject) { commit }
     let(:mauthor) { create :user, email: commit.author_email }
-    let(:backref_text) { "commit #{subject.short_id}" }
+    let(:backref_text) { "commit #{subject.id}" }
     let(:set_mentionable_text) { ->(txt){ subject.stub(safe_message: txt) } }
 
     # Include the subject in the repository stub.
