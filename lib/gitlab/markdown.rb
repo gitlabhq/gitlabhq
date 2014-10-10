@@ -80,6 +80,11 @@ module Gitlab
                                                              markdown_context)
       text = result[:output].to_html(save_with: 0)
 
+      sanitize_html(text)
+    end
+
+    # Remove HTML tags and attributes that are not whitelisted
+    def sanitize_html(text)
       allowed_attributes = ActionView::Base.sanitized_allowed_attributes
       allowed_tags = ActionView::Base.sanitized_allowed_tags
 

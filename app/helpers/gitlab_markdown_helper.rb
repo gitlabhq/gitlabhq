@@ -33,7 +33,6 @@ module GitlabMarkdownHelper
       @options = options
       gitlab_renderer = Redcarpet::Render::GitlabHTML.new(self, {
                             # see https://github.com/vmg/redcarpet#darling-i-packed-you-a-couple-renderers-for-lunch-
-                            filter_html: true,
                             with_toc_data: true,
                             safe_links_only: true
                           }.merge(options))
@@ -48,7 +47,7 @@ module GitlabMarkdownHelper
                       space_after_headers: true,
                       superscript: true)
     end
-    @markdown.render(text).html_safe
+    @markdown.render(sanitize_html(text)).html_safe
   end
 
   def first_line_in_markdown(text)
