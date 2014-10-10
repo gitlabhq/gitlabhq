@@ -33,7 +33,7 @@ describe Gitlab::OAuth::AuthHash do
   context "email not provided" do
     before { info_hash.delete(:email) }
     it "generates a temp email" do
-      expect( auth_hash.email).to_not be_empty
+      expect( auth_hash.email).to start_with('temp-email-for-oauth')
     end
   end
 
