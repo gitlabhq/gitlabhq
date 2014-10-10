@@ -19,7 +19,7 @@ module Gitlab
       issue = Issue.find(id)
       project_issue_url(id: issue.iid,
                         project_id: issue.project,
-                        host: Settings.gitlab['url'])
+                        host: Gitlab.config.gitlab['url'])
     end
   end
 end
