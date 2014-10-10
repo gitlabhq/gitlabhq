@@ -438,6 +438,65 @@ You can also use raw HTML in your Markdown, and it'll mostly work pretty well.
   <dd>Does *not* work **very** well. Use HTML <em>tags</em>.</dd>
 </dl>
 
+The following tags can be used:
+
+* `<a/>`
+* `<abbr/>`
+* `<acronym/>`
+* `<address/>`
+* `<b/>`
+* `<big/>`
+* `<blockquote/>`
+* `<br/>`
+* `<cite/>`
+* `<code/>`
+* `<dd/>`
+* `<del/>`
+* `<dfn/>`
+* `<div/>`
+* `<dl/>`
+* `<dt/>`
+* `<em/>`
+* `<h1/>`
+* `<h2/>`
+* `<h3/>`
+* `<h4/>`
+* `<h5/>`
+* `<h6/>`
+* `<hr/>`
+* `<i/>`
+* `<img/>`
+* `<ins/>`
+* `<kbd/>`
+* `<li/>`
+* `<ol/>`
+* `<p/>`
+* `<pre/>`
+* `<samp/>`
+* `<small/>`
+* `<span/>`
+* `<strong/>`
+* `<sub/>`
+* `<sup/>`
+* `<tt/>`
+* `<ul/>`
+* `<var/>`
+
+You can also use the following HTML attributes in your inline tags:
+
+* `abbr`
+* `alt`
+* `cite`
+* `class`
+* `datetime`
+* `height`
+* `href`
+* `name`
+* `src`
+* `title`
+* `width`
+* `xml:lang`
+
 ## Horizontal Rule
 
 ```
