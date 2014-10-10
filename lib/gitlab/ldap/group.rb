@@ -1,8 +1,7 @@
 module Gitlab
   module LDAP
     class Group
-      def self.find_by_cn(cn, adapter=nil)
-        adapter ||= Gitlab::LDAP::Adapter.new
+      def self.find_by_cn(cn, adapter)
         adapter.group(cn)
       end
 
@@ -65,10 +64,6 @@ module Gitlab
 
       def entry
         @entry
-      end
-
-      def adapter
-        @adapter ||= Gitlab::LDAP::Adapter.new
       end
     end
   end
