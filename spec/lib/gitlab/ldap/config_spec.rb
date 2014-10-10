@@ -12,5 +12,9 @@ describe Gitlab::LDAP::Config do
     it "works" do
       expect(config).to be_a described_class
     end
+
+    it "raises an error if a unknow provider is used" do
+      expect{ Gitlab::LDAP::Config.new 'unknown' }.to raise_error
+    end
   end
 end

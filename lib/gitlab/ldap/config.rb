@@ -18,6 +18,7 @@ module Gitlab
 
       def initialize(provider)
         @provider = provider
+        invalid_provider unless valid_provider?
         @options = config_for(provider)
       end
 
@@ -64,6 +65,10 @@ module Gitlab
         options['admin_group']
       end
 
+      def active_directory
+        options['active_directory']
+      end
+
       protected
       def base_config
         Gitlab.config.ldap
@@ -82,6 +87,14 @@ module Gitlab
         else
           nil
         end
+      end
+
+      def valid_provider?
+        self.class.providers.include?(provider)
+      end
+
+      def invalid_provider
+        raise "Unknown provider (#{provider}). Available providers: #{self.class.providers}"
       end
 
       def auth_options

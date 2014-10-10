@@ -136,19 +136,33 @@ production: &base
     enabled: false
     servers:
       -
+        ## provider_id
+        #
+        # This identifier is used by GitLab to keep track of which LDAP server each
+        # GitLab user belongs to. Each LDAP server known to GitLab should have a unique
+        # provider_id. This identifier cannot be changed once users from the LDAP server
+        # have started logging in to GitLab.
+        #
+        # Format: one word, using a-z (lower case) and 0-9
+        # Example: 'paris' or 'uswest2'
+
+        provider_id: main
+
+        ## label
+        #
+        # A human-friendly name for your LDAP server. It is OK to change the label later,
+        # for instance if you find out it is too large to fit on the web page.
+        #
+        # Example: 'Paris' or 'Acme, Ltd.'
+
+        label: 'LDAP'
+
         host: '_your_ldap_server'
         port: 636
         uid: 'sAMAccountName'
         method: 'ssl' # "tls" or "ssl" or "plain"
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
-
-        # When authenticating against an ldap server, this will provide a unique identifier
-        # Use one uniq word, no non-word charcters are allowed
-        provider_id: main
-
-        # The UI use this to make a distinction between your LDAP servers
-        label: 'LDAP'
 
         # This setting controls the amount of time between LDAP permission checks for each user.
         # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
