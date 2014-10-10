@@ -36,9 +36,8 @@ module Gitlab
 
       def allowed?
         if Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
-          if ldap_config.active_directory
-            !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
-          end
+          return true unless ldap_config.active_directory
+          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
         else
           false
         end

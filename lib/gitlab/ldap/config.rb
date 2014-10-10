@@ -60,6 +60,10 @@ module Gitlab
         options['admin_group']
       end
 
+      def active_directory
+        options['active_directory']
+      end
+
       protected
       def base_config
         Gitlab.config.ldap

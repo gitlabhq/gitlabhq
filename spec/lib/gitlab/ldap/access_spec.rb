@@ -28,19 +28,13 @@ describe Gitlab::LDAP::Access do
         it { should be_true }
       end
 
-      context 'and has no disabled flag in active diretory' do
-        before {
-          Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false)
-          Gitlab.config.ldap['enabled'] = true
-          Gitlab.config.ldap['active_directory'] = false
-        }
+      context 'withoud ActiveDirectory enabled' do
+        before do
+          Gitlab::LDAP::Config.stub(enabled?: true)
+          Gitlab::LDAP::Config.any_instance.stub(active_directory: false)
+        end
 
-        after {
-          Gitlab.config.ldap['enabled'] = false
-          Gitlab.config.ldap['active_directory'] = true
-        }
-
-        it { should be_false }
+        it { should be_true }
       end
     end
   end
