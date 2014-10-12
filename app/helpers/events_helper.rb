@@ -136,9 +136,8 @@ module EventsHelper
   end
 
   def event_note(text)
-    text = first_line_in_markdown(text)
-    text = truncate(text, length: 150)
-    sanitize(markdown(text), tags: %w(a img b pre p))
+    text = first_line_in_markdown(text, 150)
+    sanitize(text, tags: %w(a img b pre p))
   end
 
   def event_commit_title(message)

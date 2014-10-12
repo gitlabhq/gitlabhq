@@ -51,12 +51,21 @@ module GitlabMarkdownHelper
     @markdown.render(text).html_safe
   end
 
-  def first_line_in_markdown(text)
-    line = text.split("\n").detect do |i|
+  # Return the first line of +text+, up to +max_chars+, after parsing the line
+  # as Markdown.  HTML tags in the parsed output are not counted toward the
+  # +max_chars+ limit.  If the length limit falls within a tag's contents, then
+  # the tag contents are truncated without removing the closing tag.
+  def first_line_in_markdown(text, max_chars = nil)
+    line = text.split("\n").find do |i|
       i.present? && markdown(i).present?
     end
-    line += '...' unless line.nil?
-    line
+
+    if line
+      md = markdown(line)
+      truncated = truncate_visible(md, max_chars || md.length)
+    end
+
+    truncated
   end
 
   def render_wiki_content(wiki_page)
@@ -203,5 +212,31 @@ module GitlabMarkdownHelper
   # We will assume that if no ref exists we can point to master
   def correct_ref
     @ref ? @ref : "master"
+  end
+
+  private
+
+  # Return +text+, truncated to +max_chars+ characters, excluding any HTML
+  # tags.
+  def truncate_visible(text, max_chars)
+    doc = Nokogiri::HTML.fragment(text)
+    content_length = 0
+
+    doc.traverse do |node|
+      if node.text? || node.content.empty?
+        if content_length >= max_chars
+          node.remove
+          next
+        end
+
+        num_remaining = max_chars - content_length
+        if node.content.length > num_remaining
+          node.content = node.content.truncate(num_remaining)
+        end
+        content_length += node.content.length
+      end
+    end
+
+    doc.to_html
   end
 end
