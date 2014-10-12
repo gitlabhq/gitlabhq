@@ -530,6 +530,24 @@ describe GitlabMarkdownHelper do
       markdown(actual).should match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
     end
 
+    it "should not link the apostrophe to issue 39" do
+      project.team << [user, :master]
+      project.issues.stub(:where).with(iid: '39').and_return([issue])
+
+      actual   = "Yes, it is @#{member.user.username}'s task."
+      expected = /Yes, it is <a.+>@#{member.user.username}<\/a>'s task/
+      markdown(actual).should match(expected)
+    end
+
+    it "should not link the apostrophe to issue 39 in code blocks" do
+      project.team << [user, :master]
+      project.issues.stub(:where).with(iid: '39').and_return([issue])
+
+      actual   = "Yes, `it is @#{member.user.username}'s task.`"
+      expected = /Yes, <code>it is @gfm\'s task.<\/code>/
+      markdown(actual).should match(expected)
+    end
+
     it "should handle references in <em>" do
       actual = "Apply _!#{merge_request.iid}_ ASAP"
 
