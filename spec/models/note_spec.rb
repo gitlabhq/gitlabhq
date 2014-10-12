@@ -228,7 +228,7 @@ describe Note do
 
       it { should be_valid }
       its(:noteable) { should == issue }
-      its(:note) { should == "_mentioned in commit #{commit.sha[0..5]}_" }
+      its(:note) { should == "_mentioned in commit #{commit.sha}_" }
     end
 
     context 'merge request from an issue' do
@@ -267,7 +267,7 @@ describe Note do
       its(:noteable_type) { should == "Commit" }
       its(:noteable_id) { should be_nil }
       its(:commit_id) { should == commit.id }
-      its(:note) { should == "_mentioned in commit #{parent_commit.id[0...6]}_" }
+      its(:note) { should == "_mentioned in commit #{parent_commit.id}_" }
     end
   end
 

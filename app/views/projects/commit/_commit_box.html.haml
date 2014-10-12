@@ -35,7 +35,7 @@
 .commit-info-row
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
-    = link_to parent.id[0...10], project_commit_path(@project, parent)
+    = link_to parent.short_id, project_commit_path(@project, parent)
 
 - if @branches.any?
   .commit-info-row

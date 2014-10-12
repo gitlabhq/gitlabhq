@@ -60,7 +60,7 @@ describe GitlabMarkdownHelper do
       end
 
       it "should link using a short id" do
-        actual = "Backported from #{commit.short_id(6)}"
+        actual = "Backported from #{commit.short_id}"
         gfm(actual).should match(expected)
       end
 

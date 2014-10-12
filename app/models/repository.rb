@@ -30,6 +30,8 @@ class Repository
     commit = Gitlab::Git::Commit.find(raw_repository, id)
     commit = Commit.new(commit) if commit
     commit
+  rescue Rugged::OdbError => ex
+    nil
   end
 
   def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)

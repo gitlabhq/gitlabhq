@@ -22,4 +22,4 @@
           - if event.commits_count > 2
             %span ... and #{event.commits_count - 2} more commits.
           = link_to project_compare_path(event.project, from: event.commit_from, to: event.commit_to) do
-            %strong Compare &rarr; #{event.commit_from[0..7]}...#{event.commit_to[0..7]}
+            %strong Compare &rarr; #{truncate_sha(event.commit_from)}...#{truncate_sha(event.commit_to)}
