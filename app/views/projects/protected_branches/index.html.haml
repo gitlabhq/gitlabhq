@@ -1,13 +1,13 @@
 %h3.page-title Protected branches
-%p.light This ability keeps stable branches secure and forces developers to use code reviews
+%p.light Keep stable branches secure and force developers to use Merge Requests
 %hr
 
 .bs-callout.bs-callout-info
   %p Protected branches are designed to
   %ul
     %li prevent pushes from everybody except #{link_to "masters", help_page_path("permissions", "permissions"), class: "vlink"}
-    %li prevents anyone from force pushing to the branch
-    %li prevents anyone from deleting the branch
+    %li prevent anyone from force pushing to the branch
+    %li prevent anyone from deleting the branch
   %p Read more about #{link_to "project permissions", help_page_path("permissions", "permissions"), class: "underlined-link"}
 
 - if can? current_user, :admin_project, @project
