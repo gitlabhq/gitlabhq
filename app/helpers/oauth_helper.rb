@@ -1,6 +1,6 @@
 module OauthHelper
   def ldap_enabled?
-    Devise.omniauth_providers.include?(:ldap)
+    Gitlab.config.ldap.enabled
   end
 
   def default_providers

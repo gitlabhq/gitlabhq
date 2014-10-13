@@ -15,19 +15,25 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     error.to_s.humanize if error
   end
 
+  # We only find ourselves here
+  # if the authentication to LDAP was successful.
   def ldap
-    # We only find ourselves here
-    # if the authentication to LDAP was successful.
-    @user = Gitlab::LDAP::User.find_or_create(oauth)
-    @user.remember_me = true if @user.persisted?
+    @user = Gitlab::LDAP::User.new(oauth)
+    @user.save if @user.changed? # will also save new users
+    gl_user = @user.gl_user
+    gl_user.remember_me = true if @user.persisted?
 
     # Do additional LDAP checks for the user filter and EE features
-    if Gitlab::LDAP::Access.allowed?(@user)
-      sign_in_and_redirect(@user)
+    if @user.allowed?
+      sign_in_and_redirect(gl_user)
     else
       flash[:alert] = "Access denied for your LDAP account."
       redirect_to new_user_session_path
     end
+  end
+
+  Gitlab.config.ldap.servers.each do |server|
+    alias_method server.provider_name, :ldap
   end
 
   def omniauth_error
@@ -46,24 +52,17 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       current_user.save
       redirect_to profile_path
     else
-      @user = Gitlab::OAuth::User.find(oauth)
+      @user = Gitlab::OAuth::User.new(oauth)
 
-      # Create user if does not exist
-      # and allow_single_sign_on is true
-      if Gitlab.config.omniauth['allow_single_sign_on'] && !@user
-        @user, errors = Gitlab::OAuth::User.create(oauth)
+      if Gitlab.config.omniauth['allow_single_sign_on'] && @user.new?
+        @user.save
       end
 
-      if @user && !errors
-        sign_in_and_redirect(@user)
+      if @user.valid?
+        sign_in_and_redirect(@user.gl_user)
       else
-        if errors
-          error_message = errors.map{ |attribute, message| "#{attribute} #{message}" }.join(", ")
-          redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
-        else
-          flash[:notice] = "There's no such user!"
-        end
-        redirect_to new_user_session_path
+        error_message = @user.gl_user.errors.map{ |attribute, message| "#{attribute} #{message}" }.join(", ")
+        redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
       end
     end
   end
