@@ -1,83 +1,55 @@
 require 'spec_helper'
 
 describe Gitlab::OAuth::User do
-  let(:gl_auth) { Gitlab::OAuth::User }
-  let(:info) do
-    double(
+  let(:oauth_user) { Gitlab::OAuth::User.new(auth_hash) }
+  let(:gl_user) { oauth_user.gl_user }
+  let(:uid) { 'my-uid' }
+  let(:provider) { 'my-provider' }
+  let(:auth_hash) { double(uid: uid, provider: provider, info: double(info_hash)) }
+  let(:info_hash) do
+    {
       nickname: 'john',
       name: 'John',
       email: 'john@mail.com'
-    )
+    }
   end
 
-  before do
-    Gitlab.config.stub(omniauth: {})
-  end
-
-  describe :find do
+  describe :persisted? do
     let!(:existing_user) { create(:user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
       auth = double(info: double(name: 'John'), uid: 'my-uid', provider: 'my-provider')
-      assert gl_auth.find(auth)
+      expect( oauth_user.persisted? ).to be_true
     end
 
-    it "finds an existing user based on nested uid and provider" do
-      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
-      assert gl_auth.find(auth)
+    it "returns false if use is not found in database" do
+      auth_hash.stub(uid: 'non-existing')
+      expect( oauth_user.persisted? ).to be_false
     end
   end
 
-  describe :create do
-    it "should create user from LDAP" do
-      auth = double(info: info, uid: 'my-uid', provider: 'ldap')
-      user = gl_auth.create(auth)
+  describe :save do
+    context "LDAP" do
+      let(:provider) { 'ldap' }
+      it "creates a user from LDAP" do
+        oauth_user.save
 
-      user.should be_valid
-      user.extern_uid.should == auth.uid
-      user.provider.should == 'ldap'
+        expect(gl_user).to be_valid
+        expect(gl_user.extern_uid).to eql uid
+        expect(gl_user.provider).to eql 'ldap'
+      end
     end
 
-    it "should create user from Omniauth" do
-      auth = double(info: info, uid: 'my-uid', provider: 'twitter')
-      user = gl_auth.create(auth)
+    context "twitter" do
+      let(:provider) { 'twitter' }
 
-      user.should be_valid
-      user.extern_uid.should == auth.uid
-      user.provider.should == 'twitter'
-    end
+      it "creates a user from Omniauth" do
+        oauth_user.save
 
-    it "should apply defaults to user" do
-      auth = double(info: info, uid: 'my-uid', provider: 'ldap')
-      user = gl_auth.create(auth)
-
-      user.should be_valid
-      user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-      user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-    end
-
-    it "Set a temp email address if not provided (like twitter does)" do
-      info = double(
-        uid: 'my-uid',
-        nickname: 'john',
-        name: 'John'
-      )
-      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
-
-      user = gl_auth.create(auth)
-      expect(user.email).to_not be_empty
-    end
-
-    it 'generates a username if non provided (google)' do
-      info = double(
-        uid: 'my-uid',
-        name: 'John',
-        email: 'john@example.com'
-      )
-      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
-
-      user = gl_auth.create(auth)
-      expect(user.username).to eql 'john'
+        expect(gl_user).to be_valid
+        expect(gl_user.extern_uid).to eql uid
+        expect(gl_user.provider).to eql 'twitter'
+      end
     end
   end
 end
