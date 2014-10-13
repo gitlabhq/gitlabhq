@@ -32,6 +32,26 @@
       .panel-heading
         Users (#{@users.total_count})
         .panel-head-actions
+          .dropdown.inline
+            %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+              %span.light sort:
+              - if @sort.present?
+                = @sort.humanize
+              - else
+                Name
+              %b.caret
+            %ul.dropdown-menu
+              %li
+                = link_to admin_users_path(sort: nil) do
+                  Name
+                = link_to admin_users_path(sort: 'recent_sign_in') do
+                  Recent sign in
+                = link_to admin_users_path(sort: 'oldest_sign_in') do
+                  Oldest sign in
+                = link_to admin_users_path(sort: 'recently_created') do
+                  Recently created
+                = link_to admin_users_path(sort: 'late_created') do
+                  Late created
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|

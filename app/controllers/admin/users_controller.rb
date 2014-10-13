@@ -4,6 +4,7 @@ class Admin::UsersController < Admin::ApplicationController
   def index
     @users = User.filter(params[:filter])
     @users = @users.search(params[:name]) if params[:name].present?
+    @users = @users.sort(@sort = params[:sort])
     @users = @users.alphabetically.page(params[:page])
   end
 

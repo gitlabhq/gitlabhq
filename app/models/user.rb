@@ -195,6 +195,16 @@ class User < ActiveRecord::Base
       end
     end
 
+    def sort(method)
+      case method.to_s
+      when 'recent_sign_in' then reorder('users.last_sign_in_at DESC')
+      when 'oldest_sign_in' then reorder('users.last_sign_in_at ASC')
+      when 'recently_created' then reorder('users.created_at DESC')
+      when 'late_created' then reorder('users.created_at ASC')
+      else reorder("users.name ASC")
+      end
+    end
+
     def find_for_commit(email, name)
       # Prefer email match over name match
       User.where(email: email).first ||
