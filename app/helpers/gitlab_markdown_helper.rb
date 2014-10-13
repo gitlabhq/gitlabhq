@@ -56,16 +56,9 @@ module GitlabMarkdownHelper
   # +max_chars+ limit.  If the length limit falls within a tag's contents, then
   # the tag contents are truncated without removing the closing tag.
   def first_line_in_markdown(text, max_chars = nil)
-    line = text.split("\n").find do |i|
-      i.present? && markdown(i).present?
-    end
+    md = markdown(text).strip
 
-    if line
-      md = markdown(line)
-      truncated = truncate_visible(md, max_chars || md.length)
-    end
-
-    truncated
+    truncate_visible(md, max_chars || md.length) if md.present?
   end
 
   def render_wiki_content(wiki_page)
@@ -221,22 +214,44 @@ module GitlabMarkdownHelper
   def truncate_visible(text, max_chars)
     doc = Nokogiri::HTML.fragment(text)
     content_length = 0
+    truncated = false
 
     doc.traverse do |node|
       if node.text? || node.content.empty?
-        if content_length >= max_chars
+        if truncated
           node.remove
           next
+        end
+
+        # Handle line breaks within a node
+        if node.content.strip.lines.length > 1
+          node.content = "#{node.content.lines.first.chomp}..."
+          truncated = true
         end
 
         num_remaining = max_chars - content_length
         if node.content.length > num_remaining
           node.content = node.content.truncate(num_remaining)
+          truncated = true
         end
         content_length += node.content.length
       end
+
+      truncated = truncate_if_block(node, truncated)
     end
 
     doc.to_html
+  end
+
+  # Used by #truncate_visible.  If +node+ is the first block element, and the
+  # text hasn't already been truncated, then append "..." to the node contents
+  # and return true.  Otherwise return false.
+  def truncate_if_block(node, truncated)
+    if node.element? && node.description.block? && !truncated
+      node.content = "#{node.content}..." if node.next_sibling
+      true
+    else
+      truncated
+    end
   end
 end

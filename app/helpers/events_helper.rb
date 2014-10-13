@@ -137,7 +137,7 @@ module EventsHelper
 
   def event_note(text)
     text = first_line_in_markdown(text, 150)
-    sanitize(text, tags: %w(a img b pre p))
+    sanitize(text, tags: %w(a img b pre code p))
   end
 
   def event_commit_title(message)
