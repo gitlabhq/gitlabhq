@@ -119,14 +119,6 @@ class ApplicationController < ActionController::Base
     return access_denied! unless can?(current_user, action, project)
   end
 
-  def authorize_code_access!
-    return access_denied! unless can?(current_user, :download_code, project)
-  end
-
-  def authorize_push!
-    return access_denied! unless can?(current_user, :push_code, project)
-  end
-
   def authorize_labels!
     # Labels should be accessible for issues and/or merge requests
     authorize_read_issue! || authorize_read_merge_request!
