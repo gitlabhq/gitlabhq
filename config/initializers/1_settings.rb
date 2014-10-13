@@ -56,9 +56,23 @@ end
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
-Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
-Settings.ldap['active_directory'] = true if Settings.ldap['active_directory'].nil?
 
+# backwards compatibility, we only have one host
+if Settings.ldap['enabled'] || Rails.env.test?
+  if Settings.ldap['host'].present?
+    server = Settings.ldap.except('sync_time')
+    server['label'] = 'LDAP'
+    server['provider_id'] = ''
+    Settings.ldap['servers'] = [server]
+  end
+
+  Settings.ldap['servers'].each do |server|
+    server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
+    server['active_directory'] = true if server['active_directory'].nil?
+    server['provider_name'] = "ldap#{server['provider_id']}".downcase
+    server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+  end
+end
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
