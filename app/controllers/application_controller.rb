@@ -7,7 +7,6 @@ class ApplicationController < ActionController::Base
   before_filter :check_password_expiration
   before_filter :add_abilities
   before_filter :ldap_security_check
-  before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
   before_filter :add_gon_variables
   before_filter :configure_permitted_parameters, if: :devise_controller?
@@ -168,9 +167,6 @@ class ApplicationController < ActionController::Base
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end
-
-  def dev_tools
   end
 
   def default_headers
