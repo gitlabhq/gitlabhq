@@ -135,18 +135,16 @@ production: &base
   ldap:
     enabled: false
     servers:
-      -
-        ## provider_id
-        #
-        # This identifier is used by GitLab to keep track of which LDAP server each
-        # GitLab user belongs to. Each LDAP server known to GitLab should have a unique
-        # provider_id. This identifier cannot be changed once users from the LDAP server
-        # have started logging in to GitLab.
-        #
-        # Format: one word, using a-z (lower case) and 0-9
-        # Example: 'paris' or 'uswest2'
-
-        provider_id: main
+      ## provider id
+      #
+      # This identifier is used by GitLab to keep track of which LDAP server each
+      # GitLab user belongs to. Each LDAP server known to GitLab should have a unique
+      # provider id. This identifier cannot be changed once users from the LDAP server
+      # have started logging in to GitLab.
+      #
+      # Format: one word, using a-z (lower case) and 0-9
+      # Example: 'paris' or 'uswest2'
+      main:
 
         ## label
         #
