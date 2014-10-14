@@ -9,7 +9,7 @@ module Gitlab
       attr_accessor :entry, :provider
 
       def self.find_by_uid(uid, adapter)
-        adapter.user(Gitlab.config.ldap.uid, uid)
+        adapter.user(adapter.config.uid, uid)
       end
 
       def self.find_by_dn(dn, adapter)
