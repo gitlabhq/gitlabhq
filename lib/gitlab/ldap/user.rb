@@ -30,7 +30,7 @@ module Gitlab
 
       def find_by_uid_and_provider
         self.class.find_by_uid_and_provider(
-          auth_hash.provider, auth_hash.uid.downcase)
+          auth_hash.uid.downcase, auth_hash.provider)
       end
 
       def find_by_email
