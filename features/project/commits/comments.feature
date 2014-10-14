@@ -1,4 +1,4 @@
-Feature: Comments on commits
+Feature: Project Commits Comments
   Background:
     Given I sign in as a user
     And I own project "Shop"

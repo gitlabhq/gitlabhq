@@ -307,6 +307,16 @@ module SharedPaths
     visit project_issue_path(issue.project, issue)
   end
 
+  step 'I visit issue page "Tasks-open"' do
+    issue = Issue.find_by(title: 'Tasks-open')
+    visit project_issue_path(issue.project, issue)
+  end
+
+  step 'I visit issue page "Tasks-closed"' do
+    issue = Issue.find_by(title: 'Tasks-closed')
+    visit project_issue_path(issue.project, issue)
+  end
+
   step 'I visit project "Shop" labels page' do
     project = Project.find_by(name: 'Shop')
     visit project_labels_path(project)
@@ -334,6 +344,16 @@ module SharedPaths
 
   step 'I visit merge request page "Bug NS-05"' do
     mr = MergeRequest.find_by(title: "Bug NS-05")
+    visit project_merge_request_path(mr.target_project, mr)
+  end
+
+  step 'I visit merge request page "MR-task-open"' do
+    mr = MergeRequest.find_by(title: 'MR-task-open')
+    visit project_merge_request_path(mr.target_project, mr)
+  end
+
+  step 'I visit merge request page "MR-task-closed"' do
+    mr = MergeRequest.find_by(title: 'MR-task-closed')
     visit project_merge_request_path(mr.target_project, mr)
   end
 

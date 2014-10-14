@@ -43,6 +43,12 @@ Feature: Project Services
     And I fill Slack settings
     Then I should see Slack service settings saved
 
+  Scenario: Activate Pushover service
+    When I visit project "Shop" services page
+    And I click Pushover service link
+    And I fill Pushover settings
+    Then I should see Pushover service settings saved
+
   Scenario: Activate email on push service
     When I visit project "Shop" services page
     And I click email on push service link

@@ -1,12 +1,12 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
-  let(:access) { Gitlab::LDAP::Access.new }
-  let(:user) { create(:user) }
+  let(:access) { Gitlab::LDAP::Access.new user }
+  let(:user) { create(:user, :ldap) }
 
 
   describe :allowed? do
-    subject { access.allowed?(user) }
+    subject { access.allowed? }
 
     context 'when the user cannot be found' do
       before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
@@ -29,22 +29,17 @@ describe Gitlab::LDAP::Access do
         it { should be_true }
       end
 
-      context 'and has no disabled flag in active diretory' do
-        before {
-          Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false)
-          Gitlab.config.ldap['enabled'] = true
-          Gitlab.config.ldap['active_directory'] = false
-        }
+      context 'without ActiveDirectory enabled' do
+        before do
+          Gitlab::LDAP::Config.stub(enabled?: true)
+          Gitlab::LDAP::Config.any_instance.stub(active_directory: false)
+        end
 
-        after {
-          Gitlab.config.ldap['enabled'] = false
-          Gitlab.config.ldap['active_directory'] = true
-        }
-
-        it { should be_false }
+        it { should be_true }
       end
     end
   end
+<<<<<<< HEAD
 
   describe :update_permissions do
     subject { access.update_permissions(user) }
@@ -365,3 +360,6 @@ objectclass: posixGroup
   end
 end
 
+=======
+end
+>>>>>>> master

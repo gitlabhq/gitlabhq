@@ -10,7 +10,7 @@ By submitting code as an individual you agree to the [individual contributor lic
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://www.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Closing policy for issues and merge requests
 
@@ -22,7 +22,7 @@ Issues and merge requests should be in English and contain appropriate language 
 
 ## Issue tracker
 
-To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
+To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://about.gitlab.com/subscription/) and [consulting services](http://about.gitlab.com/consultancy/) are available from [GitLab.com](http://about.gitlab.com/).
 
 The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md). If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request. When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 

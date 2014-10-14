@@ -1,4 +1,4 @@
-Feature: Project markdown render
+Feature: Project Source Markdown Render
   Background:
     Given I sign in as a user
     And I own project "Delta"

@@ -10,6 +10,17 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
     super options
   end
 
+  # If project has issue number 39, apostrophe will be linked in
+  # regular text to the issue as Redcarpet will convert apostrophe to
+  # #39;
+  # We replace apostrophe with right single quote before Redcarpet
+  # does the processing and put the apostrophe back in postprocessing.
+  # This only influences regular text, code blocks are untouched.
+  def normal_text(text)
+    return text unless text.present?
+    text.gsub("'", "&rsquo;")
+  end
+
   def block_code(code, language)
     # New lines are placed to fix an rendering issue
     # with code wrapped inside <h1> tag for next case:
@@ -44,9 +55,14 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
   end
 
   def postprocess(full_document)
+    full_document.gsub!("&rsquo;", "'")
     unless @template.instance_variable_get("@project_wiki") || @project.nil?
       full_document = h.create_relative_links(full_document)
     end
-    h.gfm(full_document)
+    if @options[:parse_tasks]
+      h.gfm_with_tasks(full_document)
+    else
+      h.gfm(full_document)
+    end
   end
 end

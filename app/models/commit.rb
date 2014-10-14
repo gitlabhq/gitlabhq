@@ -19,12 +19,23 @@ class Commit
 
   class << self
     def decorate(commits)
-      commits.map { |c| self.new(c) }
+      commits.map do |commit|
+        if commit.kind_of?(Commit)
+          commit
+        else
+          self.new(commit)
+        end
+      end
     end
 
     # Calculate number of lines to render for diffs
     def diff_line_count(diffs)
       diffs.reduce(0) { |sum, d| sum + d.diff.lines.count }
+    end
+
+    # Truncate sha to 8 characters
+    def truncate_sha(sha)
+      sha[0..7]
     end
   end
 
@@ -111,7 +122,7 @@ class Commit
 
   # Mentionable override.
   def gfm_reference
-    "commit #{sha[0..5]}"
+    "commit #{id}"
   end
 
   def method_missing(m, *args, &block)
@@ -122,6 +133,11 @@ class Commit
     return true if @raw.respond_to?(method)
 
     super
+  end
+
+  # Truncate sha to 8 characters
+  def short_id
+    @raw.short_id(7)
   end
 
   def parents

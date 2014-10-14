@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
+class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -69,8 +69,8 @@ class Spinach::Features::ProjectBrowseFiles < Spinach::FeatureSteps
     click_link 'Diff'
   end
 
-  step 'I click on "Commit changes"' do
-    click_button 'Commit changes'
+  step 'I click on "Commit Changes"' do
+    click_button 'Commit Changes'
   end
 
   step 'I click on "Remove"' do

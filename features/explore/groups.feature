@@ -1,5 +1,5 @@
 @public
-Feature: Explore Groups Feature
+Feature: Explore Groups
   Background:
     Given group "TestGroup" has private project "Enterprise"
 

@@ -1,7 +1,7 @@
 # If you need to modify the existing seed repository for your tests,
 # it is recommended that you make the changes on the `markdown` branch of the seed project repository,
 # which should only be used by tests in this file. See `/spec/factories.rb#project` for more info.
-class Spinach::Features::ProjectMarkdownRender < Spinach::FeatureSteps
+class Spinach::Features::ProjectSourceMarkdownRender < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedMarkdown

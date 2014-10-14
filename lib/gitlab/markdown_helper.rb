@@ -21,5 +21,9 @@ module Gitlab
     def gitlab_markdown?(filename)
       filename.downcase.end_with?(*%w(.mdown .md .markdown))
     end
+
+    def previewable?(filename)
+      gitlab_markdown?(filename) || markup?(filename)
+    end
   end
 end

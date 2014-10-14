@@ -9,57 +9,69 @@ module Gitlab
       @users, @issues, @merge_requests, @snippets, @commits = [], [], [], [], []
     end
 
-    def analyze(string)
-      parse_references(string.dup)
+    def analyze(string, project)
+      parse_references(string.dup, project)
     end
 
     # Given a valid project, resolve the extracted identifiers of the requested type to
     # model objects.
 
     def users_for(project)
-      users.map do |identifier|
-        project.users.where(username: identifier).first
+      users.map do |entry|
+        project.users.where(username: entry[:id]).first
       end.reject(&:nil?)
     end
 
-    def issues_for(project)
-      if project.jira_tracker?
+    def issues_for(project = nil)
+      if project && project.jira_tracker?
         issues.uniq.map do |jira_identifier|
           JiraIssue.new(jira_identifier)
         end
       else
-        issues.map do |identifier|
-          project.issues.where(iid: identifier).first
+        issues.map do |entry|
+          if should_lookup?(project, entry[:project])
+            entry[:project].issues.where(iid: entry[:id]).first
+          end
         end.reject(&:nil?)
       end
     end
 
-    def merge_requests_for(project)
-      merge_requests.map do |identifier|
-        project.merge_requests.where(iid: identifier).first
+    def merge_requests_for(project = nil)
+      merge_requests.map do |entry|
+        if should_lookup?(project, entry[:project])
+          entry[:project].merge_requests.where(iid: entry[:id]).first
+        end
       end.reject(&:nil?)
     end
 
     def snippets_for(project)
-      snippets.map do |identifier|
-        project.snippets.where(id: identifier).first
+      snippets.map do |entry|
+        project.snippets.where(id: entry[:id]).first
       end.reject(&:nil?)
     end
 
-    def commits_for(project)
-      repo = project.repository
-      return [] if repo.nil?
-
-      commits.map do |identifier|
-        repo.commit(identifier)
+    def commits_for(project = nil)
+      commits.map do |entry|
+        repo = entry[:project].repository if entry[:project]
+        if should_lookup?(project, entry[:project])
+          repo.commit(entry[:id]) if repo
+        end
       end.reject(&:nil?)
     end
 
     private
 
-    def reference_link(type, identifier, project)
+    def reference_link(type, identifier, project, _)
       # Append identifier to the appropriate collection.
-      send("#{type}s") << identifier
+      send("#{type}s") << { project: project, id: identifier }
+    end
+
+    def should_lookup?(project, entry_project)
+      if entry_project.nil?
+        false
+      else
+        project.nil? || project.id == entry_project.id
+      end
     end
   end
 end

@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectMilestones < Spinach::FeatureSteps
+class Spinach::Features::ProjectIssuesMilestones < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths

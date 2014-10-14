@@ -90,7 +90,7 @@ module TreeHelper
   end
 
   def editing_preview_title(filename)
-    if gitlab_markdown?(filename) || markup?(filename)
+    if Gitlab::MarkdownHelper.previewable?(filename)
       'Preview'
     else
       'Diff'

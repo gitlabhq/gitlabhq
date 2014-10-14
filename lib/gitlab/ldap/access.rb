@@ -1,19 +1,28 @@
+# LDAP authorization model
+#
+# * Check if we are allowed access (not blocked)
+#
 module Gitlab
   module LDAP
     class Access
-      attr_reader :adapter
+      attr_reader :adapter, :provider, :user
 
-      def self.open(&block)
-        Gitlab::LDAP::Adapter.open do |adapter|
-          block.call(self.new(adapter))
+      def self.open(user, &block)
+        Gitlab::LDAP::Adapter.open(user.provider) do |adapter|
+          block.call(self.new(user, adapter))
         end
       end
 
       def self.allowed?(user)
+<<<<<<< HEAD
         self.open do |access|
           if access.allowed?(user)
             access.update_permissions(user)
             access.update_email(user)
+=======
+        self.open(user) do |access|
+          if access.allowed?
+>>>>>>> master
             user.last_credential_check_at = Time.now
             user.save
             true
@@ -23,15 +32,16 @@ module Gitlab
         end
       end
 
-      def initialize(adapter=nil)
+      def initialize(user, adapter=nil)
         @adapter = adapter
+        @user = user
+        @provider = user.provider
       end
 
-      def allowed?(user)
+      def allowed?
         if Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
-          if Gitlab.config.ldap.active_directory
-            !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
-          end
+          return true unless ldap_config.active_directory
+          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
         else
           false
         end
@@ -39,6 +49,7 @@ module Gitlab
         false
       end
 
+<<<<<<< HEAD
       def get_ldap_user(user)
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
       end
@@ -156,6 +167,14 @@ module Gitlab
 
         # TODO: Test if nil value of current_access_level in handled properly
         [current_access_level, max_group_access_level].compact.max
+=======
+      def adapter
+        @adapter ||= Gitlab::LDAP::Adapter.new(provider)
+      end
+
+      def ldap_config
+        Gitlab::LDAP::Config.new(provider)
+>>>>>>> master
       end
     end
   end
