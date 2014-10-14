@@ -39,7 +39,6 @@ describe Gitlab::LDAP::Access do
       end
     end
   end
-<<<<<<< HEAD
 
   describe :update_permissions do
     subject { access.update_permissions(user) }
@@ -359,7 +358,3 @@ objectclass: posixGroup
     end
   end
 end
-
-=======
-end
->>>>>>> master

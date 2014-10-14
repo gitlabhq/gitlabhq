@@ -14,15 +14,10 @@ module Gitlab
       end
 
       def self.allowed?(user)
-<<<<<<< HEAD
         self.open do |access|
-          if access.allowed?(user)
-            access.update_permissions(user)
-            access.update_email(user)
-=======
-        self.open(user) do |access|
           if access.allowed?
->>>>>>> master
+            access.update_permissions
+            access.update_email
             user.last_credential_check_at = Time.now
             user.save
             true
@@ -49,7 +44,14 @@ module Gitlab
         false
       end
 
-<<<<<<< HEAD
+      def adapter
+        @adapter ||= Gitlab::LDAP::Adapter.new(provider)
+      end
+
+      def ldap_config
+        Gitlab::LDAP::Config.new(provider)
+      end
+
       def get_ldap_user(user)
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid)
       end
@@ -167,14 +169,6 @@ module Gitlab
 
         # TODO: Test if nil value of current_access_level in handled properly
         [current_access_level, max_group_access_level].compact.max
-=======
-      def adapter
-        @adapter ||= Gitlab::LDAP::Adapter.new(provider)
-      end
-
-      def ldap_config
-        Gitlab::LDAP::Config.new(provider)
->>>>>>> master
       end
     end
   end
