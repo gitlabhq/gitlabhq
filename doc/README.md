@@ -20,6 +20,7 @@
 - [Update](update/README.md) Update guides to upgrade your installation.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
+- [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 
 ## Contributor documentation
 
