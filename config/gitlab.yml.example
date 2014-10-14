@@ -119,6 +119,7 @@ production: &base
     #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
 
   ## Gravatar
+  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
