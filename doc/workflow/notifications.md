@@ -1,6 +1,6 @@
 # GitLab Notifications
 
-GitLab has a notifications system in place to notify a user of events important for the workflow.
+GitLab has notifications system in place to notify a user of events important for the workflow.
 
 ## Notification settings
 
@@ -8,7 +8,7 @@ Under user profile page you can find the notification settings.
 
 ![notification settings](notifications/settings.png)
 
-We can divide the notification settings into three groups:
+Notification settings are divided into three groups:
 
 * Global Settings
 * Group Settings
@@ -24,14 +24,14 @@ Each of these settings have levels of notification:
 #### Global Settings
 
 Global Settings are at the bottom of the hierarchy.
-
 Any setting set here will be overriden by a setting at the group or a project level.
-Group or Project setting can use `global` notification setting which will then use
+
+Group or Project settings can use `global` notification setting which will then use
 anything that is set at Global Settings.
 
 #### Group Settings
 
-Group Settings are taking presedence to Global Settings but are on a level below Project Settings.
+Group Settings are taking presedence over Global Settings but are on a level below Project Settings.
 This means that you can set a different level of notifications per group while still being able
 to have a finer level setting per project.
 Organization like this is suitable for users that belong to different groups but don't have the
