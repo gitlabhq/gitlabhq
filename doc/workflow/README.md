@@ -4,3 +4,4 @@
 - [Groups](groups.md)
 - [Labels](labels.md)
 - [GitLab Flow](gitlab_flow.md)
+- [Notifications](notifications.md)
