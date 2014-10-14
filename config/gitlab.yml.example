@@ -322,8 +322,7 @@ test:
   ldap:
     enabled: false
     servers:
-      -
-        provider_id: main
+      main:
         label: ldap
         host: 127.0.0.1
         port: 3890
