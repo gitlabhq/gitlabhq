@@ -135,24 +135,13 @@ production: &base
   ldap:
     enabled: false
     servers:
-      ## provider id
-      #
-      # This identifier is used by GitLab to keep track of which LDAP server each
-      # GitLab user belongs to. Each LDAP server known to GitLab should have a unique
-      # provider id. This identifier cannot be changed once users from the LDAP server
-      # have started logging in to GitLab.
-      #
-      # Format: one word, using a-z (lower case) and 0-9
-      # Example: 'paris' or 'uswest2'
-      main:
-
+      main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
         #
         # A human-friendly name for your LDAP server. It is OK to change the label later,
         # for instance if you find out it is too large to fit on the web page.
         #
         # Example: 'Paris' or 'Acme, Ltd.'
-
         label: 'LDAP'
 
         host: '_your_ldap_server'
@@ -192,6 +181,15 @@ production: &base
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
         #
         user_filter: ''
+
+      # GitLab EE only: add more LDAP servers
+      # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
+      # so that GitLab can remember which LDAP server a user belongs to.
+      # uswest2:
+      #   label:
+      #   host:
+      #   ....
+
 
   ## OmniAuth settings
   omniauth:
