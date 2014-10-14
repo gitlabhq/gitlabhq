@@ -282,32 +282,21 @@ class User < ActiveRecord::Base
 
   # Groups user has access to
   def authorized_groups
-    @authorized_groups ||= begin
-                             group_ids = (groups.pluck(:id) + authorized_projects.pluck(:namespace_id))
-                             Group.where(id: group_ids).order('namespaces.name ASC')
-                           end
+    @authorized_groups ||= Group.where(id: authorized_group_ids).order('namespaces.name ASC')
   end
-
 
   # Projects user has access to
   def authorized_projects
-    @authorized_projects ||= begin
-                               project_ids = personal_projects.pluck(:id)
-                               project_ids += groups_projects.pluck(:id)
-                               project_ids += projects.pluck(:id).uniq
-                               Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
-                             end
+    @authorized_projects ||= Project.where(id: authorized_project_ids).joins(:namespace).order('namespaces.name ASC')
   end
 
   def owned_projects
-    @owned_projects ||= begin
-                          Project.where(namespace_id: owned_groups.pluck(:id).push(namespace.id)).joins(:namespace)
-                        end
+    @owned_projects ||= Project.where(namespace_id: owned_groups.pluck(:id).push(namespace.id)).joins(:namespace)
   end
 
   # Team membership in authorized projects
   def tm_in_authorized_projects
-    ProjectMember.where(source_id: authorized_projects.map(&:id), user_id: self.id)
+    ProjectMember.where(source_id: authorized_project_ids, user_id: self.id)
   end
 
   def is_admin?
@@ -411,7 +400,7 @@ class User < ActiveRecord::Base
   end
 
   def accessible_deploy_keys
-    DeployKey.in_projects(self.authorized_projects.pluck(:id)).uniq
+    DeployKey.in_projects(authorized_project_ids).uniq
   end
 
   def created_by
@@ -543,4 +532,14 @@ class User < ActiveRecord::Base
       UsersStarProject.create!(project: project, user: self)
     end
   end
+
+  private
+
+    def authorized_group_ids
+      groups.pluck(:id) + authorized_projects.pluck(:namespace_id)
+    end
+
+    def authorized_project_ids
+      personal_projects.pluck(:id) + groups_projects.pluck(:id) + projects.pluck(:id).uniq
+    end
 end
