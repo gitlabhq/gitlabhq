@@ -47,9 +47,8 @@ module Gitlab
       end
 
       def ssh_keys
-        ssh_keys_attribute = Gitlab.config.ldap['sync_ssh_keys'].to_sym
-        if entry.respond_to?(ssh_keys_attribute)
-          entry[ssh_keys_attribute]
+        if config.sync_ssh_keys? && entry.respond_to?(config.sync_ssh_keys)
+          entry[config.sync_ssh_keys.to_sym]
         else
           []
         end
