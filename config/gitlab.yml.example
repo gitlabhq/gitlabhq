@@ -37,7 +37,7 @@ production: &base
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
 
-    # Email server smtp settings are in [a separate file](initializers/smtp_settings.rb.sample).
+    # Email server smtp settings are in config/initializers/smtp_settings.rb.sample
 
     ## User settings
     default_projects_limit: 10
