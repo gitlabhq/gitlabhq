@@ -28,7 +28,7 @@ module API
       # Delete GitLab CI service settings
       #
       # Example Request:
-      #   DELETE /projects/:id/keys/:id
+      #   DELETE /projects/:id/services/gitlab-ci
       delete ":id/services/gitlab-ci" do
         if user_project.gitlab_ci_service
           user_project.gitlab_ci_service.update_attributes(
@@ -38,7 +38,41 @@ module API
           )
         end
       end
+
+      # Set Hipchat service for project
+      #
+      # Parameters:
+      #   token (required) - Hipchat token
+      #   room (required) - Hipchat room name
+      #
+      # Example Request:
+      #   PUT /projects/:id/services/hipchat
+      put ':id/services/hipchat' do
+        required_attributes! [:token, :room]
+        attrs = attributes_for_keys [:token, :room]
+        user_project.build_missing_services
+
+        if user_project.hipchat_service.update_attributes(
+            attrs.merge(active: true))
+          true
+        else
+          not_found!
+        end
+      end
+
+      # Delete Hipchat service settings
+      #
+      # Example Request:
+      #   DELETE /projects/:id/services/hipchat
+      delete ':id/services/hipchat' do
+        if user_project.hipchat_service
+          user_project.hipchat_service.update_attributes(
+            active: false,
+            token: nil,
+            room: nil
+          )
+        end
+      end
     end
   end
 end
-
