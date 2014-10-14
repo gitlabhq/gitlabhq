@@ -18,6 +18,8 @@ module Gitlab
           auth.login(login, password) # true will exit the loop
         end
 
+        # If (login, password) was invalid for all providers, the value of auth is now the last
+        # Gitlab::LDAP::Authentication instance we tried.
         auth.user
       end
 
