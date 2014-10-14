@@ -18,6 +18,10 @@ class SessionsController < Devise::SessionsController
       store_location_for(:redirect, redirect_path)
     end
 
+    if Gitlab.config.ldap.enabled
+      @ldap_servers = Gitlab::LDAP::Config.servers
+    end
+
     super
   end
 

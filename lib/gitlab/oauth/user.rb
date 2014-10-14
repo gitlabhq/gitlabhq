@@ -70,10 +70,6 @@ module Gitlab
         Gitlab::AppLogger
       end
 
-      def raise_error(message)
-        raise OmniAuth::Error, "(OAuth) " + message
-      end
-
       def needs_blocking?
         Gitlab.config.omniauth['block_auto_created_users']
       end

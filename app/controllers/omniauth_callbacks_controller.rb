@@ -24,7 +24,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
     gl_user.remember_me = true if @user.persisted?
 
     # Do additional LDAP checks for the user filter and EE features
-    if Gitlab::LDAP::Access.allowed?(gl_user)
+    if @user.allowed?
       sign_in_and_redirect(gl_user)
     else
       flash[:alert] = "Access denied for your LDAP account."
