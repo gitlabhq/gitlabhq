@@ -204,7 +204,7 @@ Devise.setup do |config|
   #   manager.default_strategies(scope: :user).unshift :some_external_strategy
   # end
 
-  if Gitlab.config.ldap.enabled
+  if Gitlab::LDAP::Config.enabled?
     Gitlab.config.ldap.servers.values.each do |server|
       if server['allow_username_or_email_login']
         email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
