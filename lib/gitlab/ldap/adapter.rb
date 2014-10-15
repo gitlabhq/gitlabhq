@@ -31,7 +31,7 @@ module Gitlab
       #
       def groups(cn = "*", size = nil)
         options = {
-          base: config['group_base'],
+          base: config.group_base,
           filter: Net::LDAP::Filter.eq("cn", cn)
         }
 

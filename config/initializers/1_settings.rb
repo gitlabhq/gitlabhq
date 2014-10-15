@@ -52,7 +52,6 @@ class Settings < Settingslogic
   end
 end
 
-
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
