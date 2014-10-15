@@ -9,15 +9,17 @@ We currently use three CI services to test GitLab:
 3. [Semephore](https://semaphoreapp.com/gitlabhq/gitlabhq/) for [GitHub.com repo](https://github.com/gitlabhq/gitlabhq)
 
 | Software @ configuration being tested | GitLab CI (ci.gitlab.org) | GitLab CI (GitHost.io) | Semaphore |
-|---------------------------------------|---------------------------|------------------------|-----------|
-| GitLab CE @ MySQL                     | ✓                         | ✓                      |           |
-| GitLab CE @ PostgreSQL                |                           |                        | ✓         |
-| GitLab EE @ MySQL                     | ✓                         |                        |           |
-| GitLab CI @ MySQL                     | ✓                         |                        |           |
-| GitLab CI @ PostgreSQL                |                           |                        | ✓         |
-| GitLab CI Runner                      | ✓                         |                        | ✓         |
-| GitLab Shell                          | ✓                         |                        | ✓         |
-| GitLab Shell                          | ✓                         |                        | ✓         |
+|---------------------------------------|---------------------------|---------------------------------------------------------------------------|-----------|
+| GitLab CE @ MySQL                     | ✓                         | ✓ [Core team can trigger builds](https://gitlab-ce.githost.io/projects/4) |           |
+| GitLab CE @ PostgreSQL                |                           |                                                                           | ✓ [Core team can trigger builds](https://semaphoreapp.com/gitlabhq/gitlabhq/branches/master) |
+| GitLab EE @ MySQL                     | ✓                         |                                                                           |           |
+| GitLab CI @ MySQL                     | ✓                         |                                                                           |           |
+| GitLab CI @ PostgreSQL                |                           |                                                                           | ✓         |
+| GitLab CI Runner                      | ✓                         |                                                                           | ✓         |
+| GitLab Shell                          | ✓                         |                                                                           | ✓         |
+| GitLab Shell                          | ✓                         |                                                                           | ✓         |
+
+Core team has access to trigger builds if needed for GitLab CE.
 
 We use [these build scripts](https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/build_script_gitlab_ce.md) for testing with GitLab CI.
 
