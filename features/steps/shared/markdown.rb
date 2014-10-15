@@ -54,4 +54,43 @@ EOT
       'div.description li.task-list-item input[type="checkbox"]:disabled'
     )
   end
+
+  step 'I should not see the Markdown preview' do
+    find('.gfm-form').should have_css('.js-md-preview', visible: false)
+  end
+
+  step 'I should not see the Markdown preview button' do
+    find('.gfm-form').should have_css('.js-md-preview-button', visible: false)
+  end
+
+  step 'I should not see the Markdown text field' do
+    find('.gfm-form').should have_css('textarea', visible: false)
+  end
+
+  step 'I should see the Markdown edit button' do
+    find('.gfm-form').should have_css('.js-md-write-button', visible: true)
+  end
+
+  step 'I should see the Markdown preview' do
+    find('.gfm-form').should have_css('.js-md-preview', visible: true)
+  end
+
+  step 'I should see the Markdown preview button' do
+    find('.gfm-form').should have_css('.js-md-preview-button', visible: true)
+  end
+
+  step 'I write a description like "Nice"' do
+    find('.gfm-form').fill_in 'Description', with: 'Nice'
+  end
+
+  step 'I preview a description text like "Bug fixed :smile:"' do
+    within('.gfm-form') do
+      fill_in 'Description', with: 'Bug fixed :smile:'
+      find('.js-md-preview-button').trigger('click')
+    end
+  end
+
+  step 'I haven\'t written any description text' do
+    find('.gfm-form').fill_in 'Description', with: ''
+  end
 end

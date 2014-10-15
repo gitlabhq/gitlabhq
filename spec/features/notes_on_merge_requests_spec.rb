@@ -20,7 +20,7 @@ describe 'Comments' do
         should have_css(".js-main-target-form", visible: true, count: 1)
         find(".js-main-target-form input[type=submit]").value.should == "Add Comment"
         within(".js-main-target-form") { should_not have_link("Cancel") }
-        within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: false) }
+        within('.js-main-target-form') { should have_css('.js-md-preview-button', visible: false) }
       end
 
       describe "with text" do
@@ -32,7 +32,7 @@ describe 'Comments' do
 
         it 'should have enable submit button and preview button' do
           within(".js-main-target-form") { should_not have_css(".js-comment-button[disabled]") }
-          within(".js-main-target-form") { should have_css(".js-note-preview-button", visible: true) }
+          within('.js-main-target-form') { should have_css('.js-md-preview-button', visible: true) }
         end
       end
     end
@@ -41,7 +41,7 @@ describe 'Comments' do
       before do
         within(".js-main-target-form") do
           fill_in "note[note]", with: "This is awsome!"
-          find(".js-note-preview-button").trigger("click")
+          find('.js-md-preview-button').trigger('click')
           click_button "Add Comment"
         end
       end
@@ -49,7 +49,7 @@ describe 'Comments' do
       it 'should be added and form reset' do
         should have_content("This is awsome!")
         within(".js-main-target-form") { should have_no_field("note[note]", with: "This is awesome!") }
-        within(".js-main-target-form") { should have_css(".js-note-preview", visible: false) }
+        within('.js-main-target-form') { should have_css('.js-md-preview', visible: false) }
         within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
       end
     end
@@ -172,11 +172,11 @@ describe 'Comments' do
           # add two separate texts and trigger previews on both
           within("tr[id='#{line_code}'] + .js-temp-notes-holder") do
             fill_in "note[note]", with: "One comment on line 7"
-            find(".js-note-preview-button").trigger("click")
+            find('.js-md-preview-button').trigger('click')
           end
           within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
             fill_in "note[note]", with: "Another comment on line 10"
-            find(".js-note-preview-button").trigger("click")
+            find('.js-md-preview-button').trigger('click')
           end
         end
       end

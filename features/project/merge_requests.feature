@@ -187,3 +187,34 @@ Feature: Project Merge Requests
     And I visit merge request page "MR-task-open"
     And I click link "Close"
     Then Task checkboxes should be disabled
+
+  # Description preview
+
+  @javascript
+  Scenario: I can't preview without text
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit"
+    And I haven't written any description text
+    Then I should not see the Markdown preview button
+
+  @javascript
+  Scenario: I can preview with text
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit"
+    And I write a description like "Nice"
+    Then I should see the Markdown preview button
+
+  @javascript
+  Scenario: I preview a merge request description
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit"
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown preview
+    And I should not see the Markdown text field
+
+  @javascript
+  Scenario: I can edit after preview
+    Given I visit merge request page "Bug NS-04"
+    And I click link "Edit"
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown edit button

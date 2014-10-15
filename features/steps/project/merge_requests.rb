@@ -10,6 +10,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     click_link "New Merge Request"
   end
 
+  step 'I click link "Edit"' do
+    click_link 'Edit'
+  end
+
   step 'I click link "Bug NS-04"' do
     click_link "Bug NS-04"
   end

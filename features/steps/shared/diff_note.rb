@@ -32,7 +32,7 @@ module SharedDiffNote
     click_diff_line(sample_commit.line_code)
     within("#{diff_file_selector} form[rel$='#{sample_commit.line_code}']") do
       fill_in "note[note]", with: "Should fix it :smile:"
-      find(".js-note-preview-button").trigger("click")
+      find('.js-md-preview-button').trigger('click')
     end
   end
 
@@ -41,7 +41,7 @@ module SharedDiffNote
 
     within("#{diff_file_selector} form[rel$='#{sample_commit.del_line_code}']") do
       fill_in "note[note]", with: "DRY this up"
-      find(".js-note-preview-button").trigger("click")
+      find('.js-md-preview-button').trigger('click')
     end
   end
 
@@ -73,7 +73,7 @@ module SharedDiffNote
 
   step 'I should not see the diff comment preview button' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-preview-button", visible: false)
+      page.should have_css('.js-md-preview-button', visible: false)
     end
   end
 
@@ -131,25 +131,25 @@ module SharedDiffNote
 
   step 'I should see the diff comment preview' do
     within("#{diff_file_selector} form") do
-      page.should have_css(".js-note-preview", visible: false)
+      page.should have_css('.js-md-preview', visible: false)
     end
   end
 
   step 'I should see the diff comment edit button' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-write-button", visible: true)
+      page.should have_css('.js-md-write-button', visible: true)
     end
   end
 
   step 'I should see the diff comment preview button' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-preview-button", visible: true)
+      page.should have_css('.js-md-preview-button', visible: true)
     end
   end
 
   step 'I should see two separate previews' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-preview", visible: true, count: 2)
+      page.should have_css('.js-md-preview', visible: true, count: 2)
       page.should have_content("Should fix it")
       page.should have_content("DRY this up")
     end
