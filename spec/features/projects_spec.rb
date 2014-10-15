@@ -10,8 +10,12 @@ describe "Projects", feature: true  do
       visit edit_project_path(@project)
     end
 
-    it "should be correct path" do
-      expect { click_link "Remove project" }.to change {Project.count}.by(-1)
+    it "should be correct path", js: true do
+      expect {
+        click_link "Remove project"
+        fill_in 'confirm_name_input', with: @project.path
+        click_button 'Confirm'
+      }.to change {Project.count}.by(-1)
     end
   end
 end

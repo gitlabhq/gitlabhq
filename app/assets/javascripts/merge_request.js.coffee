@@ -17,6 +17,8 @@ class MergeRequest
 
     disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
 
+    if $("a.btn-close").length
+      $("li.task-list-item input:checkbox").prop("disabled", false)
 
   # Local jQuery finder
   $: (selector) ->
@@ -72,6 +74,13 @@ class MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
+    $(".task-list-item input:checkbox").on(
+      "click"
+      null
+      "merge_request"
+      updateTaskState
+    )
+
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
@@ -95,14 +104,6 @@ class MergeRequest
       $('.ci_widget.ci-' + state).show()
     else
       $('.ci_widget.ci-error').show()
-
-    switch state
-      when "success"
-        $('.mr-state-widget').addClass("panel-success")
-      when "failed"
-        $('.mr-state-widget').addClass("panel-danger")
-      when "running", "pending"
-        $('.mr-state-widget').addClass("panel-warning")
 
   showCiCoverage: (coverage) ->
     cov_html = $('<span>')

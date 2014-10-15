@@ -1,0 +1,22 @@
+#modal-confirm-danger.modal.hide{tabindex: -1}
+  .modal-dialog
+    .modal-content
+      .modal-header
+        %a.close{href: "#", "data-dismiss" => "modal"} ×
+        %h4 Confirmation required
+
+      .modal-body
+        %p.cred.lead.js-confirm-text
+
+        %p
+          This action can lead to data loss.
+          To prevent accidental actions we ask you to confirm your intention.
+          %br
+          Please type
+          %code.js-confirm-danger-match #{phrase}
+          to proceed or close this modal to cancel
+
+        .form-group
+          = text_field_tag 'confirm_name_input', '', class: 'form-control js-confirm-danger-input'
+        .form-group
+          = submit_tag 'Confirm', class: "btn btn-danger js-confirm-danger-submit"

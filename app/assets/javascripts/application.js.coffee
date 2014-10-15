@@ -177,6 +177,13 @@ $ ->
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
 
+  $(document).on "click", '.js-confirm-danger', (e) ->
+    e.preventDefault()
+    btn = $(e.target)
+    text = btn.data("confirm-danger-message")
+    form = btn.closest("form")
+    new ConfirmDangerModal(form, text)
+
 (($) ->
   # Disable an element and add the 'disabled' Bootstrap class
   $.fn.extend disable: ->

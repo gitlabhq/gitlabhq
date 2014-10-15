@@ -36,7 +36,7 @@ module Gitlab
           member_uids.include?(user.uid)
         elsif member_dns.include?(user.dn)
           true
-        else
+        elsif Gitlab.config.ldap.active_directory
           adapter.dn_matches_filter?(user.dn, active_directory_recursive_memberof_filter)
         end
       end

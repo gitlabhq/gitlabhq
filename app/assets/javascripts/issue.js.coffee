@@ -6,4 +6,14 @@ class Issue
     $(".issue-box .inline-update").on "change", "#issue_assignee_id", ->
       $(this).submit()
 
+    if $("a.btn-close").length
+      $("li.task-list-item input:checkbox").prop("disabled", false)
+
+    $(".task-list-item input:checkbox").on(
+      "click"
+      null
+      "issue"
+      updateTaskState
+    )
+
 @Issue = Issue

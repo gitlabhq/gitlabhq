@@ -31,13 +31,13 @@ describe Gitlab::Auth do
       before { Gitlab::LDAP::Config.stub(enabled?: true) }
 
       it "tries to autheticate with db before ldap" do
-        expect(Gitlab::LDAP::User).not_to receive(:authenticate)
+        expect(Gitlab::LDAP::Authentication).not_to receive(:login)
 
         gl_auth.find(username, password)
       end
 
       it "uses ldap as fallback to for authentication" do
-        expect(Gitlab::LDAP::User).to receive(:authenticate)
+        expect(Gitlab::LDAP::Authentication).to receive(:login)
 
         gl_auth.find('ldap_user', 'password')
       end

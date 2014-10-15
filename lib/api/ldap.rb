@@ -16,8 +16,8 @@ module API
       # Example Request:
       #  GET /ldap/groups
       get 'groups' do
-        provider = Gitlab::LDAP::Config.servers.first.provider_name
-        @groups = get_group_list(provider, params[:search])
+        provider = Gitlab::LDAP::Config.servers.first['provider_name']
+        @groups = Gitlab::LDAP::Adapter.new(provider).groups("#{params[:search]}*", 20)
         present @groups, with: Entities::LdapGroup
       end
 
@@ -28,6 +28,9 @@ module API
       #  GET /ldap/ldapmain/groups
       get ':provider/groups' do
         @groups = get_group_list(params[:provider], params[:search])
+
+        # NOTE: this should be deprecated in favour of /ldap/PROVIDER_NAME/groups
+        # for now we just select the first LDAP server
         present @groups, with: Entities::LdapGroup
       end
     end

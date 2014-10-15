@@ -49,6 +49,10 @@ module Gitlab
         @adapter ||= Gitlab::LDAP::Adapter.new(provider)
       end
 
+      def ldap_config
+        Gitlab::LDAP::Config.new(provider)
+      end
+
       def ldap_user
         @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
       end
@@ -144,10 +148,6 @@ module Gitlab
         @ldap_groups_with_access ||= ldap_groups.select do |ldap_group|
           ldap_group.has_member?(ldap_user)
         end.map(&:cn)
-      end
-
-      def ldap_config
-        Gitlab::LDAP::Config.new(provider)
       end
 
       def sync_ssh_keys?

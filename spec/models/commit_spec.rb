@@ -53,17 +53,29 @@ eos
 
   describe '#closes_issues' do
     let(:issue) { create :issue, project: project }
+    let(:other_project) { create :project, :public }
+    let(:other_issue) { create :issue, project: other_project }
 
     it 'detects issues that this commit is marked as closing' do
-      commit.stub(issue_closing_regex: /^([Cc]loses|[Ff]ixes) #\d+/, safe_message: "Fixes ##{issue.iid}")
+      stub_const('Gitlab::ClosingIssueExtractor::ISSUE_CLOSING_REGEX',
+                 /Fixes #\d+/)
+      commit.stub(safe_message: "Fixes ##{issue.iid}")
       commit.closes_issues(project).should == [issue]
+    end
+
+    it 'does not detect issues from other projects' do
+      ext_ref = "#{other_project.path_with_namespace}##{other_issue.iid}"
+      stub_const('Gitlab::ClosingIssueExtractor::ISSUE_CLOSING_REGEX',
+                 /^([Cc]loses|[Ff]ixes)/)
+      commit.stub(safe_message: "Fixes #{ext_ref}")
+      commit.closes_issues(project).should be_empty
     end
   end
 
   it_behaves_like 'a mentionable' do
     let(:subject) { commit }
     let(:mauthor) { create :user, email: commit.author_email }
-    let(:backref_text) { "commit #{subject.sha[0..5]}" }
+    let(:backref_text) { "commit #{subject.id}" }
     let(:set_mentionable_text) { ->(txt){ subject.stub(safe_message: txt) } }
 
     # Include the subject in the repository stub.

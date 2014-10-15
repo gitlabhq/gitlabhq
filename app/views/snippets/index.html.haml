@@ -2,10 +2,12 @@
   Public snippets
 
   .pull-right
-    = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
-      Add new snippet
-    = link_to user_snippets_path(current_user), class: "btn btn-grouped"  do
-      My snippets
+    
+    - if current_user
+      = link_to new_snippet_path, class: "btn btn-new btn-grouped", title: "New Snippet" do
+        Add new snippet
+      = link_to user_snippets_path(current_user), class: "btn btn-grouped"  do
+        My snippets
 
 %p.light
   Public snippets created by you and other users are listed here

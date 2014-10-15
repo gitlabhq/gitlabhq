@@ -17,7 +17,7 @@
       %tr
         %td
           = link_to project_wiki_path(@project, @page, version_id: commit.id) do
-            = commit.id[0..10]
+            = truncate_sha(commit.id)
         %td
           = commit.author.name
         %td

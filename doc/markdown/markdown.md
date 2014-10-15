@@ -10,6 +10,7 @@
 * [Code and Syntax Highlighting](#code-and-syntax-highlighting)
 * [Emoji](#emoji)
 * [Special GitLab references](#special-gitlab-references)
+* [Task lists](#task-lists)
 
 **[Standard Markdown](#standard-markdown)**
 
@@ -176,6 +177,24 @@ GFM will recognize the following:
 - $123 : for snippets
 - 1234567 : for commits
 - \[file\](path/to/file) : for file references
+
+GFM also recognizes references to commits, issues, and merge requests in other projects:
+
+- namespace/project#123 : for issues
+- namespace/project!123 : for merge requests
+- namespace/project@1234567 : for commits
+
+## Task Lists
+
+You can add task lists to merge request and issue descriptions to keep track of to-do items.  To create a task, add an unordered list to the description in an issue or merge request, formatted like so:
+
+```no-highlight
+* [x] Completed task
+* [ ] Unfinished task
+    * [x] Nested task
+```
+
+Task lists can only be created in descriptions, not in titles or comments.  Task item state can be managed by editing the description's Markdown or by clicking the rendered checkboxes.
 
 # Standard Markdown
 

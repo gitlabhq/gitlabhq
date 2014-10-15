@@ -13,7 +13,7 @@ class ApplicationController < ActionController::Base
   before_filter :configure_permitted_parameters, if: :devise_controller?
   before_filter :require_email, unless: :devise_controller?
 
-  protect_from_forgery
+  protect_from_forgery with: :exception
 
   helper_method :abilities, :can?
 

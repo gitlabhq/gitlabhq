@@ -332,20 +332,21 @@ ActiveRecord::Schema.define(version: 20141010132608) do
   create_table "snippets", force: true do |t|
     t.string   "title"
     t.text     "content"
-    t.integer  "author_id",                 null: false
+    t.integer  "author_id",                    null: false
     t.integer  "project_id"
     t.datetime "created_at"
     t.datetime "updated_at"
     t.string   "file_name"
     t.datetime "expires_at"
-    t.boolean  "private",    default: true, null: false
     t.string   "type"
+    t.integer  "visibility_level", default: 0, null: false
   end
 
   add_index "snippets", ["author_id"], name: "index_snippets_on_author_id", using: :btree
   add_index "snippets", ["created_at"], name: "index_snippets_on_created_at", using: :btree
   add_index "snippets", ["expires_at"], name: "index_snippets_on_expires_at", using: :btree
   add_index "snippets", ["project_id"], name: "index_snippets_on_project_id", using: :btree
+  add_index "snippets", ["visibility_level"], name: "index_snippets_on_visibility_level", using: :btree
 
   create_table "taggings", force: true do |t|
     t.integer  "tag_id"
