@@ -1,5 +1,9 @@
 # Installation
 
+## Consider the Omnibus package installation
+
+Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+
 ## Select Version to Install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases this should be the highest numbered stable branch (example shown below).
