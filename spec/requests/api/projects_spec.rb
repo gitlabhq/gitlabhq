@@ -1,3 +1,4 @@
+# -*- coding: utf-8 -*-
 require 'spec_helper'
 
 describe API::API, api: true  do
@@ -10,6 +11,24 @@ describe API::API, api: true  do
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
   let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
+  let(:user4) { create(:user) }
+  let(:project3) { create(:project,
+                          name: 'second_project',
+                          path: 'second_project',
+                          creator_id: user.id,
+                          namespace: user.namespace,
+                          merge_requests_enabled: false,
+                          issues_enabled: false, wiki_enabled: false,
+                          snippets_enabled: false, visibility_level: 0) }
+  let(:project_member3) { create(:project_member,
+                                 user: user4,
+                                 project: project3,
+                                 access_level: ProjectMember::MASTER) }
+  let(:project4) { create(:project,
+                          name: 'third_project',
+                          path: 'third_project',
+                          creator_id: user4.id,
+                          namespace: user4.namespace) }
 
   describe "GET /projects" do
     before { project }
@@ -625,6 +644,118 @@ describe API::API, api: true  do
         json_response.should be_an Array
         json_response.size.should == 2
         json_response.each {|project| project['name'].should =~ /(internal|public) query/}
+      end
+    end
+  end
+
+  describe 'PUT /projects/:id̈́' do
+    before { project }
+    before { user }
+    before { user3 }
+    before { user4 }
+    before { project3 }
+    before { project4 }
+    before { project_member3 }
+    before { project_member2 }
+
+    context 'when unauthenticated' do
+      it 'should return authentication error' do
+        project_param = { name: 'bar' }
+        put api("/projects/#{project.id}"), project_param
+        response.status.should == 401
+      end
+    end
+
+    context 'when authenticated as project owner' do
+      it 'should update name' do
+        project_param = { name: 'bar' }
+        put api("/projects/#{project.id}", user), project_param
+        response.status.should == 200
+        project_param.each_pair do |k, v|
+          json_response[k.to_s].should == v
+        end
+      end
+
+      it 'should update visibility_level' do
+        project_param = { visibility_level: 20 }
+        put api("/projects/#{project3.id}", user), project_param
+        response.status.should == 200
+        project_param.each_pair do |k, v|
+          json_response[k.to_s].should == v
+        end
+      end
+
+      it 'should not update name to existing name' do
+        project_param = { name: project3.name }
+        put api("/projects/#{project.id}", user), project_param
+        response.status.should == 400
+        json_response['message']['name'].should == ['has already been taken']
+      end
+
+      it 'should update path & name to existing path & name in different namespace' do
+        project_param = { path: project4.path, name: project4.name }
+        put api("/projects/#{project3.id}", user), project_param
+        response.status.should == 200
+        project_param.each_pair do |k, v|
+          json_response[k.to_s].should == v
+        end
+      end
+    end
+
+    context 'when authenticated as project master' do
+      it 'should update path' do
+        project_param = { path: 'bar' }
+        put api("/projects/#{project3.id}", user4), project_param
+        response.status.should == 200
+        project_param.each_pair do |k, v|
+          json_response[k.to_s].should == v
+        end
+      end
+
+      it 'should update other attributes' do
+        project_param = { issues_enabled: true,
+                          wiki_enabled: true,
+                          snippets_enabled: true,
+                          merge_requests_enabled: true,
+                          description: 'new description' }
+
+        put api("/projects/#{project3.id}", user4), project_param
+        response.status.should == 200
+        project_param.each_pair do |k, v|
+          json_response[k.to_s].should == v
+        end
+      end
+
+      it 'should not update path to existing path' do
+        project_param = { path: project.path }
+        put api("/projects/#{project3.id}", user4), project_param
+        response.status.should == 400
+        json_response['message']['path'].should == ['has already been taken']
+      end
+
+      it 'should not update name' do
+        project_param = { name: 'bar' }
+        put api("/projects/#{project3.id}", user4), project_param
+        response.status.should == 403
+      end
+
+      it 'should not update visibility_level' do
+        project_param = { visibility_level: 20 }
+        put api("/projects/#{project3.id}", user4), project_param
+        response.status.should == 403
+      end
+    end
+
+    context 'when authenticated as project developer' do
+      it 'should not update other attributes' do
+        project_param = { path: 'bar',
+                          issues_enabled: true,
+                          wiki_enabled: true,
+                          snippets_enabled: true,
+                          merge_requests_enabled: true,
+                          description: 'new description' }
+        put api("/projects/#{project.id}", user3), project_param
+        response.status.should == 403
       end
     end
   end

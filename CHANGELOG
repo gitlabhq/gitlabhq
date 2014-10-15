@@ -14,6 +14,7 @@ v 7.4.0
   - Fail harder in the backup script
   - Changes to Slack service structure, only webhook url needed
   - Zen mode for wiki and milestones (Robert Schilling)
+  - API: Add support for editing an existing project (Mika Mäenpää)
   - Move Emoji parsing to html-pipeline-gitlab (Robert Schilling)
   - Font Awesome 4.2 integration (Sullivan Senechal)
   - Add Pushover service integration (Sullivan Senechal)
