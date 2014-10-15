@@ -1,4 +1,4 @@
-Feature: Project Browse branches
+Feature: Project Commits Branches
   Background:
     Given I sign in as a user
     And I own project "Shop"

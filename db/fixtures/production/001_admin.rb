@@ -21,7 +21,7 @@ admin.save!
 admin.confirm!
 
 if admin.valid?
-puts %q[
+puts %Q[
 Administrator account created:
 
 login.........root

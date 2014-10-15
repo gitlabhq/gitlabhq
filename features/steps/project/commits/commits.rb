@@ -1,4 +1,4 @@
-class Spinach::Features::ProjectBrowseCommits < Spinach::FeatureSteps
+class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -8,7 +8,7 @@ class Spinach::Features::ProjectBrowseCommits < Spinach::FeatureSteps
     commit = @project.repository.commit
     page.should have_content(@project.name)
     page.should have_content(commit.message[0..20])
-    page.should have_content(commit.id.to_s[0..5])
+    page.should have_content(commit.short_id)
   end
 
   step 'I click atom feed link' do

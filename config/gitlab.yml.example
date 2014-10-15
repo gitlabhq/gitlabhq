@@ -119,6 +119,7 @@ production: &base
     #   new_issue_url: "http://jira.sample/secure/CreateIssue.jspa"
 
   ## Gravatar
+  ## For Libravatar see: http://doc.gitlab.com/ce/customization/libravatar.html
   gravatar:
     enabled: true                 # Use user avatar image from Gravatar.com (default: true)
     # gravatar urls: possible placeholders: %{hash} %{size} %{email}
@@ -135,26 +136,13 @@ production: &base
   ldap:
     enabled: false
     servers:
-      -
-        ## provider_id
-        #
-        # This identifier is used by GitLab to keep track of which LDAP server each
-        # GitLab user belongs to. Each LDAP server known to GitLab should have a unique
-        # provider_id. This identifier cannot be changed once users from the LDAP server
-        # have started logging in to GitLab.
-        #
-        # Format: one word, using a-z (lower case) and 0-9
-        # Example: 'paris' or 'uswest2'
-
-        provider_id: main
-
+      main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
         #
         # A human-friendly name for your LDAP server. It is OK to change the label later,
         # for instance if you find out it is too large to fit on the web page.
         #
         # Example: 'Paris' or 'Acme, Ltd.'
-
         label: 'LDAP'
 
         host: '_your_ldap_server'
@@ -163,14 +151,6 @@ production: &base
         method: 'ssl' # "tls" or "ssl" or "plain"
         bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
         password: '_the_password_of_the_bind_user'
-
-        # This setting controls the amount of time between LDAP permission checks for each user.
-        # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
-        # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
-        # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
-        #
-        # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
-        # sync_time: 3600
 
         # This setting specifies if LDAP server is Active Directory LDAP server.
         # For non AD servers it skips the AD specific queries.
@@ -203,6 +183,14 @@ production: &base
         #
         user_filter: ''
 
+        # This setting controls the amount of time between LDAP permission checks for each user.
+        # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
+        # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
+        # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
+        #
+        # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
+        # sync_time: 3600
+
         # Base where we can search for groups
         #
         #   Ex. ou=Groups,dc=gitlab,dc=example
@@ -221,6 +209,14 @@ production: &base
         #   Ex. sshpublickey
         #
         sync_ssh_keys: false
+
+      # GitLab EE only: add more LDAP servers
+      # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
+      # so that GitLab can remember which LDAP server a user belongs to.
+      # uswest2:
+      #   label:
+      #   host:
+      #   ....
 
   ## OmniAuth settings
   omniauth:
@@ -351,8 +347,7 @@ test:
   ldap:
     enabled: false
     servers:
-      -
-        provider_id: main
+      main:
         label: ldap
         host: 127.0.0.1
         port: 3890
@@ -363,5 +358,6 @@ test:
         group_base: 'ou=groups,dc=example,dc=com'
         admin_group: ''
         sync_ssh_keys: false
+
 staging:
   <<: *base

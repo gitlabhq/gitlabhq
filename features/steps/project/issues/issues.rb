@@ -153,6 +153,14 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'project "Shop" has "Tasks-open" open issue with task markdown' do
+    create_taskable(:issue, 'Tasks-open')
+  end
+
+  step 'project "Shop" has "Tasks-closed" closed issue with task markdown' do
+    create_taskable(:closed_issue, 'Tasks-closed')
+  end
+
   step 'empty project "Empty Project"' do
     create :empty_project, name: 'Empty Project', namespace: @user.namespace
   end

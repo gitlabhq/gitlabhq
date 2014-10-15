@@ -1,4 +1,4 @@
-class Spinach::Features::Help < Spinach::FeatureSteps
+class Spinach::Features::DashboardHelp < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedMarkdown

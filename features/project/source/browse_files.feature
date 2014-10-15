@@ -1,4 +1,4 @@
-Feature: Project Browse files
+Feature: Project Source Browse Files
   Background:
     Given I sign in as a user
     And I own project "Shop"
@@ -30,7 +30,7 @@ Feature: Project Browse files
     And I edit code
     And I fill the new file name
     And I fill the commit message
-    And I click on "Commit changes"
+    And I click on "Commit Changes"
     Then I am redirected to the new file
     And I should see its new content
 
@@ -46,7 +46,7 @@ Feature: Project Browse files
     And I click button "Edit"
     And I edit code
     And I fill the commit message
-    And I click on "Commit changes"
+    And I click on "Commit Changes"
     Then I am redirected to the ".gitignore"
     And I should see its new content
 

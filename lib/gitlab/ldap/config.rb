@@ -9,11 +9,11 @@ module Gitlab
       end
 
       def self.servers
-        Gitlab.config.ldap.servers
+        Gitlab.config.ldap.servers.values
       end
 
       def self.providers
-        servers.map &:provider_name
+        servers.map {|server| server['provider_name'] }
       end
 
       def initialize(provider)
@@ -75,7 +75,7 @@ module Gitlab
       end
 
       def config_for(provider)
-        base_config.servers.find { |server| server.provider_name == provider }
+        base_config.servers.values.find { |server| server['provider_name'] == provider }
       end
 
       def encryption

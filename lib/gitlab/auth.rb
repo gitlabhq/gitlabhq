@@ -14,13 +14,5 @@ module Gitlab
         user if user.valid_password?(password)
       end
     end
-
-    def log
-      Gitlab::AppLogger
-    end
-
-    def ldap_conf
-      @ldap_conf ||= Gitlab.config.ldap
-    end
   end
 end

@@ -1,4 +1,4 @@
-Feature: Project Team management
+Feature: Project Team Management
   Background:
     Given I sign in as a user
     And I own project "Shop"

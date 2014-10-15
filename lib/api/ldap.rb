@@ -12,7 +12,7 @@ module API
       get 'groups' do
         # NOTE: this should be deprecated in favour of /ldap/PROVIDER_NAME/groups
         # for now we just select the first LDAP server
-        provider = Gitlab::LDAP::Config.servers.first.provider_name
+        provider = Gitlab::LDAP::Config.servers.first['provider_name']
         @groups = Gitlab::LDAP::Adapter.new(provider).groups("#{params[:search]}*", 20)
         present @groups, with: Entities::LdapGroup
       end

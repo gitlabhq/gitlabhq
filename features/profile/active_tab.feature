@@ -1,5 +1,5 @@
 @profile
-Feature: Profile active tab
+Feature: Profile Active Tab
   Background:
     Given I sign in as a user
 

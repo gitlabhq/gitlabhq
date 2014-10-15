@@ -1,4 +1,4 @@
-Feature: Project Labels
+Feature: Project Issues Labels
   Background:
     Given I sign in as a user
     And I own project "Shop"

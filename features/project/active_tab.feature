@@ -1,4 +1,4 @@
-Feature: Project active tab
+Feature: Project Active Tab
   Background:
     Given I sign in as a user
     And I own a project

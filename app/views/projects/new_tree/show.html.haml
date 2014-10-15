@@ -27,14 +27,9 @@
       .file-content.code
         %pre#editor= params[:content]
 
-    .form-actions
-      = hidden_field_tag 'content', '', id: "file-content"
-      .commit-button-annotation
-        = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-create'
-        .message
-          to branch
-          %strong= @ref
-      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
+    = hidden_field_tag 'content', '', id: 'file-content'
+    = render 'projects/commit_button', ref: @ref,
+              cancel_path: project_tree_path(@project, @id)
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")

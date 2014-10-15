@@ -1,4 +1,4 @@
-class Spinach::Features::SnippetsFeature < Spinach::FeatureSteps
+class Spinach::Features::Snippets < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
@@ -46,7 +46,7 @@ class Spinach::Features::SnippetsFeature < Spinach::FeatureSteps
   end
 
   step 'I uncheck "Private" checkbox' do
-    choose "Public"
+    choose "Internal"
     click_button "Save"
   end
 

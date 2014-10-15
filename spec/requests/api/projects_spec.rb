@@ -54,8 +54,15 @@ describe API::API, api: true  do
         get api("/projects/all", admin)
         response.status.should == 200
         json_response.should be_an Array
-        json_response.first['name'].should == project.name
-        json_response.first['owner']['username'].should == user.username
+        project_name = project.name
+
+        json_response.detect {
+          |project| project['name'] == project_name
+        }['name'].should == project_name
+
+        json_response.detect {
+          |project| project['owner']['username'] == user.username
+        }['owner']['username'].should == user.username
       end
     end
   end
