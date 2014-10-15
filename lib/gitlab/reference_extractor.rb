@@ -25,7 +25,7 @@ module Gitlab
     def issues_for(project = nil)
       if project && project.jira_tracker?
         issues.uniq.map do |jira_identifier|
-          JiraIssue.new(jira_identifier)
+          JiraIssue.new(jira_identifier[:id])
         end
       else
         issues.map do |entry|
