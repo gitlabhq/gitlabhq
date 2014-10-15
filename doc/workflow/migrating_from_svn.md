@@ -14,4 +14,4 @@ user created step by step guide for migrating from SVN to GitLab.
 [Benjamin New](https://github.com/leftclickben) wrote [a guide that shows how to do a migration](https://gist.github.com/leftclickben/322b7a3042cbe97ed2af). Mirrors can be found [here](https://gitlab.com/snippets/2168) and [here](https://gist.github.com/maxlazio/f1b593b0d00aa966e9ca).
 
 ## Contribute to this guide
-We welcome all contributions that would expand this guide with instructions on how to migrate from other version control systems.
+We welcome all contributions that would expand this guide with instructions on how to migrate from SVN and other version control systems.
