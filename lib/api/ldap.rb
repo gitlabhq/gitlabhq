@@ -28,9 +28,6 @@ module API
       #  GET /ldap/ldapmain/groups
       get ':provider/groups' do
         @groups = get_group_list(params[:provider], params[:search])
-
-        # NOTE: this should be deprecated in favour of /ldap/PROVIDER_NAME/groups
-        # for now we just select the first LDAP server
         present @groups, with: Entities::LdapGroup
       end
     end
