@@ -25,7 +25,6 @@ describe API::API do
 
     context "when authenticated as user" do
       it "should return an array of ldap groups" do
-        pending('Needs refactoring')
         get api("/ldap/groups", user)
         response.status.should == 200
         json_response.should be_an Array
