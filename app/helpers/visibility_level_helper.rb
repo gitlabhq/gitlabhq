@@ -28,6 +28,23 @@ module VisibilityLevelHelper
     end
   end
 
+  def snippet_visibility_level_description(level)
+    capture_haml do
+      haml_tag :span do
+        case level
+        when Gitlab::VisibilityLevel::PRIVATE
+          haml_concat "The snippet is visible only for me"
+        when Gitlab::VisibilityLevel::INTERNAL
+          haml_concat "The snippet is visible for any logged in user."
+        when Gitlab::VisibilityLevel::PUBLIC
+          haml_concat "The snippet can be accessed"
+          haml_concat "without any"
+          haml_concat "authentication."
+        end
+      end
+    end
+  end
+
   def visibility_level_icon(level)
     case level
     when Gitlab::VisibilityLevel::PRIVATE

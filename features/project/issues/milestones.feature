@@ -1,4 +1,4 @@
-Feature: Project Milestones
+Feature: Project Issues Milestones
   Background:
     Given I sign in as a user
     And I own project "Shop"

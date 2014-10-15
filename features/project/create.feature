@@ -1,4 +1,4 @@
-Feature: Create Project
+Feature: Project Create
   In order to get access to project sections
   A user with ability to create a project
   Should be able to create a new one

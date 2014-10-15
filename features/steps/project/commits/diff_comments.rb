@@ -1,4 +1,4 @@
-class Spinach::Features::CommentsOnCommitDiffs < Spinach::FeatureSteps
+class Spinach::Features::ProjectCommitsDiffComments < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedDiffNote
   include SharedPaths

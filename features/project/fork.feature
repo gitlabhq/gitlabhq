@@ -1,4 +1,4 @@
-Feature: Fork Project
+Feature: Project Fork
   Background:
     Given I sign in as a user
     And I am a member of project "Shop"

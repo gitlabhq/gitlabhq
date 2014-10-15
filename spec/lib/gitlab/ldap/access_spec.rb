@@ -1,12 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
-  let(:access) { Gitlab::LDAP::Access.new }
-  let(:user) { create(:user) }
-
+  let(:access) { Gitlab::LDAP::Access.new user }
+  let(:user) { create(:user, :ldap) }
 
   describe :allowed? do
-    subject { access.allowed?(user) }
+    subject { access.allowed? }
 
     context 'when the user cannot be found' do
       before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
@@ -29,179 +28,143 @@ describe Gitlab::LDAP::Access do
         it { should be_true }
       end
 
-      context 'and has no disabled flag in active diretory' do
-        before {
-          Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false)
-          Gitlab.config.ldap['enabled'] = true
-          Gitlab.config.ldap['active_directory'] = false
-        }
+      context 'withoud ActiveDirectory enabled' do
+        before do
+          Gitlab::LDAP::Config.stub(enabled?: true)
+          Gitlab::LDAP::Config.any_instance.stub(active_directory: false)
+        end
 
-        after {
-          Gitlab.config.ldap['enabled'] = false
-          Gitlab.config.ldap['active_directory'] = true
-        }
-
-        it { should be_false }
+        it { should be_true }
       end
     end
   end
 
   describe :update_permissions do
-    subject { access.update_permissions(user) }
-
-    before do
-      Gitlab.config.ldap['enabled'] = true
-      Gitlab.config.ldap['sync_ssh_keys'] = false
-      Gitlab.config.ldap['group_base'] = 'something'
-      Gitlab.config.ldap['admin_group'] = ''
-    end
-
-    after do
-      Gitlab.config.ldap['enabled'] = false
-    end
+    subject { access.update_permissions }
 
     it "syncs ssh keys if enabled by configuration" do
-      Gitlab.config.ldap['sync_ssh_keys'] = true
-      expect(access).to receive(:update_ssh_keys).with(user).once
+      access.stub sync_ssh_keys?: 'sshpublickey'
+      expect(access).to receive(:update_ssh_keys).once
+
+      subject
+    end
+
+    it "does update group permissions with a group base configured" do
+      access.stub group_base: 'my-group-base'
+      expect(access).to receive(:update_ldap_group_links)
 
       subject
     end
 
     it "does not update group permissions without a group base configured" do
-      Gitlab.config.ldap['group_base'] = ''
-      expect(access).not_to receive(:update_ldap_group_links).with(user)
+      access.stub group_base: ''
+      expect(access).not_to receive(:update_ldap_group_links)
 
       subject
     end
 
     it "does update admin group permissions if admin group is configured" do
-      Gitlab.config.ldap['admin_group'] = 'NSA'
-
-      access.stub(:update_ldap_group_links)
-      expect(access).to receive(:update_admin_status).with(user)
+      access.stub admin_group: 'my-admin-group'
+      access.stub :update_ldap_group_links
+      expect(access).to receive(:update_admin_status)
 
       subject
     end
   end
 
   describe :update_ssh_keys do
-    let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66049")}
     let(:ssh_key) { 'ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQCrSQHff6a1rMqBdHFt+FwIbytMZ+hJKN3KLkTtOWtSvNIriGhnTdn4rs+tjD/w+z+revytyWnMDM9dS7J8vQi006B16+hc9Xf82crqRoPRDnBytgAFFQY1G/55ql2zdfsC5yvpDOFzuwIJq5dNGsojS82t6HNmmKPq130fzsenFnj5v1pl3OJvk513oduUyKiZBGTroWTn7H/eOPtu7s9MD7pAdEjqYKFLeaKmyidiLmLqQlCRj3Tl2U9oyFg4PYNc0bL5FZJ/Z6t0Ds3i/a2RanQiKxrvgu3GSnUKMx7WIX373baL4jeM7cprRGiOY/1NcS+1cAjfJ8oaxQF/1dYj' }
-    let(:key_ldap) { LDAPKey.new(title: 'used to be a ldap key', key: ssh_key) }
+    let(:ssh_key_attribute_name) { 'sshpublickey' }
+    let(:entry) {
+      Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: #{ssh_key}") }
 
     before do
-      @old_value = Gitlab.config.ldap['sync_ssh_keys']
-      key_attribute_name = 'sshpublickey'
-      Gitlab.config.ldap['sync_ssh_keys'] = key_attribute_name
-    end
-
-    after do
-      Gitlab.config.ldap['sync_ssh_keys'] = @old_value
+      Gitlab::LDAP::Config.any_instance.stub(sync_ssh_keys: ssh_key_attribute_name)
+      access.stub sync_ssh_keys?: true
     end
 
     it "should add a SSH key if it is in LDAP but not in gitlab" do
-      entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{Gitlab.config.ldap['sync_ssh_keys']}: #{ssh_key}")
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: #{ssh_key}")
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
 
-      expect(user_ldap.keys.size).to be(0)
-      access.update_ssh_keys(user_ldap)
-      user_ldap.reload
-      expect(user_ldap.keys.size).to be(1)
+      expect{ access.update_ssh_keys }.to change(user.keys, :count).from(0).to(1)
     end
 
     it "should add a SSH key and give it a proper name" do
-      entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{Gitlab.config.ldap['sync_ssh_keys']}: #{ssh_key}")
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: #{ssh_key}")
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
 
-      access.update_ssh_keys(user_ldap)
-      expect(user_ldap.keys.last.title).to match(/LDAP/)
-      expect(user_ldap.keys.last.title).to match(/#{Gitlab.config.ldap['sync_ssh_keys']}/)
+      access.update_ssh_keys
+      expect(user.keys.last.title).to match(/LDAP/)
+      expect(user.keys.last.title).to match(/#{access.ldap_config.sync_ssh_keys}/)
     end
 
     it "should not add a SSH key if it is invalid" do
-      entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{Gitlab.config.ldap['sync_ssh_keys']}: I am not a valid key")
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
+      entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}: I am not a valid key")
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
 
-      expect(user_ldap.keys.size).to be(0)
-      access.update_ssh_keys(user_ldap)
-      expect(user_ldap.keys.size).to be(0)
+      expect{ access.update_ssh_keys }.to_not change(user.keys, :count)
     end
 
     context 'user has at least one LDAPKey' do
-      it "should remove a SSH key if it is no longer in LDAP" do
-        entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{Gitlab.config.ldap['sync_ssh_keys']}:\n")
-        Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-        key_ldap.save
-        user_ldap.keys << key_ldap
+      before { user.keys.ldap.create key: ssh_key, title: 'to be removed' }
 
-        expect(user_ldap.keys.size).to be(1)
-        access.update_ssh_keys(user_ldap)
-        expect(user_ldap.keys.size).to be(0)
+      it "should remove a SSH key if it is no longer in LDAP" do
+        entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com\n#{ssh_key_attribute_name}:\n")
+        Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+
+        expect{ access.update_ssh_keys }.to change(user.keys, :count).from(1).to(0)
       end
 
-      it "should remove a SSH key if the ldap attribute was removes" do
+      it "should remove a SSH key if the ldap attribute was removed" do
         entry = Net::LDAP::Entry.from_single_ldif_string("dn: cn=foo, dc=bar, dc=com")
-        Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-        key_ldap.save
-        user_ldap.keys << key_ldap
-        expect(user_ldap.keys.size).to be(1)
-        access.update_ssh_keys(user_ldap)
-        expect(user_ldap.keys.size).to be(0)
+        Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry, 'ldapmain') }
+
+        expect{ access.update_ssh_keys }.to change(user.keys, :count).from(1).to(0)
       end
     end
   end
 
   describe :update_user_email do
-    let(:user_ldap) { create(:user, provider: 'ldap', extern_uid: "66048")}
+    let(:entry) { Net::LDAP::Entry.new }
+
+    before do
+      access.stub ldap_user: Gitlab::LDAP::Person.new(entry, user.provider)
+    end
 
     it "should not update email if email attribute is not set" do
-      entry = Net::LDAP::Entry.new
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+      expect{ access.update_email }.to_not change(user, :unconfirmed_email)
     end
 
     it "should not update the email if the user has the same email in GitLab and in LDAP" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = [user_ldap.email]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+      entry['mail'] = [user.email]
+      expect{ access.update_email }.to_not change(user, :unconfirmed_email)
     end
 
     it "should not update the email if the user has the same email GitLab and in LDAP, but with upper case in LDAP" do
-      entry = Net::LDAP::Entry.new
-      entry['mail'] = [user_ldap.email.upcase]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == false
+      entry['mail'] = [user.email.upcase]
+      expect{ access.update_email }.to_not change(user, :unconfirmed_email)
     end
 
     it "should update the email if the user email is different" do
-      entry = Net::LDAP::Entry.new
       entry['mail'] = ["new_email@example.com"]
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(entry) }
-      updated = access.update_email(user_ldap)
-      updated.should == true
+      expect{ access.update_email }.to change(user, :unconfirmed_email)
     end
   end
 
 
   describe :update_admin_status do
-    let(:gitlab_user) { create(:user, provider: 'ldap', extern_uid: "admin2")}
-    let(:gitlab_admin) { create(:admin, provider: 'ldap', extern_uid: "admin2")}
-
     before do
-      Gitlab.config.ldap['admin_group'] = "GLAdmins"
+      access.stub(admin_group: "GLAdmins")
       ldap_user_entry = Net::LDAP::Entry.new
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(ldap_user_entry) }
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(ldap_user_entry, user.provider) }
       Gitlab::LDAP::Person.any_instance.stub(:uid) { 'admin2' }
     end
 
     it "should give admin privileges to an User" do
       admin_group = Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
-cn: #{Gitlab.config.ldap['admin_group']}
+%Q{dn: cn=#{access.admin_group},ou=groups,dc=bar,dc=com
+cn: #{access.admin_group}
 description: GitLab admins
 gidnumber: 42
 memberuid: admin1
@@ -211,15 +174,15 @@ objectclass: top
 objectclass: posixGroup
 })
       Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(admin_group) }
-      expect(gitlab_user.admin?).to be false
-      access.update_admin_status(gitlab_user)
-      expect(gitlab_user.admin?).to be true
+
+      expect{ access.update_admin_status }.to change(user, :admin?).to(true)
     end
 
     it "should remove admin privileges from an User" do
+      user.update_attribute(:admin, true)
       admin_group = Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
-cn: #{Gitlab.config.ldap['admin_group']}
+%Q{dn: cn=#{access.admin_group},ou=groups,dc=bar,dc=com
+cn: #{access.admin_group}
 description: GitLab admins
 gidnumber: 42
 memberuid: admin1
@@ -228,9 +191,7 @@ objectclass: top
 objectclass: posixGroup
 })
       Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(admin_group) }
-      expect(gitlab_admin.admin?).to be true
-      access.update_admin_status(gitlab_admin)
-      expect(gitlab_admin.admin?).to be false
+      expect{ access.update_admin_status }.to change(user, :admin?).to(false)
     end
   end
 
@@ -241,17 +202,17 @@ objectclass: posixGroup
     let(:gitlab_group_2) { create :group }
 
     before do
-      access.stub(:get_ldap_user)
       access.stub(cns_with_access: cns_with_access)
     end
 
     context "non existing access for group-1, allowed via ldap-group1 as MASTER" do
       before do
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+        gitlab_group_1.ldap_group_links.create({
+          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER })
       end
 
       it "gives the user master access for group 1" do
-        access.update_ldap_group_links(user)
+        access.update_ldap_group_links
         expect( gitlab_group_1.has_master?(user) ).to be_true
       end
     end
@@ -263,7 +224,7 @@ objectclass: posixGroup
       end
 
       it "upgrades the users access to master for group 1" do
-        expect { access.update_ldap_group_links(user) }.to \
+        expect { access.update_ldap_group_links }.to \
           change{ gitlab_group_1.has_master?(user) }.from(false).to(true)
       end
     end
@@ -275,7 +236,7 @@ objectclass: posixGroup
       end
 
       it "keeps the users master access for group 1" do
-        expect { access.update_ldap_group_links(user) }.not_to \
+        expect { access.update_ldap_group_links }.not_to \
           change{ gitlab_group_1.has_master?(user) }
       end
     end
@@ -288,7 +249,7 @@ objectclass: posixGroup
       end
 
       it "removes user from gitlab_group_1" do
-        expect { access.update_ldap_group_links(user) }.to \
+        expect { access.update_ldap_group_links }.to \
           change{ gitlab_group_1.members.where(user_id: user).any? }.from(true).to(false)
       end
     end
@@ -354,13 +315,16 @@ objectclass: posixGroup
         Gitlab::LDAP::Group.new(ldap_group_response_2)
       ]
     end
-    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new) }
+    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, user.provider) }
 
-    before { ldap_user.stub(:uid) { 'user42' } }
+    before do
+      access.stub(ldap_user: ldap_user)
+      ldap_user.stub(:uid) { 'user42' }
+    end
 
     it "only returns ldap cns to which the user has access" do
       access.stub(ldap_groups: ldap_groups)
-      expect(access.cns_with_access(ldap_user)).to eql ['group1']
+      expect(access.cns_with_access).to eql ['group1']
     end
   end
 end

@@ -27,7 +27,9 @@
       %span
         %i.fa.fa-clock-o
         = merge_request.milestone.title
-
+    - if merge_request.tasks?
+      %span.task-status
+        = merge_request.task_status
 
     .pull-right
       %small updated #{time_ago_with_tooltip(merge_request.updated_at, 'bottom', 'merge_request_updated_ago')}

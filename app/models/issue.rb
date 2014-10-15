@@ -23,6 +23,7 @@ require 'file_size_validator'
 class Issue < ActiveRecord::Base
   include Issuable
   include InternalId
+  include Taskable
 
   ActsAsTaggableOn.strict_case_match = true
 

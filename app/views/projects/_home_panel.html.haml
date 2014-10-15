@@ -3,7 +3,7 @@
   .project-home-row
     .project-home-desc
       - if @project.description.present?
-        = auto_link ERB::Util.html_escape(@project.description), link: :urls
+        = escaped_autolink(@project.description)
       - if can?(current_user, :admin_project, @project)
         &ndash;
         = link_to 'Edit', edit_project_path

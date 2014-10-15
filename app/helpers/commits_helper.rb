@@ -120,4 +120,8 @@ module CommitsHelper
                                        class: 'commit-short-id')
     end
   end
+
+  def truncate_sha(sha)
+    Commit.truncate_sha(sha)
+  end
 end

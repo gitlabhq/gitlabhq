@@ -205,21 +205,23 @@ Devise.setup do |config|
   # end
 
   if Gitlab.config.ldap.enabled
-    if Gitlab.config.ldap.allow_username_or_email_login
-      email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
-    else
-      email_stripping_proc = ->(name) {name}
-    end
+    Gitlab.config.ldap.servers.values.each do |server|
+      if server['allow_username_or_email_login']
+        email_stripping_proc = ->(name) {name.gsub(/@.*$/,'')}
+      else
+        email_stripping_proc = ->(name) {name}
+      end
 
-    config.omniauth :ldap,
-      host:     Gitlab.config.ldap['host'],
-      base:     Gitlab.config.ldap['base'],
-      uid:      Gitlab.config.ldap['uid'],
-      port:     Gitlab.config.ldap['port'],
-      method:   Gitlab.config.ldap['method'],
-      bind_dn:  Gitlab.config.ldap['bind_dn'],
-      password: Gitlab.config.ldap['password'],
-      name_proc: email_stripping_proc
+      config.omniauth server['provider_name'],
+        host:     server['host'],
+        base:     server['base'],
+        uid:      server['uid'],
+        port:     server['port'],
+        method:   server['method'],
+        bind_dn:  server['bind_dn'],
+        password: server['password'],
+        name_proc: email_stripping_proc
+    end
   end
 
   Gitlab.config.omniauth.providers.each do |provider|

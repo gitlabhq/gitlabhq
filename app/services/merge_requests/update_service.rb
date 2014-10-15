@@ -17,9 +17,15 @@ module MergeRequests
         MergeRequests::ReopenService.new(project, current_user, {}).execute(merge_request)
       when 'close'
         MergeRequests::CloseService.new(project, current_user, {}).execute(merge_request)
+      when 'task_check'
+        merge_request.update_nth_task(params[:task_num].to_i, true)
+      when 'task_uncheck'
+        merge_request.update_nth_task(params[:task_num].to_i, false)
       end
 
-      if params.present? && merge_request.update_attributes(params.except(:state_event))
+      if params.present? && merge_request.update_attributes(
+        params.except(:state_event, :task_num)
+      )
         merge_request.reset_events_cache
 
         if merge_request.previous_changes.include?('milestone_id')

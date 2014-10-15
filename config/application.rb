@@ -2,7 +2,7 @@ require File.expand_path('../boot', __FILE__)
 
 require 'rails/all'
 require 'devise'
-
+I18n.config.enforce_available_locales = false
 Bundler.require(:default, Rails.env)
 
 module Gitlab

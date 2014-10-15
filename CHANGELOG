@@ -12,9 +12,21 @@ v 7.4.0
   - API: Add support for forking a project via the API (Bernhard Kaindl)
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script
+  - Changes to Slack service structure, only webhook url needed
   - Zen mode for wiki and milestones (Robert Schilling)
   - Move Emoji parsing to html-pipeline-gitlab (Robert Schilling)
   - Font Awesome 4.2 integration (Sullivan Senechal)
+  - Add Pushover service integration (Sullivan Senechal)
+  - Add select field type for services options (Sullivan Senechal)
+  - Add cross-project references to the Markdown parser (Vinnie Okada)
+  - Add task lists to issue and merge request descriptions (Vinnie Okada)
+  - Snippets can be public, internal or private
+  - Improve danger zone: ask project path to confirm data-loss action
+  - Raise exception on forgery
+  - Show build coverage in Merge Requests (requires GitLab CI v5.1)
+  - New milestone and label links on issue edit form
+  - Improved repository graphs
+  - Improve event note display in dashboard and project activity views (Vinnie Okada)
 
 v 7.3.2
   - Fix creating new file via web editor

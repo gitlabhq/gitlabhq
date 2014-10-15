@@ -10,8 +10,7 @@
 .issue-box {
   color: #555;
   margin:20px 0;
-  background: #f9f9f9;
-  border-top-left-radius: 5px;
+  background: $box_bg;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 
   &.issue-box-closed {
@@ -112,7 +111,6 @@
     float: left;
     font-weight: bold;
     padding: 10px 15px;
-    border-top-left-radius: 5px;
   }
 
   .creator {
