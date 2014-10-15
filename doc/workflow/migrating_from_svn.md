@@ -1,7 +1,7 @@
 # Migrating from SVN to GitLab
 
 SVN stands for Subversion and is a version control system (VCS).
-Git is a distributed revision control and source code management (SCM) system.
+Git is a distributed version control system.
 
 There are some major differences between the two, for more information consult your favourite search engine.
 
