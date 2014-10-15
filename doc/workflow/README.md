@@ -4,3 +4,4 @@
 - [Groups](groups.md)
 - [Labels](labels.md)
 - [GitLab Flow](gitlab_flow.md)
+- [Migrating from SVN to GitLab](migrating_from_svn.md)
