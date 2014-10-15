@@ -1,5 +1,3 @@
-require_relative 'base_service'
-
 class CreateTagService < BaseService
   def execute(tag_name, ref, message)
     valid_tag = Gitlab::GitRefValidator.validate(tag_name)
