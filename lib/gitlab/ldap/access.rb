@@ -137,8 +137,7 @@ module Gitlab
       end
 
       def ldap_groups
-        @ldap_groups ||= ::LdapGroupLink.with_provider(provider)
-          distinct(:cn).pluck(:cn).map do |cn|
+        @ldap_groups ||= ::LdapGroupLink.with_provider(provider).distinct(:cn).pluck(:cn).map do |cn|
           Gitlab::LDAP::Group.find_by_cn(cn, adapter)
         end.compact
       end
