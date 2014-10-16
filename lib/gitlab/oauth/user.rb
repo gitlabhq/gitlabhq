@@ -13,7 +13,7 @@ module Gitlab
       end
 
       def persisted?
-        gl_user.persisted?
+        gl_user.try(:persisted?)
       end
 
       def new?
@@ -21,10 +21,12 @@ module Gitlab
       end
 
       def valid?
-        gl_user.valid?
+        gl_user.try(:valid?)
       end
 
       def save
+        unauthorized_to_create unless gl_user
+
         gl_user.save!
         log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user.block if needs_blocking?
@@ -36,7 +38,12 @@ module Gitlab
       end
 
       def gl_user
-        @user ||= find_by_uid_and_provider || build_new_user
+        @user ||= find_by_uid_and_provider
+
+        if Gitlab.config.omniauth.allow_single_sign_on
+          @user ||= build_new_user
+        end
+        @user
       end
 
       protected
@@ -76,6 +83,10 @@ module Gitlab
 
       def model
         ::User
+      end
+
+      def raise_unauthorized_to_create
+        raise StandardError.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
       end
     end
   end
