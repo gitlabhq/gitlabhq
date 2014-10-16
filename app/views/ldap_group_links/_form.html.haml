@@ -5,6 +5,11 @@
       %div.form-holder
         .form-group.clearfix
           = f.label :cn, class: 'control-label' do
+            LDAP Server
+          .col-sm-10
+            = f.select :provider, ldap_server_select_options
+        .form-group.clearfix
+          = f.label :cn, class: 'control-label' do
             LDAP Group cn
           .col-sm-10
             = f.hidden_field :cn, placeholder: "Ex. QA group", class: "xxlarge ajax-ldap-groups-select input-mn-300"

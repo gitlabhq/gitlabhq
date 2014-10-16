@@ -44,6 +44,10 @@ module Gitlab
         options['uid']
       end
 
+      def label
+        options['label']
+      end
+
       def sync_ssh_keys?
         sync_ssh_keys.present?
       end
