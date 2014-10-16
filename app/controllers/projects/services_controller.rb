@@ -41,7 +41,8 @@ class Projects::ServicesController < Projects::ApplicationController
     params.require(:service).permit(
       :title, :token, :type, :active, :api_key, :subdomain,
       :room, :recipients, :project_url, :webhook,
-      :user_key, :device, :priority, :sound
+      :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
+      :build_key
     )
   end
 end
