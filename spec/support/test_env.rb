@@ -17,7 +17,7 @@ module TestEnv
     # Clean /tmp/tests
     if File.directory?(tmp_test_path)
       Dir.entries(tmp_test_path).each do |entry|
-        unless ['.', '..', 'gitlab-shell'].include?(entry)
+        unless ['.', '..'].include?(entry)
           FileUtils.rm_r(File.join(tmp_test_path, entry))
         end
       end
@@ -126,6 +126,16 @@ module TestEnv
       if File.exists?(internal_api_mock_pid_path)
         Process.kill(:INT, File.read(internal_api_mock_pid_path).to_i)
       end
+      puts '================================================================================'
+      puts '# cat gitlab-shell.log'
+      system( 'cat ' + Rails.root.join('tmp', 'tests', 'gitlab-shell', 'gitlab-shell.log').to_s)
+      puts '# cat /tmp/gitlab'
+      system( 'cat /tmp/gitlab')
+      puts '# cat /tmp/gitlab-prereceive'
+      system( 'cat /tmp/gitlab-prereceive')
+      puts '# cat /tmp/gitlab-postreceive'
+      system( 'cat /tmp/gitlab-postreceive')
+      puts '================================================================================'
     end
   end
 end
