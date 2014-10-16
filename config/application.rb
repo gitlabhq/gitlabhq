@@ -97,5 +97,7 @@ module Gitlab
 
     redis_config_hash[:namespace] = 'cache:gitlab'
     config.cache_store = :redis_store, redis_config_hash
+
+    ENV['GITLAB_PATH_OUTSIDE_HOOK'] = ENV['PATH']
   end
 end

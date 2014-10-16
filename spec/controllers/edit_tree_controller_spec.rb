@@ -70,6 +70,17 @@ describe Projects::EditTreeController do
       it 'succeeds from a new fork to origin' do
         expect(user.already_forked?(project)).to be_false
 
+        puts '================================================================================'
+        puts 'ruby version = ' + RUBY_VERSION
+        puts 'gitlab_url = ' + Settings.gitlab.url
+        puts 'response code port 3001 = ' + Net::HTTP.get_response(URI('http://localhost:3001/')).code
+        puts 'response body port 3001 = ' + Net::HTTP.get_response(URI('http://localhost:3001/')).body
+        puts '# ls tests'
+        system( 'ls ' + Rails.root.join('tmp', 'tests').to_s)
+        puts '# cat gitlab-shell config'
+        system( 'cat ' + Rails.root.join('tmp', 'tests', 'gitlab-shell', 'config.yml').to_s)
+        puts '================================================================================'
+
         make_new_mr(on_my_fork: '1')
 
         expect(user.already_forked?(project)).to be_true

@@ -5,7 +5,9 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       default_version = File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
-      args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      # TODO restore old repo
+      #args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/cirosantilli/gitlab-shell.git")
 
       user = Settings.gitlab.user
       home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Settings.gitlab.user_home
@@ -22,6 +24,10 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
+        # Allows to change the origin URL to the fork
+        # when developing gitlab-shell.
+        sh(*%W(git remote set-url origin #{args.repo}))
+
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
         reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"

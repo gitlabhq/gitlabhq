@@ -14,7 +14,7 @@ Feature: Project Source Merge Request From Edit
     And I click on "Commit changes"
     Then I should be redirected to the new merge request page from origin to itself
 
-  @javascript
+  @javascript @wip
   Scenario: I can create a merge request from an existing fork to the original project
     Given I have a project forked off of "Shop" called "Forked Shop"
     And I visit ".gitignore" file edit page
@@ -25,7 +25,7 @@ Feature: Project Source Merge Request From Edit
     And I click on "Commit changes"
     Then I should be redirected to the new merge request page from origin to fork
 
-  @javascript
+  @javascript @wip
   Scenario: I can create a merge request from a new fork to the original project
     Given I visit ".gitignore" file edit page
     And I edit code
