@@ -594,7 +594,7 @@ describe GitlabMarkdownHelper do
     end
 
     it "should generate absolute urls for emoji" do
-      markdown(":smile:").should include("src=\"http://localhost/assets/emoji/smile.png")
+      markdown(':smile:').should match(%r{src="http://localhost(:\d+)?/assets/emoji/smile.png})
     end
 
     it "should generate absolute urls for emoji if relative url is present" do
