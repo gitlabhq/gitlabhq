@@ -29,16 +29,16 @@ describe Gitlab::OAuth::User do
   end
 
   describe :save do
-    context "LDAP" do
-      let(:provider) { 'ldap' }
-      it "creates a user from LDAP" do
-        oauth_user.save
+    let(:provider) { 'twitter' }
 
-        expect(gl_user).to be_valid
-        expect(gl_user.extern_uid).to eql uid
-        expect(gl_user.provider).to eql 'ldap'
-      end
+    it "creates a user from Omniauth" do
+      oauth_user.save
+
+      expect(gl_user).to be_valid
+      expect(gl_user.extern_uid).to eql uid
+      expect(gl_user.provider).to eql 'twitter'
     end
+  end
 
     context "twitter" do
       let(:provider) { 'twitter' }
