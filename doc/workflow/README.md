@@ -5,3 +5,5 @@
 - [Share projects with other groups](share_projects_with_other_groups.md)
 - [Labels](labels.md)
 - [GitLab Flow](gitlab_flow.md)
+- [Notifications](notifications.md)
+- [Migrating from SVN to GitLab](migrating_from_svn.md)

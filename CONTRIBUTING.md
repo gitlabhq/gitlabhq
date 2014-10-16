@@ -92,6 +92,7 @@ For examples of feedback on merge requests please look at already [closed merge 
 
 1. The change is as small as possible (see the above paragraph for details)
 1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
+1. All tests have to pass, if you suspect a failing CI build is unrelated to your contribution ask for tests to be restarted. See [the CI setup document](http://doc.gitlab.com/ce/development/ci_setup.html) on who you can ask for test restart.
 1. Initially contains a single commit (please use `git rebase -i` to squash commits)
 1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality
