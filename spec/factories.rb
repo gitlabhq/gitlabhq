@@ -187,5 +187,6 @@ FactoryGirl.define do
     cn 'group1'
     group_access Gitlab::Access::GUEST
     provider 'ldapmain'
+    group
   end
 end

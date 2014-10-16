@@ -208,7 +208,7 @@ objectclass: posixGroup
     context "non existing access for group-1, allowed via ldap-group1 as MASTER" do
       before do
         gitlab_group_1.ldap_group_links.create({
-          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER })
+          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldapmain' })
       end
 
       it "gives the user master access for group 1" do
@@ -220,7 +220,8 @@ objectclass: posixGroup
     context "existing access as guest for group-1, allowed via ldap-group1 as DEVELOPER" do
       before do
         gitlab_group_1.group_members.guests.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+        gitlab_group_1.ldap_group_links.create({
+          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldapmain' })
       end
 
       it "upgrades the users access to master for group 1" do
@@ -232,7 +233,8 @@ objectclass: posixGroup
     context "existing access as MASTER for group-1, allowed via ldap-group1 as DEVELOPER" do
       before do
         gitlab_group_1.group_members.masters.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER
+        gitlab_group_1.ldap_group_links.create({
+          cn: 'ldap-group1', group_access: Gitlab::Access::DEVELOPER, provider: 'ldapmain' })
       end
 
       it "keeps the users master access for group 1" do
@@ -244,7 +246,8 @@ objectclass: posixGroup
     context "existing access as master for group-1, not allowed" do
       before do
         gitlab_group_1.group_members.masters.create(user_id: user.id)
-        gitlab_group_1.ldap_group_links.create cn: 'ldap-group1', group_access: Gitlab::Access::MASTER
+        gitlab_group_1.ldap_group_links.create({
+          cn: 'ldap-group1', group_access: Gitlab::Access::MASTER, provider: 'ldapmain'})
         access.stub(cns_with_access: ['ldap-group2'])
       end
 
@@ -270,7 +273,8 @@ objectclass: posixGroup
     end
 
     it "returns an interator of LDAP Groups" do
-      ::LdapGroupLink.create cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: 42
+      ::LdapGroupLink.create({
+        cn: 'example', group_access: Gitlab::Access::DEVELOPER, group_id: 42, provider: 'ldapmain' })
       Gitlab::LDAP::Adapter.any_instance.stub(:group) { Gitlab::LDAP::Group.new(ldap_group_1) }
 
       expect(access.ldap_groups.first).to be_a Gitlab::LDAP::Group
