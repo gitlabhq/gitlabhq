@@ -21,6 +21,12 @@
         #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
       = render "projects/merge_requests/show/remove_source_branch"
 
+    - if @merge_request.locked?
+      %h4
+        Merge in progress...
+      %p
+        GitLab tries to merge it right now. During this time merge request is locked and can not be closed.
+
     - unless @commits.any?
       %h4 Nothing to merge
       %p

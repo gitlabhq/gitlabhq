@@ -6,6 +6,7 @@
 
     - if current_page?(starred_explore_projects_path)
       %strong.pull-right
+        %i.fa.fa-star
         = pluralize project.star_count, 'star'
 
   .project-info

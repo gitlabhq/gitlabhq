@@ -51,7 +51,7 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 ## Installation
 
 Please see [the installation page on the GitLab website](https://about.gitlab.com/installation/) for the various options.
-Since a manual installation is a lot of work and error prone we strongly recommend fast and reliable Omnibus package installation (deb/rpm) on that page.
+Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
 
 ## Third-party applications
 

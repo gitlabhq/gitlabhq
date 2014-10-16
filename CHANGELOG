@@ -27,6 +27,14 @@ v 7.4.0
   - New milestone and label links on issue edit form
   - Improved repository graphs
   - Improve event note display in dashboard and project activity views (Vinnie Okada)
+  - Add users sorting to admin area
+  - UI improvements
+  - Fix ambiguous sha problem with mentioned commit
+  - Fixed bug with apostrophe when at mentioning users
+  - Add active directory ldap option
+  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more 
+  - Faster rev list
+  - Fix branch removal
 
 v 7.3.2
   - Fix creating new file via web editor
