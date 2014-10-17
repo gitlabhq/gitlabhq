@@ -74,8 +74,8 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz | tar xz
-    cd git-2.0.0/
+    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.1.2.tar.gz | tar xz
+    cd git-2.1.2/
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
@@ -165,10 +165,11 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git -b 7-3-stable-ee gitlab
+    
+    sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git -b 7-4-stable-ee gitlab
 
 
-**Note:** You can change `7-3-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-4-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
