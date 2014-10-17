@@ -29,19 +29,10 @@ describe Gitlab::OAuth::User do
   end
 
   describe :save do
-    context "LDAP" do
-      let(:provider) { 'ldap' }
-      it "creates a user from LDAP" do
-        oauth_user.save
+    let(:provider) { 'twitter' }
 
-        expect(gl_user).to be_valid
-        expect(gl_user.extern_uid).to eql uid
-        expect(gl_user.provider).to eql 'ldap'
-      end
-    end
-
-    context "twitter" do
-      let(:provider) { 'twitter' }
+    context "with allow_single_sign_on enabled" do
+      before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
 
       it "creates a user from Omniauth" do
         oauth_user.save
@@ -49,6 +40,12 @@ describe Gitlab::OAuth::User do
         expect(gl_user).to be_valid
         expect(gl_user.extern_uid).to eql uid
         expect(gl_user.provider).to eql 'twitter'
+      end
+    end
+
+    context "with allow_single_sign_on disabled (Default)" do
+      it "throws an error" do
+        expect{ oauth_user.save }.to raise_error StandardError
       end
     end
   end
