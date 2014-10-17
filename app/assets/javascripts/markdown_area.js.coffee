@@ -48,7 +48,7 @@ $(document).ready ->
       preview.text "Nothing to preview."
     else
       preview.text "Loading..."
-      $.post($(this).data("url"),
+      $.get($(this).data("url"),
         md_text: mdText
       ).success (previewData) ->
         preview.html previewData

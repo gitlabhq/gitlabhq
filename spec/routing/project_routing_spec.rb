@@ -61,7 +61,7 @@ end
 #                  project GET    /:id(.:format)          projects#show
 #                          PUT    /:id(.:format)          projects#update
 #                          DELETE /:id(.:format)          projects#destroy
-# markdown_preview_project POST   /:id/markdown_preview(.:format) projects#markdown_preview
+# markdown_preview_project GET    /:id/markdown_preview(.:format) projects#markdown_preview
 describe ProjectsController, "routing" do
   it "to #create" do
     post("/projects").should route_to('projects#create')
@@ -96,7 +96,7 @@ describe ProjectsController, "routing" do
   end
 
   it 'to #markdown_preview' do
-    post('/gitlab/gitlabhq/markdown_preview').should(
+    get('/gitlab/gitlabhq/markdown_preview').should(
       route_to('projects#markdown_preview', id: 'gitlab/gitlabhq')
     )
   end
