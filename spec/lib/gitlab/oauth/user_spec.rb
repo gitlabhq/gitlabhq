@@ -29,26 +29,79 @@ describe Gitlab::OAuth::User do
   end
 
   describe :save do
-    context "LDAP" do
-      let(:provider) { 'ldap' }
-      it "creates a user from LDAP" do
-        oauth_user.save
+    let(:provider) { 'twitter' }
 
-        expect(gl_user).to be_valid
-        expect(gl_user.extern_uid).to eql uid
-        expect(gl_user.provider).to eql 'ldap'
+    describe 'signup' do
+      context "with allow_single_sign_on enabled" do
+        before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
+
+        it "creates a user from Omniauth" do
+          oauth_user.save
+
+          expect(gl_user).to be_valid
+          expect(gl_user.extern_uid).to eql uid
+          expect(gl_user.provider).to eql 'twitter'
+        end
+      end
+
+      context "with allow_single_sign_on disabled (Default)" do
+        it "throws an error" do
+          expect{ oauth_user.save }.to raise_error StandardError
+        end
       end
     end
 
-    context "twitter" do
+    describe 'blocking' do
       let(:provider) { 'twitter' }
+      before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
 
-      it "creates a user from Omniauth" do
-        oauth_user.save
+      context 'signup' do
+        context 'dont block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: false }
 
-        expect(gl_user).to be_valid
-        expect(gl_user.extern_uid).to eql uid
-        expect(gl_user.provider).to eql 'twitter'
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should_not be_blocked
+          end
+        end
+
+        context 'block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: true }
+
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should be_blocked
+          end
+        end
+      end
+
+      context 'sign-in' do
+        before do
+          oauth_user.save
+          oauth_user.gl_user.activate
+        end
+
+        context 'dont block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: false }
+
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should_not be_blocked
+          end
+        end
+
+        context 'block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: true }
+
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should_not be_blocked
+          end
+        end
       end
     end
   end
