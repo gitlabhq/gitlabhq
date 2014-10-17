@@ -21,7 +21,6 @@ describe 'Comments' do
         find(".js-main-target-form input[type=submit]").value.should == "Add Comment"
         within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')
-          expect(page).not_to have_css('.js-md-preview-button', visible: true)
         end
       end
 

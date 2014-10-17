@@ -33,9 +33,9 @@ module SharedNote
     end
   end
 
-  step 'I write a comment like "Nice"' do
+  step 'I write a comment like ":+1: Nice"' do
     within(".js-main-target-form") do
-      fill_in "note[note]", with: "Nice"
+      fill_in "note[note]", with: ":+1: Nice"
     end
   end
 
@@ -51,13 +51,14 @@ module SharedNote
 
   step 'I should not see the comment preview' do
     within(".js-main-target-form") do
-      expect(page).not_to have_css('.js-md-preview')
+      expect(page).not_to have_css('.js-md-preview', visible: true)
     end
   end
 
-  step 'I should not see the comment preview button' do
+  step 'The comment preview tab should say there is nothing to do' do
     within(".js-main-target-form") do
-      expect(page).not_to have_css('.js-md-preview-button')
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_content('Nothing to preview.')
     end
   end
 
@@ -79,21 +80,22 @@ module SharedNote
     end
   end
 
-  step 'I should see the comment edit button' do
+  step 'I should see the comment write tab' do
     within(".js-main-target-form") do
       expect(page).to have_css('.js-md-write-button')
+    end
+  end
+
+  step 'The comment preview tab should be display rendered Markdown' do
+    within(".js-main-target-form") do
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_css('img.emoji')
     end
   end
 
   step 'I should see the comment preview' do
     within(".js-main-target-form") do
       expect(page).to have_css('.js-md-preview')
-    end
-  end
-
-  step 'I should see the comment preview button' do
-    within(".js-main-target-form") do
-      expect(page).to have_css('.js-md-preview-button')
     end
   end
 

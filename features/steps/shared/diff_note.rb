@@ -71,9 +71,10 @@ module SharedDiffNote
     end
   end
 
-  step 'I should not see the diff comment preview button' do
+  step 'The diff comment preview tab should say there is nothing to do' do
     within(diff_file_selector) do
-      expect(page).not_to have_css('.js-md-preview-button')
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_content('Nothing to preview.')
     end
   end
 
@@ -135,15 +136,16 @@ module SharedDiffNote
     end
   end
 
-  step 'I should see the diff comment edit button' do
+  step 'I should see the diff comment write tab' do
     within(diff_file_selector) do
       expect(page).to have_css('.js-md-write-button')
     end
   end
 
-  step 'I should see the diff comment preview button' do
+  step 'The diff comment preview tab should display rendered Markdown' do
     within(diff_file_selector) do
-      expect(page).to have_css('.js-md-preview-button')
+      find('.js-md-preview-button').click
+      expect(find('.js-md-preview')).to have_css('img.emoji')
     end
   end
 
