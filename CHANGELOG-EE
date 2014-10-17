@@ -1,3 +1,10 @@
+v 7.4.0
+  - Support for multiple LDAP servers
+  - Skip AD specific LDAP checks
+  - Do not show ldap users in dropdowns for groups with enabled ldap-sync
+  - Update the JIRA integration documentation
+  - Reset the homepage to show the GitLab logo by deleting the custom logo.
+
 v 7.3.0
   - Add an option to change the LDAP sync time from default 1 hour
   - User will receive an email when unsubscribed from admin notifications
