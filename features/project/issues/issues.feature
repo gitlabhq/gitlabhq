@@ -186,3 +186,10 @@ Feature: Project Issues
     Given I click link "New Issue"
     And I preview a description text like "Bug fixed :smile:"
     Then I should see the Markdown write tab
+
+  @javascript
+  Scenario: I can preview when editing an existing issue
+    Given I click link "Release 0.4"
+    And I click link "Edit" for the issue
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown write tab
