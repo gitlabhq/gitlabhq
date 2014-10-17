@@ -54,8 +54,16 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Only allow properly saved users to login.
       if @user.persisted? && @user.valid?
         sign_in_and_redirect(@user.gl_user)
-      else @user.gl_user.errors.any?
-        error_message = @user.gl_user.errors.map{ |attribute, message| "#{attribute} #{message}" }.join(", ")
+      else
+        error_message =
+          if @user.gl_user.errors.any?
+            @user.gl_user.errors.map do |attribute, message|
+              "#{attribute} #{message}"
+            end.join(", ")
+          else
+            ''
+          end
+
         redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
       end
     end
