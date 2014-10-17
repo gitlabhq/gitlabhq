@@ -58,9 +58,28 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
     end
   end
 
+  step 'group has shared projects' do
+    share_link = shared_project.project_group_links.new(group_access: Gitlab::Access::MASTER)
+    share_link.group_id = current_group.id
+    share_link.save!
+  end
+
+  step 'I visit group page' do
+    visit admin_group_path(current_group)
+  end
+
+  step 'I should see project shared with group' do
+    page.should have_content(shared_project.name_with_namespace)
+    page.should have_content "Projects shared with"
+  end
+
   protected
 
   def current_group
     @group ||= Group.first
+  end
+
+  def shared_project
+    @shared_project ||= create(:empty_project)
   end
 end

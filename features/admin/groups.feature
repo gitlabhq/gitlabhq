@@ -20,3 +20,8 @@ Feature: Admin Groups
     When I visit admin group page
     When I select user "John Doe" from user list as "Reporter"
     Then I should see "John Doe" in team list in every project as "Reporter"
+
+  Scenario: Shared projects
+    Given group has shared projects
+    When I visit group page
+    Then I should see project shared with group

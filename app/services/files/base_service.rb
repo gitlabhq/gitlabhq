@@ -19,5 +19,9 @@ module Files
     def repository
       project.repository
     end
+
+    def git_hook
+      project.git_hook
+    end
   end
 end

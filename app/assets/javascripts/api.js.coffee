@@ -2,6 +2,7 @@
   users_path: "/api/:version/users.json"
   user_path: "/api/:version/users/:id.json"
   notes_path: "/api/:version/projects/:id/notes.json"
+  ldap_groups_path: "/api/:version/ldap/:provider/groups.json"
   namespaces_path: "/api/:version/namespaces.json"
   project_users_path: "/api/:version/projects/:id/users.json"
 
@@ -37,7 +38,7 @@
 
   # Return users list. Filtered by query
   # Only active users retrieved
-  users: (query, callback) ->
+  users: (query, skip_ldap, callback) ->
     url = Api.buildUrl(Api.users_path)
 
     $.ajax(
@@ -47,6 +48,7 @@
         search: query
         per_page: 20
         active: true
+        skip_ldap: skip_ldap
       dataType: "json"
     ).done (users) ->
       callback(users)
@@ -85,3 +87,19 @@
   buildUrl: (url) ->
     url = gon.relative_url_root + url if gon.relative_url_root?
     return url.replace(':version', gon.api_version)
+
+  # Return LDAP groups list. Filtered by query
+  ldap_groups: (query, provider, callback) ->
+    url = Api.buildUrl(Api.ldap_groups_path)
+    url = url.replace(':provider', provider);
+
+    $.ajax(
+      url: url
+      data:
+        private_token: gon.api_token
+        search: query
+        per_page: 20
+        active: true
+      dataType: "json"
+    ).done (groups) ->
+      callback(groups)

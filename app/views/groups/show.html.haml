@@ -26,6 +26,9 @@
           %p
             = escaped_autolink(@group.description)
     = render "projects", projects: @projects
+    %br
+    = render "shared_projects", projects: @shared_projects
+
     - if current_user
       .prepend-top-20
         = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed" do

@@ -14,7 +14,7 @@
   .panel-heading
     SSH Keys (#{@keys.count})
   %ul.well-list#keys-table
-    = render @keys
+    = render partial: "key", collection: @keys
     - if @keys.blank?
       %li
         .nothing-here-block There are no SSH keys with access to your account.

@@ -54,3 +54,9 @@ Feature: Project Services
     And I click email on push service link
     And I fill email on push settings
     Then I should see email on push service settings saved
+
+  Scenario: Activate JIRA service
+    When I visit project "Shop" services page
+    And I click jira service link
+    And I fill jira settings
+    Then I should see jira service settings saved

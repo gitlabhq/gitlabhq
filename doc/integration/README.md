@@ -4,12 +4,12 @@ GitLab integrates with multiple third-party services to allow external issue tra
 
 See the documentation below for details on how to configure these services.
 
-- [External issue tracker](external-issue-tracker.md) Redmine, JIRA, etc.
+- [Jira](jira.md) Integrate with the JIRA issue tracker
+- [External issue tracker](external-issue-tracker.md) Redmine, bugzilla, etc.
 - [LDAP](ldap.md) Set up sign in via LDAP
 - [OmniAuth](omniauth.md) Sign in via Twitter, GitHub, and Google via OAuth.
+- [Jenkins](jenkins.md) Integrate with the Jenkins CI
 - [Slack](slack.md) Integrate with the Slack chat service
-
-Jenkins support is [available in GitLab EE](http://doc.gitlab.com/ee/integration/jenkins.html).
 
 ## Project services
 

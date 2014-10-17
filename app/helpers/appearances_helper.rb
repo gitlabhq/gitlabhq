@@ -1,17 +1,25 @@
 module AppearancesHelper
-  def brand_item
-    nil
-  end
-
   def brand_title
-    'GitLab Community Edition'
+    if brand_item
+      brand_item.title
+    else
+      'GitLab Enterprise Edition'
+    end
   end
 
   def brand_image
-    nil
+    if brand_item.logo?
+      image_tag brand_item.logo
+    else
+      nil
+    end
   end
 
   def brand_text
-    nil
+    markdown(brand_item.description)
+  end
+
+  def brand_item
+    @appearance ||= Appearance.first
   end
 end

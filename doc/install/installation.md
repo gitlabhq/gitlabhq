@@ -165,9 +165,11 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-4-stable gitlab
+    
+    sudo -u git -H git clone https://gitlab.com/subscribers/gitlab-ee.git -b 7-4-stable-ee gitlab
 
-**Note:** You can change `7-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+
+**Note:** You can change `7-4-stable-ee` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 

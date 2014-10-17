@@ -6,6 +6,10 @@ module SharedPaths
     visit new_project_path
   end
 
+  step 'I visit login page' do
+    visit new_user_session_path
+  end
+
   # ----------------------------------------
   # User
   # ----------------------------------------
@@ -36,6 +40,10 @@ module SharedPaths
 
   step 'I visit group "Owned" settings page' do
     visit edit_group_path(Group.find_by(name:"Owned"))
+  end
+
+  step 'I visit group "Owned" LDAP settings page' do
+    visit group_ldap_group_links_path(Group.find_by(name:"Owned"))
   end
 
   step 'I visit group "Guest" page' do
@@ -158,10 +166,17 @@ module SharedPaths
     visit admin_groups_path
   end
 
+  step 'I visit admin appearance page' do
+    visit admin_appearances_path
+  end
+
   step 'I visit admin teams page' do
     visit admin_teams_path
   end
 
+  step 'I visit admin email page' do
+    visit admin_email_path
+  end
   # ----------------------------------------
   # Generic Project
   # ----------------------------------------

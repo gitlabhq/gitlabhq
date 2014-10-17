@@ -650,6 +650,7 @@ DEPENDENCIES
   minitest (~> 5.3.0)
   mousetrap-rails
   mysql2
+  net-ldap
   newrelic_rpm
   nprogress-rails
   omniauth (~> 1.1.3)
