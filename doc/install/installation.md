@@ -93,9 +93,9 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system ruby.
 
-Remove the old Ruby 1.8 if present
+Remove the old Rubies if present
 
-    sudo apt-get remove ruby1.8
+    sudo apt-get remove ruby1.8 ruby
 
 Download Ruby and compile it:
 
