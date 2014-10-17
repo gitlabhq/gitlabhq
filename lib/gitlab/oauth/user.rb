@@ -17,7 +17,7 @@ module Gitlab
       end
 
       def new?
-        !gl_user.persisted?
+        !persisted?
       end
 
       def valid?
@@ -27,10 +27,14 @@ module Gitlab
       def save
         unauthorized_to_create unless gl_user
 
-        gl_user.save!
-        log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
-        gl_user.block if needs_blocking?
+        if needs_blocking?
+          gl_user.save!
+          gl_user.block
+        else
+          gl_user.save!
+        end
 
+        log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
         gl_user
       rescue ActiveRecord::RecordInvalid => e
         log.info "(OAuth) Error saving user: #{gl_user.errors.full_messages}"
@@ -40,13 +44,27 @@ module Gitlab
       def gl_user
         @user ||= find_by_uid_and_provider
 
-        if Gitlab.config.omniauth.allow_single_sign_on
+        if signup_enabled?
           @user ||= build_new_user
         end
+
         @user
       end
 
       protected
+
+      def needs_blocking?
+        new? && block_after_signup?
+      end
+
+      def signup_enabled?
+        Gitlab.config.omniauth.allow_single_sign_on
+      end
+
+      def block_after_signup?
+        Gitlab.config.omniauth.block_auto_created_users
+      end
+
       def auth_hash=(auth_hash)
         @auth_hash = AuthHash.new(auth_hash)
       end
@@ -75,10 +93,6 @@ module Gitlab
 
       def log
         Gitlab::AppLogger
-      end
-
-      def needs_blocking?
-        Gitlab.config.omniauth['block_auto_created_users']
       end
 
       def model
