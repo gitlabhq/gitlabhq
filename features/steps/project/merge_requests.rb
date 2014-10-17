@@ -1,5 +1,6 @@
 class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedIssuable
   include SharedProject
   include SharedNote
   include SharedPaths
@@ -8,10 +9,6 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
-  end
-
-  step 'I click link "Edit"' do
-    click_link 'Edit'
   end
 
   step 'I click link "Bug NS-04"' do

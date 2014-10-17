@@ -56,27 +56,27 @@ EOT
   end
 
   step 'I should not see the Markdown preview' do
-    find('.gfm-form').should have_css('.js-md-preview', visible: false)
+    expect(find('.gfm-form')).not_to have_css('.js-md-preview')
   end
 
   step 'I should not see the Markdown preview button' do
-    find('.gfm-form').should have_css('.js-md-preview-button', visible: false)
+    expect(find('.gfm-form')).not_to have_css('.js-md-preview-button')
   end
 
   step 'I should not see the Markdown text field' do
-    find('.gfm-form').should have_css('textarea', visible: false)
+    expect(find('.gfm-form')).not_to have_css('textarea')
   end
 
   step 'I should see the Markdown edit button' do
-    find('.gfm-form').should have_css('.js-md-write-button', visible: true)
+    expect(find('.gfm-form')).to have_css('.js-md-write-button')
   end
 
   step 'I should see the Markdown preview' do
-    find('.gfm-form').should have_css('.js-md-preview', visible: true)
+    expect(find('.gfm-form')).to have_css('.js-md-preview')
   end
 
   step 'I should see the Markdown preview button' do
-    find('.gfm-form').should have_css('.js-md-preview-button', visible: true)
+    expect(find('.gfm-form')).to have_css('.js-md-preview-button')
   end
 
   step 'I write a description like "Nice"' do
@@ -86,7 +86,7 @@ EOT
   step 'I preview a description text like "Bug fixed :smile:"' do
     within('.gfm-form') do
       fill_in 'Description', with: 'Bug fixed :smile:'
-      find('.js-md-preview-button').trigger('click')
+      find('.js-md-preview-button').click()
     end
   end
 

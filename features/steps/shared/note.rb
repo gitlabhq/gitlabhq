@@ -23,7 +23,7 @@ module SharedNote
   step 'I preview a comment text like "Bug fixed :smile:"' do
     within(".js-main-target-form") do
       fill_in "note[note]", with: "Bug fixed :smile:"
-      find('.js-md-preview-button').trigger('click')
+      find('.js-md-preview-button').click
     end
   end
 
@@ -51,13 +51,13 @@ module SharedNote
 
   step 'I should not see the comment preview' do
     within(".js-main-target-form") do
-      page.should have_css('.js-md-preview', visible: false)
+      expect(page).not_to have_css('.js-md-preview')
     end
   end
 
   step 'I should not see the comment preview button' do
     within(".js-main-target-form") do
-      page.should have_css('.js-md-preview-button', visible: false)
+      expect(page).not_to have_css('.js-md-preview-button')
     end
   end
 
@@ -81,19 +81,19 @@ module SharedNote
 
   step 'I should see the comment edit button' do
     within(".js-main-target-form") do
-      page.should have_css('.js-md-write-button', visible: true)
+      expect(page).to have_css('.js-md-write-button')
     end
   end
 
   step 'I should see the comment preview' do
     within(".js-main-target-form") do
-      page.should have_css('.js-md-preview', visible: true)
+      expect(page).to have_css('.js-md-preview')
     end
   end
 
   step 'I should see the comment preview button' do
     within(".js-main-target-form") do
-      page.should have_css('.js-md-preview-button', visible: true)
+      expect(page).to have_css('.js-md-preview-button')
     end
   end
 
