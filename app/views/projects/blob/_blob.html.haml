@@ -26,7 +26,8 @@
       %span.file_name
         = blob.name
         %small= number_to_human_size blob.size
-      %span.options.hidden-xs= render "actions"
+      %span.options.hidden-xs= render 'actions',
+          show_blob_edit: @show_blob_edit
     - if blob.text?
       = render "text", blob: blob
     - elsif blob.image?

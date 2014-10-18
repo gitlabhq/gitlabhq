@@ -17,12 +17,40 @@
             = link_to "Cancel", @after_edit_path, class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
       .file-content.code
         %pre.js-edit-mode-pane#editor
+          = params[:content]
         .js-edit-mode-pane#preview.hide
           .center
             %h2
               %i.fa.fa-spinner.fa-spin
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
+    - allowed_tree_edit = allowed_tree_edit?
+    .form-group
+      .col-sm-offset-2.col-sm-10
+        %div{class: ['checkbox', allowed_tree_edit ? '' : 'disabled']}
+          = label_tag do
+            = check_box_tag 'create_merge_request', '1', !allowed_tree_edit,
+                checked: params[:create_merge_request] || !allowed_tree_edit,
+                disabled: !allowed_tree_edit
+            Create merge request
+    #new_branch_name_group{ style: allowed_tree_edit ? 'display:none;' : '' }
+      - if @project.namespace != current_user.namespace
+        .form-group
+          .col-sm-offset-2.col-sm-10
+            %div{class: ['checkbox', allowed_tree_edit ? '' : 'disabled']}
+              = label_tag do
+                = check_box_tag 'on_my_fork', '1', !allowed_tree_edit,
+                    checked: params[:on_my_fork], disabled: !allowed_tree_edit
+                Create branch on my fork
+            - unless allowed_tree_edit
+              .help-block
+                %p You must fork because you don't have push permission.
+      .form-group
+        = label_tag 'new_branch_name', 'New branch name',
+            class: 'col-sm-2 control-label'
+        .col-sm-10
+          = text_field_tag 'new_branch_name', params[:new_branch_name],
+              disabled: !allowed_tree_edit, class: 'form-control'
     = hidden_field_tag 'last_commit', @last_commit
     = hidden_field_tag 'content', '', id: "file-content"
     = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
@@ -34,7 +62,6 @@
   ace.config.loadModule("ace/ext/searchbox");
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
-  editor.setValue("#{escape_javascript(@blob.data)}");
   if (ace_mode) {
     editor.getSession().setMode('ace/mode/' + ace_mode);
   }

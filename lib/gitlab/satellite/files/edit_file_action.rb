@@ -33,15 +33,31 @@ module Gitlab
           # will raise CommandFailed when commit fails
           repo.git.commit(raise: true, timeout: true, a: true, m: commit_message)
 
+          puts '================================================================================'
+          puts 'EditFileAction#commit! before push'
+          puts '# repo.git'
+          p repo.git
+          origin = repo.config['remote.origin.url']
+          puts 'origin = ' + origin
+          puts '# origin hooks pre-receive = '
+          puts File.read(File.join(origin, 'hooks', 'pre-receive'))
+          puts '================================================================================'
 
           # push commit back to bare repo
           # will raise CommandFailed when push fails
           repo.git.push({raise: true, timeout: true}, :origin, ref)
 
+          puts '================================================================================'
+          puts 'EditFileAction#commit! after push'
+          puts '================================================================================'
+
           # everything worked
           true
         end
       rescue Grit::Git::CommandFailed => ex
+        puts '================================================================================'
+        puts 'push error: ex.message = ' + ex.message
+        puts '================================================================================'
         Gitlab::GitLogger.error(ex.message)
         false
       end
