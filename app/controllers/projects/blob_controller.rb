@@ -11,6 +11,7 @@ class Projects::BlobController < Projects::ApplicationController
   before_filter :blob
 
   def show
+    @show_blob_edit = can_show_blob_edit?
   end
 
   def destroy

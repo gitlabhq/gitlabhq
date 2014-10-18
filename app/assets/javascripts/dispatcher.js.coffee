@@ -79,6 +79,8 @@ class Dispatcher
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
         shortcut_handler = true
+      when 'projects:edit_tree:show', 'projects:edit_tree:update'
+        new EditTreeView()
 
     switch path.first()
       when 'admin' then new Admin()
