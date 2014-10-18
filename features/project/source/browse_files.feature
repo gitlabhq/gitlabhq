@@ -41,6 +41,13 @@ Feature: Project Source Browse Files
     Then I can edit code
 
   @javascript
+  Scenario: If I can fork the source but not modify it, then I can still click the edit button to make a pull request
+    Given I am a reporter of project "Reporter"
+    And I visit ".gitignore" file page of project "Reporter"
+    And I click button "Edit"
+    Then I can edit code
+
+  @javascript
   Scenario: I can edit and commit file
     Given I click on ".gitignore" file in repo
     And I click button "Edit"

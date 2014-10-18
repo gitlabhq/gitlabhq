@@ -7,7 +7,8 @@
       %span.file_name
         = @path
         %small= number_to_human_size @blob.size
-      %span.options= render "projects/blob/actions"
+      %span.options= render 'projects/blob/actions',
+          show_blob_edit: @show_blob_edit
     .file-content.blame.highlight
       %table
         - @blame.each do |commit, lines, since|

@@ -29,4 +29,10 @@ class Projects::ApplicationController < ApplicationController
       redirect_to project_tree_path(@project, @ref), notice: "This action is not allowed unless you are on top of a branch"
     end
   end
+
+  protected
+
+  def can_show_blob_edit?
+    can?(current_user, :fork_project, @project)
+  end
 end
