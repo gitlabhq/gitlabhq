@@ -195,14 +195,14 @@ Feature: Project Merge Requests
     Given I visit merge request page "Bug NS-04"
     And I click link "Edit" for the merge request
     And I haven't written any description text
-    Then I should not see the Markdown preview button
+    Then The Markdown preview tab should say there is nothing to do
 
   @javascript
   Scenario: I can preview with text
     Given I visit merge request page "Bug NS-04"
     And I click link "Edit" for the merge request
-    And I write a description like "Nice"
-    Then I should see the Markdown preview button
+    And I write a description like ":+1: Nice"
+    Then The Markdown preview tab should display rendered Markdown
 
   @javascript
   Scenario: I preview a merge request description
@@ -217,4 +217,4 @@ Feature: Project Merge Requests
     Given I visit merge request page "Bug NS-04"
     And I click link "Edit" for the merge request
     And I preview a description text like "Bug fixed :smile:"
-    Then I should see the Markdown edit button
+    Then I should see the Markdown write tab
