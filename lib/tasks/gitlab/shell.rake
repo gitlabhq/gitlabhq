@@ -11,7 +11,7 @@ namespace :gitlab do
       home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Settings.gitlab.user_home
       gitlab_url = Settings.gitlab.url
       # gitlab-shell requires a / at the end of the url
-      gitlab_url += "/" unless gitlab_url.match(/\/$/)
+      gitlab_url += '/' unless gitlab_url.end_with?('/')
       repos_path = Gitlab.config.gitlab_shell.repos_path
       target_dir = Gitlab.config.gitlab_shell.path
 
