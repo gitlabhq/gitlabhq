@@ -25,3 +25,14 @@
       Failed to collect changes
     %p
       Maybe diff is really big and operation failed with timeout. Try to get diff locally
+
+:javascript
+  (function($){
+    var diffParallelView = #{params[:view] == 'parallel'};
+    if(diffParallelView) {
+      var $files = $('.files'),
+        height = $files.outerHeight(true)
+      $files.css('position', 'absolute').css('left', 0)
+      $("<div></div>").height(height).insertAfter($files)
+    }
+  })(jQuery);
