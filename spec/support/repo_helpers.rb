@@ -96,4 +96,49 @@ eos
       commits: commits
     )
   end
+
+  # Seed repository information.
+
+  # Constant valid non-existent branch name.
+  def valid_new_branch_name
+    'new-branch'
+  end
+
+  def existing_branch_name
+    'master'
+  end
+
+  def invalid_branch_name
+    'a b'
+  end
+
+  # Constant existing path on branch master.
+  def existing_file_path
+    '.gitignore'
+  end
+
+  # Constant existing branch/path pair.
+  def existing_file_id
+    existing_branch_name + '/' + existing_file_path
+  end
+
+  # Constant valid non-existent path on branch master.
+  def new_file_name
+    'new_file'
+  end
+
+  # Substring of content of existing_file_path.
+  def old_content
+    '*.rbc'
+  end
+
+  # Not a substring of old_content
+  def new_content
+    'New content'
+  end
+
+  # Constant inexistent commit message.
+  def new_commit_message
+    'New commit message'
+  end
 end

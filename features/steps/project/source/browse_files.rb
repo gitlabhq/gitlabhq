@@ -1,6 +1,7 @@
 class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
+  include SharedProjectSource
   include SharedPaths
   include RepoHelpers
 
@@ -29,11 +30,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I should see its content' do
-    page.should have_content old_gitignore_content
-  end
-
-  step 'I should see its new content' do
-    page.should have_content new_gitignore_content
+    page.should have_content(old_content)
   end
 
   step 'I click link "Raw"' do
@@ -49,28 +46,12 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I can edit code' do
-    set_new_content
-    evaluate_script('editor.getValue()').should == new_gitignore_content
-  end
-
-  step 'I edit code' do
-    set_new_content
-  end
-
-  step 'I fill the new file name' do
-    fill_in :file_name, with: new_file_name
-  end
-
-  step 'I fill the commit message' do
-    fill_in :commit_message, with: 'Not yet a commit message.'
+    set_new_editor_content
+    evaluate_script('editor.getValue()').should == new_content
   end
 
   step 'I click link "Diff"' do
     click_link 'Diff'
-  end
-
-  step 'I click on "Commit Changes"' do
-    click_button 'Commit Changes'
   end
 
   step 'I click on "Remove"' do
@@ -129,48 +110,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Permalink'
   end
 
-  step 'I am redirected to the files URL' do
-    current_path.should == project_tree_path(@project, 'master')
-  end
-
-  step 'I am redirected to the ".gitignore"' do
-    expect(current_path).to eq(project_blob_path(@project, 'master/.gitignore'))
-  end
-
-  step 'I am redirected to the permalink URL' do
-    expect(current_path).to eq(project_blob_path(
-      @project, @project.repository.commit.sha + '/.gitignore'))
-  end
-
-  step 'I am redirected to the new file' do
-    expect(current_path).to eq(project_blob_path(
-      @project, 'master/' + new_file_name))
-  end
-
   step "I don't see the permalink link" do
     expect(page).not_to have_link('permalink')
-  end
-
-  private
-
-  def set_new_content
-    execute_script("editor.setValue('#{new_gitignore_content}')")
-  end
-
-  # Content of the gitignore file on the seed repository.
-  def old_gitignore_content
-    '*.rbc'
-  end
-
-  # Constant value that differs from the content
-  # of the gitignore of the seed repository.
-  def new_gitignore_content
-    old_gitignore_content + 'a'
-  end
-
-  # Constant value that is a valid filename and
-  # not a filename present at root of the seed repository.
-  def new_file_name
-    'not_a_file.md'
   end
 end

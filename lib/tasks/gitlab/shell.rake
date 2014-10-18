@@ -22,6 +22,11 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
+
+        # Allows to change the origin URL to the fork
+        # when developing gitlab-shell.
+        sh(*%W(git remote set-url origin #{args.repo}))
+
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
         reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
@@ -37,7 +42,7 @@ namespace :gitlab do
             bin: %x{which redis-cli}.chomp,
             namespace: "resque:gitlab"
           }.stringify_keys,
-          log_level: "INFO",
+          log_level: Rails.env.test? ? 'DEBUG' : 'INFO',
           audit_usernames: false
         }.stringify_keys
 
