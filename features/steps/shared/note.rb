@@ -35,7 +35,7 @@ module SharedNote
 
   step 'I write a comment like ":+1: Nice"' do
     within(".js-main-target-form") do
-      fill_in "note[note]", with: ":+1: Nice"
+      fill_in 'note[note]', with: ':+1: Nice'
     end
   end
 

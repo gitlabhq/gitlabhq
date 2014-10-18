@@ -152,8 +152,8 @@ module SharedDiffNote
   step 'I should see two separate previews' do
     within(diff_file_selector) do
       expect(page).to have_css('.js-md-preview', count: 2)
-      expect(page).to have_content("Should fix it")
-      expect(page).to have_content("DRY this up")
+      expect(page).to have_content('Should fix it')
+      expect(page).to have_content('DRY this up')
     end
   end
 

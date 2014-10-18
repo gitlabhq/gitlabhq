@@ -60,7 +60,7 @@ EOT
   end
 
   step 'The Markdown preview tab should say there is nothing to do' do
-    within(".gfm-form") do
+    within('.gfm-form') do
       find('.js-md-preview-button').click
       expect(find('.js-md-preview')).to have_content('Nothing to preview.')
     end
@@ -79,7 +79,7 @@ EOT
   end
 
   step 'The Markdown preview tab should display rendered Markdown' do
-    within(".gfm-form") do
+    within('.gfm-form') do
       find('.js-md-preview-button').click
       expect(find('.js-md-preview')).to have_css('img.emoji')
     end
@@ -92,7 +92,7 @@ EOT
   step 'I preview a description text like "Bug fixed :smile:"' do
     within('.gfm-form') do
       fill_in 'Description', with: 'Bug fixed :smile:'
-      find('.js-md-preview-button').click()
+      find('.js-md-preview-button').click
     end
   end
 
