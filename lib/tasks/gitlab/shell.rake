@@ -17,7 +17,7 @@ namespace :gitlab do
 
       # Clone if needed
       unless File.directory?(target_dir)
-        sh "git clone '#{args.repo}' '#{target_dir}'"
+        sh(*%W(git clone #{args.repo} #{target_dir}))
       end
 
       # Make sure we're on the right tag
