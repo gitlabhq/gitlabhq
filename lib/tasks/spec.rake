@@ -33,7 +33,7 @@ desc "GITLAB | Run specs"
 task :spec do
   cmds = [
     %W(rake gitlab:setup),
-    %W(rspec ./spec/controllers/edit_tree_controller_spec.rb:70),
+    %W(rspec spec),
   ]
   run_commands(cmds)
 end
