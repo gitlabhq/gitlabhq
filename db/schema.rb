@@ -11,7 +11,11 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
+<<<<<<< HEAD
 ActiveRecord::Schema.define(version: 20141007100818) do
+=======
+ActiveRecord::Schema.define(version: 20140703230916) do
+>>>>>>> 55c360f... services: add private hipchat server support
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"

@@ -37,6 +37,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I fill hipchat settings' do
     check 'Active'
+    fill_in 'Server', with: 'http://hipchat.my.org'
     fill_in 'Room', with: 'gitlab'
     fill_in 'Token', with: 'verySecret'
     click_button 'Save'

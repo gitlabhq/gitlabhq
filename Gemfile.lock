@@ -235,8 +235,7 @@ GEM
       railties (>= 4.0.1)
     hashie (2.1.2)
     hike (1.2.3)
-    hipchat (0.14.0)
-      httparty
+    hipchat (1.2.0)
       httparty
     html-pipeline (1.11.0)
       activesupport (>= 2)
@@ -635,8 +634,8 @@ DEPENDENCIES
   guard-rspec
   guard-spinach
   haml-rails
-  hipchat (~> 0.14.0)
   html-pipeline-gitlab (~> 0.1.0)
+  hipchat (~> 1.2.0)
   httparty
   jasmine (= 2.0.2)
   jquery-atwho-rails (~> 0.3.3)
