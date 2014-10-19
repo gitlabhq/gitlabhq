@@ -77,11 +77,11 @@ class SlackMessage
   end
 
   def new_branch?
-    before =~ /000000/
+    before.include?('000000')
   end
 
   def removed_branch?
-    after =~ /000000/
+    after.include?('000000')
   end
 
   def branch_url

@@ -25,7 +25,7 @@ namespace :gitlab do
 
         puts "Processing #{repo_path}".yellow
 
-        if path =~ /\.wiki\Z/
+        if path.end_with?('.wiki')
           puts " * Skipping wiki repo"
           next
         end

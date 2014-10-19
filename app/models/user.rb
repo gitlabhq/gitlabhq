@@ -487,7 +487,7 @@ class User < ActiveRecord::Base
   end
 
   def temp_oauth_email?
-    email =~ /\Atemp-email-for-oauth/
+    email.start_with?('temp-email-for-oauth')
   end
 
   def public_profile?
