@@ -15,7 +15,8 @@
 class HipchatService < Service
   MAX_COMMITS = 3
 
-  prop_accessor :token, :room
+  prop_accessor :token, :room, :service
+  
   validates :token, presence: true, if: :activated?
   validates :room, presence: true, if: :activated?
 
