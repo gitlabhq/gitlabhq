@@ -53,8 +53,6 @@ class ProjectsController < ApplicationController
       return
     end
 
-    return authenticate_user! unless @project.public? || current_user
-
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent
     @events = event_filter.apply_filter(@events)
