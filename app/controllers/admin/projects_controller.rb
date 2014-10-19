@@ -38,10 +38,10 @@ class Admin::ProjectsController < Admin::ApplicationController
   end
 
   def group
-    @group ||= project.group
+    @group ||= @project.group
   end
 
   def repository
-    @repository ||= project.repository
+    @repository ||= @project.repository
   end
 end

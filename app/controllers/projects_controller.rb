@@ -76,7 +76,7 @@ class ProjectsController < ApplicationController
   end
 
   def import
-    if project.import_finished?
+    if @project.import_finished?
       redirect_to @project
       return
     end
@@ -98,7 +98,7 @@ class ProjectsController < ApplicationController
   end
 
   def destroy
-    return access_denied! unless can?(current_user, :remove_project, project)
+    return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).execute
 
@@ -148,8 +148,8 @@ class ProjectsController < ApplicationController
   end
 
   def archive
-    return access_denied! unless can?(current_user, :archive_project, project)
-    project.archive!
+    return access_denied! unless can?(current_user, :archive_project, @project)
+    @project.archive!
 
     respond_to do |format|
       format.html { redirect_to @project }
@@ -157,8 +157,8 @@ class ProjectsController < ApplicationController
   end
 
   def unarchive
-    return access_denied! unless can?(current_user, :archive_project, project)
-    project.unarchive!
+    return access_denied! unless can?(current_user, :archive_project, @project)
+    @project.unarchive!
 
     respond_to do |format|
       format.html { redirect_to @project }
