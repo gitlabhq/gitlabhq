@@ -15,7 +15,7 @@ describe "Mounted Apps", "routing" do
   end
 
   it "to Grack" do
-    get("/gitlab/gitlabhq.git").should be_routable
+    get('/gitlab/gitlabhq.git/foo').should be_routable
   end
 end
 

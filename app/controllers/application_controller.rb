@@ -83,15 +83,6 @@ class ApplicationController < ActionController::Base
   def project
     id = params[:project_id] || params[:id]
 
-    # Redirect from
-    #   localhost/group/project.git
-    # to
-    #   localhost/group/project
-    #
-    if id =~ /\.git\Z/
-      redirect_to request.original_url.gsub(/\.git\Z/, '') and return
-    end
-
     @project = Project.find_with_namespace(id)
 
     if @project and can?(current_user, :read_project, @project)
