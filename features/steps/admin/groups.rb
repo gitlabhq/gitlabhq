@@ -37,8 +37,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do
-    user = User.find_by(name: "John Doe")
-    select2(user.id, from: "#user_ids", multiple: true)
+    select2(user_john.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
       select "Reporter", from: "access_level"
     end
@@ -58,9 +57,29 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
     end
   end
 
+  step 'we have user "John Doe" in group' do
+    current_group.add_user(user_john, Gitlab::Access::REPORTER)
+  end
+
+  step 'I remove user "John Doe" from group' do
+    within "#user_#{user_john.id}" do
+      click_link 'Remove user from group'
+    end
+  end
+
+  step 'I should not see "John Doe" in team list' do
+    within ".group-users-list" do
+      page.should_not have_content "John Doe"
+    end
+  end
+
   protected
 
   def current_group
     @group ||= Group.first
+  end
+
+  def user_john
+    @user_john ||= User.find_by(name: "John Doe")
   end
 end

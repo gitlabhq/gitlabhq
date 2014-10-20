@@ -19,6 +19,7 @@ class Groups::GroupMembersController < ApplicationController
 
   def destroy
     @users_group = @group.group_members.find(params[:id])
+
     if can?(current_user, :destroy, @users_group)  # May fail if last owner.
       @users_group.destroy
       respond_to do |format|
