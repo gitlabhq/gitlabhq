@@ -6,6 +6,95 @@ The first time a user signs in with LDAP credentials, GitLab will create a new G
 
 GitLab user attributes such as nickname and email will be copied from the LDAP user entry.
 
+## Configuring GitLab for LDAP integration
+
+To enable GitLab LDAP integration you need to add your LDAP server settings in `/etc/gitlab/gitlab.rb` or `/home/git/gitlab/config/gitlab.yml`.
+In GitLab Enterprise Edition you can have multiple LDAP servers connected to one GitLab server.
+
+Please note that before version 7.4, GitLab used a different syntax for configuring LDAP integration.
+The old LDAP integration syntax still works in GitLab 7.4.
+If your `gitlab.rb` or `gitlab.yml` file contains LDAP settings in both the old syntax and the new syntax, only the __old__ syntax will be used by GitLab.
+
+```ruby
+# For omnibus packages
+gitlab_rails['ldap_enabled'] = true
+gitlab_rails['ldap_servers'] = YAML.load <<-EOS # remember to close this block with 'EOS' below
+main: # 'main' is the GitLab 'provider ID' of this LDAP server
+  ## label
+  #
+  # A human-friendly name for your LDAP server. It is OK to change the label later,
+  # for instance if you find out it is too large to fit on the web page.
+  #
+  # Example: 'Paris' or 'Acme, Ltd.'
+  label: 'LDAP'
+
+  host: '_your_ldap_server'
+  port: 636
+  uid: 'sAMAccountName'
+  method: 'ssl' # "tls" or "ssl" or "plain"
+  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+  password: '_the_password_of_the_bind_user'
+
+  # This setting specifies if LDAP server is Active Directory LDAP server.
+  # For non AD servers it skips the AD specific queries.
+  # If your LDAP server is not AD, set this to false.
+  active_directory: true
+
+  # If allow_username_or_email_login is enabled, GitLab will ignore everything
+  # after the first '@' in the LDAP username submitted by the user on login.
+  #
+  # Example:
+  # - the user enters 'jane.doe@example.com' and 'p@ssw0rd' as LDAP credentials;
+  # - GitLab queries the LDAP server with 'jane.doe' and 'p@ssw0rd'.
+  #
+  # If you are using "uid: 'userPrincipalName'" on ActiveDirectory you need to
+  # disable this setting, because the userPrincipalName contains an '@'.
+  allow_username_or_email_login: false
+
+  # Base where we can search for users
+  #
+  #   Ex. ou=People,dc=gitlab,dc=example
+  #
+  base: ''
+
+  # Filter LDAP users
+  #
+  #   Format: RFC 4515 http://tools.ietf.org/search/rfc4515
+  #   Ex. (employeeType=developer)
+  #
+  #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
+  #
+  user_filter: ''
+
+# GitLab EE only: add more LDAP servers
+# Choose an ID made of a-z and 0-9 . This ID will be stored in the database
+# so that GitLab can remember which LDAP server a user belongs to.
+# uswest2:
+#   label:
+#   host:
+#   ....
+EOS
+```
+
+If you are using a GitLab installation from source you can find the LDAP settings in `/home/git/gitlab/config/gitlab.yml`:
+
+```
+production:
+  # snip...
+  ldap:
+    enabled: false
+    servers:
+      main: # 'main' is the GitLab 'provider ID' of this LDAP server
+        ## label
+        #
+        # A human-friendly name for your LDAP server. It is OK to change the label later,
+        # for instance if you find out it is too large to fit on the web page.
+        #
+        # Example: 'Paris' or 'Acme, Ltd.'
+        label: 'LDAP'
+        # snip...
+```
+
 ## Enabling LDAP sign-in for existing GitLab users
 
 When a user signs in to GitLab with LDAP for the first time, and their LDAP email address is the primary email address of an existing GitLab user, then the LDAP DN will be associated with the existing user.
