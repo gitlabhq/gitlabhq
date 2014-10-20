@@ -26,13 +26,20 @@ The filter must comply with [RFC 4515](http://tools.ietf.org/search/rfc4515).
 ```ruby
 # For omnibus-gitlab
 gitlab_rails['ldap_user_filter'] = '(employeeType=developer)'
+gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+main:
+  # snip...
+  user_filter: '(employeeType=developer)'
+EOS
 ```
 
 ```yaml
 # For installations from source
 production:
   ldap:
-     user_filter: '(employeeType=developer)'
+    servers:
+      main:
+        user_filter: '(employeeType=developer)'
 ```
 
 Tip: if you want to limit access to the nested members of an Active Directory group you can use the following syntax:
