@@ -30,9 +30,6 @@ main:
   # snip...
   user_filter: '(employeeType=developer)'
 EOS
-
-# omnibus package; legacy syntax
-gitlab_rails['ldap_user_filter'] = '(employeeType=developer)'
 ```
 
 ```yaml
@@ -43,12 +40,6 @@ production:
       main:
         # snip...
         user_filter: '(employeeType=developer)'
-
-# installations from source; legacy syntax
-production:
-  ldap:
-    # snip...
-    user_filter: '(employeeType=developer)'
 ```
 
 Tip: if you want to limit access to the nested members of an Active Directory group you can use the following syntax:
