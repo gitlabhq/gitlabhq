@@ -24,22 +24,31 @@ If you want to limit all GitLab access to a subset of the LDAP users on your LDA
 The filter must comply with [RFC 4515](http://tools.ietf.org/search/rfc4515).
 
 ```ruby
-# For omnibus-gitlab
-gitlab_rails['ldap_user_filter'] = '(employeeType=developer)'
+# For omnibus packages; new LDAP server syntax
 gitlab_rails['ldap_servers'] = YAML.load <<-EOS
 main:
   # snip...
   user_filter: '(employeeType=developer)'
 EOS
+
+# omnibus package; legacy syntax
+gitlab_rails['ldap_user_filter'] = '(employeeType=developer)'
 ```
 
 ```yaml
-# For installations from source
+# For installations from source; new LDAP server syntax
 production:
   ldap:
     servers:
       main:
+        # snip...
         user_filter: '(employeeType=developer)'
+
+# installations from source; legacy syntax
+production:
+  ldap:
+    # snip...
+    user_filter: '(employeeType=developer)'
 ```
 
 Tip: if you want to limit access to the nested members of an Active Directory group you can use the following syntax:
