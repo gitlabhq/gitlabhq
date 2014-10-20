@@ -261,8 +261,8 @@ objectclass: posixGroup
   describe 'ldap_groups' do
     let(:ldap_group_1) do
       Net::LDAP::Entry.from_single_ldif_string(
-%Q{dn: cn=#{Gitlab.config.ldap['admin_group']},ou=groups,dc=bar,dc=com
-cn: #{Gitlab.config.ldap['admin_group']}
+%Q{dn: cn=#{access.ldap_config.admin_group},ou=groups,dc=bar,dc=com
+cn: #{access.ldap_config.admin_group}
 description: GitLab group 1
 gidnumber: 42
 memberuid: user1
