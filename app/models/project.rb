@@ -173,7 +173,7 @@ class Project < ActiveRecord::Base
     end
 
     def with_push
-      includes(:events).where('events.action = ?', Event::PUSHED)
+      joins(:events).where('events.action = ?', Event::PUSHED)
     end
 
     def active
