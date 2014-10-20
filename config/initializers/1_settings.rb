@@ -61,16 +61,24 @@ Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     server = Settings.ldap.except('sync_time')
+<<<<<<< HEAD
     server = Settingslogic.new(server)
     server['label'] = 'LDAP'
+=======
+>>>>>>> 7-4-stable
     server['provider_name'] = 'ldap'
     Settings.ldap['servers'] = {
       'ldap' => server
     }
   end
 
+<<<<<<< HEAD
   Settings.ldap['servers'].map do |key, server|
     server = Settingslogic.new(server)
+=======
+  Settings.ldap['servers'].each do |key, server|
+    server['label'] ||= 'LDAP'
+>>>>>>> 7-4-stable
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
