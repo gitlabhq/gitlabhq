@@ -91,8 +91,7 @@ server {
   # resolver_timeout 10s;
 
   ## [Optional] Generate a stronger DHE parameter:
-  ##   cd /etc/ssl/certs
-  ##   sudo openssl dhparam -out dhparam.pem 4096
+  ##   sudo openssl dhparam -out /etc/ssl/certs/dhparam.pem 4096
   ##
   # ssl_dhparam /etc/ssl/certs/dhparam.pem;
 
