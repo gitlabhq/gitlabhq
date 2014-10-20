@@ -38,6 +38,9 @@
       - else
         Open
 
+    .cross-project-ref
+      = cross_project_reference(@project, @issue)
+
     .creator
       Created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
 
