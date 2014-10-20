@@ -20,3 +20,10 @@ Feature: Admin Groups
     When I visit admin group page
     When I select user "John Doe" from user list as "Reporter"
     Then I should see "John Doe" in team list in every project as "Reporter"
+
+  @javascript
+  Scenario: Remove user from group
+    Given we have user "John Doe" in group
+    When I visit admin group page
+    And I remove user "John Doe" from group
+    Then I should not see "John Doe" in team list
