@@ -67,6 +67,8 @@ class Dispatcher
         new TeamMembers()
       when 'groups:members'
         new GroupMembers()
+      when 'groups:new', 'groups:edit', 'admin:groups:edit'
+        new GroupAvatar()
       when 'projects:tree:show'
         new TreeView()
         shortcut_handler = new ShortcutsNavigation()
