@@ -85,7 +85,7 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:error], 400)
+          render_api_error!(result[:message], 400)
         end
       end
 
@@ -117,7 +117,7 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:error], 400)
+          render_api_error!(result[:message], 400)
         end
       end
 
@@ -149,7 +149,7 @@ module API
             branch_name: branch_name
           }
         else
-          render_api_error!(result[:error], 400)
+          render_api_error!(result[:message], 400)
         end
       end
     end
