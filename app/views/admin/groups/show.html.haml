@@ -74,7 +74,7 @@
       %ul.well-list.group-users-list
         - @members.each do |member|
           - user = member.user
-          %li{class: dom_class(user)}
+          %li{class: dom_class(member), id: dom_id(user)}
             .list-item-name
               %strong
                 = link_to user.name, admin_user_path(user)
