@@ -1,4 +1,4 @@
-class Flash
+class @Flash
   constructor: (message, type)->
     flash = $(".flash-container")
     flash.html("")
@@ -10,5 +10,3 @@ class Flash
 
     flash.click -> $(@).fadeOut()
     flash.show()
-
-@Flash = Flash
