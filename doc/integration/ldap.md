@@ -135,3 +135,43 @@ Tip: if you want to limit access to the nested members of an Active Directory gr
 ```
 
 Please note that GitLab does not support the custom filter syntax used by omniauth-ldap.
+
+## Integrate GitLab with more than one LDAP server (Enterprise Edition)
+
+Starting with GitLab Enterprise Edition 7.4 it is possible to give users from more than one LDAP server access to the same GitLab server.
+
+Please use the following steps to enable support for multiple LDAP servers.
+
+### 1. Check your GitLab version
+
+Go to gitlab.example.com/help and verify you are running GitLab Enterprise Edition 7.4.0 or newer.
+
+### 2. Make sure your GitLab server uses the new LDAP syntax
+
+```
+# For omnibus packages
+sudo gitlab-rails runner 'puts (Gitlab.config.ldap["host"] ? :old_syntax : :new_syntax)'
+
+# For installations from source
+cd /home/git/gitlab
+bundle exec rails runner -e production 'puts (Gitlab.config.ldap["host"] ? :old_syntax : :new_syntax)'
+```
+
+### 3. Migrate existing users and groups
+
+After switching to the new LDAP configuration syntax there will be a mismatch between the LDAP provider linked to your GitLab users and groups and the new LDAP provider defined in GitLab's configuration.
+The following command will associate all existing legacy LDAP users and groups on your GitLab server with the first LDAP server listed in `gitlab.rb` (omnibus) or `gitlab.yml`.
+
+```
+# For omnibus packages
+sudo gitlab-rake gitlab:migrate_ldap_providers
+
+# For installations from source
+cd /home/git/gitlab
+sudo -u git -H bundle exec rake gitlab:migrate_ldap_providers RAILS_ENV=production
+```
+
+### 4. Add new LDAP servers
+
+Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages) or `gitlab.yml` (installations from source).
+Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload` for the new servers to become available.
