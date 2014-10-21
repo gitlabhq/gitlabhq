@@ -58,11 +58,6 @@ class Dispatcher
       when 'groups:show', 'projects:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
-      when 'projects:new'
-        new Project()
-      when 'projects:edit'
-        new Project()
-        shortcut_handler = new ShortcutsNavigation()
       when 'projects:teams:members:index'
         new TeamMembers()
       when 'groups:members'
@@ -85,7 +80,15 @@ class Dispatcher
       when 'dashboard'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'projects'
+        new Project()
         switch path[1]
+          when 'edit'
+            shortcut_handler = new ShortcutsNavigation()
+            new ProjectNew()
+          when 'new'
+            new ProjectNew()
+          when 'show'
+            new ProjectShow()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
