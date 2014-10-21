@@ -118,8 +118,13 @@ class NotificationService
     return true unless note.noteable_type.present?
 
     # ignore gitlab service messages
-    return true if note.note =~ /\A_Status changed to closed_/
-    return true if note.note =~ /\A_mentioned in / && note.system == true
+    if note.system
+      note_content = note.note
+      if note_content.start_with?('_Status changed to closed_') ||
+         note_content.start_with?('_mentioned in ')
+        return true
+      end
+    end
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
