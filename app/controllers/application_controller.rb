@@ -81,28 +81,31 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    id = params[:project_id] || params[:id]
+    unless @project
+      id = params[:project_id] || params[:id]
 
-    # Redirect from
-    #   localhost/group/project.git
-    # to
-    #   localhost/group/project
-    #
-    if id =~ /\.git\Z/
-      redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+      # Redirect from
+      #   localhost/group/project.git
+      # to
+      #   localhost/group/project
+      #
+      if id =~ /\.git\Z/
+        redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+      end
+
+      @project = Project.find_with_namespace(id)
+
+      if @project and can?(current_user, :read_project, @project)
+        @project
+      elsif current_user.nil?
+        @project = nil
+        authenticate_user!
+      else
+        @project = nil
+        render_404 and return
+      end
     end
-
-    @project = Project.find_with_namespace(id)
-
-    if @project and can?(current_user, :read_project, @project)
-      @project
-    elsif current_user.nil?
-      @project = nil
-      authenticate_user!
-    else
-      @project = nil
-      render_404 and return
-    end
+    @project
   end
 
   def repository
