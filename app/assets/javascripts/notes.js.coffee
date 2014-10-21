@@ -1,4 +1,4 @@
-class Notes
+class @Notes
   @interval: null
 
   constructor: (notes_url, note_ids, last_fetched_at) ->
@@ -514,7 +514,3 @@ class Notes
     else
       form.find('.js-note-target-reopen').text('Reopen')
       form.find('.js-note-target-close').text('Close')
-
-
-
-@Notes = Notes

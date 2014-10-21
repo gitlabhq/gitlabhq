@@ -1,4 +1,4 @@
-class Project
+class @Project
   constructor: ->
     $('.project-edit-container').on 'ajax:before', =>
       $('.project-edit-container').hide()
@@ -23,9 +23,6 @@ class Project
         $('#project_issues_tracker_id').attr('disabled', 'disabled')
       else
         $('#project_issues_tracker_id').removeAttr('disabled')
-
-
-@Project = Project
 
 $ ->
   # Git clone panel switcher

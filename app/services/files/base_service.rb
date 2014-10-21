@@ -10,12 +10,6 @@ module Files
 
     private
 
-    def success
-      out = super()
-      out[:error] = ''
-      out
-    end
-
     def repository
       project.repository
     end

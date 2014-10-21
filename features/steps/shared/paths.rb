@@ -265,6 +265,15 @@ module SharedPaths
     visit project_blob_path(@project, File.join(root_ref, '.gitignore'))
   end
 
+  step 'I am on the new file page' do
+    current_path.should eq(project_new_tree_path(@project, root_ref))
+  end
+
+  step 'I am on the ".gitignore" edit file page' do
+    current_path.should eq(project_edit_tree_path(
+      @project, File.join(root_ref, '.gitignore')))
+  end
+
   step 'I visit project source page for "6d39438"' do
     visit project_tree_path(@project, "6d39438")
   end

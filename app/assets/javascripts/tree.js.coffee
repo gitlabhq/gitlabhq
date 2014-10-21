@@ -1,4 +1,4 @@
-class TreeView
+class @TreeView
   constructor: ->
     @initKeyNav()
 
@@ -39,5 +39,3 @@ class TreeView
       else if e.which is 13
         path = $('.tree-item.selected .tree-item-file-name a').attr('href')
         Turbolinks.visit(path)
-
-@TreeView = TreeView

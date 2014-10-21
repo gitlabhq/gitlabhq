@@ -10,7 +10,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def new
-    @user_project_relation = project.project_members.new
+    @user_project_relation = @project.project_members.new
   end
 
   def create
@@ -26,7 +26,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def update
-    @user_project_relation = project.project_members.find_by(user_id: member)
+    @user_project_relation = @project.project_members.find_by(user_id: member)
     @user_project_relation.update_attributes(member_params)
 
     unless @user_project_relation.valid?
@@ -36,7 +36,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def destroy
-    @user_project_relation = project.project_members.find_by(user_id: member)
+    @user_project_relation = @project.project_members.find_by(user_id: member)
     @user_project_relation.destroy
 
     respond_to do |format|
@@ -46,7 +46,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
   end
 
   def leave
-    project.project_members.find_by(user_id: current_user).destroy
+    @project.project_members.find_by(user_id: current_user).destroy
 
     respond_to do |format|
       format.html { redirect_to :back }

@@ -1,7 +1,7 @@
 class Projects::EditTreeController < Projects::BaseTreeController
   before_filter :require_branch_head
   before_filter :blob
-  before_filter :authorize_push!
+  before_filter :authorize_push_code!
   before_filter :from_merge_request
   before_filter :after_edit_path
 
@@ -22,7 +22,7 @@ class Projects::EditTreeController < Projects::BaseTreeController
 
       redirect_to after_edit_path
     else
-      flash[:alert] = result[:error]
+      flash[:alert] = result[:message]
       render :show
     end
   end

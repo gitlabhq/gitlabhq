@@ -1,4 +1,4 @@
-class Dashboard
+class @Dashboard
   constructor: ->
     @initSidebarTab()
 
@@ -28,6 +28,3 @@ class Dashboard
     # show tab from cookie
     sidebar_filter = $.cookie(key)
     $("#" + sidebar_filter).tab('show') if sidebar_filter
-
-
-@Dashboard = Dashboard

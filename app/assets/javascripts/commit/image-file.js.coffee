@@ -1,4 +1,4 @@
-class ImageFile
+class @ImageFile
 
   # Width where images must fits in, for 2-up this gets divided by 2
   @availWidth = 900
@@ -124,5 +124,3 @@ class ImageFile
     else
       img.on 'load', =>
         callback.call(this, domImg.naturalWidth, domImg.naturalHeight)
-
-@ImageFile = ImageFile
