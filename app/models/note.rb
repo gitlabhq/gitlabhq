@@ -80,7 +80,7 @@ class Note < ActiveRecord::Base
       note_options = {
         project: project,
         author: author,
-        note: "_mentioned in #{gfm_reference}_",
+        note: cross_reference_note_content(gfm_reference),
         system: true
       }
 
@@ -174,7 +174,7 @@ class Note < ActiveRecord::Base
                 where(noteable_id: noteable.id)
               end
 
-      notes.where('note like ?', "_mentioned in #{gfm_reference}_").
+      notes.where('note like ?', cross_reference_note_content(gfm_reference)).
         system.any?
     end
 
@@ -182,7 +182,15 @@ class Note < ActiveRecord::Base
       where("note like :query", query: "%#{query}%")
     end
 
+    def cross_reference_note_prefix
+      '_mentioned in '
+    end
+
     private
+
+    def cross_reference_note_content(gfm_reference)
+      cross_reference_note_prefix + "#{gfm_reference}_"
+    end
 
     # Prepend the mentioner's namespaced project path to the GFM reference for
     # cross-project references.  For same-project references, return the
@@ -247,6 +255,10 @@ class Note < ActiveRecord::Base
       project.users.find_by(name: noteable.author_name)
   rescue
     nil
+  end
+
+  def cross_reference?
+    note.start_with?(self.class.cross_reference_note_prefix)
   end
 
   def find_diff
