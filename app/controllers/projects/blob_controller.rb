@@ -20,7 +20,7 @@ class Projects::BlobController < Projects::ApplicationController
       flash[:notice] = "Your changes have been successfully committed"
       redirect_to project_tree_path(@project, @ref)
     else
-      flash[:alert] = result[:error]
+      flash[:alert] = result[:message]
       render :show
     end
   end
