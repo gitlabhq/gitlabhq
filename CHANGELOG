@@ -1,5 +1,6 @@
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
+  - Add time zone configuration on gitlab.yml (Sullivan Senechal)
 
 v 7.4.0
   - Refactored membership logic
