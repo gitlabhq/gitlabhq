@@ -11,7 +11,7 @@ NOTE: This is a guide for GitLab developers.
 A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
 
 ### **3. Create an overall issue**
-Name it "Release x.x.x" for easier searching.
+Create issue for GitLab CE project(internal). Name it "Release x.x.x" for easier searching.
 
 ```
 15th:
@@ -154,6 +154,12 @@ Create an annotated tag that points to the version change commit:
 
 ```
 git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
+```
+
+Tags should be created for both GitLab CE and GitLab EE. Don't forget to push tags to all remotes.
+
+```
+git push remote_name vx.x.0.rc1
 ```
 
 ### **6. Create stable branches**
