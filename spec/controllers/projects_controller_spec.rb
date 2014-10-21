@@ -7,6 +7,12 @@ describe ProjectsController do
   let(:jpg)     { fixture_file_upload(Rails.root + 'spec/fixtures/rails_sample.jpg', 'image/jpg') }
   let(:txt)     { fixture_file_upload(Rails.root + 'spec/fixtures/doc_sample.txt', 'text/plain') }
 
+  it 'GET #show .git redirection' do
+    get :show, id: project.to_param + '.git'
+
+    expect(response).to redirect_to(project_path(project))
+  end
+
   describe "POST #upload_image" do
     before do
       sign_in(user)

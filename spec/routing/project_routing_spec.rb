@@ -86,6 +86,11 @@ describe ProjectsController, "routing" do
     get("/gitlab/gitlabhq").should route_to('projects#show', id: 'gitlab/gitlabhq')
   end
 
+  it 'to #show .git redirect' do
+    get('/gitlab/gitlabhq.git').should(
+      route_to('projects#show', id: 'gitlab/gitlabhq.git'))
+  end
+
   it "to #update" do
     put("/gitlab/gitlabhq").should route_to('projects#update', id: 'gitlab/gitlabhq')
   end

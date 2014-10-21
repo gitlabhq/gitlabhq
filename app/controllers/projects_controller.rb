@@ -1,5 +1,6 @@
 class ProjectsController < ApplicationController
   skip_before_filter :authenticate_user!, only: [:show]
+  before_filter :show_redirect_git, only: [:show]
   before_filter :project, except: [:new, :create]
   before_filter :repository, except: [:new, :create]
 
@@ -208,5 +209,15 @@ class ProjectsController < ApplicationController
       :issues_enabled, :merge_requests_enabled, :snippets_enabled, :issues_tracker_id, :default_branch,
       :wiki_enabled, :visibility_level, :import_url, :last_activity_at, :namespace_id
     )
+  end
+
+  # Redirect from
+  #   localhost/group/project.git
+  # to
+  #   localhost/group/project
+  def show_redirect_git
+    if params[:id].end_with?('.git')
+      redirect_to request.original_url.chomp('.git') and return
+    end
   end
 end
