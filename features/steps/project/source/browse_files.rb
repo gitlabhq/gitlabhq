@@ -61,6 +61,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     fill_in :file_name, with: new_file_name
   end
 
+  step 'I fill the new file name with an illegal name' do
+    fill_in :file_name, with: '.git'
+  end
+
   step 'I fill the commit message' do
     fill_in :commit_message, with: 'Not yet a commit message.'
   end
@@ -149,6 +153,10 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
 
   step "I don't see the permalink link" do
     expect(page).not_to have_link('permalink')
+  end
+
+  step 'I see a commit error message' do
+    expect(page).to have_content('Your changes could not be committed')
   end
 
   private
