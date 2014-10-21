@@ -90,7 +90,7 @@ module Grack
       when *Gitlab::GitAccess::PUSH_COMMANDS
         if user
           # Skip user authorization on upload request.
-          # It will be serverd by update hook in repository
+          # It will be done by the pre-receive hook in the repository.
           true
         else
           false
