@@ -1,3 +1,6 @@
+v 7.5.0
+  - API: Add support for Hipchat (Kevin Houdebert)
+
 v 7.4.0
   - Refactored membership logic
   - Improve error reporting on users API (Julien Bianchi)
