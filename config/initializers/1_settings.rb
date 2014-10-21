@@ -61,6 +61,7 @@ Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
 if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     server = Settings.ldap.except('sync_time')
+    server = Settingslogic.new(server)
     server['label'] = 'LDAP'
     server['provider_name'] = 'ldap'
     Settings.ldap['servers'] = {
