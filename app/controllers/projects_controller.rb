@@ -6,7 +6,6 @@ class ProjectsController < ApplicationController
   # Authorize
   before_filter :authorize_read_project!, except: [:index, :new, :create]
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :retry_import]
-  before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
 
   layout 'navless', only: [:new, :create, :fork]
   before_filter :set_title, only: [:new, :create]
