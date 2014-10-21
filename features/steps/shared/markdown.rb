@@ -56,7 +56,7 @@ EOT
   end
 
   step 'I should not see the Markdown preview' do
-    expect(find('.gfm-form')).not_to have_css('.js-md-preview', visible: true)
+    expect(find('.gfm-form .js-md-preview')).not_to be_visible
   end
 
   step 'The Markdown preview tab should say there is nothing to do' do
@@ -67,21 +67,21 @@ EOT
   end
 
   step 'I should not see the Markdown text field' do
-    expect(find('.gfm-form')).not_to have_css('textarea', visible: true)
+    expect(find('.gfm-form textarea')).not_to be_visible
   end
 
   step 'I should see the Markdown write tab' do
-    expect(find('.gfm-form')).to have_css('.js-md-write-button')
+    expect(find('.gfm-form')).to have_css('.js-md-write-button', visible: true)
   end
 
   step 'I should see the Markdown preview' do
-    expect(find('.gfm-form')).to have_css('.js-md-preview')
+    expect(find('.gfm-form')).to have_css('.js-md-preview', visible: true)
   end
 
   step 'The Markdown preview tab should display rendered Markdown' do
     within('.gfm-form') do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji')
+      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
     end
   end
 

@@ -132,26 +132,26 @@ module SharedDiffNote
 
   step 'I should see the diff comment preview' do
     within("#{diff_file_selector} form") do
-      expect(page).to have_css('.js-md-preview')
+      expect(page).to have_css('.js-md-preview', visible: true)
     end
   end
 
   step 'I should see the diff comment write tab' do
     within(diff_file_selector) do
-      expect(page).to have_css('.js-md-write-button')
+      expect(page).to have_css('.js-md-write-button', visible: true)
     end
   end
 
   step 'The diff comment preview tab should display rendered Markdown' do
     within(diff_file_selector) do
       find('.js-md-preview-button').click
-      expect(find('.js-md-preview')).to have_css('img.emoji')
+      expect(find('.js-md-preview')).to have_css('img.emoji', visible: true)
     end
   end
 
   step 'I should see two separate previews' do
     within(diff_file_selector) do
-      expect(page).to have_css('.js-md-preview', count: 2)
+      expect(page).to have_css('.js-md-preview', visible: true, count: 2)
       expect(page).to have_content('Should fix it')
       expect(page).to have_content('DRY this up')
     end

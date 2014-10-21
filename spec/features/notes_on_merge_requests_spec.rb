@@ -34,7 +34,7 @@ describe 'Comments' do
         it 'should have enable submit button and preview button' do
           within('.js-main-target-form') do
             expect(page).not_to have_css('.js-comment-button[disabled]')
-            expect(page).to have_css('.js-md-preview-button')
+            expect(page).to have_css('.js-md-preview-button', visible: true)
           end
         end
       end
@@ -53,7 +53,7 @@ describe 'Comments' do
         should have_content("This is awsome!")
         within('.js-main-target-form') do
           expect(page).to have_no_field('note[note]', with: 'This is awesome!')
-          expect(page).not_to have_css('.js-md-preview', visible: true)
+          expect(page).to have_css('.js-md-preview', visible: :hidden)
         end
         within(".js-main-target-form") { should have_css(".js-note-text", visible: true) }
       end
