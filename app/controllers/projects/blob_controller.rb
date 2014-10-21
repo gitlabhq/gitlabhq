@@ -4,9 +4,9 @@ class Projects::BlobController < Projects::ApplicationController
 
   # Authorize
   before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
+  before_filter :authorize_download_code!
   before_filter :require_non_empty_project
-  before_filter :authorize_push!, only: [:destroy]
+  before_filter :authorize_push_code!, only: [:destroy]
 
   before_filter :blob
 

@@ -1,4 +1,4 @@
-class BlobView
+class @BlobView
   constructor: ->
     # handle multi-line select
     handleMultiSelect = (e) ->
@@ -71,6 +71,3 @@ class BlobView
 
     # Highlight the correct lines when the hash part of the URL changes
     $(window).on("hashchange", highlightBlobLines)
-
-
-@BlobView = BlobView

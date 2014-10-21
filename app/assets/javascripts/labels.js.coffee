@@ -1,4 +1,4 @@
-class Labels
+class @Labels
   constructor: ->
     form = $('.label-form')
     @setupLabelForm(form)
@@ -31,5 +31,3 @@ class Labels
     # Notify the form, that color has changed
     $('.label-form').trigger('keyup')
     e.preventDefault()
-
-@Labels = Labels
