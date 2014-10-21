@@ -1,5 +1,7 @@
 # ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
+For upgrading from GitLab CE to GitLab EE there is [upgrade guide](doc/update/7.4-ce-to-ee.md)
+
 ## Open source software to collaborate on code
 
 ![Animated screenshots](https://about.gitlab.com/images/animated/compiled.gif)
