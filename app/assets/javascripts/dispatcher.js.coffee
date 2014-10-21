@@ -62,6 +62,7 @@ class Dispatcher
         new TeamMembers()
       when 'groups:members'
         new GroupMembers()
+        new UsersSelect()
       when 'groups:new', 'groups:edit', 'admin:groups:edit'
         new GroupAvatar()
       when 'projects:tree:show'
@@ -81,6 +82,8 @@ class Dispatcher
       when 'admin'
         new Admin()
         switch path[1]
+          when 'groups'
+            new UsersSelect()
           when 'projects'
             new NamespaceSelect()
       when 'dashboard'
@@ -95,6 +98,8 @@ class Dispatcher
             new ProjectNew()
           when 'show'
             new ProjectShow()
+          when 'issues', 'merge_requests'
+            new ProjectUsersSelect()
           when 'wikis'
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
@@ -103,6 +108,7 @@ class Dispatcher
             shortcut_handler = new ShortcutsNavigation()
           when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
             shortcut_handler = new ShortcutsNavigation()
+            new UsersSelect()
 
 
     # If we haven't installed a custom shortcut handler, install the default one
