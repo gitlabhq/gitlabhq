@@ -6,7 +6,7 @@ Below are the [gitlab-omnibus packages](https://gitlab.com/gitlab-org/omnibus-gi
 
 Please contact <subscribers@gitlab.com> if you have any questions.
 
-## GitLab 7.3 Enterprise Edition
+## GitLab 7.4 Enterprise Edition
 
 - 7.4.0-ee - Ubuntu 14.04 64-bit [gitlab_7.4.0-ee.omnibus.2-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/7839c59170801447b308694628378151a988ce75/ubuntu-14.04/gitlab_7.4.0-ee.omnibus.2-1_amd64.deb)
     + MD5: e091774fdd2649f3a839bef1c608399f
