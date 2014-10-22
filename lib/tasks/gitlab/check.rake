@@ -664,7 +664,7 @@ namespace :gitlab do
       warn_user_is_not_gitlab
       start_checking "LDAP"
 
-      if ldap_config.enabled
+      if Gitlab::LDAP::Config.enabled?
         print_users(args.limit)
       else
         puts 'LDAP is disabled in config/gitlab.yml'
@@ -675,38 +675,18 @@ namespace :gitlab do
 
     def print_users(limit)
       puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
-      ldap.search(attributes: attributes, filter: filter, size: limit, return_result: false) do |entry|
-        puts "DN: #{entry.dn}\t#{ldap_config.uid}: #{entry[ldap_config.uid]}"
+
+      servers = Gitlab::LDAP::Config.providers
+
+      servers.each do |server|
+        puts "Server: #{server}"
+        Gitlab::LDAP::Adapter.open(server) do |adapter|
+          users = adapter.users(adapter.config.uid, '*', 100)
+          users.each do |user|
+            puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
+          end
+        end
       end
-    end
-
-    def attributes
-      [ldap_config.uid]
-    end
-
-    def filter
-      uid_filter = Net::LDAP::Filter.present?(ldap_config.uid)
-      if user_filter
-        Net::LDAP::Filter.join(uid_filter, user_filter)
-      else
-        uid_filter
-      end
-    end
-
-    def user_filter
-      if ldap_config['user_filter'] && ldap_config.user_filter.present?
-        Net::LDAP::Filter.construct(ldap_config.user_filter)
-      else
-        nil
-      end
-    end
-
-    def ldap
-      @ldap ||= OmniAuth::LDAP::Adaptor.new(ldap_config).connection
-    end
-
-    def ldap_config
-      @ldap_config ||= Gitlab.config.ldap
     end
   end
 
