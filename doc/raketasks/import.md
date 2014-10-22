@@ -12,6 +12,7 @@ Notes:
 How to use:
 
 1. copy your bare repos under git repos_path (see `config/gitlab.yml` gitlab_shell -> repos_path)
+    The directory name of the repositories must end in `.git`.
 2. run the command below
 
 ```
