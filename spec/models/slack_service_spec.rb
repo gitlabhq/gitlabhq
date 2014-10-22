@@ -2,14 +2,14 @@
 #
 # Table name: services
 #
-#  id          :integer          not null, primary key
-#  type        :string(255)
-#  title       :string(255)
-#  project_id  :integer          not null
-#  created_at  :datetime
-#  updated_at  :datetime
-#  active      :boolean          default(FALSE), not null
-#  properties  :text
+#  id         :integer          not null, primary key
+#  type       :string(255)
+#  title      :string(255)
+#  project_id :integer          not null
+#  created_at :datetime
+#  updated_at :datetime
+#  active     :boolean          default(FALSE), not null
+#  properties :text
 #
 
 require 'spec_helper'
@@ -75,6 +75,26 @@ describe SlackService do
         slack_service.execute(sample_data)
 
         WebMock.should have_requested(:post, api_url).once
+      end
+    end
+
+    context 'with new webhook syntax with slack allowed team name' do
+      before do
+        @allowed_webhook = 'https://gitlab-hq-123.slack.com/services/hooks/incoming-webhook?token=cdIj4r4LfXUOySDUjp0tk3OI'
+        slack_service.stub(
+          project: project,
+          project_id: project.id,
+          service_hook: true,
+          webhook: @allowed_webhook
+        )
+
+        WebMock.stub_request(:post, @allowed_webhook)
+      end
+
+      it "should call Slack API" do
+        slack_service.execute(sample_data)
+
+        WebMock.should have_requested(:post, @allowed_webhook).once
       end
     end
   end

@@ -7,8 +7,8 @@
     @
     %span.monospace
       - if commit.nil?
-        #{submodule_item.id[0..10]}
+        #{truncate_sha(submodule_item.id)}
       - else
-        = link_to "#{submodule_item.id[0..10]}", commit
+        = link_to "#{truncate_sha(submodule_item.id)}", commit
   %td
   %td.hidden-xs

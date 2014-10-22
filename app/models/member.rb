@@ -1,3 +1,18 @@
+# == Schema Information
+#
+# Table name: members
+#
+#  id                 :integer          not null, primary key
+#  access_level       :integer          not null
+#  source_id          :integer          not null
+#  source_type        :string(255)      not null
+#  user_id            :integer          not null
+#  notification_level :integer          not null
+#  type               :string(255)
+#  created_at         :datetime
+#  updated_at         :datetime
+#
+
 class Member < ActiveRecord::Base
   include Notifiable
   include Gitlab::Access

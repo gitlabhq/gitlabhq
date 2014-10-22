@@ -1,5 +1,9 @@
 # Installation
 
+## Consider the Omnibus package installation
+
+Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+
 ## Select Version to Install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases this should be the highest numbered stable branch (example shown below).
@@ -70,8 +74,8 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz | tar xz
-    cd git-2.0.0/
+    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.1.2.tar.gz | tar xz
+    cd git-2.1.2/
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
@@ -161,9 +165,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-3-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-4-stable gitlab
 
-**Note:** You can change `7-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 

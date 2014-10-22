@@ -23,16 +23,11 @@
               %i.fa.fa-spinner.fa-spin
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
-    .form-actions
-      = hidden_field_tag 'last_commit', @last_commit
-      = hidden_field_tag 'content', '', id: "file-content"
-      = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
-      .commit-button-annotation
-        = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-primary'
-        .message
-          to branch
-          %strong= @ref
-      = link_to "Cancel", @after_edit_path, class: "btn btn-cancel", data: { confirm: leave_edit_message}
+    = hidden_field_tag 'last_commit', @last_commit
+    = hidden_field_tag 'content', '', id: "file-content"
+    = hidden_field_tag 'from_merge_request_id', params[:from_merge_request_id]
+    = render 'projects/commit_button', ref: @ref,
+              cancel_path: @after_edit_path
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace")

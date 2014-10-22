@@ -56,9 +56,25 @@ end
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
-Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
-Settings.ldap['active_directory'] = true if Settings.ldap['active_directory'].nil?
 
+# backwards compatibility, we only have one host
+if Settings.ldap['enabled'] || Rails.env.test?
+  if Settings.ldap['host'].present?
+    server = Settings.ldap.except('sync_time')
+    server['provider_name'] = 'ldap'
+    Settings.ldap['servers'] = {
+      'ldap' => server
+    }
+  end
+
+  Settings.ldap['servers'].each do |key, server|
+    server['label'] ||= 'LDAP'
+    server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
+    server['active_directory'] = true if server['active_directory'].nil?
+    server['provider_name'] ||= "ldap#{key}".downcase
+    server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+  end
+end
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
@@ -87,6 +103,7 @@ Settings.gitlab['user_home']  ||= begin
 rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
+Settings.gitlab['time_zone']  ||= nil
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])

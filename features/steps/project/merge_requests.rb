@@ -111,7 +111,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click on the commit in the merge request' do
     within '.mr-commits' do
-      click_link sample_commit.id[0..8]
+      click_link Commit.truncate_sha(sample_commit.id)
     end
   end
 

@@ -60,7 +60,7 @@ describe GitlabMarkdownHelper do
       end
 
       it "should link using a short id" do
-        actual = "Backported from #{commit.short_id(6)}"
+        actual = "Backported from #{commit.short_id}"
         gfm(actual).should match(expected)
       end
 
@@ -530,6 +530,24 @@ describe GitlabMarkdownHelper do
       markdown(actual).should match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
     end
 
+    it "should not link the apostrophe to issue 39" do
+      project.team << [user, :master]
+      project.issues.stub(:where).with(iid: '39').and_return([issue])
+
+      actual   = "Yes, it is @#{member.user.username}'s task."
+      expected = /Yes, it is <a.+>@#{member.user.username}<\/a>'s task/
+      markdown(actual).should match(expected)
+    end
+
+    it "should not link the apostrophe to issue 39 in code blocks" do
+      project.team << [user, :master]
+      project.issues.stub(:where).with(iid: '39').and_return([issue])
+
+      actual   = "Yes, `it is @#{member.user.username}'s task.`"
+      expected = /Yes, <code>it is @gfm\'s task.<\/code>/
+      markdown(actual).should match(expected)
+    end
+
     it "should handle references in <em>" do
       actual = "Apply _!#{merge_request.iid}_ ASAP"
 
@@ -576,8 +594,20 @@ describe GitlabMarkdownHelper do
     end
 
     it "should generate absolute urls for emoji" do
-      markdown(":smile:").should include("src=\"#{url_helper('emoji/smile')}")
+      markdown(":smile:").should include("src=\"http://localhost/assets/emoji/smile.png")
     end
+
+    it "should generate absolute urls for emoji if relative url is present" do
+      Gitlab.config.gitlab.stub(:url).and_return('http://localhost/gitlab/root')
+      markdown(":smile:").should include("src=\"http://localhost/gitlab/root/assets/emoji/smile.png")
+    end
+
+    it "should generate absolute urls for emoji if asset_host is present" do
+      Gitlab::Application.config.stub(:asset_host).and_return("https://cdn.example.com")
+      ActionView::Base.any_instance.stub_chain(:config, :asset_host).and_return("https://cdn.example.com")
+      markdown(":smile:").should include("src=\"https://cdn.example.com/assets/emoji/smile.png")
+    end
+
 
     it "should handle relative urls for a file in master" do
       actual = "[GitLab API doc](doc/api/README.md)\n"

@@ -39,3 +39,4 @@ public/assets/
 .envrc
 dump.rdb
 tags
+.gitlab_shell_secret

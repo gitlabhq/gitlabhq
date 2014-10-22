@@ -92,6 +92,7 @@ For examples of feedback on merge requests please look at already [closed merge 
 
 1. The change is as small as possible (see the above paragraph for details)
 1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
+1. All tests have to pass, if you suspect a failing CI build is unrelated to your contribution ask for tests to be restarted. See [the CI setup document](http://doc.gitlab.com/ce/development/ci_setup.html) on who you can ask for test restart.
 1. Initially contains a single commit (please use `git rebase -i` to squash commits)
 1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality
@@ -100,7 +101,11 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options since they complicate future changes
 1. Changes after submitting the merge request should be in separate commits (no squashing). You will be asked to squash when the review is over, before merging.
-1. It conforms to the following style guides
+1. It conforms to the following style guides.
+    If your change touches a line that does not follow the style,
+    modify the entire line to follow it. This prevents linting tools from generating warnings.
+    Don't touch neighbouring lines. As an exception, automatic mass refactoring modifications
+    may leave style non-compliant.
 
 ## Style guides
 

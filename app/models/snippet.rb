@@ -2,23 +2,24 @@
 #
 # Table name: snippets
 #
-#  id         :integer          not null, primary key
-#  title      :string(255)
-#  content    :text
-#  author_id  :integer          not null
-#  project_id :integer
-#  created_at :datetime
-#  updated_at :datetime
-#  file_name  :string(255)
-#  expires_at :datetime
-#  private    :boolean          default(TRUE), not null
-#  type       :string(255)
+#  id               :integer          not null, primary key
+#  title            :string(255)
+#  content          :text
+#  author_id        :integer          not null
+#  project_id       :integer
+#  created_at       :datetime
+#  updated_at       :datetime
+#  file_name        :string(255)
+#  expires_at       :datetime
+#  type             :string(255)
+#  visibility_level :integer          default(0), not null
 #
 
 class Snippet < ActiveRecord::Base
   include Linguist::BlobHelper
+  include Gitlab::VisibilityLevel
 
-  default_value_for :private, true
+  default_value_for :visibility_level, Snippet::PRIVATE
 
   belongs_to :author, class_name: "User"
 
@@ -30,10 +31,13 @@ class Snippet < ActiveRecord::Base
   validates :title, presence: true, length: { within: 0..255 }
   validates :file_name, presence: true, length: { within: 0..255 }
   validates :content, presence: true
+  validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 
   # Scopes
-  scope :are_internal,  -> { where(private: false) }
-  scope :are_private, -> { where(private: true) }
+  scope :are_internal,  -> { where(visibility_level: Snippet::INTERNAL) }
+  scope :are_private, -> { where(visibility_level: Snippet::PRIVATE) }
+  scope :are_public, -> { where(visibility_level: Snippet::PUBLIC) }
+  scope :public_and_internal, -> { where(visibility_level: [Snippet::PUBLIC, Snippet::INTERNAL]) }
   scope :fresh,   -> { order("created_at DESC") }
   scope :expired, -> { where(["expires_at IS NOT NULL AND expires_at < ?", Time.current]) }
   scope :non_expired, -> { where(["expires_at IS NULL OR expires_at > ?", Time.current]) }
@@ -66,6 +70,10 @@ class Snippet < ActiveRecord::Base
     expires_at && expires_at < Time.current
   end
 
+  def visibility_level_field
+    visibility_level
+  end 
+
   class << self
     def search(query)
       where('(title LIKE :query OR file_name LIKE :query)', query: "%#{query}%")
@@ -76,7 +84,7 @@ class Snippet < ActiveRecord::Base
     end
 
     def accessible_to(user)
-      where('private = ? OR author_id = ?', false, user)
+      where('visibility_level IN (?) OR author_id = ?', [Snippet::INTERNAL, Snippet::PUBLIC], user)
     end
   end
 end

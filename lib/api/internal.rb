@@ -1,6 +1,10 @@
 module API
   # Internal access API
   class Internal < Grape::API
+    before {
+      authenticate_by_gitlab_shell_token!
+    }
+
     namespace 'internal' do
       # Check if git command is allowed to project
       #

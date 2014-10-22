@@ -28,6 +28,11 @@
           Internal
           %span.pull-right
             = @user.snippets.are_internal.count
+      = nav_tab :scope, 'are_public' do
+        = link_to user_snippets_path(@user, scope: 'are_public') do
+          Public
+          %span.pull-right
+            = @user.snippets.are_public.count
 
   .col-md-9.my-snippets
     = render 'snippets'

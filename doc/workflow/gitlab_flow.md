@@ -26,7 +26,7 @@ After getting used to these three steps the branching model becomes the challeng
 Since many organizations new to git have no conventions how to work with it, it can quickly become a mess.
 The biggest problem they run into is that many long running branches that each contain part of the changes are around.
 People have a hard time figuring out which branch they should develop on or deploy to production.
-Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](https://guides.github.com/introduction/flow/index.html)
+Frequently the reaction to this problem is to adopt a standardized pattern such as [git flow](http://nvie.com/posts/a-successful-git-branching-model/) and [GitHub flow](http://scottchacon.com/2011/08/31/github-flow.html)
 We think there is still room for improvement and will detail a set of practices we call GitLab flow.
 
 # Git flow and its problems

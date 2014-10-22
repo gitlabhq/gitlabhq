@@ -1,5 +1,9 @@
 module Gitlab
   class Logger < ::Logger
+    def self.file_name
+      file_name_noext + '.log'
+    end
+
     def self.error(message)
       build.error(message)
     end

@@ -10,22 +10,8 @@
       = f.label :title, class: 'control-label'
       .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true
 
-    - unless @snippet.respond_to?(:project)
-      .form-group
-        = f.label "Access", class: 'control-label'
-        .col-sm-10
-          = f.label :private_true, class: 'radio-label' do
-            = f.radio_button :private, true
-            %span
-              %strong Private
-              (only you can see this snippet)
-          %br
-          = f.label :private_false, class: 'radio-label' do
-            = f.radio_button :private, false
-            %span
-              %strong Internal
-              (GitLab users can see this snippet)
-
+    = render "shared/snippets/visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
+    
     .form-group
       .file-editor
         = f.label :file_name, "File", class: 'control-label'
