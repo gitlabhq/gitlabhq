@@ -13,7 +13,7 @@ namespace :gitlab do
     task repos: :environment do
 
       git_base_path = Gitlab.config.gitlab_shell.repos_path
-      repos_to_import = Dir.glob(git_base_path + '/**/*.git')
+      repos_to_import = Dir.glob(git_base_path + '/*/*.git')
 
       repos_to_import.each do |repo_path|
         # strip repo base path
@@ -21,7 +21,6 @@ namespace :gitlab do
 
         path = repo_path.sub(/\.git$/, '')
         group_name, name = File.split(path)
-        group_name = nil if group_name == '.'
 
         puts "Processing #{repo_path}".yellow
 
@@ -43,22 +42,20 @@ namespace :gitlab do
           }
 
           # find group namespace
-          if group_name
-            group = Namespace.find_by(path: group_name)
-            # create group namespace
-            unless group
-              group = Group.new(:name => group_name)
-              group.path = group_name
-              group.owner = user
-              if group.save
-                puts " * Created Group #{group.name} (#{group.id})".green
-              else
-                puts " * Failed trying to create group #{group.name}".red
-              end
+          group = Namespace.find_by(path: group_name)
+          # create group namespace
+          if !group
+            group = Group.new(:name => group_name)
+            group.path = group_name
+            group.owner = user
+            if group.save
+              puts " * Created Group #{group.name} (#{group.id})".green
+            else
+              puts " * Failed trying to create group #{group.name}".red
             end
-            # set project group
-            project_params[:namespace_id] = group.id
           end
+          # set project group
+          project_params[:namespace_id] = group.id
 
           project = Projects::CreateService.new(user, project_params).execute
 
