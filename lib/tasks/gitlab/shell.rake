@@ -22,6 +22,10 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
+        # Allows to change the origin URL to the fork
+        # so that the CI can pass.
+        sh(*%W(git remote set-url origin #{args.repo}))
+
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
         reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
