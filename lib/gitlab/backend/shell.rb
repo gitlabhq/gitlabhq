@@ -1,3 +1,5 @@
+require 'securerandom'
+
 module Gitlab
   class Shell
     class AccessDenied < StandardError; end
@@ -5,6 +7,27 @@ module Gitlab
     class KeyAdder < Struct.new(:io)
       def add_key(id, key)
         io.puts("#{id}\t#{key.strip}")
+      end
+    end
+
+    # Be sure to restart your server when you modify this method.
+    class << self
+      def setup_secret_token
+        secret_file = Rails.root.join('.gitlab_shell_secret')
+        gitlab_shell_symlink = File.join(Gitlab.config.gitlab_shell.path,
+                                         '.gitlab_shell_secret')
+
+        unless File.exist? secret_file
+          # Generate a new token of 16 random hexadecimal characters
+          # and store it in secret_file.
+          token = SecureRandom.hex(16)
+          File.write(secret_file, token)
+        end
+
+        if File.exist?(Gitlab.config.gitlab_shell.path) &&
+          !File.exist?(gitlab_shell_symlink)
+          FileUtils.symlink(secret_file, gitlab_shell_symlink)
+        end
       end
     end
 
