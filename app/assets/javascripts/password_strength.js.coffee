@@ -15,10 +15,10 @@ $(document).ready ->
   profileOptions.rules =
     activated: overwritten_rules
 
-  signUpOptions = {}
-  signUpOptions.common =
+  deviseOptions = {}
+  deviseOptions.common =
     usernameField: "#user_username"
-  signUpOptions.ui =
+  deviseOptions.ui =
     container: "#password-strength"
     showPopover: true
     showErrors: true
@@ -26,8 +26,9 @@ $(document).ready ->
     showProgressBar: false
     showStatus: true
     errorMessages: overwritten_messages
-  signUpOptions.rules =
+  deviseOptions.rules =
     activated: overwritten_rules
 
   $("#user_password").pwstrength profileOptions
-  $("#user_password_sign_up").pwstrength signUpOptions
+  $("#user_password_sign_up").pwstrength deviseOptions
+  $("#user_password_recover").pwstrength deviseOptions
