@@ -32,13 +32,13 @@
 
 
       .note-body
-        .note-text
+        .note-text{ dir: 'auto' }
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
 
         .note-edit-form
           = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
-            = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
+            = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on', dir: :auto
 
             .form-actions.clearfix
               = f.submit 'Save changes', class: "btn btn-primary btn-save js-comment-button"

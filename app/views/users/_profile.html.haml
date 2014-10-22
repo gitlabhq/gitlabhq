@@ -8,20 +8,20 @@
     - unless user.skype.blank?
       %li
         %span.light Skype:
-        %strong= link_to user.skype, "skype:#{user.skype}"
+        %strong= link_to user.skype, "skype:#{user.skype}", dir: 'auto'
     - unless user.linkedin.blank?
       %li
         %span.light LinkedIn:
-        %strong= user.linkedin
+        %strong{ dir: 'auto' }= user.linkedin
     - unless user.twitter.blank?
       %li
         %span.light Twitter:
-        %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}"
+        %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}", dir: 'auto'
     - unless user.website_url.blank?
       %li
         %span.light Website:
-        %strong= link_to user.short_website_url, user.full_website_url
+        %strong= link_to user.short_website_url, user.full_website_url, dir: 'auto'
     - unless user.bio.blank?
       %li
         %span.light Bio:
-        %span= user.bio
+        %span{ dir: 'auto' }= user.bio

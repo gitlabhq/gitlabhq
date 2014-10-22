@@ -176,6 +176,9 @@ $ ->
       toggleClass('icon-chevron-up')
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
+    
+  # RTL Support in wiki pages
+  $('.wiki').find('*').not('li').attr('dir', 'auto');
 
 (($) ->
   # Disable an element and add the 'disabled' Bootstrap class

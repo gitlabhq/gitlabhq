@@ -62,7 +62,7 @@ module CommitsHelper
 
   # Returns the sorted alphabetically links to branches, separated by a comma
   def commit_branches_links(project, branches)
-    branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch)) }.join(", ").html_safe
+    branches.sort.map { |branch| link_to(branch, project_tree_path(project, branch), dir: "auto") }.join(", ").html_safe
   end
 
   def link_to_browse_code(project, commit)
@@ -96,7 +96,7 @@ module CommitsHelper
 
     text = if options[:avatar]
             avatar = image_tag(avatar_icon(person_email, options[:size]), class: "avatar #{"s#{options[:size]}" if options[:size]}", width: options[:size], alt: "")
-            %Q{#{avatar} <span class="commit-#{options[:source]}-name">#{person_name}</span>}
+            %Q{#{avatar} <span class="commit-#{options[:source]}-name" dir="auto">#{person_name}</span>}
           else
             person_name
           end

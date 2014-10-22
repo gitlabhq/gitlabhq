@@ -1,6 +1,6 @@
 %li
   = link_to profile_key_path(key) do
-    %strong= key.title
+    %strong{ dir: :auto }= key.title
   %span
     (#{key.fingerprint})
   %span.cgray

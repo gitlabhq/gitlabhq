@@ -6,7 +6,7 @@
       %ul.well-list
         %li
           %span.light Title:
-          %strong= @key.title
+          %strong{ dir: :auto }= @key.title
         %li
           %span.light Created on:
           %strong= @key.created_at.stamp("Aug 21, 2011")

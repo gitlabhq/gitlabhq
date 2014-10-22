@@ -1,6 +1,6 @@
 %h3
   Edit label
-  %span.light #{@label.name}
+  %span.light{ dir: :auto } #{@label.name}
 .back-link
   = link_to project_labels_path(@project) do
     &larr; To labels list

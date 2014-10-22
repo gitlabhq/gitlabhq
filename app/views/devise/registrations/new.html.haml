@@ -6,9 +6,9 @@
       .devise-errors
         = devise_error_messages!
       %div
-        = f.text_field :name, class: "form-control top", placeholder: "Name", required: true
+        = f.text_field :name, class: "form-control top", placeholder: "Name", required: true, dir: :auto
       %div
-        = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true
+        = f.text_field :username, class: "form-control middle", placeholder: "Username", required: true, dir: :auto
       %div
         = f.email_field :email, class: "form-control middle", placeholder: "Email", required: true
       %div

@@ -1,6 +1,6 @@
 .panel.panel-default
   .panel-heading.clearfix
-    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control'
+    = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control', dir:'auto'
     - if current_user.can_create_group?
       = link_to new_group_path, class: "btn btn-new pull-right" do
         %i.icon-plus

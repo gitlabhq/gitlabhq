@@ -11,14 +11,14 @@
     .creator
       Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
-  %h4.title
+  %h4.title{ dir: 'auto' }
     = gfm escape_once(@merge_request.title)
 
   - if @merge_request.description.present?
     .description
       .wiki
         = preserve do
-          = markdown @merge_request.description
+          %span{ dir: 'auto' }= markdown @merge_request.description
 
   .context
     %cite.cgray

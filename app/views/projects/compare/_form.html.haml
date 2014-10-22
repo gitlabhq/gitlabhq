@@ -5,12 +5,12 @@
     .form-group
       .input-group.inline-input-group
         %span.input-group-addon from
-        = text_field_tag :from, params[:from], class: "form-control"
+        = text_field_tag :from, params[:from], class: "form-control", dir: 'auto'
     = "..."
     .form-group
       .input-group.inline-input-group
         %span.input-group-addon to
-        = text_field_tag :to, params[:to], class: "form-control"
+        = text_field_tag :to, params[:to], class: "form-control", dir: 'auto'
     &nbsp;
     = submit_tag "Compare", class: "btn btn-create commits-compare-btn"
     - if compare_to_mr_button?

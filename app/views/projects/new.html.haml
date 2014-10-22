@@ -8,7 +8,7 @@
         = f.label :name, class: 'control-label' do
           %strong Project name
         .col-sm-10
-          = f.text_field :name, placeholder: "Example Project", class: "form-control", tabindex: 1, autofocus: true
+          = f.text_field :name, placeholder: "Example Project", class: "form-control", tabindex: 1, autofocus: true, dir: 'auto'
 
       - if current_user.can_select_namespace?
         .form-group
@@ -31,7 +31,7 @@
               %span Repository name
             .col-sm-10
               .input-group
-                = f.text_field :path, class: 'form-control'
+                = f.text_field :path, class: 'form-control', dir: 'auto'
                 %span.input-group-addon .git
 
       .js-toggle-container
@@ -58,7 +58,7 @@
           Description
           %span.light (optional)
         .col-sm-10
-          = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, tabindex: 3
+          = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, tabindex: 3, dir: 'auto'
       = render "visibility_level", f: f, visibility_level: gitlab_config.default_projects_features.visibility_level, can_change_visibility_level: true
 
       .form-actions

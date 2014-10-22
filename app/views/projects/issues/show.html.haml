@@ -27,7 +27,7 @@
       - if @issue.milestone
         |
         %span.light Milestone
-        = link_to project_milestone_path(@project, @issue.milestone) do
+        = link_to project_milestone_path(@project, @issue.milestone), dir: :auto do
           = @issue.milestone.title
 
 .issue-box{ class: issue_box_class(@issue) }
@@ -41,7 +41,7 @@
     .creator
       Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}
 
-  %h4.title
+  %h4.title{ dir: :auto }
     = gfm escape_once(@issue.title)
 
   - if @issue.description.present?

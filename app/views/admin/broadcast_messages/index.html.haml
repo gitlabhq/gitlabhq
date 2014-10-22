@@ -2,7 +2,7 @@
   Broadcast Messages
 %p.light
   Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more.
-.broadcast-message-preview
+.broadcast-message-preview{ dir: 'auto' }
   %i.icon-bullhorn
   %span Your message here
 
@@ -14,7 +14,7 @@
   .form-group
     = f.label :message, class: 'control-label'
     .col-sm-10
-      = f.text_area :message, class: "form-control", rows: 2, required: true
+      = f.text_area :message, class: "form-control", rows: 2, required: true, dir: 'auto'
       %div
         = link_to '#', class: 'js-toggle-colors-link' do
           Customize colors
@@ -55,7 +55,7 @@
           = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-tiny' do
             %i.icon-remove.cred
 
-        .message= broadcast_message.message
+        .message{ dir: 'auto' }= broadcast_message.message
 
 
   = paginate @broadcast_messages

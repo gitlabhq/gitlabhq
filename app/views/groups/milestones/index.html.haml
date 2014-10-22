@@ -30,7 +30,7 @@
                   - else
                     = link_to 'Close Milestone', group_milestone_path(@group, milestone.safe_title, title: milestone.title, milestone: {state_event: :close }), method: :put, class: "btn btn-small btn-close"
               %h4
-                = link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title, title: milestone.title)
+                %span{ dir: :auto }= link_to_gfm truncate(milestone.title, length: 100), group_milestone_path(@group, milestone.safe_title, title: milestone.title)
               %div
                 %div
                   = link_to group_milestone_path(@group, milestone.safe_title, title: milestone.title) do

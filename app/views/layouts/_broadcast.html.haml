@@ -1,4 +1,4 @@
 - if broadcast_message.present?
-  .broadcast-message{ style: broadcast_styling(broadcast_message) }
+  .broadcast-message{ style: broadcast_styling(broadcast_message), dir: 'auto' }
     %i.icon-bullhorn
     = broadcast_message.message

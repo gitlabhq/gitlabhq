@@ -6,7 +6,7 @@
         = link_to root_path, class: "home has_bottom_tooltip", title: "Dashboard" do
           %h1 GITLAB
         %span.separator
-      %h1.title= title
+      %h1.title{ dir: 'auto' }= title
 
       %button.navbar-toggle{"data-target" => ".navbar-collapse", "data-toggle" => "collapse", type: "button"}
         %span.sr-only Toggle navigation

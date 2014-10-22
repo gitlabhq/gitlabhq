@@ -12,18 +12,18 @@
       %ul.well-list
         %li
           %span.light Name:
-          %strong
+          %strong{ dir: 'auto' }
             = link_to @project.name, project_path(@project)
         %li
           %span.light Namespace:
-          %strong
+          %strong{ dir: 'auto' }
             - if @project.namespace
               = link_to @project.namespace.human_name, [:admin, @project.group || @project.owner]
             - else
               Global
         %li
           %span.light Owned by:
-          %strong
+          %strong{ dir: 'auto' }
             - if @project.owner
               = link_to @project.owner_name, [:admin, @project.owner]
             - else
@@ -31,7 +31,7 @@
 
         %li
           %span.light Created by:
-          %strong
+          %strong{ dir: 'auto' }
             = @project.creator.try(:name) || '(deleted)'
 
         %li
@@ -94,7 +94,7 @@
     - if @group
       .panel.panel-default
         .panel-heading
-          %strong #{@group.name}
+          %strong{ dir: 'auto' } #{@group.name}
           group members (#{@group.users_groups.count})
           .pull-right
             = link_to admin_group_path(@group), class: 'btn btn-small' do
@@ -120,7 +120,7 @@
           %li.users_project
             .list-item-name
               %strong
-                = link_to user.name, admin_user_path(user)
+                = link_to user.name, admin_user_path(user), dir: 'auto'
             .pull-right
               - if users_project.owner?
                 %span.light Owner

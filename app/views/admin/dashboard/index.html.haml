@@ -36,7 +36,7 @@
       %hr
       - @projects.each do |project|
         %p
-          = link_to project.name_with_namespace, [:admin, project], class: 'str-truncated'
+          = link_to project.name_with_namespace, [:admin, project], class: 'str-truncated', dir: 'auto'
           %span.light.pull-right
             #{time_ago_with_tooltip(project.created_at)}
 
@@ -45,7 +45,7 @@
       %hr
       - @users.each do |user|
         %p
-          = link_to [:admin, user], class: 'str-truncated' do
+          = link_to [:admin, user], class: 'str-truncated', dir: 'auto' do
             = user.name
           %span.light.pull-right
             #{time_ago_with_tooltip(user.created_at)}
@@ -55,7 +55,7 @@
       %hr
       - @groups.each do |group|
         %p
-          = link_to [:admin, group], class: 'str-truncated' do
+          = link_to [:admin, group], class: 'str-truncated', dir: 'auto' do
             = group.name
           %span.light.pull-right
             #{time_ago_with_tooltip(group.created_at)}

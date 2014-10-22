@@ -32,7 +32,7 @@
     .creator
       = @milestone.expires_at
 
-  %h4.title
+  %h4.title{ dir: :auto }
     = gfm escape_once(@milestone.title)
 
   - if @milestone.description.present?

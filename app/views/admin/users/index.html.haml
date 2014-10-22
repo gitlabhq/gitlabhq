@@ -21,7 +21,7 @@
       %hr
       = form_tag admin_users_path, method: :get, class: 'form-inline' do
         .form-group
-          = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control'
+          = search_field_tag :name, params[:name], placeholder: 'Name, email or username', class: 'form-control', dir: 'auto'
         = button_tag type: 'submit', class: 'btn btn-primary' do
           %i.icon-search
       %hr
@@ -41,7 +41,7 @@
                 %i.icon-lock.cred
               - else
                 %i.icon-user.cgreen
-              = link_to user.name, [:admin, user]
+              = link_to user.name, [:admin, user], dir: 'auto'
               - if user.admin?
                 %strong.cred (Admin)
               - if user == current_user

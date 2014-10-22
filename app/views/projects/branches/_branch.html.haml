@@ -2,7 +2,7 @@
 %li(class="js-branch-#{branch.name}")
   %h4
     = link_to project_tree_path(@project, branch.name) do
-      %strong.str-truncated= branch.name
+      %strong.str-truncated{ dir: :auto }= branch.name
       - if branch.name == @repository.root_ref
         %span.label.label-info default
       - if @project.protected_branch? branch.name

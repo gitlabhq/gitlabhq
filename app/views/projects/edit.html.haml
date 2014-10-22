@@ -13,7 +13,7 @@
               = f.label :name, class: 'control-label' do
                 Project name
               .col-sm-10
-                = f.text_field :name, placeholder: "Example Project", class: "form-control"
+                = f.text_field :name, placeholder: "Example Project", class: "form-control", dir: 'auto'
 
 
             .form-group
@@ -21,7 +21,7 @@
                 Project description
                 %span.light (optional)
               .col-sm-10
-                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250
+                = f.text_area :description, placeholder: "Awesome project", class: "form-control", rows: 3, maxlength: 250, dir: 'auto'
 
             - if @project.repository.exists? && @project.repository.branch_names.any?
               .form-group
@@ -37,7 +37,7 @@
             .form-group
               = f.label :tag_list, "Tags", class: 'control-label'
               .col-sm-10
-                = f.text_field :tag_list, maxlength: 2000, class: "form-control"
+                = f.text_field :tag_list, maxlength: 2000, class: "form-control", dir: :auto
                 %p.hint Separate tags with commas.
 
           %fieldset.features

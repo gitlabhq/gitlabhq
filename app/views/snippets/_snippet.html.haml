@@ -1,17 +1,17 @@
 %li
   %h4.snippet-title
     = link_to reliable_snippet_path(snippet) do
-      = truncate(snippet.title, length: 60)
+      %span{ dir: "auto" }= truncate(snippet.title, length: 60)
       - if snippet.private?
         %span.label.label-gray
           %i.icon-lock
           private
-    %span.cgray.monospace.tiny.pull-right
+    %span.cgray.monospace.tiny.pull-right{ dir: "auto" }
       = snippet.file_name
 
   %small.pull-right.cgray
     - if snippet.project_id?
-      = link_to snippet.project.name_with_namespace, project_path(snippet.project)
+      = link_to snippet.project.name_with_namespace, project_path(snippet.project), dir: "auto"
 
   .snippet-info
     = "##{snippet.id}"
@@ -19,5 +19,5 @@
       by
       = link_to user_snippets_path(snippet.author) do
         = image_tag avatar_icon(snippet.author_email), class: "avatar avatar-inline s16", alt: ''
-        = snippet.author_name
+        %span{ dir: "auto" }= snippet.author_name
       %span.light #{time_ago_with_tooltip(snippet.created_at)}

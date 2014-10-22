@@ -3,7 +3,7 @@
     %strong= 'Title *'
   .col-sm-10
     = f.text_field :title, maxlength: 255, autofocus: true,
-        class: 'form-control pad js-gfm-input', required: true
+        class: 'form-control pad js-gfm-input', required: true, dir: :auto
 .form-group.issuable-description
   = f.label :description, 'Description', class: 'control-label'
   .col-sm-10

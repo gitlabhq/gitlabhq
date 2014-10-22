@@ -3,7 +3,7 @@ module EventsHelper
     author = event.author
 
     if author
-      link_to author.name, user_path(author.username)
+      link_to author.name, user_path(author.username), dir: 'auto'
     else
       event.author_name
     end

@@ -16,12 +16,12 @@
       .form-group
         = f.label :title, "Title", class: "control-label"
         .col-sm-10
-          = f.text_field :title, maxlength: 255, class: "form-control"
+          = f.text_field :title, maxlength: 255, class: "form-control", dir: "auto"
           %p.hint Required
       .form-group
         = f.label :description, "Description", class: "control-label"
         .col-sm-10
-          = f.text_area :description, maxlength: 65535, class: "form-control markdown-area", rows: 10
+          = f.text_area :description, maxlength: 65535, class: "form-control markdown-area", rows: 10, dir: :auto
           .hint
             .pull-left Milestones are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
             .pull-left Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.

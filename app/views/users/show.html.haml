@@ -2,7 +2,7 @@
   .col-md-8
     %h3.page-title
       = image_tag avatar_icon(@user.email, 90), class: "avatar s90", alt: ''
-      = @user.name
+      %div{ dir: 'auto' }= @user.name
       - if @user == current_user
         .pull-right
           = link_to profile_path, class: 'btn' do

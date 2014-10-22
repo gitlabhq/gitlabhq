@@ -27,7 +27,7 @@
         Commit message
       .col-sm-10
         = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message', '',
-            placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control')}
+            placeholder: "Update #{@blob.name}", required: true, rows: 3, class: 'form-control', dir: 'auto')}
     .form-actions
       = hidden_field_tag 'last_commit', @last_commit
       = hidden_field_tag 'content', '', id: "file-content"

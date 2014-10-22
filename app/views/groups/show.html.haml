@@ -23,7 +23,7 @@
         %h3.page-title
           = @group.name
         - if @group.description.present?
-          %p
+          %p{ dir: :auto }
             = auto_link @group.description, link: :urls
     = render "projects", projects: @projects
     - if current_user

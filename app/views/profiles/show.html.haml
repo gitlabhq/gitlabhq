@@ -19,21 +19,21 @@
       .form-group
         = f.label :name, class: "control-label"
         .col-sm-10
-          = f.text_field :name, class: "form-control", required: true
+          = f.text_field :name, class: "form-control", required: true, dir: 'auto'
           %span.help-block Enter your name, so people you know can recognize you.
 
       .form-group
         = f.label :email, class: "control-label"
         .col-sm-10
           - if @user.ldap_user?
-            = f.text_field :email, class: "form-control", required: true, readonly: true
+            = f.text_field :email, class: "form-control", required: true, readonly: true, dir: 'auto'
             %span.help-block.light
               Email is read-only for LDAP user
           - else
             - if @user.temp_oauth_email?
-              = f.text_field :email, class: "form-control", required: true, value: nil
+              = f.text_field :email, class: "form-control", required: true, value: nil, dir: 'auto'
             - else
-              = f.text_field :email, class: "form-control", required: true
+              = f.text_field :email, class: "form-control", required: true, dir: 'auto'
             - if @user.unconfirmed_email.present?
               %span.help-block
                 Please click the link in the confirmation email before continuing, it was send to
@@ -43,20 +43,20 @@
               %span.help-block We also use email for avatar detection if no avatar is uploaded.
       .form-group
         = f.label :skype, class: "control-label"
-        .col-sm-10= f.text_field :skype, class: "form-control"
+        .col-sm-10= f.text_field :skype, class: "form-control", dir: 'auto'
       .form-group
         = f.label :linkedin, class: "control-label"
-        .col-sm-10= f.text_field :linkedin, class: "form-control"
+        .col-sm-10= f.text_field :linkedin, class: "form-control", dir: 'auto'
       .form-group
         = f.label :twitter, class: "control-label"
-        .col-sm-10= f.text_field :twitter, class: "form-control"
+        .col-sm-10= f.text_field :twitter, class: "form-control", dir: 'auto'
       .form-group
         = f.label :website_url, 'Website', class: "control-label"
-        .col-sm-10= f.text_field :website_url, class: "form-control"
+        .col-sm-10= f.text_field :website_url, class: "form-control", dir: 'auto'
       .form-group
         = f.label :bio, class: "control-label"
         .col-sm-10
-          = f.text_area :bio, rows: 6, class: "form-control", maxlength: 250
+          = f.text_area :bio, rows: 6, class: "form-control", maxlength: 250, dir: 'auto'
           %span.help-block Tell us about yourself in fewer than 250 characters.
 
     .col-md-5

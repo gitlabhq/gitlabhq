@@ -14,7 +14,7 @@
       by
       = link_to user_path(@snippet.author) do
         = image_tag avatar_icon(@snippet.author_email), class: "avatar avatar-inline s16"
-        = @snippet.author_name
+        %span{ dir: "auto" }= @snippet.author_name
 
   .back-link
     = link_to project_snippets_path(@project) do

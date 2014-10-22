@@ -1,8 +1,8 @@
 %li
   %h4.snippet-title
     = link_to reliable_snippet_path(snippet) do
-      = truncate(snippet.title, length: 60)
-    %span.cgray.monospace.tiny.pull-right
+      %span{ dir: "auto" }= truncate(snippet.title, length: 60)
+    %span.cgray.monospace.tiny.pull-right{ dir: "auto" }
       = snippet.file_name
 
   .snippet-info
@@ -10,6 +10,6 @@
     %span
       by
       = image_tag avatar_icon(snippet.author_email), class: "avatar avatar-inline s16"
-      = snippet.author_name
+      %span{ dir: "auto" }= snippet.author_name
       %span.light
         #{time_ago_with_tooltip(snippet.created_at)}

@@ -12,5 +12,5 @@
     = event.project_name
 - if event.target.respond_to?(:title)
   .event-body
-    .event-note
+    .event-note{ dir: 'auto' }
       = event.target.title

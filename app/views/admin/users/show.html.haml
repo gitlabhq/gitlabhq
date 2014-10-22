@@ -1,6 +1,6 @@
 %h3.page-title
   User:
-  = @user.name
+  %span{ dir: 'auto' }= @user.name
   - if @user.blocked?
     %span.cred (Blocked)
   - if @user.admin
@@ -31,19 +31,19 @@
           %ul.well-list
             %li
               %span.light Name:
-              %strong= @user.name
+              %strong{ dir: 'auto' }= @user.name
             %li
               %span.light Username:
-              %strong
+              %strong{ dir: 'auto' }
                 = @user.username
             %li
               %span.light Email:
-              %strong
+              %strong{ dir: 'auto' }
                 = mail_to @user.email
             - @user.emails.each do |email|
               %li
                 %span.light Secondary email:
-                %strong= email.email
+                %strong{ dir: 'auto' }= email.email
                 = link_to remove_email_admin_user_path(@user, email), data: { confirm: "Are you sure you want to remove #{email.email}?" }, method: :delete, class: "btn-tiny btn btn-remove pull-right", title: 'Remove secondary email', id: "remove_email_#{email.id}" do
                   %i.icon-remove
 
@@ -95,7 +95,7 @@
             - if @user.created_by
               %li
                 %span.light Created by:
-                %strong
+                %strong{ dir: 'auto' }
                   = link_to @user.created_by.name, [:admin, @user.created_by]
 
       .col-md-6
@@ -167,7 +167,7 @@
             - group = user_group.group
             %li.users_group
               %span{class: ("list-item-name" unless user_group.owner?)}
-                %strong= link_to group.name, admin_group_path(group)
+                %strong= link_to group.name, admin_group_path(group), dir: 'auto'
               .pull-right
                 %span.light= user_group.human_access
                 - unless user_group.owner?

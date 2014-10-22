@@ -9,10 +9,10 @@
         .input-group
           %span.input-group-addon
             = @path[-1] == "/" ? @path : @path + "/"
-          = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control'
+          = text_field_tag 'file_name', params[:file_name], placeholder: "sample.rb", required: true, class: 'form-control', dir: 'auto'
           %span.input-group-addon
             on
-            %span= @ref
+            %span{ dir: "auto" }= @ref
 
     .form-group.commit_message-group
       = label_tag :encoding, class: "control-label" do
@@ -25,7 +25,7 @@
         Commit message
       .col-sm-10
         = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message',
-            params[:commit_message], placeholder: "Added new file", required: true, rows: 3, class: 'form-control')}
+            params[:commit_message], placeholder: "Added new file", required: true, rows: 3, class: 'form-control', dir: :auto)}
 
     .file-holder
       .file-title

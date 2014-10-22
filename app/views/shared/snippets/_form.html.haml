@@ -8,7 +8,7 @@
 
     .form-group
       = f.label :title, class: 'control-label'
-      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true
+      .col-sm-10= f.text_field :title, placeholder: "Example Snippet", class: 'form-control', required: true, dir: "auto"
 
     - unless @snippet.respond_to?(:project)
       .form-group
@@ -32,7 +32,7 @@
         .col-sm-10
           .file-holder.snippet
             .file-title
-              = f.text_field :file_name, placeholder: "example.rb", class: 'form-control snippet-file-name', required: true
+              = f.text_field :file_name, placeholder: "example.rb", class: 'form-control snippet-file-name', required: true, dir: "auto"
             .file-content.code
               %pre#editor= @snippet.content
               = f.hidden_field :content, class: 'snippet-file-content'

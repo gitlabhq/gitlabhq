@@ -8,7 +8,7 @@ module ProjectsHelper
       title = content_tag(:span, project.name, class: 'project-name')
 
       if project.namespace
-        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'namespace-name')
+        namespace = content_tag(:span, "#{project.namespace.human_name} / ", class: 'namespace-name', dir: 'auto')
         title = namespace + title
       end
 
@@ -28,7 +28,7 @@ module ProjectsHelper
     author_html << image_tag(avatar_icon(author.try(:email), opts[:size]), width: opts[:size], class: "avatar avatar-inline #{"s#{opts[:size]}" if opts[:size]}", alt:'') if opts[:avatar]
 
     # Build name span tag
-    author_html << content_tag(:span, sanitize(author.name), class: 'author') if opts[:name]
+    author_html << content_tag(:span, sanitize(author.name), class: 'author', dir: "auto") if opts[:name]
 
     author_html = author_html.html_safe
 

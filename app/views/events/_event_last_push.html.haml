@@ -3,7 +3,7 @@
     .event-last-push-text
       %span You pushed to
       = link_to project_commits_path(event.project, event.ref_name) do
-        %strong= event.ref_name
+        %strong{ dir: 'auto' }= event.ref_name
       at
       %strong= link_to_project event.project
       #{time_ago_with_tooltip(event.created_at)}

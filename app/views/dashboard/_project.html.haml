@@ -1,4 +1,4 @@
-= link_to project_path(project), class: dom_class(project) do
+= link_to project_path(project), class: dom_class(project), dir: "auto" do
   .dash-project-access-icon
     = visibility_level_icon(project.visibility_level)
   %span.str-truncated

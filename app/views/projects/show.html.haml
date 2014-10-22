@@ -56,9 +56,9 @@
       %p
         %span.light Owned by
         - if @project.group
-          #{link_to @project.group.name, @project.group} group
+          #{link_to @project.group.name, @project.group, dir: "auto"} group
         - else
-          #{link_to @project.owner_name, @project.owner}
+          #{link_to @project.owner_name, @project.owner, dir: "auto"}
 
 
       - if @project.gitlab_ci?

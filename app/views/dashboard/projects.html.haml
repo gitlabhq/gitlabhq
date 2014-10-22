@@ -59,7 +59,7 @@
                   %i.icon-tag
                   = tag.name
             - if project.description.present?
-              %p= truncate project.description, length: 100
+              %p{ dir: 'auto' }= truncate project.description, length: 100
             .last-activity
               %span.light Last activity:
               %span.date= project_last_activity(project)

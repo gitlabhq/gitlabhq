@@ -43,7 +43,7 @@
       Exists in
     %span
       - branch = commit_default_branch(@project, @branches)
-      = link_to(branch, project_tree_path(@project, branch))
+      = link_to(branch, project_tree_path(@project, branch), dir: "auto")
       - if @branches.any?
         and in
         = link_to("#{pluralize(@branches.count, "other branch")}", "#", class: "js-details-expand")
@@ -51,8 +51,8 @@
           = commit_branches_links(@project, @branches)
 
 .commit-box
-  %h3.commit-title
+  %h3.commit-title{ dir: "auto" }
     = gfm escape_once(@commit.title)
   - if @commit.description.present?
-    %pre.commit-description
+    %pre.commit-description{ dir: "auto" }
       = preserve(gfm(escape_once(@commit.description)))
