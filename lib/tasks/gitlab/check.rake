@@ -676,11 +676,11 @@ namespace :gitlab do
     def print_users(limit)
       puts "LDAP users with access to your GitLab server (only showing the first #{limit} results)"
 
-      servers = Gitlab.config.ldap.servers.keys
+      servers = Gitlab::LDAP::Config.providers
 
       servers.each do |server|
         puts "Server: #{server}"
-        Gitlab::LDAP::Adapter.open("ldap#{server}") do |adapter|
+        Gitlab::LDAP::Adapter.open(server) do |adapter|
           users = adapter.users(adapter.config.uid, '*', 100)
           users.each do |user|
             puts "\tDN: #{user.dn}\t #{adapter.config.uid}: #{user.uid}"
