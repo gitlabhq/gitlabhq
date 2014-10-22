@@ -226,6 +226,11 @@ class User < ActiveRecord::Base
       where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
 
+    def by_login(login)
+      where('lower(username) = :value OR lower(email) = :value',
+            value: login.to_s.downcase).first
+    end
+
     def by_username_or_id(name_or_id)
       where('users.username = ? OR users.id = ?', name_or_id.to_s, name_or_id.to_i).first
     end

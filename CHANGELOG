@@ -5,6 +5,7 @@ v 7.5.0
   - Fix LDAP config lookup for provider 'ldap'
   - Add Atlassian Bamboo CI service (Drew Blessing)
   - Mentioned @user will receive email even if he is not participating in issue or commit
+  - Session API: Use case-insensitive authentication like in UI (Andrey Krivko)
 
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users
@@ -49,7 +50,7 @@ v 7.4.0
   - Fix ambiguous sha problem with mentioned commit
   - Fixed bug with apostrophe when at mentioning users
   - Add active directory ldap option
-  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more 
+  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more
   - Faster rev list
   - Fix branch removal
 
