@@ -69,8 +69,9 @@ if Settings.ldap['enabled'] || Rails.env.test?
     }
   end
 
-  Settings.ldap['servers'].map do |key, server|
+  Settings.ldap['servers'].each do |key, server|
     server = Settingslogic.new(server)
+    server['label'] ||= 'LDAP'
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase

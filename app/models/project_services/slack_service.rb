@@ -40,7 +40,8 @@ class SlackService < Service
       project_name: project_name
     ))
 
-    credentials = webhook.match(/(\w*).slack.com.*services\/(.*)/)
+    credentials = webhook.match(/([\w-]*).slack.com.*services\/(.*)/)
+
     if credentials.present?
       subdomain =  credentials[1]
       token = credentials[2].split("token=").last
