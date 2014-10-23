@@ -2,7 +2,7 @@
 
 NOTE: This is a guide for GitLab developers.
 
-# **15th - Code Freeze & Release Manager**
+# **7 workdays before release - Code Freeze & Release Manager**
 
 ### **1. Stop merging in code, except for important bugfixes**
 
@@ -12,30 +12,31 @@ A release manager is selected that coordinates the entire release of this versio
 
 ### **3. Create an overall issue**
 Create issue for GitLab CE project(internal). Name it "Release x.x.x" for easier searching.
+Replace the dates with actual dates based on the number of workdays before the release.
 
 ```
-15th:
+Xth:
 
 * Update the changelog (#LINK)
 * Triage the omnibus-gitlab milestone
 
-16th:
+Xth:
 
 * Merge CE in to EE (#LINK)
 * Close the omnibus-gitlab milestone
 
-17th:
+Xth:
 
 * Create x.x.0.rc1 (#LINK)
 * Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
-18th:
+Xth:
 
 * Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 * Regression issue and tweet about rc1 (#LINK)
 * Start blog post (#LINK)
 
-21th:
+Xth:
 
 * Do QA and fix anything coming out of it (#LINK)
 
@@ -43,13 +44,10 @@ Create issue for GitLab CE project(internal). Name it "Release x.x.x" for easier
 
 * Release CE and EE (#LINK)
 
-23rd:
+Xth:
 
-* Prepare package for GitLab.com release (#LINK)
+* * Deploy to GitLab.com (#LINK)
 
-24th:
-
-* Deploy to GitLab.com (#LINK)
 ```
 
 ### **4. Update Changelog**
@@ -60,11 +58,11 @@ Any changes not yet added to the changelog are added by lead developer and in th
 
 Ensure that there is enough time to incorporate the findings of the release candidate, etc.
 
-# **16th - Merge the CE into EE**
+# **6 workdays before release- Merge the CE into EE**
 
 Do this via a merge request.
 
-# **17th - Create RC1**
+# **5 workdays before release - Create RC1**
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
@@ -179,7 +177,7 @@ Now developers can use master for merging new features.
 So you should use stable branch for future code chages related to release.
 
 
-# **18th - Release RC1**
+# **4 workdays before release - Release RC1**
 
 ### **1. Update GitLab.com**
 
@@ -217,7 +215,7 @@ Tweet about the RC release:
 
 > GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
-# **21st - Preparation**
+# **1 workdays before release - Preparation**
 
 ### **1. Pre QA merge**
 
@@ -309,22 +307,8 @@ List the most important features and link to the blog post.
 
 Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 
-### **10. Send out the newsletter**
+# **1 workday after release - Update GitLab.com**
 
-Send out an email to the 'GitLab Newsletter' mailing list on MailChimp.
-Replicate the former release newsletter and modify it accordingly.
-**Do not forget to edit `Subject line` and regenerate `Plain-Text Email` from HTML source**
-
-Include a link to the blog post and keep it short.
-
-Proposed email text:
-"We have released a new version of GitLab. See our blog post(<link>) for more information."
-
-
-# **23rd - Optional Patch Release**
-
-# **24th - Update GitLab.com**
-
-Merge the stable release into GitLab.com. Once the build is green deploy the next morning.
+Update GitLab.com from RC1 to the released package.
 
 # **25th - Release GitLab CI**
