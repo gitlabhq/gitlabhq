@@ -174,17 +174,11 @@ module API
       #
       # Parameters:
       #   id (required) - The ID of a project
-      #   keep_repo (optional) - If true, then delete the project from the
-      #     database but keep the repo, wiki, and satellite on disk.
       # Example Request:
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        ::Projects::DestroyService.new(
-          user_project,
-          current_user,
-          keep_repo: params[:keep_repo]
-        ).execute
+        ::Projects::DestroyService.new(user_project, current_user, {}).execute
       end
 
       # Mark this project as forked from another

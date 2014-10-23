@@ -641,16 +641,6 @@ describe API::API, api: true  do
         response.status.should == 200
       end
 
-      it 'should keep repo when "keep_repo" param is true' do
-        expect(GitlabShellWorker).not_to(
-          receive(:perform_async).with(:remove_repository,
-                                       /#{project.path_with_namespace}/)
-        )
-
-        delete api("/projects/#{project.id}?keep_repo=true", user)
-        response.status.should == 200
-      end
-
       it "should not remove a project if not an owner" do
         user3 = create(:user)
         project.team << [user3, :developer]

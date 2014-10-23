@@ -100,8 +100,7 @@ class ProjectsController < ApplicationController
   def destroy
     return access_denied! unless can?(current_user, :remove_project, project)
 
-    ::Projects::DestroyService.new(@project, current_user,
-                                   keep_repo: params[:keep_repo]).execute
+    ::Projects::DestroyService.new(@project, current_user, {}).execute
 
     respond_to do |format|
       format.html do

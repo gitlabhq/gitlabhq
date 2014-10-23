@@ -6,10 +6,7 @@ module Projects
       project.team.truncate
       project.repository.expire_cache unless project.empty_repo?
 
-      result = project.destroy
-      return false unless result
-
-      unless params[:keep_repo]
+      if project.destroy
         GitlabShellWorker.perform_async(
           :remove_repository,
           project.path_with_namespace
@@ -21,11 +18,11 @@ module Projects
         )
 
         project.satellite.destroy
-      end
 
-      log_info("Project \"#{project.name}\" was removed")
-      system_hook_service.execute_hooks_for(project, :destroy)
-      result
+        log_info("Project \"#{project.name}\" was removed")
+        system_hook_service.execute_hooks_for(project, :destroy)
+        true
+      end
     end
   end
 end
