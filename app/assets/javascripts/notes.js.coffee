@@ -281,7 +281,7 @@ class @Notes
 
     # remove notify commit author checkbox for non-commit notes
     form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
-    GitLab.GfmAutoComplete.setup()
+    new GfmAutoComplete()
     form.show()
 
 
@@ -328,7 +328,7 @@ class @Notes
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
-    GitLab.GfmAutoComplete.setup()
+    new GfmAutoComplete()
     form = note.find(".note-edit-form")
     form.show()
     textarea = form.find("textarea")
