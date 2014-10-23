@@ -117,6 +117,14 @@
   margin-bottom: 0;
 }
 
-.progress {
-  margin-top: 10px;
+.has-success input {
+  background-color: #C3FF88 !important;
+}
+
+.has-error input {
+  background-color: #FFA0A0 !important;
+}
+
+.has-warning input {
+  background-color: #FFEC8B !important;
 }

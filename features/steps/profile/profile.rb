@@ -146,7 +146,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I submit new password' do
     fill_in :user_current_password, with: '12345678'
-    fill_in :user_password, with: '12345678'
+    fill_in :user_password_profile, with: '12345678'
     fill_in :user_password_confirmation, with: '12345678'
     click_button "Set new password"
   end

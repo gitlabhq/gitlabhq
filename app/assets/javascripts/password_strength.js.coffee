@@ -7,10 +7,11 @@ overwritten_rules =
 $(document).ready ->
   profileOptions = {}
   profileOptions.ui =
-    container: "#password-strength"
-    showVerdictsInsideProgressBar: true
+    showProgressBar: false
+    showVerdicts: false
     showPopover: true
     showErrors: true
+    showStatus: true
     errorMessages: overwritten_messages
   profileOptions.rules =
     activated: overwritten_rules
@@ -19,7 +20,6 @@ $(document).ready ->
   deviseOptions.common =
     usernameField: "#user_username"
   deviseOptions.ui =
-    container: "#password-strength"
     showPopover: true
     showErrors: true
     showVerdicts: false

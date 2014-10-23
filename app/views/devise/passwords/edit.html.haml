@@ -6,7 +6,7 @@
       .devise-errors
         = devise_error_messages!
       = f.hidden_field :reset_password_token
-      .form-group#password-strength
+      .form-group
         = f.password_field :password, class: "form-control top", id: "user_password_recover", placeholder: "New password", required: true
       %div
         = f.password_field :password_confirmation, class: "form-control bottom", placeholder: "Confirm new password", required: true
