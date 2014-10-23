@@ -143,7 +143,7 @@ gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
-gem "slack-notifier", "~> 0.3.2"
+gem "slack-notifier", "~> 1.0.0"
 
 # d3
 gem "d3_rails", "~> 3.1.4"
