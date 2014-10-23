@@ -58,7 +58,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I try change my password w/o old one' do
     within '.update-password' do
-      fill_in "user_password", with: "22233344"
+      fill_in "user_password_profile", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
     end
@@ -67,7 +67,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I change my password' do
     within '.update-password' do
       fill_in "user_current_password", with: "12345678"
-      fill_in "user_password", with: "22233344"
+      fill_in "user_password_profile", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
     end
@@ -76,7 +76,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I unsuccessfully change my password' do
     within '.update-password' do
       fill_in "user_current_password", with: "12345678"
-      fill_in "user_password", with: "password"
+      fill_in "user_password_profile", with: "password"
       fill_in "user_password_confirmation", with: "confirmation"
       click_button "Save"
     end

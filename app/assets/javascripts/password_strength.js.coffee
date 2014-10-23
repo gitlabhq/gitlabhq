@@ -29,6 +29,6 @@ $(document).ready ->
   deviseOptions.rules =
     activated: overwritten_rules
 
-  $("#user_password").pwstrength profileOptions
+  $("#user_password_profile").pwstrength profileOptions
   $("#user_password_sign_up").pwstrength deviseOptions
   $("#user_password_recover").pwstrength deviseOptions
