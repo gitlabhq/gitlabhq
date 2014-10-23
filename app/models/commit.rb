@@ -126,7 +126,7 @@ class Commit
   end
 
   def method_missing(m, *args, &block)
-    @raw.send(m, *args, &block)
+    @raw.public_send(m, *args, &block)
   end
 
   def respond_to?(method)

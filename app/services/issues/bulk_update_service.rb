@@ -27,7 +27,7 @@ module Issues
 
       issues.each do |issue|
         issue.update_attributes(opts)
-        issue.send new_state if new_state
+        issue.public_send new_state if new_state
       end
 
       {

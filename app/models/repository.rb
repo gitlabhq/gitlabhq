@@ -159,7 +159,7 @@ class Repository
   end
 
   def method_missing(m, *args, &block)
-    raw_repository.send(m, *args, &block)
+    raw_repository.public_send(m, *args, &block)
   end
 
   def respond_to?(method)

@@ -144,7 +144,7 @@ module ProjectsHelper
     end
 
     [:issues, :wiki, :snippets].each do |feature|
-      nav_tabs << feature if project.send :"#{feature}_enabled"
+      nav_tabs << feature if project.public_send :"#{feature}_enabled"
     end
 
     nav_tabs.flatten

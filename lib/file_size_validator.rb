@@ -42,7 +42,7 @@ class FileSizeValidator < ActiveModel::EachValidator
       value ||= [] if key == :maximum
 
       value_size = value.size
-      next if value_size.send(validity_check, check_value)
+      next if value_size.public_send(validity_check, check_value)
 
       errors_options = options.except(*RESERVED_OPTIONS)
       errors_options[:file_size] = help.number_to_human_size check_value

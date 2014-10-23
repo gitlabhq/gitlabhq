@@ -45,7 +45,7 @@ class IssuableFinder
 
     if project
       if project.public? || (current_user && current_user.can?(:read_project, project))
-        project.send(table_name)
+        project.public_send(table_name)
       else
         []
       end

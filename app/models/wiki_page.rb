@@ -176,7 +176,7 @@ class WikiPage
 
   def save(method, *args)
     project_wiki = wiki
-    if valid? && project_wiki.send(method, *args)
+    if valid? && project_wiki.public_send(method, *args)
 
       page_details = if method == :update_page
                        @page.path
