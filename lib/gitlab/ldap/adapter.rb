@@ -22,8 +22,6 @@ module Gitlab
         Gitlab::LDAP::Config.new(provider)
       end
 
-<<<<<<< HEAD
-=======
       # Get LDAP groups from ou=Groups
       #
       # cn - filter groups by name
@@ -48,7 +46,6 @@ module Gitlab
         groups(*args).first
       end
 
->>>>>>> 7-4-stable-ee
       def users(field, value, limit = nil)
         if field.to_sym == :dn
           options = {
