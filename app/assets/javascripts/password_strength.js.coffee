@@ -1,3 +1,4 @@
+#= require pwstrength-bootstrap-1.2.2
 overwritten_messages =
   wordSimilarToUsername: "Your password should not contain your username"
 
