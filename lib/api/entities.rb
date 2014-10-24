@@ -60,7 +60,12 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :owner_id
+      expose :id, :name, :path, :owner_id, :ldap_cn, :ldap_access
+      expose :ldap_group_links, if: ->(group, _) { group.ldap_group_links.any? } do |group, _|
+        group.ldap_group_links.map do |group_link|
+          group_link.slice(:cn, :group_access)
+        end
+      end
     end
 
     class GroupDetail < Group
@@ -164,6 +169,14 @@ module API
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
+    end
+
+    class LdapGroup < Grape::Entity
+      expose :cn
+    end
+
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
     end
 
     class Namespace < Grape::Entity

@@ -40,7 +40,7 @@ class Projects::ServicesController < Projects::ApplicationController
   def service_params
     params.require(:service).permit(
       :title, :token, :type, :active, :api_key, :subdomain,
-      :room, :recipients, :project_url, :webhook,
+      :room, :recipients, :project_url, :webhook, :username, :password, :api_version,
       :user_key, :device, :priority, :sound
     )
   end

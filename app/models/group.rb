@@ -19,6 +19,9 @@ require 'file_size_validator'
 class Group < Namespace
   has_many :group_members, dependent: :destroy, as: :source, class_name: 'GroupMember'
   has_many :users, through: :group_members
+  has_many :project_group_links, dependent: :destroy
+  has_many :shared_projects, through: :project_group_links, source: :project
+  has_many :ldap_group_links, foreign_key: 'group_id', dependent: :destroy
 
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
@@ -70,8 +73,25 @@ class Group < Namespace
     end
   end
 
+  def human_ldap_access
+    Gitlab::Access.options_with_owner.key ldap_access
+  end
+
   def public_profile?
     projects.public_only.any?
+  end
+
+  # NOTE: Backwards compatibility with old ldap situation
+  def ldap_cn
+    ldap_group_links.first.try(:cn)
+  end
+
+  def ldap_access
+    ldap_group_links.first.try(:group_access)
+  end
+
+  def ldap_synced?
+    ldap_cn.present?
   end
 
   class << self

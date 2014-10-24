@@ -7,6 +7,10 @@
     = link_to project_team_index_path(@project), class: "team-tab tab" do
       %i.fa.fa-users
       Members
+  = nav_link(controller: :group_links) do
+    = link_to project_group_links_path(@project) do
+      %i.icon-share
+      Groups
   = nav_link(controller: :deploy_keys) do
     = link_to project_deploy_keys_path(@project) do
       %i.fa.fa-key
@@ -15,6 +19,10 @@
     = link_to project_hooks_path(@project) do
       %i.fa.fa-link
       Web Hooks
+  = nav_link(controller: :git_hooks) do
+    = link_to project_git_hooks_path(@project) do
+      %i.icon-upload
+      Git Hooks
   = nav_link(controller: :services) do
     = link_to project_services_path(@project) do
       %i.fa.fa-cogs

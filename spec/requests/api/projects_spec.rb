@@ -589,6 +589,37 @@ describe API::API, api: true  do
     end
   end
 
+  describe "POST /projects/:id/share" do
+    let(:group) { create(:group) }
+
+    it "should share project with group" do
+      expect {
+        post api("/projects/#{project.id}/share", user), group_id: group.id,
+          group_access: Gitlab::Access::DEVELOPER
+      }.to change { ProjectGroupLink.count }.by(1)
+
+      response.status.should == 201
+      json_response['group_id'].should == group.id
+      json_response['group_access'].should == Gitlab::Access::DEVELOPER
+    end
+
+    it "should return a 400 error when group id is not given" do
+      post api("/projects/#{project.id}/share", user), group_access: Gitlab::Access::DEVELOPER
+      response.status.should == 400
+    end
+
+    it "should return a 400 error when access level is not given" do
+      post api("/projects/#{project.id}/share", user), group_id: group.id
+      response.status.should == 400
+    end
+
+    it "should return a 409 error when wrong params passed" do
+      post api("/projects/#{project.id}/share", user), group_id: group.id, group_access: 1234
+      response.status.should == 409
+      json_response['message'].should == 'Group access is not included in the list'
+    end
+  end
+
   describe "GET /projects/search/:query" do
     let!(:query) { 'query'}
     let!(:search)           { create(:empty_project, name: query, creator_id: user.id, namespace: user.namespace) }

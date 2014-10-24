@@ -9,8 +9,11 @@ module API
       # Example Request:
       #  GET /users
       get do
+        skip_ldap = params[:skip_ldap].present? && params[:skip_ldap] == 'true'
+
         @users = User.all
         @users = @users.active if params[:active].present?
+        @users = @users.where('provider != ? OR provider IS NULL', 'ldap') if skip_ldap
         @users = @users.search(params[:search]) if params[:search].present?
         @users = paginate @users
 
