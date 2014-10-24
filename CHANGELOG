@@ -1,6 +1,7 @@
 v 7.4.1
   - Fix LDAP authentication for Git HTTP access
   - Fix LDAP config lookup for provider 'ldap'
+  - Fix public snippets
 
 v 7.4.0
   - Refactored membership logic
