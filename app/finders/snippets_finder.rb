@@ -29,6 +29,8 @@ class SnippetsFinder
   def by_user(current_user, user, scope)
     snippets = user.snippets.fresh.non_expired
 
+    return snippets.are_public unless current_user
+
     if user == current_user
       case scope
       when 'are_internal' then
