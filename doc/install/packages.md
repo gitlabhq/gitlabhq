@@ -8,24 +8,27 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 
 ## GitLab 7.4 Enterprise Edition
 
-- 7.4.1-ee - Ubuntu 14.04 64-bit [gitlab_7.4.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/d6e0332c065645b2ac380890f8406224377cbcfc/ubuntu-14.04/gitlab_7.4.1-ee.omnibus-1_amd64.deb)
-    + MD5: aa39962db5c6e9b5f56a6c592927d338
+- 7.4.2-ee - Ubuntu 14.04 64-bit [gitlab_7.4.2-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/e38dad05abb276453da95d78fa1eaa41d783f390/ubuntu-14.04/gitlab_7.4.2-ee.omnibus-1_amd64.deb)
+    + MD5: 7a28adaf0fc96e86fafe4a363484fe07
 
-- 7.4.1-ee - Ubuntu 12.04 64-bit [gitlab_7.4.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/fe8289d8a2ca90b5839012296ff1a89c4c58c5bd/ubuntu-12.04/gitlab_7.4.1-ee.omnibus-1_amd64.deb)
-    + MD5: ee324001283b52d2d0dfd8ccba71d77e
+- 7.4.2-ee - Ubuntu 12.04 64-bit [gitlab_7.4.2-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/cd86d1cb6d76231403ca0fba4ded395a6c753b9b/ubuntu-12.04/gitlab_7.4.2-ee.omnibus-1_amd64.deb)
+    + MD5: 4851d59c5b304570eafd7ca1c4ce1617
 
-- 7.4.1-ee - Debian 7 64-bit [gitlab_7.4.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/aded923f200d89ec22f70e2edc6c12146f3e605a/debian-7.6/gitlab_7.4.1-ee.omnibus-1_amd64.deb)
-    + MD5: 901115747079fbab658078f268991596
+- 7.4.2-ee - Debian 7 64-bit [gitlab_7.4.2-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/93b1781f1ef5bf910075fa23bd609d504c5875a0/debian-7.6/gitlab_7.4.2-ee.omnibus-1_amd64.deb)
+    + MD5: 21f097081c2c94edf91bc2d35fc5821a
 
-- 7.4.1-ee - CentOS 6 64-bit [gitlab-7.4.1_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0e35c2a4c7174facb186a892a5260cad168a6167/centos-6.5/gitlab-7.4.1_ee.omnibus-1.el6.x86_64.rpm)
-    + MD5: 6909bbb98071974a4ab9808c63e15f19
+- 7.4.2-ee - CentOS 6 64-bit [gitlab-7.4.2_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0cacc003ce7d724eae04610af9adc8cf2c47f6cc/centos-6.5/gitlab-7.4.2_ee.omnibus-1.el6.x86_64.rpm)
+    + MD5: ab9c5fa50eaa337d6fcb13dadf83c7c7
 
-- 7.4.1-ee - CentOS 7 64-bit [gitlab-7.4.1_ee.omnibus-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/7fec37a0e4f36281269260bdbd0b911acfb8593b/centos-7.0.1406/gitlab-7.4.1_ee.omnibus-1.el7.x86_64.rpm)
-    + MD5: 6d5e0c2be3ab694a17536c7ff93e88c4
+- 7.4.2-ee - CentOS 7 64-bit [gitlab-7.4.2_ee.omnibus-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/34271e331e786ffb2ea436ba2f872be091d9a985/centos-7.0.1406/gitlab-7.4.2_ee.omnibus-1.el7.x86_64.rpm)
+    + MD5: 54cbef1653422906aa912925c4821e80
 
 ## Previous versions
 
 ### Ubuntu 14.04 64-bit
+
+- 7.4.1-ee - Ubuntu 14.04 64-bit [gitlab_7.4.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/d6e0332c065645b2ac380890f8406224377cbcfc/ubuntu-14.04/gitlab_7.4.1-ee.omnibus-1_amd64.deb)
+    + MD5: aa39962db5c6e9b5f56a6c592927d338
 
 - 7.4.0-ee - Ubuntu 14.04 64-bit [gitlab_7.4.0-ee.omnibus.2-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/7839c59170801447b308694628378151a988ce75/ubuntu-14.04/gitlab_7.4.0-ee.omnibus.2-1_amd64.deb)
     + MD5: e091774fdd2649f3a839bef1c608399f
@@ -61,6 +64,9 @@ Please contact <subscribers@gitlab.com> if you have any questions.
     - MD5: 0a0a821a166dc08499359a72daf2aa88
 
 ### Ubuntu 12.04 64-bit
+
+- 7.4.1-ee - Ubuntu 12.04 64-bit [gitlab_7.4.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/fe8289d8a2ca90b5839012296ff1a89c4c58c5bd/ubuntu-12.04/gitlab_7.4.1-ee.omnibus-1_amd64.deb)
+    + MD5: ee324001283b52d2d0dfd8ccba71d77e
 
 - 7.4.0-ee - Ubuntu 12.04 64-bit [gitlab_7.4.0-ee.omnibus.2-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/417446d069cba775a883d22ea22955ac3e93d24a/ubuntu-12.04/gitlab_7.4.0-ee.omnibus.2-1_amd64.deb)
     + MD5: 879a821076353bc92add2e539ea0f6d1
@@ -140,6 +146,9 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 
 ### CentOS 6 64-bit
 
+- 7.4.1-ee - CentOS 6 64-bit [gitlab-7.4.1_ee.omnibus-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0e35c2a4c7174facb186a892a5260cad168a6167/centos-6.5/gitlab-7.4.1_ee.omnibus-1.el6.x86_64.rpm)
+    + MD5: 6909bbb98071974a4ab9808c63e15f19
+
 - 7.4.0-ee - CentOS 6 64-bit [gitlab-7.4.0_ee.omnibus.2-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/f26f3f667c432fb7d901cb8ec6d9933b6682f023/centos-6.5/gitlab-7.4.0_ee.omnibus.2-1.el6.x86_64.rpm)
     + MD5: 5fe5843b33d244edb7e53a65f1dddd46
 
@@ -217,6 +226,9 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 
 ### CentOS 7 64-bit
 
+- 7.4.1-ee - CentOS 7 64-bit [gitlab-7.4.1_ee.omnibus-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/7fec37a0e4f36281269260bdbd0b911acfb8593b/centos-7.0.1406/gitlab-7.4.1_ee.omnibus-1.el7.x86_64.rpm)
+    + MD5: 6d5e0c2be3ab694a17536c7ff93e88c4
+
 - 7.4.0-ee - CentOS 7 64-bit [gitlab-7.4.0_ee.omnibus.2-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/9b33aa1758a695f38898818a4fdd79529d123dc6/centos-7.0.1406/gitlab-7.4.0_ee.omnibus.2-1.el7.x86_64.rpm)
     + MD5: 9489913a4250df7691f6037dc5f26c3e
 
@@ -240,6 +252,9 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 
 
 ### Debian 7 64-bit
+
+- 7.4.1-ee - Debian 7 64-bit [gitlab_7.4.1-ee.omnibus-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/aded923f200d89ec22f70e2edc6c12146f3e605a/debian-7.6/gitlab_7.4.1-ee.omnibus-1_amd64.deb)
+    + MD5: 901115747079fbab658078f268991596
 
 - 7.4.0-ee - Debian 7 64-bit [gitlab_7.4.0-ee.omnibus.2-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/22be93e9b1d13b05c94dfa5c77ac1210932b92e1/debian-7.6/gitlab_7.4.0-ee.omnibus.2-1_amd64.deb)
     + MD5: b887551f922d97b41f5c9fbd0814ef3f
