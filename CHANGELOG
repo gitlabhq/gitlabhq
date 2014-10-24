@@ -1,3 +1,7 @@
+v 7.4.1
+  - Fix LDAP authentication for Git HTTP access
+  - Fix LDAP config lookup for provider 'ldap'
+
 v 7.4.0
   - Refactored membership logic
   - Improve error reporting on users API (Julien Bianchi)
