@@ -9,7 +9,7 @@ class SnippetsController < ApplicationController
 
   before_filter :set_title
 
-  skip_before_filter :authenticate_user!, only: [:index, :user_index]
+  skip_before_filter :authenticate_user!, only: [:index, :user_index, :show]
 
   respond_to :html
 
