@@ -81,21 +81,23 @@ class User < ActiveRecord::Base
   has_many :emails, dependent: :destroy
 
   # Groups
-  has_many :users_groups, dependent: :destroy
-  has_many :groups, through: :users_groups
-  has_many :owned_groups, -> { where users_groups: { group_access: UsersGroup::OWNER } }, through: :users_groups, source: :group
-  has_many :masters_groups, -> { where users_groups: { group_access: UsersGroup::MASTER } }, through: :users_groups, source: :group
+  has_many :members, dependent: :destroy
+  has_many :project_members, source: 'ProjectMember'
+  has_many :group_members, source: 'GroupMember'
+  has_many :groups, through: :group_members
+  has_many :owned_groups, -> { where members: { access_level: Gitlab::Access::OWNER } }, through: :group_members, source: :group
+  has_many :masters_groups, -> { where members: { access_level: Gitlab::Access::MASTER } }, through: :group_members, source: :group
 
   # Projects
   has_many :groups_projects,          through: :groups, source: :projects
   has_many :personal_projects,        through: :namespace, source: :projects
-  has_many :projects,                 through: :users_projects
+  has_many :projects,                 through: :project_members
   has_many :created_projects,         foreign_key: :creator_id, class_name: 'Project'
   has_many :users_star_projects, dependent: :destroy
   has_many :starred_projects, through: :users_star_projects, source: :project
 
   has_many :snippets,                 dependent: :destroy, foreign_key: :author_id, class_name: "Snippet"
-  has_many :users_projects,           dependent: :destroy
+  has_many :project_members,          dependent: :destroy, class_name: 'ProjectMember'
   has_many :issues,                   dependent: :destroy, foreign_key: :author_id
   has_many :notes,                    dependent: :destroy, foreign_key: :author_id
   has_many :merge_requests,           dependent: :destroy, foreign_key: :author_id
@@ -140,7 +142,7 @@ class User < ActiveRecord::Base
   state_machine :state, initial: :active do
     after_transition any => :blocked do |user, transition|
       # Remove user from all projects and
-      user.users_projects.find_each do |membership|
+      user.project_members.find_each do |membership|
         # skip owned resources
         next if membership.project.owner == user
 
@@ -148,7 +150,7 @@ class User < ActiveRecord::Base
       end
 
       # Remove user from all groups
-      user.users_groups.find_each do |membership|
+      user.group_members.find_each do |membership|
         # skip owned resources
         next if membership.group.last_owner?(user)
 
@@ -175,9 +177,8 @@ class User < ActiveRecord::Base
   scope :in_team, ->(team){ where(id: team.member_ids) }
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
-  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM users_projects)') }
-  scope :ldap, -> { where(provider:  'ldap') }
-
+  scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
@@ -194,6 +195,16 @@ class User < ActiveRecord::Base
       end
     end
 
+    def sort(method)
+      case method.to_s
+      when 'recent_sign_in' then reorder('users.last_sign_in_at DESC')
+      when 'oldest_sign_in' then reorder('users.last_sign_in_at ASC')
+      when 'recently_created' then reorder('users.created_at DESC')
+      when 'late_created' then reorder('users.created_at ASC')
+      else reorder("users.name ASC")
+      end
+    end
+
     def find_for_commit(email, name)
       # Prefer email match over name match
       User.where(email: email).first ||
@@ -201,7 +212,7 @@ class User < ActiveRecord::Base
         User.where(name: name).first
     end
 
-    def filter filter_name
+    def filter(filter_name)
       case filter_name
       when "admins"; self.admins
       when "blocked"; self.blocked
@@ -211,7 +222,7 @@ class User < ActiveRecord::Base
       end
     end
 
-    def search query
+    def search(query)
       where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
 
@@ -295,7 +306,7 @@ class User < ActiveRecord::Base
 
   # Team membership in authorized projects
   def tm_in_authorized_projects
-    UsersProject.where(project_id: authorized_projects.map(&:id), user_id: self.id)
+    ProjectMember.where(source_id: authorized_projects.map(&:id), user_id: self.id)
   end
 
   def is_admin?
@@ -330,7 +341,7 @@ class User < ActiveRecord::Base
     several_namespaces? || admin
   end
 
-  def can? action, subject
+  def can?(action, subject)
     abilities.allowed?(self, action, subject)
   end
 
@@ -351,7 +362,7 @@ class User < ActiveRecord::Base
     (personal_projects.count.to_f / projects_limit) * 100
   end
 
-  def recent_push project_id = nil
+  def recent_push(project_id = nil)
     # Get push events not earlier than 2 hours ago
     events = recent_events.code_push.where("created_at > ?", Time.now - 2.hours)
     events = events.where(project_id: project_id) if project_id
@@ -380,11 +391,11 @@ class User < ActiveRecord::Base
     project.team_member_by_id(self.id)
   end
 
-  def already_forked? project
+  def already_forked?(project)
     !!fork_of(project)
   end
 
-  def fork_of project
+  def fork_of(project)
     links = ForkedProjectLink.where(forked_from_project_id: project, forked_to_project_id: personal_projects)
 
     if links.any?
@@ -395,7 +406,7 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    extern_uid && provider == 'ldap'
+    extern_uid && provider.start_with?('ldap')
   end
 
   def accessible_deploy_keys
@@ -510,7 +521,7 @@ class User < ActiveRecord::Base
     NotificationService.new
   end
 
-  def log_info message
+  def log_info(message)
     Gitlab::AppLogger.info message
   end
 

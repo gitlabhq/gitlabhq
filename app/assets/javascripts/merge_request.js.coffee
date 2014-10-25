@@ -15,8 +15,10 @@ class MergeRequest
 
     modal = $('#modal_merge_info').modal(show: false)
 
-    disableButtonIfEmptyField '#merge_commit_message', '.accept_merge_request'
+    disableButtonIfEmptyField '#commit_message', '.accept_merge_request'
 
+    if $("a.btn-close").length
+      $("li.task-list-item input:checkbox").prop("disabled", false)
 
   # Local jQuery finder
   $: (selector) ->
@@ -40,6 +42,8 @@ class MergeRequest
     if @opts.ci_enable
       $.get @opts.url_to_ci_check, (data) =>
         this.showCiState data.status
+        if data.coverage
+          this.showCiCoverage data.coverage
       , 'json'
 
   bindEvents: ->
@@ -70,6 +74,13 @@ class MergeRequest
       this.$('.remove_source_branch_in_progress').hide()
       this.$('.remove_source_branch_widget.failed').show()
 
+    $(".task-list-item input:checkbox").on(
+      "click"
+      null
+      "merge_request"
+      updateTaskState
+    )
+
   activateTab: (action) ->
     this.$('.merge-request-tabs li').removeClass 'active'
     this.$('.tab-content').hide()
@@ -94,15 +105,11 @@ class MergeRequest
     else
       $('.ci_widget.ci-error').show()
 
-    switch state
-      when "success"
-        $('.mr-state-widget').addClass("panel-success")
-      when "failed"
-        $('.mr-state-widget').addClass("panel-danger")
-      when "running", "pending"
-        $('.mr-state-widget').addClass("panel-warning")
-
-
+  showCiCoverage: (coverage) ->
+    cov_html = $('<span>')
+    cov_html.addClass('ci-coverage')
+    cov_html.text('Coverage ' + coverage + '%')
+    $('.ci_widget:visible').append(cov_html)
 
   loadDiff: (event) ->
     $.ajax

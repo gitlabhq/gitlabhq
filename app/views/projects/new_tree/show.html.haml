@@ -19,28 +19,17 @@
         Encoding
       .col-sm-10
         = select_tag :encoding, options_for_select([ "base64", "text" ], "text"), class: 'form-control'
-
-    .form-group.commit_message-group
-      = label_tag 'commit_message', class: "control-label" do
-        Commit message
-      .col-sm-10
-        = render 'shared/commit_message_container', {textarea: text_area_tag('commit_message',
-            params[:commit_message], placeholder: "Added new file", required: true, rows: 3, class: 'form-control', dir: :auto)}
-
+    = render 'shared/commit_message_container', params: params,
+             placeholder: 'Add new file'
     .file-holder
       .file-title
-        %i.icon-file
+        %i.fa.fa-file
       .file-content.code
         %pre#editor= params[:content]
 
-    .form-actions
-      = hidden_field_tag 'content', '', id: "file-content"
-      .commit-button-annotation
-        = button_tag "Commit changes", class: 'btn commit-btn js-commit-button btn-create'
-        .message
-          to branch
-          %strong= @ref
-      = link_to "Cancel", project_tree_path(@project, @id), class: "btn btn-cancel", data: { confirm: leave_edit_message}
+    = hidden_field_tag 'content', '', id: 'file-content'
+    = render 'projects/commit_button', ref: @ref,
+              cancel_path: project_tree_path(@project, @id)
 
 :javascript
   ace.config.set("modePath", gon.relative_url_root + "#{Gitlab::Application.config.assets.prefix}/ace-src-noconflict")

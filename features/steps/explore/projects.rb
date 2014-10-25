@@ -1,4 +1,4 @@
-class Spinach::Features::ExploreProjectsFeature < Spinach::FeatureSteps
+class Spinach::Features::ExploreProjects < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject
@@ -22,14 +22,14 @@ class Spinach::Features::ExploreProjectsFeature < Spinach::FeatureSteps
 
   step 'I should see empty public project details with http clone info' do
     project = Project.find_by(name: 'Empty Public Project')
-    page.all(:css, '.git-empty .clone').each do |element|
+    all(:css, '.git-empty .clone').each do |element|
       element.text.should include(project.http_url_to_repo)
     end
   end
 
   step 'I should see empty public project details with ssh clone info' do
     project = Project.find_by(name: 'Empty Public Project')
-    page.all(:css, '.git-empty .clone').each do |element|
+    all(:css, '.git-empty .clone').each do |element|
       element.text.should include(project.url_to_repo)
     end
   end

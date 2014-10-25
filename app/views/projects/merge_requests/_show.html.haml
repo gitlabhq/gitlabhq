@@ -10,18 +10,18 @@
     %ul.nav.nav-pills.merge-request-tabs
       %li.notes-tab{data: {action: 'notes'}}
         = link_to project_merge_request_path(@project, @merge_request) do
-          %i.icon-comment
+          %i.fa.fa-comment
           Discussion
           %span.badge= @merge_request.mr_and_commit_notes.count
       %li.diffs-tab{data: {action: 'diffs'}}
         = link_to diffs_project_merge_request_path(@project, @merge_request) do
-          %i.icon-list-alt
+          %i.fa.fa-list-alt
           Changes
           %span.badge= @merge_request.diffs.size
 
   - content_for :note_actions do
     - if can?(current_user, :modify_merge_request, @merge_request)
-      - unless @merge_request.closed? || @merge_request.merged?
+      - if @merge_request.open?
         = link_to 'Close', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :close }), method: :put, class: "btn btn-grouped btn-close close-mr-link js-note-target-close", title: "Close merge request"
       - if @merge_request.closed?
         = link_to 'Reopen', project_merge_request_path(@project, @merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link js-note-target-reopen", title: "Reopen merge request"

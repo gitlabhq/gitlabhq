@@ -12,7 +12,11 @@ describe GitlabMarkdownHelper do
   let(:issue)         { create(:issue, project: project) }
   let(:merge_request) { create(:merge_request, source_project: project, target_project: project) }
   let(:snippet)       { create(:project_snippet, project: project) }
-  let(:member)        { project.users_projects.where(user_id: user).first }
+  let(:member)        { project.project_members.where(user_id: user).first }
+
+  def url_helper(image_name)
+    File.join(root_url, 'assets', image_name)
+  end
 
   before do
     # Helper expects a @project instance variable
@@ -38,8 +42,8 @@ describe GitlabMarkdownHelper do
 
     it "should not touch HTML entities" do
       @project.issues.stub(:where).with(id: '39').and_return([issue])
-      actual = expected = "We&#39;ll accept good pull requests."
-      gfm(actual).should == expected
+      actual = 'We&#39;ll accept good pull requests.'
+      gfm(actual).should == "We'll accept good pull requests."
     end
 
     it "should forward HTML options to links" do
@@ -56,7 +60,7 @@ describe GitlabMarkdownHelper do
       end
 
       it "should link using a short id" do
-        actual = "Backported from #{commit.short_id(6)}"
+        actual = "Backported from #{commit.short_id}"
         gfm(actual).should match(expected)
       end
 
@@ -177,11 +181,113 @@ describe GitlabMarkdownHelper do
       end
     end
 
+    # Shared examples for referencing an object in a different project
+    #
+    # Expects the following attributes to be available in the example group:
+    #
+    # - object    - The object itself
+    # - reference - The object reference string (e.g., #1234, $1234, !1234)
+    # - other_project - The project that owns the target object
+    #
+    # Currently limited to Snippets, Issues and MergeRequests
+    shared_examples 'cross-project referenced object' do
+      let(:project_path) { @other_project.path_with_namespace }
+      let(:full_reference) { "#{project_path}#{reference}" }
+      let(:actual)   { "Reference to #{full_reference}" }
+      let(:expected) do
+        if object.is_a?(Commit)
+          project_commit_path(@other_project, object)
+        else
+          polymorphic_path([@other_project, object])
+        end
+      end
+
+      it 'should link using a valid id' do
+        gfm(actual).should match(
+          /#{expected}.*#{Regexp.escape(full_reference)}/
+        )
+      end
+
+      it 'should link with adjacent text' do
+        # Wrap the reference in parenthesis
+        gfm(actual.gsub(full_reference, "(#{full_reference})")).should(
+          match(expected)
+        )
+
+        # Append some text to the end of the reference
+        gfm(actual.gsub(full_reference, "#{full_reference}, right?")).should(
+          match(expected)
+        )
+      end
+
+      it 'should keep whitespace intact' do
+        actual   = "Referenced #{full_reference} already."
+        expected = /Referenced <a.+>[^\s]+<\/a> already/
+        gfm(actual).should match(expected)
+      end
+
+      it 'should not link with an invalid id' do
+        # Modify the reference string so it's still parsed, but is invalid
+        if object.is_a?(Commit)
+          reference.gsub!(/^(.).+$/, '\1' + '12345abcd')
+        else
+          reference.gsub!(/^(.)(\d+)$/, '\1' + ('\2' * 2))
+        end
+        gfm(actual).should == actual
+      end
+
+      it 'should include a title attribute' do
+        if object.is_a?(Commit)
+          title = object.link_title
+        else
+          title = "#{object.class.to_s.titlecase}: #{object.title}"
+        end
+        gfm(actual).should match(/title="#{title}"/)
+      end
+
+      it 'should include standard gfm classes' do
+        css = object.class.to_s.underscore
+        gfm(actual).should match(/class="\s?gfm gfm-#{css}\s?"/)
+      end
+    end
+
     describe "referencing an issue" do
       let(:object)    { issue }
       let(:reference) { "##{issue.iid}" }
 
       include_examples 'referenced object'
+    end
+
+    context 'cross-repo references' do
+      before(:all) do
+        @other_project = create(:project, :public)
+        @commit2 = @other_project.repository.commit
+        @issue2 = create(:issue, project: @other_project)
+        @merge_request2 = create(:merge_request,
+                                 source_project: @other_project,
+                                 target_project: @other_project)
+      end
+
+      describe 'referencing an issue in another project' do
+        let(:object)    { @issue2 }
+        let(:reference) { "##{@issue2.iid}" }
+
+        include_examples 'cross-project referenced object'
+      end
+
+      describe 'referencing an merge request in another project' do
+        let(:object)    { @merge_request2 }
+        let(:reference) { "!#{@merge_request2.iid}" }
+
+        include_examples 'cross-project referenced object'
+      end
+
+      describe 'referencing a commit in another project' do
+        let(:object)    { @commit2 }
+        let(:reference) { "@#{@commit2.id}" }
+
+        include_examples 'cross-project referenced object'
+      end
     end
 
     describe "referencing a Jira issue" do
@@ -330,7 +436,8 @@ describe GitlabMarkdownHelper do
       end
 
       it "keeps whitespace intact" do
-        gfm("This deserves a :+1: big time.").should match(/deserves a <img.+\/> big time/)
+        gfm('This deserves a :+1: big time.').
+          should match(/deserves a <img.+> big time/)
       end
 
       it "ignores invalid emoji" do
@@ -423,6 +530,24 @@ describe GitlabMarkdownHelper do
       markdown(actual).should match(%r{<li>light by <a.+>@#{member.user.username}</a></li>})
     end
 
+    it "should not link the apostrophe to issue 39" do
+      project.team << [user, :master]
+      project.issues.stub(:where).with(iid: '39').and_return([issue])
+
+      actual   = "Yes, it is @#{member.user.username}'s task."
+      expected = /Yes, it is <a.+>@#{member.user.username}<\/a>'s task/
+      markdown(actual).should match(expected)
+    end
+
+    it "should not link the apostrophe to issue 39 in code blocks" do
+      project.team << [user, :master]
+      project.issues.stub(:where).with(iid: '39').and_return([issue])
+
+      actual   = "Yes, `it is @#{member.user.username}'s task.`"
+      expected = /Yes, <code>it is @gfm\'s task.<\/code>/
+      markdown(actual).should match(expected)
+    end
+
     it "should handle references in <em>" do
       actual = "Apply _!#{merge_request.iid}_ ASAP"
 
@@ -448,7 +573,8 @@ describe GitlabMarkdownHelper do
     end
 
     it "should leave inline code untouched" do
-      markdown("\nDon't use `$#{snippet.id}` here.\n").should == "<p>Don&#39;t use <code>$#{snippet.id}</code> here.</p>\n"
+      markdown("\nDon't use `$#{snippet.id}` here.\n").should ==
+        "<p>Don't use <code>$#{snippet.id}</code> here.</p>\n"
     end
 
     it "should leave ref-like autolinks untouched" do
@@ -468,8 +594,20 @@ describe GitlabMarkdownHelper do
     end
 
     it "should generate absolute urls for emoji" do
-      markdown(":smile:").should include("src=\"#{url_to_image("emoji/smile")}")
+      markdown(":smile:").should include("src=\"http://localhost/assets/emoji/smile.png")
     end
+
+    it "should generate absolute urls for emoji if relative url is present" do
+      Gitlab.config.gitlab.stub(:url).and_return('http://localhost/gitlab/root')
+      markdown(":smile:").should include("src=\"http://localhost/gitlab/root/assets/emoji/smile.png")
+    end
+
+    it "should generate absolute urls for emoji if asset_host is present" do
+      Gitlab::Application.config.stub(:asset_host).and_return("https://cdn.example.com")
+      ActionView::Base.any_instance.stub_chain(:config, :asset_host).and_return("https://cdn.example.com")
+      markdown(":smile:").should include("src=\"https://cdn.example.com/assets/emoji/smile.png")
+    end
+
 
     it "should handle relative urls for a file in master" do
       actual = "[GitLab API doc](doc/api/README.md)\n"
@@ -508,7 +646,7 @@ describe GitlabMarkdownHelper do
     end
   end
 
-  describe "markdwon for empty repository" do
+  describe 'markdown for empty repository' do
     before do
       @project = empty_project
       @repository = empty_project.repository
@@ -542,6 +680,105 @@ describe GitlabMarkdownHelper do
       @wiki.stub(:formatted_content).and_return(formatted_content_stub)
 
       helper.render_wiki_content(@wiki)
+    end
+  end
+
+  describe '#gfm_with_tasks' do
+    before(:all) do
+      @source_text_asterisk = <<EOT.gsub(/^\s{8}/, '')
+        * [ ] valid unchecked task
+        * [x] valid lowercase checked task
+        * [X] valid uppercase checked task
+            * [ ] valid unchecked nested task
+            * [x] valid checked nested task
+
+        [ ] not an unchecked task - no list item
+        [x] not a checked task - no list item
+
+        * [  ] not an unchecked task - too many spaces
+        * [x ] not a checked task - too many spaces
+        * [] not an unchecked task - no spaces
+        * Not a task [ ] - not at beginning
+EOT
+
+      @source_text_dash = <<EOT.gsub(/^\s{8}/, '')
+        - [ ] valid unchecked task
+        - [x] valid lowercase checked task
+        - [X] valid uppercase checked task
+            - [ ] valid unchecked nested task
+            - [x] valid checked nested task
+EOT
+    end
+
+    it 'should render checkboxes at beginning of asterisk list items' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).to match(/<input.*checkbox.*valid unchecked task/)
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid lowercase checked task/
+      )
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid uppercase checked task/
+      )
+    end
+
+    it 'should render checkboxes at beginning of dash list items' do
+      rendered_text = markdown(@source_text_dash, parse_tasks: true)
+
+      expect(rendered_text).to match(/<input.*checkbox.*valid unchecked task/)
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid lowercase checked task/
+      )
+      expect(rendered_text).to match(
+        /<input.*checkbox.*valid uppercase checked task/
+      )
+    end
+
+    it 'should not be confused by whitespace before bullets' do
+      rendered_text_asterisk = markdown(@source_text_asterisk,
+                                        parse_tasks: true)
+      rendered_text_dash = markdown(@source_text_dash, parse_tasks: true)
+
+      expect(rendered_text_asterisk).to match(
+        /<input.*checkbox.*valid unchecked nested task/
+      )
+      expect(rendered_text_asterisk).to match(
+        /<input.*checkbox.*valid checked nested task/
+      )
+      expect(rendered_text_dash).to match(
+        /<input.*checkbox.*valid unchecked nested task/
+      )
+      expect(rendered_text_dash).to match(
+        /<input.*checkbox.*valid checked nested task/
+      )
+    end
+
+    it 'should not render checkboxes outside of list items' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not an unchecked task - no list item/
+      )
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not a checked task - no list item/
+      )
+    end
+
+    it 'should not render checkboxes with invalid formatting' do
+      rendered_text = markdown(@source_text_asterisk, parse_tasks: true)
+
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not an unchecked task - too many spaces/
+      )
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not a checked task - too many spaces/
+      )
+      expect(rendered_text).not_to match(
+        /<input.*checkbox.*not an unchecked task - no spaces/
+      )
+      expect(rendered_text).not_to match(
+        /Not a task.*<input.*checkbox.*not at beginning/
+      )
     end
   end
 end

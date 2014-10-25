@@ -1,4 +1,4 @@
-Feature: Project Feature
+Feature: Project
   Background:
     Given I sign in as a user
     And I own project "Shop"
@@ -27,7 +27,6 @@ Feature: Project Feature
 
   Scenario: I should see project readme and version
     When I visit project "Shop" page
-    Then I should see project "Shop" README link
     And I should see project "Shop" version
 
   Scenario: I should change project default branch
@@ -35,3 +34,11 @@ Feature: Project Feature
     And change project default branch
     And I save project
     Then I should see project default branch changed
+
+  @javascript
+  Scenario: I should have default tab per my preference
+    And I own project "Forum"
+    When I select project "Forum" README tab
+    Then I should see project "Forum" README
+    And I visit project "Shop" page
+    Then I should see project "Shop" README

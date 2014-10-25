@@ -1,9 +1,10 @@
-class ProjectMergeRequests < Spinach::FeatureSteps
+class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedNote
   include SharedPaths
   include SharedMarkdown
+  include SharedDiffNote
 
   step 'I click link "New Merge Request"' do
     click_link "New Merge Request"
@@ -96,6 +97,10 @@ class ProjectMergeRequests < Spinach::FeatureSteps
            author: project.users.first)
   end
 
+  step 'project "Shop" has "MR-task-open" open MR with task markdown' do
+    create_taskable(:merge_request, 'MR-task-open')
+  end
+
   step 'I switch to the diff tab' do
     visit diffs_project_merge_request_path(project, merge_request)
   end
@@ -106,7 +111,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I click on the commit in the merge request' do
     within '.mr-commits' do
-      click_link sample_commit.id[0..8]
+      click_link Commit.truncate_sha(sample_commit.id)
     end
   end
 
@@ -153,7 +158,7 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   step 'I modify merge commit message' do
     find('.modify-merge-commit-link').click
-    fill_in 'merge_commit_message', with: "wow such merge"
+    fill_in 'commit_message', with: 'wow such merge'
   end
 
   step 'merge request "Bug NS-05" is mergeable' do
@@ -210,6 +215,18 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I should not see a comment like "Line is wrong here" in the second file' do
+    within '.files [id^=diff]:nth-child(2)' do
+      page.should_not have_visible_content "Line is wrong here"
+    end
+  end
+
+  step 'I should see a comment like "Line is wrong here" in the second file' do
+    within '.files [id^=diff]:nth-child(2) .note-text' do
+      page.should have_visible_content "Line is wrong here"
+    end
+  end
+
   step 'I leave a comment like "Line is correct" on line 12 of the first file' do
     init_diff_note_first_file
 
@@ -227,12 +244,8 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     init_diff_note_second_file
 
     within(".js-discussion-note-form") do
-      fill_in "note_note", with: "Line is wrong"
+      fill_in "note_note", with: "Line is wrong on here"
       click_button "Add Comment"
-    end
-
-    within ".files [id^=diff]:nth-child(2) .note-text" do
-      page.should have_content "Line is wrong"
     end
   end
 
@@ -258,10 +271,6 @@ class ProjectMergeRequests < Spinach::FeatureSteps
     within '.files [id^=diff]:nth-child(1) .note-text' do
       page.should have_visible_content "Line is correct"
     end
-  end
-
-  def project
-    @project ||= Project.find_by!(name: "Shop")
   end
 
   def merge_request
@@ -291,9 +300,5 @@ class ProjectMergeRequests < Spinach::FeatureSteps
 
   def have_visible_content (text)
     have_css("*", text: text, visible: true)
-  end
-
-  def click_diff_line(code)
-    find("a[data-line-code='#{code}']").click
   end
 end

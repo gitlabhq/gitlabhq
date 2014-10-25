@@ -3,7 +3,7 @@
     = search_field_tag :filter_group, nil, placeholder: 'Filter by name', class: 'dash-filter form-control', dir:'auto'
     - if current_user.can_create_group?
       = link_to new_group_path, class: "btn btn-new pull-right" do
-        %i.icon-plus
+        %i.fa.fa-plus
         New group
   %ul.well-list.dash-list
     - groups.each do |group|
@@ -13,7 +13,7 @@
           %span.group-name.filter-title
             = truncate(group.name, length: 35)
           %span.arrow
-            %i.icon-angle-right
+            %i.fa.fa-angle-right
     - if groups.blank?
       %li
         .nothing-here-block You have no groups yet.

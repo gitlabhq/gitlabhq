@@ -1,7 +1,7 @@
 - project = note.project
 .search-result-row
   %h5.note-search-caption.str-truncated
-    %i.icon-comment
+    %i.fa.fa-comment
     = link_to_member(project, note.author, avatar: false)
     commented on
 
@@ -10,7 +10,7 @@
         = project.name_with_namespace
       &middot;
       = link_to project_commit_path(project, note.commit_id, anchor: dom_id(note)) do
-        Commit #{note.commit_id[0..8]}
+        Commit #{truncate_sha(note.commit_id)}
     - else
       = link_to project do
         = project.name_with_namespace

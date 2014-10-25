@@ -6,7 +6,7 @@ module Gitlab
       md = ISSUE_CLOSING_REGEX.match(message)
       if md
         extractor = Gitlab::ReferenceExtractor.new
-        extractor.analyze(md[0])
+        extractor.analyze(md[0], project)
         extractor.issues_for(project)
       else
         []

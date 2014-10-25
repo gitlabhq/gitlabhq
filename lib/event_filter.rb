@@ -23,7 +23,7 @@ class EventFilter
     end
   end
 
-  def initialize params
+  def initialize(params)
     @params = if params
                 params.dup
               else
@@ -31,7 +31,7 @@ class EventFilter
               end
   end
 
-  def apply_filter events
+  def apply_filter(events)
     return events unless params.present?
 
     filter = params.dup
@@ -50,7 +50,7 @@ class EventFilter
     events = events.where(action: actions)
   end
 
-  def options key
+  def options(key)
     filter = params.dup
 
     if filter.include? key
@@ -62,7 +62,7 @@ class EventFilter
     filter
   end
 
-  def active? key
+  def active?(key)
     params.include? key
   end
 end

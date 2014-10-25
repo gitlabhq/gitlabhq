@@ -265,6 +265,15 @@ module SharedPaths
     visit project_blob_path(@project, File.join(root_ref, '.gitignore'))
   end
 
+  step 'I am on the new file page' do
+    current_path.should eq(project_new_tree_path(@project, root_ref))
+  end
+
+  step 'I am on the ".gitignore" edit file page' do
+    current_path.should eq(project_edit_tree_path(
+      @project, File.join(root_ref, '.gitignore')))
+  end
+
   step 'I visit project source page for "6d39438"' do
     visit project_tree_path(@project, "6d39438")
   end
@@ -289,6 +298,16 @@ module SharedPaths
 
   step 'I visit issue page "Release 0.4"' do
     issue = Issue.find_by(title: "Release 0.4")
+    visit project_issue_path(issue.project, issue)
+  end
+
+  step 'I visit issue page "Tasks-open"' do
+    issue = Issue.find_by(title: 'Tasks-open')
+    visit project_issue_path(issue.project, issue)
+  end
+
+  step 'I visit issue page "Tasks-closed"' do
+    issue = Issue.find_by(title: 'Tasks-closed')
     visit project_issue_path(issue.project, issue)
   end
 
@@ -319,6 +338,16 @@ module SharedPaths
 
   step 'I visit merge request page "Bug NS-05"' do
     mr = MergeRequest.find_by(title: "Bug NS-05")
+    visit project_merge_request_path(mr.target_project, mr)
+  end
+
+  step 'I visit merge request page "MR-task-open"' do
+    mr = MergeRequest.find_by(title: 'MR-task-open')
+    visit project_merge_request_path(mr.target_project, mr)
+  end
+
+  step 'I visit merge request page "MR-task-closed"' do
+    mr = MergeRequest.find_by(title: 'MR-task-closed')
     visit project_merge_request_path(mr.target_project, mr)
   end
 
@@ -394,15 +423,15 @@ module SharedPaths
   # Snippets
   # ----------------------------------------
 
-  Given 'I visit project "Shop" snippets page' do
+  step 'I visit project "Shop" snippets page' do
     visit project_snippets_path(project)
   end
 
-  Given 'I visit snippets page' do
+  step 'I visit snippets page' do
     visit snippets_path
   end
 
-  Given 'I visit new snippet page' do
+  step 'I visit new snippet page' do
     visit new_snippet_path
   end
 
@@ -411,14 +440,14 @@ module SharedPaths
   end
 
   def project
-    project = Project.find_by!(name: "Shop")
+    Project.find_by!(name: 'Shop')
   end
 
   # ----------------------------------------
   # Errors
   # ----------------------------------------
 
-  Then 'page status code should be 404' do
-    page.status_code.should == 404
+  step 'page status code should be 404' do
+    status_code.should == 404
   end
 end

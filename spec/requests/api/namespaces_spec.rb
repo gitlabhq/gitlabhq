@@ -20,8 +20,7 @@ describe API::API, api: true  do
         response.status.should == 200
         json_response.should be_an Array
 
-        # Admin namespace + 2 group namespaces
-        json_response.length.should == 3
+        json_response.length.should == Namespace.count
       end
     end
   end

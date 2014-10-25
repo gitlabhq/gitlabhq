@@ -17,11 +17,11 @@
       %tr
         %td
           = link_to project_wiki_path(@project, @page, version_id: commit.id) do
-            = commit.short_id
+            = truncate_sha(commit.id)
         %td
-          = commit_author_link(commit, avatar: true, size: 24)
+          = commit.author.name
         %td
-          = commit.title
+          = commit.message
         %td
           #{time_ago_with_tooltip(version.date)}
         %td

@@ -56,8 +56,25 @@ end
 # Default settings
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
-Settings.ldap['allow_username_or_email_login'] = false if Settings.ldap['allow_username_or_email_login'].nil?
 
+# backwards compatibility, we only have one host
+if Settings.ldap['enabled'] || Rails.env.test?
+  if Settings.ldap['host'].present?
+    server = Settings.ldap.except('sync_time')
+    server['provider_name'] = 'ldap'
+    Settings.ldap['servers'] = {
+      'ldap' => server
+    }
+  end
+
+  Settings.ldap['servers'].each do |key, server|
+    server['label'] ||= 'LDAP'
+    server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
+    server['active_directory'] = true if server['active_directory'].nil?
+    server['provider_name'] ||= "ldap#{key}".downcase
+    server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
+  end
+end
 
 Settings['omniauth'] ||= Settingslogic.new({})
 Settings.omniauth['enabled']      = false if Settings.omniauth['enabled'].nil?
@@ -129,6 +146,11 @@ Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_s
 Settings['backup'] ||= Settingslogic.new({})
 Settings.backup['keep_time']  ||= 0
 Settings.backup['path']         = File.expand_path(Settings.backup['path'] || "tmp/backups/", Rails.root)
+Settings.backup['upload'] ||= Settingslogic.new({'remote_directory' => nil, 'connection' => nil})
+# Convert upload connection settings to use symbol keys, to make Fog happy
+if Settings.backup['upload']['connection']
+  Settings.backup['upload']['connection'] = Hash[Settings.backup['upload']['connection'].map { |k, v| [k.to_sym, v] }]
+end
 
 #
 # Git

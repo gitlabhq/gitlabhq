@@ -25,6 +25,7 @@ require Rails.root.join("lib/static_model")
 
 class MergeRequest < ActiveRecord::Base
   include Issuable
+  include Taskable
   include InternalId
 
   belongs_to :target_project, foreign_key: :target_project_id, class_name: "Project"
@@ -122,9 +123,11 @@ class MergeRequest < ActiveRecord::Base
     if opened? || reopened?
       similar_mrs = self.target_project.merge_requests.where(source_branch: source_branch, target_branch: target_branch, source_project_id: source_project.id).opened
       similar_mrs = similar_mrs.where('id not in (?)', self.id) if self.id
-
       if similar_mrs.any?
-        errors.add :base, "Cannot Create: This merge request already exists: #{similar_mrs.pluck(:title)}"
+        errors.add :validate_branches,
+                   "Cannot Create: This merge request already exists: #{
+                   similar_mrs.pluck(:title)
+                   }"
       end
     end
   end
@@ -140,7 +143,8 @@ class MergeRequest < ActiveRecord::Base
       if source_project.forked_from?(target_project)
         true
       else
-        errors.add :base, "Source project is not a fork of target project"
+        errors.add :validate_fork,
+                   'Source project is not a fork of target project'
       end
     end
   end
@@ -206,6 +210,20 @@ class MergeRequest < ActiveRecord::Base
   # see "git format-patch"
   def to_patch(current_user)
     Gitlab::Satellite::MergeAction.new(current_user, self).format_patch
+  end
+
+  def hook_attrs
+    attrs = {
+      source: source_project.hook_attrs,
+      target: target_project.hook_attrs,
+      last_commit: nil
+    }
+
+    unless last_commit.nil?
+      attrs.merge!(last_commit: last_commit.hook_attrs(source_project))
+    end
+
+    attributes.merge!(attrs)
   end
 
   def for_fork?

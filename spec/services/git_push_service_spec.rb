@@ -14,6 +14,32 @@ describe GitPushService do
     @ref = 'refs/heads/master'
   end
 
+  describe 'Push branches' do
+    context 'new branch' do
+      subject do
+        service.execute(project, user, @blankrev, @newrev, @ref)
+      end
+
+      it { should be_true }
+    end
+
+    context 'existing branch' do
+      subject do
+        service.execute(project, user, @oldrev, @newrev, @ref)
+      end
+
+      it { should be_true }
+    end
+
+    context 'rm branch' do
+      subject do
+        service.execute(project, user, @oldrev, @blankrev, @ref)
+      end
+
+      it { should be_true }
+    end
+  end
+
   describe "Git Push Data" do
     before do
       service.execute(project, user, @oldrev, @newrev, @ref)
@@ -79,6 +105,8 @@ describe GitPushService do
     context "execute web hooks" do
       it "when pushing a branch for the first time" do
         project.should_receive(:execute_hooks)
+        project.default_branch.should == "master"
+        project.protected_branches.should_receive(:create).with({ name: "master" })
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 

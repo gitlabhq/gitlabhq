@@ -1,4 +1,4 @@
-password = if ENV['GITLAB_ROOT_PASSWORD'].nil? || ENV['GITLAB_ROOT_PASSWORD'].empty?
+password = if ENV['GITLAB_ROOT_PASSWORD'].blank?
              "5iveL!fe"
            else
              ENV['GITLAB_ROOT_PASSWORD']
@@ -21,7 +21,7 @@ admin.save!
 admin.confirm!
 
 if admin.valid?
-puts %q[
+puts %Q[
 Administrator account created:
 
 login.........root

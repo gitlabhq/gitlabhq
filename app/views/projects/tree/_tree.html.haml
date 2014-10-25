@@ -12,7 +12,7 @@
     %li
       = link_to project_new_tree_path(@project, @id), title: 'New file', id: 'new-file-link' do
         %small
-          %i.icon-plus
+          %i.fa.fa-plus
 
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
@@ -24,13 +24,13 @@
           .pull-left Last Commit
           .last-commit.hidden-sm.pull-left
             &nbsp;
-            %i.icon-angle-right
+            %i.fa.fa-angle-right
             &nbsp;
             %small.light
               = link_to @commit.short_id, project_commit_path(@project, @commit)
               &ndash;
               %span{ dir: 'auto' }= truncate(@commit.title, length: 50)
-          = link_to "history", project_commits_path(@project, @id), class: "pull-right"
+          = link_to 'History', project_commits_path(@project, @id), class: 'pull-right'
 
     - if @path.present?
       %tr.tree-item

@@ -1,4 +1,4 @@
-class ProjectFeature < Spinach::FeatureSteps
+class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
@@ -25,12 +25,6 @@ class ProjectFeature < Spinach::FeatureSteps
     project.path.should == "new-path"
   end
 
-  step 'I should see project "Shop" README link' do
-    within '.project-side' do
-      page.should have_content "README.md"
-    end
-  end
-
   step 'I should see project "Shop" version' do
     within '.project-side' do
       page.should have_content "Version: 6.7.0.pre"
@@ -44,5 +38,19 @@ class ProjectFeature < Spinach::FeatureSteps
 
   step 'I should see project default branch changed' do
     find(:css, 'select#project_default_branch').value.should == 'fix'
+  end
+
+  step 'I select project "Forum" README tab' do
+    click_link 'Readme'
+  end
+
+  step 'I should see project "Forum" README' do
+    page.should have_link "README.md"
+    page.should have_content "Sample repo for testing gitlab features"
+  end
+
+  step 'I should see project "Shop" README' do
+    page.should have_link "README.md"
+    page.should have_content "testme"
   end
 end

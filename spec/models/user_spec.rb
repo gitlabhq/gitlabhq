@@ -52,7 +52,7 @@ describe User do
   describe "Associations" do
     it { should have_one(:namespace) }
     it { should have_many(:snippets).class_name('Snippet').dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:project_members).dependent(:destroy) }
     it { should have_many(:groups) }
     it { should have_many(:keys).dependent(:destroy) }
     it { should have_many(:events).class_name('Event').dependent(:destroy) }
@@ -182,7 +182,7 @@ describe User do
       @group = create :group
       @group.add_owner(@user)
 
-      @group.add_user(@user2, UsersGroup::OWNER)
+      @group.add_user(@user2, GroupMember::OWNER)
     end
 
     it { @user2.several_namespaces?.should be_true }
@@ -346,6 +346,25 @@ describe User do
     end
   end
 
+  describe :ldap_user? do
+    let(:user) { build(:user, :ldap) }
+
+    it "is true if provider name starts with ldap" do
+      user.provider = 'ldapmain'
+      expect( user.ldap_user? ).to be_true
+    end
+
+    it "is false for other providers" do
+      user.provider = 'other-provider'
+      expect( user.ldap_user? ).to be_false
+    end
+
+    it "is false if no extern_uid is provided" do
+      user.extern_uid = nil
+      expect( user.ldap_user? ).to be_false
+    end
+  end
+
   describe '#full_website_url' do
     let(:user) { create(:user) }
 
@@ -427,6 +446,34 @@ describe User do
       expect(user.starred?(project)).to be_true
       user.toggle_star(project)
       expect(user.starred?(project)).to be_false
+    end
+  end
+
+  describe "#sort" do
+    before do
+      User.delete_all
+      @user = create :user, created_at: Date.today, last_sign_in_at: Date.today, name: 'Alpha'
+      @user1 = create :user, created_at: Date.today - 1, last_sign_in_at: Date.today - 1, name: 'Omega'
+    end
+    
+    it "sorts users as recently_signed_in" do
+      User.sort('recent_sign_in').first.should == @user
+    end
+
+    it "sorts users as late_signed_in" do
+      User.sort('oldest_sign_in').first.should == @user1
+    end
+
+    it "sorts users as recently_created" do
+      User.sort('recently_created').first.should == @user
+    end
+
+    it "sorts users as late_created" do
+      User.sort('late_created').first.should == @user1
+    end
+
+    it "sorts users by name when nil is passed" do
+      User.sort(nil).first.should == @user
     end
   end
 end

@@ -6,55 +6,77 @@
 module Gitlab
   module OAuth
     class User
-      class << self
-        attr_reader :auth_hash
-
-        def find(auth_hash)
-          self.auth_hash = auth_hash
-          find_by_uid_and_provider
-        end
-
-        def create(auth_hash)
-          user = new(auth_hash)
-          user.save_and_trigger_callbacks
-        end
-
-        def model
-          ::User
-        end
-
-        def auth_hash=(auth_hash)
-          @auth_hash = AuthHash.new(auth_hash)
-        end
-
-        protected
-        def find_by_uid_and_provider
-          model.where(provider: auth_hash.provider, extern_uid: auth_hash.uid).last
-        end
-      end
-
-      # Instance methods
-      attr_accessor :auth_hash, :user
+      attr_accessor :auth_hash, :gl_user
 
       def initialize(auth_hash)
         self.auth_hash = auth_hash
-        self.user = self.class.model.new(user_attributes)
-        user.skip_confirmation!
+      end
+
+      def persisted?
+        gl_user.try(:persisted?)
+      end
+
+      def new?
+        !persisted?
+      end
+
+      def valid?
+        gl_user.try(:valid?)
+      end
+
+      def save
+        unauthorized_to_create unless gl_user
+
+        if needs_blocking?
+          gl_user.save!
+          gl_user.block
+        else
+          gl_user.save!
+        end
+
+        log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
+        gl_user
+      rescue ActiveRecord::RecordInvalid => e
+        log.info "(OAuth) Error saving user: #{gl_user.errors.full_messages}"
+        return self, e.record.errors
+      end
+
+      def gl_user
+        @user ||= find_by_uid_and_provider
+
+        if signup_enabled?
+          @user ||= build_new_user
+        end
+
+        @user
+      end
+
+      protected
+
+      def needs_blocking?
+        new? && block_after_signup?
+      end
+
+      def signup_enabled?
+        Gitlab.config.omniauth.allow_single_sign_on
+      end
+
+      def block_after_signup?
+        Gitlab.config.omniauth.block_auto_created_users
       end
 
       def auth_hash=(auth_hash)
         @auth_hash = AuthHash.new(auth_hash)
       end
 
-      def save_and_trigger_callbacks
-        user.save!
-        log.info "(OAuth) Creating user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
-        user.block if needs_blocking?
+      def find_by_uid_and_provider
+        model.where(provider: auth_hash.provider, extern_uid: auth_hash.uid).last
+      end
 
-        user
-      rescue ActiveRecord::RecordInvalid => e
-        log.info "(OAuth) Email #{e.record.errors[:email]}. Username #{e.record.errors[:username]}"
-        return nil, e.record.errors
+      def build_new_user
+        model.new(user_attributes).tap do |user|
+          user.skip_confirmation!
+        end
       end
 
       def user_attributes
@@ -73,12 +95,12 @@ module Gitlab
         Gitlab::AppLogger
       end
 
-      def raise_error(message)
-        raise OmniAuth::Error, "(OAuth) " + message
+      def model
+        ::User
       end
 
-      def needs_blocking?
-        Gitlab.config.omniauth['block_auto_created_users']
+      def raise_unauthorized_to_create
+        raise StandardError.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
       end
     end
   end

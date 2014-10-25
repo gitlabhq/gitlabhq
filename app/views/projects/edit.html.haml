@@ -86,105 +86,99 @@
 
 
 
-    .danger-settings.js-toggle-container
-      .centered-light-block
-        %h3
-          %i.icon-warning-sign
-          Dangerous settings
-
-        %p Project settings below may result in data loss!
-        = link_to '#', class: 'btn js-toggle-button' do
-          Show them to me
-          %i.icon-chevron-down
-
-      .js-toggle-content.hide
-        - if can? current_user, :archive_project, @project
-          .panel.panel-default.panel.panel-warning
+    .danger-settings
+      - if can? current_user, :archive_project, @project
+        - if @project.archived?
+          .panel.panel-success
             .panel-heading
-              - if @project.archived?
-                Unarchive project
-              - else
-                Archive project
+              Unarchive project
             .panel-body
-              - if @project.archived?
-                %p
-                  Unarchiving the project will mark its repository as active.
-                  %br
-                  The project can be committed to.
-                  %br
-                  %strong Once active this project shows up in the search and on the dashboard.
-                = link_to 'Unarchive', unarchive_project_path(@project),
-                    data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
-                    method: :post, class: "btn btn-remove"
-              - else
-                %p
-                  Archiving the project will mark its repository as read-only.
-                  %br
-                  It is hidden from the dashboard and doesn't show up in searches.
-                  %br
-                  %strong Archived projects cannot be committed to!
-                = link_to 'Archive', archive_project_path(@project),
-                    data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
-                    method: :post, class: "btn btn-warning"
+              %p
+                Unarchiving the project will mark its repository as active.
+                %br
+                The project can be committed to.
+                %br
+                %strong Once active this project shows up in the search and on the dashboard.
+              = link_to 'Unarchive', unarchive_project_path(@project),
+                  data: { confirm: "Are you sure that you want to unarchive this project?\nWhen this project is unarchived it is active and can be committed to again." },
+                  method: :post, class: "btn btn-success"
         - else
-          .nothing-here-block Only the project owner can archive a project
+          .panel.panel-warning
+            .panel-heading
+              Archive project
+            .panel-body
+              %p
+                Archiving the project will mark its repository as read-only.
+                %br
+                It is hidden from the dashboard and doesn't show up in searches.
+                %br
+                %strong Archived projects cannot be committed to!
+              = link_to 'Archive', archive_project_path(@project),
+                  data: { confirm: "Are you sure that you want to archive this project?\nAn archived project cannot be committed to." },
+                  method: :post, class: "btn btn-warning"
+      - else
+        .nothing-here-block Only the project owner can archive a project
 
-        .panel.panel-default.panel.panel-warning
-          .panel-heading Rename repository
+      .panel.panel-default.panel.panel-warning
+        .panel-heading Rename repository
+        .errors-holder
+        .panel-body
+          = form_for(@project, html: { class: 'form-horizontal' }) do |f|
+            .form-group
+              = f.label :path, class: 'control-label' do
+                %span Path
+              .col-sm-9
+                .form-group
+                  .input-group
+                    = f.text_field :path, class: 'form-control'
+                    %span.input-group-addon .git
+                %ul
+                  %li Be careful. Renaming a project's repository can have unintended side effects.
+                  %li You will need to update your local repositories to point to the new location.
+            .form-actions
+              = f.submit 'Rename', class: "btn btn-warning"
+
+      - if can?(current_user, :change_namespace, @project)
+        .panel.panel-default.panel.panel-danger
+          .panel-heading Transfer project
           .errors-holder
           .panel-body
-            = form_for(@project, html: { class: 'form-horizontal' }) do |f|
+            = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
               .form-group
-                = f.label :path, class: 'control-label' do
-                  %span Path
-                .col-sm-9
+                = f.label :namespace_id, class: 'control-label' do
+                  %span Namespace
+                .col-sm-10
                   .form-group
-                    .input-group
-                      = f.text_field :path, class: 'form-control'
-                      %span.input-group-addon .git
+                    = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'select2' }
                   %ul
-                    %li Be careful. Renaming a project's repository can have unintended side effects.
+                    %li Be careful. Changing the project's namespace can have unintended side effects.
+                    %li You can only transfer the project to namespaces you manage.
                     %li You will need to update your local repositories to point to the new location.
               .form-actions
-                = f.submit 'Rename', class: "btn btn-warning"
+                = f.submit 'Transfer', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => transfer_project_message(@project) }
+      - else
+        .nothing-here-block Only the project owner can transfer a project
 
-        - if can?(current_user, :change_namespace, @project)
-          .panel.panel-default.panel.panel-danger
-            .panel-heading Transfer project
-            .errors-holder
-            .panel-body
-              = form_for(@project, url: transfer_project_path(@project), method: :put, remote: true, html: { class: 'transfer-project form-horizontal' }) do |f|
-                .form-group
-                  = f.label :namespace_id, class: 'control-label' do
-                    %span Namespace
-                  .col-sm-10
-                    .form-group
-                      = f.select :namespace_id, namespaces_options(@project.namespace_id), { prompt: 'Choose a project namespace' }, { class: 'select2' }
-                    %ul
-                      %li Be careful. Changing the project's namespace can have unintended side effects.
-                      %li You can only transfer the project to namespaces you manage.
-                      %li You will need to update your local repositories to point to the new location.
-                .form-actions
-                  = f.submit 'Transfer', class: "btn btn-remove"
-        - else
-          .nothing-here-block Only the project owner can transfer a project
-
-        - if can?(current_user, :remove_project, @project)
-          .panel.panel-default.panel.panel-danger
-            .panel-heading Remove project
-            .panel-body
+      - if can?(current_user, :remove_project, @project)
+        .panel.panel-default.panel.panel-danger
+          .panel-heading Remove project
+          .panel-body
+            = form_tag(project_path(@project), method: :delete, html: { class: 'form-horizontal'}) do
               %p
                 Removing the project will delete its repository and all related resources including issues, merge requests etc.
                 %br
                 %strong Removed projects cannot be restored!
 
-              = link_to 'Remove project', @project, data: { confirm: remove_project_message(@project) }, method: :delete, class: "btn btn-remove"
-        - else
-          .nothing-here-block Only project owner can remove a project
+              = link_to 'Remove project', '#', class: "btn btn-remove js-confirm-danger", data: { "confirm-danger-message" => remove_project_message(@project) }
+      - else
+        .nothing-here-block Only project owner can remove a project
 
 .save-project-loader.hide
   .center
     %h2
-      %i.icon-spinner.icon-spin
+      %i.fa.fa-spinner.fa-spin
       Saving project.
     %p Please wait a moment, this page will automatically refresh when ready.
+
+
+= render 'shared/confirm_modal', phrase: @project.path

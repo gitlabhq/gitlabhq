@@ -1,4 +1,4 @@
-Feature: Project Browse git repo
+Feature: Project Source Git Blame
   Background:
     Given I sign in as a user
     And I own project "Shop"
@@ -6,5 +6,5 @@ Feature: Project Browse git repo
 
   Scenario: I blame file
     Given I click on ".gitignore" file in repo
-    And I click blame button
+    And I click Blame button
     Then I should see git file blame

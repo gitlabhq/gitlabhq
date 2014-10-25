@@ -9,7 +9,7 @@
 .event-body
   .event-note{ dir: 'auto' }
     .md
-      %i.icon-comment-alt.event-note-icon
+      %i.fa.fa-comment-o.event-note-icon
       = event_note(event.target.note)
     - note = event.target
     - if note.attachment.url
@@ -18,5 +18,5 @@
           = image_tag note.attachment.secure_url, class: 'note-image-attach'
       - else
         = link_to note.attachment.secure_url, target: "_blank", class: 'note-file-attach' do
-          %i.icon-paper-clip
+          %i.fa.fa-paperclip
           = note.attachment_identifier

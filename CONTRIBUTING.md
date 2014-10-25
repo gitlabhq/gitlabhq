@@ -10,7 +10,7 @@ By submitting code as an individual you agree to the [individual contributor lic
 
 ## Security vulnerability disclosure
 
-Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://www.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
+Please report suspected security vulnerabilities in private to support@gitlab.com, also see the [disclosure section on the GitLab.com website](http://about.gitlab.com/disclosure/). Please do NOT create publicly viewable issues for suspected security vulnerabilities.
 
 ## Closing policy for issues and merge requests
 
@@ -22,7 +22,7 @@ Issues and merge requests should be in English and contain appropriate language 
 
 ## Issue tracker
 
-To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://www.gitlab.com/subscription/) and [consulting services](http://www.gitlab.com/consultancy/) are available from [GitLab.com](http://www.gitlab.com/).
+To get support for your particular problem please use the channels as detailed in the [getting help section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#getting-help). Professional [support subscriptions](http://about.gitlab.com/subscription/) and [consulting services](http://about.gitlab.com/consultancy/) are available from [GitLab.com](http://about.gitlab.com/).
 
 The [issue tracker](https://gitlab.com/gitlab-org/gitlab-ce/issues) is only for obvious errors in the latest [stable or development release of GitLab](MAINTENANCE.md). If something is wrong but it is not a regression compared to older versions of GitLab please do not open an issue but a feature request. When submitting an issue please conform to the issue submission guidelines listed below. Not all issues will be addressed and your issue is more likely to be addressed if you submit a merge request which partially or fully addresses the issue.
 
@@ -61,7 +61,7 @@ If you can, please submit a merge request with the fix or improvements including
 1. Fork the project on GitLab Cloud
 1. Create a feature branch
 1. Write [tests](README.md#run-the-tests) and code
-1. Add your changes to the [CHANGELOG](CHANGELOG)
+1. Add your changes to the [CHANGELOG](CHANGELOG) insert your line at a [random point](doc/workflow/gitlab_flow.md#do-not-order-commits-with-rebase) in the current version
 1. If you are changing the README, some documentation or other things which have no effect on the tests, add `[ci skip]` somewhere in the commit message
 1. If you have multiple commits please combine them into one commit by [squashing them](http://git-scm.com/book/en/Git-Tools-Rewriting-History#Squashing-Commits)
 1. Push the commit to your fork
@@ -92,6 +92,7 @@ For examples of feedback on merge requests please look at already [closed merge 
 
 1. The change is as small as possible (see the above paragraph for details)
 1. Include proper tests and make all tests pass (unless it contains a test exposing a bug in existing code)
+1. All tests have to pass, if you suspect a failing CI build is unrelated to your contribution ask for tests to be restarted. See [the CI setup document](http://doc.gitlab.com/ce/development/ci_setup.html) on who you can ask for test restart.
 1. Initially contains a single commit (please use `git rebase -i` to squash commits)
 1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality

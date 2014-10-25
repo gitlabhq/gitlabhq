@@ -21,7 +21,7 @@
             - else
               %td.old_line= raw(line.type == "new" ? "&nbsp;" : line.old_pos)
               %td.new_line= raw(line.type == "old" ? "&nbsp;" : line.new_pos)
-              %td.line_content{class: "noteable_line #{line.type} #{line_code}", "line_code" => line_code}= raw "#{line.text} &nbsp;"
+              %td.line_content{class: "noteable_line #{line.type} #{line_code}", "line_code" => line_code}= raw diff_line_content(line.text)
 
               - if line_code == note.line_code
                 = render "projects/notes/diff_notes_with_reply", notes: discussion_notes

@@ -1,18 +1,22 @@
 # Installation
 
+## Consider the Omnibus package installation
+
+Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+
 ## Select Version to Install
 
 Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases this should be the highest numbered stable branch (example shown below).
 
 ![Select latest branch](https://i.imgur.com/Lrdxk1k.png)
 
-If the highest number stable branch is unclear please check the [GitLab Blog](https://www.gitlab.com/blog/) for installation guide links by version.
+If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
 ## Important Notes
 
 This guide is long because it covers many cases and includes all commands you need, this is [one of the few installation scripts that actually works out of the box](https://twitter.com/robinvdvleuten/status/424163226532986880).
 
-This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://www.gitlab.com/downloads/).
+This installation guide was created for and tested on **Debian/Ubuntu** operating systems. Please read [doc/install/requirements.md](./requirements.md) for hardware and operating system requirements. If you want to install on RHEL/CentOS we recommend using the [Omnibus packages](https://about.gitlab.com/downloads/).
 
 This is the official installation guide to set up a production server. To set up a **development installation** or for many other installation options please see [the installation section of the readme](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/README.md#installation).
 
@@ -28,6 +32,7 @@ The GitLab installation consists of setting up the following components:
 1. Ruby
 1. System Users
 1. Database
+1. Redis
 1. GitLab
 1. Nginx
 
@@ -69,8 +74,8 @@ Is the system packaged Git too old? Remove it and compile from source.
 
     # Download and compile from source
     cd /tmp
-    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.0.0.tar.gz | tar xz
-    cd git-2.0.0/
+    curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.1.2.tar.gz | tar xz
+    cd git-2.1.2/
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
@@ -160,9 +165,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-3-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-4-stable gitlab
 
-**Note:** You can change `7-3-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -342,7 +347,7 @@ Validate your `gitlab` or `gitlab-ssl` Nginx config file with the following comm
 
     sudo nginx -t
 
-You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indiciated in the error message given.
+You should receive `syntax is okay` and `test is successful` messages. If you receive errors check your `gitlab` or `gitlab-ssl` Nginx config file for typos, etc. as indicated in the error message given.
 
 ### Restart
 

@@ -17,39 +17,38 @@ class GitPushService
   def execute(project, user, oldrev, newrev, ref)
     @project, @user = project, user
 
-    # Collect data for this git push
-    @push_commits = project.repository.commits_between(oldrev, newrev)
-    @push_data = post_receive_data(oldrev, newrev, ref)
-
-    create_push_event
-
     project.ensure_satellite_exists
     project.repository.expire_cache
     project.update_repository_size
 
-    if push_to_existing_branch?(ref, oldrev)
-      project.update_merge_requests(oldrev, newrev, ref, @user)
-      process_commit_messages(ref)
-    end
-
     if push_to_branch?(ref)
-      project.execute_hooks(@push_data.dup, :push_hooks)
-      project.execute_services(@push_data.dup)
-    end
-
-    if push_to_new_branch?(ref, oldrev)
-      # Re-find the pushed commits.
-      if is_default_branch?(ref)
-        # Initial push to the default branch. Take the full history of that branch as "newly pushed".
-        @push_commits = project.repository.commits(newrev)
-      else
-        # Use the pushed commits that aren't reachable by the default branch
-        # as a heuristic. This may include more commits than are actually pushed, but
-        # that shouldn't matter because we check for existing cross-references later.
-        @push_commits = project.repository.commits_between(project.default_branch, newrev)
+      if push_remove_branch?(ref, newrev)
+        @push_commits = []
+      elsif push_to_new_branch?(ref, oldrev)
+        # Re-find the pushed commits.
+        if is_default_branch?(ref)
+          # Initial push to the default branch. Take the full history of that branch as "newly pushed".
+          @push_commits = project.repository.commits(newrev)
+          # Default branch is protected by default
+          project.protected_branches.create({ name: project.default_branch })
+        else
+          # Use the pushed commits that aren't reachable by the default branch
+          # as a heuristic. This may include more commits than are actually pushed, but
+          # that shouldn't matter because we check for existing cross-references later.
+          @push_commits = project.repository.commits_between(project.default_branch, newrev)
+        end
+        process_commit_messages(ref)
+      elsif push_to_existing_branch?(ref, oldrev)
+        # Collect data for this git push
+        @push_commits = project.repository.commits_between(oldrev, newrev)
+        project.update_merge_requests(oldrev, newrev, ref, @user)
+        process_commit_messages(ref)
       end
 
-      process_commit_messages(ref)
+      @push_data = post_receive_data(oldrev, newrev, ref)
+      create_push_event(@push_data)
+      project.execute_hooks(@push_data.dup, :push_hooks)
+      project.execute_services(@push_data.dup)
     end
   end
 
@@ -65,7 +64,7 @@ class GitPushService
 
   protected
 
-  def create_push_event
+  def create_push_event(push_data)
     Event.create!(
       project: project,
       action: Event::PUSHED,
@@ -76,7 +75,7 @@ class GitPushService
 
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
   # close the referenced Issue. Create cross-reference Notes corresponding to any other referenced Mentionables.
-  def process_commit_messages ref
+  def process_commit_messages(ref)
     is_default_branch = is_default_branch?(ref)
 
     @push_commits.each do |commit|
@@ -151,43 +150,40 @@ class GitPushService
     # will be passed as post receive hook data.
     #
     push_commits_limited.each do |commit|
-      data[:commits] << {
-        id: commit.id,
-        message: commit.safe_message,
-        timestamp: commit.committed_date.xmlschema,
-        url: "#{Gitlab.config.gitlab.url}/#{project.path_with_namespace}/commit/#{commit.id}",
-        author: {
-          name: commit.author_name,
-          email: commit.author_email
-        }
-      }
+      data[:commits] << commit.hook_attrs(project)
     end
 
     data
   end
 
-  def push_to_existing_branch? ref, oldrev
+  def push_to_existing_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
     ref_parts[1] =~ /heads/ && oldrev != "0000000000000000000000000000000000000000"
   end
 
-  def push_to_new_branch? ref, oldrev
+  def push_to_new_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
     ref_parts[1] =~ /heads/ && oldrev == "0000000000000000000000000000000000000000"
   end
 
-  def push_to_branch? ref
+  def push_remove_branch?(ref, newrev)
+    ref_parts = ref.split('/')
+
+    ref_parts[1] =~ /heads/ && newrev == "0000000000000000000000000000000000000000"
+  end
+
+  def push_to_branch?(ref)
     ref =~ /refs\/heads/
   end
 
-  def is_default_branch? ref
+  def is_default_branch?(ref)
     ref == "refs/heads/#{project.default_branch}"
   end
 
-  def commit_user commit
+  def commit_user(commit)
     User.find_for_commit(commit.author_email, commit.author_name) || user
   end
 end

@@ -20,7 +20,10 @@ describe API::API, api: true  do
         get api("/users", user)
         response.status.should == 200
         json_response.should be_an Array
-        json_response.first['username'].should == user.username
+        username = user.username
+        json_response.detect {
+          |user| user['username'] == username
+          }['username'].should == username
       end
     end
 
@@ -51,6 +54,7 @@ describe API::API, api: true  do
     it "should return a 404 error if user id not found" do
       get api("/users/9999", user)
       response.status.should == 404
+      json_response['message'].should == '404 Not found'
     end
   end
 
@@ -98,18 +102,47 @@ describe API::API, api: true  do
     end
 
     it "should not create user with invalid email" do
-      post api("/users", admin), { email: "invalid email", password: 'password' }
+      post api('/users', admin),
+           email: 'invalid email',
+           password: 'password',
+           name: 'test'
       response.status.should == 400
     end
 
-    it "should return 400 error if password not given" do
-      post api("/users", admin), { email: 'test@example.com' }
+    it 'should return 400 error if name not given' do
+      post api('/users', admin), email: 'test@example.com', password: 'pass1234'
+      response.status.should == 400
+    end
+
+    it 'should return 400 error if password not given' do
+      post api('/users', admin), email: 'test@example.com', name: 'test'
       response.status.should == 400
     end
 
     it "should return 400 error if email not given" do
-      post api("/users", admin), { password: 'pass1234' }
+      post api('/users', admin), password: 'pass1234', name: 'test'
       response.status.should == 400
+    end
+
+    it 'should return 400 error if user does not validate' do
+      post api('/users', admin),
+           password: 'pass',
+           email: 'test@example.com',
+           username: 'test!',
+           name: 'test',
+           bio: 'g' * 256,
+           projects_limit: -1
+      response.status.should == 400
+      json_response['message']['password'].
+          should == ['is too short (minimum is 8 characters)']
+      json_response['message']['bio'].
+          should == ['is too long (maximum is 255 characters)']
+      json_response['message']['projects_limit'].
+          should == ['must be greater than or equal to 0']
+      json_response['message']['username'].
+          should == ['can contain only letters, digits, '\
+          '\'_\', \'-\' and \'.\'. It must start with letter, digit or '\
+          '\'_\', optionally preceeded by \'.\'. It must not end in \'.git\'.']
     end
 
     it "shouldn't available for non admin users" do
@@ -117,21 +150,37 @@ describe API::API, api: true  do
       response.status.should == 403
     end
 
-    context "with existing user" do
-      before { post api("/users", admin), { email: 'test@example.com', password: 'password', username: 'test' } }
+    context 'with existing user' do
+      before do
+        post api('/users', admin),
+             email: 'test@example.com',
+             password: 'password',
+             username: 'test',
+             name: 'foo'
+      end
 
-      it "should not create user with same email" do
+      it 'should return 409 conflict error if user with same email exists' do
         expect {
-          post api("/users", admin), { email: 'test@example.com', password: 'password' }
+          post api('/users', admin),
+               name: 'foo',
+               email: 'test@example.com',
+               password: 'password',
+               username: 'foo'
         }.to change { User.count }.by(0)
+        response.status.should == 409
+        json_response['message'].should == 'Email has already been taken'
       end
 
-      it "should return 409 conflict error if user with email exists" do
-        post api("/users", admin), { email: 'test@example.com', password: 'password' }
-      end
-
-      it "should return 409 conflict error if same username exists" do
-        post api("/users", admin), { email: 'foo@example.com', password: 'pass', username: 'test' }
+      it 'should return 409 conflict error if same username exists' do
+        expect do
+          post api('/users', admin),
+               name: 'foo',
+               email: 'foo@example.com',
+               password: 'password',
+               username: 'test'
+        end.to change { User.count }.by(0)
+        response.status.should == 409
+        json_response['message'].should == 'Username has already been taken'
       end
     end
   end
@@ -173,6 +222,20 @@ describe API::API, api: true  do
       user.reload.bio.should == 'new test bio'
     end
 
+    it 'should update user with his own email' do
+      put api("/users/#{user.id}", admin), email: user.email
+      response.status.should == 200
+      json_response['email'].should == user.email
+      user.reload.email.should == user.email
+    end
+
+    it 'should update user with his own username' do
+      put api("/users/#{user.id}", admin), username: user.username
+      response.status.should == 200
+      json_response['username'].should == user.username
+      user.reload.username.should == user.username
+    end
+
     it "should update admin status" do
       put api("/users/#{user.id}", admin), {admin: true}
       response.status.should == 200
@@ -190,7 +253,7 @@ describe API::API, api: true  do
 
     it "should not allow invalid update" do
       put api("/users/#{user.id}", admin), {email: 'invalid email'}
-      response.status.should == 404
+      response.status.should == 400
       user.reload.email.should_not == 'invalid email'
     end
 
@@ -202,25 +265,49 @@ describe API::API, api: true  do
     it "should return 404 for non-existing user" do
       put api("/users/999999", admin), {bio: 'update should fail'}
       response.status.should == 404
+      json_response['message'].should == '404 Not found'
+    end
+
+    it 'should return 400 error if user does not validate' do
+      put api("/users/#{user.id}", admin),
+          password: 'pass',
+          email: 'test@example.com',
+          username: 'test!',
+          name: 'test',
+          bio: 'g' * 256,
+          projects_limit: -1
+      response.status.should == 400
+      json_response['message']['password'].
+          should == ['is too short (minimum is 8 characters)']
+      json_response['message']['bio'].
+          should == ['is too long (maximum is 255 characters)']
+      json_response['message']['projects_limit'].
+          should == ['must be greater than or equal to 0']
+      json_response['message']['username'].
+          should == ['can contain only letters, digits, '\
+          '\'_\', \'-\' and \'.\'. It must start with letter, digit or '\
+          '\'_\', optionally preceeded by \'.\'. It must not end in \'.git\'.']
     end
 
     context "with existing user" do
       before {
         post api("/users", admin), { email: 'test@example.com', password: 'password', username: 'test', name: 'test' }
         post api("/users", admin), { email: 'foo@bar.com', password: 'password', username: 'john', name: 'john' }
-        @user_id = User.all.last.id
+        @user = User.all.last
       }
 
-#      it "should return 409 conflict error if email address exists" do
-#        put api("/users/#{@user_id}", admin), { email: 'test@example.com' }
-#        response.status.should == 409
-#      end
-#
-#      it "should return 409 conflict error if username taken" do
-#        @user_id = User.all.last.id
-#        put api("/users/#{@user_id}", admin), { username: 'test' }
-#        response.status.should == 409
-#      end
+      it 'should return 409 conflict error if email address exists' do
+        put api("/users/#{@user.id}", admin), email: 'test@example.com'
+        response.status.should == 409
+        @user.reload.email.should == @user.email
+      end
+
+      it 'should return 409 conflict error if username taken' do
+        @user_id = User.all.last.id
+        put api("/users/#{@user.id}", admin), username: 'test'
+        response.status.should == 409
+        @user.reload.username.should == @user.username
+      end
     end
   end
 
@@ -229,7 +316,14 @@ describe API::API, api: true  do
 
     it "should not create invalid ssh key" do
       post api("/users/#{user.id}/keys", admin), { title: "invalid key" }
-      response.status.should == 404
+      response.status.should == 400
+      json_response['message'].should == '400 (Bad request) "key" not given'
+    end
+
+    it 'should not create key without title' do
+      post api("/users/#{user.id}/keys", admin), key: 'some key'
+      response.status.should == 400
+      json_response['message'].should == '400 (Bad request) "title" not given'
     end
 
     it "should create ssh key" do
@@ -254,6 +348,7 @@ describe API::API, api: true  do
       it 'should return 404 for non-existing user' do
         get api('/users/999999/keys', admin)
         response.status.should == 404
+        json_response['message'].should == '404 User Not Found'
       end
 
       it 'should return array of ssh keys' do
@@ -292,11 +387,13 @@ describe API::API, api: true  do
         user.save
         delete api("/users/999999/keys/#{key.id}", admin)
         response.status.should == 404
+        json_response['message'].should == '404 User Not Found'
       end
 
       it 'should return 404 error if key not foud' do
         delete api("/users/#{user.id}/keys/42", admin)
         response.status.should == 404
+        json_response['message'].should == '404 Key Not Found'
       end
     end
   end
@@ -324,6 +421,7 @@ describe API::API, api: true  do
     it "should return 404 for non-existing user" do
       delete api("/users/999999", admin)
       response.status.should == 404
+      json_response['message'].should == '404 User Not Found'
     end
   end
 
@@ -375,6 +473,7 @@ describe API::API, api: true  do
     it "should return 404 Not Found within invalid ID" do
       get api("/user/keys/42", user)
       response.status.should == 404
+      json_response['message'].should == '404 Not found'
     end
 
     it "should return 404 error if admin accesses user's ssh key" do
@@ -383,6 +482,7 @@ describe API::API, api: true  do
       admin
       get api("/user/keys/#{key.id}", admin)
       response.status.should == 404
+      json_response['message'].should == '404 Not found'
     end
   end
 
@@ -403,6 +503,13 @@ describe API::API, api: true  do
     it "should not create ssh key without key" do
       post api("/user/keys", user), title: 'title'
       response.status.should == 400
+      json_response['message'].should == '400 (Bad request) "key" not given'
+    end
+
+    it 'should not create ssh key without title' do
+      post api('/user/keys', user), key: 'some key'
+      response.status.should == 400
+      json_response['message'].should == '400 (Bad request) "title" not given'
     end
 
     it "should not create ssh key without title" do

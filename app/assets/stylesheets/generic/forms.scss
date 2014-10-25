@@ -1,3 +1,7 @@
+textarea {
+  resize: vertical;
+}
+
 input[type='search'].search-text-input {
   background-image: image-url("icon-search.png");
   background-repeat: no-repeat;

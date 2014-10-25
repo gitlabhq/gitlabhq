@@ -1,4 +1,4 @@
-class ProjectShortcuts < Spinach::FeatureSteps
+class Spinach::Features::ProjectShortcuts < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject

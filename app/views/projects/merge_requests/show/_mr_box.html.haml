@@ -18,7 +18,7 @@
     .description
       .wiki
         = preserve do
-          %span{ dir: 'auto' }= markdown @merge_request.description
+          %span{ dir: 'auto' }= markdown(@merge_request.description, parse_tasks: true)
 
   .context
     %cite.cgray

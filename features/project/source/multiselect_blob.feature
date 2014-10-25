@@ -1,4 +1,4 @@
-Feature: Project Multiselect Blob
+Feature: Project Source Multiselect Blob
   Background:
     Given I sign in as a user
     And I own project "Shop"

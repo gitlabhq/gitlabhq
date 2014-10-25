@@ -7,18 +7,18 @@ $(document).ready ->
   divHover = "<div class=\"div-dropzone-hover\"></div>"
   divSpinner = "<div class=\"div-dropzone-spinner\"></div>"
   divAlert = "<div class=\"" + alertClass + "\"></div>"
-  iconPicture = "<i class=\"icon-picture div-dropzone-icon\"></i>"
-  iconSpinner = "<i class=\"icon-spinner icon-spin div-dropzone-icon\"></i>"
+  iconPicture = "<i class=\"fa fa-picture-o div-dropzone-icon\"></i>"
+  iconSpinner = "<i class=\"fa fa-spinner fa-spin div-dropzone-icon\"></i>"
   btnAlert = "<button type=\"button\"" + alertAttr + ">&times;</button>"
   project_image_path_upload = window.project_image_path_upload or null
 
-  $("textarea.markdown-area").wrap "<div class=\"div-dropzone\"></div>"  
-  
+  $("textarea.markdown-area").wrap "<div class=\"div-dropzone\"></div>"
+
   $(".div-dropzone").parent().addClass "div-dropzone-wrapper"
 
   $(".div-dropzone").append divHover
   $(".div-dropzone-hover").append iconPicture
-  $(".div-dropzone").append divSpinner 
+  $(".div-dropzone").append divSpinner
   $(".div-dropzone-spinner").append iconSpinner
   $(".div-dropzone-spinner").css
     "opacity": 0
@@ -27,12 +27,12 @@ $(document).ready ->
   dropzone = $(".div-dropzone").dropzone(
     url: project_image_path_upload
     dictDefaultMessage: ""
-    clickable: false
+    clickable: true
     paramName: "markdown_img"
     maxFilesize: 10
     uploadMultiple: false
     acceptedFiles: "image/jpg,image/jpeg,image/gif,image/png"
-    headers: 
+    headers:
       "X-CSRF-Token": $("meta[name=\"csrf-token\"]").attr("content")
 
     previewContainer: false
@@ -91,7 +91,7 @@ $(document).ready ->
   handlePaste = (e) ->
     e.preventDefault()
     my_event = e.originalEvent
-    
+
     if my_event.clipboardData and my_event.clipboardData.items
       processItem(my_event)
 
@@ -115,7 +115,7 @@ $(document).ready ->
         return item
       i++
     return false
-  
+
   pasteText = (text) ->
     caretStart = $(child)[0].selectionStart
     caretEnd = $(child)[0].selectionEnd
@@ -126,12 +126,12 @@ $(document).ready ->
     $(child).val beforeSelection + text + afterSelection
     $(".markdown-area").trigger "input"
 
-  getFilename = (e) -> 
+  getFilename = (e) ->
     if window.clipboardData and window.clipboardData.getData
       value = window.clipboardData.getData("Text")
     else if e.clipboardData and e.clipboardData.getData
       value = e.clipboardData.getData("text/plain")
-    
+
     value = value.split("\r")
     value.first()
 
@@ -154,7 +154,7 @@ $(document).ready ->
 
       success: (e, textStatus, response) ->
         insertToTextArea(filename, formatLink(response.responseJSON.link))
-      
+
       error: (response) ->
         showError(response.responseJSON.message)
 
@@ -190,7 +190,7 @@ $(document).ready ->
 
   $(".markdown-selector").click (e) ->
     e.preventDefault()
-    $(@).closest(".div-dropzone-wrapper").find(".div-dropzone").click()
+    $(@).closest('.gfm-form').find('.div-dropzone').click()
     return
 
   return

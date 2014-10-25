@@ -1,4 +1,4 @@
-class ProfileNotifications < Spinach::FeatureSteps
+class Spinach::Features::ProfileNotifications < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
 

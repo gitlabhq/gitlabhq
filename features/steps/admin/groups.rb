@@ -1,4 +1,4 @@
-class AdminGroups < Spinach::FeatureSteps
+class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedUser
@@ -13,7 +13,7 @@ class AdminGroups < Spinach::FeatureSteps
     click_link "New Group"
   end
 
-  And 'I have group with projects' do
+  step 'I have group with projects' do
     @group   = create(:group)
     @project = create(:project, group: @group)
     @event   = create(:closed_issue_event, project: @project)
@@ -21,31 +21,30 @@ class AdminGroups < Spinach::FeatureSteps
     @project.team << [current_user, :master]
   end
 
-  And 'submit form with new group info' do
+  step 'submit form with new group info' do
     fill_in 'group_name', with: 'gitlab'
     fill_in 'group_description', with: 'Group description'
     click_button "Create group"
   end
 
-  Then 'I should see newly created group' do
+  step 'I should see newly created group' do
     page.should have_content "Group: gitlab"
     page.should have_content "Group description"
   end
 
-  Then 'I should be redirected to group page' do
+  step 'I should be redirected to group page' do
     current_path.should == admin_group_path(Group.last)
   end
 
   When 'I select user "John Doe" from user list as "Reporter"' do
-    user = User.find_by(name: "John Doe")
-    select2(user.id, from: "#user_ids", multiple: true)
+    select2(user_john.id, from: "#user_ids", multiple: true)
     within "#new_team_member" do
-      select "Reporter", from: "group_access"
+      select "Reporter", from: "access_level"
     end
     click_button "Add users into group"
   end
 
-  Then 'I should see "John Doe" in team list in every project as "Reporter"' do
+  step 'I should see "John Doe" in team list in every project as "Reporter"' do
     within ".group-users-list" do
       page.should have_content "John Doe"
       page.should have_content "Reporter"
@@ -58,9 +57,29 @@ class AdminGroups < Spinach::FeatureSteps
     end
   end
 
+  step 'we have user "John Doe" in group' do
+    current_group.add_user(user_john, Gitlab::Access::REPORTER)
+  end
+
+  step 'I remove user "John Doe" from group' do
+    within "#user_#{user_john.id}" do
+      click_link 'Remove user from group'
+    end
+  end
+
+  step 'I should not see "John Doe" in team list' do
+    within ".group-users-list" do
+      page.should_not have_content "John Doe"
+    end
+  end
+
   protected
 
   def current_group
     @group ||= Group.first
+  end
+
+  def user_john
+    @user_john ||= User.find_by(name: "John Doe")
   end
 end

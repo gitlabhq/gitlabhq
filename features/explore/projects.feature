@@ -1,5 +1,5 @@
 @public
-Feature: Explore Projects Feature
+Feature: Explore Projects
   Background:
     Given public project "Community"
     And internal project "Internal"

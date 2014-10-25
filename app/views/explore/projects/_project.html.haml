@@ -6,6 +6,7 @@
 
     - if current_page?(starred_explore_projects_path)
       %strong.pull-right
+        %i.fa.fa-star
         = pluralize project.star_count, 'star'
 
   .project-info
@@ -21,5 +22,5 @@
         &middot;
         = link_to pluralize(project.repository.tag_names.count, 'tag'), project_tags_path(project)
       - else
-        %i.icon-warning-sign
+        %i.fa.fa-exclamation-triangle
         Empty repository

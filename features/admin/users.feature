@@ -16,6 +16,12 @@ Feature: Admin Users
     Then See username error message
     And Not changed form action url
 
+  Scenario: Show user attributes
+    Given user "Mike" with groups and projects
+    Given I visit admin users page
+    And click on "Mike" link
+    Then I should see user "Mike" details
+
   Scenario: Edit my user attributes
     Given I visit admin users page
     And click edit on my user

@@ -64,6 +64,8 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
+  has_one :buildbox_service, dependent: :destroy
+  has_one :pushover_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
@@ -79,8 +81,8 @@ class Project < ActiveRecord::Base
   has_many :snippets,           dependent: :destroy, class_name: "ProjectSnippet"
   has_many :hooks,              dependent: :destroy, class_name: "ProjectHook"
   has_many :protected_branches, dependent: :destroy
-  has_many :users_projects, dependent: :destroy
-  has_many :users, through: :users_projects
+  has_many :project_members, dependent: :destroy, as: :source, class_name: 'ProjectMember'
+  has_many :users, through: :project_members
   has_many :deploy_keys_projects, dependent: :destroy
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
@@ -122,6 +124,7 @@ class Project < ActiveRecord::Base
   scope :in_namespace, ->(namespace) { where(namespace_id: namespace.id) }
   scope :in_group_namespace, -> { joins(:group) }
   scope :sorted_by_activity, -> { reorder("projects.last_activity_at DESC") }
+  scope :sorted_by_stars, -> { reorder("projects.star_count DESC") }
   scope :personal, ->(user) { where(namespace_id: user.namespace_id) }
   scope :joined, ->(user) { where("namespace_id != ?", user.namespace_id) }
   scope :public_only, -> { where(visibility_level: Project::PUBLIC) }
@@ -310,7 +313,7 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack pushover buildbox)
   end
 
   def gitlab_ci?
@@ -330,7 +333,7 @@ class Project < ActiveRecord::Base
     path
   end
 
-  def items_for entity
+  def items_for(entity)
     case entity
     when 'issue' then
       issues
@@ -353,12 +356,12 @@ class Project < ActiveRecord::Base
 
   def team_member_by_name_or_email(name = nil, email = nil)
     user = users.where("name like ? or email like ?", name, email).first
-    users_projects.where(user: user) if user
+    project_members.where(user: user) if user
   end
 
   # Get Team Member record by user id
   def team_member_by_id(user_id)
-    users_projects.find_by(user_id: user_id)
+    project_members.find_by(user_id: user_id)
   end
 
   def name_with_namespace
@@ -503,7 +506,7 @@ class Project < ActiveRecord::Base
   end
 
   # Check if current branch name is marked as protected in the system
-  def protected_branch? branch_name
+  def protected_branch?(branch_name)
     protected_branches_names.include?(branch_name)
   end
 
@@ -543,6 +546,16 @@ class Project < ActiveRecord::Base
     end
   end
 
+  def hook_attrs
+    {
+      name: name,
+      ssh_url: ssh_url_to_repo,
+      http_url: http_url_to_repo,
+      namespace: namespace.name,
+      visibility_level: visibility_level
+    }
+  end
+
   # Reset events cache related to this project
   #
   # Since we do cache @event we need to reset cache in special cases:
@@ -559,7 +572,7 @@ class Project < ActiveRecord::Base
   end
 
   def project_member(user)
-    users_projects.where(user_id: user).first
+    project_members.where(user_id: user).first
   end
 
   def default_branch

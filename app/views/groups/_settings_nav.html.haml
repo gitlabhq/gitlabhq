@@ -1,10 +1,10 @@
 %ul.nav.nav-pills.nav-stacked.nav-stacked-menu
   = nav_link(path: 'groups#edit') do
     = link_to edit_group_path(@group) do
-      %i.icon-edit
+      %i.fa.fa-pencil-square-o
       Group
   = nav_link(path: 'groups#projects') do
     = link_to projects_group_path(@group) do
-      %i.icon-folder-close
+      %i.fa.fa-folder
       Projects
 

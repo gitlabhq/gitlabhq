@@ -1,4 +1,4 @@
-class ForkProject < Spinach::FeatureSteps
+class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedProject

@@ -22,6 +22,12 @@ FileUtils.mkdir_p "tmp/special/directory"
 contents = `cat #{filename}`
 # Correct
 contents = File.read(filename)
+
+# Sometimes a shell command is just the best solution. The example below has no
+# user input, and is hard to implement correctly in Ruby: delete all files and
+# directories older than 120 minutes under /some/path, but not /some/path
+# itself.
+Gitlab::Popen.popen(%W(find /some/path -not -path /some/path -mmin +120 -delete))
 ```
 
 This coding style could have prevented CVE-2013-4490.

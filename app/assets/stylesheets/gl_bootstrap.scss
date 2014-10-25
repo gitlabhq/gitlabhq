@@ -124,7 +124,7 @@ $list-group-active-bg: $bg_primary;
         color: #888;
         text-shadow: 0 1px 1px #fff;
       }
-      i[class^="icon-"] {
+      i[class~="fa"] {
         line-height: 14px;
       }
     }
@@ -233,8 +233,8 @@ $list-group-active-bg: $bg_primary;
     }
 
     .form-actions {
-      margin-bottom: 0;
-      background: #FFF;
+      margin: -15px;
+      margin-top: 18px;
     }
   }
 
@@ -262,53 +262,33 @@ $list-group-active-bg: $bg_primary;
 }
 
 .panel-danger {
-  border-color: $border_danger;
+  @include panel-colored;
   .panel-heading {
-    color: #ffffff;
-    background-color: $bg_danger;
+    color: $border_danger;
     border-color: $border_danger;
-    a {
-      color: #FFF;
-      text-decoration: underline;
-    }
   }
 }
 
 .panel-success {
-  border-color: $border_success;
+  @include panel-colored;
   .panel-heading {
-    color: #ffffff;
-    background-color: $bg_success;
+    color: $border_success;
     border-color: $border_success;
-    a {
-      color: #FFF;
-      text-decoration: underline;
-    }
   }
 }
 
 .panel-primary {
-  border-color: $border_primary;
+  @include panel-colored;
   .panel-heading {
-    color: #ffffff;
-    background-color: $bg_primary;
+    color: $border_primary;
     border-color: $border_primary;
-    a {
-      color: #FFF;
-      text-decoration: underline;
-    }
   }
 }
 
 .panel-warning {
-  border-color: $border_warning;
+  @include panel-colored;
   .panel-heading {
-    color: #ffffff;
-    background-color: $bg_warning;
+    color: $border_warning;
     border-color: $border_warning;
-    a {
-      color: #FFF;
-      text-decoration: underline;
-    }
   }
 }

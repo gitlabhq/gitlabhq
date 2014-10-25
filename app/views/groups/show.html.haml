@@ -24,13 +24,13 @@
           = @group.name
         - if @group.description.present?
           %p{ dir: :auto }
-            = auto_link @group.description, link: :urls
+            = escaped_autolink(@group.description)
     = render "projects", projects: @projects
     - if current_user
       .prepend-top-20
         = link_to group_path(@group, { format: :atom, private_token: current_user.private_token }), title: "Feed" do
           %strong
-            %i.icon-rss
+            %i.fa.fa-rss
             News Feed
 
     %hr

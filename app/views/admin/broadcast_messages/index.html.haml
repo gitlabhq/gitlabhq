@@ -2,8 +2,8 @@
   Broadcast Messages
 %p.light
   Broadcast messages are displayed for every user and can be used to notify users about scheduled maintenance, recent upgrades and more.
-.broadcast-message-preview{ dir: 'auto' }
-  %i.icon-bullhorn
+.broadcast-message-preview{ dir: :auto }
+  %i.fa.fa-bullhorn
   %span Your message here
 
 = form_for [:admin, @broadcast_message], html: { class: 'broadcast-message-form form-horizontal'} do |f|
@@ -53,7 +53,7 @@
               #{broadcast_message.ends_at.to_s(:short)}
           &nbsp;
           = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-tiny' do
-            %i.icon-remove.cred
+            %i.fa.fa-times.cred
 
         .message{ dir: 'auto' }= broadcast_message.message
 

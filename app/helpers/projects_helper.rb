@@ -3,7 +3,7 @@ module ProjectsHelper
     "You are going to remove #{user.name} from #{project.name} project team. Are you sure?"
   end
 
-  def link_to_project project
+  def link_to_project(project)
     link_to project do
       title = content_tag(:span, project.name, class: 'project-name')
 
@@ -39,7 +39,7 @@ module ProjectsHelper
     end
   end
 
-  def project_title project
+  def project_title(project)
     if project.group
       content_tag :span do
         link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name
@@ -54,6 +54,10 @@ module ProjectsHelper
 
   def remove_project_message(project)
     "You are going to remove #{project.name_with_namespace}.\n Removed project CANNOT be restored!\n Are you ABSOLUTELY sure?"
+  end
+
+  def transfer_project_message(project)
+    "You are going to transfer #{project.name_with_namespace} to another owner. Are you ABSOLUTELY sure?"
   end
 
   def project_nav_tabs
@@ -128,12 +132,12 @@ module ProjectsHelper
 
     toggle_html = content_tag('span', class: 'toggle') do
       toggle_text = if starred
-                      'Unstar'
+                      ' Unstar'
                     else
-                      'Star'
+                      ' Star'
                     end
 
-      content_tag('i', ' ', class: 'icon-star') + toggle_text
+      content_tag('i', ' ', class: 'fa fa-star') + toggle_text
     end
 
     count_html = content_tag('span', class: 'count') do
@@ -153,6 +157,14 @@ module ProjectsHelper
       link_to toggle_star_project_path(@project), link_opts do
         toggle_html + ' ' + count_html
       end
+    end
+  end
+
+  def link_to_toggle_fork
+    out = content_tag(:i, '', class: 'fa fa-code-fork')
+    out << ' Fork'
+    out << content_tag(:span, class: 'count') do
+      @project.forks_count.to_s
     end
   end
 

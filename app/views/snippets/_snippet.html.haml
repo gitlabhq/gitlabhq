@@ -4,7 +4,7 @@
       %span{ dir: "auto" }= truncate(snippet.title, length: 60)
       - if snippet.private?
         %span.label.label-gray
-          %i.icon-lock
+          %i.fa.fa-lock
           private
     %span.cgray.monospace.tiny.pull-right{ dir: "auto" }
       = snippet.file_name

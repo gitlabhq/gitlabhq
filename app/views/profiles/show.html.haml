@@ -36,7 +36,7 @@
               = f.text_field :email, class: "form-control", required: true, dir: 'auto'
             - if @user.unconfirmed_email.present?
               %span.help-block
-                Please click the link in the confirmation email before continuing, it was send to
+                Please click the link in the confirmation email before continuing, it was sent to
                 %strong #{@user.unconfirmed_email}
 
             - else
@@ -78,7 +78,7 @@
                   or change it at #{link_to "gravatar.com", "http://gravatar.com"}
             %hr
             %a.choose-btn.btn.btn-small.js-choose-user-avatar-button
-              %i.icon-paper-clip
+              %i.fa.fa-paperclip
               %span Choose File ...
             &nbsp;
             %span.file_name.js-avatar-filename File name...

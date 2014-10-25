@@ -51,6 +51,16 @@ module GitlabMarkdownHelper
     @markdown.render(text).html_safe
   end
 
+  # Return the first line of +text+, up to +max_chars+, after parsing the line
+  # as Markdown.  HTML tags in the parsed output are not counted toward the
+  # +max_chars+ limit.  If the length limit falls within a tag's contents, then
+  # the tag contents are truncated without removing the closing tag.
+  def first_line_in_markdown(text, max_chars = nil)
+    md = markdown(text).strip
+
+    truncate_visible(md, max_chars || md.length) if md.present?
+  end
+
   def render_wiki_content(wiki_page)
     if wiki_page.format == :markdown
       markdown(wiki_page.content)
@@ -195,5 +205,53 @@ module GitlabMarkdownHelper
   # We will assume that if no ref exists we can point to master
   def correct_ref
     @ref ? @ref : "master"
+  end
+
+  private
+
+  # Return +text+, truncated to +max_chars+ characters, excluding any HTML
+  # tags.
+  def truncate_visible(text, max_chars)
+    doc = Nokogiri::HTML.fragment(text)
+    content_length = 0
+    truncated = false
+
+    doc.traverse do |node|
+      if node.text? || node.content.empty?
+        if truncated
+          node.remove
+          next
+        end
+
+        # Handle line breaks within a node
+        if node.content.strip.lines.length > 1
+          node.content = "#{node.content.lines.first.chomp}..."
+          truncated = true
+        end
+
+        num_remaining = max_chars - content_length
+        if node.content.length > num_remaining
+          node.content = node.content.truncate(num_remaining)
+          truncated = true
+        end
+        content_length += node.content.length
+      end
+
+      truncated = truncate_if_block(node, truncated)
+    end
+
+    doc.to_html
+  end
+
+  # Used by #truncate_visible.  If +node+ is the first block element, and the
+  # text hasn't already been truncated, then append "..." to the node contents
+  # and return true.  Otherwise return false.
+  def truncate_if_block(node, truncated)
+    if node.element? && node.description.block? && !truncated
+      node.content = "#{node.content}..." if node.next_sibling
+      true
+    else
+      truncated
+    end
   end
 end

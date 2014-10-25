@@ -1,0 +1,85 @@
+= render 'head'
+
+%p.lead
+  Commits statistic for
+  %strong #{@repository.root_ref}
+  #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+
+.row
+  .col-md-6
+    %ul
+      %li
+        %p.lead
+          %strong #{@commits_graph.commits.size}
+          commits during
+          %strong #{@commits_graph.duration}
+          days
+      %li
+        %p.lead
+          Average
+          %strong #{@commits_graph.commit_per_day}
+          commits per day
+      %li
+        %p.lead
+          Contributed by
+          %strong #{@commits_graph.authors}
+          authors
+  .col-md-6
+    %div
+      %p.slead
+        Commits per day of month
+      %canvas#month-chart{width: 800, height: 400}
+.row
+  .col-md-6
+    %div
+      %p.slead
+        Commits per day hour (UTC)
+      %canvas#hour-chart{width: 800, height: 400}
+  .col-md-6
+    %div
+      %p.slead
+        Commits per weekday
+      %canvas#weekday-chart{width: 800, height: 400}
+
+:coffeescript
+  data = {
+    labels : #{@commits_per_time.keys.to_json},
+    datasets : [{
+      fillColor : "rgba(220,220,220,0.5)",
+      strokeColor : "rgba(220,220,220,1)",
+      pointColor : "rgba(220,220,220,1)",
+      pointStrokeColor : "#EEE",
+      data : #{@commits_per_time.values.to_json}
+    }]
+  }
+
+  ctx = $("#hour-chart").get(0).getContext("2d");
+  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true});
+
+  data = {
+    labels : #{@commits_per_week_days.keys.to_json},
+    datasets : [{
+      fillColor : "rgba(220,220,220,0.5)",
+      strokeColor : "rgba(220,220,220,1)",
+      pointColor : "rgba(220,220,220,1)",
+      pointStrokeColor : "#EEE",
+      data : #{@commits_per_week_days.values.to_json}
+    }]
+  }
+
+  ctx = $("#weekday-chart").get(0).getContext("2d");
+  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true});
+
+  data = {
+    labels : #{@commits_per_month.keys.to_json},
+    datasets : [{
+      fillColor : "rgba(220,220,220,0.5)",
+      strokeColor : "rgba(220,220,220,1)",
+      pointColor : "rgba(220,220,220,1)",
+      pointStrokeColor : "#EEE",
+      data : #{@commits_per_month.values.to_json}
+    }]
+  }
+
+  ctx = $("#month-chart").get(0).getContext("2d");
+  new Chart(ctx).Line(data,{"scaleOverlay": true, responsive: true});

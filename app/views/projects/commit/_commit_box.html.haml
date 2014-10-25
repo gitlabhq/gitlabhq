@@ -2,11 +2,11 @@
   %div
     - if @notes_count > 0
       %span.btn.disabled.btn-grouped
-        %i.icon-comment
+        %i.fa.fa-comment
         = @notes_count
     .pull-left.btn-group
       %a.btn.btn-grouped.dropdown-toggle{ data: {toggle: :dropdown} }
-        %i.icon-download-alt
+        %i.fa.fa-download
         Download as
         %span.caret
       %ul.dropdown-menu
@@ -35,7 +35,7 @@
 .commit-info-row
   %span.cgray= pluralize(@commit.parents.count, "parent")
   - @commit.parents.each do |parent|
-    = link_to parent.id[0...10], project_commit_path(@project, parent)
+    = link_to parent.short_id, project_commit_path(@project, parent)
 
 - if @branches.any?
   .commit-info-row

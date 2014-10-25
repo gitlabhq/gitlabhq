@@ -38,7 +38,7 @@ describe Project do
     it { should have_many(:merge_requests).dependent(:destroy) }
     it { should have_many(:issues).dependent(:destroy) }
     it { should have_many(:milestones).dependent(:destroy) }
-    it { should have_many(:users_projects).dependent(:destroy) }
+    it { should have_many(:project_members).dependent(:destroy) }
     it { should have_many(:notes).dependent(:destroy) }
     it { should have_many(:snippets).class_name('ProjectSnippet').dependent(:destroy) }
     it { should have_many(:deploy_keys_projects).dependent(:destroy) }
@@ -47,6 +47,7 @@ describe Project do
     it { should have_many(:protected_branches).dependent(:destroy) }
     it { should have_one(:forked_project_link).dependent(:destroy) }
     it { should have_one(:slack_service).dependent(:destroy) }
+    it { should have_one(:pushover_service).dependent(:destroy) }
   end
 
   describe "Mass assignment" do

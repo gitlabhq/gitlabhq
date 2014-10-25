@@ -1,3 +1,50 @@
+v 7.4.2
+  - Fix internal snippet exposing for unauthenticated users
+
+v 7.4.1
+  - Fix LDAP authentication for Git HTTP access
+  - Fix LDAP config lookup for provider 'ldap'
+  - Fix public snippets
+  - Fix 500 error on projects with nested submodules
+
+v 7.4.0
+  - Refactored membership logic
+  - Improve error reporting on users API (Julien Bianchi)
+  - Refactor test coverage tools usage. Use SIMPLECOV=true to generate it locally
+  - Default branch is protected by default
+  - Increase unicorn timeout to 60 seconds
+  - Sort search autocomplete projects by stars count so most popular go first
+  - Add README to tab on project show page
+  - Do not delete tmp/repositories itself during clean-up, only its contents
+  - Support for backup uploads to remote storage
+  - Prevent notes polling when there are not notes
+  - API: Add support for forking a project via the API (Bernhard Kaindl)
+  - API: filter project issues by milestone (Julien Bianchi)
+  - Fail harder in the backup script
+  - Changes to Slack service structure, only webhook url needed
+  - Zen mode for wiki and milestones (Robert Schilling)
+  - Move Emoji parsing to html-pipeline-gitlab (Robert Schilling)
+  - Font Awesome 4.2 integration (Sullivan Senechal)
+  - Add Pushover service integration (Sullivan Senechal)
+  - Add select field type for services options (Sullivan Senechal)
+  - Add cross-project references to the Markdown parser (Vinnie Okada)
+  - Add task lists to issue and merge request descriptions (Vinnie Okada)
+  - Snippets can be public, internal or private
+  - Improve danger zone: ask project path to confirm data-loss action
+  - Raise exception on forgery
+  - Show build coverage in Merge Requests (requires GitLab CI v5.1)
+  - New milestone and label links on issue edit form
+  - Improved repository graphs
+  - Improve event note display in dashboard and project activity views (Vinnie Okada)
+  - Add users sorting to admin area
+  - UI improvements
+  - Fix ambiguous sha problem with mentioned commit
+  - Fixed bug with apostrophe when at mentioning users
+  - Add active directory ldap option
+  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more 
+  - Faster rev list
+  - Fix branch removal
+
 v 7.3.2
   - Fix creating new file via web editor
   - Use gitlab-shell v2.0.1

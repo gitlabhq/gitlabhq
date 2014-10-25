@@ -1,55 +1,28 @@
 module Gitlab
   module LDAP
     class Adapter
-      attr_reader :ldap
+      attr_reader :provider, :ldap
 
-      def self.open(&block)
-        Net::LDAP.open(adapter_options) do |ldap|
-          block.call(self.new(ldap))
+      def self.open(provider, &block)
+        Net::LDAP.open(config(provider).adapter_options) do |ldap|
+          block.call(self.new(provider, ldap))
         end
       end
 
-      def self.config
-        Gitlab.config.ldap
+      def self.config(provider)
+        Gitlab::LDAP::Config.new(provider)
       end
 
-      def self.adapter_options
-        encryption =
-          case config['method'].to_s
-          when 'ssl'
-            :simple_tls
-          when 'tls'
-            :start_tls
-          else
-            nil
-          end
-
-        options = {
-          host: config['host'],
-          port: config['port'],
-          encryption: encryption
-        }
-
-        auth_options = {
-          auth: {
-            method: :simple,
-            username: config['bind_dn'],
-            password: config['password']
-          }
-        }
-
-        if config['password'] || config['bind_dn']
-          options.merge!(auth_options)
-        end
-        options
+      def initialize(provider, ldap=nil)
+        @provider = provider
+        @ldap = ldap || Net::LDAP.new(config.adapter_options)
       end
 
-
-      def initialize(ldap=nil)
-        @ldap = ldap || Net::LDAP.new(self.class.adapter_options)
+      def config
+        Gitlab::LDAP::Config.new(provider)
       end
 
-      def users(field, value)
+      def users(field, value, limit = nil)
         if field.to_sym == :dn
           options = {
             base: value,
@@ -57,13 +30,13 @@ module Gitlab
           }
         else
           options = {
-            base: config['base'],
+            base: config.base,
             filter: Net::LDAP::Filter.eq(field, value)
           }
         end
 
-        if config['user_filter'].present?
-          user_filter = Net::LDAP::Filter.construct(config['user_filter'])
+        if config.user_filter.present?
+          user_filter = Net::LDAP::Filter.construct(config.user_filter)
 
           options[:filter] = if options[:filter]
                                Net::LDAP::Filter.join(options[:filter], user_filter)
@@ -72,12 +45,16 @@ module Gitlab
                              end
         end
 
+        if limit.present?
+          options.merge!(size: limit)
+        end
+
         entries = ldap_search(options).select do |entry|
           entry.respond_to? config.uid
         end
 
         entries.map do |entry|
-          Gitlab::LDAP::Person.new(entry)
+          Gitlab::LDAP::Person.new(entry, provider)
         end
       end
 
@@ -104,12 +81,6 @@ module Gitlab
         else
           results
         end
-      end
-
-      private
-
-      def config
-        @config ||= self.class.config
       end
     end
   end

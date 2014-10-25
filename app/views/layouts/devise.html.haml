@@ -2,7 +2,6 @@
 %html{ lang: "en"}
   = render "layouts/head"
   %body.ui_basic.login-page
-    = render "layouts/flash"
     .container
       .content
         .login-title
@@ -10,6 +9,7 @@
     %hr
     .container
       .content
+        = render "layouts/flash"
         .row
           .col-md-7.brand-holder
             - if brand_item

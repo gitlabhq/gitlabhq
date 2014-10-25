@@ -1,3 +1,14 @@
-.commit-message-container
-  .max-width-marker
-  = textarea
+.form-group.commit_message-group
+  = label_tag 'commit_message', class: 'control-label' do
+    Commit message
+  .col-sm-10
+    .commit-message-container
+      .max-width-marker
+      = text_area_tag 'commit_message',
+          (params[:commit_message] || local_assigns[:text]),
+          class: 'form-control', placeholder: local_assigns[:placeholder],
+          required: true, rows: (local_assigns[:rows] || 3), dir: :auto
+    - if local_assigns[:hint]
+      %p.hint
+        Try to keep the first line under 52 characters
+        and the others under 72.

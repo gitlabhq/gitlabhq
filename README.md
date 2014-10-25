@@ -23,7 +23,7 @@
 
 - [![Code Climate](https://codeclimate.com/github/gitlabhq/gitlabhq.svg)](https://codeclimate.com/github/gitlabhq/gitlabhq)
 
-- [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
+- [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq?branch=master)
 
 - [![PullReview stats](https://www.pullreview.com/gitlab/gitlab-org/gitlab-ce/badges/master.svg?)](https://www.pullreview.com/gitlab.gitlab.com/gitlab-org/gitlab-ce/reviews/master)
 
@@ -38,17 +38,6 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 - [GitLab Enterprise Edition](https://about.gitlab.com/gitlab-ee/) with additional features aimed at larger organizations.
 - [GitLab CI](https://about.gitlab.com/gitlab-ci/) a continuous integration (CI) server that is easy to integrate with GitLab.
 
-## Third-party applications
-
-Access GitLab from multiple platforms with applications below.
-These applications are maintained by contributors, GitLab B.V. does not offer support for them.
-
-- [iPhone app](http://gitlabcontrol.com/)
-- [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en)
-- [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi)
-- [Command line client](https://github.com/drewblessing/gitlab-cli)
-- [Ruby API wrapper](https://github.com/NARKOZ/gitlab)
-
 ## Requirements
 
 - Ubuntu/Debian/CentOS/RHEL**
@@ -61,7 +50,19 @@ These applications are maintained by contributors, GitLab B.V. does not offer su
 
 ## Installation
 
-Please see [the installation page on the GitLab website](https://about.gitlab.com/installation/).
+Please see [the installation page on the GitLab website](https://about.gitlab.com/installation/) for the various options.
+Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+
+## Third-party applications
+
+Access GitLab from multiple platforms with applications below.
+These applications are maintained by contributors, GitLab B.V. does not offer support for them.
+
+- [iPhone app](http://gitlabcontrol.com/)
+- [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en)
+- [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi)
+- [Command line client](https://github.com/drewblessing/gitlab-cli)
+- [Ruby API wrapper](https://github.com/NARKOZ/gitlab)
 
 ### New versions
 

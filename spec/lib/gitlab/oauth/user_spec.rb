@@ -1,83 +1,108 @@
 require 'spec_helper'
 
 describe Gitlab::OAuth::User do
-  let(:gl_auth) { Gitlab::OAuth::User }
-  let(:info) do
-    double(
+  let(:oauth_user) { Gitlab::OAuth::User.new(auth_hash) }
+  let(:gl_user) { oauth_user.gl_user }
+  let(:uid) { 'my-uid' }
+  let(:provider) { 'my-provider' }
+  let(:auth_hash) { double(uid: uid, provider: provider, info: double(info_hash)) }
+  let(:info_hash) do
+    {
       nickname: 'john',
       name: 'John',
       email: 'john@mail.com'
-    )
+    }
   end
 
-  before do
-    Gitlab.config.stub(omniauth: {})
-  end
-
-  describe :find do
+  describe :persisted? do
     let!(:existing_user) { create(:user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
       auth = double(info: double(name: 'John'), uid: 'my-uid', provider: 'my-provider')
-      assert gl_auth.find(auth)
+      expect( oauth_user.persisted? ).to be_true
     end
 
-    it "finds an existing user based on nested uid and provider" do
-      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
-      assert gl_auth.find(auth)
+    it "returns false if use is not found in database" do
+      auth_hash.stub(uid: 'non-existing')
+      expect( oauth_user.persisted? ).to be_false
     end
   end
 
-  describe :create do
-    it "should create user from LDAP" do
-      auth = double(info: info, uid: 'my-uid', provider: 'ldap')
-      user = gl_auth.create(auth)
+  describe :save do
+    let(:provider) { 'twitter' }
 
-      user.should be_valid
-      user.extern_uid.should == auth.uid
-      user.provider.should == 'ldap'
+    describe 'signup' do
+      context "with allow_single_sign_on enabled" do
+        before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
+
+        it "creates a user from Omniauth" do
+          oauth_user.save
+
+          expect(gl_user).to be_valid
+          expect(gl_user.extern_uid).to eql uid
+          expect(gl_user.provider).to eql 'twitter'
+        end
+      end
+
+      context "with allow_single_sign_on disabled (Default)" do
+        it "throws an error" do
+          expect{ oauth_user.save }.to raise_error StandardError
+        end
+      end
     end
 
-    it "should create user from Omniauth" do
-      auth = double(info: info, uid: 'my-uid', provider: 'twitter')
-      user = gl_auth.create(auth)
+    describe 'blocking' do
+      let(:provider) { 'twitter' }
+      before { Gitlab.config.omniauth.stub allow_single_sign_on: true }
 
-      user.should be_valid
-      user.extern_uid.should == auth.uid
-      user.provider.should == 'twitter'
-    end
+      context 'signup' do
+        context 'dont block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: false }
 
-    it "should apply defaults to user" do
-      auth = double(info: info, uid: 'my-uid', provider: 'ldap')
-      user = gl_auth.create(auth)
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should_not be_blocked
+          end
+        end
 
-      user.should be_valid
-      user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-      user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-    end
+        context 'block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: true }
 
-    it "Set a temp email address if not provided (like twitter does)" do
-      info = double(
-        uid: 'my-uid',
-        nickname: 'john',
-        name: 'John'
-      )
-      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should be_blocked
+          end
+        end
+      end
 
-      user = gl_auth.create(auth)
-      expect(user.email).to_not be_empty
-    end
+      context 'sign-in' do
+        before do
+          oauth_user.save
+          oauth_user.gl_user.activate
+        end
 
-    it 'generates a username if non provided (google)' do
-      info = double(
-        uid: 'my-uid',
-        name: 'John',
-        email: 'john@example.com'
-      )
-      auth = double(info: info, uid: 'my-uid', provider: 'my-provider')
+        context 'dont block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: false }
 
-      user = gl_auth.create(auth)
-      expect(user.username).to eql 'john'
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should_not be_blocked
+          end
+        end
+
+        context 'block on create' do
+          before { Gitlab.config.omniauth.stub block_auto_created_users: true }
+
+          it do
+            oauth_user.save
+            gl_user.should be_valid
+            gl_user.should_not be_blocked
+          end
+        end
+      end
     end
   end
 end

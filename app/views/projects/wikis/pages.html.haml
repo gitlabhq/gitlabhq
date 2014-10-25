@@ -8,5 +8,5 @@
         = link_to wiki_page.title, project_wiki_path(@project, wiki_page)
         %small (#{wiki_page.format})
         .pull-right
-          %small Last edited #{time_ago_with_tooltip(wiki_page.commit.created_at)}
+          %small Last edited #{time_ago_with_tooltip(wiki_page.commit.authored_date)}
 = paginate @wiki_pages, theme: 'gitlab'

@@ -15,15 +15,16 @@
         %span.file-mode= "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
       .diff-btn-group
-        - unless params[:view] == 'parallel'
-          %label
-            = check_box_tag nil, 1, false, class: "js-toggle-diff-line-wrap"
-            Wrap text
-        &nbsp;
-        = link_to "#", class: "js-toggle-diff-comments btn btn-small" do
-          %i.icon-chevron-down
-          Diff comments
-        &nbsp;
+        - if blob.text?
+          - unless params[:view] == 'parallel'
+            %label
+              = check_box_tag nil, 1, false, class: 'js-toggle-diff-line-wrap'
+              Wrap text
+          &nbsp;
+          = link_to '#', class: 'js-toggle-diff-comments btn btn-small' do
+            %i.fa.fa-chevron-down
+            Diff comments
+          &nbsp;
 
         - if @merge_request && @merge_request.source_project
           = link_to project_edit_tree_path(@merge_request.source_project, tree_join(@merge_request.source_branch, diff_file.new_path), from_merge_request_id: @merge_request.id), { class: 'btn btn-small' } do

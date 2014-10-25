@@ -1,5 +1,5 @@
 @dashboard
-Feature: Event filters
+Feature: Event Filters
   Background:
     Given I sign in as a user
     And I own a project

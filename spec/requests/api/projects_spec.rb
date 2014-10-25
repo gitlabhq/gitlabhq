@@ -8,8 +8,8 @@ describe API::API, api: true  do
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
-  let(:users_project) { create(:users_project, user: user, project: project, project_access: UsersProject::MASTER) }
-  let(:users_project2) { create(:users_project, user: user3, project: project, project_access: UsersProject::DEVELOPER) }
+  let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
+  let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
 
   describe "GET /projects" do
     before { project }
@@ -54,8 +54,15 @@ describe API::API, api: true  do
         get api("/projects/all", admin)
         response.status.should == 200
         json_response.should be_an Array
-        json_response.first['name'].should == project.name
-        json_response.first['owner']['username'].should == user.username
+        project_name = project.name
+
+        json_response.detect {
+          |project| project['name'] == project_name
+        }['name'].should == project_name
+
+        json_response.detect {
+          |project| project['owner']['username'] == user.username
+        }['owner']['username'].should == user.username
       end
     end
   end
@@ -188,9 +195,24 @@ describe API::API, api: true  do
       response.status.should == 201
     end
 
-    it "should respond with 404 on failure" do
+    it 'should respond with 400 on failure' do
       post api("/projects/user/#{user.id}", admin)
-      response.status.should == 404
+      response.status.should == 400
+      json_response['message']['creator'].should == ['can\'t be blank']
+      json_response['message']['namespace'].should == ['can\'t be blank']
+      json_response['message']['name'].should == [
+        'can\'t be blank',
+        'is too short (minimum is 0 characters)',
+        'can contain only letters, digits, \'_\', \'-\' and \'.\' and '\
+        'space. It must start with letter, digit or \'_\'.'
+      ]
+      json_response['message']['path'].should == [
+        'can\'t be blank',
+        'is too short (minimum is 0 characters)',
+        'can contain only letters, digits, \'_\', \'-\' and \'.\'. It must '\
+        'start with letter, digit or \'_\', optionally preceeded by \'.\'. '\
+        'It must not end in \'.git\'.'
+      ]
     end
 
     it "should assign attributes to project" do
@@ -254,7 +276,7 @@ describe API::API, api: true  do
 
   describe "GET /projects/:id" do
     before { project }
-    before { users_project }
+    before { project_member }
 
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
@@ -283,7 +305,10 @@ describe API::API, api: true  do
 
     describe 'permissions' do
       context 'personal project' do
-        before { get api("/projects/#{project.id}", user) }
+        before do
+          project.team << [user, :master]
+          get api("/projects/#{project.id}", user)
+        end
 
         it { response.status.should == 200 }
         it { json_response['permissions']["project_access"]["access_level"].should == Gitlab::Access::MASTER }
@@ -305,7 +330,7 @@ describe API::API, api: true  do
   end
 
   describe "GET /projects/:id/events" do
-    before { users_project }
+    before { project_member }
 
     it "should return a project events" do
       get api("/projects/#{project.id}/events", user)
@@ -407,9 +432,9 @@ describe API::API, api: true  do
       response.status.should == 200
     end
 
-    it "should return success when deleting unknown snippet id" do
+    it 'should return 404 when deleting unknown snippet id' do
       delete api("/projects/#{project.id}/snippets/1234", user)
-      response.status.should == 200
+      response.status.should == 404
     end
   end
 
@@ -456,7 +481,21 @@ describe API::API, api: true  do
     describe "POST /projects/:id/keys" do
       it "should not create an invalid ssh key" do
         post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
-        response.status.should == 404
+        response.status.should == 400
+        json_response['message']['key'].should == [
+          'can\'t be blank',
+          'is too short (minimum is 0 characters)',
+          'is invalid'
+        ]
+      end
+
+      it 'should not create a key without title' do
+        post api("/projects/#{project.id}/keys", user), key: 'some key'
+        response.status.should == 400
+        json_response['message']['title'].should == [
+          'can\'t be blank',
+          'is too short (minimum is 0 characters)'
+        ]
       end
 
       it "should create new ssh key" do

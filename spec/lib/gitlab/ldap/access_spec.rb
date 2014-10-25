@@ -1,11 +1,11 @@
 require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
-  let(:access) { Gitlab::LDAP::Access.new }
-  let(:user) { create(:user) }
+  let(:access) { Gitlab::LDAP::Access.new user }
+  let(:user) { create(:user, :ldap) }
 
   describe :allowed? do
-    subject { access.allowed?(user) }
+    subject { access.allowed? }
 
     context 'when the user cannot be found' do
       before { Gitlab::LDAP::Person.stub(find_by_dn: nil) }
@@ -24,6 +24,15 @@ describe Gitlab::LDAP::Access do
 
       context 'and has no disabled flag in active diretory' do
         before { Gitlab::LDAP::Person.stub(disabled_via_active_directory?: false) }
+
+        it { should be_true }
+      end
+
+      context 'without ActiveDirectory enabled' do
+        before do
+          Gitlab::LDAP::Config.stub(enabled?: true)
+          Gitlab::LDAP::Config.any_instance.stub(active_directory: false)
+        end
 
         it { should be_true }
       end

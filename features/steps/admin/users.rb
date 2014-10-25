@@ -1,34 +1,34 @@
-class AdminUsers < Spinach::FeatureSteps
+class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedAdmin
 
-  Then 'I should see all users' do
+  step 'I should see all users' do
     User.all.each do |user|
       page.should have_content user.name
     end
   end
 
-  And 'Click edit' do
+  step 'Click edit' do
     @user = User.first
     find("#edit_user_#{@user.id}").click
   end
 
-  And 'Input non ascii char in username' do
+  step 'Input non ascii char in username' do
     fill_in 'user_username', with: "\u3042\u3044"
   end
 
-  And 'Click save' do
+  step 'Click save' do
     click_button("Save")
   end
 
-  Then 'See username error message' do
+  step 'See username error message' do
     within "#error_explanation" do
       page.should have_content "Username"
     end
   end
 
-  And 'Not changed form action url' do
+  step 'Not changed form action url' do
     page.should have_selector %(form[action="/admin/users/#{@user.username}"])
   end
 
@@ -62,5 +62,24 @@ class AdminUsers < Spinach::FeatureSteps
 
   step 'I should not see secondary email anymore' do
     page.should_not have_content "Secondary email:"
+  end
+
+  step 'user "Mike" with groups and projects' do
+    user = create(:user, name: 'Mike')
+
+    project = create(:empty_project)
+    project.team << [user, :developer]
+
+    group = create(:group)
+    group.add_user(user, Gitlab::Access::DEVELOPER)
+  end
+
+  step 'click on "Mike" link' do
+    click_link "Mike"
+  end
+
+  step 'I should see user "Mike" details' do
+    page.should have_content 'Account'
+    page.should have_content 'Personal projects limit'
   end
 end

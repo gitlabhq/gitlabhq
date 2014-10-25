@@ -1,37 +1,51 @@
-class UserSnippets < Spinach::FeatureSteps
+class Spinach::Features::SnippetsUser < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedPaths
   include SharedSnippet
 
-  Given 'I visit my snippets page' do
+  step 'I visit my snippets page' do
     visit user_snippets_path(current_user)
   end
 
-  Then 'I should see "Personal snippet one" in snippets' do
+  step 'I should see "Personal snippet one" in snippets' do
     page.should have_content "Personal snippet one"
   end
 
-  And 'I should see "Personal snippet private" in snippets' do
+  step 'I should see "Personal snippet private" in snippets' do
     page.should have_content "Personal snippet private"
   end
 
-  Then 'I should not see "Personal snippet one" in snippets' do
+  step 'I should see "Personal snippet internal" in snippets' do
+    page.should have_content "Personal snippet internal"
+  end
+
+  step 'I should not see "Personal snippet one" in snippets' do
     page.should_not have_content "Personal snippet one"
   end
 
-  And 'I should not see "Personal snippet private" in snippets' do
+  step 'I should not see "Personal snippet private" in snippets' do
     page.should_not have_content "Personal snippet private"
   end
 
-  Given 'I click "Public" filter' do
+  step 'I should not see "Personal snippet internal" in snippets' do
+    page.should_not have_content "Personal snippet internal"
+  end
+
+  step 'I click "Internal" filter' do
     within('.nav-stacked') do
-      click_link "Public"
+      click_link "Internal"
     end
   end
 
-  Given 'I click "Private" filter' do
+  step 'I click "Private" filter' do
     within('.nav-stacked') do
       click_link "Private"
+    end
+  end
+
+  step 'I click "Public" filter' do
+    within('.nav-stacked') do
+      click_link "Public"
     end
   end
 
