@@ -276,7 +276,9 @@ module ProjectsHelper
 
   def hidden_pass_url(original_url)
     result = URI(original_url)
-    result.password = '*****' if result.password.present?
+    result.password = '*****' unless result.password.nil?
     result
+  rescue
+    original_url
   end
 end
