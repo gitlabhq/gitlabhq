@@ -202,7 +202,7 @@ module ApplicationHelper
   def time_ago_with_tooltip(date, placement = 'top', html_class = 'time_ago')
     capture_haml do
       haml_tag :time, date.to_s,
-        class: html_class, datetime: date.getutc.iso8601, title: date.stamp("Aug 21, 2011 9:23pm"),
+        class: html_class, datetime: date.getutc.iso8601, title: JalaliDate.new(date).strftime("%A %d %b %Y %H:%M"),
         data: { toggle: 'tooltip', placement: placement }
 
       haml_tag :script, "$('." + html_class + "').timeago().tooltip()"

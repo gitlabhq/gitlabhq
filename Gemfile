@@ -8,6 +8,9 @@ def linux_only(require_as)
   RUBY_PLATFORM.include?('linux') && require_as
 end
 
+# Jalali Date
+gem 'jalalidate', "~> 0.3.3"
+
 gem "rails", "~> 4.1.0"
 
 # Make links from text
