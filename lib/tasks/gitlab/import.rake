@@ -20,8 +20,7 @@ namespace :gitlab do
         repo_path[0..git_base_path.length] = ''
 
         path = repo_path.sub(/\.git$/, '')
-        name = File.basename path
-        group_name = File.dirname path
+        group_name, name = File.split(path)
         group_name = nil if group_name == '.'
 
         puts "Processing #{repo_path}".yellow
