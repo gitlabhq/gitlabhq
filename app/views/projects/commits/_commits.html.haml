@@ -3,7 +3,7 @@
     .col-md-2
       %h4
         %i.fa.fa-calendar
-        %span= day.stamp("28 Aug, 2010")
+        %span= JalaliDate.new(day).strftime("%A %d %b %Y")
       %p= pluralize(commits.count, 'commit')
     .col-md-10
       %ul.bordered-list

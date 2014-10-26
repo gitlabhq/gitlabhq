@@ -58,12 +58,12 @@
             %li
               %span.light Member since:
               %strong
-                = @user.created_at.stamp("Nov 12, 2031")
+                = JalaliDate.new(@user.created_at).strftime("%A %d %b %Y")
             - if @user.confirmed_at
               %li
                 %span.light Confirmed at:
                 %strong
-                  = @user.confirmed_at.stamp("Nov 12, 2031")
+                  = JalaliDate.new(@user.confirmed_at).strftime("%A %d %b %Y")
             - else
               %li
                 %span.light Confirmed:
@@ -74,7 +74,7 @@
               %span.light Current sign-in at:
               %strong
                 - if @user.current_sign_in_at
-                  = @user.current_sign_in_at.stamp("Nov 12, 2031")
+                  = JalaliDate.new(@user.current_sign_in_at).strftime("%A %d %b %Y")
                 - else
                   never
 
@@ -82,7 +82,7 @@
               %span.light Last sign-in at:
               %strong
                 - if @user.last_sign_in_at
-                  = @user.last_sign_in_at.stamp("Nov 12, 2031")
+                  = JalaliDate.new(@user.last_sign_in_at).strftime("%A %d %b %Y")
                 - else
                   never
 
@@ -172,7 +172,7 @@
             - group = user_group.group
             %li.group_member
               %span{class: ("list-item-name" unless user_group.owner?)}
-                %strong= link_to group.name, admin_group_path(group), dir: 'auto'
+                %strong= link_to group.name, admin_group_path(group), dir: :auto
               .pull-right
                 %span.light= user_group.human_access
                 - unless user_group.owner?

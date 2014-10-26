@@ -4,11 +4,11 @@
   %ul.well-list
     %li
       %span.light Member since
-      %strong= user.created_at.stamp("Aug 21, 2011")
+      %strong= JalaliDate.new(user.created_at).strftime("%A %d %b %Y")
     - unless user.skype.blank?
       %li
         %span.light Skype:
-        %strong= link_to user.skype, "skype:#{user.skype}", dir: 'auto'
+        %strong= link_to user.skype, "skype:#{user.skype}", dir: :auto
     - unless user.linkedin.blank?
       %li
         %span.light LinkedIn:
@@ -16,11 +16,11 @@
     - unless user.twitter.blank?
       %li
         %span.light Twitter:
-        %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}", dir: 'auto'
+        %strong= link_to user.twitter, "http://www.twitter.com/#{user.twitter}", dir: :auto
     - unless user.website_url.blank?
       %li
         %span.light Website:
-        %strong= link_to user.short_website_url, user.full_website_url, dir: 'auto'
+        %strong= link_to user.short_website_url, user.full_website_url, dir: :auto
     - unless user.bio.blank?
       %li
         %span.light Bio:

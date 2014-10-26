@@ -3,7 +3,7 @@
 %p.lead
   Commits statistic for
   %strong #{@repository.root_ref}
-  #{@commits_graph.start_date.strftime('%b %d')} - #{@commits_graph.end_date.strftime('%b %d')}
+  %span{ dir: :auto }#{JalaliDate.new(@commits_graph.end_date).strftime("%d %b")} - #{JalaliDate.new(@commits_graph.start_date).strftime("%d %b")}
 
 .row
   .col-md-6

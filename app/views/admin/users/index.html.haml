@@ -60,13 +60,8 @@
               - if user.blocked?
                 %i.fa.fa-lock.cred
               - else
-<<<<<<< HEAD
-                %i.icon-user.cgreen
-              = link_to user.name, [:admin, user], dir: 'auto'
-=======
                 %i.fa.fa-user.cgreen
-              = link_to user.name, [:admin, user]
->>>>>>> v7.4.2
+              = link_to user.name, [:admin, user], dir: :auto
               - if user.admin?
                 %strong.cred (Admin)
               - if user == current_user

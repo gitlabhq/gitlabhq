@@ -9,7 +9,7 @@
           %strong{ dir: :auto }= @key.title
         %li
           %span.light Created on:
-          %strong= @key.created_at.stamp("Aug 21, 2011")
+          %strong= JalaliDate.new(@key.created_at).strftime("%A %d %b %Y")
 
   .col-md-8
     %p

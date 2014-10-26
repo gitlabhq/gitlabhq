@@ -9,7 +9,7 @@
 %hr
 = form_tag admin_groups_path, method: :get, class: 'form-inline' do
   .form-group
-    = text_field_tag :name, params[:name], class: "form-control input-mn-300", dir: 'auto'
+    = text_field_tag :name, params[:name], class: "form-control input-mn-300", dir: :auto
   = submit_tag "Search", class: "btn submit btn-primary"
 
 %hr
@@ -29,7 +29,7 @@
 
           &rarr;
           %span.monospace
-            %strong{ dir: 'auto' } #{group.path}/
+            %strong{ dir: :auto } #{group.path}/
       .clearfix
         %p{ dir: 'auto' }
           = truncate group.description, length: 150

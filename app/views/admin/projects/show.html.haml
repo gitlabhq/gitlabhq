@@ -37,7 +37,7 @@
         %li
           %span.light Created on:
           %strong
-            = @project.created_at.stamp("March 1, 1999")
+            = JalaliDate.new(@project.created_at).strftime("%A %d %b %Y")
 
         %li
           %span.light http:

@@ -3,7 +3,7 @@
   = @key.title
   %small
     created on
-    = @key.created_at.stamp("Aug 21, 2011")
+    = JalaliDate.new(@key.created_at).strftime("%A %d %b %Y")
 .back-link
   = link_to project_deploy_keys_path(@project) do
     &larr; To keys list

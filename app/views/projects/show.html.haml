@@ -54,7 +54,7 @@
         .prepend-top-10
           %p
             %span.light Created on
-            #{@project.created_at.stamp('Aug 22, 2013')}
+            #{JalaliDate.new(@project.created_at).strftime("%A %d %b %Y")}
           %p
             %span.light Owned by
             - if @project.group

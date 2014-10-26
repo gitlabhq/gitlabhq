@@ -15,21 +15,21 @@
           = image_tag group_icon(@group.path), class: "avatar s60"
         %li
           %span.light Name:
-          %strong{ dir: 'auto' }= @group.name
+          %strong{ dir: :auto }= @group.name
         %li
           %span.light Path:
-          %strong{ dir: 'auto' }
+          %strong{ dir: :auto }
             = @group.path
 
         %li
           %span.light Description:
           %strong
-            %span{ dir: 'auto' }= @group.description
+            %span{ dir: :auto }= @group.description
 
         %li
           %span.light Created on:
-          %strong{ dir: 'auto' }
-            = @group.created_at.stamp("March 1, 1999")
+          %strong{ dir: :auto }
+            = JalaliDate.new(@group.created_at).strftime("%A %d %b %Y")
 
     .panel.panel-default
       .panel-heading
@@ -40,11 +40,11 @@
       %ul.well-list
         - @projects.each do |project|
           %li
-            %strong{ dir: 'auto' }
+            %strong{ dir: :auto }
               = link_to project.name_with_namespace, [:admin, project]
               %span.label.label-gray
                 = repository_size(project)
-            %span.pull-right.light{ dir: 'auto' }
+            %span.pull-right.light{ dir: :auto }
               %span.monospace= project.path_with_namespace + ".git"
       .panel-footer
         = paginate @projects, param_name: 'projects_page', theme: 'gitlab'
@@ -76,7 +76,7 @@
           - user = member.user
           %li{class: dom_class(member), id: dom_id(user)}
             .list-item-name
-              %strong{ dir: 'auto' }
+              %strong{ dir: :auto }
                 = link_to user.name, admin_user_path(user)
             %span.pull-right.light
               = member.human_access
