@@ -46,7 +46,7 @@
           %li
             = link_to project_filter_path(milestone_id: milestone.id) do
               %strong= milestone.title
-              %small.light expires at #{JalaliDate.new(Date.parse(milestone.expires_at)).strftime("%A %d %b %Y")}
+              %small.light= milestone.expires_at
 
     .pull-right
       = render 'shared/sort_dropdown'
