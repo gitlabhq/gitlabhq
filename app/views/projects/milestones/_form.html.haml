@@ -51,6 +51,7 @@
 :javascript
   disableButtonIfEmptyField("#milestone_title", ".btn-save");
   Calendar.setup({
+    inputField   : "milestone_due_date",
     flat         : "datepicker",   // id of the input field
     flatCallback : function(calendar) {$('#milestone_due_date').val(calendar.date.toLocaleFormat("%Y/%m/%d"))},
     ifFormat     : "%Y/%m/%d",       // format of the input field

@@ -1,3 +1,8 @@
+= stylesheet_link_tag "JalaliJSCalendar-1.4/calendar-blue"
+= javascript_include_tag "JalaliJSCalendar-1.4/jalali"
+= javascript_include_tag "JalaliJSCalendar-1.4/calendar"
+= javascript_include_tag "JalaliJSCalendar-1.4/calendar-setup"
+= javascript_include_tag "JalaliJSCalendar-1.4/lang/calendar-fa"
 %h3.page-title
   Broadcast Messages
 %p.light
@@ -30,12 +35,14 @@
       .light 6 character hex values starting with a # sign.
   .form-group
     = f.label :starts_at, class: 'control-label'
-    .col-sm-10.datetime-controls
-      = f.datetime_select :starts_at
+    .col-sm-10.datetime-controls{ style: 'width: auto' }
+      = f.hidden_field :starts_at
+      #datepicker1
   .form-group
     = f.label :ends_at, class: 'control-label'
-    .col-sm-10.datetime-controls
-      = f.datetime_select :ends_at
+    .col-sm-10.datetime-controls{ style: 'width: auto' }
+      = f.hidden_field :ends_at
+      #datepicker2
   .form-actions
     = f.submit "Add broadcast message", class: "btn btn-create"
 
@@ -46,11 +53,11 @@
         .pull-right
           - if broadcast_message.starts_at
             %strong
-              #{broadcast_message.starts_at.to_s(:short)}
+              #{JalaliDate.new(broadcast_message.starts_at).strftime("%A %d %b %Y %H:%M")}
             \...
           - if broadcast_message.ends_at
             %strong
-              #{broadcast_message.ends_at.to_s(:short)}
+              #{JalaliDate.new(broadcast_message.ends_at).strftime("%A %d %b %Y %H:%M")}
           &nbsp;
           = link_to [:admin, broadcast_message], method: :delete, remote: true, class: 'remove-row btn btn-tiny' do
             %i.fa.fa-times.cred
@@ -59,3 +66,31 @@
 
 
   = paginate @broadcast_messages
+
+:javascript
+  function utcString(date) {
+    var utc = new Date(date.getTime() + date.getTimezoneOffset() * 60000);
+    return utc.toLocaleFormat("%Y/%m/%d %H:%M");
+  }
+  var now = new Date();
+  var nowCounterUTC = new Date(now.getTime() - now.getTimezoneOffset() * 60000);
+  Calendar.setup({
+    inputField   : "broadcast_message_starts_at",
+    flat         : "datepicker1",   // id of the input field
+    flatCallback : function(calendar) {$('#broadcast_message_starts_at').val(utcString(calendar.date))},
+    ifFormat     : "%Y/%m/%d %H:%M",       // format of the input field
+    dateType     : 'jalali',
+    timeFormat   : '24',
+    showsTime    : true,
+    weekNumbers  : false
+  }).setDate(nowCounterUTC);
+  Calendar.setup({
+    inputField   : "broadcast_message_ends_at",
+    flat         : "datepicker2",   // id of the input field
+    flatCallback : function(calendar) {$('#broadcast_message_ends_at').val(utcString(calendar.date))},
+    ifFormat     : "%Y/%m/%d %H:%M",       // format of the input field
+    dateType     : 'jalali',
+    timeFormat   : '24',
+    showsTime    : true,
+    weekNumbers  : false
+  }).setDate(nowCounterUTC);
