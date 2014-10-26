@@ -17,15 +17,28 @@ module Gitlab
         def create(auth)
           @auth = auth
           password = Devise.friendly_token[0, 8].downcase
-          opts = {
-            extern_uid: uid,
-            provider: provider,
-            name: name,
-            username: username.gsub(/[^\w\d\.-]/, '.'),
-            email: email,
-            password: password,
-            password_confirmation: password,
-          }
+          
+          if username.nil?
+            opts = {
+              extern_uid: uid,
+              provider: provider,
+              name: name,
+              username: username,
+              email: email,
+              password: password,
+              password_confirmation: password,
+            }  
+          else 
+            opts = {
+              extern_uid: uid,
+              provider: provider,
+              name: name,
+              username: username.gsub(/[^\w\d\.-]/, '.'),
+              email: email,
+              password: password,
+              password_confirmation: password,
+            }
+          end
 
           user = model.build_user(opts)
           user.skip_confirmation!
