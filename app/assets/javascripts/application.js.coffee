@@ -41,6 +41,11 @@
 #= require shortcuts_issueable
 #= require shortcuts_network
 #= require_tree .
+#
+#= require JalaliJSCalendar-1.4/jalali
+#= require JalaliJSCalendar-1.4/calendar
+#= require JalaliJSCalendar-1.4/calendar-setup
+#= require JalaliJSCalendar-1.4/lang/calendar-fa
 
 window.slugify = (text) ->
   text.replace(/[^-a-zA-Z0-9]+/g, '_').toLowerCase()
