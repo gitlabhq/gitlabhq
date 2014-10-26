@@ -98,7 +98,6 @@ class Project < ActiveRecord::Base
             format: { with: Gitlab::Regex.project_name_regex,
                       message: Gitlab::Regex.project_regex_message }
   validates :path, presence: true, length: { within: 0..255 },
-            exclusion: { in: Gitlab::Blacklist.path },
             format: { with: Gitlab::Regex.path_regex,
                       message: Gitlab::Regex.path_regex_message }
   validates :issues_enabled, :merge_requests_enabled,

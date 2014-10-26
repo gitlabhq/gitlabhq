@@ -74,6 +74,12 @@ describe Project do
       project2.should_not be_valid
       project2.errors[:limit_reached].first.should match(/Your project limit is 0/)
     end
+
+    it 'should not blacklist project paths'\
+       'that are blacklisted for namespaces' do
+      (expect { create(:project, name: Gitlab::Blacklist.path.first) }).
+        not_to raise_error
+    end
   end
 
   describe "Respond to" do
