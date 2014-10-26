@@ -10,7 +10,7 @@
     - if milestone.expired? and not milestone.closed?
       %span.cred (Expired)
     %small
-      = milestone.expires_at
+      = "expires at #{JalaliDate.new(Date.parse(milestone.expires_at)).strftime("%A %d %b %Y")}"
   - if milestone.is_empty?
     %span.muted Empty
   - else

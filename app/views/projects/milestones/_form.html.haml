@@ -1,3 +1,8 @@
+= stylesheet_link_tag "JalaliJSCalendar-1.4/calendar-blue"
+= javascript_include_tag "JalaliJSCalendar-1.4/jalali"
+= javascript_include_tag "JalaliJSCalendar-1.4/calendar"
+= javascript_include_tag "JalaliJSCalendar-1.4/calendar-setup"
+= javascript_include_tag "JalaliJSCalendar-1.4/lang/calendar-fa"
 %h3.page-title= @milestone.new_record? ? "New Milestone" : "Edit Milestone ##{@milestone.iid}"
 .back-link
   = link_to project_milestones_path(@project) do
@@ -16,7 +21,7 @@
       .form-group
         = f.label :title, "Title", class: "control-label"
         .col-sm-10
-          = f.text_field :title, maxlength: 255, class: "form-control", dir: "auto"
+          = f.text_field :title, maxlength: 255, class: "form-control", dir: :auto
           %p.hint Required
       .form-group
         = f.label :description, "Description", class: "control-label"
@@ -31,8 +36,8 @@
       .form-group
         = f.label :due_date, "Due Date", class: "control-label"
         .col-sm-10= f.hidden_field :due_date
-        .col-sm-10
-          .datepicker
+        .col-sm-10{ style: "width: auto" }
+          #datepicker
 
   .form-actions
     - if @milestone.new_record?
@@ -45,9 +50,12 @@
 
 :javascript
   disableButtonIfEmptyField("#milestone_title", ".btn-save");
-  $( ".datepicker" ).datepicker({
-    dateFormat: "yy-mm-dd",
-    onSelect: function(dateText, inst) { $("#milestone_due_date").val(dateText) }
-  }).datepicker("setDate", $.datepicker.parseDate('yy-mm-dd', $('#milestone_due_date').val()));
+  Calendar.setup({
+    flat         : "datepicker",   // id of the input field
+    flatCallback : function(calendar) {$('#milestone_due_date').val(calendar.date.toLocaleFormat("%Y/%m/%d"))},
+    ifFormat     : "%Y/%m/%d",       // format of the input field
+    dateType     : 'jalali',
+    weekNumbers  : false
+  });
 
   window.project_image_path_upload = "#{upload_image_project_path @project}";

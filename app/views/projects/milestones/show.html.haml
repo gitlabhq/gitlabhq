@@ -30,7 +30,7 @@
       - else
         Open
     .creator
-      = @milestone.expires_at
+      = JalaliDate.new(Date.parse(@milestone.expires_at)).strftime("%A %d %b %Y")
 
   %h4.title{ dir: :auto }
     = gfm escape_once(@milestone.title)
@@ -49,7 +49,7 @@
       #{@milestone.open_items_count} open
       &nbsp;
       %span.light #{@milestone.percent_complete}% complete
-      %span.pull-right= @milestone.expires_at
+      %span.pull-right= "expires at #{JalaliDate.new(Date.parse(@milestone.expires_at)).strftime("%A %d %b %Y")}"
     .progress.progress-info
       .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
