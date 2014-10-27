@@ -76,6 +76,8 @@ class Dispatcher
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
         shortcut_handler = true
+      when 'users:show'
+        new User()
 
     switch path.first()
       when 'admin'
@@ -85,6 +87,8 @@ class Dispatcher
             new NamespaceSelect()
       when 'dashboard'
         shortcut_handler = new ShortcutsDashboardNavigation()
+      when 'profiles'
+        new Profile()
       when 'projects'
         new Project()
         switch path[1]
