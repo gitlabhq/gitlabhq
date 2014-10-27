@@ -2,7 +2,7 @@
 
 NOTE: This is a guide for GitLab developers.
 
-# **15th - Code Freeze & Release Manager**
+# **7 workdays before release - Code Freeze & Release Manager**
 
 ### **1. Stop merging in code, except for important bug fixes**
 
@@ -11,31 +11,33 @@ NOTE: This is a guide for GitLab developers.
 A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
 
 ### **3. Create an overall issue**
-Name it "Release x.x.x" for easier searching.
+
+Create issue for GitLab CE project(internal). Name it "Release x.x.x" for easier searching.
+Replace the dates with actual dates based on the number of workdays before the release.
 
 ```
-15th:
+Xth:
 
 * Update the changelog (#LINK)
 * Triage the omnibus-gitlab milestone
 
-16th:
+Xth:
 
 * Merge CE in to EE (#LINK)
 * Close the omnibus-gitlab milestone
 
-17th:
+Xth:
 
 * Create x.x.0.rc1 (#LINK)
 * Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
-18th:
+Xth:
 
 * Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 * Regression issue and tweet about rc1 (#LINK)
 * Start blog post (#LINK)
 
-21th:
+Xth:
 
 * Do QA and fix anything coming out of it (#LINK)
 
@@ -43,13 +45,10 @@ Name it "Release x.x.x" for easier searching.
 
 * Release CE and EE (#LINK)
 
-23rd:
+Xth:
 
-* Prepare package for GitLab.com release (#LINK)
+* * Deploy to GitLab.com (#LINK)
 
-24th:
-
-* Deploy to GitLab.com (#LINK)
 ```
 
 ### **4. Update changelog**
@@ -60,11 +59,11 @@ Any changes not yet added to the changelog are added by lead developer and in th
 
 Ensure that there is enough time to incorporate the findings of the release candidate, etc.
 
-# **16th - Merge the CE into EE**
+# **6 workdays before release- Merge the CE into EE**
 
 Do this via a merge request.
 
-# **17th - Create RC1**
+# **5 workdays before release - Create RC1**
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
@@ -156,6 +155,12 @@ Create an annotated tag that points to the version change commit:
 git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
 ```
 
+Tags should be created for both GitLab CE and GitLab EE. Don't forget to push tags to all remotes.
+
+```
+git push remote_name vx.x.0.rc1
+```
+
 ### **6. Create stable branches**
 
 For GitLab EE, append `-ee` to the branch.
@@ -173,9 +178,13 @@ Now developers can use master for merging new features.
 So you should use stable branch for future code chages related to release.
 
 
-# **18th - Release RC1**
+# **4 workdays before release - Release RC1**
 
-### **1. Update GitLab.com**
+### **1. Determine QA person
+
+Notify person of QA day.
+
+### **2. Update GitLab.com**
 
 Merge the RC1 EE code into GitLab.com.
 Once the build is green, create a package.
@@ -183,19 +192,20 @@ If there are big database migrations consider testing them with the production d
 Try to deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
-### **2. Prepare the blog post**
+### **3. Prepare the blog post**
 
 - Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
 - Check the changelog of CE and EE for important changes.
 - Create a WIP MR for the blog post
 - Ask Dmitriy to add screenshots to the WIP MR.
-- Decide with team who will be the MVP user.
+- Decide with team who will be the MVP user. 
+- Create WIP MR for adding MVP to MVP page on website
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 - Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
 - Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
 - After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
 
-### **3. Create a regressions issue**
+### **4. Create a regressions issue**
 
 On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
 
@@ -212,7 +222,7 @@ Tweet about the RC release:
 
 > GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
-# **21st - Preparation**
+# **1 workdays before release - Preparation**
 
 ### **1. Pre QA merge**
 
@@ -304,22 +314,19 @@ List the most important features and link to the blog post.
 
 Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 
-### **10. Send out the newsletter**
+# **1 workday after release - Update GitLab.com**
 
-Send out an email to the 'GitLab Newsletter' mailing list on MailChimp.
-Replicate the former release newsletter and modify it accordingly.
-**Do not forget to edit `Subject line` and regenerate `Plain-Text Email` from HTML source**
-
-Include a link to the blog post and keep it short.
-
-Proposed email text:
-"We have released a new version of GitLab. See our blog post(<link>) for more information."
-
-
-# **23rd - Optional Patch Release**
-
-# **24th - Update GitLab.com**
-
-Merge the stable release into GitLab.com. Once the build is green deploy the next morning.
+Update GitLab.com from RC1 to the released package.
 
 # **25th - Release GitLab CI**
+
+- Create the update guid `doc/x.x-to-x.x.md`.
+- Update CHANGELOG
+- Bump version
+- Create annotated tags `git tag -a vx.x.0 -m 'Version x.x.0' xxxxx`
+- Create stable branch `x-x-stable`
+- Create GitHub release post
+- Post to blog about release
+- Post to twitter
+
+
