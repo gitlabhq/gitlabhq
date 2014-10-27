@@ -11,12 +11,6 @@ module BranchesHelper
 
   def can_push_branch?(project, branch_name)
     return false unless project.repository.branch_names.include?(branch_name)
-    action = if project.protected_branch?(branch_name)
-               :push_code_to_protected_branches
-             else
-               :push_code
-             end
-
-    current_user.can?(action, project)
+    project.can_push_to?(current_user, branch_name)
   end
 end

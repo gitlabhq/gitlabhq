@@ -58,11 +58,7 @@ module TreeHelper
     ref ||= @ref
     return false unless project.repository.branch_names.include?(ref)
 
-    if project.protected_branch? ref
-      can?(current_user, :push_code_to_protected_branches, project)
-    else
-      can?(current_user, :push_code, project)
-    end
+    project.can_push_to?(current_user, ref)
   end
 
   def edit_blob_link(project, ref, path, options = {})

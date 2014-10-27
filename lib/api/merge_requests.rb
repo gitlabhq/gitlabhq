@@ -167,13 +167,7 @@ module API
       put ":id/merge_request/:merge_request_id/merge" do
         merge_request = user_project.merge_requests.find(params[:merge_request_id])
 
-        action = if user_project.protected_branch?(merge_request.target_branch)
-                   :push_code_to_protected_branches
-                 else
-                   :push_code
-                 end
-
-        if can?(current_user, action, user_project)
+        if user_project.can_push_to?(current_user, merge_request.target_branch)
           if merge_request.unchecked?
             merge_request.check_if_can_be_merged
           end
