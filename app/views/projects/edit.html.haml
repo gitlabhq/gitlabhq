@@ -13,7 +13,11 @@
               = f.label :name, class: 'control-label' do
                 Project name
               .col-sm-10
-                = f.text_field :name, placeholder: "Example Project", class: "form-control"
+                = f.text_field :name, placeholder: "Example Project", class: "form-control", readonly: true
+                %p.hint
+                  Rename the project at
+                  %strong Rename repository
+                  section.
 
 
             .form-group
@@ -124,6 +128,12 @@
         .errors-holder
         .panel-body
           = form_for(@project, html: { class: 'form-horizontal' }) do |f|
+            .form-group.project_name_holder
+              = f.label :name, class: 'control-label' do
+                Project name
+              .col-sm-9
+                .form-group
+                  = f.text_field :name, placeholder: "Example Project", class: "form-control"
             .form-group
               = f.label :path, class: 'control-label' do
                 %span Path
