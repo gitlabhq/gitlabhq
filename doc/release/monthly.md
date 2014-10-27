@@ -4,7 +4,7 @@ NOTE: This is a guide for GitLab developers.
 
 # **15th - Code Freeze & Release Manager**
 
-### **1. Stop merging in code, except for important bugfixes**
+### **1. Stop merging in code, except for important bug fixes**
 
 ### **2. Release Manager**
 
@@ -52,7 +52,7 @@ Name it "Release x.x.x" for easier searching.
 * Deploy to GitLab.com (#LINK)
 ```
 
-### **4. Update Changelog**
+### **4. Update changelog**
 
 Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
 
@@ -71,15 +71,15 @@ The RC1 release comes with the task to update the installation and upgrade docs.
 ### **1. Update the installation guide**
 
 1. Check if it references the correct branch `x-x-stable` (doesn't exist yet, but that is okay)
-1. Check the [GitLab Shell version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L782)
-1. Check the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794)
+1. Check the [GitLab Shell version](/lib/tasks/gitlab/check.rake#L782)
+1. Check the [Git version](/lib/tasks/gitlab/check.rake#L794)
 1. There might be other changes. Ask around.
 
-### **2. Create an update guides**
+### **2. Create update guides**
 
-1. Create: CE update guide from previous version. Like `from-6-8-to-6.9`
+1. Create: CE update guide from previous version. Like `7.3-to-7.4.md`
 1. Create: CE to EE update guide in EE repository for latest version.
-1. Update: https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/6.0-to-6.x.md to latest version.
+1. Update: `6.x-or-7.x-to-7.x.md` to latest version.
 
 It's best to copy paste the previous guide and make changes where necessary.
 The typical steps are listed below with any points you should specifically look at.
@@ -98,9 +98,9 @@ List any major changes here, so the user is aware of them before starting to upg
 
 #### 3. Do users need to update dependencies like `git`?
 
-- Check if the [GitLab Shell version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L782) changed since the last release.
+- Check if the [GitLab Shell version](/lib/tasks/gitlab/check.rake#L782) changed since the last release.
 
-- Check if the [Git version](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/lib/tasks/gitlab/check.rake#L794) changed since the last release.
+- Check if the [Git version](/lib/tasks/gitlab/check.rake#L794) changed since the last release.
 
 #### 4. Get latest code
 
@@ -112,19 +112,19 @@ List any major changes here, so the user is aware of them before starting to upg
 
 Check if any of these changed since last release:
 
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/nginx/gitlab>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/nginx/gitlab-ssl>
+- [lib/support/nginx/gitlab](/lib/support/nginx/gitlab)
+- [lib/support/nginx/gitlab-ssl](/lib/support/nginx/gitlab-ssl)
 - <https://gitlab.com/gitlab-org/gitlab-shell/commits/master/config.yml.example>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/gitlab.yml.example>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/unicorn.rb.example>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.mysql>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/database.yml.postgresql>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/initializers/rack_attack.rb.example>
-- <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/config/resque.yml.example>
+- [config/gitlab.yml.example](/config/gitlab.yml.example)
+- [config/unicorn.rb.example](/config/unicorn.rb.example)
+- [config/database.yml.mysql](/config/database.yml.mysql)
+- [config/database.yml.postgresql](/config/database.yml.postgresql)
+- [config/initializers/rack_attack.rb.example](/config/initializers/rack_attack.rb.example)
+- [config/resque.yml.example](/config/resque.yml.example)
 
 #### 8. Need to update init script?
 
-Check if the `init.d/gitlab` script changed since last release: <https://gitlab.com/gitlab-org/gitlab-ce/commits/master/lib/support/init.d/gitlab>
+Check if the `init.d/gitlab` script changed since last release: [lib/support/init.d/gitlab](/lib/support/init.d/gitlab)
 
 #### 9. Start application
 
@@ -252,7 +252,7 @@ Note: Merge CE into EE if needed.
 
 ### **2. Update installation.md**
 
-Update [installation.md](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) to the newest version in master.
+Update [installation.md](/doc/install/installation.md) to the newest version in master.
 
 ### **3. Push latest changes from x-x-stable branch to dev.gitlab.org**
 
