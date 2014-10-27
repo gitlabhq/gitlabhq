@@ -13,6 +13,9 @@ describe DisableEmailInterceptor do
   end
 
   after do
+    # Removing interceptor from the list because unregister_interceptor is
+    # implemented in later version of mail gem
+    # See: https://github.com/mikel/mail/pull/705
     Mail.class_variable_set(:@@delivery_interceptors, [])
   end
 
