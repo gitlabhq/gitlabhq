@@ -67,6 +67,10 @@ module API
       unauthorized! unless current_user
     end
 
+    def authenticate_by_gitlab_shell_token!
+      unauthorized! unless secret_token == params['secret_token']
+    end
+
     def authenticated_as_admin!
       forbidden! unless current_user.is_admin?
     end
@@ -192,6 +196,10 @@ module API
                        abilities << Ability
                        abilities
                      end
+    end
+
+    def secret_token
+      File.read(Rails.root.join('.gitlab_shell_secret'))
     end
   end
 end

@@ -1,6 +1,8 @@
 module Gitlab
   module LDAP
     class Group
+      attr_accessor :adapter
+
       def self.find_by_cn(cn, adapter)
         adapter.group(cn)
       end
@@ -36,7 +38,7 @@ module Gitlab
           member_uids.include?(user.uid)
         elsif member_dns.include?(user.dn)
           true
-        elsif Gitlab.config.ldap.active_directory
+        elsif adapter.config.active_directory
           adapter.dn_matches_filter?(user.dn, active_directory_recursive_memberof_filter)
         end
       end
