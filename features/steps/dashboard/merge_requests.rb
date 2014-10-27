@@ -4,7 +4,9 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   step 'I should see merge requests assigned to me' do
     should_see(assigned_merge_request)
+    should_see(assigned_merge_request_from_fork)
     should_not_see(authored_merge_request)
+    should_not_see(authored_merge_request_from_fork)
     should_not_see(other_merge_request)
   end
 
@@ -12,6 +14,7 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
     should_see(authored_merge_request)
     should_see(authored_merge_request_from_fork)
     should_not_see(assigned_merge_request)
+    should_not_see(assigned_merge_request_from_fork)
     should_not_see(other_merge_request)
   end
 
@@ -28,6 +31,7 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   step 'I have assigned merge requests' do
     assigned_merge_request
+    assigned_merge_request_from_fork
   end
 
   step 'I have other merge requests' do
@@ -55,7 +59,10 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
   end
 
   def assigned_merge_request
-    @assigned_merge_request ||= create :merge_request, assignee: current_user, target_project: project, source_project: project
+    @assigned_merge_request ||= create :merge_request,
+                                  assignee: current_user,
+                                  target_project: project,
+                                  source_project: project
   end
 
   def authored_merge_request
@@ -77,6 +84,14 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
     @authored_merge_request_from_fork ||= create :merge_request,
                                             source_branch: 'basic_page',
                                             author: current_user,
+                                            target_project: public_project,
+                                            source_project: forked_project
+  end
+
+  def assigned_merge_request_from_fork
+    @assigned_merge_request_from_fork ||= create :merge_request,
+                                            source_branch: 'basic_page_fix',
+                                            assignee: current_user,
                                             target_project: public_project,
                                             source_project: forked_project
   end
