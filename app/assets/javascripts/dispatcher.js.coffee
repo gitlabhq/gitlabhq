@@ -78,7 +78,11 @@ class Dispatcher
         shortcut_handler = true
 
     switch path.first()
-      when 'admin' then new Admin()
+      when 'admin'
+        new Admin()
+        switch path[1]
+          when 'projects'
+            new NamespaceSelect()
       when 'dashboard'
         shortcut_handler = new ShortcutsDashboardNavigation()
       when 'projects'
