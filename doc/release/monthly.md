@@ -11,6 +11,7 @@ NOTE: This is a guide for GitLab developers.
 A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
 
 ### **3. Create an overall issue**
+
 Create issue for GitLab CE project(internal). Name it "Release x.x.x" for easier searching.
 Replace the dates with actual dates based on the number of workdays before the release.
 
@@ -179,7 +180,11 @@ So you should use stable branch for future code chages related to release.
 
 # **4 workdays before release - Release RC1**
 
-### **1. Update GitLab.com**
+### **1. Determine QA person
+
+Notify person of QA day.
+
+### **2. Update GitLab.com**
 
 Merge the RC1 EE code into GitLab.com.
 Once the build is green, create a package.
@@ -187,18 +192,19 @@ If there are big database migrations consider testing them with the production d
 Try to deploy in the morning.
 It is important to do this as soon as possible, so we can catch any errors before we release the full version.
 
-### **2. Prepare the blog post**
+### **3. Prepare the blog post**
 
 - Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
 - Check the changelog of CE and EE for important changes.
 - Create a WIP MR for the blog post
 - Ask Dmitriy to add screenshots to the WIP MR.
-- Decide with team who will be the MVP user.
+- Decide with team who will be the MVP user. 
+- Create WIP MR for adding MVP to MVP page on website
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 - Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
 - After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
 
-### **3. Create a regressions issue**
+### **4. Create a regressions issue**
 
 On [the GitLab CE issue tracker on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues/) create an issue titled "GitLab X.X regressions" add the following text:
 
@@ -312,3 +318,14 @@ Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 Update GitLab.com from RC1 to the released package.
 
 # **25th - Release GitLab CI**
+
+- Create the update guid `doc/x.x-to-x.x.md`.
+- Update CHANGELOG
+- Bump version
+- Create annotated tags `git tag -a vx.x.0 -m 'Version x.x.0' xxxxx`
+- Create stable branch `x-x-stable`
+- Create GitHub release post
+- Post to blog about release
+- Post to twitter
+
+
