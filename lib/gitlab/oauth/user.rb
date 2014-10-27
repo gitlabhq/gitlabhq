@@ -27,8 +27,8 @@ module Gitlab
               email: email,
               password: password,
               password_confirmation: password,
-            }  
-          else 
+            }
+          else
             opts = {
               extern_uid: uid,
               provider: provider,
