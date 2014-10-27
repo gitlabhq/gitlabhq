@@ -1,4 +1,4 @@
-class Activities
+class @Activities
   constructor: ->
     Pager.init 20, true
     $(".event_filter_link").bind "click", (event) =>
@@ -27,5 +27,3 @@ class Activities
       event_filters.splice index, 1
 
     $.cookie "event_filter", event_filters.join(","), { path: '/' }
-
-@Activities = Activities

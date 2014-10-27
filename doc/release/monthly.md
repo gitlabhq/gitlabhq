@@ -191,6 +191,7 @@ It is important to do this as soon as possible, so we can catch any errors befor
 - Ask Dmitriy to add screenshots to the WIP MR.
 - Decide with team who will be the MVP user.
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+- Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
 - Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
 - After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
 

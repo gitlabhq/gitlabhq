@@ -119,7 +119,7 @@ class NotificationService
 
     # ignore gitlab service messages
     return true if note.note =~ /\A_Status changed to closed_/
-    return true if note.note =~ /\A_mentioned in / && note.system == true
+    return true if note.cross_reference? && note.system == true
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 

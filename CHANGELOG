@@ -1,3 +1,9 @@
+v 7.5.0
+  - API: Add support for Hipchat (Kevin Houdebert)
+  - Add time zone configuration on gitlab.yml (Sullivan Senechal)
+  - Fix LDAP authentication for Git HTTP access
+  - Fix LDAP config lookup for provider 'ldap'
+
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users
 

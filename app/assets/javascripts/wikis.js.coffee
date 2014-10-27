@@ -1,4 +1,4 @@
-class Wikis
+class @Wikis
   constructor: ->
     $('.build-new-wiki').bind "click", ->
       field = $('#new_wiki_path')
@@ -7,6 +7,3 @@ class Wikis
 
       if(slug.length > 0)
         location.href = path + "/" + slug
-
-
-@Wikis = Wikis

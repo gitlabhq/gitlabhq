@@ -42,7 +42,7 @@ class Projects::DeployKeysController < Projects::ApplicationController
   end
 
   def enable
-    project.deploy_keys << available_keys.find(params[:id])
+    @project.deploy_keys << available_keys.find(params[:id])
 
     redirect_to project_deploy_keys_path(@project)
   end
