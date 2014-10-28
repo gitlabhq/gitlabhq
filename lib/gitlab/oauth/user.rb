@@ -19,6 +19,7 @@ module Gitlab
           password = Devise.friendly_token[0, 8].downcase
           
           if username.nil?
+          # Use the old behavior if no username is present
             opts = {
               extern_uid: uid,
               provider: provider,
@@ -29,7 +30,8 @@ module Gitlab
               password_confirmation: password,
             }
           else
-            opts = {
+          # Otherwise clean username with regex
+          opts = {
               extern_uid: uid,
               provider: provider,
               name: name,
