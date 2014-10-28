@@ -4,29 +4,25 @@ overwritten_messages =
 
 overwritten_rules =
   wordSequences: false
+
+options =
+  showProgressBar: false
+  showVerdicts: false
+  showPopover: true
+  showErrors: true
+  showStatus: true
+  errorMessages: overwritten_messages
   
 $(document).ready ->
   profileOptions = {}
-  profileOptions.ui =
-    showProgressBar: false
-    showVerdicts: false
-    showPopover: true
-    showErrors: true
-    showStatus: true
-    errorMessages: overwritten_messages
+  profileOptions.ui = options
   profileOptions.rules =
     activated: overwritten_rules
 
   deviseOptions = {}
   deviseOptions.common =
     usernameField: "#user_username"
-  deviseOptions.ui =
-    showPopover: true
-    showErrors: true
-    showVerdicts: false
-    showProgressBar: false
-    showStatus: true
-    errorMessages: overwritten_messages
+  deviseOptions.ui = options
   deviseOptions.rules =
     activated: overwritten_rules
 
