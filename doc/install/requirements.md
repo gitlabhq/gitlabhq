@@ -90,7 +90,7 @@ On a very active server (10,000 active users) the Sidekiq process can use 1GB+ o
 ## Supported web browsers
 
 - Chrome (Latest stable version)
-- Firefox (Latest released version) 
+- Firefox (Latest released version and [latest ESR version](https://www.mozilla.org/en-US/firefox/organizations/)) 
 - Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+
