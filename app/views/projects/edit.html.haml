@@ -13,11 +13,7 @@
               = f.label :name, class: 'control-label' do
                 Project name
               .col-sm-10
-                = f.text_field :name, placeholder: "Example Project", class: "form-control", readonly: true
-                %p.hint
-                  Rename the project at
-                  %strong Rename repository
-                  section.
+                = f.text_field :name, placeholder: "Example Project", class: "form-control", id: "project_name_edit"
 
 
             .form-group
