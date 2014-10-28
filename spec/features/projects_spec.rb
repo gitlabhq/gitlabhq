@@ -17,5 +17,14 @@ describe "Projects", feature: true  do
         click_button 'Confirm'
       }.to change {Project.count}.by(-1)
     end
+
+    it 'should delete the project from the database and disk' do
+      expect(GitlabShellWorker).to(
+        receive(:perform_async).with(:remove_repository,
+                                     /#{@project.path_with_namespace}/)
+      ).twice
+
+      expect { click_link "Remove project" }.to change {Project.count}.by(-1)
+    end
   end
 end

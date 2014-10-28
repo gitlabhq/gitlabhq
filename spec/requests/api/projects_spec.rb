@@ -632,6 +632,11 @@ describe API::API, api: true  do
   describe "DELETE /projects/:id" do
     context "when authenticated as user" do
       it "should remove project" do
+        expect(GitlabShellWorker).to(
+          receive(:perform_async).with(:remove_repository,
+                                       /#{project.path_with_namespace}/)
+        ).twice
+
         delete api("/projects/#{project.id}", user)
         response.status.should == 200
       end
