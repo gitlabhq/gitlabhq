@@ -34,14 +34,14 @@ class Repository
     nil
   end
 
-  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false)
+  def commits(ref, path = nil, limit = nil, offset = nil, skip_merges = false, follow = true)
     commits = Gitlab::Git::Commit.where(
       repo: raw_repository,
       ref: ref,
       path: path,
       limit: limit,
       offset: offset,
-      follow: true,
+      follow: follow,
     )
     commits = Commit.decorate(commits) if commits.present?
     commits
