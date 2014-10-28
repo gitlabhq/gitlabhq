@@ -121,6 +121,20 @@ class Note < ActiveRecord::Base
       })
     end
 
+    def create_labels_change_note(noteable, project, author, labels, removed)
+      labels_title = labels.map{ |label| "`#{label.title}`" }.join(', ')
+      label = 'Label'.pluralize(labels.count)
+      body = "_#{label} #{labels_title} #{ removed ? 'removed' : 'added' }_"
+
+      create(
+        noteable: noteable,
+        project: project,
+        author: author,
+        note: body,
+        system: true
+      )
+    end
+
     def create_new_commits_note(noteable, project, author, commits)
       commits_text = ActionController::Base.helpers.pluralize(commits.size, 'new commit')
       body = "Added #{commits_text}:\n\n"

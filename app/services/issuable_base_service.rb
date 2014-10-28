@@ -10,4 +10,9 @@ class IssuableBaseService < BaseService
     Note.create_milestone_change_note(
       issuable, issuable.project, current_user, issuable.milestone)
   end
+
+  def create_labels_note(issuable, labels, removed = true)
+    Note.create_labels_change_note(
+        issuable, issuable.project, current_user, labels, removed)
+  end
 end
