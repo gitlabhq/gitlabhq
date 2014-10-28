@@ -145,8 +145,8 @@ describe API::API, api: true  do
           '\'_\', optionally preceeded by \'.\'. It must not end in \'.git\'.']
     end
 
-    it "shouldn't available for non admin users" do
-      post api("/users", user), attributes_for(:user)
+    it "shouldn't be available for non admin users" do
+      post api('/users', user), attributes_for(:user)
       response.status.should == 403
     end
 

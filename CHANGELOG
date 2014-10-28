@@ -1,6 +1,7 @@
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration on gitlab.yml (Sullivan Senechal)
+  - Add force_random_password option to user POST api
   - Fix LDAP authentication for Git HTTP access
   - Fix LDAP config lookup for provider 'ldap'
 

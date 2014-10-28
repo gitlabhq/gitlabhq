@@ -146,7 +146,7 @@ Parameters:
 
 ## User creation
 
-Creates a new user. Note only administrators can create new users.
+Creates a new user. Note only administrators can create new users. If `force_random_password` is set, user is created as if done from the admin control panel.
 
 ```
 POST /users
@@ -154,20 +154,21 @@ POST /users
 
 Parameters:
 
-- `email` (required)            - Email
-- `password` (required)         - Password
-- `username` (required)         - Username
-- `name` (required)             - Name
-- `skype` (optional)            - Skype ID
-- `linkedin` (optional)         - LinkedIn
-- `twitter` (optional)          - Twitter account
-- `website_url` (optional)      - Website URL
-- `projects_limit` (optional)   - Number of projects user can create
-- `extern_uid` (optional)       - External UID
-- `provider` (optional)         - External provider name
-- `bio` (optional)              - User's biography
-- `admin` (optional)            - User is admin - true or false (default)
-- `can_create_group` (optional) - User can create groups - true or false
+- `email` (required)                                                    - Email
+- `password` (required unless force_random_password is set)             - Password
+- `force_random_password` (true/false; required unless password is set) - generate random password for user
+- `username` (required)                                                 - Username
+- `name` (required)                                                     - Name
+- `skype` (optional)                                                    - Skype ID
+- `linkedin` (optional)                                                 - LinkedIn
+- `twitter` (optional)                                                  - Twitter account
+- `website_url` (optional)                                              - Website URL
+- `projects_limit` (optional)                                           - Number of projects user can create
+- `extern_uid` (optional)                                               - External UID
+- `provider` (optional)                                                 - External provider name
+- `bio` (optional)                                                      - User's biography
+- `admin` (optional)                                                    - User is admin - true or false (default)
+- `can_create_group` (optional)                                         - User can create groups - true or false
 
 ## User modification
 
