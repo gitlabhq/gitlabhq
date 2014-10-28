@@ -26,15 +26,13 @@ sudo -u git -H git checkout LATEST_TAG
 
 Replace LATEST_TAG with the latest GitLab tag you want to upgrade to, for example `v6.6.3`.
 
-### 3. Update gitlab-shell if it is not the latest version
+### 3. Update gitlab-shell to the corresponding version
 
 ```bash
 cd /home/git/gitlab-shell
 sudo -u git -H git fetch
-sudo -u git -H git checkout LATEST_TAG
+sudo -u git -H git checkout v`cat /home/git/gitlab/GITLAB_SHELL_VERSION`
 ```
-
-Replace LATEST_TAG with the latest GitLab Shell tag you want to upgrade to, for example `v1.7.9`.
 
 ### 4. Install libs, migrations, etc.
 
