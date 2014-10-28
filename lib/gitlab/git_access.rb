@@ -109,11 +109,15 @@ module Gitlab
       end
 
       # Check commit messages unless its branch removal
-      if git_hook.commit_message_regex.present? && newrev !~ /00000000/
+      if (git_hook.commit_message_regex.present? || git_hook.author_email_regex.present?) && newrev !~ /00000000/
         commits = project.repository.commits_between(oldrev, newrev)
         commits.each do |commit|
-          unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
-            return false
+          if git_hook.commit_message_regex.present?
+            return false unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
+          end
+          if git_hook.author_email_regex.present?
+            return false unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
+            return false unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
           end
         end
       end

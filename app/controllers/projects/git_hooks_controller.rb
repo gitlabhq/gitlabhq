@@ -27,6 +27,6 @@ class Projects::GitHooksController < Projects::ApplicationController
 
   # Only allow a trusted parameter "white list" through.
   def git_hook_params
-    params.require(:git_hook).permit(:deny_delete_tag, :delete_branch_regex, :commit_message_regex, :force_push_regex)
+    params.require(:git_hook).permit(:deny_delete_tag, :delete_branch_regex, :commit_message_regex, :force_push_regex, :author_email_regex)
   end
 end
