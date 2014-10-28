@@ -220,13 +220,27 @@ describe API::API, api: true  do
 
       context "when a member of the group" do
         it "should return ok and add new member" do
-          count_before=group_no_members.group_members.count
           new_user = create(:user)
-          post api("/groups/#{group_no_members.id}/members", owner), user_id: new_user.id, access_level: GroupMember::MASTER
+
+          expect {
+            post api("/groups/#{group_no_members.id}/members", owner),
+              user_id: new_user.id, access_level: GroupMember::MASTER
+          }.to change { group_no_members.members.count }.by(1)
+
           response.status.should == 201
           json_response['name'].should == new_user.name
           json_response['access_level'].should == GroupMember::MASTER
-          group_no_members.group_members.count.should == count_before + 1
+        end
+
+        it "should not allow guest to modify group members" do
+          new_user = create(:user)
+
+          expect {
+            post api("/groups/#{group_with_members.id}/members", guest),
+            user_id: new_user.id, access_level: GroupMember::MASTER
+          }.not_to change { group_with_members.members.count }
+
+          response.status.should == 403
         end
 
         it "should return error if member already exists" do
