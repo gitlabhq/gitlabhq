@@ -17,7 +17,7 @@ module Gitlab
         def create(auth)
           @auth = auth
           password = Devise.friendly_token[0, 8].downcase
-          
+
           if username.nil?
           # Use the old behavior if no username is present
             opts = {
