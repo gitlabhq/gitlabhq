@@ -19,6 +19,7 @@
         = hidden_field_tag :issue_context
         = f.submit class: 'btn'
       - elsif issue.milestone
-        = link_to issue.milestone.title, project_milestone_path
+        = link_to project_milestone_path(@project, @issue.milestone) do
+          = @issue.milestone.title
       - else
         None

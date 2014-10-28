@@ -16,10 +16,23 @@ module Gitlab
         servers.map {|server| server['provider_name'] }
       end
 
+      def self.valid_provider?(provider)
+        providers.include?(provider)
+      end
+
+      def self.invalid_provider(provider)
+        raise "Unknown provider (#{provider}). Available providers: #{providers}"
+      end
+
       def initialize(provider)
-        @provider = provider
-        invalid_provider unless valid_provider?
-        @options = config_for(provider)
+        if self.class.valid_provider?(provider)
+          @provider = provider
+        elsif provider == 'ldap'
+          @provider = self.class.providers.first
+        else
+          self.class.invalid_provider(provider)
+        end
+        @options = config_for(@provider) # Use @provider, not provider
       end
 
       def enabled?
@@ -87,14 +100,6 @@ module Gitlab
         else
           nil
         end
-      end
-
-      def valid_provider?
-        self.class.providers.include?(provider)
-      end
-
-      def invalid_provider
-        raise "Unknown provider (#{provider}). Available providers: #{self.class.providers}"
       end
 
       def auth_options

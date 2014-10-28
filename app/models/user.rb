@@ -330,11 +330,7 @@ class User < ActiveRecord::Base
   end
 
   def abilities
-    @abilities ||= begin
-                     abilities = Six.new
-                     abilities << Ability
-                     abilities
-                   end
+    Ability.abilities
   end
 
   def can_select_namespace?

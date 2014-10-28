@@ -39,6 +39,8 @@ production: &base
     # time_zone: 'UTC'
 
     ## Email settings
+    # Uncomment and set to false if you need to disable email sending from GitLab (default: true)
+    # email_enabled: true
     # Email address used in the "From" field in mails sent by GitLab
     email_from: example@example.com
 

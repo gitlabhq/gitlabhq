@@ -95,6 +95,7 @@ Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
+Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
