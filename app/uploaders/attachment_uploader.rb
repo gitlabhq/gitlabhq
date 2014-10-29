@@ -27,7 +27,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
   end
 
   def url
-    Gitlab.config.gitlab.relative_url_root + '' + super unless super.nil?
+    Gitlab.config.gitlab.relative_url_root + super unless super.nil?
   end
 
   def file_storage?
