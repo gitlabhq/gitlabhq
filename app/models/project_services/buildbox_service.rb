@@ -12,6 +12,8 @@
 #  properties :text
 #
 
+require "addressable/uri"
+
 class BuildboxService < CiService
   prop_accessor :project_url, :token
 
