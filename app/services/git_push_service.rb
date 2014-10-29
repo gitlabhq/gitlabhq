@@ -87,7 +87,11 @@ class GitPushService
 
       if !issues_to_close.empty? && is_default_branch
         issues_to_close.each do |issue|
-          Issues::CloseService.new(project, author, {}).execute(issue, commit)
+          if project.jira_tracker? && project.jira_service.active
+            project.jira_service.execute(push_data, issue)
+          else
+            Issues::CloseService.new(project, author, {}).execute(issue, commit)
+          end
         end
       end
 

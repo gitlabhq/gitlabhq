@@ -6,4 +6,5 @@
   %span.cgray
     added #{time_ago_with_tooltip(key.created_at)}
 
-  = link_to 'Remove', profile_key_path(key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
+  - unless key.is_a? LDAPKey
+    = link_to 'Remove', profile_key_path(key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"

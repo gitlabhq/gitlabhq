@@ -219,6 +219,9 @@ v 6.9.0
   - Labels for merge requests (Drew Blessing)
   - Threaded emails by setting a Message-ID (Philip Blatter)
 
+v 6.8.1
+  - Bump required gitlab-shell version to 1.9.3
+
 v 6.8.0
   - Ability to at mention users that are participating in issue and merge req. discussion
   - Enabled GZip Compression for assets in example Nginx, make sure that Nginx is compiled with --with-http_gzip_static_module flag (this is default in Ubuntu)

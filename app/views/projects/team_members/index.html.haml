@@ -14,3 +14,5 @@
 = render "team", members: @project_members
 - if @group
   = render "group_members"
+- if @project_group_links.any?
+  = render "shared_group_members"

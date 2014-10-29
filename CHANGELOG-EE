@@ -1,0 +1,78 @@
+v 7.4.0
+  - Support for multiple LDAP servers
+  - Skip AD specific LDAP checks
+  - Do not show ldap users in dropdowns for groups with enabled ldap-sync
+  - Update the JIRA integration documentation
+  - Reset the homepage to show the GitLab logo by deleting the custom logo.
+
+v 7.3.0
+  - Add an option to change the LDAP sync time from default 1 hour
+  - User will receive an email when unsubscribed from admin notifications
+  - Show group sharing members on /my/project/team
+  - Improve explanation of the LDAP permission reset
+  - Fix some navigation issues
+  - Added support for multiple LDAP groups per Gitlab group
+
+v 7.2.0
+  - Improve Redmine integration
+  - Better logging for the JIRA issue closing service
+  - Administrators can now send email to all users through the admin interface
+  - JIRA issue transition ID is now customizable
+  - LDAP group settings are now visible in admin group show page and group members page
+
+v 7.1.0
+  - Synchronize LDAP-enabled GitLab administrators with an LDAP group (Marvin Frick, sponsored by SinnerSchrader)
+  - Synchronize SSH keys with LDAP (Oleg Girko (Jolla) and Marvin Frick (SinnerSchrader))
+  - Support Jenkins jobs with multiple modules (Marvin Frick, sponsored by SinnerSchrader)
+
+v 7.0.0
+  - Fix: empty brand images are displayed as empty image_tag on login page (Marvin Frick, sponsored by SinnerSchrader)
+
+v 6.9.4
+  - Fix bug in JIRA Issue closing triggered by commit messages
+  - Fix JIRA issue reference bug
+
+v 6.9.3
+  - Fix check CI status only when CI service is enabled(Daniel Aquino)
+
+v 6.9.2
+  - Merge community edition changes for version 6.9.2
+
+v 6.9.1
+  - Merge community edition changes for version 6.9.1
+
+v 6.9.0
+  - Add support for closing Jira tickets with commits and MR
+  - Template for Merge Request description can be added in project settings
+  - Jenkins CI service
+  - Fix LDAP email upper case bug
+
+v 6.8.0
+  - Customise sign-in page with custom text and logo
+
+v 6.7.1
+  - Handle LDAP errors in Adapter#dn_matches_filter?
+
+v 6.7.0
+  - Improve LDAP sign-in speed by reusing connections
+  - Add support for Active Directory nested LDAP groups
+  - Git hooks: Commit message regex
+  - Git hooks: Deny git tag removal
+  - Fix group edit in admin area
+
+v 6.5.0
+  - Add reset permissions button to Group#members page
+
+v 6.4.0
+  - Respect existing group permissions during sync with LDAP group (d3844662ec7ce816b0a85c8b40f66ee6c5ae90a1)
+
+v 6.3.0
+  - When looking up a user by DN, use single scope (bc8a875df1609728f1c7674abef46c01168a0d20)
+  - Try sAMAccountName if omniauth nickname is nil (9b7174c333fa07c44cc53b80459a115ef1856e38)
+
+v 6.2.0
+  - API: expose ldap_cn and ldap_access group attributes
+  - Use omniauth-ldap nickname attribute as GitLab username
+  - Improve group sharing UI for installation with many groups
+  - Fix empty LDAP group raises exception
+  - Respect LDAP user filter for git access

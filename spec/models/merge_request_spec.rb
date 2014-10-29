@@ -112,6 +112,17 @@ describe MergeRequest do
 
       subject.closes_issues.should include(issue2)
     end
+
+    context 'for a project with JIRA integration' do
+      let(:issue0) { JiraIssue.new('JIRA-123') }
+      let(:issue1) { JiraIssue.new('FOOBAR-4567') }
+
+      it 'returns sorted JiraIssues' do
+        subject.project.stub(default_branch: subject.target_branch)
+
+        subject.closes_issues.should eq([issue1, issue0])
+      end
+    end
   end
 
   it_behaves_like 'an editable mentionable' do

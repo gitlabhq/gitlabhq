@@ -1,0 +1,6 @@
+%li
+  = ldap_group_link.cn
+  %small.light== as #{ldap_group_link.human_access} on #{ldap_group_link.provider_label}
+  .pull-right
+    = link_to group_ldap_group_link_path(group, ldap_group_link), method: :delete, class: 'btn btn-danger btn-small' do
+      = fa_icon('unlink', text: 'unlink')
