@@ -115,15 +115,21 @@ describe API::API, api: true  do
 
     context "when a member of the group" do
       it "should delete guest's membership of group" do
-        count_before=group_with_members.group_members.count
-        delete api("/groups/#{group_with_members.id}/members/#{guest.id}", owner)
+        expect {
+          delete api("/groups/#{group_with_members.id}/members/#{guest.id}", owner)
+        }.to change { group_with_members.members.count }.by(-1)
+
         response.status.should == 200
-        group_with_members.group_members.count.should == count_before - 1
       end
 
       it "should return a 404 error when user id is not known" do
         delete api("/groups/#{group_with_members.id}/members/1328", owner)
         response.status.should == 404
+      end
+
+      it "should not allow guest to modify group members" do
+        delete api("/groups/#{group_with_members.id}/members/#{master.id}", guest)
+        response.status.should == 403
       end
     end
   end
