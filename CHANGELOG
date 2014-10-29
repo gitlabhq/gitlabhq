@@ -1,3 +1,8 @@
+v 7.4.3
+  - Fix raw snippets view
+  - Fix security issue for member api
+  - Fix buildbox integration
+
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users
 
