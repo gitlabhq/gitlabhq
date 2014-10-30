@@ -76,6 +76,7 @@ Is the system packaged Git too old? Remove it and compile from source.
     cd /tmp
     curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.1.2.tar.gz | tar xz
     cd git-2.1.2/
+    ./configure
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
