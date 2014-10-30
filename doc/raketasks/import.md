@@ -36,13 +36,13 @@ gitlab_shell:
 
 ```
 
-### Copy your bare repositories inside this newly created folder, e.g.:
+### Copy your bare repositories inside this newly created folder:
 
 ```
 $ cp -r /old/git/foo.git/ /home/git/repositories/new_group/
 ```
 
-### Run the commands below depending on you type of installation:
+### Run the commands below depending on your type of installation:
 
 #### Omnibus Installation
 
