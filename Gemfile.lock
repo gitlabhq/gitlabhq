@@ -592,6 +592,7 @@ DEPENDENCIES
   RedCloth
   ace-rails-ap
   acts-as-taggable-on
+  addressable
   annotate (~> 2.6.0.beta2)
   asciidoctor (= 0.1.4)
   awesome_print
