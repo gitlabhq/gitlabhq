@@ -23,7 +23,7 @@ class SerializeServiceProperties < ActiveRecord::Migration
       associations[service.type.to_sym].each do |attribute|
         service.send("#{attribute}=", service.attributes[attribute.to_s])
       end
-      service.save!
+      service.save(validate: false)
     end
 
     remove_column :services, :project_url, :string
