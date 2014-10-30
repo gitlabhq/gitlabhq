@@ -186,6 +186,7 @@ gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
 gem 'request_store'
 gem "virtus"
+gem 'addressable'
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"
