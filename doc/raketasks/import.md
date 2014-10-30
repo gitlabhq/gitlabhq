@@ -11,7 +11,7 @@ Notes:
 
 How to use:
 
-1. Create a new folder inside the git repositories path.
+1. Create a new folder inside the git repositories path. This will be the name of the new group.
 
 - For omnibus-gitlab it is located at: `/var/opt/gitlab/git-data/repositories`
 - For manual installations it is usually located at: `/home/git/repositories` or you can see where
@@ -41,22 +41,30 @@ gitlab_shell:
 2. Copy your bare repositories inside this newly created folder, e.g.:
 
 ```
-$ cp /old/git/foo.git /home/git/repositories/new_group/foo.git
+$ cp -r /old/git/foo.git/ /home/git/repositories/new_group/
 ```
 
-3. Run the command below depending on you type of installation:
+3. Run the commands below depending on you type of installation:
 
 #### Omnibus Installation
 
 ```
 $ sudo gitlab-rake gitlab:import:repos
 ```
+```
+$ sudo gitlab-rake gitlab:satellites:create
+```
 
 #### Manual Installation
+
+Before running these commands you need to change the directory to where your GitLab installation is located:
 
 ```
 $ cd /home/git/gitlab
 $ sudo -u git -H bundle exec rake gitlab:import:repos RAILS_ENV=production
+```
+```
+$ sudo -u git -H bundle exec rake gitlab:satellites:create
 ```
 
 #### Example output:
