@@ -211,3 +211,11 @@ Parameters:
 
 It return 200 if succeed, 404 if the branch to be deleted does not exist
 or 400 for other reasons. In case of an error, an explaining message is provided.
+
+Success response: 
+
+```json
+{
+  "branch_name": "my-removed-branch"
+}
+```
