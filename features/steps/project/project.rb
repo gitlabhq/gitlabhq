@@ -4,7 +4,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedPaths
 
   step 'change project settings' do
-    fill_in 'project_name', with: 'NewName'
+    fill_in 'project_name_edit', with: 'NewName'
     uncheck 'project_issues_enabled'
   end
 
