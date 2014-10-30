@@ -137,6 +137,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
+    
+    # Quit the database session
+    gitlabhq_production> \q
 
 ## 5. Redis
 
