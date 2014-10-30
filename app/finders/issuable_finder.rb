@@ -48,7 +48,7 @@ class IssuableFinder
       else
         []
       end
-    elsif current_user && params[:authorized_only].presence
+    elsif current_user && params[:authorized_only].presence && !current_user_related?
       klass.of_projects(current_user.authorized_projects).references(:project)
     else
       klass.of_projects(ProjectsFinder.new.execute(current_user)).references(:project)
@@ -141,5 +141,9 @@ class IssuableFinder
 
   def project
     Project.where(id: params[:project_id]).first if params[:project_id].present?
+  end
+
+  def current_user_related?
+    params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
   end
 end

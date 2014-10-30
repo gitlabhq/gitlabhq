@@ -5,7 +5,6 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
-  before_filter :add_abilities
   before_filter :ldap_security_check
   before_filter :default_headers
   before_filter :add_gon_variables
@@ -72,7 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def abilities
-    @abilities ||= Six.new
+    Ability.abilities
   end
 
   def can?(object, action, subject)
@@ -111,10 +110,6 @@ class ApplicationController < ActionController::Base
     @repository ||= project.repository
   rescue Grit::NoSuchPathError
     nil
-  end
-
-  def add_abilities
-    abilities << Ability
   end
 
   def authorize_project!(action)

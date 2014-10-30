@@ -52,11 +52,7 @@ module Mentionable
       if identifier == "all"
         users += project.team.members.flatten
       else
-        if has_project
-          id = project.team.members.find_by(username: identifier).try(:id)
-        else
-          id = User.find_by(username: identifier).try(:id)
-        end
+        id = User.find_by(username: identifier).try(:id)
         users << User.find(id) unless id.blank?
       end
     end

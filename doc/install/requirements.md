@@ -24,7 +24,7 @@ For the installations options please see [the installation page on the GitLab we
 On the above unsupported distributions is still possible to install GitLab yourself.
 Please see the [manual installation guide](https://github.com/gitlabhq/gitlabhq/blob/master/doc/install/installation.md) and the [unofficial installation guides](https://github.com/gitlabhq/gitlab-public-wiki/wiki/Unofficial-Installation-Guides) on the public wiki for more information.
 
-### Non Unix operating systems such as Windows
+### Non-Unix operating systems such as Windows
 
 GitLab is developed for Unix operating systems.
 GitLab does **not** run on Windows and we have no plans of supporting it in the near future.
@@ -53,8 +53,8 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab 
 - 512MB is the absolute minimum but we do not recommend this amount of memory.
 You will either need to configure 512MB or 1.5GB of swap space.
 With 512MB of swap space you must configure only one unicorn worker.
-With one unicorn worker only git over ssh access will work because the git over http access requires two running workers (one worker to receive the user request and one worker for the authorization check).
-If you use SSD storage and configure 1.5GB of swap space you can use two Unicorn workers, this will allow http access but it will still be slow.
+With one unicorn worker only git over ssh access will work because the git over HTTP access requires two running workers (one worker to receive the user request and one worker for the authorization check).
+If you use SSD storage and configure 1.5GB of swap space you can use two Unicorn workers, this will allow HTTP access but it will still be slow.
 - 1GB RAM + 1GB swap supports up to 100 users
 - **2GB RAM** is the **recommended** memory size and supports up to 500 users
 - 4GB RAM supports up to 2,000 users
@@ -67,7 +67,7 @@ Notice: The 25 workers of Sidekiq will show up as separate processes in your pro
 
 ### Storage
 
-The necessary hard drive space largely depends on the size of the repos you want to store in GitLab. But as a *rule of thumb* you should have at least twice as much free space as your all repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
+The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least twice as much free space as all your repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
 
 If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
 
@@ -90,7 +90,7 @@ On a very active server (10,000 active users) the Sidekiq process can use 1GB+ o
 ## Supported web browsers
 
 - Chrome (Latest stable version)
-- Firefox (Latest released version) 
+- Firefox (Latest released version and [latest ESR version](https://www.mozilla.org/en-US/firefox/organizations/)) 
 - Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+

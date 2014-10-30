@@ -5,6 +5,7 @@
 - [API](api/README.md) Explore how you can access GitLab via a simple and powerful API.
 - [Markdown](markdown/markdown.md) Learn what you can do with GitLab's advanced formatting system.
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
+- [Project Services](project_services/project_services.md) Explore how project services can integrate a project with external services, such as for CI.
 - [Public access](public_access/public_access.md) Learn how you can allow public and internal access to a project.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.

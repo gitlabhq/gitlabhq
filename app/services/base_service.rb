@@ -6,11 +6,7 @@ class BaseService
   end
 
   def abilities
-    @abilities ||= begin
-                     abilities = Six.new
-                     abilities << Ability
-                     abilities
-                   end
+    Ability.abilities
   end
 
   def can?(object, action, subject)

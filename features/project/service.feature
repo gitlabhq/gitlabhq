@@ -54,3 +54,9 @@ Feature: Project Services
     And I click email on push service link
     And I fill email on push settings
     Then I should see email on push service settings saved
+
+  Scenario: Activate Atlassian Bamboo CI service
+    When I visit project "Shop" services page
+    And I click Atlassian Bamboo CI service link
+    And I fill Atlassian Bamboo CI settings
+    Then I should see Atlassian Bamboo CI service settings saved
