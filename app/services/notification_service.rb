@@ -124,6 +124,7 @@ class NotificationService
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     target = note.noteable
+
     if target.respond_to?(:participants)
       recipients = target.participants
     else
