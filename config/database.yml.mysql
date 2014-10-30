@@ -4,7 +4,7 @@
 production:
   adapter: mysql2
   encoding: utf8
-  collation: utf8_general_ci
+  collation: utf8_unicode_ci
   reconnect: false
   database: gitlabhq_production
   pool: 10
@@ -19,7 +19,7 @@ production:
 development:
   adapter: mysql2
   encoding: utf8
-  collation: utf8_general_ci
+  collation: utf8_unicode_ci
   reconnect: false
   database: gitlabhq_development
   pool: 5
@@ -33,7 +33,7 @@ development:
 test: &test
   adapter: mysql2
   encoding: utf8
-  collation: utf8_general_ci
+  collation: utf8_unicode_ci
   reconnect: false
   database: gitlabhq_test
   pool: 5
