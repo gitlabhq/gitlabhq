@@ -10,7 +10,10 @@
         - if @commit.parent_ids.present?
           = view_file_btn(@commit.parent_id, diff_file, project)
     - else
-      %span= diff_file.new_path
+      - if diff_file.renamed_file
+        %span= "#{diff_file.old_path} renamed to #{diff_file.new_path}"
+      - else
+        %span= diff_file.new_path
       - if diff_file.mode_changed?
         %span.file-mode= "#{diff_file.diff.a_mode} → #{diff_file.diff.b_mode}"
 
