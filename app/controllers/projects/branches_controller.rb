@@ -19,6 +19,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def create
     result = CreateBranchService.new(project, current_user).
         execute(params[:branch_name], params[:ref])
+
     if result[:status] == :success
       @branch = result[:branch]
       redirect_to project_tree_path(@project, @branch.name)

@@ -82,6 +82,7 @@ module API
         authorize_push_project
         result = CreateBranchService.new(user_project, current_user).
           execute(params[:branch_name], params[:ref])
+
         if result[:status] == :success
           present result[:branch],
                   with: Entities::RepoObject,
@@ -104,7 +105,9 @@ module API
           execute(params[:branch])
 
         if result[:status] == :success
-          true
+          {
+            branch_name: params[:branch]
+          }
         else
           render_api_error!(result[:message], result[:return_code])
         end
