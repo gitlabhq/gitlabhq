@@ -433,6 +433,7 @@ describe API::API, api: true  do
       json_response['is_admin'].should == user.is_admin?
       json_response['can_create_project'].should == user.can_create_project?
       json_response['can_create_group'].should == user.can_create_group?
+      json_response['projects_limit'].should == user.projects_limit
     end
 
     it "should return 401 error if user is unauthenticated" do

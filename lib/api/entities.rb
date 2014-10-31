@@ -16,7 +16,7 @@ module API
 
     class UserFull < User
       expose :email
-      expose :theme_id, :color_scheme_id, :extern_uid, :provider
+      expose :theme_id, :color_scheme_id, :extern_uid, :provider, :projects_limit
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
     end

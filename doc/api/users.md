@@ -79,6 +79,7 @@ GET /users
     "avatar_url": "http://localhost:3000/uploads/user/avatar/1/cd8.jpeg",
     "can_create_group": true,
     "can_create_project": true
+    "projects_limit": 100,
   }
 ]
 ```
@@ -140,7 +141,8 @@ Parameters:
   "color_scheme_id": 2,
   "is_admin": false,
   "can_create_group": true,
-  "can_create_project": true
+  "can_create_project": true,
+  "projects_limit": 100,
 }
 ```
 
@@ -240,7 +242,8 @@ GET /user
   "color_scheme_id": 2,
   "is_admin": false,
   "can_create_group": true,
-  "can_create_project": true
+  "can_create_project": true,
+  "projects_limit": 100,
 }
 ```
 
