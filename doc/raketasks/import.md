@@ -1,13 +1,13 @@
 # Import bare repositories into your GitLab instance
 
-### Notes:
+## Notes
 
 - The owner of the project will be the first admin
 - The groups will be created as needed
 - The owner of the group will be the first admin
 - Existing projects will be skipped
 
-## How to use:
+## How to use
 
 ### Create a new folder inside the git repositories path. This will be the name of the new group.
 
@@ -15,7 +15,6 @@
 it in the `/etc/gitlab/gitlab.rb` file.
 - For manual installations, it is usually located at: `/home/git/repositories` or you can see where
 your repositories are located by looking at `config/gitlab.yml` under the `gitlab_shell => repos_path` entry.
-
 
 ### Copy your bare repositories inside this newly created folder:
 
@@ -40,7 +39,7 @@ $ cd /home/git/gitlab
 $ sudo -u git -H bundle exec rake gitlab:import:repos RAILS_ENV=production
 ```
 
-#### Example output:
+#### Example output
 
 ```
 Processing abcd.git
