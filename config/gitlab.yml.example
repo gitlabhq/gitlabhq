@@ -135,6 +135,13 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
+
+    # GitLab EE only.
+    # GitLab will refresh LDAP user membership once a day.
+    # Default time of the day when this will happen is at 1:30am server time.
+    schedule_sync_hour: 1 # Hour of the day. Value from 0-23.
+    schedule_sync_minute: 30 # Minute of the hour. Value from 0-59.
+
     servers:
       main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
@@ -209,11 +216,6 @@ production: &base
         #   Ex. sshpublickey
         #
         sync_ssh_keys: false
-
-        # GitLab will refresh LDAP user membership once a day.
-        # Default time of the day when this will happen is at 1:30am server time.
-        schedule_sync_hour: 1 # Hour of the day. Value from 0-23.
-        schedule_sync_minute: 30 # Minute of the hour. Value from 0-59.
 
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database

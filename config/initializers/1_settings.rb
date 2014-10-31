@@ -56,6 +56,8 @@ end
 Settings['ldap'] ||= Settingslogic.new({})
 Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 Settings.ldap['sync_time'] = 3600 if Settings.ldap['sync_time'].nil?
+Settings.ldap['schedule_sync_hour'] = 1 if Settings.ldap['schedule_sync_hour'].nil?
+Settings.ldap['schedule_sync_minute'] = 30  if Settings.ldap['schedule_sync_minute'].nil?
 
 # backwards compatibility, we only have one host
 if Settings.ldap['enabled'] || Rails.env.test?
@@ -77,8 +79,6 @@ if Settings.ldap['enabled'] || Rails.env.test?
     server['provider_name'] ||= "ldap#{key}".downcase
     server['sync_time'] = 3600 if server['sync_time'].nil?
     server['provider_class'] = OmniAuth::Utils.camelize(server['provider_name'])
-    server['schedule_sync_hour'] = 1 if server['schedule_sync_hour'].nil?
-    server['schedule_sync_minute'] = 30  if server['schedule_sync_minute'].nil?
     Settings.ldap['servers'][key] = server
   end
 end

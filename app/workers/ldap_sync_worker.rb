@@ -3,8 +3,8 @@ class LdapSyncWorker
   include Sidetiq::Schedulable
 
   if Gitlab.config.ldap.enabled
-    HOUR = Gitlab.config.ldap.servers.values.first['schedule_sync_hour']
-    MINUTE = Gitlab.config.ldap.servers.values.first['schedule_sync_minute']
+    HOUR = Gitlab.config.ldap.schedule_sync_hour
+    MINUTE = Gitlab.config.ldap.schedule_sync_minute
 
     recurrence { daily.hour_of_day(HOUR).minute_of_hour(MINUTE) }
   end
