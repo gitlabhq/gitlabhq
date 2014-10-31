@@ -1,3 +1,6 @@
+v 7.5.0
+  - Add an option for automatic daily LDAP user sync
+
 v 7.4.0
   - Support for multiple LDAP servers
   - Skip AD specific LDAP checks
