@@ -13,13 +13,23 @@
   .form-group
     = f.label :deny_delete_tag, "Prevent tag removal", class: 'control-label'
     .col-sm-10
-      .checkbox
-        = f.check_box :deny_delete_tag
-        %span.descr
-          Do not allow users to remove git tags with
-          = succeed '.' do
-            %code git push
-          Tags can still be deleted through the web UI.
+      %label
+        .checkbox
+          = f.check_box :deny_delete_tag
+          %span.descr
+            Do not allow users to remove git tags with
+            = succeed '.' do
+              %code git push
+            Tags can still be deleted through the web UI.
+
+  .form-group
+    = f.label :member_check, "Restrict commit authors to existing Gitlab users", class: 'control-label'
+    .col-sm-10
+      %label
+        .checkbox
+          = f.check_box :member_check
+          %span.descr
+            Check whether author is a GitLab member
 
   -#.form-group
     = f.label :force_push_regex, "Force push", class: 'control-label'
