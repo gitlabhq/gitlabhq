@@ -51,7 +51,7 @@ module CommitsHelper
       end
     end
 
-    crumbs.html_safe
+    crumbs
   end
 
   # Return Project default branch, if it present in array

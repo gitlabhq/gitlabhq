@@ -33,9 +33,11 @@ module ProjectsHelper
     author_html = author_html.html_safe
 
     if opts[:name]
-      link_to(author_html, user_path(author), class: "author_link").html_safe
+      link_to(author_html, user_path(author), class: 'author_link')
     else
-      link_to(author_html, user_path(author), class: "author_link has_tooltip", data: { :'original-title' => sanitize(author.name) } ).html_safe
+      link_to(author_html, user_path(author),
+              class: 'author_link has_tooltip',
+              data: { :'original-title' => sanitize(author.name) })
     end
   end
 
