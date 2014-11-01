@@ -1,4 +1,4 @@
-require_relative '../../app/models/project_services/slack_message'
+require 'spec_helper'
 
 describe SlackMessage do
   subject { SlackMessage.new(args) }
