@@ -56,6 +56,7 @@ Parameters:
 [
   {
     "name": "v1.0.0",
+    "message": "Release 1.0.0",
     "commit": {
       "id": "2695effb5807a22ff3d138d593fd856244e155e7",
       "parents": [],
@@ -67,10 +68,11 @@ Parameters:
       "committed_date": "2012-05-28T04:42:42-07:00",
       "committer_email": "jack@example.com"
     },
-    "protected": false
   }
 ]
 ```
+The message will be `nil` when creating a lightweight tag otherwise
+it will contain the annotation.
 
 It returns 200 if the operation succeed. In case of an error,
 405 with an explaining error message is returned.

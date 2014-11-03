@@ -6,6 +6,9 @@ v 7.5.0
   - Add Atlassian Bamboo CI service (Drew Blessing)
   - Mentioned @user will receive email even if he is not participating in issue or commit
   - Session API: Use case-insensitive authentication like in UI (Andrey Krivko)
+  - Tie up loose ends with annotated tags: API & UI (Sean Edge)
+  - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
+  - Expose username in project events API (sponsored by O'Reilly Media)
 
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users

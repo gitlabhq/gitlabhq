@@ -73,6 +73,25 @@ module API
       end
     end
 
+    class RepoTag < Grape::Entity
+      expose :name
+      expose :message do |repo_obj, _options|
+        if repo_obj.respond_to?(:message)
+          repo_obj.message
+        else
+          nil
+        end
+      end
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
+      end
+    end
+
     class RepoObject < Grape::Entity
       expose :name
 
@@ -164,6 +183,12 @@ module API
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
+
+      expose :author_username do |event, options|
+        if event.author
+          event.author.username
+        end
+      end
     end
 
     class Namespace < Grape::Entity
