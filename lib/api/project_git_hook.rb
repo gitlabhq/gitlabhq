@@ -1,6 +1,6 @@
 module API
   # Projects git hook API
-  class ProjectGitHooks < Grape::API
+  class ProjectGitHook < Grape::API
     before { authenticate! }
     before { authorize_admin_project }
 
@@ -50,7 +50,7 @@ module API
           :deny_delete_tag
         ]
 
-        if @git_hook.update_attributes attrs
+        if @git_hook && @git_hook.update_attributes(attrs)
           present @git_hook, with: Entities::ProjectGitHook
         else
           not_found!
