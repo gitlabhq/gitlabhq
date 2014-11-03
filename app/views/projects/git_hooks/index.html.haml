@@ -63,6 +63,16 @@
         = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
         to be pushed.
         If this field is empty it allows any email.
+
+  .form-group
+    = f.label :file_name_regex, "Prohibited file names", class: 'control-label'
+    .col-sm-10
+      = f.text_field :file_name_regex, class: "form-control", placeholder: 'Example: (jar|exe)$'
+      %p.hint
+        All commited filenames must not match this
+        = link_to 'Ruby regular expression', 'http://www.ruby-doc.org/core-2.1.1/Regexp.html'
+        to be pushed.
+        If this field is empty it allows any filenames.
     
   .form-actions
     = f.submit "Save Git hooks", class: "btn btn-create"

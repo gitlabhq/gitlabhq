@@ -128,6 +128,14 @@ module Gitlab
               return false unless User.existing_member?(commit.committer_email)
             end
           end
+
+          if git_hook.file_name_regex.present?
+            commit.diffs.each do |diff|
+              if diff.renamed_file || diff.new_file
+                return false if diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+              end
+            end
+          end
         end
       end
 
