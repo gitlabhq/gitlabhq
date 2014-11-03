@@ -339,6 +339,7 @@ describe API::API, api: true  do
 
       json_event['action_name'].should == 'joined'
       json_event['project_id'].to_i.should == project.id
+      json_event['author_username'].should == user.username
     end
 
     it "should return a 404 error if not found" do

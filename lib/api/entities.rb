@@ -183,6 +183,12 @@ module API
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
+
+      expose :author_username do |event, options|
+        if event.author
+          event.author.username
+        end
+      end
     end
 
     class Namespace < Grape::Entity
