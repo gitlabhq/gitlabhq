@@ -34,6 +34,11 @@ module API
       expose :issues_events, :merge_requests_events, :tag_push_events
     end
 
+    class ProjectGitHook < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
     class ForkedFromProject < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
