@@ -13,4 +13,8 @@ class GitHook < ActiveRecord::Base
       true
     end
   end
+
+  def commit_validation?
+    commit_message_regex.present? || author_email_regex.present? || member_check
+  end
 end
