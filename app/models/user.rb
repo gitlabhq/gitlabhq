@@ -213,6 +213,10 @@ class User < ActiveRecord::Base
         User.where(name: name).first
     end
 
+    def existing_member?(email)
+      User.where(email: email).any? || Email.where(email: email).any?
+    end
+
     def filter(filter_name)
       case filter_name
       when "admins"; self.admins

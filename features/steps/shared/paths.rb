@@ -228,6 +228,10 @@ module SharedPaths
     visit project_hooks_path(@project)
   end
 
+  step 'I visit project git hooks page' do
+    visit project_git_hooks_path(@project)
+  end
+
   step 'I visit project deploy keys page' do
     visit project_deploy_keys_path(@project)
   end
