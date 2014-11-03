@@ -186,10 +186,6 @@ class Event < ActiveRecord::Base
     data[:ref]["refs/heads"]
   end
 
-  def new_branch?
-    commit_from =~ /^00000/
-  end
-
   def new_ref?
     commit_from =~ /^00000/
   end
