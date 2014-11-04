@@ -1,5 +1,6 @@
 module SharedProject
   include Spinach::DSL
+  include RepoHelpers
 
   # Create a project without caring about what it's called
   step "I own a project" do
@@ -12,6 +13,32 @@ module SharedProject
     @project = Project.find_by(name: "Shop")
     @project ||= create(:project, name: "Shop", namespace: @user.namespace, snippets_enabled: true)
     @project.team << [@user, :master]
+  end
+
+  step 'I am a member of project "Shop"' do
+    i_am_in_project(:reporter)
+  end
+
+  step 'I am a reporter of project "Reporter"' do
+    i_am_in_project(:reporter, 'Reporter')
+  end
+
+  step 'I am a developper of project "Shop"' do
+    i_am_in_project(:developper)
+  end
+
+  step 'I am a master of project "Shop"' do
+    i_am_in_project(:master)
+  end
+
+  def i_am_in_project(role, project_name = 'Shop')
+    @project = Project.find_by(name: project_name)
+    @project ||= create(:project, name: project_name)
+    @project.team << [@user, role]
+  end
+
+  step 'I have a project forked off of "Shop" called "Forked Shop"' do
+    @forked_project = Projects::ForkService.new(@project, @user).execute
   end
 
   # Create another specific project called "Forum"

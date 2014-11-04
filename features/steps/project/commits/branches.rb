@@ -33,19 +33,19 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   step 'I submit new branch form' do
-    fill_in 'branch_name', with: 'deploy_keys'
+    fill_in 'branch_name', with: valid_new_branch_name
     fill_in 'ref', with: 'master'
     click_button 'Create branch'
   end
 
   step 'I submit new branch form with invalid name' do
-    fill_in 'branch_name', with: '1.0 stable'
+    fill_in 'branch_name', with: invalid_branch_name
     fill_in 'ref', with: 'master'
     click_button 'Create branch'
   end
 
   step 'I submit new branch form with invalid reference' do
-    fill_in 'branch_name', with: 'foo'
+    fill_in 'branch_name', with: valid_new_branch_name
     fill_in 'ref', with: 'foo'
     click_button 'Create branch'
   end
@@ -57,7 +57,7 @@ class Spinach::Features::ProjectCommitsBranches < Spinach::FeatureSteps
   end
 
   step 'I should see new branch created' do
-    page.should have_content 'deploy_keys'
+    page.should have_content valid_new_branch_name
   end
 
   step 'I should see new an error that branch is invalid' do

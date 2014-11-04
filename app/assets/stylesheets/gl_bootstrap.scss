@@ -292,3 +292,6 @@ $list-group-active-bg: $bg_primary;
     border-color: $border_warning;
   }
 }
+
+$form-control-height: ($line-height-computed +
+                      ($padding-base-vertical * 2) + 2);

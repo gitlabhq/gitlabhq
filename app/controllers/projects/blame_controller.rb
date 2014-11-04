@@ -8,6 +8,7 @@ class Projects::BlameController < Projects::ApplicationController
   before_filter :require_non_empty_project
 
   def show
+    @show_blob_edit = can_show_blob_edit?
     @blob = @repository.blob_at(@commit.id, @path)
     @blame = Gitlab::Git::Blame.new(project.repository, @commit.id, @path)
   end

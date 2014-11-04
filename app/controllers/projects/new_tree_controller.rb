@@ -1,20 +1,22 @@
 class Projects::NewTreeController < Projects::BaseTreeController
+  before_filter :authorize_show_blob_edit!
   before_filter :require_branch_head
-  before_filter :authorize_push_code!
 
   def show
+    set_new_mr_vars
   end
 
   def update
-    file_path = File.join(@path, File.basename(params[:file_name]))
-    result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
+    update_new_mr(Files::CreateService, file_path)
+  end
 
-    if result[:status] == :success
-      flash[:notice] = "Your changes have been successfully committed"
-      redirect_to project_blob_path(@project, File.join(@ref, file_path))
-    else
-      flash[:alert] = result[:message]
-      render :show
-    end
+  protected
+
+  def after_edit_path
+    project_blob_path(@project, @ref + file_path)
+  end
+
+  def file_path
+    @file_path ||= File.join(@path, File.basename(params[:file_name]))
   end
 end
