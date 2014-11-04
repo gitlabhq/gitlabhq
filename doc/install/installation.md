@@ -127,7 +127,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Login to PostgreSQL
     sudo -u postgres psql -d template1
 
-    # Create a user for GitLab.
+    # Create a user for GitLab
+    # Do not type the 'template1=#', this is part of the prompt
     template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
