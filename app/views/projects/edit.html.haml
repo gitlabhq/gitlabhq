@@ -80,6 +80,13 @@
                   = f.check_box :snippets_enabled
                   %span.descr Share code pastes with others out of git repository
 
+            .form-group
+              = f.label :check_email, "Check emails", class: 'control-label'
+              .col-sm-10
+                .checkbox
+                  = f.check_box :check_email
+                  %span.descr If enabled all commits emails should belongs to registered users
+
 
           .form-actions
             = f.submit 'Save changes', class: "btn btn-save"
