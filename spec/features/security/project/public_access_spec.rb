@@ -96,7 +96,10 @@ describe "Public Project Access", feature: true  do
     before do
       commit = project.repository.commit
       path = '.gitignore'
-      @blob_path = project_blob_path(project, File.join(commit.id, path))
+      @blob_path = project_blob_path(
+        project,
+        ExtractsPath.join(commit.id, path)
+      )
     end
 
     it { @blob_path.should be_allowed_for master }
