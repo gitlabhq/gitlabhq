@@ -4,6 +4,7 @@ v 7.5.0
   - Add an option for automatic daily LDAP user sync
   - Added git hook for preventing tag removal to API
   - Added git hook for setting commit message regex to API
+  - Added an ability to block commits with certain filenames by regex expression
 
 v 7.4.0
   - Support for multiple LDAP servers
