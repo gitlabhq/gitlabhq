@@ -23,7 +23,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I change my avatar' do
-    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:user_avatar, Rails.root.join('public', 'gitlab_logo.png'))
     click_button "Save changes"
     @user.reload
   end
@@ -38,7 +38,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I have an avatar' do
-    attach_file(:user_avatar, File.join(Rails.root, 'public', 'gitlab_logo.png'))
+    attach_file(:user_avatar, Rails.root.join('public', 'gitlab_logo.png'))
     click_button "Save changes"
     @user.reload
   end

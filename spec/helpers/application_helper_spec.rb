@@ -40,7 +40,7 @@ describe ApplicationHelper do
   end
 
   describe "group_icon" do
-    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+    avatar_file_path = Rails.root.join('public', 'gitlab_logo.png')
 
     it "should return an url for the avatar" do
       group = create(:group)
@@ -57,7 +57,7 @@ describe ApplicationHelper do
   end
 
   describe "avatar_icon" do
-    avatar_file_path = File.join(Rails.root, 'public', 'gitlab_logo.png')
+    avatar_file_path = Rails.root.join('public', 'gitlab_logo.png')
 
     it "should return an url for the avatar" do
       user = create(:user)

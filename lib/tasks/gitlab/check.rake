@@ -575,7 +575,7 @@ namespace :gitlab do
     end
 
     def required_gitlab_shell_version
-      File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
+      File.read(Rails.root.join("GITLAB_SHELL_VERSION")).strip
     end
 
     def gitlab_shell_major_version
