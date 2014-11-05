@@ -4,7 +4,7 @@ namespace :gitlab do
     task :install, [:tag, :repo] => :environment do |t, args|
       warn_user_is_not_gitlab
 
-      default_version = File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
+      default_version = Gitlab::Shell.version_required
       args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
 
       user = Gitlab.config.gitlab.user
