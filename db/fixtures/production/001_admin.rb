@@ -1,5 +1,3 @@
-password = nil
-expire_time = nil
 if ENV['GITLAB_ROOT_PASSWORD'].blank?
   password = '5iveL!fe'
   expire_time = Time.now
