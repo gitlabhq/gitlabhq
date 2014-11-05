@@ -78,7 +78,7 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
   end
 
   step 'I click on "Remove"' do
-    click_link 'Remove'
+    click_button 'Remove'
   end
 
   step 'I click on "Remove file"' do
