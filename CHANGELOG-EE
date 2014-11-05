@@ -2,6 +2,8 @@ v 7.5.0
   - Added an ability to check each author commit's email by regex
   - Added an abulity to restrict commit authors to existing Gitlab users
   - Add an option for automatic daily LDAP user sync
+  - Added git hook for preventing tag removal to API
+  - Added git hook for setting commit message regex to API
 
 v 7.4.0
   - Support for multiple LDAP servers

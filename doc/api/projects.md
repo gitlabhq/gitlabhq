@@ -628,3 +628,72 @@ Parameters:
 -   query (required) - A string contained in the project name
 -   per_page (optional) - number of projects to return per page
 -   page (optional) - the page to retrieve
+
+## Git Hooks (EE only)
+
+### Show project git hooks
+
+Get a project git hook.
+
+```
+GET /projects/:id/git_hooks
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+
+
+```json
+{
+  "id": 1,
+  "project_id": 3,
+  "commit_message_regex": "Fixes \d +\",
+  "deny_delete_tag": false,
+  "created_at": "2012-10-12T17:04:47Z"
+}
+```
+
+### Add project git hook
+
+Adds a git hook to a specified project.
+
+```
+POST /projects/:id/git_hooks
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `deny_delete_tag` - Do not allow users to remove git tags with git push
+- `commit_message_regex` - Commit message regex
+
+### Edit project git hook
+
+Edits a git hook for a specified project.
+
+```
+PUT /projects/:id/git_hooks
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `deny_delete_tag` - Do not allow users to remove git tags with git push
+- `commit_message_regex` - Commit message regex
+
+### Delete project git hook
+
+Removes a git hook from a project. This is an idempotent method and can be called multiple times.
+Either the git hook is available or not.
+
+```
+DELETE /projects/:id/git_hooks
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+
+Note the JSON response differs if the hook is available or not. If the project hook
+is available before it is returned in the JSON response or an empty response is returned.

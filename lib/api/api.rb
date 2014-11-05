@@ -41,6 +41,7 @@ module API
     mount ProjectMembers
     mount DeployKeys
     mount ProjectHooks
+    mount ProjectGitHook
     mount Ldap
     mount Services
     mount Files
