@@ -1,6 +1,5 @@
 class Projects::GraphsController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
   before_filter :authorize_download_code!
   before_filter :require_non_empty_project
 
