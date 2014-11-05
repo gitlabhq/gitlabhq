@@ -449,6 +449,27 @@ describe User do
     end
   end
 
+  describe "#existing_member?" do
+    it "returns true for exisitng user" do
+      create :user, email: "bruno@example.com"
+
+      expect(User.existing_member?("bruno@example.com")).to be_true
+    end
+
+    it "returns false for unknown exisitng user" do
+      create :user, email: "bruno@example.com"
+
+      expect(User.existing_member?("rendom@example.com")).to be_false
+    end
+
+    it "returns true if additional email exists" do
+      user = create :user
+      user.emails.create(email: "bruno@example.com")
+
+      expect(User.existing_member?("bruno@example.com")).to be_true
+    end
+  end
+
   describe "#sort" do
     before do
       User.delete_all
