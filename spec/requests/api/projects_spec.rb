@@ -209,9 +209,8 @@ describe API::API, api: true  do
       json_response['message']['path'].should == [
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
-        'can contain only letters, digits, \'_\', \'-\' and \'.\'. It must '\
-        'start with letter, digit or \'_\', optionally preceeded by \'.\'. '\
-        'It must not end in \'.git\'.'
+        'can contain only letters, digits, \'_\', \'-\' and \'.\'. ' \
+        'Cannot start with \'-\' or end in \'.git\''
       ]
     end
 
