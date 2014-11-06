@@ -4,7 +4,6 @@ class ProjectsController < ApplicationController
   before_filter :repository, except: [:new, :create]
 
   # Authorize
-  before_filter :authorize_read_project!, except: [:index, :new, :create]
   before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :retry_import]
 
   layout 'navless', only: [:new, :create, :fork]
@@ -51,8 +50,6 @@ class ProjectsController < ApplicationController
       redirect_to import_project_path(@project)
       return
     end
-
-    return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent

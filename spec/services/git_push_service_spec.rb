@@ -8,7 +8,7 @@ describe GitPushService do
   let (:service) { GitPushService.new }
 
   before do
-    @blankrev = '0000000000000000000000000000000000000000'
+    @blankrev = Gitlab::Git::BLANK_SHA
     @oldrev = sample_commit.parent_id
     @newrev = sample_commit.id
     @ref = 'refs/heads/master'

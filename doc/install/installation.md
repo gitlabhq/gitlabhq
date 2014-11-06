@@ -199,7 +199,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
-    sudo chmod -R u+rwX log/
+    sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
     # Create directory for satellites

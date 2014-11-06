@@ -2,7 +2,6 @@ class Projects::RefsController < Projects::ApplicationController
   include ExtractsPath
 
   # Authorize
-  before_filter :authorize_read_project!
   before_filter :authorize_download_code!
   before_filter :require_non_empty_project
 
