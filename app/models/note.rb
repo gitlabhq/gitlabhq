@@ -90,7 +90,7 @@ class Note < ActiveRecord::Base
         note_options.merge!(noteable: noteable)
       end
 
-      create(note_options)
+      create(note_options) unless cross_reference_disallowed?(noteable, mentioner)
     end
 
     def create_milestone_change_note(noteable, project, author, milestone)
@@ -163,6 +163,15 @@ class Note < ActiveRecord::Base
 
     def build_discussion_id(type, id, line_code)
       [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
+    end
+
+    # Determine if cross reference note should be created.
+    # eg. mentioning a commit in MR comments which exists inside a MR
+    # should not create "mentioned in" note.
+    def cross_reference_disallowed?(noteable, mentioner)
+      if mentioner.kind_of?(MergeRequest)
+        mentioner.commits.map(&:id).include? noteable.id
+      end
     end
 
     # Determine whether or not a cross-reference note already exists.
