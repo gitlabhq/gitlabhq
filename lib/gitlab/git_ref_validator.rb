@@ -6,7 +6,7 @@ module Gitlab
     # Returns true for a valid reference name, false otherwise
     def validate(ref_name)
       Gitlab::Utils.system_silent(
-        %W(git check-ref-format refs/#{ref_name})) == 0
+        %W(git check-ref-format refs/#{ref_name}))
     end
   end
 end

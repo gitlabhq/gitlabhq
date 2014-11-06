@@ -5,10 +5,9 @@ module Gitlab
     # Run system command without outputting to stdout.
     #
     # @param  cmd [Array<String>]
-    # @return [Integer] exit status
+    # @return [Boolean]
     def system_silent(cmd)
-      IO.popen(cmd).close
-      $?.exitstatus
+      Popen::popen(cmd).last.zero?
     end
   end
 end
