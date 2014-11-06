@@ -76,7 +76,7 @@ namespace :gitlab do
     desc "GITLAB | Build missing projects"
     task build_missing_projects: :environment do
       Project.find_each(batch_size: 1000) do |project|
-        path_to_repo = File.join(Gitlab.config.gitlab_shell.repos_path, "#{project.path_with_namespace}.git")
+        path_to_repo = project.repository.path_to_repo
         if File.exists?(path_to_repo)
           print '-'
         else
