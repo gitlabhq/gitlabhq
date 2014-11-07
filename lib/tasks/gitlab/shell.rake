@@ -5,7 +5,9 @@ namespace :gitlab do
       warn_user_is_not_gitlab
 
       default_version = File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
-      args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      # TODO restore old repo
+      #args.with_defaults(tag: 'v' + default_version, repo: "https://gitlab.com/gitlab-org/gitlab-shell.git")
+      args.with_defaults(tag: 'v' + default_version, repo: "https://github.com/cirosantilli/gitlab-shell.git")
 
       user = Gitlab.config.gitlab.user
       home_dir = Rails.env.test? ? Rails.root.join('tmp/tests') : Gitlab.config.gitlab.user_home
@@ -22,10 +24,14 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
+        # Allows to change the origin URL to the fork
+        # when developing gitlab-shell.
+        sh(*%W(git remote set-url origin #{args.repo}))
+
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
-        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
-        sh "#{reset} || git fetch origin && #{reset}"
+        reset = "(rev=\"$(git describe #{args.tag} || git describe \"origin/#{args.tag}\")\" && git reset --hard \"$rev\")"
+        sh "#{reset} || (git fetch --tags origin && #{reset})"
 
         config = {
           user: user,
@@ -37,7 +43,7 @@ namespace :gitlab do
             bin: %x{which redis-cli}.chomp,
             namespace: "resque:gitlab"
           }.stringify_keys,
-          log_level: "INFO",
+          log_level: Rails.env.test? ? 'DEBUG' : 'INFO',
           audit_usernames: false
         }.stringify_keys
 
@@ -66,6 +72,8 @@ namespace :gitlab do
       File.open(File.join(home_dir, ".ssh", "environment"), "w+") do |f|
         f.puts "PATH=#{ENV['PATH']}"
       end
+
+      Gitlab::Shell.setup_secret_token
     end
 
     desc "GITLAB | Setup gitlab-shell"
