@@ -8,6 +8,13 @@ module Gitlab
       end
     end
 
+    class << self
+      def version_required
+        @version_required ||= File.read(Rails.root.
+                                        join('GITLAB_SHELL_VERSION')).strip
+      end
+    end
+
     # Init new repository
     #
     # name - project path with namespace
