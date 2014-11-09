@@ -19,7 +19,7 @@ class HipchatService < Service
   validates :token, presence: true, if: :activated?
 
   def title
-    'Hipchat'
+    'HipChat'
   end
 
   def description
@@ -44,7 +44,8 @@ class HipchatService < Service
   private
 
   def gate
-    @gate ||= HipChat::Client.new(token)
+    options = { api_version: 'v2' }
+    @gate ||= HipChat::Client.new(token, options)
   end
 
   def create_message(push)
