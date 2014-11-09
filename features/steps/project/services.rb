@@ -47,6 +47,17 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Room').value.should == 'gitlab'
   end
 
+  step 'I fill hipchat settings with custom server' do
+    check 'Active'
+    fill_in 'Room', with: 'gitlab_custom'
+    fill_in 'Token', with: 'secretCustom'
+    fill_in 'Server', with: 'https://chat.example.com'
+    click_button 'Save'
+  end
+
+  step 'I should see hipchat service settings with custom server saved' do
+    find_field('Server').value.should == 'https://chat.example.com'
+  end
 
   step 'I click pivotaltracker service link' do
     click_link 'PivotalTracker'
