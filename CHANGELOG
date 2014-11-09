@@ -1,5 +1,6 @@
 v 7.6.0
   - Fork repository to groups
+  - Show complete file history even when file renamed
   - New rugged version
   -
   -
