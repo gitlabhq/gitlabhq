@@ -1,5 +1,5 @@
 ## GitLab
-## Contributors: randx, yin8086, sashkab, orkoden, axilleas
+## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller
 ##
 ## Modified from nginx http version
 ## Modified from http://blog.phusion.nl/2012/04/21/tutorial-setting-up-gitlab-on-debian-6/
@@ -26,9 +26,8 @@
 ## [1] https://github.com/agentzh/chunkin-nginx-module#status
 ## [2] https://github.com/agentzh/chunkin-nginx-module
 ##
-##
 ###################################
-##        SSL configuration      ##
+##         configuration         ##
 ###################################
 ##
 ## See installation.md#using-https for additional HTTPS configuration details.
@@ -37,22 +36,22 @@ upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
 }
 
-## Normal HTTP host
+## Redirects all HTTP traffic to the HTTPS host
 server {
   listen *:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
-
-  ## Redirects all traffic to the HTTPS host
-  root /nowhere; ## root doesn't have to be a valid path since we are redirecting
-  rewrite ^ https://$server_name$request_uri? permanent;
+  return 301 https://$server_name$request_uri;
+  access_log  /var/log/nginx/gitlab_access.log;
+  error_log   /var/log/nginx/gitlab_error.log;
 }
+
 
 ## HTTPS host
 server {
   listen 443 ssl;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
-  server_tokens off;
+  server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
 
   ## Increase this if you want to upload large attachments
@@ -70,12 +69,9 @@ server {
   ssl_protocols TLSv1 TLSv1.1 TLSv1.2;
   ssl_prefer_server_ciphers on;
   ssl_session_cache shared:SSL:10m;
+  ssl_session_timeout 5m;
 
-  ## [WARNING] The following header states that the browser should only communicate
-  ## with your server over a secure connection for the next 24 months.
-  add_header Strict-Transport-Security max-age=63072000;
-  add_header X-Frame-Options SAMEORIGIN;
-  add_header X-Content-Type-Options nosniff;
+  ## See app/controllers/application_controller.rb for headers set
 
   ## [Optional] If your certficate has OCSP, enable OCSP stapling to reduce the overhead and latency of running SSL.
   ## Replace with your ssl_trusted_certificate. For more info see:
