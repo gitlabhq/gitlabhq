@@ -1,13 +1,9 @@
-require 'sidekiq/testing'
-
 module Gitlab
   class Seeder
     def self.quiet
       mute_mailer
       SeedFu.quiet = true
-      Sidekiq::Testing.inline! do
-        yield
-      end
+      yield
       SeedFu.quiet = false
       puts "\nOK".green
     end
