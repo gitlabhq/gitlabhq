@@ -3,6 +3,7 @@ v 7.5.0
   - Add time zone configuration on gitlab.yml (Sullivan Senechal)
   - Fix LDAP authentication for Git HTTP access
   - Fix LDAP config lookup for provider 'ldap'
+  - Project title links to project homepage (Ben Bodenmiller)
   - Add Atlassian Bamboo CI service (Drew Blessing)
   - Mentioned @user will receive email even if he is not participating in issue or commit
   - Session API: Use case-insensitive authentication like in UI (Andrey Krivko)
