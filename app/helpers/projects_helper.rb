@@ -42,12 +42,12 @@ module ProjectsHelper
   def project_title(project)
     if project.group
       content_tag :span do
-        link_to(simple_sanitize(project.group.name), group_path(project.group)) + " / " + project.name
+        link_to(simple_sanitize(project.group.name), group_path(project.group)) + ' / ' + link_to(simple_sanitize(project.name), project_path(project))
       end
     else
       owner = project.namespace.owner
       content_tag :span do
-        link_to(simple_sanitize(owner.name), user_path(owner)) + " / " + project.name
+        link_to(simple_sanitize(owner.name), user_path(owner)) + ' / ' + link_to(simple_sanitize(project.name), project_path(project))
       end
     end
   end
