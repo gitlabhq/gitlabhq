@@ -6,6 +6,9 @@ v 7.5.0
   - Added git hook for setting commit message regex to API
   - Added an ability to block commits with certain filenames by regex expression
 
+v 7.4.4
+  - Fix broken ldap migration
+
 v 7.4.0
   - Support for multiple LDAP servers
   - Skip AD specific LDAP checks

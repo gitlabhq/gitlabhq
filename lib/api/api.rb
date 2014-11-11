@@ -27,6 +27,7 @@ module API
     helpers APIHelpers
 
     mount Groups
+    mount GroupMembers
     mount Users
     mount Projects
     mount Repositories
