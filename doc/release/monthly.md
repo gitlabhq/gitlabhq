@@ -145,6 +145,8 @@ Make sure the code quality indicators are green / good.
 
 ### **4. Run release tool**
 
+**Make sure EE `master` has latest changes from CE `master`**
+
 Get release tools
 
 ```
