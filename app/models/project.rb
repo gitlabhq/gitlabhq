@@ -402,43 +402,8 @@ class Project < ActiveRecord::Base
   end
 
   def update_merge_requests(oldrev, newrev, ref, user)
-    return true unless ref =~ /heads/
-    branch_name = ref.gsub("refs/heads/", "")
-    commits = self.repository.commits_between(oldrev, newrev)
-    c_ids = commits.map(&:id)
-
-    # Close merge requests
-    mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
-    mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
-
-    mrs.uniq.select(&:source_project).each do |merge_request|
-      MergeRequests::MergeService.new.execute(merge_request, user, nil)
-    end
-
-    # Update code for merge requests into project between project branches
-    mrs = self.merge_requests.opened.by_branch(branch_name).to_a
-    # Update code for merge requests between project and project fork
-    mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
-
-    mrs.uniq.select(&:source_project).each do |merge_request|
-      merge_request.reload_code
-      merge_request.mark_as_unchecked
-    end
-
-    # Add comment about pushing new commits to merge requests
-    comment_mr_with_commits(branch_name, commits, user)
-
-    true
-  end
-
-  def comment_mr_with_commits(branch_name, commits, user)
-    mrs = self.origin_merge_requests.opened.where(source_branch: branch_name).to_a
-    mrs += self.fork_merge_requests.opened.where(source_branch: branch_name).to_a
-
-    mrs.uniq.select(&:source_project).each do |merge_request|
-      Note.create_new_commits_note(merge_request, merge_request.project,
-                                   user, commits)
-    end
+    MergeRequests::RefreshService.new(self, user).
+      execute(oldrev, newrev, ref)
   end
 
   def valid_repo?
