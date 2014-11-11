@@ -154,6 +154,13 @@ git clone git@dev.gitlab.org:gitlab/release-tools.git
 cd release-tools
 ```
 
+Release candidate creates stable branch from master. 
+So we need to sync master branch between all CE remotes. Also do same for EE.
+
+```
+bundle exec rake sync
+```
+
 Create release candidate and stable branch:
 
 ```
