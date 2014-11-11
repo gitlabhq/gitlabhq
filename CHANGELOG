@@ -11,6 +11,11 @@ v 7.5.0
   - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
   - Expose username in project events API (sponsored by O'Reilly Media)
 
+v 7.4.3
+  - Fix raw snippets view
+  - Fix security issue for member api
+  - Fix buildbox integration
+
 v 7.4.2
   - Fix internal snippet exposing for unauthenticated users
 
