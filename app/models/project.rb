@@ -411,7 +411,7 @@ class Project < ActiveRecord::Base
     mrs = self.merge_requests.opened.where(target_branch: branch_name).to_a
     mrs = mrs.select(&:last_commit).select { |mr| c_ids.include?(mr.last_commit.id) }
 
-    mrs.uniq.each do |merge_request|
+    mrs.uniq.select(&:source_project).each do |merge_request|
       MergeRequests::MergeService.new.execute(merge_request, user, nil)
     end
 
@@ -420,7 +420,7 @@ class Project < ActiveRecord::Base
     # Update code for merge requests between project and project fork
     mrs += self.fork_merge_requests.opened.by_branch(branch_name).to_a
 
-    mrs.uniq.each do |merge_request|
+    mrs.uniq.select(&:source_project).each do |merge_request|
       merge_request.reload_code
       merge_request.mark_as_unchecked
     end
@@ -435,7 +435,7 @@ class Project < ActiveRecord::Base
     mrs = self.origin_merge_requests.opened.where(source_branch: branch_name).to_a
     mrs += self.fork_merge_requests.opened.where(source_branch: branch_name).to_a
 
-    mrs.uniq.each do |merge_request|
+    mrs.uniq.select(&:source_project).each do |merge_request|
       Note.create_new_commits_note(merge_request, merge_request.project,
                                    user, commits)
     end
