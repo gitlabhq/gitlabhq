@@ -140,8 +140,7 @@ describe API::API, api: true  do
       json_response['message']['projects_limit'].
           should == ['must be greater than or equal to 0']
       json_response['message']['username'].
-          should == ['can contain only letters, digits, '\
-          '\'_\', \'-\' and \'.\'. Cannot start with \'-\' or end in \'.git\'']
+          should == [Gitlab::Regex.send(:default_regex_message)]
     end
 
     it "shouldn't available for non admin users" do
@@ -283,8 +282,7 @@ describe API::API, api: true  do
       json_response['message']['projects_limit'].
           should == ['must be greater than or equal to 0']
       json_response['message']['username'].
-          should == ['can contain only letters, digits, '\
-          '\'_\', \'-\' and \'.\'. Cannot start with \'-\' or end in \'.git\'']
+          should == [Gitlab::Regex.send(:default_regex_message)]
     end
 
     context "with existing user" do
