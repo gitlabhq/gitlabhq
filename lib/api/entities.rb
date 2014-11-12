@@ -179,6 +179,14 @@ module API
       expose :author, using: Entities::UserBasic
     end
 
+    class CommitNote < Grape::Entity
+      expose :note
+      expose(:path) { |note| note.diff_file_name }
+      expose(:line) { |note| note.diff_new_line }
+      expose(:line_type) { |note| note.diff_line_type }
+      expose :author, using: Entities::UserBasic
+    end
+
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
       expose :target_id, :target_type, :author_id
