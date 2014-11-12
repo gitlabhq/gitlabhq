@@ -15,7 +15,6 @@ module Gitlab
           { title: "support", color: yellow },
           { title: "discussion", color: blue },
           { title: "suggestion", color: blue },
-          { title: "feature", color: green },
           { title: "enhancement", color: green }
         ]
 

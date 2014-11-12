@@ -143,35 +143,28 @@ Make sure the code quality indicators are green / good.
 
 - [![Coverage Status](https://coveralls.io/repos/gitlabhq/gitlabhq/badge.png?branch=master)](https://coveralls.io/r/gitlabhq/gitlabhq)
 
-### **4. Set VERSION**
+### **4. Run release tool**
 
-Change version in VERSION to `x.x.0.rc1`.
+**Make sure EE `master` has latest changes from CE `master`**
 
-### **5. Tag**
-
-Create an annotated tag that points to the version change commit:
+Get release tools
 
 ```
-git tag -a vx.x.0.rc1 -m 'Version x.x.0.rc1'
+git clone git@dev.gitlab.org:gitlab/release-tools.git
+cd release-tools
 ```
 
-Tags should be created for both GitLab CE and GitLab EE. Don't forget to push tags to all remotes.
+Release candidate creates stable branch from master. 
+So we need to sync master branch between all CE remotes. Also do same for EE.
 
 ```
-git push remote_name vx.x.0.rc1
+bundle exec rake sync
 ```
 
-### **6. Create stable branches**
-
-For GitLab EE, append `-ee` to the branch.
-
-`x-x-stable-ee`
+Create release candidate and stable branch:
 
 ```
-git checkout master
-git pull
-git checkout -b x-x-stable
-git push <remote> x-x-stable
+bundle exec rake release["x.x.0.rc1"]
 ```
 
 Now developers can use master for merging new features.
@@ -245,69 +238,45 @@ create an issue about it in order to discuss the next steps after the release.
 
 # **22nd - Release CE and EE**
 
-For GitLab EE, append `-ee` to the branches and tags.
+**Make sure EE `x-x-stable-ee` has latest changes from CE `x-x-stable`**
 
-`x-x-stable-ee`
 
-`v.x.x.0-ee`
+### **1. Release code**
 
-Note: Merge CE into EE if needed.
+Get release tools
 
-### **1. Set VERSION to x.x.x and push**
+```
+git clone git@dev.gitlab.org:gitlab/release-tools.git
+cd release-tools
+```
 
-- Change the GITLAB_SHELL_VERSION file in `master` of the CE repository if the version changed.
-- Change the GITLAB_SHELL_VERSION file in `master` of the EE repository if the version changed.
-- Change the VERSION file in `master` branch of the CE repository and commit and push to origin.
-- Change the VERSION file in `master` branch of the EE repository and commit and push to origin.
+Bump version, create release tag and push to remotes:
+
+```
+bundle exec rake release["x.x.0"]
+```
+
 
 ### **2. Update installation.md**
 
 Update [installation.md](/doc/install/installation.md) to the newest version in master.
 
-### **3. Push latest changes from x-x-stable branch to dev.gitlab.org**
 
-```
-git checkout -b x-x-stable
-git push origin x-x-stable
-```
-
-### **4. Build the Omnibus packages**
+### **3. Build the Omnibus packages**
 
 Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md).
 This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
 
-### **5. Create annotated tag vx.x.x**
 
-In `x-x-stable` branch check for the SHA-1 of the commit with VERSION file changed. Tag that commit,
-
-```
-git tag -a vx.x.0 -m 'Version x.x.0' xxxxx
-```
-
-where `xxxxx` is SHA-1.
-
-### **6. Push the tag and x-x-stable branch to the remotes**
-
-For GitLab CE, push to dev, GitLab.com and GitHub.
-
-For GitLab EE, push to the subscribers repo.
-
-Make sure the branch is marked 'protected' on each of the remotes you pushed to.
-
-```
-git push <remote> x-x-stable(-ee)
-git push <remote> vx.x.0
-```
-
-### **7. Publish packages for new release**
+### **4. Publish packages for new release**
 
 Update `downloads/index.html` and `downloads/archive/index.html` in `www-gitlab-com` repository.
 
-### **8. Publish blog for new release**
+### **5. Publish blog for new release**
 
 Merge the [blog merge request](#1-prepare-the-blog-post) in `www-gitlab-com` repository.
 
-### **9. Tweet to blog**
+### **6. Tweet to blog**
 
 Send out a tweet to share the good news with the world.
 List the most important features and link to the blog post.

@@ -1,28 +1,45 @@
-# Import
+# Import bare repositories into your GitLab instance
 
-## Import bare repositories into GitLab project instance
+## Notes
 
-Notes:
+- The owner of the project will be the first admin
+- The groups will be created as needed
+- The owner of the group will be the first admin
+- Existing projects will be skipped
 
-- project owner will be a first admin
-- groups will be created as needed
-- group owner will be the first admin
-- existing projects will be skipped
+## How to use
 
-How to use:
+### Create a new folder inside the git repositories path. This will be the name of the new group.
 
-1. copy your bare repos under git repos_path (see `config/gitlab.yml` gitlab_shell -> repos_path)
-1. run the command below
+- For omnibus-gitlab, it is located at: `/var/opt/gitlab/git-data/repositories` by default, unless you changed
+it in the `/etc/gitlab/gitlab.rb` file.
+- For manual installations, it is usually located at: `/home/git/repositories` or you can see where
+your repositories are located by looking at `config/gitlab.yml` under the `gitlab_shell => repos_path` entry.
+
+### Copy your bare repositories inside this newly created folder:
 
 ```
-# omnibus-gitlab
-sudo gitlab-rake gitlab:import:repos
-
-# installation from source or cookbook
-bundle exec rake gitlab:import:repos RAILS_ENV=production
+$ cp -r /old/git/foo.git/ /home/git/repositories/new_group/
 ```
 
-Example output:
+### Run the command below depending on your type of installation:
+
+#### Omnibus Installation
+
+```
+$ sudo gitlab-rake gitlab:import:repos
+```
+
+#### Manual Installation
+
+Before running this command you need to change the directory to where your GitLab installation is located:
+
+```
+$ cd /home/git/gitlab
+$ sudo -u git -H bundle exec rake gitlab:import:repos RAILS_ENV=production
+```
+
+#### Example output
 
 ```
 Processing abcd.git

@@ -36,7 +36,7 @@ describe Event do
       @user = project.owner
 
       data = {
-        before: "0000000000000000000000000000000000000000",
+        before: Gitlab::Git::BLANK_SHA,
         after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
         ref: "refs/heads/master",
         user_id: @user.id,
@@ -60,7 +60,6 @@ describe Event do
 
     it { @event.push?.should be_true }
     it { @event.proper?.should be_true }
-    it { @event.new_branch?.should be_true }
     it { @event.tag?.should be_false }
     it { @event.branch_name.should == "master" }
     it { @event.author.should == @user }

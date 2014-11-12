@@ -1,6 +1,5 @@
 class Projects::BranchesController < Projects::ApplicationController
   # Authorize
-  before_filter :authorize_read_project!
   before_filter :require_non_empty_project
 
   before_filter :authorize_download_code!
@@ -19,6 +18,7 @@ class Projects::BranchesController < Projects::ApplicationController
   def create
     result = CreateBranchService.new(project, current_user).
         execute(params[:branch_name], params[:ref])
+
     if result[:status] == :success
       @branch = result[:branch]
       redirect_to project_tree_path(@project, @branch.name)

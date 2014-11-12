@@ -32,7 +32,7 @@ module SharedProject
     @project = Project.find_by(name: "Shop")
 
     data = {
-      before: "0000000000000000000000000000000000000000",
+      before: Gitlab::Git::BLANK_SHA,
       after: "6d394385cf567f80a8fd85055db1ab4c5295806f",
       ref: "refs/heads/fix",
       user_id: @user.id,

@@ -10,6 +10,8 @@ Otherwise include it in the monthly release and note there was a regression fix 
 
 ## Release Procedure
 
+### Preparation
+
 1. Verify that the issue can be reproduced
 1. Note in the 'GitLab X.X regressions' that you will create a patch
 1. Create an issue on private GitLab development server
@@ -17,12 +19,33 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. Fix the issue on a feature branch, do this on the private GitLab development server
 1. Consider creating and testing workarounds
 1. After the branch is merged into master, cherry pick the commit(s) into the current stable branch
+1. Make sure that the build has passed and all tests are passing
 1. In a separate commit in the stable branch update the CHANGELOG
 1. For EE, update the CHANGELOG-EE if it is EE specific fix. Otherwise, merge the stable CE branch and add to CHANGELOG-EE "Merge community edition changes for version X.X.X"
-1. In a separate commit in the stable branch update the VERSION
-1. Create an annotated tag vX.X.X for CE and another patch release for EE `git tag -a vx.x.x -m 'Version x.x.x'`
-1. Make sure that the build has passed and all tests are passing
-1. Push the code and the tags to all the CE and EE repositories
+
+### Bump version 
+
+Get release tools
+
+```
+git clone git@dev.gitlab.org:gitlab/release-tools.git
+cd release-tools
+```
+
+Bump version in stable branch, create release tag and push to remotes:
+
+```
+bundle exec rake release["x.x.x"]
+```
+
+Or if you need to release only EE:
+
+```
+CE=false be rake release['x.x.x']
+```
+
+### Release
+
 1. Apply the patch to GitLab Cloud and the private GitLab development server
 1. [Build new packages with the latest version](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/release.md)
 1. Cherry-pick the changelog update back into master

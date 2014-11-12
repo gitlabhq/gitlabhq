@@ -109,12 +109,12 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I fill Slack settings' do
     check 'Active'
-    fill_in 'Webhook', with: 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
+    fill_in 'Webhook', with: 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
     click_button 'Save'
   end
 
   step 'I should see Slack service settings saved' do
-    find_field('Webhook').value.should == 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
+    find_field('Webhook').value.should == 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
   end
 
   step 'I click Pushover service link' do
