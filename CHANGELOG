@@ -10,6 +10,7 @@ v 7.5.0
   - Tie up loose ends with annotated tags: API & UI (Sean Edge)
   - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
   - Expose username in project events API (sponsored by O'Reilly Media)
+  - Nginx config changes to support IPv6 connections
 
 v 7.4.3
   - Fix raw snippets view
