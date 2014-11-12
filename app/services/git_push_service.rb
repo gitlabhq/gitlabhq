@@ -83,9 +83,14 @@ class GitPushService
       # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
       # a different branch.
       issues_to_close = commit.closes_issues(project)
-      author = commit_user(commit)
 
-      if !issues_to_close.empty? && is_default_branch
+      # Load commit author only if needed.
+      # For push with 1k commits it prevents 900+ requests in database
+      author = nil
+
+      if issues_to_close.present? && is_default_branch
+        author ||= commit_user(commit)
+
         issues_to_close.each do |issue|
           Issues::CloseService.new(project, author, {}).execute(issue, commit)
         end
@@ -96,8 +101,13 @@ class GitPushService
       # being pushed to a different branch).
       refs = commit.references(project) - issues_to_close
       refs.reject! { |r| commit.has_mentioned?(r) }
-      refs.each do |r|
-        Note.create_cross_reference_note(r, commit, author, project)
+
+      if refs.present?
+        author ||= commit_user(commit)
+
+        refs.each do |r|
+          Note.create_cross_reference_note(r, commit, author, project)
+        end
       end
     end
   end
