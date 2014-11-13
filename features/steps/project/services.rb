@@ -156,6 +156,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Username').value.should == 'gitlab'
     find_field('Password').value.should_not == 'gitlab'
     find_field('Api version').value.should == '2'
+  end
 
   step 'I click Atlassian Bamboo CI service link' do
     click_link 'Atlassian Bamboo CI'
