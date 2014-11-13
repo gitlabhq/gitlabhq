@@ -5,6 +5,7 @@ v 7.5.0
   - Added git hook for preventing tag removal to API
   - Added git hook for setting commit message regex to API
   - Added an ability to block commits with certain filenames by regex expression
+  - Improved a jenkins parser
 
 v 7.4.4
   - Fix broken ldap migration
