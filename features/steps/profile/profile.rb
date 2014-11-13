@@ -58,16 +58,34 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I try change my password w/o old one' do
     within '.update-password' do
-      fill_in "user_password", with: "22233344"
+      fill_in "user_password_profile", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
+    end
+  end
+
+  step 'I try to set a weak password' do
+    within '.update-password' do
+      fill_in "user_password_profile", with: "22233344"
+    end
+  end
+
+  step 'I try to set a short password' do
+    within '.update-password' do
+      fill_in "user_password_profile", with: "short"
+    end
+  end
+
+  step 'I try to set a strong password' do
+    within '.update-password' do
+      fill_in "user_password_profile", with: "Itulvo9z8uud%$"
     end
   end
 
   step 'I change my password' do
     within '.update-password' do
       fill_in "user_current_password", with: "12345678"
-      fill_in "user_password", with: "22233344"
+      fill_in "user_password_profile", with: "22233344"
       fill_in "user_password_confirmation", with: "22233344"
       click_button "Save"
     end
@@ -76,7 +94,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   step 'I unsuccessfully change my password' do
     within '.update-password' do
       fill_in "user_current_password", with: "12345678"
-      fill_in "user_password", with: "password"
+      fill_in "user_password_profile", with: "password"
       fill_in "user_password_confirmation", with: "confirmation"
       click_button "Save"
     end
@@ -84,6 +102,22 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I should see a missing password error message" do
     page.should have_content "You must provide a valid current password"
+  end
+
+  step 'I should see the input field yellow' do
+    page.should have_css 'div.has-warning'
+  end
+
+  step 'I should see the input field green' do
+    page.should have_css 'div.has-success'
+  end
+
+  step 'I should see the input field red' do
+    page.should have_css 'div.has-error'
+  end
+
+  step 'I should see the password error message' do
+    page.should have_content 'Your password is too short'
   end
 
   step "I should see a password error message" do
@@ -146,7 +180,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step 'I submit new password' do
     fill_in :user_current_password, with: '12345678'
-    fill_in :user_password, with: '12345678'
+    fill_in :user_password_profile, with: '12345678'
     fill_in :user_password_confirmation, with: '12345678'
     click_button "Set new password"
   end

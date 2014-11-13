@@ -262,5 +262,13 @@ class Ability
       end
       rules
     end
+
+    def abilities
+      @abilities ||= begin
+                       abilities = Six.new
+                       abilities << self
+                       abilities
+                     end
+    end
   end
 end

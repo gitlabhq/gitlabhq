@@ -1,4 +1,4 @@
-class MergeRequest
+class @MergeRequest
   constructor: (@opts) ->
     @initContextWidget()
     this.$el = $('.merge-request')
@@ -132,5 +132,3 @@ class MergeRequest
     this.$('.automerge_widget').hide()
     this.$('.merge-in-progress').hide()
     this.$('.automerge_widget.already_cannot_be_merged').show()
-
-this.MergeRequest = MergeRequest

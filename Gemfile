@@ -37,7 +37,7 @@ gem "gitlab_git", '7.0.0.rc10'
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.1.0', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
 gem 'net-ldap'
 
 # Git Wiki
@@ -145,7 +145,7 @@ gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
-gem "slack-notifier", "~> 0.3.2"
+gem "slack-notifier", "~> 1.0.0"
 
 # d3
 gem "d3_rails", "~> 3.1.4"

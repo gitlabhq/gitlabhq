@@ -80,7 +80,7 @@ class Note < ActiveRecord::Base
       note_options = {
         project: project,
         author: author,
-        note: "_mentioned in #{gfm_reference}_",
+        note: cross_reference_note_content(gfm_reference),
         system: true
       }
 
@@ -90,7 +90,7 @@ class Note < ActiveRecord::Base
         note_options.merge!(noteable: noteable)
       end
 
-      create(note_options)
+      create(note_options) unless cross_reference_disallowed?(noteable, mentioner)
     end
 
     def create_milestone_change_note(noteable, project, author, milestone)
@@ -165,6 +165,15 @@ class Note < ActiveRecord::Base
       [:discussion, type.try(:underscore), id, line_code].join("-").to_sym
     end
 
+    # Determine if cross reference note should be created.
+    # eg. mentioning a commit in MR comments which exists inside a MR
+    # should not create "mentioned in" note.
+    def cross_reference_disallowed?(noteable, mentioner)
+      if mentioner.kind_of?(MergeRequest)
+        mentioner.commits.map(&:id).include? noteable.id
+      end
+    end
+
     # Determine whether or not a cross-reference note already exists.
     def cross_reference_exists?(noteable, mentioner)
       gfm_reference = mentioner_gfm_ref(noteable, mentioner)
@@ -174,7 +183,7 @@ class Note < ActiveRecord::Base
                 where(noteable_id: noteable.id)
               end
 
-      notes.where('note like ?', "_mentioned in #{gfm_reference}_").
+      notes.where('note like ?', cross_reference_note_content(gfm_reference)).
         system.any?
     end
 
@@ -182,7 +191,15 @@ class Note < ActiveRecord::Base
       where("note like :query", query: "%#{query}%")
     end
 
+    def cross_reference_note_prefix
+      '_mentioned in '
+    end
+
     private
+
+    def cross_reference_note_content(gfm_reference)
+      cross_reference_note_prefix + "#{gfm_reference}_"
+    end
 
     # Prepend the mentioner's namespaced project path to the GFM reference for
     # cross-project references.  For same-project references, return the
@@ -243,10 +260,14 @@ class Note < ActiveRecord::Base
 
   def commit_author
     @commit_author ||=
-      project.users.find_by(email: noteable.author_email) ||
-      project.users.find_by(name: noteable.author_name)
+      project.team.users.find_by(email: noteable.author_email) ||
+      project.team.users.find_by(name: noteable.author_name)
   rescue
     nil
+  end
+
+  def cross_reference?
+    note.start_with?(self.class.cross_reference_note_prefix)
   end
 
   def find_diff
@@ -296,7 +317,7 @@ class Note < ActiveRecord::Base
   end
 
   def diff_file_index
-    line_code.split('_')[0]
+    line_code.split('_')[0] if line_code
   end
 
   def diff_file_name
@@ -312,11 +333,11 @@ class Note < ActiveRecord::Base
   end
 
   def diff_old_line
-    line_code.split('_')[1].to_i
+    line_code.split('_')[1].to_i if line_code
   end
 
   def diff_new_line
-    line_code.split('_')[2].to_i
+    line_code.split('_')[2].to_i if line_code
   end
 
   def generate_line_code(line)
@@ -335,6 +356,20 @@ class Note < ActiveRecord::Base
     end
 
     @diff_line
+  end
+
+  def diff_line_type
+    return @diff_line_type if @diff_line_type
+
+    if diff
+      diff_lines.each do |line|
+        if generate_line_code(line) == self.line_code
+          @diff_line_type = line.type
+        end
+      end
+    end
+
+    @diff_line_type
   end
 
   def truncated_diff_lines

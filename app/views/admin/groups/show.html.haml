@@ -91,7 +91,7 @@
           %div.prepend-top-10
             = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
           %hr
-          = submit_tag 'Add users into group', class: "btn btn-create"
+          = button_tag 'Add users into group', class: "btn btn-create"
     .panel.panel-default
       .panel-heading
         %h3.panel-title

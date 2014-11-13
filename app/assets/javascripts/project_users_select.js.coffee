@@ -1,6 +1,6 @@
-@projectUsersSelect =
-  init: ->
-    $('.ajax-project-users-select').each (i, select) ->
+class @ProjectUsersSelect
+  constructor: ->
+    $('.ajax-project-users-select').each (i, select) =>
       project_id = $(select).data('project-id') || $('body').data('project-id')
 
       $(select).select2
@@ -28,14 +28,16 @@
             Api.user(id, callback)
 
 
-        formatResult: projectUsersSelect.projectUserFormatResult
-        formatSelection: projectUsersSelect.projectUserFormatSelection
+        formatResult: (args...) =>
+          @formatResult(args...)
+        formatSelection: (args...) =>
+          @formatSelection(args...)
         dropdownCssClass: "ajax-project-users-dropdown"
         dropdownAutoWidth: true
         escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
           m
 
-  projectUserFormatResult: (user) ->
+  formatResult: (user) ->
     if user.avatar_url
       avatar = user.avatar_url
     else
@@ -52,8 +54,5 @@
        <div class='user-username'>#{user.username}</div>
      </div>"
 
-  projectUserFormatSelection: (user) ->
+  formatSelection: (user) ->
     user.name
-
-$ ->
-  projectUsersSelect.init()

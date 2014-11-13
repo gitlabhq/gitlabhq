@@ -55,12 +55,13 @@ describe Gitlab::GitAccess do
 
     def changes
       {
-        push_new_branch: '000000000 570e7b2ab refs/heads/wow',
+        push_new_branch: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/heads/wow",
         push_master: '6f6d7e7ed 570e7b2ab refs/heads/master',
         push_protected_branch: '6f6d7e7ed 570e7b2ab refs/heads/feature',
-        push_remove_protected_branch: '570e7b2ab 000000000 refs/heads/feature',
+        push_remove_protected_branch: "570e7b2ab #{Gitlab::Git::BLANK_SHA} "\
+                                      'refs/heads/feature',
         push_tag: '6f6d7e7ed 570e7b2ab refs/tags/v1.0.0',
-        push_new_tag: '000000000 570e7b2ab refs/tags/v7.8.9',
+        push_new_tag: "#{Gitlab::Git::BLANK_SHA} 570e7b2ab refs/tags/v7.8.9",
         push_all: ['6f6d7e7ed 570e7b2ab refs/heads/master', '6f6d7e7ed 570e7b2ab refs/heads/feature']
       }
     end

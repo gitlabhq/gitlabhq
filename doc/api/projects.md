@@ -186,6 +186,7 @@ Parameters:
     "target_id": 830,
     "target_type": "Issue",
     "author_id": 1,
+    "author_username": "john",
     "data": null,
     "target_title": "Public project search field"
   },
@@ -196,6 +197,7 @@ Parameters:
     "target_id": null,
     "target_type": null,
     "author_id": 1,
+    "author_username": "john",
     "data": {
       "before": "50d4420237a9de7be1304607147aec22e4a14af7",
       "after": "c5feabde2d8cd023215af4d2ceeb7a64839fc428",
@@ -231,6 +233,7 @@ Parameters:
     "target_id": 840,
     "target_type": "Issue",
     "author_id": 1,
+    "author_username": "john",
     "data": null,
     "target_title": "Finish & merge Code search PR"
   }

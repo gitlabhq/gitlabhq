@@ -24,7 +24,7 @@
       .form-group
         = f.label :password, 'New password', class: 'control-label'
         .col-sm-10
-          = f.password_field :password, required: true, class: 'form-control'
+          = f.password_field :password, required: true, class: 'form-control', id: 'user_password_profile'
       .form-group
         = f.label :password_confirmation, class: 'control-label'
         .col-sm-10

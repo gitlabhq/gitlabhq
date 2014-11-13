@@ -15,26 +15,17 @@ namespace :gitlab do
       git_base_path = Gitlab.config.gitlab_shell.repos_path
       repos_to_import = Dir.glob(git_base_path + '/**/*.git')
 
-      namespaces = Namespace.pluck(:path)
-
       repos_to_import.each do |repo_path|
         # strip repo base path
         repo_path[0..git_base_path.length] = ''
 
         path = repo_path.sub(/\.git$/, '')
-        name = File.basename path
-        group_name = File.dirname path
+        group_name, name = File.split(path)
         group_name = nil if group_name == '.'
-
-        # Skip if group or user
-        if namespaces.include?(name)
-          puts "Skipping #{project.name} due to namespace conflict with group or user".yellow
-          next
-        end
 
         puts "Processing #{repo_path}".yellow
 
-        if path =~ /.wiki\Z/
+        if path =~ /\.wiki\Z/
           puts " * Skipping wiki repo"
           next
         end
@@ -53,9 +44,9 @@ namespace :gitlab do
 
           # find group namespace
           if group_name
-            group = Group.find_by(path: group_name)
+            group = Namespace.find_by(path: group_name)
             # create group namespace
-            if !group
+            unless group
               group = Group.new(:name => group_name)
               group.path = group_name
               group.owner = user

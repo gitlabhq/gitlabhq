@@ -14,6 +14,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     page.should have_content 'GitLab CI'
     page.should have_content 'Assembla'
     page.should have_content 'Pushover'
+    page.should have_content 'Atlassian Bamboo'
   end
 
   step 'I click gitlab-ci service link' do
@@ -108,12 +109,12 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
 
   step 'I fill Slack settings' do
     check 'Active'
-    fill_in 'Webhook', with: 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
+    fill_in 'Webhook', with: 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
     click_button 'Save'
   end
 
   step 'I should see Slack service settings saved' do
-    find_field('Webhook').value.should == 'https://gitlabhq.slack.com/services/hooks?token=cdIj4r4LfXUOySDUjp0tk3OI'
+    find_field('Webhook').value.should == 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685'
   end
 
   step 'I click Pushover service link' do
@@ -155,5 +156,23 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Username').value.should == 'gitlab'
     find_field('Password').value.should_not == 'gitlab'
     find_field('Api version').value.should == '2'
+
+  step 'I click Atlassian Bamboo CI service link' do
+    click_link 'Atlassian Bamboo CI'
+  end
+
+  step 'I fill Atlassian Bamboo CI settings' do
+    check 'Active'
+    fill_in 'Bamboo url', with: 'http://bamboo.example.com'
+    fill_in 'Build key', with: 'KEY'
+    fill_in 'Username', with: 'user'
+    fill_in 'Password', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see Atlassian Bamboo CI service settings saved' do
+    find_field('Bamboo url').value.should == 'http://bamboo.example.com'
+    find_field('Build key').value.should == 'KEY'
+    find_field('Username').value.should == 'user'
   end
 end

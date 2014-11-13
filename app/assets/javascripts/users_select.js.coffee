@@ -1,5 +1,32 @@
-$ ->
-  userFormatResult = (user) ->
+class @UsersSelect
+  constructor: ->
+    $('.ajax-users-select').each (i, select) =>
+      skip_ldap = $(select).hasClass('skip_ldap')
+
+      $(select).select2
+        placeholder: "Search for a user"
+        multiple: $(select).hasClass('multiselect')
+        minimumInputLength: 0
+        query: (query) ->
+          Api.users query.term, skip_ldap, (users) ->
+            data = { results: users }
+            query.callback(data)
+
+        initSelection: (element, callback) ->
+          id = $(element).val()
+          if id isnt ""
+            Api.user(id, callback)
+
+
+        formatResult: (args...) =>
+          @formatResult(args...)
+        formatSelection: (args...) =>
+          @formatSelection(args...)
+        dropdownCssClass: "ajax-users-dropdown"
+        escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
+          m
+
+  formatResult: (user) ->
     if user.avatar_url
       avatar = user.avatar_url
     else
@@ -11,29 +38,5 @@ $ ->
        <div class='user-username'>#{user.username}</div>
      </div>"
 
-  userFormatSelection = (user) ->
+  formatSelection: (user) ->
     user.name
-
-  $('.ajax-users-select').each (i, select) ->
-    skip_ldap = $(select).hasClass('skip_ldap')
-
-    $(select).select2
-      placeholder: "Search for a user"
-      multiple: $(select).hasClass('multiselect')
-      minimumInputLength: 0
-      query: (query) ->
-        Api.users query.term, skip_ldap, (users) ->
-          data = { results: users }
-          query.callback(data)
-
-      initSelection: (element, callback) ->
-        id = $(element).val()
-        if id isnt ""
-          Api.user(id, callback)
-
-
-      formatResult: userFormatResult
-      formatSelection: userFormatSelection
-      dropdownCssClass: "ajax-users-dropdown"
-      escapeMarkup: (m) -> # we do not want to escape markup since we are displaying html in results
-        m

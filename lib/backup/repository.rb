@@ -91,7 +91,7 @@ module Backup
     protected
 
     def path_to_repo(project)
-      File.join(repos_path, project.path_with_namespace + '.git')
+      project.repository.path_to_repo
     end
 
     def path_to_bundle(project)

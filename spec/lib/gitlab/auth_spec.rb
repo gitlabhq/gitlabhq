@@ -10,11 +10,19 @@ describe Gitlab::Auth do
         password: password,
         password_confirmation: password)
     end
-    let(:username) { 'john' }
+    let(:username) { 'John' }     # username isn't lowercase, test this
     let(:password) { 'my-secret' }
 
     it "should find user by valid login/password" do
       expect( gl_auth.find(username, password) ).to eql user
+    end
+
+    it 'should find user by valid email/password with case-insensitive email' do
+      expect(gl_auth.find(user.email.upcase, password)).to eql user
+    end
+
+    it 'should find user by valid username/password with case-insensitive username' do
+      expect(gl_auth.find(username.upcase, password)).to eql user
     end
 
     it "should not find user with invalid password" do

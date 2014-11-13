@@ -83,9 +83,14 @@ class GitPushService
       # closing regex. Exclude any mentioned Issues from cross-referencing even if the commits are being pushed to
       # a different branch.
       issues_to_close = commit.closes_issues(project)
-      author = commit_user(commit)
 
-      if !issues_to_close.empty? && is_default_branch
+      # Load commit author only if needed.
+      # For push with 1k commits it prevents 900+ requests in database
+      author = nil
+
+      if issues_to_close.present? && is_default_branch
+        author ||= commit_user(commit)
+
         issues_to_close.each do |issue|
           if project.jira_tracker? && project.jira_service.active
             project.jira_service.execute(push_data, issue)
@@ -100,8 +105,13 @@ class GitPushService
       # being pushed to a different branch).
       refs = commit.references(project) - issues_to_close
       refs.reject! { |r| commit.has_mentioned?(r) }
-      refs.each do |r|
-        Note.create_cross_reference_note(r, commit, author, project)
+
+      if refs.present?
+        author ||= commit_user(commit)
+
+        refs.each do |r|
+          Note.create_cross_reference_note(r, commit, author, project)
+        end
       end
     end
   end
@@ -164,19 +174,19 @@ class GitPushService
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
-    ref_parts[1] =~ /heads/ && oldrev != "0000000000000000000000000000000000000000"
+    ref_parts[1] =~ /heads/ && oldrev != Gitlab::Git::BLANK_SHA
   end
 
   def push_to_new_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
-    ref_parts[1] =~ /heads/ && oldrev == "0000000000000000000000000000000000000000"
+    ref_parts[1] =~ /heads/ && oldrev == Gitlab::Git::BLANK_SHA
   end
 
   def push_remove_branch?(ref, newrev)
     ref_parts = ref.split('/')
 
-    ref_parts[1] =~ /heads/ && newrev == "0000000000000000000000000000000000000000"
+    ref_parts[1] =~ /heads/ && newrev == Gitlab::Git::BLANK_SHA
   end
 
   def push_to_branch?(ref)

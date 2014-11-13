@@ -16,7 +16,8 @@ module API
 
     class UserFull < User
       expose :email
-      expose :theme_id, :color_scheme_id, :extern_uid, :provider
+      expose :theme_id, :color_scheme_id, :extern_uid, :provider, \
+             :projects_limit
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
     end
@@ -80,6 +81,25 @@ module API
     class GroupMember < UserBasic
       expose :access_level do |user, options|
         options[:group].group_members.find_by(user_id: user.id).access_level
+      end
+    end
+
+    class RepoTag < Grape::Entity
+      expose :name
+      expose :message do |repo_obj, _options|
+        if repo_obj.respond_to?(:message)
+          repo_obj.message
+        else
+          nil
+        end
+      end
+
+      expose :commit do |repo_obj, options|
+        if repo_obj.respond_to?(:commit)
+          repo_obj.commit
+        elsif options[:project]
+          options[:project].repository.commit(repo_obj.target)
+        end
       end
     end
 
@@ -169,11 +189,25 @@ module API
       expose :author, using: Entities::UserBasic
     end
 
+    class CommitNote < Grape::Entity
+      expose :note
+      expose(:path) { |note| note.diff_file_name }
+      expose(:line) { |note| note.diff_new_line }
+      expose(:line_type) { |note| note.diff_line_type }
+      expose :author, using: Entities::UserBasic
+    end
+
     class Event < Grape::Entity
       expose :title, :project_id, :action_name
       expose :target_id, :target_type, :author_id
       expose :data, :target_title
       expose :created_at
+
+      expose :author_username do |event, options|
+        if event.author
+          event.author.username
+        end
+      end
     end
 
     class LdapGroup < Grape::Entity
