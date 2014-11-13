@@ -12,6 +12,7 @@ v 7.5.0
   - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
   - Expose username in project events API (sponsored by O'Reilly Media)
   - Adds comments to commits in the API
+  - Monokai highlighting style now more accurate to original (Mark Riedesel)
 
 v 7.4.3
   - Fix raw snippets view

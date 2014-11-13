@@ -29,27 +29,29 @@
 
   .hljs-tag,
   .hljs-tag .hljs-title,
-  .hljs-keyword,
-  .hljs-literal,
   .hljs-strong,
   .hljs-change,
   .hljs-winutils,
   .hljs-flow,
   .lisp .hljs-title,
   .clojure .hljs-built_in,
+  .hljs-keyword,
   .nginx .hljs-title,
   .tex .hljs-special {
     color: #F92672;
   }
 
   .hljs {
-    color: #DDD;
+    color: #F8F8F2;
   }
 
-  .hljs .hljs-constant,
-  .asciidoc .hljs-code {
+  .asciidoc .hljs-code,
+  .markdown .hljs-code,
+  .hljs-literal,
+  .hljs-function .hljs-keyword {
     color: #66D9EF;
   }
+
 
   .hljs-code,
   .hljs-class .hljs-title,
@@ -62,18 +64,27 @@
   .hljs-symbol,
   .hljs-symbol .hljs-string,
   .hljs-value,
+  .hljs-constant,
+  .hljs-number,
   .hljs-regexp {
-    color: #BF79DB;
+    color: #AE81FF;
+  }
+
+  .hljs-string {
+    color: #E6DB74;
+  }
+
+  .hljs-params {
+    color: #fd971f;
   }
 
   .hljs-link_url,
   .hljs-tag .hljs-value,
-  .hljs-string,
   .hljs-bullet,
   .hljs-subst,
   .hljs-title,
   .hljs-emphasis,
-  .haskell .hljs-type,
+  .hljs-type,
   .hljs-preprocessor,
   .hljs-pragma,
   .ruby .hljs-class .hljs-parent,
@@ -99,12 +110,12 @@
   }
 
   .hljs-comment,
-  .java .hljs-annotation,
+  .hljs-annotation,
   .smartquote,
   .hljs-blockquote,
   .hljs-horizontal_rule,
-  .python .hljs-decorator,
   .hljs-template_comment,
+  .hljs-decorator,
   .hljs-pi,
   .hljs-doctype,
   .hljs-deletion,
