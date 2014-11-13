@@ -20,7 +20,7 @@
               = link_to project_path(current_user.fork_of(@project)), title: 'Go to my fork' do
                 = link_to_toggle_fork
             - else
-              = link_to fork_project_path(@project), title: "Fork project", method: "POST" do
+              = link_to new_project_fork_path(@project), title: "Fork project" do
                 = link_to_toggle_fork
 
       .star-buttons

@@ -551,4 +551,14 @@ class User < ActiveRecord::Base
       UsersStarProject.create!(project: project, user: self)
     end
   end
+
+  def manageable_namespaces
+    @manageable_namespaces ||=
+      begin
+        namespaces = []
+        namespaces << namespace
+        namespaces += owned_groups
+        namespaces += masters_groups
+      end
+  end
 end

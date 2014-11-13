@@ -1,0 +1,19 @@
+%h3.page-title Fork project
+%p.lead Select namespace where to fork this project
+%hr
+
+- @namespaces.in_groups_of(6, false) do |group|
+  .row
+    - group.each do |namespace|
+      .col-md-2.col-sm-3
+        .thumbnail
+          = link_to project_fork_path(@project, namespace_id: namespace.id), title: "Fork here", method: "POST" do
+            - if namespace.kind_of?(Group)
+              = image_tag group_icon(namespace.path)
+            - else
+              = image_tag avatar_icon(namespace.owner.email, 200)
+            .caption
+              %h4=namespace.human_name
+              %p
+                = namespace.path
+

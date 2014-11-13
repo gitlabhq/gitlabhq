@@ -111,22 +111,6 @@ class ProjectsController < ApplicationController
     end
   end
 
-  def fork
-    @forked_project = ::Projects::ForkService.new(project, current_user).execute
-
-    respond_to do |format|
-      format.html do
-        if @forked_project.saved? && @forked_project.forked?
-          redirect_to(@forked_project, notice: 'Project was successfully forked.')
-        else
-          @title = 'Fork project'
-          render "fork"
-        end
-      end
-      format.js
-    end
-  end
-
   def autocomplete_sources
     note_type = params['type']
     note_id = params['type_id']
