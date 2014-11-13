@@ -13,11 +13,14 @@ module Projects
       project = Project.new(project_params)
       project.name = @from_project.name
       project.path = @from_project.path
-      project.namespace = @current_user.namespace
+      project.creator = @current_user
+
       if namespace = @params[:namespace]
         project.namespace = namespace
+      else
+        project.namespace = @current_user.namespace
       end
-      project.creator = @current_user
+
       unless @current_user.can?(:create_projects, project.namespace)
         project.errors.add(:namespace, 'insufficient access rights')
         return project
@@ -47,8 +50,8 @@ module Projects
       else
         project.errors.add(:base, "Invalid fork destination")
       end
-      project
 
+      project
     end
   end
 end
