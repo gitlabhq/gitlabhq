@@ -13,7 +13,7 @@
   = form_tag members_group_path(@group), method: :get, class: 'form-inline member-search-form'  do
     .form-group
       = search_field_tag :search, params[:search], { placeholder: 'Find existing member by name', class: 'form-control search-text-input input-mn-300' }
-    = submit_tag 'Search', class: 'btn'
+    = button_tag 'Search', class: 'btn'
 
   - if current_user && current_user.can?(:manage_group, @group)
     .pull-right

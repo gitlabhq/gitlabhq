@@ -1,3 +1,18 @@
+v 7.5.0
+  - API: Add support for Hipchat (Kevin Houdebert)
+  - Add time zone configuration on gitlab.yml (Sullivan Senechal)
+  - Fix LDAP authentication for Git HTTP access
+  - Fix LDAP config lookup for provider 'ldap'
+  - Drop all sequences during Postgres database restore
+  - Project title links to project homepage (Ben Bodenmiller)
+  - Add Atlassian Bamboo CI service (Drew Blessing)
+  - Mentioned @user will receive email even if he is not participating in issue or commit
+  - Session API: Use case-insensitive authentication like in UI (Andrey Krivko)
+  - Tie up loose ends with annotated tags: API & UI (Sean Edge)
+  - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
+  - Expose username in project events API (sponsored by O'Reilly Media)
+  - Adds comments to commits in the API
+
 v 7.4.3
   - Fix raw snippets view
   - Fix security issue for member api
@@ -46,7 +61,7 @@ v 7.4.0
   - Fix ambiguous sha problem with mentioned commit
   - Fixed bug with apostrophe when at mentioning users
   - Add active directory ldap option
-  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more 
+  - Developers can push to wiki repo. Protected branches does not affect wiki repo any more
   - Faster rev list
   - Fix branch removal
 

@@ -29,7 +29,7 @@ class Spinach::Features::EventFilters < Spinach::FeatureSteps
 
   step 'this project has push event' do
     data = {
-      before: "0000000000000000000000000000000000000000",
+      before: Gitlab::Git::BLANK_SHA,
       after: "0220c11b9a3e6c69dc8fd35321254ca9a7b98f7e",
       ref: "refs/heads/new_design",
       user_id: @user.id,

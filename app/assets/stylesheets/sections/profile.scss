@@ -111,3 +111,20 @@
     height: 50px;
   }
 }
+
+//CSS for password-strength indicator
+#password-strength {
+  margin-bottom: 0;
+}
+
+.has-success input {
+  background-color: #D6F1D7 !important;
+}
+
+.has-error input {
+  background-color: #F3CECE !important;
+}
+
+.has-warning input {
+  background-color: #FFE9A4 !important;
+}

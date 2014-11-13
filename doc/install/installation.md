@@ -76,6 +76,7 @@ Is the system packaged Git too old? Remove it and compile from source.
     cd /tmp
     curl -L --progress https://www.kernel.org/pub/software/scm/git/git-2.1.2.tar.gz | tar xz
     cd git-2.1.2/
+    ./configure
     make prefix=/usr/local all
 
     # Install into /usr/local/bin
@@ -91,7 +92,7 @@ Then select 'Internet Site' and press enter to confirm the hostname.
 
 ## 2. Ruby
 
-The use of ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system ruby.
+The use of Ruby version managers such as [RVM](http://rvm.io/), [rbenv](https://github.com/sstephenson/rbenv) or [chruby](https://github.com/postmodern/chruby) with GitLab in production frequently leads to hard to diagnose problems. For example, GitLab Shell is called from OpenSSH and having a version manager can prevent pushing and pulling over SSH. Version managers are not supported and we strongly advise everyone to follow the instructions below to use a system Ruby.
 
 Remove the old Ruby 1.8 if present
 
@@ -126,7 +127,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Login to PostgreSQL
     sudo -u postgres psql -d template1
 
-    # Create a user for GitLab.
+    # Create a user for GitLab
+    # Do not type the 'template1=#', this is part of the prompt
     template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
@@ -137,6 +139,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
+    
+    # Quit the database session
+    gitlabhq_production> \q
 
 ## 5. Redis
 
@@ -150,6 +155,17 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Enable Redis socket for default Debian / Ubuntu path
     echo 'unixsocket /var/run/redis/redis.sock' | sudo tee -a /etc/redis/redis.conf
+    # Grant permission to the socket to all members of the redis group
+    echo 'unixsocketperm 770' | sudo tee -a /etc/redis/redis.conf
+
+    # Create the directory which contains the socket
+    mkdir /var/run/redis
+    chown redis:redis /var/run/redis
+    chmod 755 /var/run/redis
+    # Persist the directory which contains the socket, if applicable
+    if [ -d /etc/tmpfiles.d ]; then
+      echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
+    fi
 
     # Activate the changes to redis.conf
     sudo service redis-server restart
@@ -185,7 +201,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
-    sudo chmod -R u+rwX log/
+    sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
     # Create directory for satellites

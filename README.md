@@ -57,14 +57,8 @@ Since a manual installation is a lot of work and error prone we strongly recomme
 
 ## Third-party applications
 
-Access GitLab from multiple platforms with applications below.
-These applications are maintained by contributors, GitLab B.V. does not offer support for them.
-
-- [iPhone app](http://gitlabcontrol.com/)
-- [Android app](https://play.google.com/store/apps/details?id=com.bd.gitlab&hl=en)
-- [Chrome app](https://chrome.google.com/webstore/detail/chrome-gitlab-notifier/eageapgbnjicdjjihgclpclilenjbobi)
-- [Command line client](https://github.com/drewblessing/gitlab-cli)
-- [Ruby API wrapper](https://github.com/NARKOZ/gitlab)
+There are a lot of applications and API wrappers for GitLab.
+Find them [on our website](https://about.gitlab.com/applications/).
 
 ### New versions
 

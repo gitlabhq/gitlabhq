@@ -249,6 +249,12 @@ describe Note do
       its(:note) { should == "_mentioned in merge request !#{mergereq.iid}_" }
     end
 
+    context 'commit contained in a merge request' do
+      subject { Note.create_cross_reference_note(mergereq.commits.first, mergereq, author, project) }
+
+      it { should be_nil }
+    end
+
     context 'commit from issue' do
       subject { Note.create_cross_reference_note(commit, issue, author, project) }
 

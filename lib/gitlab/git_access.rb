@@ -67,7 +67,7 @@ module Gitlab
                  if forced_push?(project, oldrev, newrev)
                    :force_push_code_to_protected_branches
                    # and we dont allow remove of protected branch
-                 elsif newrev =~ /0000000/
+                 elsif newrev == Gitlab::Git::BLANK_SHA
                    :remove_protected_branches
                  else
                    :push_code_to_protected_branches
@@ -86,7 +86,7 @@ module Gitlab
     def forced_push?(project, oldrev, newrev)
       return false if project.empty_repo?
 
-      if oldrev !~ /00000000/ && newrev !~ /00000000/
+      if oldrev != Gitlab::Git::BLANK_SHA && newrev != Gitlab::Git::BLANK_SHA
         missed_refs = IO.popen(%W(git --git-dir=#{project.repository.path_to_repo} rev-list #{oldrev} ^#{newrev})).read
         missed_refs.split("\n").size > 0
       else

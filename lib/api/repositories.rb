@@ -23,7 +23,8 @@ module API
       # Example Request:
       #   GET /projects/:id/repository/tags
       get ":id/repository/tags" do
-        present user_project.repo.tags.sort_by(&:name).reverse, with: Entities::RepoObject, project: user_project
+        present user_project.repo.tags.sort_by(&:name).reverse,
+                with: Entities::RepoTag, project: user_project
       end
 
       # Create tag
@@ -43,7 +44,7 @@ module API
 
         if result[:status] == :success
           present result[:tag],
-                  with: Entities::RepoObject,
+                  with: Entities::RepoTag,
                   project: user_project
         else
           render_api_error!(result[:message], 400)

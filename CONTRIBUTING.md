@@ -54,6 +54,8 @@ We welcome merge requests with fixes and improvements to GitLab code, tests, and
 
 Merge requests can be filed either at [gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests) or [github.com](https://github.com/gitlabhq/gitlabhq/pulls).
 
+If you are new to GitLab development (or web development in general), search for the label `easyfix` ([gitlab.com](https://gitlab.com/gitlab-org/gitlab-ce/issues?label_name=easyfix), [github](https://github.com/gitlabhq/gitlabhq/labels/easyfix)). Those are issues easy to fix, marked by the GitLab core-team. If you are unsure how to proceed but want to help, mention one of the core-team members to give you a hint.
+
 ### Merge request guidelines
 
 If you can, please submit a merge request with the fix or improvements including tests. If you don't know how to fix the issue but can write a test that exposes the issue we will accept that as well. In general bug fixes that include a regression test are merged quickly while new features without proper tests are least likely to receive timely feedback. The workflow to make a merge request is as follows:
@@ -101,7 +103,11 @@ For examples of feedback on merge requests please look at already [closed merge 
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options since they complicate future changes
 1. Changes after submitting the merge request should be in separate commits (no squashing). You will be asked to squash when the review is over, before merging.
-1. It conforms to the following style guides
+1. It conforms to the following style guides.
+    If your change touches a line that does not follow the style,
+    modify the entire line to follow it. This prevents linting tools from generating warnings.
+    Don't touch neighbouring lines. As an exception, automatic mass refactoring modifications
+    may leave style non-compliant.
 
 ## Style guides
 

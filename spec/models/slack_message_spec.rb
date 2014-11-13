@@ -1,4 +1,4 @@
-require_relative '../../app/models/project_services/slack_message'
+require 'spec_helper'
 
 describe SlackMessage do
   subject { SlackMessage.new(args) }
@@ -26,11 +26,11 @@ describe SlackMessage do
 
     it 'returns a message regarding pushes' do
       subject.pretext.should ==
-        'user_name pushed to branch <url/commits/master|master> of ' <<
+        'user_name pushed to branch <url/commits/master|master> of '\
         '<url|project_name> (<url/compare/before...after|Compare changes>)'
       subject.attachments.should == [
         {
-          text: "<url1|abcdefghi>: message1 - author1\n" <<
+          text: "<url1|abcdefghi>: message1 - author1\n"\
                 "<url2|123456789>: message2 - author2",
           color: color,
         }
@@ -45,7 +45,7 @@ describe SlackMessage do
 
     it 'returns a message regarding a new branch' do
       subject.pretext.should ==
-        'user_name pushed new branch <url/commits/master|master> to ' <<
+        'user_name pushed new branch <url/commits/master|master> to '\
         '<url|project_name>'
       subject.attachments.should be_empty
     end

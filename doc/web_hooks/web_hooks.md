@@ -63,6 +63,11 @@ Triggered when a new issue is created or an existing issue was updated/closed/re
 ```json
 {
   "object_kind": "issue",
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  },
   "object_attributes": {
     "id": 301,
     "title": "New API: create/update/delete file",
@@ -92,6 +97,11 @@ Triggered when a new merge request is created or an existing merge request was u
 ```json
 {
   "object_kind": "merge_request",
+  "user": {
+    "name": "Administrator",
+    "username": "root",
+    "avatar_url": "http://www.gravatar.com/avatar/e64c7d89f26bd1972efa854d13d7dd61?s=40\u0026d=identicon"
+  },
   "object_attributes": {
     "id": 99,
     "target_branch": "master",

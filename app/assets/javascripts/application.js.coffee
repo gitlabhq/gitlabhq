@@ -18,6 +18,7 @@
 #= require jquery.turbolinks
 #= require turbolinks
 #= require bootstrap
+#= require password_strength
 #= require select2
 #= require raphael
 #= require g.raphael-min
@@ -63,7 +64,7 @@ window.extractLast = (term) ->
   return split( term ).pop()
 
 window.rstrip = (val) ->
-  return val.replace(/\s+$/, '')
+  return if val then val.replace(/\s+$/, '') else val
 
 # Disable button if text field is empty
 window.disableButtonIfEmptyField = (field_selector, button_selector) ->
