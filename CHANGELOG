@@ -7,6 +7,7 @@ v 7.6.0
   - Add optional Sidekiq MemoryKiller middleware (enabled via SIDEKIQ_MAX_RSS env variable)
   -
   -
+  - Monokai highlighting style now more faithful to original design (Mark Riedesel)
   - Create project with repository in synchrony
   - Added ability to create empty repo or import existing one if project does not have repository
   -
