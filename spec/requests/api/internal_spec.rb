@@ -37,7 +37,7 @@ describe API::API, api: true  do
           pull(key, project)
 
           response.status.should == 200
-          response.body.should == 'true'
+          JSON.parse(response.body)["status"].should be_true
         end
       end
 
@@ -46,7 +46,7 @@ describe API::API, api: true  do
           push(key, project)
 
           response.status.should == 200
-          response.body.should == 'true'
+          JSON.parse(response.body)["status"].should be_true
         end
       end
     end
@@ -61,7 +61,7 @@ describe API::API, api: true  do
           pull(key, project)
 
           response.status.should == 200
-          response.body.should == 'false'
+          JSON.parse(response.body)["status"].should be_false
         end
       end
 
@@ -70,7 +70,7 @@ describe API::API, api: true  do
           push(key, project)
 
           response.status.should == 200
-          response.body.should == 'false'
+          JSON.parse(response.body)["status"].should be_false
         end
       end
     end
@@ -87,7 +87,7 @@ describe API::API, api: true  do
           pull(key, personal_project)
 
           response.status.should == 200
-          response.body.should == 'false'
+          JSON.parse(response.body)["status"].should be_false
         end
       end
 
@@ -96,7 +96,7 @@ describe API::API, api: true  do
           push(key, personal_project)
 
           response.status.should == 200
-          response.body.should == 'false'
+          JSON.parse(response.body)["status"].should be_false
         end
       end
     end
@@ -114,7 +114,7 @@ describe API::API, api: true  do
           pull(key, project)
 
           response.status.should == 200
-          response.body.should == 'true'
+          JSON.parse(response.body)["status"].should be_true
         end
       end
 
@@ -123,7 +123,7 @@ describe API::API, api: true  do
           push(key, project)
 
           response.status.should == 200
-          response.body.should == 'false'
+          JSON.parse(response.body)["status"].should be_false
         end
       end
     end

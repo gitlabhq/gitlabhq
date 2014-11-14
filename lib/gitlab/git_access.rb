@@ -5,61 +5,60 @@ module Gitlab
 
     attr_reader :params, :project, :git_cmd, :user
 
-    def allowed?(actor, cmd, project, changes = nil)
+    def check(actor, cmd, project, changes = nil)
       case cmd
       when *DOWNLOAD_COMMANDS
         if actor.is_a? User
-          download_allowed?(actor, project)
+          download_access_check(actor, project)
         elsif actor.is_a? DeployKey
           actor.projects.include?(project)
         elsif actor.is_a? Key
-          download_allowed?(actor.user, project)
+          download_access_check(actor.user, project)
         else
           raise 'Wrong actor'
         end
       when *PUSH_COMMANDS
         if actor.is_a? User
-          push_allowed?(actor, project, changes)
+          push_access_check(actor, project, changes)
         elsif actor.is_a? DeployKey
-          # Deploy key not allowed to push
-          return false
+          return build_status_object(false, "Deploy key not allowed to push")
         elsif actor.is_a? Key
-          push_allowed?(actor.user, project, changes)
+          push_access_check(actor.user, project, changes)
         else
           raise 'Wrong actor'
         end
       else
-        false
+        return build_status_object(false, "Wrong command")
       end
     end
 
-    def download_allowed?(user, project)
-      if user && user_allowed?(user)
-        user.can?(:download_code, project)
+    def download_access_check(user, project)
+      if user && user_allowed?(user) && user.can?(:download_code, project)
+        build_status_object(true)
       else
-        false
+        build_status_object(false, "You don't have access")
       end
     end
 
-    def push_allowed?(user, project, changes)
-      return false unless user && user_allowed?(user)
-      return true if changes.blank?
+    def push_access_check(user, project, changes)
+      return build_status_object(false, "You don't have access") unless user && user_allowed?(user)
+      return build_status_object(true) if changes.blank?
 
       changes = changes.lines if changes.kind_of?(String)
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes.each do |change|
-        unless change_allowed?(user, project, change)
+        status = change_access_check(user, project, change)
+        unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
-          return false
+          return status
         end
       end
 
-      # If user has access to make all changes
-      true
+      return build_status_object(true)
     end
 
-    def change_allowed?(user, project, change)
+    def change_access_check(user, project, change)
       oldrev, newrev, ref = change.split(' ')
 
       action = if project.protected_branch?(branch_name(ref))
@@ -79,8 +78,10 @@ module Gitlab
                  :push_code
                end
 
-      user.can?(action, project) &&
-        pass_git_hooks?(user, project, ref, oldrev, newrev)
+      unless user.can?(action, project)
+        return build_status_object(false, "You don't have permission")
+      end
+      pass_git_hooks?(user, project, ref, oldrev, newrev)
     end
 
     def forced_push?(project, oldrev, newrev)
@@ -95,16 +96,16 @@ module Gitlab
     end
 
     def pass_git_hooks?(user, project, ref, oldrev, newrev)
-      return true unless project.git_hook
+      return build_status_object(true) unless project.git_hook
 
-      return true unless newrev && oldrev
+      return build_status_object(true) unless newrev && oldrev
 
       git_hook = project.git_hook
 
       # Prevent tag removal
       if git_hook.deny_delete_tag
         if project.repository.tag_names.include?(ref) && newrev =~ /0000000/
-          return false
+          return build_status_object(false, "You can not delete tag")
         end
       end
 
@@ -113,33 +114,43 @@ module Gitlab
         commits = project.repository.commits_between(oldrev, newrev)
         commits.each do |commit|
           if git_hook.commit_message_regex.present?
-            return false unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
+            unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
+              return build_status_object(false, "Commit message does not follow the pattern")
+            end
           end
 
           if git_hook.author_email_regex.present?
-            return false unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
-            return false unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
+            unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
+              return build_status_object(false, "Commiter's email does not follow the pattern")
+            end
+            unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
+              return build_status_object(false, "Author's email does not follow the pattern")
+            end
           end
 
           # Check whether author is a GitLab member
           if git_hook.member_check
-            return false unless User.existing_member?(commit.author_email)
+            unless User.existing_member?(commit.author_email)
+              return build_status_object(false, "Author is not a member of team")
+            end
             if commit.author_email != commit.committer_email
-              return false unless User.existing_member?(commit.committer_email)
+              unless User.existing_member?(commit.committer_email)
+                return build_status_object(false, "Commiter is not a member of team")
+              end
             end
           end
 
           if git_hook.file_name_regex.present?
             commit.diffs.each do |diff|
-              if diff.renamed_file || diff.new_file
-                return false if diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+              if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+                return build_status_object(false, "File name #{diff.new_path} does not follow the pattern")
               end
             end
           end
         end
       end
 
-      true
+      build_status_object(true)
     end
 
     private
@@ -164,6 +175,12 @@ module Gitlab
       else
         nil
       end
+    end
+
+    protected
+
+    def build_status_object(status, message = '')
+      GitAccessStatus.new(status, message)
     end
     
   end
