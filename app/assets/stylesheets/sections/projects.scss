@@ -270,3 +270,28 @@ ul.nav.nav-projects-tabs {
     color: #999;
   }
 }
+
+.fork-namespaces {
+  .thumbnail {
+
+    &.fork-exists-thumbnail {
+      border-color: #EEE;
+
+      .caption {
+        color: #999;
+      }
+    }
+
+    &.fork-thumbnail {
+      border-color: #AAA;
+
+      &:hover {
+        background-color: $hover;
+      }
+    }
+
+    a {
+      text-decoration: none;
+    }
+  }
+}
