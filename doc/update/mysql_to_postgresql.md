@@ -1,4 +1,5 @@
 # Migrating GitLab from MySQL to Postgres
+*Make sure you view this [guide from the `master` branch](../../../master/doc/update/mysql_to_postgresql.md) for the most up to date instructions.*
 
 If you are replacing MySQL with Postgres while keeping GitLab on the same server all you need to do is to export from MySQL, import into Postgres and rebuild the indexes as described below. If you are also moving GitLab to another server, or if you are switching to omnibus-gitlab, you may want to use a GitLab backup file. The second part of this documents explains the procedure to do this.
 
