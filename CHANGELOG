@@ -1,6 +1,6 @@
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
-  - Add time zone configuration on gitlab.yml (Sullivan Senechal)
+  - Add time zone configuration in gitlab.yml (Sullivan Senechal)
   - Fix LDAP authentication for Git HTTP access
   - Run 'GC.start' after every EmailsOnPushWorker job
   - Fix LDAP config lookup for provider 'ldap'
@@ -22,7 +22,6 @@ v 7.5.0
   - Added a password strength indicator
   - Change project name and path in one form
   - Display renamed files in diff views (Vinnie Okada)
-  - Add timezone configuration to gitlab.yml
   - Fix raw view for public snippets 
 
 v 7.4.3
