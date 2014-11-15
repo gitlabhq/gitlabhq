@@ -159,9 +159,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     sudo sed -i '/# unixsocketperm/ s/^# unixsocketperm.*/unixsocketperm 0770/' /etc/redis/redis.conf
 
     # Create the directory which contains the socket
-    mkdir -p /var/run/redis
-    chown redis:redis /var/run/redis
-    chmod 755 /var/run/redis
+    sudo mkdir -p /var/run/redis
+    sudo chown redis:redis /var/run/redis
+    sudo chmod 755 /var/run/redis
     # Persist the directory which contains the socket, if applicable
     if [ -d /etc/tmpfiles.d ]; then
       echo 'd  /var/run/redis  0755  redis  redis  10d  -' | sudo tee -a /etc/tmpfiles.d/redis.conf
