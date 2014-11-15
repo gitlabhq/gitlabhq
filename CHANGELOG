@@ -16,6 +16,7 @@ v 7.5.0
   - Performance improvements
   - Fix post-receive issue for projects with deleted forks
   - New gitlab-shell version with custom hooks support
+  - Nginx config changes to support IPv6 connections
   - Improve code 
   - GitLab CI 5.2+ support (does not support older versions)
   - Fixed bug when you can not push commits starting with 000000 to protected branches
