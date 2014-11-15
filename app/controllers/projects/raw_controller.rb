@@ -29,7 +29,7 @@ class Projects::RawController < Projects::ApplicationController
 
   def get_blob_type
     if @blob.text?
-      'text/plain; charset=utf-8'
+      "text/plain; charset=#{@blob.detect_encoding[:encoding]}"
     else
       'application/octet-stream'
     end
