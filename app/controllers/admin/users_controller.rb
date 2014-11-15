@@ -45,7 +45,6 @@ class Admin::UsersController < Admin::ApplicationController
 
     @user = User.new(user_params.merge(opts))
     @user.created_by_id = current_user.id
-    @user.generate_password
     @user.generate_reset_token
     @user.skip_confirmation!
 

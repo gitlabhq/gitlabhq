@@ -40,29 +40,55 @@ module API
       # Create user. Available only for admin
       #
       # Parameters:
-      #   email (required)                  - Email
-      #   password (required)               - Password
-      #   name (required)                   - Name
-      #   username (required)               - Name
-      #   skype                             - Skype ID
-      #   linkedin                          - Linkedin
-      #   twitter                           - Twitter account
-      #   website_url                       - Website url
-      #   projects_limit                    - Number of projects user can create
-      #   extern_uid                        - External authentication provider UID
-      #   provider                          - External provider
-      #   bio                               - Bio
-      #   admin                             - User is admin - true or false (default)
-      #   can_create_group                  - User can create groups - true or false
+      #   email (required)                                       - Email
+      #   password (required unless force_random_password set)   - Password
+      #   force_random_password (required unless password set)   - generate random password for user - true or false
+      #   name (required)                                        - Name
+      #   username (required)                                    - Name
+      #   skype                                                  - Skype ID
+      #   linkedin                                               - Linkedin
+      #   twitter                                                - Twitter account
+      #   website_url                                            - Website url
+      #   projects_limit                                         - Number of projects user can create
+      #   extern_uid                                             - External authentication provider UID
+      #   provider                                               - External provider
+      #   bio                                                    - Bio
+      #   admin                                                  - User is admin - true or false (default)
+      #   can_create_group                                       - User can create groups - true or false
       # Example Request:
       #   POST /users
       post do
         authenticated_as_admin!
-        required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
-        user = User.build_user(attrs)
+
+        required_attributes! [:email, :name, :username]
+        attrs = attributes_for_keys [:email, :name, :skype, :linkedin,
+                                     :twitter, :projects_limit, :username,
+                                     :extern_uid, :provider, :bio,
+                                     :can_create_group, :admin]
+
+        force_random =  params[:force_random_password] &&
+          (params[:force_random_password].to_i > 0)
+
+        if params[:password] && !force_random
+          attrs[:password] = params[:password]
+        elsif force_random && !params[:password]
+          attrs[:force_random_password] = true
+        else
+          render_api_error!('Either password or force_random_password'\
+                            ' must be set', 400)
+        end
+
         admin = attrs.delete(:admin)
+        user = User.new(attrs)
+
         user.admin = admin unless admin.nil?
+        if force_random
+          user.created_by_id = current_user.id
+          user.password_expires_at = nil
+          user.generate_reset_token
+          user.skip_confirmation!
+        end
+
         if user.save
           present user, with: Entities::UserFull
         else

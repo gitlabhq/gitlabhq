@@ -143,8 +143,8 @@ describe API::API, api: true  do
           should == [Gitlab::Regex.send(:default_regex_message)]
     end
 
-    it "shouldn't available for non admin users" do
-      post api("/users", user), attributes_for(:user)
+    it "shouldn't be available for non admin users" do
+      post api('/users', user), attributes_for(:user)
       response.status.should == 403
     end
 
