@@ -177,24 +177,6 @@ describe ApplicationHelper do
     end
   end
 
-  describe "simple_sanitize" do
-    let(:a_tag) { '<a href="#">Foo</a>' }
-
-    it "allows the a tag" do
-      simple_sanitize(a_tag).should == a_tag
-    end
-
-    it "allows the span tag" do
-      input = '<span class="foo">Bar</span>'
-      simple_sanitize(input).should == input
-    end
-
-    it "disallows other tags" do
-      input = "<strike><b>#{a_tag}</b></strike>"
-      simple_sanitize(input).should == a_tag
-    end
-  end
-
   describe "link_to" do
 
     it "should not include rel=nofollow for internal links" do
