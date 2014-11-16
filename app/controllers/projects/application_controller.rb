@@ -29,4 +29,20 @@ class Projects::ApplicationController < ApplicationController
       redirect_to project_tree_path(@project, @ref), notice: "This action is not allowed unless you are on top of a branch"
     end
   end
+
+  protected
+
+  def changes_successful_action(result, redirect_path)
+    if result[:status] == :success
+      flash[:notice] = changes_successful_action_message
+      redirect_to redirect_path
+    else
+      flash[:alert] = result[:message]
+      render :show
+    end
+  end
+
+  def changes_successful_action_message
+    'Your changes have been successfully committed'
+  end
 end
