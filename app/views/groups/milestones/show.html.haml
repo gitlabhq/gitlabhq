@@ -24,7 +24,7 @@
         Open
 
   %h4.title
-    = gfm escape_once(@group_milestone.title)
+    = escape_gfm(@group_milestone.title)
 
   .description
     - @group_milestone.milestones.each do |milestone|

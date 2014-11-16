@@ -12,7 +12,7 @@
       Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 
   %h4.title
-    = gfm escape_once(@merge_request.title)
+    = escape_gfm(@merge_request.title)
 
   - if @merge_request.description.present?
     .description
