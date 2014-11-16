@@ -10,10 +10,18 @@ module TreeHelper
     tree = ""
 
     # Render folders if we have any
-    tree += render partial: 'projects/tree/tree_item', collection: folders, locals: {type: 'folder'} if folders.present?
+    if folders.present?
+      tree += render partial: 'projects/tree/item',
+                     collection: folders,
+                     locals: { type: 'folder', path_helper: :project_tree_path }
+    end
 
     # Render files if we have any
-    tree += render partial: 'projects/tree/blob_item', collection: files, locals: {type: 'file'} if files.present?
+    if files.present?
+      tree += render partial: 'projects/tree/item',
+                     collection: files,
+                     locals: { type: 'file', path_helper: :project_blob_path }
+    end
 
     # Render submodules if we have any
     tree += render partial: 'projects/tree/submodule_item', collection: submodules if submodules.present?

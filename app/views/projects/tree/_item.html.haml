@@ -1,0 +1,8 @@
+%tr{ class: "tree-item #{tree_hex_class(item)}" }
+  %td.tree-item-file-name
+    = tree_icon(type)
+    %span.str-truncated
+      = link_to item.name, send(path_helper, @project, tree_join(@id || @commit.id, item.name))
+  %td.tree_time_ago.cgray
+    = render 'spinner'
+  %td.hidden-xs.tree_commit
