@@ -1,5 +1,8 @@
 %h3.page-title
-  Issue ##{@issue.iid}
+  %span.title
+    = gfm escape_once(@issue.title)
+  %span.id
+    \##{@issue.iid}
 
   %span.pull-right.issue-btn-group
     - if can?(current_user, :write_issue, @project)
@@ -40,9 +43,6 @@
 
     .creator
       Created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
-
-  %h4.title
-    = gfm escape_once(@issue.title)
 
   - if @issue.description.present?
     .description

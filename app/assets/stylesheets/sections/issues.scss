@@ -152,3 +152,11 @@ form.edit-issue {
     }
   }
 }
+
+body[data-page="projects:issues:show"] {
+  .page-title {
+    .id {
+      @extend .text-muted;
+    }
+  }
+}
