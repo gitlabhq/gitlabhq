@@ -14,7 +14,7 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 sudo gitlab-rake gitlab:backup:create
 
 # if you've installed GitLab from source or using the cookbook
-bundle exec rake gitlab:backup:create RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Example output:
