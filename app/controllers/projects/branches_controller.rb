@@ -1,4 +1,5 @@
 class Projects::BranchesController < Projects::ApplicationController
+  include ActionView::Helpers::SanitizeHelper
   # Authorize
   before_filter :require_non_empty_project
 
@@ -16,8 +17,10 @@ class Projects::BranchesController < Projects::ApplicationController
   end
 
   def create
+    branch_name = sanitize(strip_tags(params[:branch_name]))
+    ref = sanitize(strip_tags(params[:ref]))
     result = CreateBranchService.new(project, current_user).
-        execute(params[:branch_name], params[:ref])
+        execute(branch_name, ref)
 
     if result[:status] == :success
       @branch = result[:branch]

@@ -2,6 +2,7 @@ v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration on gitlab.yml (Sullivan Senechal)
   - Fix LDAP authentication for Git HTTP access
+  - Run 'GC.start' after every EmailsOnPushWorker job
   - Fix LDAP config lookup for provider 'ldap'
   - Drop all sequences during Postgres database restore
   - Project title links to project homepage (Ben Bodenmiller)
@@ -12,6 +13,18 @@ v 7.5.0
   - Return valid json for deleting branch via API (sponsored by O'Reilly Media)
   - Expose username in project events API (sponsored by O'Reilly Media)
   - Adds comments to commits in the API
+  - Performance improvements
+  - Fix post-receive issue for projects with deleted forks
+  - New gitlab-shell version with custom hooks support
+  - Improve code 
+  - GitLab CI 5.2+ support (does not support older versions)
+  - Fixed bug when you can not push commits starting with 000000 to protected branches
+  - Added a password strength indicator
+  - Change project name and path in one form
+  - Display renamed files in diff views (Vinnie Okada)
+  - Add timezone configuration to gitlab.yml
+  - Fix raw view for public snippets
+  - Use secret token with GitLab internal API.
 
 v 7.4.3
   - Fix raw snippets view

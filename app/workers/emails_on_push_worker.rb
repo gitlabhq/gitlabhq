@@ -21,5 +21,8 @@ class EmailsOnPushWorker
     recipients.split(" ").each do |recipient|
       Notify.repository_push_email(project_id, recipient, author_id, branch, compare).deliver
     end
+  ensure
+    compare = nil
+    GC.start
   end
 end
