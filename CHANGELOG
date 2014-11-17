@@ -23,7 +23,8 @@ v 7.5.0
   - Change project name and path in one form
   - Display renamed files in diff views (Vinnie Okada)
   - Add timezone configuration to gitlab.yml
-  - Fix raw view for public snippets 
+  - Fix raw view for public snippets
+  - Use secret token with GitLab internal API.
 
 v 7.4.3
   - Fix raw snippets view
