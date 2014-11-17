@@ -96,6 +96,7 @@ class PushoverService < Service
       message = "#{data[:user_name]} pushed new branch \"#{ref}\"."
     elsif Gitlab::Git.blank_ref?(after)
       message = "#{data[:user_name]} deleted branch \"#{ref}\"."
+
     else
       message = "#{data[:user_name]} push to branch \"#{ref}\"."
     end

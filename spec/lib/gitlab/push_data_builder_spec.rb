@@ -17,6 +17,7 @@ describe 'Gitlab::PushDataBuilder' do
     it { expect(data[:repository][:git_ssh_url]).to eq(project.ssh_url_to_repo) }
     it { expect(data[:repository][:visibility_level]).to eq(project.visibility_level) }
     it { expect(data[:total_commits_count]).to eq(3) }
+
   end
 
   describe :build do
@@ -35,5 +36,6 @@ describe 'Gitlab::PushDataBuilder' do
     it { expect(data[:ref]).to eq('refs/tags/v1.1.0') }
     it { expect(data[:commits]).to be_empty }
     it { expect(data[:total_commits_count]).to be_zero }
+
   end
 end

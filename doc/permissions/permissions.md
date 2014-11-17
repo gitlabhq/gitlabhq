@@ -53,3 +53,4 @@ Any user can remove themselves from a group, unless they are the last Owner of t
 | Create project in group |       |          |           | ✓      | ✓     |
 | Manage group members    |       |          |           |        | ✓     |
 | Remove group            |       |          |           |        | ✓     |
+

@@ -98,6 +98,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
       author: current_user
   end
 
+
   step 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
     fill_in 'group_path', with: 'new-name'

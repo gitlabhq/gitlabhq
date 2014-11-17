@@ -37,6 +37,7 @@ describe WikiPage do
 
       it "sets the version attribute" do
         expect(@wiki_page.version).to be_a Gollum::Git::Commit
+
       end
     end
   end

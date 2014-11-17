@@ -31,6 +31,7 @@ module Gitlab
     def can_push_to_branch?(ref)
       return false unless user
 
+
       if project.protected_branch?(ref)  &&
           !(project.developers_can_push_to_protected_branch?(ref) && project.team.developer?(user))
         user.can?(:push_code_to_protected_branches, project)
@@ -98,6 +99,7 @@ module Gitlab
 
     def user_push_access_check(changes)
       unless user && user_allowed?
+
         return build_status_object(false, "You don't have access")
       end
 
@@ -114,6 +116,7 @@ module Gitlab
       # Iterate over all changes to find if user allowed all of them to be applied
       changes.map(&:strip).reject(&:blank?).each do |change|
         status = change_access_check(change)
+
         unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
           return status
@@ -148,6 +151,7 @@ module Gitlab
     end
 
     private
+
 
     def protected_branch_action(oldrev, newrev, branch_name)
       # we dont allow force push to protected branch

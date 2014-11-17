@@ -112,6 +112,7 @@ Please ensure you support the feature you contribute through all of these steps.
 
 If you add a dependency in GitLab (such as an operating system package) please consider updating the following and note the applicability of each in your merge request:
 
+
 1. Note the addition in the release blog post (create one if it doesn't exist yet) https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/
 1. Upgrade guide, for example https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.5-to-7.6.md
 1. Upgrader https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/upgrader.md#2-run-gitlab-upgrade-tool

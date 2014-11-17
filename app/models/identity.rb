@@ -16,3 +16,4 @@ class Identity < ActiveRecord::Base
 
   validates :extern_uid, allow_blank: true, uniqueness: { scope: :provider }
 end
+

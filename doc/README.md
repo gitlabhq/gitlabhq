@@ -12,6 +12,7 @@
 - [Workflow](workflow/README.md) Using GitLab functionality and importing projects from GitHub and SVN.
 - [GitLab as OAuth2 authentication service provider](integration/oauth_provider.md). It allows you to login to other applications from GitLab.
 
+
 ## Administrator documentation
 
 - [Install](install/README.md) Requirements, directory structures and installation from source.
@@ -26,6 +27,7 @@
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.
 - [Operations](operations/README.md) Keeping GitLab up and running
 - [Log system](logs/logs.md) Log system
+
 
 ## Contributor documentation
 

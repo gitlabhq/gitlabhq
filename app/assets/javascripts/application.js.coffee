@@ -115,6 +115,7 @@ if location.hash
 window.addEventListener "hashchange", shiftWindow
 
 $ ->
+
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 

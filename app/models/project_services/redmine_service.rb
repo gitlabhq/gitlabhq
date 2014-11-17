@@ -18,6 +18,7 @@
 #  note_events           :boolean          default(TRUE), not null
 #
 
+
 class RedmineService < IssueTrackerService
 
   prop_accessor :title, :description, :project_url, :issues_url, :new_issue_url
@@ -36,6 +37,7 @@ class RedmineService < IssueTrackerService
     else
       'Redmine issue tracker'
     end
+
   end
 
   def to_param

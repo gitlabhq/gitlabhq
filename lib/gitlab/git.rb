@@ -20,6 +20,7 @@ module Gitlab
       def blank_ref?(ref)
         ref == BLANK_SHA
       end
+
     end
   end
 end

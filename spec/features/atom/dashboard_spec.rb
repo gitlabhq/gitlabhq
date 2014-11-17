@@ -25,11 +25,13 @@ describe "Dashboard Feed", feature: true  do
 
       it "should have issue opened event" do
         expect(body).to have_content("#{user.name} opened issue ##{issue.iid}")
+
       end
 
       it "should have issue comment event" do
         expect(body).
           to have_content("#{user.name} commented on issue ##{issue.iid}")
+
       end
     end
   end
@@ -40,5 +42,9 @@ describe "Dashboard Feed", feature: true  do
 
   def note_event(note, user)
     EventCreateService.new.leave_note(note, user)
+  end
+
+  def safe_name
+    html_escape(user.name)
   end
 end

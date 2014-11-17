@@ -43,6 +43,7 @@ class Spinach::Features::DashboardIssues < Spinach::FeatureSteps
   step 'I click "All" link' do
     select2(nil, from: "#author_id")
     select2(nil, from: "#assignee_id")
+
   end
 
   def should_see(issue)

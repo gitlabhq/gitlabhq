@@ -58,6 +58,7 @@ module TreeHelper
     return false unless project.repository.branch_names.include?(ref)
 
     ::Gitlab::GitAccess.new(current_user, project).can_push_to_branch?(ref)
+
   end
 
   def tree_breadcrumbs(tree, max_links = 2)
@@ -83,6 +84,7 @@ module TreeHelper
   end
 
   # returns the relative path of the first subdir that doesn't have only one directory descendant
+
   def flatten_tree(tree)
     subtree = Gitlab::Git::Tree.where(@repository, @commit.id, tree.path)
     if subtree.count == 1 && subtree.first.dir?

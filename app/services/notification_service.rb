@@ -121,6 +121,7 @@ class NotificationService
 
     # ignore gitlab service messages
     return true if note.note.start_with?('Status changed to closed')
+
     return true if note.cross_reference? && note.system == true
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
@@ -336,6 +337,7 @@ class NotificationService
 
     if subscriptions.any?
       recipients + subscriptions.where(subscribed: true).map(&:user)
+
     else
       recipients
     end
@@ -343,6 +345,7 @@ class NotificationService
   
   def new_resource_email(target, project, method)
     recipients = build_recipients(target, project)
+
     recipients.delete(target.author)
 
     recipients.each do |recipient|
@@ -352,6 +355,7 @@ class NotificationService
 
   def close_resource_email(target, project, current_user, method)
     recipients = build_recipients(target, project)
+
     recipients.delete(current_user)
 
     recipients.each do |recipient|
@@ -371,6 +375,7 @@ class NotificationService
 
   def reopen_resource_email(target, project, current_user, method, status)
     recipients = build_recipients(target, project)
+
     recipients.delete(current_user)
 
     recipients.each do |recipient|

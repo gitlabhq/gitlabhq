@@ -634,6 +634,7 @@ describe GitlabMarkdownHelper do
 
       target_html = "<pre class=\"code highlight white plaintext\"><code>some code from $#{snippet.id}\nhere too\n</code></pre>\n"
 
+
       expect(helper.markdown("\n    some code from $#{snippet.id}\n    here too\n")).
         to eq(target_html)
       expect(helper.markdown("\n```\nsome code from $#{snippet.id}\nhere too\n```\n")).

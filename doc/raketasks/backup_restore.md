@@ -14,6 +14,7 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 sudo gitlab-rake gitlab:backup:create
 
 # if you've installed GitLab from source
+
 sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
@@ -138,6 +139,7 @@ Please be informed that a backup does not store your configuration files.
 If you use an Omnibus package please see the [instructions in the readme to backup your configuration](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#backup-and-restore-omnibus-gitlab-configuration).
 If you have a cookbook installation there should be a copy of your configuration in Chef.
 If you have an installation from source, please consider backing up your `gitlab.yml` file, any SSL keys and certificates, and your [SSH host keys](https://superuser.com/questions/532040/copy-ssh-keys-from-one-server-to-another-server/532079#532079).
+
 
 ## Restore a previously created backup
 

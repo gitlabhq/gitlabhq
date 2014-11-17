@@ -111,6 +111,7 @@ describe API::API, api: true  do
         post api("/groups", admin), {name: "Duplicate Test", path: group2.path}
         expect(response.status).to eq(400)
         expect(response.message).to eq("Bad Request")
+
       end
 
       it "should return 400 bad request error if name not given" do

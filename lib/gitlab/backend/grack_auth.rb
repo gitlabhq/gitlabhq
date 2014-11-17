@@ -130,6 +130,7 @@ module Grack
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
         if user
           Gitlab::GitAccess.new(user, project).download_access_check.allowed?
+
         elsif project.public?
           # Allow clone/fetch for public projects
           true

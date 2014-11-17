@@ -88,6 +88,7 @@ If you have a 512MB machine with a SSD drive you can use two Unicorn workers, th
 
 To change the Unicorn workers when you have the Omnibus package please see [the Unicorn settings in the Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/settings/unicorn.md#unicorn-settings).
 
+
 ## Database
 
 If you want to run the database separately, the **recommended** database size is **1 MB per user**.

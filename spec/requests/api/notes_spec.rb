@@ -139,12 +139,14 @@ describe API::API, api: true  do
                   "notes/#{issue_note.id}", user), body: 'Hello!'
         expect(response.status).to eq(200)
         expect(json_response['body']).to eq('Hello!')
+
       end
 
       it 'should return a 404 error when note id not found' do
         put api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user),
                 body: 'Hello!'
         expect(response.status).to eq(404)
+
       end
 
       it 'should return a 400 bad request error if body not given' do
@@ -166,6 +168,7 @@ describe API::API, api: true  do
         put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
                   "notes/123", user), body: "Hello!"
         expect(response.status).to eq(404)
+
       end
     end
 
@@ -175,12 +178,14 @@ describe API::API, api: true  do
                   "notes/#{merge_request_note.id}", user), body: 'Hello!'
         expect(response.status).to eq(200)
         expect(json_response['body']).to eq('Hello!')
+
       end
 
       it 'should return a 404 error when note id not found' do
         put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
                   "notes/123", user), body: "Hello!"
         expect(response.status).to eq(404)
+
       end
     end
   end

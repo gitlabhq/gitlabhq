@@ -55,6 +55,7 @@ end
 
 #                 projects POST   /projects(.:format)     projects#create
 #              new_project GET    /projects/new(.:format) projects#new
+
 #            files_project GET    /:id/files(.:format)    projects#files
 #             edit_project GET    /:id/edit(.:format)     projects#edit
 #                  project GET    /:id(.:format)          projects#show
@@ -64,6 +65,7 @@ end
 describe ProjectsController, 'routing' do
   it 'to #create' do
     expect(post('/projects')).to route_to('projects#create')
+
   end
 
   it 'to #new' do
@@ -93,6 +95,12 @@ describe ProjectsController, 'routing' do
   it 'to #markdown_preview' do
     expect(post('/gitlab/gitlabhq/markdown_preview')).to(
       route_to('projects#markdown_preview', namespace_id: 'gitlab', id: 'gitlabhq')
+    )
+  end
+
+  it 'to #markdown_preview' do
+    get('/gitlab/gitlabhq/markdown_preview').should(
+      route_to('projects#markdown_preview', id: 'gitlab/gitlabhq')
     )
   end
 end
@@ -396,6 +404,7 @@ end
 #          project_note DELETE /:project_id/notes/:id(.:format)     notes#destroy
 describe Projects::NotesController, 'routing' do
   it_behaves_like 'RESTful project resources' do
+
     let(:actions)    { [:index, :create, :destroy] }
     let(:controller) { 'notes' }
   end
@@ -416,6 +425,7 @@ describe Projects::BlobController, 'routing' do
     expect(get('/gitlab/gitlabhq/blob/master/app/models/compare.rb')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/compare.rb')
     expect(get('/gitlab/gitlabhq/blob/master/app/models/diff.js')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/app/models/diff.js')
     expect(get('/gitlab/gitlabhq/blob/master/files.scss')).to route_to('projects/blob#show', namespace_id: 'gitlab', project_id: 'gitlabhq', id: 'master/files.scss')
+
   end
 end
 
@@ -439,6 +449,22 @@ describe Projects::BlobController, 'routing' do
     expect(post('/gitlab/gitlabhq/preview/master/app/models/project.rb')).to(
       route_to('projects/blob#preview',
                namespace_id: 'gitlab', project_id: 'gitlabhq',
+               id: 'master/app/models/project.rb'))
+  end
+end
+
+describe Projects::BlobController, 'routing' do
+  it 'to #edit' do
+    get('/gitlab/gitlabhq/edit/master/app/models/project.rb').should(
+      route_to('projects/blob#edit',
+               project_id: 'gitlab/gitlabhq',
+               id: 'master/app/models/project.rb'))
+  end
+
+  it 'to #preview' do
+    post('/gitlab/gitlabhq/preview/master/app/models/project.rb').should(
+      route_to('projects/blob#preview',
+               project_id: 'gitlab/gitlabhq',
                id: 'master/app/models/project.rb'))
   end
 end

@@ -6,6 +6,7 @@ describe ProjectsHelper do
       expect(project_status_css_class("started")).to eq("active")
       expect(project_status_css_class("failed")).to eq("danger")
       expect(project_status_css_class("finished")).to eq("success")
+
     end
   end
 end

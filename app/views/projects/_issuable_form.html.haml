@@ -16,6 +16,7 @@
   .col-sm-10
 
     = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+
       = render 'projects/zen', f: f, attr: :description,
                                classes: 'description form-control'
       .col-sm-12.hint
@@ -24,6 +25,7 @@
           #{link_to 'GitLab Flavored Markdown', help_page_path('markdown', 'markdown'), target: '_blank'}.
         .pull-right
           Attach files by dragging &amp; dropping
+
           or #{link_to 'selecting them', '#', class: 'markdown-selector' }.
 
       .clearfix
@@ -54,7 +56,7 @@
         %span.light No open milestones available.
       &nbsp;
       - if can? current_user, :admin_milestone, issuable.project
-        = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blank
+        = link_to 'Create new milestone', new_namespace_project_milestone_path(issuable.project.namespace, issuable.project), target: :blan
 .form-group
   = f.label :label_ids, class: 'control-label' do
     %i.fa.fa-tag
@@ -75,6 +77,7 @@
     %p
       Please review the
       %strong #{link_to 'guidelines for contribution', guide_url}
+
       to this repository.
   - if issuable.new_record?
     = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'

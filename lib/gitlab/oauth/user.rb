@@ -91,6 +91,7 @@ module Gitlab
           password:                   auth_hash.password,
           password_confirmation:      auth_hash.password,
           password_automatically_set: true
+
         }
       end
 

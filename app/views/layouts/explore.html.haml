@@ -3,6 +3,7 @@
 %html{ lang: "en"}
   = render "layouts/head", title: page_title
   %body{class: "#{app_theme}  application", :'data-page' => body_data_page}
+
     = render "layouts/broadcast"
     - if current_user
       = render "layouts/head_panel", title: link_to(page_title, explore_root_path)

@@ -67,6 +67,7 @@ module API
 
     class Group < Grape::Entity
       expose :id, :name, :path, :description
+
     end
 
     class GroupDetail < Group

@@ -39,6 +39,7 @@ describe API::API, api: true  do
     namespace: user4.namespace)
   end
 
+
   describe 'GET /projects' do
     before { project }
 
@@ -245,6 +246,7 @@ describe API::API, api: true  do
 
       expect(response.status).to eq(400)
       expect(json_response['message']['name']).to eq([
+
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
         Gitlab::Regex.project_regex_message
@@ -336,6 +338,7 @@ describe API::API, api: true  do
       get api('/projects/42', user)
       expect(response.status).to eq(404)
       expect(json_response['message']).to eq('404 Project Not Found')
+
     end
 
     it 'should return a 404 error if user is not a member' do
@@ -389,6 +392,7 @@ describe API::API, api: true  do
       get api('/projects/42/events', user)
       expect(response.status).to eq(404)
       expect(json_response['message']).to eq('404 Project Not Found')
+
     end
 
     it 'should return a 404 error if user is not a member' do

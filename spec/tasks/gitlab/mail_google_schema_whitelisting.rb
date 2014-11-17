@@ -13,6 +13,7 @@ describe 'gitlab:mail_google_schema_whitelisting rake task' do
     before do
       # avoid writing task output to spec progress
       allow($stdout).to receive :write
+
     end
 
     let :run_rake_task do

@@ -35,5 +35,19 @@ module Gitlab
 
       types[id]
     end
+
+    def self.type_css_class_by_id(id)
+      types = {
+        BASIC  => 'light_theme',
+        MARS   => 'dark_theme',
+        MODERN => 'dark_theme',
+        GRAY   => 'dark_theme',
+        COLOR  => 'dark_theme'
+      }
+
+      id ||= Gitlab.config.gitlab.default_theme
+
+      types[id]
+    end
   end
 end

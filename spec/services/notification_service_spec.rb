@@ -204,6 +204,7 @@ describe NotificationService do
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
         should_email(@u_participant_mentioned.id)
+
         should_not_email(@u_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)

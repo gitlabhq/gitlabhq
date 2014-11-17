@@ -9,7 +9,9 @@ module Gitlab
       else
         missed_refs, _ = Gitlab::Popen.popen(%W(git --git-dir=#{project.repository.path_to_repo} rev-list #{oldrev} ^#{newrev}))
         missed_refs.split("\n").size > 0
+
       end
     end
   end
 end
+

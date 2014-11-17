@@ -104,6 +104,7 @@ Gitlab::Application.routes.draw do
     to:           redirect("uploads/note/attachment/%{id}/%{filename}"),
     constraints:  { filename: /.+/ }
 
+
   #
   # Explore area
   #
@@ -280,6 +281,7 @@ Gitlab::Application.routes.draw do
         post :toggle_star
         post :markdown_preview
         get :autocomplete_sources
+
       end
 
       scope module: :projects do
@@ -358,7 +360,9 @@ Gitlab::Application.routes.draw do
           member do
             get :commits
           end
+
         end
+      end
 
         get '/compare/:from...:to' => 'compare#show', :as => 'compare',
             :constraints => { from: /.+/, to: /.+/ }
@@ -385,6 +389,7 @@ Gitlab::Application.routes.draw do
           member do
             get 'archive', constraints: { format: Gitlab::Regex.archive_formats_regex }
           end
+
         end
 
         resources :services, constraints: { id: /[^\/]+/ }, only: [:index, :edit, :update] do
@@ -402,6 +407,7 @@ Gitlab::Application.routes.draw do
 
         resource :fork, only: [:new, :create]
         resource :import, only: [:new, :create, :show]
+
 
         resources :refs, only: [] do
           collection do
@@ -488,6 +494,7 @@ Gitlab::Application.routes.draw do
             get ":secret/:filename", action: :show, as: :show, constraints: { filename: /.+/ }
           end
         end
+
       end
 
     end

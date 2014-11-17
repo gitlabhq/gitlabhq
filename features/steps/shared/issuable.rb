@@ -3,6 +3,7 @@ module SharedIssuable
 
   def edit_issuable
    find(:css, '.issuable-edit').click
+
   end
 
   step 'I click link "Edit" for the merge request' do

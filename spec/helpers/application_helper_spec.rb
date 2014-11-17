@@ -87,6 +87,7 @@ describe ApplicationHelper do
     end
 
     it 'should call gravatar_icon when no avatar is present' do
+
       user = create(:user, email: 'test@example.com')
       user.save!
       expect(avatar_icon(user.email).to_s).to eq('http://www.gravatar.com/avatar/55502f40dc8b7c769880b10874abc9d0?s=40&d=identicon')

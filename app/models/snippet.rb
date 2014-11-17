@@ -35,6 +35,7 @@ class Snippet < ActiveRecord::Base
     length: { within: 0..255 },
     format: { with: Gitlab::Regex.path_regex,
               message: Gitlab::Regex.path_regex_message }
+
   validates :content, presence: true
   validates :visibility_level, inclusion: { in: Gitlab::VisibilityLevel.values }
 

@@ -59,6 +59,7 @@ class GitPushService
     project.execute_services(@push_data.dup, :push_hooks)
   end
 
+
   protected
 
   # Extract any GFM references from the pushed commit messages. If the configured issue-closing regex is matched,
@@ -101,6 +102,7 @@ class GitPushService
   end
 
   def build_push_data(oldrev, newrev, ref)
+
     Gitlab::PushDataBuilder.
       build(project, user, oldrev, newrev, ref, push_commits)
   end

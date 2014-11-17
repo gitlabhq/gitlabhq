@@ -12,6 +12,7 @@ RUN apt-get update -q \
 # If you run GitLab Enterprise Edition point it to a location where you have downloaded it.
 RUN TMP_FILE=$(mktemp); \
     wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab_7.9.1-omnibus.1-1_amd64.deb \
+
     && dpkg -i $TMP_FILE \
     && rm -f $TMP_FILE
 
@@ -31,3 +32,4 @@ COPY assets/wrapper /usr/local/bin/
 
 # Wrapper to handle signal, trigger runit and reconfigure GitLab
 CMD ["/usr/local/bin/wrapper"]
+

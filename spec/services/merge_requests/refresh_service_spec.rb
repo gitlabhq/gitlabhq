@@ -51,6 +51,7 @@ describe MergeRequests::RefreshService do
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_merged }
       it { expect(@fork_merge_request.notes.last.note).to include('changed to merged') }
+
     end
 
     context 'push to fork repo source branch' do
@@ -63,6 +64,7 @@ describe MergeRequests::RefreshService do
       it { expect(@merge_request).to be_open }
       it { expect(@fork_merge_request.notes.last.note).to include('Added 4 commits') }
       it { expect(@fork_merge_request).to be_open }
+
     end
 
     context 'push to fork repo target branch' do
@@ -88,6 +90,7 @@ describe MergeRequests::RefreshService do
       it { expect(@merge_request).to be_merged }
       it { expect(@fork_merge_request).to be_open }
       it { expect(@fork_merge_request.notes).to be_empty }
+
     end
 
     def reload_mrs

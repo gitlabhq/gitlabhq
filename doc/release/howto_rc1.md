@@ -13,6 +13,7 @@ The RC1 release comes with the task to update the installation and upgrade docs.
 
 [Follow this guide](howto_update_guides.md) to create update guides.
 
+
 ### 3. Code quality indicators
 
 Make sure the code quality indicators are green / good.
@@ -29,6 +30,7 @@ Make sure the code quality indicators are green / good.
 
 ### 4. Run release tool
 
+
 **Make sure EE `master` has latest changes from CE `master`**
 
 Get release tools
@@ -40,6 +42,7 @@ cd release-tools
 
 Release candidate creates stable branch from master.
 So we need to sync master branch between all CE, EE and CI remotes.
+
 
 ```
 bundle exec rake sync
@@ -53,3 +56,23 @@ bundle exec rake release["x.x.0.rc1"]
 
 Now developers can use master for merging new features.
 So you should use stable branch for future code changes related to release.
+
+
+### 5. Release GitLab CI RC1
+
+Add to your local `gitlab-ci/.git/config`:
+
+```
+[remote "public"]
+    url = none
+    pushurl = git@dev.gitlab.org:gitlab/gitlab-ci.git
+    pushurl = git@gitlab.com:gitlab-org/gitlab-ci.git
+    pushurl = git@github.com:gitlabhq/gitlab-ci.git
+```
+
+* Create a stable branch `x-y-stable`
+* Bump VERSION to `x.y.0.rc1`
+* `git tag -a v$(cat VERSION) -m "Version $(cat VERSION)"`
+* `git push public x-y-stable v$(cat VERSION)`
+
+>>>>>>> Version 7.5.0.rc1

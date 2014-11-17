@@ -64,6 +64,7 @@
                 = link_to admin_namespaces_projects_path(sort: sort_value_largest_repo) do
                   = sort_title_largest_repo
           = link_to 'New Project', new_project_path, class: "btn btn-sm btn-success"
+
       %ul.well-list
         - @projects.each do |project|
           %li

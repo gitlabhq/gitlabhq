@@ -25,6 +25,7 @@
         - if blob.text?
           = link_to '#', class: 'js-toggle-diff-comments btn btn-sm active has_tooltip', title: "Toggle comments for this file" do
             %i.fa.fa-comments
+
           &nbsp;
 
         - if @merge_request && @merge_request.source_project

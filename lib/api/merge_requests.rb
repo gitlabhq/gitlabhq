@@ -181,6 +181,7 @@ module API
         allowed = ::Gitlab::GitAccess.new(current_user, user_project).
           can_push_to_branch?(merge_request.target_branch)
 
+
         if allowed
           if merge_request.unchecked?
             merge_request.check_if_can_be_merged

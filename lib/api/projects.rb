@@ -51,6 +51,7 @@ module API
       get do
         @projects = current_user.authorized_projects
         @projects = filter_projects(@projects)
+
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end
@@ -62,6 +63,7 @@ module API
       get '/owned' do
         @projects = current_user.owned_projects
         @projects = filter_projects(@projects)
+
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end
@@ -74,6 +76,7 @@ module API
         authenticated_as_admin!
         @projects = Project.all
         @projects = filter_projects(@projects)
+
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end

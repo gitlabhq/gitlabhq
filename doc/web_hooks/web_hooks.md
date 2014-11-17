@@ -68,6 +68,7 @@ Triggered when you create (or delete) tags to the repository.
 ```json
 {
   "object_kind": "tag_push",
+
   "ref": "refs/tags/v1.0.0",
   "before": "0000000000000000000000000000000000000000",
   "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",

@@ -60,6 +60,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy
+
         end
       end
 
@@ -69,6 +70,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy
+
         end
       end
     end
@@ -84,6 +86,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_falsey
+
         end
       end
 
@@ -93,6 +96,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_falsey
+
         end
       end
     end
@@ -110,6 +114,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_falsey
+
         end
       end
 
@@ -119,6 +124,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_falsey
+
         end
       end
     end
@@ -137,6 +143,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy
+
         end
       end
 
@@ -146,6 +153,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_falsey
+
         end
       end
     end
@@ -163,6 +171,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_truthy
+
         end
       end
 
@@ -172,6 +181,7 @@ describe API::API, api: true  do
 
           expect(response.status).to eq(200)
           expect(json_response["status"]).to be_falsey
+
         end
       end
     end
@@ -182,6 +192,7 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(200)
         expect(json_response["status"]).to be_falsey
+
       end
     end
 
@@ -191,6 +202,7 @@ describe API::API, api: true  do
 
         expect(response.status).to eq(200)
         expect(json_response["status"]).to be_falsey
+
       end
     end
   end

@@ -1,5 +1,6 @@
 $ ->
   $(".protected-branches-list :checkbox").change (e) ->
+
     name = $(this).attr("name")
     if name == "developers_can_push"
       id = $(this).val()
@@ -16,6 +17,7 @@ $ ->
         success: ->
           row = $(e.target)
           row.closest('tr').effect('highlight')
+
 
         error: ->
           new Flash("Failed to update branch!", "alert")

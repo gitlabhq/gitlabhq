@@ -35,6 +35,7 @@ describe API::API, api: true  do
         expect(json_response.first.keys).to include 'email'
         expect(json_response.first.keys).to include 'identities'
         expect(json_response.first.keys).to include 'can_create_project'
+
       end
     end
   end

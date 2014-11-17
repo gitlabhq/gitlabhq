@@ -210,3 +210,4 @@ Feature: Project Issues
     Then I should see that I am subscribed
     When I click button "Unsubscribe"
     Then I should see that I am unsubscribed
+

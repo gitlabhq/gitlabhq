@@ -45,6 +45,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
       # Add new authentication method
       current_user.identities.find_or_create_by(extern_uid: oauth['uid'], provider: oauth['provider'])
       redirect_to profile_account_path, notice: 'Authentication method updated'
+
     else
       @user = Gitlab::OAuth::User.new(oauth)
       @user.save

@@ -7,6 +7,7 @@
       %th
       %th Service
       %th Description
+
       %th Last edit
   - @services.sort_by(&:title).each do |service|
     %tr
@@ -14,6 +15,7 @@
         = boolean_to_icon service.activated?
       %td
         = link_to edit_namespace_project_service_path(@project.namespace, @project, service.to_param) do
+
           %strong= service.title
       %td
         = service.description

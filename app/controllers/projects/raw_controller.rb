@@ -2,6 +2,7 @@
 class Projects::RawController < Projects::ApplicationController
   include ExtractsPath
 
+
   before_filter :require_non_empty_project
   before_filter :assign_ref_vars
   before_filter :authorize_download_code!

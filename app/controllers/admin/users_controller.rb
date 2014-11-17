@@ -12,6 +12,7 @@ class Admin::UsersController < Admin::ApplicationController
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
     @keys = user.keys
+
   end
 
   def new

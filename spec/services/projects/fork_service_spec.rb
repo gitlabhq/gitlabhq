@@ -64,6 +64,7 @@ describe Projects::ForkService do
         expect(to_project.path).to        eq(@project.path)
         expect(to_project.description).to eq(@project.description)
         expect(to_project.star_count).to     be_zero
+
       end
     end
 
@@ -71,6 +72,7 @@ describe Projects::ForkService do
       it 'group developer should fail to fork project into the group' do
         to_project = fork_project(@project, @developer, true, @opts)
         expect(to_project.errors[:namespace]).to eq(['insufficient access rights'])
+
       end
     end
 
@@ -82,7 +84,7 @@ describe Projects::ForkService do
         expect(existing_project.persisted?).to be_truthy
         expect(to_project.errors[:base]).to eq(['Invalid fork destination'])
         expect(to_project.errors[:name]).to eq(['has already been taken'])
-        expect(to_project.errors[:path]).to eq(['has already been taken'])
+        expect(to_project.errors[:path]).to eq(['has already been taken']1
       end
     end
   end

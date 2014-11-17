@@ -20,6 +20,7 @@ class AttachmentUploader < CarrierWave::Uploader::Base
     false
   end
 
+
   def file_storage?
     self.class.storage == CarrierWave::Storage::File
   end

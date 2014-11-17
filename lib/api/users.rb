@@ -61,11 +61,13 @@ module API
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
         attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :can_create_group, :admin, :confirm]
+
         admin = attrs.delete(:admin)
         confirm = !(attrs.delete(:confirm) =~ (/(false|f|no|0)$/i))
         user = User.build_user(attrs)
         user.admin = admin unless admin.nil?
         user.skip_confirmation! unless confirm
+
 
         identity_attrs = attributes_for_keys [:provider, :extern_uid]
         if identity_attrs.any?

@@ -45,6 +45,7 @@ module Gitlab
         gl_user.identities.find_or_initialize_by(provider: auth_hash.provider,
                                                  extern_uid: auth_hash.uid)
 
+
         gl_user
       end
 

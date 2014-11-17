@@ -24,6 +24,7 @@ Gitlab::Seeder.quiet do
         confirmed_at: DateTime.now,
         password: '12345678'
       )
+
       print '.'
     rescue ActiveRecord::RecordInvalid
       print 'F'

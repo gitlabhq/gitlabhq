@@ -2,6 +2,7 @@
   = render 'shared/no_ssh'
   = render 'shared/no_password'
 
+
 = render "home_panel"
 
 .center.well
@@ -12,6 +13,7 @@
     = link_to namespace_project_new_blob_path(@project.namespace, @project, 'master'), class: 'btn btn-new btn-lg' do
       add a file
     &nbsp;or do a push via the command line.
+
 
 %h4
   %strong Command line instructions

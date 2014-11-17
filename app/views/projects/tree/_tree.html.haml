@@ -14,6 +14,7 @@
         %small
           %i.fa.fa-plus
 
+
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
     %thead
@@ -36,6 +37,7 @@
       %tr.tree-item
         %td.tree-item-file-name
           = link_to "..", namespace_project_tree_path(@project.namespace, @project, up_dir_path), class: 'prepend-left-10'
+
         %td
         %td.hidden-xs
 
@@ -44,7 +46,9 @@
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
 
+
 %div.tree_progress
+
 
 :javascript
   // Load last commit log for each file in tree

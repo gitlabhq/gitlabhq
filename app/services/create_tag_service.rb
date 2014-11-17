@@ -27,6 +27,7 @@ class CreateTagService < BaseService
       project.execute_hooks(push_data.dup, :tag_push_hooks)
       project.execute_services(push_data.dup, :tag_push_hooks)
 
+
       success(new_tag)
     else
       error('Invalid reference name')

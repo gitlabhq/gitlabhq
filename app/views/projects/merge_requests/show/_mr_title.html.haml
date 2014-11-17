@@ -1,4 +1,5 @@
 %h4.page-title
+
   .issue-box{ class: issue_box_class(@merge_request) }
     - if @merge_request.merged?
       Merged
@@ -20,3 +21,4 @@
           Edit
       - if @merge_request.closed?
         = link_to 'Reopen', merge_request_path(@merge_request, merge_request: {state_event: :reopen }), method: :put, class: "btn btn-grouped btn-reopen reopen-mr-link", title: "Close merge request"
+

@@ -19,6 +19,7 @@ This can be either a hard disk, or something more complex, such as a NFS filesys
 **Nginx** acts like the front-desk.
 Users come to Nginx and request actions to be done by workers in the office;
 
+
 **The database** is a series of metal file cabinets with information on:
  - The goods in the warehouse (metadata, issues, merge requests etc);
  - The users coming to the front desk (permissions)

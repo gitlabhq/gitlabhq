@@ -143,6 +143,7 @@ sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 This will rebuild an authorized_keys file.
 You will lose any data stored in authorized_keys file.
 Do you want to continue (yes/no)? yes
+<<<<<<< HEAD
 ```
 
 ## Clear redis cache
@@ -175,4 +176,5 @@ For installations from source:
 ```
 cd /home/git/gitlab
 sudo -u git -H bundle exec rake assets:precompile RAILS_ENV=production
+
 ```

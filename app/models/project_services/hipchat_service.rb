@@ -76,6 +76,7 @@ class HipchatService < Service
       when "note"
         create_note_message(data)
       end
+
   end
 
   def create_push_message(push)
@@ -93,6 +94,7 @@ class HipchatService < Service
                  " to #{project_link}\n"
     elsif Gitlab::Git.blank_ref?(after)
       message << "removed #{ref_type} <b>#{ref}</b> from <a href=\"#{project.web_url}\">#{project_name}</a> \n"
+
     else
       message << "pushed to #{ref_type} <a href=\""\
                   "#{project.web_url}/commits/#{URI.escape(ref)}\">#{ref}</a> "

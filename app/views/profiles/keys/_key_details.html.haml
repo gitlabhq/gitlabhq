@@ -1,4 +1,5 @@
 - is_admin = defined?(admin) ? true : false
+
 .row
   .col-md-4
     .panel.panel-default
@@ -20,3 +21,4 @@
       = @key.key
   .pull-right
     = link_to 'Remove', path_to_key(@key, is_admin), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"
+

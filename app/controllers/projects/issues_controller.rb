@@ -22,6 +22,7 @@ class Projects::IssuesController < Projects::ApplicationController
     @issues = @issues.full_search(terms) if terms.present?
     @issues = @issues.page(params[:page]).per(PER_PAGE)
 
+
     respond_to do |format|
       format.html
       format.atom { render layout: false }

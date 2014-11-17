@@ -136,6 +136,14 @@ class IssuableFinder
     items
   end
 
+  def by_author(items)
+    if params[:author_id].present?
+      items = items.where(author_id: (params[:author_id] == '0' ? nil : params[:author_id]))
+    end
+
+    items
+  end
+
   def by_label(items)
     if params[:label_name].present?
       label_names = params[:label_name].split(",")

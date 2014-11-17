@@ -50,6 +50,7 @@ gem 'gitlab_omniauth-ldap', '1.2.1', require: "omniauth-ldap"
 # Git Wiki
 gem 'gollum-lib', '~> 4.0.2'
 
+
 # Language detection
 gem "gitlab-linguist", "~> 3.0.1", require: "linguist"
 
@@ -181,6 +182,7 @@ gem 'mousetrap-rails'
 # Detect and convert string character encoding
 gem 'charlock_holmes'
 
+
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
@@ -269,9 +271,11 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
+  gem "therubyracer"
 end
 
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
 gem "rugments"
+

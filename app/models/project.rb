@@ -163,6 +163,7 @@ class Project < ActiveRecord::Base
   scope :public_and_internal_only, -> { where(visibility_level: Project.public_and_internal_levels) }
   scope :non_archived, -> { where(archived: false) }
 
+
   state_machine :import_status, initial: :none do
     event :import_start do
       transition [:none, :finished] => :started
@@ -421,6 +422,7 @@ class Project < ActiveRecord::Base
     path
   end
 
+
   def items_for(entity)
     case entity
     when 'issue' then
@@ -479,6 +481,7 @@ class Project < ActiveRecord::Base
   def execute_services(data, hooks_scope = :push_hooks)
     # Call only service hooks that are active for this scope
     services.send(hooks_scope).each do |service|
+
       service.async_execute(data)
     end
   end
@@ -679,6 +682,7 @@ class Project < ActiveRecord::Base
       true
     else
       errors.add(:base, 'Failed to create repository')
+
       false
     end
   end
@@ -692,6 +696,7 @@ class Project < ActiveRecord::Base
     true
   rescue ProjectWiki::CouldNotCreateWikiError => ex
     errors.add(:base, 'Failed create wiki')
+
     false
   end
 end

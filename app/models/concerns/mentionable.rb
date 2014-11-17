@@ -57,6 +57,7 @@ module Mentionable
         else
           users << namespace.owner
         end
+
       end
     end
     users.uniq

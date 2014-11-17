@@ -1,4 +1,5 @@
 module ProfileHelper
+
   def show_profile_username_tab?
     current_user.can_change_username?
   end
@@ -9,5 +10,6 @@ module ProfileHelper
 
   def show_profile_remove_tab?
     signup_enabled?
+
   end
 end

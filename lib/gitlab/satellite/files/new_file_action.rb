@@ -21,6 +21,7 @@ module Gitlab
             else
               repo.git.checkout({ raise: true, timeout: true, b: true }, ref, "origin/#{ref}")
               ref
+
             end
 
           file_path_in_satellite = File.join(repo.working_dir, file_path)
@@ -54,6 +55,7 @@ module Gitlab
           # push commit back to bare repo
           # will raise CommandFailed when push fails
           repo.git.push({ raise: true, timeout: true }, :origin, target_branch)
+
 
           # everything worked
           true

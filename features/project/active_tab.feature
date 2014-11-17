@@ -111,6 +111,7 @@ Feature: Project Active Tab
     Then the active main tab should be Issues
     And no other main tabs should be active
 
+
   Scenario: On Project Issues/Milestones
     Given I visit my project's issues page
     And I click the "Milestones" tab

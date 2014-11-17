@@ -111,6 +111,7 @@ describe API::API, api: true  do
     it 'should return a 401 error if user not authenticated' do
       get api("/projects/#{project.id}/milestones/#{milestone.id}/issues")
       expect(response.status).to eq(401)
+
     end
   end
 end

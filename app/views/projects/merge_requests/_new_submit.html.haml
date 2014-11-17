@@ -10,6 +10,7 @@
     = link_to 'Change branches', new_namespace_project_merge_request_path(@project.namespace, @project)
 
 = form_for [@project.namespace.becomes(Namespace), @project, @merge_request], html: { class: "merge-request-form form-horizontal gfm-form" } do |f|
+
   .merge-request-form-info
     .form-group
       = f.label :title, class: 'control-label' do
@@ -20,6 +21,7 @@
       = f.label :description, 'Description', class: 'control-label'
       .col-sm-10
         = render layout: 'projects/md_preview', locals: { preview_class: "wiki" } do
+
           = render 'projects/zen', f: f, attr: :description, classes: 'description form-control'
 
           .col-sm-12-hint
@@ -28,6 +30,7 @@
               #{link_to 'Gitlab Flavored Markdown', help_page_path('markdown', 'markdown'), target: '_blank'}.
             .pull-right
               Attach files by dragging &amp; dropping
+
               or #{link_to 'selecting them', '#', class: 'markdown-selector'}.
 
           .clearfix
@@ -39,7 +42,11 @@
           %i.fa.fa-user
           Assign to
       .col-sm-10
+<<<<<<< HEAD
         = users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
+=======
+        = project_users_select_tag('merge_request[assignee_id]', placeholder: 'Select a user', class: 'custom-form-control', selected: @merge_request.assignee_id, project_id: @merge_request.target_project_id)
+>>>>>>> Version 7.5.0.rc1
         &nbsp;
         = link_to 'Assign to me', '#', class: 'btn assign-to-me-link'
     .form-group
@@ -54,7 +61,11 @@
             %span.light No open milestones available.
           &nbsp;
           - if can? current_user, :admin_milestone, @merge_request.target_project
+<<<<<<< HEAD
             = link_to 'Create new milestone', new_namespace_project_milestone_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
+=======
+            = link_to 'Create new milestone', new_project_milestone_path(@merge_request.target_project), target: :blank
+>>>>>>> Version 7.5.0.rc1
     .form-group
       = f.label :label_ids, class: 'control-label' do
         %i.fa.fa-tag
@@ -66,6 +77,7 @@
           %span.light No labels yet.
         &nbsp;
         - if can? current_user, :admin_label, @merge_request.target_project
+<<<<<<< HEAD
           = link_to 'Create new label', new_namespace_project_label_path(@merge_request.target_project.namespace, @merge_request.target_project), target: :blank
 
     .form-actions
@@ -73,6 +85,15 @@
         %p
           Please review the
           %strong #{link_to 'guidelines for contribution', guide_url}
+=======
+          = link_to 'Create new label', new_project_label_path(@merge_request.target_project), target: :blank
+
+    .form-actions
+      - if contribution_guide_url(@target_project)
+        %p
+          Please review the
+          %strong #{link_to 'guidelines for contribution', contribution_guide_url(@target_project)}
+>>>>>>> Version 7.5.0.rc1
           to this repository.
       = f.hidden_field :source_project_id
       = f.hidden_field :source_branch
@@ -95,6 +116,7 @@
 
   .commits.tab-content
     = render "projects/commits/commits", project: @project
+
   .diffs.tab-content
     - if @diffs.present?
       = render "projects/diffs/diffs", diffs: @diffs, project: @project
@@ -104,6 +126,7 @@
         %p To preserve performance the line changes are not shown.
     - else
       .alert.alert-danger
+
         %h4 This comparison includes a huge diff.
         %p To preserve performance the line changes are not shown.
 
@@ -114,6 +137,7 @@
   });
 
   window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";
+
 
 :javascript
   var merge_request

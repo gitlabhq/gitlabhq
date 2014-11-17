@@ -19,6 +19,14 @@ There are two editions of GitLab.
 *GitLab Enterprise Edition (EE)* includes [extra features](https://about.gitlab.com/features/#compare) that are most useful for organizations with more than 100 users.
 To get access to the EE and support please [become a subscriber](https://about.gitlab.com/pricing/).
 
+## Editions
+
+There are two editions of GitLab.
+GitLab [Community Edition](https://about.gitlab.com/features/) (CE) is available without any costs under an MIT license.
+
+GitLab Enterprise Edition (EE) includes [extra features](https://about.gitlab.com/features/#compare) that are most useful for organizations with more than 100 users.
+To get access to the EE and support please [become a subscriber](https://about.gitlab.com/pricing/).
+
 ## Canonical source
 
 The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
@@ -52,16 +60,20 @@ GitLab requires the following software:
 - Ruby (MRI) 2.0 or 2.1
 - Git 1.7.10+
 - Redis 2.0+
+
 - MySQL or PostgreSQL
 
 Please see the [requirements documentation](doc/install/requirements.md) for system requirements and more information about the supported operating systems.
 
 ## Installation
 
+<<<<<<< HEAD
 The recommended way to install GitLab is using the provided [Omnibus packages](https://about.gitlab.com/downloads/). Compared to an installation from source, this is faster and less error prone. Just select your operating system, download the respective package (Debian or RPM) and install it using the system's package manager.
+
 
 There are various other options to install GitLab, please refer to the [installation page on the GitLab website](https://about.gitlab.com/installation/) for more information.
 
+<<<<<<< HEAD
 You can access a new installation with the login **`root`** and password **`5iveL!fe`**, after login you are required to set a unique password.
 
 ## Third-party applications
@@ -80,10 +92,12 @@ For updating the Omnibus installation please see the [update documentation](http
 
 To work on GitLab itself, we recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
 If you do not use the GitLab Development Kit you need to install and setup all the dependencies yourself, this is a lot of work and error prone.
+
 One small thing you also have to do when installing it yourself is to copy the example development unicorn configuration file:
 
     cp config/unicorn.rb.example.development config/unicorn.rb
 
+<<<<<<< HEAD
 Instructions on how to start GitLab and how to run the tests can be found in the [development section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#development).
 
 ## Documentation

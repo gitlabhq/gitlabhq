@@ -14,6 +14,7 @@ module MergeRequests
       notification_service.merge_mr(merge_request, current_user)
       execute_hooks(merge_request, 'merge')
 
+
       true
     rescue
       false

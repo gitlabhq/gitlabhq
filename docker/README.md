@@ -17,6 +17,7 @@ Build your own based on the Omnibus packages with the following commands (it ass
 ```bash
 sudo docker build --tag gitlab_data_image docker/data/
 sudo docker build --tag gitlab_app_image_xy docker/
+
 ```
 
 We assume using a data volume container, this will simplify migrations and backups.
@@ -42,6 +43,7 @@ sudo docker run --detach --name gitlab_app_xy --publish 8080:80 --publish 2222:2
 
 It might take a while before the docker container is responding to queries. You can follow the configuration process with `sudo docker logs -f gitlab_app_xy`.
 
+
 You can then go to `http://localhost:8080/` (or `http://192.168.59.103:8080/` if you use boot2docker).
 You can login with username `root` and password `5iveL!fe`.
 Next time, you can just use `sudo docker start gitlab_app` and `sudo docker stop gitlab_app`.
@@ -56,6 +58,7 @@ To access GitLab configuration, you can start an interactive command line in a n
 
 ```bash
 sudo docker run -ti -e TERM=linux --rm --volumes-from gitlab_data ubuntu 
+
 vi /etc/gitlab/gitlab.rb
 ```
 
@@ -82,6 +85,7 @@ On the first run GitLab will reconfigure and update itself. If everything runs O
 sudo docker rm gitlab_app_78
 sudo docker rmi gitlab_app_image_78
 ```
+
 
 Troubleshooting
 =========================

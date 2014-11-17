@@ -27,6 +27,7 @@
 
     %hr
     %h2.issue-title
+
       = gfm escape_once(@issue.title)
     %div
       - if @issue.description.present?
@@ -38,3 +39,4 @@
     %hr
   .issue-discussion
     = render "projects/issues/discussion"
+

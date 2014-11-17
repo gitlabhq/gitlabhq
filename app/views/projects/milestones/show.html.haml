@@ -1,3 +1,4 @@
+
 %h4.page-title
   .issue-box{ class: issue_box_class(@milestone) }
     - if @milestone.closed?
@@ -46,6 +47,7 @@
   = milestone_progress_bar(@milestone)
 
 
+
 %ul.nav.nav-tabs
   %li.active
     = link_to '#tab-issues', 'data-toggle' => 'tab' do
@@ -66,6 +68,7 @@
         %i.fa.fa-plus
         New Issue
       = link_to 'Browse Issues', namespace_project_issues_path(@milestone.project.namespace, @milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-grouped"
+
 
 .tab-content
   .tab-pane.active#tab-issues

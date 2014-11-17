@@ -20,6 +20,7 @@ Please report suspected security vulnerabilities in private to <support@gitlab.c
 1. Build the package for GitLab.com and do a deploy
 1. Build the package for ci.gitLab.com and do a deploy
 1. [Create new AMIs](https://dev.gitlab.org/gitlab/AMI/blob/master/README.md)
+
 1. Create feature branches for the blog post on GitLab.com and link them from the code branch
 1. Merge and publish the blog posts
 1. Send tweets about the release from `@gitlabhq`

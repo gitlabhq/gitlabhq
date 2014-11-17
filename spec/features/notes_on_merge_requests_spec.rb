@@ -22,6 +22,7 @@ describe 'Comments' do
         is_expected.to have_css('.js-main-target-form', visible: true, count: 1)
         expect(find('.js-main-target-form input[type=submit]').value).
           to eq('Add Comment')
+
         within('.js-main-target-form') do
           expect(page).not_to have_link('Cancel')
         end
@@ -49,11 +50,13 @@ describe 'Comments' do
           fill_in 'note[note]', with: 'This is awsome!'
           find('.js-md-preview-button').click
           click_button 'Add Comment'
+
         end
       end
 
       it 'should be added and form reset' do
         is_expected.to have_content('This is awsome!')
+
         within('.js-main-target-form') do
           expect(page).to have_no_field('note[note]', with: 'This is awesome!')
           expect(page).to have_css('.js-md-preview', visible: :hidden)
@@ -61,6 +64,7 @@ describe 'Comments' do
         within('.js-main-target-form') do
           is_expected.to have_css('.js-note-text', visible: true)
         end
+
       end
     end
 
@@ -104,6 +108,7 @@ describe 'Comments' do
             is_expected.to have_css('.note_edited_ago')
             expect(find('.note_edited_ago').text).
               to match(/less than a minute ago/)
+
           end
         end
       end
@@ -125,6 +130,7 @@ describe 'Comments' do
           is_expected.not_to have_css('.note-attachment')
           expect(find('.current-note-edit-form', visible: false)).
             not_to be_visible
+
         end
       end
     end
@@ -192,6 +198,7 @@ describe 'Comments' do
           end
           within("tr[id='#{line_code_2}'] + .js-temp-notes-holder") do
             fill_in 'note[note]', with: 'Another comment on line 10'
+
             find('.js-md-preview-button').click
           end
         end

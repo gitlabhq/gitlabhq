@@ -299,6 +299,7 @@ class ApplicationController < ActionController::Base
     milestone_id = @filter_params[:milestone_id]
 
     @sort = @filter_params[:sort]
+
     @assignees = User.where(id: collection.pluck(:assignee_id))
     @authors = User.where(id: collection.pluck(:author_id))
     @milestones = Milestone.where(id: collection.pluck(:milestone_id))

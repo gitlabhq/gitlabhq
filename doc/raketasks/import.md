@@ -25,6 +25,7 @@ sudo -u git mkdir /var/opt/gitlab/git-data/repositories/new_group
 If you are using an installation from source, replace `/var/opt/gitlab/git-data`
 with `/home/git`.
 
+
 ### Copy your bare repositories inside this newly created folder:
 
 ```
@@ -38,6 +39,7 @@ sudo chown -R git:git /var/opt/gitlab/git-data/repositories/new_group/
 
 If you are using an installation from source, replace `/var/opt/gitlab/git-data`
 with `/home/git`.
+
 
 ### Run the command below depending on your type of installation:
 

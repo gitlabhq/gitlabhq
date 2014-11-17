@@ -15,6 +15,7 @@
         %tr
           %td
             = link_to namespace_project_commits_path(@project.namespace, @project, branch.name) do
+
               %strong= branch.name
               - if @project.root_ref?(branch.name)
                 %span.label.label-info default
@@ -23,6 +24,7 @@
             %td
               - if commit = branch.commit
                 = link_to namespace_project_commit_path(@project.namespace, @project, commit.id), class: 'commit_short_id' do
+
                   = commit.short_id
                 &middot;
                 #{time_ago_with_tooltip(commit.committed_date)}
@@ -32,3 +34,4 @@
               .pull-right
                 - if can? current_user, :admin_project, @project
                   = link_to 'Unprotect', [@project.namespace.becomes(Namespace), @project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-sm"
+

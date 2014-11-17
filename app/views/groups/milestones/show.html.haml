@@ -29,6 +29,7 @@
     %tr
       %td
         = link_to "#{milestone.project.name}", namespace_project_milestone_path(milestone.project.namespace, milestone.project, milestone)
+
       %td
         = milestone.issues.opened.count
       %td
@@ -46,6 +47,7 @@
     &ndash;
     #{@group_milestone.open_items_count} open
   = milestone_progress_bar(@group_milestone)
+
 
 %ul.nav.nav-tabs
   %li.active

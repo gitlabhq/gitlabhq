@@ -14,6 +14,7 @@ describe Gitlab::GitAccessWiki do
     subject { access.push_access_check(changes) }
 
     it { expect(subject.allowed?).to be_truthy }
+
   end
 
   def changes

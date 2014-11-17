@@ -230,6 +230,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   step 'I click link "Show inline discussion" of the second file' do
     within '.files [id^=diff]:nth-child(2)' do
       find('.js-toggle-diff-comments').click
+
     end
   end
 

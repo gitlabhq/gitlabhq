@@ -22,6 +22,7 @@
           = link_to namespace_project_branches_path(sort: 'recently_updated') do
             = sort_title_recently_updated
           = link_to namespace_project_branches_path(sort: 'last_updated') do
+
             = sort_title_oldest_updated
 %hr
 - unless @branches.empty?

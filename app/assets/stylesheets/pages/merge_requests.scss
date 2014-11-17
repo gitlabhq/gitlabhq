@@ -14,6 +14,7 @@
   .accept-merge-holder {
     .accept-action {
       display: inline-block;
+
     }
 
     .accept-control {
@@ -27,6 +28,7 @@
       .remove_source_checkbox {
         margin: 0;
         font-weight: bold;
+
       }
     }
   }
@@ -41,6 +43,7 @@
         padding: 15px 40px;
         font-size: 14px;
       }
+
     }
   }
 }
@@ -86,6 +89,7 @@
       margin-bottom: 5px;
       font-size: $list-font-size;
       font-weight: bold;
+
     }
 
     .merge-request-info {

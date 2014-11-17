@@ -27,6 +27,7 @@ module NotesHelper
         haml_tag :span do
           haml_concat '&middot;'
           haml_concat icon('edit', title: 'edited')
+
           haml_concat time_ago_with_tooltip(note.updated_at, 'bottom', 'note_edited_ago')
         end
       end
@@ -61,7 +62,11 @@ module NotesHelper
     button_tag(class: 'btn add-diff-note js-add-diff-note-button',
                data: data,
                title: 'Add a comment to this line') do
+<<<<<<< HEAD
       icon('comment-o')
+=======
+      content_tag :i, nil, class: 'fa fa-comment-o'
+>>>>>>> Version 7.5.0.rc1
     end
   end
 

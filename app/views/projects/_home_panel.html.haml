@@ -3,6 +3,7 @@
   .project-identicon-holder
     = project_icon(@project, alt: '', class: 'avatar project-avatar')
   .project-home-row.project-home-row-top
+
     .project-home-desc
       - if @project.description.present?
         = escaped_autolink(@project.description)

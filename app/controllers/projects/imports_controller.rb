@@ -21,6 +21,7 @@ class Projects::ImportsController < Projects::ApplicationController
     end
 
     redirect_to namespace_project_import_path(@project.namespace, @project)
+
   end
 
   def show
@@ -30,6 +31,7 @@ class Projects::ImportsController < Projects::ApplicationController
       else
         redirect_to new_namespace_project_import_path(@project.namespace,
                                                       @project) && return
+
       end
     end
   end
@@ -39,6 +41,7 @@ class Projects::ImportsController < Projects::ApplicationController
   def require_no_repo
     if @project.repository_exists? && !@project.import_in_progress?
       redirect_to(namespace_project_path(@project.namespace, @project)) and return
+
     end
   end
 

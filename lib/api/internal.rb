@@ -55,6 +55,7 @@ module API
         else
           Gitlab::GitAccessStatus.new(false, 'No such project')
         end
+
       end
 
       #

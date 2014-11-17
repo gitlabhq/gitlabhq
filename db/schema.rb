@@ -13,6 +13,7 @@
 
 ActiveRecord::Schema.define(version: 20150324155957) do
 
+
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
 
@@ -97,6 +98,7 @@ ActiveRecord::Schema.define(version: 20150324155957) do
   end
 
   add_index "identities", ["created_at", "id"], name: "index_identities_on_created_at_and_id", using: :btree
+
   add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "issues", force: true do |t|
@@ -474,6 +476,7 @@ ActiveRecord::Schema.define(version: 20150324155957) do
     t.string   "bitbucket_access_token"
     t.string   "bitbucket_access_token_secret"
     t.string   "location"
+
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

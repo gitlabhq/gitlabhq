@@ -45,6 +45,7 @@ describe API::API, api: true  do
         post api("/projects/fork/#{project.id}", user3)
         expect(response.status).to eq(404)
         expect(json_response['message']).to eq('404 Project Not Found')
+
       end
 
       it 'should fail if forked project exists in the user namespace' do
@@ -59,6 +60,7 @@ describe API::API, api: true  do
         post api('/projects/fork/424242', user)
         expect(response.status).to eq(404)
         expect(json_response['message']).to eq('404 Project Not Found')
+
       end
     end
 

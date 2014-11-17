@@ -53,6 +53,8 @@ module Projects
             raise 'Failed to create repository'
           end
         end
+
+        after_create_actions
       end
 
       after_create_actions if @project.persisted?
@@ -80,6 +82,7 @@ module Projects
       @project.create_wiki if @project.wiki_enabled?
 
       event_service.create_project(@project, current_user)
+
       system_hook_service.execute_hooks_for(@project, :create)
 
       unless @project.group

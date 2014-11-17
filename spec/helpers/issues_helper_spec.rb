@@ -24,6 +24,7 @@ describe IssuesHelper do
   end
 
   describe "url_for_project_issues" do
+
     let(:project_url) { ext_project.external_issue_tracker.project_url }
     let(:ext_expected) do
       project_url.gsub(':project_id', ext_project.id.to_s)
@@ -56,11 +57,13 @@ describe IssuesHelper do
 
       it "should return path to external tracker" do
         expect(url_for_project_issues).to match(ext_expected)
+
       end
     end
   end
 
   describe "url_for_issue" do
+
     let(:issues_url) { ext_project.external_issue_tracker.issues_url}
     let(:ext_expected) do
       issues_url.gsub(':id', issue.iid.to_s)
@@ -78,6 +81,7 @@ describe IssuesHelper do
       @project = ext_project
 
       expect(url_for_issue(issue.iid)).to match(ext_expected)
+
     end
 
     it "should return empty string if project nil" do
@@ -94,11 +98,13 @@ describe IssuesHelper do
 
       it "should return external path" do
         expect(url_for_issue(issue.iid)).to match(ext_expected)
+
       end
     end
   end
 
   describe '#url_for_new_issue' do
+
     let(:issues_url) { ext_project.external_issue_tracker.new_issue_url }
     let(:ext_expected) do
       issues_url.gsub(':project_id', ext_project.id.to_s)
@@ -131,6 +137,7 @@ describe IssuesHelper do
 
       it "should return internal path" do
         expect(url_for_new_issue).to match(ext_expected)
+
       end
     end
   end

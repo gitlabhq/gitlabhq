@@ -132,6 +132,7 @@ class User < ActiveRecord::Base
     format: { with: Gitlab::Regex.username_regex,
               message: Gitlab::Regex.username_regex_message }
 
+
   validates :notification_level, inclusion: { in: Notification.notification_levels }, presence: true
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
@@ -172,6 +173,7 @@ class User < ActiveRecord::Base
   scope :active, -> { with_state(:active) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+
 
   #
   # Class methods
@@ -312,6 +314,7 @@ class User < ActiveRecord::Base
                                project_ids.push(*groups_projects.pluck(:id))
                                project_ids.push(*projects.pluck(:id).uniq)
                                Project.where(id: project_ids)
+
                              end
   end
 

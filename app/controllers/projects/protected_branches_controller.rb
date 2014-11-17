@@ -34,6 +34,24 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
     end
   end
 
+  def update
+    protected_branch = @project.protected_branches.find(params[:id])
+
+    if protected_branch &&
+       protected_branch.update_attributes(
+        developers_can_push: params[:developers_can_push]
+       )
+
+      respond_to do |format|
+        format.json { render json: protected_branch, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: protected_branch.errors, status: :unprocessable_entity }
+      end
+    end
+  end
+
   def destroy
     @project.protected_branches.find(params[:id]).destroy
 

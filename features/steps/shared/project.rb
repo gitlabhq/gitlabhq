@@ -31,6 +31,7 @@ module SharedProject
   step 'I visit my empty project page' do
     project = Project.find_by(name: 'Empty Project')
     visit namespace_project_path(project.namespace, project)
+
   end
 
   step 'project "Shop" has push event' do

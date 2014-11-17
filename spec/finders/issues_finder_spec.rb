@@ -28,30 +28,35 @@ describe IssuesFinder do
         params = { scope: "all", state: 'opened' }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues.size).to eq(3)
+
       end
 
       it 'should filter by assignee id' do
         params = { scope: "all", assignee_id: user.id, state: 'opened' }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues.size).to eq(2)
+
       end
 
       it 'should filter by author id' do
         params = { scope: "all", author_id: user2.id, state: 'opened' }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues).to eq([issue3])
+
       end
 
       it 'should filter by milestone id' do
         params = { scope: "all", milestone_id: milestone.id, state: 'opened' }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues).to eq([issue1])
+
       end
 
       it 'should be empty for unauthorized user' do
         params = { scope: "all", state: 'opened' }
         issues = IssuesFinder.new.execute(nil, params)
         expect(issues.size).to be_zero
+
       end
 
       it 'should not include unauthorized issues' do
@@ -61,6 +66,7 @@ describe IssuesFinder do
         expect(issues).not_to include(issue1)
         expect(issues).to include(issue2)
         expect(issues).to include(issue3)
+
       end
     end
 
@@ -69,12 +75,14 @@ describe IssuesFinder do
         params = { scope: "assigned-to-me", state: 'opened' }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues.size).to eq(2)
+
       end
 
       it 'should filter by project' do
         params = { scope: "assigned-to-me", state: 'opened', project_id: project1.id }
         issues = IssuesFinder.new.execute(user, params)
         expect(issues.size).to eq(1)
+
       end
     end
   end

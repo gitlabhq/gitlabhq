@@ -2,6 +2,7 @@
   = edit_blob_link(@project, @ref, @path)
   = link_to 'Raw', namespace_project_raw_path(@project.namespace, @project, @id),
       class: 'btn btn-sm', target: '_blank'
+
   -# only show normal/blame view links for text files
   - if @blob.text?
     - if current_page? namespace_project_blame_path(@project.namespace, @project, @id)
@@ -18,5 +19,6 @@
 
 - if allowed_tree_edit?
   = button_tag class: 'remove-blob btn btn-sm btn-remove',
+
       'data-toggle' => 'modal', 'data-target' => '#modal-remove-blob' do
     Remove

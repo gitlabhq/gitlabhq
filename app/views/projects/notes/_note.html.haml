@@ -1,4 +1,5 @@
 %li.timeline-entry{ id: dom_id(note), class: [dom_class(note), "note-row-#{note.id}", ('system-note' if note.system)], data: { discussion: note.discussion_id } }
+
   .timeline-entry-inner
     .timeline-icon
       - if note.system
@@ -6,6 +7,7 @@
       - else
         = link_to user_path(note.author) do
           = image_tag avatar_icon(note.author_email), class: "avatar s40"
+
     .timeline-content
       .note-header
         .note-actions
@@ -24,6 +26,7 @@
         - if note.system
           = link_to user_path(note.author) do
             = image_tag avatar_icon(note.author_email), class: "avatar s16"
+
         = link_to_member(@project, note.author, avatar: false)
         %span.author-username
           = '@' + note.author.username
@@ -55,6 +58,7 @@
           = preserve do
             = markdown(note.note, {no_header_anchors: true})
         = render 'projects/notes/edit_form', note: note
+
 
       - if note.attachment.url
         .note-attachment

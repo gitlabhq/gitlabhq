@@ -90,6 +90,7 @@ module ProjectsHelper
         ' Star'
       end
 
+
     toggle_html = content_tag('span', class: 'toggle') do
       icon('star') + toggle_text
     end
@@ -313,5 +314,7 @@ module ProjectsHelper
     else
       nil
     end
+
   end
 end
+

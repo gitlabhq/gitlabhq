@@ -5,6 +5,7 @@ module API
 
     resource :projects do
 
+
       # Get a project team members
       #
       # Parameters:

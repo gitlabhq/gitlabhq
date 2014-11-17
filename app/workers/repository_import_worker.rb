@@ -28,5 +28,6 @@ class RepositoryImportWorker
     project.satellite.create unless project.satellite.exists?
     project.update_repository_size
     Gitlab::BitbucketImport::KeyDeleter.new(project).execute if project.import_type == 'bitbucket'
+
   end
 end

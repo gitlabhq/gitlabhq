@@ -155,6 +155,14 @@ class ProjectsController < ApplicationController
 
   def markdown_preview
     render text: view_context.markdown(params[:md_text])
+
+  end
+
+  private
+
+  def upload_path
+    base_dir = FileUploader.generate_dir
+    File.join(repository.path_with_namespace, base_dir)
   end
 
   private

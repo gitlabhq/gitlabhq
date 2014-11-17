@@ -1,6 +1,7 @@
 .issues-filters
   .issues-state-filters
     %ul.nav.nav-tabs
+
       %li{class: ("active" if params[:state] == 'opened')}
         = link_to page_filter_path(state: 'opened') do
           %i.fa.fa-exclamation-circle
@@ -56,3 +57,4 @@
   $('form.filter-form').on 'submit', (event) ->
     event.preventDefault()
     Turbolinks.visit @.action + '&' + $(@).serialize()
+

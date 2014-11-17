@@ -28,6 +28,7 @@ class Notify < ActionMailer::Base
 
   def test_email(recipient_email, subject, body)
     mail(to: recipient_email,
+
          subject: subject,
          body: body.html_safe,
          content_type: 'text/html'

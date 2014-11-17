@@ -31,6 +31,7 @@ class GitTagPushService
       end
     end
 
+
     Gitlab::PushDataBuilder.
       build(project, user, oldrev, newrev, ref, commits, message)
   end

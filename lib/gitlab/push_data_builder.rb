@@ -10,6 +10,7 @@ module Gitlab
       #   user_id: String,
       #   user_name: String,
       #   user_email: String
+
       #   project_id: String,
       #   repository: {
       #     name: String,
@@ -22,6 +23,7 @@ module Gitlab
       # }
       #
       def build(project, user, oldrev, newrev, ref, commits = [], message = nil)
+
         # Total commits count
         commits_count = commits.size
 
@@ -38,6 +40,7 @@ module Gitlab
         # Hash to be passed as post_receive_data
         data = {
           object_kind: type,
+
           before: oldrev,
           after: newrev,
           ref: ref,
@@ -46,6 +49,7 @@ module Gitlab
           user_id: user.id,
           user_name: user.name,
           user_email: user.email,
+
           project_id: project.id,
           repository: {
             name: project.name,
@@ -59,6 +63,7 @@ module Gitlab
           commits: commit_attrs,
           total_commits_count: commits_count
         }
+
 
         data
       end
@@ -75,6 +80,7 @@ module Gitlab
         # Find sha for tag, except when it was deleted.
         if Gitlab::Git.tag_ref?(ref) && !Gitlab::Git.blank_ref?(newrev)
           tag_name = Gitlab::Git.ref_name(ref)
+
           tag = repository.find_tag(tag_name)
 
           if tag

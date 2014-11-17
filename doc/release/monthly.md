@@ -16,6 +16,7 @@ This person should also make sure this document is kept up to date and issues ar
 ## Take vacations into account
 
 The time is measured in weekdays to compensate for weekends.
+
 Do everything on time to prevent problems due to rush jobs or too little testing time.
 Make sure that you take into account any vacations of maintainers.
 If the release is falling behind immediately warn the team.
@@ -42,6 +43,7 @@ Xth: (6 working days before the 22nd)
 - [ ] Check the tasks in [how to rc1 guide](howto_rc1.md) and delegate tasks if necessary
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
 
+
 Xth: (5 working days before the 22nd)
 
 - [ ] Do QA and fix anything coming out of it (#LINK)
@@ -63,6 +65,7 @@ Xth: (2 working days before the 22nd)
 
 - [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
 - [ ] Check that MVP is added to the mvp page (source/mvp/index.html in www-gitlab-com)
+
 
 Xth: (1 working day before the 22nd)
 
@@ -103,6 +106,7 @@ Once the stable branches have been created, update the CHANGELOG in `master` wit
 Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X QA" in order to keep track of the progress.
 
 Use the omnibus packages created for RC1 of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
+
 
 **NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
 
@@ -147,6 +151,7 @@ Tweet about the RC release:
 1. Create a WIP MR for the blog post
 1. Ask Dmitriy (or a team member with OS X) to add screenshots to the WIP MR.
 1. Decide with core team who will be the MVP user.
+
 1. Create WIP MR for adding MVP to MVP page on website
 1. Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 1. Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
@@ -169,6 +174,11 @@ bundle exec rake release["x.x.0"]
 ```
 
 This will create correct version and tag and push to all CE, EE and CI remotes.
+
+1. bump version in the stable branch
+1. create annotated tag
+1. push the stable branch and the annotated tag to the public repositories
+>>>>>>> Version 7.5.0.rc1
 
 Update [installation.md](/doc/install/installation.md) to the newest version in master.
 
@@ -210,3 +220,4 @@ Consider creating a post on Hacker News.
 ## Create a WIP blogpost for the next release
 
 Create a WIP blogpost using [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md).
+

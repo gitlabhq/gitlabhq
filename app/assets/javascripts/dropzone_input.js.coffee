@@ -238,3 +238,4 @@ class @DropzoneInput
     text = "[#{link.alt}](#{link.url})"
     text = "!#{text}" if link.is_image
     text
+

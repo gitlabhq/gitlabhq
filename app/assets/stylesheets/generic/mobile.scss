@@ -1,4 +1,5 @@
 /** Common mobile (screen XS, SM) styles **/
+
 @media (max-width: $screen-xs-max) {
   .container .content {
     margin-top: 20px;
@@ -67,3 +68,4 @@
   z-index: 100;
   @include box-shadow(0 1px 2px #DDD);
 }
+

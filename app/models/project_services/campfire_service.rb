@@ -75,6 +75,7 @@ class CampfireService < Service
     if Gitlab::Git.blank_ref?(before)
       message << "pushed new branch #{ref} \n"
     elsif Gitlab::Git.blank_ref?(after)
+
       message << "removed branch #{ref} \n"
     else
       message << "pushed #{push[:total_commits_count]} commits to #{ref}. "

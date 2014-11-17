@@ -14,6 +14,7 @@ describe TreeHelper do
 
       it "should return the directory name" do
         expect(flatten_tree(tree_item)).to match('files')
+
       end
     end
 
@@ -22,6 +23,7 @@ describe TreeHelper do
 
       it "should return the flattened path" do
         expect(flatten_tree(tree_item)).to match('foo/bar')
+
       end
     end
   end

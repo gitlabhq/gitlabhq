@@ -1,0 +1,164 @@
+body.project {
+  padding: 0;
+
+  &.ui_mars {
+    .app_logo {
+      background-color: #24272D;
+    }
+  }
+
+  &.ui_color {
+    .app_logo {
+      background-color: #325;
+    }
+  }
+
+  &.ui_basic {
+    .app_logo {
+      background-color: #DDD;
+    }
+  }
+
+  &.ui_modern {
+    .app_logo {
+      background-color: #017855;
+    }
+  }
+
+  &.ui_gray {
+    .app_logo {
+      background-color: #222;
+    }
+  }
+
+  header .container {
+    width: 100% !important;
+    padding-left: 0px;
+
+    .separator {
+      display: none;
+    }
+  }
+}
+
+.page-with-sidebar {
+  background: #F5F5F5;
+}
+
+.sidebar-wrapper {
+  overflow-y: auto;
+  background: #F5F5F5;
+}
+
+.content-wrapper {
+  width: 100%;
+  padding: 15px;
+  background: #FFF;
+}
+
+.nav-sidebar {
+  margin: 0;
+  list-style: none;
+
+  &.navbar-collapse {
+    padding: 0px !important;
+  }
+}
+
+.nav-sidebar li a .count {
+  float: right;
+  background: #eee;
+  padding: 0px 8px;
+  @include border-radius(6px);
+}
+
+.nav-sidebar li {
+  &.active a {
+    color: #111;
+    background: #EEE;
+    font-weight: bold;
+
+    &.no-highlight {
+      background: none;
+    }
+
+    i {
+      color: #444;
+    }
+  }
+}
+
+.nav-sidebar li {
+  &.separate-item {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  a {
+    color: #555;
+    display: block;
+    text-decoration: none;
+    padding: 6px 15px;
+    font-size: 13px;
+    line-height: 20px;
+    text-shadow: 0 1px 2px #FFF;
+    padding-left: 20px;
+
+    &:hover {
+      text-decoration: none;
+      color: #333;
+      background: #DDD;
+    }
+
+    &:active, &:focus {
+      text-decoration: none;
+    }
+
+    i {
+      width: 20px;
+      color: #888;
+      margin-right: 23px;
+    }
+  }
+}
+
+.project-settings-nav {
+  margin-left: 0px;
+  padding-left: 0px;
+
+  li {
+    list-style: none;
+  }
+}
+
+@media(min-width:768px) {
+  .page-with-sidebar {
+    padding-left: 250px;
+  }
+
+  .sidebar-wrapper {
+    width: 250px;
+    position: fixed;
+    left: 250px;
+    height: 100%;
+    margin-left: -250px;
+    border-right: 1px solid #EAEAEA;
+
+    .nav-sidebar {
+      margin-top: 20px;
+      position: fixed;
+      top: 45px;
+      width: 250px;
+    }
+  }
+
+  .content-wrapper {
+    padding: 20px;
+  }
+}
+
+/** TODO: REMOVE **/
+.profiler-results {
+  display: none;
+}

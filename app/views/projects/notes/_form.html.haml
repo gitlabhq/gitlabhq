@@ -14,11 +14,13 @@
       .pull-right Attach files by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
 
 
+
   .note-form-actions
     .buttons
       = f.submit 'Add Comment', class: "btn comment-btn btn-grouped js-comment-button"
       = yield(:note_actions)
       %a.btn.grouped.js-close-discussion-note-form Cancel
+
 
 :javascript
   window.project_uploads_path = "#{namespace_project_uploads_path @project.namespace, @project}";

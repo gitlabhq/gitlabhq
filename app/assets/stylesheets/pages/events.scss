@@ -46,6 +46,7 @@
   border-bottom: 1px solid #eee;
   .event-title {
     @include str-truncated(72%);
+
     font-weight: 500;
     font-size: 14px;
     .author_name {
@@ -147,6 +148,17 @@
 }
 
 
+.project .event_filter {
+  position: static;
+  float: left;
+  width: 100%;
+  margin-left: 0;
+  a {
+    margin-right: 10px;
+    width: 50px;
+  }
+}
+
 /*
  * Last push widget
  */
@@ -154,12 +166,19 @@
   overflow: auto;
   .event-last-push-text {
     @include str-truncated(100%);
+<<<<<<< HEAD:app/assets/stylesheets/pages/events.scss
     padding: 5px 0;
     font-size: 13px;
     float:left;
     margin-right: -150px;
     padding-right: 150px;
     line-height: 20px;
+=======
+    float:left;
+    margin-right: -150px;
+    padding-right: 150px;
+    line-height: 24px;
+>>>>>>> Version 7.5.0.rc1:app/assets/stylesheets/sections/events.scss
   }
 }
 
@@ -183,6 +202,7 @@
     .event-item-timestamp {
       display: none;
     }
+<<<<<<< HEAD:app/assets/stylesheets/pages/events.scss
   }
 }
 
@@ -192,5 +212,7 @@
     padding: 5px 10px;
     background: $background-color;
     margin-left: 4px;
+=======
+>>>>>>> Version 7.5.0.rc1:app/assets/stylesheets/sections/events.scss
   }
 }

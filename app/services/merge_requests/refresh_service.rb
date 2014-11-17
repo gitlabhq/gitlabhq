@@ -5,6 +5,7 @@ module MergeRequests
 
       @oldrev, @newrev = oldrev, newrev
       @branch_name = Gitlab::Git.ref_name(ref)
+
       @fork_merge_requests = @project.fork_merge_requests.opened
       @commits = @project.repository.commits_between(oldrev, newrev)
 
