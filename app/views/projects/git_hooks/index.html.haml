@@ -23,13 +23,13 @@
             Tags can still be deleted through the web UI.
 
   .form-group
-    = f.label :member_check, "Restrict commit authors to existing Gitlab users", class: 'control-label'
+    = f.label :member_check, "Restrict commits by author(email) to existing GitLab users", class: 'control-label'
     .col-sm-10
       %label
         .checkbox
           = f.check_box :member_check
           %span.descr
-            Check whether author is a GitLab member
+            Check whether author is a GitLab user
 
   -#.form-group
     = f.label :force_push_regex, "Force push", class: 'control-label'
