@@ -22,12 +22,21 @@
         git push -u origin master
 
   %fieldset
-    %legend Push an existing Git repository
+    %legend Push an existing Git repository (only master branch)
     %pre.dark
       :preserve
         cd existing_git_repo
         git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
         git push -u origin master
+        
+  %fieldset
+    %legend Push an existing Git repository (all beanches and tags)
+    %pre.dark
+      :preserve
+        cd existing_git_repo
+        git remote add origin #{ content_tag(:span, default_url_to_repo, class: 'clone')}
+        git push -u origin --all
+        git push origin --tags
 
 - if can? current_user, :remove_project, @project
   .prepend-top-20
