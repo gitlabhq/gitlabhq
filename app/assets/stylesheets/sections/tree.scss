@@ -1,4 +1,8 @@
 .tree-holder {
+
+  $line_height: 20px;
+  $padding_vertical: 8px;
+
   .tree-content-holder {
     float: left;
     width: 100%;
@@ -18,8 +22,8 @@
 
     tr {
       td, th {
-        padding: 8px 10px;
-        line-height: 20px;
+        padding: $padding_vertical 10px;
+        line-height: $line_height;
       }
       th {
         font-weight: normal;
@@ -37,12 +41,31 @@
           border-bottom: 1px solid #ADF;
         }
         cursor: pointer;
+        &.tree-item td.actions a {
+          visibility: visible;
+        }
       }
       &.selected {
         td {
           background: #f5f5f5;
           border-top: 1px solid #EEE;
           border-bottom: 1px solid #EEE;
+        }
+      }
+      &.tree-item {
+        td.actions {
+          $large_icon_font_size: 1.5em;
+          line-height: $line_height + 2 * $padding_vertical;
+          padding: 0;
+          text-align: center;
+          min-width: $large_icon_font_size;
+          a {
+            display: block;
+            visibility: hidden;
+            &:hover {
+              font-size: $large_icon_font_size;
+            }
+          }
         }
       }
     }

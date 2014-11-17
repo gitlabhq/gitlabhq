@@ -31,6 +31,7 @@
               &ndash;
               = truncate(@commit.title, length: 50)
           = link_to 'History', project_commits_path(@project, @id), class: 'pull-right'
+        %th.hidden-xs
 
     - if @path.present?
       %tr.tree-item

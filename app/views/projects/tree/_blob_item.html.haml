@@ -6,3 +6,7 @@
   %td.tree_time_ago.cgray
     = render 'spinner'
   %td.hidden-xs.tree_commit
+  %td.hidden-xs.actions
+    - if allowed_tree_edit?
+      = link_to project_edit_tree_path(@project, tree_join(@id, blob_item.name)) do
+        %i.fa.fa-pencil
