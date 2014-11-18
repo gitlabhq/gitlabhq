@@ -46,3 +46,5 @@
           %li.hidden-xs
             = link_to current_user, class: "profile-pic", id: 'profile-pic' do
               = image_tag avatar_icon(current_user.email, 26), alt: 'User activity'
+
+= render 'shared/outdated_browser'
