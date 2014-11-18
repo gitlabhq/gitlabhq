@@ -22,14 +22,10 @@ namespace :gitlab do
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
-        # Allows to change the origin URL to the fork
-        # when developing gitlab-shell.
-        sh(*%W(git remote set-url origin #{args.repo}))
-
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
-        reset = "(rev=\"$(git describe #{args.tag} || git describe \"origin/#{args.tag}\")\" && git reset --hard \"$rev\")"
-        sh "#{reset} || (git fetch --tags origin && #{reset})"
+        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
+        sh "#{reset} || git fetch origin && #{reset}"
 
         config = {
           user: user,
@@ -41,7 +37,7 @@ namespace :gitlab do
             bin: %x{which redis-cli}.chomp,
             namespace: "resque:gitlab"
           }.stringify_keys,
-          log_level: Rails.env.test? ? 'DEBUG' : 'INFO',
+          log_level: "INFO",
           audit_usernames: false
         }.stringify_keys
 
@@ -70,8 +66,6 @@ namespace :gitlab do
       File.open(File.join(home_dir, ".ssh", "environment"), "w+") do |f|
         f.puts "PATH=#{ENV['PATH']}"
       end
-
-      Gitlab::Shell.setup_secret_token
     end
 
     desc "GITLAB | Setup gitlab-shell"
