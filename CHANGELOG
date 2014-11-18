@@ -62,6 +62,7 @@ v 7.8.0
   - 
   - 
   - Added support for firing system hooks on group create/destroy and adding/removing users to group (Boyan Tabakov)
+  - Make web hooks raise exception on non-200 status codes so that sidekiq retries failed requests (Boyan Tabakov)
 
 v 7.7.2
   - Update GitLab Shell to version 2.4.2 that fixes a bug when developers can push to protected branch
