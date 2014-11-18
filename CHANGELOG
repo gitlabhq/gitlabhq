@@ -1,3 +1,20 @@
+v 7.6.0
+  - Fork repository to groups
+  - New rugged version
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration in gitlab.yml (Sullivan Senechal)
