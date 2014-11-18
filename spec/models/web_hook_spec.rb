@@ -70,5 +70,12 @@ describe ProjectHook do
         @project_hook.execute(@data)
       }.should raise_error
     end
+
+    it 'raises exception on non-2xx server response' do
+      WebMock.stub_request(:post, @project_hook.url).
+        to_return(status: 404, body: nil, headers: {})
+
+      lambda { @project_hook.execute(@data) }.should raise_error
+    end
   end
 end
