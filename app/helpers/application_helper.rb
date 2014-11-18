@@ -271,4 +271,8 @@ module ApplicationHelper
   def promo_url
     'https://' + promo_host
   end
+
+  def outdated_browser?
+    browser.ie? && browser.version.to_i < 10
+  end
 end
