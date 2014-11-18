@@ -181,7 +181,6 @@ Gitlab::Application.routes.draw do
   resources :projects, constraints: { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       put :transfer
-      post :fork
       post :archive
       post :unarchive
       post :upload_image
@@ -214,11 +213,11 @@ Gitlab::Application.routes.draw do
 
       match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
-        resources :snippets, constraints: {id: /\d+/} do
-          member do
-            get "raw"
-          end
+      resources :snippets, constraints: {id: /\d+/} do
+        member do
+          get "raw"
         end
+      end
 
       resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-\/]+/} do
         collection do
@@ -231,6 +230,8 @@ Gitlab::Application.routes.draw do
           get "history"
         end
       end
+
+      resource :fork, only: [:new, :create]
 
       resource :repository, only: [:show] do
         member do

@@ -50,6 +50,7 @@ v 7.4.0
   - Do not delete tmp/repositories itself during clean-up, only its contents
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
+  - Internal ForkService: Prepare support for fork to a given namespace
   - API: Add support for forking a project via the API (Bernhard Kaindl)
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script

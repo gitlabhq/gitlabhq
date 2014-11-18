@@ -1,0 +1,38 @@
+%h3.page-title Fork project
+%p.lead Select namespace where to fork this project
+%hr
+
+.fork-namespaces
+  - @namespaces.in_groups_of(6, false) do |group|
+    .row
+      - group.each do |namespace|
+        .col-md-2.col-sm-3
+          - if fork = namespace.find_fork_of(@project)
+            .thumbnail.fork-exists-thumbnail
+              = link_to project_path(fork), title: "Visit project fork", class: 'has_tooltip' do
+                = image_tag namespace_icon(namespace, 200)
+                .caption
+                  %h4=namespace.human_name
+                  %p
+                    = namespace.path
+          - else
+            .thumbnail.fork-thumbnail
+              = link_to project_fork_path(@project, namespace_id: namespace.id), title: "Fork here", method: "POST", class: 'has_tooltip' do
+                = image_tag namespace_icon(namespace, 200)
+                .caption
+                  %h4=namespace.human_name
+                  %p
+                    = namespace.path
+
+  %p.light
+    Fork is a copy of a project repository.
+    %br
+    Forking a repository allows you to do changes without affecting the original project.
+
+.save-project-loader.hide
+  .center
+    %h2
+      %i.fa.fa-spinner.fa-spin
+      Forking repository
+    %p Please wait a moment, this page will automatically refresh when ready.
+

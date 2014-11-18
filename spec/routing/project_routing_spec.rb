@@ -55,7 +55,6 @@ end
 
 #      projects POST   /projects(.:format)     projects#create
 #   new_project GET    /projects/new(.:format) projects#new
-#  fork_project POST   /:id/fork(.:format)     projects#fork
 # files_project GET    /:id/files(.:format)    projects#files
 #  edit_project GET    /:id/edit(.:format)     projects#edit
 #       project GET    /:id(.:format)          projects#show
@@ -68,10 +67,6 @@ describe ProjectsController, "routing" do
 
   it "to #new" do
     get("/projects/new").should route_to('projects#new')
-  end
-
-  it "to #fork" do
-    post("/gitlab/gitlabhq/fork").should route_to('projects#fork', id: 'gitlab/gitlabhq')
   end
 
   it "to #edit" do
@@ -460,5 +455,15 @@ end
 describe Projects::GraphsController, "routing" do
   it "to #show" do
     get("/gitlab/gitlabhq/graphs/master").should route_to('projects/graphs#show', project_id: 'gitlab/gitlabhq', id: 'master')
+  end
+end
+
+describe Projects::ForksController, "routing" do
+  it "to #new" do
+    get("/gitlab/gitlabhq/fork/new").should route_to("projects/forks#new", project_id: 'gitlab/gitlabhq')
+  end
+
+  it "to #create" do
+    post("/gitlab/gitlabhq/fork").should route_to("projects/forks#create", project_id: 'gitlab/gitlabhq')
   end
 end
