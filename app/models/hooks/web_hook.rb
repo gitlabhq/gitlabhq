@@ -32,18 +32,25 @@ class WebHook < ActiveRecord::Base
   def execute(data)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
-      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" }, verify: false)
+      response = WebHook.post(url,
+                   body: data.to_json,
+                   headers: { 'Content-Type' => 'application/json' },
+                   verify: false)
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       auth = {
         username: URI.decode(parsed_url.user),
         password: URI.decode(parsed_url.password),
       }
-      WebHook.post(post_url,
+      response = WebHook.post(post_url,
                    body: data.to_json,
-                   headers: {"Content-Type" => "application/json"},
+                   headers: {'Content-Type' => 'application/json'},
                    verify: false,
                    basic_auth: auth)
+    end
+
+    unless response.code.to_s =~ /^2\d\d$/
+      raise Exception.new("Server returned status code #{response.code}#{response.message}.")
     end
   end
 
