@@ -6,7 +6,7 @@ class AuditEventsController < ApplicationController
   layout "project_settings"
 
   def project_log
-    @events = AuditEvent.where(entity_type: "Project", entity_id: project.id)
+    @events = AuditEvent.where(entity_type: "Project", entity_id: project.id).page(params[:page]).per(30)
   end
 
   private
