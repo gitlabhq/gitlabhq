@@ -1,0 +1,30 @@
+%h3.page-title Project Audit Events
+%p.light Events in #{@project.path_with_namespace}
+
+%table.table
+  %thead
+    %tr
+      %th
+      %th
+      %th Author
+      %th
+      %th
+      %th Action
+      %th
+      %th Target
+
+
+  %tbody
+    - @events.each do |event|
+      %tr
+        %td
+        %td
+        %td #{event.author_name}
+        %td
+        %td
+        %td #{raw human_text(event.details)}
+        %td
+        %td #{event.details['target_details']}
+
+
+

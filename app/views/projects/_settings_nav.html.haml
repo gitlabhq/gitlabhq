@@ -31,3 +31,7 @@
     = link_to project_protected_branches_path(@project) do
       %i.fa.fa-lock
       Protected branches
+  = nav_link(controller: :audit_events) do
+    = link_to project_audit_events_path(@project) do
+      %i.fa.fa-file-text-o
+      Audit Events

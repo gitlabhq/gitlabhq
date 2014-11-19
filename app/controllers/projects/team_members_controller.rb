@@ -28,7 +28,24 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def update
     @user_project_relation = @project.project_members.find_by(user_id: member)
-    @user_project_relation.update_attributes(member_params)
+    old_access_level = @user_project_relation.human_access
+
+    if @user_project_relation.update_attributes(member_params)
+      details = {
+        change: "access_level",
+        from:  old_access_level,
+        to: @user_project_relation.human_access,
+        target_id: @user_project_relation.user_id,
+        target_type: "User",
+        target_details: @user_project_relation.user.name,
+      }
+      SecurityEvent.create(
+        author_id: current_user.id,
+        entity_id: @project.id,
+        entity_type: "Project",
+        details: details
+      )
+    end
 
     unless @user_project_relation.valid?
       flash[:alert] = "User should have at least one role"
