@@ -31,7 +31,7 @@
           - else
             = link_to_toggle_star('You must sign in to star a project.', false, false)
 
-  .project-home-row
+  .project-home-row.hidden-xs
     - if current_user && !empty_repo
       .project-home-dropdown
         = render "dropdown"
