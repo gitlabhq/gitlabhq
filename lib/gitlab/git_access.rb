@@ -3,7 +3,11 @@ module Gitlab
     DOWNLOAD_COMMANDS = %w{ git-upload-pack git-upload-archive }
     PUSH_COMMANDS = %w{ git-receive-pack }
 
-    attr_reader :params, :project, :git_cmd, :user
+    attr_reader :params, :project, :git_cmd, :user, :errors
+
+    def initialize
+      @errors = []
+    end
 
     def allowed?(actor, cmd, project, changes = nil)
       case cmd
@@ -59,8 +63,23 @@ module Gitlab
       true
     end
 
+    def invalid_emails(project, oldrev, newrev)
+      if oldrev && newrev
+        emails = IO.popen(%W(git --git-dir=#{project.repository.path_to_repo} log --format=%ae #{oldrev}...#{newrev})).read.split(/\s/).uniq
+        if emails.present?
+            found_emails = User.where(email: emails).map{|u| u.emails}
+            missing = emails - found_emails
+            @errors << "User is not allowed to PUSH due to invalid e-mail address (#{missing.join(' ')}), please, use your registered e-mail address" if missing.present?
+            return missing
+        end
+      end
+      []
+    end
+
     def change_allowed?(user, project, change)
       oldrev, newrev, ref = change.split(' ')
+
+      return false if project.check_email && invalid_emails(project,oldrev,newrev).present?
 
       action = if project.protected_branch?(branch_name(ref))
                  # we dont allow force push to protected branch

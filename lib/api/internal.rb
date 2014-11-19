@@ -43,12 +43,13 @@ module API
 
         return false unless actor
 
-        access.allowed?(
+        result = access.allowed?(
           actor,
           params[:action],
           project,
           params[:changes]
         )
+        access.errors.present? ? access.errors.join("\n") : result
       end
 
       #
