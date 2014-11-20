@@ -1,10 +1,5 @@
-- if can? current_user, :write_merge_request, @project
-  = link_to new_project_merge_request_path(@project), class: "pull-right btn btn-new", title: "New Merge Request" do
-    %i.fa.fa-plus
-    New Merge Request
-%h3.page-title
-  Merge Requests
-%hr
+= render "projects/issues_nav"
+
 .row
   .fixed.sidebar-expand-button.hidden-lg.hidden-md
     %i.fa.fa-list.fa-2x

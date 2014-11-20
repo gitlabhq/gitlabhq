@@ -1,7 +1,12 @@
 %ul.nav.nav-tabs
-  = nav_link(controller: :issues) do
-    = link_to project_issues_path(@project), class: "tab" do
-      Browse Issues
+  - if project_nav_tab? :issues
+    = nav_link(controller: :issues) do
+      = link_to project_issues_path(@project), class: "tab" do
+        Browse Issues
+  - if project_nav_tab? :merge_requests
+    = nav_link(controller: :merge_requests) do
+      = link_to project_merge_requests_path(@project), class: "tab" do
+        Merge Requests
   = nav_link(controller: :milestones) do
     = link_to 'Milestones', project_milestones_path(@project), class: "tab"
   = nav_link(controller: :labels) do
@@ -34,3 +39,14 @@
           = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-left", title: "New Issue", id: "new_issue_link" do
             %i.fa.fa-plus
             New Issue
+
+  - if current_controller?(:merge_requests)
+    %li.pull-right
+      .pull-right
+        %button.btn.btn-default.sidebar-expand-button
+          %i.icon.fa.fa-list
+            
+        - if can? current_user, :write_merge_request, @project
+          = link_to new_project_merge_request_path(@project), class: "pull-right btn btn-new", title: "New Merge Request" do
+            %i.fa.fa-plus
+            New Merge Request

@@ -1,4 +1,4 @@
-= render "projects/issues/head"
+= render "projects/issues_nav"
 
 - if can? current_user, :admin_label, @project
   = link_to new_project_label_path(@project), class: "pull-right btn btn-new" do
