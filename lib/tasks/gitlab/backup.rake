@@ -79,6 +79,8 @@ namespace :gitlab do
 
     def configure_cron_mode
       if ENV['CRON']
+        # We need an object we can say 'puts' and 'print' to; let's use a
+        # StringIO.
         require 'stringio'
         $progress = StringIO.new
       else
