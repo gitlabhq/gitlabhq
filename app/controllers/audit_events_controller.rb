@@ -8,11 +8,11 @@ class AuditEventsController < ApplicationController
   layout :determine_layout
 
   def project_log
-    @events = AuditEvent.where(entity_type: "Project", entity_id: project.id).page(params[:page]).per(30)
+    @events = AuditEvent.where(entity_type: "Project", entity_id: project.id).page(params[:page]).per(20)
   end
 
   def group_log
-    @events = AuditEvent.where(entity_type: "Group", entity_id: group.id).page(params[:page]).per(30)
+    @events = AuditEvent.where(entity_type: "Group", entity_id: group.id).page(params[:page]).per(20)
   end
 
   private

@@ -2,6 +2,7 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include Select2Helper
 
   step 'change project settings' do
     fill_in 'project_name_edit', with: 'NewName'
@@ -68,5 +69,48 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   step 'I should see project "Shop" README' do
     page.should have_link "README.md"
     page.should have_content "testme"
+  end
+
+  step 'gitlab user "Pete"' do
+    create(:user, name: "Pete")
+  end
+
+  step '"Pete" is "Shop" developer' do
+    user = User.find_by(name: "Pete")
+    project = Project.find_by(name: "Shop")
+    project.team << [user, :developer]
+  end
+
+  step 'I visit project "Shop" settings page' do
+    click_link 'Settings'
+  end
+
+  step 'I go to "Members"' do
+    click_link 'Members'
+  end
+
+  step 'I change "Pete" access level to master' do
+    user = User.find_by(name: "Pete")
+    within "#user_#{user.id}" do
+      select "Master", from: "project_member_access_level"
+    end
+  end
+
+  step 'I go to "Audit Events"' do
+    click_link 'Audit Events'
+  end
+
+  step 'I should see the audit event listed' do
+    within ('table#audits tr:nth-child(1) td:nth-child(6)') do
+      page.should have_content "Change access level from developer to master"
+    end
+
+    within ('table#audits tr:nth-child(1) td:nth-child(3)') do
+      page.should have_content project.owner.name
+    end
+
+    within ('table#audits tr:nth-child(1) td:nth-child(8)') do
+      page.should have_content 'Pete'
+    end
   end
 end
