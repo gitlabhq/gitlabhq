@@ -128,13 +128,14 @@ sudo chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
 In some case it is necessary to rebuild the `authorized_keys` file.
 
 
-For Omnibus-packages
+For Omnibus-packages:
 ```
 sudo gitlab-rake gitlab:shell:setup
 ```
 
 For installations from source:
 ```
+cd /home/git/gitlab
 sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
 ```
 
