@@ -18,11 +18,11 @@ module Backup
       end
 
       # create archive
-      print "Creating backup archive: #{tar_file} ... "
+      $progress.print "Creating backup archive: #{tar_file} ... "
       if Kernel.system('tar', '-cf', tar_file, *BACKUP_CONTENTS)
-        puts "done".green
+        $progress.puts "done".green
       else
-        puts "failed".red
+        puts "creating archive #{tar_file} failed".red
         abort 'Backup failed'
       end
 
@@ -31,37 +31,37 @@ module Backup
 
     def upload(tar_file)
       remote_directory = Gitlab.config.backup.upload.remote_directory
-      print "Uploading backup archive to remote storage #{remote_directory} ... "
+      $progress.print "Uploading backup archive to remote storage #{remote_directory} ... "
 
       connection_settings = Gitlab.config.backup.upload.connection
       if connection_settings.blank?
-        puts "skipped".yellow
+        $progress.puts "skipped".yellow
         return
       end
 
       connection = ::Fog::Storage.new(connection_settings)
       directory = connection.directories.get(remote_directory)
       if directory.files.create(key: tar_file, body: File.open(tar_file), public: false)
-        puts "done".green
+        $progress.puts "done".green
       else
-        puts "failed".red
+        puts "uploading backup to #{remote_directory} failed".red
         abort 'Backup failed'
       end
     end
 
     def cleanup
-      print "Deleting tmp directories ... "
+      $progress.print "Deleting tmp directories ... "
       if Kernel.system('rm', '-rf', *BACKUP_CONTENTS)
-        puts "done".green
+        $progress.puts "done".green
       else
-        puts "failed".red
+        puts "deleting tmp directory failed".red
         abort 'Backup failed'
       end
     end
 
     def remove_old
       # delete backups
-      print "Deleting old backups ... "
+      $progress.print "Deleting old backups ... "
       keep_time = Gitlab.config.backup.keep_time.to_i
       path = Gitlab.config.backup.path
 
@@ -76,9 +76,9 @@ module Backup
             end
           end
         end
-        puts "done. (#{removed} removed)".green
+        $progress.puts "done. (#{removed} removed)".green
       else
-        puts "skipping".yellow
+        $progress.puts "skipping".yellow
       end
     end
 
@@ -101,12 +101,12 @@ module Backup
         exit 1
       end
 
-      print "Unpacking backup ... "
+      $progress.print "Unpacking backup ... "
       unless Kernel.system(*%W(tar -xf #{tar_file}))
-        puts "failed".red
+        puts "unpacking backup failed".red
         exit 1
       else
-        puts "done".green
+        $progress.puts "done".green
       end
 
       settings = YAML.load_file("backup_information.yml")
