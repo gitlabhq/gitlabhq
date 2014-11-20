@@ -2,7 +2,9 @@
 
 Below are the [gitlab-omnibus packages](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) for GitLab Enterprise Edition.
 
-[Update instructions](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md) can be found in the GitLab Omnibus documentation. The [GitLab Omnibus Readme](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) contains troubleshooting information and configuration options.
+Installation instructions are similar to the [CE Omnibus package instructions](https://about.gitlab.com/downloads/) after choosing an OS (of course your package name is different).
+[Update instructions](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md) can be found in the GitLab Omnibus documentation.
+The [GitLab Omnibus Readme](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md) contains troubleshooting information and configuration options.
 
 Please contact <subscribers@gitlab.com> if you have any questions.
 
