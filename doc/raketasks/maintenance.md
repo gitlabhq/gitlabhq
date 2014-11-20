@@ -122,3 +122,26 @@ sudo -u git -H mkdir -p /home/git/gitlab-satellites
 sudo -u git -H bundle exec rake gitlab:satellites:create RAILS_ENV=production
 sudo chmod u+rwx,g=rx,o-rwx /home/git/gitlab-satellites
 ```
+
+## Rebuild authorized_keys file
+
+In some case it is necessary to rebuild the `authorized_keys` file.
+
+
+For Omnibus-packages
+```
+sudo gitlab-rake gitlab:shell:setup
+```
+
+For installations from source:
+```
+sudo -u git -H bundle exec rake gitlab:shell:setup RAILS_ENV=production
+```
+
+```
+This will rebuild an authorized_keys file.
+You will lose any data stored in authorized_keys file.
+Do you want to continue (yes/no)? yes
+
+............................
+```
