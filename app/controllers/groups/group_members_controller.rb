@@ -14,7 +14,24 @@ class Groups::GroupMembersController < ApplicationController
 
   def update
     @member = @group.group_members.find(params[:id])
-    @member.update_attributes(member_params)
+    old_access_level = @member.human_access
+
+    if @member.update_attributes(member_params)
+      details = {
+        change: "access_level",
+        from:  old_access_level,
+        to: @member.human_access,
+        target_id: @member.user_id,
+        target_type: "User",
+        target_details: @member.user.name,
+      }
+      SecurityEvent.create(
+        author_id: current_user.id,
+        entity_id: @group.id,
+        entity_type: "Group",
+        details: details
+      )
+    end
   end
 
   def destroy
