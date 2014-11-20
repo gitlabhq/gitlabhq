@@ -57,6 +57,37 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     projects_with_access.should_not have_content("Mary Jane")
   end
 
+  step 'I change the role to "Developer"' do
+    user = User.find_by(name: "Mary Jane")
+    member = Group.find_by(name: "Owned").members.where(user_id: user.id).first
+
+    within "#group_member_#{member.id}" do
+      find(".btn-tiny.btn.js-toggle-button").click
+      within "#edit_group_member_#{member.id}" do
+        select 'Developer', from: 'group_member_access_level'
+        click_on 'Save'
+      end
+    end
+  end
+
+  step 'I go to "Audit Events"' do
+    click_link 'Audit Events'
+  end
+
+  step 'I should see the audit event listed' do
+    within ('table#audits tr:nth-child(1) td:nth-child(6)') do
+      page.should have_content 'Change access level from reporter to developer'
+    end
+
+    within ('table#audits tr:nth-child(1) td:nth-child(3)') do
+      page.should have_content 'John Doe'
+    end
+
+    within ('table#audits tr:nth-child(1) td:nth-child(8)') do
+      page.should have_content 'Mary Jane'
+    end
+  end
+
   step 'project from group "Owned" has issues assigned to me' do
     create :issue,
       project: project,

@@ -60,6 +60,17 @@ Feature: Groups
     And I add a new LDAP synchronization
     Then I see a new LDAP synchronization listed
 
+  @javascript
+  Scenario: I should see audit events
+    Given User "Mary Jane" exists
+    When I visit group "Owned" members page
+    And I select user "Mary Jane" from list with role "Reporter"
+    And I change the role to "Developer"
+    When I visit group "Owned" settings page
+    And I go to "Audit Events"
+    Then I should see the audit event listed
+
+
   # Leave
 
   @javascript
