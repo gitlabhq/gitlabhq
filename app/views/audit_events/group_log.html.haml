@@ -1,5 +1,3 @@
-
-
 .row
   .col-md-2
     = render 'groups/settings_nav'
@@ -8,31 +6,4 @@
     %h3.page-title Group Audit Events
     %p.light Events in #{@group.name}
 
-    %table.table#audits
-      %thead
-        %tr
-          %th
-          %th
-          %th Author
-          %th
-          %th
-          %th Action
-          %th
-          %th Target
-          %th
-          %th At
-
-      %tbody
-        - @events.each do |event|
-          %tr
-            %td
-            %td
-            %td #{event.author_name}
-            %td
-            %td
-            %td #{raw human_text(event.details)}
-            %td
-            %td #{event.details['target_details']}
-            %td
-            %td #{event.created_at}
-        = paginate @events
+    = render 'event_table', events: @events

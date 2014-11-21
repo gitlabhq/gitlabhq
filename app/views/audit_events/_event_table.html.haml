@@ -1,0 +1,29 @@
+- if defined?(events)
+  %table.table#audits
+    %thead
+      %tr
+        %th
+        %th
+        %th Author
+        %th
+        %th
+        %th Action
+        %th
+        %th Target
+        %th
+        %th At
+
+    %tbody
+      - events.each do |event|
+        %tr
+          %td
+          %td
+          %td #{event.author_name}
+          %td
+          %td
+          %td #{raw human_text(event.details)}
+          %td
+          %td #{event.details['target_details']}
+          %td
+          %td #{event.created_at}
+      = paginate events
