@@ -1,5 +1,5 @@
 class AuditEvent < ActiveRecord::Base
-  serialize :details, JSON
+  serialize :details, Hash
 
   belongs_to :user, foreign_key: :author_id
 

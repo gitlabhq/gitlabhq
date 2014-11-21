@@ -23,7 +23,7 @@
           %td
           %td #{raw human_text(event.details)}
           %td
-          %td #{event.details['target_details']}
+          %td #{event.details[:target_details]}
           %td
           %td #{event.created_at}
       = paginate events
