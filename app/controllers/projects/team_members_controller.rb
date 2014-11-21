@@ -19,6 +19,16 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
     @project.team << [users, params[:access_level]]
 
+    users.each do |user|
+      details = {
+        add: "user_access",
+        target_id: user.id,
+        target_type: "User",
+        target_details: user.name,
+      }
+      AuditEventService.new(current_user, @project, details).security_event
+    end
+
     if params[:redirect_to]
       redirect_to params[:redirect_to]
     else
@@ -50,7 +60,18 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def destroy
     @user_project_relation = @project.project_members.find_by(user_id: member)
-    @user_project_relation.destroy
+    user_id = @user_project_relation.user_id
+    user_name = @user_project_relation.user.name
+
+    if @user_project_relation.destroy
+      details = {
+        remove: "user_access",
+        target_id: user_id,
+        target_type: "User",
+        target_details: user_name,
+      }
+      AuditEventService.new(current_user, @project, details).security_event
+    end
 
     respond_to do |format|
       format.html { redirect_to project_team_index_path(@project) }
