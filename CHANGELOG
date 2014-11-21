@@ -41,6 +41,7 @@ v 7.5.0
   - Display renamed files in diff views (Vinnie Okada)
   - Fix raw view for public snippets
   - Use secret token with GitLab internal API.
+  - Add missing timestamps to 'members' table
 
 v 7.4.3
   - Fix raw snippets view
