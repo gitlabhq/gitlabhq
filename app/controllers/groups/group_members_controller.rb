@@ -25,12 +25,7 @@ class Groups::GroupMembersController < ApplicationController
         target_type: "User",
         target_details: @member.user.name,
       }
-      SecurityEvent.create(
-        author_id: current_user.id,
-        entity_id: @group.id,
-        entity_type: "Group",
-        details: details
-      )
+      AuditEventService.new(current_user, @group, details).security_event
     end
   end
 

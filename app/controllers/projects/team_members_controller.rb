@@ -39,12 +39,7 @@ class Projects::TeamMembersController < Projects::ApplicationController
         target_type: "User",
         target_details: @user_project_relation.user.name,
       }
-      SecurityEvent.create(
-        author_id: current_user.id,
-        entity_id: @project.id,
-        entity_type: "Project",
-        details: details
-      )
+      AuditEventService.new(current_user, @project, details).security_event
     end
 
     unless @user_project_relation.valid?
