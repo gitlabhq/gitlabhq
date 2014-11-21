@@ -33,9 +33,6 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 - 7.4.5-ee/CI 5.1.0 - Ubuntu 14.04 64-bit [gitlab_7.4.5-ee.omnibus.5.1.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/9ac1901f0e346f5c795262368450fda9b1f7bbb9/ubuntu-14.04/gitlab_7.4.5-ee.omnibus.5.1.0.ci-1_amd64.deb)
     + SHA256: 8e44f7cc87a73f007c882f5f9147294073a7ea58a805d9a3cb43d1ed1e0d9dfe
 
-- 7.4.5-ee/CI 5.1.0 - Ubuntu 12.04 64-bit [gitlab_7.4.5-ee.omnibus.5.1.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/16e535efc9f100d6acafa651e28180c6573197f3/ubuntu-12.04/gitlab_7.4.5-ee.omnibus.5.1.0.ci-1_amd64.deb)
-    + SHA256: 92fa8eb59efc6ae901a13ad47712061edd468d111e197517a7d96309a6798152
-
 - 7.4.4-ee/CI 5.1.0 - Ubuntu 14.04 64-bit [gitlab_7.4.4-ee.omnibus.5.1.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/2a880962cd18293a9da61ab884c29cbdd7eebdba/ubuntu-14.04/gitlab_7.4.4-ee.omnibus.5.1.0.ci-1_amd64.deb)
     + MD5: d549fdaa96e53a2a98cb91676076259a
 
@@ -85,6 +82,9 @@ Please contact <subscribers@gitlab.com> if you have any questions.
     - MD5: 0a0a821a166dc08499359a72daf2aa88
 
 ### Ubuntu 12.04 64-bit
+
+- 7.4.5-ee/CI 5.1.0 - Ubuntu 12.04 64-bit [gitlab_7.4.5-ee.omnibus.5.1.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/16e535efc9f100d6acafa651e28180c6573197f3/ubuntu-12.04/gitlab_7.4.5-ee.omnibus.5.1.0.ci-1_amd64.deb)
+    + SHA256: 92fa8eb59efc6ae901a13ad47712061edd468d111e197517a7d96309a6798152
 
 - 7.4.4-ee/CI 5.1.0 - Ubuntu 12.04 64-bit [gitlab_7.4.4-ee.omnibus.5.1.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/e99bcfc0601b020fc7d218bcd2e76fbcbc66c9d8/ubuntu-12.04/gitlab_7.4.4-ee.omnibus.5.1.0.ci-1_amd64.deb)
     + MD5: 61cc01a792a0b649e5bfb51bd63adb12
