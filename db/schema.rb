@@ -12,6 +12,7 @@
 # It's strongly recommended that you check this file into your version control system.
 
 ActiveRecord::Schema.define(version: 20150324155957) do
+    Add missing timestamps to the 'members' table
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
