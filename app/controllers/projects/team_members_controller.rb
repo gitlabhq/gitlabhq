@@ -16,12 +16,13 @@ class Projects::TeamMembersController < Projects::ApplicationController
 
   def create
     users = User.where(id: params[:user_ids].split(','))
-
-    @project.team << [users, params[:access_level]]
+    access_level = params[:access_level]
+    @project.team << [users, access_level]
 
     users.each do |user|
       details = {
         add: "user_access",
+        as: Gitlab::Access.options_with_owner.key(access_level.to_i),
         target_id: user.id,
         target_type: "User",
         target_details: user.name,
