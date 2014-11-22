@@ -9,7 +9,7 @@
       Members
   = nav_link(controller: :group_links) do
     = link_to project_group_links_path(@project) do
-      %i.icon-share
+      %i.fa.fa-share-square-o
       Groups
   = nav_link(controller: :deploy_keys) do
     = link_to project_deploy_keys_path(@project) do
@@ -21,7 +21,7 @@
       Web Hooks
   = nav_link(controller: :git_hooks) do
     = link_to project_git_hooks_path(@project) do
-      %i.icon-upload
+      %i.fa.fa-git-square
       Git Hooks
   = nav_link(controller: :services) do
     = link_to project_services_path(@project) do
