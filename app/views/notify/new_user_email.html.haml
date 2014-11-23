@@ -1,5 +1,7 @@
 %p
-  Hi #{@user['name']}!
+  Hi
+  %span{ dir: :auto }= @user['name']
+  !
 %p
   - if Gitlab.config.gitlab.signup_enabled
     Your account has been created successfully.

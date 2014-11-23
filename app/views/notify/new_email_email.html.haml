@@ -1,5 +1,7 @@
 %p
-  Hi #{@user.name}!
+  Hi
+  %span{ dir: :auto }= @user.name
+  !
 %p
   A new email was added to your account:
 %p

@@ -2,9 +2,9 @@
   Assignee changed
   - if @previous_assignee
     from
-    %strong #{@previous_assignee.name}
+    %strong{ dir: :auto } #{@previous_assignee.name}
   to
   - if issuable.assignee_id
-    %strong #{issuable.assignee_name}
+    %strong{ dir: :auto } #{issuable.assignee_name}
   - else
     %strong Unassigned
