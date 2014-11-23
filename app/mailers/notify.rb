@@ -84,6 +84,7 @@ class Notify < ActionMailer::Base
   #   => "Lorem ipsum | Dolor sit amet"
   def subject(*extra)
     subject = ""
+    subject << "[#{@project.owner.name}] " if @project
     subject << "#{@project.name} | " if @project
     subject << extra.join(' | ') if extra.present?
     subject
