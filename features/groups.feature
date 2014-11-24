@@ -146,3 +146,14 @@ Feature: Groups
     And I click on one group milestone
     Then I should see group milestone with descriptions and expiry date
     And I should see group milestone with all issues and MRs assigned to that milestone
+
+  @javascript
+  Scenario: I should see audit events
+    Given User "Mary Jane" exists
+    When I visit group "Owned" members page
+    And I select user "Mary Jane" from list with role "Reporter"
+    And I change the role to "Developer"
+    And I click on the "Remove User From Group" button for "Mary Jane"
+    When I visit group "Owned" settings page
+    And I go to "Audit Events"
+    Then I should see the audit event listed

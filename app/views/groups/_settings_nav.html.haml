@@ -11,4 +11,8 @@
     = link_to group_ldap_group_links_path(@group) do
       %i.icon-exchange
       LDAP Groups
+  = nav_link(controller: :audit_events) do
+    = link_to group_audit_events_path(@group) do
+      %i.fa.fa-file-text-o
+      Audit Events
 
