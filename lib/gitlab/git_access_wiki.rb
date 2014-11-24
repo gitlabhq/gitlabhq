@@ -1,6 +1,6 @@
 module Gitlab
   class GitAccessWiki < GitAccess
-    def change_allowed_check(user, project, change)
+    def change_access_check(user, project, change)
       if user.can?(:write_wiki, project)
         build_status_object(true)
       else
