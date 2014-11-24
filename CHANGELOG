@@ -1,7 +1,7 @@
 v 7.6.0
   - Fork repository to groups
   - New rugged version
-  -
+  - Add CRON=1 backup setting for quiet backups
   -
   -
   -
