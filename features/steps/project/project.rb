@@ -101,16 +101,10 @@ class Spinach::Features::Project < Spinach::FeatureSteps
   end
 
   step 'I should see the audit event listed' do
-    within ('table#audits tr:nth-child(1) td:nth-child(6)') do
+    within ('table#audits') do
       page.should have_content "Change access level from developer to master"
-    end
-
-    within ('table#audits tr:nth-child(1) td:nth-child(3)') do
-      page.should have_content project.owner.name
-    end
-
-    within ('table#audits tr:nth-child(1) td:nth-child(8)') do
-      page.should have_content 'Pete'
+      page.should have_content(project.owner.name)
+      page.should have_content('Pete')
     end
   end
 end

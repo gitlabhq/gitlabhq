@@ -75,16 +75,12 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see the audit event listed' do
-    within ('table#audits tr:nth-child(1) td:nth-child(6)') do
+    within ('table#audits') do
+      page.should have_content 'Add user access as reporter'
       page.should have_content 'Change access level from reporter to developer'
-    end
-
-    within ('table#audits tr:nth-child(1) td:nth-child(3)') do
-      page.should have_content 'John Doe'
-    end
-
-    within ('table#audits tr:nth-child(1) td:nth-child(8)') do
-      page.should have_content 'Mary Jane'
+      page.should have_content 'Remove user access'
+      page.should have_content('John Doe', count: 3)
+      page.should have_content('Mary Jane', count: 3)
     end
   end
 

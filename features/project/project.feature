@@ -56,7 +56,7 @@ Feature: Project
     And "Pete" is "Shop" developer
     When I visit project "Shop" settings page
     And I go to "Members"
-    Then I change "Pete" access level to master
-    And I visit project "Shop" settings page
+    And I change "Pete" access level to master
+    When I visit project "Shop" settings page
     And I go to "Audit Events"
     Then I should see the audit event listed
