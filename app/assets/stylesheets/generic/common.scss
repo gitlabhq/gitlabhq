@@ -227,6 +227,19 @@ li.note {
   }
 }
 
+.browser-alert {
+  padding: 10px;
+  text-align: center;
+  background: #C67;
+//  background: #F51;
+  color: #fff;
+  font-weight: bold;
+  a {
+    color: #fff;
+    text-decoration: underline;
+  }
+}
+
 .warning_message {
   border-left: 4px solid #ed9;
   color: #b90;
