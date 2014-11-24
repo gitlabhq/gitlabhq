@@ -184,6 +184,8 @@ Gitlab::Application.routes.draw do
       resource :avatar, only: [:destroy]
       resources :milestones
     end
+
+    get "/audit_events" => "audit_events#group_log"
   end
 
   get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
@@ -358,6 +360,8 @@ Gitlab::Application.routes.draw do
         end
       end
     end
+
+    get "/audit_events" => "audit_events#project_log"
   end
 
   get ':id' => "namespaces#show", constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}
