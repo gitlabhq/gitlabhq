@@ -14,7 +14,9 @@ Please report suspected security vulnerabilities in private to <support@gitlab.c
 
 1. Verify that the issue can be reproduced
 1. Acknowledge the issue to the researcher that disclosed it
+1. Inform the release manager that there needs to be a security release
 1. Do the steps from [patch release document](doc/release/patch.md), starting with "Create an issue on private GitLab development server"
+1. The MR with the security fix should get a 'security' label and be assigned to the release manager
 1. Create feature branches for the blog post on GitLab.com and link them from the code branch
 1. Merge and publish the blog posts
 1. Send tweets about the release from `@gitlabhq`

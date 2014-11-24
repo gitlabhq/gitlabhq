@@ -8,7 +8,9 @@ NOTE: This is a guide for GitLab developers.
 
 ### **2. Release Manager**
 
-A release manager is selected that coordinates the entire release of this version. The release manager has to make sure all the steps below are done and delegated where necessary. This person should also make sure this document is kept up to date and issues are created and updated.
+A release manager is selected that coordinates all releases the coming month, including the patch releases for previous releases.
+The release manager has to make sure all the steps below are done and delegated where necessary.
+This person should also make sure this document is kept up to date and issues are created and updated.
 
 ### **3. Create an overall issue**
 
