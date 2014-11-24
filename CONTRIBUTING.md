@@ -98,7 +98,7 @@ Please ensure you support the feature you contribute through all of these steps.
 1. Added to the release blog article
 1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/) if relevant
 1. Community questions answered
-1. Answers to questions rediated (in docs/wiki/etc.)
+1. Answers to questions radiated (in docs/wiki/etc.)
 
 ## Merge request description format
 
