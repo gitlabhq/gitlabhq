@@ -17,6 +17,7 @@ Otherwise include it in the monthly release and note there was a regression fix 
 1. Create an issue on private GitLab development server
 1. Name the issue "Release X.X.X CE and X.X.X EE", this will make searching easier
 1. Fix the issue on a feature branch, do this on the private GitLab development server
+1. If it is a security issue, then assign it to the release manager and apply a 'security' label
 1. Consider creating and testing workarounds
 1. After the branch is merged into master, cherry pick the commit(s) into the current stable branch
 1. Make sure that the build has passed and all tests are passing
