@@ -574,20 +574,16 @@ namespace :gitlab do
       Gitlab::Shell.new.version
     end
 
-    def required_gitlab_shell_version
-      File.read(File.join(Rails.root, "GITLAB_SHELL_VERSION")).strip
-    end
-
     def gitlab_shell_major_version
-      required_gitlab_shell_version.split(".")[0].to_i
+      Gitlab::Shell.version_required.split('.')[0].to_i
     end
 
     def gitlab_shell_minor_version
-      required_gitlab_shell_version.split(".")[1].to_i
+      Gitlab::Shell.version_required.split('.')[1].to_i
     end
 
     def gitlab_shell_patch_version
-      required_gitlab_shell_version.split(".")[2].to_i
+      Gitlab::Shell.version_required.split('.')[2].to_i
     end
 
     def has_gitlab_shell3?

@@ -28,3 +28,4 @@
           You're receiving this notification because you are a member of the #{link_to_unless @target_url, @project.name_with_namespace, project_url(@project)} project team.
         - if @target_url
           #{link_to "View it on GitLab", @target_url}
+          = email_action @target_url

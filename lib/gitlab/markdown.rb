@@ -202,7 +202,7 @@ module Gitlab
 
       if identifier == "all"
         link_to("@all", project_url(project), options)
-      elsif user = User.find_by(username: identifier)
+      elsif User.find_by(username: identifier)
         link_to("@#{identifier}", user_url(identifier), options)
       end
     end

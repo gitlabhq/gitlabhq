@@ -93,3 +93,66 @@ Parameters:
   }
 ]
 ```
+
+## Get the comments of a commit
+
+Get the comments of a commit in a project.
+
+```
+GET /projects/:id/repository/commits/:sha/comments
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `sha` (required) - The name of a repository branch or tag or if not given the default branch
+
+```json
+[
+  {
+    "note": "this code is really nice",
+    "author": {
+      "id": 11,
+      "username": "admin",
+      "email": "admin@local.host",
+      "name": "Administrator",
+      "state": "active",
+      "created_at": "2014-03-06T08:17:35.000Z"
+    }
+  }
+]
+```
+
+## Post comment to commit
+
+Adds a comment to a commit. Optionally you can post comments on a specific line of a commit. Therefor both `path`, `line_new` and `line_old` are required.
+
+```
+POST /projects/:id/repository/commits/:sha/comments
+```
+
+Parameters:
+
+- `id` (required)               - The ID of a project
+- `sha` (required)              - The name of a repository branch or tag or if not given the default branch
+- `note` (required)             - Text of comment
+- `path` (optional)             - The file path
+- `line` (optional)             - The line number
+- `line_type` (optional)        - The line type (new or old)
+
+```json
+{
+  "author": {
+    "id": 1,
+    "username": "admin",
+    "email": "admin@local.host",
+    "name": "Administrator",
+    "blocked": false,
+    "created_at": "2012-04-29T08:46:00Z"
+  },
+  "note": "text1",
+  "path": "example.rb",
+  "line": 5,
+  "line_type": "new"
+}
+```

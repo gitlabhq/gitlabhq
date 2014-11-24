@@ -59,7 +59,13 @@ module Backup
 
         project.namespace.ensure_dir_exist if project.namespace
 
-        if system(*%W(git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)}), silent)
+        if File.exists?(path_to_bundle(project))
+          cmd = %W(git clone --bare #{path_to_bundle(project)} #{path_to_repo(project)})
+        else
+          cmd = %W(git init --bare #{path_to_repo(project)})
+        end
+
+        if system(*cmd, silent)
           puts "[DONE]".green
         else
           puts "[FAILED]".red
@@ -91,7 +97,7 @@ module Backup
     protected
 
     def path_to_repo(project)
-      File.join(repos_path, project.path_with_namespace + '.git')
+      project.repository.path_to_repo
     end
 
     def path_to_bundle(project)

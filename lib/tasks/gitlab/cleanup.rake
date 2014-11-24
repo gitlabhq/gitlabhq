@@ -92,11 +92,11 @@ namespace :gitlab do
 
       User.ldap.each do |ldap_user|
         print "#{ldap_user.name} (#{ldap_user.extern_uid}) ..."
-        if Gitlab::LDAP::Access.open { |access| access.allowed?(ldap_user) }
+        if Gitlab::LDAP::Access.allowed?(ldap_user)
           puts " [OK]".green
         else
           if block_flag
-            ldap_user.block!
+            ldap_user.block! unless ldap_user.blocked?
             puts " [BLOCKED]".red
           else
             puts " [NOT IN LDAP]".yellow

@@ -87,8 +87,8 @@ module CommitsHelper
   #  avatar: true will prepend the avatar image
   #  size:   size of the avatar image in px
   def commit_person_link(commit, options = {})
-    source_name = commit.send "#{options[:source]}_name".to_sym
-    source_email = commit.send "#{options[:source]}_email".to_sym
+    source_name = clean(commit.send "#{options[:source]}_name".to_sym)
+    source_email = clean(commit.send "#{options[:source]}_email".to_sym)
 
     user = User.find_for_commit(source_email, source_name)
     person_name = user.nil? ? source_name : user.name
@@ -123,5 +123,9 @@ module CommitsHelper
 
   def truncate_sha(sha)
     Commit.truncate_sha(sha)
+  end
+
+  def clean(string)
+    Sanitize.clean(string, remove_contents: true)
   end
 end

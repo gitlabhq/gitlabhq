@@ -7,8 +7,16 @@ class Spinach::Features::PublicSnippets < Spinach::FeatureSteps
     page.should have_no_xpath("//i[@class='public-snippet']")
   end
 
+  step 'I should see raw snippet "Personal snippet one"' do
+    page.should have_text(snippet.content)
+  end
+
   step 'I visit snippet page "Personal snippet one"' do
     visit snippet_path(snippet)
+  end
+
+  step 'I visit snippet raw page "Personal snippet one"' do
+    visit raw_snippet_path(snippet)
   end
 
   def snippet

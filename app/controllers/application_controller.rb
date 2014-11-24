@@ -5,9 +5,7 @@ class ApplicationController < ActionController::Base
   before_filter :authenticate_user!
   before_filter :reject_blocked!
   before_filter :check_password_expiration
-  before_filter :add_abilities
   before_filter :ldap_security_check
-  before_filter :dev_tools if Rails.env == 'development'
   before_filter :default_headers
   before_filter :add_gon_variables
   before_filter :configure_permitted_parameters, if: :devise_controller?
@@ -73,7 +71,7 @@ class ApplicationController < ActionController::Base
   end
 
   def abilities
-    @abilities ||= Six.new
+    Ability.abilities
   end
 
   def can?(object, action, subject)
@@ -81,28 +79,31 @@ class ApplicationController < ActionController::Base
   end
 
   def project
-    id = params[:project_id] || params[:id]
+    unless @project
+      id = params[:project_id] || params[:id]
 
-    # Redirect from
-    #   localhost/group/project.git
-    # to
-    #   localhost/group/project
-    #
-    if id =~ /\.git\Z/
-      redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+      # Redirect from
+      #   localhost/group/project.git
+      # to
+      #   localhost/group/project
+      #
+      if id =~ /\.git\Z/
+        redirect_to request.original_url.gsub(/\.git\Z/, '') and return
+      end
+
+      @project = Project.find_with_namespace(id)
+
+      if @project and can?(current_user, :read_project, @project)
+        @project
+      elsif current_user.nil?
+        @project = nil
+        authenticate_user!
+      else
+        @project = nil
+        render_404 and return
+      end
     end
-
-    @project = Project.find_with_namespace(id)
-
-    if @project and can?(current_user, :read_project, @project)
-      @project
-    elsif current_user.nil?
-      @project = nil
-      authenticate_user!
-    else
-      @project = nil
-      render_404 and return
-    end
+    @project
   end
 
   def repository
@@ -111,20 +112,8 @@ class ApplicationController < ActionController::Base
     nil
   end
 
-  def add_abilities
-    abilities << Ability
-  end
-
   def authorize_project!(action)
     return access_denied! unless can?(current_user, action, project)
-  end
-
-  def authorize_code_access!
-    return access_denied! unless can?(current_user, :download_code, project)
-  end
-
-  def authorize_push!
-    return access_denied! unless can?(current_user, :push_code, project)
   end
 
   def authorize_labels!
@@ -168,9 +157,6 @@ class ApplicationController < ActionController::Base
     response.headers["Cache-Control"] = "no-cache, no-store, max-age=0, must-revalidate"
     response.headers["Pragma"] = "no-cache"
     response.headers["Expires"] = "Fri, 01 Jan 1990 00:00:00 GMT"
-  end
-
-  def dev_tools
   end
 
   def default_headers

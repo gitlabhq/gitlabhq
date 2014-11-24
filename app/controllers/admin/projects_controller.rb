@@ -31,17 +31,11 @@ class Admin::ProjectsController < Admin::ApplicationController
   protected
 
   def project
-    id = params[:project_id] || params[:id]
-
-    @project = Project.find_with_namespace(id)
+    @project = Project.find_with_namespace(params[:id])
     @project || render_404
   end
 
   def group
-    @group ||= project.group
-  end
-
-  def repository
-    @repository ||= project.repository
+    @group ||= @project.group
   end
 end

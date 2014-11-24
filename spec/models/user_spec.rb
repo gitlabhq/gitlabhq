@@ -287,6 +287,20 @@ describe User do
     end
   end
 
+  describe '.by_login' do
+    let(:username) { 'John' }
+    let!(:user) { create(:user, username: username) }
+
+    it 'should get the correct user' do
+      expect(User.by_login(user.email.upcase)).to eq user
+      expect(User.by_login(user.email)).to eq user
+      expect(User.by_login(username.downcase)).to eq user
+      expect(User.by_login(username)).to eq user
+      expect(User.by_login(nil)).to be_nil
+      expect(User.by_login('')).to be_nil
+    end
+  end
+
   describe 'all_ssh_keys' do
     it { should have_many(:keys).dependent(:destroy) }
 

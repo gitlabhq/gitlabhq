@@ -14,8 +14,6 @@
   .issue-info
     - if issue.assignee
       assigned to #{link_to_member(@project, issue.assignee)}
-    - else
-      unassigned
     - if issue.votes_count > 0
       = render 'votes/votes_inline', votable: issue
     - if issue.notes.any?

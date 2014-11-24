@@ -25,7 +25,7 @@
             - next unless process.match(/(sidekiq \d+\.\d+\.\d+.+$)/)
             - data = process.strip.split(' ')
             %tr
-              %td= Settings.gitlab.user
+              %td= gitlab_config.user
               - 5.times do
                 %td= data.shift
               %td= data.join(' ')
@@ -36,7 +36,7 @@
           If '[25 of 25 busy]' is shown, restart GitLab with 'sudo service gitlab reload'.
         %p
           %i.fa.fa-exclamation-circle
-          If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{Settings.gitlab.user} -f sidekiq) and restart GitLab.
+          If more than one sidekiq process is listed, stop GitLab, kill the remaining sidekiq processes (sudo pkill -u #{gitlab_config.user} -f sidekiq) and restart GitLab.
 
 
 
