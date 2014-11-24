@@ -82,6 +82,24 @@ Please keep the change in a single MR **as small as possible**. If you want to c
 
 For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the contribution acceptance criteria.
 
+## Definition of done
+
+If you contribute to GitLab please know that changes involve more than just code.
+We have the following [definition of done](http://guide.agilealliance.org/guide/definition-of-done.html).
+Please ensure you support the feature you contribute through all of these steps.
+
+1. Description explaning the relevancy (see following item)
+1. Working and clean code that is commented where needed
+1. Unit and integration tests that pass on the CI server
+1. Documented in the /doc directory
+1. Changelog entry added
+1. Reviewed and any concerns are addressed
+1. Merged by the project lead
+1. Added to the release blog article
+1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/) if relevant
+1. Community questions answered
+1. Answers to questions rediated (in docs/wiki/etc.)
+
 ## Merge request description format
 
 1. What does this MR do?
