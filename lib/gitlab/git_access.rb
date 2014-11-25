@@ -143,7 +143,7 @@ module Gitlab
           if git_hook.file_name_regex.present?
             commit.diffs.each do |diff|
               if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
-                return build_status_object(false, "File name #{diff.new_path} does not follow the pattern")
+                return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern")
               end
             end
           end
