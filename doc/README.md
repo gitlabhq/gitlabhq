@@ -20,7 +20,7 @@
 - [System hooks](system_hooks/system_hooks.md) Let GitLab notify you when certain management tasks need to be carried out.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [Update](update/README.md) Update guides to upgrade your installation.
-- [Audit Events](administration/audit_events.md) Check how user access change in projects and groups.
+- [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
 
 - [Branded login page](customization/branded_login_page.md) Change the login page appearance for your GitLab instance.
 - [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
