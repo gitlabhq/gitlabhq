@@ -43,7 +43,7 @@ module API
 
         return false unless actor
 
-        access.allowed?(
+        access.check(
           actor,
           params[:action],
           project,

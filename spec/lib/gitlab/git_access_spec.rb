@@ -5,14 +5,14 @@ describe Gitlab::GitAccess do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
-  describe 'download_allowed?' do
+  describe 'download_access_check' do
     describe 'master permissions' do
       before { project.team << [user, :master] }
 
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_true }
+        it { subject.allowed?.should be_true }
       end
     end
 
@@ -20,9 +20,9 @@ describe Gitlab::GitAccess do
       before { project.team << [user, :guest] }
 
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_false }
+        it { subject.allowed?.should be_false }
       end
     end
 
@@ -33,22 +33,22 @@ describe Gitlab::GitAccess do
       end
 
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_false }
+        it { subject.allowed?.should be_false }
       end
     end
 
     describe 'without acccess to project' do
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_false }
+        it { subject.allowed?.should be_false }
       end
     end
   end
 
-  describe 'push_allowed?' do
+  describe 'push_access_check' do
     def protect_feature_branch
       create(:protected_branch, name: 'feature', project: project)
     end
@@ -117,9 +117,9 @@ describe Gitlab::GitAccess do
 
         permissions_matrix[role].each do |action, allowed|
           context action do
-            subject { access.push_allowed?(user, project, changes[action]) }
+            subject { access.push_access_check(user, project, changes[action]) }
 
-            it { should allowed ? be_true : be_false }
+            it { subject.allowed?.should allowed ? be_true : be_false }
           end
         end
       end
@@ -135,7 +135,7 @@ describe Gitlab::GitAccess do
       it 'returns false' do
         project.create_git_hook
         project.git_hook.update(commit_message_regex: "@only.com")
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').should be_false
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_false
       end
     end
 
@@ -146,12 +146,12 @@ describe Gitlab::GitAccess do
       end
 
       it 'returns false for non-member user' do
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').should be_false
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_false
       end
 
       it 'returns true if committer is a gitlab member' do
         create(:user, email: 'dmitriy.zaporozhets@gmail.com')
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').should be_true
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '6f6d7e7ed', '570e7b2ab').allowed?.should be_true
       end
     end
 
@@ -159,13 +159,13 @@ describe Gitlab::GitAccess do
       it 'returns false when filename is prohibited' do
         project.create_git_hook
         project.git_hook.update(file_name_regex: "jpg$")
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').should be_false
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_false
       end
 
       it 'returns true if file name is allowed' do
         project.create_git_hook
         project.git_hook.update(file_name_regex: "exe$")
-        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').should be_true
+        access.pass_git_hooks?(user, project, 'refs/heads/master', '913c66a37', '33f3729a4').allowed?.should be_true
       end
     end
   end
