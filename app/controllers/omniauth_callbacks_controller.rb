@@ -42,10 +42,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_omniauth
     if current_user
-      # Change a logged-in user's authentication method:
-      current_user.extern_uid = oauth['uid']
-      current_user.provider = oauth['provider']
-      current_user.save
+      # Add new authentication method
+      current_user.identities.find_or_create_by(extern_uid: oauth['uid'], provider: oauth['provider'])
       redirect_to profile_path
     else
       @user = Gitlab::OAuth::User.new(oauth)
@@ -53,6 +51,7 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       # Only allow properly saved users to login.
       if @user.persisted? && @user.valid?
+        # binding.pry
         sign_in_and_redirect(@user.gl_user)
       else
         error_message =
