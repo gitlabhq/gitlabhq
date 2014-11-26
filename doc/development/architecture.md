@@ -23,7 +23,7 @@ Users come to NginX and request actions to be done by workers in the office;
  - The goods in the warehouse (metadata, issues, merge requests etc);
  - The users coming to the front desk (permissions)
 
-**Redis** is a [communication board with “cubby holes”](http://cache3.asset-cache.net/gc/52392865-mail-lies-in-cubby-holes-in-the-trenton-post-gettyimages.jpg?v=1&c=IWSAsset&k=2&d=OCUJ5gVf7YdJQI2Xhkc2QMDTqXzgg%2Fa7CPCCcA9Ug%2BfL2iMdhkcAYaLLAievbZlwJI9YEbpjb1pB2Fh7Fge3%2FA%3D%3D) that can contain tasks for office workers;
+**Redis** is a [communication board with “cubby holes”](https://dev.gitlab.org/gitlab/gitlabhq/blob/master/doc/development/cubby_holes.jpg) that can contain tasks for office workers;
 
 **Sidekiq** is a worker that primarily handles sending out emails.
 It takes tasks from the Redis communication board;
