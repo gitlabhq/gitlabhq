@@ -1,6 +1,9 @@
 # Subscriber information
 
+
 Thank you for purchasing a GitLab subscription!
+
+For standard subscribers, please see [the Standard subscribers README](https://gitlab.com/standard/standard-subscriber-information/tree/master#README).
 
 If you would like to receive access to GitLab Enterprise Edition please create an account on https://gitlab.com/users/sign_up and send us the username. Note that your user will be visible to other Support Subscribers.
 
