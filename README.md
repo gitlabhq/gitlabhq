@@ -1,7 +1,5 @@
 # ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
-For upgrading from GitLab CE to GitLab EE there is [upgrade guide](doc/update/7.4-ce-to-ee.md)
-
 ## Subscriber onboarding information
 
 Thank you for purchasing a GitLab subscription!
