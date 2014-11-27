@@ -233,7 +233,7 @@ GEM
       activesupport (>= 4.0.1)
       haml (>= 3.1, < 5.0)
       railties (>= 4.0.1)
-    hashie (2.1.2)
+    hashie (2.0.5)
     hike (1.2.3)
     hipchat (1.4.0)
       httparty
@@ -516,6 +516,10 @@ GEM
     stamp (0.5.0)
     state_machine (1.2.0)
     stringex (2.5.1)
+    teamcity-ruby-client (1.2.0)
+      faraday (~> 0.8.5)
+      faraday_middleware (~> 0.9.0)
+      hashie (~> 2.0.0)
     temple (0.6.7)
     term-ansicolor (1.2.2)
       tins (~> 0.8)
@@ -696,6 +700,7 @@ DEPENDENCIES
   spring-commands-spinach (= 1.0.0)
   stamp
   state_machine
+  teamcity-ruby-client
   test_after_commit
   therubyracer
   thin
