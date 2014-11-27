@@ -6,7 +6,7 @@ For upgrading from GitLab CE to GitLab EE there is [upgrade guide](doc/update/7.
 
 Thank you for purchasing a GitLab subscription!
 
-For standard subscribers, please see [the Standard subscribers README](https://gitlab.com/standard/standard-subscriber-information/tree/master#README).
+For standard subscribers, please see **emergency contact info and other useful information** in [the Standard subscribers README](https://gitlab.com/standard/standard-subscriber-information/tree/master#README).
 
 If you would like to receive access to GitLab Enterprise Edition please create an account on https://gitlab.com/users/sign_up and send us the username. Note that your user will be visible to other Support Subscribers.
 
