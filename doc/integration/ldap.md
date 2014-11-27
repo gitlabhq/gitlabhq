@@ -271,3 +271,18 @@ sudo -u git -H bundle exec rake gitlab:migrate_ldap_providers RAILS_ENV=producti
 
 Now you can add new LDAP servers via `/etc/gitlab/gitlab.rb` (omnibus packages) or `gitlab.yml` (installations from source).
 Remember to run `sudo gitlab-ctl reconfigure` or `sudo service gitlab reload` for the new servers to become available.
+
+## Automatic Daily LDAP Sync
+
+GitLab Enterprise Edition will now automatically sync all LDAP members on a daily basis. You can configure the time that it happens.
+
+LDAP group synchronization in GitLab Enterprise Edition works by GitLab periodically updating the group memberships of _active_ GitLab users.
+If a GitLab user becomes _inactive_ however, their group memberships in GitLab can start to lag behind the LDAP server group memberships.
+Starting with GitLab 7.5 Enterprise Edition, GitLab will also update the LDAP group memberships of inactive users, by doing a daily LDAP check for _all_ GitLab users.
+
+> Example:
+John Doe leaves the company and is removed from the LDAP server.
+At this point he can no longer log in to GitLab 7.4 EE.
+But because he is no longer active on the GitLab EE server (he cannot log in!), his LDAP group memberships in GitLab no longer get updated, and he stays listed as a group member on the GitLab server.
+
+> Now with GitLab 7.5 Enterprise Edition, within 24 hours of John being removed from the LDAP server, his user will also stop being listed as member of any GitLab groups.
