@@ -35,7 +35,7 @@ production: &base
 
     ## Date & Time settings
     # Uncomment and customize if you want to change the default time zone of GitLab application.
-    # To see all available zones, run `bundle exec rake time:zones:all`
+    # To see all available zones, run `bundle exec rake time:zones:all RAILS_ENV=production`
     # time_zone: 'UTC'
 
     ## Email settings
