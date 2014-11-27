@@ -35,15 +35,13 @@ module Gitlab
       end
 
       def find_by_email
-        User.find_by(email: auth_hash.email)
+        ::User.find_by(email: auth_hash.email)
       end
 
       def update_user_attributes
-        gl_user.attributes = {
-          extern_uid: auth_hash.uid,
-          provider: auth_hash.provider,
-          email: auth_hash.email
-        }
+        gl_user.email = auth_hash.email
+        gl_user.identities.build(provider: auth_hash.provider, extern_uid: auth_hash.uid)
+        gl_user
       end
 
       def changed?

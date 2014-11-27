@@ -406,7 +406,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    extern_uid && provider.start_with?('ldap')
+    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+  end
+
+  def ldap_identity
+    @ldap_identity ||= identities.find_by(["provider LIKE ?", "ldap%"])
   end
 
   def accessible_deploy_keys

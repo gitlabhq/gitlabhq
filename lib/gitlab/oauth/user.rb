@@ -5,6 +5,8 @@
 #
 module Gitlab
   module OAuth
+    class ForbiddenAction < StandardError; end
+
     class User
       attr_accessor :auth_hash, :gl_user
 
@@ -27,9 +29,11 @@ module Gitlab
       def save
         unauthorized_to_create unless gl_user
 
-        gl_user.save!
         if needs_blocking?
+          gl_user.save!
           gl_user.block
+        else
+          gl_user.save!
         end
 
         log.info "(OAuth) saving user #{auth_hash.email} from login with extern_uid => #{auth_hash.uid}"
@@ -73,9 +77,10 @@ module Gitlab
       end
 
       def build_new_user
-        user = User.new(user_attributes)
+        user = ::User.new(user_attributes)
         user.skip_confirmation!
         user.identities.new(extern_uid: auth_hash.uid, provider: auth_hash.provider)
+        user
       end
 
       def user_attributes
@@ -92,8 +97,8 @@ module Gitlab
         Gitlab::AppLogger
       end
 
-      def raise_unauthorized_to_create
-        raise StandardError.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
+      def unauthorized_to_create
+        raise ForbiddenAction.new("Unauthorized to create user, signup disabled for #{auth_hash.provider}")
       end
     end
   end

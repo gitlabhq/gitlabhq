@@ -51,7 +51,6 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
       # Only allow properly saved users to login.
       if @user.persisted? && @user.valid?
-        # binding.pry
         sign_in_and_redirect(@user.gl_user)
       else
         error_message =
@@ -66,8 +65,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
       end
     end
-  rescue StandardError
-    flash[:notice] = "There's no such user!"
+  rescue ForbiddenAction => e
+    flash[:notice] = e.message
     redirect_to new_user_session_path
   end
 

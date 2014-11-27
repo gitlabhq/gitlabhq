@@ -10,10 +10,10 @@ module ProfileHelper
   end
 
   def show_profile_social_tab?
-    enabled_social_providers.any? && !current_user.ldap_user?
+    enabled_social_providers.any?
   end
 
   def show_profile_remove_tab?
-    gitlab_config.signup_enabled && !current_user.ldap_user?
+    gitlab_config.signup_enabled
   end
 end
