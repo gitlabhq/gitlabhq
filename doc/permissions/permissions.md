@@ -19,6 +19,7 @@ If a user is a GitLab administrator they receive all permissions.
 | Create new merge request              |         |            | ✓           | ✓        | ✓      |
 | Create new branches                   |         |            | ✓           | ✓        | ✓      |
 | Push to non-protected branches        |         |            | ✓           | ✓        | ✓      |
+| Force push to non-protected branches  |         |            | ✓           | ✓        | ✓      |
 | Remove non-protected branches         |         |            | ✓           | ✓        | ✓      |
 | Add tags                              |         |            | ✓           | ✓        | ✓      |
 | Write a wiki                          |         |            | ✓           | ✓        | ✓      |
@@ -35,6 +36,8 @@ If a user is a GitLab administrator they receive all permissions.
 | Switch visibility level               |         |            |             |          | ✓      |
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
+| Force push to protected branches      |         |            |             |          |        |
+| Remove protected branches            |          |            |             |          |        |
 
 ## Group
 
