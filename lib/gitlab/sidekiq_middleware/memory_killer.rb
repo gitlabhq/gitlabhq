@@ -12,10 +12,13 @@ module Gitlab
         Sidekiq.logger.warn "current RSS #{current_rss} exceeds maximum RSS "\
          "#{max_rss}"
         Sidekiq.logger.warn "sending SIGUSR1 to PID #{Process.pid}"
+        # SIGUSR1 tells Sidekiq to stop accepting new jobs
         Process.kill('SIGUSR1', Process.pid)
 
         Sidekiq.logger.warn "spawning thread that will send SIGTERM to PID "\
           "#{Process.pid} in #{graceful_shutdown_wait} seconds"
+        # Send the final shutdown signal to Sidekiq from a separate thread so
+        # that the current job can finish
         Thread.new do
           sleep(graceful_shutdown_wait)
           Process.kill('SIGTERM', Process.pid)
