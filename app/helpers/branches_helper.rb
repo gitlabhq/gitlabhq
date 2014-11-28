@@ -19,4 +19,14 @@ module BranchesHelper
 
     current_user.can?(action, project)
   end
+
+  def can_rebase?(project, branch_name)
+    if project.protected_branch? branch_name
+      can?(current_user, :push_code_to_protected_branches, project)
+    elsif can?(current_user, :push_code, project)
+      true
+    else
+      false
+    end
+  end
 end

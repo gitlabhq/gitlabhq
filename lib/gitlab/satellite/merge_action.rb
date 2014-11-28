@@ -35,7 +35,6 @@ module Gitlab
           # If unsuccesful, continue with regular merge.
           if merge_request.should_rebase
             if rebase_in_satellite!(merge_repo)
-              merge_repo.git.push(default_options, :origin, merge_request.target_branch)
               remove_source_branch(merge_repo)
               return true
             end
@@ -154,21 +153,20 @@ module Gitlab
       # target_branch: master
       #
       # git checkout feature
-      # git merge master
-      # git rebase master
-      # git checkout master
+      # git pull --rebase origin master
+      # git push origin feature:master
       # git merge feature
       # git push remote master
       def rebase_in_satellite!(repo)
         update_satellite_source_and_target!(repo)
         repo.git.checkout(default_options({b: true}), merge_request.source_branch, "source/#{merge_request.source_branch}")
-        repo.git.merge(default_options({no_ff: true}), "origin/#{merge_request.target_branch}")
 
-        output, status = popen(%W(git rebase origin/#{merge_request.target_branch}), repo.working_dir)
+        output, status = popen(%W(git pull --rebase origin #{merge_request.target_branch}), repo.working_dir)
         if status == 0
           Gitlab::AppLogger.info "Rebasing before merge in #{merge_request.source_project.path_with_namespace} MR!#{merge_request.id}: #{output}."
-          repo.git.checkout(default_options, merge_request.target_branch)
-          repo.git.merge(default_options, "source/#{merge_request.source_branch}")
+          if merge_request.source_branch && merge_request.target_branch
+            repo.git.push(default_options, "origin", "#{merge_request.source_branch}:#{merge_request.target_branch}")
+          end
         else
           repo.git.rebase(default_options, "--abort")
           Gitlab::AppLogger.info "Rebasing in in #{merge_request.source_project.path_with_namespace} MR!#{merge_request.id} aborted, rebase manually."
