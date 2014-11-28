@@ -122,6 +122,7 @@ gem 'slim'
 gem 'sinatra', require: nil
 gem 'sidekiq', '~> 3.3'
 gem 'sidetiq', '0.6.3'
+Update Sidekiq to 2.17.8
 
 # HTTP requests
 gem "httparty"
