@@ -24,6 +24,11 @@
                 = label_tag :should_remove_source_branch, class: "checkbox" do
                   = check_box_tag :should_remove_source_branch
                   Remove source-branch
+            - if @merge_request.source_project.merge_requests_rebase_enabled && !@merge_request.for_fork?
+              .remove_branch_holder.pull-left
+                = label_tag :should_rebase, class: "checkbox" do
+                  = check_box_tag :should_rebase
+                  Rebase before merge
             .js-toggle-container
               %label
                 %i.fa.fa-edit

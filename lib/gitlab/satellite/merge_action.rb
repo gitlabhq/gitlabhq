@@ -2,6 +2,8 @@ module Gitlab
   module Satellite
     # GitLab server-side merge
     class MergeAction < Action
+      include Gitlab::Popen
+
       attr_accessor :merge_request
 
       def initialize(user, merge_request)
@@ -27,6 +29,16 @@ module Gitlab
       def merge!(merge_commit_message = nil)
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
+
+          if merge_request.should_rebase
+            if rebase_in_satellite!(merge_repo)
+              merge_repo.git.push(default_options, :origin, merge_request.target_branch)
+              return true
+            else
+              prepare_satellite!(merge_repo)
+            end
+          end
+
           if merge_in_satellite!(merge_repo, merge_commit_message)
             # push merge back to bare repo
             # will raise CommandFailed when push fails
@@ -129,6 +141,25 @@ module Gitlab
         # merge the source branch into the satellite
         # will raise CommandFailed when merge fails
         repo.git.merge(default_options({no_ff: true}), "-m#{message}", "source/#{merge_request.source_branch}")
+      rescue Grit::Git::CommandFailed => ex
+        handle_exception(ex)
+      end
+
+      def rebase_in_satellite!(repo)
+        update_satellite_source_and_target!(repo)
+        repo.git.checkout(default_options({b: true}), merge_request.source_branch, "source/#{merge_request.source_branch}")
+        repo.git.merge(default_options({no_ff: true}), "origin/#{merge_request.target_branch}")
+
+        output, status = popen(%W(git rebase origin/#{merge_request.target_branch}), repo.working_dir)
+        if status == 0
+          Gitlab::AppLogger.info "Rebasing before merge in #{merge_request.source_project.path_with_namespace} MR!#{merge_request.id}: #{output}."
+          repo.git.checkout(default_options, merge_request.target_branch)
+          repo.git.merge(default_options, "source/#{merge_request.source_branch}")
+        else
+          repo.git.rebase(default_options, "--abort")
+          Gitlab::AppLogger.info "Rebasing in in #{merge_request.source_project.path_with_namespace} MR!#{merge_request.id} aborted, rebase manually."
+          false
+        end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
