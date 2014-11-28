@@ -4,7 +4,7 @@ v 7.6.0
   - Add CRON=1 backup setting for quiet backups
   -
   -
-  -
+  - Add optional Sidekiq MemoryKiller middleware (enabled via SIDEKIQ_MAX_RSS env variable)
   -
   -
   -
