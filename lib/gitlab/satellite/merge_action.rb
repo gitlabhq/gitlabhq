@@ -30,12 +30,14 @@ module Gitlab
         in_locked_and_timed_satellite do |merge_repo|
           prepare_satellite!(merge_repo)
 
+          # If rebase before merge
+          # Attempt a rebase and return if succesful.
+          # If unsuccesful, continue with regular merge.
           if merge_request.should_rebase
             if rebase_in_satellite!(merge_repo)
               merge_repo.git.push(default_options, :origin, merge_request.target_branch)
+              remove_source_branch(merge_repo)
               return true
-            else
-              prepare_satellite!(merge_repo)
             end
           end
 
@@ -45,10 +47,7 @@ module Gitlab
             merge_repo.git.push(default_options, :origin, merge_request.target_branch)
 
             # remove source branch
-            if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch) && !merge_request.for_fork?
-              # will raise CommandFailed when push fails
-              merge_repo.git.push(default_options, :origin, ":#{merge_request.source_branch}")
-            end
+            remove_source_branch(merge_repo)
             # merge, push and branch removal successful
             true
           end
@@ -145,6 +144,21 @@ module Gitlab
         handle_exception(ex)
       end
 
+      # Rebases before merging the source_branch into the target_branch in the satellite.
+      # Before starting the rebase, clears out the satellite.
+      # Returns false if rebase cannot be done cleanly and resets the satellite.
+      # Returns true otherwise.
+
+      # Eg. of clean rebase
+      # source_branch: feature
+      # target_branch: master
+      #
+      # git checkout feature
+      # git merge master
+      # git rebase master
+      # git checkout master
+      # git merge feature
+      # git push remote master
       def rebase_in_satellite!(repo)
         update_satellite_source_and_target!(repo)
         repo.git.checkout(default_options({b: true}), merge_request.source_branch, "source/#{merge_request.source_branch}")
@@ -158,6 +172,7 @@ module Gitlab
         else
           repo.git.rebase(default_options, "--abort")
           Gitlab::AppLogger.info "Rebasing in in #{merge_request.source_project.path_with_namespace} MR!#{merge_request.id} aborted, rebase manually."
+          prepare_satellite!(repo)
           false
         end
       rescue Grit::Git::CommandFailed => ex
@@ -169,6 +184,15 @@ module Gitlab
         repo.remote_add('source', merge_request.source_project.repository.path_to_repo)
         repo.remote_fetch('source')
         repo.git.checkout(default_options({b: true}), merge_request.target_branch, "origin/#{merge_request.target_branch}")
+      rescue Grit::Git::CommandFailed => ex
+        handle_exception(ex)
+      end
+
+      def remove_source_branch(repo)
+        if merge_request.should_remove_source_branch && !project.root_ref?(merge_request.source_branch) && !merge_request.for_fork?
+          # will raise CommandFailed when push fails
+          repo.git.push(default_options, :origin, ":#{merge_request.source_branch}")
+        end
       rescue Grit::Git::CommandFailed => ex
         handle_exception(ex)
       end
