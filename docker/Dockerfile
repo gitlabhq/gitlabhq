@@ -1,5 +1,5 @@
-# Data: docker run --name gitlab_data genezys/gitlab:7.5.1 /bin/true
-# Run:  docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data genezys/gitlab:7.5.1
+# Data: docker run --name gitlab_data USER/IMAGE:TAG /bin/true
+# Run:  docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data USER/IMAGE:TAG
 
 FROM ubuntu:14.04
 MAINTAINER Vincent Robert <vincent.robert@genezys.net>
