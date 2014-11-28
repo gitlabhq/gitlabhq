@@ -1,5 +1,9 @@
-# Data: docker run --name gitlab_data USER/IMAGE:TAG /bin/true
-# Run:  docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data USER/IMAGE:TAG
+# At this moment GitLab doesn't have official Docker images.
+# Build your own based on the Omnibus packages with the following commands.
+# The first commands assumes you're in the GitLab repo root directory.
+# Build: sudo docker build --tag gitlab_image docker/.
+# Data: sudo docker run --name gitlab_data gitlab /bin/true
+# Run: sudo docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab_image
 
 FROM ubuntu:14.04
 MAINTAINER Vincent Robert <vincent.robert@genezys.net>
