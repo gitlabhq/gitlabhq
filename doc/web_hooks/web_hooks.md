@@ -119,6 +119,7 @@ Triggered when a new merge request is created or an existing merge request was u
     "merge_status": "unchecked",
     "target_project_id": 14,
     "iid": 1,
+    "url": "http://example.com/awesome_space/awesome_project/merge_requests/1",
     "description": "",
     "source": {
       "name": "awesome_project",
