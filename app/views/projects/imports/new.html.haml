@@ -1,0 +1,21 @@
+%h3.page-title
+  - if @project.import_failed?
+    Import failed. Retry?
+  - else
+    Import repository
+
+%hr
+
+= form_for @project, url: project_import_path(@project), method: :post, html: { class: 'form-horizontal' } do |f|
+  .form-group.import-url-data
+    = f.label :import_url, class: 'control-label' do
+      %span Import existing git repo
+    .col-sm-10
+      = f.text_field :import_url, class: 'form-control', placeholder: 'https://github.com/randx/six.git'
+      .bs-callout.bs-callout-info
+        This URL must be publicly accessible or you can add a username and password like this: https://username:password@gitlab.com/company/project.git.
+        %br
+        The import will time out after 4 minutes. For big repositories, use a clone/push combination.
+        For SVN repositories, check #{link_to "this migrating from SVN doc.", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}
+  .form-actions
+    = f.submit 'Start import', class: "btn btn-create", tabindex: 4

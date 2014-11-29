@@ -136,7 +136,7 @@ class Project < ActiveRecord::Base
 
   state_machine :import_status, initial: :none do
     event :import_start do
-      transition :none => :started
+      transition [:none, :finished] => :started
     end
 
     event :import_finish do
