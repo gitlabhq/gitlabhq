@@ -19,10 +19,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = ::Projects::CreateService.new(current_user, project_params).execute
-    flash[:notice] = 'Project was successfully created.' if @project.saved?
 
-    respond_to do |format|
-      format.js
+    if @project.saved?
+      redirect_to project_path(@project), notice: 'Project was successfully created.'
+    else
+      render 'new'
     end
   end
 
