@@ -4,7 +4,7 @@ class ProjectsController < ApplicationController
   before_filter :repository, except: [:new, :create]
 
   # Authorize
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :retry_import]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
 
   layout 'navless', only: [:new, :create, :fork]
   before_filter :set_title, only: [:new, :create]
@@ -19,10 +19,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = ::Projects::CreateService.new(current_user, project_params).execute
-    flash[:notice] = 'Project was successfully created.' if @project.saved?
 
-    respond_to do |format|
-      format.js
+    if @project.saved?
+      redirect_to project_path(@project), notice: 'Project was successfully created.'
+    else
+      render 'new'
     end
   end
 
@@ -47,7 +48,7 @@ class ProjectsController < ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to import_project_path(@project)
+      redirect_to project_import_path(@project)
       return
     end
 
@@ -60,37 +61,20 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if @project.empty_repo?
-          render "projects/empty", layout: user_layout
+        if @project.repository_exists?
+          if @project.empty_repo?
+            render "projects/empty", layout: user_layout
+          else
+            @last_push = current_user.recent_push(@project.id) if current_user
+            render :show, layout: user_layout
+          end
         else
-          @last_push = current_user.recent_push(@project.id) if current_user
-          render :show, layout: user_layout
+          render "projects/no_repo", layout: user_layout
         end
       end
+
       format.json { pager_json("events/_events", @events.count) }
     end
-  end
-
-  def import
-    if @project.import_finished?
-      redirect_to @project
-      return
-    end
-  end
-
-  def retry_import
-    unless @project.import_failed?
-      redirect_to import_project_path(@project)
-    end
-
-    @project.import_url = project_params[:import_url]
-
-    if @project.save
-      @project.reload
-      @project.import_retry
-    end
-
-    redirect_to import_project_path(@project)
   end
 
   def destroy

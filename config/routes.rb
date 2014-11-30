@@ -186,8 +186,6 @@ Gitlab::Application.routes.draw do
       post :upload_image
       post :toggle_star
       get :autocomplete_sources
-      get :import
-      put :retry_import
     end
 
     scope module: :projects do
@@ -232,8 +230,9 @@ Gitlab::Application.routes.draw do
       end
 
       resource :fork, only: [:new, :create]
+      resource :import, only: [:new, :create, :show]
 
-      resource :repository, only: [:show] do
+      resource :repository, only: [:show, :create] do
         member do
           get "archive", constraints: { format: Gitlab::Regex.archive_formats_regex }
         end
