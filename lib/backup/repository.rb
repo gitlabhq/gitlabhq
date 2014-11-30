@@ -79,16 +79,20 @@ module Backup
 
         wiki = ProjectWiki.new(project)
 
+        $progress.print " * #{wiki.path_with_namespace} ... "
+
         if File.exists?(path_to_bundle(wiki))
-          $progress.print " * #{wiki.path_with_namespace} ... "
           cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
-          if system(*cmd, silent)
-            $progress.puts " [DONE]".green
-          else
-            puts " [FAILED]".red
-            puts "failed: #{cmd.join(' ')}"
-            abort 'Restore failed'
-          end
+        else
+          cmd = %W(git init --bare #{path_to_repo(wiki)})
+        end
+
+        if system(*cmd, silent)
+          $progress.puts " [DONE]".green
+        else
+          puts " [FAILED]".red
+          puts "failed: #{cmd.join(' ')}"
+          abort 'Restore failed'
         end
       end
 

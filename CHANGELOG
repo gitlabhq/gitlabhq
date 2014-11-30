@@ -2,7 +2,7 @@ v 7.6.0
   - Fork repository to groups
   - New rugged version
   - Add CRON=1 backup setting for quiet backups
-  -
+  - Fix failing wiki restore
   -
   - Add optional Sidekiq MemoryKiller middleware (enabled via SIDEKIQ_MAX_RSS env variable)
   -
