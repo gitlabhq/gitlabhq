@@ -11,7 +11,7 @@ v 7.6.0
   - Added ability to create empty repo or import existing one if project does not have repository
   -
   -
-  -
+  - Reactivate highlight.js language autodetection
   -
   -
 
