@@ -60,6 +60,7 @@ module Backup
 
       Project.find_each(batch_size: 1000) do |project|
         $progress.print " * #{project.path_with_namespace} ... "
+        Properly fix wiki restore.
 
         project.namespace.ensure_dir_exist if project.namespace
 
@@ -81,7 +82,11 @@ module Backup
         wiki = ProjectWiki.new(project)
 
         if File.exists?(path_to_bundle(wiki))
+<<<<<<< HEAD
           $progress.print " * #{wiki.path_with_namespace} ... "
+=======
+          print " * #{wiki.path_with_namespace} ... "
+>>>>>>> Properly fix wiki restore.
 
           # If a wiki bundle exists, first remove the empty repo
           # that was initialized with ProjectWiki.new() and then
@@ -90,7 +95,11 @@ module Backup
           cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
 
           if system(*cmd, silent)
+<<<<<<< HEAD
             $progress.puts " [DONE]".green
+=======
+            puts " [DONE]".green
+>>>>>>> Properly fix wiki restore.
           else
             puts " [FAILED]".red
             puts "failed: #{cmd.join(' ')}"
