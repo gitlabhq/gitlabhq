@@ -59,7 +59,7 @@ module Backup
       FileUtils.mkdir_p(repos_path)
 
       Project.find_each(batch_size: 1000) do |project|
-        $progress.print "#{project.path_with_namespace} ... "
+        $progress.print " * #{project.path_with_namespace} ... "
 
         project.namespace.ensure_dir_exist if project.namespace
 
@@ -79,20 +79,22 @@ module Backup
 
         wiki = ProjectWiki.new(project)
 
-        $progress.print " * #{wiki.path_with_namespace} ... "
-
         if File.exists?(path_to_bundle(wiki))
-          cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
-        else
-          cmd = %W(git init --bare #{path_to_repo(wiki)})
-        end
+          $progress.print " * #{wiki.path_with_namespace} ... "
 
-        if system(*cmd, silent)
-          $progress.puts " [DONE]".green
-        else
-          puts " [FAILED]".red
-          puts "failed: #{cmd.join(' ')}"
-          abort 'Restore failed'
+          # If a wiki bundle exists, first remove the empty repo
+          # that was initialized with ProjectWiki.new() and then
+          # try to restore with 'git clone --bare'.
+          FileUtils.rm_rf(path_to_repo(wiki))
+          cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
+
+          if system(*cmd, silent)
+            $progress.puts " [DONE]".green
+          else
+            puts " [FAILED]".red
+            puts "failed: #{cmd.join(' ')}"
+            abort 'Restore failed'
+          end
         end
       end
 
