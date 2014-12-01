@@ -46,6 +46,25 @@ describe Gitlab::GitAccess do
         it { subject.allowed?.should be_false }
       end
     end
+
+    describe 'deploy key permissions' do
+      let(:key) { create(:deploy_key) }
+
+      context 'pull code' do
+        context 'allowed' do
+          before { key.projects << project }
+          subject { access.download_access_check(key, project) }
+
+          it { subject.allowed?.should be_true }
+        end
+
+        context 'denied' do
+          subject { access.download_access_check(key, project) }
+
+          it { subject.allowed?.should be_false }
+        end
+      end
+    end
   end
 
   describe 'push_access_check' do
