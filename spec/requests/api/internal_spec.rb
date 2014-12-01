@@ -26,7 +26,7 @@ describe API::API, api: true  do
     end
   end
 
-  describe "GET /internal/allowed" do
+  describe "POST /internal/allowed" do
     context "access granted" do
       before do
         project.team << [user, :developer]
@@ -140,7 +140,7 @@ describe API::API, api: true  do
           archive(key, project)
 
           response.status.should == 200
-          response.body.should == 'true'
+          JSON.parse(response.body)["status"].should be_true
         end
       end
 
@@ -149,8 +149,26 @@ describe API::API, api: true  do
           archive(key, project)
 
           response.status.should == 200
-          response.body.should == 'false'
+          JSON.parse(response.body)["status"].should be_false
         end
+      end
+    end
+
+    context 'project does not exist' do
+      it do
+        pull(key, OpenStruct.new(path_with_namespace: 'gitlab/notexists'))
+
+        response.status.should == 200
+        JSON.parse(response.body)["status"].should be_false
+      end
+    end
+
+    context 'user does not exist' do
+      it do
+        pull(OpenStruct.new(id: 0), project)
+
+        response.status.should == 200
+        JSON.parse(response.body)["status"].should be_false
       end
     end
   end
