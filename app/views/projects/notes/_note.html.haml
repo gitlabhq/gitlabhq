@@ -18,6 +18,8 @@
               %i.fa.fa-trash-o.cred
               Remove
         = link_to_member(@project, note.author, avatar: false)
+        %span.author-username
+          = '@' + note.author.username
         %span.note-last-update
           = note_timestamp(note)
 
