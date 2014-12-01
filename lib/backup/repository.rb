@@ -55,7 +55,7 @@ module Backup
       FileUtils.mkdir_p(repos_path)
 
       Project.find_each(batch_size: 1000) do |project|
-        print " * #{project.path_with_namespace} ... "
+        print "#{project.path_with_namespace} ... "
 
         project.namespace.ensure_dir_exist if project.namespace
 
