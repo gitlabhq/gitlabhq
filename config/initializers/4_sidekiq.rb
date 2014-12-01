@@ -14,7 +14,7 @@ Sidekiq.configure_server do |config|
   }
 
   config.server_middleware do |chain|
-    chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger
+    chain.add Gitlab::SidekiqMiddleware::ArgumentsLogger if ENV['SIDEKIQ_LOG_ARGUMENTS']
     chain.add Gitlab::SidekiqMiddleware::MemoryKiller if ENV['SIDEKIQ_MAX_RSS']
   end
 end
