@@ -3,6 +3,7 @@ v 7.5.1
 
 v 7.5.2
   - Don't log Sidekiq arguments by default
+  - Fix restore of wiki repositories from backups
 
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
