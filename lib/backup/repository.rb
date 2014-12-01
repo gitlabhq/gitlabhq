@@ -61,6 +61,7 @@ module Backup
       Project.find_each(batch_size: 1000) do |project|
         $progress.print " * #{project.path_with_namespace} ... "
         Properly fix wiki restore.
+        Remove unnecessary backported change
 
         project.namespace.ensure_dir_exist if project.namespace
 
