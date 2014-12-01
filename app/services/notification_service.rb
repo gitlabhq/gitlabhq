@@ -107,7 +107,7 @@ class NotificationService
   # Notify new user with email after creation
   def new_user(user, token = nil)
     # Don't email omniauth created users
-    mailer.new_user_email(user.id, user.password, token) unless user.extern_uid?
+    mailer.new_user_email(user.id, token) unless user.extern_uid?
   end
 
   # Notify users on new note in system
