@@ -2,7 +2,7 @@
   - if project_nav_tab? :issues
     = nav_link(controller: :issues) do
       = link_to project_issues_path(@project), class: "tab" do
-        Browse Issues
+        Issues
   - if project_nav_tab? :merge_requests
     = nav_link(controller: :merge_requests) do
       = link_to project_merge_requests_path(@project), class: "tab" do
@@ -19,7 +19,7 @@
 
   - if current_controller?(:issues)
     - if current_user
-      %li
+      %li.hidden-xs
         = link_to project_issues_path(@project, :atom, { private_token: current_user.private_token }) do
           %i.fa.fa-rss
 
@@ -45,8 +45,8 @@
       .pull-right
         %button.btn.btn-default.sidebar-expand-button
           %i.icon.fa.fa-list
-            
+
         - if can? current_user, :write_merge_request, @project
-          = link_to new_project_merge_request_path(@project), class: "pull-right btn btn-new", title: "New Merge Request" do
+          = link_to new_project_merge_request_path(@project), class: "btn btn-new pull-left", title: "New Merge Request" do
             %i.fa.fa-plus
             New Merge Request
