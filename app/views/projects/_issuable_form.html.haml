@@ -49,7 +49,7 @@
       - else
         %span.light No open milestones available.
       &nbsp;
-      = link_to 'Create new milestone', new_project_milestone_path(issuable.project)
+      = link_to 'Create new milestone', new_project_milestone_path(issuable.project), target: :blank
 .form-group
   = f.label :label_ids, class: 'control-label' do
     %i.icon-tag
@@ -61,7 +61,7 @@
     - else
       %span.light No labels yet.
     &nbsp;
-    = link_to 'Create new label', new_project_label_path(issuable.project)
+    = link_to 'Create new label', new_project_label_path(issuable.project), target: :blank
 
 .form-actions
   - if issuable.new_record?
