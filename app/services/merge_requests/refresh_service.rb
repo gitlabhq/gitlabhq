@@ -3,6 +3,7 @@ module MergeRequests
     def execute(oldrev, newrev, ref)
       return true unless ref =~ /heads/
 
+      @oldrev, @newrev = oldrev, newrev
       @branch_name = ref.gsub("refs/heads/", "")
       @fork_merge_requests = @project.fork_merge_requests.opened
       @commits = @project.repository.commits_between(oldrev, newrev)
@@ -35,6 +36,10 @@ module MergeRequests
       end
     end
 
+    def force_push?
+      Gitlab::ForcePushCheck.force_push?(@project, @oldrev, @newrev)
+    end
+
     # Refresh merge request diff if we push to source or target branch of merge request
     # Note: we should update merge requests from forks too
     def reload_merge_requests
@@ -43,8 +48,22 @@ module MergeRequests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
-        merge_request.reload_code
-        merge_request.mark_as_unchecked
+
+        if merge_request.source_branch == @branch_name || force_push?
+          merge_request.reload_code
+          merge_request.mark_as_unchecked
+        else
+          mr_commit_ids = merge_request.commits.map(&:id)
+          push_commit_ids = @commits.map(&:id)
+          matches = mr_commit_ids & push_commit_ids
+
+          if matches.any?
+            merge_request.reload_code
+            merge_request.mark_as_unchecked
+          else
+            merge_request.mark_as_unchecked
+          end
+        end
       end
     end
 
