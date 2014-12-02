@@ -14,6 +14,12 @@ v 7.6.0
   - Reactivate highlight.js language autodetection
   - Mobile UI improvements
   -
+  - Change maximum avatar file size from 100KB to 200KB
+  -
+  -
+  -
+  -
+  -
 
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
