@@ -8,7 +8,7 @@ GitLab offers git repository management, code reviews, issue tracking, activity 
 ![GitLab Logo](https://gitlab.com/uploads/appearance/logo/1/brand_logo-c37eb221b456bb4b472cc1084480991f.png)
 
 
-How to use this image.
+How to use this image
 ======================
 
 I recommend creating a data volume container first, this will simplify migrations and backups:
@@ -28,7 +28,7 @@ Then run GitLab:
 You can then go to `http://localhost:8080/` (or most likely `http://192.168.59.103:8080/` if you use boot2docker). Next time, you can just use `docker start gitlab` and `docker stop gitlab`.
 
 
-How to configure GitLab.
+How to configure GitLab
 ========================
 
 This container uses the official Omnibus GitLab distribution, so all configuration is done in the unique configuration file `/etc/gitlab/gitlab.rb`.
@@ -40,3 +40,7 @@ To access GitLab configuration, you can start a new container using the shared d
 **Note** that GitLab will reconfigure itself **at each container start.** You will need to restart the container to reconfigure your GitLab.
 
 You can find all available options in [GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
+
+Troubleshooting
+=========================
+Please see the [troubleshooting](troubleshooting.md) file in this directory.

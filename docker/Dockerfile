@@ -4,7 +4,6 @@
 # sudo docker build --tag gitlab_image docker/
 # sudo docker run --name gitlab_data gitlab_image /bin/true
 # sudo docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab_image
-# sudo docker run -t --rm --volumes-from gitlab_data ubuntu tail -f /var/log/gitlab/reconfigure.log
 
 FROM ubuntu:14.04
 MAINTAINER Vincent Robert <vincent.robert@genezys.net>
@@ -12,8 +11,9 @@ MAINTAINER Vincent Robert <vincent.robert@genezys.net>
 # Install required packages
 RUN apt-get update -q \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
-    	openssh-server \
-    	wget \
+      openssh-server \
+      wget \
+      vim \
     && apt-get clean
 
 # Download & Install GitLab
