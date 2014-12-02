@@ -25,6 +25,7 @@
         = @search_results.notes_count
   %li{class: ("active" if @scope == 'wiki_blobs')}
     = link_to search_filter_path(scope: 'wiki_blobs') do
+      %i.fa.fa-book
       Wiki
       .pull-right
         = @search_results.wiki_blobs_count
