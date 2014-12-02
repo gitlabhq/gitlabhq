@@ -40,7 +40,11 @@ sudo docker run -ti -e TERM=linux --name gitlab --publish 8080:80 --publish 2222
 # Configure GitLab to redirect PostgreSQL logs
 echo "postgresql['log_directory'] = '/var/log/gitlab/postgresql'" >> /etc/gitlab/gitlab.rb
 
+# Prevent Postgres from allocating 25% of total memory
+echo "postgresql['shared_buffers'] = '100MB'" >> /etc/gitlab/gitlab.rb
+
 # You can now start GitLab manually from Bash (in the background)
+# Maybe the command below is still missing something to run in the background
 gitlab-ctl reconfigure > /var/log/gitlab/reconfigure.log & /opt/gitlab/embedded/bin/runsvdir-start &
 
 # And tail the logs (PostgreSQL log may not exist immediately)
