@@ -286,3 +286,44 @@ At this point he can no longer log in to GitLab 7.4 EE.
 But because he is no longer active on the GitLab EE server (he cannot log in!), his LDAP group memberships in GitLab no longer get updated, and he stays listed as a group member on the GitLab server.
 
 > Now with GitLab 7.5 Enterprise Edition, within 24 hours of John being removed from the LDAP server, his user will also stop being listed as member of any GitLab groups.
+
+## LDAP Synchronization
+
+LDAP membership is checked for a GitLab user:
+
+- when they sign in to the GitLab instance
+- on a daily basis
+- on any request that they do, once the LDAP cache has expired (default 1 hour, configurable, cache is per user)
+
+If you want a shorter or longer LDAP sync time, you can easily set this with the `sync_time` attribute in your config.
+
+For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitlab.rb` to your LDAP config.
+A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
+
+```
+gitlab_rails['ldap_servers'] = [
+  {
+    "id" => "main",
+    "label" => "LDAP",
+    "host" => "hostname of LDAP server",
+    "port" => 389,
+    "uid" => "sAMAccountName",
+    "method" => "plain", # 'ssl' or 'plain'
+    "bind_dn" => "CN=query user,CN=Users,DC=mycorp,DC=com",
+    "password" => "query user password",
+    "active_directory" => true,
+    "allow_username_or_email_login" => true,
+    "base" => "DC=mycorp,DC=com",
+    "group_base" => "OU=groups,DC=mycorp,DC=com",
+    "admin_group" => "",
+    "sync_ssh_keys" => false,
+    "sync_time" => 1800
+  }
+]
+```
+
+Here, `sync_time` is set to `1800` seconds, meaning the LDAP cache will expire every 30 minutes.
+
+For manual GitLab installations, simply uncomment the `sync_time` entry in your `gitlab.yml` and set it to the value you desire.
+
+Please note that changing the LDAP sync time can influence the performance of your GitLab instance.
