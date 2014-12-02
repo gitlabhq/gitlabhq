@@ -21,6 +21,9 @@ v 7.6.0
   -
   -
 
+v 7.5.2
+  - Don't log Sidekiq arguments by default
+
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration in gitlab.yml (Sullivan Senechal)
