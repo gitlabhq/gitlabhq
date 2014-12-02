@@ -51,10 +51,11 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab 
 ### Memory
 
 - 512MB is the absolute minimum but we do not recommend this amount of memory.
-You will either need to configure 512MB or 1.5GB of swap space.
-With 512MB of swap space you must configure only one unicorn worker.
+You will need to configure minimum 1.5GB of swap space.
+With 1.5GB of swap space you must configure only one unicorn worker.
 With one unicorn worker only git over ssh access will work because the git over HTTP access requires two running workers (one worker to receive the user request and one worker for the authorization check).
 If you use SSD storage and configure 1.5GB of swap space you can use two Unicorn workers, this will allow HTTP access but it will still be slow.
+Consider installing GitLab on Ubuntu as installation on CentOS could be unsuccessful with this amount of memory.
 - 1GB RAM + 1GB swap supports up to 100 users
 - **2GB RAM** is the **recommended** memory size and supports up to 500 users
 - 4GB RAM supports up to 2,000 users
