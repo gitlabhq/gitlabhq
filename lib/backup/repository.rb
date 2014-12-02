@@ -76,10 +76,18 @@ module Backup
 
         if File.exists?(path_to_bundle(wiki))
           print " * #{wiki.path_with_namespace} ... "
-          if system(*%W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)}), silent)
+
+          # If a wiki bundle exists, first remove the empty repo
+          # that was initialized with ProjectWiki.new() and then
+          # try to restore with 'git clone --bare'.
+          FileUtils.rm_rf(path_to_repo(wiki))
+          cmd = %W(git clone --bare #{path_to_bundle(wiki)} #{path_to_repo(wiki)})
+
+          if system(*cmd, silent)
             puts " [DONE]".green
           else
             puts " [FAILED]".red
+            puts "failed: #{cmd.join(' ')}"
             abort 'Restore failed'
           end
         end
