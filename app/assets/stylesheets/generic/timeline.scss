@@ -75,3 +75,20 @@
     }
   }
 }
+
+@media (max-width: $screen-xs-max) {
+  .timeline {
+    &:before {
+      background: none;
+    }
+    .timeline-entry .timeline-entry-inner {
+      .timeline-icon {
+        display: none;
+      }
+
+      .timeline-content {
+        margin-left: 0;
+      }
+    }
+  }
+}

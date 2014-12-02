@@ -7,7 +7,7 @@
         %i.fa.fa-check
         MERGED
     - else
-      %span.pull-right
+      %span.pull-right.hidden-xs
         - if merge_request.for_fork?
           %span.light
             #{merge_request.source_project_namespace}:
@@ -31,7 +31,7 @@
       %span.task-status
         = merge_request.task_status
 
-    .pull-right
+    .pull-right.hidden-xs
       %small updated #{time_ago_with_tooltip(merge_request.updated_at, 'bottom', 'merge_request_updated_ago')}
 
     .merge-request-labels

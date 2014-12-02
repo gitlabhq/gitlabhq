@@ -151,4 +151,14 @@ form.edit-issue {
       }
     }
   }
+
+  .issue {
+    &:hover  .issue-actions {
+      display: none !important;
+    }
+
+    .issue-updated-at {
+      display: none;
+    }
+  }
 }

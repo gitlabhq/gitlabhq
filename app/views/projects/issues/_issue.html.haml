@@ -28,7 +28,7 @@
       %span.task-status
         = issue.task_status
 
-    .pull-right
+    .pull-right.issue-updated-at
       %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
 
     .issue-labels
