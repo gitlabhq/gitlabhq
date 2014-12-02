@@ -293,12 +293,12 @@ LDAP membership is checked for a GitLab user:
 
 - when they sign in to the GitLab instance
 - on a daily basis
-- on any request that they do, once the LDAP cache has expired (default 1 hour, configurable, see below)
+- on any request that they do, once the LDAP cache has expired (default 1 hour, configurable, cache is per user)
 
 If you want a shorter or longer LDAP sync time, you can easily set this with the `sync_time` attribute in your config.
 
 For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitlab.rb` to your LDAP config.
-A typical LDAP configuration might look like this:
+A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
 
 ```
 gitlab_rails['ldap_servers'] = [
