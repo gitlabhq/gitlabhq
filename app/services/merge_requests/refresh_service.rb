@@ -43,8 +43,22 @@ module MergeRequests
       merge_requests = filter_merge_requests(merge_requests)
 
       merge_requests.each do |merge_request|
-        merge_request.reload_code
-        merge_request.mark_as_unchecked
+
+        if merge_request.source_branch == @branch_name
+          merge_request.reload_code
+          merge_request.mark_as_unchecked
+        else
+          mr_commit_ids = merge_request.commits.map(&:id)
+          push_commit_ids = @commits.map(&:id)
+          matches = mr_commit_ids & push_commit_ids
+
+          if matches.any?
+            merge_request.reload_code
+            merge_request.mark_as_unchecked
+          else
+            merge_request.mark_as_unchecked
+          end
+        end
       end
     end
 
