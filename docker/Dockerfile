@@ -13,7 +13,6 @@ RUN apt-get update -q \
     && DEBIAN_FRONTEND=noninteractive apt-get install -qy \
       openssh-server \
       wget \
-      vim \
     && apt-get clean
 
 # Download & Install GitLab
