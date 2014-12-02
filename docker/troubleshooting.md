@@ -21,3 +21,5 @@ sudo docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --vol
 sudo docker run -t --rm --volumes-from gitlab_data ubuntu tail -f /var/log/gitlab/reconfigure.log
 
 sudo docker run -t --rm --volumes-from gitlab_data ubuntu cat /var/log/gitlab/postgresql.log
+
+sudo docker run -ti --rm --volumes-from gitlab_data ubuntu /bin/sh
