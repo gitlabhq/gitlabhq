@@ -288,7 +288,7 @@ Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 # **1 workday after release - Update GitLab.com**
 
 - Build a package for gitlab.com based on the official release instead of RC1
-- Deploy the package
+- Deploy the package (should not need downtime because of the small difference with RC1)
 
 # **25th - Release GitLab CI**
 
