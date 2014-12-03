@@ -33,7 +33,7 @@ Xth:
 Xth:
 
 - [ ] Create x.x.0.rc1 (#LINK)
-- [ ] Create x.x.0-ee.rc1 (#LINK)
+- [ ] Create x.x.0.rc1-ee (#LINK)
 - [ ] Create CI y.y.0.rc1 (#LINK)
 - [ ] Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
