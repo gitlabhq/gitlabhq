@@ -217,6 +217,7 @@ It is important to do this as soon as possible, so we can catch any errors befor
 - Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
 - Check the changelog of CE and EE for important changes.
 - Also check the CI changelog
+- Add a proposed tweet text to the blog post WIP MR description.
 - Create a WIP MR for the blog post
 - Ask Dmitriy to add screenshots to the WIP MR.
 - Decide with team who will be the MVP user. 
@@ -264,7 +265,7 @@ Create an issue with description of a problem, if it is quick fix fix it yoursel
 **NOTE** If there is a problem that cannot be fixed in a timely manner, reverting the feature is an option! If the feature is reverted,
 create an issue about it in order to discuss the next steps after the release.
 
-# **22nd - Release CE and EE**
+# **22nd - Release CE, EE and CI**
 
 **Make sure EE `x-x-stable-ee` has latest changes from CE `x-x-stable`**
 
