@@ -265,3 +265,4 @@ end
 gem "newrelic_rpm"
 
 gem 'octokit', '3.7.0'
+gem "rugments"

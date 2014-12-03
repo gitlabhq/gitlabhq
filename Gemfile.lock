@@ -468,6 +468,7 @@ GEM
     rubyntlm (0.4.0)
     rubypants (0.2.0)
     rugged (0.21.2)
+    rugments (1.0.0.beta3)
     safe_yaml (0.9.7)
     sanitize (2.1.0)
       nokogiri (>= 1.4.4)
@@ -706,6 +707,7 @@ DEPENDENCIES
   redis-rails
   request_store
   rspec-rails
+  rugments
   sanitize (~> 2.0)
   sass-rails (~> 4.0.2)
   sdoc
