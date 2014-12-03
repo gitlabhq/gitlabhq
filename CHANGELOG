@@ -1,3 +1,13 @@
+
+Yakun's Change
+
+1. I add the function to replace one file in current repository throught the file edit mainboard.
+
+2. Changes are made to the original file "new_tree_controller.rb", "_actions.html.haml" , "show.html.haml".
+
+3. New file "update.html.haml" is added.
+
+
 v 7.6.0
   - Fork repository to groups
   - New rugged version
