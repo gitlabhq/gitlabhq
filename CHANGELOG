@@ -17,7 +17,7 @@ v 7.6.0
   - Change maximum avatar file size from 100KB to 200KB
   -
   -
-  -
+  - In the docker directory is a container template based on the Omnibus packages.
   -
   -
 
