@@ -8,6 +8,6 @@ module BlobHelper
   end
 
   def no_highlight_files
-    %w(credits changelog copying copyright license authors)
+    %w(credits changelog news copying copyright license authors)
   end
 end
