@@ -34,11 +34,11 @@ upstream gitlab {
 
 ## Normal HTTP host
 server {
-  
-  listether remove "default_server" from the listen line below, 
+  ## Either remove "default_server" from the listen line below, 
   ## or delete the /etc/nginx/sites-enabled/default file. This will cause gitlab
   ## to be served if you visit any address that your server responds to, eg.
   ## the ip address of the server (http://x.x.x.x/)n 0.0.0.0:80 default_server;
+  listen 0.0.0.0:80 default_server;
   listen [::]:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
