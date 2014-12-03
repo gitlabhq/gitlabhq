@@ -122,6 +122,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
 
     if @merge_request.open? && @merge_request.can_be_merged?
       @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
+      @merge_request.should_rebase = params[:should_rebase]
       @merge_request.automerge!(current_user, params[:commit_message])
       @status = true
     else

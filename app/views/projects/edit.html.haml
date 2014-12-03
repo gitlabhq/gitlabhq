@@ -67,6 +67,13 @@
                   %span.descr Submit changes to be merged upstream.
 
             .form-group
+              = f.label :merge_requests_rebase_enabled, "Merge Requests Rebase", class: 'control-label'
+              .col-sm-10
+                .checkbox
+                  = f.check_box :merge_requests_rebase_enabled
+                  %span.descr Allows rebasing of merge requests before merging.
+
+            .form-group
               = f.label :merge_requests_template, class: 'control-label' do
                 Merge request template
                 %span.light (optional)
