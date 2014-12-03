@@ -41,7 +41,9 @@ sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 -
 
 It might take a while before the docker container is responding to queries.
 
-You can then go to `http://localhost:8080/` (or `http://192.168.59.103:8080/` if you use boot2docker). Next time, you can just use `sudo docker start gitlab_app` and `sudo docker stop gitlab_app`.
+You can then go to `http://localhost:8080/` (or `http://192.168.59.103:8080/` if you use boot2docker).
+You can login with username `root` and password `5iveL!fe`.
+Next time, you can just use `sudo docker start gitlab_app` and `sudo docker stop gitlab_app`.
 
 
 How to configure GitLab
