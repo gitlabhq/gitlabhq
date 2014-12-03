@@ -20,42 +20,48 @@ Replace the dates with actual dates based on the number of workdays before the r
 ```
 Xth:
 
-* Update the changelog (#LINK)
-* Triage the omnibus-gitlab milestone
+- [ ] Update the CE changelog (#LINK)
+- [ ] Update the EE changelog (#LINK)
+- [ ] Update the CI changelog (#LINK)
+- [ ] Triage the omnibus-gitlab milestone
 
 Xth:
 
-* Merge CE in to EE (#LINK)
-* Close the omnibus-gitlab milestone
+- [ ] Merge CE in to EE (#LINK)
+- [ ] Close the omnibus-gitlab milestone
 
 Xth:
 
-* Create x.x.0.rc1 (#LINK)
-* Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
+- [ ] Create x.x.0.rc1 (#LINK)
+- [ ] Create x.x.0.rc1-ee (#LINK)
+- [ ] Create CI y.y.0.rc1 (#LINK)
+- [ ] Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
 Xth:
 
-* Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
-* Regression issue and tweet about rc1 (#LINK)
-* Start blog post (#LINK)
+- [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
+- [ ] Regression issues (CE, CI) and tweet about rc1 (#LINK)
+- [ ] Start blog post (#LINK)
 
 Xth:
 
-* Do QA and fix anything coming out of it (#LINK)
+- [ ] Do QA and fix anything coming out of it (#LINK)
 
 22nd:
 
-* Release CE and EE (#LINK)
+- [ ] Release CE, EE and CI (#LINK)
 
 Xth:
 
-* * Deploy to GitLab.com (#LINK)
+- [ ] Deploy to GitLab.com (#LINK)
 
 ```
 
 ### **4. Update changelog**
 
 Any changes not yet added to the changelog are added by lead developer and in that merge request the complete team is asked if there is anything missing.
+
+There are three changelogs that need to be updated: CE, EE and CI.
 
 ### **5. Take weekend and vacations into account**
 
@@ -81,6 +87,7 @@ The RC1 release comes with the task to update the installation and upgrade docs.
 1. Create: CE update guide from previous version. Like `7.3-to-7.4.md`
 1. Create: CE to EE update guide in EE repository for latest version.
 1. Update: `6.x-or-7.x-to-7.x.md` to latest version.
+1. Create: CI update guide from previous version
 
 It's best to copy paste the previous guide and make changes where necessary.
 The typical steps are listed below with any points you should specifically look at.
@@ -173,6 +180,24 @@ Now developers can use master for merging new features.
 So you should use stable branch for future code chages related to release.
 
 
+### 5. Release GitLab CI RC1
+
+Add to your local `gitlab-ci/.git/config`:
+
+```
+[remote "public"]
+    url = none
+    pushurl = git@dev.gitlab.org:gitlab/gitlab-ci.git
+    pushurl = git@gitlab.com:gitlab-org/gitlab-ci.git
+    pushurl = git@github.com:gitlabhq/gitlab-ci.git
+```
+
+* Create a stable branch `x-y-stable`
+* Bump VERSION to `x.y.0.rc1`
+* `git tag -a v$(cat VERSION) -m "Version $(cat VERSION)"
+* `git push public x-y-stable v$(cat VERSION)`
+
+
 # **4 workdays before release - Release RC1**
 
 ### **1. Determine QA person
@@ -191,6 +216,8 @@ It is important to do this as soon as possible, so we can catch any errors befor
 
 - Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
 - Check the changelog of CE and EE for important changes.
+- Also check the CI changelog
+- Add a proposed tweet text to the blog post WIP MR description.
 - Create a WIP MR for the blog post
 - Ask Dmitriy to add screenshots to the WIP MR.
 - Decide with team who will be the MVP user. 
@@ -238,7 +265,7 @@ Create an issue with description of a problem, if it is quick fix fix it yoursel
 **NOTE** If there is a problem that cannot be fixed in a timely manner, reverting the feature is an option! If the feature is reverted,
 create an issue about it in order to discuss the next steps after the release.
 
-# **22nd - Release CE and EE**
+# **22nd - Release CE, EE and CI**
 
 **Make sure EE `x-x-stable-ee` has latest changes from CE `x-x-stable`**
 
@@ -258,6 +285,11 @@ Bump version, create release tag and push to remotes:
 bundle exec rake release["x.x.0"]
 ```
 
+Also perform these steps for GitLab CI:
+
+- bump version in the stable branch
+- create annotated tag
+- push the stable branch and the annotated tag to the public repositories
 
 ### **2. Update installation.md**
 
@@ -288,17 +320,4 @@ Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
 # **1 workday after release - Update GitLab.com**
 
 - Build a package for gitlab.com based on the official release instead of RC1
-- Deploy the package
-
-# **25th - Release GitLab CI**
-
-- Create the update guid `doc/x.x-to-x.x.md`.
-- Update CHANGELOG
-- Bump version
-- Create annotated tags `git tag -a vx.x.0 -m 'Version x.x.0' xxxxx`
-- Create stable branch `x-x-stable`
-- Create GitHub release post
-- Post to blog about release
-- Post to twitter
-
-
+- Deploy the package (should not need downtime because of the small difference with RC1)
