@@ -11,21 +11,37 @@ GitLab offers git repository management, code reviews, issue tracking, activity 
 How to use this image
 ======================
 
-I recommend creating a data volume container first, this will simplify migrations and backups:
+At this moment GitLab doesn't have official Docker images.
+Build your own based on the Omnibus packages with the following command (it assumes you're in the GitLab repo root directory):
 
-	docker run --name gitlab_data genezys/gitlab:7.5.1 /bin/true
+```bash
+sudo docker build --tag gitlab_image docker/
+```
 
-This empty container will exist to persist as volumes the 3 directories used by GitLab, so remember not to delete it:
+We assume using a data volume container, this will simplify migrations and backups.
+This empty container will exist to persist as volumes the 3 directories used by GitLab, so remember not to delete it.
+
+The directories on data container are:
 
 - `/var/opt/gitlab` for application data
 - `/var/log/gitlab` for logs
 - `/etc/gitlab` for configuration
 
-Then run GitLab:
+Create the data container with:
 
-	docker run --detach --name gitlab --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data genezys/gitlab:7.5.1
+```bash
+sudo docker run --name gitlab_data gitlab_image /bin/true
+```
 
-You can then go to `http://localhost:8080/` (or most likely `http://192.168.59.103:8080/` if you use boot2docker). Next time, you can just use `docker start gitlab` and `docker stop gitlab`.
+After creating this run GitLab:
+
+```bash
+sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab_image
+```
+
+It might take a while before the docker container is responding to queries.
+
+You can then go to `http://localhost:8080/` (or `http://192.168.59.103:8080/` if you use boot2docker). Next time, you can just use `sudo docker start gitlab_app` and `sudo docker stop gitlab_app`.
 
 
 How to configure GitLab
@@ -39,7 +55,7 @@ To access GitLab configuration, you can start a new container using the shared d
 
 **Note** that GitLab will reconfigure itself **at each container start.** You will need to restart the container to reconfigure your GitLab.
 
-You can find all available options in [GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
+You can find all available options in [Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
 
 Troubleshooting
 =========================
