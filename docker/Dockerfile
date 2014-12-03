@@ -1,5 +1,4 @@
 FROM ubuntu:14.04
-MAINTAINER Vincent Robert <vincent.robert@genezys.net>
 
 # Install required packages
 RUN apt-get update -q \
