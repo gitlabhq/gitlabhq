@@ -20,36 +20,36 @@ Replace the dates with actual dates based on the number of workdays before the r
 ```
 Xth:
 
-* Update the changelog (#LINK)
-* Triage the omnibus-gitlab milestone
+- [ ] Update the changelog (#LINK)
+- [ ] Triage the omnibus-gitlab milestone
 
 Xth:
 
-* Merge CE in to EE (#LINK)
-* Close the omnibus-gitlab milestone
+- [ ] Merge CE in to EE (#LINK)
+- [ ] Close the omnibus-gitlab milestone
 
 Xth:
 
-* Create x.x.0.rc1 (#LINK)
-* Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
+- [ ] Create x.x.0.rc1 (#LINK)
+- [ ] Build package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
 Xth:
 
-* Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
-* Regression issue and tweet about rc1 (#LINK)
-* Start blog post (#LINK)
+- [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
+- [ ] Regression issue and tweet about rc1 (#LINK)
+- [ ] Start blog post (#LINK)
 
 Xth:
 
-* Do QA and fix anything coming out of it (#LINK)
+- [ ] Do QA and fix anything coming out of it (#LINK)
 
 22nd:
 
-* Release CE and EE (#LINK)
+- [ ] Release CE and EE (#LINK)
 
 Xth:
 
-* * Deploy to GitLab.com (#LINK)
+- [ ] Deploy to GitLab.com (#LINK)
 
 ```
 
