@@ -6,6 +6,14 @@ class Projects::NewTreeController < Projects::BaseTreeController
   end
 
   def update
+
+    if @path.match(/(.*\/)*(.+)\z/)!=nil
+      file_na=@path.match(/(.*\/)*(.+)\z/)[2]
+      @path=@path.gsub(file_na,'')
+      params[:content]=params[:file_upload].read
+      params[:file_name]=file_na
+    end
+    
     file_path = File.join(@path, File.basename(params[:file_name]))
     result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
 
