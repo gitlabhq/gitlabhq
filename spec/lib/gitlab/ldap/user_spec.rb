@@ -21,7 +21,7 @@ describe Gitlab::LDAP::User do
     end
 
     it "connects to existing non-ldap user if the email matches" do
-      existing_user = create(:omniauth_user, email: 'john@example.com')
+      existing_user = create(:omniauth_user, email: 'john@example.com', provider: "twitter")
       expect{ gl_user.save }.to_not change{ User.count }
 
       existing_user.reload
