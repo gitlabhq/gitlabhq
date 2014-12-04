@@ -8,10 +8,10 @@ module SortingHelper
   end
 
   def sort_title_oldest_created
-    'Recently updated'
+    'Oldest created'
   end
 
   def sort_title_recently_created
-    'Recently updated'
+    'Recently created'
   end
 end
