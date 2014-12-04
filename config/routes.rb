@@ -137,7 +137,8 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
+  match "/u/:username" => "users#show", as: :user,
+    constraints: {username: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, via: :get
 
   #
   # Dashboard Area
