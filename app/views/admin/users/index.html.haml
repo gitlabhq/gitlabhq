@@ -18,6 +18,14 @@
           = link_to admin_users_path(filter: "wop") do
             Without projects
             %small.pull-right= User.without_projects.count
+        %li{class: "#{'active' if params[:filter] == "wosi30"}"}
+          = link_to admin_users_path(filter: "wosi30") do
+            Without sign-in last 30 days
+            %small.pull-right= User.without_sign_in_30_days.count
+        %li{class: "#{'active' if params[:filter] == "wosi"}"}
+          = link_to admin_users_path(filter: "wosi") do
+            Without sign-in
+            %small.pull-right= User.without_sign_in.count
       %hr
       = form_tag admin_users_path, method: :get, class: 'form-inline' do
         .form-group

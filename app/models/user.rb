@@ -178,6 +178,9 @@ class User < ActiveRecord::Base
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :without_sign_in_30_days, -> {
+         where(current_sign_in_at: [nil, Date.new(2000)..30.days.ago]) }
+  scope :without_sign_in, -> { where(current_sign_in_at: nil) }
   scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
@@ -217,6 +220,8 @@ class User < ActiveRecord::Base
       when "admins"; self.admins
       when "blocked"; self.blocked
       when "wop"; self.without_projects
+      when 'wosi30'; without_sign_in_30_days
+      when 'wosi'; without_sign_in
       else
         self.active
       end
