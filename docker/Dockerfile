@@ -29,4 +29,4 @@ VOLUME ["/var/opt/gitlab", "/var/log/gitlab", "/etc/gitlab"]
 ADD gitlab.rb /etc/gitlab/
 
 # Default is to run runit & reconfigure
-CMD gitlab-ctl reconfigure > /var/log/gitlab/reconfigure.log & /opt/gitlab/embedded/bin/runsvdir-start
+CMD gitlab-ctl reconfigure & /opt/gitlab/embedded/bin/runsvdir-start

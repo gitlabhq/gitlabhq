@@ -39,7 +39,7 @@ After creating this run GitLab:
 sudo docker run --detach --name gitlab_app --publish 8080:80 --publish 2222:22 --volumes-from gitlab_data gitlab_image
 ```
 
-It might take a while before the docker container is responding to queries.
+It might take a while before the docker container is responding to queries. You can follow the configuration process with `docker logs -f gitlab`.
 
 You can then go to `http://localhost:8080/` (or `http://192.168.59.103:8080/` if you use boot2docker).
 You can login with username `root` and password `5iveL!fe`.
