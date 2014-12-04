@@ -9,7 +9,7 @@ RUN apt-get update -q \
 
 # Download & Install GitLab
 RUN TMP_FILE=$(mktemp); \
-    wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab_7.5.1-omnibus.5.2.0.ci-1_amd64.deb \
+    wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab_7.5.2-omnibus.5.2.1.ci-1_amd64.deb \
     && dpkg -i $TMP_FILE \
     && rm -f $TMP_FILE
 
@@ -29,4 +29,4 @@ VOLUME ["/var/opt/gitlab", "/var/log/gitlab", "/etc/gitlab"]
 ADD gitlab.rb /etc/gitlab/
 
 # Default is to run runit & reconfigure
-CMD gitlab-ctl reconfigure > /var/log/gitlab/reconfigure.log & /opt/gitlab/embedded/bin/runsvdir-start
+CMD gitlab-ctl reconfigure & /opt/gitlab/embedded/bin/runsvdir-start
