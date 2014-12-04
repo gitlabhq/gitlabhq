@@ -32,7 +32,10 @@ class WebHook < ActiveRecord::Base
   def execute(data)
     parsed_url = URI.parse(url)
     if parsed_url.userinfo.blank?
-      WebHook.post(url, body: data.to_json, headers: { "Content-Type" => "application/json" }, verify: false)
+      WebHook.post(url,
+                   body: data.to_json,
+                   headers: { "Content-Type" => "application/json" },
+                   verify: false)
     else
       post_url = url.gsub("#{parsed_url.userinfo}@", "")
       auth = {
@@ -45,6 +48,9 @@ class WebHook < ActiveRecord::Base
                    verify: false,
                    basic_auth: auth)
     end
+  rescue SocketError, Errno::ECONNREFUSED => e
+    logger.error("WebHook Error => #{e}")
+    false
   end
 
   def async_execute(data)
