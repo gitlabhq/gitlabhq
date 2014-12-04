@@ -51,13 +51,17 @@ How to configure GitLab
 
 This container uses the official Omnibus GitLab distribution, so all configuration is done in the unique configuration file `/etc/gitlab/gitlab.rb`.
 
-To access GitLab configuration, you can start a new container using the shared data volume container:
+To access GitLab configuration, you can start an interactive command line in a new container using the shared data volume container, you will be able to browse the 3 directories and use your favorite text editor:
 
-	docker run -ti --rm --volumes-from gitlab_data ubuntu vi /etc/gitlab/gitlab.rb
+```bash
+docker run -ti -e TERM=linux --rm --volumes-from gitlab_data ubuntu 
+vi /etc/gitlab/gitlab.rb
+```
 
 **Note** that GitLab will reconfigure itself **at each container start.** You will need to restart the container to reconfigure your GitLab.
 
 You can find all available options in [Omnibus GitLab documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/README.md#configuration).
+
 
 Troubleshooting
 =========================
