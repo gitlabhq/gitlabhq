@@ -8,6 +8,20 @@ The [GitLab Omnibus Readme](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/ma
 
 Please contact <subscribers@gitlab.com> if you have any questions.
 
+## RPM 'package is already installed' error
+
+If you are using RPM and you are upgrading from GitLab Community Edition you may get an error like this:
+
+```
+package gitlab-7.5.2_omnibus.5.2.1.ci-1.el7.x86_64 (which is newer than gitlab-7.5.2_ee.omnibus.5.2.1.ci-1.el7.x86_64) is already installed
+```
+
+You can override this version check with the `--oldpackage` option:
+
+```
+rpm -Uvh --oldpackage gitlab-7.5.2_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
+```
+
 ## GitLab 7.5 Enterprise Edition
 
 - 7.5.1-ee/CI 5.2.0 - Ubuntu 14.04 64-bit [gitlab_7.5.1-ee.omnibus.5.2.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/3da7e4fb16f1a15de137a5ac5d4cb4a39cef536c/ubuntu-14.04/gitlab_7.5.1-ee.omnibus.5.2.0.ci-1_amd64.deb)
