@@ -8,7 +8,7 @@ RUN apt-get update -q \
     && apt-get clean
 
 # Download & Install GitLab
-# If the Omnibus package version below is outdates please contribute a merge request to update it.
+# If the Omnibus package version below is outdated please contribute a merge request to update it.
 # If you run GitLab Enterprise Edition point it to a location where you have downloaded it.
 RUN TMP_FILE=$(mktemp); \
     wget -q -O $TMP_FILE https://downloads-packages.s3.amazonaws.com/ubuntu-14.04/gitlab_7.5.2-omnibus.5.2.1.ci-1_amd64.deb \
