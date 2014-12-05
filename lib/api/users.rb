@@ -59,10 +59,16 @@ module API
       post do
         authenticated_as_admin!
         required_attributes! [:email, :password, :name, :username]
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :projects_limit, :username, :bio, :can_create_group, :admin]
         user = User.build_user(attrs)
         admin = attrs.delete(:admin)
         user.admin = admin unless admin.nil?
+
+        identity_attrs = attributes_for_keys [:provider, :extern_uid]
+        if identity_attrs.any?
+          user.identities.build(identity_attrs)
+        end
+
         if user.save
           present user, with: Entities::UserFull
         else
@@ -89,8 +95,6 @@ module API
       #   twitter                           - Twitter account
       #   website_url                       - Website url
       #   projects_limit                    - Limit projects each user can create
-      #   extern_uid                        - External authentication provider UID
-      #   provider                          - External provider
       #   bio                               - Bio
       #   admin                             - User is admin - true or false (default)
       #   can_create_group                  - User can create groups - true or false
@@ -99,7 +103,7 @@ module API
       put ":id" do
         authenticated_as_admin!
 
-        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :extern_uid, :provider, :bio, :can_create_group, :admin]
+        attrs = attributes_for_keys [:email, :name, :password, :skype, :linkedin, :twitter, :website_url, :projects_limit, :username, :bio, :can_create_group, :admin]
         user = User.find(params[:id])
         not_found!('User') unless user
 

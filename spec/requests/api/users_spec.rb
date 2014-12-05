@@ -33,7 +33,7 @@ describe API::API, api: true  do
         response.status.should == 200
         json_response.should be_an Array
         json_response.first.keys.should include 'email'
-        json_response.first.keys.should include 'extern_uid'
+        json_response.first.keys.should include 'identities'
         json_response.first.keys.should include 'can_create_project'
       end
     end

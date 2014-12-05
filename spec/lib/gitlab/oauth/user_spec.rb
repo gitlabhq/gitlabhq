@@ -15,7 +15,7 @@ describe Gitlab::OAuth::User do
   end
 
   describe :persisted? do
-    let!(:existing_user) { create(:user, extern_uid: 'my-uid', provider: 'my-provider') }
+    let!(:existing_user) { create(:omniauth_user, extern_uid: 'my-uid', provider: 'my-provider') }
 
     it "finds an existing user based on uid and provider (facebook)" do
       auth = double(info: double(name: 'John'), uid: 'my-uid', provider: 'my-provider')
@@ -39,8 +39,9 @@ describe Gitlab::OAuth::User do
           oauth_user.save
 
           expect(gl_user).to be_valid
-          expect(gl_user.extern_uid).to eql uid
-          expect(gl_user.provider).to eql 'twitter'
+          identity = gl_user.identities.first
+          expect(identity.extern_uid).to eql uid
+          expect(identity.provider).to eql 'twitter'
         end
       end
 
