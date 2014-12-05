@@ -19,7 +19,7 @@ v 7.6.0
   -
   - In the docker directory is a container template based on the Omnibus packages.
   - Update Sidekiq to version 2.17.8
-  -
+  - Add author filter to project issues and merge requests pages
   - Atom feed for user activity
 
 v 7.5.2
