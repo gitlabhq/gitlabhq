@@ -70,6 +70,16 @@ class MergeRequest < ActiveRecord::Base
       transition locked: :reopened
     end
 
+    after_transition any => :locked do |merge_request, transition|
+      merge_request.locked_at = Time.now
+      merge_request.save
+    end
+
+    after_transition :locked => (any - :locked) do |merge_request, transition|
+      merge_request.locked_at = nil
+      merge_request.save
+    end
+
     state :opened
     state :reopened
     state :closed
