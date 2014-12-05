@@ -17,18 +17,10 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    params[:sort] ||= 'newest'
-    params[:scope] = 'all' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
+    set_filter_variables(@project.merge_requests)
 
     @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
     @merge_requests = @merge_requests.page(params[:page]).per(20)
-
-    @sort = params[:sort].humanize
-    assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
-    @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
-    @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
-    @assignees = User.where(id: @project.merge_requests.pluck(:assignee_id))
   end
 
   def show
