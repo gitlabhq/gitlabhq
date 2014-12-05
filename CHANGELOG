@@ -1,9 +1,12 @@
-v 7.5.1
-  - Add missing timestamps to 'members' table
+v 7.5.3
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
 
 v 7.5.2
   - Don't log Sidekiq arguments by default
   - Fix restore of wiki repositories from backups
+
+v 7.5.1
+  - Add missing timestamps to 'members' table
 
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
