@@ -46,7 +46,7 @@ describe Notify do
 
     token = 'kETLwRaayvigPq_x3SNM'
 
-    subject { Notify.new_user_email(new_user.id, new_user.password, token) }
+    subject { Notify.new_user_email(new_user.id, token) }
 
     it_behaves_like 'an email sent from GitLab'
 
@@ -83,7 +83,7 @@ describe Notify do
     let(:example_site_path) { root_path }
     let(:new_user) { create(:user, email: 'newguy@example.com', password: "securePassword") }
 
-    subject { Notify.new_user_email(new_user.id, new_user.password) }
+    subject { Notify.new_user_email(new_user.id) }
 
     it_behaves_like 'an email sent from GitLab'
 

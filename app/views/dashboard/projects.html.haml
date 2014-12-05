@@ -14,13 +14,14 @@
         = link_to projects_dashboard_filter_path(sort: nil) do
           Name
         = link_to projects_dashboard_filter_path(sort: 'newest') do
-          Newest
+          = sort_title_recently_created
         = link_to projects_dashboard_filter_path(sort: 'oldest') do
-          Oldest
+          = sort_title_oldest_created
         = link_to projects_dashboard_filter_path(sort: 'recently_updated') do
-          Recently updated
+          = sort_title_recently_updated
         = link_to projects_dashboard_filter_path(sort: 'last_updated') do
-          Last updated
+          = sort_title_oldest_updated
+
 %p.light
   All projects you have access to are listed here. Public projects are not included here unless you are a member
 %hr

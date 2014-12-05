@@ -20,9 +20,9 @@
           = link_to project_branches_path(sort: nil) do
             Name
           = link_to project_branches_path(sort: 'recently_updated') do
-            Recently updated
+            = sort_title_recently_updated
           = link_to project_branches_path(sort: 'last_updated') do
-            Last updated
+            = sort_title_oldest_updated
 %hr
 - unless @branches.empty?
   %ul.bordered-list.top-list.all-branches

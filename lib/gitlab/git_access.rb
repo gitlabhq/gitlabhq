@@ -8,15 +8,7 @@ module Gitlab
     def check(actor, cmd, project, changes = nil)
       case cmd
       when *DOWNLOAD_COMMANDS
-        if actor.is_a? User
-          download_access_check(actor, project)
-        elsif actor.is_a? DeployKey
-          actor.projects.include?(project)
-        elsif actor.is_a? Key
-          download_access_check(actor.user, project)
-        else
-          raise 'Wrong actor'
-        end
+        download_access_check(actor, project)
       when *PUSH_COMMANDS
         if actor.is_a? User
           push_access_check(actor, project, changes)
@@ -32,7 +24,23 @@ module Gitlab
       end
     end
 
-    def download_access_check(user, project)
+    def download_access_check(actor, project)
+      if actor.is_a?(User)
+        user_download_access_check(actor, project)
+      elsif actor.is_a?(DeployKey)
+        if actor.projects.include?(project)
+          build_status_object(true)
+        else
+          build_status_object(false, "Deploy key not allowed to access this project")
+        end
+      elsif actor.is_a? Key
+        user_download_access_check(actor.user, project)
+      else
+        raise 'Wrong actor'
+      end
+    end
+
+    def user_download_access_check(user, project)
       if user && user_allowed?(user) && user.can?(:download_code, project)
         build_status_object(true)
       else
@@ -78,21 +86,20 @@ module Gitlab
                  :push_code
                end
 
+
+
+      # Stop execution if user has no access to this project
       unless user.can?(action, project)
         return build_status_object(false, "You don't have permission")
       end
+
+      # Return build_status_object(true) if all git hook checks passed successfully
+      # or build_status_object(false) if any hook fails
       pass_git_hooks?(user, project, ref, oldrev, newrev)
     end
 
     def forced_push?(project, oldrev, newrev)
-      return false if project.empty_repo?
-
-      if oldrev != Gitlab::Git::BLANK_SHA && newrev != Gitlab::Git::BLANK_SHA
-        missed_refs = IO.popen(%W(git --git-dir=#{project.repository.path_to_repo} rev-list #{oldrev} ^#{newrev})).read
-        missed_refs.split("\n").size > 0
-      else
-        false
-      end
+      Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
     end
 
     def pass_git_hooks?(user, project, ref, oldrev, newrev)
@@ -182,6 +189,5 @@ module Gitlab
     def build_status_object(status, message = '')
       GitAccessStatus.new(status, message)
     end
-    
   end
 end

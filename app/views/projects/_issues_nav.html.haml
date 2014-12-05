@@ -1,0 +1,55 @@
+%ul.nav.nav-tabs
+  - if project_nav_tab? :issues
+    = nav_link(controller: :issues) do
+      = link_to project_issues_path(@project), class: "tab" do
+        Issues
+  - if project_nav_tab? :merge_requests
+    = nav_link(controller: :merge_requests) do
+      = link_to project_merge_requests_path(@project), class: "tab" do
+        Merge Requests
+  = nav_link(controller: :milestones) do
+    = link_to 'Milestones', project_milestones_path(@project), class: "tab"
+  = nav_link(controller: :labels) do
+    = link_to 'Labels', project_labels_path(@project), class: "tab"
+
+  - if current_controller?(:milestones)
+    %li.pull-right
+      %button.btn.btn-default.sidebar-expand-button
+        %i.icon.fa.fa-list
+
+  - if current_controller?(:issues)
+    - if current_user
+      %li.hidden-xs
+        = link_to project_issues_path(@project, :atom, { private_token: current_user.private_token }) do
+          %i.fa.fa-rss
+
+    %li.pull-right
+      .pull-right
+        %button.btn.btn-default.sidebar-expand-button
+          %i.icon.fa.fa-list
+
+        .pull-left
+          = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'pull-left issue-search-form'  do
+            .append-right-10.hidden-xs.hidden-sm
+              = search_field_tag :issue_search, params[:issue_search], { placeholder: 'Filter by title or description', class: 'form-control issue_search search-text-input input-mn-300' }
+              = hidden_field_tag :state, params['state']
+              = hidden_field_tag :scope, params['scope']
+              = hidden_field_tag :assignee_id, params['assignee_id']
+              = hidden_field_tag :milestone_id, params['milestone_id']
+              = hidden_field_tag :label_id, params['label_id']
+
+        - if can? current_user, :write_issue, @project
+          = link_to new_project_issue_path(@project, issue: { assignee_id: params[:assignee_id], milestone_id: params[:milestone_id]}), class: "btn btn-new pull-left", title: "New Issue", id: "new_issue_link" do
+            %i.fa.fa-plus
+            New Issue
+
+  - if current_controller?(:merge_requests)
+    %li.pull-right
+      .pull-right
+        %button.btn.btn-default.sidebar-expand-button
+          %i.icon.fa.fa-list
+
+        - if can? current_user, :write_merge_request, @project
+          = link_to new_project_merge_request_path(@project), class: "btn btn-new pull-left", title: "New Merge Request" do
+            %i.fa.fa-plus
+            New Merge Request

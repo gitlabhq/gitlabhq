@@ -19,6 +19,12 @@ Feature: Project Services
     And I fill hipchat settings
     Then I should see hipchat service settings saved
 
+  Scenario: Activate hipchat service with custom server
+    When I visit project "Shop" services page
+    And I click hipchat service link
+    And I fill hipchat settings with custom server
+    Then I should see hipchat service settings with custom server saved
+
   Scenario: Activate pivotaltracker service
     When I visit project "Shop" services page
     And I click pivotaltracker service link

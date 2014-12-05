@@ -131,7 +131,7 @@ module SharedProject
   end
 
   step 'public empty project "Empty Public Project"' do
-    create :empty_project, :public, name: "Empty Public Project"
+    create :project_empty_repo, :public, name: "Empty Public Project"
   end
 
   step 'project "Community" has comments' do

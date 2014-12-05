@@ -42,10 +42,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
 
   def handle_omniauth
     if current_user
-      # Change a logged-in user's authentication method:
-      current_user.extern_uid = oauth['uid']
-      current_user.provider = oauth['provider']
-      current_user.save
+      # Add new authentication method
+      current_user.identities.find_or_create_by(extern_uid: oauth['uid'], provider: oauth['provider'])
       redirect_to profile_path
     else
       @user = Gitlab::OAuth::User.new(oauth)
@@ -67,8 +65,8 @@ class OmniauthCallbacksController < Devise::OmniauthCallbacksController
         redirect_to omniauth_error_path(oauth['provider'], error: error_message) and return
       end
     end
-  rescue StandardError
-    flash[:notice] = "There's no such user!"
+  rescue ForbiddenAction => e
+    flash[:notice] = e.message
     redirect_to new_user_session_path
   end
 

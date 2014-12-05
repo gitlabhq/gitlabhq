@@ -31,7 +31,7 @@ gem 'omniauth-shibboleth'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.0.0.rc11'
+gem "gitlab_git", '7.0.0.rc12'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -113,7 +113,7 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq', '2.17.0'
+gem 'sidekiq', '2.17.8'
 gem 'sidetiq', '0.6.1'
 
 # HTTP requests
@@ -136,7 +136,7 @@ gem "redis-rails"
 gem 'tinder', '~> 1.9.2'
 
 # HipChat integration
-gem "hipchat", "~> 0.14.0"
+gem "hipchat", "~> 1.4.0"
 
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"

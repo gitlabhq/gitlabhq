@@ -10,7 +10,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   step 'I should see list of available services' do
     page.should have_content 'Project services'
     page.should have_content 'Campfire'
-    page.should have_content 'Hipchat'
+    page.should have_content 'HipChat'
     page.should have_content 'GitLab CI'
     page.should have_content 'Assembla'
     page.should have_content 'Pushover'
@@ -33,7 +33,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   end
 
   step 'I click hipchat service link' do
-    click_link 'Hipchat'
+    click_link 'HipChat'
   end
 
   step 'I fill hipchat settings' do
@@ -47,6 +47,17 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Room').value.should == 'gitlab'
   end
 
+  step 'I fill hipchat settings with custom server' do
+    check 'Active'
+    fill_in 'Room', with: 'gitlab_custom'
+    fill_in 'Token', with: 'secretCustom'
+    fill_in 'Server', with: 'https://chat.example.com'
+    click_button 'Save'
+  end
+
+  step 'I should see hipchat service settings with custom server saved' do
+    find_field('Server').value.should == 'https://chat.example.com'
+  end
 
   step 'I click pivotaltracker service link' do
     click_link 'PivotalTracker'
