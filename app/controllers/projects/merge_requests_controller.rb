@@ -225,6 +225,11 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     @allowed_to_merge = allowed_to_merge?
     @show_merge_controls = @merge_request.open? && @commits.any? && @allowed_to_merge
     @source_branch = @merge_request.source_project.repository.find_branch(@merge_request.source_branch).try(:name)
+
+    if @merge_request.locked_long_ago?
+      @merge_request.unlock_mr
+      @merge_request.close
+    end
   end
 
   def allowed_to_merge?

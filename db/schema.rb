@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141121161704) do
+ActiveRecord::Schema.define(version: 20141205134006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -181,6 +181,7 @@ ActiveRecord::Schema.define(version: 20141121161704) do
     t.integer  "iid"
     t.text     "description"
     t.integer  "position",          default: 0
+    t.datetime "locked_at"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
