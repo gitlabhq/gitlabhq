@@ -2,6 +2,9 @@ v 7.6.0
   - Added Audit events related to membership changes for groups and projects
   - Added option to attempt a rebase before merging merge request
 
+v 7.5.3
+  - Only set up Sidetiq from a Sidekiq server process (fixes Redis::InheritedError)
+
 v 7.5.0
   - Added an ability to check each author commit's email by regex
   - Added an ability to restrict commit authors to existing Gitlab users
