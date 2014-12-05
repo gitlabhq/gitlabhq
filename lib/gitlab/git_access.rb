@@ -49,8 +49,17 @@ module Gitlab
     end
 
     def push_access_check(user, project, changes)
-      return build_status_object(false, "You don't have access") unless user && user_allowed?(user)
-      return build_status_object(true) if changes.blank?
+      unless user && user_allowed?(user)
+        return build_status_object(false, "You don't have access")
+      end
+
+      if changes.blank?
+        return build_status_object(true)
+      end
+
+      unless project.repository.exists?
+        return build_status_object(false, "Repository does not exist")
+      end
 
       changes = changes.lines if changes.kind_of?(String)
 
@@ -79,7 +88,7 @@ module Gitlab
                  else
                    :push_code_to_protected_branches
                  end
-               elsif project.repository && project.repository.tag_names.include?(tag_name(ref))
+               elsif project.repository.tag_names.include?(tag_name(ref))
                  # Prevent any changes to existing git tag unless user has permissions
                  :admin_project
                else
