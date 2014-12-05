@@ -26,10 +26,6 @@ class AttachmentUploader < CarrierWave::Uploader::Base
     Gitlab.config.gitlab.relative_url_root + "/files/#{model.class.to_s.underscore}/#{model.id}/#{file.filename}"
   end
 
-  def url
-    Gitlab.config.gitlab.relative_url_root + super unless super.nil?
-  end
-
   def file_storage?
     self.class.storage == CarrierWave::Storage::File
   end
