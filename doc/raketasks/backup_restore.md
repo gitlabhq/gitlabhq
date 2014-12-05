@@ -208,3 +208,26 @@ Add the following lines at the bottom:
 
 The `CRON=1` environment setting tells the backup script to suppress all progress output if there are no errors.
 This is recommended to reduce cron spam.
+
+## Alternative backup strategies
+
+If your GitLab server contains a lot of Git repository data you may find the GitLab backup script to be too slow.
+In this case you can consider using filesystem snapshots as part of your backup strategy.
+
+Example: Amazone EBS
+
+> A GitLab server using omnibus-gitlab hosted on Amazon AWS.
+> An EBS drive containing an ext4 filesystem is mounted at `/var/opt/gitlab`.
+> In this case you could make an application backup by taking an EBS snapshot.
+> The backup includes all repositories, uploads and Postgres data.
+
+Example: LVM snapshots + Rsync
+
+> A GitLab server using omnibus-gitlab, with an LVM logical volume mounted at `/var/opt/gitlab`.
+> Replicating the `/var/opt/gitlab` directory usign Rsync would not be reliable because too many files would change while Rsync is running.
+> Instead of rsync-ing `/var/opt/gitlab`, we create a temporary LVM snapshot, which we mount as a read-only filesystem at `/mnt/gitlab_backup`.
+> Now we can have a longer running Rsync job which will create a consistent replica on the remote server.
+> The replica includes all repositories, uploads and Postgres data.
+
+If you are running GitLab on a virtualized server you can possibly also create VM snapshots of the entire GitLab server.
+It is not uncommon however for a VM snapshot to require you to power down the server, so this approach is probably of limited practical use.
