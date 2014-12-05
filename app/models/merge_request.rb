@@ -346,4 +346,8 @@ class MergeRequest < ActiveRecord::Base
       source_project.repository.branch_names
     end
   end
+
+  def locked_long_ago?
+    locked_at && locked_at < (Time.now - 1.day)
+  end
 end

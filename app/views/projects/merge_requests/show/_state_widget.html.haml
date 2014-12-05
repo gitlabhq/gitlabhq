@@ -11,8 +11,10 @@
 
     - if @merge_request.closed?
       %h4
-        Closed by #{link_to_member(@project, @merge_request.closed_event.author, avatar: false)}
-        #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
+        Closed
+        - if @merge_request.closed_event
+          by #{link_to_member(@project, @merge_request.closed_event.author, avatar: false)}
+          #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
       %p Changes were not merged into target branch
 
     - if @merge_request.merged?
