@@ -18,7 +18,7 @@ module Gitlab
 
         return unless MAX_RSS > 0 && current_rss > MAX_RSS
 
-        Tread.new do
+        Thread.new do
           # Return if another thread is already waiting to shut Sidekiq down
           return unless MUTEX.try_lock
 
