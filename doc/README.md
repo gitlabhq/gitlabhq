@@ -2,20 +2,22 @@
 
 ## User documentation
 
-- [API](api/README.md) Explore how you can access GitLab via a simple and powerful API.
-- [Markdown](markdown/markdown.md) Learn what you can do with GitLab's advanced formatting system.
+- [API](api/README.md) Automate GitLab via a simple and powerful API.
+- [Markdown](markdown/markdown.md) GitLab's advanced formatting system.
 - [Permissions](permissions/permissions.md) Learn what each role in a project (guest/reporter/developer/master/owner) can do.
-- [Public access](public_access/public_access.md) Learn how you can allow public and internal access to a project.
+- [Project Services](project_services/project_services.md) Integrate a project with external services, such as CI and chat.
+- [Public access](public_access/public_access.md) Learn how you can allow public and internal access to projects.
 - [SSH](ssh/README.md) Setup your ssh keys and deploy keys for secure access to your projects.
 - [Web hooks](web_hooks/web_hooks.md) Let GitLab notify you when new code has been pushed to your project.
-- [Workflow](workflow/README.md) Learn how to use Git and GitLab together.
+- [Workflow](workflow/README.md) Learn how to get the maximum out of GitLab.
 
 ## Administrator documentation
 
 - [Install](install/README.md) Requirements, directory structures and manual installation.
 - [Integration](integration/README.md) How to integrate with systems such as JIRA, Redmine, LDAP and Twitter.
-- [Raketasks](raketasks/README.md) Explore what GitLab has in store for you to make administration easier.
-- [System hooks](system_hooks/system_hooks.md) Let GitLab notify you when certain management tasks need to be carried out.
+- [Raketasks](raketasks/README.md) Backups, maintenance, automatic web hook setup and the importing of projects.
+- [Custom git hooks](hooks/custom_hooks.md) Custom git hooks (on the filesystem) for when web hooks aren't enough.
+- [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [Update](update/README.md) Update guides to upgrade your installation.
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.

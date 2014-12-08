@@ -1,5 +1,5 @@
 ## GitLab
-## Maintainer: @randx
+## Contributors: randx, yin8086, sashkab, orkoden, axilleas, bbodenmiller
 ##
 ## Lines starting with two hashes (##) are comments with information.
 ## Lines starting with one hash (#) are configuration parameters that can be uncommented.
@@ -15,7 +15,7 @@
 ## - installing an old version of Nginx with the chunkin module [2] compiled in, or
 ## - using a newer version of Nginx.
 ##
-## At the time of writing we do not know if either of these theoretical solutions works. 
+## At the time of writing we do not know if either of these theoretical solutions works.
 ## As a workaround users can use Git over SSH to push large files.
 ##
 ## [0] https://git.kernel.org/cgit/git/git.git/tree/Documentation/technical/http-protocol.txt#n99
@@ -26,6 +26,7 @@
 ##         configuration         ##
 ###################################
 ##
+## See installation.md#using-https for additional HTTPS configuration details.
 
 upstream gitlab {
   server unix:/home/git/gitlab/tmp/sockets/gitlab.socket fail_timeout=0;
@@ -33,7 +34,8 @@ upstream gitlab {
 
 ## Normal HTTP host
 server {
-  listen *:80 default_server;
+  listen 0.0.0.0:80 default_server;
+  listen [::]:80 default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
@@ -41,6 +43,8 @@ server {
   ## Increase this if you want to upload large attachments
   ## Or if you want to accept large git objects over http
   client_max_body_size 20m;
+
+  ## See app/controllers/application_controller.rb for headers set
 
   ## Individual nginx logs for this GitLab vhost
   access_log  /var/log/nginx/gitlab_access.log;

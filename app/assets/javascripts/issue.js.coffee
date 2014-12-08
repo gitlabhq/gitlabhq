@@ -1,4 +1,4 @@
-class Issue
+class @Issue
   constructor: ->
     $('.edit-issue.inline-update input[type="submit"]').hide()
     $(".issue-box .inline-update").on "change", "select", ->
@@ -15,5 +15,3 @@ class Issue
       "issue"
       updateTaskState
     )
-
-@Issue = Issue

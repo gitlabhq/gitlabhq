@@ -107,7 +107,7 @@ class NotificationService
   # Notify new user with email after creation
   def new_user(user, token = nil)
     # Don't email omniauth created users
-    mailer.new_user_email(user.id, user.password, token) unless user.extern_uid?
+    mailer.new_user_email(user.id, token) unless user.identities.any?
   end
 
   # Notify users on new note in system
@@ -119,11 +119,12 @@ class NotificationService
 
     # ignore gitlab service messages
     return true if note.note =~ /\A_Status changed to closed_/
-    return true if note.note =~ /\A_mentioned in / && note.system == true
+    return true if note.cross_reference? && note.system == true
 
     opts = { noteable_type: note.noteable_type, project_id: note.project_id }
 
     target = note.noteable
+
     if target.respond_to?(:participants)
       recipients = target.participants
     else

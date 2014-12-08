@@ -36,12 +36,15 @@ ul.notes {
       font-size: 13px;
     }
     .author {
-      color: #555;
+      color: #333;
       font-weight: bold;
       font-size: 14px;
       &:hover {
-        color: $link_hover_color;
+        color: $link_color;
       }
+    }
+    .author-username {
+      font-size: 14px;
     }
   }
 

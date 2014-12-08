@@ -64,6 +64,13 @@ describe SnippetsFinder do
       snippets = SnippetsFinder.new.execute(user, filter: :by_user, user: user)
       snippets.should include(@snippet1, @snippet2, @snippet3)
     end
+
+    it "returns only public snippets if unauthenticated user" do
+      snippets = SnippetsFinder.new.execute(nil, filter: :by_user, user: user)
+      snippets.should include(@snippet3)
+      snippets.should_not include(@snippet2, @snippet1)
+    end
+
   end
 
   context 'by_project filter' do

@@ -19,6 +19,12 @@ Feature: Project Services
     And I fill hipchat settings
     Then I should see hipchat service settings saved
 
+  Scenario: Activate hipchat service with custom server
+    When I visit project "Shop" services page
+    And I click hipchat service link
+    And I fill hipchat settings with custom server
+    Then I should see hipchat service settings with custom server saved
+
   Scenario: Activate pivotaltracker service
     When I visit project "Shop" services page
     And I click pivotaltracker service link
@@ -54,3 +60,9 @@ Feature: Project Services
     And I click email on push service link
     And I fill email on push settings
     Then I should see email on push service settings saved
+
+  Scenario: Activate Atlassian Bamboo CI service
+    When I visit project "Shop" services page
+    And I click Atlassian Bamboo CI service link
+    And I fill Atlassian Bamboo CI settings
+    Then I should see Atlassian Bamboo CI service settings saved

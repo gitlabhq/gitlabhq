@@ -35,7 +35,7 @@
                     = label
         %hr
         = hidden_field_tag :sort, params[:sort]
-        = submit_tag "Search", class: "btn submit btn-primary"
+        = button_tag "Search", class: "btn submit btn-primary"
         = link_to "Reset", admin_projects_path, class: "btn btn-cancel"
 
   .col-md-9
@@ -56,13 +56,13 @@
                 = link_to admin_projects_path(sort: nil) do
                   Name
                 = link_to admin_projects_path(sort: 'newest') do
-                  Newest
+                  = sort_title_recently_created
                 = link_to admin_projects_path(sort: 'oldest') do
-                  Oldest
+                  = sort_title_oldest_created
                 = link_to admin_projects_path(sort: 'recently_updated') do
-                  Recently updated
+                  = sort_title_recently_updated
                 = link_to admin_projects_path(sort: 'last_updated') do
-                  Last updated
+                  = sort_title_oldest_updated
                 = link_to admin_projects_path(sort: 'largest_repository') do
                   Largest repository
           = link_to 'New Project', new_project_path, class: "btn btn-new"

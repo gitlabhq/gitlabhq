@@ -1,4 +1,4 @@
-class window.ContributorsGraph
+class @ContributorsGraph
   MARGIN:
     top: 20
     right: 20
@@ -44,7 +44,7 @@ class window.ContributorsGraph
   set_data: (data) ->
     @data = data
 
-class window.ContributorsMasterGraph extends ContributorsGraph
+class @ContributorsMasterGraph extends ContributorsGraph
   constructor: (@data) ->
     @width = $('.container').width() - 70
     @height = 200
@@ -117,7 +117,7 @@ class window.ContributorsMasterGraph extends ContributorsGraph
     @svg.select("path").attr("d", @area)
     @svg.select(".y.axis").call(@y_axis)
 
-class window.ContributorsAuthorGraph extends ContributorsGraph
+class @ContributorsAuthorGraph extends ContributorsGraph
   constructor: (@data) ->
     @width = $('.container').width()/2 - 100
     @height = 200

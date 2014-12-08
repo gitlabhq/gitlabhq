@@ -1,4 +1,4 @@
-class NotesVotes
+class @NotesVotes
   updateVotes: ->
     votes = $("#votes .votes")
     notes = $("#notes-list .note .vote")
@@ -18,5 +18,3 @@ class NotesVotes
       # replace vote numbers
       votes.find(".upvotes").text votes.find(".upvotes").text().replace(/\d+/, upvotes)
       votes.find(".downvotes").text votes.find(".downvotes").text().replace(/\d+/, downvotes)
-
-@NotesVotes = NotesVotes

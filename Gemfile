@@ -31,13 +31,13 @@ gem 'omniauth-shibboleth'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.0.0.rc9'
+gem "gitlab_git", '7.0.0.rc12'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
-gem 'gitlab_omniauth-ldap', '1.1.0', require: "omniauth-ldap"
+gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
 
 # Git Wiki
 gem 'gollum-lib', '~> 3.0.0'
@@ -112,7 +112,7 @@ gem "acts-as-taggable-on"
 # Background jobs
 gem 'slim'
 gem 'sinatra', require: nil
-gem 'sidekiq', '2.17.0'
+gem 'sidekiq', '2.17.8'
 
 # HTTP requests
 gem "httparty"
@@ -134,7 +134,7 @@ gem "redis-rails"
 gem 'tinder', '~> 1.9.2'
 
 # HipChat integration
-gem "hipchat", "~> 0.14.0"
+gem "hipchat", "~> 1.4.0"
 
 # Flowdock integration
 gem "gitlab-flowdock-git-hook", "~> 0.4.2"
@@ -143,7 +143,7 @@ gem "gitlab-flowdock-git-hook", "~> 0.4.2"
 gem "gemnasium-gitlab-service", "~> 0.2"
 
 # Slack integration
-gem "slack-notifier", "~> 0.3.2"
+gem "slack-notifier", "~> 1.0.0"
 
 # d3
 gem "d3_rails", "~> 3.1.4"
@@ -186,6 +186,7 @@ gem "gon", '~> 5.0.0'
 gem 'nprogress-rails'
 gem 'request_store'
 gem "virtus"
+gem 'addressable'
 
 group :development do
   gem "annotate", "~> 2.6.0.beta2"

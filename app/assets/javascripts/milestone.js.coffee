@@ -1,4 +1,4 @@
-class Milestone
+class @Milestone
   @updateIssue: (li, issue_url, data) ->
     $.ajax
       type: "PUT"
@@ -115,5 +115,3 @@ class Milestone
         Milestone.updateMergeRequest(ui.item, merge_request_url, data)
 
     ).disableSelection()
-
-@Milestone = Milestone

@@ -37,35 +37,22 @@ module Projects
 
       @project.creator = current_user
 
-      if @project.save
-        log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
-        system_hook_service.execute_hooks_for(@project, :create)
+      Project.transaction do
+        @project.save
 
-        unless @project.group
-          @project.team << [current_user, :master]
-        end
-
-        @project.update_column(:last_activity_at, @project.created_at)
-
-        if @project.import?
-          @project.import_start
-        else
-          GitlabShellWorker.perform_async(
-            :add_repository,
-            @project.path_with_namespace
-          )
-        end
-
-        if @project.wiki_enabled?
-          begin
-            # force the creation of a wiki,
-            ProjectWiki.new(@project, @project.owner).wiki
-          rescue ProjectWiki::CouldNotCreateWikiError => ex
-            # Prevent project observer crash
-            # if failed to create wiki
-            nil
+        unless @project.import?
+          unless @project.create_repository
+            raise 'Failed to create repository'
           end
         end
+      end
+
+      if @project.persisted?
+        if @project.wiki_enabled?
+          @project.create_wiki
+        end
+
+        after_create_actions
       end
 
       @project
@@ -83,6 +70,21 @@ module Projects
     def allowed_namespace?(user, namespace_id)
       namespace = Namespace.find_by(id: namespace_id)
       current_user.can?(:create_projects, namespace)
+    end
+
+    def after_create_actions
+      log_info("#{@project.owner.name} created a new project \"#{@project.name_with_namespace}\"")
+      system_hook_service.execute_hooks_for(@project, :create)
+
+      unless @project.group
+        @project.team << [current_user, :master]
+      end
+
+      @project.update_column(:last_activity_at, @project.created_at)
+
+      if @project.import?
+        @project.import_start
+      end
     end
   end
 end

@@ -178,7 +178,7 @@ module API
       #   DELETE /projects/:id
       delete ":id" do
         authorize! :remove_project, user_project
-        user_project.destroy
+        ::Projects::DestroyService.new(user_project, current_user, {}).execute
       end
 
       # Mark this project as forked from another

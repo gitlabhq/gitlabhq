@@ -3,10 +3,9 @@ class Projects::BlobController < Projects::ApplicationController
   include ExtractsPath
 
   # Authorize
-  before_filter :authorize_read_project!
-  before_filter :authorize_code_access!
+  before_filter :authorize_download_code!
   before_filter :require_non_empty_project
-  before_filter :authorize_push!, only: [:destroy]
+  before_filter :authorize_push_code!, only: [:destroy]
 
   before_filter :blob
 
@@ -20,7 +19,7 @@ class Projects::BlobController < Projects::ApplicationController
       flash[:notice] = "Your changes have been successfully committed"
       redirect_to project_tree_path(@project, @ref)
     else
-      flash[:alert] = result[:error]
+      flash[:alert] = result[:message]
       render :show
     end
   end

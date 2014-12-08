@@ -4,9 +4,7 @@ class ProjectsController < ApplicationController
   before_filter :repository, except: [:new, :create]
 
   # Authorize
-  before_filter :authorize_read_project!, except: [:index, :new, :create]
-  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive, :retry_import]
-  before_filter :require_non_empty_project, only: [:blob, :tree, :graph]
+  before_filter :authorize_admin_project!, only: [:edit, :update, :destroy, :transfer, :archive, :unarchive]
 
   layout 'navless', only: [:new, :create, :fork]
   before_filter :set_title, only: [:new, :create]
@@ -21,10 +19,11 @@ class ProjectsController < ApplicationController
 
   def create
     @project = ::Projects::CreateService.new(current_user, project_params).execute
-    flash[:notice] = 'Project was successfully created.' if @project.saved?
 
-    respond_to do |format|
-      format.js
+    if @project.saved?
+      redirect_to project_path(@project), notice: 'Project was successfully created.'
+    else
+      render 'new'
     end
   end
 
@@ -49,11 +48,9 @@ class ProjectsController < ApplicationController
 
   def show
     if @project.import_in_progress?
-      redirect_to import_project_path(@project)
+      redirect_to project_import_path(@project)
       return
     end
-
-    return authenticate_user! unless @project.public? || current_user
 
     limit = (params[:limit] || 20).to_i
     @events = @project.events.recent
@@ -64,41 +61,24 @@ class ProjectsController < ApplicationController
 
     respond_to do |format|
       format.html do
-        if @project.empty_repo?
-          render "projects/empty", layout: user_layout
+        if @project.repository_exists?
+          if @project.empty_repo?
+            render "projects/empty", layout: user_layout
+          else
+            @last_push = current_user.recent_push(@project.id) if current_user
+            render :show, layout: user_layout
+          end
         else
-          @last_push = current_user.recent_push(@project.id) if current_user
-          render :show, layout: user_layout
+          render "projects/no_repo", layout: user_layout
         end
       end
+
       format.json { pager_json("events/_events", @events.count) }
     end
   end
 
-  def import
-    if project.import_finished?
-      redirect_to @project
-      return
-    end
-  end
-
-  def retry_import
-    unless @project.import_failed?
-      redirect_to import_project_path(@project)
-    end
-
-    @project.import_url = project_params[:import_url]
-
-    if @project.save
-      @project.reload
-      @project.import_retry
-    end
-
-    redirect_to import_project_path(@project)
-  end
-
   def destroy
-    return access_denied! unless can?(current_user, :remove_project, project)
+    return access_denied! unless can?(current_user, :remove_project, @project)
 
     ::Projects::DestroyService.new(@project, current_user, {}).execute
 
@@ -112,22 +92,6 @@ class ProjectsController < ApplicationController
           redirect_to projects_dashboard_path
         end
       end
-    end
-  end
-
-  def fork
-    @forked_project = ::Projects::ForkService.new(project, current_user).execute
-
-    respond_to do |format|
-      format.html do
-        if @forked_project.saved? && @forked_project.forked?
-          redirect_to(@forked_project, notice: 'Project was successfully forked.')
-        else
-          @title = 'Fork project'
-          render "fork"
-        end
-      end
-      format.js
     end
   end
 
@@ -148,8 +112,8 @@ class ProjectsController < ApplicationController
   end
 
   def archive
-    return access_denied! unless can?(current_user, :archive_project, project)
-    project.archive!
+    return access_denied! unless can?(current_user, :archive_project, @project)
+    @project.archive!
 
     respond_to do |format|
       format.html { redirect_to @project }
@@ -157,8 +121,8 @@ class ProjectsController < ApplicationController
   end
 
   def unarchive
-    return access_denied! unless can?(current_user, :archive_project, project)
-    project.unarchive!
+    return access_denied! unless can?(current_user, :archive_project, @project)
+    @project.unarchive!
 
     respond_to do |format|
       format.html { redirect_to @project }

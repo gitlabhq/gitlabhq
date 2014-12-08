@@ -510,6 +510,10 @@ Code above produces next output:
 | cell 1   | cell 2   |
 | cell 3   | cell 4   |
 
+**Note**
+
+The row of dashes between the table header and body must have at least three dashes in each column.
+
 ## References
 
 - This document leveraged heavily from the [Markdown-Cheatsheet](https://github.com/adam-p/markdown-here/wiki/Markdown-Cheatsheet).

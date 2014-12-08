@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141007100818) do
+ActiveRecord::Schema.define(version: 20141205134006) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -73,6 +73,14 @@ ActiveRecord::Schema.define(version: 20141007100818) do
   end
 
   add_index "forked_project_links", ["forked_to_project_id"], name: "index_forked_project_links_on_forked_to_project_id", unique: true, using: :btree
+
+  create_table "identities", force: true do |t|
+    t.string  "extern_uid"
+    t.string  "provider"
+    t.integer "user_id"
+  end
+
+  add_index "identities", ["user_id"], name: "index_identities_on_user_id", using: :btree
 
   create_table "issues", force: true do |t|
     t.string   "title"
@@ -173,6 +181,7 @@ ActiveRecord::Schema.define(version: 20141007100818) do
     t.integer  "iid"
     t.text     "description"
     t.integer  "position",          default: 0
+    t.datetime "locked_at"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
@@ -350,8 +359,6 @@ ActiveRecord::Schema.define(version: 20141007100818) do
     t.string   "bio"
     t.integer  "failed_attempts",          default: 0
     t.datetime "locked_at"
-    t.string   "extern_uid"
-    t.string   "provider"
     t.string   "username"
     t.boolean  "can_create_group",         default: true,  null: false
     t.boolean  "can_create_team",          default: true,  null: false
@@ -360,6 +367,7 @@ ActiveRecord::Schema.define(version: 20141007100818) do
     t.integer  "notification_level",       default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
+    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -367,7 +375,6 @@ ActiveRecord::Schema.define(version: 20141007100818) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
-    t.datetime "last_credential_check_at"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree
@@ -375,7 +382,6 @@ ActiveRecord::Schema.define(version: 20141007100818) do
   add_index "users", ["confirmation_token"], name: "index_users_on_confirmation_token", unique: true, using: :btree
   add_index "users", ["current_sign_in_at"], name: "index_users_on_current_sign_in_at", using: :btree
   add_index "users", ["email"], name: "index_users_on_email", unique: true, using: :btree
-  add_index "users", ["extern_uid", "provider"], name: "index_users_on_extern_uid_and_provider", unique: true, using: :btree
   add_index "users", ["name"], name: "index_users_on_name", using: :btree
   add_index "users", ["reset_password_token"], name: "index_users_on_reset_password_token", unique: true, using: :btree
   add_index "users", ["username"], name: "index_users_on_username", using: :btree

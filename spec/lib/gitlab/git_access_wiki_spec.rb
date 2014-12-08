@@ -11,9 +11,9 @@ describe Gitlab::GitAccessWiki do
       project.team << [user, :developer]
     end
 
-    subject { access.push_allowed?(user, project, changes) }
+    subject { access.push_access_check(user, project, changes) }
 
-    it { should be_true }
+    it { subject.allowed?.should be_true }
   end
 
   def changes

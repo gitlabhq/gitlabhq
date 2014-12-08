@@ -80,7 +80,7 @@ module Grack
       case git_cmd
       when *Gitlab::GitAccess::DOWNLOAD_COMMANDS
         if user
-          Gitlab::GitAccess.new.download_allowed?(user, project)
+          Gitlab::GitAccess.new.download_access_check(user, project).allowed?
         elsif project.public?
           # Allow clone/fetch for public projects
           true
@@ -90,7 +90,7 @@ module Grack
       when *Gitlab::GitAccess::PUSH_COMMANDS
         if user
           # Skip user authorization on upload request.
-          # It will be serverd by update hook in repository
+          # It will be done by the pre-receive hook in the repository.
           true
         else
           false

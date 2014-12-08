@@ -38,8 +38,12 @@
       - else
         Open
 
+    .cross-project-ref
+      %i.fa.fa-link.has_tooltip{:"data-original-title" => 'Cross-project reference'}
+      = cross_project_reference(@project, @issue)
+
     .creator
-      Created by #{link_to_member(@project, @issue.author)} #{time_ago_with_tooltip(@issue.created_at)}
+      Created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
 
   %h4.title
     = gfm escape_once(@issue.title)

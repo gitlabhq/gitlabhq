@@ -61,7 +61,6 @@ Settings.ldap['enabled'] = false if Settings.ldap['enabled'].nil?
 if Settings.ldap['enabled'] || Rails.env.test?
   if Settings.ldap['host'].present?
     server = Settings.ldap.except('sync_time')
-    server['label'] = 'LDAP'
     server['provider_name'] = 'ldap'
     Settings.ldap['servers'] = {
       'ldap' => server
@@ -69,6 +68,7 @@ if Settings.ldap['enabled'] || Rails.env.test?
   end
 
   Settings.ldap['servers'].each do |key, server|
+    server['label'] ||= 'LDAP'
     server['allow_username_or_email_login'] = false if server['allow_username_or_email_login'].nil?
     server['active_directory'] = true if server['active_directory'].nil?
     server['provider_name'] ||= "ldap#{key}".downcase
@@ -95,6 +95,7 @@ Settings.gitlab['https']        = false if Settings.gitlab['https'].nil?
 Settings.gitlab['port']       ||= Settings.gitlab.https ? 443 : 80
 Settings.gitlab['relative_url_root'] ||= ENV['RAILS_RELATIVE_URL_ROOT'] || ''
 Settings.gitlab['protocol']   ||= Settings.gitlab.https ? "https" : "http"
+Settings.gitlab['email_enabled'] ||= true if Settings.gitlab['email_enabled'].nil?
 Settings.gitlab['email_from'] ||= "gitlab@#{Settings.gitlab.host}"
 Settings.gitlab['url']        ||= Settings.send(:build_gitlab_url)
 Settings.gitlab['user']       ||= 'git'
@@ -103,6 +104,7 @@ Settings.gitlab['user_home']  ||= begin
 rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
+Settings.gitlab['time_zone']  ||= nil
 Settings.gitlab['signup_enabled'] ||= false
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])

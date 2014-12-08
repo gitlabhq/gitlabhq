@@ -66,6 +66,16 @@ describe ApplicationHelper do
       avatar_icon(user.email).to_s.should match("/uploads/user/avatar/#{ user.id }/gitlab_logo.png")
     end
 
+    it "should return an url for the avatar with relative url" do
+      Gitlab.config.gitlab.stub(relative_url_root: "/gitlab")
+      Gitlab.config.gitlab.stub(url: Settings.send(:build_gitlab_url))
+
+      user = create(:user)
+      user.avatar = File.open(avatar_file_path)
+      user.save!
+      avatar_icon(user.email).to_s.should match("/gitlab//uploads/user/avatar/#{ user.id }/gitlab_logo.png")
+    end
+
     it "should call gravatar_icon when no avatar is present" do
       user = create(:user, email: 'test@example.com')
       user.save!

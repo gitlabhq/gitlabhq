@@ -75,7 +75,7 @@
 }
 
 .participants {
-  margin-bottom: 10px;
+  margin-bottom: 20px;
 }
 
 .issues_bulk_update {
@@ -149,6 +149,16 @@ form.edit-issue {
       &:last-child:not(:first-child) {
         border-radius: 0 0 4px 4px;
       }
+    }
+  }
+
+  .issue {
+    &:hover  .issue-actions {
+      display: none !important;
+    }
+
+    .issue-updated-at {
+      display: none;
     }
   }
 }

@@ -18,6 +18,8 @@
               %i.fa.fa-trash-o.cred
               Remove
         = link_to_member(@project, note.author, avatar: false)
+        %span.author-username
+          = '@' + note.author.username
         %span.note-last-update
           = note_timestamp(note)
 
@@ -60,7 +62,7 @@
           - if note.attachment.image?
             = link_to note.attachment.secure_url, target: '_blank' do
               = image_tag note.attachment.secure_url, class: 'note-image-attach'
-          .attachment.pull-right
+          .attachment
             = link_to note.attachment.secure_url, target: "_blank" do
               %i.fa.fa-paperclip
               = note.attachment_identifier

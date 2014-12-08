@@ -21,13 +21,7 @@
 
 ## Clients
 
-- [php-gitlab-api](https://github.com/m4tthumphrey/php-gitlab-api) - PHP
-- [Laravel API Wrapper for GitLab CE](https://github.com/adamgoose/gitlab) - PHP / [Laravel](http://laravel.com)
-- [Ruby Wrapper](https://github.com/NARKOZ/gitlab) - Ruby
-- [python-gitlab](https://github.com/Itxaka/python-gitlab) - Python
-- [java-gitlab-api](https://github.com/timols/java-gitlab-api) - Java
-- [node-gitlab](https://github.com/moul/node-gitlab) - Node.js
-- [NGitLab](https://github.com/Scooletz/NGitLab) - .NET
+Find API Clients for GitLab [on our website](https://about.gitlab.com/applications/#api-clients).
 
 ## Introduction
 
@@ -158,7 +152,7 @@ When an attribute is missing, you will get something like:
 
     HTTP/1.1 400 Bad Request
     Content-Type: application/json
-    
+
     {
         "message":"400 (Bad request) \"title\" not given"
     }
@@ -167,7 +161,7 @@ When a validation error occurs, error messages will be different. They will hold
 
     HTTP/1.1 400 Bad Request
     Content-Type: application/json
-    
+
     {
         "message": {
             "bio": [

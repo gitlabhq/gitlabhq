@@ -1,68 +1,25 @@
+- loggers = [Gitlab::GitLogger, Gitlab::AppLogger,
+             Gitlab::ProductionLogger, Gitlab::SidekiqLogger]
 %ul.nav.nav-tabs.log-tabs
-  %li.active
-    = link_to "githost.log", "#githost", 'data-toggle' => 'tab'
-  %li
-    = link_to "application.log", "#application", 'data-toggle' => 'tab'
-  %li
-    = link_to "production.log", "#production", 'data-toggle' => 'tab'
-  %li
-    = link_to "sidekiq.log", "#sidekiq", 'data-toggle' => 'tab'
-
+  - loggers.each do |klass|
+    %li{ class: (klass == Gitlab::GitLogger ? 'active' : '') }
+      = link_to klass::file_name, "##{klass::file_name_noext}",
+          'data-toggle' => 'tab'
 %p.light To prevent performance issues admin logs output the last 2000 lines
 .tab-content
-  .tab-pane.active#githost
-    .file-holder#README
-      .file-title
-        %i.fa.fa-file
-        githost.log
-        .pull-right
-          = link_to '#', class: 'log-bottom' do
-            %i.fa.fa-arrow-down
-            Scroll down
-      .file-content.logs
-        %ol
-          - Gitlab::GitLogger.read_latest.each do |line|
-            %li
-              %p= line
-  .tab-pane#application
-    .file-holder#README
-      .file-title
-        %i.fa.fa-file
-        application.log
-        .pull-right
-          = link_to '#', class: 'log-bottom' do
-            %i.fa.fa-arrow-down
-            Scroll down
-      .file-content.logs
-        %ol
-          - Gitlab::AppLogger.read_latest.each do |line|
-            %li
-              %p= line
-  .tab-pane#production
-    .file-holder#README
-      .file-title
-        %i.fa.fa-file
-        production.log
-        .pull-right
-          = link_to '#', class: 'log-bottom' do
-            %i.fa.fa-arrow-down
-            Scroll down
-      .file-content.logs
-        %ol
-          - Gitlab::Logger.read_latest_for('production.log').each do |line|
-            %li
-              %p= line
-  .tab-pane#sidekiq
-    .file-holder#README
-      .file-title
-        %i.fa.fa-file
-        sidekiq.log
-        .pull-right
-          = link_to '#', class: 'log-bottom' do
-            %i.fa.fa-arrow-down
-            Scroll down
-      .file-content.logs
-        %ol
-          - Gitlab::Logger.read_latest_for('sidekiq.log').each do |line|
-            %li
-              %p= line
+  - loggers.each do |klass|
+    .tab-pane{ class: (klass == Gitlab::GitLogger ? 'active' : ''),
+        id: klass::file_name_noext }
+      .file-holder#README
+        .file-title
+          %i.fa.fa-file
+          = klass::file_name
+          .pull-right
+            = link_to '#', class: 'log-bottom' do
+              %i.fa.fa-arrow-down
+              Scroll down
+        .file-content.logs
+          %ol
+            - klass.read_latest.each do |line|
+              %li
+                %p= line

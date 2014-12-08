@@ -90,4 +90,8 @@ class Namespace < ActiveRecord::Base
   def kind
     type == 'Group' ? 'group' : 'user'
   end
+
+  def find_fork_of(project)
+    projects.joins(:forked_project_link).where('forked_project_links.forked_from_project_id = ?', project.id).first
+  end
 end

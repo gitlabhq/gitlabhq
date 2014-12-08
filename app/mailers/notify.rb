@@ -11,6 +11,7 @@ class Notify < ActionMailer::Base
   add_template_helper ApplicationHelper
   add_template_helper GitlabMarkdownHelper
   add_template_helper MergeRequestsHelper
+  add_template_helper EmailsHelper
 
   default_url_options[:host]     = Gitlab.config.gitlab.host
   default_url_options[:protocol] = Gitlab.config.gitlab.protocol
@@ -23,6 +24,14 @@ class Notify < ActionMailer::Base
   # Just send email with 2 seconds delay
   def self.delay
     delay_for(2.seconds)
+  end
+
+  def test_email(recepient_email, subject, body)
+    mail(to: recepient_email,
+         subject: subject,
+         body: body.html_safe,
+         content_type: 'text/html'
+    )
   end
 
   private

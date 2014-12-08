@@ -5,61 +5,77 @@ module Gitlab
 
     attr_reader :params, :project, :git_cmd, :user
 
-    def allowed?(actor, cmd, project, changes = nil)
+    def check(actor, cmd, project, changes = nil)
       case cmd
       when *DOWNLOAD_COMMANDS
-        if actor.is_a? User
-          download_allowed?(actor, project)
-        elsif actor.is_a? DeployKey
-          actor.projects.include?(project)
-        elsif actor.is_a? Key
-          download_allowed?(actor.user, project)
-        else
-          raise 'Wrong actor'
-        end
+        download_access_check(actor, project)
       when *PUSH_COMMANDS
         if actor.is_a? User
-          push_allowed?(actor, project, changes)
+          push_access_check(actor, project, changes)
         elsif actor.is_a? DeployKey
-          # Deploy key not allowed to push
-          return false
+          return build_status_object(false, "Deploy key not allowed to push")
         elsif actor.is_a? Key
-          push_allowed?(actor.user, project, changes)
+          push_access_check(actor.user, project, changes)
         else
           raise 'Wrong actor'
         end
       else
-        false
+        return build_status_object(false, "Wrong command")
       end
     end
 
-    def download_allowed?(user, project)
-      if user && user_allowed?(user)
-        user.can?(:download_code, project)
+    def download_access_check(actor, project)
+      if actor.is_a?(User)
+        user_download_access_check(actor, project)
+      elsif actor.is_a?(DeployKey)
+        if actor.projects.include?(project)
+          build_status_object(true)
+        else
+          build_status_object(false, "Deploy key not allowed to access this project")
+        end
+      elsif actor.is_a? Key
+        user_download_access_check(actor.user, project)
       else
-        false
+        raise 'Wrong actor'
       end
     end
 
-    def push_allowed?(user, project, changes)
-      return false unless user && user_allowed?(user)
-      return true if changes.blank?
+    def user_download_access_check(user, project)
+      if user && user_allowed?(user) && user.can?(:download_code, project)
+        build_status_object(true)
+      else
+        build_status_object(false, "You don't have access")
+      end
+    end
+
+    def push_access_check(user, project, changes)
+      unless user && user_allowed?(user)
+        return build_status_object(false, "You don't have access")
+      end
+
+      if changes.blank?
+        return build_status_object(true)
+      end
+
+      unless project.repository.exists?
+        return build_status_object(false, "Repository does not exist")
+      end
 
       changes = changes.lines if changes.kind_of?(String)
 
       # Iterate over all changes to find if user allowed all of them to be applied
       changes.each do |change|
-        unless change_allowed?(user, project, change)
+        status = change_access_check(user, project, change)
+        unless status.allowed?
           # If user does not have access to make at least one change - cancel all push
-          return false
+          return status
         end
       end
 
-      # If user has access to make all changes
-      true
+      return build_status_object(true)
     end
 
-    def change_allowed?(user, project, change)
+    def change_access_check(user, project, change)
       oldrev, newrev, ref = change.split(' ')
 
       action = if project.protected_branch?(branch_name(ref))
@@ -67,30 +83,27 @@ module Gitlab
                  if forced_push?(project, oldrev, newrev)
                    :force_push_code_to_protected_branches
                    # and we dont allow remove of protected branch
-                 elsif newrev =~ /0000000/
+                 elsif newrev == Gitlab::Git::BLANK_SHA
                    :remove_protected_branches
                  else
                    :push_code_to_protected_branches
                  end
-               elsif project.repository && project.repository.tag_names.include?(tag_name(ref))
+               elsif project.repository.tag_names.include?(tag_name(ref))
                  # Prevent any changes to existing git tag unless user has permissions
                  :admin_project
                else
                  :push_code
                end
 
-      user.can?(action, project)
+      if user.can?(action, project)
+        build_status_object(true)
+      else
+        build_status_object(false, "You don't have permission")
+      end
     end
 
     def forced_push?(project, oldrev, newrev)
-      return false if project.empty_repo?
-
-      if oldrev !~ /00000000/ && newrev !~ /00000000/
-        missed_refs = IO.popen(%W(git --git-dir=#{project.repository.path_to_repo} rev-list #{oldrev} ^#{newrev})).read
-        missed_refs.split("\n").size > 0
-      else
-        false
-      end
+      Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
     end
 
     private
@@ -115,6 +128,12 @@ module Gitlab
       else
         nil
       end
+    end
+
+    protected
+
+    def build_status_object(status, message = '')
+      GitAccessStatus.new(status, message)
     end
   end
 end

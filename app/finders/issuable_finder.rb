@@ -33,6 +33,7 @@ class IssuableFinder
     items = by_search(items)
     items = by_milestone(items)
     items = by_assignee(items)
+    items = by_author(items)
     items = by_label(items)
     items = sort(items)
   end
@@ -48,7 +49,7 @@ class IssuableFinder
       else
         []
       end
-    elsif current_user && params[:authorized_only].presence
+    elsif current_user && params[:authorized_only].presence && !current_user_related?
       klass.of_projects(current_user.authorized_projects).references(:project)
     else
       klass.of_projects(ProjectsFinder.new.execute(current_user)).references(:project)
@@ -125,6 +126,14 @@ class IssuableFinder
     items
   end
 
+  def by_author(items)
+    if params[:author_id].present?
+      items = items.where(author_id: (params[:author_id] == '0' ? nil : params[:author_id]))
+    end
+
+    items
+  end
+
   def by_label(items)
     if params[:label_name].present?
       label_names = params[:label_name].split(",")
@@ -141,5 +150,9 @@ class IssuableFinder
 
   def project
     Project.where(id: params[:project_id]).first if params[:project_id].present?
+  end
+
+  def current_user_related?
+    params[:scope] == 'created-by-me' || params[:scope] == 'authored' || params[:scope] == 'assigned-to-me'
   end
 end

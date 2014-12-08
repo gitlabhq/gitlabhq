@@ -83,3 +83,22 @@ Feature: Profile
     Given I visit profile design page
     When I change my code preview theme
     Then I should receive feedback that the changes were saved
+
+  @javascript
+  Scenario: I see the password strength indicator
+    Given I visit profile password page
+    When I try to set a weak password
+    Then I should see the input field yellow
+
+  @javascript
+  Scenario: I see the password strength indicator error
+    Given I visit profile password page
+    When I try to set a short password
+    Then I should see the input field red
+    And I should see the password error message
+
+  @javascript
+  Scenario: I see the password strength indicator with success
+    Given I visit profile password page
+    When I try to set a strong password
+    Then I should see the input field green

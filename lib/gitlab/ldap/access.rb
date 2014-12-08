@@ -8,7 +8,7 @@ module Gitlab
       attr_reader :adapter, :provider, :user
 
       def self.open(user, &block)
-        Gitlab::LDAP::Adapter.open(user.provider) do |adapter|
+        Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
           block.call(self.new(user, adapter))
         end
       end
@@ -28,13 +28,13 @@ module Gitlab
       def initialize(user, adapter=nil)
         @adapter = adapter
         @user = user
-        @provider = user.provider
+        @provider = user.ldap_identity.provider
       end
 
       def allowed?
-        if Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
+        if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
           return true unless ldap_config.active_directory
-          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
+          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
         else
           false
         end

@@ -10,11 +10,11 @@
           - target_remote = @merge_request.target_project.namespace.nil? ? "target" :@merge_request.target_project.namespace.path
           %p
             %strong Step 1.
-            Checkout the branch we are going to merge and pull in the code
+            Fetch the code and create a new branch pointing to it
           %pre.dark
             :preserve
-              git checkout -b #{@merge_request.source_project_path}-#{@merge_request.source_branch} #{@merge_request.target_branch}
-              git pull #{@merge_request.source_project.http_url_to_repo} #{@merge_request.source_branch}
+              git fetch #{@merge_request.source_project.http_url_to_repo} #{@merge_request.source_branch}
+              git checkout -b #{@merge_request.source_project_path}-#{@merge_request.source_branch} FETCH_HEAD
           %p
             %strong Step 2.
             Merge the branch and push the changes to GitLab

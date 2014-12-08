@@ -1,7 +1,6 @@
 class Explore::ProjectsController < ApplicationController
   skip_before_filter :authenticate_user!,
-    :reject_blocked,
-    :add_abilities
+                     :reject_blocked
 
   layout 'explore'
 

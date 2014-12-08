@@ -113,30 +113,36 @@
     font-size: 15px;
     border-bottom: 1px solid #BBB;
     color: #777;
+    background-color: #F5F5F5;
 
     &.ci-success {
       color: $bg_success;
       border-color: $border_success;
+      background-color: #F1FAF1;
     }
 
     &.ci-pending {
       color: #548;
       border-color: #548;
+      background-color: #F4F1FA;
     }
 
     &.ci-running {
       color: $bg_warning;
       border-color: $border_warning;
+      background-color: #FAF5F1;
     }
 
     &.ci-failed {
       color: $bg_danger;
       border-color: $border_danger;
+      background-color: #FAF1F1;
     }
 
     &.ci-error {
       color: $bg_danger;
       border-color: $border_danger;
+      background-color: #FAF1F1;
     }
   }
 

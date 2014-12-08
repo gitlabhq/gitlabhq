@@ -146,6 +146,7 @@ describe API::API, api: true  do
     it "should remove branch" do
       delete api("/projects/#{project.id}/repository/branches/#{branch_name}", user)
       response.status.should == 200
+      json_response['branch_name'].should == branch_name
     end
 
     it 'should return 404 if branch not exists' do

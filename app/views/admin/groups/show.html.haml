@@ -64,7 +64,7 @@
           %div.prepend-top-10
             = select_tag :access_level, options_for_select(GroupMember.access_level_roles), class: "project-access-select select2"
           %hr
-          = submit_tag 'Add users into group', class: "btn btn-create"
+          = button_tag 'Add users into group', class: "btn btn-create"
     .panel.panel-default
       .panel-heading
         %h3.panel-title
@@ -74,13 +74,13 @@
       %ul.well-list.group-users-list
         - @members.each do |member|
           - user = member.user
-          %li{class: dom_class(user)}
+          %li{class: dom_class(member), id: dom_id(user)}
             .list-item-name
               %strong
                 = link_to user.name, admin_user_path(user)
             %span.pull-right.light
               = member.human_access
-              = link_to group_group_members_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
+              = link_to group_group_member_path(@group, member), data: { confirm: remove_user_from_group_message(@group, user) }, method: :delete, remote: true, class: "btn-tiny btn btn-remove", title: 'Remove user from group' do
                 %i.fa.fa-minus.fa-inverse
       .panel-footer
         = paginate @members, param_name: 'members_page', theme: 'gitlab'
