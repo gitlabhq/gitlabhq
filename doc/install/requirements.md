@@ -93,8 +93,10 @@ On a very active server (10,000 active users) the Sidekiq process can use 1GB+ o
 It's possible to increase the amount of unicorn workers.
 This will usually help for short waits on databases and caches.
 
-We recommend using CPU cores + 1 unicorn workers.
+For most instances we recommend using CPU cores + 1 unicorn workers.
 For a machine with 2 cores, 3 unicorn workers is ideal.
+
+For memory constrained instances, we recommend using a single unicorn worker.
 
 ## Supported web browsers
 

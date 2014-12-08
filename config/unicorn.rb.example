@@ -13,11 +13,9 @@
 #
 # ENV['RAILS_RELATIVE_URL_ROOT'] = "/gitlab"
 
-# We recommend using CPU cores + 1 worker processes.
-# Read more about unicorn workers here:
-# http://doc.gitlab.com/ee/install/requirements.html
+# Read about unicorn workers here:
+# http://doc.gitlab.com/ee/install/requirements.html#unicorn-workers
 #
-# The minimum amount of worker processes is 2
 worker_processes 2
 
 # Since Unicorn is never exposed to outside clients, it does not need to
