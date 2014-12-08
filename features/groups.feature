@@ -56,6 +56,7 @@ Feature: Groups
     And I should not see the "Remove avatar" button
 
   Scenario: Add new LDAP synchronization
+    Given LDAP enabled
     When I visit Group "Owned" LDAP settings page
     And I add a new LDAP synchronization
     Then I see a new LDAP synchronization listed
