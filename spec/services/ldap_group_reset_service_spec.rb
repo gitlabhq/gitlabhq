@@ -4,8 +4,8 @@ describe LdapGroupResetService do
   # TODO: refactor to multi-ldap setup
   let(:group) { create(:group) }
   let(:user) { create(:user) }
-  let(:ldap_user) { create(:user, extern_uid: 'john', provider: 'ldap', last_credential_check_at: Time.now) }
-  let(:ldap_user_2) { create(:user, extern_uid: 'mike', provider: 'ldap', last_credential_check_at: Time.now) }
+  let(:ldap_user) { create(:omniauth_user, extern_uid: 'john', provider: 'ldap', last_credential_check_at: Time.now) }
+  let(:ldap_user_2) { create(:omniauth_user, extern_uid: 'mike', provider: 'ldap', last_credential_check_at: Time.now) }
 
   before do
     group.add_owner(user)
