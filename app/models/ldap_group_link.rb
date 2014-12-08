@@ -14,6 +14,8 @@ class LdapGroupLink < ActiveRecord::Base
 
   def config
     Gitlab::LDAP::Config.new(provider)
+  rescue Gitlab::LDAP::Config::InvalidProvider
+    nil
   end
 
   # default to the first LDAP server
