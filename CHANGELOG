@@ -1,6 +1,33 @@
+v 7.6.0
+  - Fork repository to groups
+  - New rugged version
+  - Add CRON=1 backup setting for quiet backups
+  - Fix failing wiki restore
+  -
+  - Add optional Sidekiq MemoryKiller middleware (enabled via SIDEKIQ_MAX_RSS env variable)
+  -
+  -
+  - Create project with repository in synchrony
+  - Added ability to create empty repo or import existing one if project does not have repository
+  -
+  -
+  - Reactivate highlight.js language autodetection
+  - Mobile UI improvements
+  -
+  - Change maximum avatar file size from 100KB to 200KB
+  -
+  -
+  - In the docker directory is a container template based on the Omnibus packages.
+  - Update Sidekiq to version 2.17.8
+  -
+  - Atom feed for user activity
+
+v 7.5.2
+  - Don't log Sidekiq arguments by default
+
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
-  - Add time zone configuration on gitlab.yml (Sullivan Senechal)
+  - Add time zone configuration in gitlab.yml (Sullivan Senechal)
   - Fix LDAP authentication for Git HTTP access
   - Run 'GC.start' after every EmailsOnPushWorker job
   - Fix LDAP config lookup for provider 'ldap'
@@ -22,9 +49,9 @@ v 7.5.0
   - Added a password strength indicator
   - Change project name and path in one form
   - Display renamed files in diff views (Vinnie Okada)
-  - Add timezone configuration to gitlab.yml
   - Fix raw view for public snippets
   - Use secret token with GitLab internal API.
+  - Add missing timestamps to 'members' table
 
 v 7.4.3
   - Fix raw snippets view
@@ -51,6 +78,7 @@ v 7.4.0
   - Do not delete tmp/repositories itself during clean-up, only its contents
   - Support for backup uploads to remote storage
   - Prevent notes polling when there are not notes
+  - Internal ForkService: Prepare support for fork to a given namespace
   - API: Add support for forking a project via the API (Bernhard Kaindl)
   - API: filter project issues by milestone (Julien Bianchi)
   - Fail harder in the backup script

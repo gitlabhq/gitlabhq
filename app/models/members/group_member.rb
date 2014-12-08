@@ -26,8 +26,7 @@ class GroupMember < Member
 
   scope :with_group, ->(group) { where(source_id: group.id) }
   scope :with_user, ->(user) { where(user_id: user.id) }
-  scope :with_ldap_dn, -> { references(:user).includes(:user).
-        where(users: { provider: 'ldap' }) }
+  scope :with_ldap_dn, -> { joins(user: :identities).where("identities.provider LIKE ?", 'ldap%') }
 
   after_create :notify_create
   after_update :notify_update

@@ -16,11 +16,11 @@
       - unless @project.empty_repo?
         .fork-buttons
           - if current_user && can?(current_user, :fork_project, @project) && @project.namespace != current_user.namespace
-            - if current_user.already_forked?(@project)
+            - if current_user.already_forked?(@project) && current_user.manageable_namespaces.size < 2
               = link_to project_path(current_user.fork_of(@project)), title: 'Go to my fork' do
                 = link_to_toggle_fork
             - else
-              = link_to fork_project_path(@project), title: "Fork project", method: "POST" do
+              = link_to new_project_fork_path(@project), title: "Fork project" do
                 = link_to_toggle_fork
 
       .star-buttons
@@ -31,7 +31,7 @@
           - else
             = link_to_toggle_star('You must sign in to star a project.', false, false)
 
-  .project-home-row
+  .project-home-row.hidden-xs
     - if current_user && !empty_repo
       .project-home-dropdown
         = render "dropdown"

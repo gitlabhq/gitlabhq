@@ -143,7 +143,7 @@ class Project < ActiveRecord::Base
 
   state_machine :import_status, initial: :none do
     event :import_start do
-      transition :none => :started
+      transition [:none, :finished] => :started
     end
 
     event :import_finish do
@@ -608,5 +608,26 @@ class Project < ActiveRecord::Base
     else
       false
     end
+  end
+
+  def create_repository
+    if gitlab_shell.add_repository(path_with_namespace)
+      true
+    else
+      errors.add(:base, "Failed to create repository")
+      false
+    end
+  end
+
+  def repository_exists?
+    !!repository.exists?
+  end
+
+  def create_wiki
+    ProjectWiki.new(self, self.owner).wiki
+    true
+  rescue ProjectWiki::CouldNotCreateWikiError => ex
+    errors.add(:base, "Failed create wiki")
+    false
   end
 end

@@ -254,4 +254,16 @@ module GitlabMarkdownHelper
       truncated
     end
   end
+
+  def cross_project_reference(project, entity)
+    path = project.path_with_namespace
+
+    if entity.kind_of?(Issue)
+      [path, entity.iid].join('#')
+    elsif entity.kind_of?(MergeRequest)
+      [path, entity.iid].join('!')
+    else
+      raise 'Not supported type'
+    end
+  end
 end

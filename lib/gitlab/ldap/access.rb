@@ -9,7 +9,7 @@ module Gitlab
       attr_reader :adapter, :provider, :user, :ldap_user
 
       def self.open(user, &block)
-        Gitlab::LDAP::Adapter.open(user.provider) do |adapter|
+        Gitlab::LDAP::Adapter.open(user.ldap_identity.provider) do |adapter|
           block.call(self.new(user, adapter))
         end
       end
@@ -31,13 +31,13 @@ module Gitlab
       def initialize(user, adapter=nil)
         @adapter = adapter
         @user = user
-        @provider = user.provider
+        @provider = user.ldap_identity.provider
       end
 
       def allowed?
-        if Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
+        if Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
           return true unless ldap_config.active_directory
-          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.extern_uid, adapter)
+          !Gitlab::LDAP::Person.disabled_via_active_directory?(user.ldap_identity.extern_uid, adapter)
         else
           false
         end
@@ -54,7 +54,7 @@ module Gitlab
       end
 
       def ldap_user
-        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter)
+        @ldap_user ||= Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter)
       end
 
       def update_permissions
@@ -110,7 +110,7 @@ module Gitlab
 
       def update_admin_status
         admin_group = Gitlab::LDAP::Group.find_by_cn(ldap_config.admin_group, adapter)
-        if admin_group.has_member?(Gitlab::LDAP::Person.find_by_dn(user.extern_uid, adapter))
+        if admin_group.has_member?(Gitlab::LDAP::Person.find_by_dn(user.ldap_identity.extern_uid, adapter))
           unless user.admin?
             user.admin = true
             user.save

@@ -62,6 +62,7 @@ describe User do
     it { should have_many(:assigned_issues).dependent(:destroy) }
     it { should have_many(:merge_requests).dependent(:destroy) }
     it { should have_many(:assigned_merge_requests).dependent(:destroy) }
+    it { should have_many(:identities).dependent(:destroy) }
   end
 
   describe "Mass assignment" do
@@ -361,21 +362,26 @@ describe User do
   end
 
   describe :ldap_user? do
-    let(:user) { build(:user, :ldap) }
-
     it "is true if provider name starts with ldap" do
-      user.provider = 'ldapmain'
+      user = create(:omniauth_user, provider: 'ldapmain')
       expect( user.ldap_user? ).to be_true
     end
 
     it "is false for other providers" do
-      user.provider = 'other-provider'
+      user = create(:omniauth_user, provider: 'other-provider')
       expect( user.ldap_user? ).to be_false
     end
 
     it "is false if no extern_uid is provided" do
-      user.extern_uid = nil
+      user = create(:omniauth_user, extern_uid: nil)
       expect( user.ldap_user? ).to be_false
+    end
+  end
+
+  describe :ldap_identity do
+    it "returns ldap identity" do
+      user = create :omniauth_user
+      user.ldap_identity.provider.should_not be_empty
     end
   end
 

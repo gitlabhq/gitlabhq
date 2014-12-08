@@ -24,9 +24,18 @@ FactoryGirl.define do
       admin true
     end
 
-    trait :ldap do
-      provider 'ldapmain'
-      extern_uid 'my-ldap-id'
+    factory :omniauth_user do
+      ignore do
+        extern_uid '123456'
+        provider 'ldapmain'
+      end
+
+      after(:create) do |user, evaluator|
+        user.identities << create(:identity,
+          provider: evaluator.provider,
+          extern_uid: evaluator.extern_uid
+        )
+      end
     end
 
     factory :admin, traits: [:admin]
@@ -188,5 +197,10 @@ FactoryGirl.define do
     group_access Gitlab::Access::GUEST
     provider 'ldapmain'
     group
+  end
+
+  factory :identity do
+    provider 'ldapmain'
+    extern_uid 'my-ldap-id'
   end
 end

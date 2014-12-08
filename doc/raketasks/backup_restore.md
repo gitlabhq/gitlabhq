@@ -14,7 +14,7 @@ You can only restore a backup to exactly the same version of GitLab that you cre
 sudo gitlab-rake gitlab:backup:create
 
 # if you've installed GitLab from source or using the cookbook
-bundle exec rake gitlab:backup:create RAILS_ENV=production
+sudo -u git -H bundle exec rake gitlab:backup:create RAILS_ENV=production
 ```
 
 Example output:
@@ -203,5 +203,8 @@ Add the following lines at the bottom:
 
 ```
 # Create a full backup of the GitLab repositories and SQL database every day at 4am
-0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production
+0 4 * * * cd /home/git/gitlab && PATH=/usr/local/bin:/usr/bin:/bin bundle exec rake gitlab:backup:create RAILS_ENV=production CRON=1
 ```
+
+The `CRON=1` environment setting tells the backup script to suppress all progress output if there are no errors.
+This is recommended to reduce cron spam.

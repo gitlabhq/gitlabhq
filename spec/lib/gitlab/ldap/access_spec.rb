@@ -2,7 +2,7 @@ require 'spec_helper'
 
 describe Gitlab::LDAP::Access do
   let(:access) { Gitlab::LDAP::Access.new user }
-  let(:user) { create(:user, :ldap) }
+  let(:user) { create(:omniauth_user) }
 
   describe :allowed? do
     subject { access.allowed? }
@@ -129,7 +129,7 @@ describe Gitlab::LDAP::Access do
     let(:entry) { Net::LDAP::Entry.new }
 
     before do
-      access.stub ldap_user: Gitlab::LDAP::Person.new(entry, user.provider)
+      access.stub ldap_user: Gitlab::LDAP::Person.new(entry, user.ldap_identity.provider)
     end
 
     it "should not update email if email attribute is not set" do
@@ -157,7 +157,7 @@ describe Gitlab::LDAP::Access do
     before do
       access.stub(admin_group: "GLAdmins")
       ldap_user_entry = Net::LDAP::Entry.new
-      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(ldap_user_entry, user.provider) }
+      Gitlab::LDAP::Adapter.any_instance.stub(:user) { Gitlab::LDAP::Person.new(ldap_user_entry, user.ldap_identity.provider) }
       Gitlab::LDAP::Person.any_instance.stub(:uid) { 'admin2' }
     end
 
@@ -319,7 +319,7 @@ objectclass: posixGroup
         Gitlab::LDAP::Group.new(ldap_group_response_2)
       ]
     end
-    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, user.provider) }
+    let(:ldap_user) { Gitlab::LDAP::Person.new(Net::LDAP::Entry.new, user.ldap_identity.provider) }
 
     before do
       access.stub(ldap_user: ldap_user)

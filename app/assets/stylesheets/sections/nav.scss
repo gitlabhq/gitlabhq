@@ -63,7 +63,6 @@
   @media (max-width: $screen-xs-max) {
     font-size: 18px;
     margin: 0;
-
     max-height: none;
 
     &, .container {
@@ -86,6 +85,7 @@
             color: #fff;
             font-weight: normal;
             text-shadow: none;
+            border: none;
 
             &:after { display: none; }
           }
