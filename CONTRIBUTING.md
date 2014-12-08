@@ -37,7 +37,7 @@ Please send a merge request with a tested solution or a merge request with a fai
 **[Search the issues](https://gitlab.com/gitlab-org/gitlab-ce/issues)** for similar entries before submitting your own, there's a good chance somebody else had the same issue. Show your support with `:+1:` and/or join the discussion. Please submit issues in the following format (as the first post):
 
 1. **Summary:** Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
-1. **Steps to reproduce:** How can we reproduce the issue, preferably on the [GitLab development virtual machine with vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) (start your issue with: `vagrant destroy && vagrant up && vagrant ssh`)
+1. **Steps to reproduce:** How can we reproduce the issue
 1. **Expected behavior:** Describe your issue in detail
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
