@@ -88,10 +88,18 @@ Sidekiq processes the background jobs with a multithreaded process.
 This process starts with the entire Rails stack (200MB+) but it can grow over time due to memory leaks.
 On a very active server (10,000 active users) the Sidekiq process can use 1GB+ of memory.
 
+## Unicorn Workers
+
+It's possible to increase the amount of unicorn workers.
+This will usually help for short waits on databases and caches.
+
+We recommend using CPU cores + 1 unicorn workers.
+For a machine with 2 cores, 3 unicorn workers is ideal.
+
 ## Supported web browsers
 
 - Chrome (Latest stable version)
-- Firefox (Latest released version and [latest ESR version](https://www.mozilla.org/en-US/firefox/organizations/)) 
+- Firefox (Latest released version and [latest ESR version](https://www.mozilla.org/en-US/firefox/organizations/))
 - Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+
