@@ -59,11 +59,11 @@ class Spinach::Features::Search < Spinach::FeatureSteps
     create(:merge_request, :simple, title: "Bar", source_project: project, target_project: project)
   end
 
-  step 'I should see "Foo" link' do
-    page.should have_link "Foo"
+  step 'I should see "Foo" link in the search results' do
+    find(:css, '.search-results').should have_link 'Foo'
   end
 
-  step 'I should not see "Bar" link' do
-    page.should_not have_link "Bar"
+  step 'I should not see "Bar" link in the search results' do
+    find(:css, '.search-results').should_not have_link 'Bar'
   end
 end

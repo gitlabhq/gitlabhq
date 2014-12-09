@@ -13,15 +13,15 @@ Feature: Search
     And project has issues
     When I search for "Foo"
     And I click "Issues" link
-    Then I should see "Foo" link
-    And I should not see "Bar" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
 
   Scenario: I should see merge requests I am looking for
     And project has merge requests
     When I search for "Foo"
     When I click "Merge requests" link
-    Then I should see "Foo" link
-    And I should not see "Bar" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
 
   Scenario: I should see project code I am looking for
     When I click project "Shop" link
@@ -33,14 +33,14 @@ Feature: Search
     When I click project "Shop" link
     And I search for "Foo"
     And I click "Issues" link
-    Then I should see "Foo" link
-    And I should not see "Bar" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
 
   Scenario: I should see project merge requests
     And project has merge requests
     When I click project "Shop" link
     And I search for "Foo"
     And I click "Merge requests" link
-    Then I should see "Foo" link
-    And I should not see "Bar" link
+    Then I should see "Foo" link in the search results
+    And I should not see "Bar" link in the search results
 
