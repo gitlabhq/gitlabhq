@@ -190,7 +190,7 @@ Gitlab::Application.routes.draw do
     end
 
     scope module: :projects do
-      resources :blob, only: [:show, :destroy], constraints: { id: /.+/ } do
+      resources :blob, only: [:show, :destroy], constraints: { id: /.+/, format: false } do
         get :diff, on: :member
       end
       resources :raw,       only: [:show], constraints: {id: /.+/}
