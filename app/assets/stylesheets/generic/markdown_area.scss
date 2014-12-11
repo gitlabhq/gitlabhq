@@ -20,6 +20,7 @@
       opacity: 0;
       font-size: 50px;
       transition: opacity 200ms ease-in-out;
+      pointer-events: none;
     }
 
     .div-dropzone-spinner {
