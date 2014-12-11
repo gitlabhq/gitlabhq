@@ -147,6 +147,10 @@ class ProjectsController < ApplicationController
     render json: { star_count: @project.star_count }
   end
 
+  def markdown_preview
+    render text: view_context.markdown(params[:md_text])
+  end
+
   private
 
   def upload_path

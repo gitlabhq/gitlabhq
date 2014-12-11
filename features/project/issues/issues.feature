@@ -159,3 +159,37 @@ Feature: Project Issues
     Given project "Shop" has "Tasks-closed" closed issue with task markdown
     When I visit issue page "Tasks-closed"
     Then Task checkboxes should be disabled
+
+  # Issue description preview
+
+  @javascript
+  Scenario: I can't preview without text
+    Given I click link "New Issue"
+    And I haven't written any description text
+    Then The Markdown preview tab should say there is nothing to do
+
+  @javascript
+  Scenario: I can preview with text
+    Given I click link "New Issue"
+    And I write a description like ":+1: Nice"
+    Then The Markdown preview tab should display rendered Markdown
+
+  @javascript
+  Scenario: I preview an issue description
+    Given I click link "New Issue"
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown preview
+    And I should not see the Markdown text field
+
+  @javascript
+  Scenario: I can edit after preview
+    Given I click link "New Issue"
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown write tab
+
+  @javascript
+  Scenario: I can preview when editing an existing issue
+    Given I click link "Release 0.4"
+    And I click link "Edit" for the issue
+    And I preview a description text like "Bug fixed :smile:"
+    Then I should see the Markdown write tab
