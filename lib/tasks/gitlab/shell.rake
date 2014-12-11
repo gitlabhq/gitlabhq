@@ -17,15 +17,19 @@ namespace :gitlab do
 
       # Clone if needed
       unless File.directory?(target_dir)
-        sh(*%W(git clone #{args.repo} #{target_dir}))
+        Gitlab::Popen.popen(%W(git clone -- #{args.repo} #{target_dir}))
       end
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
-        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
-        sh "#{reset} || git fetch origin && #{reset}"
+        reset_status = reset_to_commit(args)
+
+        if reset_status != 0
+          Gitlab::Popen.popen(%W(git fetch origin))
+          reset_to_commit(args)
+        end
 
         config = {
           user: user,
@@ -54,7 +58,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
         # Launch installation process
-        sh "bin/install"
+        Gitlab::Popen.popen(%W(bin/install))
       end
 
       # Required for debian packaging with PKGR: Setup .ssh/environment with
@@ -117,6 +121,18 @@ namespace :gitlab do
   rescue Gitlab::TaskAbortedByUserError
     puts "Quitting...".red
     exit 1
+  end
+
+  def reset_to_commit(args)
+    tag, status = Gitlab::Popen.popen(%W(git describe -- #{args.tag}))
+
+    if status != 0
+      tag, status = Gitlab::Popen.popen(%W(git describe -- origin/#{args.tag}))
+    end
+
+    tag = tag.strip
+    reset, reset_status = Gitlab::Popen.popen(%W(git reset --hard #{tag}))
+    reset_status
   end
 end
 
