@@ -38,6 +38,16 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab 
 
 ## Hardware requirements
 
+### Storage
+
+The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least twice as much free space as all your repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
+
+If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
+
+Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
+
+If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
+
 ### CPU
 
 - 1 core works supports up to 100 users but the application can be a bit slower due to having all workers and background jobs running on the same core
@@ -50,12 +60,10 @@ We love [JRuby](http://jruby.org/) and [Rubinius](http://rubini.us/) but GitLab 
 
 ### Memory
 
-- 512MB is the absolute minimum but we do not recommend this amount of memory.
-You will need to configure minimum 1.5GB of swap space.
-With 1.5GB of swap space you must configure only one unicorn worker.
-With one unicorn worker only git over ssh access will work because the git over HTTP access requires two running workers (one worker to receive the user request and one worker for the authorization check).
-If you use SSD storage and configure 1.5GB of swap space you can use two Unicorn workers, this will allow HTTP access but it will still be slow.
-Consider installing GitLab on Ubuntu as installation on CentOS could be unsuccessful with this amount of memory.
+You need at least 2GB of addressable memory (RAM + swap) to install and use GitLab!
+With less memory GitLab will give strange errors during the reconfigure run and 500 errors during usage.
+
+- 512MB RAM + 1.5GB of swap is the absolute minimum but we strongly **advise against** this amount of memory. See the unicorn worker section below for more advise.
 - 1GB RAM + 1GB swap supports up to 100 users
 - **2GB RAM** is the **recommended** memory size and supports up to 500 users
 - 4GB RAM supports up to 2,000 users
@@ -66,15 +74,16 @@ Consider installing GitLab on Ubuntu as installation on CentOS could be unsucces
 
 Notice: The 25 workers of Sidekiq will show up as separate processes in your process overview (such as top or htop) but they share the same RAM allocation since Sidekiq is a multithreaded application.
 
-### Storage
+## Unicorn Workers
 
-The necessary hard drive space largely depends on the size of the repos you want to store in GitLab but as a *rule of thumb* you should have at least twice as much free space as all your repos combined take up. You need twice the storage because [GitLab satellites](structure.md) contain an extra copy of each repo.
+It's possible to increase the amount of unicorn workers and tis will usually help for to reduce the response time of the applications.
+For most instances we recommend using: CPU cores + 1 = unicorn workers.
+So for a machine with 2 cores, 3 unicorn workers is ideal.
 
-If you want to be flexible about growing your hard drive space in the future consider mounting it using LVM so you can add more hard drives when you need them.
-
-Apart from a local hard drive you can also mount a volume that supports the network file system (NFS) protocol. This volume might be located on a file server, a network attached storage (NAS) device, a storage area network (SAN) or on an Amazon Web Services (AWS) Elastic Block Store (EBS) volume.
-
-If you have enough RAM memory and a recent CPU the speed of GitLab is mainly limited by hard drive seek times. Having a fast drive (7200 RPM and up) or a solid state drive (SSD) will improve the responsiveness of GitLab.
+For all machines that have 1GB and up we recommend a minimum of two unicorn workers.
+If you have a 512MB machine with a magnetic (non-SSD) swap drive we recommend to configure only one Unicorn worker to prevent excessive swapping.
+With one Unicorn worker only git over ssh access will work because the git over HTTP access requires two running workers (one worker to receive the user request and one worker for the authorization check).
+If you have a 512MB machine with a SSD drive you can use two Unicorn workers, this will allow HTTP access although it will be slow due to swapping.
 
 ## Database
 
@@ -91,7 +100,7 @@ On a very active server (10,000 active users) the Sidekiq process can use 1GB+ o
 ## Supported web browsers
 
 - Chrome (Latest stable version)
-- Firefox (Latest released version and [latest ESR version](https://www.mozilla.org/en-US/firefox/organizations/)) 
+- Firefox (Latest released version and [latest ESR version](https://www.mozilla.org/en-US/firefox/organizations/))
 - Safari 7+ (known problem: required fields in html5 do not work)
 - Opera (Latest released version)
 - IE 10+

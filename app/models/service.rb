@@ -82,4 +82,8 @@ class Service < ActiveRecord::Base
       }
     end
   end
+
+  def async_execute(data)
+    Sidekiq::Client.enqueue(ProjectServiceWorker, id, data)
+  end
 end

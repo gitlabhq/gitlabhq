@@ -5,23 +5,13 @@
   = f.hidden_field :noteable_id
   = f.hidden_field :noteable_type
 
-  %ul.nav.nav-tabs
-    %li.active
-      = link_to '#note-write-holder', class: 'js-note-write-button' do
-        Write
-    %li
-      = link_to '#note-preview-holder', class: 'js-note-preview-button', data: { url: preview_project_notes_path(@project) } do
-        Preview
-  %div
-    .note-write-holder
-      = render 'projects/zen', f: f, attr: :note,
-                               classes: 'note_text js-note-text'
-      .light.clearfix
-        .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
-        .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
+  = render layout: 'projects/md_preview' do
+    = render 'projects/zen', f: f, attr: :note,
+                             classes: 'note_text js-note-text'
+    .light.clearfix
+      .pull-left Comments are parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"),{ target: '_blank', tabindex: -1 }}
+      .pull-right Attach images (JPG, PNG, GIF) by dragging &amp; dropping or #{link_to "selecting them", '#', class: 'markdown-selector', tabindex: -1 }.
 
-    .note-preview-holder.hide
-      .js-note-preview
 
   .note-form-actions
     .buttons
