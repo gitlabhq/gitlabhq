@@ -239,4 +239,10 @@ class ApplicationController < ActionController::Base
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
   end
+
+  def require_ldap_enabled
+    unless Gitlab.config.ldap.enabled
+      render_404 and return
+    end
+  end
 end

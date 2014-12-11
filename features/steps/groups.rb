@@ -313,6 +313,14 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
             milestone: milestone2_project3
   end
 
+  step 'LDAP enabled' do
+    Gitlab.config.ldap.stub(:enabled).and_return(true)
+  end
+
+  step 'LDAP disabled' do
+    Gitlab.config.ldap.stub(:enabled).and_return(false)
+  end
+
   step 'I add a new LDAP synchronization' do
     within('form#new_ldap_group_link') do
       find('#ldap_group_link_cn', visible: false).set('my-group-cn')
@@ -324,6 +332,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I see a new LDAP synchronization listed' do
     expect(page).not_to have_content('No synchronizations yet')
-    expect(page).to have_content('my-group-cn as Developer')
+    expect(page).to have_content('As Developer on ldap server')
   end
 end
