@@ -301,25 +301,25 @@ For Omnibus package installations, simply add `"sync_time"` in `/etc/gitlab/gitl
 A typical LDAP configuration for GitLab installed with an Omnibus package might look like this:
 
 ```
-gitlab_rails['ldap_servers'] = [
-  {
-    "id" => "main",
-    "label" => "LDAP",
-    "host" => "hostname of LDAP server",
-    "port" => 389,
-    "uid" => "sAMAccountName",
-    "method" => "plain", # 'ssl' or 'plain'
-    "bind_dn" => "CN=query user,CN=Users,DC=mycorp,DC=com",
-    "password" => "query user password",
-    "active_directory" => true,
-    "allow_username_or_email_login" => true,
-    "base" => "DC=mycorp,DC=com",
-    "group_base" => "OU=groups,DC=mycorp,DC=com",
-    "admin_group" => "",
-    "sync_ssh_keys" => false,
-    "sync_time" => 1800
-  }
-]
+gitlab_rails['ldap_servers'] = YAML.load <<-EOS
+main:
+  label: 'LDAP'
+  host: '_your_ldap_server'
+  port: 636
+  uid: 'sAMAccountName'
+  method: 'ssl' # "tls" or "ssl" or "plain"
+  bind_dn: '_the_full_dn_of_the_user_you_will_bind_with'
+  password: '_the_password_of_the_bind_user'
+  active_directory: true
+  allow_username_or_email_login: false
+  base: ''
+  user_filter: ''
+  sync_time: 1800
+  ## EE only
+  group_base: ''
+  admin_group: ''
+  sync_ssh_keys: false
+EOS
 ```
 
 Here, `sync_time` is set to `1800` seconds, meaning the LDAP cache will expire every 30 minutes.
