@@ -60,6 +60,7 @@ Feature: Groups
     When I visit Group "Owned" LDAP settings page
     And I add a new LDAP synchronization
     Then I see a new LDAP synchronization listed
+    And LDAP disabled
 
   # Leave
 

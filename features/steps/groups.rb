@@ -317,6 +317,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
     Gitlab.config.ldap.stub(:enabled).and_return(true)
   end
 
+  step 'LDAP disabled' do
+    Gitlab.config.ldap.stub(:enabled).and_return(false)
+  end
+
   step 'I add a new LDAP synchronization' do
     within('form#new_ldap_group_link') do
       find('#ldap_group_link_cn', visible: false).set('my-group-cn')
