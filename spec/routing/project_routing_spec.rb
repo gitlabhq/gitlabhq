@@ -417,6 +417,7 @@ describe Projects::BlobController, "routing" do
   it "to #show" do
     get("/gitlab/gitlabhq/blob/master/app/models/project.rb").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/project.rb')
     get("/gitlab/gitlabhq/blob/master/app/models/compare.rb").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/compare.rb')
+    get("/gitlab/gitlabhq/blob/master/app/models/diff.js").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/diff.js')
     get("/gitlab/gitlabhq/blob/master/files.scss").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/files.scss')
   end
 end
