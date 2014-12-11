@@ -24,8 +24,10 @@ namespace :gitlab do
       Dir.chdir(target_dir) do
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
-        reset = "git reset --hard $(git describe #{args.tag} || git describe origin/#{args.tag})"
-        sh "#{reset} || git fetch origin && #{reset}"
+        reset = "(rev=\"$(git describe #{args.tag} ||"\
+                "git describe \"origin/#{args.tag}\")\" &&"\
+                "git reset --hard \"$rev\")"
+        sh "#{reset} || (git fetch origin && #{reset})"
 
         config = {
           user: user,
