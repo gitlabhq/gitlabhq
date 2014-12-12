@@ -226,6 +226,7 @@ ActiveRecord::Schema.define(version: 20141205134006) do
     t.integer  "iid"
     t.text     "description"
     t.integer  "position",          default: 0
+    t.datetime "locked_at"
   end
 
   add_index "merge_requests", ["assignee_id"], name: "index_merge_requests_on_assignee_id", using: :btree
