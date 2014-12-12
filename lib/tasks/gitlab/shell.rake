@@ -17,7 +17,7 @@ namespace :gitlab do
 
       # Clone if needed
       unless File.directory?(target_dir)
-        system(%W(git clone -- #{args.repo} #{target_dir}))
+        system(*%W(git clone -- #{args.repo} #{target_dir}))
       end
 
       # Make sure we're on the right tag
@@ -27,7 +27,7 @@ namespace :gitlab do
         reseted = reset_to_commit(args)
 
         unless reseted
-          system(%W(git fetch origin))
+          system(*%W(git fetch origin))
           reset_to_commit(args)
         end
 
@@ -58,7 +58,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
         # Launch installation process
-        system(%W(bin/install))
+        system(*%W(bin/install))
       end
 
       # Required for debian packaging with PKGR: Setup .ssh/environment with
@@ -131,7 +131,7 @@ namespace :gitlab do
     end
 
     tag = tag.strip
-    system(%W(git reset --hard #{tag}))
+    system(*%W(git reset --hard #{tag}))
   end
 end
 
