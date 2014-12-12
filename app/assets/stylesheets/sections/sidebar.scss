@@ -1,17 +1,48 @@
 body.project {
   padding: 0;
 
+  &.ui_mars {
+    .app_logo {
+      background-color: #24272D;
+    }
+  }
+
+  &.ui_color {
+    .app_logo {
+      background-color: #325;
+    }
+  }
+
+  &.ui_basic {
+    .app_logo {
+      background-color: #DDD;
+    }
+  }
+
+  &.ui_modern {
+    .app_logo {
+      background-color: #017855;
+    }
+  }
+
+  &.ui_gray {
+    .app_logo {
+      background-color: #222;
+    }
+  }
+
   header .container {
     width: 100% !important;
+    padding-left: 0px;
+
+    .separator {
+      display: none;
+    }
   }
 }
 
 .page-with-sidebar {
   background: #F5F5F5;
-
-  header .navbar-inner {
-    padding: 0px 20px;
-  }
 }
 
 .sidebar-wrapper {
@@ -68,7 +99,7 @@ body.project {
     font-size: 13px;
     line-height: 20px;
     text-shadow: 0 1px 2px #FFF;
-    padding-left: 30px;
+    padding-left: 67px;
 
     &:hover {
       text-decoration: none;
@@ -94,7 +125,7 @@ body.project {
     a {
       padding: 5px 15px;
       font-size: 12px;
-      padding-left: 30px;
+      padding-left: 67px;
     }
   }
 }
