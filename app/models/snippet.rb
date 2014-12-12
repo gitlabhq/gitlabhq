@@ -64,6 +64,10 @@ class Snippet < ActiveRecord::Base
     file_name
   end
 
+  def sanitized_file_name
+    file_name.gsub(/[^a-zA-Z0-9_\-\.]+/, '')
+  end
+
   def mode
     nil
   end
