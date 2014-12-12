@@ -16,7 +16,7 @@ v 7.6.0
   - Mobile UI improvements
   -
   - Change maximum avatar file size from 100KB to 200KB
-  -
+  - Strict validation for snippet file names
   - Enable Markdown preview for issues, merge requests, milestones, and notes (Vinnie Okada)
   - In the docker directory is a container template based on the Omnibus packages.
   - Update Sidekiq to version 2.17.8
