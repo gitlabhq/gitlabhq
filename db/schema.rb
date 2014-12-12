@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141205134006) do
+ActiveRecord::Schema.define(version: 20141212124604) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -265,6 +265,7 @@ ActiveRecord::Schema.define(version: 20141205134006) do
     t.string   "ldap_cn"
     t.integer  "ldap_access"
     t.string   "avatar"
+    t.boolean  "membership_lock", default: false
   end
 
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
