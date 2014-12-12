@@ -7,13 +7,13 @@
     = render "layouts/init_auto_complete"
     - if can?(current_user, :download_code, @project)
       = render 'shared/no_ssh'
-    %nav.main-nav.navbar-collapse.collapse
-      .container= render 'layouts/nav/project'
-    .container
-      .content
-        = render "layouts/flash"
-        .row
-          .col-md-2
-            = render "projects/settings_nav"
-          .col-md-10
+
+    .page-with-sidebar
+      .sidebar-wrapper
+        = render 'layouts/nav/project', settings: true
+      .content-wrapper
+        .container-fluid
+          .content
+            = render "layouts/flash"
             = yield
+    = yield :embedded_scripts

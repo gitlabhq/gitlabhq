@@ -1,0 +1,120 @@
+body.project {
+  padding: 0;
+
+  header .container {
+    width: 100% !important;
+  }
+}
+
+.page-with-sidebar {
+  background: #F5F5F5;
+
+  header .navbar-inner {
+    padding: 0px 20px;
+  }
+}
+
+.sidebar-wrapper {
+  z-index: 1000;
+  position: absolute;
+  left: 250px;
+  width: 0;
+  height: 100%;
+  margin-left: -250px;
+  overflow-y: auto;
+  background: #F5F5F5;
+}
+
+.content-wrapper {
+  width: 100%;
+  padding: 15px;
+  background: #FFF;
+}
+
+.nav-sidebar {
+  position: fixed;
+  top: 45px;
+  width: 250px;
+  margin: 0;
+  list-style: none;
+  margin-top: 20px;
+}
+
+.nav-sidebar li a .count {
+  float: right;
+  background: #eee;
+  padding: 2px 8px;
+  @include border-radius(6px);
+}
+
+.nav-sidebar li.active a {
+  color: #333;
+  background: #EEE;
+  font-weight: bold;
+}
+
+.nav-sidebar li {
+  &.separate-item {
+    border-top: 1px solid #ddd;
+    padding-top: 10px;
+    margin-top: 10px;
+  }
+
+  a {
+    color: #666;
+    display: block;
+    text-decoration: none;
+    padding: 6px 15px;
+    font-size: 13px;
+    line-height: 20px;
+    text-shadow: 0 1px 2px #FFF;
+    padding-left: 30px;
+
+    &:hover {
+      text-decoration: none;
+      color: #333;
+      background: #DDD;
+    }
+
+    &:active, &:focus {
+      text-decoration: none;
+    }
+  }
+}
+
+.project-settings-nav {
+  margin-left: 0px;
+  padding-left: 0px;
+
+  li {
+    line-height: 28px;
+    font-size: 12px;
+    list-style: none;
+
+    a {
+      padding: 5px 15px;
+      font-size: 12px;
+      padding-left: 30px;
+    }
+  }
+}
+
+@media(min-width:768px) {
+  .page-with-sidebar {
+    padding-left: 250px;
+  }
+
+  .sidebar-wrapper {
+    width: 250px;
+  }
+
+  .content-wrapper {
+    padding: 20px;
+  }
+}
+
+/** TODO: REMOVE **/
+.profiler-results {
+  display: none;
+}
+
