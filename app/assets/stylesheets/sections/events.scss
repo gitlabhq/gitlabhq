@@ -47,7 +47,7 @@
   .event-title {
     @include str-truncated(72%);
     color: #333;
-    font-weight: normal;
+    font-weight: 500;
     font-size: 14px;
     .author_name {
       color: #333;
@@ -56,12 +56,9 @@
   .event-body {
     margin-left: 35px;
     margin-right: 100px;
+    color: #777;
 
-    .event-info {
-      color: #666;
-    }
     .event-note {
-      color: #666;
       margin-top: 5px;
 
       .md {
@@ -72,7 +69,7 @@
         border: none;
         background: #f9f9f9;
         border-radius: 0;
-        color: #666;
+        color: #777;
         margin: 0 20px;
       }
 
@@ -120,7 +117,6 @@
         padding: 3px;
         padding-left: 0;
         border: none;
-        color: #666;
         .commit-row-title {
           font-size: 12px;
         }

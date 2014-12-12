@@ -1,0 +1,72 @@
+.issues-filters
+  .dropdown.inline
+    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %i.fa.fa-user
+      %span.light assignee:
+      - if @assignee.present?
+        %strong= @assignee.name
+      - elsif params[:assignee_id] == "0"
+        Unassigned
+      - else
+        Any
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to project_filter_path(assignee_id: nil) do
+          Any
+        = link_to project_filter_path(assignee_id: 0) do
+          Unassigned
+      - @assignees.sort_by(&:name).each do |user|
+        %li
+          = link_to project_filter_path(assignee_id: user.id) do
+            = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
+            = user.name
+
+  .dropdown.inline.prepend-left-10
+    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %i.fa.fa-user
+      %span.light author:
+      - if @author.present?
+        %strong= @author.name
+      - elsif params[:author_id] == "0"
+        Unassigned
+      - else
+        Any
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to project_filter_path(author_id: nil) do
+          Any
+        = link_to project_filter_path(author_id: 0) do
+          Unassigned
+      - @authors.sort_by(&:name).each do |user|
+        %li
+          = link_to project_filter_path(author_id: user.id) do
+            = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
+            = user.name
+
+  .dropdown.inline.prepend-left-10
+    %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
+      %i.fa.fa-clock-o
+      %span.light milestone:
+      - if @milestone.present?
+        %strong= @milestone.title
+      - elsif params[:milestone_id] == "0"
+        None (backlog)
+      - else
+        Any
+      %b.caret
+    %ul.dropdown-menu
+      %li
+        = link_to project_filter_path(milestone_id: nil) do
+          Any
+        = link_to project_filter_path(milestone_id: 0) do
+          None (backlog)
+      - project_active_milestones.each do |milestone|
+        %li
+          = link_to project_filter_path(milestone_id: milestone.id) do
+            %strong= milestone.title
+            %small.light= milestone.expires_at
+
+  .pull-right
+    = render 'shared/sort_dropdown'

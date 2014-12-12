@@ -29,4 +29,31 @@ class Projects::ApplicationController < ApplicationController
       redirect_to project_tree_path(@project, @ref), notice: "This action is not allowed unless you are on top of a branch"
     end
   end
+
+  def set_filter_variables(collection)
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @sort = params[:sort].humanize
+
+    assignee_id = params[:assignee_id]
+    author_id = params[:author_id]
+    milestone_id = params[:milestone_id]
+
+    if assignee_id.present? && !assignee_id.to_i.zero?
+      @assignee = @project.team.find(assignee_id)
+    end
+
+    if author_id.present? && !author_id.to_i.zero?
+      @author = @project.team.find(assignee_id)
+    end
+
+    if milestone_id.present? && !milestone_id.to_i.zero?
+      @milestone = @project.milestones.find(milestone_id)
+    end
+
+    @assignees = User.where(id: collection.pluck(:assignee_id))
+    @authors = User.where(id: collection.pluck(:author_id))
+  end
 end

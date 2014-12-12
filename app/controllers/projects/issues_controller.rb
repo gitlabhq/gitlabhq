@@ -18,17 +18,11 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def index
     terms = params['issue_search']
+    set_filter_variables(@project.issues)
 
-    @issues = issues_filtered
+    @issues = IssuesFinder.new.execute(current_user, params.merge(project_id: @project.id))
     @issues = @issues.full_search(terms) if terms.present?
     @issues = @issues.page(params[:page]).per(20)
-
-    assignee_id, milestone_id = params[:assignee_id], params[:milestone_id]
-    @assignee = @project.team.find(assignee_id) if assignee_id.present? && !assignee_id.to_i.zero?
-    @milestone = @project.milestones.find(milestone_id) if milestone_id.present? && !milestone_id.to_i.zero?
-    sort_param = params[:sort] || 'newest'
-    @sort = sort_param.humanize unless sort_param.empty?
-    @assignees = User.where(id: @project.issues.pluck(:assignee_id)).active
 
     respond_to do |format|
       format.html
@@ -125,12 +119,6 @@ class Projects::IssuesController < Projects::ApplicationController
 
   def module_enabled
     return render_404 unless @project.issues_enabled
-  end
-
-  def issues_filtered
-    params[:scope] = 'all' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
-    @issues = IssuesFinder.new.execute(current_user, params.merge(project_id: @project.id))
   end
 
   # Since iids are implemented only in 6.1

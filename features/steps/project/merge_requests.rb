@@ -1,5 +1,6 @@
 class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedIssuable
   include SharedProject
   include SharedNote
   include SharedPaths

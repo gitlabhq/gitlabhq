@@ -405,14 +405,8 @@ class Project < ActiveRecord::Base
   end
 
   def execute_services(data)
-    services.each do |service|
-
-      # Call service hook only if it is active
-      begin
-        service.execute(data) if service.active
-      rescue => e
-        logger.error(e)
-      end
+    services.select(&:active).each do |service|
+      service.async_execute(data)
     end
   end
 

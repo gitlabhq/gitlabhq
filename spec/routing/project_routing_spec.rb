@@ -53,13 +53,14 @@ shared_examples "RESTful project resources" do
   end
 end
 
-#      projects POST   /projects(.:format)     projects#create
-#   new_project GET    /projects/new(.:format) projects#new
-# files_project GET    /:id/files(.:format)    projects#files
-#  edit_project GET    /:id/edit(.:format)     projects#edit
-#       project GET    /:id(.:format)          projects#show
-#               PUT    /:id(.:format)          projects#update
-#               DELETE /:id(.:format)          projects#destroy
+#                 projects POST   /projects(.:format)     projects#create
+#              new_project GET    /projects/new(.:format) projects#new
+#            files_project GET    /:id/files(.:format)    projects#files
+#             edit_project GET    /:id/edit(.:format)     projects#edit
+#                  project GET    /:id(.:format)          projects#show
+#                          PUT    /:id(.:format)          projects#update
+#                          DELETE /:id(.:format)          projects#destroy
+# markdown_preview_project GET    /:id/markdown_preview(.:format) projects#markdown_preview
 describe ProjectsController, "routing" do
   it "to #create" do
     post("/projects").should route_to('projects#create')
@@ -87,6 +88,12 @@ describe ProjectsController, "routing" do
 
   it "to #destroy" do
     delete("/gitlab/gitlabhq").should route_to('projects#destroy', id: 'gitlab/gitlabhq')
+  end
+
+  it 'to #markdown_preview' do
+    get('/gitlab/gitlabhq/markdown_preview').should(
+      route_to('projects#markdown_preview', id: 'gitlab/gitlabhq')
+    )
   end
 end
 
@@ -387,15 +394,10 @@ describe Projects::IssuesController, "routing" do
   end
 end
 
-# preview_project_notes POST   /:project_id/notes/preview(.:format) notes#preview
 #         project_notes GET    /:project_id/notes(.:format)         notes#index
 #                       POST   /:project_id/notes(.:format)         notes#create
 #          project_note DELETE /:project_id/notes/:id(.:format)     notes#destroy
 describe Projects::NotesController, "routing" do
-  it "to #preview" do
-    post("/gitlab/gitlabhq/notes/preview").should route_to('projects/notes#preview', project_id: 'gitlab/gitlabhq')
-  end
-
   it_behaves_like "RESTful project resources" do
     let(:actions)    { [:index, :create, :destroy] }
     let(:controller) { 'notes' }
@@ -415,6 +417,7 @@ describe Projects::BlobController, "routing" do
   it "to #show" do
     get("/gitlab/gitlabhq/blob/master/app/models/project.rb").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/project.rb')
     get("/gitlab/gitlabhq/blob/master/app/models/compare.rb").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/compare.rb')
+    get("/gitlab/gitlabhq/blob/master/app/models/diff.js").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/app/models/diff.js')
     get("/gitlab/gitlabhq/blob/master/files.scss").should route_to('projects/blob#show', project_id: 'gitlab/gitlabhq', id: 'master/files.scss')
   end
 end
