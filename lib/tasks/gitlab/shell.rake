@@ -17,17 +17,17 @@ namespace :gitlab do
 
       # Clone if needed
       unless File.directory?(target_dir)
-        Gitlab::Popen.popen(%W(git clone -- #{args.repo} #{target_dir}))
+        system(%W(git clone -- #{args.repo} #{target_dir}))
       end
 
       # Make sure we're on the right tag
       Dir.chdir(target_dir) do
         # First try to checkout without fetching
         # to avoid stalling tests if the Internet is down.
-        reset_status = reset_to_commit(args)
+        reseted = reset_to_commit(args)
 
-        if reset_status != 0
-          Gitlab::Popen.popen(%W(git fetch origin))
+        unless reseted
+          system(%W(git fetch origin))
           reset_to_commit(args)
         end
 
@@ -58,7 +58,7 @@ namespace :gitlab do
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}
 
         # Launch installation process
-        Gitlab::Popen.popen(%W(bin/install))
+        system(%W(bin/install))
       end
 
       # Required for debian packaging with PKGR: Setup .ssh/environment with
@@ -126,13 +126,12 @@ namespace :gitlab do
   def reset_to_commit(args)
     tag, status = Gitlab::Popen.popen(%W(git describe -- #{args.tag}))
 
-    if status != 0
+    unless status.zero?
       tag, status = Gitlab::Popen.popen(%W(git describe -- origin/#{args.tag}))
     end
 
     tag = tag.strip
-    reset, reset_status = Gitlab::Popen.popen(%W(git reset --hard #{tag}))
-    reset_status
+    system(%W(git reset --hard #{tag}))
   end
 end
 
