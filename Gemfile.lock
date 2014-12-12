@@ -323,6 +323,11 @@ GEM
     omniauth-google-oauth2 (0.2.5)
       omniauth (> 1.0)
       omniauth-oauth2 (~> 1.1)
+    omniauth-kerberos (0.2.0)
+      omniauth-multipassword
+      timfel-krb5-auth (~> 0.8)
+    omniauth-multipassword (0.4.1)
+      omniauth (~> 1.0)
     omniauth-oauth (1.0.1)
       oauth
       omniauth (~> 1.0)
@@ -536,6 +541,7 @@ GEM
     thread_safe (0.3.4)
     tilt (1.4.1)
     timers (1.1.0)
+    timfel-krb5-auth (0.8)
     tinder (1.9.3)
       eventmachine (~> 1.0)
       faraday (~> 0.8)
@@ -661,6 +667,7 @@ DEPENDENCIES
   omniauth (~> 1.1.3)
   omniauth-github
   omniauth-google-oauth2
+  omniauth-kerberos
   omniauth-shibboleth
   omniauth-twitter
   org-ruby (= 0.9.9)
