@@ -12,6 +12,7 @@ class ProjectTeam
   #   @team << [@users, :master]
   #
   def <<(args)
+    return false if group_member_lock
     users = args.first
 
     if users.respond_to?(:each)
@@ -217,5 +218,9 @@ class ProjectTeam
 
   def group
     project.group
+  end
+
+  def group_member_lock
+    group && group.membership_lock
   end
 end
