@@ -48,6 +48,14 @@ class Spinach::Features::ProjectSourceBrowseFiles < Spinach::FeatureSteps
     click_link 'Edit'
   end
 
+  step 'I cannot see the edit button' do
+    page.should_not have_link 'edit'
+  end
+
+  step 'The edit button is disabled' do
+    page.should have_css '.disabled', text: 'edit'
+  end
+
   step 'I can edit code' do
     set_new_content
     evaluate_script('editor.getValue()').should == new_gitignore_content

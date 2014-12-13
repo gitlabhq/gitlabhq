@@ -50,6 +50,16 @@ Feature: Project Source Browse Files
     And I click button "Edit"
     Then I can edit code
 
+  Scenario: If the file is binary the edit link is hidden
+    Given I visit a binary file in the repo
+    Then I cannot see the edit button
+
+  Scenario: If I don't have edit permission the edit link is disabled
+    Given public project "Community"
+    And I visit project "Community" source page
+    And I click on ".gitignore" file in repo
+    Then The edit button is disabled
+
   @javascript
   Scenario: I can edit and commit file
     Given I click on ".gitignore" file in repo
