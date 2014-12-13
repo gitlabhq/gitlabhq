@@ -104,3 +104,10 @@ This merge request has been closed because a request for more information has no
 ### Accepting merge requests
 
 Is there a request on [the feature request forum](http://feedback.gitlab.com/forums/176466-general) that is similar to this? If so, can you make a comment with a link to it? Please be aware that new functionality that is not marked [accepting merge/pull requests](http://feedback.gitlab.com/forums/176466-general/status/796455) on the forum might not make it into GitLab. You might be asked to make changes and even after implementing them your feature might still be declined. If you want to reduce the chance of this happening please have a discussion in the forum first.
+
+### Only accepting merge requests with green tests
+
+We can only accept a merge requests if all the tests are green, can you please
+make sure the tests of this merge requests are green? If the failing test has
+nothing do to with your merge request, you might want to rebase with master to
+see if that makes the tests green again.
