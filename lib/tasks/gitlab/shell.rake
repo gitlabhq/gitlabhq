@@ -39,20 +39,12 @@ namespace :gitlab do
           auth_file: File.join(home_dir, ".ssh", "authorized_keys"),
           redis: {
             bin: %x{which redis-cli}.chomp,
-            namespace: "resque:gitlab"
+            namespace: "resque:gitlab",
+            url: Gitlab.config.redis.redis_url
           }.stringify_keys,
           log_level: "INFO",
           audit_usernames: false
         }.stringify_keys
-
-        redis_url = URI.parse(ENV['REDIS_URL'] || "redis://localhost:6379")
-
-        if redis_url.scheme == 'unix'
-          config['redis']['socket'] = redis_url.path
-        else
-          config['redis']['host'] = redis_url.host
-          config['redis']['port'] = redis_url.port
-        end
 
         # Generate config.yml based on existing gitlab settings
         File.open("config.yml", "w+") {|f| f.puts config.to_yaml}

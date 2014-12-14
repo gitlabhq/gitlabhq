@@ -143,6 +143,21 @@ Settings.gitlab_shell['owner_group']  ||= Settings.gitlab.user
 Settings.gitlab_shell['ssh_path_prefix'] ||= Settings.send(:build_gitlab_shell_ssh_path_prefix)
 
 #
+# Redis
+# for caching and gitlab-shell config generation (lib/tasks/gitlab/shell.rake)
+# Note: ENV['REDIS_URL'] takes precedence over config/resque.yml
+#
+Settings['redis'] ||= Settingslogic.new({})
+redis_config_file = Rails.root.join('config', 'resque.yml')
+redis_config_url_string = if File.exists?(redis_config_file)
+                     YAML.load_file(redis_config_file)[Rails.env]
+                   else
+                     "redis://localhost:6379"
+                   end
+Settings.redis['redis_url'] = ENV['REDIS_URL']
+Settings.redis['redis_url'] ||= redis_config_url_string
+
+#
 # Backup
 #
 Settings['backup'] ||= Settingslogic.new({})
