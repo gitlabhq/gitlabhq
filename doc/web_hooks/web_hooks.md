@@ -54,6 +54,29 @@ Triggered when you push to the repository except when pushing tags.
 }
 ```
 
+## Tag events
+
+Triggered when you create (or delete) tags to the repository.
+
+**Request body:**
+
+```json
+{
+  "ref": "refs/tags/v1.0.0",
+  "before": "0000000000000000000000000000000000000000",
+  "after": "82b3d5ae55f7080f1e6022629cdb57bfae7cccc7",
+  "user_id": 1,
+  "user_name": "John Smith",
+  "project_id": 1,
+  "repository": {
+    "name": "jsmith",
+    "url": "ssh://git@example.com/jsmith/example.git",
+    "description": "",
+    "homepage": "http://example.com/jsmith/example"
+  }
+}
+```
+
 ## Issues events
 
 Triggered when a new issue is created or an existing issue was updated/closed/reopened.
