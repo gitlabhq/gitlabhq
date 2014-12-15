@@ -111,6 +111,11 @@ body.project {
     &:active, &:focus {
       text-decoration: none;
     }
+
+    i {
+      width: 20px;
+      color: #999;
+    }
   }
 }
 
@@ -153,6 +158,7 @@ body.project {
 
   .content-wrapper {
     padding: 20px;
+    border-left: 1px solid #EAEAEA;
   }
 }
 

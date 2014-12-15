@@ -171,6 +171,17 @@
   }
 }
 
+.project .event_filter {
+  position: static;
+  float: left;
+  width: 100%;
+  margin-left: 0;
+  a {
+    margin-right: 10px;
+    width: 50px;
+  }
+}
+
 /*
  * Last push widget
  */
