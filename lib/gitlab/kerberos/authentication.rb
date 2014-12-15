@@ -25,11 +25,16 @@ module Gitlab
       end
 
       def login
-        valid? && User.find_by(email: email)
+        valid? && find_by_login(@login)
       end
 
-      def email
-        @login + "@" + @krb5.get_default_realm.downcase
+      private
+
+      def find_by_login(login)
+        identity = ::Identity.
+          where(provider: :kerberos).
+          where('lower(extern_uid) = ?', login).last
+        identity && identity.user
       end
     end
   end
