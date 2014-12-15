@@ -107,7 +107,7 @@ Is there a request on [the feature request forum](http://feedback.gitlab.com/for
 
 ### Only accepting merge requests with green tests
 
-We can only accept a merge requests if all the tests are green, can you please
-make sure the tests of this merge requests are green? If the failing test has
-nothing do to with your merge request, you might want to rebase with master to
-see if that makes the tests green again.
+We can only accept a merge request if all the tests are green. I've just
+restarted the build. When the tests are still not passing after this restart and
+you're sure that is does not have anything to do with your code changes, please
+rebase with master to see if that solves the issue.
