@@ -13,7 +13,11 @@ class Settings < Settingslogic
       if gitlab_shell.ssh_port != 22
         "ssh://#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:#{gitlab_shell.ssh_port}/"
       else
-        "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+        if gitlab_shell.ssh_host.include? ':'
+          "[#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}]:"
+        else
+          "#{gitlab_shell.ssh_user}@#{gitlab_shell.ssh_host}:"
+        end
       end
     end
 
