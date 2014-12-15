@@ -52,8 +52,6 @@ header {
       border-width: 0;
       font-size: 18px;
 
-      .app_logo { margin-left: -15px; }
-
       .title {
         @include str-truncated(70%);
       }

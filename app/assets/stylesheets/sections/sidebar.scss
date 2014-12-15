@@ -47,11 +47,6 @@ body.project {
 
 .sidebar-wrapper {
   z-index: 1000;
-  position: absolute;
-  left: 250px;
-  width: 0;
-  height: 100%;
-  margin-left: -250px;
   overflow-y: auto;
   background: #F5F5F5;
 }
@@ -63,12 +58,12 @@ body.project {
 }
 
 .nav-sidebar {
-  position: fixed;
-  top: 45px;
-  width: 250px;
   margin: 0;
   list-style: none;
-  margin-top: 20px;
+
+  &.navbar-collapse {
+    padding: 0px !important;
+  }
 }
 
 .nav-sidebar li a .count {
@@ -143,6 +138,17 @@ body.project {
 
   .sidebar-wrapper {
     width: 250px;
+    position: absolute;
+    left: 250px;
+    height: 100%;
+    margin-left: -250px;
+
+    .nav-sidebar {
+      margin-top: 20px;
+      position: fixed;
+      top: 45px;
+      width: 250px;
+    }
   }
 
   .content-wrapper {
@@ -154,4 +160,3 @@ body.project {
 .profiler-results {
   display: none;
 }
-
