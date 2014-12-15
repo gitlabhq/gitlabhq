@@ -262,9 +262,9 @@ ActiveRecord::Schema.define(version: 20141205134006) do
     t.datetime "updated_at"
     t.string   "type"
     t.string   "description", default: "", null: false
+    t.string   "avatar"
     t.string   "ldap_cn"
     t.integer  "ldap_access"
-    t.string   "avatar"
   end
 
   add_index "namespaces", ["name"], name: "index_namespaces_on_name", using: :btree
@@ -325,8 +325,8 @@ ActiveRecord::Schema.define(version: 20141205134006) do
     t.boolean  "archived",                      default: false,    null: false
     t.string   "import_status"
     t.float    "repository_size",               default: 0.0
-    t.text     "merge_requests_template"
     t.integer  "star_count",                    default: 0,        null: false
+    t.text     "merge_requests_template"
     t.boolean  "merge_requests_rebase_enabled", default: false
   end
 
