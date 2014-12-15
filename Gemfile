@@ -30,6 +30,9 @@ gem 'omniauth-github'
 gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
 
+# Browser detection
+gem "browser"
+
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
 gem "gitlab_git", '7.0.0.rc12'
