@@ -172,6 +172,15 @@ Settings.satellites['timeout'] ||= 30
 Settings['extra'] ||= Settingslogic.new({})
 
 #
+# Rack::Attack settings
+#
+Settings['rack_attack'] ||= Settingslogic.new({})
+Settings.rack_attack['git_basic_auth'] ||= Settingslogic.new({})
+Settings.rack_attack.git_basic_auth['maxretry'] ||= 10
+Settings.rack_attack.git_basic_auth['findtime'] ||= 1.minute
+Settings.rack_attack.git_basic_auth['bantime'] ||= 1.hour
+
+#
 # Testing settings
 #
 if Rails.env.test?

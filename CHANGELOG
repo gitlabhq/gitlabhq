@@ -1,3 +1,6 @@
+v 7.7.0
+  - Block Git HTTP access after 10 failed authentication attempts
+
 v 7.6.0
   - Fork repository to groups
   - New rugged version
