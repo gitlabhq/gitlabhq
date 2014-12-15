@@ -74,14 +74,20 @@ body.project {
 .nav-sidebar li a .count {
   float: right;
   background: #eee;
-  padding: 2px 8px;
+  padding: 0px 8px;
   @include border-radius(6px);
 }
 
-.nav-sidebar li.active a {
-  color: #333;
-  background: #EEE;
-  font-weight: bold;
+.nav-sidebar li {
+  &.active a {
+    color: #333;
+    background: #EEE;
+    font-weight: bold;
+
+    &.no-highlight {
+      background: none;
+    }
+  }
 }
 
 .nav-sidebar li {
