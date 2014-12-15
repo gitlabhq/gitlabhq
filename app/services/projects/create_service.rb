@@ -4,6 +4,10 @@ module Projects
       @current_user, @params = user, params.dup
     end
 
+    def format(str)
+      str.to_s.gsub(/\s+/, '-')
+    end
+
     def execute
       @project = Project.new(params)
 
@@ -15,9 +19,9 @@ module Projects
       # Format path for project
       #
       # Ex.
-      #  'GitLab HQ'.gsub(/\s+/, '-') => "GitLab-HQ"
+      #  format('GitLab HQ') => "GitLab-HQ"
       #
-      @project.path = @project.name.dup.gsub(/\s+/, '-') unless @project.path.present?
+      @project.path = format(@project.name.dup) unless @project.path.present?
 
       # get namespace id
       namespace_id = params[:namespace_id]
