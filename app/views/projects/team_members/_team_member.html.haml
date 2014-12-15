@@ -1,18 +1,15 @@
 - user = member.user
 %li{id: dom_id(user), class: "team_member_row access-#{member.human_access.downcase}"}
-  - unless membership_locked?
-    .pull-right
-      - if current_user_can_admin_project
-        - unless @project.personal? && user == current_user
-          .pull-left
-            = form_for(member, as: :project_member, url: project_team_member_path(@project, member.user)) do |f|
-              = f.select :access_level, options_for_select(ProjectMember.access_roles, member.access_level), {}, class: "trigger-submit"
-            &nbsp;
-          = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from team' do
-            %i.fa.fa-minus.fa-inverse
+  .pull-right
+    - if current_user_can_admin_project
+      - unless @project.personal? && user == current_user
+        .pull-left
+          = form_for(member, as: :project_member, url: project_team_member_path(@project, member.user)) do |f|
+            = f.select :access_level, options_for_select(ProjectMember.access_roles, member.access_level), {}, class: "trigger-submit"
+          &nbsp;
+        = link_to project_team_member_path(@project, user), data: { confirm: remove_from_project_team_message(@project, user)}, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from team' do
+          %i.fa.fa-minus.fa-inverse
   = image_tag avatar_icon(user.email, 32), class: "avatar s32"
   %p
     %strong= user.name
   %span.cgray= user.username
-
-

@@ -74,11 +74,10 @@ gitlab_rails['gitlab_default_can_create_group'] = false
 
 In GitLab Enterprise Edition it is possible to lock membership in project to the level of members in group.
 
-This allows group owner to lock down any new project membership to any of the projects within the group allowing tighter control over
-project membership.
+This allows group owner to lock down any new project membership to any of the projects within the group allowing tighter control over project membership.
 
 To enable this feature, navigate to group settings page, select `Member lock` and `Save group`.
 
 ![Checkbox for membership lock](groups/membership_lock.png)
 
-This will disable the option for all users who previously had permissions to operate project memberships. No new users can be added, removed or their access level changed. Furthermore, any request to change project permission level for users through API will not be possible.
+This will disable the option for all users who previously had permissions to operate project memberships so no new users can be added. Furthermore, any request to add new user to project through API will not be possible.

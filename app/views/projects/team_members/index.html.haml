@@ -15,7 +15,7 @@
   %strong= link_to "here", help_page_path("permissions", "permissions"), class: "vlink"
   - if membership_locked?
     %span.pull-right
-      Managing user access is disabled at group level
+      Adding new users is disabled at group level
 
 = render "team", members: @project_members
 - if @group

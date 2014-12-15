@@ -60,6 +60,6 @@ class Spinach::Features::GroupsManagement < Spinach::FeatureSteps
   step 'I cannot control user membership from project page' do
     page.should_not have_link 'New project member'
     page.should_not have_link 'Import members'
-    page.should_not have_selector '#project_member_access_level', text: 'Master'
+    page.should have_selector '#project_member_access_level', text: 'Master'
   end
 end

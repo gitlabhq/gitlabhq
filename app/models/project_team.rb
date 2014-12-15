@@ -12,7 +12,6 @@ class ProjectTeam
   #   @team << [@users, :master]
   #
   def <<(args)
-    return false if group_member_lock
     users = args.first
 
     if users.respond_to?(:each)
@@ -53,6 +52,7 @@ class ProjectTeam
   end
 
   def add_users_ids(user_ids, access)
+    return false if group_member_lock
     ProjectMember.add_users_into_projects(
       [project.id],
       user_ids,
