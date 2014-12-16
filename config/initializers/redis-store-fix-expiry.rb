@@ -4,7 +4,7 @@ module Gitlab
   class Redis
     class Store
       module Namespace
-        # Redis::Store#expire in redis-store 1.1.4 does not respect namespaces;
+        # Redis::Store#setex in redis-store 1.1.4 does not respect namespaces;
         # this new method does.
         def setex(key, expires_in, value, options=nil)
           namespace(key) { |key| super(key, expires_in, value) }
