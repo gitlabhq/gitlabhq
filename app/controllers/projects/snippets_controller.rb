@@ -68,7 +68,7 @@ class Projects::SnippetsController < Projects::ApplicationController
       @snippet.content,
       type: 'text/plain; charset=utf-8',
       disposition: 'inline',
-      filename: @snippet.file_name
+      filename: @snippet.sanitized_file_name
     )
   end
 

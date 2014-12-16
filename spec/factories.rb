@@ -5,8 +5,12 @@ FactoryGirl.define do
     Faker::Lorem.sentence
   end
 
-  sequence :name, aliases: [:file_name] do
+  sequence :name do
     Faker::Name.name
+  end
+
+  sequence :file_name do
+    Faker::Internet.user_name
   end
 
   sequence(:url) { Faker::Internet.uri('http') }
