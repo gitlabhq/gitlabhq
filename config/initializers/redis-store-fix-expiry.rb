@@ -21,8 +21,8 @@ module Gitlab
         # Our new definitions of #setex and #expire above assume that the
         # #namespace method exists. Because we cannot be sure of that, we
         # re-implement the #namespace method from Redis::Store::Namespace so
-        # that it all Redis::Store instances, whether they use namespacing or
-        # not.
+        # that it is available for all Redis::Store instances, whether they use
+        # namespacing or not.
         #
         # Based on lib/redis/store/namespace.rb L49-51 (redis-store 1.1.4)
         def namespace(key)
