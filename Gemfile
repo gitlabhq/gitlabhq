@@ -28,6 +28,7 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
+gem 'omniauth-kerberos'
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
