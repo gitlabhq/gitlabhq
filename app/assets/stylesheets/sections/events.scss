@@ -140,47 +140,6 @@
   }
 }
 
-/**
- * Event filter
- *
- */
-.event_filter {
-  position: absolute;
-  width: 40px;
-  margin-left: -55px;
-
-  .filter_icon {
-    a {
-      text-align:center;
-      background: $bg_primary;
-      margin-bottom: 10px;
-      float: left;
-      padding: 9px 6px;
-      font-size: 18px;
-      width: 40px;
-      color: #FFF;
-      @include border-radius(3px);
-    }
-
-    &.inactive {
-      a {
-        color: #DDD;
-        background: #f9f9f9;
-      }
-    }
-  }
-}
-
-.sidenav .event_filter {
-  position: static;
-  float: left;
-  width: 100%;
-  margin-left: 0;
-  a {
-    margin-right: 10px;
-    width: 50px;
-  }
-}
 
 /*
  * Last push widget
@@ -213,4 +172,8 @@
       display: none;
     }
   }
+}
+
+.event_filter li a {
+  padding: 5px 10px;
 }
