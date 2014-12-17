@@ -24,20 +24,20 @@ describe Issues::UpdateService do
         @issue = Issues::UpdateService.new(project, user, opts).execute(issue)
       end
 
-      it { @issue.should be_valid }
-      it { @issue.title.should == 'New title' }
-      it { @issue.assignee.should == user2 }
-      it { @issue.should be_closed }
+      it { expect(@issue).to be_valid }
+      it { expect(@issue.title).to eq('New title') }
+      it { expect(@issue.assignee).to eq(user2) }
+      it { expect(@issue).to be_closed }
 
       it 'should send email to user2 about assign of new issue' do
         email = ActionMailer::Base.deliveries.last
-        email.to.first.should == user2.email
-        email.subject.should include(issue.title)
+        expect(email.to.first).to eq(user2.email)
+        expect(email.subject).to include(issue.title)
       end
 
       it 'should create system note about issue reassign' do
         note = @issue.notes.last
-        note.note.should include "Reassigned to \@#{user2.username}"
+        expect(note.note).to include "Reassigned to \@#{user2.username}"
       end
     end
   end

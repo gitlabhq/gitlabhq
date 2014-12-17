@@ -19,7 +19,7 @@ describe Projects::MergeRequestsController do
       end
 
       it "should generate it" do
-        MergeRequest.any_instance.should_receive(:"to_#{format}")
+        expect_any_instance_of(MergeRequest).to receive(:"to_#{format}")
 
         get :show, project_id: project.to_param, id: merge_request.iid, format: format
       end
@@ -31,7 +31,7 @@ describe Projects::MergeRequestsController do
       end
 
       it "should not escape Html" do
-        MergeRequest.any_instance.stub(:"to_#{format}").and_return('HTML entities &<>" ')
+        allow_any_instance_of(MergeRequest).to receive(:"to_#{format}").and_return('HTML entities &<>" ')
 
         get :show, project_id: project.to_param, id: merge_request.iid, format: format
 

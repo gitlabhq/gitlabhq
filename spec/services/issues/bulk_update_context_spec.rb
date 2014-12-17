@@ -30,11 +30,11 @@ describe Issues::BulkUpdateService do
 
     it {
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
-      result[:success].should be_true
-      result[:count].should == @issues.count
+      expect(result[:success]).to be_true
+      expect(result[:count]).to eq(@issues.count)
 
-      @project.issues.opened.should be_empty
-      @project.issues.closed.should_not be_empty
+      expect(@project.issues.opened).to be_empty
+      expect(@project.issues.closed).not_to be_empty
     }
 
   end
@@ -55,11 +55,11 @@ describe Issues::BulkUpdateService do
 
     it {
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
-      result[:success].should be_true
-      result[:count].should == @issues.count
+      expect(result[:success]).to be_true
+      expect(result[:count]).to eq(@issues.count)
 
-      @project.issues.closed.should be_empty
-      @project.issues.opened.should_not be_empty
+      expect(@project.issues.closed).to be_empty
+      expect(@project.issues.opened).not_to be_empty
     }
 
   end
@@ -78,10 +78,10 @@ describe Issues::BulkUpdateService do
 
     it {
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
-      result[:success].should be_true
-      result[:count].should == 1
+      expect(result[:success]).to be_true
+      expect(result[:count]).to eq(1)
 
-      @project.issues.first.assignee.should == @new_assignee
+      expect(@project.issues.first.assignee).to eq(@new_assignee)
     }
 
   end
@@ -100,10 +100,10 @@ describe Issues::BulkUpdateService do
 
     it {
       result = Issues::BulkUpdateService.new(@project, @user, @params).execute
-      result[:success].should be_true
-      result[:count].should == 1
+      expect(result[:success]).to be_true
+      expect(result[:count]).to eq(1)
 
-      @project.issues.first.milestone.should == @milestone
+      expect(@project.issues.first.milestone).to eq(@milestone)
     }
   end
 

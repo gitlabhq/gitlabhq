@@ -62,8 +62,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should_not be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).not_to be_blocked
           end
         end
 
@@ -72,8 +72,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).to be_blocked
           end
         end
       end
@@ -89,8 +89,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should_not be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).not_to be_blocked
           end
         end
 
@@ -99,8 +99,8 @@ describe Gitlab::OAuth::User do
 
           it do
             oauth_user.save
-            gl_user.should be_valid
-            gl_user.should_not be_blocked
+            expect(gl_user).to be_valid
+            expect(gl_user).not_to be_blocked
           end
         end
       end

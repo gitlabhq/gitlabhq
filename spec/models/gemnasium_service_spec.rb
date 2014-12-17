@@ -36,7 +36,7 @@ describe GemnasiumService do
       @sample_data = GitPushService.new.sample_data(project, user)
     end
     it "should call Gemnasium service" do
-      Gemnasium::GitlabService.should_receive(:execute).with(an_instance_of(Hash)).once
+      expect(Gemnasium::GitlabService).to receive(:execute).with(an_instance_of(Hash)).once
       @gemnasium_service.execute(@sample_data)
     end
   end

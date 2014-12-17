@@ -51,7 +51,7 @@ describe SlackService do
     it "should call Slack API" do
       slack.execute(sample_data)
 
-      WebMock.should have_requested(:post, webhook_url).once
+      expect(WebMock).to have_requested(:post, webhook_url).once
     end
   end
 end

@@ -34,86 +34,87 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/issues")
-        response.status.should == 401
+        expect(response.status).to eq(401)
       end
     end
 
     context "when authenticated" do
       it "should return an array of issues" do
         get api("/issues", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['title'].should == issue.title
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['title']).to eq(issue.title)
       end
 
       it "should add pagination headers" do
         get api("/issues?per_page=3", user)
-        response.headers['Link'].should ==
+        expect(response.headers['Link']).to eq(
           '<http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="first", <http://www.example.com/api/v3/issues?page=1&per_page=3>; rel="last"'
+        )
       end
 
       it 'should return an array of closed issues' do
         get api('/issues?state=closed', user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 1
-        json_response.first['id'].should == closed_issue.id
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(closed_issue.id)
       end
 
       it 'should return an array of opened issues' do
         get api('/issues?state=opened', user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 1
-        json_response.first['id'].should == issue.id
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['id']).to eq(issue.id)
       end
 
       it 'should return an array of all issues' do
         get api('/issues?state=all', user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 2
-        json_response.first['id'].should == issue.id
-        json_response.second['id'].should == closed_issue.id
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(2)
+        expect(json_response.first['id']).to eq(issue.id)
+        expect(json_response.second['id']).to eq(closed_issue.id)
       end
 
       it 'should return an array of labeled issues' do
         get api("/issues?labels=#{label.title}", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 1
-        json_response.first['labels'].should == [label.title]
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['labels']).to eq([label.title])
       end
 
       it 'should return an array of labeled issues when at least one label matches' do
         get api("/issues?labels=#{label.title},foo,bar", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 1
-        json_response.first['labels'].should == [label.title]
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['labels']).to eq([label.title])
       end
 
       it 'should return an empty array if no issue matches labels' do
         get api('/issues?labels=foo,bar', user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 0
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
       end
 
       it 'should return an array of labeled issues matching given state' do
         get api("/issues?labels=#{label.title}&state=opened", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 1
-        json_response.first['labels'].should == [label.title]
-        json_response.first['state'].should == 'opened'
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(1)
+        expect(json_response.first['labels']).to eq([label.title])
+        expect(json_response.first['state']).to eq('opened')
       end
 
       it 'should return an empty array if no issue matches labels and state filters' do
         get api("/issues?labels=#{label.title}&state=closed", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.length.should == 0
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.length).to eq(0)
       end
     end
   end
@@ -124,78 +125,78 @@ describe API::API, api: true  do
 
     it "should return project issues" do
       get api("#{base_url}/issues", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.first['title'].should == issue.title
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(issue.title)
     end
 
     it 'should return an array of labeled project issues' do
       get api("#{base_url}/issues?labels=#{label.title}", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 1
-      json_response.first['labels'].should == [label.title]
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label.title])
     end
 
     it 'should return an array of labeled project issues when at least one label matches' do
       get api("#{base_url}/issues?labels=#{label.title},foo,bar", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 1
-      json_response.first['labels'].should == [label.title]
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['labels']).to eq([label.title])
     end
 
     it 'should return an empty array if no project issue matches labels' do
       get api("#{base_url}/issues?labels=foo,bar", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 0
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'should return an empty array if no issue matches milestone' do
       get api("#{base_url}/issues?milestone=#{empty_milestone.title}", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 0
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'should return an empty array if milestone does not exist' do
       get api("#{base_url}/issues?milestone=foo", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 0
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(0)
     end
 
     it 'should return an array of issues in given milestone' do
       get api("#{base_url}/issues?milestone=#{title}", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 2
-      json_response.first['id'].should == issue.id
-      json_response.second['id'].should == closed_issue.id
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(2)
+      expect(json_response.first['id']).to eq(issue.id)
+      expect(json_response.second['id']).to eq(closed_issue.id)
     end
 
     it 'should return an array of issues matching state in milestone' do
       get api("#{base_url}/issues?milestone=#{milestone.title}"\
               '&state=closed', user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.length.should == 1
-      json_response.first['id'].should == closed_issue.id
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.length).to eq(1)
+      expect(json_response.first['id']).to eq(closed_issue.id)
     end
   end
 
   describe "GET /projects/:id/issues/:issue_id" do
     it "should return a project issue by id" do
       get api("/projects/#{project.id}/issues/#{issue.id}", user)
-      response.status.should == 200
-      json_response['title'].should == issue.title
-      json_response['iid'].should == issue.iid
+      expect(response.status).to eq(200)
+      expect(json_response['title']).to eq(issue.title)
+      expect(json_response['iid']).to eq(issue.iid)
     end
 
     it "should return 404 if issue id not found" do
       get api("/projects/#{project.id}/issues/54321", user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -203,32 +204,32 @@ describe API::API, api: true  do
     it "should create a new project issue" do
       post api("/projects/#{project.id}/issues", user),
         title: 'new issue', labels: 'label, label2'
-      response.status.should == 201
-      json_response['title'].should == 'new issue'
-      json_response['description'].should be_nil
-      json_response['labels'].should == ['label', 'label2']
+      expect(response.status).to eq(201)
+      expect(json_response['title']).to eq('new issue')
+      expect(json_response['description']).to be_nil
+      expect(json_response['labels']).to eq(['label', 'label2'])
     end
 
     it "should return a 400 bad request if title not given" do
       post api("/projects/#{project.id}/issues", user), labels: 'label, label2'
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it 'should return 400 on invalid label names' do
       post api("/projects/#{project.id}/issues", user),
            title: 'new issue',
            labels: 'label, ?'
-      response.status.should == 400
-      json_response['message']['labels']['?']['title'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
     end
 
     it 'should return 400 if title is too long' do
       post api("/projects/#{project.id}/issues", user),
            title: 'g' * 256
-      response.status.should == 400
-      json_response['message']['title'].should == [
+      expect(response.status).to eq(400)
+      expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
-      ]
+      ])
     end
   end
 
@@ -236,23 +237,23 @@ describe API::API, api: true  do
     it "should update a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         title: 'updated title'
-      response.status.should == 200
+      expect(response.status).to eq(200)
 
-      json_response['title'].should == 'updated title'
+      expect(json_response['title']).to eq('updated title')
     end
 
     it "should return 404 error if issue id not found" do
       put api("/projects/#{project.id}/issues/44444", user),
         title: 'updated title'
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
 
     it 'should return 400 on invalid label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title',
           labels: 'label, ?'
-      response.status.should == 400
-      json_response['message']['labels']['?']['title'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
     end
   end
 
@@ -263,49 +264,49 @@ describe API::API, api: true  do
     it 'should not update labels if not present' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'updated title'
-      response.status.should == 200
-      json_response['labels'].should == [label.title]
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to eq([label.title])
     end
 
     it 'should remove all labels' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: ''
-      response.status.should == 200
-      json_response['labels'].should == []
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to eq([])
     end
 
     it 'should update labels' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'foo,bar'
-      response.status.should == 200
-      json_response['labels'].should include 'foo'
-      json_response['labels'].should include 'bar'
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to include 'foo'
+      expect(json_response['labels']).to include 'bar'
     end
 
     it 'should return 400 on invalid label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label, ?'
-      response.status.should == 400
-      json_response['message']['labels']['?']['title'].should == ['is invalid']
+      expect(response.status).to eq(400)
+      expect(json_response['message']['labels']['?']['title']).to eq(['is invalid'])
     end
 
     it 'should allow special label names' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           labels: 'label:foo, label-bar,label_bar,label/bar'
-      response.status.should == 200
-      json_response['labels'].should include 'label:foo'
-      json_response['labels'].should include 'label-bar'
-      json_response['labels'].should include 'label_bar'
-      json_response['labels'].should include 'label/bar'
+      expect(response.status).to eq(200)
+      expect(json_response['labels']).to include 'label:foo'
+      expect(json_response['labels']).to include 'label-bar'
+      expect(json_response['labels']).to include 'label_bar'
+      expect(json_response['labels']).to include 'label/bar'
     end
 
     it 'should return 400 if title is too long' do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
           title: 'g' * 256
-      response.status.should == 400
-      json_response['message']['title'].should == [
+      expect(response.status).to eq(400)
+      expect(json_response['message']['title']).to eq([
         'is too long (maximum is 255 characters)'
-      ]
+      ])
     end
   end
 
@@ -313,17 +314,17 @@ describe API::API, api: true  do
     it "should update a project issue" do
       put api("/projects/#{project.id}/issues/#{issue.id}", user),
         labels: 'label2', state_event: "close"
-      response.status.should == 200
+      expect(response.status).to eq(200)
 
-      json_response['labels'].should include 'label2'
-      json_response['state'].should eq "closed"
+      expect(json_response['labels']).to include 'label2'
+      expect(json_response['state']).to eq "closed"
     end
   end
 
   describe "DELETE /projects/:id/issues/:issue_id" do
     it "should delete a project issue" do
       delete api("/projects/#{project.id}/issues/#{issue.id}", user)
-      response.status.should == 405
+      expect(response.status).to eq(405)
     end
   end
 end

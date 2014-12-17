@@ -48,7 +48,7 @@ module TestEnv
   end
 
   def enable_mailer
-    NotificationService.any_instance.unstub(:mailer)
+    allow_any_instance_of(NotificationService).to receive(:mailer).and_call_original
   end
 
   def setup_gitlab_shell

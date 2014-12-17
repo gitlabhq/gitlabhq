@@ -63,7 +63,7 @@ describe PushoverService do
     it 'should call Pushover API' do
       pushover.execute(sample_data)
 
-      WebMock.should have_requested(:post, api_url).once
+      expect(WebMock).to have_requested(:post, api_url).once
     end
   end
 end

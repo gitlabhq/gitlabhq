@@ -119,26 +119,26 @@ describe User do
   describe '#generate_password' do
     it "should execute callback when force_random_password specified" do
       user = build(:user, force_random_password: true)
-      user.should_receive(:generate_password)
+      expect(user).to receive(:generate_password)
       user.save
     end
 
     it "should not generate password by default" do
       user = create(:user, password: 'abcdefghe')
-      user.password.should == 'abcdefghe'
+      expect(user.password).to eq('abcdefghe')
     end
 
     it "should generate password when forcing random password" do
-      Devise.stub(:friendly_token).and_return('123456789')
+      allow(Devise).to receive(:friendly_token).and_return('123456789')
       user = create(:user, password: 'abcdefg', force_random_password: true)
-      user.password.should == '12345678'
+      expect(user.password).to eq('12345678')
     end
   end
 
   describe 'authentication token' do
     it "should have authentication token" do
       user = create(:user)
-      user.authentication_token.should_not be_blank
+      expect(user.authentication_token).not_to be_blank
     end
   end
 
@@ -153,15 +153,15 @@ describe User do
       @project_3.team << [@user, :developer]
     end
 
-    it { @user.authorized_projects.should include(@project) }
-    it { @user.authorized_projects.should include(@project_2) }
-    it { @user.authorized_projects.should include(@project_3) }
-    it { @user.owned_projects.should include(@project) }
-    it { @user.owned_projects.should_not include(@project_2) }
-    it { @user.owned_projects.should_not include(@project_3) }
-    it { @user.personal_projects.should include(@project) }
-    it { @user.personal_projects.should_not include(@project_2) }
-    it { @user.personal_projects.should_not include(@project_3) }
+    it { expect(@user.authorized_projects).to include(@project) }
+    it { expect(@user.authorized_projects).to include(@project_2) }
+    it { expect(@user.authorized_projects).to include(@project_3) }
+    it { expect(@user.owned_projects).to include(@project) }
+    it { expect(@user.owned_projects).not_to include(@project_2) }
+    it { expect(@user.owned_projects).not_to include(@project_3) }
+    it { expect(@user.personal_projects).to include(@project) }
+    it { expect(@user.personal_projects).not_to include(@project_2) }
+    it { expect(@user.personal_projects).not_to include(@project_3) }
   end
 
   describe 'groups' do
@@ -171,9 +171,9 @@ describe User do
       @group.add_owner(@user)
     end
 
-    it { @user.several_namespaces?.should be_true }
-    it { @user.authorized_groups.should == [@group] }
-    it { @user.owned_groups.should == [@group] }
+    it { expect(@user.several_namespaces?).to be_true }
+    it { expect(@user.authorized_groups).to eq([@group]) }
+    it { expect(@user.owned_groups).to eq([@group]) }
   end
 
   describe 'group multiple owners' do
@@ -186,7 +186,7 @@ describe User do
       @group.add_user(@user2, GroupMember::OWNER)
     end
 
-    it { @user2.several_namespaces?.should be_true }
+    it { expect(@user2.several_namespaces?).to be_true }
   end
 
   describe 'namespaced' do
@@ -195,7 +195,7 @@ describe User do
       @project = create :project, namespace: @user.namespace
     end
 
-    it { @user.several_namespaces?.should be_false }
+    it { expect(@user.several_namespaces?).to be_false }
   end
 
   describe 'blocking user' do
@@ -203,7 +203,7 @@ describe User do
 
     it "should block user" do
       user.block
-      user.blocked?.should be_true
+      expect(user.blocked?).to be_true
     end
   end
 
@@ -215,10 +215,10 @@ describe User do
       @blocked = create :user, state: :blocked
     end
 
-    it { User.filter("admins").should == [@admin] }
-    it { User.filter("blocked").should == [@blocked] }
-    it { User.filter("wop").should include(@user, @admin, @blocked) }
-    it { User.filter(nil).should include(@user, @admin) }
+    it { expect(User.filter("admins")).to eq([@admin]) }
+    it { expect(User.filter("blocked")).to eq([@blocked]) }
+    it { expect(User.filter("wop")).to include(@user, @admin, @blocked) }
+    it { expect(User.filter(nil)).to include(@user, @admin) }
   end
 
   describe :not_in_project do
@@ -228,27 +228,27 @@ describe User do
       @project = create :project
     end
 
-    it { User.not_in_project(@project).should include(@user, @project.owner) }
+    it { expect(User.not_in_project(@project)).to include(@user, @project.owner) }
   end
 
   describe 'user creation' do
     describe 'normal user' do
       let(:user) { create(:user, name: 'John Smith') }
 
-      it { user.is_admin?.should be_false }
-      it { user.require_ssh_key?.should be_true }
-      it { user.can_create_group?.should be_true }
-      it { user.can_create_project?.should be_true }
-      it { user.first_name.should == 'John' }
+      it { expect(user.is_admin?).to be_false }
+      it { expect(user.require_ssh_key?).to be_true }
+      it { expect(user.can_create_group?).to be_true }
+      it { expect(user.can_create_project?).to be_true }
+      it { expect(user.first_name).to eq('John') }
     end
 
     describe 'with defaults' do
       let(:user) { User.new }
 
       it "should apply defaults to user" do
-        user.projects_limit.should == Gitlab.config.gitlab.default_projects_limit
-        user.can_create_group.should == Gitlab.config.gitlab.default_can_create_group
-        user.theme_id.should == Gitlab.config.gitlab.default_theme
+        expect(user.projects_limit).to eq(Gitlab.config.gitlab.default_projects_limit)
+        expect(user.can_create_group).to eq(Gitlab.config.gitlab.default_can_create_group)
+        expect(user.theme_id).to eq(Gitlab.config.gitlab.default_theme)
       end
     end
 
@@ -256,9 +256,9 @@ describe User do
       let(:user) { User.new(projects_limit: 123, can_create_group: false, can_create_team: true, theme_id: Gitlab::Theme::BASIC) }
 
       it "should apply defaults to user" do
-        user.projects_limit.should == 123
-        user.can_create_group.should be_false
-        user.theme_id.should == Gitlab::Theme::BASIC
+        expect(user.projects_limit).to eq(123)
+        expect(user.can_create_group).to be_false
+        expect(user.theme_id).to eq(Gitlab::Theme::BASIC)
       end
     end
   end
@@ -268,12 +268,12 @@ describe User do
     let(:user2) { create(:user, username: 'jameson', email: 'jameson@example.com') }
 
     it "should be case insensitive" do
-      User.search(user1.username.upcase).to_a.should == [user1]
-      User.search(user1.username.downcase).to_a.should == [user1]
-      User.search(user2.username.upcase).to_a.should == [user2]
-      User.search(user2.username.downcase).to_a.should == [user2]
-      User.search(user1.username.downcase).to_a.count.should == 2
-      User.search(user2.username.downcase).to_a.count.should == 1
+      expect(User.search(user1.username.upcase).to_a).to eq([user1])
+      expect(User.search(user1.username.downcase).to_a).to eq([user1])
+      expect(User.search(user2.username.upcase).to_a).to eq([user2])
+      expect(User.search(user2.username.downcase).to_a).to eq([user2])
+      expect(User.search(user1.username.downcase).to_a.count).to eq(2)
+      expect(User.search(user2.username.downcase).to_a.count).to eq(1)
     end
   end
 
@@ -281,10 +281,10 @@ describe User do
     let(:user1) { create(:user, username: 'foo') }
 
     it "should get the correct user" do
-      User.by_username_or_id(user1.id).should == user1
-      User.by_username_or_id('foo').should == user1
-      User.by_username_or_id(-1).should be_nil
-      User.by_username_or_id('bar').should be_nil
+      expect(User.by_username_or_id(user1.id)).to eq(user1)
+      expect(User.by_username_or_id('foo')).to eq(user1)
+      expect(User.by_username_or_id(-1)).to be_nil
+      expect(User.by_username_or_id('bar')).to be_nil
     end
   end
 
@@ -309,7 +309,7 @@ describe User do
       user = create :user
       key = create :key, key: "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABAQD33bWLBxu48Sev9Fert1yzEO4WGcWglWF7K/AwblIUFselOt/QdOL9DSjpQGxLagO1s9wl53STIO8qGS4Ms0EJZyIXOEFMjFJ5xmjSy+S37By4sG7SsltQEHMxtbtFOaW5LV2wCrX+rUsRNqLMamZjgjcPO0/EgGCXIGMAYW4O7cwGZdXWYIhQ1Vwy+CsVMDdPkPgBXqK7nR/ey8KMs8ho5fMNgB5hBw/AL9fNGhRw3QTD6Q12Nkhl4VZES2EsZqlpNnJttnPdp847DUsT6yuLRlfiQfz5Cn9ysHFdXObMN5VYIiPFwHeYCZp1X2S4fDZooRE8uOLTfxWHPXwrhqSH", user_id: user.id
 
-      user.all_ssh_keys.should include(key.key)
+      expect(user.all_ssh_keys).to include(key.key)
     end
   end
 
@@ -318,12 +318,12 @@ describe User do
 
     it "should be true if avatar is image" do
       user.update_attribute(:avatar, 'uploads/avatar.png')
-      user.avatar_type.should be_true
+      expect(user.avatar_type).to be_true
     end
 
     it "should be false if avatar is html page" do
       user.update_attribute(:avatar, 'uploads/avatar.html')
-      user.avatar_type.should == ["only images allowed"]
+      expect(user.avatar_type).to eq(["only images allowed"])
     end
   end
 
@@ -381,7 +381,7 @@ describe User do
   describe :ldap_identity do
     it "returns ldap identity" do
       user = create :omniauth_user
-      user.ldap_identity.provider.should_not be_empty
+      expect(user.ldap_identity.provider).not_to be_empty
     end
   end
 
@@ -477,23 +477,23 @@ describe User do
     end
     
     it "sorts users as recently_signed_in" do
-      User.sort('recent_sign_in').first.should == @user
+      expect(User.sort('recent_sign_in').first).to eq(@user)
     end
 
     it "sorts users as late_signed_in" do
-      User.sort('oldest_sign_in').first.should == @user1
+      expect(User.sort('oldest_sign_in').first).to eq(@user1)
     end
 
     it "sorts users as recently_created" do
-      User.sort('recently_created').first.should == @user
+      expect(User.sort('recently_created').first).to eq(@user)
     end
 
     it "sorts users as late_created" do
-      User.sort('late_created').first.should == @user1
+      expect(User.sort('late_created').first).to eq(@user1)
     end
 
     it "sorts users by name when nil is passed" do
-      User.sort(nil).first.should == @user
+      expect(User.sort(nil).first).to eq(@user)
     end
   end
 end

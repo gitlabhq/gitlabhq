@@ -33,19 +33,19 @@ describe ProjectMember do
       @status = @project_2.team.import(@project_1)
     end
 
-    it { @status.should be_true }
+    it { expect(@status).to be_true }
 
     describe 'project 2 should get user 1 as developer. user_2 should not be changed' do
-      it { @project_2.users.should include(@user_1) }
-      it { @project_2.users.should include(@user_2) }
+      it { expect(@project_2.users).to include(@user_1) }
+      it { expect(@project_2.users).to include(@user_2) }
 
-      it { @abilities.allowed?(@user_1, :write_project, @project_2).should be_true }
-      it { @abilities.allowed?(@user_2, :read_project, @project_2).should be_true }
+      it { expect(@abilities.allowed?(@user_1, :write_project, @project_2)).to be_true }
+      it { expect(@abilities.allowed?(@user_2, :read_project, @project_2)).to be_true }
     end
 
     describe 'project 1 should not be changed' do
-      it { @project_1.users.should include(@user_1) }
-      it { @project_1.users.should_not include(@user_2) }
+      it { expect(@project_1.users).to include(@user_1) }
+      it { expect(@project_1.users).not_to include(@user_2) }
     end
   end
 
@@ -64,12 +64,12 @@ describe ProjectMember do
       )
     end
 
-    it { @project_1.users.should include(@user_1) }
-    it { @project_1.users.should include(@user_2) }
+    it { expect(@project_1.users).to include(@user_1) }
+    it { expect(@project_1.users).to include(@user_2) }
 
 
-    it { @project_2.users.should include(@user_1) }
-    it { @project_2.users.should include(@user_2) }
+    it { expect(@project_2.users).to include(@user_1) }
+    it { expect(@project_2.users).to include(@user_2) }
   end
 
   describe :truncate_teams do
@@ -86,7 +86,7 @@ describe ProjectMember do
       ProjectMember.truncate_teams([@project_1.id, @project_2.id])
     end
 
-    it { @project_1.users.should be_empty }
-    it { @project_2.users.should be_empty }
+    it { expect(@project_1.users).to be_empty }
+    it { expect(@project_2.users).to be_empty }
   end
 end

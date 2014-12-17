@@ -39,7 +39,7 @@ describe FlowdockService do
 
     it "should call FlowDock API" do
       @flowdock_service.execute(@sample_data)
-      WebMock.should have_requested(:post, @api_url).with(
+      expect(WebMock).to have_requested(:post, @api_url).with(
         body: /#{@sample_data[:before]}.*#{@sample_data[:after]}.*#{project.path}/
       ).once
     end

@@ -33,14 +33,14 @@ describe Namespace do
     it { should respond_to(:to_param) }
   end
 
-  it { Namespace.global_id.should == 'GLN' }
+  it { expect(Namespace.global_id).to eq('GLN') }
 
   describe :to_param do
-    it { namespace.to_param.should == namespace.path }
+    it { expect(namespace.to_param).to eq(namespace.path) }
   end
 
   describe :human_name do
-    it { namespace.human_name.should == namespace.owner_name }
+    it { expect(namespace.human_name).to eq(namespace.owner_name) }
   end
 
   describe :search do
@@ -48,8 +48,8 @@ describe Namespace do
       @namespace = create :namespace
     end
 
-    it { Namespace.search(@namespace.path).should == [@namespace] }
-    it { Namespace.search('unknown').should == [] }
+    it { expect(Namespace.search(@namespace.path)).to eq([@namespace]) }
+    it { expect(Namespace.search('unknown')).to eq([]) }
   end
 
   describe :move_dir do
@@ -66,13 +66,13 @@ describe Namespace do
       new_path = @namespace.path + "_new"
       @namespace.stub(path_was: @namespace.path)
       @namespace.stub(path: new_path)
-      @namespace.move_dir.should be_true
+      expect(@namespace.move_dir).to be_true
     end
   end
 
   describe :rm_dir do
     it "should remove dir" do
-      namespace.rm_dir.should be_true
+      expect(namespace.rm_dir).to be_true
     end
   end
 end

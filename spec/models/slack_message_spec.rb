@@ -25,16 +25,17 @@ describe SlackMessage do
     end
 
     it 'returns a message regarding pushes' do
-      subject.pretext.should ==
+      expect(subject.pretext).to eq(
         'user_name pushed to branch <url/commits/master|master> of '\
         '<url|project_name> (<url/compare/before...after|Compare changes>)'
-      subject.attachments.should == [
+      )
+      expect(subject.attachments).to eq([
         {
           text: "<url1|abcdefghi>: message1 - author1\n"\
                 "<url2|123456789>: message2 - author2",
           color: color,
         }
-      ]
+      ])
     end
   end
 
@@ -44,10 +45,11 @@ describe SlackMessage do
     end
 
     it 'returns a message regarding a new branch' do
-      subject.pretext.should ==
+      expect(subject.pretext).to eq(
         'user_name pushed new branch <url/commits/master|master> to '\
         '<url|project_name>'
-      subject.attachments.should be_empty
+      )
+      expect(subject.attachments).to be_empty
     end
   end
 
@@ -57,9 +59,10 @@ describe SlackMessage do
     end
 
     it 'returns a message regarding a removed branch' do
-      subject.pretext.should ==
+      expect(subject.pretext).to eq(
         'user_name removed branch master from <url|project_name>'
-      subject.attachments.should be_empty
+      )
+      expect(subject.attachments).to be_empty
     end
   end
 end
