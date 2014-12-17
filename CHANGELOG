@@ -23,6 +23,7 @@ v 7.8.1
   - Fix urls for the issues when relative url was enabled
   - Add Bitbucket omniauth provider.
   - Add Bitbucket importer.
+  - Support referencing issues to a project whose name starts with a digit
 
 v 7.8.0
   - Fix access control and protection against XSS for note attachments and other uploads.
