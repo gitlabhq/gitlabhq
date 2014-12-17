@@ -3,10 +3,11 @@
     = link_to group_path(@group), title: "Home" do
       %i.fa.fa-dashboard
       Activity
-  = nav_link(controller: [:group, :milestones]) do
-    = link_to group_milestones_path(@group) do
-      %i.fa.fa-clock-o
-      Milestones
+  - if current_user
+    = nav_link(controller: [:group, :milestones]) do
+      = link_to group_milestones_path(@group) do
+        %i.fa.fa-clock-o
+        Milestones
   = nav_link(path: 'groups#issues') do
     = link_to issues_group_path(@group) do
       %i.fa.fa-exclamation-circle
