@@ -52,6 +52,7 @@ class ProjectTeam
   end
 
   def add_users_ids(user_ids, access)
+    return false if group_member_lock
     ProjectMember.add_users_into_projects(
       [project.id],
       user_ids,
@@ -217,5 +218,9 @@ class ProjectTeam
 
   def group
     project.group
+  end
+
+  def group_member_lock
+    group && group.membership_lock
   end
 end

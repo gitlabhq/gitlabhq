@@ -279,4 +279,12 @@ module ProjectsHelper
     result.password = '*****' if result.password.present?
     result
   end
+
+  def membership_locked?
+    if @project.group && @project.group.membership_lock
+      true
+    else
+      false
+    end
+  end
 end

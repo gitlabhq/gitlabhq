@@ -2,6 +2,7 @@ v 7.6.0
   - Added Audit events related to membership changes for groups and projects
   - Added option to attempt a rebase before merging merge request
   - Dont show LDAP groups settings if LDAP disabled
+  - Added member lock for groups to disallow membership additions on project level
   - Rebase on merge request. Introduced merge request option to rebase before merging
   - Better message for failed pushes because of git hooks
   - Kerberos support for web interface and git HTTP
