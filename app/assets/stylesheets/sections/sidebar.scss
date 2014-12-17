@@ -75,12 +75,16 @@ body.sidenav {
 
 .nav-sidebar li {
   &.active a {
-    color: #333;
+    color: #111;
     background: #EEE;
     font-weight: bold;
 
     &.no-highlight {
       background: none;
+    }
+
+    i {
+      color: #444;
     }
   }
 }
@@ -93,7 +97,7 @@ body.sidenav {
   }
 
   a {
-    color: #666;
+    color: #555;
     display: block;
     text-decoration: none;
     padding: 6px 15px;
@@ -114,7 +118,7 @@ body.sidenav {
 
     i {
       width: 20px;
-      color: #999;
+      color: #888;
     }
   }
 }
