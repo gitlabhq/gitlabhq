@@ -4,7 +4,7 @@ v 7.8.0
   - Replace highlight.js with rouge-fork rugments (Stefan Tatschner)
   - 
   - 
-  - 
+  - Expose description in groups API
   - 
   - 
   - 
