@@ -52,17 +52,18 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 
 Please see [the installation page on the GitLab website](https://about.gitlab.com/installation/) for the various options.
 Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+You can access new installation with the login `root` and password `5iveL!fe`, after login you are required to set a unique password.
 
 ## Third-party applications
 
 There are a lot of applications and API wrappers for GitLab.
 Find them [on our website](https://about.gitlab.com/applications/).
 
-### New versions
+## New versions
 
 Since 2011 a minor or major version of GitLab is released on the 22nd of every month. Patch and security releases come out when needed.  New features are detailed on the [blog](https://about.gitlab.com/blog/) and in the [changelog](CHANGELOG). For more information about the release process see the release [documentation](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/release). Features that will likely be in the next releases can be found on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
-### Upgrading
+## Upgrading
 
 For updating the the Omnibus installation please see the [update documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md). For manual installations there is an [upgrader script](doc/update/upgrader.md) and there are [upgrade guides](doc/update).
 
