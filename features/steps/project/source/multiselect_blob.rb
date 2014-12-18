@@ -35,7 +35,7 @@ class Spinach::Features::ProjectSourceMultiselectBlob < Spinach::FeatureSteps
             extra ||= ids.delete(element[:id]).nil?
           end
 
-          extra.should be_false and ids.should be_empty
+          extra.should be_falsey and ids.should be_empty
         end
       end
     end

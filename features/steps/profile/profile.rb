@@ -49,7 +49,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my gravatar' do
-    @user.avatar?.should be_false
+    @user.avatar?.should be_falsey
   end
 
   step 'I should not see the "Remove avatar" button' do
@@ -171,7 +171,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I am not an ldap user" do
     current_user.identities.delete
-    current_user.ldap_user?.should be_false
+    current_user.ldap_user?.should be_falsey
   end
 
   step 'I redirected to expired password page' do

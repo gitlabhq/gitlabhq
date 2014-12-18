@@ -2,15 +2,15 @@ module SharedActiveTab
   include Spinach::DSL
 
   def ensure_active_main_tab(content)
-    find('.main-nav li.active').should have_content(content)
+    expect(find('.main-nav li.active')).to have_content(content)
   end
 
   def ensure_active_sub_tab(content)
-    find('div.content ul.nav-tabs li.active').should have_content(content)
+    expect(find('div.content ul.nav-tabs li.active')).to have_content(content)
   end
 
   def ensure_active_sub_nav(content)
-    find('div.content ul.nav-stacked-menu li.active').should have_content(content)
+    expect(find('div.content ul.nav-stacked-menu li.active')).to have_content(content)
   end
 
   step 'no other main tabs should be active' do

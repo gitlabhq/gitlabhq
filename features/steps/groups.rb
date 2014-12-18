@@ -130,7 +130,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should not see group "Owned" avatar' do
-    Group.find_by(name: "Owned").avatar?.should be_false
+    Group.find_by(name: "Owned").avatar?.should be_falsey
   end
 
   step 'I should not see the "Remove avatar" button' do

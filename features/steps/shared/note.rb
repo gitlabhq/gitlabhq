@@ -45,7 +45,7 @@ module SharedNote
 
   step 'I should not see the cancel comment button' do
     within(".js-main-target-form") do
-      should_not have_link("Cancel")
+      is_expected.not_to have_link("Cancel")
     end
   end
 
