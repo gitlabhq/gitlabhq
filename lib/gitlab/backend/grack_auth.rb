@@ -76,7 +76,10 @@ module Grack
       return user if user.present?
 
       # At this point, we know the credentials were wrong. We let Rack::Attack
-      # know there was a failed authentication attempt from this IP
+      # know there was a failed authentication attempt from this IP. This
+      # information is stored in the Rails cache (Redis) and will be used by
+      # the Rack::Attack middleware to decide whether to block requests from
+      # this IP.
       Rack::Attack::Allow2Ban.filter(@request.ip, Gitlab.config.rack_attack.git_basic_auth) do
         # Return true, so that Allow2Ban increments the counter (stored in
         # Rails.cache) for the IP
