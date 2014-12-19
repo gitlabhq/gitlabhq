@@ -2,6 +2,11 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  use_doorkeeper do
+    controllers :applications => 'oauth/applications',
+                :authorized_applications => 'oauth/authorized_applications',
+                :authorizations => 'oauth/authorizations'
+  end
   #
   # Search
   #

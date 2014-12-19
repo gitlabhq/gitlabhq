@@ -3,7 +3,7 @@
     = link_to profile_path, title: "Profile" do
       %i.fa.fa-user
       Profile
-  = nav_link(controller: :accounts) do
+  = nav_link(controller: [:accounts, :applications]) do
     = link_to profile_account_path do
       %i.fa.fa-gear
       Account
