@@ -22,11 +22,7 @@ module API
       #   GET /projects
       get do
         @projects = current_user.authorized_projects
-
-        sort = case params["sort"]
-                 when 'desc' then 'DESC'
-                 else 'ASC'
-               end
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         @projects = case params["order_by"]
                       when 'id' then @projects.reorder("id #{sort}")
@@ -50,11 +46,7 @@ module API
       # Example Request:
       #   GET /projects/owned
       get '/owned' do
-        sort = case params["sort"]
-                 when 'desc' then 'DESC'
-                 else 'ASC'
-               end
-
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
         @projects = current_user.owned_projects
         @projects = case params["order_by"]
                       when 'id' then @projects.reorder("id #{sort}")
@@ -74,11 +66,7 @@ module API
       #   GET /projects/all
       get '/all' do
         authenticated_as_admin!
-
-        sort = case params["sort"]
-                 when 'desc' then 'DESC'
-                 else 'ASC'
-               end
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         @projects = case params["order_by"]
                       when 'id' then Project.order("id #{sort}")
@@ -268,11 +256,7 @@ module API
         ids = current_user.authorized_projects.map(&:id)
         visibility_levels = [ Gitlab::VisibilityLevel::INTERNAL, Gitlab::VisibilityLevel::PUBLIC ]
         projects = Project.where("(id in (?) OR visibility_level in (?)) AND (name LIKE (?))", ids, visibility_levels, "%#{params[:query]}%")
-
-        sort = case params["sort"]
-                 when 'desc' then 'DESC'
-                 else 'ASC'
-               end
+        sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         projects = case params["order_by"]
                      when 'id' then projects.order("id #{sort}")
