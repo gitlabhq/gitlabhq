@@ -790,14 +790,14 @@ namespace :gitlab do
   end
 
   def sanitized_message(project)
-    if sanitize
+    if is_need_sanitize
       "#{project.namespace_id.to_s.yellow}/#{project.id.to_s.yellow} ... "
     else
       "#{project.name_with_namespace.yellow} ... "
     end
   end
 
-  def sanitize
+  def is_need_sanitize
     if ENV['SANITIZE'] == "true"
       true
     else
