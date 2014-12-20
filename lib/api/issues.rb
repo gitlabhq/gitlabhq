@@ -100,6 +100,10 @@ module API
       #   POST /projects/:id/issues
       post ":id/issues" do
         required_attributes! [:title]
+
+#        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :metadata]
+#        attrs[:label_list] = params[:labels] if params[:labels].present?
+
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id]
 
         # Validate label names in advance
@@ -138,12 +142,18 @@ module API
       put ":id/issues/:issue_id" do
         issue = user_project.issues.find(params[:issue_id])
         authorize! :modify_issue, issue
+<<<<<<< HEAD
+
+        attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event, :metadata]
+        attrs[:label_list] = params[:labels] if params[:labels].present?
+=======
         attrs = attributes_for_keys [:title, :description, :assignee_id, :milestone_id, :state_event]
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
           render_api_error!({ labels: errors }, 400)
         end
+>>>>>>> upstream/master
 
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
 
