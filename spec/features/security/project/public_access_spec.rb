@@ -23,7 +23,10 @@ describe "Public Project Access", feature: true  do
   describe "Project should be public" do
     subject { project }
 
-    its(:public?) { should be_true }
+    describe '#public?' do
+      subject { super().public? }
+      it { should be_true }
+    end
   end
 
   describe "GET /:project_path" do
@@ -99,12 +102,12 @@ describe "Public Project Access", feature: true  do
       @blob_path = project_blob_path(project, File.join(commit.id, path))
     end
 
-    it { @blob_path.should be_allowed_for master }
-    it { @blob_path.should be_allowed_for reporter }
-    it { @blob_path.should be_allowed_for :admin }
-    it { @blob_path.should be_allowed_for guest }
-    it { @blob_path.should be_allowed_for :user }
-    it { @blob_path.should be_allowed_for :visitor }
+    it { expect(@blob_path).to be_allowed_for master }
+    it { expect(@blob_path).to be_allowed_for reporter }
+    it { expect(@blob_path).to be_allowed_for :admin }
+    it { expect(@blob_path).to be_allowed_for guest }
+    it { expect(@blob_path).to be_allowed_for :user }
+    it { expect(@blob_path).to be_allowed_for :visitor }
   end
 
   describe "GET /:project_path/edit" do
@@ -189,7 +192,7 @@ describe "Public Project Access", feature: true  do
 
     before do
       # Speed increase
-      Project.any_instance.stub(:branches).and_return([])
+      allow_any_instance_of(Project).to receive(:branches).and_return([])
     end
 
     it { should be_allowed_for master }
@@ -205,7 +208,7 @@ describe "Public Project Access", feature: true  do
 
     before do
       # Speed increase
-      Project.any_instance.stub(:tags).and_return([])
+      allow_any_instance_of(Project).to receive(:tags).and_return([])
     end
 
     it { should be_allowed_for master }

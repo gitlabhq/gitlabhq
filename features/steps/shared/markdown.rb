@@ -2,8 +2,8 @@ module SharedMarkdown
   include Spinach::DSL
 
   def header_should_have_correct_id_and_link(level, text, id, parent = ".wiki")
-    find(:css, "#{parent} h#{level}##{id}").text.should == text
-    find(:css, "#{parent} h#{level}##{id} > :last-child")[:href].should =~ /##{id}$/
+    expect(find(:css, "#{parent} h#{level}##{id}").text).to eq(text)
+    expect(find(:css, "#{parent} h#{level}##{id} > :last-child")[:href]).to match(/##{id}$/)
   end
 
   def create_taskable(type, title)

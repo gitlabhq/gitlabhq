@@ -30,18 +30,18 @@ describe Group do
   it { should_not validate_presence_of :owner }
 
   describe :users do
-    it { group.users.should == group.owners }
+    it { expect(group.users).to eq(group.owners) }
   end
 
   describe :human_name do
-    it { group.human_name.should == group.name }
+    it { expect(group.human_name).to eq(group.name) }
   end
 
   describe :add_users do
     let(:user) { create(:user) }
     before { group.add_user(user, GroupMember::MASTER) }
 
-    it { group.group_members.masters.map(&:user).should include(user) }
+    it { expect(group.group_members.masters.map(&:user)).to include(user) }
   end
 
   describe :add_users do
@@ -49,10 +49,10 @@ describe Group do
     before { group.add_users([user.id], GroupMember::GUEST) }
 
     it "should update the group permission" do
-      group.group_members.guests.map(&:user).should include(user)
+      expect(group.group_members.guests.map(&:user)).to include(user)
       group.add_users([user.id], GroupMember::DEVELOPER)
-      group.group_members.developers.map(&:user).should include(user)
-      group.group_members.guests.map(&:user).should_not include(user)
+      expect(group.group_members.developers.map(&:user)).to include(user)
+      expect(group.group_members.guests.map(&:user)).not_to include(user)
     end
   end
 
@@ -62,12 +62,12 @@ describe Group do
 
     it "should be true if avatar is image" do
       group.update_attribute(:avatar, 'uploads/avatar.png')
-      group.avatar_type.should be_true
+      expect(group.avatar_type).to be_true
     end
 
     it "should be false if avatar is html page" do
       group.update_attribute(:avatar, 'uploads/avatar.html')
-      group.avatar_type.should == ["only images allowed"]
+      expect(group.avatar_type).to eq(["only images allowed"])
     end
   end
 end

@@ -12,11 +12,11 @@ describe "Admin::Projects", feature: true  do
     end
 
     it "should be ok" do
-      current_path.should == admin_projects_path
+      expect(current_path).to eq(admin_projects_path)
     end
 
     it "should have projects list" do
-      page.should have_content(@project.name)
+      expect(page).to have_content(@project.name)
     end
   end
 
@@ -27,8 +27,8 @@ describe "Admin::Projects", feature: true  do
     end
 
     it "should have project info" do
-      page.should have_content(@project.path)
-      page.should have_content(@project.name)
+      expect(page).to have_content(@project.path)
+      expect(page).to have_content(@project.name)
     end
   end
 end

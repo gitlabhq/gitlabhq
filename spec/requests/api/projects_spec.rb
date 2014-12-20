@@ -17,17 +17,17 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/projects")
-        response.status.should == 401
+        expect(response.status).to eq(401)
       end
     end
 
     context "when authenticated" do
       it "should return an array of projects" do
         get api("/projects", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['name'].should == project.name
-        json_response.first['owner']['username'].should == user.username
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['name']).to eq(project.name)
+        expect(json_response.first['owner']['username']).to eq(user.username)
       end
     end
   end
@@ -38,31 +38,31 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/projects/all")
-        response.status.should == 401
+        expect(response.status).to eq(401)
       end
     end
 
     context "when authenticated as regular user" do
       it "should return authentication error" do
         get api("/projects/all", user)
-        response.status.should == 403
+        expect(response.status).to eq(403)
       end
     end
 
     context "when authenticated as admin" do
       it "should return an array of all projects" do
         get api("/projects/all", admin)
-        response.status.should == 200
-        json_response.should be_an Array
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
         project_name = project.name
 
-        json_response.detect {
+        expect(json_response.detect {
           |project| project['name'] == project_name
-        }['name'].should == project_name
+        }['name']).to eq(project_name)
 
-        json_response.detect {
+        expect(json_response.detect {
           |project| project['owner']['username'] == user.username
-        }['owner']['username'].should == user.username
+        }['owner']['username']).to eq(user.username)
       end
     end
   end
@@ -92,23 +92,23 @@ describe API::API, api: true  do
 
     it "should return a 400 error if name not given" do
       post api("/projects", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should create last project before reaching project limit" do
       (1..user2.projects_limit-1).each { |p| post api("/projects", user2), name: "foo#{p}" }
       post api("/projects", user2), name: "foo"
-      response.status.should == 201
+      expect(response.status).to eq(201)
     end
 
     it "should respond with 201 on success" do
       post api("/projects", user), name: 'foo'
-      response.status.should == 201
+      expect(response.status).to eq(201)
     end
 
     it "should respond with 400 if name is not given" do
       post api("/projects", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 403 error if project limit reached" do
@@ -116,7 +116,7 @@ describe API::API, api: true  do
         post api("/projects", user), name: "foo#{p}"
       end
       post api("/projects", user), name: 'bar'
-      response.status.should == 403
+      expect(response.status).to eq(403)
     end
 
     it "should assign attributes to project" do
@@ -131,50 +131,50 @@ describe API::API, api: true  do
       post api("/projects", user), project
 
       project.each_pair do |k,v|
-        json_response[k.to_s].should == v
+        expect(json_response[k.to_s]).to eq(v)
       end
     end
 
     it "should set a project as public" do
       project = attributes_for(:project, :public)
       post api("/projects", user), project
-      json_response['public'].should be_true
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+      expect(json_response['public']).to be_true
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it "should set a project as public using :public" do
       project = attributes_for(:project, { public: true })
       post api("/projects", user), project
-      json_response['public'].should be_true
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+      expect(json_response['public']).to be_true
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it "should set a project as internal" do
       project = attributes_for(:project, :internal)
       post api("/projects", user), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it "should set a project as internal overriding :public" do
       project = attributes_for(:project, :internal, { public: true })
       post api("/projects", user), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it "should set a project as private" do
       project = attributes_for(:project, :private)
       post api("/projects", user), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it "should set a project as private using :public" do
       project = attributes_for(:project, { public: false })
       post api("/projects", user), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
   end
 
@@ -192,24 +192,24 @@ describe API::API, api: true  do
 
     it "should respond with 201 on success" do
       post api("/projects/user/#{user.id}", admin), name: 'foo'
-      response.status.should == 201
+      expect(response.status).to eq(201)
     end
 
     it 'should respond with 400 on failure' do
       post api("/projects/user/#{user.id}", admin)
-      response.status.should == 400
-      json_response['message']['creator'].should == ['can\'t be blank']
-      json_response['message']['namespace'].should == ['can\'t be blank']
-      json_response['message']['name'].should == [
+      expect(response.status).to eq(400)
+      expect(json_response['message']['creator']).to eq(['can\'t be blank'])
+      expect(json_response['message']['namespace']).to eq(['can\'t be blank'])
+      expect(json_response['message']['name']).to eq([
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
         Gitlab::Regex.project_regex_message
-      ]
-      json_response['message']['path'].should == [
+      ])
+      expect(json_response['message']['path']).to eq([
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
         Gitlab::Regex.send(:default_regex_message)
-      ]
+      ])
     end
 
     it "should assign attributes to project" do
@@ -224,50 +224,50 @@ describe API::API, api: true  do
 
       project.each_pair do |k,v|
         next if k == :path
-        json_response[k.to_s].should == v
+        expect(json_response[k.to_s]).to eq(v)
       end
     end
 
     it "should set a project as public" do
       project = attributes_for(:project, :public)
       post api("/projects/user/#{user.id}", admin), project
-      json_response['public'].should be_true
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+      expect(json_response['public']).to be_true
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it "should set a project as public using :public" do
       project = attributes_for(:project, { public: true })
       post api("/projects/user/#{user.id}", admin), project
-      json_response['public'].should be_true
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PUBLIC
+      expect(json_response['public']).to be_true
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PUBLIC)
     end
 
     it "should set a project as internal" do
       project = attributes_for(:project, :internal)
       post api("/projects/user/#{user.id}", admin), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it "should set a project as internal overriding :public" do
       project = attributes_for(:project, :internal, { public: true })
       post api("/projects/user/#{user.id}", admin), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::INTERNAL
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::INTERNAL)
     end
 
     it "should set a project as private" do
       project = attributes_for(:project, :private)
       post api("/projects/user/#{user.id}", admin), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
 
     it "should set a project as private using :public" do
       project = attributes_for(:project, { public: false })
       post api("/projects/user/#{user.id}", admin), project
-      json_response['public'].should be_false
-      json_response['visibility_level'].should == Gitlab::VisibilityLevel::PRIVATE
+      expect(json_response['public']).to be_false
+      expect(json_response['visibility_level']).to eq(Gitlab::VisibilityLevel::PRIVATE)
     end
   end
 
@@ -277,27 +277,27 @@ describe API::API, api: true  do
 
     it "should return a project by id" do
       get api("/projects/#{project.id}", user)
-      response.status.should == 200
-      json_response['name'].should == project.name
-      json_response['owner']['username'].should == user.username
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(project.name)
+      expect(json_response['owner']['username']).to eq(user.username)
     end
 
     it "should return a project by path name" do
       get api("/projects/#{project.id}", user)
-      response.status.should == 200
-      json_response['name'].should == project.name
+      expect(response.status).to eq(200)
+      expect(json_response['name']).to eq(project.name)
     end
 
     it "should return a 404 error if not found" do
       get api("/projects/42", user)
-      response.status.should == 404
-      json_response['message'].should == '404 Not Found'
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 Not Found')
     end
 
     it "should return a 404 error if user is not a member" do
       other_user = create(:user)
       get api("/projects/#{project.id}", other_user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
 
     describe 'permissions' do
@@ -307,9 +307,9 @@ describe API::API, api: true  do
           get api("/projects/#{project.id}", user)
         end
 
-        it { response.status.should == 200 }
-        it { json_response['permissions']["project_access"]["access_level"].should == Gitlab::Access::MASTER }
-        it { json_response['permissions']["group_access"].should be_nil }
+        it { expect(response.status).to eq(200) }
+        it { expect(json_response['permissions']["project_access"]["access_level"]).to eq(Gitlab::Access::MASTER) }
+        it { expect(json_response['permissions']["group_access"]).to be_nil }
       end
 
       context 'group project' do
@@ -319,9 +319,9 @@ describe API::API, api: true  do
           get api("/projects/#{project2.id}", user)
         end
 
-        it { response.status.should == 200 }
-        it { json_response['permissions']["project_access"].should be_nil }
-        it { json_response['permissions']["group_access"]["access_level"].should == Gitlab::Access::OWNER }
+        it { expect(response.status).to eq(200) }
+        it { expect(json_response['permissions']["project_access"]).to be_nil }
+        it { expect(json_response['permissions']["group_access"]["access_level"]).to eq(Gitlab::Access::OWNER) }
       end
     end
   end
@@ -331,24 +331,24 @@ describe API::API, api: true  do
 
     it "should return a project events" do
       get api("/projects/#{project.id}/events", user)
-      response.status.should == 200
+      expect(response.status).to eq(200)
       json_event = json_response.first
 
-      json_event['action_name'].should == 'joined'
-      json_event['project_id'].to_i.should == project.id
-      json_event['author_username'].should == user.username
+      expect(json_event['action_name']).to eq('joined')
+      expect(json_event['project_id'].to_i).to eq(project.id)
+      expect(json_event['author_username']).to eq(user.username)
     end
 
     it "should return a 404 error if not found" do
       get api("/projects/42/events", user)
-      response.status.should == 404
-      json_response['message'].should == '404 Not Found'
+      expect(response.status).to eq(404)
+      expect(json_response['message']).to eq('404 Not Found')
     end
 
     it "should return a 404 error if user is not a member" do
       other_user = create(:user)
       get api("/projects/#{project.id}/events", other_user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -357,22 +357,22 @@ describe API::API, api: true  do
 
     it "should return an array of project snippets" do
       get api("/projects/#{project.id}/snippets", user)
-      response.status.should == 200
-      json_response.should be_an Array
-      json_response.first['title'].should == snippet.title
+      expect(response.status).to eq(200)
+      expect(json_response).to be_an Array
+      expect(json_response.first['title']).to eq(snippet.title)
     end
   end
 
   describe "GET /projects/:id/snippets/:snippet_id" do
     it "should return a project snippet" do
       get api("/projects/#{project.id}/snippets/#{snippet.id}", user)
-      response.status.should == 200
-      json_response['title'].should == snippet.title
+      expect(response.status).to eq(200)
+      expect(json_response['title']).to eq(snippet.title)
     end
 
     it "should return a 404 error if snippet id not found" do
       get api("/projects/#{project.id}/snippets/1234", user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -380,26 +380,26 @@ describe API::API, api: true  do
     it "should create a new project snippet" do
       post api("/projects/#{project.id}/snippets", user),
         title: 'api test', file_name: 'sample.rb', code: 'test'
-      response.status.should == 201
-      json_response['title'].should == 'api test'
+      expect(response.status).to eq(201)
+      expect(json_response['title']).to eq('api test')
     end
 
     it "should return a 400 error if title is not given" do
       post api("/projects/#{project.id}/snippets", user),
         file_name: 'sample.rb', code: 'test'
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 400 error if file_name not given" do
       post api("/projects/#{project.id}/snippets", user),
         title: 'api test', code: 'test'
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 400 error if code not given" do
       post api("/projects/#{project.id}/snippets", user),
         title: 'api test', file_name: 'sample.rb'
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 
@@ -407,16 +407,16 @@ describe API::API, api: true  do
     it "should update an existing project snippet" do
       put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
         code: 'updated code'
-      response.status.should == 200
-      json_response['title'].should == 'example'
-      snippet.reload.content.should == 'updated code'
+      expect(response.status).to eq(200)
+      expect(json_response['title']).to eq('example')
+      expect(snippet.reload.content).to eq('updated code')
     end
 
     it "should update an existing project snippet with new title" do
       put api("/projects/#{project.id}/snippets/#{snippet.id}", user),
         title: 'other api test'
-      response.status.should == 200
-      json_response['title'].should == 'other api test'
+      expect(response.status).to eq(200)
+      expect(json_response['title']).to eq('other api test')
     end
   end
 
@@ -427,24 +427,24 @@ describe API::API, api: true  do
       expect {
         delete api("/projects/#{project.id}/snippets/#{snippet.id}", user)
       }.to change { Snippet.count }.by(-1)
-      response.status.should == 200
+      expect(response.status).to eq(200)
     end
 
     it 'should return 404 when deleting unknown snippet id' do
       delete api("/projects/#{project.id}/snippets/1234", user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
   describe "GET /projects/:id/snippets/:snippet_id/raw" do
     it "should get a raw project snippet" do
       get api("/projects/#{project.id}/snippets/#{snippet.id}/raw", user)
-      response.status.should == 200
+      expect(response.status).to eq(200)
     end
 
     it "should return a 404 error if raw project snippet not found" do
       get api("/projects/#{project.id}/snippets/5555/raw", user)
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -457,43 +457,43 @@ describe API::API, api: true  do
 
       it "should return array of ssh keys" do
         get api("/projects/#{project.id}/keys", user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.first['title'].should == deploy_key.title
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.first['title']).to eq(deploy_key.title)
       end
     end
 
     describe "GET /projects/:id/keys/:key_id" do
       it "should return a single key" do
         get api("/projects/#{project.id}/keys/#{deploy_key.id}", user)
-        response.status.should == 200
-        json_response['title'].should == deploy_key.title
+        expect(response.status).to eq(200)
+        expect(json_response['title']).to eq(deploy_key.title)
       end
 
       it "should return 404 Not Found with invalid ID" do
         get api("/projects/#{project.id}/keys/404", user)
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
     end
 
     describe "POST /projects/:id/keys" do
       it "should not create an invalid ssh key" do
         post api("/projects/#{project.id}/keys", user), { title: "invalid key" }
-        response.status.should == 400
-        json_response['message']['key'].should == [
+        expect(response.status).to eq(400)
+        expect(json_response['message']['key']).to eq([
           'can\'t be blank',
           'is too short (minimum is 0 characters)',
           'is invalid'
-        ]
+        ])
       end
 
       it 'should not create a key without title' do
         post api("/projects/#{project.id}/keys", user), key: 'some key'
-        response.status.should == 400
-        json_response['message']['title'].should == [
+        expect(response.status).to eq(400)
+        expect(json_response['message']['title']).to eq([
           'can\'t be blank',
           'is too short (minimum is 0 characters)'
-        ]
+        ])
       end
 
       it "should create new ssh key" do
@@ -515,7 +515,7 @@ describe API::API, api: true  do
 
       it "should return 404 Not Found with invalid ID" do
         delete api("/projects/#{project.id}/keys/404", user)
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
     end
   end
@@ -529,33 +529,33 @@ describe API::API, api: true  do
 
       it "shouldn't available for non admin users" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", user)
-        response.status.should == 403
+        expect(response.status).to eq(403)
       end
 
       it "should allow project to be forked from an existing project" do
-        project_fork_target.forked?.should_not be_true
+        expect(project_fork_target.forked?).not_to be_true
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
-        response.status.should == 201
+        expect(response.status).to eq(201)
         project_fork_target.reload
-        project_fork_target.forked_from_project.id.should == project_fork_source.id
-        project_fork_target.forked_project_link.should_not be_nil
-        project_fork_target.forked?.should be_true
+        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+        expect(project_fork_target.forked_project_link).not_to be_nil
+        expect(project_fork_target.forked?).to be_true
       end
 
       it "should fail if forked_from project which does not exist" do
         post api("/projects/#{project_fork_target.id}/fork/9999", admin)
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
 
       it "should fail with 409 if already forked" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
         project_fork_target.reload
-        project_fork_target.forked_from_project.id.should == project_fork_source.id
+        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
         post api("/projects/#{project_fork_target.id}/fork/#{new_project_fork_source.id}", admin)
-        response.status.should == 409
+        expect(response.status).to eq(409)
         project_fork_target.reload
-        project_fork_target.forked_from_project.id.should == project_fork_source.id
-        project_fork_target.forked?.should be_true
+        expect(project_fork_target.forked_from_project.id).to eq(project_fork_source.id)
+        expect(project_fork_target.forked?).to be_true
       end
     end
 
@@ -563,26 +563,26 @@ describe API::API, api: true  do
 
       it "shouldn't available for non admin users" do
         delete api("/projects/#{project_fork_target.id}/fork", user)
-        response.status.should == 403
+        expect(response.status).to eq(403)
       end
 
       it "should make forked project unforked" do
         post api("/projects/#{project_fork_target.id}/fork/#{project_fork_source.id}", admin)
         project_fork_target.reload
-        project_fork_target.forked_from_project.should_not be_nil
-        project_fork_target.forked?.should be_true
+        expect(project_fork_target.forked_from_project).not_to be_nil
+        expect(project_fork_target.forked?).to be_true
         delete api("/projects/#{project_fork_target.id}/fork", admin)
-        response.status.should == 200
+        expect(response.status).to eq(200)
         project_fork_target.reload
-        project_fork_target.forked_from_project.should be_nil
-        project_fork_target.forked?.should_not be_true
+        expect(project_fork_target.forked_from_project).to be_nil
+        expect(project_fork_target.forked?).not_to be_true
       end
 
       it "should be idempotent if not forked" do
-        project_fork_target.forked_from_project.should be_nil
+        expect(project_fork_target.forked_from_project).to be_nil
         delete api("/projects/#{project_fork_target.id}/fork", admin)
-        response.status.should == 200
-        project_fork_target.reload.forked_from_project.should be_nil
+        expect(response.status).to eq(200)
+        expect(project_fork_target.reload.forked_from_project).to be_nil
       end
     end
   end
@@ -602,27 +602,27 @@ describe API::API, api: true  do
     context "when unauthenticated" do
       it "should return authentication error" do
         get api("/projects/search/#{query}")
-        response.status.should == 401
+        expect(response.status).to eq(401)
       end
     end
 
     context "when authenticated" do
       it "should return an array of projects" do
         get api("/projects/search/#{query}",user)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.size.should == 6
-        json_response.each {|project| project['name'].should =~ /.*query.*/}
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(6)
+        json_response.each {|project| expect(project['name']).to match(/.*query.*/)}
       end
     end
 
     context "when authenticated as a different user" do
       it "should return matching public projects" do
         get api("/projects/search/#{query}", user2)
-        response.status.should == 200
-        json_response.should be_an Array
-        json_response.size.should == 2
-        json_response.each {|project| project['name'].should =~ /(internal|public) query/}
+        expect(response.status).to eq(200)
+        expect(json_response).to be_an Array
+        expect(json_response.size).to eq(2)
+        json_response.each {|project| expect(project['name']).to match(/(internal|public) query/)}
       end
     end
   end
@@ -636,36 +636,36 @@ describe API::API, api: true  do
         ).twice
 
         delete api("/projects/#{project.id}", user)
-        response.status.should == 200
+        expect(response.status).to eq(200)
       end
 
       it "should not remove a project if not an owner" do
         user3 = create(:user)
         project.team << [user3, :developer]
         delete api("/projects/#{project.id}", user3)
-        response.status.should == 403
+        expect(response.status).to eq(403)
       end
 
       it "should not remove a non existing project" do
         delete api("/projects/1328", user)
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
 
       it "should not remove a project not attached to user" do
         delete api("/projects/#{project.id}", user2)
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
     end
 
     context "when authenticated as admin" do
       it "should remove any existing project" do
         delete api("/projects/#{project.id}", admin)
-        response.status.should == 200
+        expect(response.status).to eq(200)
       end
 
       it "should not remove a non existing project" do
         delete api("/projects/1328", admin)
-        response.status.should == 404
+        expect(response.status).to eq(404)
       end
     end
   end

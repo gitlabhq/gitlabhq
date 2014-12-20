@@ -18,8 +18,8 @@ describe Notes::CreateService do
         @note = Notes::CreateService.new(project, user, opts).execute
       end
 
-      it { @note.should be_valid }
-      it { @note.note.should == 'Awesome comment' }
+      it { expect(@note).to be_valid }
+      it { expect(@note.note).to eq('Awesome comment') }
     end
   end
 end

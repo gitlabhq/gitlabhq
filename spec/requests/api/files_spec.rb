@@ -16,15 +16,15 @@ describe API::API, api: true  do
       }
 
       get api("/projects/#{project.id}/repository/files", user), params
-      response.status.should == 200
-      json_response['file_path'].should == file_path
-      json_response['file_name'].should == 'popen.rb'
-      Base64.decode64(json_response['content']).lines.first.should == "require 'fileutils'\n"
+      expect(response.status).to eq(200)
+      expect(json_response['file_path']).to eq(file_path)
+      expect(json_response['file_name']).to eq('popen.rb')
+      expect(Base64.decode64(json_response['content']).lines.first).to eq("require 'fileutils'\n")
     end
 
     it "should return a 400 bad request if no params given" do
       get api("/projects/#{project.id}/repository/files", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 404 if such file does not exist" do
@@ -34,7 +34,7 @@ describe API::API, api: true  do
       }
 
       get api("/projects/#{project.id}/repository/files", user), params
-      response.status.should == 404
+      expect(response.status).to eq(404)
     end
   end
 
@@ -54,13 +54,13 @@ describe API::API, api: true  do
       )
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
-      response.status.should == 201
-      json_response['file_path'].should == 'newfile.rb'
+      expect(response.status).to eq(201)
+      expect(json_response['file_path']).to eq('newfile.rb')
     end
 
     it "should return a 400 bad request if no params given" do
       post api("/projects/#{project.id}/repository/files", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 400 if satellite fails to create file" do
@@ -69,7 +69,7 @@ describe API::API, api: true  do
       )
 
       post api("/projects/#{project.id}/repository/files", user), valid_params
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 
@@ -89,13 +89,13 @@ describe API::API, api: true  do
       )
 
       put api("/projects/#{project.id}/repository/files", user), valid_params
-      response.status.should == 200
-      json_response['file_path'].should == file_path
+      expect(response.status).to eq(200)
+      expect(json_response['file_path']).to eq(file_path)
     end
 
     it "should return a 400 bad request if no params given" do
       put api("/projects/#{project.id}/repository/files", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 400 if satellite fails to create file" do
@@ -104,7 +104,7 @@ describe API::API, api: true  do
       )
 
       put api("/projects/#{project.id}/repository/files", user), valid_params
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 
@@ -123,13 +123,13 @@ describe API::API, api: true  do
       )
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
-      response.status.should == 200
-      json_response['file_path'].should == file_path
+      expect(response.status).to eq(200)
+      expect(json_response['file_path']).to eq(file_path)
     end
 
     it "should return a 400 bad request if no params given" do
       delete api("/projects/#{project.id}/repository/files", user)
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
 
     it "should return a 400 if satellite fails to create file" do
@@ -138,7 +138,7 @@ describe API::API, api: true  do
       )
 
       delete api("/projects/#{project.id}/repository/files", user), valid_params
-      response.status.should == 400
+      expect(response.status).to eq(400)
     end
   end
 end

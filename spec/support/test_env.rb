@@ -1,4 +1,4 @@
-require 'rspec/mocks'
+require 'rspec/mocks/standalone'
 
 module TestEnv
   extend self
@@ -18,7 +18,7 @@ module TestEnv
   # See gitlab.yml.example test section for paths
   #
   def init(opts = {})
-    RSpec::Mocks::setup(self)
+    RSpec::Mocks.setup
 
     # Disable mailer for spinach tests
     disable_mailer if opts[:mailer] == false
@@ -48,7 +48,7 @@ module TestEnv
   end
 
   def enable_mailer
-    NotificationService.any_instance.unstub(:mailer)
+    allow_any_instance_of(NotificationService).to receive(:mailer).and_call_original
   end
 
   def setup_gitlab_shell

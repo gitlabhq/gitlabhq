@@ -212,8 +212,8 @@ group :development, :test do
   gem 'coveralls', require: false
   # gem 'rails-dev-tweaks'
   gem 'spinach-rails'
-  gem "rspec-rails"
-  gem "capybara", '~> 2.2.1'
+  gem "rspec-rails", '~> 3.0'
+  gem "capybara", '~> 2.4.1'
   gem "pry"
   gem "awesome_print"
   gem "database_cleaner"

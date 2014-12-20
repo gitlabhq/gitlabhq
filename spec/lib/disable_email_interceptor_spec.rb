@@ -6,7 +6,7 @@ describe DisableEmailInterceptor do
   end
 
   it 'should not send emails' do
-    Gitlab.config.gitlab.stub(:email_enabled).and_return(false)
+    allow(Gitlab.config.gitlab).to receive(:email_enabled).and_return(false)
     expect {
       deliver_mail
     }.not_to change(ActionMailer::Base.deliveries, :count)

@@ -12,7 +12,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_true }
+        it { expect(subject.allowed?).to be_true }
       end
     end
 
@@ -22,7 +22,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_false }
+        it { expect(subject.allowed?).to be_false }
       end
     end
 
@@ -35,7 +35,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_false }
+        it { expect(subject.allowed?).to be_false }
       end
     end
 
@@ -43,7 +43,7 @@ describe Gitlab::GitAccess do
       context 'pull code' do
         subject { access.download_access_check(user, project) }
 
-        it { subject.allowed?.should be_false }
+        it { expect(subject.allowed?).to be_false }
       end
     end
 
@@ -55,13 +55,13 @@ describe Gitlab::GitAccess do
           before { key.projects << project }
           subject { access.download_access_check(key, project) }
 
-          it { subject.allowed?.should be_true }
+          it { expect(subject.allowed?).to be_true }
         end
 
         context 'denied' do
           subject { access.download_access_check(key, project) }
 
-          it { subject.allowed?.should be_false }
+          it { expect(subject.allowed?).to be_false }
         end
       end
     end
@@ -138,7 +138,7 @@ describe Gitlab::GitAccess do
           context action do
             subject { access.push_access_check(user, project, changes[action]) }
 
-            it { subject.allowed?.should allowed ? be_true : be_false }
+            it { expect(subject.allowed?).to allowed ? be_true : be_false }
           end
         end
       end

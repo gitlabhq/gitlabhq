@@ -21,7 +21,7 @@ describe NotesFinder do
 
     it 'should find all notes' do
       notes = NotesFinder.new.execute(project, user, params)
-      notes.size.should eq(2)
+      expect(notes.size).to eq(2)
     end
 
     it 'should raise an exception for an invalid target_type' do
@@ -32,7 +32,7 @@ describe NotesFinder do
     it 'filters out old notes' do
       note2.update_attribute(:updated_at, 2.hours.ago)
       notes = NotesFinder.new.execute(project, user, params)
-      notes.should eq([note1])
+      expect(notes).to eq([note1])
     end
   end
 end

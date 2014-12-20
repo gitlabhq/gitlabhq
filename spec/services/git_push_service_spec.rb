@@ -69,7 +69,9 @@ describe GitPushService do
       subject { @push_data[:commits] }
 
       it { should be_an(Array) }
-      it { should have(1).element }
+      it 'has 1 element' do
+        expect(subject.size).to eq(1)
+      end
 
       context "the commit" do
         subject { @push_data[:commits].first }
@@ -95,28 +97,28 @@ describe GitPushService do
       @event = Event.last
     end
 
-    it { @event.should_not be_nil }
-    it { @event.project.should == project }
-    it { @event.action.should == Event::PUSHED }
-    it { @event.data.should == service.push_data }
+    it { expect(@event).not_to be_nil }
+    it { expect(@event.project).to eq(project) }
+    it { expect(@event.action).to eq(Event::PUSHED) }
+    it { expect(@event.data).to eq(service.push_data) }
   end
 
   describe "Web Hooks" do
     context "execute web hooks" do
       it "when pushing a branch for the first time" do
-        project.should_receive(:execute_hooks)
-        project.default_branch.should == "master"
-        project.protected_branches.should_receive(:create).with({ name: "master" })
+        expect(project).to receive(:execute_hooks)
+        expect(project.default_branch).to eq("master")
+        expect(project.protected_branches).to receive(:create).with({ name: "master" })
         service.execute(project, user, @blankrev, 'newrev', 'refs/heads/master')
       end
 
       it "when pushing new commits to existing branch" do
-        project.should_receive(:execute_hooks)
+        expect(project).to receive(:execute_hooks)
         service.execute(project, user, 'oldrev', 'newrev', 'refs/heads/master')
       end
 
       it "when pushing tags" do
-        project.should_not_receive(:execute_hooks)
+        expect(project).not_to receive(:execute_hooks)
         service.execute(project, user, 'newrev', 'newrev', 'refs/tags/v1.0.0')
       end
     end
@@ -138,7 +140,7 @@ describe GitPushService do
     end
 
     it "creates a note if a pushed commit mentions an issue" do
-      Note.should_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
     end
@@ -146,32 +148,32 @@ describe GitPushService do
     it "only creates a cross-reference note if one doesn't already exist" do
       Note.create_cross_reference_note(issue, commit, user, project)
 
-      Note.should_not_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).not_to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
     end
 
     it "defaults to the pushing user if the commit's author is not known" do
       commit.stub(author_name: 'unknown name', author_email: 'unknown@email.com')
-      Note.should_receive(:create_cross_reference_note).with(issue, commit, user, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, user, project)
 
       service.execute(project, user, @oldrev, @newrev, @ref)
     end
 
     it "finds references in the first push to a non-default branch" do
-      project.repository.stub(:commits_between).with(@blankrev, @newrev).and_return([])
-      project.repository.stub(:commits_between).with("master", @newrev).and_return([commit])
+      allow(project.repository).to receive(:commits_between).with(@blankrev, @newrev).and_return([])
+      allow(project.repository).to receive(:commits_between).with("master", @newrev).and_return([commit])
 
-      Note.should_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
 
       service.execute(project, user, @blankrev, @newrev, 'refs/heads/other')
     end
 
     it "finds references in the first push to a default branch" do
-      project.repository.stub(:commits_between).with(@blankrev, @newrev).and_return([])
-      project.repository.stub(:commits).with(@newrev).and_return([commit])
+      allow(project.repository).to receive(:commits_between).with(@blankrev, @newrev).and_return([])
+      allow(project.repository).to receive(:commits).with(@newrev).and_return([commit])
 
-      Note.should_receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
+      expect(Note).to receive(:create_cross_reference_note).with(issue, commit, commit_author, project)
 
       service.execute(project, user, @blankrev, @newrev, 'refs/heads/master')
     end
@@ -197,7 +199,7 @@ describe GitPushService do
     it "closes issues with commit messages" do
       service.execute(project, user, @oldrev, @newrev, @ref)
 
-      Issue.find(issue.id).should be_closed
+      expect(Issue.find(issue.id)).to be_closed
     end
 
     it "doesn't create cross-reference notes for a closing reference" do
@@ -214,7 +216,7 @@ describe GitPushService do
         service.execute(project, user, @oldrev, @newrev, 'refs/heads/hurf')
       }.not_to change { Note.where(project_id: project.id, system: true).count }
 
-      Issue.find(issue.id).should be_opened
+      expect(Issue.find(issue.id)).to be_opened
     end
   end
 end

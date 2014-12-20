@@ -13,7 +13,7 @@ describe Gitlab::GitAccessWiki do
 
     subject { access.push_access_check(user, project, changes) }
 
-    it { subject.allowed?.should be_true }
+    it { expect(subject.allowed?).to be_true }
   end
 
   def changes

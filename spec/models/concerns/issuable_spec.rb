@@ -20,47 +20,47 @@ describe Issue, "Issuable" do
   end
 
   describe "Scope" do
-    it { described_class.should respond_to(:opened) }
-    it { described_class.should respond_to(:closed) }
-    it { described_class.should respond_to(:assigned) }
+    it { expect(described_class).to respond_to(:opened) }
+    it { expect(described_class).to respond_to(:closed) }
+    it { expect(described_class).to respond_to(:assigned) }
   end
 
   describe ".search" do
     let!(:searchable_issue) { create(:issue, title: "Searchable issue") }
 
     it "matches by title" do
-      described_class.search('able').should == [searchable_issue]
+      expect(described_class.search('able')).to eq([searchable_issue])
     end
   end
 
   describe "#today?" do
     it "returns true when created today" do
       # Avoid timezone differences and just return exactly what we want
-      Date.stub(:today).and_return(issue.created_at.to_date)
-      issue.today?.should be_true
+      allow(Date).to receive(:today).and_return(issue.created_at.to_date)
+      expect(issue.today?).to be_true
     end
 
     it "returns false when not created today" do
-      Date.stub(:today).and_return(Date.yesterday)
-      issue.today?.should be_false
+      allow(Date).to receive(:today).and_return(Date.yesterday)
+      expect(issue.today?).to be_false
     end
   end
 
   describe "#new?" do
     it "returns true when created today and record hasn't been updated" do
-      issue.stub(:today?).and_return(true)
-      issue.new?.should be_true
+      allow(issue).to receive(:today?).and_return(true)
+      expect(issue.new?).to be_true
     end
 
     it "returns false when not created today" do
-      issue.stub(:today?).and_return(false)
-      issue.new?.should be_false
+      allow(issue).to receive(:today?).and_return(false)
+      expect(issue.new?).to be_false
     end
 
     it "returns false when record has been updated" do
-      issue.stub(:today?).and_return(true)
+      allow(issue).to receive(:today?).and_return(true)
       issue.touch
-      issue.new?.should be_false
+      expect(issue.new?).to be_false
     end
   end
 end

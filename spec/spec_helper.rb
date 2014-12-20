@@ -41,4 +41,10 @@ RSpec.configure do |config|
   config.before(:suite) do
     TestEnv.init
   end
+
+  config.expect_with :rspec do |c|
+    c.syntax = :expect
+  end
+
+  config.infer_spec_type_from_file_location!
 end
