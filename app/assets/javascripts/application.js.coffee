@@ -182,9 +182,6 @@ $ ->
       toggleClass('fa fa-chevron-up')
     $(@).closest(".diff-file").find(".notes_holder").toggle()
     e.preventDefault()
-    
-  # RTL Support in wiki pages
-  $('.wiki').find('*').not('li').attr('dir', 'auto');
 
   $(document).on "click", '.js-confirm-danger', (e) ->
     e.preventDefault()

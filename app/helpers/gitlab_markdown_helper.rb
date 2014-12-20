@@ -48,7 +48,9 @@ module GitlabMarkdownHelper
                       space_after_headers: true,
                       superscript: true)
     end
-    @markdown.render(text).html_safe
+    html_doc = Nokogiri::HTML(@markdown.render(text))
+    html_doc.css(':not(li)').each { |dom| dom[:dir] = :auto }
+    html_doc.to_html.html_safe
   end
 
   # Return the first line of +text+, up to +max_chars+, after parsing the line
