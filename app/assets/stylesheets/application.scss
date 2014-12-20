@@ -63,6 +63,6 @@
 */
 @import "semantic-ui/modules/sidebar";
 
-* {
+*[dir='auto'] {
 	font-family: 'Tahoma' !important;
 }
