@@ -1,16 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Dashboard"
-  %body{class: "#{app_theme} sidenav application", :'data-page' => body_data_page }
+  %body{class: "#{app_theme} application", :'data-page' => body_data_page }
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "Dashboard"
-    .page-with-sidebar
-      .sidebar-wrapper
-        = render 'layouts/nav/dashboard'
-      .content-wrapper
-        .container-fluid
-          .content
-            = render "layouts/flash"
-            .clearfix
-              = yield
-    = yield :embedded_scripts
+    = render 'layouts/page', sidebar: 'layouts/nav/dashboard'

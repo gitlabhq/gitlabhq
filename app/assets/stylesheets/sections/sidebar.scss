@@ -1,46 +1,3 @@
-body.sidenav {
-  padding: 0;
-
-  &.ui_mars {
-    .app_logo {
-      background-color: #24272D;
-    }
-  }
-
-  &.ui_color {
-    .app_logo {
-      background-color: #325;
-    }
-  }
-
-  &.ui_basic {
-    .app_logo {
-      background-color: #DDD;
-    }
-  }
-
-  &.ui_modern {
-    .app_logo {
-      background-color: #017855;
-    }
-  }
-
-  &.ui_gray {
-    .app_logo {
-      background-color: #222;
-    }
-  }
-
-  header .container {
-    width: 100% !important;
-    padding-left: 0px;
-
-    .separator {
-      display: none;
-    }
-  }
-}
-
 .page-with-sidebar {
   background: #F5F5F5;
 }
@@ -164,9 +121,4 @@ body.sidenav {
     padding: 20px;
     border-left: 1px solid #EAEAEA;
   }
-}
-
-/** TODO: REMOVE **/
-.profiler-results {
-  display: none;
 }

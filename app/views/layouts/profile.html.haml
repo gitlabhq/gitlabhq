@@ -1,16 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: "Profile"
-  %body{class: "#{app_theme} sidenav profile", :'data-page' => body_data_page}
+  %body{class: "#{app_theme} profile", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "Profile"
-    .page-with-sidebar
-      .sidebar-wrapper
-        = render 'layouts/nav/profile'
-      .content-wrapper
-        .container-fluid
-          .content
-            = render "layouts/flash"
-            .clearfix
-              = yield
-    = yield :embedded_scripts
+    = render 'layouts/page', sidebar: 'layouts/nav/profile'

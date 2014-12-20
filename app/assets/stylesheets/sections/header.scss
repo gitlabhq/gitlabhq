@@ -84,6 +84,11 @@ header {
 
   z-index: 10;
 
+  .container {
+    width: 100% !important;
+    padding-left: 0px;
+  }
+
   /**
    *
    * Logo holder
@@ -229,21 +234,6 @@ header {
       }
       color: #fff;
     }
-  }
-
-  .app_logo {
-    .separator {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  .separator {
-    float: left;
-    height: 46px;
-    width: 2px;
-    margin-left: 10px;
-    margin-right: 10px;
   }
 }
 

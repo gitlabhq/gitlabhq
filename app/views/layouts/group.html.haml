@@ -4,13 +4,4 @@
   %body{class: "#{app_theme} application sidenav", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: @group.name
-    .page-with-sidebar
-      .sidebar-wrapper
-        = render 'layouts/nav/group'
-      .content-wrapper
-        .container-fluid
-          .content
-            = render "layouts/flash"
-            .clearfix
-              = yield
-    = yield :embedded_scripts
+    = render 'layouts/page', sidebar: 'layouts/nav/group'

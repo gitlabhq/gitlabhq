@@ -1,15 +1,7 @@
 !!! 5
 %html{ lang: "en"}
   = render "layouts/head", title: @project.name_with_namespace
-  %body{class: "#{app_theme} sidenav application", :'data-page' => body_data_page}
+  %body{class: "#{app_theme} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/public_head_panel", title: project_title(@project)
-    .page-with-sidebar
-      .sidebar-wrapper
-        = render 'layouts/nav/project'
-      .content-wrapper
-        .container-fluid
-          .content
-            = render "layouts/flash"
-            = yield
-    = yield :embedded_scripts
+    = render 'layouts/page', sidebar: 'layouts/nav/project'

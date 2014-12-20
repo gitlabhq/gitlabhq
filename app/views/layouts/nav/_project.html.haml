@@ -61,5 +61,6 @@
         %i.fa.fa-cogs
         Settings
         %i.fa.fa-angle-down
-  - if defined?(settings) && settings
+
+  - if @project_settings_nav
     = render 'projects/settings_nav'
