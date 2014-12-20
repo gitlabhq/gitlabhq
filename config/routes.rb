@@ -197,6 +197,7 @@ Gitlab::Application.routes.draw do
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
       resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
+        # Cannot be GET to differentiate from GET paths that end in preview.
         post :preview, on: :member
       end
       resources :new_tree,  only: [:show, :update], constraints: {id: /.+/}, path: 'new'

@@ -430,6 +430,26 @@ describe Projects::TreeController, "routing" do
   end
 end
 
+describe Projects::EditTreeController, 'routing' do
+  it 'to #show' do
+    get('/gitlab/gitlabhq/edit/master/app/models/project.rb').should(
+      route_to('projects/edit_tree#show',
+               project_id: 'gitlab/gitlabhq',
+               id: 'master/app/models/project.rb'))
+    get('/gitlab/gitlabhq/edit/master/app/models/project.rb/preview').should(
+      route_to('projects/edit_tree#show',
+               project_id: 'gitlab/gitlabhq',
+               id: 'master/app/models/project.rb/preview'))
+  end
+
+  it 'to #preview' do
+    post('/gitlab/gitlabhq/edit/master/app/models/project.rb/preview').should(
+      route_to('projects/edit_tree#preview',
+               project_id: 'gitlab/gitlabhq',
+               id: 'master/app/models/project.rb'))
+  end
+end
+
 # project_compare_index GET    /:project_id/compare(.:format)             compare#index {id: /[^\/]+/, project_id: /[^\/]+/}
 #                       POST   /:project_id/compare(.:format)             compare#create {id: /[^\/]+/, project_id: /[^\/]+/}
 #       project_compare        /:project_id/compare/:from...:to(.:format) compare#show {from: /.+/, to: /.+/, id: /[^\/]+/, project_id: /[^\/]+/}
