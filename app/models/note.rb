@@ -502,6 +502,6 @@ class Note < ActiveRecord::Base
   end
 
   def editable?
-    !system
+    !read_attribute(:system)
   end
 end

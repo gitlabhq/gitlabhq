@@ -24,6 +24,51 @@ $(document).ready ->
     "opacity": 0
     "display": "none"
 
+  # Preview button
+  $(document).off "click", ".js-md-preview-button"
+  $(document).on "click", ".js-md-preview-button", (e) ->
+    ###
+    Shows the Markdown preview.
+
+    Lets the server render GFM into Html and displays it.
+    ###
+    e.preventDefault()
+    form = $(this).closest("form")
+    # toggle tabs
+    form.find(".js-md-write-button").parent().removeClass "active"
+    form.find(".js-md-preview-button").parent().addClass "active"
+
+    # toggle content
+    form.find(".md-write-holder").hide()
+    form.find(".md-preview-holder").show()
+
+    preview = form.find(".js-md-preview")
+    mdText = form.find(".markdown-area").val()
+    if mdText.trim().length is 0
+      preview.text "Nothing to preview."
+    else
+      preview.text "Loading..."
+      $.get($(this).data("url"),
+        md_text: mdText
+      ).success (previewData) ->
+        preview.html previewData
+
+  # Write button
+  $(document).off "click", ".js-md-write-button"
+  $(document).on "click", ".js-md-write-button", (e) ->
+    ###
+    Shows the Markdown textarea.
+    ###
+    e.preventDefault()
+    form = $(this).closest("form")
+    # toggle tabs
+    form.find(".js-md-write-button").parent().addClass "active"
+    form.find(".js-md-preview-button").parent().removeClass "active"
+
+    # toggle content
+    form.find(".md-write-holder").show()
+    form.find(".md-preview-holder").hide()
+
   dropzone = $(".div-dropzone").dropzone(
     url: project_image_path_upload
     dictDefaultMessage: ""

@@ -44,6 +44,9 @@ class ProjectsController < ApplicationController
 
   def transfer
     ::Projects::TransferService.new(project, current_user, project_params).execute
+    if @project.errors[:namespace_id].present?
+      flash[:alert] = @project.errors[:namespace_id].first
+    end
   end
 
   def show
@@ -145,6 +148,10 @@ class ProjectsController < ApplicationController
     current_user.toggle_star(@project)
     @project.reload
     render json: { star_count: @project.star_count }
+  end
+
+  def markdown_preview
+    render text: view_context.markdown(params[:md_text])
   end
 
   private

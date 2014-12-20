@@ -100,9 +100,9 @@ List any major changes here, so the user is aware of them before starting to upg
 - Web server changes
 - File structure changes
 
-#### 1. Make backup
+#### 1. Stop server
 
-#### 2. Stop server
+#### 2. Make backup
 
 #### 3. Do users need to update dependencies like `git`?
 
