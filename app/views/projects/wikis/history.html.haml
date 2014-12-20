@@ -18,9 +18,9 @@
         %td
           = link_to project_wiki_path(@project, @page, version_id: commit.id) do
             = truncate_sha(commit.id)
-        %td
+        %td{ dir: :auto }
           = commit.author.name
-        %td
+        %td{ dir: :auto }
           = commit.message
         %td
           #{time_ago_with_tooltip(version.date)}
