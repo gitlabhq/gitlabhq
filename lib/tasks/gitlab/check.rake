@@ -585,10 +585,6 @@ namespace :gitlab do
     def gitlab_shell_patch_version
       Gitlab::Shell.version_required.split('.')[2].to_i
     end
-
-    def has_gitlab_shell3?
-      gitlab_shell_version.try(:start_with?, "v3.")
-    end
   end
 
 
