@@ -1,9 +1,19 @@
+- if @group.persisted?
+  .form-group
+    = f.label :name, class: 'control-label' do
+      Group name
+    .col-sm-10
+      = f.text_field :name, placeholder: 'open-source', class: 'form-control'
+
 .form-group
-  = f.label :name, class: 'control-label' do
-    Group name
+  = f.label :path, class: 'control-label' do
+    Group path
   .col-sm-10
-    = f.text_field :name, placeholder: 'Example Group', class: 'form-control',
-        autofocus: local_assigns[:autofocus] || false
+    .input-group
+      .input-group-addon
+        = root_url
+      = f.text_field :path, placeholder: 'open-source', class: 'form-control',
+          autofocus: local_assigns[:autofocus] || false
 
 .form-group.group-description-holder
   = f.label :description, 'Details', class: 'control-label'
