@@ -48,7 +48,7 @@
         - else
           = link_to 'Close', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-block btn-close", title: "Close Issue"
 
-        = link_to edit_project_issue_path(@project, @issue), class: "btn btn-block" do
+        = link_to edit_project_issue_path(@project, @issue), class: "btn btn-block issuable-edit" do
           %i.fa.fa-pencil-square-o
           Edit
     .clearfix

@@ -26,9 +26,9 @@ class @MergeRequest
 
   initContextWidget: ->
     $('.edit-merge_request.inline-update input[type="submit"]').hide()
-    $(".issue-box .inline-update").on "change", "select", ->
+    $(".context .inline-update").on "change", "select", ->
       $(this).submit()
-    $(".issue-box .inline-update").on "change", "#merge_request_assignee_id", ->
+    $(".context .inline-update").on "change", "#merge_request_assignee_id", ->
       $(this).submit()
 
   initMergeWidget: ->
