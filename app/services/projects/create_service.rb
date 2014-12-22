@@ -13,8 +13,15 @@ module Projects
       end
 
       # Set project name from path
-      unless @project.name.present?
+      if @project.name.present? && @project.path.present?
+        # if both name and path set - everything is ok
+      elsif @project.path.present?
+        # Set project name from path
         @project.name = @project.path.dup
+      elsif @project.name.present?
+        # For compatibility - set path from name
+        # TODO: remove this in 8.0
+        @project.path = @project.name.dup.parameterize
       end
 
       # get namespace id
