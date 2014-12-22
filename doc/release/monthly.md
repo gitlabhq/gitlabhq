@@ -224,8 +224,8 @@ It is important to do this as soon as possible, so we can catch any errors befor
 - Create WIP MR for adding MVP to MVP page on website
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 - Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
-- Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
-- After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
+- Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
+- Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
 
 ### **4. Create a regressions issue**
 
