@@ -25,11 +25,11 @@ module API
         sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         @projects = case params["order_by"]
-                      when 'id' then @projects.reorder("id #{sort}")
-                      when 'name' then @projects.reorder("name #{sort}")
-                      when 'created_at' then @projects.reorder("created_at #{sort}")
-                      when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
-                      else @projects
+                    when 'id' then @projects.reorder("id #{sort}")
+                    when 'name' then @projects.reorder("name #{sort}")
+                    when 'created_at' then @projects.reorder("created_at #{sort}")
+                    when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
+                    else @projects
                     end
 
         # If the archived parameter is passed, limit results accordingly
@@ -49,11 +49,11 @@ module API
         sort = params[:sort] == 'desc' ? 'desc' : 'asc'
         @projects = current_user.owned_projects
         @projects = case params["order_by"]
-                      when 'id' then @projects.reorder("id #{sort}")
-                      when 'name' then @projects.reorder("name #{sort}")
-                      when 'created_at' then @projects.reorder("created_at #{sort}")
-                      when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
-                      else @projects
+                    when 'id' then @projects.reorder("id #{sort}")
+                    when 'name' then @projects.reorder("name #{sort}")
+                    when 'created_at' then @projects.reorder("created_at #{sort}")
+                    when 'last_activity_at' then @projects.reorder("last_activity_at #{sort}")
+                    else @projects
                     end
 
         @projects = paginate @projects
@@ -69,11 +69,11 @@ module API
         sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         @projects = case params["order_by"]
-                      when 'id' then Project.order("id #{sort}")
-                      when 'name' then Project.order("name #{sort}")
-                      when 'created_at' then Project.order("created_at #{sort}")
-                      when 'last_activity_at' then Project.order("last_activity_at #{sort}")
-                      else Project
+                    when 'id' then Project.order("id #{sort}")
+                    when 'name' then Project.order("name #{sort}")
+                    when 'created_at' then Project.order("created_at #{sort}")
+                    when 'last_activity_at' then Project.order("last_activity_at #{sort}")
+                    else Project
                     end
 
         @projects = paginate @projects
@@ -259,11 +259,11 @@ module API
         sort = params[:sort] == 'desc' ? 'desc' : 'asc'
 
         projects = case params["order_by"]
-                     when 'id' then projects.order("id #{sort}")
-                     when 'name' then projects.order("name #{sort}")
-                     when 'created_at' then projects.order("created_at #{sort}")
-                     when 'last_activity_at' then projects.order("last_activity_at #{sort}")
-                     else projects
+                   when 'id' then projects.order("id #{sort}")
+                   when 'name' then projects.order("name #{sort}")
+                   when 'created_at' then projects.order("created_at #{sort}")
+                   when 'last_activity_at' then projects.order("last_activity_at #{sort}")
+                   else projects
                    end
 
         present paginate(projects), with: Entities::Project
