@@ -22,7 +22,7 @@ class Spinach::Features::AdminGroups < Spinach::FeatureSteps
   end
 
   step 'submit form with new group info' do
-    fill_in 'group_name', with: 'gitlab'
+    fill_in 'group_path', with: 'gitlab'
     fill_in 'group_description', with: 'Group description'
     click_button "Create group"
   end
