@@ -12,12 +12,10 @@ module Projects
         @project.visibility_level = default_features.visibility_level
       end
 
-      # Parametrize path for project
-      #
-      # Ex.
-      #  'GitLab HQ'.parameterize => "gitlab-hq"
-      #
-      @project.path = @project.name.dup.parameterize unless @project.path.present?
+      # Set project name from path
+      unless @project.name.present?
+        @project.name = @project.path.dup
+      end
 
       # get namespace id
       namespace_id = params[:namespace_id]
