@@ -66,7 +66,14 @@ module TreeHelper
   end
 
   def edit_blob_link(project, ref, path, options = {})
-    if project.repository.blob_at(ref, path).text?
+    blob =
+      begin
+        project.repository.blob_at(ref, path)
+      rescue
+        nil
+      end
+
+    if blob && blob.text?
       text = 'Edit'
       after = options[:after] || ''
       from_mr = options[:from_merge_request_id]
