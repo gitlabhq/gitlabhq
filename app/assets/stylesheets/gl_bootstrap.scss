@@ -148,6 +148,10 @@ $list-group-active-bg: $bg_primary;
   color: #666;
 }
 
+.nav-compact > li > a {
+  padding: 6px 12px;
+}
+
 .nav-small > li > a {
   padding: 3px 5px;
   font-size: 12px;
