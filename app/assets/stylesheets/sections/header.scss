@@ -93,12 +93,10 @@ header {
    */
   .app_logo {
     float: left;
-    margin-right: 9px;
 
     a {
       float: left;
-      padding: 0px;
-      margin: 0 6px;
+      padding: 0 6px;
 
       h1 {
         margin: 0;
@@ -125,7 +123,7 @@ header {
     position: relative;
     float: left;
     margin: 0;
-    margin-left: 5px;
+    margin-left: 14px;
     @include header-font;
     @include str-truncated(37%);
   }
@@ -233,19 +231,12 @@ header {
     }
   }
 
-  .app_logo {
-    .separator {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
   .separator {
     float: left;
     height: 46px;
     width: 2px;
-    margin-left: 10px;
-    margin-right: 10px;
+    margin-left: 0;
+    margin-right: 0;
   }
 }
 
