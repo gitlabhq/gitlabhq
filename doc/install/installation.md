@@ -294,9 +294,9 @@ GitLab Shell is an SSH access and repository management software developed speci
 
     # When done you see 'Administrator account created:'
 
-**Note:** You can set the Administrator password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD`, eg.:
+**Note:** You can set the Administrator/root password by supplying it in environmental variable `GITLAB_ROOT_PASSWORD` as seen below. If you don't set the password (and it is set to the default one) please wait with exposing GitLab to the public internet until the installation is done and you've logged into the server the first time. During the first login you'll be forced to change the default password.
 
-    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=newpassword
+    sudo -u git -H bundle exec rake gitlab:setup RAILS_ENV=production GITLAB_ROOT_PASSWORD=yourpassword
 
 ### Install Init Script
 
@@ -388,7 +388,7 @@ Visit YOUR_SERVER in your web browser for your first GitLab login. The setup has
     root
     5iveL!fe
 
-**Important Note:** Please login to the server before exposing it to the public internet. On login you'll be prompted to change the password.
+**Important Note:** On login you'll be prompted to change the password.
 
 **Enjoy!**
 
