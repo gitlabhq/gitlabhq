@@ -46,7 +46,7 @@
       Created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
 
   %h4.title
-    = gfm escape_once(@issue.title)
+    = escape_gfm(@issue.title)
 
   - if @issue.description.present?
     .description

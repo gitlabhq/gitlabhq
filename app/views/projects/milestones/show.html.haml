@@ -33,7 +33,7 @@
       = @milestone.expires_at
 
   %h4.title
-    = gfm escape_once(@milestone.title)
+    = escape_gfm(@milestone.title)
 
   - if @milestone.description.present?
     .description

@@ -207,6 +207,11 @@ module GitlabMarkdownHelper
     @ref ? @ref : "master"
   end
 
+  # Escape HTML and then interpret references.
+  def escape_gfm(s)
+    gfm(escape_once(s))
+  end
+
   private
 
   # Return +text+, truncated to +max_chars+ characters, excluding any HTML

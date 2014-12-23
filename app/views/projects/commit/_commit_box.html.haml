@@ -52,7 +52,7 @@
 
 .commit-box
   %h3.commit-title
-    = gfm escape_once(@commit.title)
+    = escape_gfm(@commit.title)
   - if @commit.description.present?
     %pre.commit-description
       = preserve(gfm(escape_once(@commit.description)))
