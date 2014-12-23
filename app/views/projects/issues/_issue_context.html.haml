@@ -1,6 +1,6 @@
 = form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
   .row
-    .col-sm-6
+    .col-sm-4
       %strong.append-right-10
         Assignee:
 
@@ -11,7 +11,14 @@
       - else
         None
 
-    .col-sm-6.text-right
+    .col-sm-4.text-center
+      %strong.append-right-10
+        Labels:
+
+      - if can?(current_user, :modify_issue, @issue)
+        = f.collection_select :label_ids, @project.labels.all, :id, :name, { selected: @issue.label_ids }, multiple: true, class: 'select2 labels-display-none js-open-labels-dropdown'
+
+    .col-sm-4.text-right
       %strong.append-right-10
         Milestone:
       - if can?(current_user, :modify_issue, @issue)

@@ -1,2 +1,3 @@
 - if params[:merge_request_context]
   $('.issue-box .context').effect('highlight');
+  $('.merge-request-show-labels').empty().append(" #{ escape_javascript(render partial: "labels" ) }")

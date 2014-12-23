@@ -1,0 +1,2 @@
+- @merge_request.labels.each do |label|
+  = render partial: 'shared/colored_label_with_close', locals: {label: label, path: project_merge_requests_path(@project, label_name: label.name)}

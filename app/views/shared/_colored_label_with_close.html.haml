@@ -1,0 +1,6 @@
+%span.label.color-label{style: "background:#{label_color(label)}"}
+  = link_to label.name, class: "label-choice-close js-remove-label", remote: true, label_id: label.id, label_name: label.name do
+    %i.fa.fa-remove{style: "color:#{text_color(label_color(label))}"}
+  = link_to path do
+    %span.label{style: "color:#{text_color(label_color(label))}"}
+      = label.title

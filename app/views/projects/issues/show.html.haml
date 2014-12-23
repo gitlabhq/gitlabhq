@@ -72,8 +72,6 @@
     = link_to_member(@project, participant, name: false, size: 24)
 
   .issue-show-labels.pull-right
-    - @issue.labels.each do |label|
-      = link_to project_issues_path(@project, label_name: label.name) do
-        = render_colored_label(label)
+    = render 'labels'
 
 .voting_notes#notes= render "projects/notes/notes_with_form"

@@ -1,5 +1,5 @@
 %li{id: dom_id(label)}
-  = render_colored_label(label)
+  = render partial: 'shared/colored_label', locals: {label: label}
   .pull-right
     %strong.append-right-20
       = link_to project_issues_path(@project, label_name: label.name) do

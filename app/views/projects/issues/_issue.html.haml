@@ -34,7 +34,7 @@
     .issue-labels
       - issue.labels.each do |label|
         = link_to project_issues_path(issue.project, label_name: label.name) do
-          = render_colored_label(label)
+          = render partial: 'shared/colored_label', locals: {label: label}
 
   .issue-actions
     - if can? current_user, :modify_issue, issue

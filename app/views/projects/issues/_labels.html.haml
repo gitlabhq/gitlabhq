@@ -1,0 +1,2 @@
+- @issue.labels.each do |label|
+  = render partial: 'shared/colored_label_with_close', locals: {label: label, path: project_issues_path(@project, label_name: label.name)}
