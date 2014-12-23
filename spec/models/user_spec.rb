@@ -207,20 +207,6 @@ describe User do
     end
   end
 
-  describe 'filter' do
-    before do
-      User.delete_all
-      @user = create :user
-      @admin = create :user, admin: true
-      @blocked = create :user, state: :blocked
-    end
-
-    it { User.filter("admins").should == [@admin] }
-    it { User.filter("blocked").should == [@blocked] }
-    it { User.filter("wop").should include(@user, @admin, @blocked) }
-    it { User.filter(nil).should include(@user, @admin) }
-  end
-
   describe :not_in_project do
     before do
       User.delete_all

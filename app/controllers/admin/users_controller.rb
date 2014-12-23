@@ -2,7 +2,7 @@ class Admin::UsersController < Admin::ApplicationController
   before_filter :user, only: [:show, :edit, :update, :destroy]
 
   def index
-    @users = User.filter(params[:filter])
+    @users = UsersFinder.new.execute(params[:filter])
     @users = @users.search(params[:name]) if params[:name].present?
     @users = @users.sort(@sort = params[:sort])
     @users = @users.alphabetically.page(params[:page])

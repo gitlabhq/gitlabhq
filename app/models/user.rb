@@ -211,16 +211,6 @@ class User < ActiveRecord::Base
         User.where(name: name).first
     end
 
-    def filter(filter_name)
-      case filter_name
-      when "admins"; self.admins
-      when "blocked"; self.blocked
-      when "wop"; self.without_projects
-      else
-        self.active
-      end
-    end
-
     def search(query)
       where("lower(name) LIKE :query OR lower(email) LIKE :query OR lower(username) LIKE :query", query: "%#{query.downcase}%")
     end
