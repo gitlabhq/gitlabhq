@@ -22,7 +22,25 @@ You can override this version check with the `--oldpackage` option:
 rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 ```
 
-## GitLab 7.6 Enterprise Edition
+### GitLab 7.6.2 Enterprise Edition
+
+- 7.6.2-ee/CI 5.3.0 - Ubuntu 14.04 64-bit [gitlab_7.6.2-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/53929136ec14551c8bfa20d47ec02ff54049894b/ubuntu-14.04/gitlab_7.6.2-ee.omnibus.5.3.0.ci-1_amd64.deb)
++ SHA256: 7160635026fa793da8e4721a4fb129110b70010470a9caf4ce2737a00868cb17
+
+- 7.6.2-ee/CI 5.3.0 - Ubuntu 12.04 64-bit [gitlab_7.6.2-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/7e461508f04d8dc1ec777b961dc280992b448e33/ubuntu-12.04/gitlab_7.6.2-ee.omnibus.5.3.0.ci-1_amd64.deb)
++ SHA256: 9604994b16eac2f165d651f9507dfa6dba8f3a16f1f9a80227f5e5781ba9712f
+
+- 7.6.2-ee/CI 5.3.0 - Debian 7 64-bit [gitlab_7.6.2-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/df3858e527f4f471b330d9cf94272ca1783692ed/debian-7.7/gitlab_7.6.2-ee.omnibus.5.3.0.ci-1_amd64.deb)
++ SHA256: 30e6a86c74604d19bc0a1dc12266b2c759aa6563d643d0a14dcef7d70cdf2d37
+
+- 7.6.2-ee/CI 5.3.0 - CentOS 6 64-bit [gitlab-7.6.2_ee.omnibus.5.3.0.ci-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/0954d8fcb53b141396af476bd0183f133d09ba80/centos-6.6/gitlab-7.6.2_ee.omnibus.5.3.0.ci-1.el6.x86_64.rpm)
++ SHA256: 753aee361de05799fd38ce05a42ca593ff0524419a6493c2f14cb35c225b5653
+
+- 7.6.2-ee/CI 5.3.0 - CentOS 7 64-bit [gitlab-7.6.2_ee.omnibus.5.3.0.ci-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/ab1e28b5dbf63b6416fad2797d2682f69246758a/centos-7.0.1406/gitlab-7.6.2_ee.omnibus.5.3.0.ci-1.el7.x86_64.rpm)
++ SHA256: 2aa4be6c97b93010a115356fe1bf74626838eb658124217a68809ba1b5435d98
+
+
+### GitLab 7.6.0 Enterprise Edition
 
 - 7.6.0-ee/CI 5.3.0 - Ubuntu 14.04 64-bit [gitlab_7.6.0-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/fadbb1570f35a76e8b57435bb9f3bfc321b59956/ubuntu-14.04/gitlab_7.6.0-ee.omnibus.5.3.0.ci-1_amd64.deb)
     + SHA256: 72e961070688763391aafd28a94ca893b74a2f612b64f9e2d5c7aa3b972ee6ed

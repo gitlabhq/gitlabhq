@@ -1,3 +1,9 @@
+v 7.6.2
+  - Fix failing migrations for MySQL, LDAP
+
+v 7.6.1
+  - No changes
+
 v 7.6.0
   - Added Audit events related to membership changes for groups and projects
   - Added option to attempt a rebase before merging merge request
