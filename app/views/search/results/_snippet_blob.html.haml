@@ -43,7 +43,7 @@
               - snippet_blob[:snippet_chunks].each do |snippet|
                 - unless snippet[:data].empty?
                   - snippet[:data].lines.to_a.size.times do |index|
-                    - offset = defined?(snippet[:start_line]) ? snippet[:start_line] : 1
+                    - offset = snippet[:start_line] || 1
                     - i = index + offset
                     = link_to snippet_path+"#L#{i}", id: "L#{i}", rel: "#L#{i}" do
                       %i.fa.fa-link
