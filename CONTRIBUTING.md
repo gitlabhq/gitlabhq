@@ -118,6 +118,7 @@ Please ensure you support the feature you contribute through all of these steps.
 1. Can merge without problems (if not please merge `master`, never rebase commits pushed to the remote server)
 1. Does not break any existing functionality
 1. Fixes one specific issue or implements one specific feature (do not combine things, send separate merge requests if needed)
+1. Migrations should do only one thing (eg: either create a table, move data to a new table or remove an old table) to aid retrying on failure
 1. Keeps the GitLab code base clean and well structured
 1. Contains functionality we think other users will benefit from too
 1. Doesn't add configuration options since they complicate future changes
