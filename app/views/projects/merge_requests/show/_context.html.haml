@@ -1,6 +1,6 @@
 = form_for [@project, @merge_request], remote: true, html: {class: 'edit-merge_request inline-update'} do |f|
   %div.prepend-top-20
-    %strong
+    %p
       Assignee:
 
     - if can?(current_user, :modify_merge_request, @merge_request)
@@ -11,7 +11,7 @@
       None
 
   %div.prepend-top-20
-    %strong
+    %p
       Milestone:
     - if can?(current_user, :modify_merge_request, @merge_request)
       = f.select(:milestone_id, milestone_options(@merge_request), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})

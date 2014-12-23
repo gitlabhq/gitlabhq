@@ -1,6 +1,6 @@
 = form_for [@project, @issue], remote: true, html: {class: 'edit-issue inline-update'} do |f|
   %div.prepend-top-20
-    %strong
+    %p
       Assignee:
 
     - if can?(current_user, :modify_issue, @issue)
@@ -11,7 +11,7 @@
       None
 
   %div.prepend-top-20
-    %strong
+    %p
       Milestone:
     - if can?(current_user, :modify_issue, @issue)
       = f.select(:milestone_id, milestone_options(@issue), { include_blank: "Select milestone" }, {class: 'select2 select2-compact js-select2 js-milestone'})
