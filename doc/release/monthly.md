@@ -238,13 +238,17 @@ The release manager will comment here about the plans for patch releases.
 
 Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
 
-### **4. Tweet**
+### **5. Tweet**
 
 Tweet about the RC release:
 
 > GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 # **1 workdays before release - Preparation**
+
+### **0. Doublecheck blog post**
+
+Doublecheck the everyone has been mentioned in the blog post.
 
 ### **1. Pre QA merge**
 
