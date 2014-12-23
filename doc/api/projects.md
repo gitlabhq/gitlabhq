@@ -284,6 +284,31 @@ Parameters:
 - `visibility_level` (optional)
 - `import_url` (optional)
 
+### Edit project
+
+Updates an existing project
+
+```
+PUT /projects/:id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `name` (optional) - project name
+- `path` (optional) - repository name for project
+- `description` (optional) - short project description
+- `default_branch` (optional)
+- `issues_enabled` (optional)
+- `merge_requests_enabled` (optional)
+- `wiki_enabled` (optional)
+- `snippets_enabled` (optional)
+- `public` (optional) - if `true` same as setting visibility_level = 20
+- `visibility_level` (optional)
+
+On success, method returns 200 with the updated project. If parameters are 
+invalid, 400 is returned.
+
 ### Fork project
 
 Forks a project into the user namespace of the authenticated user.
