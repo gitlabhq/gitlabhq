@@ -14,6 +14,7 @@ SELECT provider, extern_uid, id FROM users
 WHERE provider IS NOT NULL
 eos
 
+    remove_index :users, ["extern_uid", "provider"]
     remove_column :users, :extern_uid
     remove_column :users, :provider
   end
@@ -34,5 +35,6 @@ eos
       end
 
     drop_table :identities
+    add_index "users", ["extern_uid", "provider"], name: "index_users_on_extern_uid_and_provider", unique: true, using: :btree
   end
 end
