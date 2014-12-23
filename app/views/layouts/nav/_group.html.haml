@@ -13,13 +13,13 @@
       %i.fa.fa-exclamation-circle
       Issues
       - if current_user
-        %span.count= current_user.assigned_issues.opened.of_group(@group).count
+        %span.count= Issue.opened.of_group(@group).count
   = nav_link(path: 'groups#merge_requests') do
     = link_to merge_requests_group_path(@group) do
       %i.fa.fa-tasks
       Merge Requests
       - if current_user
-        %span.count= current_user.cared_merge_requests.opened.of_group(@group).count
+        %span.count= MergeRequest.opened.of_group(@group).count
   = nav_link(path: 'groups#members') do
     = link_to members_group_path(@group) do
       %i.fa.fa-users

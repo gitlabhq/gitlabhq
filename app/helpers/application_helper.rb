@@ -275,4 +275,22 @@ module ApplicationHelper
   def promo_url
     'https://' + promo_host
   end
+
+  def page_filter_path(options={})
+    exist_opts = {
+      state: params[:state],
+      scope: params[:scope],
+      label_name: params[:label_name],
+      milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+      author_id: params[:author_id],
+      sort: params[:sort],
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
+  end
 end

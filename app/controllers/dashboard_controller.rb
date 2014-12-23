@@ -3,8 +3,6 @@ class DashboardController < ApplicationController
 
   before_filter :load_projects, except: [:projects]
   before_filter :event_filter, only: :show
-  before_filter :default_filter, only: [:issues, :merge_requests]
-
 
   def show
     # Fetch only 30 projects.
@@ -55,13 +53,17 @@ class DashboardController < ApplicationController
   end
 
   def merge_requests
+    set_filters_defaults
     @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
+    set_filter_values(@merge_requests)
     @merge_requests = @merge_requests.page(params[:page]).per(20)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
+    set_filters_defaults
     @issues = IssuesFinder.new.execute(current_user, params)
+    set_filter_values(@issues)
     @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.preload(:author, :project)
 
@@ -75,11 +77,5 @@ class DashboardController < ApplicationController
 
   def load_projects
     @projects = current_user.authorized_projects.sorted_by_activity.non_archived
-  end
-
-  def default_filter
-    params[:scope] = 'assigned-to-me' if params[:scope].blank?
-    params[:state] = 'opened' if params[:state].blank?
-    params[:authorized_only] = true
   end
 end

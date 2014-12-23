@@ -8,10 +8,6 @@
   - if current_user
     To see all merge requests you should visit #{link_to 'dashboard', merge_requests_dashboard_path} page.
 %hr
-.row
-  .fixed.sidebar-expand-button.hidden-lg.hidden-md
-    %i.fa.fa-list.fa-2x
-  .col-md-3.responsive-side
-    = render 'shared/filter', entity: 'merge_request'
-  .col-md-9
-    = render 'shared/merge_requests'
+.append-bottom-20
+  = render 'shared/issuable_filter'
+= render 'shared/merge_requests'

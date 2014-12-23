@@ -239,4 +239,46 @@ class ApplicationController < ActionController::Base
       redirect_to profile_path, notice: 'Please complete your profile with email address' and return
     end
   end
+
+  def set_filters_defaults
+    params[:sort] ||= 'newest'
+    params[:scope] = 'all' if params[:scope].blank?
+    params[:state] = 'opened' if params[:state].blank?
+
+    @sort = params[:sort].humanize
+
+    if @project
+      params[:project_id] = @project.id
+    elsif @group
+      params[:group_id] = @group.id
+    else
+      params[:authorized_only] = true
+
+      unless params[:assignee_id].present?
+        params[:assignee_id] = current_user.id
+      end
+    end
+  end
+
+  def set_filter_values(collection)
+    assignee_id = params[:assignee_id]
+    author_id = params[:author_id]
+    milestone_id = params[:milestone_id]
+
+    @assignees = User.where(id: collection.pluck(:assignee_id))
+    @authors = User.where(id: collection.pluck(:author_id))
+    @milestones = Milestone.where(id: collection.pluck(:milestone_id))
+
+    if assignee_id.present? && !assignee_id.to_i.zero?
+      @assignee = @assignees.find(assignee_id)
+    end
+
+    if author_id.present? && !author_id.to_i.zero?
+      @author = @authors.find(author_id)
+    end
+
+    if milestone_id.present? && !milestone_id.to_i.zero?
+      @milestone = @milestones.find(milestone_id)
+    end
+  end
 end
