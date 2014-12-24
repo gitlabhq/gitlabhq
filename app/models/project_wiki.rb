@@ -5,7 +5,7 @@ class ProjectWiki
     'Markdown' => :markdown,
     'RDoc'     => :rdoc,
     'AsciiDoc' => :asciidoc
-  }
+  } unless defined?(MARKUPS)
 
   class CouldNotCreateWikiError < StandardError; end
 

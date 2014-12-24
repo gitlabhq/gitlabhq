@@ -49,9 +49,10 @@
                 = link_to admin_users_path(sort: 'oldest_sign_in') do
                   Oldest sign in
                 = link_to admin_users_path(sort: 'recently_created') do
-                  Recently created
+                  = sort_title_recently_created
                 = link_to admin_users_path(sort: 'late_created') do
-                  Late created
+                  = sort_title_oldest_created
+
           = link_to 'New User', new_admin_user_path, class: "btn btn-new"
       %ul.well-list
         - @users.each do |user|

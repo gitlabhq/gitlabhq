@@ -11,14 +11,18 @@
 
     - if @merge_request.closed?
       %h4
-        Closed by #{link_to_member(@project, @merge_request.closed_event.author, avatar: false)}
-        #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
+        Closed
+        - if @merge_request.closed_event
+          by #{link_to_member(@project, @merge_request.closed_event.author, avatar: false)}
+          #{time_ago_with_tooltip(@merge_request.closed_event.created_at)}
       %p Changes were not merged into target branch
 
     - if @merge_request.merged?
       %h4
-        Merged by #{link_to_member(@project, @merge_request.merge_event.author, avatar: false)}
-        #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
+        Merged
+        - if @merge_request.merge_event
+          by #{link_to_member(@project, @merge_request.merge_event.author, avatar: false)}
+          #{time_ago_with_tooltip(@merge_request.merge_event.created_at)}
       = render "projects/merge_requests/show/remove_source_branch"
 
     - if @merge_request.locked?
@@ -44,4 +48,3 @@
         Accepting this merge request will close #{@closes_issues.size == 1 ? 'issue' : 'issues'}
         = succeed '.' do
           != gfm(issues_sentence(@closes_issues))
-

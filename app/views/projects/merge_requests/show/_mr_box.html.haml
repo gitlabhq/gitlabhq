@@ -8,6 +8,10 @@
       - else
         Open
 
+    .cross-project-ref
+      %i.fa.fa-link.has_tooltip{:"data-original-title" => 'Cross-project reference'}
+      = cross_project_reference(@project, @merge_request)
+
     .creator
       Created by #{link_to_member(@project, @merge_request.author)} #{time_ago_with_tooltip(@merge_request.created_at)}
 

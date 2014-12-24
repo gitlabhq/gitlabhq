@@ -10,6 +10,8 @@ If you have local changes to your GitLab repository the script will stash them a
 
 **GitLab Upgrader is available only for GitLab version 6.4.2 or higher.**
 
+**This script does NOT update gitlab-shell, it needs manual update. See step 5 below.**
+
 ## 0. Backup
 
     cd /home/git/gitlab

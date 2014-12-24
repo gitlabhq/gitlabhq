@@ -21,12 +21,13 @@
       .form-group
         .light
           = f.label :description, "Description"
-        = render 'projects/zen', f: f, attr: :description,
-                                 classes: 'description form-control'
-        .clearfix.hint
-          .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
-          .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
-        .error-alert
+        = render layout: 'projects/md_preview' do
+          = render 'projects/zen', f: f, attr: :description,
+                                   classes: 'description form-control'
+          .clearfix.hint
+            .pull-left Description is parsed with #{link_to "GitLab Flavored Markdown", help_page_path("markdown", "markdown"), target: '_blank'}.
+            .pull-right Attach images (JPG, PNG, GIF) by dragging & dropping or #{link_to "selecting them", '#', class: 'markdown-selector' }.
+          .error-alert
       .form-group
         .issue-assignee
           = f.label :assignee_id do

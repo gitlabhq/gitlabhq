@@ -5,8 +5,12 @@ FactoryGirl.define do
     Faker::Lorem.sentence
   end
 
-  sequence :name, aliases: [:file_name] do
+  sequence :name do
     Faker::Name.name
+  end
+
+  sequence :file_name do
+    Faker::Internet.user_name
   end
 
   sequence(:url) { Faker::Internet.uri('http') }
@@ -24,9 +28,18 @@ FactoryGirl.define do
       admin true
     end
 
-    trait :ldap do
-      provider 'ldapmain'
-      extern_uid 'my-ldap-id'
+    factory :omniauth_user do
+      ignore do
+        extern_uid '123456'
+        provider 'ldapmain'
+      end
+
+      after(:create) do |user, evaluator|
+        user.identities << create(:identity,
+          provider: evaluator.provider,
+          extern_uid: evaluator.extern_uid
+        )
+      end
     end
 
     factory :admin, traits: [:admin]
@@ -181,5 +194,10 @@ FactoryGirl.define do
   factory :deploy_keys_project do
     deploy_key
     project
+  end
+
+  factory :identity do
+    provider 'ldapmain'
+    extern_uid 'my-ldap-id'
   end
 end

@@ -18,7 +18,15 @@
       %h4 Groups:
       = render 'groups', groups: @groups
       %hr
-    %h4 User Activity:
+    %h4
+      User Activity:
+
+      - if current_user
+        %span.rss-icon.pull-right
+          = link_to user_path(@user, :atom, { private_token: current_user.private_token }) do
+            %strong
+              %i.fa.fa-rss
+
     = render @events
   .col-md-4
     = render 'profile', user: @user

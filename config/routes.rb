@@ -137,7 +137,8 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  match "/u/:username" => "users#show", as: :user, constraints: { username: /.*/ }, via: :get
+  match "/u/:username" => "users#show", as: :user,
+    constraints: {username: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, via: :get
 
   #
   # Dashboard Area
@@ -181,18 +182,16 @@ Gitlab::Application.routes.draw do
   resources :projects, constraints: { id: /[a-zA-Z.0-9_\-]+\/[a-zA-Z.0-9_\-]+/ }, except: [:new, :create, :index], path: "/" do
     member do
       put :transfer
-      post :fork
       post :archive
       post :unarchive
       post :upload_image
       post :toggle_star
+      get :markdown_preview
       get :autocomplete_sources
-      get :import
-      put :retry_import
     end
 
     scope module: :projects do
-      resources :blob, only: [:show, :destroy], constraints: { id: /.+/ } do
+      resources :blob, only: [:show, :destroy], constraints: { id: /.+/, format: false } do
         get :diff, on: :member
       end
       resources :raw,       only: [:show], constraints: {id: /.+/}
@@ -214,11 +213,11 @@ Gitlab::Application.routes.draw do
 
       match "/compare/:from...:to" => "compare#show", as: "compare", via: [:get, :post], constraints: {from: /.+/, to: /.+/}
 
-        resources :snippets, constraints: {id: /\d+/} do
-          member do
-            get "raw"
-          end
+      resources :snippets, constraints: {id: /\d+/} do
+        member do
+          get "raw"
         end
+      end
 
       resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-\/]+/} do
         collection do
@@ -232,7 +231,10 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resource :repository, only: [:show] do
+      resource :fork, only: [:new, :create]
+      resource :import, only: [:new, :create, :show]
+
+      resource :repository, only: [:show, :create] do
         member do
           get "archive", constraints: { format: Gitlab::Regex.archive_formats_regex }
         end
@@ -327,10 +329,6 @@ Gitlab::Application.routes.draw do
       resources :notes, only: [:index, :create, :destroy, :update], constraints: {id: /\d+/} do
         member do
           delete :delete_attachment
-        end
-
-        collection do
-          post :preview
         end
       end
     end

@@ -37,7 +37,7 @@ Please send a merge request with a tested solution or a merge request with a fai
 **[Search the issues](https://gitlab.com/gitlab-org/gitlab-ce/issues)** for similar entries before submitting your own, there's a good chance somebody else had the same issue. Show your support with `:+1:` and/or join the discussion. Please submit issues in the following format (as the first post):
 
 1. **Summary:** Summarize your issue in one sentence (what goes wrong, what did you expect to happen)
-1. **Steps to reproduce:** How can we reproduce the issue, preferably on the [GitLab development virtual machine with vagrant](https://gitlab.com/gitlab-org/cookbook-gitlab/blob/master/doc/development.md) (start your issue with: `vagrant destroy && vagrant up && vagrant ssh`)
+1. **Steps to reproduce:** How can we reproduce the issue
 1. **Expected behavior:** Describe your issue in detail
 1. **Observed behavior**
 1. **Relevant logs and/or screenshots:** Please use code blocks (\`\`\`) to format console output, logs, and code as it's very hard to read otherwise.
@@ -75,20 +75,39 @@ If you can, please submit a merge request with the fix or improvements including
 1. Link relevant [issues](https://gitlab.com/gitlab-org/gitlab-ce/issues) and/or [feature requests](http://feedback.gitlab.com/) from the merge request description and leave a comment on them with a link back to the MR
 1. Be prepared to answer questions and incorporate feedback even if requests for this arrive weeks or months after your MR submission
 1. If your MR touches code that executes shell commands, make sure it adheres to the [shell command guidelines](    doc/development/shell_commands.md).
+1. Also have a look at the [shell command guidelines](doc/development/shell_commands.md) if your code reads or opens files, or handles paths to files on disk.
 
 The **official merge window** is in the beginning of the month from the 1st to the 7th day of the month. The best time to submit a MR and get feedback fast. Before this time the GitLab B.V. team is still dealing with work that is created by the monthly release such as assisting subscribers with upgrade issues, the release of Enterprise Edition and the upgrade of GitLab Cloud. After the 7th it is already getting closer to the release date of the next version. This means there is less time to fix the issues created by merging large new features.
 
 Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? Can you do part of the refactor? The increased reviewability of small MR's that leads to higher code quality is more important to us than having a minimal commit log. The smaller a MR is the more likely it is it will be merged (quickly), after that you can send more MR's to enhance it.
 
-For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the following contribution acceptance criteria.
+For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the contribution acceptance criteria.
 
-**Please format your merge request description as follows:**
+## Definition of done
+
+If you contribute to GitLab please know that changes involve more than just code.
+We have the following [definition of done](http://guide.agilealliance.org/guide/definition-of-done.html).
+Please ensure you support the feature you contribute through all of these steps.
+
+1. Description explaning the relevancy (see following item)
+1. Working and clean code that is commented where needed
+1. Unit and integration tests that pass on the CI server
+1. Documented in the /doc directory
+1. Changelog entry added
+1. Reviewed and any concerns are addressed
+1. Merged by the project lead
+1. Added to the release blog article
+1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/) if relevant
+1. Community questions answered
+1. Answers to questions radiated (in docs/wiki/etc.)
+
+## Merge request description format
 
 1. What does this MR do?
 1. Are there points in the code the reviewer needs to double check?
 1. Why was this MR needed?
 1. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
-1. Screenshots (If appropriate)
+1. Screenshots (if relevant)
 
 ## Contribution acceptance criteria
 
@@ -123,3 +142,17 @@ For examples of feedback on merge requests please look at already [closed merge 
 1.  [Markdown](http://www.cirosantilli.com/markdown-styleguide)
 
 This is also the style used by linting tools such as [RuboCop](https://github.com/bbatsov/rubocop), [PullReview](https://www.pullreview.com/) and [Hound CI](https://houndci.com).
+
+## Code of conduct
+As contributors and maintainers of this project, we pledge to respect all people who contribute through reporting issues, posting feature requests, updating documentation, submitting pull requests or patches, and other activities.
+
+We are committed to making participation in this project a harassment-free experience for everyone, regardless of level of experience, gender, gender identity and expression, sexual orientation, disability, personal appearance, body size, race, age, or religion.
+
+Examples of unacceptable behavior by participants include the use of sexual language or imagery, derogatory comments or personal attacks, trolling, public or private harassment, insults, or other unprofessional conduct.
+
+Project maintainers have the right and responsibility to remove, edit, or reject comments, commits, code, wiki edits, issues, and other contributions that are not aligned to this Code of Conduct. Project maintainers who do not follow the Code of Conduct may be removed from the project team.
+
+Instances of abusive, harassing, or otherwise unacceptable behavior can be
+reported by emailing contact@gitlab.com
+
+This Code of Conduct is adapted from the [Contributor Covenant](http:contributor-covenant.org), version 1.0.0, available at [http://contributor-covenant.org/version/1/0/0/](http://contributor-covenant.org/version/1/0/0/)

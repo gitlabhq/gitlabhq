@@ -1,0 +1,17 @@
+/** Common mobile (screen XS) styles **/
+@media (max-width: $screen-xs-max) {
+  .container .content {
+    margin-top: 20px;
+  }
+
+  .nav.nav-tabs > li > a {
+    padding: 10px;
+    font-size: 12px;
+    margin-right: 3px;
+
+    .badge {
+      display: none;
+    }
+  }
+}
+

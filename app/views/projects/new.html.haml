@@ -3,7 +3,7 @@
     = render 'projects/errors'
   .project-edit-content
 
-    = form_for @project, remote: true, html: { class: 'new_project form-horizontal' } do |f|
+    = form_for @project, html: { class: 'new_project form-horizontal' } do |f|
       .form-group.project-name-holder
         = f.label :name, class: 'control-label' do
           %strong Project name

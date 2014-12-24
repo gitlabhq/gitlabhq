@@ -95,7 +95,7 @@
               %li
                 %span.light LDAP uid:
                 %strong
-                  = @user.extern_uid
+                  = @user.ldap_identity.extern_uid
 
             - if @user.created_by
               %li

@@ -42,7 +42,6 @@
   }
   .file-content {
     background: #fff;
-    font-size: 11px;
 
     &.image_file {
       background: #eee;
@@ -54,8 +53,6 @@
     }
 
     &.wiki {
-      font-size: 14px;
-      line-height: 1.6;
       padding: 25px;
 
       .highlight {

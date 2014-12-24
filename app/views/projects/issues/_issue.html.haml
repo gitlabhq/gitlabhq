@@ -4,7 +4,6 @@
       = check_box_tag dom_id(issue,"selected"), nil, false, 'data-id' => issue.id, class: "selected_issue", disabled: !can?(current_user, :modify_issue, issue)
 
   .issue-title
-    %span.light= "##{issue.iid}"
     %span.str-truncated
       = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title", dir: 'auto'
     - if issue.closed?
@@ -12,6 +11,7 @@
         CLOSED
 
   .issue-info
+    %span.light= "##{issue.iid}"
     - if issue.assignee
       assigned to #{link_to_member(@project, issue.assignee)}
     - if issue.votes_count > 0
@@ -28,7 +28,7 @@
       %span.task-status
         = issue.task_status
 
-    .pull-right
+    .pull-right.issue-updated-at
       %small updated #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_update_ago')}
 
     .issue-labels

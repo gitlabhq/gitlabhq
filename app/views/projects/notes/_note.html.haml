@@ -18,6 +18,8 @@
               %i.fa.fa-trash-o.cred
               Remove
         = link_to_member(@project, note.author, avatar: false)
+        %span.author-username
+          = '@' + note.author.username
         %span.note-last-update
           = note_timestamp(note)
 
@@ -38,7 +40,8 @@
 
         .note-edit-form
           = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
-            = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on', dir: :auto
+            = render layout: 'projects/md_preview' do
+              = f.text_area :note, class: 'note_text js-note-text markdown-area js-gfm-input turn-on', dir: :auto
 
             .form-actions.clearfix
               = f.submit 'Save changes', class: "btn btn-primary btn-save js-comment-button"

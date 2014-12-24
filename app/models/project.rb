@@ -136,7 +136,7 @@ class Project < ActiveRecord::Base
 
   state_machine :import_status, initial: :none do
     event :import_start do
-      transition :none => :started
+      transition [:none, :finished] => :started
     end
 
     event :import_finish do
@@ -390,14 +390,8 @@ class Project < ActiveRecord::Base
   end
 
   def execute_services(data)
-    services.each do |service|
-
-      # Call service hook only if it is active
-      begin
-        service.execute(data) if service.active
-      rescue => e
-        logger.error(e)
-      end
+    services.select(&:active).each do |service|
+      service.async_execute(data)
     end
   end
 
@@ -585,5 +579,26 @@ class Project < ActiveRecord::Base
 
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
+  end
+
+  def create_repository
+    if gitlab_shell.add_repository(path_with_namespace)
+      true
+    else
+      errors.add(:base, "Failed to create repository")
+      false
+    end
+  end
+
+  def repository_exists?
+    !!repository.exists?
+  end
+
+  def create_wiki
+    ProjectWiki.new(self, self.owner).wiki
+    true
+  rescue ProjectWiki::CouldNotCreateWikiError => ex
+    errors.add(:base, "Failed create wiki")
+    false
   end
 end

@@ -27,6 +27,10 @@
 #
 
 FactoryGirl.define do
+  # Project without repository
+  #
+  # Project does not have bare repository.
+  # Use this factory if you dont need repository in tests
   factory :empty_project, class: 'Project' do
     sequence(:name) { |n| "project#{n}" }
     path { name.downcase.gsub(/\s/, '_') }
@@ -47,6 +51,20 @@ FactoryGirl.define do
     end
   end
 
+  # Project with empty repository
+  #
+  # This is a case when you just created a project
+  # but not pushed any code there yet
+  factory :project_empty_repo, parent: :empty_project do
+    after :create do |project|
+      project.create_repository
+    end
+  end
+
+  # Project with test repository
+  #
+  # Test repository source can be found at
+  # https://gitlab.com/gitlab-org/gitlab-test
   factory :project, parent: :empty_project do
     path { 'gitlabhq' }
 

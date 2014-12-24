@@ -79,6 +79,7 @@ class User < ActiveRecord::Base
   # Profile
   has_many :keys, dependent: :destroy
   has_many :emails, dependent: :destroy
+  has_many :identities, dependent: :destroy
 
   # Groups
   has_many :members, dependent: :destroy
@@ -113,7 +114,6 @@ class User < ActiveRecord::Base
   validates :name, presence: true
   validates :email, presence: true, email: {strict_mode: true}, uniqueness: true
   validates :bio, length: { maximum: 255 }, allow_blank: true
-  validates :extern_uid, allow_blank: true, uniqueness: {scope: :provider}
   validates :projects_limit, presence: true, numericality: {greater_than_or_equal_to: 0}
   validates :username, presence: true, uniqueness: { case_sensitive: false },
             exclusion: { in: Gitlab::Blacklist.path },
@@ -124,7 +124,7 @@ class User < ActiveRecord::Base
   validate :namespace_uniq, if: ->(user) { user.username_changed? }
   validate :avatar_type, if: ->(user) { user.avatar_changed? }
   validate :unique_email, if: ->(user) { user.email_changed? }
-  validates :avatar, file_size: { maximum: 100.kilobytes.to_i }
+  validates :avatar, file_size: { maximum: 200.kilobytes.to_i }
 
   before_validation :generate_password, on: :create
   before_validation :sanitize_attrs
@@ -178,7 +178,6 @@ class User < ActiveRecord::Base
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
-  scope :ldap, -> { where('provider LIKE ?', 'ldap%') }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
@@ -407,7 +406,11 @@ class User < ActiveRecord::Base
   end
 
   def ldap_user?
-    extern_uid && provider.start_with?('ldap')
+    identities.exists?(["provider LIKE ? AND extern_uid IS NOT NULL", "ldap%"])
+  end
+
+  def ldap_identity
+    @ldap_identity ||= identities.find_by(["provider LIKE ?", "ldap%"])
   end
 
   def accessible_deploy_keys
@@ -550,5 +553,15 @@ class User < ActiveRecord::Base
     else
       UsersStarProject.create!(project: project, user: self)
     end
+  end
+
+  def manageable_namespaces
+    @manageable_namespaces ||=
+      begin
+        namespaces = []
+        namespaces << namespace
+        namespaces += owned_groups
+        namespaces += masters_groups
+      end
   end
 end

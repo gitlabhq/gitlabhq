@@ -103,7 +103,9 @@ class Projects::MilestonesController < Projects::ApplicationController
   end
 
   def module_enabled
-    return render_404 unless @project.issues_enabled
+    unless @project.issues_enabled || @project.merge_requests_enabled
+      return render_404
+    end
   end
 
   def milestone_params

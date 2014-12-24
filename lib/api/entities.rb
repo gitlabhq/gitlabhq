@@ -14,10 +14,14 @@ module API
       expose :bio, :skype, :linkedin, :twitter, :website_url
     end
 
+    class Identity < Grape::Entity
+      expose :provider, :extern_uid
+    end
+
     class UserFull < User
       expose :email
-      expose :theme_id, :color_scheme_id, :extern_uid, :provider, \
-             :projects_limit
+      expose :theme_id, :color_scheme_id, :projects_limit
+      expose :identities, using: Entities::Identity
       expose :can_create_group?, as: :can_create_group
       expose :can_create_project?, as: :can_create_project
     end

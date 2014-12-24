@@ -36,12 +36,15 @@ ul.notes {
       font-size: 13px;
     }
     .author {
-      color: #555;
+      color: #333;
       font-weight: bold;
       font-size: 14px;
       &:hover {
-        color: $link_hover_color;
+        color: $link_color;
       }
+    }
+    .author-username {
+      font-size: 14px;
     }
   }
 
@@ -224,7 +227,6 @@ ul.notes {
     margin-bottom: 0;
   }
 
-  .note-preview-holder,
   .note_text {
     background: #FFF;
     border: 1px solid #ddd;
@@ -242,15 +244,6 @@ ul.notes {
 
   .note_text {
     width: 100%;
-  }
-  .nav-tabs {
-    margin-bottom: 0;
-    border: none;
-
-    li a,
-    li.active a {
-      border: 1px solid #DDD;
-    }
   }
 }
 
