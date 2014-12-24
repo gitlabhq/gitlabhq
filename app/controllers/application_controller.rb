@@ -252,7 +252,11 @@ class ApplicationController < ActionController::Base
     elsif @group
       @filter_params[:group_id] = @group.id
     else
-      @filter_params[:authorized_only] = true
+      # TODO: this filter ignore issues/mr created in public or
+      # internal repos where you are not a member. Enable this filter
+      # or improve current implementation to filter only issues you
+      # created or assigned or mentioned
+      #@filter_params[:authorized_only] = true
 
       unless @filter_params[:assignee_id]
         @filter_params[:assignee_id] = current_user.id
