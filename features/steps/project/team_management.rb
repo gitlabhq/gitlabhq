@@ -5,14 +5,14 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
   include Select2Helper
 
   step 'I should be able to see myself in team' do
-    page.should have_content(@user.name)
-    page.should have_content(@user.username)
+    expect(page).to have_content(@user.name)
+    expect(page).to have_content(@user.username)
   end
 
   step 'I should see "Sam" in team list' do
     user = User.find_by(name: "Sam")
-    page.should have_content(user.name)
-    page.should have_content(user.username)
+    expect(page).to have_content(user.name)
+    expect(page).to have_content(user.username)
   end
 
   step 'I click link "New Team Member"' do
@@ -31,13 +31,13 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
 
   step 'I should see "Mike" in team list as "Reporter"' do
     within ".access-reporter" do
-      page.should have_content('Mike')
+      expect(page).to have_content('Mike')
     end
   end
 
   step 'I should see "Sam" in team list as "Developer"' do
     within ".access-developer" do
-      page.should have_content('Sam')
+      expect(page).to have_content('Sam')
     end
   end
 
@@ -50,7 +50,7 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
 
   step 'I should see "Sam" in team list as "Reporter"' do
     within ".access-reporter" do
-      page.should have_content('Sam')
+      expect(page).to have_content('Sam')
     end
   end
 
@@ -60,8 +60,8 @@ class Spinach::Features::ProjectTeamManagement < Spinach::FeatureSteps
 
   step 'I should not see "Sam" in team list' do
     user = User.find_by(name: "Sam")
-    page.should_not have_content(user.name)
-    page.should_not have_content(user.username)
+    expect(page).not_to have_content(user.name)
+    expect(page).not_to have_content(user.username)
   end
 
   step 'gitlab user "Mike"' do

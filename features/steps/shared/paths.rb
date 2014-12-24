@@ -119,7 +119,7 @@ module SharedPaths
   end
 
   step 'I should be redirected to the profile groups page' do
-    current_path.should == profile_groups_path
+    expect(current_path).to eq(profile_groups_path)
   end
 
   # ----------------------------------------
@@ -266,11 +266,11 @@ module SharedPaths
   end
 
   step 'I am on the new file page' do
-    current_path.should eq(project_new_tree_path(@project, root_ref))
+    expect(current_path).to eq(project_new_tree_path(@project, root_ref))
   end
 
   step 'I am on the ".gitignore" edit file page' do
-    current_path.should eq(project_edit_tree_path(
+    expect(current_path).to eq(project_edit_tree_path(
       @project, File.join(root_ref, '.gitignore')))
   end
 
@@ -448,6 +448,6 @@ module SharedPaths
   # ----------------------------------------
 
   step 'page status code should be 404' do
-    status_code.should == 404
+    expect(status_code).to eq(404)
   end
 end

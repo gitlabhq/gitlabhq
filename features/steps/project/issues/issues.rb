@@ -7,15 +7,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   include SharedMarkdown
 
   step 'I should see "Release 0.4" in issues' do
-    page.should have_content "Release 0.4"
+    expect(page).to have_content "Release 0.4"
   end
 
   step 'I should not see "Release 0.3" in issues' do
-    page.should_not have_content "Release 0.3"
+    expect(page).not_to have_content "Release 0.3"
   end
 
   step 'I should not see "Tweet control" in issues' do
-    page.should_not have_content "Tweet control"
+    expect(page).not_to have_content "Tweet control"
   end
 
   step 'I click link "Closed"' do
@@ -23,11 +23,11 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see "Release 0.3" in issues' do
-    page.should have_content "Release 0.3"
+    expect(page).to have_content "Release 0.3"
   end
 
   step 'I should not see "Release 0.4" in issues' do
-    page.should_not have_content "Release 0.4"
+    expect(page).not_to have_content "Release 0.4"
   end
 
   step 'I click link "All"' do
@@ -39,7 +39,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see issue "Release 0.4"' do
-    page.should have_content "Release 0.4"
+    expect(page).to have_content "Release 0.4"
   end
 
   step 'I click link "New Issue"' do
@@ -63,15 +63,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I should see label \'bug\' with issue' do
     within '.issue-show-labels' do
-      page.should have_content 'bug'
+      expect(page).to have_content 'bug'
     end
   end
 
   step 'I should see issue "500 error on profile"' do
     issue = Issue.find_by(title: "500 error on profile")
-    page.should have_content issue.title
-    page.should have_content issue.author_name
-    page.should have_content issue.project.name
+    expect(page).to have_content issue.title
+    expect(page).to have_content issue.author_name
+    expect(page).to have_content issue.project.name
   end
 
   step 'I fill in issue search with "Re"' do
@@ -114,7 +114,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
 
   step 'I should see selected milestone with title "v3.0"' do
     issues_milestone_selector = "#issue_milestone_id_chzn > a"
-    find(issues_milestone_selector).should have_content("v3.0")
+    expect(find(issues_milestone_selector)).to have_content("v3.0")
   end
 
   When 'I select first assignee from "Shop" project' do
@@ -127,7 +127,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
     issues_assignee_selector = "#issue_assignee_id_chzn > a"
 
     assignee_name = project.users.first.name
-    find(issues_assignee_selector).should have_content(assignee_name)
+    expect(find(issues_assignee_selector)).to have_content(assignee_name)
   end
 
   step 'project "Shop" have "Release 0.4" open issue' do
@@ -174,7 +174,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   step 'I see empty project details with ssh clone info' do
     project = Project.find_by(name: 'Empty Project')
     all(:css, '.git-empty .clone').each do |element|
-      element.text.should include(project.url_to_repo)
+      expect(element.text).to include(project.url_to_repo)
     end
   end
 
@@ -192,7 +192,7 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'The code block should be unchanged' do
-    page.should have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
+    expect(page).to have_content("```\nCommand [1]: /usr/local/bin/git , see [text](doc/text)\n```")
   end
 
   step 'project \'Shop\' has issue \'Bugfix1\' with description: \'Description for issue1\'' do
@@ -216,15 +216,15 @@ class Spinach::Features::ProjectIssues < Spinach::FeatureSteps
   end
 
   step 'I should see \'Bugfix1\' in issues' do
-    page.should have_content 'Bugfix1'
+    expect(page).to have_content 'Bugfix1'
   end
 
   step 'I should see \'Feature1\' in issues' do
-    page.should have_content 'Feature1'
+    expect(page).to have_content 'Feature1'
   end
 
   step 'I should not see \'Bugfix1\' in issues' do
-    page.should_not have_content 'Bugfix1'
+    expect(page).not_to have_content 'Bugfix1'
   end
 
   step 'issue \'Release 0.4\' has label \'bug\'' do

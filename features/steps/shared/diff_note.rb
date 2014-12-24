@@ -67,7 +67,7 @@ module SharedDiffNote
 
   step 'I should not see the diff comment form' do
     within(diff_file_selector) do
-      page.should_not have_css("form.new_note")
+      expect(page).not_to have_css("form.new_note")
     end
   end
 
@@ -80,53 +80,53 @@ module SharedDiffNote
 
   step 'I should not see the diff comment text field' do
     within(diff_file_selector) do
-      page.should have_css(".js-note-text", visible: false)
+      expect(page).to have_css(".js-note-text", visible: false)
     end
   end
 
   step 'I should only see one diff form' do
     within(diff_file_selector) do
-      page.should have_css("form.new_note", count: 1)
+      expect(page).to have_css("form.new_note", count: 1)
     end
   end
 
   step 'I should see a diff comment form with ":-1: I don\'t like this"' do
     within(diff_file_selector) do
-      page.should have_field("note[note]", with: ":-1: I don\'t like this")
+      expect(page).to have_field("note[note]", with: ":-1: I don\'t like this")
     end
   end
 
   step 'I should see a diff comment saying "Typo, please fix"' do
     within("#{diff_file_selector} .note") do
-      page.should have_content("Typo, please fix")
+      expect(page).to have_content("Typo, please fix")
     end
   end
 
   step 'I should see a discussion reply button' do
     within(diff_file_selector) do
-      page.should have_button('Reply')
+      expect(page).to have_button('Reply')
     end
   end
 
   step 'I should see a temporary diff comment form' do
     within(diff_file_selector) do
-      page.should have_css(".js-temp-notes-holder form.new_note")
+      expect(page).to have_css(".js-temp-notes-holder form.new_note")
     end
   end
 
   step 'I should see add a diff comment button' do
-    page.should have_css(".js-add-diff-note-button", visible: false)
+    expect(page).to have_css(".js-add-diff-note-button", visible: false)
   end
 
   step 'I should see an empty diff comment form' do
     within(diff_file_selector) do
-      page.should have_field("note[note]", with: "")
+      expect(page).to have_field("note[note]", with: "")
     end
   end
 
   step 'I should see the cancel comment button' do
     within("#{diff_file_selector} form") do
-      page.should have_css(".js-close-discussion-note-form", text: "Cancel")
+      expect(page).to have_css(".js-close-discussion-note-form", text: "Cancel")
     end
   end
 

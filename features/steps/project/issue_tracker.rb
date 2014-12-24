@@ -14,7 +14,7 @@ class Spinach::Features::ProjectIssueTracker < Spinach::FeatureSteps
   end
 
   step 'I the project should have "GitLab" as issue tracker' do
-    find_field('project_issues_tracker').value.should == 'gitlab'
+    expect(find_field('project_issues_tracker').value).to eq('gitlab')
   end
 
   step 'change the issue tracker to "Redmine"' do
@@ -22,7 +22,7 @@ class Spinach::Features::ProjectIssueTracker < Spinach::FeatureSteps
   end
 
   step 'I the project should have "Redmine" as issue tracker' do
-    find_field('project_issues_tracker').value.should == 'redmine'
+    expect(find_field('project_issues_tracker').value).to eq('redmine')
   end
 
   step 'I save project' do

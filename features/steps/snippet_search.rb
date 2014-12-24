@@ -18,39 +18,39 @@ class Spinach::Features::SnippetSearch < Spinach::FeatureSteps
   end
 
   step 'I should see "line seven" in results' do
-    page.should have_content 'line seven'
+    expect(page).to have_content 'line seven'
   end
 
   step 'I should see "line four" in results' do
-    page.should have_content 'line four'
+    expect(page).to have_content 'line four'
   end
 
   step 'I should see "line ten" in results' do
-    page.should have_content 'line ten'
+    expect(page).to have_content 'line ten'
   end
 
   step 'I should not see "line eleven" in results' do
-    page.should_not have_content 'line eleven'
+    expect(page).not_to have_content 'line eleven'
   end
 
   step 'I should not see "line three" in results' do
-    page.should_not have_content 'line three'
+    expect(page).not_to have_content 'line three'
   end
 
   step 'I should see "Personal snippet one" in results' do
-    page.should have_content 'Personal snippet one'
+    expect(page).to have_content 'Personal snippet one'
   end
 
   step 'I should see "Personal snippet private" in results' do
-    page.should have_content 'Personal snippet private'
+    expect(page).to have_content 'Personal snippet private'
   end
 
   step 'I should not see "Personal snippet one" in results' do
-    page.should_not have_content 'Personal snippet one'
+    expect(page).not_to have_content 'Personal snippet one'
   end
 
   step 'I should not see "Personal snippet private" in results' do
-    page.should_not have_content 'Personal snippet private'
+    expect(page).not_to have_content 'Personal snippet private'
   end
 
 end

@@ -5,43 +5,43 @@ class Spinach::Features::ProjectIssuesFilterLabels < Spinach::FeatureSteps
 
   step 'I should see "bug" in labels filter' do
     within ".labels-filter" do
-      page.should have_content "bug"
+      expect(page).to have_content "bug"
     end
   end
 
   step 'I should see "feature" in labels filter' do
     within ".labels-filter" do
-      page.should have_content "feature"
+      expect(page).to have_content "feature"
     end
   end
 
   step 'I should see "enhancement" in labels filter' do
     within ".labels-filter" do
-      page.should have_content "enhancement"
+      expect(page).to have_content "enhancement"
     end
   end
 
   step 'I should see "Bugfix1" in issues list' do
     within ".issues-list" do
-      page.should have_content "Bugfix1"
+      expect(page).to have_content "Bugfix1"
     end
   end
 
   step 'I should see "Bugfix2" in issues list' do
     within ".issues-list" do
-      page.should have_content "Bugfix2"
+      expect(page).to have_content "Bugfix2"
     end
   end
 
   step 'I should not see "Bugfix2" in issues list' do
     within ".issues-list" do
-      page.should_not have_content "Bugfix2"
+      expect(page).not_to have_content "Bugfix2"
     end
   end
 
   step 'I should not see "Feature1" in issues list' do
     within ".issues-list" do
-      page.should_not have_content "Feature1"
+      expect(page).not_to have_content "Feature1"
     end
   end
 

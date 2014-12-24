@@ -37,11 +37,11 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see "Shop" project link' do
-    page.should have_link "Shop"
+    expect(page).to have_link "Shop"
   end
 
   step 'I should see code results for project "Shop"' do
-    page.should have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
+    expect(page).to have_content 'Update capybara, rspec-rails, poltergeist to recent versions'
   end
 
   step 'I search for "Contibuting"' do
@@ -60,10 +60,10 @@ class Spinach::Features::Search < Spinach::FeatureSteps
   end
 
   step 'I should see "Foo" link' do
-    page.should have_link "Foo"
+    expect(page).to have_link "Foo"
   end
 
   step 'I should not see "Bar" link' do
-    page.should_not have_link "Bar"
+    expect(page).not_to have_link "Bar"
   end
 end

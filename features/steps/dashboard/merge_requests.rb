@@ -51,11 +51,11 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
   end
 
   def should_see(merge_request)
-    page.should have_content(merge_request.title[0..10])
+    expect(page).to have_content(merge_request.title[0..10])
   end
 
   def should_not_see(merge_request)
-    page.should_not have_content(merge_request.title[0..10])
+    expect(page).not_to have_content(merge_request.title[0..10])
   end
 
   def assigned_merge_request

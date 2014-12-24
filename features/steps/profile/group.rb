@@ -17,28 +17,28 @@ class Spinach::Features::ProfileGroup < Spinach::FeatureSteps
   end
 
   step 'I should not see the "Leave" button for group "Owned"' do
-    find(:css, 'li', text: "Owner").should_not have_selector(:css, 'i.fa.fa-sign-out')
+    expect(find(:css, 'li', text: "Owner")).not_to have_selector(:css, 'i.fa.fa-sign-out')
     # poltergeist always confirms popups.
   end
 
   step 'I should not see the "Leave" button for groupr "Guest"' do
-    find(:css, 'li', text: "Guest").should_not have_selector(:css,  'i.fa.fa-sign-out')
+    expect(find(:css, 'li', text: "Guest")).not_to have_selector(:css,  'i.fa.fa-sign-out')
     # poltergeist always confirms popups.
   end
 
   step 'I should see group "Owned" in group list' do
-    page.should have_content("Owned")
+    expect(page).to have_content("Owned")
   end
 
   step 'I should not see group "Owned" in group list' do
-    page.should_not have_content("Owned")
+    expect(page).not_to have_content("Owned")
   end
 
   step 'I should see group "Guest" in group list' do
-    page.should have_content("Guest")
+    expect(page).to have_content("Guest")
   end
 
   step 'I should not see group "Guest" in group list' do
-    page.should_not have_content("Guest")
+    expect(page).not_to have_content("Guest")
   end
 end

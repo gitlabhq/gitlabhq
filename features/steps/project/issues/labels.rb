@@ -24,7 +24,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see labels help message' do
     within '.labels' do
-      page.should have_content 'Create first label or generate default set of '\
+      expect(page).to have_content 'Create first label or generate default set of '\
                                'labels'
     end
   end
@@ -49,37 +49,37 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see label label exist error message' do
     within '.label-form' do
-      page.should have_content 'Title has already been taken'
+      expect(page).to have_content 'Title has already been taken'
     end
   end
 
   step 'I should see label color error message' do
     within '.label-form' do
-      page.should have_content 'Color is invalid'
+      expect(page).to have_content 'Color is invalid'
     end
   end
 
   step 'I should see label \'feature\'' do
     within '.manage-labels-list' do
-      page.should have_content 'feature'
+      expect(page).to have_content 'feature'
     end
   end
 
   step 'I should see label \'bug\'' do
     within '.manage-labels-list' do
-      page.should have_content 'bug'
+      expect(page).to have_content 'bug'
     end
   end
 
   step 'I should not see label \'bug\'' do
     within '.manage-labels-list' do
-      page.should_not have_content 'bug'
+      expect(page).not_to have_content 'bug'
     end
   end
 
   step 'I should see label \'support\'' do
     within '.manage-labels-list' do
-      page.should have_content 'support'
+      expect(page).to have_content 'support'
     end
   end
 
@@ -91,7 +91,7 @@ class Spinach::Features::ProjectIssuesLabels < Spinach::FeatureSteps
 
   step 'I should see label \'fix\'' do
     within '.manage-labels-list' do
-      page.should have_content 'fix'
+      expect(page).to have_content 'fix'
     end
   end
 

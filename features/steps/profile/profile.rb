@@ -3,7 +3,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   include SharedPaths
 
   step 'I should see my profile info' do
-    page.should have_content "Profile settings"
+    expect(page).to have_content "Profile settings"
   end
 
   step 'I change my profile info' do
@@ -16,10 +16,10 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see new profile info' do
-    @user.skype.should == 'testskype'
-    @user.linkedin.should == 'testlinkedin'
-    @user.twitter.should == 'testtwitter'
-    @user.website_url.should == 'testurl'
+    expect(@user.skype).to eq('testskype')
+    expect(@user.linkedin).to eq('testlinkedin')
+    expect(@user.twitter).to eq('testtwitter')
+    expect(@user.website_url).to eq('testurl')
   end
 
   step 'I change my avatar' do
@@ -29,12 +29,12 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see new avatar' do
-    @user.avatar.should be_instance_of AttachmentUploader
-    @user.avatar.url.should == "/uploads/user/avatar/#{ @user.id }/gitlab_logo.png"
+    expect(@user.avatar).to be_instance_of AttachmentUploader
+    expect(@user.avatar.url).to eq("/uploads/user/avatar/#{ @user.id }/gitlab_logo.png")
   end
 
   step 'I should see the "Remove avatar" button' do
-    page.should have_link("Remove avatar")
+    expect(page).to have_link("Remove avatar")
   end
 
   step 'I have an avatar' do
@@ -49,11 +49,11 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my gravatar' do
-    @user.avatar?.should be_falsey
+    expect(@user.avatar?).to be_falsey
   end
 
   step 'I should not see the "Remove avatar" button' do
-    page.should_not have_link("Remove avatar")
+    expect(page).not_to have_link("Remove avatar")
   end
 
   step 'I try change my password w/o old one' do
@@ -101,27 +101,27 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I should see a missing password error message" do
-    page.should have_content "You must provide a valid current password"
+    expect(page).to have_content "You must provide a valid current password"
   end
 
   step 'I should see the input field yellow' do
-    page.should have_css 'div.has-warning'
+    expect(page).to have_css 'div.has-warning'
   end
 
   step 'I should see the input field green' do
-    page.should have_css 'div.has-success'
+    expect(page).to have_css 'div.has-success'
   end
 
   step 'I should see the input field red' do
-    page.should have_css 'div.has-error'
+    expect(page).to have_css 'div.has-error'
   end
 
   step 'I should see the password error message' do
-    page.should have_content 'Your password is too short'
+    expect(page).to have_content 'Your password is too short'
   end
 
   step "I should see a password error message" do
-    page.should have_content "Password confirmation doesn't match"
+    expect(page).to have_content "Password confirmation doesn't match"
   end
 
   step 'I reset my token' do
@@ -132,8 +132,8 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see new token' do
-    find("#token").value.should_not == @old_token
-    find("#token").value.should == @user.reload.private_token
+    expect(find("#token").value).not_to eq(@old_token)
+    expect(find("#token").value).to eq(@user.reload.private_token)
   end
 
   step 'I have activity' do
@@ -141,7 +141,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my activity' do
-    page.should have_content "#{current_user.name} closed issue"
+    expect(page).to have_content "#{current_user.name} closed issue"
   end
 
   step "I change my application theme" do
@@ -157,12 +157,12 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I should see the theme change immediately" do
-    page.should have_selector('body.ui_color')
-    page.should_not have_selector('body.ui_basic')
+    expect(page).to have_selector('body.ui_color')
+    expect(page).not_to have_selector('body.ui_basic')
   end
 
   step "I should receive feedback that the changes were saved" do
-    page.should have_content("saved")
+    expect(page).to have_content("saved")
   end
 
   step 'my password is expired' do
@@ -171,11 +171,11 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
 
   step "I am not an ldap user" do
     current_user.identities.delete
-    current_user.ldap_user?.should be_falsey
+    expect(current_user.ldap_user?).to be_falsey
   end
 
   step 'I redirected to expired password page' do
-    current_path.should == new_profile_password_path
+    expect(current_path).to eq(new_profile_password_path)
   end
 
   step 'I submit new password' do
@@ -186,15 +186,15 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I redirected to sign in page' do
-    current_path.should == new_user_session_path
+    expect(current_path).to eq(new_user_session_path)
   end
 
   step 'I should be redirected to password page' do
-    current_path.should == edit_profile_password_path
+    expect(current_path).to eq(edit_profile_password_path)
   end
 
   step 'I should be redirected to account page' do
-    current_path.should == profile_account_path
+    expect(current_path).to eq(profile_account_path)
   end
 
   step 'I click on my profile picture' do
@@ -202,10 +202,10 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see my user page' do
-    page.should have_content "User Activity"
+    expect(page).to have_content "User Activity"
 
     within '.navbar-gitlab' do
-      page.should have_content current_user.name
+      expect(page).to have_content current_user.name
     end
   end
 
@@ -219,6 +219,6 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step 'I should see groups I belong to' do
-    page.should have_css('.profile-groups-avatars', visible: true)
+    expect(page).to have_css('.profile-groups-avatars', visible: true)
   end
 end

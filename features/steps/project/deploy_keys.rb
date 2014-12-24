@@ -9,7 +9,7 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
 
   step 'I should see project deploy keys' do
     within '.enabled-keys' do
-      page.should have_content deploy_key.title
+      expect(page).to have_content deploy_key.title
     end
   end
 
@@ -24,12 +24,12 @@ class Spinach::Features::ProjectDeployKeys < Spinach::FeatureSteps
   end
 
   step 'I should be on deploy keys page' do
-    current_path.should == project_deploy_keys_path(@project)
+    expect(current_path).to eq(project_deploy_keys_path(@project))
   end
 
   step 'I should see newly created deploy key' do
     within '.enabled-keys' do
-      page.should have_content(deploy_key.title)
+      expect(page).to have_content(deploy_key.title)
     end
   end
 

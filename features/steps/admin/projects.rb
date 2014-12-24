@@ -5,7 +5,7 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
 
   step 'I should see all projects' do
     Project.all.each do |p|
-      page.should have_content p.name_with_namespace
+      expect(page).to have_content p.name_with_namespace
     end
   end
 
@@ -15,9 +15,9 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
 
   step 'I should see project details' do
     project = Project.first
-    current_path.should == admin_project_path(project)
-    page.should have_content(project.name_with_namespace)
-    page.should have_content(project.creator.name)
+    expect(current_path).to eq(admin_project_path(project))
+    expect(page).to have_content(project.name_with_namespace)
+    expect(page).to have_content(project.creator.name)
   end
 
   step 'I visit admin project page' do
@@ -34,8 +34,8 @@ class Spinach::Features::AdminProjects < Spinach::FeatureSteps
   end
 
   step 'I should see project transfered' do
-    page.should have_content 'Web / ' + project.name
-    page.should have_content 'Namespace: Web'
+    expect(page).to have_content 'Web / ' + project.name
+    expect(page).to have_content 'Namespace: Web'
   end
 
   def project

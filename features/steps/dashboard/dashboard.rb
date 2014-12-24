@@ -4,16 +4,16 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   include SharedProject
 
   step 'I should see "New Project" link' do
-    page.should have_link "New project"
+    expect(page).to have_link "New project"
   end
 
   step 'I should see "Shop" project link' do
-    page.should have_link "Shop"
+    expect(page).to have_link "Shop"
   end
 
   step 'I should see last push widget' do
-    page.should have_content "You pushed to fix"
-    page.should have_link "Create Merge Request"
+    expect(page).to have_content "You pushed to fix"
+    expect(page).to have_link "Create Merge Request"
   end
 
   step 'I click "Create Merge Request" link' do
@@ -21,10 +21,10 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I see prefilled new Merge Request page' do
-    current_path.should == new_project_merge_request_path(@project)
-    find("#merge_request_target_project_id").value.should == @project.id.to_s
-    find("#merge_request_source_branch").value.should == "fix"
-    find("#merge_request_target_branch").value.should == "master"
+    expect(current_path).to eq(new_project_merge_request_path(@project))
+    expect(find("#merge_request_target_project_id").value).to eq(@project.id.to_s)
+    expect(find("#merge_request_source_branch").value).to eq("fix")
+    expect(find("#merge_request_target_branch").value).to eq("master")
   end
 
   step 'user with name "John Doe" joined project "Shop"' do
@@ -38,7 +38,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I should see "John Doe joined project at Shop" event' do
-    page.should have_content "John Doe joined project at #{project.name_with_namespace}"
+    expect(page).to have_content "John Doe joined project at #{project.name_with_namespace}"
   end
 
   step 'user with name "John Doe" left project "Shop"' do
@@ -51,7 +51,7 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I should see "John Doe left project at Shop" event' do
-    page.should have_content "John Doe left project at #{project.name_with_namespace}"
+    expect(page).to have_content "John Doe left project at #{project.name_with_namespace}"
   end
 
   step 'I have group with projects' do
@@ -64,13 +64,13 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
 
   step 'I should see projects list' do
     @user.authorized_projects.all.each do |project|
-      page.should have_link project.name_with_namespace
+      expect(page).to have_link project.name_with_namespace
     end
   end
 
   step 'I should see groups list' do
     Group.all.each do |group|
-      page.should have_link group.name
+      expect(page).to have_link group.name
     end
   end
 
@@ -80,6 +80,6 @@ class Spinach::Features::Dashboard < Spinach::FeatureSteps
   end
 
   step 'I should see 1 project at group list' do
-    find('span.last_activity/span').should have_content('1')
+    expect(find('span.last_activity/span')).to have_content('1')
   end
 end

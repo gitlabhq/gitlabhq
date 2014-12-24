@@ -23,7 +23,7 @@ class Spinach::Features::ProjectSourceMultiselectBlob < Spinach::FeatureSteps
         pluralization = range.kind_of?(Array) ? "s" : ""
 
         step "I should see \"#{fragment}\" as URI fragment" do
-          URI.parse(current_url).fragment.should == fragment
+          expect(URI.parse(current_url).fragment).to eq(fragment)
         end
 
         step "I should see line#{pluralization} #{fragment[1..-1]} highlighted" do
@@ -35,7 +35,7 @@ class Spinach::Features::ProjectSourceMultiselectBlob < Spinach::FeatureSteps
             extra ||= ids.delete(element[:id]).nil?
           end
 
-          extra.should be_falsey and ids.should be_empty
+          expect(extra).to be_falsey and expect(ids).to be_empty
         end
       end
     end

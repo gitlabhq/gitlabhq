@@ -14,15 +14,15 @@ module SharedActiveTab
   end
 
   step 'no other main tabs should be active' do
-    page.should have_selector('.main-nav li.active', count: 1)
+    expect(page).to have_selector('.main-nav li.active', count: 1)
   end
 
   step 'no other sub tabs should be active' do
-    page.should have_selector('div.content ul.nav-tabs li.active', count: 1)
+    expect(page).to have_selector('div.content ul.nav-tabs li.active', count: 1)
   end
 
   step 'no other sub navs should be active' do
-    page.should have_selector('div.content ul.nav-stacked-menu li.active', count: 1)
+    expect(page).to have_selector('div.content ul.nav-stacked-menu li.active', count: 1)
   end
 
   step 'the active main tab should be Home' do

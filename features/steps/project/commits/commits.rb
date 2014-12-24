@@ -6,9 +6,9 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I see project commits' do
     commit = @project.repository.commit
-    page.should have_content(@project.name)
-    page.should have_content(commit.message[0..20])
-    page.should have_content(commit.short_id)
+    expect(page).to have_content(@project.name)
+    expect(page).to have_content(commit.message[0..20])
+    expect(page).to have_content(commit.short_id)
   end
 
   step 'I click atom feed link' do
@@ -17,10 +17,10 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'I see commits atom feed' do
     commit = @project.repository.commit
-    response_headers['Content-Type'].should have_content("application/atom+xml")
-    body.should have_selector("title", text: "Recent commits to #{@project.name}")
-    body.should have_selector("author email", text: commit.author_email)
-    body.should have_selector("entry summary", text: commit.description[0..10])
+    expect(response_headers['Content-Type']).to have_content("application/atom+xml")
+    expect(body).to have_selector("title", text: "Recent commits to #{@project.name}")
+    expect(body).to have_selector("author email", text: commit.author_email)
+    expect(body).to have_selector("entry summary", text: commit.description[0..10])
   end
 
   step 'I click on commit link' do
@@ -28,8 +28,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see commit info' do
-    page.should have_content sample_commit.message
-    page.should have_content "Showing #{sample_commit.files_changed_count} changed files"
+    expect(page).to have_content sample_commit.message
+    expect(page).to have_content "Showing #{sample_commit.files_changed_count} changed files"
   end
 
   step 'I fill compare fields with refs' do
@@ -39,21 +39,21 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see compared refs' do
-    page.should have_content "Compare View"
-    page.should have_content "Commits (1)"
-    page.should have_content "Showing 2 changed files"
+    expect(page).to have_content "Compare View"
+    expect(page).to have_content "Commits (1)"
+    expect(page).to have_content "Showing 2 changed files"
   end
 
   step 'I see breadcrumb links' do
-    page.should have_selector('ul.breadcrumb')
-    page.should have_selector('ul.breadcrumb a', count: 4)
+    expect(page).to have_selector('ul.breadcrumb')
+    expect(page).to have_selector('ul.breadcrumb a', count: 4)
   end
 
   step 'I see commits stats' do
-    page.should have_content 'Top 50 Committers'
-    page.should have_content 'Committers'
-    page.should have_content 'Total commits'
-    page.should have_content 'Authors'
+    expect(page).to have_content 'Top 50 Committers'
+    expect(page).to have_content 'Committers'
+    expect(page).to have_content 'Total commits'
+    expect(page).to have_content 'Authors'
   end
 
   step 'I visit big commit page' do
@@ -62,8 +62,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see big commit warning' do
-    page.should have_content sample_big_commit.message
-    page.should have_content "Too many changes"
+    expect(page).to have_content sample_big_commit.message
+    expect(page).to have_content "Too many changes"
     Commit::DIFF_SAFE_FILES = 100
   end
 
@@ -73,8 +73,8 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
 
   step 'The diff links to both the previous and current image' do
     links = all('.two-up span div a')
-    links[0]['href'].should =~ %r{blob/#{sample_image_commit.old_blob_id}}
-    links[1]['href'].should =~ %r{blob/#{sample_image_commit.new_blob_id}}
+    expect(links[0]['href']).to match(%r{blob/#{sample_image_commit.old_blob_id}})
+    expect(links[1]['href']).to match(%r{blob/#{sample_image_commit.new_blob_id}})
   end
 
   step 'I click side-by-side diff button' do
@@ -82,10 +82,10 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I see side-by-side diff button' do
-    page.should have_content "Side-by-side Diff"
+    expect(page).to have_content "Side-by-side Diff"
   end
 
   step 'I see inline diff button' do
-    page.should have_content "Inline Diff"
+    expect(page).to have_content "Inline Diff"
   end
 end

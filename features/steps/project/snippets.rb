@@ -30,15 +30,15 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I should see "Snippet one" in snippets' do
-    page.should have_content "Snippet one"
+    expect(page).to have_content "Snippet one"
   end
 
   step 'I should not see "Snippet two" in snippets' do
-    page.should_not have_content "Snippet two"
+    expect(page).not_to have_content "Snippet two"
   end
 
   step 'I should not see "Snippet one" in snippets' do
-    page.should_not have_content "Snippet one"
+    expect(page).not_to have_content "Snippet one"
   end
 
   step 'I click link "Edit"' do
@@ -61,8 +61,8 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I should see snippet "Snippet three"' do
-    page.should have_content "Snippet three"
-    page.should have_content "Content of snippet three"
+    expect(page).to have_content "Snippet three"
+    expect(page).to have_content "Content of snippet three"
   end
 
   step 'I submit new title "Snippet new title"' do
@@ -71,7 +71,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I should see "Snippet new title"' do
-    page.should have_content "Snippet new title"
+    expect(page).to have_content "Snippet new title"
   end
 
   step 'I leave a comment like "Good snippet!"' do
@@ -82,7 +82,7 @@ class Spinach::Features::ProjectSnippets < Spinach::FeatureSteps
   end
 
   step 'I should see comment "Good snippet!"' do
-    page.should have_content "Good snippet!"
+    expect(page).to have_content "Good snippet!"
   end
 
   step 'I visit snippet page "Snippet one"' do

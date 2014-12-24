@@ -7,23 +7,23 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see group "Owned" projects list' do
     Group.find_by(name: "Owned").projects.each do |project|
-      page.should have_link project.name
+      expect(page).to have_link project.name
     end
   end
 
   step 'I should see projects activity feed' do
-    page.should have_content 'closed issue'
+    expect(page).to have_content 'closed issue'
   end
 
   step 'I should see issues from group "Owned" assigned to me' do
     assigned_to_me(:issues).each do |issue|
-      page.should have_content issue.title
+      expect(page).to have_content issue.title
     end
   end
 
   step 'I should see merge requests from group "Owned" assigned to me' do
     assigned_to_me(:merge_requests).each do |issue|
-      page.should have_content issue.title[0..80]
+      expect(page).to have_content issue.title[0..80]
     end
   end
 
@@ -39,22 +39,22 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see user "John Doe" in team list' do
     projects_with_access = find(".panel .well-list")
-    projects_with_access.should have_content("John Doe")
+    expect(projects_with_access).to have_content("John Doe")
   end
 
   step 'I should not see user "John Doe" in team list' do
     projects_with_access = find(".panel .well-list")
-    projects_with_access.should_not have_content("John Doe")
+    expect(projects_with_access).not_to have_content("John Doe")
   end
 
   step 'I should see user "Mary Jane" in team list' do
     projects_with_access = find(".panel .well-list")
-    projects_with_access.should have_content("Mary Jane")
+    expect(projects_with_access).to have_content("Mary Jane")
   end
 
   step 'I should not see user "Mary Jane" in team list' do
     projects_with_access = find(".panel .well-list")
-    projects_with_access.should_not have_content("Mary Jane")
+    expect(projects_with_access).not_to have_content("Mary Jane")
   end
 
   step 'project from group "Owned" has issues assigned to me' do
@@ -83,13 +83,13 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should be redirected to group "Samurai" page' do
-    current_path.should == group_path(Group.last)
+    expect(current_path).to eq(group_path(Group.last))
   end
 
   step 'I should see newly created group "Samurai"' do
-    page.should have_content "Samurai"
-    page.should have_content "Tokugawa Shogunate"
-    page.should have_content "Currently you are only seeing events from the"
+    expect(page).to have_content "Samurai"
+    expect(page).to have_content "Tokugawa Shogunate"
+    expect(page).to have_content "Currently you are only seeing events from the"
   end
 
   step 'I change group "Owned" name to "new-name"' do
@@ -99,7 +99,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see new group "Owned" name' do
     within ".navbar-gitlab" do
-      page.should have_content "group: new-name"
+      expect(page).to have_content "group: new-name"
     end
   end
 
@@ -110,12 +110,12 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see new group "Owned" avatar' do
-    Group.find_by(name: "Owned").avatar.should be_instance_of AttachmentUploader
-    Group.find_by(name: "Owned").avatar.url.should == "/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/gitlab_logo.png"
+    expect(Group.find_by(name: "Owned").avatar).to be_instance_of AttachmentUploader
+    expect(Group.find_by(name: "Owned").avatar.url).to eq("/uploads/group/avatar/#{ Group.find_by(name:"Owned").id }/gitlab_logo.png")
   end
 
   step 'I should see the "Remove avatar" button' do
-    page.should have_link("Remove avatar")
+    expect(page).to have_link("Remove avatar")
   end
 
   step 'I have group "Owned" avatar' do
@@ -130,11 +130,11 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should not see group "Owned" avatar' do
-    Group.find_by(name: "Owned").avatar?.should be_falsey
+    expect(Group.find_by(name: "Owned").avatar?).to be_falsey
   end
 
   step 'I should not see the "Remove avatar" button' do
-    page.should_not have_link("Remove avatar")
+    expect(page).not_to have_link("Remove avatar")
   end
 
   step 'I click on the "Remove User From Group" button for "John Doe"' do
@@ -148,12 +148,12 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should not see the "Remove User From Group" button for "John Doe"' do
-    find(:css, 'li', text: "John Doe").should_not have_selector(:css, 'a.btn-remove')
+    expect(find(:css, 'li', text: "John Doe")).not_to have_selector(:css, 'a.btn-remove')
     # poltergeist always confirms popups.
   end
 
   step 'I should not see the "Remove User From Group" button for "Mary Jane"' do
-    find(:css, 'li', text: "Mary Jane").should_not have_selector(:css, 'a.btn-remove')
+    expect(find(:css, 'li', text: "Mary Jane")).not_to have_selector(:css, 'a.btn-remove')
     # poltergeist always confirms popups.
   end
 
@@ -169,7 +169,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group milestones index page has no milestones' do
-    page.should have_content('No milestones to show')
+    expect(page).to have_content('No milestones to show')
   end
 
   step 'Group has projects with milestones' do
@@ -177,10 +177,10 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group milestones index page with milestones' do
-    page.should have_content('Version 7.2')
-    page.should have_content('GL-113')
-    page.should have_link('2 Issues', href: group_milestone_path("owned", "version-7-2", title: "Version 7.2"))
-    page.should have_link('3 Merge Requests', href: group_milestone_path("owned", "gl-113", title: "GL-113"))
+    expect(page).to have_content('Version 7.2')
+    expect(page).to have_content('GL-113')
+    expect(page).to have_link('2 Issues', href: group_milestone_path("owned", "version-7-2", title: "Version 7.2"))
+    expect(page).to have_link('3 Merge Requests', href: group_milestone_path("owned", "gl-113", title: "GL-113"))
   end
 
   step 'I click on one group milestone' do
@@ -188,15 +188,15 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group milestone with descriptions and expiry date' do
-    page.should have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
-    page.should have_content('expires at Aug 20, 2114')
+    expect(page).to have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
+    expect(page).to have_content('expires at Aug 20, 2114')
   end
 
   step 'I should see group milestone with all issues and MRs assigned to that milestone' do
-    page.should have_content('Milestone GL-113')
-    page.should have_content('Progress: 0 closed – 4 open')
-    page.should have_link(@issue1.title, href: project_issue_path(@project1, @issue1))
-    page.should have_link(@mr3.title, href: project_merge_request_path(@project3, @mr3))
+    expect(page).to have_content('Milestone GL-113')
+    expect(page).to have_content('Progress: 0 closed – 4 open')
+    expect(page).to have_link(@issue1.title, href: project_issue_path(@project1, @issue1))
+    expect(page).to have_link(@mr3.title, href: project_merge_request_path(@project3, @mr3))
   end
 
   protected

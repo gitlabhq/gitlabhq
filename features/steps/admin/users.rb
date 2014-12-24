@@ -5,7 +5,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
 
   step 'I should see all users' do
     User.all.each do |user|
-      page.should have_content user.name
+      expect(page).to have_content user.name
     end
   end
 
@@ -24,12 +24,12 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
 
   step 'See username error message' do
     within "#error_explanation" do
-      page.should have_content "Username"
+      expect(page).to have_content "Username"
     end
   end
 
   step 'Not changed form action url' do
-    page.should have_selector %(form[action="/admin/users/#{@user.username}"])
+    expect(page).to have_selector %(form[action="/admin/users/#{@user.username}"])
   end
 
   step 'I submit modified user' do
@@ -38,7 +38,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I see user attributes changed' do
-    page.should have_content 'Can create groups: Yes'
+    expect(page).to have_content 'Can create groups: Yes'
   end
 
   step 'click edit on my user' do
@@ -53,7 +53,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I see the secondary email' do
-    page.should have_content "Secondary email: #{@user_with_secondary_email.emails.last.email}"
+    expect(page).to have_content "Secondary email: #{@user_with_secondary_email.emails.last.email}"
   end
 
   step 'I click remove secondary email' do
@@ -61,7 +61,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should not see secondary email anymore' do
-    page.should_not have_content "Secondary email:"
+    expect(page).not_to have_content "Secondary email:"
   end
 
   step 'user "Mike" with groups and projects' do
@@ -79,7 +79,7 @@ class Spinach::Features::AdminUsers < Spinach::FeatureSteps
   end
 
   step 'I should see user "Mike" details' do
-    page.should have_content 'Account'
-    page.should have_content 'Personal projects limit'
+    expect(page).to have_content 'Account'
+    expect(page).to have_content 'Personal projects limit'
   end
 end
