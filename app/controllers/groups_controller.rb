@@ -21,7 +21,7 @@ class GroupsController < ApplicationController
 
   def create
     @group = Group.new(group_params)
-    @group.path = @group.name.dup.parameterize if @group.name
+    @group.name = @group.path.dup unless @group.name
 
     if @group.save
       @group.add_owner(current_user)

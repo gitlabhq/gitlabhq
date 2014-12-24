@@ -77,7 +77,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'submit form with new group "Samurai" info' do
-    fill_in 'group_name', with: 'Samurai'
+    fill_in 'group_path', with: 'Samurai'
     fill_in 'group_description', with: 'Tokugawa Shogunate'
     click_button "Create group"
   end
@@ -93,6 +93,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I change group "Owned" name to "new-name"' do
     fill_in 'group_name', with: 'new-name'
+    fill_in 'group_path', with: 'new-name'
     click_button "Save group"
   end
 
