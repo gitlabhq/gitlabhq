@@ -53,17 +53,13 @@ class DashboardController < ApplicationController
   end
 
   def merge_requests
-    set_filters_defaults
-    @merge_requests = MergeRequestsFinder.new.execute(current_user, params)
-    set_filter_values(@merge_requests)
+    @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
     @merge_requests = @merge_requests.preload(:author, :target_project)
   end
 
   def issues
-    set_filters_defaults
-    @issues = IssuesFinder.new.execute(current_user, params)
-    set_filter_values(@issues)
+    @issues = get_issues_collection
     @issues = @issues.page(params[:page]).per(20)
     @issues = @issues.preload(:author, :project)
 

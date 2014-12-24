@@ -240,24 +240,26 @@ class ApplicationController < ActionController::Base
     end
   end
 
-  def set_filters_defaults
+  def set_filters_params
     params[:sort] ||= 'newest'
     params[:scope] = 'all' if params[:scope].blank?
     params[:state] = 'opened' if params[:state].blank?
 
-    @sort = params[:sort].humanize
+    @filter_params = params.dup
 
     if @project
-      params[:project_id] = @project.id
+      @filter_params[:project_id] = @project.id
     elsif @group
-      params[:group_id] = @group.id
+      @filter_params[:group_id] = @group.id
     else
-      params[:authorized_only] = true
+      @filter_params[:authorized_only] = true
 
-      unless params[:assignee_id].present?
-        params[:assignee_id] = current_user.id
+      unless @filter_params[:assignee_id]
+        @filter_params[:assignee_id] = current_user.id
       end
     end
+
+    @filter_params
   end
 
   def set_filter_values(collection)
@@ -265,20 +267,35 @@ class ApplicationController < ActionController::Base
     author_id = params[:author_id]
     milestone_id = params[:milestone_id]
 
+    @sort = params[:sort].try(:humanize)
     @assignees = User.where(id: collection.pluck(:assignee_id))
     @authors = User.where(id: collection.pluck(:author_id))
     @milestones = Milestone.where(id: collection.pluck(:milestone_id))
 
     if assignee_id.present? && !assignee_id.to_i.zero?
-      @assignee = @assignees.find(assignee_id)
+      @assignee = @assignees.find_by(id: assignee_id)
     end
 
     if author_id.present? && !author_id.to_i.zero?
-      @author = @authors.find(author_id)
+      @author = @authors.find_by(id: author_id)
     end
 
     if milestone_id.present? && !milestone_id.to_i.zero?
-      @milestone = @milestones.find(milestone_id)
+      @milestone = @milestones.find_by(id: milestone_id)
     end
+  end
+
+  def get_issues_collection
+    set_filters_params
+    issues = IssuesFinder.new.execute(current_user, @filter_params)
+    set_filter_values(issues)
+    issues
+  end
+
+  def get_merge_requests_collection
+    set_filters_params
+    merge_requests = MergeRequestsFinder.new.execute(current_user, @filter_params)
+    set_filter_values(merge_requests)
+    merge_requests
   end
 end
