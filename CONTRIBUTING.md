@@ -101,6 +101,16 @@ Please ensure you support the feature you contribute through all of these steps.
 1. Community questions answered
 1. Answers to questions radiated (in docs/wiki/etc.)
 
+If you add a dependency in GitLab (such as an operating system package) please consider updating the following and note the applicability of each in your merge request:
+
+1. Note the addition in the release blog post (create one if it doesn't exist yet) https://gitlab.com/gitlab-com/www-gitlab-com/merge_requests/
+1. Upgrade guide, for example https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/7.5-to-7.6.md
+1. Upgrader https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/update/upgrader.md#2-run-gitlab-upgrade-tool
+1. Installation guide https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies
+1. GitLab Development Kit https://gitlab.com/gitlab-org/gitlab-development-kit
+1. Test suite https://gitlab.com/gitlab-org/gitlab-ci/blob/master/doc/examples/configure_a_runner_to_run_the_gitlab_ce_test_suite.md
+1. Omnibus package creator https://gitlab.com/gitlab-org/omnibus-gitlab
+
 ## Merge request description format
 
 1. What does this MR do?
