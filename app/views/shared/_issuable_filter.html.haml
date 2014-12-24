@@ -14,7 +14,7 @@
           %i.fa.fa-compass
           All
 
-  .dropdown.inline
+  .dropdown.inline.assignee-filter
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
       %i.fa.fa-user
       %span.light assignee:
@@ -37,7 +37,7 @@
             = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
             = user.name
 
-  .dropdown.inline.prepend-left-10
+  .dropdown.inline.prepend-left-10.author-filter
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
       %i.fa.fa-user
       %span.light author:
@@ -60,7 +60,7 @@
             = image_tag avatar_icon(user.email), class: "avatar s16", alt: ''
             = user.name
 
-  .dropdown.inline.prepend-left-10
+  .dropdown.inline.prepend-left-10.milestone-filter
     %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
       %i.fa.fa-clock-o
       %span.light milestone:
@@ -84,7 +84,7 @@
             %small.light= milestone.expires_at
 
   - if @project
-    .dropdown.inline.prepend-left-10
+    .dropdown.inline.prepend-left-10.labels-filter
       %a.dropdown-toggle.btn{href: '#', "data-toggle" => "dropdown"}
         %i.fa.fa-tags
         %span.light label:

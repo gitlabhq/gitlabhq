@@ -263,11 +263,11 @@ class ApplicationController < ActionController::Base
   end
 
   def set_filter_values(collection)
-    assignee_id = params[:assignee_id]
-    author_id = params[:author_id]
-    milestone_id = params[:milestone_id]
+    assignee_id = @filter_params[:assignee_id]
+    author_id = @filter_params[:author_id]
+    milestone_id = @filter_params[:milestone_id]
 
-    @sort = params[:sort].try(:humanize)
+    @sort = @filter_params[:sort].try(:humanize)
     @assignees = User.where(id: collection.pluck(:assignee_id))
     @authors = User.where(id: collection.pluck(:author_id))
     @milestones = Milestone.where(id: collection.pluck(:milestone_id))
