@@ -4,5 +4,4 @@
   %body{class: "#{app_theme} #{theme_type} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/public_head_panel", title: @title
-    .container.navless-container
-      .content= yield
+    = render 'layouts/page'

@@ -20,16 +20,12 @@
 }
 
 .merge-request .merge-request-tabs{
-  border-bottom: 2px solid $border_primary;
   margin: 20px 0;
 
   li {
     a {
       padding: 15px 40px;
       font-size: 14px;
-      margin-bottom: -2px;
-      border-bottom: 2px solid $border_primary;
-      @include border-radius(0px);
     }
   }
 }

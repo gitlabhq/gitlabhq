@@ -6,7 +6,7 @@ module GroupsHelper
   def leave_group_message(group)
     "Are you sure you want to leave \"#{group}\" group?"
   end
-  
+
   def should_user_see_group_roles?(user, group)
     if user
       user.is_admin? || group.members.exists?(user_id: user.id)
@@ -43,5 +43,13 @@ module GroupsHelper
     path = request.path
     path << "?#{options.to_param}"
     path
+  end
+
+  def group_settings_page?
+    if current_controller?('groups')
+      current_action?('edit') || current_action?('projects')
+    else
+      false
+    end
   end
 end

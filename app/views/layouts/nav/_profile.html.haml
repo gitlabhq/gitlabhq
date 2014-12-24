@@ -1,26 +1,42 @@
-%ul
+%ul.nav-sidebar.navbar-collapse.collapse
   = nav_link(path: 'profiles#show', html_options: {class: 'home'}) do
     = link_to profile_path, title: "Profile" do
+      %i.fa.fa-user
       Profile
   = nav_link(controller: :accounts) do
-    = link_to "Account", profile_account_path
+    = link_to profile_account_path do
+      %i.fa.fa-gear
+      Account
   = nav_link(controller: :emails) do
     = link_to profile_emails_path do
+      %i.fa.fa-envelope-o
       Emails
       %span.count= current_user.emails.count + 1
   - unless current_user.ldap_user?
     = nav_link(controller: :passwords) do
-      = link_to "Password", edit_profile_password_path
+      = link_to edit_profile_password_path do
+        %i.fa.fa-lock
+        Password
   = nav_link(controller: :notifications) do
-    = link_to "Notifications", profile_notifications_path
+    = link_to profile_notifications_path do
+      %i.fa.fa-inbox
+      Notifications
+
   = nav_link(controller: :keys) do
     = link_to profile_keys_path do
+      %i.fa.fa-key
       SSH Keys
       %span.count= current_user.keys.count
   = nav_link(path: 'profiles#design') do
-    = link_to "Design", design_profile_path
+    = link_to design_profile_path do
+      %i.fa.fa-image
+      Design
   = nav_link(controller: :groups) do
-    = link_to "Groups", profile_groups_path
+    = link_to profile_groups_path do
+      %i.fa.fa-group
+      Groups
   = nav_link(path: 'profiles#history') do
-    = link_to "History", history_profile_path
+    = link_to history_profile_path do
+      %i.fa.fa-history
+      History
 

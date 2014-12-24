@@ -4,9 +4,4 @@
   %body{class: "#{app_theme} #{theme_type} application", :'data-page' => body_data_page }
     = render "layouts/broadcast"
     = render "layouts/head_panel", title: "Dashboard"
-    %nav.main-nav.navbar-collapse.collapse
-      .container= render 'layouts/nav/dashboard'
-    .container
-      .content
-        = render "layouts/flash"
-        = yield
+    = render 'layouts/page', sidebar: 'layouts/nav/dashboard'

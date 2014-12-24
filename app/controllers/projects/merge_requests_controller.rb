@@ -17,9 +17,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
   before_filter :authorize_modify_merge_request!, only: [:close, :edit, :update, :sort]
 
   def index
-    set_filter_variables(@project.merge_requests)
-
-    @merge_requests = MergeRequestsFinder.new.execute(current_user, params.merge(project_id: @project.id))
+    @merge_requests = get_merge_requests_collection
     @merge_requests = @merge_requests.page(params[:page]).per(20)
   end
 

@@ -4,7 +4,4 @@
   %body{class: "#{app_theme} #{theme_type} application", :'data-page' => body_data_page}
     = render "layouts/broadcast"
     = render "layouts/public_head_panel", title: "group: #{@group.name}"
-    %nav.main-nav.navbar-collapse.collapse
-      .container= render 'layouts/nav/group'
-    .container
-      .content= yield
+    = render 'layouts/page', sidebar: 'layouts/nav/group'

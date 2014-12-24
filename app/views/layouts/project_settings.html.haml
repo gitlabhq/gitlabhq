@@ -7,13 +7,6 @@
     = render "layouts/init_auto_complete"
     - if can?(current_user, :download_code, @project)
       = render 'shared/no_ssh'
-    %nav.main-nav.navbar-collapse.collapse
-      .container= render 'layouts/nav/project'
-    .container
-      .content
-        = render "layouts/flash"
-        .row
-          .col-md-2
-            = render "projects/settings_nav"
-          .col-md-10
-            = yield
+
+    - @project_settings_nav = true
+    = render 'layouts/page', sidebar: 'layouts/nav/project'

@@ -89,7 +89,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   step 'I should see newly created group "Samurai"' do
     page.should have_content "Samurai"
     page.should have_content "Tokugawa Shogunate"
-    page.should have_content "Currently you are only seeing events from the"
   end
 
   step 'I change group "Owned" name to "new-name"' do
@@ -99,7 +98,7 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
 
   step 'I should see new group "Owned" name' do
     within ".navbar-gitlab" do
-      page.should have_content "group: new-name"
+      page.should have_content "new-name"
     end
   end
 

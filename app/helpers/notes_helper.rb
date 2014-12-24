@@ -52,8 +52,11 @@ module NotesHelper
       discussion_id: discussion_id
     }
 
-    button_tag '', class: 'btn add-diff-note js-add-diff-note-button',
-               data: data, title: 'Add a comment to this line'
+    button_tag(class: 'btn add-diff-note js-add-diff-note-button',
+               data: data,
+               title: 'Add a comment to this line') do
+      content_tag :i, nil, class: 'fa fa-comment-o'
+    end
   end
 
   def link_to_reply_diff(note)
