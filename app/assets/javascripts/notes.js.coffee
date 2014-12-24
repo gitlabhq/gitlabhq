@@ -375,7 +375,7 @@ class @Notes
   ###
   addDiffNote: (e) =>
     e.preventDefault()
-    link = e.target
+    link = e.currentTarget
     form = $(".js-new-note-form")
     row = $(link).closest("tr")
     nextRow = row.next()
