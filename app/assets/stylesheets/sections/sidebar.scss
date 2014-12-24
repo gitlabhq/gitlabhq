@@ -121,3 +121,35 @@
     border-left: 1px solid #EAEAEA;
   }
 }
+
+.fold-sidenav {
+  .page-with-sidebar {
+    padding-left: 50px;
+  }
+
+  .sidebar-wrapper {
+    width: 52px;
+    position: absolute;
+    left: 50px;
+    height: 100%;
+    margin-left: -50px;
+
+    .nav-sidebar {
+      margin-top: 20px;
+      position: fixed;
+      top: 45px;
+      width: 52px;
+
+      li a {
+        padding-left: 18px;
+        font-size: 14px;
+        padding: 10px 15px;
+        text-align: center;
+
+        & > span {
+          display: none;
+        }
+      }
+    }
+  }
+}

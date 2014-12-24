@@ -2,23 +2,28 @@
   = nav_link(path: 'dashboard#show', html_options: {class: 'home'}) do
     = link_to root_path, title: 'Home', class: 'shortcuts-activity' do
       %i.fa.fa-dashboard
-      Activity
+      %span
+        Activity
   = nav_link(path: 'dashboard#projects') do
     = link_to projects_dashboard_path, class: 'shortcuts-projects' do
       %i.fa.fa-cube
-      Projects
+      %span
+        Projects
   = nav_link(path: 'dashboard#issues') do
     = link_to issues_dashboard_path, class: 'shortcuts-issues' do
       %i.fa.fa-exclamation-circle
-      Issues
-      %span.count= current_user.assigned_issues.opened.count
+      %span
+        Issues
+        %span.count= current_user.assigned_issues.opened.count
   = nav_link(path: 'dashboard#merge_requests') do
     = link_to merge_requests_dashboard_path, class: 'shortcuts-merge_requests' do
       %i.fa.fa-tasks
-      Merge Requests
-      %span.count= current_user.assigned_merge_requests.opened.count
+      %span
+        Merge Requests
+        %span.count= current_user.assigned_merge_requests.opened.count
   = nav_link(controller: :help) do
     = link_to help_path do
       %i.fa.fa-question-circle
-      Help
+      %span
+        Help
 
