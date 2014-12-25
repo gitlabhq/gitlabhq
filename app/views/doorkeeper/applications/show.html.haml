@@ -1,21 +1,26 @@
 %h3.page-title
   Application: #{@application.name}
-.row
-  .col-md-8
-    %h4 Application Id:
-    %p
+
+
+%table.table
+  %tr
+    %td
+      Application Id
+    %td
       %code#application_id= @application.uid
-    %h4 Secret:
-    %p
+  %tr
+    %td
+      Secret:
+    %td
       %code#secret= @application.secret
-    %h4 Callback urls:
-    %table
+
+  %tr
+    %td
+      Callback url
+    %td
       - @application.redirect_uri.split.each do |uri|
-        %tr
-          %td
-            %code= uri
-          %td
-            = link_to 'Authorize', oauth_authorization_path(client_id: @application.uid, redirect_uri: uri, response_type: 'code'), class: 'btn btn-success', target: '_blank'
-.prepend-top-20
-  %p= link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
-  %p= render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'
+        %div
+          %span.monospace= uri
+.form-actions
+  = link_to 'Edit', edit_oauth_application_path(@application), class: 'btn btn-primary wide pull-left'
+  = render 'delete_form', application: @application, submit_btn_css: 'btn btn-danger prepend-left-10'

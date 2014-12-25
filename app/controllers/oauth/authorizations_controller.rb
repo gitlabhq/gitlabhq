@@ -55,4 +55,3 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
     @strategy ||= server.authorization_request(pre_auth.response_type)
   end
 end
-

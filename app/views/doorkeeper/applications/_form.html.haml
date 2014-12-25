@@ -19,7 +19,6 @@
           Use
           %code= Doorkeeper.configuration.native_redirect_uri
           for local tests
-  .form-group
-    .col-sm-offset-2.col-sm-10
-      = f.submit 'Submit', class: "btn btn-primary wide"
-      = link_to "Cancel", profile_account_path, :class => "btn btn-default"
+  .form-actions
+    = f.submit 'Submit', class: "btn btn-primary wide"
+    = link_to "Cancel", applications_profile_path, class: "btn btn-default"

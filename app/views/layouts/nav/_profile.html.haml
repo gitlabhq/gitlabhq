@@ -3,10 +3,14 @@
     = link_to profile_path, title: "Profile" do
       %i.fa.fa-user
       Profile
-  = nav_link(controller: [:accounts, :applications]) do
+  = nav_link(controller: [:accounts]) do
     = link_to profile_account_path do
       %i.fa.fa-gear
       Account
+  = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new']) do
+    = link_to applications_profile_path do
+      %i.fa.fa-cloud
+      Applications
   = nav_link(controller: :emails) do
     = link_to profile_emails_path do
       %i.fa.fa-envelope-o

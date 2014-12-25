@@ -118,6 +118,7 @@ Gitlab::Application.routes.draw do
     member do
       get :history
       get :design
+      get :applications
 
       put :reset_private_token
       put :update_username

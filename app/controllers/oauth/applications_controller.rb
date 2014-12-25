@@ -3,7 +3,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
   layout "profile"
 
   def index
-    @applications = current_user.oauth_applications
+    head :forbidden and return
   end
 
   def create
@@ -27,5 +27,15 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
     end
 
     redirect_to profile_account_url
+  end
+
+  private
+
+  def set_application
+    @application = current_user.oauth_applications.find(params[:id])
+  end
+
+  rescue_from ActiveRecord::RecordNotFound do |exception|
+    render "errors/not_found", layout: "errors", status: 404
   end
 end

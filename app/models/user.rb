@@ -565,4 +565,8 @@ class User < ActiveRecord::Base
         namespaces += masters_groups
       end
   end
+
+  def oauth_authorized_tokens
+    Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
+  end
 end

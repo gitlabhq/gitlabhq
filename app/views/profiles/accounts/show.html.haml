@@ -75,38 +75,4 @@
               The following groups will be abandoned. You should transfer or remove them:
               %strong #{current_user.solo_owned_groups.map(&:name).join(', ')}
         = link_to 'Delete account', user_registration_path, data: { confirm: "REMOVE #{current_user.name}? Are you sure?" }, method: :delete, class: "btn btn-remove"
-        
-  %h3.page-title
-    OAuth2
-  %fieldset.oauth-applications
-    %legend Your applications
-    %p= link_to 'New Application', new_oauth_application_path, class: 'btn btn-success'
-    %table.table.table-striped
-      %thead
-        %tr
-          %th Name
-          %th Callback URL
-          %th
-          %th
-      %tbody
-        - @applications.each do |application|
-          %tr{:id => "application_#{application.id}"}
-            %td= link_to application.name, oauth_application_path(application)
-            %td= application.redirect_uri
-            %td= link_to 'Edit', edit_oauth_application_path(application), class: 'btn btn-link btn-small'
-            %td= render 'doorkeeper/applications/delete_form', application: application
 
-  %fieldset.oauth-authorized-applications
-    %legend Your authorized applications
-    %table.table.table-striped
-      %thead
-        %tr
-          %th Name
-          %th Created At
-          %th
-      %tbody
-        - @authorized_applications.each do |application|
-          %tr{:id => "application_#{application.id}"}
-            %td= link_to application.name, oauth_application_path(application)
-            %td= application.created_at.strftime('%Y-%m-%d %H:%M:%S') 
-            %td= render 'doorkeeper/authorized_applications/delete_form', application: application
