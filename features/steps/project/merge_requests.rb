@@ -109,6 +109,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the commit in the merge request' do
+    within '.merge-request-tabs' do
+      click_link 'Commits'
+    end
+
     within '.mr-commits' do
       click_link Commit.truncate_sha(sample_commit.id)
     end
@@ -261,7 +265,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click Side-by-side Diff tab' do
-    click_link 'Side-by-side Diff'
+    click_link 'Side-by-side'
   end
 
   step 'I should see comments on the side-by-side diff page' do
