@@ -96,7 +96,7 @@
   }
 }
 
-@media(min-width:768px) {
+@mixin expanded-sidebar {
   .page-with-sidebar {
     padding-left: 250px;
   }
@@ -122,7 +122,7 @@
   }
 }
 
-.fold-sidenav {
+@mixin folded-sidebar {
   .page-with-sidebar {
     padding-left: 50px;
   }
@@ -153,3 +153,12 @@
     }
   }
 }
+
+@media (max-width: $screen-sm-max) {
+  @include folded-sidebar;
+}
+
+@media(min-width: $screen-sm-max) {
+  @include expanded-sidebar;
+}
+
