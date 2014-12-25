@@ -89,6 +89,9 @@ class @MergeRequest
         this.$('.merge-request-tabs .diffs-tab').addClass 'active'
         this.loadDiff() unless @diffs_loaded
         this.$('.diffs').show()
+      when 'commits'
+        this.$('.merge-request-tabs .commits-tab').addClass 'active'
+        this.$('.commits').show()
       else
         this.$('.merge-request-tabs .notes-tab').addClass 'active'
         this.$('.notes').show()
