@@ -96,7 +96,7 @@
   }
 }
 
-@media(min-width:768px) {
+@mixin expanded-sidebar {
   .page-with-sidebar {
     padding-left: 250px;
   }
@@ -121,3 +121,44 @@
     border-left: 1px solid #EAEAEA;
   }
 }
+
+@mixin folded-sidebar {
+  .page-with-sidebar {
+    padding-left: 50px;
+  }
+
+  .sidebar-wrapper {
+    width: 52px;
+    position: absolute;
+    left: 50px;
+    height: 100%;
+    margin-left: -50px;
+
+    .nav-sidebar {
+      margin-top: 20px;
+      position: fixed;
+      top: 45px;
+      width: 52px;
+
+      li a {
+        padding-left: 18px;
+        font-size: 14px;
+        padding: 10px 15px;
+        text-align: center;
+
+        & > span {
+          display: none;
+        }
+      }
+    }
+  }
+}
+
+@media (max-width: $screen-sm-max) {
+  @include folded-sidebar;
+}
+
+@media(min-width: $screen-sm-max) {
+  @include expanded-sidebar;
+}
+
