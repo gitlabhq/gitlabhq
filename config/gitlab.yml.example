@@ -179,7 +179,7 @@ production: &base
         #
         #   Ex. ou=People,dc=gitlab,dc=example
         #
-        base: ''
+        base: ""
 
         # Filter LDAP users
         #
@@ -188,7 +188,7 @@ production: &base
         #
         #   Note: GitLab does not support omniauth-ldap's custom filter syntax.
         #
-        user_filter: ''
+        user_filter: ""
 
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
@@ -335,9 +335,9 @@ test:
         uid: 'uid'
         method: 'plain' # "tls" or "ssl" or "plain"
         base: 'dc=example,dc=com'
-        user_filter: ''
+        user_filter: ""
         group_base: 'ou=groups,dc=example,dc=com'
-        admin_group: ''
+        admin_group: ""
         sync_ssh_keys: false
 
 staging:
