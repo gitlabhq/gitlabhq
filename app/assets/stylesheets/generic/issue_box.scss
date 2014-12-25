@@ -6,7 +6,9 @@
 
 .issue-box {
   display: inline-block;
-  padding: 0 10px;
+  padding: 7px 13px;
+  font-weight: normal;
+  margin-right: 5px;
 
   &.issue-box-closed {
     background-color: $bg_danger;
