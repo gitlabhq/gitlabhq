@@ -8,6 +8,11 @@
     = link_to profile_account_path do
       %i.fa.fa-gear
       Account
+  = nav_link(path: ['profiles#applications', 'applications#edit', 'applications#show', 'applications#new']) do
+    = link_to applications_profile_path do
+      %i.fa.fa-cloud
+      %span
+        Applications
   = nav_link(controller: :emails) do
     = link_to profile_emails_path do
       %i.fa.fa-envelope-o

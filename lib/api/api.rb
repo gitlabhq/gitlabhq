@@ -2,6 +2,7 @@ Dir["#{Rails.root}/lib/api/*.rb"].each {|file| require file}
 
 module API
   class API < Grape::API
+    include APIGuard
     version 'v3', using: :path
 
     rescue_from ActiveRecord::RecordNotFound do
