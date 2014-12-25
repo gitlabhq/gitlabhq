@@ -27,9 +27,9 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   private
 
   def matching_token?
-    Doorkeeper::AccessToken.matching_token_for pre_auth.client,
-                                   current_resource_owner.id,
-                                   pre_auth.scopes
+    Doorkeeper::AccessToken.matching_token_for(pre_auth.client,
+                                               current_resource_owner.id,
+                                               pre_auth.scopes)
   end
 
   def redirect_or_render(auth)
@@ -41,7 +41,8 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   def pre_auth
-    @pre_auth ||= Doorkeeper::OAuth::PreAuthorization.new(Doorkeeper.configuration,
+    @pre_auth ||=
+      Doorkeeper::OAuth::PreAuthorization.new(Doorkeeper.configuration,
                                               server.client_via_uid,
                                               params)
   end
@@ -51,7 +52,7 @@ class Oauth::AuthorizationsController < Doorkeeper::AuthorizationsController
   end
 
   def strategy
-    @strategy ||= server.authorization_request pre_auth.response_type
+    @strategy ||= server.authorization_request(pre_auth.response_type)
   end
 end
 
