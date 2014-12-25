@@ -5,7 +5,7 @@
     - else
       = link_to 'Close Issue', project_issue_path(@project, @issue, issue: {state_event: :close }, status_only: true), method: :put, class: "btn btn-grouped btn-close js-note-target-close", title: "Close Issue"
 .row
-  .col-sm-9
+  .col-md-9
     .participants
       %cite.cgray
         = pluralize(@issue.participants.count, 'participant')
@@ -13,7 +13,7 @@
         = link_to_member(@project, participant, name: false, size: 24)
 
     .voting_notes#notes= render "projects/notes/notes_with_form"
-  .col-sm-3
+  .col-md-3.hidden-sm.hidden-xs
     %div
     .clearfix
       %span.slead.has_tooltip{:"data-original-title" => 'Cross-project reference'}

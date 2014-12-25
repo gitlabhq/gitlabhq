@@ -19,13 +19,15 @@
   }
 }
 
-.merge-request .merge-request-tabs{
-  margin: 20px 0;
+@media(min-width: $screen-sm-max) {
+  .merge-request .merge-request-tabs{
+    margin: 20px 0;
 
-  li {
-    a {
-      padding: 15px 40px;
-      font-size: 14px;
+    li {
+      a {
+        padding: 15px 40px;
+        font-size: 14px;
+      }
     }
   }
 }
