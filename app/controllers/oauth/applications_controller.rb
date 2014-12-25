@@ -26,7 +26,7 @@ class Oauth::ApplicationsController < Doorkeeper::ApplicationsController
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :destroy])
     end
 
-    redirect_to profile_account_url
+    redirect_to applications_profile_url
   end
 
   private

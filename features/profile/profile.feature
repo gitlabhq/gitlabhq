@@ -72,7 +72,7 @@ Feature: Profile
     Then I should see my user page
 
   Scenario: I can manage application
-    Given I visit profile account page
+    Given I visit profile applications page
     Then I click on new application button
     And I should see application form
     Then I fill application form out and submit
@@ -81,7 +81,7 @@ Feature: Profile
     And I see edit application form
     Then I change name of application and submit
     And I see that application was changed
-    Then I visit profile account page
+    Then I visit profile applications page
     And I click to remove application
     Then I see that application is removed
 

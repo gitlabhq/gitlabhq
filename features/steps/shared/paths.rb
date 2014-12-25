@@ -94,6 +94,10 @@ module SharedPaths
     visit profile_path
   end
 
+  step 'I visit profile applications page' do
+    visit applications_profile_path
+  end
+
   step 'I visit profile password page' do
     visit edit_profile_password_path
   end

@@ -26,18 +26,22 @@
 
 %fieldset.oauth-authorized-applications.prepend-top-20
   %legend Authorized applications
-  %table.table.table-striped
-    %thead
-      %tr
-        %th Name
-        %th Authorized At
-        %th Scope
-        %th
-    %tbody
-      - @authorized_tokens.each do |token|
-        - application = token.application
-        %tr{:id => "application_#{application.id}"}
-          %td= application.name
-          %td= token.created_at
-          %td= token.scopes
-          %td= render 'doorkeeper/authorized_applications/delete_form', application: application
+
+  - if @authorized_tokens.any?
+    %table.table.table-striped
+      %thead
+        %tr
+          %th Name
+          %th Authorized At
+          %th Scope
+          %th
+      %tbody
+        - @authorized_tokens.each do |token|
+          - application = token.application
+          %tr{:id => "application_#{application.id}"}
+            %td= application.name
+            %td= token.created_at
+            %td= token.scopes
+            %td= render 'doorkeeper/authorized_applications/delete_form', application: application
+  - else
+    %p.light You dont have any authorized applications
