@@ -355,3 +355,9 @@ table {
 .task-status {
   margin-left: 10px;
 }
+
+#nprogress .spinner {
+  top: auto !important;
+  bottom: 20px !important;
+  left: 20px !important;
+}
