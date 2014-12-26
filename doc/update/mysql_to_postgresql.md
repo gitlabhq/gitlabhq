@@ -13,7 +13,7 @@ sudo service gitlab stop
 
 git clone https://github.com/gitlabhq/mysql-postgresql-converter.git
 cd mysql-postgresql-converter
-mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production
+mysqldump --compatible=postgresql --default-character-set=utf8 -r databasename.mysql -u root gitlabhq_production -p
 python db_converter.py databasename.mysql databasename.psql
 
 # Import the database dump as the application database user
@@ -94,7 +94,7 @@ sudo -u git -H mv tmp/backups/TIMESTAMP_gitlab_backup.tar tmp/backups/postgresql
 
 # Create a separate database dump with PostgreSQL compatibility
 cd tmp/backups/postgresql
-sudo -u git -H mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production
+sudo -u git -H mysqldump --compatible=postgresql --default-character-set=utf8 -r gitlabhq_production.mysql -u root gitlabhq_production -p
 
 # Clone the database converter
 sudo -u git -H git clone https://github.com/gitlabhq/mysql-postgresql-converter.git

@@ -150,6 +150,8 @@
               .col-sm-9
                 .form-group
                   .input-group
+                    .input-group-addon
+                      #{URI.join(root_url, @project.namespace.path)}/
                     = f.text_field :path, class: 'form-control'
                     %span.input-group-addon .git
                 %ul

@@ -23,7 +23,7 @@ If you have local changes to your GitLab repository the script will stash them a
 
 ## 2. Run GitLab upgrade tool
 
-Note: GitLab 7.2 adds `pkg-config` and `cmake` as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
+Note: GitLab 7.6 adds `libkrb5-dev` as a dependency (installed by default on Ubuntu and OSX) while 7.2 adds `pkg-config` and `cmake` as dependency. Please check the dependencies in the [installation guide.](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md#1-packages-dependencies)
 
     # Starting with GitLab version 7.0 upgrader script has been moved to bin directory
     cd /home/git/gitlab
