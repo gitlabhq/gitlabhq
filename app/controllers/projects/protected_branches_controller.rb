@@ -22,13 +22,14 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
        protected_branch.update_attributes(
         developers_can_push: params[:developers_can_push]
        )
-      flash[:notice] = 'Branch was successfully updated.'
-    else
-      flash[:alert] = 'Could not update the branch.'
-    end
 
-    respond_to do |format|
-      format.html { redirect_to project_protected_branches_path }
+      respond_to do |format|
+        format.json { render :json => protected_branch, status: :ok }
+      end
+    else
+      respond_to do |format|
+        format.json { render json: protected_branch.errors, status: :unprocessable_entity }
+      end
     end
   end
 
