@@ -130,14 +130,16 @@
 
   .sidebar-wrapper {
     width: 52px;
-    position: absolute;
+    position: fixed;
     left: 50px;
     height: 100%;
     margin-left: -50px;
+    border-right: 1px solid #EAEAEA;
+    overflow-x: hidden;
 
     .nav-sidebar {
       margin-top: 20px;
-      position: fixed;
+      position: absolute;
       top: 45px;
       width: 52px;
 
