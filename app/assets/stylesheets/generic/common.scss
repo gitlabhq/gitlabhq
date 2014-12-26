@@ -207,26 +207,6 @@ li.note {
   }
 }
 
-.no-ssh-key-message {
-  padding: 10px 0;
-  background: #C67;
-  margin: 0;
-  color: #FFF;
-  margin-top: -1px;
-  text-align: center;
-
-  a {
-    color: #fff;
-    text-decoration: underline;
-  }
-
-  .links-xs {
-    text-align: center;
-    font-size: 16px;
-    padding: 5px;
-  }
-}
-
 .warning_message {
   border-left: 4px solid #ed9;
   color: #b90;
@@ -354,4 +334,10 @@ table {
 
 .task-status {
   margin-left: 10px;
+}
+
+#nprogress .spinner {
+  top: auto !important;
+  bottom: 20px !important;
+  left: 20px !important;
 }

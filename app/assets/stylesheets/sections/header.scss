@@ -4,6 +4,7 @@
  */
 header {
   &.navbar-gitlab {
+    z-index: 100;
     margin-bottom: 0;
     min-height: 40px;
     border: none;
@@ -81,8 +82,6 @@ header {
       }
     }
   }
-
-  z-index: 10;
 
   .container {
     width: 100% !important;
