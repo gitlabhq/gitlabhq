@@ -470,6 +470,10 @@ class Project < ActiveRecord::Base
     protected_branches_names.include?(branch_name)
   end
 
+  def developers_can_push_to_protected_branch?(branch_name)
+    protected_branches.map{ |pb| pb.developers_can_push if pb.name == branch_name }.compact.first
+  end
+
   def forked?
     !(forked_project_link.nil? || forked_project_link.forked_from_project.nil?)
   end
