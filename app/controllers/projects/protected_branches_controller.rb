@@ -27,6 +27,6 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
   private
 
   def protected_branch_params
-    params.require(:protected_branch).permit(:name)
+    params.require(:protected_branch).permit(:name, :developers_can_push)
   end
 end

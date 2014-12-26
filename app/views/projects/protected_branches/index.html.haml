@@ -22,6 +22,10 @@
       = f.label :name, "Branch", class: 'control-label'
       .col-sm-10
         = f.select(:name, @project.open_branches.map { |br| [br.name, br.name] } , {include_blank: "Select branch"}, {class: "select2"})
+    .form-group
+      = f.label :developers_can_push, "Developers can push?", class: 'control-label'
+      .col-sm-10
+        = f.check_box :developers_can_push
     .form-actions
       = f.submit 'Protect', class: "btn-create btn"
 - unless @branches.empty?
