@@ -2,6 +2,11 @@ require 'sidekiq/web'
 require 'api/api'
 
 Gitlab::Application.routes.draw do
+  use_doorkeeper do
+    controllers :applications => 'oauth/applications',
+                :authorized_applications => 'oauth/authorized_applications',
+                :authorizations => 'oauth/authorizations'
+  end
   #
   # Search
   #
@@ -122,6 +127,7 @@ Gitlab::Application.routes.draw do
     member do
       get :history
       get :design
+      get :applications
 
       put :reset_private_token
       put :update_username
@@ -219,6 +225,7 @@ Gitlab::Application.routes.draw do
       resources :raw,       only: [:show], constraints: {id: /.+/}
       resources :tree,      only: [:show], constraints: {id: /.+/, format: /(html|js)/ }
       resources :edit_tree, only: [:show, :update], constraints: { id: /.+/ }, path: 'edit' do
+        # Cannot be GET to differentiate from GET paths that end in preview.
         post :preview, on: :member
       end
       resources :new_tree,  only: [:show, :update], constraints: {id: /.+/}, path: 'new'

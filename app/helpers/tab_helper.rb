@@ -28,6 +28,10 @@ module TabHelper
   #   nav_link(controller: [:tree, :refs]) { "Hello" }
   #   # => '<li class="active">Hello</li>'
   #
+  #   # Several paths
+  #   nav_link(path: ['tree#show', 'profile#show']) { "Hello" }
+  #   # => '<li class="active">Hello</li>'
+  #
   #   # Shorthand path
   #   nav_link(path: 'tree#show') { "Hello" }
   #   # => '<li class="active">Hello</li>'
@@ -38,25 +42,7 @@ module TabHelper
   #
   # Returns a list item element String
   def nav_link(options = {}, &block)
-    if path = options.delete(:path)
-      if path.respond_to?(:each)
-        c = path.map { |p| p.split('#').first }
-        a = path.map { |p| p.split('#').last }
-      else
-        c, a, _ = path.split('#')
-      end
-    else
-      c = options.delete(:controller)
-      a = options.delete(:action)
-    end
-
-    if c && a
-      # When given both options, make sure BOTH are active
-      klass = current_controller?(*c) && current_action?(*a) ? 'active' : ''
-    else
-      # Otherwise check EITHER option
-      klass = current_controller?(*c) || current_action?(*a) ? 'active' : ''
-    end
+    klass = active_nav_link?(options) ? 'active' : ''
 
     # Add our custom class into the html_options, which may or may not exist
     # and which may or may not already have a :class key
@@ -70,6 +56,34 @@ module TabHelper
     else
       content_tag(:li, nil, o)
     end
+  end
+
+  def active_nav_link?(options)
+    if path = options.delete(:path)
+      unless path.respond_to?(:each)
+        path = [path]
+      end
+
+      path.any? do |single_path|
+        current_path?(single_path)
+      end
+    else
+      c = options.delete(:controller)
+      a = options.delete(:action)
+
+      if c && a
+        # When given both options, make sure BOTH are true
+        current_controller?(*c) && current_action?(*a)
+      else
+        # Otherwise check EITHER option
+        current_controller?(*c) || current_action?(*a)
+      end
+    end
+  end
+
+  def current_path?(path)
+    c, a, _ = path.split('#')
+    current_controller?(c) && current_action?(a)
   end
 
   def project_tab_class

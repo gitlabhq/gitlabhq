@@ -3,7 +3,7 @@ class Spinach::Features::ProjectCreate < Spinach::FeatureSteps
   include SharedPaths
 
   step 'fill project form with valid data' do
-    fill_in 'project_name', with: 'Empty'
+    fill_in 'project_path', with: 'Empty'
     click_button "Create project"
   end
 

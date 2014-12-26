@@ -51,12 +51,6 @@ window.ajaxGet = (url) ->
 
 window.showAndHide = (selector) ->
 
-window.errorMessage = (message) ->
-  ehtml = $("<p>")
-  ehtml.addClass("error_message")
-  ehtml.html(message)
-  ehtml
-
 window.split = (val) ->
   return val.split( /,\s*/ )
 

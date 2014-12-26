@@ -12,7 +12,7 @@ describe "Admin::Hooks", feature: true do
   describe "GET /admin/hooks" do
     it "should be ok" do
       visit admin_root_path
-      within ".main-nav" do
+      within ".sidebar-wrapper" do
         click_on "Hooks"
       end
       current_path.should == admin_hooks_path

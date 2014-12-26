@@ -198,8 +198,6 @@ describe API::API, api: true  do
     it 'should respond with 400 on failure' do
       post api("/projects/user/#{user.id}", admin)
       response.status.should == 400
-      json_response['message']['creator'].should == ['can\'t be blank']
-      json_response['message']['namespace'].should == ['can\'t be blank']
       json_response['message']['name'].should == [
         'can\'t be blank',
         'is too short (minimum is 0 characters)',

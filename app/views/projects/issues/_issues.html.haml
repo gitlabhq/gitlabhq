@@ -1,7 +1,7 @@
 .append-bottom-10
   .check-all-holder
     = check_box_tag "check_all_issues", nil, false, class: "check_all_issues left"
-  = render 'projects/issuable_filter'
+  = render 'shared/issuable_filter'
 
   .clearfix
     .issues_bulk_update.hide

@@ -114,6 +114,10 @@ module ApplicationHelper
     Gitlab::Theme.css_class_by_id(current_user.try(:theme_id))
   end
 
+  def theme_type
+    Gitlab::Theme.type_css_class_by_id(current_user.try(:theme_id))
+  end
+
   def user_color_scheme_class
     COLOR_SCHEMES[current_user.try(:color_scheme_id)] if defined?(current_user)
   end
@@ -270,5 +274,23 @@ module ApplicationHelper
 
   def promo_url
     'https://' + promo_host
+  end
+
+  def page_filter_path(options={})
+    exist_opts = {
+      state: params[:state],
+      scope: params[:scope],
+      label_name: params[:label_name],
+      milestone_id: params[:milestone_id],
+      assignee_id: params[:assignee_id],
+      author_id: params[:author_id],
+      sort: params[:sort],
+    }
+
+    options = exist_opts.merge(options)
+
+    path = request.path
+    path << "?#{options.to_param}"
+    path
   end
 end

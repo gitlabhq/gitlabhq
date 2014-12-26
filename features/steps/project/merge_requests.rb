@@ -57,9 +57,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Close"' do
-    within '.page-title' do
-      click_link "Close"
-    end
+    first(:css, '.close-mr-link').click
   end
 
   step 'I submit new merge request "Wiki Feature"' do
@@ -111,6 +109,10 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click on the commit in the merge request' do
+    within '.merge-request-tabs' do
+      click_link 'Commits'
+    end
+
     within '.mr-commits' do
       click_link Commit.truncate_sha(sample_commit.id)
     end
@@ -181,13 +183,11 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click link "Reopen"' do
-    within '.page-title' do
-      click_link "Reopen"
-    end
+    first(:css, '.reopen-mr-link').click
   end
 
   step 'I should see reopened merge request "Bug NS-04"' do
-    within '.state-label' do
+    within '.issue-box' do
       page.should have_content "Open"
     end
   end
@@ -275,7 +275,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click Side-by-side Diff tab' do
-    click_link 'Side-by-side Diff'
+    click_link 'Side-by-side'
   end
 
   step 'I should see comments on the side-by-side diff page' do

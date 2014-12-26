@@ -44,4 +44,12 @@ module GroupsHelper
     path << "?#{options.to_param}"
     path
   end
+
+  def group_settings_page?
+    if current_controller?('groups')
+      current_action?('edit') || current_action?('projects')
+    else
+      false
+    end
+  end
 end
