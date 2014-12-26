@@ -40,8 +40,15 @@
               %span.label.label-info default
             %span.label.label-success
               %i.fa.fa-lock
+            - if branch.developers_can_push
+              %span.label.label-warning
+                %i.fa.fa-group
           .pull-right
             - if can? current_user, :admin_project, @project
+              - if branch.developers_can_push
+                = link_to 'Disable developers push', [@project, branch, { developers_can_push: false }], data: { confirm: 'Branch will be no longer writable for developers. Are you sure?' }, method: :put, class: "btn btn-grouped btn-small"
+              - else
+                = link_to 'Allow developers to push', [@project, branch, { developers_can_push: true }], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :put, class: "btn btn-grouped btn-small"
               = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
 
         - if commit = branch.commit

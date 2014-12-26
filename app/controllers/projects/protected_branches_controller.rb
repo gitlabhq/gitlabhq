@@ -15,6 +15,23 @@ class Projects::ProtectedBranchesController < Projects::ApplicationController
     redirect_to project_protected_branches_path(@project)
   end
 
+  def update
+    protected_branch = @project.protected_branches.find(params[:id])
+
+    if protected_branch &&
+       protected_branch.update_attributes(
+        developers_can_push: params[:developers_can_push]
+       )
+      flash[:notice] = 'Branch was successfully updated.'
+    else
+      flash[:alert] = 'Could not update the branch.'
+    end
+
+    respond_to do |format|
+      format.html { redirect_to project_protected_branches_path }
+    end
+  end
+
   def destroy
     @project.protected_branches.find(params[:id]).destroy
 
