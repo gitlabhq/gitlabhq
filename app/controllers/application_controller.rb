@@ -257,10 +257,6 @@ class ApplicationController < ActionController::Base
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
       #@filter_params[:authorized_only] = true
-
-      unless @filter_params[:assignee_id]
-        @filter_params[:assignee_id] = current_user.id
-      end
     end
 
     @filter_params

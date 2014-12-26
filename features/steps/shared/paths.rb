@@ -1,6 +1,7 @@
 module SharedPaths
   include Spinach::DSL
   include RepoHelpers
+  include DashboardHelper
 
   step 'I visit new project page' do
     visit new_project_path
@@ -71,11 +72,11 @@ module SharedPaths
   end
 
   step 'I visit dashboard issues page' do
-    visit issues_dashboard_path
+    visit assigned_issues_dashboard_path
   end
 
   step 'I visit dashboard merge requests page' do
-    visit merge_requests_dashboard_path
+    visit assigned_mrs_dashboard_path
   end
 
   step 'I visit dashboard search page' do
