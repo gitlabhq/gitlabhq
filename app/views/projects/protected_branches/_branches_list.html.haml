@@ -2,10 +2,10 @@
   %h5 Already Protected:
   %table.table.protected-branches-list
     %thead
-      %tr
-        %th{style: "border:0;"} Branch
-        %th{style: "border:0;"} Developers can push
-        %th{style: "border:0;"}
+      %tr.no-border
+        %th Branch
+        %th Developers can push
+        %th
 
     %tbody
       - @branches.each do |branch|
@@ -22,8 +22,8 @@
               .pull-right
                 - if can? current_user, :admin_project, @project
                   = link_to 'Unprotect', [@project, branch], data: { confirm: 'Branch will be writable for developers. Are you sure?' }, method: :delete, class: "btn btn-remove btn-small"
-        %tr
-          %td{style: "border:0;"}
+        %tr.no-border
+          %td
             - if commit = branch.commit
               = link_to project_commit_path(@project, commit.id), class: 'commit_short_id' do
                 = commit.short_id
@@ -32,5 +32,5 @@
               #{time_ago_with_tooltip(commit.committed_date)}
             - else
               (branch was removed from repository)
-          %td{style: "border:0;"}
-          %td{style: "border:0;"}
+          %td
+          %td
