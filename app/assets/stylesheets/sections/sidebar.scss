@@ -104,10 +104,11 @@
 
   .sidebar-wrapper {
     width: 250px;
-    position: absolute;
+    position: fixed;
     left: 250px;
     height: 100%;
     margin-left: -250px;
+    border-right: 1px solid #EAEAEA;
 
     .nav-sidebar {
       margin-top: 20px;
@@ -119,7 +120,6 @@
 
   .content-wrapper {
     padding: 20px;
-    border-left: 1px solid #EAEAEA;
   }
 }
 
