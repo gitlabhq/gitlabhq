@@ -1,9 +1,4 @@
-.row
-  .col-md-2
-    = render 'groups/settings_nav'
+%h3.page-title Group Audit Events
+%p.light Events in #{@group.name}
 
-  .col-md-10
-    %h3.page-title Group Audit Events
-    %p.light Events in #{@group.name}
-
-    = render 'event_table', events: @events
+= render 'event_table', events: @events
