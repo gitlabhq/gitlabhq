@@ -45,8 +45,7 @@
     .creator
       Created by #{link_to_member(@project, @issue.author)} #{issue_timestamp(@issue)}
 
-  %h4.title{ dir: :auto }
-    = gfm escape_once(@issue.title)
+  %h4.title{ dir: :auto }= gfm escape_once(@issue.title)
 
   - if @issue.description.present?
     .description
