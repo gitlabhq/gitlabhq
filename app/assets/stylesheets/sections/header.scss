@@ -7,6 +7,9 @@ header {
     margin-bottom: 0;
     min-height: 40px;
     border: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
 
     .navbar-inner {
       filter: none;

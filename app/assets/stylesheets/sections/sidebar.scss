@@ -11,6 +11,7 @@
   width: 100%;
   padding: 15px;
   background: #FFF;
+  margin-top: 48px;
 }
 
 .nav-sidebar {
@@ -131,9 +132,9 @@
   .sidebar-wrapper {
     width: 52px;
     position: fixed;
-    left: 50px;
+    top: 0;
+    left: 0;
     height: 100%;
-    margin-left: -50px;
     border-right: 1px solid #EAEAEA;
     overflow-x: hidden;
 
