@@ -188,7 +188,6 @@ class Spinach::Features::Groups < Spinach::FeatureSteps
   end
 
   step 'I should see group milestone with descriptions and expiry date' do
-    page.should have_content('Lorem Ipsum is simply dummy text of the printing and typesetting industry')
     page.should have_content('expires at Aug 20, 2114')
   end
 
