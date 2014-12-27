@@ -66,3 +66,9 @@ Feature: Project Services
     And I click Atlassian Bamboo CI service link
     And I fill Atlassian Bamboo CI settings
     Then I should see Atlassian Bamboo CI service settings saved
+
+  Scenario: Activate Teamcity CI service
+    When I visit project "Shop" services page
+    And I click Teamcity CI service link
+    And I fill Teamcity CI settings
+    Then I should see Teamcity CI service settings saved

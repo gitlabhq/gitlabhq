@@ -260,3 +260,4 @@ group :production do
 end
 
 gem "newrelic_rpm"
+gem 'teamcity-ruby-client'
