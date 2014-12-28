@@ -15,6 +15,7 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     page.should have_content 'Assembla'
     page.should have_content 'Pushover'
     page.should have_content 'Atlassian Bamboo'
+    page.should have_content 'JetBrains TeamCity'
   end
 
   step 'I click gitlab-ci service link' do
@@ -166,6 +167,25 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   step 'I should see Atlassian Bamboo CI service settings saved' do
     find_field('Bamboo url').value.should == 'http://bamboo.example.com'
     find_field('Build key').value.should == 'KEY'
+    find_field('Username').value.should == 'user'
+  end
+
+  step 'I click JetBrains TeamCity CI service link' do
+    click_link 'JetBrains TeamCity CI'
+  end
+
+  step 'I fill JetBrains TeamCity CI settings' do
+    check 'Active'
+    fill_in 'Teamcity url', with: 'http://teamcity.example.com'
+    fill_in 'Build type', with: 'GitlabTest_Build'
+    fill_in 'Username', with: 'user'
+    fill_in 'Password', with: 'verySecret'
+    click_button 'Save'
+  end
+
+  step 'I should see JetBrains TeamCity CI service settings saved' do
+    find_field('Teamcity url').value.should == 'http://teamcity.example.com'
+    find_field('Build type').value.should == 'GitlabTest_Build'
     find_field('Username').value.should == 'user'
   end
 end
