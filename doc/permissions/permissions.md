@@ -29,6 +29,7 @@ If a user is a GitLab administrator they receive all permissions.
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
+| Turn on/off prot. branch push for devs|         |            |             | ✓        | ✓      |
 | Rewrite/remove git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
