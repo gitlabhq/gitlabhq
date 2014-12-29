@@ -8,9 +8,9 @@
   $('#key_key').on('focusout', function(){
     var title = $('#key_title'),
         val      = $('#key_key').val(),
-        key_mail = val.match(/([a-zA-Z0-9._-]+@[a-zA-Z0-9._-]+|\.[a-zA-Z0-9._-]+)/gi);
+        comment = val.match(/^\S+ \S+ (.+)$/);
 
-    if( key_mail && key_mail.length > 0 && title.val() == '' ){
-      $('#key_title').val( key_mail );
+    if( comment && comment.length > 1 && title.val() == '' ){
+      $('#key_title').val( comment[1] );
     }
   });
