@@ -29,6 +29,8 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
+gem 'doorkeeper', '2.0.1'
+gem "rack-oauth2", "~> 1.0.5"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library

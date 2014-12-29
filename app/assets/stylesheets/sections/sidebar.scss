@@ -3,6 +3,7 @@
 }
 
 .sidebar-wrapper {
+  z-index: 99;
   overflow-y: auto;
   background: #F5F5F5;
 }
@@ -11,6 +12,7 @@
   width: 100%;
   padding: 15px;
   background: #FFF;
+  margin-top: 48px;
 }
 
 .nav-sidebar {
@@ -60,7 +62,7 @@
     font-size: 13px;
     line-height: 20px;
     text-shadow: 0 1px 2px #FFF;
-    padding-left: 67px;
+    padding-left: 20px;
 
     &:hover {
       text-decoration: none;
@@ -75,6 +77,7 @@
     i {
       width: 20px;
       color: #888;
+      margin-right: 23px;
     }
   }
 }
@@ -91,7 +94,7 @@
     a {
       padding: 5px 15px;
       font-size: 12px;
-      padding-left: 67px;
+      padding-left: 20px;
     }
   }
 }
@@ -103,10 +106,11 @@
 
   .sidebar-wrapper {
     width: 250px;
-    position: absolute;
+    position: fixed;
     left: 250px;
     height: 100%;
     margin-left: -250px;
+    border-right: 1px solid #EAEAEA;
 
     .nav-sidebar {
       margin-top: 20px;
@@ -118,7 +122,6 @@
 
   .content-wrapper {
     padding: 20px;
-    border-left: 1px solid #EAEAEA;
   }
 }
 
@@ -129,14 +132,16 @@
 
   .sidebar-wrapper {
     width: 52px;
-    position: absolute;
-    left: 50px;
+    position: fixed;
+    top: 0;
+    left: 0;
     height: 100%;
-    margin-left: -50px;
+    border-right: 1px solid #EAEAEA;
+    overflow-x: hidden;
 
     .nav-sidebar {
       margin-top: 20px;
-      position: fixed;
+      position: absolute;
       top: 45px;
       width: 52px;
 

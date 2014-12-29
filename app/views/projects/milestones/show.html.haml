@@ -1,5 +1,5 @@
 = render "projects/issues_nav"
-%h3.page-title
+%h4.page-title
   .issue-box{ class: issue_box_class(@milestone) }
     - if @milestone.closed?
       Closed
@@ -8,52 +8,44 @@
     - else
       Open
   Milestone ##{@milestone.iid}
-  .pull-right.creator
-    %small= @milestone.expires_at
+  %small.creator
+    = @milestone.expires_at
+  .pull-right
+    - if can?(current_user, :admin_milestone, @project)
+      = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-grouped" do
+        %i.fa.fa-pencil-square-o
+        Edit
+      - if @milestone.active?
+        = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-grouped"
+      - else
+        = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-grouped"
 
 %hr
 - if @milestone.issues.any? && @milestone.can_be_closed?
   .alert.alert-success
     %span All issues for this milestone are closed. You may close milestone now.
-.row
-  .col-sm-9
-    %h3.issue-title
-      = gfm escape_once(@milestone.title)
-    %div
-      - if @milestone.description.present?
-        .description
-          .wiki
-            = preserve do
-              = markdown @milestone.description
 
-    %hr
-    .context
-      %p.lead
-        Progress:
-        #{@milestone.closed_items_count} closed
-        &ndash;
-        #{@milestone.open_items_count} open
-        &nbsp;
-        %span.light #{@milestone.percent_complete}% complete
-        %span.pull-right= @milestone.expires_at
-      .progress.progress-info
-        .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
+%h3.issue-title
+  = gfm escape_once(@milestone.title)
+%div
+  - if @milestone.description.present?
+    .description
+      .wiki
+        = preserve do
+          = markdown @milestone.description
 
-  .col-sm-3
-    %div
-      - if can?(current_user, :admin_milestone, @project)
-        = link_to edit_project_milestone_path(@project, @milestone), class: "btn btn-block" do
-          %i.fa.fa-pencil-square-o
-          Edit
-        - if @milestone.active?
-          = link_to 'Close Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :close }), method: :put, class: "btn btn-close btn-block"
-        - else
-          = link_to 'Reopen Milestone', project_milestone_path(@project, @milestone, milestone: {state_event: :activate }), method: :put, class: "btn btn-reopen btn-block"
-      = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn  btn-block", title: "New Issue" do
-        %i.fa.fa-plus
-        New Issue
-      = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-block"
-
+%hr
+.context
+  %p.lead
+    Progress:
+    #{@milestone.closed_items_count} closed
+    &ndash;
+    #{@milestone.open_items_count} open
+    &nbsp;
+    %span.light #{@milestone.percent_complete}% complete
+    %span.pull-right= @milestone.expires_at
+  .progress.progress-info
+    .progress-bar{style: "width: #{@milestone.percent_complete}%;"}
 
 
 %ul.nav.nav-tabs
@@ -71,6 +63,10 @@
       %span.badge= @users.count
 
   .pull-right
+    = link_to new_project_issue_path(@project, issue: { milestone_id: @milestone.id }), class: "btn  btn-grouped", title: "New Issue" do
+      %i.fa.fa-plus
+      New Issue
+    = link_to 'Browse Issues', project_issues_path(@milestone.project, milestone_id: @milestone.id), class: "btn  edit-milestone-link btn-grouped"
 
 .tab-content
   .tab-pane.active#tab-issues

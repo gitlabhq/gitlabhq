@@ -19,13 +19,15 @@
   }
 }
 
-.merge-request .merge-request-tabs{
-  margin: 20px 0;
+@media(min-width: $screen-sm-max) {
+  .merge-request .merge-request-tabs{
+    margin: 20px 0;
 
-  li {
-    a {
-      padding: 15px 40px;
-      font-size: 14px;
+    li {
+      a {
+        padding: 15px 40px;
+        font-size: 14px;
+      }
     }
   }
 }
@@ -102,6 +104,7 @@
 .mr-state-widget {
   background: $box_bg;
   margin-bottom: 20px;
+  color: #666;
   @include box-shadow(0 1px 1px rgba(0, 0, 0, 0.09));
 
   .ci_widget {
@@ -146,7 +149,6 @@
     padding: 10px 15px;
 
     h4 {
-      font-size: 20px;
       font-weight: normal;
     }
 

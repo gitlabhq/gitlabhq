@@ -1,19 +1,19 @@
 v 7.7.0
   -
   -
+  - Add Jetbrains Teamcity CI service (Jason Lippert)
   -
   -
   -
   -
   -
+  - OAuth applications feature
   -
   -
+  - Set project path instead of project name in create form
   -
   -
-  -
-  -
-  -
-  -
+  - New side navigation
   
 
 
