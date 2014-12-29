@@ -84,6 +84,8 @@ Gitlab::Application.routes.draw do
         put :team_update
         put :block
         put :unblock
+        get 'key/:key_id', action: 'show_key', as: 'user_key'
+        delete 'key/:key_id', action: 'remove_key', as: 'remove_user_key'
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end

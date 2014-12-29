@@ -11,6 +11,7 @@ class Admin::UsersController < Admin::ApplicationController
   def show
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
+    @ssh_keys = user.keys.order('id DESC')
   end
 
   def new
@@ -107,6 +108,27 @@ class Admin::UsersController < Admin::ApplicationController
     end
   end
 
+  def show_key
+    @key = user.keys.find(params[:key_id])
+
+    respond_to do |format|
+      format.html { render 'key' }
+      format.js { render nothing: true }
+    end
+  end
+
+  def remove_key
+    key = user.keys.find(params[:key_id])
+
+    respond_to do |format|
+      if key.destroy
+        format.html { redirect_to [:admin, user], notice: 'User key was successfully removed.' }
+      else
+        format.html { redirect_to [:admin, user], alert: 'Failed to remove user key.' }
+      end
+    end
+  end
+
   protected
 
   def user
@@ -118,7 +140,7 @@ class Admin::UsersController < Admin::ApplicationController
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-      :projects_limit, :can_create_group, :admin
+      :projects_limit, :can_create_group, :admin, :key_id
     )
   end
 end
