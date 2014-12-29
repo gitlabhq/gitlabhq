@@ -8,3 +8,4 @@
 - [GitLab Flow](gitlab_flow.md)
 - [Notifications](notifications.md)
 - [Migrating from SVN to GitLab](migrating_from_svn.md)
+- [Protected branches](protected_branches.md)
