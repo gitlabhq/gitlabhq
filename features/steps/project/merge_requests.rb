@@ -265,7 +265,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click Side-by-side Diff tab' do
-    click_link 'Side-by-side'
+    find('a', text: 'Side-by-side').trigger('click')
   end
 
   step 'I should see comments on the side-by-side diff page' do
