@@ -1,6 +1,14 @@
 require 'slack-notifier'
 
 class SlackMessage
+  attr_reader :after
+  attr_reader :before
+  attr_reader :commits
+  attr_reader :project_name
+  attr_reader :project_url
+  attr_reader :ref
+  attr_reader :username
+
   def initialize(params)
     @after = params.fetch(:after)
     @before = params.fetch(:before)
@@ -22,14 +30,6 @@ class SlackMessage
   end
 
   private
-
-  attr_reader :after
-  attr_reader :before
-  attr_reader :commits
-  attr_reader :project_name
-  attr_reader :project_url
-  attr_reader :ref
-  attr_reader :username
 
   def message
     if new_branch?
