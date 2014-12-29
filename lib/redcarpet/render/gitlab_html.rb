@@ -49,7 +49,7 @@ class Redcarpet::Render::GitlabHTML < Redcarpet::Render::HTML
       "<h#{level}>#{text}</h#{level}>"
     else
       id = ActionController::Base.helpers.strip_tags(h.gfm(text)).downcase() \
-          .gsub(/[^a-z0-9_-]/, '-').gsub(/-+/, '-').gsub(/^-/, '').gsub(/-$/, '')
+          .gsub(/[^\p{Word}-]/, '-').gsub(/-+/, '-').gsub(/^-/, '').gsub(/-$/, '')
       "<h#{level} id=\"#{id}\">#{text}<a href=\"\##{id}\"></a></h#{level}>"
     end
   end
