@@ -1,3 +1,6 @@
+v 7.7.0
+  - Added custom header logo support (Drew Blessing)
+
 v 7.6.2
   - Fix failing migrations for MySQL, LDAP
 

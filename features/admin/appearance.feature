@@ -26,3 +26,12 @@ Feature: Admin Appearance
     Then I should see a logo
     And I remove the logo
     Then I should see logo removed
+
+  Scenario: Header logos
+    Given application has custom appearance
+    And I sign in as an admin
+    And I visit admin appearance page
+    When I attach header logos
+    Then I should see header logos
+    And I remove the header logos
+    Then I should see header logos removed

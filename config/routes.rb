@@ -114,6 +114,7 @@ Gitlab::Application.routes.draw do
       member do
         get :preview
         delete :logo
+        delete :header_logos
       end
     end
 
