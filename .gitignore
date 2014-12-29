@@ -40,3 +40,4 @@ rails_best_practices_output.html
 tags
 tmp/
 vendor/bundle/*
+foo
