@@ -52,10 +52,11 @@
       - else
         %span.light No open milestones available.
       &nbsp;
-      = link_to 'Create new milestone', new_project_milestone_path(issuable.project), target: :blank
+      - if can? current_user, :admin_milestone, issuable.project
+        = link_to 'Create new milestone', new_project_milestone_path(issuable.project), target: :blank
 .form-group
   = f.label :label_ids, class: 'control-label' do
-    %i.icon-tag
+    %i.fa.fa-tag
     Labels
   .col-sm-10
     - if issuable.project.labels.any?
@@ -64,9 +65,15 @@
     - else
       %span.light No labels yet.
     &nbsp;
-    = link_to 'Create new label', new_project_label_path(issuable.project), target: :blank
+    - if can? current_user, :admin_label, issuable.project
+      = link_to 'Create new label', new_project_label_path(issuable.project), target: :blank
 
 .form-actions
+  - if contribution_guide_url(issuable.project) && !issuable.persisted?
+    %p
+      Please review the
+      %strong #{link_to 'guidelines for contribution', contribution_guide_url(issuable.project)}
+      to this repository.
   - if issuable.new_record?
     = f.submit "Submit new #{issuable.class.model_name.human.downcase}", class: 'btn btn-create'
   - else
