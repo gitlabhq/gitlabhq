@@ -8,7 +8,6 @@ If a user is a GitLab administrator they receive all permissions.
 
 ## Project
 
-
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -38,7 +37,7 @@ If a user is a GitLab administrator they receive all permissions.
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Force push to protected branches      |         |            |             |          |        |
-| Remove protected branches            |          |            |             |          |        |
+| Remove protected branches             |         |            |             |          |        |
 
 ## Group
 

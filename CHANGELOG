@@ -4,7 +4,7 @@ v 7.7.0
   - Add Jetbrains Teamcity CI service (Jason Lippert)
   -
   -
-  -
+  - Mention notification level
   -
   -
   - OAuth applications feature
@@ -14,8 +14,12 @@ v 7.7.0
   -
   -
   - New side navigation
-  
-
+  -
+  -
+  -
+  - Add alert message in case of outdated browser (IE < 10)
+  -
+  -
 
 v 7.6.0
   - Fork repository to groups
@@ -62,7 +66,7 @@ v 7.5.0
   - Performance improvements
   - Fix post-receive issue for projects with deleted forks
   - New gitlab-shell version with custom hooks support
-  - Improve code 
+  - Improve code
   - GitLab CI 5.2+ support (does not support older versions)
   - Fixed bug when you can not push commits starting with 000000 to protected branches
   - Added a password strength indicator
