@@ -35,7 +35,7 @@ class HipchatService < Service
       { type: 'text', name: 'token',     placeholder: '' },
       { type: 'text', name: 'room',      placeholder: '' },
       { type: 'text', name: 'server',
-        placeholder: 'Leave blank for default. https://chat.hipchat.com' }
+        placeholder: 'Leave blank for default. https://hipchat.example.com' }
     ]
   end
 
@@ -47,7 +47,7 @@ class HipchatService < Service
 
   def gate
     options = { api_version: 'v2' }
-    options[:server_url] = server unless server.nil?
+    options[:server_url] = server unless server.blank?
     @gate ||= HipChat::Client.new(token, options)
   end
 
