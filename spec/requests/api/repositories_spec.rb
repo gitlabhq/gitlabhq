@@ -98,6 +98,7 @@ describe API::API, api: true  do
 
         json_response.should be_an Array
         json_response.first['name'].should == 'encoding'
+        json_response.first['path'].should == 'encoding'
         json_response.first['type'].should == 'tree'
         json_response.first['mode'].should == '040000'
       end
@@ -107,6 +108,23 @@ describe API::API, api: true  do
       it "should not return project commits" do
         get api("/projects/#{project.id}/repository/tree")
         response.status.should == 401
+      end
+    end
+  end
+
+  describe "GET /projects/:id/repository/tree?recursive=1" do
+    context "authorized user" do
+      before { project.team << [user2, :reporter] }
+
+      it "should return project commits" do
+        get api("/projects/#{project.id}/repository/tree?recursive=1", user)
+        response.status.should == 200
+
+        json_response.should be_an Array
+        json_response[2]['name'].should == 'html'
+        json_response[2]['path'].should == 'files/html'
+        json_response[2]['type'].should == 'tree'
+        json_response[2]['mode'].should == '040000'
       end
     end
   end

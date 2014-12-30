@@ -200,12 +200,12 @@ class Repository
     commit(self.root_ref)
   end
 
-  def tree(sha = :head, path = nil)
+  def tree(sha = :head, path = nil, recursive = 0)
     if sha == :head
       sha = head_commit.sha
     end
 
-    Tree.new(self, sha, path)
+    Tree.new(self, sha, path, recursive)
   end
 
   def blob_at_branch(branch_name, path)
