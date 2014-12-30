@@ -48,7 +48,7 @@ module API
         if milestone.valid?
           present milestone, with: Entities::Milestone
         else
-          not_found!
+          not_found!("Milestone #{milestone.errors.messages}")
         end
       end
 
@@ -72,7 +72,7 @@ module API
         if milestone.valid?
           present milestone, with: Entities::Milestone
         else
-          not_found!
+          not_found!("Milestone #{milestone.errors.messages}")
         end
       end
     end

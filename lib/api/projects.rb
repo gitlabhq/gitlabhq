@@ -227,7 +227,7 @@ module API
             render_api_error!("Project already forked", 409)
           end
         else
-          not_found!
+          not_found!("Source Project")
         end
 
       end

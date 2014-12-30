@@ -9,7 +9,7 @@ module API
           if errors[:access_level].any?
             error!(errors[:access_level], 422)
           end
-          not_found!
+          not_found!(errors)
         end
       end
 

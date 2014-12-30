@@ -61,7 +61,7 @@ module API
           if @note.valid?
             present @note, with: Entities::Note
           else
-            not_found!
+            not_found!("Note #{@note.errors.messages}")
           end
         end
 
