@@ -113,7 +113,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_link 'Commits'
     end
 
-    within '.mr-commits' do
+    within '.commits' do
       click_link Commit.truncate_sha(sample_commit.id)
     end
   end
