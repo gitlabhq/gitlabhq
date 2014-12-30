@@ -46,7 +46,7 @@ class Tree
     entries.select(&:dir?).each do |t|
       entries += getRecursiveEntries(git_repo,sha,t.path)
     end
- 	end
+  end
 
   def trees
     @entries.select(&:dir?)
