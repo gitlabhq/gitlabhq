@@ -3,12 +3,12 @@ class Tree
 
   attr_accessor :entries, :readme, :contribution_guide
 
-   def initialize(repository, sha, path = '/', recursive = 0)
+  def initialize(repository, sha, path = '/', recursive)
     path = '/' if path.blank?
     git_repo = repository.raw_repository
 
     if recursive == '1'
-      @entries = getRecursiveEntries(git_repo, sha, path)
+      @entries = get_recursive_entries(git_repo, sha, path)
     else
       @entries = Gitlab::Git::Tree.where(git_repo, sha, path)
     end
@@ -40,14 +40,12 @@ class Tree
     end
   end
 
-  def getRecursiveEntries(git_repo, sha, path)
-  	entries =  Gitlab::Git::Tree.where(git_repo, sha, path)
+  def get_recursive_entries(git_repo, sha, path)
+    entries =  Gitlab::Git::Tree.where(git_repo, sha, path)
 
-  	entries.select(&:dir?).each do |t|
-  		entries += getRecursiveEntries(git_repo,sha,t.path)
-  	end
-
-  	return entries
+    entries.select(&:dir?).each do |t|
+      entries += getRecursiveEntries(git_repo,sha,t.path)
+    end
  	end
 
   def trees
