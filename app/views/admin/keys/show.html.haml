@@ -1,0 +1,4 @@
+= render "profiles/keys/key_details"
+
+.pull-right
+  = link_to 'Remove', admin_user_key_path(@user, @key), data: {confirm: 'Are you sure?'}, method: :delete, class: "btn btn-remove delete-key"

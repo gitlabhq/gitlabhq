@@ -232,7 +232,7 @@
             - @ssh_keys.each do |key|
               %tr
                 %td
-                  = link_to user_key_admin_user_path(@user, key) do
+                  = link_to admin_user_key_path(@user, key) do
                     %strong= key.title
                 %td
                   %span
@@ -240,7 +240,7 @@
                   %span.cgray
                     added #{time_ago_with_tooltip(key.created_at)}
                 %td
-                  = link_to 'Remove', remove_user_key_admin_user_path(@user, key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
+                  = link_to 'Remove', admin_user_key_path(@user, key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
 
     - else
       .nothing-here-block User has no ssh keys
