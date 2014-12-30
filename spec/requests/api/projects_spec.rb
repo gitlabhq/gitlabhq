@@ -289,7 +289,7 @@ describe API::API, api: true  do
     it "should return a 404 error if not found" do
       get api("/projects/42", user)
       response.status.should == 404
-      json_response['message'].should == '404 Not Found'
+      json_response['message'].should == '404 Project Not Found'
     end
 
     it "should return a 404 error if user is not a member" do
@@ -340,7 +340,7 @@ describe API::API, api: true  do
     it "should return a 404 error if not found" do
       get api("/projects/42/events", user)
       response.status.should == 404
-      json_response['message'].should == '404 Not Found'
+      json_response['message'].should == '404 Project Not Found'
     end
 
     it "should return a 404 error if user is not a member" do
