@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141217125223) do
+ActiveRecord::Schema.define(version: 20141230100055) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -262,8 +262,6 @@ ActiveRecord::Schema.define(version: 20141217125223) do
     t.datetime "updated_at"
     t.string   "type"
     t.string   "description",     default: "",    null: false
-    t.string   "ldap_cn"
-    t.integer  "ldap_access"
     t.string   "avatar"
     t.boolean  "membership_lock", default: false
   end
@@ -468,7 +466,6 @@ ActiveRecord::Schema.define(version: 20141217125223) do
     t.integer  "notification_level",          default: 1,     null: false
     t.datetime "password_expires_at"
     t.integer  "created_by_id"
-    t.datetime "last_credential_check_at"
     t.string   "avatar"
     t.string   "confirmation_token"
     t.datetime "confirmed_at"
@@ -476,6 +473,7 @@ ActiveRecord::Schema.define(version: 20141217125223) do
     t.string   "unconfirmed_email"
     t.boolean  "hide_no_ssh_key",             default: false
     t.string   "website_url",                 default: "",    null: false
+    t.datetime "last_credential_check_at"
     t.datetime "admin_email_unsubscribed_at"
   end
 
