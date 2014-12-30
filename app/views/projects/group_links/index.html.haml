@@ -20,20 +20,20 @@
                 %i.icon-remove
                 disable sharing
 
-- if @available_groups.present?
-  .available-groups
-    %h4
-      Can be shared with
-    %div
-      = form_tag project_group_links_path(@project), method: :post, class: 'form-horizontal' do
-        .form-group
-          = label_tag :group_id, 'Group', class: 'control-label'
-          .col-sm-10
-            = select_tag :group_id, options_from_collection_for_select(@available_groups, :id, :name), class: 'select2'
-        .form-group
-          = label_tag :group_access, 'Max access level', class: 'control-label'
-          .col-sm-10
-            = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control"
-        .form-actions
-          = submit_tag "Share", class: "btn btn-create"
+
+.available-groups
+  %h4
+    Can be shared with
+  %div
+    = form_tag project_group_links_path(@project), method: :post, class: 'form-horizontal' do
+      .form-group
+        = label_tag :link_group_id, 'Group', class: 'control-label'
+        .col-sm-10
+          = groups_select_tag(:link_group_id)
+      .form-group
+        = label_tag :link_group_access, 'Max access level', class: 'control-label'
+        .col-sm-10
+          = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control"
+      .form-actions
+        = submit_tag "Share", class: "btn btn-create"
 

@@ -2,6 +2,7 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   include SharedAuthentication
   include SharedProject
   include SharedPaths
+  include Select2Helper
 
   step 'I should see project already shared with group "Ops"' do
     within '.enabled-groups' do
@@ -16,8 +17,9 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   end
 
   step 'I select group "Market" for share' do
-    select "Master", from: 'group_access'
-    select "Market", from: 'group_id'
+    group = Group.find_by(path: 'market')
+    select2(group.id, from: "#link_group_id")
+    select "Master", from: 'link_group_access'
     click_button "Share"
   end
 
@@ -35,7 +37,7 @@ class Spinach::Features::ProjectGroupLinks < Spinach::FeatureSteps
   end
 
   step 'project "Shop" is not shared with group "Market"' do
-    create(:group, name: 'Market')
+    create(:group, name: 'Market', path: 'market')
   end
 
   step 'I visit project group links page' do

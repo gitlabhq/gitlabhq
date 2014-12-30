@@ -10,6 +10,7 @@ Feature: Project Group Links
     Then I should see project already shared with group "Ops"
     Then I should see project is not shared with group "Market"
 
+  @javascript
   Scenario: I share project with group
     When I select group "Market" for share
     Then I should see project is shared with group "Market"
