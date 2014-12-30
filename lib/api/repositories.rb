@@ -56,14 +56,16 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       #   ref_name (optional) - The name of a repository branch or tag, if not given the default branch is used
+      #   recursive=1 (optional) - Used to get a recursive tree
       # Example Request:
       #   GET /projects/:id/repository/tree
       get ":id/repository/tree" do
         ref = params[:ref_name] || user_project.try(:default_branch) || 'master'
         path = params[:path] || nil
+        recursive = params[:recursive] || '0'
 
         commit = user_project.repository.commit(ref)
-        tree = user_project.repository.tree(commit.id, path)
+        tree = user_project.repository.tree(commit.id, path, recursive)
 
         present tree.sorted_entries, with: Entities::RepoTreeObject
       end
