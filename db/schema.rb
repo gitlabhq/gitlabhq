@@ -23,6 +23,8 @@ ActiveRecord::Schema.define(version: 20141230100055) do
     t.integer  "updated_by"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "dark_logo"
+    t.string   "light_logo"
   end
 
   create_table "audit_events", force: true do |t|
@@ -367,8 +369,8 @@ ActiveRecord::Schema.define(version: 20141230100055) do
     t.boolean  "archived",                      default: false,    null: false
     t.string   "import_status"
     t.float    "repository_size",               default: 0.0
-    t.text     "merge_requests_template"
     t.integer  "star_count",                    default: 0,        null: false
+    t.text     "merge_requests_template"
     t.boolean  "merge_requests_rebase_enabled", default: false
   end
 

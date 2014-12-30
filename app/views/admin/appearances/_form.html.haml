@@ -4,6 +4,9 @@
       - @appearance.errors.full_messages.each do |msg|
         %p= msg
 
+  %fieldset.sign-in
+    %legend
+      Sign in/Sign up pages:
   .form-group
     = f.label :title, class: 'control-label'
     .col-sm-10
@@ -25,6 +28,30 @@
       = f.file_field :logo, class: ""
       .hint
         Maximum logo size is 1MB, page optimized for logo size 640x360px
+
+  %fieldset.app_logo
+    %legend
+      Navigation bar:
+  .form-group
+    = f.label :dark_logo, class: 'control-label'
+    .col-sm-10
+      - if @appearance.dark_logo?
+        = image_tag @appearance.dark_logo, class: 'appearance-dark-logo-preview'
+      = f.file_field :dark_logo, class: ""
+      .hint
+        Maximum size is 1MB, page optimized for logo size 40x40px
+    = f.label :light_logo, class: 'control-label'
+    .col-sm-10
+      - if @appearance.light_logo?
+        = image_tag @appearance.light_logo, class: 'appearance-light-logo-preview'
+      = f.file_field :light_logo, class: ""
+      .hint
+        Maximum size is 1MB, page optimized for logo size 41x41px
+      -if @appearance.light_logo? || @appearance.dark_logo?
+        %br
+          = link_to 'Remove header logos', header_logos_admin_appearances_path, data: { confirm: "Header logos will be removed. Are you sure?"}, method: :delete, class: "btn btn-remove btn-small remove-logo"
+
+
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
     = link_to 'Preview', preview_admin_appearances_path, class: 'btn', target: '_blank'
