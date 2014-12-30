@@ -20,6 +20,10 @@ v 7.7.0
   - Add alert message in case of outdated browser (IE < 10)
   -
   - Added API support for sorting projects
+  -
+  -
+  - Added API support for recursive tree
+
 
 v 7.6.0
   - Fork repository to groups
