@@ -39,10 +39,6 @@ class Projects::EditTreeController < Projects::BaseTreeController
 
   private
 
-  def blob
-    @blob ||= @repository.blob_at(@commit.id, @path)
-  end
-
   def after_edit_path
     @after_edit_path ||=
       if from_merge_request

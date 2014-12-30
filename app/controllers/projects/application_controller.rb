@@ -29,4 +29,16 @@ class Projects::ApplicationController < ApplicationController
       redirect_to project_tree_path(@project, @ref), notice: "This action is not allowed unless you are on top of a branch"
     end
   end
+
+  def blob
+    @blob ||= @repository.blob_at(@commit.id, @path)
+
+    if @blob
+      @blob
+    elsif tree.entries.any?
+      redirect_to project_tree_path(@project, File.join(@ref, @path)) and return
+    else
+      return not_found!
+    end
+  end
 end

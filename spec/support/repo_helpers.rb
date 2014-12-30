@@ -96,4 +96,24 @@ eos
       commits: commits
     )
   end
+
+  def root_ref
+    'master'
+  end
+
+  def existing_path
+    '.gitignore'
+  end
+
+  def existing_path_id
+    root_ref + '/' + existing_path
+  end
+
+  def inexistent_path
+    'new_file'
+  end
+
+  def inexistent_path_id
+    root_ref + '/' + inexistent_path
+  end
 end
