@@ -69,7 +69,7 @@
       = link_to 'Create new label', new_project_label_path(issuable.project), target: :blank
 
 .form-actions
-  - if contribution_guide_url(issuable.project) && !issuable.persisted?
+  - if !issuable.project.empty_repo? && contribution_guide_url(issuable.project) && !issuable.persisted?
     %p
       Please review the
       %strong #{link_to 'guidelines for contribution', contribution_guide_url(issuable.project)}
