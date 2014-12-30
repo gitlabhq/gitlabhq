@@ -44,9 +44,9 @@ class Tree
     entries =  Gitlab::Git::Tree.where(git_repo, sha, path)
 
     entries.select(&:dir?).each do |t|
-      entries += get_recursive_entries(git_repo,sha,t.path)
+      entries += get_recursive_entries(git_repo, sha,t.path)
     end
-		entries
+    entries
   end
 
   def trees
