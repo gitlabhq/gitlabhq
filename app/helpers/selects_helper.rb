@@ -26,4 +26,13 @@ module SelectsHelper
       'label'
     )
   end
+
+  def groups_select_tag(id, opts = {})
+    css_class = "ajax-groups-select "
+    css_class << "multiselect " if opts[:multiple]
+    css_class << (opts[:class] || '')
+    value = opts[:selected] || ''
+
+    hidden_field_tag(id, value, class: css_class)
+  end
 end
