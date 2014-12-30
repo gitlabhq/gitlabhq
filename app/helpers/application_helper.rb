@@ -297,4 +297,12 @@ module ApplicationHelper
   def outdated_browser?
     browser.ie? && browser.version.to_i < 10
   end
+
+  def path_to_key(key, admin = false)
+    if admin
+      admin_user_key_path(@user, key)
+    else
+      profile_key_path(key)
+    end
+  end
 end

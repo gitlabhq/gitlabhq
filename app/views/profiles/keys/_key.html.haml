@@ -1,9 +1,12 @@
-%li
-  = link_to profile_key_path(key) do
-    %strong= key.title
-  %span
-    (#{key.fingerprint})
-  %span.cgray
-    added #{time_ago_with_tooltip(key.created_at)}
-
-  = link_to 'Remove', profile_key_path(key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
+%tr
+  %td
+    = link_to path_to_key(key, is_admin) do
+      %strong= key.title
+  %td
+    %span
+      (#{key.fingerprint})
+  %td
+    %span.cgray
+      added #{time_ago_with_tooltip(key.created_at)}
+  %td
+    = link_to 'Remove', path_to_key(key, is_admin), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
