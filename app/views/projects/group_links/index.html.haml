@@ -27,13 +27,13 @@
   %div
     = form_tag project_group_links_path(@project), method: :post, class: 'form-horizontal' do
       .form-group
-        = label_tag :group_id, 'Group', class: 'control-label'
+        = label_tag :link_group_id, 'Group', class: 'control-label'
         .col-sm-10
-          = groups_select_tag(:group_id)
+          = groups_select_tag(:link_group_id)
       .form-group
-        = label_tag :group_access, 'Max access level', class: 'control-label'
+        = label_tag :link_group_access, 'Max access level', class: 'control-label'
         .col-sm-10
-          = select_tag :group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control"
+          = select_tag :link_group_access, options_for_select(ProjectGroupLink.access_options, ProjectGroupLink.default_access), class: "form-control"
       .form-actions
         = submit_tag "Share", class: "btn btn-create"
 
