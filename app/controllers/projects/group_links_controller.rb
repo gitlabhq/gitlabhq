@@ -4,9 +4,6 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   def index
     @group_links = project.project_group_links.all
-    @available_groups = Group.all
-    @available_groups -= project.invited_groups
-    @available_groups -= [project.group]
   end
 
   def create
