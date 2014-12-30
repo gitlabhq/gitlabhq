@@ -8,8 +8,8 @@ class Projects::GroupLinksController < Projects::ApplicationController
 
   def create
     link = project.project_group_links.new
-    link.group_id = params[:group_id]
-    link.group_access = params[:group_access]
+    link.group_id = params[:link_group_id]
+    link.group_access = params[:link_group_access]
     link.save
 
     redirect_to project_group_links_path(project)
