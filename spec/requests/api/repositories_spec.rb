@@ -88,12 +88,12 @@ describe API::API, api: true  do
     end
   end
 
-  describe 'GET /projects/:id/repository/tree' do
-    context 'authorized user' do
+  describe "GET /projects/:id/repository/tree" do
+    context "authorized user" do
       before { project.team << [user2, :reporter] }
 
-      it 'should return project commits' do
-        get api('/projects/#{project.id}/repository/tree', user)
+      it "should return project commits" do
+        get api("/projects/#{project.id}/repository/tree", user)
         response.status.should == 200
 
         json_response.should be_an Array
@@ -104,20 +104,20 @@ describe API::API, api: true  do
       end
     end
 
-    context 'unauthorized user' do
-      it 'should not return project commits' do
-        get api('/projects/#{project.id}/repository/tree')
+    context "unauthorized user" do
+      it "should not return project commits" do
+        get api("/projects/#{project.id}/repository/tree")
         response.status.should == 401
       end
     end
   end
 
-  describe 'GET /projects/:id/repository/tree?recursive=1' do
-    context 'authorized user' do
+  describe "GET /projects/:id/repository/tree?recursive=1" do
+    context "authorized user" do
       before { project.team << [user2, :reporter] }
 
-      it 'should return project commits' do
-        get api('/projects/#{project.id}/repository/tree?recursive=1', user)
+      it "should return project commits" do
+        get api("/projects/#{project.id}/repository/tree?recursive=1", user)
         response.status.should == 200
 
         json_response.should be_an Array
