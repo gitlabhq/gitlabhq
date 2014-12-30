@@ -19,6 +19,8 @@ GET /groups
 ]
 ```
 
+You can search for groups by name or path with: `/groups?search=Rails`
+
 ## Details of a group
 
 Get all details of a group.
