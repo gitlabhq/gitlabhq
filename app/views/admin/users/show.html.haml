@@ -220,27 +220,4 @@
                         = link_to project_team_member_path(project, @user), data: { confirm: remove_from_project_team_message(project, @user) }, remote: true, method: :delete, class: "btn-tiny btn btn-remove", title: 'Remove user from project' do
                           %i.fa.fa-times
   #ssh-keys.tab-pane
-    - if @ssh_keys.any?
-      .panel.panel-default
-        %table.table
-          %thead.panel-heading
-            %tr
-              %th Title
-              %th Fingerprint
-              %th
-          %tbody
-            - @ssh_keys.each do |key|
-              %tr
-                %td
-                  = link_to admin_user_key_path(@user, key) do
-                    %strong= key.title
-                %td
-                  %span
-                    (#{key.fingerprint})
-                  %span.cgray
-                    added #{time_ago_with_tooltip(key.created_at)}
-                %td
-                  = link_to 'Remove', admin_user_key_path(@user, key), data: { confirm: 'Are you sure?'}, method: :delete, class: "btn btn-small btn-remove delete-key pull-right"
-
-    - else
-      .nothing-here-block User has no ssh keys
+    = render 'profiles/keys/key_table', admin: true

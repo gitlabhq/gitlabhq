@@ -11,7 +11,7 @@ class Admin::UsersController < Admin::ApplicationController
   def show
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
-    @ssh_keys = user.keys.order('id DESC')
+    @keys = user.keys.order('id DESC')
   end
 
   def new
