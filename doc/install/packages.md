@@ -13,7 +13,7 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 If you are using RPM and you are upgrading from GitLab Community Edition you may get an error like this:
 
 ```
-package gitlab-7.6.0_omnibus.5.3.0.ci-1.el7.x86_64 (which is newer than gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64) is already installed
+package gitlab-7.6.3_omnibus.5.3.0.ci-1.el7.x86_64 (which is newer than gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64) is already installed
 ```
 
 You can override this version check with the `--oldpackage` option:
@@ -21,6 +21,24 @@ You can override this version check with the `--oldpackage` option:
 ```
 rpm -Uvh --oldpackage gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64.rpm
 ```
+
+### GitLab 7.6.3 Enterprise Edition
+
+- 7.6.3-ee/CI 5.3.0 - Ubuntu 14.04 64-bit [gitlab_7.6.3-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/3ed4b729ff7d7e45e845399901666e1c32fe6c25/ubuntu-14.04/gitlab_7.6.3-ee.omnibus.5.3.0.ci-1_amd64.deb)
++ SHA256: 5fc2e12b9eddee53385300c4596deaf82cd592ae154df2e25c9e4150dca90c61
+
+- 7.6.3-ee/CI 5.3.0 - Ubuntu 12.04 64-bit [gitlab_7.6.3-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/aa09725dc1fdd5bcb2cd62835ad808b0c6fa1773/ubuntu-12.04/gitlab_7.6.3-ee.omnibus.5.3.0.ci-1_amd64.deb)
++ SHA256: 7e2c91e5bd34ef7fff3808e1ea503f70dca88b9d39d10419036922a62cc8cf04
+
+- 7.6.3-ee/CI 5.3.0 - Debian 7 64-bit [gitlab_7.6.3-ee.omnibus.5.3.0.ci-1_amd64.deb](https://s3-eu-west-1.amazonaws.com/downloads-packages/f8a9865824f4bbb758ae0204c23f4aa4b4c3d0ee/debian-7.7/gitlab_7.6.3-ee.omnibus.5.3.0.ci-1_amd64.deb)
++ SHA256: 48a894ea20113fc25e52a82bd98561402194b8ba20422ba3db5d7b918f7ef644
+
+- 7.6.3-ee/CI 5.3.0 - CentOS 6 64-bit [gitlab-7.6.3_ee.omnibus.5.3.0.ci-1.el6.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/a43a43353d96e7dd845e056af6e0f32692d1b9f1/centos-6.6/gitlab-7.6.3_ee.omnibus.5.3.0.ci-1.el6.x86_64.rpm)
++ SHA256: 9fcc935d7f6db8eaafe25e441ee77ebdbc26d5a3b8886fd060c8c32133bdbdbe
+
+- 7.6.3-ee/CI 5.3.0 - CentOS 7 64-bit [gitlab-7.6.3_ee.omnibus.5.3.0.ci-1.el7.x86_64.rpm](https://s3-eu-west-1.amazonaws.com/downloads-packages/6bddc4ef501939a7d5624f2784ec60d11490c1fe/centos-7.0.1406/gitlab-7.6.3_ee.omnibus.5.3.0.ci-1.el7.x86_64.rpm)
++ SHA256: b80a25250ab93f53825fc6f68c89ce01b2d641c0ae2ffe204eeafdea5058e87e
+
 
 ### GitLab 7.6.2 Enterprise Edition
 
