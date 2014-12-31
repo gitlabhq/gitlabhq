@@ -237,4 +237,20 @@ module ProjectsHelper
     result.password = '*****' if result.password.present?
     result
   end
+
+  def project_status_css_class(status)
+    case status
+    when "started"
+      "active"
+    when "failed"
+      "danger"
+    when "finished"
+      "success"
+    end
+  end
+
+  def github_import_enabled?
+    Gitlab.config.omniauth.enabled && enabled_oauth_providers.include?(:github)
+  end
 end
+

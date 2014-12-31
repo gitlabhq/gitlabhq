@@ -263,3 +263,5 @@ group :production do
 end
 
 gem "newrelic_rpm"
+
+gem 'octokit', '3.7.0'
