@@ -13,7 +13,7 @@ Please contact <subscribers@gitlab.com> if you have any questions.
 If you are using RPM and you are upgrading from GitLab Community Edition you may get an error like this:
 
 ```
-package gitlab-7.6.0_omnibus.5.3.0.ci-1.el7.x86_64 (which is newer than gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64) is already installed
+package gitlab-7.6.3_omnibus.5.3.0.ci-1.el7.x86_64 (which is newer than gitlab-7.5.3_ee.omnibus.5.2.1.ci-1.el7.x86_64) is already installed
 ```
 
 You can override this version check with the `--oldpackage` option:
