@@ -1,0 +1,17 @@
+.diff-file
+  .diff-content
+    .file-content.code
+      - unless @diff_lines.empty?
+        %table.text-file
+          - @diff_lines.each do |line|
+            %tr.line_holder{ class: "#{line.type}" }
+              - if line.type == "match"
+                %td.old_line= "..."
+                %td.new_line= "..."
+                %td.line_content.matched= line.text
+              - else
+                %td.old_line
+                %td.new_line
+                %td.line_content{class: "#{line.type}"}= raw diff_line_content(line.text)
+      - else
+        .nothing-here-block No changes.

@@ -1,9 +1,14 @@
 .file-editor
   %ul.nav.nav-tabs.js-edit-mode
     %li.active
-      = link_to 'Edit', '#editor'
+      = link_to 'Edit', '#', data: { 'pane-id' => 'editor' }
+    - if Gitlab::MarkdownHelper.previewable?(@blob.name)
+      %li
+        = link_to 'Preview', '#', data: { 'pane-id' => 'preview',
+            'target-url' => preview_project_edit_tree_path(@project, @id) }
     %li
-      = link_to editing_preview_title(@blob.name), '#preview', 'data-preview-url' => preview_project_edit_tree_path(@project, @id)
+      = link_to 'Diff', '#', data: { 'pane-id' => 'preview',
+          'target-url' => diff_project_edit_tree_path(@project, @id) }
 
   = form_tag(project_edit_tree_path(@project, @id), method: :put, class: "form-horizontal") do
     .file-holder.file
@@ -18,9 +23,9 @@
       .file-content.code
         %pre.js-edit-mode-pane#editor
         .js-edit-mode-pane#preview.hide
-          .center
-            %h2
-              %i.fa.fa-spinner.fa-spin
+        .js-edit-mode-pane#loader.hide
+          %h2.center
+            %i.fa.fa-spinner.fa-spin
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
     = hidden_field_tag 'last_commit', @last_commit
@@ -47,26 +52,31 @@
   });
 
   var editModePanes = $('.js-edit-mode-pane'),
-      editModeLinks = $('.js-edit-mode a');
+      editModeLinks = $('.js-edit-mode a'),
+      loaderPane = $('#loader');
 
   editModeLinks.click(function(event) {
     event.preventDefault();
 
     var currentLink = $(this),
-        paneId = currentLink.attr('href'),
-        currentPane = editModePanes.filter(paneId);
+        paneId = currentLink.data('pane-id'),
+        currentPane = editModePanes.filter('#' + paneId);
 
     editModeLinks.parent().removeClass('active hover');
     currentLink.parent().addClass('active hover');
     editModePanes.hide();
+    loaderPane.show();
 
-    if (paneId == '#preview') {
+    if (paneId == 'editor') {
       currentPane.fadeIn(200);
-      $.post(currentLink.data('preview-url'), { content: editor.getValue() }, function(response) {
-        currentPane.empty().append(response);
-      })
-    } else {
-      currentPane.fadeIn(200);
+      loaderPane.hide();
       editor.focus()
+    } else {
+      $.post(currentLink.data('target-url'), { content: editor.getValue() },
+             function(response) {
+        currentPane.html(response);
+        loaderPane.hide();
+        currentPane.fadeIn(200);
+      })
     }
   })
