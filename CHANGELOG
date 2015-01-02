@@ -33,7 +33,8 @@ v 7.9.0 (unreleased)
   - Send notifications and leave system comments when bulk updating issues.
   - Automatically link commit ranges to compare page: sha1...sha4 or sha1..sha4 (includes sha1 in comparison)
   - Move groups page from profile to dashboard
-  - Starred projects page at dashboard 
+  - Starred projects page at dashboard
+  - Make email display name configurable
 
 v 7.8.2
   - Fix service migration issue when upgrading from versions prior to 7.3
