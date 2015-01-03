@@ -5,7 +5,7 @@
 
   .issue-title
     %span.str-truncated
-      = link_to_gfm issue.title, project_issue_path(issue.project, issue), class: "row_title"
+      = link_to issue.title, project_issue_path(issue.project, issue), class: "row_title"
     - if issue.closed?
       %small.pull-right
         CLOSED
