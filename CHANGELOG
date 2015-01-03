@@ -5,15 +5,15 @@ v 7.7.0
   -
   -
   - Mention notification level
-  -
-  -
+  - Markdown preview in wiki (Yuriy Glukhov)
+  - Raise group avatar filesize limit to 200kb
   - OAuth applications feature
-  -
-  -
+  - Show user SSH keys in admin area
+  - Developer can push to protected branches option
   - Set project path instead of project name in create form
   -
   -
-  - New side navigation
+  - New UI layout with side navigation
   -
   -
   -
