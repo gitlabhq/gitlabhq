@@ -35,7 +35,7 @@ upstream gitlab {
 ## Normal HTTP host
 server {
   listen 0.0.0.0:80 default_server;
-  listen [::]:80 default_server;
+  listen [::]:80 ipv6only=on default_server;
   server_name YOUR_SERVER_FQDN; ## Replace this with something like gitlab.example.com
   server_tokens off; ## Don't show the nginx version number, a security best practice
   root /home/git/gitlab/public;
