@@ -67,7 +67,7 @@ module Gitlab
       if oldrev && newrev
         emails = IO.popen(%W(git --git-dir=#{project.repository.path_to_repo} log --format=%ae #{oldrev}...#{newrev})).read.split(/\s/).uniq
         if emails.present?
-            found_emails = User.where(email: emails).map{|u| u.emails}
+            found_emails = User.where(email: emails).map{|u| u.email}
             missing = emails - found_emails
             @errors << "User is not allowed to PUSH due to invalid e-mail address (#{missing.join(' ')}), please, use your registered e-mail address" if missing.present?
             return missing
