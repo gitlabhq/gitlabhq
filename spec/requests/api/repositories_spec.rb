@@ -37,8 +37,7 @@ describe API::API, api: true  do
     context 'annotated tag' do
       it 'should create a new annotated tag' do
         # Identity must be set in .gitconfig to create annotated tag.
-        repo_path = File.join(Gitlab.config.gitlab_shell.repos_path,
-                              project.path_with_namespace + '.git')
+        repo_path = project.repository.path_to_repo
         system(*%W(git --git-dir=#{repo_path} config user.name #{user.name}))
         system(*%W(git --git-dir=#{repo_path} config user.email #{user.email}))
 

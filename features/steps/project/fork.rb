@@ -25,4 +25,10 @@ class Spinach::Features::ProjectFork < Spinach::FeatureSteps
   step 'I should see a "Name has already been taken" warning' do
     page.should have_content "Name has already been taken"
   end
+
+  step 'I fork to my namespace' do
+    within '.fork-namespaces' do
+      click_link current_user.name
+    end
+  end
 end

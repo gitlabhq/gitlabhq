@@ -5,14 +5,14 @@ describe Gitlab::GitAccess do
   let(:project) { create(:project) }
   let(:user) { create(:user) }
 
-  describe 'download_allowed?' do
+  describe 'download_access_check' do
     describe 'master permissions' do
       before { project.team << [user, :master] }
 
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_true }
+        it { subject.allowed?.should be_true }
       end
     end
 
@@ -20,9 +20,9 @@ describe Gitlab::GitAccess do
       before { project.team << [user, :guest] }
 
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_false }
+        it { subject.allowed?.should be_false }
       end
     end
 
@@ -33,22 +33,41 @@ describe Gitlab::GitAccess do
       end
 
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_false }
+        it { subject.allowed?.should be_false }
       end
     end
 
     describe 'without acccess to project' do
       context 'pull code' do
-        subject { access.download_allowed?(user, project) }
+        subject { access.download_access_check(user, project) }
 
-        it { should be_false }
+        it { subject.allowed?.should be_false }
+      end
+    end
+
+    describe 'deploy key permissions' do
+      let(:key) { create(:deploy_key) }
+
+      context 'pull code' do
+        context 'allowed' do
+          before { key.projects << project }
+          subject { access.download_access_check(key, project) }
+
+          it { subject.allowed?.should be_true }
+        end
+
+        context 'denied' do
+          subject { access.download_access_check(key, project) }
+
+          it { subject.allowed?.should be_false }
+        end
       end
     end
   end
 
-  describe 'push_allowed?' do
+  describe 'push_access_check' do
     def protect_feature_branch
       create(:protected_branch, name: 'feature', project: project)
     end
@@ -117,9 +136,9 @@ describe Gitlab::GitAccess do
 
         permissions_matrix[role].each do |action, allowed|
           context action do
-            subject { access.push_allowed?(user, project, changes[action]) }
+            subject { access.push_access_check(user, project, changes[action]) }
 
-            it { should allowed ? be_true : be_false }
+            it { subject.allowed?.should allowed ? be_true : be_false }
           end
         end
       end

@@ -33,17 +33,22 @@ module API
           end
 
         project = Project.find_with_namespace(project_path)
-        return false unless project
+
+        unless project
+          return Gitlab::GitAccessStatus.new(false, 'No such project')
+        end
 
         actor = if params[:key_id]
-                  Key.find(params[:key_id])
+                  Key.find_by(id: params[:key_id])
                 elsif params[:user_id]
-                  User.find(params[:user_id])
+                  User.find_by(id: params[:user_id])
                 end
 
-        return false unless actor
+        unless actor
+          return Gitlab::GitAccessStatus.new(false, 'No such user or key')
+        end
 
-        access.allowed?(
+        access.check(
           actor,
           params[:action],
           project,

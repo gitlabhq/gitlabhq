@@ -80,15 +80,33 @@ The **official merge window** is in the beginning of the month from the 1st to t
 
 Please keep the change in a single MR **as small as possible**. If you want to contribute a large feature think very hard what the minimum viable change is. Can you split functionality? Can you only submit the backend/API code? Can you start with a very simple UI? Can you do part of the refactor? The increased reviewability of small MR's that leads to higher code quality is more important to us than having a minimal commit log. The smaller a MR is the more likely it is it will be merged (quickly), after that you can send more MR's to enhance it.
 
-For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the following contribution acceptance criteria.
+For examples of feedback on merge requests please look at already [closed merge requests](https://gitlab.com/gitlab-org/gitlab-ce/merge_requests?assignee_id=&label_name=&milestone_id=&scope=&sort=&state=closed). If you would like quick feedback on your merge request feel free to mention one of the Merge Marshalls of [the core-team](https://about.gitlab.com/core-team/). Please ensure that your merge request meets the contribution acceptance criteria.
 
-**Please format your merge request description as follows:**
+## Definition of done
+
+If you contribute to GitLab please know that changes involve more than just code.
+We have the following [definition of done](http://guide.agilealliance.org/guide/definition-of-done.html).
+Please ensure you support the feature you contribute through all of these steps.
+
+1. Description explaning the relevancy (see following item)
+1. Working and clean code that is commented where needed
+1. Unit and integration tests that pass on the CI server
+1. Documented in the /doc directory
+1. Changelog entry added
+1. Reviewed and any concerns are addressed
+1. Merged by the project lead
+1. Added to the release blog article
+1. Added to [the website](https://gitlab.com/gitlab-com/www-gitlab-com/) if relevant
+1. Community questions answered
+1. Answers to questions radiated (in docs/wiki/etc.)
+
+## Merge request description format
 
 1. What does this MR do?
 1. Are there points in the code the reviewer needs to double check?
 1. Why was this MR needed?
 1. What are the relevant issue numbers / [Feature requests](http://feedback.gitlab.com/)?
-1. Screenshots (If appropriate)
+1. Screenshots (if relevant)
 
 ## Contribution acceptance criteria
 

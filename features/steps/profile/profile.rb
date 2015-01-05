@@ -170,7 +170,7 @@ class Spinach::Features::Profile < Spinach::FeatureSteps
   end
 
   step "I am not an ldap user" do
-    current_user.update_attributes(extern_uid: nil,  provider: '')
+    current_user.identities.delete
     current_user.ldap_user?.should be_false
   end
 

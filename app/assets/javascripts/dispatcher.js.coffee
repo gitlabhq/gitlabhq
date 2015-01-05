@@ -58,8 +58,6 @@ class Dispatcher
       when 'groups:show', 'projects:show'
         new Activities()
         shortcut_handler = new ShortcutsNavigation()
-      when 'projects:teams:members:index'
-        new TeamMembers()
       when 'groups:members'
         new GroupMembers()
         new UsersSelect()
@@ -77,6 +75,8 @@ class Dispatcher
         # Ensure we don't create a particular shortcut handler here. This is
         # already created, where the network graph is created.
         shortcut_handler = true
+      when 'projects:forks:new'
+        new ProjectFork()
       when 'users:show'
         new User()
 

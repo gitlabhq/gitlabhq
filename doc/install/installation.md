@@ -6,9 +6,9 @@ Since a manual installation is a lot of work and error prone we strongly recomme
 
 ## Select Version to Install
 
-Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the branch (version) of GitLab you would like to install. In most cases this should be the highest numbered stable branch (example shown below).
-
-![Select latest branch](https://i.imgur.com/Lrdxk1k.png)
+Make sure you view [this installation guide](https://gitlab.com/gitlab-org/gitlab-ce/blob/master/doc/install/installation.md) from the tag (version) of GitLab you would like to install.
+In most cases this should be the highest numbered production tag (without rc in it).
+You can select the tag in the version dropdown in the top left corner of GitLab (below the menu bar).
 
 If the highest number stable branch is unclear please check the [GitLab Blog](https://about.gitlab.com/blog/) for installation guide links by version.
 
@@ -101,8 +101,8 @@ Remove the old Ruby 1.8 if present
 Download Ruby and compile it:
 
     mkdir /tmp/ruby && cd /tmp/ruby
-    curl -L --progress ftp://ftp.ruby-lang.org/pub/ruby/2.1/ruby-2.1.2.tar.gz | tar xz
-    cd ruby-2.1.2
+    curl -L --progress http://cache.ruby-lang.org/pub/ruby/2.1/ruby-2.1.5.tar.gz | tar xz
+    cd ruby-2.1.5
     ./configure --disable-install-rdoc
     make
     sudo make install
@@ -127,7 +127,8 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Login to PostgreSQL
     sudo -u postgres psql -d template1
 
-    # Create a user for GitLab.
+    # Create a user for GitLab
+    # Do not type the 'template1=#', this is part of the prompt
     template1=# CREATE USER git CREATEDB;
 
     # Create the GitLab production database & grant all privileges on database
@@ -138,6 +139,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 
     # Try connecting to the new database with the new user
     sudo -u git -H psql -d gitlabhq_production
+    
+    # Quit the database session
+    gitlabhq_production> \q
 
 ## 5. Redis
 
@@ -177,9 +181,9 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 ### Clone the Source
 
     # Clone GitLab repository
-    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-4-stable gitlab
+    sudo -u git -H git clone https://gitlab.com/gitlab-org/gitlab-ce.git -b 7-5-stable gitlab
 
-**Note:** You can change `7-4-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
+**Note:** You can change `7-5-stable` to `master` if you want the *bleeding edge* version, but never install master on a production server!
 
 ### Configure It
 
@@ -195,7 +199,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
     # Make sure GitLab can write to the log/ and tmp/ directories
     sudo chown -R git log/
     sudo chown -R git tmp/
-    sudo chmod -R u+rwX log/
+    sudo chmod -R u+rwX,go-w log/
     sudo chmod -R u+rwX tmp/
 
     # Create directory for satellites
@@ -274,7 +278,7 @@ We recommend using a PostgreSQL database. For MySQL check [MySQL setup guide](da
 GitLab Shell is an SSH access and repository management software developed specially for GitLab.
 
     # Run the installation task for gitlab-shell (replace `REDIS_URL` if needed):
-    sudo -u git -H bundle exec rake gitlab:shell:install[v2.0.1] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
+    sudo -u git -H bundle exec rake gitlab:shell:install[v2.2.0] REDIS_URL=unix:/var/run/redis/redis.sock RAILS_ENV=production
 
     # By default, the gitlab-shell config is generated from your main GitLab config.
     # You can review (and modify) the gitlab-shell config as follows:

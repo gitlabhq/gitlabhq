@@ -62,6 +62,19 @@ module IssuesHelper
     ''
   end
 
+  def issue_timestamp(issue)
+    # Shows the created at time and the updated at time if different
+    ts = "#{time_ago_with_tooltip(issue.created_at, 'bottom', 'note_created_ago')}"
+    if issue.updated_at != issue.created_at
+      ts << capture_haml do
+        haml_tag :small do
+          haml_concat " (Edited #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_edited_ago')})"
+        end
+      end
+    end
+    ts.html_safe
+  end
+
   # Checks if issues_tracker setting exists in gitlab.yml
   def external_issues_tracker_enabled?
     Gitlab.config.issues_tracker && Gitlab.config.issues_tracker.values.any?
@@ -98,6 +111,21 @@ module IssuesHelper
       'issue-box-closed'
     else
       'issue-box-open'
+    end
+  end
+
+  def issue_to_atom(xml, issue)
+    xml.entry do
+      xml.id      project_issue_url(issue.project, issue)
+      xml.link    href: project_issue_url(issue.project, issue)
+      xml.title   truncate(issue.title, length: 80)
+      xml.updated issue.created_at.strftime("%Y-%m-%dT%H:%M:%SZ")
+      xml.media   :thumbnail, width: "40", height: "40", url: avatar_icon(issue.author_email)
+      xml.author do |author|
+        xml.name issue.author_name
+        xml.email issue.author_email
+      end
+      xml.summary issue.title
     end
   end
 end

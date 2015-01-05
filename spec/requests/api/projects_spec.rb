@@ -203,15 +203,12 @@ describe API::API, api: true  do
       json_response['message']['name'].should == [
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
-        'can contain only letters, digits, \'_\', \'-\' and \'.\' and '\
-        'space. It must start with letter, digit or \'_\'.'
+        Gitlab::Regex.project_regex_message
       ]
       json_response['message']['path'].should == [
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
-        'can contain only letters, digits, \'_\', \'-\' and \'.\'. It must '\
-        'start with letter, digit or \'_\', optionally preceeded by \'.\'. '\
-        'It must not end in \'.git\'.'
+        Gitlab::Regex.send(:default_regex_message)
       ]
     end
 
