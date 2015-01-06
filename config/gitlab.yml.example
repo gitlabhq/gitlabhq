@@ -300,6 +300,9 @@ production: &base
 
   rack_attack:
     git_basic_auth:
+      # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
+      # ip_whitelist: ["127.0.0.1"]
+      #
       # Limit the number of Git HTTP authentication attempts per IP
       # maxretry: 10
       #

@@ -80,10 +80,15 @@ module Grack
       # information is stored in the Rails cache (Redis) and will be used by
       # the Rack::Attack middleware to decide whether to block requests from
       # this IP.
-      Rack::Attack::Allow2Ban.filter(@request.ip, Gitlab.config.rack_attack.git_basic_auth) do
-        # Return true, so that Allow2Ban increments the counter (stored in
-        # Rails.cache) for the IP
-        true
+      config = Gitlab.config.rack_attack.git_basic_auth
+      Rack::Attack::Allow2Ban.filter(@request.ip, config) do
+        # Unless the IP is whitelisted, return true so that Allow2Ban
+        # increments the counter (stored in Rails.cache) for the IP
+        if config.ip_whitelist.include?(@request.ip)
+          false
+        else
+          true
+        end
       end
 
       nil # No user was found
