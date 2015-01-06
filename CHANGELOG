@@ -1,3 +1,6 @@
+v 7.4.4
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
+
 v 7.4.3
   - Fix raw snippets view
   - Fix security issue for member api
