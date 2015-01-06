@@ -68,6 +68,36 @@ module ProjectsHelper
     project_nav_tabs.include? name
   end
 
+  def selected_label?(label_name)
+    params[:label_name].to_s.split(',').include?(label_name)
+  end
+
+  def labels_filter_path(label_name)
+    label_name =
+      if selected_label?(label_name)
+        params[:label_name].split(',').reject { |l| l == label_name }.join(',')
+      elsif params[:label_name].present?
+        "#{params[:label_name]},#{label_name}"
+      else
+        label_name
+      end
+
+    project_filter_path(label_name: label_name)
+  end
+
+  def label_filter_class(label_name)
+    if selected_label?(label_name)
+      'label-filter-item active'
+    else
+      'label-filter-item light'
+    end
+  end
+
+  def project_filter_path(options = {})
+    merge_params_path(options, [:state, :scope, :label_name,
+                                :milestone_id, :assignee_id, :sort])
+  end
+
   def project_active_milestones
     @project.milestones.active.order("due_date, title ASC")
   end

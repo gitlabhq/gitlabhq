@@ -1,16 +1,17 @@
 module DashboardHelper
-  def projects_dashboard_filter_path(options={})
-    exist_opts = {
-      sort: params[:sort],
-      scope: params[:scope],
-      group: params[:group],
-    }
+  def entities_per_project(project, entity)
+    case entity.to_sym
+    when :issue
+      @issues.where(project_id: project.id)
+    when :merge_request
+      @merge_requests.where(target_project_id: project.id)
+    else
+      []
+    end.count
+  end
 
-    options = exist_opts.merge(options)
-
-    path = request.path
-    path << "?#{options.to_param}"
-    path
+  def projects_dashboard_filter_path(options = {})
+    merge_params_path(options, [:sort, :scope, :group])
   end
 
   def assigned_issues_dashboard_path

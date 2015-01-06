@@ -94,15 +94,7 @@ module SearchHelper
   end
 
   def search_filter_path(options={})
-    exist_opts = {
-      search: params[:search],
-      project_id: params[:project_id],
-      group_id: params[:group_id],
-      scope: params[:scope]
-    }
-
-    options = exist_opts.merge(options)
-    search_path(options)
+    merge_params_path(options, [:search, :project_id, :group_id, :scope])
   end
 
   # Sanitize html generated after parsing markdown from issue description or comment
