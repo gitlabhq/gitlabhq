@@ -19,8 +19,8 @@ module Issues
                                                                   :task_num))
         issue.reset_events_cache
 
-        add_label_note(old_labels, issue.labels, issue, true)
-        add_label_note(issue.labels, old_labels, issue, false)
+        create_labels_note(issue, old_labels, issue.labels, true)
+        create_labels_note(issue, issue.labels, old_labels, false)
 
         if issue.previous_changes.include?('milestone_id')
           create_milestone_note(issue)
@@ -36,18 +36,6 @@ module Issues
       end
 
       issue
-    end
-
-    private
-
-    def add_label_note(labels1, labels2, issue, removed)
-      diff_labels = labels1 - labels2
-      create_labels_note(issue, diff_labels, removed) unless diff_labels.empty?
-    end
-
-    def update_task(issue, params, checked)
-      issue.update_nth_task(params[:task_num].to_i, checked)
-      params.except!(:task_num)
     end
   end
 end

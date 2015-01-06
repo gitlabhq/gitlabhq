@@ -23,10 +23,14 @@ module MergeRequests
         merge_request.update_nth_task(params[:task_num].to_i, false)
       end
 
+      old_labels = merge_request.labels.map{ |label| label }
       if params.present? && merge_request.update_attributes(
         params.except(:state_event, :task_num)
       )
         merge_request.reset_events_cache
+
+        create_labels_note(merge_request, old_labels, merge_request.labels, true)
+        create_labels_note(merge_request, merge_request.labels, old_labels, false)
 
         if merge_request.previous_changes.include?('milestone_id')
           create_milestone_note(merge_request)

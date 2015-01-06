@@ -45,7 +45,7 @@ describe Issues::UpdateService do
       end
 
       it 'should create system note about issue label edit' do
-        note = @issue.notes.first(2).last
+        note = @issue.notes[1]
         note.note.should include "Label `#{label.title}` added"
       end
     end
