@@ -292,11 +292,17 @@ table {
 
 .dashboard-intro-icon {
   float: left;
+  text-align: center;
   font-size: 32px;
   color: #AAA;
-  padding: 5px 0;
-  width: 50px;
-  min-height: 100px;
+  width: 60px;
+}
+
+.dashboard-intro-text {
+  display: inline-block;
+  margin-left: -60px;
+  padding-left: 60px;
+  width: 100%;
 }
 
 .broadcast-message {
