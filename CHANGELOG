@@ -1,3 +1,6 @@
+v 7.2.2
+  - Bump gitlab_git to 6.2.2 (includes Rugged 0.21.2)
+
 v 7.2.1
   - Delete orphaned labels during label migration (James Brooks)
   - Security: prevent XSS with stricter MIME types for raw repo files
