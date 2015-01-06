@@ -23,6 +23,7 @@ FactoryGirl.define do
     password_confirmation { password }
     confirmed_at { Time.now }
     confirmation_token { nil }
+    can_create_group true
 
     trait :admin do
       admin true

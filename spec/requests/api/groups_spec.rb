@@ -3,8 +3,9 @@ require 'spec_helper'
 describe API::API, api: true  do
   include ApiHelpers
 
-  let(:user1) { create(:user) }
+  let(:user1) { create(:user, can_create_group: false) }
   let(:user2) { create(:user) }
+  let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let!(:group1) { create(:group) }
   let!(:group2) { create(:group) }
@@ -76,31 +77,31 @@ describe API::API, api: true  do
   end
 
   describe "POST /groups" do
-    context "when authenticated as user" do
+    context 'when authenticated as user without group permissions' do
       it "should not create group" do
         post api("/groups", user1), attributes_for(:group)
         response.status.should == 403
       end
     end
 
-    context "when authenticated as admin" do
+    context 'when authenticated as user with group permissions' do
       it "should create group" do
-        post api("/groups", admin), attributes_for(:group)
+        post api('/groups', user3), attributes_for(:group)
         response.status.should == 201
       end
 
       it "should not create group, duplicate" do
-        post api("/groups", admin), {name: "Duplicate Test", path: group2.path}
+        post api('/groups', user3), name: 'Duplicate Test', path: group2.path
         response.status.should == 404
       end
 
       it "should return 400 bad request error if name not given" do
-        post api("/groups", admin), {path: group2.path}
+        post api('/groups', user3), path: group2.path
         response.status.should == 400
       end
 
       it "should return 400 bad request error if path not given" do
-        post api("/groups", admin), { name: 'test' }
+        post api('/groups', user3), name: 'test'
         response.status.should == 400
       end
     end
@@ -114,8 +115,8 @@ describe API::API, api: true  do
       end
 
       it "should not remove a group if not an owner" do
-        user3 = create(:user)
-        group1.add_user(user3, Gitlab::Access::MASTER)
+        user4 = create(:user)
+        group1.add_user(user4, Gitlab::Access::MASTER)
         delete api("/groups/#{group1.id}", user3)
         response.status.should == 403
       end

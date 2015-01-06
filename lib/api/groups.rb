@@ -36,7 +36,7 @@ module API
         present @groups, with: Entities::Group
       end
 
-      # Create group. Available only for admin
+      # Create group. Available only for users who can create groups.
       #
       # Parameters:
       #   name (required) - The name of the group
@@ -44,7 +44,7 @@ module API
       # Example Request:
       #   POST /groups
       post do
-        authenticated_as_admin!
+        authorize! :create_group, current_user
         required_attributes! [:name, :path]
 
         attrs = attributes_for_keys [:name, :path]
