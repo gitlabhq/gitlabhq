@@ -100,9 +100,9 @@ List any major changes here, so the user is aware of them before starting to upg
 - Web server changes
 - File structure changes
 
-#### 1. Make backup
+#### 1. Stop server
 
-#### 2. Stop server
+#### 2. Make backup
 
 #### 3. Do users need to update dependencies like `git`?
 
@@ -200,7 +200,7 @@ Add to your local `gitlab-ci/.git/config`:
 
 # **4 workdays before release - Release RC1**
 
-### **1. Determine QA person
+### **1. Determine QA person**
 
 Notify person of QA day.
 
@@ -215,6 +215,7 @@ It is important to do this as soon as possible, so we can catch any errors befor
 ### **3. Prepare the blog post**
 
 - Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
+- Make sure the blog post contains information about the GitLab CI release.
 - Check the changelog of CE and EE for important changes.
 - Also check the CI changelog
 - Add a proposed tweet text to the blog post WIP MR description.
@@ -224,8 +225,8 @@ It is important to do this as soon as possible, so we can catch any errors befor
 - Create WIP MR for adding MVP to MVP page on website
 - Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
 - Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
-- Assign to one reviewer who will fix spelling issues by editing the branch (can use the online editor)
-- After the reviewer is finished the whole team will be mentioned to give their suggestions via line comments
+- Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
+- Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
 
 ### **4. Create a regressions issue**
 
@@ -238,13 +239,17 @@ The release manager will comment here about the plans for patch releases.
 
 Assign the issue to the release manager and /cc all the core-team members active on the issue tracker. If there are any known bugs in the release add them immediately.
 
-### **4. Tweet**
+### **5. Tweet**
 
 Tweet about the RC release:
 
 > GitLab x.x.0.rc1 is out. This release candidate is only suitable for testing. Please link regressions issues from LINK_TO_REGRESSION_ISSUE
 
 # **1 workdays before release - Preparation**
+
+### **0. Doublecheck blog post**
+
+Doublecheck the everyone has been mentioned in the blog post.
 
 ### **1. Pre QA merge**
 
@@ -265,7 +270,7 @@ Create an issue with description of a problem, if it is quick fix fix it yoursel
 **NOTE** If there is a problem that cannot be fixed in a timely manner, reverting the feature is an option! If the feature is reverted,
 create an issue about it in order to discuss the next steps after the release.
 
-# **22nd - Release CE, EE and CI**
+# **Workday before release - Create Omnibus tags and build packages**
 
 **Make sure EE `x-x-stable-ee` has latest changes from CE `x-x-stable`**
 
@@ -302,20 +307,24 @@ Follow the [release doc in the Omnibus repository](https://gitlab.com/gitlab-org
 This can happen before tagging because Omnibus uses tags in its own repo and SHA1's to refer to the GitLab codebase.
 
 
-### **4. Publish packages for new release**
+# **22nd - Release CE, EE and CI**
+
+### **1. Publish packages for new release**
 
 Update `downloads/index.html` and `downloads/archive/index.html` in `www-gitlab-com` repository.
 
-### **5. Publish blog for new release**
+### **2. Publish blog for new release**
 
 Merge the [blog merge request](#1-prepare-the-blog-post) in `www-gitlab-com` repository.
 
-### **6. Tweet to blog**
+### **3. Tweet to blog**
 
 Send out a tweet to share the good news with the world.
 List the most important features and link to the blog post.
 
-Proposed tweet for CE "GitLab X.X is released! It brings *** <link-to-blogpost>"
+Proposed tweet "Release of GitLab X.X & CI Y.Y! FEATURE, FEATURE and FEATURE <link-to-blogpost> #gitlab"
+
+Consider creating a post on Hacker News.
 
 # **1 workday after release - Update GitLab.com**
 

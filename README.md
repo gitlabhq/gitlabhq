@@ -52,69 +52,30 @@ On [about.gitlab.com](https://about.gitlab.com/) you can find more information a
 
 Please see [the installation page on the GitLab website](https://about.gitlab.com/installation/) for the various options.
 Since a manual installation is a lot of work and error prone we strongly recommend the fast and reliable [Omnibus package installation](https://about.gitlab.com/downloads/) (deb/rpm).
+You can access new installation with the login `root` and password `5iveL!fe`, after login you are required to set a unique password.
 
 ## Third-party applications
 
 There are a lot of applications and API wrappers for GitLab.
 Find them [on our website](https://about.gitlab.com/applications/).
 
-### New versions
+## New versions
 
 Since 2011 a minor or major version of GitLab is released on the 22nd of every month. Patch and security releases come out when needed.  New features are detailed on the [blog](https://about.gitlab.com/blog/) and in the [changelog](CHANGELOG). For more information about the release process see the release [documentation](https://gitlab.com/gitlab-org/gitlab-ce/tree/master/doc/release). Features that will likely be in the next releases can be found on the [feature request forum](http://feedback.gitlab.com/forums/176466-general) with the status [started](http://feedback.gitlab.com/forums/176466-general/status/796456) and [completed](http://feedback.gitlab.com/forums/176466-general/status/796457).
 
-### Upgrading
+## Upgrading
 
 For updating the the Omnibus installation please see the [update documentation](https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md). For manual installations there is an [upgrader script](doc/update/upgrader.md) and there are [upgrade guides](doc/update).
-
-## Run in production mode
-
-The Installation guide contains instructions on how to download an init script and run it automatically on boot. You can also start the init script manually:
-
-    sudo service gitlab start
-
-or by directly calling the script:
-
-     sudo /etc/init.d/gitlab start
-
-Please login with `root` / `5iveL!fe`
 
 ## Install a development environment
 
 We recommend setting up your development environment with [the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit).
-If you do not use the development kit you might need to copy the example development unicorn configuration file
+If you do not use the GitLab Development Development kit you need to install and setup all the dependencies yourself, this is a lot of work and error prone.
+One small thing you also have to do when installing it yourself is to copy the example development unicorn configuration file:
 
     cp config/unicorn.rb.example.development config/unicorn.rb
 
-## Run in development mode
-
-Start it with [Foreman](https://github.com/ddollar/foreman)
-
-    bundle exec foreman start -p 3000
-
-or start each component separately:
-
-    bundle exec rails s
-    bin/background_jobs start
-
-And surf to [localhost:3000](http://localhost:3000/) and login with `root` / `5iveL!fe`.
-
-## Run the tests
-
--   Run all tests:
-
-        bundle exec rake test
-
--   [RSpec](http://rspec.info/) unit and functional tests.
-
-    All RSpec tests: `bundle exec rake spec`
-
-    Single RSpec file: `bundle exec rspec spec/controllers/commit_controller_spec.rb`
-
--   [Spinach](https://github.com/codegram/spinach) integration tests.
-
-    All Spinach tests: `bundle exec rake spinach`
-
-    Single Spinach test: `bundle exec spinach features/project/issues/milestones.feature`
+Instructions on how to start Gitlab and how to run the tests can be found in the [development section of the GitLab Development Kit](https://gitlab.com/gitlab-org/gitlab-development-kit#development).
 
 ## Documentation
 

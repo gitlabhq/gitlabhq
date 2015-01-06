@@ -88,7 +88,8 @@ label {
   @include box-shadow(none);
 }
 
-.issuable-description {
+.issuable-description,
+.wiki-content {
   margin-top: 35px;
 }
 

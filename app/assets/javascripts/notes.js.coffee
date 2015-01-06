@@ -36,12 +36,6 @@ class @Notes
     # delete note attachment
     $(document).on "click", ".js-note-attachment-delete", @removeAttachment
 
-    # Preview button
-    $(document).on "click", ".js-note-preview-button", @previewNote
-
-    # Preview button
-    $(document).on "click", ".js-note-write-button", @writeNote
-
     # reset main target form after submit
     $(document).on "ajax:complete", ".js-main-target-form", @resetMainTargetForm
 
@@ -77,8 +71,6 @@ class @Notes
     $(document).off "click", ".note-edit-cancel"
     $(document).off "click", ".js-note-delete"
     $(document).off "click", ".js-note-attachment-delete"
-    $(document).off "click", ".js-note-preview-button"
-    $(document).off "click", ".js-note-write-button"
     $(document).off "ajax:complete", ".js-main-target-form"
     $(document).off "click", ".js-choose-note-attachment-button"
     $(document).off "click", ".js-discussion-reply-button"
@@ -166,47 +158,6 @@ class @Notes
     @removeDiscussionNoteForm(form)
 
   ###
-  Shows write note textarea.
-  ###
-  writeNote: (e) ->
-    e.preventDefault()
-    form = $(this).closest("form")
-    # toggle tabs
-    form.find(".js-note-write-button").parent().addClass "active"
-    form.find(".js-note-preview-button").parent().removeClass "active"
-
-    # toggle content
-    form.find(".note-write-holder").show()
-    form.find(".note-preview-holder").hide()
-
-  ###
-  Shows the note preview.
-
-  Lets the server render GFM into Html and displays it.
-  ###
-  previewNote: (e) ->
-    e.preventDefault()
-    form = $(this).closest("form")
-    # toggle tabs
-    form.find(".js-note-write-button").parent().removeClass "active"
-    form.find(".js-note-preview-button").parent().addClass "active"
-
-    # toggle content
-    form.find(".note-write-holder").hide()
-    form.find(".note-preview-holder").show()
-
-    preview = form.find(".js-note-preview")
-    noteText = form.find(".js-note-text").val()
-    if noteText.trim().length is 0
-      preview.text "Nothing to preview."
-    else
-      preview.text "Loading..."
-      $.post($(this).data("url"),
-        note: noteText
-      ).success (previewData) ->
-        preview.html previewData
-
-  ###
   Called in response the main target form has been successfully submitted.
 
   Removes any errors.
@@ -220,7 +171,7 @@ class @Notes
     form.find(".js-errors").remove()
 
     # reset text and preview
-    form.find(".js-note-write-button").click()
+    form.find(".js-md-write-button").click()
     form.find(".js-note-text").val("").trigger "input"
 
   ###
@@ -270,8 +221,8 @@ class @Notes
     form.removeClass "js-new-note-form"
 
     # setup preview buttons
-    form.find(".js-note-write-button, .js-note-preview-button").tooltip placement: "left"
-    previewButton = form.find(".js-note-preview-button")
+    form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
+    previewButton = form.find(".js-md-preview-button")
     form.find(".js-note-text").on "input", ->
       if $(this).val().trim() isnt ""
         previewButton.removeClass("turn-off").addClass "turn-on"
@@ -424,7 +375,7 @@ class @Notes
   ###
   addDiffNote: (e) =>
     e.preventDefault()
-    link = e.target
+    link = e.currentTarget
     form = $(".js-new-note-form")
     row = $(link).closest("tr")
     nextRow = row.next()

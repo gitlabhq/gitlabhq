@@ -7,6 +7,7 @@ OmniAuth does not prevent standard GitLab authentication or LDAP (if configured)
 - [Initial OmniAuth Configuration](#initial-omniauth-configuration)
 - [Supported Providers](#supported-providers)
 - [Enable OmniAuth for an Existing User](#enable-omniauth-for-an-existing-user)
+- [OmniAuth configuration sample when using Omnibus GitLab](https://gitlab.com/gitlab-org/omnibus-gitlab/tree/master#omniauth-google-twitter-github-login)
 
 ## Initial OmniAuth Configuration
 

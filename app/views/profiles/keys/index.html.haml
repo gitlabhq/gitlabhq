@@ -1,5 +1,5 @@
 %h3.page-title
-  My SSH keys
+  My SSH keys (#{@keys.count})
   .pull-right
     = link_to "Add SSH Key", new_profile_key_path, class: "btn btn-new"
 %p.light
@@ -9,14 +9,4 @@
   = link_to "generate it", help_page_path("ssh", "ssh")
 %hr
 
-
-.panel.panel-default
-  .panel-heading
-    SSH Keys (#{@keys.count})
-  %ul.well-list#keys-table
-    = render @keys
-    - if @keys.blank?
-      %li
-        .nothing-here-block There are no SSH keys with access to your account.
-
-
+= render 'key_table'

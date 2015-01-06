@@ -8,7 +8,6 @@ If a user is a GitLab administrator they receive all permissions.
 
 ## Project
 
-
 | Action                                | Guest   | Reporter   | Developer   | Master   | Owner  |
 |---------------------------------------|---------|------------|-------------|----------|--------|
 | Create new issue                      | ✓       | ✓          | ✓           | ✓        | ✓      |
@@ -29,6 +28,7 @@ If a user is a GitLab administrator they receive all permissions.
 | Add new team members                  |         |            |             | ✓        | ✓      |
 | Push to protected branches            |         |            |             | ✓        | ✓      |
 | Enable/disable branch protection      |         |            |             | ✓        | ✓      |
+| Turn on/off prot. branch push for devs|         |            |             | ✓        | ✓      |
 | Rewrite/remove git tags               |         |            |             | ✓        | ✓      |
 | Edit project                          |         |            |             | ✓        | ✓      |
 | Add deploy keys to project            |         |            |             | ✓        | ✓      |
@@ -37,7 +37,7 @@ If a user is a GitLab administrator they receive all permissions.
 | Transfer project to another namespace |         |            |             |          | ✓      |
 | Remove project                        |         |            |             |          | ✓      |
 | Force push to protected branches      |         |            |             |          |        |
-| Remove protected branches            |          |            |             |          |        |
+| Remove protected branches             |         |            |             |          |        |
 
 ## Group
 

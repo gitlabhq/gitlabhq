@@ -78,6 +78,21 @@ Parameters:
 - `issue_id` (required) - The ID of an issue
 - `body` (required) - The content of a note
 
+### Modify existing issue note
+
+Modify existing note of an issue.
+
+```
+PUT /projects/:id/issues/:issue_id/notes/:note_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `issue_id` (required) - The ID of an issue
+- `note_id` (required) - The ID of a note
+- `body` (required) - The content of a note
+
 ## Snippets
 
 ### List all snippet notes
@@ -137,7 +152,22 @@ POST /projects/:id/snippets/:snippet_id/notes
 Parameters:
 
 - `id` (required) - The ID of a project
-- `snippet_id` (required) - The ID of an snippet
+- `snippet_id` (required) - The ID of a snippet
+- `body` (required) - The content of a note
+
+### Modify existing snippet note
+
+Modify existing note of a snippet.
+
+```
+PUT /projects/:id/snippets/:snippet_id/notes/:note_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `snippet_id` (required) - The ID of a snippet
+- `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note
 
 ## Merge Requests
@@ -198,4 +228,19 @@ Parameters:
 
 - `id` (required) - The ID of a project
 - `merge_request_id` (required) - The ID of a merge request
+- `body` (required) - The content of a note
+
+### Modify existing merge request note
+
+Modify existing note of a merge request.
+
+```
+PUT /projects/:id/merge_requests/:merge_request_id/notes/:note_id
+```
+
+Parameters:
+
+- `id` (required) - The ID of a project
+- `merge_request_id` (required) - The ID of a merge request
+- `note_id` (required) - The ID of a note
 - `body` (required) - The content of a note

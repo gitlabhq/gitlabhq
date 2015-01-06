@@ -5,8 +5,12 @@ FactoryGirl.define do
     Faker::Lorem.sentence
   end
 
-  sequence :name, aliases: [:file_name] do
+  sequence :name do
     Faker::Name.name
+  end
+
+  sequence :file_name do
+    Faker::Internet.user_name
   end
 
   sequence(:url) { Faker::Internet.uri('http') }
@@ -18,7 +22,7 @@ FactoryGirl.define do
     password "12345678"
     password_confirmation { password }
     confirmed_at { Time.now }
-    confirmation_token { nil }    
+    confirmation_token { nil }
 
     trait :admin do
       admin true

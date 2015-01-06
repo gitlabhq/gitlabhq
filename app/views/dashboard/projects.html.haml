@@ -38,17 +38,19 @@
             = link_to project_path(project), class: dom_class(project) do
               = project.name_with_namespace
 
+            - if project.forked_from_project
+              &nbsp;
+              %small
+                %i.fa.fa-code-fork
+                Forked from:
+                = link_to project.forked_from_project.name_with_namespace, project_path(project.forked_from_project)
+
             - if current_user.can_leave_project?(project)
               .pull-right
                 = link_to leave_project_team_members_path(project), data: { confirm: "Leave project?"}, method: :delete, remote: true, class: "btn-tiny btn remove-row", title: 'Leave project' do
                   %i.fa.fa-sign-out
                   Leave
 
-            - if project.forked_from_project
-              %small.pull-right
-                %i.fa.fa-code-fork
-                Forked from:
-                = link_to project.forked_from_project.name_with_namespace, project_path(project.forked_from_project)
           .project-info
             .pull-right
               - if project.archived?

@@ -129,6 +129,13 @@ describe Gitlab::GitAccess do
       }
     end
 
+    def self.updated_permissions_matrix
+      updated_permissions_matrix = permissions_matrix.dup
+      updated_permissions_matrix[:developer][:push_protected_branch] = true
+      updated_permissions_matrix[:developer][:push_all] = true
+      updated_permissions_matrix
+    end
+
     permissions_matrix.keys.each do |role|
       describe "#{role} access" do
         before { protect_feature_branch }
@@ -139,6 +146,23 @@ describe Gitlab::GitAccess do
             subject { access.push_access_check(user, project, changes[action]) }
 
             it { subject.allowed?.should allowed ? be_true : be_false }
+          end
+        end
+      end
+    end
+
+    context "with enabled developers push to protected branches " do
+      updated_permissions_matrix.keys.each do |role|
+        describe "#{role} access" do
+          before { create(:protected_branch, name: 'feature', developers_can_push: true, project: project) }
+          before { project.team << [user, role] }
+
+          updated_permissions_matrix[role].each do |action, allowed|
+            context action do
+              subject { access.push_access_check(user, project, changes[action]) }
+
+              it { subject.allowed?.should allowed ? be_true : be_false }
+            end
           end
         end
       end

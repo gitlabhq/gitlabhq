@@ -106,6 +106,7 @@ class User < ActiveRecord::Base
   has_many :recent_events, -> { order "id DESC" }, foreign_key: :author_id,   class_name: "Event"
   has_many :assigned_issues,          dependent: :destroy, foreign_key: :assignee_id, class_name: "Issue"
   has_many :assigned_merge_requests,  dependent: :destroy, foreign_key: :assignee_id, class_name: "MergeRequest"
+  has_many :oauth_applications, class_name: 'Doorkeeper::Application', as: :owner, dependent: :destroy
 
 
   #
@@ -563,5 +564,9 @@ class User < ActiveRecord::Base
         namespaces += owned_groups
         namespaces += masters_groups
       end
+  end
+
+  def oauth_authorized_tokens
+    Doorkeeper::AccessToken.where(resource_owner_id: self.id, revoked_at: nil)
   end
 end

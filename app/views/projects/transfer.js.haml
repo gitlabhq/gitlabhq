@@ -1,7 +1,2 @@
-- if @project.errors[:namespace_id].present?
-  :plain
-    $("#tab-transfer .errors-holder").replaceWith(errorMessage('#{escape_javascript(@project.errors[:namespace_id].first)}'));
-    $("#tab-transfer .form-actions input").removeAttr('disabled').removeClass('disabled');
-- else
-  :plain
+:plain
     location.href = "#{edit_project_path(@project)}";

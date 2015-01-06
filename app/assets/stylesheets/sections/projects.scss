@@ -308,3 +308,10 @@ ul.nav.nav-projects-tabs {
     display: none;
   }
 }
+
+
+table.table.protected-branches-list tr.no-border {
+  th, td {
+    border: 0;
+  }
+}

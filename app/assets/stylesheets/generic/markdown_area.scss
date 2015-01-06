@@ -20,6 +20,7 @@
       opacity: 0;
       font-size: 50px;
       transition: opacity 200ms ease-in-out;
+      pointer-events: none;
     }
 
     .div-dropzone-spinner {
@@ -49,4 +50,30 @@
   margin-top: 5px;
   margin-bottom: 0;
   transition: opacity 200ms ease-in-out;
+}
+
+.md-preview-holder {
+  background: #FFF;
+  border: 1px solid #ddd;
+  min-height: 100px;
+  padding: 5px;
+  font-size: 14px;
+  box-shadow: none;
+}
+
+.new_note,
+.edit_note,
+.issuable-description,
+.milestone-description,
+.wiki-content,
+.merge-request-form {
+  .nav-tabs {
+    margin-bottom: 0;
+    border: none;
+
+    li a,
+    li.active a {
+      border: 1px solid #DDD;
+    }
+  }
 }

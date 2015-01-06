@@ -46,7 +46,7 @@ class @ContributorsGraph
 
 class @ContributorsMasterGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = $('.container').width() - 70
+    @width = $('.container').width() - 345
     @height = 200
     @x = null
     @y = null
@@ -119,7 +119,7 @@ class @ContributorsMasterGraph extends ContributorsGraph
 
 class @ContributorsAuthorGraph extends ContributorsGraph
   constructor: (@data) ->
-    @width = $('.container').width()/2 - 100
+    @width = $('.container').width()/2 - 225
     @height = 200
     @x = null
     @y = null
