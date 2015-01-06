@@ -145,8 +145,12 @@
  * Last push widget
  */
 .event-last-push {
+  overflow: auto;
   .event-last-push-text {
-    @include str-truncated(75%);
+    @include str-truncated(100%);
+    float:left;
+    margin-right: -150px;
+    padding-right: 150px;
     line-height: 24px;
   }
 }
