@@ -94,7 +94,7 @@
         %span.badge= @diffs.size
 
   .commits.tab-content
-    = render "projects/commits/commits"
+    = render "projects/commits/commits", project: @project
   .diffs.tab-content
     - if @diffs.present?
       = render "projects/diffs/diffs", diffs: @diffs, project: @project
