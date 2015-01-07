@@ -14,7 +14,7 @@ v 7.7.0
   -
   -
   - New side navigation
-  -
+  - Updates to the messages returned by API (sponsored by O'Reilly Media)
   -
   -
   - Add alert message in case of outdated browser (IE < 10)
