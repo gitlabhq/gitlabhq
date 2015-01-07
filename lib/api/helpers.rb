@@ -42,7 +42,7 @@ module API
 
     def user_project
       @project ||= find_project(params[:id])
-      @project || not_found!
+      @project || not_found!("Project")
     end
 
     def find_project(id)

@@ -13,6 +13,7 @@ v 7.7.0
   - Set project path instead of project name in create form
   -
   -
+  - Updates to the messages returned by API (sponsored by O'Reilly Media)
   - New UI layout with side navigation
   -
   -

@@ -54,7 +54,7 @@ module API
         if @group.save
           present @group, with: Entities::Group
         else
-          not_found!
+          render_api_error!("Failed to save group #{@group.errors.messages}", 400)
         end
       end
 
@@ -97,7 +97,7 @@ module API
         if result
           present group
         else
-          not_found!
+          render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
       end
     end
