@@ -13,7 +13,7 @@
   = commits_breadcrumbs
 
 %div{id: dom_id(@project)}
-  #commits-list= render "commits"
+  #commits-list= render "commits", project: @project
 .clear
 = spinner
 

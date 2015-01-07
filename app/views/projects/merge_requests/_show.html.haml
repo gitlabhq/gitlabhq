@@ -42,7 +42,7 @@
           %span.badge= @merge_request.mr_and_commit_notes.count
       %li.commits-tab{data: {action: 'commits'}}
         = link_to project_merge_request_path(@project, @merge_request), title: 'Commits' do
-          %i.fa.fa-database
+          %i.fa.fa-history
           Commits
           %span.badge= @commits.size
       %li.diffs-tab{data: {action: 'diffs'}}

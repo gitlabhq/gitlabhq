@@ -189,7 +189,9 @@ class MergeRequest < ActiveRecord::Base
   end
 
   def automerge!(current_user, commit_message = nil)
-    MergeRequests::AutoMergeService.new.execute(self, current_user, commit_message)
+    MergeRequests::AutoMergeService.
+      new(target_project, current_user).
+      execute(self, commit_message)
   end
 
   def open?

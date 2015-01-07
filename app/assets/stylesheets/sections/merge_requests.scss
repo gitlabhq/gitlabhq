@@ -11,10 +11,27 @@
     }
   }
 
-  .accept-group {
-    label {
-      margin: 5px;
+  .accept-merge-holder {
+    margin-top: 5px;
+
+    .accept-action {
+      display: inline-block;
+
+      .accept_merge_request {
+        padding: 10px 20px;
+      }
+    }
+
+    .accept-control {
+      display: inline-block;
       margin-left: 20px;
+      padding: 10px 0;
+      line-height: 20px;
+      font-weight: bold;
+
+      .checkbox {
+        margin: 0;
+      }
     }
   }
 }
@@ -169,8 +186,4 @@
 
 .merge-request-show-labels .label {
   padding: 6px 10px;
-}
-
-.mr-commits .commit {
-  padding: 10px 15px;
 }

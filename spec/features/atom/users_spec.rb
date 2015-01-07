@@ -24,11 +24,12 @@ describe "User Feed", feature: true  do
       end
 
       it "should have issue opened event" do
-        body.should have_content("#{user.name} opened issue ##{issue.iid}")
+        expect(body).to have_content("#{safe_name} opened issue ##{issue.iid}")
       end
 
       it "should have issue comment event" do
-        body.should have_content("#{user.name} commented on issue ##{issue.iid}")
+        expect(body).
+          to have_content("#{safe_name} commented on issue ##{issue.iid}")
       end
     end
   end
@@ -39,5 +40,9 @@ describe "User Feed", feature: true  do
 
   def note_event(note, user)
     EventCreateService.new.leave_note(note, user)
+  end
+
+  def safe_name
+    html_escape(user.name)
   end
 end
