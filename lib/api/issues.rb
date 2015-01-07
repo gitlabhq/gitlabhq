@@ -104,7 +104,7 @@ module API
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
-          render_api_error!("Unable to validate label: #{errors}"}, 400)
+          render_api_error!({ labels: errors }, 400)
         end
 
         issue = ::Issues::CreateService.new(user_project, current_user, attrs).execute
@@ -118,7 +118,7 @@ module API
 
           present issue, with: Entities::Issue
         else
-          render_api_error!("Unable to create issue #{issue.errors.messages}", 400)
+          render_validation_error!(issue)
         end
       end
 
@@ -142,7 +142,7 @@ module API
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
-          render_api_error!("Unable to validate label: #{errors}"}, 400)
+          render_api_error!({ labels: errors }, 400)
         end
 
         issue = ::Issues::UpdateService.new(user_project, current_user, attrs).execute(issue)
@@ -158,7 +158,7 @@ module API
 
           present issue, with: Entities::Issue
         else
-          render_api_error!("Unable to update issue #{issue.errors.messages}", 400)
+          render_validation_error!(issue)
         end
       end
 

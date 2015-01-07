@@ -58,7 +58,7 @@ module API
         if key.valid? && user_project.deploy_keys << key
           present key, with: Entities::SSHKey
         else
-          render_api_error!("Failed to add key #{key.errors.messages}", 400)
+          render_validation_error!(key)
         end
       end
 

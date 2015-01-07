@@ -37,7 +37,7 @@ module API
         if label.valid?
           present label, with: Entities::Label
         else
-          render_api_error!("Unable to create label #{label.errors.messages}", 400)
+          render_validation_error!(label)
         end
       end
 
@@ -90,7 +90,7 @@ module API
         if label.update(attrs)
           present label, with: Entities::Label
         else
-          render_api_error!("Unable to create label #{label.errors.messages}", 400)
+          render_validation_error!(label)
         end
       end
     end
