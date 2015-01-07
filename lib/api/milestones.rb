@@ -48,7 +48,7 @@ module API
         if milestone.valid?
           present milestone, with: Entities::Milestone
         else
-          not_found!("Milestone #{milestone.errors.messages}")
+          render_api_error!("Failed to create milestone #{milestone.errors.messages}", 400)
         end
       end
 
@@ -72,7 +72,7 @@ module API
         if milestone.valid?
           present milestone, with: Entities::Milestone
         else
-          not_found!("Milestone #{milestone.errors.messages}")
+          render_api_error!("Failed to update milestone #{milestone.errors.messages}", 400)
         end
       end
     end

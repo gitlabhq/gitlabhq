@@ -93,7 +93,7 @@ module API
           if @note.valid?
             present @note, with: Entities::Note
           else
-            bad_request!('Invalid note')
+            render_api_error!("Failed to save note #{note.errors.messages}", 400)
           end
         end
 

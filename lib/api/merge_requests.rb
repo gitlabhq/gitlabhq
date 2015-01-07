@@ -137,7 +137,7 @@ module API
 
         # Validate label names in advance
         if (errors = validate_label_params(params)).any?
-          render_api_error!({ labels: errors }, 400)
+          render_api_error!("Unable to validate label: #{errors}"}, 400)
         end
 
         merge_request = ::MergeRequests::UpdateService.new(user_project, current_user, attrs).execute(merge_request)
@@ -233,7 +233,7 @@ module API
         if note.save
           present note, with: Entities::MRNote
         else
-          render_validation_error!(note)
+          render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
       end
     end
