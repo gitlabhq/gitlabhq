@@ -305,4 +305,9 @@ module ApplicationHelper
       profile_key_path(key)
     end
   end
+
+  def redirect_from_root?
+    request.env['rack.session']['user_return_to'] ==
+      '/'
+  end
 end
