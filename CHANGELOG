@@ -39,6 +39,7 @@ v 7.7.0
   -
   - Change some of application settings on fly in admin area UI
   - Redesign signin/signup pages
+  - Close standard input in Gitlab::Popen.popen
 
 v 7.6.0
   - Fork repository to groups
