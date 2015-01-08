@@ -1,23 +1,40 @@
 v 7.7.0
+  -
+  -
+  - Add Jetbrains Teamcity CI service (Jason Lippert)
+  -
+  -
+  - Mention notification level
+  - Markdown preview in wiki (Yuriy Glukhov)
+  - Raise group avatar filesize limit to 200kb
+  - OAuth applications feature
+  - Show user SSH keys in admin area
+  - Developer can push to protected branches option
+  - Set project path instead of project name in create form
   - Block Git HTTP access after 10 failed authentication attempts
+  -
+  -
+  - Updates to the messages returned by API (sponsored by O'Reilly Media)
+  - New UI layout with side navigation
+  -
+  -
+  -
+  - Add alert message in case of outdated browser (IE < 10)
+  -
+  - Added API support for sorting projects
+  - Update gitlab_git to version 7.0.0.rc13
 
 v 7.6.0
   - Fork repository to groups
   - New rugged version
   - Add CRON=1 backup setting for quiet backups
   - Fix failing wiki restore
-  -
   - Add optional Sidekiq MemoryKiller middleware (enabled via SIDEKIQ_MAX_RSS env variable)
-  -
-  -
   - Monokai highlighting style now more faithful to original design (Mark Riedesel)
   - Create project with repository in synchrony
   - Added ability to create empty repo or import existing one if project does not have repository
-  -
-  -
   - Reactivate highlight.js language autodetection
   - Mobile UI improvements
-  -
   - Change maximum avatar file size from 100KB to 200KB
   - Strict validation for snippet file names
   - Enable Markdown preview for issues, merge requests, milestones, and notes (Vinnie Okada)
@@ -25,9 +42,21 @@ v 7.6.0
   - Update Sidekiq to version 2.17.8
   - Add author filter to project issues and merge requests pages
   - Atom feed for user activity
+  - Support multiple omniauth providers for the same user
+  - Rendering cross reference in issue title and tooltip for merge request
+  - Show username in comments
+  - Possibility to create Milestones or Labels when Issues are disabled
+  - Fix bug with showing gpg signature in tag
+
+v 7.5.3
+  - Bump gitlab_git to 7.0.0.rc12 (includes Rugged 0.21.2)
 
 v 7.5.2
   - Don't log Sidekiq arguments by default
+  - Fix restore of wiki repositories from backups
+
+v 7.5.1
+  - Add missing timestamps to 'members' table
 
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
@@ -47,7 +76,7 @@ v 7.5.0
   - Performance improvements
   - Fix post-receive issue for projects with deleted forks
   - New gitlab-shell version with custom hooks support
-  - Improve code 
+  - Improve code
   - GitLab CI 5.2+ support (does not support older versions)
   - Fixed bug when you can not push commits starting with 000000 to protected branches
   - Added a password strength indicator

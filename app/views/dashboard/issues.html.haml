@@ -5,10 +5,6 @@
   List all issues from all projects you have access to.
 %hr
 
-.row
-  .fixed.sidebar-expand-button.hidden-lg.hidden-md
-    %i.fa.fa-list.fa-2x
-  .col-md-3.responsive-side
-    = render 'shared/filter', entity: 'issue'
-  .col-md-9
-    = render 'shared/issues'
+.append-bottom-20
+  = render 'shared/issuable_filter'
+= render 'shared/issues'

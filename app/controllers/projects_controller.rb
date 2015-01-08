@@ -44,6 +44,9 @@ class ProjectsController < ApplicationController
 
   def transfer
     ::Projects::TransferService.new(project, current_user, project_params).execute
+    if @project.errors[:namespace_id].present?
+      flash[:alert] = @project.errors[:namespace_id].first
+    end
   end
 
   def show

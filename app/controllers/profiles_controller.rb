@@ -13,6 +13,11 @@ class ProfilesController < ApplicationController
   def design
   end
 
+  def applications
+    @applications = current_user.oauth_applications
+    @authorized_tokens = current_user.oauth_authorized_tokens
+  end
+
   def update
     user_params.except!(:email) if @user.ldap_user?
 

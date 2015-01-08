@@ -11,6 +11,7 @@ class Admin::UsersController < Admin::ApplicationController
   def show
     @personal_projects = user.personal_projects
     @joined_projects = user.projects.joined(@user)
+    @keys = user.keys.order('id DESC')
   end
 
   def new
@@ -118,7 +119,7 @@ class Admin::UsersController < Admin::ApplicationController
       :email, :remember_me, :bio, :name, :username,
       :skype, :linkedin, :twitter, :website_url, :color_scheme_id, :theme_id, :force_random_password,
       :extern_uid, :provider, :password_expires_at, :avatar, :hide_no_ssh_key,
-      :projects_limit, :can_create_group, :admin
+      :projects_limit, :can_create_group, :admin, :key_id
     )
   end
 end

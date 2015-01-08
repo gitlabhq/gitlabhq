@@ -62,6 +62,7 @@ ul.notes {
     }
     .note-body {
       @include md-typography;
+      overflow: auto;
     }
     .note-header {
       padding-bottom: 3px;
@@ -155,19 +156,26 @@ ul.notes {
   }
 
   .add-diff-note {
-    background: image-url("diff_note_add.png") no-repeat left 0;
-    border: none;
-    height: 22px;
-    margin-left: -65px;
+    margin-top: -4px;
+    @include border-radius(40px);
+    background: #FFF;
+    padding: 4px;
+    font-size: 16px;
+    color: $link_color;
+    margin-left: -60px;
     position: absolute;
-    width: 22px;
     z-index: 10;
+
+    transition: all 0.2s ease;
 
     // "hide" it by default
     opacity: 0.0;
     filter: alpha(opacity=0);
 
     &:hover {
+      font-size: 24px;
+      background: $bg_primary;
+      color: #FFF;
       @include show-add-diff-note;
     }
   }

@@ -21,15 +21,14 @@ module EventsHelper
 
   def event_filter_link(key, tooltip)
     key = key.to_s
-    inactive = if @event_filter.active? key
-                 nil
-               else
-                 'inactive'
-               end
+    active = if @event_filter.active? key
+               'active'
+             end
 
-    content_tag :div, class: "filter_icon #{inactive}" do
+    content_tag :li, class: "filter_icon #{active}" do
       link_to request.path, class: 'has_tooltip event_filter_link', id: "#{key}_event_filter", 'data-original-title' => tooltip do
-        content_tag :i, nil, class: icon_for_event[key]
+        content_tag(:i, nil, class: icon_for_event[key]) +
+          content_tag(:span, ' ' + tooltip)
       end
     end
   end

@@ -4,9 +4,13 @@
  */
 header {
   &.navbar-gitlab {
+    z-index: 100;
     margin-bottom: 0;
     min-height: 40px;
     border: none;
+    position: fixed;
+    top: 0;
+    width: 100%;
 
     .navbar-inner {
       filter: none;
@@ -52,8 +56,6 @@ header {
       border-width: 0;
       font-size: 18px;
 
-      .app_logo { margin-left: -15px; }
-
       .title {
         @include str-truncated(70%);
       }
@@ -84,7 +86,10 @@ header {
     }
   }
 
-  z-index: 10;
+  .container {
+    width: 100% !important;
+    padding-left: 0px;
+  }
 
   /**
    *
@@ -231,21 +236,6 @@ header {
       }
       color: #fff;
     }
-  }
-
-  .app_logo {
-    .separator {
-      margin-left: 0;
-      margin-right: 0;
-    }
-  }
-
-  .separator {
-    float: left;
-    height: 46px;
-    width: 2px;
-    margin-left: 10px;
-    margin-right: 10px;
   }
 }
 

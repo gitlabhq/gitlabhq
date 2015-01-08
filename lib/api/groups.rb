@@ -25,11 +25,14 @@ module API
       # Example Request:
       #  GET /groups
       get do
-        if current_user.admin
-          @groups = paginate Group
-        else
-          @groups = paginate current_user.groups
-        end
+        @groups = if current_user.admin
+                    Group.all
+                  else
+                    current_user.groups
+                  end
+
+        @groups = @groups.search(params[:search]) if params[:search].present?
+        @groups = paginate @groups
         present @groups, with: Entities::Group
       end
 
@@ -51,7 +54,7 @@ module API
         if @group.save
           present @group, with: Entities::Group
         else
-          not_found!
+          render_api_error!("Failed to save group #{@group.errors.messages}", 400)
         end
       end
 
@@ -94,7 +97,7 @@ module API
         if result
           present group
         else
-          not_found!
+          render_api_error!("Failed to transfer project #{project.errors.messages}", 400)
         end
       end
     end

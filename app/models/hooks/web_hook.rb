@@ -48,7 +48,7 @@ class WebHook < ActiveRecord::Base
                    verify: false,
                    basic_auth: auth)
     end
-  rescue SocketError, Errno::ECONNREFUSED => e
+  rescue SocketError, Errno::ECONNREFUSED, Net::OpenTimeout => e
     logger.error("WebHook Error => #{e}")
     false
   end

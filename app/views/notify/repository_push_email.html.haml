@@ -6,7 +6,9 @@
   - @commits.each do |commit|
     %li
       %strong #{link_to commit.short_id, project_commit_url(@project, commit)}
-      %span by #{commit.author_name}
+      %div
+        %span by #{commit.author_name}
+        %i at #{commit.committed_date.strftime("%Y-%m-%dT%H:%M:%SZ")}
       %pre #{commit.safe_message}
 
 %h4 Changes:

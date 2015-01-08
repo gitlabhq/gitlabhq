@@ -1,9 +1,9 @@
 class @Issue
   constructor: ->
     $('.edit-issue.inline-update input[type="submit"]').hide()
-    $(".issue-box .inline-update").on "change", "select", ->
+    $(".context .inline-update").on "change", "select", ->
       $(this).submit()
-    $(".issue-box .inline-update").on "change", "#issue_assignee_id", ->
+    $(".context .inline-update").on "change", "#issue_assignee_id", ->
       $(this).submit()
 
     if $("a.btn-close").length

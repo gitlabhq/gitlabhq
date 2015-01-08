@@ -16,3 +16,4 @@ __Project integrations with external services for continuous integration and mor
 - PivotalTracker
 - Pushover
 - Slack
+- TeamCity

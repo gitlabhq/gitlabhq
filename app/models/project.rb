@@ -66,6 +66,7 @@ class Project < ActiveRecord::Base
   has_one :slack_service, dependent: :destroy
   has_one :buildbox_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
+  has_one :teamcity_service, dependent: :destroy
   has_one :pushover_service, dependent: :destroy
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
@@ -314,7 +315,8 @@ class Project < ActiveRecord::Base
   end
 
   def available_services_names
-    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla emails_on_push gemnasium slack pushover buildbox bamboo)
+    %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity)
   end
 
   def gitlab_ci?
@@ -327,11 +329,6 @@ class Project < ActiveRecord::Base
 
   def ci_service
     @ci_service ||= ci_services.select(&:activated?).first
-  end
-
-  # For compatibility with old code
-  def code
-    path
   end
 
   def items_for(entity)
@@ -468,6 +465,10 @@ class Project < ActiveRecord::Base
   # Check if current branch name is marked as protected in the system
   def protected_branch?(branch_name)
     protected_branches_names.include?(branch_name)
+  end
+
+  def developers_can_push_to_protected_branch?(branch_name)
+    protected_branches.any? { |pb| pb.name == branch_name && pb.developers_can_push }
   end
 
   def forked?

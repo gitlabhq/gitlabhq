@@ -41,6 +41,7 @@ describe API, api: true do
   describe ".current_user" do
     it "should return nil for an invalid token" do
       env[API::APIHelpers::PRIVATE_TOKEN_HEADER] = 'invalid token'
+      self.class.any_instance.stub(:doorkeeper_guard){ false }
       current_user.should be_nil
     end
 

@@ -42,7 +42,7 @@ class Projects::ServicesController < Projects::ApplicationController
       :title, :token, :type, :active, :api_key, :subdomain,
       :room, :recipients, :project_url, :webhook,
       :user_key, :device, :priority, :sound, :bamboo_url, :username, :password,
-      :build_key, :server
+      :build_key, :server, :teamcity_url, :build_type
     )
   end
 end

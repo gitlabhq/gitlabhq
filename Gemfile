@@ -28,10 +28,16 @@ gem 'omniauth-google-oauth2'
 gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
+gem 'omniauth-kerberos'
+gem 'doorkeeper', '2.0.1'
+gem "rack-oauth2", "~> 1.0.5"
+
+# Browser detection
+gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.0.0.rc12'
+gem "gitlab_git", '7.0.0.rc13'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -89,7 +95,7 @@ gem "github-markup"
 gem 'redcarpet', '~> 3.1.2'
 gem 'RedCloth'
 gem 'rdoc', '~>3.6'
-gem 'org-ruby', '= 0.9.9'
+gem 'org-ruby', '= 0.9.12'
 gem 'creole', '~>0.3.6'
 gem 'wikicloth', '=0.8.1'
 gem 'asciidoctor', '= 0.1.4'

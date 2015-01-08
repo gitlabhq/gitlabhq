@@ -144,6 +144,10 @@ class NotificationService
     # Merge project watchers
     recipients = recipients.concat(project_watchers(note.project)).compact.uniq
 
+    # Reject mention users unless mentioned in comment
+    recipients = reject_mention_users(recipients - note.mentioned_users, note.project)
+    recipients = recipients + note.mentioned_users
+
     # Reject mutes users
     recipients = reject_muted_users(recipients, note.project)
 
@@ -285,13 +289,39 @@ class NotificationService
     end
   end
 
+  # Remove users with notification level 'Mentioned'
+  def reject_mention_users(users, project = nil)
+    users = users.to_a.compact.uniq
+
+    users.reject do |user|
+      next user.notification.mention? unless project
+
+      tm = project.project_members.find_by(user_id: user.id)
+
+      if !tm && project.group
+        tm = project.group.group_members.find_by(user_id: user.id)
+      end
+
+      # reject users who globally set mention notification and has no membership
+      next user.notification.mention? unless tm
+
+      # reject users who set mention notification in project
+      next true if tm.notification.mention?
+
+      # reject users who have N_MENTION in project and disabled in global settings
+      tm.notification.global? && user.notification.mention?
+    end
+  end
+
   def new_resource_email(target, project, method)
     if target.respond_to?(:participants)
       recipients = target.participants
     else
       recipients = []
     end
+
     recipients = reject_muted_users(recipients, project)
+    recipients = reject_mention_users(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(target.author)
 
@@ -302,6 +332,7 @@ class NotificationService
 
   def close_resource_email(target, project, current_user, method)
     recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = reject_mention_users(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(current_user)
 
@@ -320,6 +351,7 @@ class NotificationService
 
     # reject users with disabled notifications
     recipients = reject_muted_users(recipients, project)
+    recipients = reject_mention_users(recipients, project)
 
     # Reject me from recipients if I reassign an item
     recipients.delete(current_user)
@@ -331,6 +363,7 @@ class NotificationService
 
   def reopen_resource_email(target, project, current_user, method, status)
     recipients = reject_muted_users([target.author, target.assignee], project)
+    recipients = reject_mention_users(recipients, project)
     recipients = recipients.concat(project_watchers(project)).uniq
     recipients.delete(current_user)
 

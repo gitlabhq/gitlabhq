@@ -1,7 +1,10 @@
-%li.timeline-entry{ id: dom_id(note), class: dom_class(note), data: { discussion: note.discussion_id } }
+%li.timeline-entry{ id: dom_id(note), class: [dom_class(note), ('system-note' if note.system)], data: { discussion: note.discussion_id } }
   .timeline-entry-inner
     .timeline-icon
-      = image_tag avatar_icon(note.author_email), class: "avatar s40"
+      - if note.system
+        %span.fa.fa-circle
+      - else
+        = image_tag avatar_icon(note.author_email), class: "avatar s40"
     .timeline-content
       .note-header
         .note-actions
@@ -17,6 +20,8 @@
             = link_to project_note_path(@project, note), title: "Remove comment", method: :delete, data: { confirm: 'Are you sure you want to remove this comment?' }, remote: true, class: "danger js-note-delete" do
               %i.fa.fa-trash-o.cred
               Remove
+        - if note.system
+          = image_tag avatar_icon(note.author_email), class: "avatar s16"
         = link_to_member(@project, note.author, avatar: false)
         %span.author-username
           = '@' + note.author.username
@@ -41,7 +46,7 @@
         .note-edit-form
           = form_for note, url: project_note_path(@project, note), method: :put, remote: true, authenticity_token: true do |f|
             = render layout: 'projects/md_preview' do
-              = f.text_area :note, class: 'note_text js-note-text markdown-area js-gfm-input turn-on'
+              = f.text_area :note, class: 'note_text js-note-text js-gfm-input turn-on'
 
             .form-actions.clearfix
               = f.submit 'Save changes', class: "btn btn-primary btn-save js-comment-button"

@@ -78,14 +78,14 @@ class Spinach::Features::ProjectCommits < Spinach::FeatureSteps
   end
 
   step 'I click side-by-side diff button' do
-    click_link "Side-by-side Diff"
+    click_link "Side-by-side"
   end
 
   step 'I see side-by-side diff button' do
-    page.should have_content "Side-by-side Diff"
+    page.should have_content "Side-by-side"
   end
 
   step 'I see inline diff button' do
-    page.should have_content "Inline Diff"
+    page.should have_content "Inline"
   end
 end

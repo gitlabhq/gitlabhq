@@ -198,8 +198,6 @@ describe API::API, api: true  do
     it 'should respond with 400 on failure' do
       post api("/projects/user/#{user.id}", admin)
       response.status.should == 400
-      json_response['message']['creator'].should == ['can\'t be blank']
-      json_response['message']['namespace'].should == ['can\'t be blank']
       json_response['message']['name'].should == [
         'can\'t be blank',
         'is too short (minimum is 0 characters)',
@@ -291,7 +289,7 @@ describe API::API, api: true  do
     it "should return a 404 error if not found" do
       get api("/projects/42", user)
       response.status.should == 404
-      json_response['message'].should == '404 Not Found'
+      json_response['message'].should == '404 Project Not Found'
     end
 
     it "should return a 404 error if user is not a member" do
@@ -342,7 +340,7 @@ describe API::API, api: true  do
     it "should return a 404 error if not found" do
       get api("/projects/42/events", user)
       response.status.should == 404
-      json_response['message'].should == '404 Not Found'
+      json_response['message'].should == '404 Project Not Found'
     end
 
     it "should return a 404 error if user is not a member" do
