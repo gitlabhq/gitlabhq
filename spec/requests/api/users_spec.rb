@@ -186,7 +186,7 @@ describe API::API, api: true  do
   describe "GET /users/sign_up" do
     context 'enabled' do
       before do
-        Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+        ApplicationSetting.any_instance.stub(signup_enabled?: true)
       end
 
       it "should return sign up page if signup is enabled" do
@@ -197,7 +197,7 @@ describe API::API, api: true  do
 
     context 'disabled' do
       before do
-        Gitlab.config.gitlab.stub(:signup_enabled).and_return(false)
+        ApplicationSetting.any_instance.stub(signup_enabled?: false)
       end
 
       it "should redirect to sign in page if signup is disabled" do

@@ -26,7 +26,7 @@ class RegistrationsController < Devise::RegistrationsController
   private
 
   def signup_enabled?
-    if current_application_settings.signup_enabled?
+    unless current_application_settings.signup_enabled?
       redirect_to(new_user_session_path)
     end
   end
