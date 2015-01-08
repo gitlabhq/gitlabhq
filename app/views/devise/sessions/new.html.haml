@@ -5,7 +5,7 @@
     .prepend-top-20
       = render 'devise/shared/oauth_box'
 
-  - if gitlab_config.signup_enabled
+  - if signup_enabled?
     .prepend-top-20
       = render 'devise/shared/signup_box'
 
