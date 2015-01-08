@@ -1,3 +1,6 @@
+v 7.3.3
+  - Bump gitlab_git to 6.2.2 (includes Rugged 0.21.2)
+
 v 7.3.2
   - Fix creating new file via web editor
   - Use gitlab-shell v2.0.1
