@@ -109,6 +109,8 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resource :application_settings
+
     root to: "dashboard#index"
   end
 

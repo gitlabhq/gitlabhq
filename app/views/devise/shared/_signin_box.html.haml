@@ -7,18 +7,18 @@
         - @ldap_servers.each_with_index do |server, i|
           %li{class: (:active if i.zero?)}
             = link_to server['label'], "#tab-#{server['provider_name']}", 'data-toggle' => 'tab'
-        - if gitlab_config.signin_enabled
+        - if signin_enabled?
           %li
             = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
       .tab-content
         - @ldap_servers.each_with_index do |server, i|
           %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero?)}
             = render 'devise/sessions/new_ldap', provider: server['provider_name']
-        - if gitlab_config.signin_enabled
+        - if signin_enabled?
           %div#tab-signin.tab-pane
             = render 'devise/sessions/new_base'
 
-    - elsif gitlab_config.signin_enabled
+    - elsif signin_enabled?
       = render 'devise/sessions/new_base'
     - else
       %div

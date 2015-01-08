@@ -310,4 +310,12 @@ module ApplicationHelper
     request.env['rack.session']['user_return_to'] ==
       '/'
   end
+
+  def signup_enabled?
+    ApplicationSetting.current.signup_enabled
+  end
+
+  def signin_enabled?
+    ApplicationSetting.current.signin_enabled
+  end
 end

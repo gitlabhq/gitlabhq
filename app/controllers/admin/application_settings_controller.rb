@@ -1,0 +1,31 @@
+class Admin::ApplicationSettingsController < Admin::ApplicationController
+  before_filter :set_application_setting
+
+  def show
+  end
+
+  def edit
+  end
+
+  def update
+    @application_setting.update_attributes(application_setting_params)
+
+    redirect_to admin_application_settings_path
+  end
+
+  private
+
+  def set_application_setting
+    @application_setting = ApplicationSetting.last
+  end
+
+  def application_setting_params
+    params.require(:application_setting).permit(
+      :default_projects_limit,
+      :signup_enabled,
+      :signin_enabled,
+      :gravatar_enabled,
+      :sign_in_text,
+    )
+  end
+end

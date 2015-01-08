@@ -1,6 +1,6 @@
 class GravatarService
   def execute(email, size = nil)
-    if gravatar_config.enabled && email.present?
+    if ApplicationSetting.current.gravatar_enabled && email.present?
       size = 40 if size.nil? || size <= 0
 
       sprintf gravatar_url,

@@ -1,0 +1,2 @@
+module ApplicationSettingsHelper
+end
