@@ -1,4 +1,4 @@
-begin
+if ActiveRecord::Base.connection.table_exists?('application_settings')
   unless ApplicationSetting.any?
     ApplicationSetting.create(
       default_projects_limit: Settings.gitlab['default_projects_limit'],
@@ -8,5 +8,4 @@ begin
       sign_in_text: Settings.extra['sign_in_text'],
     )
   end
-rescue
 end
