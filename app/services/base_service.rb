@@ -1,4 +1,6 @@
 class BaseService
+  include Gitlab::CurrentSettings
+
   attr_accessor :project, :current_user, :params
 
   def initialize(project, user, params = {})
@@ -27,6 +29,10 @@ class BaseService
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def current_application_settings
+    ApplicationSetting.current
   end
 
   private

@@ -1,18 +1,3 @@
-%table.table
-  %tr
-    %td Default projects limit:
-    %td= @application_setting.default_projects_limit
-  %tr
-    %td Signup enabled:
-    %td= @application_setting.signup_enabled
-  %tr
-    %td Signin enabled:
-    %td= @application_setting.signin_enabled
-  %tr
-    %td Gravatar enabled:
-    %td= @application_setting.gravatar_enabled
-  %tr
-    %td Sign in text:
-    %td= @application_setting.sign_in_text
-
-= link_to 'Edit', edit_admin_application_settings_path
+%h3.page-title Application settings
+%hr
+= render 'form'

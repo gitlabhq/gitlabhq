@@ -4,13 +4,13 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
   def show
   end
 
-  def edit
-  end
-
   def update
-    @application_setting.update_attributes(application_setting_params)
-
-    redirect_to admin_application_settings_path
+    if @application_setting.update_attributes(application_setting_params)
+      redirect_to admin_application_settings_path,
+        notice: 'Application settings saved successfully'
+    else
+      render :show
+    end
   end
 
   private
