@@ -1,10 +1,14 @@
 module Gitlab
   module CurrentSettings
     def current_application_settings
-      if ActiveRecord::Base.connection.table_exists?('application_settings')
-        ApplicationSetting.current ||
-          ApplicationSetting.create_from_defaults
-      else
+      begin
+        if ActiveRecord::Base.connection.table_exists?('application_settings')
+          ApplicationSetting.current ||
+            ApplicationSetting.create_from_defaults
+        else
+          fake_application_settings
+        end
+      rescue ActiveRecord::NoDatabaseError
         fake_application_settings
       end
     end
