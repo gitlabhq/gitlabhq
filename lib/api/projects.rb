@@ -28,6 +28,10 @@ module API
           @projects = @projects.where(archived: parse_boolean(params[:archived]))
         end
 
+        if params[:search].present?
+          @projects = @projects.search(params[:search])
+        end
+
         @projects = paginate @projects
         present @projects, with: Entities::Project
       end
