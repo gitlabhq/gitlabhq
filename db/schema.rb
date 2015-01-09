@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20141230100055) do
+ActiveRecord::Schema.define(version: 20150108073740) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -40,6 +40,16 @@ ActiveRecord::Schema.define(version: 20141230100055) do
   add_index "audit_events", ["author_id"], name: "index_audit_events_on_author_id", using: :btree
   add_index "audit_events", ["entity_id", "entity_type"], name: "index_audit_events_on_entity_id_and_entity_type", using: :btree
   add_index "audit_events", ["type"], name: "index_audit_events_on_type", using: :btree
+
+  create_table "application_settings", force: true do |t|
+    t.integer  "default_projects_limit"
+    t.boolean  "signup_enabled"
+    t.boolean  "signin_enabled"
+    t.boolean  "gravatar_enabled"
+    t.text     "sign_in_text"
+    t.datetime "created_at"
+    t.datetime "updated_at"
+  end
 
   create_table "broadcast_messages", force: true do |t|
     t.text     "message",    null: false
@@ -380,10 +390,11 @@ ActiveRecord::Schema.define(version: 20141230100055) do
   add_index "projects", ["star_count"], name: "index_projects_on_star_count", using: :btree
 
   create_table "protected_branches", force: true do |t|
-    t.integer  "project_id", null: false
-    t.string   "name",       null: false
+    t.integer  "project_id",                          null: false
+    t.string   "name",                                null: false
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.boolean  "developers_can_push", default: false, null: false
   end
 
   add_index "protected_branches", ["project_id"], name: "index_protected_branches_on_project_id", using: :btree

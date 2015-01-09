@@ -131,4 +131,58 @@ describe API::API, api: true  do
       post api("/projects/#{project.id}/issues/#{issue.id}/notes", user), body: 'hi!'
     end
   end
+
+  describe 'PUT /projects/:id/noteable/:noteable_id/notes/:note_id' do
+    context 'when noteable is an Issue' do
+      it 'should return modified note' do
+        put api("/projects/#{project.id}/issues/#{issue.id}/"\
+                  "notes/#{issue_note.id}", user), body: 'Hello!'
+        response.status.should == 200
+        json_response['body'].should == 'Hello!'
+      end
+
+      it 'should return a 404 error when note id not found' do
+        put api("/projects/#{project.id}/issues/#{issue.id}/notes/123", user),
+                body: 'Hello!'
+        response.status.should == 404
+      end
+
+      it 'should return a 400 bad request error if body not given' do
+        put api("/projects/#{project.id}/issues/#{issue.id}/"\
+                  "notes/#{issue_note.id}", user)
+        response.status.should == 400
+      end
+    end
+
+    context 'when noteable is a Snippet' do
+      it 'should return modified note' do
+        put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                  "notes/#{snippet_note.id}", user), body: 'Hello!'
+        response.status.should == 200
+        json_response['body'].should == 'Hello!'
+      end
+
+      it 'should return a 404 error when note id not found' do
+        put api("/projects/#{project.id}/snippets/#{snippet.id}/"\
+                  "notes/123", user), body: "Hello!"
+        response.status.should == 404
+      end
+    end
+
+    context 'when noteable is a Merge Request' do
+      it 'should return modified note' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+                  "notes/#{merge_request_note.id}", user), body: 'Hello!'
+        response.status.should == 200
+        json_response['body'].should == 'Hello!'
+      end
+
+      it 'should return a 404 error when note id not found' do
+        put api("/projects/#{project.id}/merge_requests/#{merge_request.id}/"\
+                  "notes/123", user), body: "Hello!"
+        response.status.should == 404
+      end
+    end
+  end
+
 end

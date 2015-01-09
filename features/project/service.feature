@@ -72,3 +72,10 @@ Feature: Project Services
     And I click Atlassian Bamboo CI service link
     And I fill Atlassian Bamboo CI settings
     Then I should see Atlassian Bamboo CI service settings saved
+
+  Scenario: Activate jetBrains TeamCity CI service
+    When I visit project "Shop" services page
+    And I click jetBrains TeamCity CI service link
+    And I fill jetBrains TeamCity CI settings
+    Then I should see jetBrains TeamCity CI service settings saved
+	

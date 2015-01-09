@@ -3,7 +3,7 @@ require 'spec_helper'
 describe 'Users', feature: true do
   describe "GET /users/sign_up" do
     before do
-      Gitlab.config.gitlab.stub(:signup_enabled).and_return(true)
+      ApplicationSetting.any_instance.stub(signup_enabled?: true)
     end
 
     it "should create a new user account" do

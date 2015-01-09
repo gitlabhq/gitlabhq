@@ -113,7 +113,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
       click_link 'Commits'
     end
 
-    within '.mr-commits' do
+    within '.commits' do
       click_link Commit.truncate_sha(sample_commit.id)
     end
   end
@@ -156,7 +156,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'merge request is mergeable' do
-    page.should have_content 'You can accept this request automatically'
+    page.should have_button 'Accept Merge Request'
   end
 
   step 'I modify merge commit message' do
@@ -275,7 +275,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I click Side-by-side Diff tab' do
-    click_link 'Side-by-side'
+    find('a', text: 'Side-by-side').trigger('click')
   end
 
   step 'I should see comments on the side-by-side diff page' do

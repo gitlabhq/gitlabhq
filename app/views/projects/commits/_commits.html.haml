@@ -7,5 +7,5 @@
       %p= pluralize(commits.count, 'commit')
     .col-md-10
       %ul.bordered-list
-        = render commits, project: @project
+        = render commits, project: project
   %hr.lists-separator

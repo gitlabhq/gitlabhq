@@ -79,16 +79,8 @@ module Gitlab
       oldrev, newrev, ref = change.split(' ')
 
       action = if project.protected_branch?(branch_name(ref))
-                 # we dont allow force push to protected branch
-                 if forced_push?(project, oldrev, newrev)
-                   :force_push_code_to_protected_branches
-                   # and we dont allow remove of protected branch
-                 elsif newrev == Gitlab::Git::BLANK_SHA
-                   :remove_protected_branches
-                 else
-                   :push_code_to_protected_branches
-                 end
-               elsif project.repository.tag_names.include?(tag_name(ref))
+                 protected_branch_action(project, oldrev, newrev, branch_name(ref))
+               elsif protected_tag?(project, tag_name(ref))
                  # Prevent any changes to existing git tag unless user has permissions
                  :admin_project
                else
@@ -170,6 +162,24 @@ module Gitlab
     end
 
     private
+
+    def protected_branch_action(project, oldrev, newrev, branch_name)
+      # we dont allow force push to protected branch
+      if forced_push?(project, oldrev, newrev)
+       :force_push_code_to_protected_branches
+       # and we dont allow remove of protected branch
+      elsif newrev == Gitlab::Git::BLANK_SHA
+       :remove_protected_branches
+      elsif project.developers_can_push_to_protected_branch?(branch_name)
+       :push_code
+      else
+       :push_code_to_protected_branches
+      end
+    end
+
+    def protected_tag?(project, tag_name)
+      project.repository.tag_names.include?(tag_name)
+    end
 
     def user_allowed?(user)
       Gitlab::UserAccess.allowed?(user)

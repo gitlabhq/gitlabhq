@@ -62,6 +62,7 @@ ul.notes {
     }
     .note-body {
       @include md-typography;
+      overflow: auto;
     }
     .note-header {
       padding-bottom: 3px;
