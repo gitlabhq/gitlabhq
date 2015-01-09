@@ -15,8 +15,17 @@ class @AdminEmailSelect
             projects
 
           $.when(project_result, group_result).done (projects, groups) ->
-            data = $.merge(groups[0], projects[0])
+            all = {id: "all"}
+            data = $.merge([all], groups[0], projects[0])
             query.callback({ results: data})
+
+        id: (object) ->
+          if object.path_with_namespace
+            "project-#{object.id}"
+          else if object.path
+            "group-#{object.id}"
+          else
+            "all"
 
         formatResult: (args...) =>
           @formatResult(args...)
@@ -32,15 +41,22 @@ class @AdminEmailSelect
          <div class='project-name'>#{object.name}</div>
          <div class='project-path'>#{object.path_with_namespace}</div>
        </div>"
-    else
+    else if object.path
       "<div class='group-result'>
          <div class='group-name'>#{object.name}</div>
          <div class='group-path'>#{object.path}</div>
+       </div>"
+    else
+      "<div class='group-result'>
+         <div class='group-name'>All</div>
+         <div class='group-path'>All groups and projects</div>
        </div>"
 
   formatSelection: (object) ->
     if object.path_with_namespace
       "Project: #{object.name}"
-    else
+    else if object.path
       "Group: #{object.name}"
+    else
+      "All groups and projects"
 
