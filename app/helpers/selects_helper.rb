@@ -35,4 +35,13 @@ module SelectsHelper
 
     hidden_field_tag(id, value, class: css_class)
   end
+
+  def admin_email_select_tag(id, opts = {})
+    css_class = "ajax-admin-email-select "
+    css_class << "multiselect " if opts[:multiple]
+    css_class << (opts[:class] || '')
+    value = opts[:selected] || ''
+
+    hidden_field_tag(id, value, class: css_class)
+  end
 end

@@ -17,6 +17,6 @@
   .form-group
     %label.control-label{for: :recipients} Recipient group
     .col-sm-10
-      = select_tag :recipients, admin_email_grouped_recipient_options, class: :select2, required: true
+      = admin_email_select_tag(:recipients)
   .form-actions
     = submit_tag 'Send message', class: 'btn btn-create'
