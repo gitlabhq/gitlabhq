@@ -116,6 +116,7 @@ describe NotificationService do
           should_email(note.noteable.assignee_id)
 
           should_not_email(note.author_id)
+          should_not_email(@u_mentioned.id)
           should_not_email(@u_disabled.id)
           should_not_email(@u_not_mentioned.id)
           notification.new_note(note)
@@ -168,6 +169,12 @@ describe NotificationService do
           notification.new_note(note)
         end
 
+        it do
+          @u_committer.update_attributes(notification_level: Notification::N_MENTION)
+          should_not_email(@u_committer.id, note)
+          notification.new_note(note)
+        end
+
         def should_email(user_id, n)
           Notify.should_receive(:note_commit_email).with(user_id, n.id)
         end
@@ -190,8 +197,15 @@ describe NotificationService do
       it do
         should_email(issue.assignee_id)
         should_email(@u_watcher.id)
+        should_not_email(@u_mentioned.id)
         should_not_email(@u_participating.id)
         should_not_email(@u_disabled.id)
+        notification.new_issue(issue, @u_disabled)
+      end
+
+      it do
+        issue.assignee.update_attributes(notification_level: Notification::N_MENTION)
+        should_not_email(issue.assignee_id)
         notification.new_issue(issue, @u_disabled)
       end
 
@@ -391,7 +405,7 @@ describe NotificationService do
     @u_watcher = create(:user, notification_level: Notification::N_WATCH)
     @u_participating = create(:user, notification_level: Notification::N_PARTICIPATING)
     @u_disabled = create(:user, notification_level: Notification::N_DISABLED)
-    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_PARTICIPATING)
+    @u_mentioned = create(:user, username: 'mention', notification_level: Notification::N_MENTION)
     @u_committer = create(:user, username: 'committer')
     @u_not_mentioned = create(:user, username: 'regular', notification_level: Notification::N_PARTICIPATING)
 

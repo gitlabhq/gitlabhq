@@ -2,18 +2,21 @@
   = nav_link(path: 'groups#edit') do
     = link_to edit_group_path(@group) do
       %i.fa.fa-pencil-square-o
-      Group
+      %span
+        Group
   = nav_link(path: 'groups#projects') do
     = link_to projects_group_path(@group) do
       %i.fa.fa-folder
-      Projects
+      %span
+        Projects
   - if ldap_enabled?
     = nav_link(controller: :ldap_group_links) do
       = link_to group_ldap_group_links_path(@group) do
         %i.fa.fa-exchange
-        LDAP Groups
+        %span
+          LDAP Groups
   = nav_link(controller: :audit_events) do
     = link_to group_audit_events_path(@group) do
       %i.fa.fa-file-text-o
-      Audit Events
-
+      %span
+        Audit Events

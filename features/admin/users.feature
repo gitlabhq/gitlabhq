@@ -35,3 +35,13 @@ Feature: Admin Users
     And I see the secondary email
     When I click remove secondary email
     Then I should not see secondary email anymore
+
+  Scenario: Show user keys
+    Given user "Pete" with ssh keys
+    And I visit admin users page
+    And click on user "Pete"
+    Then I should see key list
+    And I click on the key title
+    Then I should see key details
+    And I click on remove key
+    Then I should see the key removed

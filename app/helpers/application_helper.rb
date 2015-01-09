@@ -293,4 +293,21 @@ module ApplicationHelper
     path << "?#{options.to_param}"
     path
   end
+
+  def outdated_browser?
+    browser.ie? && browser.version.to_i < 10
+  end
+
+  def path_to_key(key, admin = false)
+    if admin
+      admin_user_key_path(@user, key)
+    else
+      profile_key_path(key)
+    end
+  end
+
+  def redirect_from_root?
+    request.env['rack.session']['user_return_to'] ==
+      '/'
+  end
 end

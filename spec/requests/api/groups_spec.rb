@@ -98,7 +98,8 @@ describe API::API, api: true  do
 
       it "should not create group, duplicate" do
         post api("/groups", admin), {name: "Duplicate Test", path: group2.path}
-        response.status.should == 404
+        response.status.should == 400
+        response.message.should == "Bad Request"
       end
 
       it "should return 400 bad request error if name not given" do

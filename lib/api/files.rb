@@ -35,7 +35,7 @@ module API
         file_path = attrs.delete(:file_path)
 
         commit = user_project.repository.commit(ref)
-        not_found! "Commit" unless commit
+        not_found! 'Commit' unless commit
 
         blob = user_project.repository.blob_at(commit.sha, file_path)
 
@@ -53,7 +53,7 @@ module API
             commit_id: commit.id,
           }
         else
-          render_api_error!('File not found', 404)
+          not_found! 'File'
         end
       end
 

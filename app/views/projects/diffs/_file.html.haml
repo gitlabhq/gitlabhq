@@ -4,7 +4,7 @@
 .diff-file{id: "diff-#{i}", data: {blob_diff_path: blob_diff_path }}
   .diff-header{id: "file-path-#{hexdigest(diff_file.new_path || diff_file.old_path)}"}
     - if diff_file.deleted_file
-      %span= diff_file.old_path
+      %span="#{diff_file.old_path} deleted"
 
       .diff-btn-group
         - if @commit.parent_ids.present?

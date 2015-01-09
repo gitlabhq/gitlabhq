@@ -10,13 +10,13 @@
       %span
         Projects
   = nav_link(path: 'dashboard#issues') do
-    = link_to issues_dashboard_path, class: 'shortcuts-issues' do
+    = link_to assigned_issues_dashboard_path, class: 'shortcuts-issues' do
       %i.fa.fa-exclamation-circle
       %span
         Issues
         %span.count= current_user.assigned_issues.opened.count
   = nav_link(path: 'dashboard#merge_requests') do
-    = link_to merge_requests_dashboard_path, class: 'shortcuts-merge_requests' do
+    = link_to assigned_mrs_dashboard_path, class: 'shortcuts-merge_requests' do
       %i.fa.fa-tasks
       %span
         Merge Requests

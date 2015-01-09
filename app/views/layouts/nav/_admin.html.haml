@@ -44,3 +44,8 @@
       %i.fa.fa-image
       %span
         Appearance
+  = nav_link(controller: :application_settings) do
+    = link_to admin_application_settings_path do
+      %i.fa.fa-cogs
+      %span
+        Settings

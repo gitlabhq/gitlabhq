@@ -1,6 +1,8 @@
 require 'gon'
 
 class ApplicationController < ActionController::Base
+  include Gitlab::CurrentSettings
+
   before_filter :authenticate_user_from_token!
   before_filter :authenticate_user!
   before_filter :reject_blocked!
@@ -13,7 +15,7 @@ class ApplicationController < ActionController::Base
 
   protect_from_forgery with: :exception
 
-  helper_method :abilities, :can?
+  helper_method :abilities, :can?, :current_application_settings
 
   rescue_from Encoding::CompatibilityError do |exception|
     log_exception(exception)
@@ -263,10 +265,6 @@ class ApplicationController < ActionController::Base
       # or improve current implementation to filter only issues you
       # created or assigned or mentioned
       #@filter_params[:authorized_only] = true
-
-      unless @filter_params[:assignee_id]
-        @filter_params[:assignee_id] = current_user.id
-      end
     end
 
     @filter_params

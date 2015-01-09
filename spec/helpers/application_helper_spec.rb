@@ -87,7 +87,7 @@ describe ApplicationHelper do
     let(:user_email) { 'user@email.com' }
 
     it "should return a generic avatar path when Gravatar is disabled" do
-      Gitlab.config.gravatar.stub(:enabled).and_return(false)
+      ApplicationSetting.any_instance.stub(gravatar_enabled?: false)
       gravatar_icon(user_email).should match('no_avatar.png')
     end
 

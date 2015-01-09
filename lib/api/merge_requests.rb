@@ -233,7 +233,7 @@ module API
         if note.save
           present note, with: Entities::MRNote
         else
-          render_validation_error!(note)
+          render_api_error!("Failed to save note #{note.errors.messages}", 400)
         end
       end
     end

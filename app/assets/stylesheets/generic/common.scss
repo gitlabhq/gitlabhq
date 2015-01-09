@@ -207,23 +207,15 @@ li.note {
   }
 }
 
-.no-ssh-key-message {
-  padding: 10px 0;
-  background: #C67;
-  margin: 0;
-  color: #FFF;
-  margin-top: -1px;
+.browser-alert {
+  padding: 10px;
   text-align: center;
-
+  background: #C67;
+  color: #fff;
+  font-weight: bold;
   a {
     color: #fff;
     text-decoration: underline;
-  }
-
-  .links-xs {
-    text-align: center;
-    font-size: 16px;
-    padding: 5px;
   }
 }
 
@@ -282,7 +274,7 @@ img.emoji {
 }
 
 .navless-container {
-  margin-top: 20px;
+  margin-top: 68px;
 }
 
 .description-block {
@@ -309,11 +301,17 @@ table {
 
 .dashboard-intro-icon {
   float: left;
+  text-align: center;
   font-size: 32px;
   color: #AAA;
-  padding: 5px 0;
-  width: 50px;
-  min-height: 100px;
+  width: 60px;
+}
+
+.dashboard-intro-text {
+  display: inline-block;
+  margin-left: -60px;
+  padding-left: 60px;
+  width: 100%;
 }
 
 .broadcast-message {
@@ -363,4 +361,10 @@ table {
 
 .task-status {
   margin-left: 10px;
+}
+
+#nprogress .spinner {
+  top: auto !important;
+  bottom: 20px !important;
+  left: 20px !important;
 }
