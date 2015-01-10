@@ -14,7 +14,9 @@ This person should also make sure this document is kept up to date and issues ar
 
 ## Take weekend and vacations into account
 
-Ensure that there is enough time to incorporate the findings of the release candidate, etc.
+The time is measured in weekdays to compensate for weekends. 
+Do things on time to prevent problems due to rush jobs or too little testing time. 
+Make sure that you take into account vacations of maintainers.
 
 ## Create an overall issue and follow it
 
@@ -35,24 +37,29 @@ Xth: (6 working days befor 22th)
 
 - [ ] Merge CE master in to EE master via merge request (#LINK)
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
+- [ ] Determine QA person and notify this person
 
 Xth: (5 working days befor 22th)
 
+- [ ] Do QA and fix anything coming out of it (#LINK)
 - [ ] Close the omnibus-gitlab milestone
-- [ ] Build rc1 package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 
 Xth: (4 working days befor 22th)
 
+- [ ] Build rc1 package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
+
+Xth: (3 working days befor 22th)
+
 - [ ] Create regression issues (CE, CI) (#LINK)
 - [ ] Tweet about rc1 (#LINK)
-- [ ] Start blog post (#LINK)
-- [ ] Determine QA person and notify him
+- [ ] Prepare the blog post (#LINK)
+
 
 Xth: (2 working days befor 22th)
 
 - [ ] Merge CE stable branch into EE stable branch
-- [ ] Do QA and fix anything coming out of it (#LINK)
+- [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
 
 Xth: (1 working day befor 22th)
 
@@ -84,6 +91,21 @@ There are three changelogs that need to be updated: CE, EE and CI.
 ## Create RC1 (CE, EE, CI)
 
 [Follow this How-to guide](howto_rc1.md) to create RC1.
+
+## QA
+
+Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X QA" in order to keep track of the progress.
+
+Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
+
+**NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
+
+#### Fix anything coming out of the QA
+
+Create an issue with description of a problem, if it is quick fix fix it yourself otherwise contact the team for advice.
+
+**NOTE** If there is a problem that cannot be fixed in a timely manner, reverting the feature is an option! If the feature is reverted,
+create an issue about it in order to discuss the next steps after the release.
 
 ## Update GitLab.com with RC1
 
@@ -125,21 +147,6 @@ Tweet about the RC release:
 - Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
 - Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
 - Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
-
-## QA
-
-Create issue on dev.gitlab.org `gitlab` repository, named "GitLab X.X QA" in order to keep track of the progress.
-
-Use the omnibus packages of Enterprise Edition using [this guide](https://dev.gitlab.org/gitlab/gitlab-ee/blob/master/doc/release/manual_testing.md).
-
-**NOTE** Upgrader can only be tested when tags are pushed to all repositories. Do not forget to confirm it is working before releasing. Note that in the issue.
-
-#### Fix anything coming out of the QA
-
-Create an issue with description of a problem, if it is quick fix fix it yourself otherwise contact the team for advice.
-
-**NOTE** If there is a problem that cannot be fixed in a timely manner, reverting the feature is an option! If the feature is reverted,
-create an issue about it in order to discuss the next steps after the release.
 
 ## Create CE, EE, CI stable versions
 
@@ -193,5 +200,4 @@ Consider creating a post on Hacker News.
 
 ## Update GitLab.com with stable version
 
-- Build a package for gitlab.com based on the official release instead of RC1
 - Deploy the package (should not need downtime because of the small difference with RC1)
