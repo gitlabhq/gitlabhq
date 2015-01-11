@@ -1,10 +1,11 @@
 # Monthly Release
 
-NOTE: This is a guide for GitLab developers.
+NOTE: This is a guide used by the GitLab B.V. developers.
 
-It starts 7 days before release. Current release manager must choose next release manager. 
-New release manager should create overall issue at GitLab 
-
+It starts 7 working days before the release.
+The release manager doesn't have to perform all the work but must ensure someone is assigned.
+The current release manager must schedule the appointment of the next release manager.
+The new release manager should create overall issue to track the progress.
 
 ## Release Manager
 
@@ -12,11 +13,12 @@ A release manager is selected that coordinates all releases the coming month, in
 The release manager has to make sure all the steps below are done and delegated where necessary.
 This person should also make sure this document is kept up to date and issues are created and updated.
 
-## Take weekend and vacations into account
+## Take vacations into account
 
 The time is measured in weekdays to compensate for weekends. 
-Do things on time to prevent problems due to rush jobs or too little testing time. 
-Make sure that you take into account vacations of maintainers.
+Do everything on time to prevent problems due to rush jobs or too little testing time.
+Make sure that you take into account any vacations of maintainers.
+If the release is falling behind immediately warn the team.
 
 ## Create an overall issue and follow it
 
@@ -25,7 +27,7 @@ Replace the dates with actual dates based on the number of workdays before the r
 All steps from issue template are explained below
 
 ```
-Xth: (7 working days before 22th)
+Xth: (7 working days before the 22nd)
 
 - [ ] Code freeze
 - [ ] Update the CE changelog (#LINK)
@@ -33,35 +35,34 @@ Xth: (7 working days before 22th)
 - [ ] Update the CI changelog (#LINK)
 - [ ] Triage the omnibus-gitlab milestone
 
-Xth: (6 working days before 22th)
+Xth: (6 working days before the 22nd)
 
 - [ ] Merge CE master in to EE master via merge request (#LINK)
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
 - [ ] Determine QA person and notify this person
 
-Xth: (5 working days before 22th)
+Xth: (5 working days before the 22nd)
 
 - [ ] Do QA and fix anything coming out of it (#LINK)
 - [ ] Close the omnibus-gitlab milestone
 
-Xth: (4 working days before 22th)
+Xth: (4 working days before the 22nd)
 
 - [ ] Build rc1 package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 
-Xth: (3 working days before 22th)
+Xth: (3 working days before the 22nd)
 
 - [ ] Create regression issues (CE, CI) (#LINK)
 - [ ] Tweet about rc1 (#LINK)
 - [ ] Prepare the blog post (#LINK)
 
-
-Xth: (2 working days before 22th)
+Xth: (2 working days before the 22nd)
 
 - [ ] Merge CE stable branch into EE stable branch
 - [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
 
-Xth: (1 working day before 22th)
+Xth: (1 working day before the 22nd)
 
 - [ ] Create CE, EE, CI stable versions (#LINK)
 - [ ] Create Omnibus tags and build packages
@@ -70,9 +71,9 @@ Xth: (1 working day before 22th)
 
 - [ ] Release CE, EE and CI (#LINK)
 
-Xth: (1 working day after 22th)
+Xth: (1 working day after the 22nd)
 
-- [ ] Deploy to GitLab.com (#LINK)
+- [ ] Update GitLab.com with the stable version (#LINK)
 
 ```
 
@@ -198,6 +199,6 @@ Proposed tweet "Release of GitLab X.X & CI Y.Y! FEATURE, FEATURE and FEATURE <li
 
 Consider creating a post on Hacker News.
 
-## Update GitLab.com with stable version
+## Update GitLab.com with the stable version
 
 - Deploy the package (should not need downtime because of the small difference with RC1)
