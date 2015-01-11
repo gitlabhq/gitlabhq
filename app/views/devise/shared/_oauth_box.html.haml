@@ -1,7 +1,7 @@
 - providers = additional_providers
 - if providers.present?
-  .bs-callout.bs-callout-info{:'data-no-turbolink' => 'data-no-turbolink'}
-    %span Sign in with: &nbsp;
+  .login-box{:'data-no-turbolink' => 'data-no-turbolink'}
+    %span Sign in with &nbsp;
     - providers.each do |provider|
       %span
         - if default_providers.include?(provider)

@@ -175,7 +175,6 @@ gem 'semantic-ui-sass', '~> 0.16.1.0'
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
-gem "therubyracer"
 gem 'turbolinks'
 gem 'jquery-turbolinks'
 
@@ -260,6 +259,7 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
+  gem "therubyracer"
 end
 
 gem "newrelic_rpm"

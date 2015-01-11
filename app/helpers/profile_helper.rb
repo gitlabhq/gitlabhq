@@ -14,6 +14,6 @@ module ProfileHelper
   end
 
   def show_profile_remove_tab?
-    gitlab_config.signup_enabled
+    signup_enabled?
   end
 end

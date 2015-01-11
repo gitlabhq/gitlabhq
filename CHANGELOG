@@ -22,6 +22,24 @@ v 7.7.0
   -
   - Added API support for sorting projects
   - Update gitlab_git to version 7.0.0.rc13
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  -
+  - Change some of application settings on fly in admin area UI
+  - Redesign signin/signup pages
+  - Close standard input in Gitlab::Popen.popen
 
 v 7.6.0
   - Fork repository to groups
