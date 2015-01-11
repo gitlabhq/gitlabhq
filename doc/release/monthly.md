@@ -25,7 +25,7 @@ Replace the dates with actual dates based on the number of workdays before the r
 All steps from issue template are explained below
 
 ```
-Xth: (7 working days befor 22th)
+Xth: (7 working days before 22th)
 
 - [ ] Code freeze
 - [ ] Update the CE changelog (#LINK)
@@ -33,35 +33,35 @@ Xth: (7 working days befor 22th)
 - [ ] Update the CI changelog (#LINK)
 - [ ] Triage the omnibus-gitlab milestone
 
-Xth: (6 working days befor 22th)
+Xth: (6 working days before 22th)
 
 - [ ] Merge CE master in to EE master via merge request (#LINK)
 - [ ] Create CE, EE, CI RC1 versions (#LINK)
 - [ ] Determine QA person and notify this person
 
-Xth: (5 working days befor 22th)
+Xth: (5 working days before 22th)
 
 - [ ] Do QA and fix anything coming out of it (#LINK)
 - [ ] Close the omnibus-gitlab milestone
 
-Xth: (4 working days befor 22th)
+Xth: (4 working days before 22th)
 
 - [ ] Build rc1 package for GitLab.com (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#build-a-package)
 - [ ] Update GitLab.com with rc1 (#LINK) (https://dev.gitlab.org/cookbooks/chef-repo/blob/master/doc/administration.md#deploy-the-package)
 
-Xth: (3 working days befor 22th)
+Xth: (3 working days before 22th)
 
 - [ ] Create regression issues (CE, CI) (#LINK)
 - [ ] Tweet about rc1 (#LINK)
 - [ ] Prepare the blog post (#LINK)
 
 
-Xth: (2 working days befor 22th)
+Xth: (2 working days before 22th)
 
 - [ ] Merge CE stable branch into EE stable branch
 - [ ] Check that everyone is mentioned on the blog post (the reviewer should have done this one working day ago)
 
-Xth: (1 working day befor 22th)
+Xth: (1 working day before 22th)
 
 - [ ] Create CE, EE, CI stable versions (#LINK)
 - [ ] Create Omnibus tags and build packages
