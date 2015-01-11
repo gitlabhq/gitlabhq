@@ -10,7 +10,7 @@ module TestEnv
     'fix'              => '12d65c8',
     'improve/awesome'  => '5937ac0',
     'markdown'         => '0ed8c6c',
-    'master'           => 'e56497b'
+    'master'           => '5937ac0'
   }
 
   # Test environment
