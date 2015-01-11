@@ -11,6 +11,7 @@ describe GithubImportsController do
     it "updates access token" do
       token = "asdasd12345"
       Gitlab::Github::Client.any_instance.stub_chain(:client, :auth_code, :get_token, :token).and_return(token)
+      Gitlab.config.omniauth.providers << OpenStruct.new(app_id: "asd123", app_secret: "asd123", name: "github")
 
       get :callback
       
