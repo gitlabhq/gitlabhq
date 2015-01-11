@@ -134,19 +134,19 @@ Tweet about the RC release:
 
 ## Prepare the blog post
 
-- Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
-- Make sure the blog post contains information about the GitLab CI release.
-- Check the changelog of CE and EE for important changes.
-- Also check the CI changelog
-- Add a proposed tweet text to the blog post WIP MR description.
-- Create a WIP MR for the blog post
-- Ask Dmitriy to add screenshots to the WIP MR.
-- Decide with team who will be the MVP user. 
-- Create WIP MR for adding MVP to MVP page on website
-- Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
-- Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
-- Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
-- Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
+1. Start with a complete copy of the [release blog template](https://gitlab.com/gitlab-com/www-gitlab-com/blob/master/doc/release_blog_template.md) and fill it out.
+1. Make sure the blog post contains information about the GitLab CI release.
+1. Check the changelog of CE and EE for important changes.
+1. Also check the CI changelog
+1. Add a proposed tweet text to the blog post WIP MR description.
+1. Create a WIP MR for the blog post
+1. Ask Dmitriy to add screenshots to the WIP MR.
+1. Decide with team who will be the MVP user. 
+1. Create WIP MR for adding MVP to MVP page on website
+1. Add a note if there are security fixes: This release fixes an important security issue and we advise everyone to upgrade as soon as possible.
+1. Create a merge request on [GitLab.com](https://gitlab.com/gitlab-com/www-gitlab-com/tree/master)
+1. Assign to one reviewer who will fix spelling issues by editing the branch (either with a git client or by using the online editor)
+1. Comment to the reviewer: '@person Please mention the whole team as soon as you are done (3 workdays before release at the latest)'
 
 ## Create CE, EE, CI stable versions
 
@@ -165,9 +165,9 @@ bundle exec rake release["x.x.0"]
 
 Also perform these steps for GitLab CI:
 
-- bump version in the stable branch
-- create annotated tag
-- push the stable branch and the annotated tag to the public repositories
+1. bump version in the stable branch
+1. create annotated tag
+1. push the stable branch and the annotated tag to the public repositories
 
 Update [installation.md](/doc/install/installation.md) to the newest version in master.
 
@@ -180,16 +180,16 @@ This can happen before tagging because Omnibus uses tags in its own repo and SHA
 
 ## Release CE, EE and CI
 
-### 1. Publish packages for new release
+__1. Publish packages for new release__
 
 Update `downloads/index.html` and `downloads/archive/index.html` in `www-gitlab-com` repository.
 
-### 2. Publish blog for new release
+__2. Publish blog for new release__
 
 Doublecheck the everyone has been mentioned in the blog post.
 Merge the [blog merge request](#1-prepare-the-blog-post) in `www-gitlab-com` repository.
 
-### 3. Tweet to blog
+__3. Tweet to blog__
 
 Send out a tweet to share the good news with the world.
 List the most important features and link to the blog post.
