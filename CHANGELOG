@@ -21,14 +21,14 @@ v 7.7.0
   - Add alert message in case of outdated browser (IE < 10)
   -
   - Added API support for sorting projects
-  - Update gitlab_git to version 7.0.0.rc13
+  - Update gitlab_git to version 7.0.0.rc14
   -
   -
   -
   -
   -
   -
-  -
+  - Fix File blame not respecting branch selection
   -
   -
   -
