@@ -269,7 +269,7 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
   end
 
   step 'I should see comments on the side-by-side diff page' do
-    within '.files [id^=diff]:nth-child(1) .note-text' do
+    within '.files [id^=diff]:nth-child(1) .parallel .note-text' do
       page.should have_visible_content "Line is correct"
     end
   end
