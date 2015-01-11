@@ -8,6 +8,12 @@ class GitTagPushService
     create_push_event
     project.repository.expire_cache
     project.execute_hooks(@push_data.dup, :tag_push_hooks)
+
+    if project.gitlab_ci?
+      project.gitlab_ci_service.async_execute(@push_data)
+    end
+
+    true
   end
 
   private
