@@ -230,7 +230,7 @@ Gitlab::Application.routes.draw do
         end
       end
 
-      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /[a-zA-Z.0-9_\-\/]+/} do
+      resources :wikis, only: [:show, :edit, :destroy, :create], constraints: {id: /\S+/} do
         collection do
           get :pages
           put ':id' => 'wikis#update'

@@ -85,7 +85,7 @@ class ProjectWiki
   def create_page(title, content, format = :markdown, message = nil)
     commit = commit_details(:created, message, title)
 
-    wiki.write_page(title, format, content, commit)
+    wiki.write_page(URI.encode(title), format, content, commit)
   rescue Gollum::DuplicatePageError => e
     @error_message = "Duplicate page: #{e.message}"
     return false
@@ -103,7 +103,7 @@ class ProjectWiki
 
   def page_title_and_dir(title)
     title_array =  title.split("/")
-    title = title_array.pop
+    title = URI.encode title_array.pop
     [title.gsub(/\.[^.]*$/, ""), title_array.join("/")]
   end
 
