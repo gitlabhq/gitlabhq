@@ -51,7 +51,7 @@ describe API::API, api: true  do
           get api("/projects", user), { order_by: 'id', sort: 'desc'}
           response.status.should eq(200)
           json_response.should be_an Array
-          json_response.first['id'].should eq(3)
+          json_response.first['id'].should eq(project3.id)
         end
       end
     end
