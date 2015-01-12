@@ -11,6 +11,12 @@ You still need to configure your system for Kerberos usage, such as specifying r
 
 The first time a user signs in with Kerberos credentials, GitLab will create a new GitLab user associated with the email, which is built from the kerberos username and realm. Existing GitLab users can go to profile > account and attach a Kerberos account.
 
-## HTTP git access
+### HTTP git access
 
 A linked Kerberos account enables you to `git pull` and `git push` using your Kerberos account, as well as your standard GitLab credentials.
+
+### Helpful links to setup development kerberos environment. 
+
+https://help.ubuntu.com/community/Kerberos
+
+http://blog.manula.org/2012/04/setting-up-kerberos-server-with-debian.html
