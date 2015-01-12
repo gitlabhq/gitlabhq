@@ -11,17 +11,14 @@
 - Completely free and open source (MIT Expat license)
 - Powered by Ruby on Rails
 
-## Additional features availabe in GitLab Enterprise Edition
+## Editions
 
-You might be interested in some of the features we include in GitLab Enterprise Edition:
- - Deeper LDAP integration, specifically L[DAP group synchronization](http://doc.gitlab.com/ee/integration/ldap.html#ldap-group-synchronization-gitlab-enterprise-edition), sharing a project with other groups, and [multiple LDAP support](http://doc.gitlab.com/ee/integration/ldap.html#integrate-gitlab-with-more-than-one-ldap-server-enterprise-edition);
- - Manage contributions to your code with [git hooks](http://doc.gitlab.com/ee/git_hooks/git_hooks.html), [rebasing merge requests](http://doc.gitlab.com/ee/workflow/gitlab_flow.html#do-not-order-commits-with-rebase), and [auditing](http://doc.gitlab.com/ee/administration/audit_events.html);
- - [Deeper Jenkins CI integration](http://doc.gitlab.com/ee/integration/jenkins.html);
- - [Deeper JIRA integration](http://doc.gitlab.com/ee/integration/jira.html)
+There are two editions available for GitLab. 
 
+GitLab Community Edition is aimed at individuals and small teams. Click [here](https://about.gitlab.com/features/) for an overview of its major features.
+
+GitLab Enterprise Edition is designed to accommodate big teams and organizations. You can find out more about the additional features [here](https://about.gitlab.com/features/#compare) 
 GitLab Enterprise Edition is available to our subscribers, along with support from our side. [How to become a subscriber.](https://about.gitlab.com/pricing/)
-
-Feel free to check out the rest of the features in GitLab Enterprise Edition [here](https://about.gitlab.com/features/#enterprise)
 
 ## Canonical source
 
