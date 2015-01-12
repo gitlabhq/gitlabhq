@@ -13,6 +13,7 @@ Parameters:
 - `archived` (optional) - if passed, limit by archived status
 - `order_by` (optional) - Return requests ordered by `id`, `name`, `created_at` or `last_activity_at` fields
 - `sort` (optional) - Return requests sorted in `asc` or `desc` order
+- `search` (optional) - Return list of authorized projects according to a search criteria
 
 ```json
 [

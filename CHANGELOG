@@ -25,7 +25,7 @@ v 7.7.0
   -
   -
   -
-  -
+  - Add API project search filter option for authorized projects
   -
   -
   - Fix File blame not respecting branch selection

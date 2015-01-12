@@ -7,6 +7,8 @@ describe API::API, api: true  do
   let(:user3) { create(:user) }
   let(:admin) { create(:admin) }
   let(:project) { create(:project, creator_id: user.id, namespace: user.namespace) }
+  let(:project2) { create(:project, path: 'project2', creator_id: user.id, namespace: user.namespace) }
+  let(:project3) { create(:project, path: 'project3', creator_id: user.id, namespace: user.namespace) }
   let(:snippet) { create(:project_snippet, author: user, project: project, title: 'example') }
   let(:project_member) { create(:project_member, user: user, project: project, access_level: ProjectMember::MASTER) }
   let(:project_member2) { create(:project_member, user: user3, project: project, access_level: ProjectMember::DEVELOPER) }
@@ -28,6 +30,29 @@ describe API::API, api: true  do
         json_response.should be_an Array
         json_response.first['name'].should == project.name
         json_response.first['owner']['username'].should == user.username
+      end
+
+      context "and using search" do
+        it "should return searched project" do
+          get api("/projects", user), { search: project.name }
+          response.status.should eq(200)
+          json_response.should be_an Array
+          json_response.length.should eq(1)
+        end
+      end
+
+      context "and using sorting" do
+        before do
+          project2
+          project3
+        end
+
+        it "should return the correct order when sorted by id" do
+          get api("/projects", user), { order_by: 'id', sort: 'desc'}
+          response.status.should eq(200)
+          json_response.should be_an Array
+          json_response.first['id'].should eq(3)
+        end
       end
     end
   end
