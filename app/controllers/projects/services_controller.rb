@@ -24,7 +24,7 @@ class Projects::ServicesController < Projects::ApplicationController
   end
 
   def test
-    data = Gitlab::PushDataBuilder.build(project, current_user)
+    data = Gitlab::PushDataBuilder.build_sample(project, current_user)
     @service.execute(data)
 
     redirect_to :back

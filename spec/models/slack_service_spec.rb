@@ -34,7 +34,7 @@ describe SlackService do
     let(:slack)   { SlackService.new }
     let(:user)    { create(:user) }
     let(:project) { create(:project) }
-    let(:sample_data) { GitPushService.new.sample_data(project, user) }
+    let(:sample_data) { Gitlab::PushDataBuilder.build_sample(project, user) }
     let(:webhook_url) { 'https://hooks.slack.com/services/SVRWFV0VVAR97N/B02R25XN3/ZBqu7xMupaEEICInN685' }
 
     before do

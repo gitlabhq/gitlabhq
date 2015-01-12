@@ -32,7 +32,7 @@ describe FlowdockService do
         service_hook: true,
         token: 'verySecret'
       )
-      @sample_data = GitPushService.new.sample_data(project, user)
+      @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
       @api_url = 'https://api.flowdock.com/v1/git/verySecret'
       WebMock.stub_request(:post, @api_url)
     end
