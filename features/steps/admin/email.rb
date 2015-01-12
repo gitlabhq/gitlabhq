@@ -15,7 +15,16 @@ class Spinach::Features::AdminEmail < Spinach::FeatureSteps
     within('form#new-admin-email') do
       fill_in :subject, with: 'my subject'
       fill_in :body, with: @email_text
-      select @selected_group.name, from: :recipients
+
+      # Note: Unable to use select2 helper because
+      # the helper uses select2 method "val" to select the group from the dropdown
+      # and the method "val" requires "initSelection" to be used in the select2 call
+      select2_container = first("#s2id_recipients")
+      select2_container.find(".select2-choice").click
+      find(:xpath, "//body").find("input.select2-input").set(@selected_group.name)
+      page.execute_script(%|$("input.select2-input:visible").keyup();|)
+      find(:xpath, "//body").find(".group-name", text: @selected_group.name).click
+
       find('.btn-create').click
     end
   end

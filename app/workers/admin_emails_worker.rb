@@ -8,6 +8,7 @@ class AdminEmailsWorker
   end
 
   private
+
   def recipient_list(recipient_id)
     case recipient_id
     when 'all'

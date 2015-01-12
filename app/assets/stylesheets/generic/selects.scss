@@ -128,6 +128,15 @@ select {
   }
 }
 
+.project-result {
+  .project-name {
+    font-weight: bold;
+  }
+  .project-path {
+    color: #999;
+  }
+}
+
 .user-result {
   .user-image {
     float: left;
