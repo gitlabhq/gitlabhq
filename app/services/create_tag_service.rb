@@ -27,9 +27,9 @@ class CreateTagService < BaseService
       end
 
       Event.create_ref_event(project, current_user, new_tag, 'add', 'refs/tags')
-      return success(new_tag)
+      success(new_tag)
     else
-      return error('Invalid reference name')
+      error('Invalid reference name')
     end
   end
 
@@ -41,6 +41,6 @@ class CreateTagService < BaseService
 
   def create_push_data(project, user, tag)
     Gitlab::PushDataBuilder.
-      build(project, user, Gitlab::Git::BLANK_SHA, tag.target, tag.name, [])
+      build(project, user, Gitlab::Git::BLANK_SHA, tag.target, 'refs/tags/' + tag.name, [])
   end
 end
