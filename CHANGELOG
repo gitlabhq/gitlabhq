@@ -2,10 +2,7 @@ Note: The upcoming release contains empty lines to reduce the number of merge co
 
 v 7.7.0
   - Import from GitHub.com feature
-  -
   - Add Jetbrains Teamcity CI service (Jason Lippert)
-  -
-  -
   - Mention notification level
   - Markdown preview in wiki (Yuriy Glukhov)
   - Raise group avatar filesize limit to 200kb
@@ -14,35 +11,19 @@ v 7.7.0
   - Developer can push to protected branches option
   - Set project path instead of project name in create form
   - Block Git HTTP access after 10 failed authentication attempts
-  -
-  -
   - Updates to the messages returned by API (sponsored by O'Reilly Media)
   - New UI layout with side navigation
-  -
-  -
-  -
   - Add alert message in case of outdated browser (IE < 10)
-  -
   - Added API support for sorting projects
   - Update gitlab_git to version 7.0.0.rc14
-  -
-  -
-  -
   - Add API project search filter option for authorized projects
-  -
-  -
   - Fix File blame not respecting branch selection
-  -
-  -
-  -
-  -
-  -
-  -
-  -
-  -
   - Change some of application settings on fly in admin area UI
   - Redesign signin/signup pages
   - Close standard input in Gitlab::Popen.popen
+  - Trigger GitLab CI when push tags
+  - When accept merge request - do merge using sidaekiq job
+
 
 v 7.6.0
   - Fork repository to groups
