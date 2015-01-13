@@ -90,7 +90,7 @@ asked if there is anything missing.
 
 There are three changelogs that need to be updated: CE, EE and CI.
 
-Remove the DISCLAIMER text in the stable branches.
+Remove the Note text in the stable branches.
 
 ## Create RC1 (CE, EE, CI)
 
@@ -103,7 +103,7 @@ lines to it. We do this in order to avoid merge conflicts when merging the CHANG
 
 Make sure that the CHANGELOG im master contains the following disclaimer message:
 
-> DISCLAIMER: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
+> Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
 
 ## QA
 
