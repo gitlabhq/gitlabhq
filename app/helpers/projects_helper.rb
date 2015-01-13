@@ -237,4 +237,9 @@ module ProjectsHelper
     result.password = '*****' if result.password.present?
     result
   end
+
+  def project_wiki_path_with_version(proj, page, version, is_newest)
+    url_params = is_newest ? {} : { version_id: version }
+    project_wiki_path(proj, page, url_params)
+  end
 end
