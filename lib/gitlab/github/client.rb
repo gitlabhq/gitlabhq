@@ -19,9 +19,9 @@ module Gitlab
 
       def github_options
         {
-          :site => 'https://api.github.com',
-          :authorize_url => 'https://github.com/login/oauth/authorize',
-          :token_url => 'https://github.com/login/oauth/access_token'
+          site: 'https://api.github.com',
+          authorize_url: 'https://github.com/login/oauth/authorize',
+          token_url: 'https://github.com/login/oauth/access_token'
         }
       end
     end

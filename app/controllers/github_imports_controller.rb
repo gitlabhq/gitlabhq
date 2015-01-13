@@ -2,7 +2,7 @@ class GithubImportsController < ApplicationController
   before_filter :github_auth, except: :callback
 
   rescue_from Octokit::Unauthorized, with: :github_unauthorized
-  
+
   def callback
     token = client.auth_code.get_token(params[:code]).token
     current_user.github_access_token = token

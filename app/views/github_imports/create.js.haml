@@ -13,6 +13,4 @@
 - else
   :plain
     $("table.import-jobs tbody").prepend($("tr#repo_#{@repo_id}"))
-    $("tr#repo_#{@repo_id}").addClass("active").find(".import-actions").text("started")
-
-  
+    $("tr#repo_#{@repo_id}").addClass("active").find(".import-actions").html("<i class='fa fa-spinner fa-spin'></i> started")
