@@ -54,7 +54,8 @@
 
   .form-actions
     = f.submit 'Save', class: 'btn btn-save'
-    = link_to 'Preview', preview_admin_appearances_path, class: 'btn', target: '_blank'
+    - if @appearance.persisted?
+      = link_to 'Preview last save', preview_admin_appearances_path, class: 'btn', target: '_blank'
 
     - if @appearance.updated_at
       %span.pull-right
