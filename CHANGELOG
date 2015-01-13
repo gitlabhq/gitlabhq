@@ -1,7 +1,7 @@
 Note: The upcoming release contains empty lines to reduce the number of merge conflicts, scroll down to see past releases.
 
 v 7.7.0
-  -
+  - Import from GitHub.com feature
   -
   - Add Jetbrains Teamcity CI service (Jason Lippert)
   -
