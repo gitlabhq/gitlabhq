@@ -15,10 +15,14 @@
 
 There are two editions available for GitLab. 
 
-GitLab Community Edition is aimed at individuals and small teams. Click [here](https://about.gitlab.com/features/) for an overview of its major features.
+GitLab Community Edition is an open source code collaboration platform.
+Click [here](https://about.gitlab.com/features/) for an overview of its major features.
 
-GitLab Enterprise Edition is designed to accommodate big teams and organizations. You can find out more about the additional features [here](https://about.gitlab.com/features/#compare) 
-GitLab Enterprise Edition is available to our subscribers, along with support from our side. [How to become a subscriber.](https://about.gitlab.com/pricing/)
+GitLab Enterprise Edition includes features useful for organizations with over 100 users.
+You can read about these features [here](https://about.gitlab.com/features/#compare)
+
+GitLab Enterprise Edition is available to GitLab subscribers, along with support from the GitLab B.V. service engineers.
+[How to become a subscriber.](https://about.gitlab.com/pricing/)
 
 ## Canonical source
 
