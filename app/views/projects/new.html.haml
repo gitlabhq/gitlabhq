@@ -27,7 +27,7 @@
           .col-sm-10
             = link_to "#", class: 'js-toggle-button' do
               %i.fa.fa-upload
-              %span Import existing repository?
+              %span Import existing repository by URL
         .js-toggle-content.hide
           .form-group.import-url-data
             = f.label :import_url, class: 'control-label' do
@@ -39,13 +39,14 @@
                 %br
                 The import will time out after 4 minutes. For big repositories, use a clone/push combination.
                 For SVN repositories, check #{link_to "this migrating from SVN doc.", "http://doc.gitlab.com/ce/workflow/migrating_from_svn.html"}
-      
+
       - if github_import_enabled?
         .project-import.form-group
           .col-sm-2
           .col-sm-10
-            %i.fa.fa-bars
-            = link_to "Import projects from github", status_github_import_path
+            = link_to status_github_import_path do
+              %i.fa.fa-github
+              Import projects from GitHub
 
       %hr.prepend-botton-10
 
