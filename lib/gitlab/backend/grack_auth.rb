@@ -72,8 +72,26 @@ module Grack
     end
 
     def authenticate_user(login, password)
-      auth = Gitlab::Auth.new
-      auth.find(login, password)
+      user = Gitlab::Auth.new.find(login, password)
+      return user if user.present?
+
+      # At this point, we know the credentials were wrong. We let Rack::Attack
+      # know there was a failed authentication attempt from this IP. This
+      # information is stored in the Rails cache (Redis) and will be used by
+      # the Rack::Attack middleware to decide whether to block requests from
+      # this IP.
+      config = Gitlab.config.rack_attack.git_basic_auth
+      Rack::Attack::Allow2Ban.filter(@request.ip, config) do
+        # Unless the IP is whitelisted, return true so that Allow2Ban
+        # increments the counter (stored in Rails.cache) for the IP
+        if config.ip_whitelist.include?(@request.ip)
+          false
+        else
+          true
+        end
+      end
+
+      nil # No user was found
     end
 
     def authorized_request?
