@@ -11,6 +11,19 @@
 - Completely free and open source (MIT Expat license)
 - Powered by Ruby on Rails
 
+## Editions
+
+There are two editions available for GitLab. 
+
+GitLab Community Edition is an open source code collaboration platform.
+Click [here](https://about.gitlab.com/features/) for an overview of its major features.
+
+GitLab Enterprise Edition includes features useful for organizations with over 100 users.
+You can read about these features [here](https://about.gitlab.com/features/#compare)
+
+GitLab Enterprise Edition is available to GitLab subscribers, along with support from the GitLab B.V. service engineers.
+[How to become a subscriber.](https://about.gitlab.com/pricing/)
+
 ## Canonical source
 
 - The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
