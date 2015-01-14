@@ -257,5 +257,13 @@ module ProjectsHelper
   def github_import_enabled?
     Gitlab.config.omniauth.enabled && enabled_oauth_providers.include?(:github)
   end
+  
+  def membership_locked?
+    if @project.group && @project.group.membership_lock
+      true
+    else
+      false
+    end
+  end
 end
 

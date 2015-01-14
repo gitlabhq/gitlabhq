@@ -39,6 +39,7 @@ Gitlab::Application.routes.draw do
 
   get 'help'                  => 'help#index'
   get 'help/:category/:file'  => 'help#show', as: :help_page
+  get 'help/:category/*file'  => 'help#show'
   get 'help/shortcuts'
 
   #
@@ -110,6 +111,7 @@ Gitlab::Application.routes.draw do
     resources :broadcast_messages, only: [:index, :create, :destroy]
     resource :logs, only: [:show]
     resource :background_jobs, controller: 'background_jobs', only: [:show]
+    resource :email, only: [:show, :create]
 
     resources :projects, constraints: { id: /[a-zA-Z.\/0-9_\-]+/ }, only: [:index, :show] do
       member do
@@ -117,8 +119,15 @@ Gitlab::Application.routes.draw do
       end
     end
 
-    resource :application_settings, only: [:show, :update]
+    resource :appearances, path: 'appearance' do
+      member do
+        get :preview
+        delete :logo
+        delete :header_logos
+      end
+    end
 
+    resource :application_settings, only: [:show, :update]
     root to: "dashboard#index"
   end
 
@@ -180,12 +189,25 @@ Gitlab::Application.routes.draw do
     end
 
     scope module: :groups do
+      resource :ldap, only: [] do
+        member do
+          put :reset_access
+        end
+      end
+    end
+
+    scope module: :groups do
+      resources :ldap_group_links, only: [:index, :create, :destroy]
       resources :group_members, only: [:create, :update, :destroy]
       resource :avatar, only: [:destroy]
       resources :milestones
     end
+
+    get "/audit_events" => "audit_events#group_log"
   end
 
+  get  'unsubscribes/:email', to: 'unsubscribes#show', as: :unsubscribe
+  post 'unsubscribes/:email', to: 'unsubscribes#create'
   resources :projects, constraints: { id: /[^\/]+/ }, only: [:new, :create]
 
   devise_for :users, controllers: { omniauth_callbacks: :omniauth_callbacks, registrations: :registrations , passwords: :passwords, sessions: :sessions, confirmations: :confirmations }
@@ -308,6 +330,8 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :git_hooks, constraints: {id: /\d+/}
+
       resources :hooks, only: [:index, :create, :destroy], constraints: {id: /\d+/} do
         member do
           get :test
@@ -345,12 +369,16 @@ Gitlab::Application.routes.draw do
         end
       end
 
+      resources :group_links, only: [:index, :create, :destroy], constraints: {id: /\d+/}
+
       resources :notes, only: [:index, :create, :destroy, :update], constraints: {id: /\d+/} do
         member do
           delete :delete_attachment
         end
       end
     end
+
+    get "/audit_events" => "audit_events#project_log"
   end
 
   get ':id' => "namespaces#show", constraints: {id: /(?:[^.]|\.(?!atom$))+/, format: /atom/}

@@ -148,6 +148,11 @@ Feature: Project Merge Requests
     Then I should see a comment like "Line is wrong" in the second file
     And I should still see a comment like "Line is correct" in the first file
 
+  Scenario: I submit new unassigned merge request with template description
+    Given I click link "New Merge Request"
+    And I select "fix" as source
+    Then I should see description field pre-filled
+
   @javascript
   Scenario: I unfold diff
     Given project "Shop" have "Bug NS-05" open merge request with diffs inside

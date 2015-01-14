@@ -39,6 +39,11 @@ module API
       expose :issues_events, :merge_requests_events, :tag_push_events
     end
 
+    class ProjectGitHook < Grape::Entity
+      expose :id, :project_id, :created_at
+      expose :commit_message_regex, :deny_delete_tag
+    end
+
     class ForkedFromProject < Grape::Entity
       expose :id
       expose :name, :name_with_namespace
@@ -65,7 +70,12 @@ module API
     end
 
     class Group < Grape::Entity
-      expose :id, :name, :path, :owner_id
+      expose :id, :name, :path, :owner_id, :ldap_cn, :ldap_access
+      expose :ldap_group_links, if: ->(group, _) { group.ldap_group_links.any? } do |group, _|
+        group.ldap_group_links.map do |group_link|
+          group_link.slice(:cn, :group_access)
+        end
+      end
     end
 
     class GroupDetail < Group
@@ -202,6 +212,14 @@ module API
           event.author.username
         end
       end
+    end
+
+    class LdapGroup < Grape::Entity
+      expose :cn
+    end
+
+    class ProjectGroupLink < Grape::Entity
+      expose :id, :project_id, :group_id, :group_access
     end
 
     class Namespace < Grape::Entity

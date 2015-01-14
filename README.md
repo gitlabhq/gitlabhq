@@ -1,5 +1,29 @@
 # ![logo](https://about.gitlab.com/images/gitlab_logo.png) GitLab
 
+## Subscriber onboarding information
+
+Thank you for purchasing a GitLab subscription!
+
+For standard subscribers, please see **emergency contact info and other useful information** in [the Standard subscribers README](https://gitlab.com/standard/standard-subscriber-information/tree/master#README).
+
+If you would like to receive access to GitLab Enterprise Edition please create an account on https://gitlab.com/users/sign_up and send us the username. Note that your user will be visible to other Support Subscribers.
+
+Once your username is added, you can find the repository here:
+https://gitlab.com/subscribers/gitlab-ee
+
+Packages:
+https://gitlab.com/subscribers/gitlab-ee/blob/master/doc/install/packages.md
+
+Documentation:
+http://doc.gitlab.com/ee/
+
+To upgrade from CE, just perform a normal upgrade, but make use of an EE package:
+https://gitlab.com/gitlab-org/omnibus-gitlab/blob/master/doc/update.md#updating-from-gitlab-6-6-x-and-higher-to-the-latest-version
+
+If you need help with your GitLab installation and for any technical questions please contact us at subscribers@gitlab.com.
+
+For all other questions, contact us at sales@gitlab.com 
+
 ## Open source software to collaborate on code
 
 ![Animated screenshots](https://about.gitlab.com/images/animated/compiled.gif)
@@ -21,7 +45,7 @@ To get access to the EE and support please [become a subscriber](https://about.g
 
 ## Canonical source
 
-- The source of GitLab Community Edition is [hosted on GitLab.com](https://gitlab.com/gitlab-org/gitlab-ce/) and there are mirrors to make [contributing](CONTRIBUTING.md) as easy as possible.
+- The source of GitLab Enterprise Edition is [hosted on GitLab.com](https://dev.gitlab.org/gitlab/gitlab-ee/) and acessible only to [subscribers](https://about.gitlab.com/subscription/).
 
 ## Code status
 
@@ -87,7 +111,7 @@ Instructions on how to start Gitlab and how to run the tests can be found in the
 
 ## Documentation
 
-All documentation can be found on [doc.gitlab.com/ce/](http://doc.gitlab.com/ce/).
+All documentation can be found on [doc.gitlab.com/ee/](http://doc.gitlab.com/ee/).
 
 ## Getting help
 

@@ -1,0 +1,19 @@
+%li
+  %h4= ldap_group_link.cn
+  .pull-right
+    = link_to group_ldap_group_link_path(group, ldap_group_link), method: :delete, class: 'btn btn-danger btn-small' do
+      = fa_icon('unlink', text: 'unlink')
+
+  - if ldap_group_link.config
+    %p.light
+      As
+      %strong #{ldap_group_link.human_access}
+      on
+      %strong #{ldap_group_link.provider_label}
+      server
+  - else
+    %p.cred
+      %i.fa.fa-warning
+      Config for
+      %code #{ldap_group_link.provider}
+      does not present in GitLab

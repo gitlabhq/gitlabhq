@@ -9,6 +9,11 @@
       %i.fa.fa-users
       %span
         Members
+  = nav_link(controller: :group_links) do
+    = link_to project_group_links_path(@project) do
+      %i.fa.fa-share-square-o
+      %span
+        Groups
   = nav_link(controller: :deploy_keys) do
     = link_to project_deploy_keys_path(@project) do
       %i.fa.fa-key
@@ -19,6 +24,11 @@
       %i.fa.fa-link
       %span
         Web Hooks
+  = nav_link(controller: :git_hooks) do
+    = link_to project_git_hooks_path(@project) do
+      %i.fa.fa-git-square
+      %span
+        Git Hooks
   = nav_link(controller: :services) do
     = link_to project_services_path(@project) do
       %i.fa.fa-cogs
@@ -29,3 +39,8 @@
       %i.fa.fa-lock
       %span
         Protected branches
+  = nav_link(controller: :audit_events) do
+    = link_to project_audit_events_path(@project) do
+      %i.fa.fa-file-text-o
+      %span
+        Audit Events

@@ -40,6 +40,9 @@ class MergeRequest < ActiveRecord::Base
 
   attr_accessor :should_remove_source_branch
 
+  # If true, merge request should rebase before merging
+  attr_accessor :should_rebase
+
   # When this attribute is true some MR validation is ignored
   # It allows us to close or modify broken merge requests
   attr_accessor :allow_broken

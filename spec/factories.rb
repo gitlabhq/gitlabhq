@@ -196,6 +196,13 @@ FactoryGirl.define do
     project
   end
 
+  factory :ldap_group_link do
+    cn 'group1'
+    group_access Gitlab::Access::GUEST
+    provider 'ldapmain'
+    group
+  end
+
   factory :identity do
     provider 'ldapmain'
     extern_uid 'my-ldap-id'

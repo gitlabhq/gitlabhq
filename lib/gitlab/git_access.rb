@@ -87,15 +87,78 @@ module Gitlab
                  :push_code
                end
 
-      if user.can?(action, project)
-        build_status_object(true)
-      else
-        build_status_object(false, "You don't have permission")
+
+
+      # Stop execution if user has no access to this project
+      unless user.can?(action, project)
+        return build_status_object(false, "You don't have permission")
       end
+
+      # Return build_status_object(true) if all git hook checks passed successfully
+      # or build_status_object(false) if any hook fails
+      pass_git_hooks?(user, project, ref, oldrev, newrev)
     end
 
     def forced_push?(project, oldrev, newrev)
       Gitlab::ForcePushCheck.force_push?(project, oldrev, newrev)
+    end
+
+    def pass_git_hooks?(user, project, ref, oldrev, newrev)
+      return build_status_object(true) unless project.git_hook
+
+      return build_status_object(true) unless newrev && oldrev
+
+      git_hook = project.git_hook
+
+      # Prevent tag removal
+      if git_hook.deny_delete_tag
+        if project.repository.tag_names.include?(ref) && newrev =~ /0000000/
+          return build_status_object(false, "You can not delete tag")
+        end
+      end
+
+      # Check commit messages unless its branch removal
+      if git_hook.commit_validation? && newrev !~ /00000000/
+        commits = project.repository.commits_between(oldrev, newrev)
+        commits.each do |commit|
+          if git_hook.commit_message_regex.present?
+            unless commit.safe_message =~ Regexp.new(git_hook.commit_message_regex)
+              return build_status_object(false, "Commit message does not follow the pattern")
+            end
+          end
+
+          if git_hook.author_email_regex.present?
+            unless commit.committer_email =~ Regexp.new(git_hook.author_email_regex)
+              return build_status_object(false, "Commiter's email does not follow the pattern")
+            end
+            unless commit.author_email =~ Regexp.new(git_hook.author_email_regex)
+              return build_status_object(false, "Author's email does not follow the pattern")
+            end
+          end
+
+          # Check whether author is a GitLab member
+          if git_hook.member_check
+            unless User.existing_member?(commit.author_email)
+              return build_status_object(false, "Author is not a member of team")
+            end
+            if commit.author_email != commit.committer_email
+              unless User.existing_member?(commit.committer_email)
+                return build_status_object(false, "Commiter is not a member of team")
+              end
+            end
+          end
+
+          if git_hook.file_name_regex.present?
+            commit.diffs.each do |diff|
+              if (diff.renamed_file || diff.new_file) && diff.new_path =~ Regexp.new(git_hook.file_name_regex)
+                return build_status_object(false, "File name #{diff.new_path.inspect} does not follow the pattern")
+              end
+            end
+          end
+        end
+      end
+
+      build_status_object(true)
     end
 
     private

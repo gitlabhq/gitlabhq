@@ -77,7 +77,7 @@ production: &base
     # This happens when the commit is pushed or merged into the default branch of a project.
     # When not specified the default issue_closing_pattern as specified below will be used.
     # Tip: you can test your closing pattern at http://rubular.com
-    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) #(\d+)'
+    # issue_closing_pattern: '([Cc]lose[sd]|[Ff]ixe[sd]) (#\d+|([A-Z\-]+-)\d+)'
 
     ## Default project features settings
     default_projects_features:
@@ -142,6 +142,14 @@ production: &base
   #   bundle exec rake gitlab:ldap:check RAILS_ENV=production
   ldap:
     enabled: false
+
+    # GitLab EE only.
+    # In addition to refreshing users when they log in,
+    # enabling this setting will refresh LDAP user membership once a day.
+    # Default time of the day when this will happen is at 1:30am server time.
+    schedule_sync_hour: 1 # Hour of the day. Value from 0-23.
+    schedule_sync_minute: 30 # Minute of the hour. Value from 0-59.
+
     servers:
       main: # 'main' is the GitLab 'provider ID' of this LDAP server
         ## label
@@ -190,6 +198,33 @@ production: &base
         #
         user_filter: ''
 
+        # This setting controls the amount of time between LDAP permission checks for each user.
+        # After this time has expired for a given user, their next interaction with GitLab (a click in the web UI, a git pull etc.) will be slower because the LDAP permission check is being performed.
+        # How much slower depends on your LDAP setup, but it is not uncommon for this check to add seconds of waiting time.
+        # The default value is to have a 'slow click' once every 3600 seconds, i.e. once per hour.
+        #
+        # Warning: if you set this value too low, every click in GitLab will be a 'slow click' for all of your LDAP users.
+        # sync_time: 3600
+
+        # Base where we can search for groups
+        #
+        #   Ex. ou=Groups,dc=gitlab,dc=example
+        #
+        group_base: ''
+
+        # LDAP group of users who should be admins in GitLab
+        #
+        #   Ex. GLAdmins
+        #
+        admin_group: ''
+
+        # Name of attribute which holds a ssh public key of the user object.
+        # If false or nil, SSH key syncronisation will be disabled.
+        #
+        #   Ex. sshpublickey
+        #
+        sync_ssh_keys: false
+
       # GitLab EE only: add more LDAP servers
       # Choose an ID made of a-z and 0-9 . This ID will be stored in the database
       # so that GitLab can remember which LDAP server a user belongs to.
@@ -197,7 +232,6 @@ production: &base
       #   label:
       #   host:
       #   ....
-
 
   ## OmniAuth settings
   omniauth:

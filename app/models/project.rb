@@ -51,6 +51,7 @@ class Project < ActiveRecord::Base
   belongs_to :group, -> { where(type: Group) }, foreign_key: "namespace_id"
   belongs_to :namespace
 
+  has_one :git_hook, dependent: :destroy
   has_one :last_event, -> {order 'events.created_at DESC'}, class_name: 'Event', foreign_key: 'project_id'
 
   # Project services
@@ -64,10 +65,13 @@ class Project < ActiveRecord::Base
   has_one :assembla_service, dependent: :destroy
   has_one :gemnasium_service, dependent: :destroy
   has_one :slack_service, dependent: :destroy
+  has_one :jira_service, dependent: :destroy
+  has_one :jenkins_service, dependent: :destroy
   has_one :buildbox_service, dependent: :destroy
   has_one :bamboo_service, dependent: :destroy
   has_one :teamcity_service, dependent: :destroy
   has_one :pushover_service, dependent: :destroy
+
   has_one :forked_project_link, dependent: :destroy, foreign_key: "forked_to_project_id"
   has_one :forked_from_project, through: :forked_project_link
   # Merge Requests for target project should be removed with it
@@ -89,6 +93,9 @@ class Project < ActiveRecord::Base
   has_many :deploy_keys, through: :deploy_keys_projects
   has_many :users_star_projects, dependent: :destroy
   has_many :starrers, through: :users_star_projects, source: :user
+
+  has_many :project_group_links, dependent: :destroy
+  has_many :invited_groups, through: :project_group_links, source: :group
 
   delegate :name, to: :owner, allow_nil: true, prefix: true
   delegate :members, to: :team, prefix: true
@@ -316,7 +323,7 @@ class Project < ActiveRecord::Base
 
   def available_services_names
     %w(gitlab_ci campfire hipchat pivotaltracker flowdock assembla
-       emails_on_push gemnasium slack pushover buildbox bamboo teamcity)
+       emails_on_push gemnasium slack pushover buildbox bamboo teamcity jira jenkins)
   end
 
   def gitlab_ci?
@@ -329,6 +336,19 @@ class Project < ActiveRecord::Base
 
   def ci_service
     @ci_service ||= ci_services.select(&:activated?).first
+  end
+
+  def jira_tracker?
+    self.issues_tracker == "jira"
+  end
+
+  def redmine_tracker?
+    self.issues_tracker == "redmine"
+  end
+
+  # For compatibility with old code
+  def code
+    path
   end
 
   def items_for(entity)
@@ -580,6 +600,14 @@ class Project < ActiveRecord::Base
 
   def origin_merge_requests
     merge_requests.where(source_project_id: self.id)
+  end
+
+  def group_ldap_synced?
+    if group
+      group.ldap_synced?
+    else
+      false
+    end
   end
 
   def create_repository

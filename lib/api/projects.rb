@@ -245,6 +245,30 @@ module API
           user_project.forked_project_link.destroy
         end
       end
+
+      # Share project with group
+      #
+      # Parameters:
+      #   id (required) - The ID of a project
+      #   group_id (required) - The ID of a group
+      #   group_access (required) - Level of permissions for sharing
+      #
+      # Example Request:
+      #   POST /projects/:id/share
+      post ":id/share" do
+        authorize! :admin_project, user_project
+        required_attributes! [:group_id, :group_access]
+
+        link = user_project.project_group_links.new
+        link.group_id = params[:group_id]
+        link.group_access = params[:group_access]
+        if link.save
+          present link, with: Entities::ProjectGroupLink
+        else
+          render_api_error!(link.errors.full_messages.first, 409)
+        end
+      end
+
       # search for projects current_user has access to
       #
       # Parameters:

@@ -7,6 +7,9 @@
         - @ldap_servers.each_with_index do |server, i|
           %li{class: (:active if i.zero?)}
             = link_to server['label'], "#tab-#{server['provider_name']}", 'data-toggle' => 'tab'
+        - if kerberos_enabled?
+          %li{class: (:active unless ldap_enabled?)}
+            = link_to "Kerberos", "#tab-kerberos", 'data-toggle' => 'tab'
         - if signin_enabled?
           %li
             = link_to 'Standard', '#tab-signin', 'data-toggle' => 'tab'
@@ -14,6 +17,9 @@
         - @ldap_servers.each_with_index do |server, i|
           %div.tab-pane{id: "tab-#{server['provider_name']}", class: (:active if i.zero?)}
             = render 'devise/sessions/new_ldap', provider: server['provider_name']
+        - if kerberos_enabled?
+          %div#tab-kerberos.tab-pane{class: (:active unless ldap_enabled?)}
+            = render 'devise/sessions/new_kerberos', provider: :kerberos
         - if signin_enabled?
           %div#tab-signin.tab-pane
             = render 'devise/sessions/new_base'

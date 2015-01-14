@@ -44,6 +44,7 @@ gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
 
 # LDAP Auth
 gem 'gitlab_omniauth-ldap', '1.2.0', require: "omniauth-ldap"
+gem 'net-ldap'
 
 # Git Wiki
 gem 'gollum-lib', '~> 3.0.0'
@@ -119,6 +120,7 @@ gem "acts-as-taggable-on"
 gem 'slim'
 gem 'sinatra', require: nil
 gem 'sidekiq', '2.17.8'
+gem 'sidetiq', '0.6.1'
 
 # HTTP requests
 gem "httparty"

@@ -35,6 +35,17 @@ describe Gitlab::Auth do
       expect( gl_auth.find(username, password) ).to_not eql user
     end
 
+    context "with kerberos" do
+      before { Devise.stub(omniauth_providers: [:kerberos]) }
+
+      it "finds user" do
+        Gitlab::Kerberos::Authentication.stub(valid?: true)
+        Gitlab::Kerberos::Authentication.stub(email: user.email)
+        
+        expect( gl_auth.find(username, password) ).to eql user
+      end
+    end
+
     context "with ldap enabled" do
       before { Gitlab::LDAP::Config.stub(enabled?: true) }
 

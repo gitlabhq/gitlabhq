@@ -12,6 +12,7 @@ describe API::API, api: true  do
   before do
     group1.add_owner(user1)
     group2.add_owner(user2)
+    group1.ldap_group_links.create cn: 'ldap-group', group_access: Gitlab::Access::MASTER
   end
 
   describe "GET /groups" do
@@ -29,6 +30,12 @@ describe API::API, api: true  do
         json_response.should be_an Array
         json_response.length.should == 1
         json_response.first['name'].should == group1.name
+        json_response.first['ldap_cn'].should == group1.ldap_cn
+        json_response.first['ldap_access'].should == group1.ldap_access
+
+        ldap_group_link = json_response.first['ldap_group_links'].first
+        ldap_group_link['cn'].should == group1.ldap_cn
+        ldap_group_link['group_access'].should == group1.ldap_access
       end
     end
 
@@ -103,6 +110,13 @@ describe API::API, api: true  do
       it "should return 400 bad request error if path not given" do
         post api("/groups", admin), { name: 'test' }
         response.status.should == 400
+      end
+
+      it "creates an ldap_group_link if ldap_cn and ldap_access are supplied" do
+        group_attributes = attributes_for(:group, ldap_cn: 'ldap-group', ldap_access: Gitlab::Access::DEVELOPER)
+        expect {
+          post api("/groups", admin), group_attributes
+        }.to change{ LdapGroupLink.count }.by(1)
       end
     end
   end

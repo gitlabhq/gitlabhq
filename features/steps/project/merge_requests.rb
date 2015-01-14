@@ -256,6 +256,16 @@ class Spinach::Features::ProjectMergeRequests < Spinach::FeatureSteps
     end
   end
 
+  step 'I select "fix" as source' do
+    select "fix", from: "merge_request_source_branch"
+    select "feature", from: "merge_request_target_branch"
+    click_button "Compare branches"
+  end
+
+  step 'I should see description field pre-filled' do
+    find_field('merge_request_description').value.should == 'This merge request should contain the following.'
+  end
+
   step 'I unfold diff' do
     first('.js-unfold').click
   end

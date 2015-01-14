@@ -25,6 +25,13 @@ Feature: Project
     And change project path settings
     Then I should see project with new path settings
 
+  Scenario: I visit edit project and fill in merge request template
+    When I visit edit project "Shop" page
+    Then I should see project settings
+    And I fill in merge request template
+    And I save project
+    Then I should see project with merge request template saved
+
   Scenario: I should see project readme and version
     When I visit project "Shop" page
     And I should see project "Shop" version
@@ -42,3 +49,14 @@ Feature: Project
     Then I should see project "Forum" README
     And I visit project "Shop" page
     Then I should see project "Shop" README
+
+  @javascript
+  Scenario: I should see audit events
+    And gitlab user "Pete"
+    And "Pete" is "Shop" developer
+    When I visit project "Shop" settings page
+    And I go to "Members"
+    And I change "Pete" access level to master
+    When I visit project "Shop" settings page
+    And I go to "Audit Events"
+    Then I should see the audit event listed

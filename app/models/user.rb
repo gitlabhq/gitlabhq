@@ -180,6 +180,8 @@ class User < ActiveRecord::Base
   scope :not_in_team, ->(team){ where('users.id NOT IN (:ids)', ids: team.member_ids) }
   scope :not_in_project, ->(project) { project.users.present? ? where("id not in (:ids)", ids: project.users.map(&:id) ) : all }
   scope :without_projects, -> { where('id NOT IN (SELECT DISTINCT(user_id) FROM members)') }
+  scope :subscribed_for_admin_email, -> { where(admin_email_unsubscribed_at: nil) }
+  scope :ldap, -> { joins(:identities).where('identities.provider LIKE ?', 'ldap%') }
   scope :potential_team_members, ->(team) { team.members.any? ? active.not_in_team(team) : active  }
 
   #
@@ -211,6 +213,10 @@ class User < ActiveRecord::Base
       User.where(email: email).first ||
         User.joins(:emails).where(emails: { email: email }).first ||
         User.where(name: name).first
+    end
+
+    def existing_member?(email)
+      User.where(email: email).any? || Email.where(email: email).any?
     end
 
     def filter(filter_name)
@@ -299,7 +305,8 @@ class User < ActiveRecord::Base
     @authorized_projects ||= begin
                                project_ids = personal_projects.pluck(:id)
                                project_ids += groups_projects.pluck(:id)
-                               project_ids += projects.pluck(:id).uniq
+                               project_ids += projects.pluck(:id)
+                               project_ids += groups.joins(:shared_projects).pluck(:project_id)
                                Project.where(id: project_ids).joins(:namespace).order('namespaces.name ASC')
                              end
   end
@@ -434,7 +441,7 @@ class User < ActiveRecord::Base
     if !Gitlab.config.ldap.enabled
       false
     elsif ldap_user?
-      !last_credential_check_at || (last_credential_check_at + 1.hour) < Time.now
+      !last_credential_check_at || (last_credential_check_at + Gitlab.config.ldap['sync_time']) < Time.now
     else
       false
     end
@@ -541,6 +548,10 @@ class User < ActiveRecord::Base
 
   def system_hook_service
     SystemHooksService.new
+  end
+
+  def admin_unsubscribe!
+    update_column :admin_email_unsubscribed_at, Time.now
   end
 
   def starred?(project)

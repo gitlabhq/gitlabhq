@@ -20,6 +20,11 @@
 - [System hooks](system_hooks/system_hooks.md) Notifications when users, projects and keys are changed.
 - [Security](security/README.md) Learn what you can do to further secure your GitLab instance.
 - [Update](update/README.md) Update guides to upgrade your installation.
+- [Audit Events](administration/audit_events.md) Check how user access changed in projects and groups.
+
+- [Branded login page](customization/branded_login_page.md) Change the login page appearance for your GitLab instance.
+- [Git Hooks](git_hooks/git_hooks.md) Advanced push rules for your project.
+- [Email](tools/email.md) Email GitLab users from GitLab
 - [Welcome message](customization/welcome_message.md) Add a custom welcome message to the sign-in page.
 - [Issue closing](customization/issue_closing.md) Customize how to close an issue from commit messages.
 - [Libravatar](customization/libravatar.md) Use Libravatar for user avatars.

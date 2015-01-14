@@ -151,6 +151,25 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
     find_field('Sound').find('option[selected]').value.should == 'bike'
   end
 
+  step 'I click jira service link' do
+    click_link 'JIRA'
+  end
+
+  step 'I fill jira settings' do
+    fill_in 'Project url', with: 'http://jira.example'
+    fill_in 'Username', with: 'gitlab'
+    fill_in 'Password', with: 'gitlab'
+    fill_in 'Api version', with: '2'
+    click_button 'Save'
+  end
+
+  step 'I should see jira service settings saved' do
+    find_field('Project url').value.should == 'http://jira.example'
+    find_field('Username').value.should == 'gitlab'
+    find_field('Password').value.should_not == 'gitlab'
+    find_field('Api version').value.should == '2'
+  end
+
   step 'I click Atlassian Bamboo CI service link' do
     click_link 'Atlassian Bamboo CI'
   end

@@ -17,12 +17,29 @@
 
   - if current_user && current_user.can?(:manage_group, @group)
     .pull-right
+      - if ldap_enabled? && @group.ldap_group_links.any?
+        = link_to reset_access_group_ldap_path(@group), class: 'btn btn-grouped', data: { confirm: "Force GitLab to do LDAP permission checks for all group members? All members besides yourself will be reduced to 'Guest' access until their next interaction with GitLab." }, method: :put do
+          Clear LDAP permission cache
+
       = link_to '#', class: 'btn btn-new js-toggle-button' do
         Add members
         %i.fa.fa-chevron-down
 
     .js-toggle-content.hide.new-group-member-holder
       = render "new_group_member"
+
+- if ldap_enabled? && @group.ldap_group_links.any?
+  .bs-callout.bs-callout-info
+    The members of this group are sync with LDAP.
+    Because LDAP permissions in GitLab get updated one user at a time and because GitLab caches LDAP check results, changes on your LDAP server or in this group's LDAP sync settings may take up to #{Gitlab.config.ldap['sync_time']}s to show in the list below.
+    %ul
+      - @group.ldap_group_links.each do |ldap_group_link|
+        %li
+          People in cn
+          %code= ldap_group_link.cn
+          are given
+          %code= ldap_group_link.human_access
+          access.
 
 .panel.panel-default.prepend-top-20
   .panel-heading
