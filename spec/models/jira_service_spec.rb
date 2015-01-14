@@ -42,7 +42,7 @@ describe JiraService, models: true do
         password: 'gitlab_jira_password',
         api_version: '2'
       )
-      @sample_data = GitPushService.new.sample_data(project, user)
+      @sample_data = Gitlab::PushDataBuilder.build_sample(project, user)
       # https://github.com/bblimke/webmock#request-with-basic-authentication
       @api_url = 'http://gitlab_jira_username:gitlab_jira_password@jira.example.com/rest/api/2/issue/JIRA-123/transitions'
 
