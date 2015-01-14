@@ -20,6 +20,17 @@
     margin-bottom: 10px;
     clear: both;
 
+    /* Hack for anchors and fixed navbar */
+    &[id] {
+      &:before {
+        content: '';
+        display: block;
+        position: relative;
+        width: 0;
+        height: 3em;
+        margin-top: -3em;
+      }
+    }
 
     &:target {
       .timeline-entry-inner .timeline-content {
