@@ -8,6 +8,7 @@ class AutoMergeWorker
     current_user = User.find(current_user_id)
     merge_request = MergeRequest.find(merge_request_id)
     merge_request.should_remove_source_branch = params[:should_remove_source_branch]
+    merge_request.should_rebase = params[:should_rebase]
     merge_request.automerge!(current_user, params[:commit_message])
   end
 end

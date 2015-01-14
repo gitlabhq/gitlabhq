@@ -113,13 +113,7 @@ class Projects::MergeRequestsController < Projects::ApplicationController
     return access_denied! unless allowed_to_merge?
 
     if @merge_request.open? && @merge_request.can_be_merged?
-<<<<<<< HEAD
       AutoMergeWorker.perform_async(@merge_request.id, current_user.id, params)
-=======
-      @merge_request.should_remove_source_branch = params[:should_remove_source_branch]
-      @merge_request.should_rebase = params[:should_rebase]
-      @merge_request.automerge!(current_user, params[:commit_message])
->>>>>>> ee/master
       @status = true
     else
       @status = false
