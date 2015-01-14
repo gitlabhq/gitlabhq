@@ -23,6 +23,7 @@ v 7.7.0
   - Close standard input in Gitlab::Popen.popen
   - Trigger GitLab CI when push tags
   - When accept merge request - do merge using sidaekiq job
+  - Enable web signups by default
 
 
 v 7.6.0
