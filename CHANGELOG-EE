@@ -1,5 +1,7 @@
 v 7.7.0
   - Added custom header logo support (Drew Blessing)
+  - Fixed preview appearance bug
+  - Improve performance for selectboxes: project share page, admin email users page
 
 v 7.6.2
   - Fix failing migrations for MySQL, LDAP
