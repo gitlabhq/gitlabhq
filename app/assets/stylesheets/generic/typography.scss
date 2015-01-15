@@ -98,7 +98,8 @@ a:focus {
       $size: 16px;
       position: absolute;
       right: 100%;
-      bottom: 7px;
+      top: 50%;
+      margin-top: -$size/2;
       margin-right: 0px;
       padding-right: 20px;
       display: inline-block;
@@ -107,18 +108,6 @@ a:focus {
       background-image: image-url("icon-link.png");
       background-size: contain;
       background-repeat: no-repeat;
-    }
-
-    /* Hack for anchors and fixed navbar */
-    &[id] {
-      &:before {
-        content: '';
-        display: block;
-        position: relative;
-        width: 0;
-        height: 3em;
-        margin-top: -3em;
-      }
     }
   }
 

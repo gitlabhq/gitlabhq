@@ -65,10 +65,8 @@
     max-width: 100%;
   }
 
-  h1, h2, h3 {
-    &:first-child {
-      margin-top: 0;
-    }
+  *:first-child {
+    margin-top: 0;
   }
 
   code { padding: 0 4px; }
