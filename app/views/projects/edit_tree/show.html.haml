@@ -6,21 +6,7 @@
       = link_to editing_preview_title(@blob.name), '#preview', 'data-preview-url' => preview_project_edit_tree_path(@project, @id)
 
   = form_tag(project_edit_tree_path(@project, @id), method: :put, class: "form-horizontal") do
-    .file-holder.file
-      .file-title
-        %i.fa.fa-file
-        %span.file_name
-          %span.monospace.light #{@ref}:
-          = @path
-        %span.options
-          .btn-group.tree-btn-group
-            = link_to "Cancel", @after_edit_path, class: "btn btn-tiny btn-cancel", data: { confirm: leave_edit_message }
-      .file-content.code
-        %pre.js-edit-mode-pane#editor
-        .js-edit-mode-pane#preview.hide
-          .center
-            %h2
-              %i.fa.fa-spinner.fa-spin
+    = render 'projects/blob_editor', ref: @ref, path: @path, blob_data: @blob.data
     = render 'shared/commit_message_container', params: params,
              placeholder: "Update #{@blob.name}"
     = hidden_field_tag 'last_commit', @last_commit
@@ -34,7 +20,6 @@
   ace.config.loadModule("ace/ext/searchbox");
   var ace_mode = "#{@blob.language.try(:ace_mode)}";
   var editor = ace.edit("editor");
-  editor.setValue("#{escape_javascript(@blob.data)}");
   if (ace_mode) {
     editor.getSession().setMode('ace/mode/' + ace_mode);
   }

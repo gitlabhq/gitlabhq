@@ -25,8 +25,8 @@ module API
         # project. This applies the correct project permissions to
         # the wiki repository as well.
         access =
-          if project_path =~ /\.wiki\Z/
-            project_path.sub!(/\.wiki\Z/, '')
+          if project_path.end_with?('.wiki')
+            project_path.chomp!('.wiki')
             Gitlab::GitAccessWiki.new
           else
             Gitlab::GitAccess.new
