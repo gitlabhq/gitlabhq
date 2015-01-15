@@ -219,6 +219,7 @@ class @Notes
   setupNoteForm: (form) ->
     disableButtonIfEmptyField form.find(".js-note-text"), form.find(".js-comment-button")
     form.removeClass "js-new-note-form"
+    form.find('.div-dropzone').remove()
 
     # setup preview buttons
     form.find(".js-md-write-button, .js-md-preview-button").tooltip placement: "left"
@@ -233,6 +234,7 @@ class @Notes
     # remove notify commit author checkbox for non-commit notes
     form.find(".js-notify-commit-author").remove()  if form.find("#note_noteable_type").val() isnt "Commit"
     GitLab.GfmAutoComplete.setup()
+    new DropzoneInput(form)
     form.show()
 
 
