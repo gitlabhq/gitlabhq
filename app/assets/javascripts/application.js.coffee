@@ -18,7 +18,6 @@
 #= require jquery.turbolinks
 #= require turbolinks
 #= require bootstrap
-#= require password_strength
 #= require select2
 #= require raphael
 #= require g.raphael-min
