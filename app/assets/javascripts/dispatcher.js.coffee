@@ -46,6 +46,7 @@ class Dispatcher
         new ZenMode()
       when "projects:merge_requests:diffs"
         new Diff()
+        new ZenMode()
       when 'projects:merge_requests:index'
         shortcut_handler = new ShortcutsNavigation()
       when 'dashboard:show'
