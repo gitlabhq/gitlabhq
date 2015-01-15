@@ -13,7 +13,9 @@ $(document).ready ->
   project_image_path_upload = window.project_image_path_upload or null
 
   $("textarea.markdown-area").wrap "<div class=\"div-dropzone\"></div>"
-
+  $("textarea.markdown-area").bind 'paste', (event) =>
+    handlePaste(event)
+  
   $(".div-dropzone").parent().addClass "div-dropzone-wrapper"
 
   $(".div-dropzone").append divHover
@@ -137,7 +139,7 @@ $(document).ready ->
     e.preventDefault()
     my_event = e.originalEvent
 
-    if my_event.clipboardData and my_event.clipboardData.items
+    if my_event.clipboardData
       processItem(my_event)
 
   processItem = (e) ->
@@ -152,10 +154,13 @@ $(document).ready ->
       text = e.clipboardData.getData("text/plain")
       pasteText(text)
 
-  isImage = (data) ->
+  isImage = (e) ->
+    if not e.clipboardData.items
+      return false
+
     i = 0
-    while i < data.clipboardData.items.length
-      item = data.clipboardData.items[i]
+    while i < e.clipboardData.items.length
+      item = e.clipboardData.items[i]
       if item.type.indexOf("image") isnt -1
         return item
       i++
