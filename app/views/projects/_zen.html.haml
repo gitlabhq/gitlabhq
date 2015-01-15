@@ -3,7 +3,7 @@
   .zen-backdrop
     - classes << ' js-gfm-input markdown-area'
     = f.text_area attr, class: classes, placeholder: 'Leave a comment'
-    = link_to nil, class: 'zen-enter-link' do
+    = link_to nil, class: 'zen-enter-link', tabindex: '-1' do
       %i.fa.fa-expand
       Edit in fullscreen
     = link_to nil, class: 'zen-leave-link' do
