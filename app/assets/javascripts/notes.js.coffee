@@ -261,8 +261,10 @@ class @Notes
   Updates the current note field.
   ###
   updateNote: (xhr, note, status) =>
-    note_li = $("#note_" + note.id)
+    note_li = $(".note-row-" + note.id)
     note_li.replaceWith(note.html)
+    note_li.find('.note-edit-form').hide()
+    note_li.find('.note-text').show()
     code = "#note_" + note.id + " .highlight pre code"
     $(code).each (i, e) ->
       hljs.highlightBlock(e)
@@ -278,11 +280,16 @@ class @Notes
     e.preventDefault()
     note = $(this).closest(".note")
     note.find(".note-text").hide()
+    form = note.find(".note-edit-form")
+    form.find('.div-dropzone').remove()
 
     # Show the attachment delete link
     note.find(".js-note-attachment-delete").show()
+
+    # Setup markdown form
     GitLab.GfmAutoComplete.setup()
-    form = note.find(".note-edit-form")
+    new DropzoneInput(form)
+
     form.show()
     textarea = form.find("textarea")
     textarea.focus()
