@@ -121,6 +121,6 @@ Add to your local `gitlab-ci/.git/config`:
 
 * Create a stable branch `x-y-stable`
 * Bump VERSION to `x.y.0.rc1`
-* `git tag -a v$(cat VERSION) -m "Version $(cat VERSION)"
+* `git tag -a v$(cat VERSION) -m "Version $(cat VERSION)"`
 * `git push public x-y-stable v$(cat VERSION)`
 
