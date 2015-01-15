@@ -111,23 +111,23 @@ class GitPushService
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
-    ref_parts[1] =~ /heads/ && oldrev != Gitlab::Git::BLANK_SHA
+    ref_parts[1].include?('heads') && oldrev != Gitlab::Git::BLANK_SHA
   end
 
   def push_to_new_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
-    ref_parts[1] =~ /heads/ && oldrev == Gitlab::Git::BLANK_SHA
+    ref_parts[1].include?('heads') && oldrev == Gitlab::Git::BLANK_SHA
   end
 
   def push_remove_branch?(ref, newrev)
     ref_parts = ref.split('/')
 
-    ref_parts[1] =~ /heads/ && newrev == Gitlab::Git::BLANK_SHA
+    ref_parts[1].include?('heads') && newrev == Gitlab::Git::BLANK_SHA
   end
 
   def push_to_branch?(ref)
-    ref =~ /refs\/heads/
+    ref.include?('refs/heads')
   end
 
   def is_default_branch?(ref)
