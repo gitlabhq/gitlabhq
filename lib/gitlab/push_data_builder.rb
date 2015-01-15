@@ -66,8 +66,11 @@ module Gitlab
         if newrev != Gitlab::Git::BLANK_SHA && ref.start_with?('refs/tags/')
           tag_name = Gitlab::Git.extract_ref_name(ref)
           tag = repository.find_tag(tag_name)
-          commit = repository.commit(tag.target)
-          commit.try(:sha)
+
+          if tag
+            commit = repository.commit(tag.target)
+            commit.try(:sha)
+          end
         else
           newrev
         end
