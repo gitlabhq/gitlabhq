@@ -53,6 +53,14 @@ Gitlab::Application.routes.draw do
   get "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
 
   #
+  # Github importer area
+  #
+  resource :github_import, only: [:create, :new] do
+    get :status
+    get :callback
+  end
+
+  #
   # Explroe area
   #
   namespace :explore do

@@ -15,9 +15,6 @@ module API
 
       # Get a projects list for authenticated user
       #
-      # Parameters:
-      #   archived (optional) - if passed, limit by archived status
-      #
       # Example Request:
       #   GET /projects
       get do

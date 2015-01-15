@@ -238,6 +238,26 @@ module ProjectsHelper
     result
   end
 
+  def project_wiki_path_with_version(proj, page, version, is_newest)
+    url_params = is_newest ? {} : { version_id: version }
+    project_wiki_path(proj, page, url_params)
+  end
+
+  def project_status_css_class(status)
+    case status
+    when "started"
+      "active"
+    when "failed"
+      "danger"
+    when "finished"
+      "success"
+    end
+  end
+
+  def github_import_enabled?
+    Gitlab.config.omniauth.enabled && enabled_oauth_providers.include?(:github)
+  end
+  
   def membership_locked?
     if @project.group && @project.group.membership_lock
       true
@@ -246,3 +266,4 @@ module ProjectsHelper
     end
   end
 end
+

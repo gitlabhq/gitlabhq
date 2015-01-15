@@ -378,6 +378,8 @@ ActiveRecord::Schema.define(version: 20150108073740) do
     t.integer  "visibility_level",              default: 0,        null: false
     t.boolean  "archived",                      default: false,    null: false
     t.string   "import_status"
+    t.string   "import_type"
+    t.string   "import_source"
     t.float    "repository_size",               default: 0.0
     t.integer  "star_count",                    default: 0,        null: false
     t.text     "merge_requests_template"
@@ -487,6 +489,7 @@ ActiveRecord::Schema.define(version: 20150108073740) do
     t.boolean  "hide_no_ssh_key",             default: false
     t.string   "website_url",                 default: "",    null: false
     t.datetime "last_credential_check_at"
+    t.string   "github_access_token"
     t.datetime "admin_email_unsubscribed_at"
   end
 

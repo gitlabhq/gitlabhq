@@ -1,0 +1,48 @@
+%h3.page-title
+  %i.fa.fa-github
+  Import repositories from GitHub.com
+
+%p.light
+  Select projects you want to import.
+  %span.pull-right
+    Reload to see the progress.
+
+%hr
+%table.table.import-jobs
+  %thead
+    %tr
+      %th From GitHub
+      %th To GitLab
+      %th Status
+  %tbody
+    - @already_added_projects.each do |project|
+      %tr{id: "repo_#{project.id}", class: "#{project_status_css_class(project.import_status)}"}
+        %td= project.import_source
+        %td
+          %strong= link_to project.name_with_namespace, project
+        %td
+          - if project.import_status == 'finished'
+            %span.cgreen
+              %i.fa.fa-check
+              done
+          - else
+            = project.human_import_status_name
+
+    - @repos.each do |repo|
+      %tr{id: "repo_#{repo.id}"}
+        %td= repo.full_name
+        %td.import-target
+          = repo.full_name
+        %td.import-actions
+          = button_tag "Add", class: "btn btn-add-to-import"
+
+
+:coffeescript
+  $(".btn-add-to-import").click () ->
+    new_namespace = null
+    tr = $(this).closest("tr")
+    id = tr.attr("id").replace("repo_", "")
+    if tr.find(".import-target input").length > 0
+      new_namespace = tr.find(".import-target input").prop("value")
+      tr.find(".import-target").empty().append(new_namespace + "/" + tr.find(".import-target").data("project_name"))
+    $.post "#{github_import_url}", {repo_id: id, new_namespace: new_namespace}, dataType: 'script'

@@ -51,6 +51,24 @@ curl --header "PRIVATE-TOKEN: QVy1PB7sTxfy4pqfZM1U" "http://example.com/api/v3/p
 
 The API uses JSON to serialize data. You don't need to specify `.json` at the end of API URL.
 
+## Authentication with OAuth2 token
+
+Instead of the private_token you can transmit the OAuth2 access token as a header or as a parameter.
+
+### OAuth2 token (as a parameter)
+
+```
+curl https://localhost:3000/api/v3/user?access_token=OAUTH-TOKEN
+```
+
+###  OAuth2 token (as a header)
+
+```
+curl -H "Authorization: Bearer OAUTH-TOKEN" https://localhost:3000/api/v3/user
+```
+
+Read more about [OAuth2 in GitLab](oauth2.md).
+
 ## Status codes
 
 The API is designed to return different status codes according to context and action. In this way if a request results in an error the caller is able to get insight into what went wrong, e.g. status code `400 Bad Request` is returned if a required attribute is missing from the request. The following list gives an overview of how the API functions generally behave.

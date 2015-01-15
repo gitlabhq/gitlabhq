@@ -29,7 +29,7 @@ gem 'omniauth-twitter'
 gem 'omniauth-github'
 gem 'omniauth-shibboleth'
 gem 'omniauth-kerberos'
-gem 'doorkeeper', '2.0.1'
+gem 'doorkeeper', '2.1.0'
 gem "rack-oauth2", "~> 1.0.5"
 
 # Browser detection
@@ -37,7 +37,7 @@ gem "browser"
 
 # Extracting information from a git repository
 # Provide access to Gitlab::Git library
-gem "gitlab_git", '7.0.0.rc13'
+gem "gitlab_git", '7.0.0.rc14'
 
 # Ruby/Rack Git Smart-HTTP Server Handler
 gem 'gitlab-grack', '~> 2.0.0.pre', require: 'grack'
@@ -177,7 +177,6 @@ gem 'semantic-ui-sass', '~> 0.16.1.0'
 gem "sass-rails", '~> 4.0.2'
 gem "coffee-rails"
 gem "uglifier"
-gem "therubyracer"
 gem 'turbolinks'
 gem 'jquery-turbolinks'
 
@@ -262,6 +261,9 @@ end
 
 group :production do
   gem "gitlab_meta", '7.0'
+  gem "therubyracer"
 end
 
 gem "newrelic_rpm"
+
+gem 'octokit', '3.7.0'
