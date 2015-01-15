@@ -280,7 +280,10 @@ class @Notes
     e.preventDefault()
     note = $(this).closest(".note")
     note.find(".note-text").hide()
-    form = note.find(".note-edit-form")
+    note.find(".note-header").hide()
+    base_form = note.find(".note-edit-form")
+    form = base_form.clone().insertAfter(base_form)
+    form.addClass('current-note-edit-form')
     form.find('.div-dropzone').remove()
 
     # Show the attachment delete link
@@ -304,8 +307,8 @@ class @Notes
     e.preventDefault()
     note = $(this).closest(".note")
     note.find(".note-text").show()
-    note.find(".js-note-attachment-delete").hide()
-    note.find(".note-edit-form").hide()
+    note.find(".note-header").show()
+    note.find(".current-note-edit-form").remove()
 
   ###
   Called in response to deleting a note of any kind.
