@@ -55,12 +55,6 @@ Feature: Project Commits Diff Comments
     Then I should see a discussion reply button
 
   @javascript
-  Scenario: I can't preview without text
-    Given I open a diff comment form
-    And I haven't written any diff comment text
-    Then The diff comment preview tab should say there is nothing to do
-
-  @javascript
   Scenario: I can preview with text
     Given I open a diff comment form
     And I write a diff comment like ":-1: I don't like this"
