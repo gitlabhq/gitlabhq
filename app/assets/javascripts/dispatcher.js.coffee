@@ -33,11 +33,13 @@ class Dispatcher
         GitLab.GfmAutoComplete.setup()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
+        new DropzoneInput($('.issue-form'))
       when 'projects:merge_requests:new', 'projects:merge_requests:edit'
         GitLab.GfmAutoComplete.setup()
         new Diff()
         shortcut_handler = new ShortcutsNavigation()
         new ZenMode()
+        new DropzoneInput($('.merge-request-form'))
       when 'projects:merge_requests:show'
         new Diff()
         shortcut_handler = new ShortcutsIssueable()
@@ -108,6 +110,7 @@ class Dispatcher
             new Wikis()
             shortcut_handler = new ShortcutsNavigation()
             new ZenMode()
+            new DropzoneInput($('.wiki-form'))
           when 'snippets', 'labels', 'graphs'
             shortcut_handler = new ShortcutsNavigation()
           when 'team_members', 'deploy_keys', 'hooks', 'services', 'protected_branches'
