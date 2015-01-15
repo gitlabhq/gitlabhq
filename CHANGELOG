@@ -24,6 +24,9 @@ v 7.7.0
   - Trigger GitLab CI when push tags
   - When accept merge request - do merge using sidaekiq job
   - Enable web signups by default
+  - Fixes for diff comments: drag-n-drop images, selecting images
+  - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
+  
 
 
 v 7.6.0
