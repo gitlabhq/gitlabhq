@@ -54,8 +54,8 @@ namespace :gitlab do
         <div class='footer' style='margin-top: 10px;'>
           <p>
           <br>
-            You're receiving this notification because you are a member of the Base / Rails Project project team.
             <a href=\"#{url}\">View it on GitLab</a>
+            You're receiving this notification because you are a member of the Base / Rails Project project team.
             #{schema}
           </p>
         </div>
