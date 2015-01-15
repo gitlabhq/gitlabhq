@@ -12,7 +12,6 @@
   width: 100%;
   padding: 15px;
   background: #FFF;
-  margin-top: 48px;
 }
 
 .nav-sidebar {
@@ -158,4 +157,5 @@
 @media(min-width: $screen-sm-max) {
   @include expanded-sidebar;
 }
+
 
