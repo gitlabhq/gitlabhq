@@ -18,7 +18,6 @@
 #= require jquery.turbolinks
 #= require turbolinks
 #= require bootstrap
-#= require password_strength
 #= require select2
 #= require raphael
 #= require g.raphael-min
@@ -109,9 +108,19 @@ window.unbindEvents = ->
   $(document).unbind('scroll')
   $(document).off('scroll')
 
+window.shiftWindow = ->
+  scrollBy 0, -50
+
 document.addEventListener("page:fetch", unbindEvents)
 
+# Scroll the window to avoid the topnav bar
+# https://github.com/twitter/bootstrap/issues/1768
+if location.hash
+  setTimeout shiftWindow, 1
+window.addEventListener "hashchange", shiftWindow
+
 $ ->
+
   # Click a .one_click_select field, select the contents
   $(".one_click_select").on 'click', -> $(@).select()
 
