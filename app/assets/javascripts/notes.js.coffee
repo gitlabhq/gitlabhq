@@ -114,10 +114,6 @@ class @Notes
     if @isNewNote(note)
       @note_ids.push(note.id)
       $('ul.main-notes-list').append(note.html)
-      code = "#note_" + note.id + " .highlight pre code"
-      $(code).each (i, e) ->
-        hljs.highlightBlock(e)
-
 
   ###
   Check if note does not exists on page
@@ -265,9 +261,6 @@ class @Notes
     note_li.replaceWith(note.html)
     note_li.find('.note-edit-form').hide()
     note_li.find('.note-text').show()
-    code = "#note_" + note.id + " .highlight pre code"
-    $(code).each (i, e) ->
-      hljs.highlightBlock(e)
 
   ###
   Called in response to clicking the edit note link

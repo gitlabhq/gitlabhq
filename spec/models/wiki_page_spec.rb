@@ -36,7 +36,7 @@ describe WikiPage do
       end
 
       it "sets the version attribute" do
-        @wiki_page.version.should be_a Grit::Commit
+        @wiki_page.version.should be_a Gollum::Git::Commit
       end
     end
   end

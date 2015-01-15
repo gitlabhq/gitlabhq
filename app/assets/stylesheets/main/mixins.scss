@@ -65,7 +65,16 @@
     max-width: 100%;
   }
 
-  code { padding: 0 4px; }
+  *:first-child {
+    margin-top: 0;
+  }
+
+  code {
+    font-family: $monospace_font;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 0;
+  }
 
   h1 {
     margin-top: 45px;

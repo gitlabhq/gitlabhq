@@ -4,7 +4,6 @@ $ ->
 class Dispatcher
   constructor: () ->
     @initSearch()
-    @initHighlight()
     @initPageScripts()
 
   initPageScripts: ->
@@ -130,10 +129,3 @@ class Dispatcher
     project_ref = opts.data('autocomplete-project-ref')
 
     new SearchAutocomplete(path, project_id, project_ref)
-
-  initHighlight: ->
-    $('.highlight pre code').each (i, e) ->
-      $(e).html($.map($(e).html().split("\n"), (line, i) ->
-        "<span class='line' id='LC" + (i + 1) + "'>" + line + "</span>"
-      ).join("\n"))
-      hljs.highlightBlock(e)

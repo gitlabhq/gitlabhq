@@ -24,7 +24,7 @@
         %td
           = commit.message
         %td
-          #{time_ago_with_tooltip(version.date)}
+          #{time_ago_with_tooltip(version.authored_date)}
         %td
           %strong
             = @page.page.wiki.page(@page.page.name, commit.id).try(:format)

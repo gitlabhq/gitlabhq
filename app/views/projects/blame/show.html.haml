@@ -26,9 +26,9 @@
                   = i
                   \
             %td.lines
-              %pre
-                %code{ class: highlightjs_class(@blob.name) }
+              %pre{class: 'code highlight white'}
+                %code
                   :erb
                     <% lines.each do |line| %>
-                    <%= line %>
+                      <%= highlight(@blob.name, line, true).html_safe %>
                     <% end %>

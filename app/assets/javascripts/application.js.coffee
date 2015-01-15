@@ -24,7 +24,6 @@
 #= require g.bar-min
 #= require chart-lib.min
 #= require branch-graph
-#= require highlight.pack
 #= require ace/ace
 #= require ace/ext-searchbox
 #= require d3

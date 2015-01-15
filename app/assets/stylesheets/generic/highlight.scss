@@ -1,4 +1,4 @@
-.highlighted-data {
+.file-content.code {
   border: none;
   box-shadow: none;
   margin: 0px;
@@ -13,8 +13,13 @@
     font-size: 12px !important;
     line-height: 16px !important;
     margin: 0;
+    overflow: auto;
+    overflow-y: hidden;
+    white-space: pre;
+    word-wrap: normal;
 
     code {
+      font-family: $monospace_font;
       white-space: pre;
       word-wrap: normal;
       padding: 0;
@@ -23,10 +28,6 @@
         display: inline;
       }
     }
-  }
-
-  .hljs {
-    padding: 0;
   }
 
   .line-numbers {
@@ -51,18 +52,18 @@
       }
     }
   }
+}
 
-  .highlight {
-    overflow: auto;
-    overflow-y: hidden;
+.note-text .code {
+  border: none;
+  box-shadow: none;
+  background: $box_bg;
+  padding: 1em;
 
-    pre {
-      white-space: pre;
-      word-wrap: normal;
-
-      code {
-        font-family: $monospace_font;
-      }
-    }
+  code {
+    font-family: $monospace_font;
+    white-space: pre;
+    word-wrap: normal;
+    padding: 0;
   }
 }

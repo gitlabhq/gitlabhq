@@ -1,4 +1,4 @@
-%div.highlighted-data{class: user_color_scheme_class}
+.file-content.code{class: user_color_scheme_class}
   .line-numbers
     - if blob.data.present?
       - blob.data.lines.to_a.size.times do |index|
@@ -7,7 +7,4 @@
         = link_to "#L#{i}", id: "L#{i}", rel: "#L#{i}" do
           %i.fa.fa-link
           = i
-  .highlight
-    %pre
-      %code{ class: highlightjs_class(blob.name) }
-        #{blob.data}
+  = highlight(blob.name, blob.data)
