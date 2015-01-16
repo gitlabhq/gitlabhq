@@ -24,6 +24,10 @@ v 7.6.0
 v 7.5.2
   - Don't log Sidekiq arguments by default
 
+New feature changes:
+1. Add 'upload' functionality, user can upload file to the current repository.
+2. Add 'replace' functionality, user can replace existing file in the current repository.
+
 v 7.5.0
   - API: Add support for Hipchat (Kevin Houdebert)
   - Add time zone configuration in gitlab.yml (Sullivan Senechal)

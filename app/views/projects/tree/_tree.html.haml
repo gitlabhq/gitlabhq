@@ -10,9 +10,11 @@
         = link_to title, '#'
   - if current_user && can_push_branch?(@project, @ref)
     %li
-      = link_to project_new_tree_path(@project, @id), title: 'New file', id: 'new-file-link' do
-        %small
-          %i.fa.fa-plus
+      = link_to project_new_tree_path(@project, @id), class: 'btn btn-small btn-xs', title: 'Create New file', id: 'new-file-link' do
+        Create        
+      = | 
+      = button_tag class: 'btn btn-small btn-xs', 'data-toggle' => 'modal', title: 'Upload New file', 'data-target' => '#modal-upload-tree' do
+        Upload	
 
 %div#tree-content-holder.tree-content-holder
   %table#tree-slider{class: "table_#{@hex_path} tree-table" }
@@ -44,7 +46,9 @@
   - if tree.readme
     = render "projects/tree/readme", readme: tree.readme
 
+
 %div.tree_progress
+
 
 :javascript
   // Load last commit log for each file in tree
