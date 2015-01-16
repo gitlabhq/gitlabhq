@@ -105,7 +105,7 @@ rescue ArgumentError # no user configured
   '/home/' + Settings.gitlab['user']
 end
 Settings.gitlab['time_zone']  ||= nil
-Settings.gitlab['signup_enabled'] ||= true
+Settings.gitlab['signup_enabled'] ||= true if Settings.gitlab['signup_enabled'].nil?
 Settings.gitlab['signin_enabled'] ||= true if Settings.gitlab['signin_enabled'].nil?
 Settings.gitlab['restricted_visibility_levels'] = Settings.send(:verify_constant_array, Gitlab::VisibilityLevel, Settings.gitlab['restricted_visibility_levels'], [])
 Settings.gitlab['username_changing_enabled'] = true if Settings.gitlab['username_changing_enabled'].nil?
