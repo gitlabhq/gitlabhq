@@ -27,6 +27,7 @@ describe AsanaService, models: true do
       end
 
       it { should validate_presence_of :api_key }
+      it { should validate_presence_of :restrict_to_branch }
     end
   end
 
@@ -40,7 +41,8 @@ describe AsanaService, models: true do
         project: project,
         project_id: project.id,
         service_hook: true,
-        api_key: 'verySecret'
+        api_key: 'verySecret',
+        restrict_to_branch: 'master'
       )
     end
 

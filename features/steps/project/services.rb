@@ -110,11 +110,13 @@ class Spinach::Features::ProjectServices < Spinach::FeatureSteps
   step 'I fill Asana settings' do
     check 'Active'
     fill_in 'Api key', with: 'verySecret'
+    fill_in 'Restrict to branch', with: 'master'
     click_button 'Save'
   end
 
   step 'I should see Asana service settings saved' do
     find_field('Api key').value.should == 'verySecret'
+    find_field('Restrict to branch').value.should == 'master'
   end
 
   step 'I click email on push service link' do
