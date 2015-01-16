@@ -1,5 +1,7 @@
 user: git
 group: git
+services:
+  - postgres
 before_precompile: ./bin/pkgr_before_precompile.sh
 targets:
   debian-7: &wheezy
