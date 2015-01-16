@@ -19,11 +19,6 @@
       Labels
 
 
-  - if current_controller?(:milestones)
-    %li.pull-right
-      %button.btn.btn-default.sidebar-expand-button
-        %i.icon.fa.fa-list
-
   - if current_controller?(:issues)
     - if current_user
       %li.hidden-xs
@@ -32,9 +27,6 @@
 
     %li.pull-right
       .pull-right
-        %button.btn.btn-default.sidebar-expand-button
-          %i.icon.fa.fa-list
-
         .pull-left
           = form_tag project_issues_path(@project), method: :get, id: "issue_search_form", class: 'pull-left issue-search-form'  do
             .append-right-10.hidden-xs.hidden-sm
@@ -53,9 +45,6 @@
   - if current_controller?(:merge_requests)
     %li.pull-right
       .pull-right
-        %button.btn.btn-default.sidebar-expand-button
-          %i.icon.fa.fa-list
-
         - if can? current_user, :write_merge_request, @project
           = link_to new_project_merge_request_path(@project), class: "btn btn-new pull-left", title: "New Merge Request" do
             %i.fa.fa-plus
