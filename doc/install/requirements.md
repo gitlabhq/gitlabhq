@@ -76,7 +76,7 @@ Notice: The 25 workers of Sidekiq will show up as separate processes in your pro
 
 ## Unicorn Workers
 
-It's possible to increase the amount of unicorn workers and tis will usually help for to reduce the response time of the applications.
+It's possible to increase the amount of unicorn workers and this will usually help to reduce the response time of the applications.
 For most instances we recommend using: CPU cores + 1 = unicorn workers.
 So for a machine with 2 cores, 3 unicorn workers is ideal.
 
