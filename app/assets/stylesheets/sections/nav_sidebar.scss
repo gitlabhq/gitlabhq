@@ -1,5 +1,13 @@
 .page-with-sidebar {
   background: #F5F5F5;
+
+  .sidebar-wrapper {
+    position: fixed;
+    top: 0;
+    left: 0;
+    height: 100%;
+    border-right: 1px solid #EAEAEA;
+  }
 }
 
 .sidebar-wrapper {
@@ -97,11 +105,6 @@
 
   .sidebar-wrapper {
     width: 250px;
-    position: fixed;
-    left: 250px;
-    height: 100%;
-    margin-left: -250px;
-    border-right: 1px solid #EAEAEA;
 
     .nav-sidebar {
       margin-top: 20px;
@@ -123,11 +126,6 @@
 
   .sidebar-wrapper {
     width: 52px;
-    position: fixed;
-    top: 0;
-    left: 0;
-    height: 100%;
-    border-right: 1px solid #EAEAEA;
     overflow-x: hidden;
 
     .nav-sidebar {
@@ -157,5 +155,3 @@
 @media(min-width: $screen-sm-max) {
   @include expanded-sidebar;
 }
-
-

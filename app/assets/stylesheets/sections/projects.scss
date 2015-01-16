@@ -296,20 +296,6 @@ ul.nav.nav-projects-tabs {
   }
 }
 
-@media (max-width: $screen-xs-max) {
-  .project-home-panel {
-    .star-fork-buttons {
-      padding-top: 10px;
-      padding-right: 15px;
-    }
-  }
-
-  .project-home-links {
-    display: none;
-  }
-}
-
-
 table.table.protected-branches-list tr.no-border {
   th, td {
     border: 0;
