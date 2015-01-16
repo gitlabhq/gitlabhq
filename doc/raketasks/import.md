@@ -22,6 +22,8 @@ your repositories are located by looking at `config/gitlab.yml` under the `gitla
 $ cp -r /old/git/foo.git/ /home/git/repositories/new_group/
 ```
 
+The repository folder must end in `.git`.
+
 ### Run the command below depending on your type of installation:
 
 #### Omnibus Installation
