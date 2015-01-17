@@ -1,6 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
   validates :home_page_url, allow_blank: true,
-    format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
+    format: { with: URI::regexp(%w(http https)), message: "should be a valid url" },
+    if: :home_page_url_column_exist
 
   def self.current
     ApplicationSetting.last
@@ -14,5 +15,9 @@ class ApplicationSetting < ActiveRecord::Base
       gravatar_enabled: Settings.gravatar['enabled'],
       sign_in_text: Settings.extra['sign_in_text'],
     )
+  end
+
+  def home_page_url_column_exist
+    ActiveRecord::Base.connection.column_exists?(:application_settings, :home_page_url)
   end
 end
