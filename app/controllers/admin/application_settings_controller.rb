@@ -26,6 +26,7 @@ class Admin::ApplicationSettingsController < Admin::ApplicationController
       :signin_enabled,
       :gravatar_enabled,
       :sign_in_text,
+      :home_page_url
     )
   end
 end
