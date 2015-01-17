@@ -45,3 +45,9 @@
       %i.fa.fa-cogs
       %span
         Settings
+
+  = nav_link(controller: :applications) do
+    = link_to admin_applications_path do
+      %i.fa.fa-unlock-alt
+      %span
+        Application
