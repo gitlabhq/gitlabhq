@@ -1,0 +1,21 @@
+.side-filters
+  = form_tag filter_path, method: 'get' do
+    = render 'shared/state_filter', filter_path: :filter_path,
+        entity: entity, scope: @group
+
+    %fieldset
+      %legend Projects
+      %ul.nav.nav-pills.nav-stacked.nav-small
+        - @projects.each do |project|
+          - unless entities_per_project(project, entity).zero?
+            %li{class: ("active" if params[:project_id] == project.id.to_s)}
+              = link_to filter_path(project_id: project.id) do
+                = project.name_with_namespace
+                %small.pull-right= entities_per_project(project, entity)
+
+    %fieldset
+      - if params[:state].present? || params[:project_id].present?
+        = link_to filter_path(state: nil, project_id: nil), class: 'pull-right cgray' do
+          %i.icon-remove
+          %strong Clear filter
+

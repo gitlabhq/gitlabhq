@@ -1,5 +1,6 @@
 class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
   include SharedAuthentication
+  include SharedDashboard
   include SharedPaths
 
   step 'I should see merge requests assigned to me' do
@@ -36,24 +37,6 @@ class Spinach::Features::DashboardMergeRequests < Spinach::FeatureSteps
 
   step 'I have other merge requests' do
     other_merge_request
-  end
-
-  step 'I click "Authored by me" link' do
-    within ".assignee-filter" do
-      click_link "Any"
-    end
-    within ".author-filter" do
-      click_link current_user.name
-    end
-  end
-
-  step 'I click "All" link' do
-    within ".author-filter" do
-      click_link "Any"
-    end
-    within ".assignee-filter" do
-      click_link "Any"
-    end
   end
 
   def should_see(merge_request)
