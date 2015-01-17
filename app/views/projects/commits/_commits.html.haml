@@ -1,3 +1,6 @@
+- unless defined?(project)
+  - project = @project
+
 - @commits.group_by { |c| c.committed_date.to_date }.sort.reverse.each do |day, commits|
   .row.commits-row
     .col-md-2
