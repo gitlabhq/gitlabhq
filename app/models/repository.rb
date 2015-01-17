@@ -312,4 +312,21 @@ class Repository
       []
     end
   end
+
+  def tag_names_contains(sha)
+    args = %W(git tag --contains #{sha})
+    names = Gitlab::Popen.popen(args, path_to_repo).first
+
+    if names.respond_to?(:split)
+      names = names.split("\n").map(&:strip)
+
+      names.each do |name|
+        name.slice! '* '
+      end
+
+      names
+    else
+      []
+    end
+  end
 end
