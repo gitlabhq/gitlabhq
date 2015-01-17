@@ -1,4 +1,7 @@
 class ApplicationSetting < ActiveRecord::Base
+  validates :home_page_url, allow_blank: true,
+    format: { with: URI::regexp(%w(http https)), message: "should be a valid url" }
+
   def self.current
     ApplicationSetting.last
   end

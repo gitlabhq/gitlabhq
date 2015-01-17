@@ -26,6 +26,10 @@
       .col-sm-10
         = f.number_field :default_projects_limit, class: 'form-control'
     .form-group
+      = f.label :home_page_url, class: 'control-label'
+      .col-sm-10
+        = f.text_field :home_page_url, class: 'form-control', placeholder: 'http://company.example.com'
+    .form-group
       = f.label :sign_in_text, class: 'control-label'
       .col-sm-10
         = f.text_area :sign_in_text, class: 'form-control'
