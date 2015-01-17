@@ -34,6 +34,7 @@
           %p
             %strong Step 2.
             Merge the branch and push the changes to GitLab
+            NB: This will not be allowed on protected branches by default, and you should rather accept the merge request through gitlab. If this is not possible, you may use vote-for-push; the push failure message will instruct you on how to do this
           %pre.dark
             :preserve
               git checkout #{@merge_request.target_branch}

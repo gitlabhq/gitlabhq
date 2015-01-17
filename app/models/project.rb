@@ -191,6 +191,7 @@ class Project < ActiveRecord::Base
     end
 
     def find_with_namespace(id)
+      id = id.sub(':', '/')
       return nil unless id.include?("/")
 
       id = id.split("/")

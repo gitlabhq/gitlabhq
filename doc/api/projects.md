@@ -108,8 +108,9 @@ GET /projects/all
 
 ### Get single project
 
-Get a specific project, identified by project ID or NAMESPACE/PROJECT_NAME, which is owned by the authenticated user.
-If using namespaced projects call make sure that the NAMESPACE/PROJECT_NAME is URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`).
+Get a specific project, identified by project ID or NAMESPACE:PROJECT_NAME, which is owned by the authenticated user.
+Note that the syntax of NAMESPACE/PROJECT_NAME is also supported, but requires the name to be URL-encoded, eg. `/api/v3/projects/diaspora%2Fdiaspora` (where `/` is represented by `%2F`).
+This also applies to all other project ID calls with namespaces below
 
 ```
 GET /projects/:id
@@ -117,7 +118,7 @@ GET /projects/:id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 
 ```json
 {
@@ -178,7 +179,7 @@ GET /projects/:id/events
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 
 ```json
 [
@@ -323,7 +324,7 @@ GET /projects/:id/members
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `query` (optional) - Query string to search for members
 
 ### Get project team member
@@ -336,7 +337,7 @@ GET /projects/:id/members/:user_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `user_id` (required) - The ID of a user
 
 ```json
@@ -363,7 +364,7 @@ POST /projects/:id/members
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `user_id` (required) - The ID of a user to add
 - `access_level` (required) - Project access level
 
@@ -377,7 +378,7 @@ PUT /projects/:id/members/:user_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `user_id` (required) - The ID of a team member
 - `access_level` (required) - Project access level
 
@@ -391,7 +392,7 @@ DELETE /projects/:id/members/:user_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `user_id` (required) - The ID of a team member
 
 This method is idempotent and can be called multiple times with the same parameters.
@@ -411,7 +412,7 @@ GET /projects/:id/hooks
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 
 ### Get project hook
 
@@ -423,7 +424,7 @@ GET /projects/:id/hooks/:hook_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `hook_id` (required) - The ID of a project hook
 
 ```json
@@ -448,7 +449,7 @@ POST /projects/:id/hooks
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `url` (required) - The hook URL
 - `push_events` - Trigger hook on push events
 - `issues_events` - Trigger hook on issues events
@@ -465,7 +466,7 @@ PUT /projects/:id/hooks/:hook_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `hook_id` (required) - The ID of a project hook
 - `url` (required) - The hook URL
 - `push_events` - Trigger hook on push events
@@ -484,7 +485,7 @@ DELETE /projects/:id/hooks/:hook_id
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `hook_id` (required) - The ID of hook to delete
 
 Note the JSON response differs if the hook is available or not. If the project hook
@@ -502,7 +503,7 @@ GET /projects/:id/repository/branches
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 
 ```json
 [
@@ -567,7 +568,7 @@ GET /projects/:id/repository/branches/:branch
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `branch` (required) - The name of the branch.
 
 ### Protect single branch
@@ -580,7 +581,7 @@ PUT /projects/:id/repository/branches/:branch/protect
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `branch` (required) - The name of the branch.
 
 ### Unprotect single branch
@@ -593,7 +594,7 @@ PUT /projects/:id/repository/branches/:branch/unprotect
 
 Parameters:
 
-- `id` (required) - The ID or NAMESPACE/PROJECT_NAME of a project
+- `id` (required) - The ID or NAMESPACE:PROJECT_NAME of a project
 - `branch` (required) - The name of the branch.
 
 ## Admin fork relation
