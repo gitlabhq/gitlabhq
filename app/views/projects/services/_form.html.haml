@@ -10,6 +10,11 @@
 
 %hr
 
+%h3 Install Notes
+= render "projects/services_notes/#{@service.to_param}"
+
+%hr
+
 = form_for(@service, as: :service, url: project_service_path(@project, @service.to_param), method: :put, html: { class: 'form-horizontal' }) do |f|
   - if @service.errors.any?
     .alert.alert-danger
