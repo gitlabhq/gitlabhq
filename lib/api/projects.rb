@@ -96,7 +96,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       # Example Request:
-      #   GET /projects/:id
+      #   GET /projects/:id/events
       get ":id/events" do
         limit = (params[:per_page] || 20).to_i
         offset = (params[:page] || 0).to_i * limit
