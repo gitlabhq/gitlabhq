@@ -109,6 +109,7 @@ Parameters:
 - `target_branch` (required)     - The target branch
 - `assignee_id` (optional)       - Assignee user ID
 - `title` (required)             - Title of MR
+- `description` (optional)       - Description of MR
 - `target_project_id` (optional) - The target project (numeric id)
 
 ```json
@@ -160,6 +161,7 @@ Parameters:
 - `target_branch`               - The target branch
 - `assignee_id`                 - Assignee user ID
 - `title`                       - Title of MR
+- `description`                 - Description of MR
 - `state_event`                 - New state (close|reopen|merge)
 
 ```json
@@ -169,6 +171,7 @@ Parameters:
   "source_branch": "test1",
   "project_id": 3,
   "title": "test1",
+  "description": "description1",
   "state": "opened",
   "upvotes": 0,
   "downvotes": 0,
