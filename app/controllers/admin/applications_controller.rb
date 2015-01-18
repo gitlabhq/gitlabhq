@@ -17,7 +17,7 @@ class Admin::ApplicationsController < Admin::ApplicationController
 
   def create
     @application = Doorkeeper::Application.new(application_params)
-    
+
     if @application.save
       flash[:notice] = I18n.t(:notice, scope: [:doorkeeper, :flash, :applications, :create])
       redirect_to admin_application_url(@application)
