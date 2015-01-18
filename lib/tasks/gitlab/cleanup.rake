@@ -39,7 +39,7 @@ namespace :gitlab do
       end
 
       unless remove_flag
-        puts "To cleanup this directories run this command with REMOVE=true".yellow
+        puts "To cleanup these directories run this command with REMOVE=true".yellow
       end
     end
 
@@ -81,7 +81,7 @@ namespace :gitlab do
       end
 
       unless remove_flag
-        puts "To cleanup this directories run this command with REMOVE=true".yellow
+        puts "To cleanup these directories run this command with REMOVE=true".yellow
       end
     end
 
