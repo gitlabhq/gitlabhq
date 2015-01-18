@@ -11,7 +11,7 @@
         Projects
   = nav_link(controller: :users) do
     = link_to admin_users_path do
-      %i.fa.fa-users
+      %i.fa.fa-user
       %span
         Users
   = nav_link(controller: :groups) do
@@ -45,3 +45,9 @@
       %i.fa.fa-cogs
       %span
         Settings
+
+  = nav_link(controller: :applications) do
+    = link_to admin_applications_path do
+      %i.fa.fa-cloud
+      %span
+        Applications

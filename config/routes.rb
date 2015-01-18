@@ -97,6 +97,8 @@ Gitlab::Application.routes.draw do
       end
     end
 
+    resources :applications
+
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
         put :project_teams_update
