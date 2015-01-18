@@ -27,6 +27,7 @@ v 7.7.0
   - Fixes for diff comments: drag-n-drop images, selecting images
   - Fixes for edit comments: drag-n-drop images, preview mode, selecting images, save & update 
   - Remove password strength indicator
+  - Fix commit pagination
   
 
 
