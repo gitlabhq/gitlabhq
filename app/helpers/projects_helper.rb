@@ -234,8 +234,10 @@ module ProjectsHelper
 
   def hidden_pass_url(original_url)
     result = URI(original_url)
-    result.password = '*****' if result.password.present?
+    result.password = '*****' unless result.password.nil?
     result
+  rescue
+    original_url
   end
 
   def project_wiki_path_with_version(proj, page, version, is_newest)
