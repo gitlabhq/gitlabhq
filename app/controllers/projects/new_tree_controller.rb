@@ -46,8 +46,8 @@ class Projects::NewTreeController < Projects::BaseTreeController
 						return 
 					end
 				end
-				params[:content]=params[:file_upload].read
-				params[:file_name]=file_na	
+				params[:content] = params[:file_upload].read
+				params[:file_name] = file_na	
 				file_path = File.join(@path, File.basename(params[:file_name]))
 				result = Files::CreateService.new(@project, current_user, params, @ref, file_path).execute
 			end
