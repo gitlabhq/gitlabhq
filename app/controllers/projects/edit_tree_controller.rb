@@ -14,7 +14,7 @@ class Projects::EditTreeController < Projects::BaseTreeController
       new(@project, current_user, params, @ref, @path).execute
 
     if result[:status] == :success
-      flash[:notice] = "Your changes have been successfully committed"
+      flash[:notice] = changes_successful_action_message
 
       if from_merge_request
         from_merge_request.reload_code
