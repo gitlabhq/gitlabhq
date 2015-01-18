@@ -32,8 +32,8 @@ class HipchatService < Service
 
   def fields
     [
-      { type: 'text', name: 'token',     placeholder: '' },
-      { type: 'text', name: 'room',      placeholder: '' },
+      { type: 'text', name: 'token',     placeholder: 'Room token' },
+      { type: 'text', name: 'room',      placeholder: 'Room name or ID' },
       { type: 'text', name: 'server',
         placeholder: 'Leave blank for default. https://hipchat.example.com' }
     ]
