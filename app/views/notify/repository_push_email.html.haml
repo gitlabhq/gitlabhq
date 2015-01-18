@@ -23,7 +23,7 @@
         = diff.new_path || diff.old_path
     %hr
     %pre
-      = diff.diff
+      = color_email_diff(diff.diff)
     %br
 
 - if @compare.timeout

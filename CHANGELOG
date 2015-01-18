@@ -7,7 +7,7 @@ v 7.8.0
   - Expose description in groups API
   - 
   - 
-  - 
+  - Add diff syntax highlighting in email-on-push service notifications (Hannes Rosenögger)
   - 
   - 
   - 
