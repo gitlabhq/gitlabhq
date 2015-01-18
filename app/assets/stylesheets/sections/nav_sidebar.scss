@@ -148,10 +148,10 @@
   }
 }
 
-@media (max-width: $screen-sm-max) {
+@media (max-width: $screen-md-max) {
   @include folded-sidebar;
 }
 
-@media(min-width: $screen-sm-max) {
+@media(min-width: $screen-md-max) {
   @include expanded-sidebar;
 }
