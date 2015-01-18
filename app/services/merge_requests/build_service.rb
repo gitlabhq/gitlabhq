@@ -9,7 +9,12 @@ module MergeRequests
       merge_request.compare_commits = []
       merge_request.compare_diffs = []
       merge_request.source_project = project unless merge_request.source_project
-      merge_request.target_project ||= (project.forked_from_project || project)
+      merge_request.target_project ||=
+          if !project.forked_from_project.nil? && project.forked_from_project.merge_requests_enabled
+            project.forked_from_project
+          else
+            project
+          end
       merge_request.target_branch ||= merge_request.target_project.default_branch
 
       unless merge_request.target_branch && merge_request.source_branch
