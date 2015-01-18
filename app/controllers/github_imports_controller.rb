@@ -58,11 +58,11 @@ class GithubImportsController < ApplicationController
 
   def github_auth
     if current_user.github_access_token.blank?
-      go_to_gihub_for_permissions
+      go_to_github_for_permissions
     end
   end
 
-  def go_to_gihub_for_permissions
+  def go_to_github_for_permissions
     redirect_to client.auth_code.authorize_url({
       redirect_uri: callback_github_import_url,
       scope: "repo, user, user:email"
@@ -70,6 +70,6 @@ class GithubImportsController < ApplicationController
   end
 
   def github_unauthorized
-    go_to_gihub_for_permissions
+    go_to_github_for_permissions
   end
 end
