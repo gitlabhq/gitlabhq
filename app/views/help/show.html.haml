@@ -1,2 +1,2 @@
 .documentation.wiki
-  = markdown File.read(Rails.root.join('doc', @category, @file + '.md'))
+  = markdown File.read(Rails.root.join('doc', @category, @file + '.md')).gsub("$your_email", current_user.email)
