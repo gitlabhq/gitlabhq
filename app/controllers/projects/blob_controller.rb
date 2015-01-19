@@ -47,7 +47,8 @@ class Projects::BlobController < Projects::ApplicationController
     if @blob
       @blob
     elsif tree.entries.any?
-      redirect_to project_tree_path(@project, File.join(@ref, @path)) and return
+      redirect_to project_tree_path(@project, ExtractsPath.join(@ref, @path))
+      return
     else
       return not_found!
     end

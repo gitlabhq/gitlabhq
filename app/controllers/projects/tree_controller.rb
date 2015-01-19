@@ -4,7 +4,8 @@ class Projects::TreeController < Projects::BaseTreeController
 
     if tree.entries.empty?
       if @repository.blob_at(@commit.id, @path)
-        redirect_to project_blob_path(@project, File.join(@ref, @path)) and return
+        redirect_to project_blob_path(@project, ExtractsPath.join(@ref, @path))
+        return
       else
         return not_found!
       end

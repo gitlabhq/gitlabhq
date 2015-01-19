@@ -276,11 +276,14 @@ module SharedPaths
   end
 
   step 'I visit blob file from repo' do
-    visit project_blob_path(@project, File.join(sample_commit.id, sample_blob.path))
+    visit project_blob_path(
+      @project,
+      ExtractsPath.join(sample_commit.id, sample_blob.path)
+    )
   end
 
   step 'I visit ".gitignore" file in repo' do
-    visit project_blob_path(@project, File.join(root_ref, '.gitignore'))
+    visit project_blob_path(@project, ExtractsPath.join(root_ref, '.gitignore'))
   end
 
   step 'I am on the new file page' do
@@ -289,7 +292,7 @@ module SharedPaths
 
   step 'I am on the ".gitignore" edit file page' do
     current_path.should eq(project_edit_tree_path(
-      @project, File.join(root_ref, '.gitignore')))
+      @project, ExtractsPath.join(root_ref, '.gitignore')))
   end
 
   step 'I visit project source page for "6d39438"' do

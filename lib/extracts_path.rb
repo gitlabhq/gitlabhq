@@ -12,6 +12,12 @@ module ExtractsPath
     end
   end
 
+  class << self
+    def join(ref, path)
+      ref + SEPARATOR + path
+    end
+  end
+
   # Given a string containing both a Git tree-ish, such as a branch or tag, and
   # a filesystem path joined by forward slashes, attempts to separate the two.
   #
@@ -58,10 +64,10 @@ module ExtractsPath
       # branches and tags
 
       # Append a trailing slash if we only get a ref and no file path
-      id += '/' unless id.ends_with?('/')
+      id += SEPARATOR unless id.ends_with?(SEPARATOR)
 
       valid_refs = @project.repository.ref_names
-      valid_refs.select! { |v| id.start_with?("#{v}/") }
+      valid_refs.select! { |v| id.start_with?("#{v}#{SEPARATOR}") }
 
       if valid_refs.length != 1
         # No exact ref match, so just try our best
@@ -122,9 +128,11 @@ module ExtractsPath
 
   private
 
+  SEPARATOR = '/'
+
   def get_id
     id = params[:id] || params[:ref]
-    id += "/" + params[:path] unless params[:path].blank?
+    id = self.class.join(id, params[:path]) unless params[:path].blank?
     id
   end
 end

@@ -48,9 +48,8 @@ module TreeHelper
     "file_#{hexdigest(content.name)}"
   end
 
-  # Simple shortcut to File.join
-  def tree_join(*args)
-    File.join(*args)
+  def tree_join(ref, path)
+    ExtractsPath.join(ref, path)
   end
 
   def allowed_tree_edit?(project = nil, ref = nil)
