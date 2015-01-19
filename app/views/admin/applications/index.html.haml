@@ -12,7 +12,7 @@
       %th Clients
       %th
       %th
-  %tbody
+  %tbody.oauth-applications
     - @applications.each do |application|
       %tr{:id => "application_#{application.id}"}
         %td= link_to application.name, admin_application_path(application)
