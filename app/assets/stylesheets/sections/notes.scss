@@ -61,8 +61,12 @@ ul.notes {
       font-size: 14px;
     }
     .note-body {
-      @include md-typography;
       overflow: auto;
+      .note-text {
+        overflow: auto;
+        word-wrap: break-word;
+        @include md-typography;
+      }
     }
     .note-header {
       padding-bottom: 3px;
