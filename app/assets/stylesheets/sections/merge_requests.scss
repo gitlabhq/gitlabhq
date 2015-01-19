@@ -29,7 +29,7 @@
       line-height: 20px;
       font-weight: bold;
 
-      .checkbox {
+      .remove_source_checkbox {
         margin: 0;
       }
     }
@@ -88,7 +88,7 @@
 
     .merge-request-title {
       margin-bottom: 5px;
-      font-size: 14px;
+      font-size: $list-font-size;
     }
 
     .merge-request-info {

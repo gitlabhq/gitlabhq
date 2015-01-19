@@ -64,7 +64,7 @@ module SharedNote
 
   step 'I should not see the comment text field' do
     within(".js-main-target-form") do
-      page.should have_css(".js-note-text", visible: false)
+      expect(find('.js-note-text')).not_to be_visible
     end
   end
 

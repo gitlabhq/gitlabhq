@@ -6,8 +6,7 @@
     = render "layouts/public_head_panel", title: ''
     .container.navless-container
       .content
-        - unless redirect_from_root?
-          = render "layouts/flash"
+        = render "layouts/flash"
         .row.prepend-top-20
           .col-sm-5.pull-right
             = yield

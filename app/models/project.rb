@@ -183,7 +183,7 @@ class Project < ActiveRecord::Base
     end
 
     def search(query)
-      joins(:namespace).where("projects.archived = ?", false).where("projects.name LIKE :query OR projects.path LIKE :query OR namespaces.name LIKE :query OR projects.description LIKE :query", query: "%#{query}%")
+      joins(:namespace).where("projects.archived = ?", false).where("LOWER(projects.name) LIKE :query OR LOWER(projects.path) LIKE :query OR LOWER(namespaces.name) LIKE :query OR LOWER(projects.description) LIKE :query", query: "%#{query.downcase}%")
     end
 
     def search_by_title(query)

@@ -15,9 +15,6 @@ module API
 
       # Get a projects list for authenticated user
       #
-      # Parameters:
-      #   archived (optional) - if passed, limit by archived status
-      #
       # Example Request:
       #   GET /projects
       get do
@@ -35,6 +32,10 @@ module API
         # If the archived parameter is passed, limit results accordingly
         if params[:archived].present?
           @projects = @projects.where(archived: parse_boolean(params[:archived]))
+        end
+
+        if params[:search].present?
+          @projects = @projects.search(params[:search])
         end
 
         @projects = paginate @projects
@@ -95,7 +96,7 @@ module API
       # Parameters:
       #   id (required) - The ID of a project
       # Example Request:
-      #   GET /projects/:id
+      #   GET /projects/:id/events
       get ":id/events" do
         limit = (params[:per_page] || 20).to_i
         offset = (params[:page] || 0).to_i * limit

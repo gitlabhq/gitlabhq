@@ -52,6 +52,14 @@ Gitlab::Application.routes.draw do
   get "/s/:username" => "snippets#user_index", as: :user_snippets, constraints: { username: /.*/ }
 
   #
+  # Github importer area
+  #
+  resource :github_import, only: [:create, :new] do
+    get :status
+    get :callback
+  end
+
+  #
   # Explroe area
   #
   namespace :explore do
@@ -88,6 +96,8 @@ Gitlab::Application.routes.draw do
         delete 'remove/:email_id', action: 'remove_email', as: 'remove_email'
       end
     end
+
+    resources :applications
 
     resources :groups, constraints: { id: /[^\/]+/ } do
       member do
@@ -146,8 +156,8 @@ Gitlab::Application.routes.draw do
     end
   end
 
-  match "/u/:username" => "users#show", as: :user,
-    constraints: {username: /(?:[^.]|\.(?!atom$))+/, format: /atom/}, via: :get
+  get '/u/:username' => 'users#show', as: :user,
+      constraints: { username: /(?:[^.]|\.(?!atom$))+/, format: /atom/ }
 
   #
   # Dashboard Area

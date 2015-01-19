@@ -11,7 +11,7 @@
 #
 # It's strongly recommended that you check this file into your version control system.
 
-ActiveRecord::Schema.define(version: 20150108073740) do
+ActiveRecord::Schema.define(version: 20150116234544) do
 
   # These are extensions that must be enabled in order to support this database
   enable_extension "plpgsql"
@@ -24,6 +24,7 @@ ActiveRecord::Schema.define(version: 20150108073740) do
     t.text     "sign_in_text"
     t.datetime "created_at"
     t.datetime "updated_at"
+    t.string   "home_page_url"
   end
 
   create_table "broadcast_messages", force: true do |t|
@@ -324,6 +325,8 @@ ActiveRecord::Schema.define(version: 20150108073740) do
     t.string   "import_status"
     t.float    "repository_size",        default: 0.0
     t.integer  "star_count",             default: 0,        null: false
+    t.string   "import_type"
+    t.string   "import_source"
   end
 
   add_index "projects", ["creator_id"], name: "index_projects_on_creator_id", using: :btree
@@ -429,6 +432,7 @@ ActiveRecord::Schema.define(version: 20150108073740) do
     t.boolean  "hide_no_ssh_key",          default: false
     t.string   "website_url",              default: "",    null: false
     t.datetime "last_credential_check_at"
+    t.string   "github_access_token"
   end
 
   add_index "users", ["admin"], name: "index_users_on_admin", using: :btree

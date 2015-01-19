@@ -89,7 +89,7 @@ class Key < ActiveRecord::Base
     end
 
     if cmd_status.zero?
-      cmd_output.gsub /([\d\h]{2}:)+[\d\h]{2}/ do |match|
+      cmd_output.gsub /(\h{2}:)+\h{2}/ do |match|
         self.fingerprint = match
       end
     end

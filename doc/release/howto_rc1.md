@@ -2,14 +2,14 @@
 
 The RC1 release comes with the task to update the installation and upgrade docs. Be mindful that there might already be merge requests for this on GitLab or GitHub.
 
-### **1. Update the installation guide**
+### 1. Update the installation guide
 
 1. Check if it references the correct branch `x-x-stable` (doesn't exist yet, but that is okay)
 1. Check the [GitLab Shell version](/lib/tasks/gitlab/check.rake#L782)
 1. Check the [Git version](/lib/tasks/gitlab/check.rake#L794)
 1. There might be other changes. Ask around.
 
-### **2. Create update guides**
+### 2. Create update guides
 
 1. Create: CE update guide from previous version. Like `7.3-to-7.4.md`
 1. Create: CE to EE update guide in EE repository for latest version.
@@ -65,7 +65,7 @@ Check if the `init.d/gitlab` script changed since last release: [lib/support/ini
 
 #### 10. Check application status
 
-### **3. Code quality indicators**
+### 3. Code quality indicators
 
 Make sure the code quality indicators are green / good.
 
@@ -121,6 +121,6 @@ Add to your local `gitlab-ci/.git/config`:
 
 * Create a stable branch `x-y-stable`
 * Bump VERSION to `x.y.0.rc1`
-* `git tag -a v$(cat VERSION) -m "Version $(cat VERSION)"
+* `git tag -a v$(cat VERSION) -m "Version $(cat VERSION)"`
 * `git push public x-y-stable v$(cat VERSION)`
 

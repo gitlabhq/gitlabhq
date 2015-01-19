@@ -52,16 +52,6 @@ class GitPushService
     end
   end
 
-  # This method provide a sample data
-  # generated with post_receive_data method
-  # for given project
-  #
-  def sample_data(project, user)
-    @project, @user = project, user
-    @push_commits = project.repository.commits(project.default_branch, nil, 3)
-    post_receive_data(@push_commits.last.id, @push_commits.first.id, "refs/heads/#{project.default_branch}")
-  end
-
   protected
 
   def create_push_event(push_data)
@@ -112,81 +102,32 @@ class GitPushService
     end
   end
 
-  # Produce a hash of post-receive data
-  #
-  # data = {
-  #   before: String,
-  #   after: String,
-  #   ref: String,
-  #   user_id: String,
-  #   user_name: String,
-  #   project_id: String,
-  #   repository: {
-  #     name: String,
-  #     url: String,
-  #     description: String,
-  #     homepage: String,
-  #   },
-  #   commits: Array,
-  #   total_commits_count: Fixnum
-  # }
-  #
   def post_receive_data(oldrev, newrev, ref)
-    # Total commits count
-    push_commits_count = push_commits.size
-
-    # Get latest 20 commits ASC
-    push_commits_limited = push_commits.last(20)
-
-    # Hash to be passed as post_receive_data
-    data = {
-      before: oldrev,
-      after: newrev,
-      ref: ref,
-      user_id: user.id,
-      user_name: user.name,
-      project_id: project.id,
-      repository: {
-        name: project.name,
-        url: project.url_to_repo,
-        description: project.description,
-        homepage: project.web_url,
-      },
-      commits: [],
-      total_commits_count: push_commits_count
-    }
-
-    # For performance purposes maximum 20 latest commits
-    # will be passed as post receive hook data.
-    #
-    push_commits_limited.each do |commit|
-      data[:commits] << commit.hook_attrs(project)
-    end
-
-    data
+    Gitlab::PushDataBuilder.
+      build(project, user, oldrev, newrev, ref, push_commits)
   end
 
   def push_to_existing_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
     # Return if this is not a push to a branch (e.g. new commits)
-    ref_parts[1] =~ /heads/ && oldrev != Gitlab::Git::BLANK_SHA
+    ref_parts[1].include?('heads') && oldrev != Gitlab::Git::BLANK_SHA
   end
 
   def push_to_new_branch?(ref, oldrev)
     ref_parts = ref.split('/')
 
-    ref_parts[1] =~ /heads/ && oldrev == Gitlab::Git::BLANK_SHA
+    ref_parts[1].include?('heads') && oldrev == Gitlab::Git::BLANK_SHA
   end
 
   def push_remove_branch?(ref, newrev)
     ref_parts = ref.split('/')
 
-    ref_parts[1] =~ /heads/ && newrev == Gitlab::Git::BLANK_SHA
+    ref_parts[1].include?('heads') && newrev == Gitlab::Git::BLANK_SHA
   end
 
   def push_to_branch?(ref)
-    ref =~ /refs\/heads/
+    ref.include?('refs/heads')
   end
 
   def is_default_branch?(ref)

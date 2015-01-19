@@ -10,6 +10,11 @@ Doorkeeper.configure do
     current_user || redirect_to(new_user_session_url)
   end
 
+  resource_owner_from_credentials do |routes|
+    u = User.find_by(email: params[:username])
+    u if u && u.valid_password?(params[:password])
+  end
+
   # If you want to restrict access to the web interface for adding oauth authorized applications, you need to declare the block below.
   # admin_authenticator do
   #   # Put your admin authentication logic here.
@@ -35,7 +40,7 @@ Doorkeeper.configure do
   # Optional parameter :confirmation => true (default false) if you want to enforce ownership of
   # a registered application
   # Note: you must also run the rails g doorkeeper:application_owner generator to provide the necessary support
-  enable_application_owner :confirmation => true
+  enable_application_owner :confirmation => false
 
   # Define access token scopes for your provider
   # For more information go to

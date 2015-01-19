@@ -13,6 +13,7 @@ class Projects::TagsController < Projects::ApplicationController
   def create
     result = CreateTagService.new(@project, current_user).
       execute(params[:tag_name], params[:ref], params[:message])
+
     if result[:status] == :success
       @tag = result[:tag]
       redirect_to project_tags_path(@project)

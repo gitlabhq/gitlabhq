@@ -298,6 +298,20 @@ production: &base
     #   ![Company Logo](http://www.companydomain.com/logo.png)
     #   [Learn more about CompanyName](http://www.companydomain.com/)
 
+  rack_attack:
+    git_basic_auth:
+      # Whitelist requests from 127.0.0.1 for web proxies (NGINX/Apache) with incorrect headers
+      # ip_whitelist: ["127.0.0.1"]
+      #
+      # Limit the number of Git HTTP authentication attempts per IP
+      # maxretry: 10
+      #
+      # Reset the auth attempt counter per IP after 60 seconds
+      # findtime: 60
+      #
+      # Ban an IP for one hour (3600s) after too many auth attempts
+      # bantime: 3600
+
 development:
   <<: *base
 
