@@ -94,8 +94,8 @@ describe 'Comments' do
           end
 
           within("#note_#{note.id}") do
-            should have_css(".note-last-update small")
-            find(".note-last-update small").text.should match(/Edited less than a minute ago/)
+            should have_css(".note_edited_ago")
+            find(".note_edited_ago").text.should match(/less than a minute ago/)
           end
         end
       end

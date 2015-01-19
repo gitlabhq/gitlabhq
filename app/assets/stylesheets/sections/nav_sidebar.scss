@@ -1,3 +1,5 @@
+
+
 .page-with-sidebar {
   background: #F5F5F5;
 
@@ -100,17 +102,17 @@
 
 @mixin expanded-sidebar {
   .page-with-sidebar {
-    padding-left: 250px;
+    padding-left: $sidebar_width;
   }
 
   .sidebar-wrapper {
-    width: 250px;
+    width: $sidebar_width;
 
     .nav-sidebar {
       margin-top: 20px;
       position: fixed;
       top: 45px;
-      width: 250px;
+      width: $sidebar_width;
     }
   }
 

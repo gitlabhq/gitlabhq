@@ -67,8 +67,10 @@ module IssuesHelper
     ts = "#{time_ago_with_tooltip(issue.created_at, 'bottom', 'note_created_ago')}"
     if issue.updated_at != issue.created_at
       ts << capture_haml do
-        haml_tag :small do
-          haml_concat " (Edited #{time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_edited_ago')})"
+        haml_tag :span do
+          haml_concat '&middot;'
+          haml_concat '<i class="fa fa-edit" title="edited"></i> '
+          haml_concat time_ago_with_tooltip(issue.updated_at, 'bottom', 'issue_edited_ago')
         end
       end
     end
